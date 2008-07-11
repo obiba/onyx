@@ -4,7 +4,6 @@
   <bean id="hibernateConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
     <property name="propertiesArray">
       <list>
-        <!-- ref bean="hibernateSearchConfig"/-->
         <ref bean="hibernateCacheConfig" />
         <ref bean="hibernateDbConfig" />
       </list>
