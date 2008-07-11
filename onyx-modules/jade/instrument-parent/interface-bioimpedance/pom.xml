@@ -17,12 +17,4 @@
   <packaging>jar</packaging>  
   <version>1.0-SNAPSHOT</version>  
   
-  <dependencies>
-    <dependency>
-      <groupId>org.obiba.jade</groupId>
-      <artifactId>instrument-parent</artifactId>
-      <version>1.0-SNAPSHOT</version>      
-    </dependency>      
-  </dependencies>    
-  
 </project>
