@@ -24,6 +24,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
   <!--import resource="mysql-datasource.xml" /-->
 
   <!-- Import Jade's core context -->
-  <import resource="classpath:META-INF/spring/context.xml" />
+  <import resource="classpath:META-INF/spring/jade-core-context.xml" />
 
 </beans>
