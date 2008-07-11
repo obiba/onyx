@@ -22,6 +22,18 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.obiba</groupId>
+        <artifactId>obiba-core</artifactId>
+        <version>${obiba.commons.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.obiba</groupId>
+        <artifactId>obiba-wicket</artifactId>
+        <version>${obiba.commons.version}</version>
+      </dependency>
+
       <!-- Definition of all Spring modules -->
       <dependency>
         <groupId>org.springframework</groupId>
@@ -326,7 +338,7 @@
       <artifactId>dbunit</artifactId>
     </dependency>
 
-    <!-- Logging -->    
+    <!-- Logging -->
     <!-- Every child should use SLF4J for logging -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -449,6 +461,7 @@
   <properties>
     <wicket.version>1.3.3</wicket.version>
     <spring.version>2.5.5</spring.version>
+    <obiba.commons.version>1.0.1-SNAPSHOT</obiba.commons.version>
   </properties>
 
 </project>

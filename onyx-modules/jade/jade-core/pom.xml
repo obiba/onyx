@@ -21,7 +21,6 @@
     <dependency>
       <groupId>org.obiba</groupId>
       <artifactId>obiba-core</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
