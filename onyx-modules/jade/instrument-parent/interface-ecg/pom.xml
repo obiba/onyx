@@ -7,13 +7,13 @@
   <name>ECG Interface</name>
 
   <parent>
+    <groupId>org.obiba.jade.instrument</groupId>
     <artifactId>instrument-parent</artifactId>
-    <groupId>org.obiba.jade</groupId>
     <version>1.0-M1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <groupId>org.obiba.jade</groupId>
+  <groupId>org.obiba.jade.instrument</groupId>
   <artifactId>interface-ecg</artifactId>
   <packaging>jar</packaging>
 

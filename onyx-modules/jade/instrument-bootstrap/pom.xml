@@ -6,13 +6,13 @@
 
   <name>Instrument Bootstrap</name>
 
-  <groupId>org.obiba.jade</groupId>
+  <groupId>org.obiba.jade.instrument</groupId>
   <artifactId>instrument-bootstrap</artifactId>
   <packaging>jar</packaging>
 
   <parent>
-    <artifactId>jade</artifactId>
     <groupId>org.obiba.jade</groupId>
+    <artifactId>jade</artifactId>
     <version>1.0-M1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
@@ -26,7 +26,7 @@
 
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-webmvc</artifactId>
+      <artifactId>spring-web</artifactId>
     </dependency>
   </dependencies>
 

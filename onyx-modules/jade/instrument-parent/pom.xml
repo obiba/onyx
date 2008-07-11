@@ -6,7 +6,7 @@
 
   <name>Instrument Parent POM</name>
 
-  <groupId>org.obiba.jade</groupId>
+  <groupId>org.obiba.jade.instrument</groupId>
   <artifactId>instrument-parent</artifactId>
   <packaging>pom</packaging>
 
@@ -24,7 +24,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.obiba.jade</groupId>
+      <groupId>org.obiba.jade.instrument</groupId>
       <artifactId>instrument-bootstrap</artifactId>
       <version>${project.version}</version>
     </dependency>

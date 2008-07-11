@@ -93,6 +93,21 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>interface-bioimpedance</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>interface-ecg</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -100,6 +115,30 @@
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- 
+              Copy the webstart bundles in as a resource
+              before packaging starts.
+            -->
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <includeGroupIds>org.obiba.jade.instrument</includeGroupIds>
+          <includeTypes>zip</includeTypes>
+          <includeScope>provided</includeScope>
+          <useSubDirectoryPerArtifact>true</useSubDirectoryPerArtifact>
+          <!-- This says to unpack the zip files directly into the webapp's directory -->
+          <outputDirectory>${project.build.directory}/${project.build.finalName}/clients</outputDirectory>
+        </configuration>
       </plugin>
     </plugins>
   </build>
