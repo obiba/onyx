@@ -89,12 +89,49 @@
           </exclusion>
         </exclusions>
       </dependency>
-
+      
       <dependency>
         <groupId>javax.transaction</groupId>
         <artifactId>jta</artifactId>
         <version>1.0.1B</version>
         <scope>test</scope>
+      </dependency>
+      
+      <!-- Wicket -->
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket</artifactId>
+        <version>${wicket.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-spring</artifactId>
+        <version>${wicket.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-spring-annot</artifactId>
+        <version>${wicket.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-extensions</artifactId>
+        <version>${wicket.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-auth-roles</artifactId>
+        <version>${wicket.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>1.3</version>
       </dependency>
 
       <!-- Use commons-dbcp as the DataSource implementation -->
@@ -289,23 +326,6 @@
   </build>
 
   <repositories>
-    <repository>
-      <id>internal</id>
-      <name>Internal maven2 repository</name>
-      <url>http://ci26:8888/maven2/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-
-    <repository>
-      <id>internal-snapshots</id>
-      <name>Internal maven2 repository</name>
-      <url>http://ci26:8888/maven2-snapshots/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
 
     <repository>
       <id>spring-s3</id>
@@ -329,16 +349,9 @@
     </repository>
 
   </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>internal</id>
-      <name>Internal maven2 repository</name>
-      <url>http://ci26:8888/maven2/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
+  
+  <properties>
+    <wicket.version>1.3.3</wicket.version>
+  </properties>
 
 </project>
