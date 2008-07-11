@@ -23,7 +23,7 @@
     </property>
     <property name="annotatedClasses">
       <list>
-        <!--value>org.obiba.onyx.jade.core.domain.instrument.InstrumentType</value-->
+        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentType</value>
       </list>
     </property>
     <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration" />
