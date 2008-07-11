@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -16,15 +18,37 @@
     <module>jade-core</module>
     <module>jade-remote-api</module>
     <module>jade-remote-server</module>
-    <module>jade-webapp</module>    
+    <module>jade-webapp</module>
   </modules>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.springframework</groupId>
-        <artifactId>spring</artifactId>
-        <version>2.5.4</version>
+        <artifactId>spring-core</artifactId>
+        <version>2.5.5</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>2.5.5</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aop</artifactId>
+        <version>2.5.5</version>
         <exclusions>
           <exclusion>
             <groupId>commons-logging</groupId>
@@ -89,14 +113,14 @@
           </exclusion>
         </exclusions>
       </dependency>
-      
+
       <dependency>
         <groupId>javax.transaction</groupId>
         <artifactId>jta</artifactId>
         <version>1.0.1B</version>
         <scope>test</scope>
       </dependency>
-      
+
       <!-- Wicket -->
       <dependency>
         <groupId>org.apache.wicket</groupId>
@@ -180,7 +204,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
-        <version>2.5.4</version>
+        <version>2.5.5</version>
         <scope>test</scope>
         <exclusions>
           <exclusion>
@@ -259,7 +283,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>org.dbunit</groupId>
       <artifactId>dbunit</artifactId>
@@ -333,14 +357,20 @@
 
     <repository>
       <id>spring-s3</id>
-      <name>Springframework Maven SNAPSHOT (and milestone) Repository</name>
-      <url>http://s3.amazonaws.com/maven.springframework.org/snapshot</url>
+      <name>
+        Springframework Maven SNAPSHOT (and milestone) Repository
+      </name>
+      <url>
+        http://s3.amazonaws.com/maven.springframework.org/snapshot
+      </url>
     </repository>
 
     <repository>
       <id>spring-s3.milestones</id>
       <name>Spring Portfolio Maven MILESTONE Repository</name>
-      <url>http://s3.amazonaws.com/maven.springframework.org/milestone</url>
+      <url>
+        http://s3.amazonaws.com/maven.springframework.org/milestone
+      </url>
     </repository>
 
     <repository>
@@ -353,7 +383,7 @@
     </repository>
 
   </repositories>
-  
+
   <properties>
     <wicket.version>1.3.3</wicket.version>
   </properties>
