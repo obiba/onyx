@@ -1,0 +1,43 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <bean id="hibernateConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="propertiesArray">
+      <list>
+        <!-- ref bean="hibernateSearchConfig"/-->
+        <ref bean="hibernateCacheConfig" />
+        <ref bean="hibernateDbConfig" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- Use a friendlier NamingStrategy -->
+  <bean id="namingStrategy" class="org.hibernate.cfg.ImprovedNamingStrategy" />
+
+  <!-- The Hibernate SessionFactory -->
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+    <property name="dataSource">
+      <ref bean="dataSource" />
+    </property>
+    <property name="namingStrategy">
+      <ref bean="namingStrategy" />
+    </property>
+    <property name="annotatedClasses">
+      <list>
+        <!--value>org.obiba.onyx.jade.core.domain.instrument.InstrumentType</value-->
+      </list>
+    </property>
+    <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration" />
+    <property name="hibernateProperties" ref="hibernateConfig" />
+  </bean>
+
+  <!-- Hook the SessionFactory to a platform TransactionManager -->
+  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+
+  <bean id="persistenceManager" class="org.obiba.core.service.impl.hibernate.PersistenceManagerHibernateImpl">
+    <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+
+</beans>

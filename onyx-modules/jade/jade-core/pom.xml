@@ -17,4 +17,60 @@
     <relativePath>../pom.xml</relativePath>    
   </parent>
   
+  <dependencies>
+    <dependency>
+      <groupId>org.obiba</groupId>
+      <artifactId>obiba-core</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-commons-annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl104-over-slf4j</artifactId>
+    </dependency>
+
+    <!-- Even though we don't use it, the JTA jar is required due because the Spring class hierarchy and hibernate references javax.transaction.TransactionManager -->
+    <dependency>
+      <groupId>javax.transaction</groupId>
+      <artifactId>jta</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>jsr250-api</artifactId>
+      <version>1.0</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  
 </project>
