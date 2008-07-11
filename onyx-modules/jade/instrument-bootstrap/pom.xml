@@ -1,128 +1,33 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <name>Instrument Bootstrap</name>
-  
+
   <groupId>org.obiba.jade</groupId>
   <artifactId>instrument-bootstrap</artifactId>
-  <packaging>jar</packaging>  
-  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
   <parent>
     <artifactId>jade</artifactId>
     <groupId>org.obiba.jade</groupId>
-    <version>1.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>    
+    <version>1.0-M1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
-  
-  <dependencies> 
-  	<dependency>
+
+  <dependencies>
+    <dependency>
       <groupId>org.obiba.jade</groupId>
       <artifactId>jade-remote-api</artifactId>
-      <version>1.0-SNAPSHOT</version>        
-    </dependency>    
-    
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
+      <version>${project.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-aop</artifactId>
-    </dependency>
-    
-  </dependencies>   
-  
-  <build>
-    <plugins>
-	  <plugin>
-	    <groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-compiler-plugin</artifactId>
-		<configuration>
-		  <source>1.5</source>
-		  <target>1.5</target>
-		</configuration>
-	  </plugin>
-	  <plugin>
-	    <groupId>org.codehaus.mojo.webstart</groupId>
-		<artifactId>webstart-maven-plugin</artifactId>
-		<version>1.0-alpha-2</version>
-		<executions>
-		  <execution>
-		    <id>make-jnlp</id><!-- this is used for inheritance merges -->
-			<phase>package</phase><!-- append to the packaging phase. -->
-			<goals>
-			   <goal>jnlp-single</goal><!-- goals == mojos -->
-			</goals>
-			</execution>
-		</executions>
-		<configuration>
-		  <!--
-			Set to true to exclude all transitive dependencies. Default is false.
-		  -->
-		  <excludeTransitive>false</excludeTransitive>
-	
-		  <!-- The path where the libraries are stored within the jnlp structure. not required. by default the libraries are within the working directory -->
-		  <libPath>lib</libPath>
-	
-	   	  <!-- JNLP generation -->
-		  <jnlp>
-		  
-		    <!-- default values -->
-			<!--inputTemplateResourcePath>${project.basedir}</inputTemplateResourcePath-->
-			<!--inputTemplate>src/main/jnlp/template.vm</inputTemplate-->
-			<!-- relative to inputTemplateResourcePath -->
-			<outputFile>
-			  ${project.artifactId}-${project.version}.jnlp
-			</outputFile><!-- defaults to launch.jnlp -->
-	
-			<!-- used to automatically identify the jar containing the main class. -->
-			<!-- this is perhaps going to change -->
-			<mainClass>
-			  org.obiba.onyx.jade.client.JnlpClient
-			</mainClass>
-		  
-		  </jnlp>
-	
-		  <sign>
-		    <keystore>fillme</keystore>
-			<keypass>fillme</keypass><!-- we need to override passwords easily from the command line. ${keypass} -->
-			<storepass>fillme</storepass><!-- ${storepass} -->
-			<!--storetype>fillme</storetype-->
-			<alias>fillme</alias>
-	
-			<!--validity>fillme</validity-->
-	
-			<!-- only required for generating the keystore -->
-			<dnameCn>fillme</dnameCn>
-			<dnameOu>fillme</dnameOu>
-			<dnameO>fillme</dnameO>
-			<dnameL>fillme</dnameL>
-			<dnameSt>fillme</dnameSt>
-			<dnameC>fillme</dnameC>
-	
-			<verify>true</verify><!-- verify that the signing operation succeeded -->
-	
-			<!-- KEYSTORE MANAGEMENT -->
-			<keystoreConfig>
-			  <delete>true</delete><!-- delete the keystore -->
-			  <gen>true</gen><!-- optional shortcut to generate the store. -->
-			</keystoreConfig>
-		  </sign>
-	
-		  <!-- causes a version attribute to be output in each jar resource element, optional, default is false -->
-		  <outputJarVersions>false</outputJarVersions>
-		  <verbose>true</verbose>
-	
-		</configuration>
-      </plugin>
-	</plugins>  
-  </build>
-  
+  </dependencies>
+
 </project>
