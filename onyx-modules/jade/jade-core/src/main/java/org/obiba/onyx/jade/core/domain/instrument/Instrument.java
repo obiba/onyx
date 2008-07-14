@@ -15,7 +15,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.jade.core.domain.participant.InstrumentRun;
 
 @Entity
 public class Instrument extends AbstractEntity {

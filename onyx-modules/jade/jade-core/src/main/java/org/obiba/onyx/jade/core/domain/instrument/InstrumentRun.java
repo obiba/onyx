@@ -1,11 +1,10 @@
-package org.obiba.onyx.jade.core.domain.participant;
+package org.obiba.onyx.jade.core.domain.instrument;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 
 @Entity
 public class InstrumentRun extends AbstractEntity {

@@ -1,4 +1,4 @@
-package org.obiba.onyx.jade.core.domain.participant;
+package org.obiba.onyx.jade.core.domain.instrument;
 
 import java.util.ArrayList;
 import java.util.List;
