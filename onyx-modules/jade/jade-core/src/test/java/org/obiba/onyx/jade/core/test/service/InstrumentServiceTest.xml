@@ -1,15 +1,15 @@
 <dataset>
+
   <instrument_type id="1" name="STA" description="Height" />
   <instrument_type id="2" name="BIM" description="Bioimpedance" />
   <instrument_type id="3" name="SPI" description="Spirometry" />
-  
-  <instrument_type_dependencies instrument_type_id="2" depends_on_instrument_type_id="1"/>
-  <instrument_type_dependencies instrument_type_id="3" depends_on_instrument_type_id="1"/>
-  <instrument_type_dependencies instrument_type_id="3" depends_on_instrument_type_id="2"/>
 
-  <instrument id="1" instrument_type_id="1" name="Tape 1" vendor="Seca" model="Model 214" status="ACTIVE"/>
-  <instrument id="2" instrument_type_id="1" name="Tape 2" vendor="Seca" model="Model 214" status="ACTIVE"/>
-  
-  <instrument id="3" instrument_type_id="2" name="BioImp 1" vendor="Tanita" model="TBF 310" status="ACTIVE"/>
+  <instrument_type_dependencies instrument_type_id="2" depends_on_instrument_type_id="1" />
+  <instrument_type_dependencies instrument_type_id="3" depends_on_instrument_type_id="1" />
+  <instrument_type_dependencies instrument_type_id="3" depends_on_instrument_type_id="2" />
+
+  <instrument id="1" instrument_type_id="1" name="Tape 1" vendor="Seca" model="Model 214" status="ACTIVE" />
+  <instrument id="2" instrument_type_id="1" name="Tape 2" vendor="Seca" model="Model 214" status="ACTIVE" />
+  <instrument id="3" instrument_type_id="2" name="BioImp 1" vendor="Tanita" model="TBF 310" status="ACTIVE" />
 
 </dataset>
