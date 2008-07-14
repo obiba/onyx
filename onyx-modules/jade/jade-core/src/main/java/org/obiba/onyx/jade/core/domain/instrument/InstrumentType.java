@@ -83,4 +83,11 @@ public class InstrumentType extends AbstractEntity {
   public List<InstrumentType> getDependentTypes() {
     return dependentTypes != null ? dependentTypes : (dependentTypes = new ArrayList<InstrumentType>());
   }
+  
+  public void addDependentType(InstrumentType instrumentType) {
+    if (!this.equals(instrumentType)) {
+      getDependentTypes().add(instrumentType);
+      instrumentType.getDependsOnTypes().add(this);
+    }
+  }
 }

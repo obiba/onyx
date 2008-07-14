@@ -23,6 +23,13 @@ public interface InstrumentService {
   public InstrumentType getInstrumentType(String name);
   
   /**
+   * Add an depending instrument type to given instrument type.
+   * @param type
+   * @param dependency
+   */
+  public void addInstrumentTypeDependency(InstrumentType type, InstrumentType dependency);
+  
+  /**
    * Get the instruments for the given instrument type name.
    * @param typeName
    * @return 
