@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -11,12 +13,8 @@ import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
 
 @Entity
-//@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-//@DiscriminatorColumn(
-//    name="instrument_parameter_type",
-//    discriminatorType=DiscriminatorType.STRING
-//)
-//@DiscriminatorValue("InstrumentParameter")
+@Inheritance(strategy = InheritanceType.JOINED)
+//Creates one table for the base class and one table per concrete subclass with foreign key to base class PK.
 public abstract class InstrumentParameter extends AbstractEntity {
 
   @Column(length = 200)

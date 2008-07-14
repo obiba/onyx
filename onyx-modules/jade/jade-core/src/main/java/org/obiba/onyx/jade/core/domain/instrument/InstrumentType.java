@@ -12,8 +12,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
 
@@ -31,14 +29,13 @@ public class InstrumentType extends AbstractEntity {
   private String description;
 
   @OneToMany(mappedBy = "instrumentType")
-  @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN })
   private List<Instrument> instruments;
 
-  @ManyToMany(targetEntity = InstrumentType.class, cascade = { javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.MERGE })
+  @ManyToMany(targetEntity = InstrumentType.class)
   @JoinTable(name = "instrument_type_dependencies", joinColumns = @JoinColumn(name = "instrument_type_id"), inverseJoinColumns = @JoinColumn(name = "depends_on_instrument_type_id"))
   private List<InstrumentType> dependsOnTypes;
 
-  @ManyToMany(cascade = { javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.MERGE }, mappedBy = "dependsOnTypes", targetEntity = InstrumentType.class)
+  @ManyToMany(mappedBy = "dependsOnTypes", targetEntity = InstrumentType.class)
   private List<InstrumentType> dependentTypes;
 
   public InstrumentType() {

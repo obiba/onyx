@@ -8,9 +8,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
 @Entity
 //@DiscriminatorValue("InstrumentComputedOutputParameter")
 public class InstrumentComputedOutputParameter extends InstrumentOutputParameter {
@@ -18,7 +15,6 @@ public class InstrumentComputedOutputParameter extends InstrumentOutputParameter
   private static final long serialVersionUID = -4217317349036043214L;
 
   @OneToMany(mappedBy = "instrumentComputedOutputParameter")
-  @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN })
   private List<InstrumentOutputParameter> instrumentOutputParameters;
 
   @Enumerated(EnumType.STRING)

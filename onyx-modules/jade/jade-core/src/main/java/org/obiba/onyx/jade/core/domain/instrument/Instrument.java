@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
 
@@ -45,11 +43,9 @@ public class Instrument extends AbstractEntity {
   private InstrumentType instrumentType;
 
   @OneToMany(mappedBy = "instrument")
-  @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN })
   private List<InstrumentParameter> instrumentParameters;
 
   @OneToMany(mappedBy = "instrument")
-  @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN })
   private List<InstrumentRun> instrumentRuns;
 
   // TODO image
