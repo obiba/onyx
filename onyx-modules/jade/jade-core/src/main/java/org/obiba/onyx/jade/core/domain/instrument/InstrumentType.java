@@ -5,7 +5,12 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -13,6 +18,7 @@ import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
 
 @Entity
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "name" }) })
 public class InstrumentType extends AbstractEntity {
 
   private static final long serialVersionUID = 23414234L;
@@ -28,14 +34,21 @@ public class InstrumentType extends AbstractEntity {
   @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN })
   private List<Instrument> instruments;
 
+  @ManyToMany(targetEntity = InstrumentType.class, cascade = { javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.MERGE })
+  @JoinTable(name = "instrument_type_dependencies", joinColumns = @JoinColumn(name = "instrument_type_id"), inverseJoinColumns = @JoinColumn(name = "depends_on_instrument_type_id"))
+  private List<InstrumentType> dependsOnTypes;
+
+  @ManyToMany(cascade = { javax.persistence.CascadeType.PERSIST, javax.persistence.CascadeType.MERGE }, mappedBy = "dependsOnTypes", targetEntity = InstrumentType.class)
+  private List<InstrumentType> dependentTypes;
+
   public InstrumentType() {
   }
-  
+
   public InstrumentType(String name, String description) {
     this.name = name;
     this.description = description;
   }
-  
+
   public String getName() {
     return name;
   }
@@ -61,5 +74,13 @@ public class InstrumentType extends AbstractEntity {
       getInstruments().add(instrument);
       instrument.setInstrumentType(this);
     }
+  }
+
+  public List<InstrumentType> getDependsOnTypes() {
+    return dependsOnTypes != null ? dependsOnTypes : (dependsOnTypes = new ArrayList<InstrumentType>());
+  }
+
+  public List<InstrumentType> getDependentTypes() {
+    return dependentTypes != null ? dependentTypes : (dependentTypes = new ArrayList<InstrumentType>());
   }
 }

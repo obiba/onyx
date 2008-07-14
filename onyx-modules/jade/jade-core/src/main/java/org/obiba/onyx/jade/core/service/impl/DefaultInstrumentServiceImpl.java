@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,15 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     return getPersistenceManager().save(type);
   }
   
+  public InstrumentType getInstrumentType(String name) {
+    InstrumentType template = new InstrumentType(name, null);
+    return getPersistenceManager().matchOne(template);
+  }
+  
+  public List<Instrument> getInstruments(String typeName) {
+    return getInstruments(getInstrumentType(typeName));
+  }
+  
   public List<Instrument> getInstruments(InstrumentType instrumentType) {
     Instrument template = new Instrument();
     template.setInstrumentType(instrumentType);
@@ -23,12 +33,19 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     return getPersistenceManager().match(template);
   }
 
+  public List<Instrument> getActiveInstruments(InstrumentType instrumentType) {
+    Instrument template = new Instrument();
+    template.setInstrumentType(instrumentType);
+    template.setStatus(InstrumentStatus.ACTIVE);
+    
+    return getPersistenceManager().match(template);
+  }
+  
   public void addInstrument(InstrumentType instrumentType, Instrument instrument) {
     if (instrumentType != null && instrument != null) {
       instrumentType.addInstrument(instrument);
       getPersistenceManager().save(instrumentType);
     }
   }
-
 
 }
