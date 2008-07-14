@@ -67,11 +67,15 @@
             <!-- JNLP generation -->
             <jnlp>
 
-              <!-- default values -->
-              <!--inputTemplateResourcePath>${project.basedir}</inputTemplateResourcePath-->
-              <!--inputTemplate>src/main/jnlp/template.vm</inputTemplate-->
+              <!-- 
+                Overriden to use a common template specified in the parent project.
+                this only works if the child project is located directly under the parent.
+              -->
+              <inputTemplateResourcePath>${project.basedir}/..</inputTemplateResourcePath>
+
               <!-- relative to inputTemplateResourcePath -->
-              <outputFile>${project.artifactId}-${project.version}.jnlp</outputFile><!-- defaults to launch.jnlp -->
+              <!--inputTemplate>src/main/jnlp/template.vm</inputTemplate-->
+              <!--outputFile>launch.jnlp</outputFile--><!-- defaults to launch.jnlp -->
 
               <!-- used to automatically identify the jar containing the main class. -->
               <!-- this is perhaps going to change -->
@@ -107,7 +111,7 @@
 
             <!-- causes a version attribute to be output in each jar resource element, optional, default is false -->
             <outputJarVersions>false</outputJarVersions>
-            <verbose>true</verbose>
+            <verbose>false</verbose>
 
           </configuration>
         </plugin>

@@ -4,9 +4,7 @@
     codebase="${codebaseUrl}">
   <information>
     <title>$project.name</title>
-    <vendor>$project.organization.name</vendor>
-    <homepage href="$project.url"/>
-    <description>$project.description</description>
+    <vendor>Obiba</vendor>
 #if($offlineAllowed)
     <offline-allowed/>
 
