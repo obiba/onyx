@@ -1,6 +1,9 @@
 package org.obiba.onyx.jade.core.domain.instrument;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,8 +16,9 @@ import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-//Creates one table for the base class and one table per concrete subclass with foreign key to base class PK.
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "instrument_parameter_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("InstrumentParameter")
 public abstract class InstrumentParameter extends AbstractEntity {
 
   @Column(length = 200)

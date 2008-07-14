@@ -3,13 +3,14 @@ package org.obiba.onyx.jade.core.domain.instrument;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 
 @Entity
-//@DiscriminatorValue("InstrumentComputedOutputParameter")
+@DiscriminatorValue("InstrumentComputedOutputParameter")
 public class InstrumentComputedOutputParameter extends InstrumentOutputParameter {
 
   private static final long serialVersionUID = -4217317349036043214L;
