@@ -11,6 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService implements InstrumentService {
 
+  public InstrumentType createInstrumentType(String name, String description) {
+    InstrumentType type = new InstrumentType(name, description);
+    return getPersistenceManager().save(type);
+  }
+  
   public List<Instrument> getInstruments(InstrumentType instrumentType) {
     Instrument template = new Instrument();
     template.setInstrumentType(instrumentType);
@@ -24,5 +29,6 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
       getPersistenceManager().save(instrumentType);
     }
   }
+
 
 }

@@ -1,0 +1,7 @@
+<dataset>
+  <instrument_type id="1" name="STA" description="Height" />
+  <instrument_type id="2" name="BIM" description="Bioimpedance" />
+
+  <instrument id="1" instrument_type_id="1" name="Tape 1" vendor="Seca" model="Model 214"/>
+
+</dataset>

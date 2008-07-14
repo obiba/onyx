@@ -24,6 +24,13 @@
     <property name="annotatedClasses">
       <list>
         <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentType</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.Instrument</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentRun</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.ParticipantInterview</value>
       </list>
     </property>
     <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration" />

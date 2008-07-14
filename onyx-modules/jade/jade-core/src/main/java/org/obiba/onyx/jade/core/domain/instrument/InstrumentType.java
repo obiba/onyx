@@ -30,7 +30,12 @@ public class InstrumentType extends AbstractEntity {
 
   public InstrumentType() {
   }
-
+  
+  public InstrumentType(String name, String description) {
+    this.name = name;
+    this.description = description;
+  }
+  
   public String getName() {
     return name;
   }
