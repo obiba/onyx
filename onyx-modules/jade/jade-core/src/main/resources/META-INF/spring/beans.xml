@@ -10,9 +10,11 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
   
-  <bean id="jadeDatabaseSeed" class="org.obiba.onyx.jade.core.wicket.seed.JadeDatabaseSeed" autowire="byType" scope="singleton">
+  <bean id="jadeDatabaseSeed" class="org.obiba.onyx.jade.core.wicket.seed.JadeDatabaseSeed" scope="singleton">
     <property name="resource" value="classpath:/xstreamSeed.xml" />
     <property name="developmentSeed" value="true" />
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="instrumentService" ref="instrumentService" />
   </bean>
 
 </beans>
