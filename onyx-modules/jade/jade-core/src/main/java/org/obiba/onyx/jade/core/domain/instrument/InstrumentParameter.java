@@ -34,6 +34,9 @@ public abstract class InstrumentParameter extends AbstractEntity {
   @Enumerated(EnumType.STRING)
   private DataType dataType;
 
+  @Enumerated(EnumType.STRING)
+  private InstrumentParameterCaptureMethod captureMethod;
+
   @ManyToOne
   @JoinColumn(name = "instrument_id")
   private Instrument instrument;
@@ -68,6 +71,14 @@ public abstract class InstrumentParameter extends AbstractEntity {
 
   public void setDataType(DataType dataType) {
     this.dataType = dataType;
+  }
+
+  public InstrumentParameterCaptureMethod getCaptureMethod() {
+    return captureMethod;
+  }
+
+  public void setCaptureMethod(InstrumentParameterCaptureMethod captureMethod) {
+    this.captureMethod = captureMethod;
   }
 
   public Instrument getInstrument() {

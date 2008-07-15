@@ -62,8 +62,8 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
     xstream.alias("output", InstrumentOutputParameter.class);
     xstream.alias("computedOutput", InstrumentComputedOutputParameter.class);
     xstream.alias("fixedSource", FixedSource.class);
-    xstream.alias("participantSource", ParticipantPropertySource.class);
-    xstream.alias("outputSource", OutputParameterSource.class);
+    xstream.alias("participantPropertySource", ParticipantPropertySource.class);
+    xstream.alias("outputParameterSource", OutputParameterSource.class);
     
   }
   

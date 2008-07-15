@@ -25,4 +25,9 @@ public class FixedSource extends InputSource {
     this.value = value;
   }
 
+  @Override
+  public boolean isReadOnly() {
+    return true;
+  }
+
 }

@@ -13,4 +13,9 @@ public class OperatorSource extends InputSource {
     super();
   }
 
+  @Override
+  public boolean isReadOnly() {
+    return false;
+  }
+
 }

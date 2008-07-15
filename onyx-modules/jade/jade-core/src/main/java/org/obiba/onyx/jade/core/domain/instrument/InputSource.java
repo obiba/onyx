@@ -23,7 +23,7 @@ public abstract class InputSource extends AbstractEntity {
 
   @OneToMany(mappedBy = "inputSource")
   private List<InstrumentInputParameter> instrumentInputParameters;
-
+  
   public List<InstrumentInputParameter> getInstrumentInputParameters() {
     return instrumentInputParameters != null ? instrumentInputParameters : (instrumentInputParameters = new ArrayList<InstrumentInputParameter>());
   }
@@ -35,4 +35,5 @@ public abstract class InputSource extends AbstractEntity {
     }
   }
 
+  public abstract boolean isReadOnly();
 }

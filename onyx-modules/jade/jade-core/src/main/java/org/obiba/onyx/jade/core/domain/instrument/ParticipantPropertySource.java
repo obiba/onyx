@@ -25,4 +25,9 @@ public class ParticipantPropertySource extends InputSource {
     this.property = property;
   }
 
+  @Override
+  public boolean isReadOnly() {
+    return true;
+  }
+
 }

@@ -31,11 +31,11 @@ public class InstrumentType extends AbstractEntity {
   @OneToMany(mappedBy = "instrumentType")
   private List<Instrument> instruments;
 
-  @ManyToMany(targetEntity = InstrumentType.class)
+  @ManyToMany
   @JoinTable(name = "instrument_type_dependencies", joinColumns = @JoinColumn(name = "instrument_type_id"), inverseJoinColumns = @JoinColumn(name = "depends_on_instrument_type_id"))
   private List<InstrumentType> dependsOnTypes;
 
-  @ManyToMany(mappedBy = "dependsOnTypes", targetEntity = InstrumentType.class)
+  @ManyToMany(mappedBy = "dependsOnTypes")
   private List<InstrumentType> dependentTypes;
 
   public InstrumentType() {
