@@ -24,8 +24,8 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
   <!--import resource="mysql-datasource.xml" /-->
 
   <!-- Import Jade's core context -->
-  <import resource="classpath:META-INF/spring/jade-core-context.xml" />
+  <import resource="classpath:META-INF/spring/jade-core/context.xml" />
   
-  <bean id="applicationBean" class="org.obiba.onyx.jade.webapp.JadeApplication" scope="singleton" />
+  <import resource="beans.xml" />
 
 </beans>
