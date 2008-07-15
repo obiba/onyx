@@ -4,25 +4,21 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Physical Measurement Core</name>
+  <name>Onyx Core</name>
+  <description>Assessment Center Application Runtime Engine</description>
 
-  <groupId>org.obiba.jade</groupId>
-  <artifactId>jade-core</artifactId>
+  <groupId>org.obiba.onyx</groupId>
+  <artifactId>onyx-core</artifactId>
   <packaging>jar</packaging>
 
   <parent>
-    <artifactId>jade</artifactId>
     <groupId>org.obiba.jade</groupId>
+    <artifactId>jade</artifactId>
     <version>1.0-M1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <dependencies>
-    <dependency>
-      <groupId>org.obiba.onyx</groupId>
-      <artifactId>onyx-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
     <dependency>
       <groupId>org.obiba</groupId>
       <artifactId>obiba-core</artifactId>

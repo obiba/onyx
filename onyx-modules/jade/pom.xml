@@ -17,6 +17,7 @@
     <module>jade-core</module>
     <module>jade-remote-api</module>
     <module>jade-remote-server</module>
+    <module>onyx-core</module>
     <module>onyx-webapp</module>
   </modules>
 

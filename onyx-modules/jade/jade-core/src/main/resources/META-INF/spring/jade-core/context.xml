@@ -2,6 +2,6 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
   default-autowire="no">
 
-  <import resource="classpath:META-INF/spring/jade-core/persistence.xml" />
+  <import resource="persistence.xml" />
 
 </beans>

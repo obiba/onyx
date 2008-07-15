@@ -20,14 +20,21 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.obiba.onyx</groupId>
+      <artifactId>onyx-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.obiba.jade</groupId>
       <artifactId>jade-core</artifactId>
       <version>${project.version}</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.obiba.jade</groupId>
       <artifactId>jade-remote-server</artifactId>
       <version>${project.version}</version>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>
