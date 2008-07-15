@@ -53,7 +53,7 @@ A:hover {
 	float:left;
 	background-color: #375FB7;
 	background-image: url('../images/bkg.jpg');
-	background-repeat: no-repeat;
+	background-repeat: repeat;
 	background-position: left top;
 }
 
