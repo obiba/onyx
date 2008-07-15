@@ -8,6 +8,7 @@ public class JadePanel extends Panel {
 
   public JadePanel(String id) {
     super(id);
+    add(new InstrumentTypeSelectionPanel("content"));
   }
 
 }

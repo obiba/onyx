@@ -87,4 +87,9 @@ public class InstrumentType extends AbstractEntity {
       instrumentType.getDependsOnTypes().add(this);
     }
   }
+  
+  @Override
+  public String toString() {
+    return name;
+  }
 }
