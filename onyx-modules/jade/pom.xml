@@ -17,7 +17,7 @@
     <module>jade-core</module>
     <module>jade-remote-api</module>
     <module>jade-remote-server</module>
-    <module>jade-webapp</module>
+    <module>onyx-webapp</module>
   </modules>
 
   <dependencyManagement>
@@ -383,6 +383,30 @@
         <configuration>
           <source>1.5</source>
           <target>1.5</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- 
+              Copy the webstart bundles in as a resource
+              before packaging starts.
+            -->
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <includeGroupIds>org.obiba.jade.instrument</includeGroupIds>
+          <includeTypes>zip</includeTypes>
+          <includeScope>provided</includeScope>
+          <useSubDirectoryPerArtifact>true</useSubDirectoryPerArtifact>
+          <!-- This says to unpack the zip files directly into the webapp's directory -->
+          <outputDirectory>${project.build.directory}/${project.build.finalName}/clients</outputDirectory>
         </configuration>
       </plugin>
     </plugins>
