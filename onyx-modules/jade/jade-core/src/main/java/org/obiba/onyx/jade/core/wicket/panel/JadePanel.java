@@ -1,4 +1,4 @@
-package org.obiba.onyx.jade.core.wicket;
+package org.obiba.onyx.jade.core.wicket.panel;
 
 import org.apache.wicket.markup.html.panel.Panel;
 

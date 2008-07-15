@@ -4,7 +4,7 @@ import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.obiba.onyx.jade.core.wicket.JadePanel;
+import org.obiba.onyx.jade.core.wicket.panel.JadePanel;
 
 public class HomePage extends WebPage implements IAjaxIndicatorAware {
 
