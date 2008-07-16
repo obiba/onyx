@@ -61,11 +61,11 @@ public class InstrumentLauncherPanel extends Panel {
     if(instruments.size() > 0) {
       Instrument instrument = instruments.get(0);
 
-      if(instrument.getZip() != null) {
+      if(instrument.getCodeBase() != null) {
         Properties props = new Properties();
         props.setProperty("baseServiceUrl", makeUrl("remoting"));
-        props.setProperty("codebaseUrl", makeUrl("clients/" + instrument.getZip()));
-        props.setProperty("jnlpPath", context.getRealPath("/clients/" + instrument.getZip() + "/launch.jnlp"));
+        props.setProperty("codebaseUrl", makeUrl("clients/" + instrument.getCodeBase()));
+        props.setProperty("jnlpPath", context.getRealPath("/clients/" + instrument.getCodeBase() + "/launch.jnlp"));
 
         form.add(new ResourceLink("go", new JnlpResource(props)));
       } else {
