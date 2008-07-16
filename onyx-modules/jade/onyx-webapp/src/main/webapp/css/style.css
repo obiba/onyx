@@ -386,28 +386,44 @@ text-align:center;
   line-height:18px;
 }
 
-table.dataview {
+/*************** Entity Table ********************/
+
+table.entityTable {
   width: 500px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #375FB7;
+  padding:1px;
 }
 
-table.dataview tr.odd {
+table.entityTable tr.titleToolbar {
+  font-weight: bold;
+  color: #F6F8FF;
+  background-color: #375FB7;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #375FB7;
+  padding: 3px;
+}
+
+table.entityTable tr.odd {
   background-color: #E1E3E5;
 }
 
-table.dataview tr.navigation {
+table.entityTable tr.navigation {
   background-color: #666666;
   color: #FFFFFF;
 }
 
-table.dataview .navigator a {
+table.entityTable .navigator a {
   color: #AFBBC5
 }
 
-table.dataview .navigator em {
+table.entityTable .navigator em {
   font-weight: bold
 }
 
-table.dataview th {
+table.entityTable th {
   background-color: #CAD08D;
   padding: 3px;
   border: 1px solid #FFFFFF;
@@ -415,14 +431,14 @@ table.dataview th {
 
 }
 
-table.dataview th.wicket_orderUp {
+table.entityTable th.wicket_orderUp {
   padding-right:15px;
   background-image: url(../images/up.png);
   background-repeat: no-repeat;
   background-position: 95% 50%;
 }
 
-table.dataview th.wicket_orderDown {
+table.entityTable th.wicket_orderDown {
   padding-right:15px;
   background-image: url(../images/down.png);
   background-repeat: no-repeat;
@@ -430,12 +446,14 @@ table.dataview th.wicket_orderDown {
   background-position: 95% 50%;
 }
 
-table.dataview td {
+table.entityTable td {
   border: 1px solid #FFFFFF; 
   padding: 3px;
   
   
 }
+
+/*************** End Entity Table ********************/
 
 table.gertTable {
 	border-width: 1px;
@@ -740,7 +758,8 @@ form {
 	padding-bottom:6px;
 	background-position:left;
 }
-/*******************TAB LAYOUT************************************************/
+
+/******************* Tab Layout ************************************************/
 /*Credits: Dynamic Drive CSS Library */
 /*URL: http://www.dynamicdrive.com/style/ */
     
@@ -812,3 +831,4 @@ text-decoration:none;
 div.tab-row a:hover span{ /*onMouseover style*/
 background-position:100% -82px; /*Shift background image up to start of 2nd tab image*/
 }
+/******************* End Tab Layout ************************************************/
