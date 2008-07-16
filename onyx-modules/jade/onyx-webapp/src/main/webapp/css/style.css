@@ -91,55 +91,33 @@ A:hover {
   color: #00CAA4;
 }
 
+
+
 #menuBar {
   background-color: #AEB659;
+  height:25px;
   color: #FFFFFF;
   font-family: verdana, arial, sans-serif;
-  font-size:16px;
-}
-
-#menuBarAddOns {
   font-size:12px;
+  border-top:1px solid FFFFFF;
 }
 
-/*
-#menuBar ul {
-  margin-top: 0px;
-  padding-left: 0px;
-  margin-left: 0px;
-  border-top: 1px solid #A2B5C6;
-  background-color: #666666;
-  color: #FFFFFF;
-  float: left;
-  width: 100%;
-  font-family: verdana, arial, sans-serif;
-  font-size:14px;
-  font-weight: bold;
+#menuAddOns{
+	padding-top:1px;
+	float:right;
+	font-size:11px;
+	margin-right:15px;
 }
-
-#menuBar ul li { display: inline; }
-
-#menuBar ul li a
-{
-	padding-top:5px;
-	padding-bottom:5px;
-	padding-left:15px;
-	padding-right:15px;
-	color: #FFFFFF;
-	text-decoration: none;
-	float: left;
-	border-right: 1px solid #fff;
-	background-image: none;
-	background-repeat: repeat-x;
-	background-position: left top;
+#menuAddOns form{
+	padding:0px;
+	margin:0px;
+	padding-left:5px;
+	display:inline;
 }
-
-#menuBar ul li a:hover
-{
-  background-color: #999999;
-  color: #FFFFFF;
+#menu{
+	float:left;
+	margin:left:15px;
 }
-*/
 
 #contentWrapper {
   margin-top:10px;
