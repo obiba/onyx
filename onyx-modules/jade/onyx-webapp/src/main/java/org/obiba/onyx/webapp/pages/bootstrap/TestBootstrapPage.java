@@ -41,13 +41,13 @@ public class TestBootstrapPage extends WebPage {
     final ServletContext context = ((WebApplication) RequestCycle.get().getApplication()).getServletContext();
 
     Properties props = new Properties();
-    props.setProperty("baseServiceUrl", makeUrl("remoting"));
+    props.setProperty("org.obiba.onyx.remoting.url", makeUrl("remoting"));
     props.setProperty("codebaseUrl", makeUrl("clients/interface-bioimpedance-1.0-M1-SNAPSHOT-zip"));
     props.setProperty("jnlpPath", context.getRealPath("/clients/interface-bioimpedance-1.0-M1-SNAPSHOT-zip/launch.jnlp"));
     add(new ResourceLink("startTbf310", new JnlpResource(props)));
 
     props = new Properties();
-    props.setProperty("baseServiceUrl", makeUrl("remoting"));
+    props.setProperty("org.obiba.onyx.remoting.url", makeUrl("remoting"));
     props.setProperty("codebaseUrl", makeUrl("clients/interface-ecg-1.0-M1-SNAPSHOT-zip"));
     props.setProperty("jnlpPath", context.getRealPath("/clients/interface-ecg-1.0-M1-SNAPSHOT-zip/launch.jnlp"));
     add(new ResourceLink("startCardiosoft", new JnlpResource(props)));

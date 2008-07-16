@@ -11,28 +11,11 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 public class JnlpClient {
-  
+
   public static void main(String[] args) throws Exception {
 
-    GenericApplicationContext appContext = new GenericApplicationContext();
-    XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(appContext);
-    xmlReader.loadBeanDefinitions(new ClassPathResource("/META-INF/spring/bootstrap-context.xml"));
-    xmlReader.loadBeanDefinitions(new ClassPathResource("/META-INF/spring/instrument-context.xml"));
-    xmlReader.loadBeanDefinitions(new ClassPathResource("/META-INF/spring/remote-api-client.xml"));
-
-    Properties params = loadServiceParams(args);
-    PropertyPlaceholderConfigurer c = new PropertyPlaceholderConfigurer();
-    c.setProperties(params);
-    appContext.addBeanFactoryPostProcessor(c);
-
-    appContext.refresh();
-
-    AbstractInstrumentRunner instrumentRunner = (AbstractInstrumentRunner) appContext.getBean("instrumentRunner");
-    instrumentRunner.run();
-
-    RemoteService instrumentService = instrumentRunner.getInstrRemoteService();
-    
-    System.out.println("RemoteService says: " + instrumentService.echo("Hello World test367!"));
+    GenericApplicationContext appContext = loadAppContext(args);
+    runInstrument(appContext);
 
     Thread.sleep(3000);
     appContext.destroy();
@@ -40,7 +23,40 @@ public class JnlpClient {
     System.exit(0);
   }
 
-  private static Properties loadServiceParams(String[] args) {
+  protected static void runInstrument(GenericApplicationContext appContext) {
+
+    // Run the instrument specific code.
+    AbstractInstrumentRunner instrumentRunner = (AbstractInstrumentRunner) appContext.getBean("instrumentRunner");
+    instrumentRunner.run();
+
+    // Test instrument remote services.
+    RemoteService instrumentService = instrumentRunner.getInstrRemoteService();
+    System.out.println("RemoteService says: " + instrumentService.echo("Hello World test367!"));
+
+  }
+
+  protected static GenericApplicationContext loadAppContext(String[] requestParams) {
+
+    // Load bootstrap context files.
+    GenericApplicationContext appContext = new GenericApplicationContext();
+    XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(appContext);
+    xmlReader.loadBeanDefinitions(new ClassPathResource("/META-INF/spring/bootstrap-context.xml"));
+    xmlReader.loadBeanDefinitions(new ClassPathResource("/META-INF/spring/instrument-context.xml"));
+
+    // Load remote API context file and configure server parameters in context file.
+    xmlReader.loadBeanDefinitions(new ClassPathResource("/META-INF/spring/remote-api-client.xml"));
+    Properties paramsProp = loadServiceParams(requestParams);
+    PropertyPlaceholderConfigurer c = new PropertyPlaceholderConfigurer();
+    c.setProperties(paramsProp);
+    appContext.addBeanFactoryPostProcessor(c);
+
+    appContext.refresh();
+
+    return appContext;
+
+  }
+
+  protected static Properties loadServiceParams(String[] args) {
 
     Properties params = new Properties();
     try {
