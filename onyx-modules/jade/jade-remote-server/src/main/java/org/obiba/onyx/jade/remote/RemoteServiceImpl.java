@@ -1,7 +1,6 @@
 package org.obiba.onyx.jade.remote;
 
 
-import org.obiba.onyx.jade.remote.RemoteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

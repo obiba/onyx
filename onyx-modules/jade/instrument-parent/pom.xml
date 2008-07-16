@@ -19,6 +19,7 @@
 
   <modules>
     <module>interface-bioimpedance</module>
+    <module>interface-ecg</module>    
   </modules>
 
   <dependencies>
