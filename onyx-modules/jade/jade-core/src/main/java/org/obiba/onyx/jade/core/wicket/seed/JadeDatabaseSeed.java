@@ -56,7 +56,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
   @Override
   protected void initializeXstream(XStream xstream) {
     super.initializeXstream(xstream);
-    xstream.alias("type", InstrumentType.class);
+    xstream.alias("instrumentType", InstrumentType.class);
     xstream.alias("instrument", Instrument.class);
     xstream.alias("input", InstrumentInputParameter.class);
     xstream.alias("output", InstrumentOutputParameter.class);

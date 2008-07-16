@@ -2,41 +2,46 @@
 <linked-list>
 
   <!-- Instrument types -->
-  <type id="sta">
+  <instrumentType id="sta">
     <name>STA</name>
     <description>Height measurement</description>
 
     <dependentTypes>
-      <type reference="bim" />
-      <type reference="spi" />
+      <instrumentType reference="bim" />
+      <instrumentType reference="spi" />
     </dependentTypes>
 
-  </type>
+  </instrumentType>
 
-  <type id="bim">
+  <instrumentType id="bim">
     <name>BIM</name>
     <description>Bioimpedance measurement</description>
 
     <dependsOnTypes>
-      <type reference="sta" />
+      <instrumentType reference="sta" />
     </dependsOnTypes>
 
     <dependentTypes>
-      <type reference="spi" />
+      <instrumentType reference="spi" />
     </dependentTypes>
 
-  </type>
+  </instrumentType>
 
-  <type id="spi">
+  <instrumentType id="spi">
     <name>SPI</name>
     <description>Spirometry measurement</description>
 
     <dependsOnTypes>
-      <type reference="sta" />
-      <type reference="bim" />
+      <instrumentType reference="sta" />
+      <instrumentType reference="bim" />
     </dependsOnTypes>
 
-  </type>
+  </instrumentType>
+  
+  <instrumentType id="ecg">
+    <name>ECG</name>
+    <description>Electrocardiogram measurement</description>
+  </instrumentType>
 
   <!-- Instruments -->
   <!-- STA1 -->
@@ -47,7 +52,7 @@
     <serialNumber>1234567890</serialNumber>
     <barcode>sta01</barcode>
     <status>ACTIVE</status>
-    <type reference="sta" />
+    <instrumentType reference="sta" />
   </instrument>
 
   <output id="sta1_height1">
@@ -88,7 +93,7 @@
     <serialNumber>0987654321</serialNumber>
     <barcode>sta02</barcode>
     <status>ACTIVE</status>
-    <type reference="sta" />
+    <instrumentType reference="sta" />
   </instrument>
 
   <output id="sta2_height1">
@@ -127,7 +132,8 @@
     <vendor>Tanita</vendor>
     <model>TBF 310</model>
     <status>ACTIVE</status>
-    <type reference="bim" />
+    <zip>interface-bioimpedance-1.0-M1-SNAPSHOT-zip</zip>
+    <instrumentType reference="bim" />
   </instrument>
 
   <input id="bioimp1_height">
@@ -146,5 +152,15 @@
       <input reference="bioimp1_height" />
     </instrumentInputParameters>
   </outputParameterSource>
+  
+  <!-- ECG1 -->
+  <instrument id="ecg1">
+    <name>ECG 1</name>
+    <vendor>GE</vendor>
+    <model>CardioSoft</model>
+    <status>ACTIVE</status>
+    <zip>interface-ecg-1.0-M1-SNAPSHOT-zip</zip>
+    <instrumentType reference="ecg" />
+  </instrument>
 
 </linked-list>

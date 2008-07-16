@@ -34,6 +34,9 @@ public class Instrument extends AbstractEntity {
 
   @Column(length = 200)
   private String barcode;
+  
+  @Column(length = 200)
+  private String zip;
 
   @Enumerated(EnumType.STRING)
   private InstrumentStatus status;
@@ -91,6 +94,14 @@ public class Instrument extends AbstractEntity {
 
   public void setBarcode(String barcode) {
     this.barcode = barcode;
+  }
+
+  public String getZip() {
+    return zip;
+  }
+
+  public void setZip(String zip) {
+    this.zip = zip;
   }
 
   public InstrumentStatus getStatus() {
