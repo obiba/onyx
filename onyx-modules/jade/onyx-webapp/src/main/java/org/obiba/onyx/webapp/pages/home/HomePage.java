@@ -9,7 +9,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
-import org.obiba.onyx.webapp.pages.bootstrap.TestBootstrapPage;
 
 public class HomePage extends WebPage implements IAjaxIndicatorAware {
 
@@ -36,8 +35,6 @@ public class HomePage extends WebPage implements IAjaxIndicatorAware {
 
     Module module = registry.getModule(stage.getModule());
     add(module.startStage(stage).createStageComponent("stage-component"));
-    
-    add(new PageLink( "testBootstrap", TestBootstrapPage.class ));
   }
 
   /**
