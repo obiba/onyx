@@ -25,19 +25,19 @@ public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManager
   public void cancelInstrumentRun(InstrumentRun instrumentRun) {
     endInstrumentRun(instrumentRun, InstrumentRunStatus.CANCELED);
   }
-  
+
   public void failInstrumentRun(InstrumentRun instrumentRun) {
     endInstrumentRun(instrumentRun, InstrumentRunStatus.IN_ERROR);
   }
-  
+
   public void completeInstrumentRun(InstrumentRun instrumentRun) {
     endInstrumentRun(instrumentRun, InstrumentRunStatus.COMPLETED);
   }
-  
+
   private void endInstrumentRun(InstrumentRun instrumentRun, InstrumentRunStatus status) {
     instrumentRun.setStatus(status);
     instrumentRun.setTimeEnd(new Date());
-    
+
     getPersistenceManager().save(instrumentRun);
   }
 
