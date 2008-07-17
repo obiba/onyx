@@ -127,6 +127,7 @@ public class InstrumentRunValue extends AbstractEntity {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public <T> T getValue() {
     return (T)getData().getValue();
   }
