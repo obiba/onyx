@@ -7,15 +7,12 @@ public abstract class WizardStepPanel extends Panel {
 
   private static final long serialVersionUID = -6326593868471433867L;
 
-  private WizardForm form;
-
   protected WizardStepPanel previous;
 
   protected WizardStepPanel next;
 
-  public WizardStepPanel(String id, WizardForm form) {
+  public WizardStepPanel(String id) {
     super(id);
-    this.form = form;
   }
 
   public void setNextStep(WizardStepPanel next) {
@@ -32,10 +29,6 @@ public abstract class WizardStepPanel extends Panel {
 
   public WizardStepPanel getPreviousStep() {
     return previous;
-  }
-
-  public WizardForm getForm() {
-    return form;
   }
 
   /**

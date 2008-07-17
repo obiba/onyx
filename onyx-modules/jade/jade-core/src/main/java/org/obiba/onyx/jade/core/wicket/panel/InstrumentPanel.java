@@ -52,7 +52,7 @@ public class InstrumentPanel extends WizardPanel {
     DropDownChoice defChoices;
 
     public StepOnePanel(String id, WizardForm form) {
-      super(id, form);
+      super(id);
       setOutputMarkupId(true);
 
       add(new Label("title", "1: Input Parameters"));
@@ -79,7 +79,7 @@ public class InstrumentPanel extends WizardPanel {
     private static final long serialVersionUID = -2511672064460152210L;
 
     public StepTwoPanel(String id, WizardForm form) {
-      super(id, form);
+      super(id);
       setOutputMarkupId(true);
 
       add(new Label("title", "2: Instructions"));
@@ -105,7 +105,7 @@ public class InstrumentPanel extends WizardPanel {
     private static final long serialVersionUID = 6617334507631332206L;
 
     public StepThreePanel(String id, WizardForm form) {
-      super(id, form);
+      super(id);
       setOutputMarkupId(true);
       add(new Label("title", "3: Output Parameters"));
 
