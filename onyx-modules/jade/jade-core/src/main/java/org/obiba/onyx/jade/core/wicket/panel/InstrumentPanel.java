@@ -64,10 +64,11 @@ public class InstrumentPanel extends WizardPanel {
     @Override
     public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
       // No previous step
-      Component previous = form.getPreviousLink().setEnabled(false);
+      form.getPreviousLink().setEnabled(false);
+      form.getNextLink().setEnabled(true);
       if(target != null) {
-        target.addComponent(previous);
-        target.addComponent(next);
+        target.addComponent(form.getPreviousLink());
+        target.addComponent(form.getNextLink());
       }
     }
 
@@ -90,7 +91,10 @@ public class InstrumentPanel extends WizardPanel {
     public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
       form.getPreviousLink().setEnabled(true);
       form.getNextLink().setEnabled(true);
-      if(target != null) target.addComponent(form.getNextLink());
+      if(target != null) {
+        target.addComponent(form.getPreviousLink());
+        target.addComponent(form.getNextLink());
+      }
     }
 
   }

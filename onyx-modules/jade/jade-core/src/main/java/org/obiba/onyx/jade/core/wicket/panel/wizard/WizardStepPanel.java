@@ -38,6 +38,11 @@ public abstract class WizardStepPanel extends Panel {
     return form;
   }
 
+  /**
+   * Called when "next" button is pressed to go to this step.
+   * @param form
+   * @param target
+   */
   public void onStep(WizardForm form, AjaxRequestTarget target) {
 
   }

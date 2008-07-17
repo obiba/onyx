@@ -20,19 +20,19 @@ public class WizardForm extends Form {
   private static final long serialVersionUID = 8829452703870884599L;
 
   private static final Logger log = LoggerFactory.getLogger(WizardForm.class);
-  
+
   /**
    * Indicates whether the action was canceled or not. TODO: should probably go
    * in an Action interface or abstract class of some sort
    */
   private boolean canceled = false;
-  
+
   public WizardForm(String id) {
     super(id);
 
     setOutputMarkupId(true);
     setMultiPart(true);
-    
+
     IBehavior buttonBehavior = new WizardButtonBehavior();
     // finish button
     AjaxButton finish = new AjaxButton("finish", this) {
@@ -64,8 +64,8 @@ public class WizardForm extends Form {
     finish.setEnabled(false);
     finish.setOutputMarkupId(true);
     add(finish);
-    
- // previous button
+
+    // previous button
     AjaxLink link = new AjaxLink("previousLink") {
       private static final long serialVersionUID = 0L;
 
@@ -110,7 +110,7 @@ public class WizardForm extends Form {
     link.add(new AttributeModifier("value", true, new StringResourceModel("Cancel", WizardForm.this, null)));
     add(link);
   }
-  
+
   public Component getNextLink() {
     return get("nextLink");
   }
@@ -122,7 +122,7 @@ public class WizardForm extends Form {
   public Component getFinishLink() {
     return get("finish");
   }
-  
+
   protected void gotoNext(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
     log.info("gotoNext.currentStep=" + currentStep.getClass().getName());
@@ -136,12 +136,12 @@ public class WizardForm extends Form {
   protected void gotoPrevious(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
     log.info("gotoPrevious.currentStep=" + currentStep.getClass().getName());
-    WizardStepPanel next = currentStep.getPreviousStep();
-    currentStep.replaceWith(next);
-    next.handleWizardState(this, target);
+    WizardStepPanel previous = currentStep.getPreviousStep();
+    currentStep.replaceWith(previous);
+    previous.handleWizardState(this, target);
     target.addComponent(this);
   }
-  
+
   public boolean isCanceled() {
     return canceled;
   }
@@ -149,7 +149,7 @@ public class WizardForm extends Form {
   public void setCanceled(boolean canceled) {
     this.canceled = canceled;
   }
-  
+
   private class WizardButtonBehavior extends AttributeAppender {
 
     private static final long serialVersionUID = -2793180600410649652L;
