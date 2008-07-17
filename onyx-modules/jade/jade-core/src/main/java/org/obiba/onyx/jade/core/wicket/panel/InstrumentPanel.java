@@ -1,6 +1,5 @@
 package org.obiba.onyx.jade.core.wicket.panel;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -66,6 +65,7 @@ public class InstrumentPanel extends WizardPanel {
       // No previous step
       form.getPreviousLink().setEnabled(false);
       form.getNextLink().setEnabled(true);
+      form.getFinishLink().setEnabled(false);
       if(target != null) {
         target.addComponent(form.getPreviousLink());
         target.addComponent(form.getNextLink());
@@ -91,6 +91,7 @@ public class InstrumentPanel extends WizardPanel {
     public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
       form.getPreviousLink().setEnabled(true);
       form.getNextLink().setEnabled(true);
+      form.getFinishLink().setEnabled(false);
       if(target != null) {
         target.addComponent(form.getPreviousLink());
         target.addComponent(form.getNextLink());
