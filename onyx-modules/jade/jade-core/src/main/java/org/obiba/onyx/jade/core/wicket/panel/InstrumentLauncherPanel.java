@@ -12,16 +12,16 @@ import java.util.Properties;
 import javax.servlet.ServletContext;
 
 import org.apache.wicket.RequestCycle;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.Resource;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.markup.html.WebResource;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.ResourceLink;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.request.target.basic.RedirectRequestTarget;
 import org.apache.wicket.util.io.Streams;
 import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
@@ -38,6 +38,9 @@ public class InstrumentLauncherPanel extends Panel {
 
   private static final Logger log = LoggerFactory.getLogger(InstrumentLauncherPanel.class);
 
+  private Instrument instrument;
+
+  @SuppressWarnings("serial")
   public InstrumentLauncherPanel(String id, IModel instrumentTypeModel) {
     super(id, instrumentTypeModel);
 
@@ -45,35 +48,39 @@ public class InstrumentLauncherPanel extends Panel {
     add(form);
     form.setOutputMarkupId(true);
 
-    form.add(new AjaxButton("start", form) {
-
-      @Override
-      protected void onSubmit(AjaxRequestTarget target, Form form) {
-        log.info("Start " + InstrumentLauncherPanel.this.getModelObject() + " !");
-      }
-
-    });
-
-    final ServletContext context = ((WebApplication) RequestCycle.get().getApplication()).getServletContext();
-
-    InstrumentType type = (InstrumentType) instrumentTypeModel.getObject();
+    InstrumentType type = (InstrumentType) InstrumentLauncherPanel.this.getModelObject();
     List<Instrument> instruments = type.getInstruments();
     if(instruments.size() > 0) {
-      Instrument instrument = instruments.get(0);
-
-      if(instrument.getCodeBase() != null) {
-        Properties props = new Properties();
-        props.setProperty("baseServiceUrl", makeUrl("remoting"));
-        props.setProperty("codebaseUrl", makeUrl("clients/" + instrument.getCodeBase()));
-        props.setProperty("jnlpPath", context.getRealPath("/clients/" + instrument.getCodeBase() + "/launch.jnlp"));
-
-        form.add(new ResourceLink("go", new JnlpResource(props)));
-      } else {
-        form.add(new EmptyPanel("go"));
-      }
-    } else {
-      form.add(new EmptyPanel("go"));
+      instrument = instruments.get(0);
     }
+
+    Button button = new Button("start") {
+      @Override
+      public void onSubmit() {
+        log.info("Start " + InstrumentLauncherPanel.this.getModelObject() + " !");
+
+        if(instrument != null && instrument.getCodeBase() != null) {
+          ServletContext context = ((WebApplication) RequestCycle.get().getApplication()).getServletContext();
+
+          log.info("codeBase=" + instrument.getCodeBase());
+          final Properties props = new Properties();
+          props.setProperty("baseServiceUrl", makeUrl("remoting"));
+          props.setProperty("codebaseUrl", makeUrl("clients/" + instrument.getCodeBase()));
+          props.setProperty("jnlpPath", context.getRealPath("/clients/" + instrument.getCodeBase() + "/launch.jnlp"));
+
+          ResourceReference jnlpReference = new ResourceReference(instrument.getCodeBase()) {
+            protected Resource newResource() {
+              return new JnlpResource(props);
+            }
+          };
+          String url = RequestCycle.get().urlFor(jnlpReference).toString();
+          getRequestCycle().setRequestTarget(new RedirectRequestTarget(url));
+        }
+      }
+    };
+    form.add(button);
+    button.setEnabled(instrument != null && instrument.getCodeBase() != null);
+
   }
 
   private class JnlpResource extends WebResource {
