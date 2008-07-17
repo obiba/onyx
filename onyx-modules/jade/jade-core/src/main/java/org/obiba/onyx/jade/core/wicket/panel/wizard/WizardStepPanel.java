@@ -9,9 +9,9 @@ public abstract class WizardStepPanel extends Panel {
 
   private WizardForm form;
 
-  WizardStepPanel previous;
+  protected WizardStepPanel previous;
 
-  WizardStepPanel next;
+  protected WizardStepPanel next;
 
   public WizardStepPanel(String id, WizardForm form) {
     super(id);
@@ -42,6 +42,6 @@ public abstract class WizardStepPanel extends Panel {
 
   }
 
-  abstract void handleWizardState(WizardForm form, AjaxRequestTarget target);
+  public abstract void handleWizardState(WizardForm form, AjaxRequestTarget target);
 
 }

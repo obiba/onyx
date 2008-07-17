@@ -1,23 +1,25 @@
-package org.obiba.onyx.jade.core.wicket.panel.wizard;
+package org.obiba.onyx.jade.core.wicket.panel;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.jade.core.wicket.panel.wizard.WizardForm;
+import org.obiba.onyx.jade.core.wicket.panel.wizard.WizardPanel;
+import org.obiba.onyx.jade.core.wicket.panel.wizard.WizardStepPanel;
 
-public class TestWizardPanel extends WizardPanel {
+public class InstrumentPanel extends WizardPanel {
 
   private static final long serialVersionUID = 390982191889443136L;
 
-  public TestWizardPanel(String id, IModel instrument) {
+  public InstrumentPanel(String id, IModel instrument) {
     super(id, instrument);
   }
-  
+
   @Override
-  public WizardForm getForm(String componentId) {
+  public WizardForm createForm(String componentId) {
     return new AddForm(componentId);
   }
 
@@ -44,11 +46,6 @@ public class TestWizardPanel extends WizardPanel {
 
   }
 
-  /**
-   * Phase and Def selection (required).
-   * @author ymarcon
-   * 
-   */
   private class StepOnePanel extends WizardStepPanel {
 
     private static final long serialVersionUID = 1L;
@@ -59,16 +56,15 @@ public class TestWizardPanel extends WizardPanel {
       super(id, form);
       setOutputMarkupId(true);
 
-      add(new Label("title", "Step One"));
+      add(new Label("title", "1: Input Parameters"));
 
       add(new EmptyPanel("panel"));
     }
 
     @Override
-    void handleWizardState(WizardForm form, AjaxRequestTarget target) {
+    public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
       // No previous step
       Component previous = form.getPreviousLink().setEnabled(false);
-      // Enable next only if a DEF has been selected
       if(target != null) {
         target.addComponent(previous);
         target.addComponent(next);
@@ -77,11 +73,6 @@ public class TestWizardPanel extends WizardPanel {
 
   }
 
-  /**
-   * Meta-data file upload (required).
-   * @author ymarcon
-   * 
-   */
   private class StepTwoPanel extends WizardStepPanel {
 
     private static final long serialVersionUID = -2511672064460152210L;
@@ -90,32 +81,20 @@ public class TestWizardPanel extends WizardPanel {
       super(id, form);
       setOutputMarkupId(true);
 
-      add(new Label("title", "Step Two"));
+      add(new Label("title", "2: Instructions"));
 
-     add(new EmptyPanel("panel"));
+      add(new EmptyPanel("panel"));
     }
 
     @Override
-    void handleWizardState(WizardForm form, AjaxRequestTarget target) {
+    public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
       form.getPreviousLink().setEnabled(true);
       form.getNextLink().setEnabled(true);
       if(target != null) target.addComponent(form.getNextLink());
     }
 
-    /**
-     * Called when file upload is successfully finished.
-     * 
-     */
-    public void onFileSubmit(Form form) {
-    }
-
   }
 
-  /**
-   * Progress bar or result of pre-processing ?
-   * @author ymarcon
-   * 
-   */
   private class StepThreePanel extends WizardStepPanel {
 
     private static final long serialVersionUID = 6617334507631332206L;
@@ -123,16 +102,13 @@ public class TestWizardPanel extends WizardPanel {
     public StepThreePanel(String id, WizardForm form) {
       super(id, form);
       setOutputMarkupId(true);
-      add(new Label("title", "Step Three"));
+      add(new Label("title", "3: Output Parameters"));
 
       add(new EmptyPanel("panel"));
     }
 
-    public void onStep(AddForm form, AjaxRequestTarget target) {
-    }
-
     @Override
-    void handleWizardState(WizardForm form, AjaxRequestTarget target) {
+    public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
       form.getNextLink().setEnabled(false);
       form.getPreviousLink().setEnabled(true);
       form.getFinishLink().setEnabled(true);
@@ -143,7 +119,5 @@ public class TestWizardPanel extends WizardPanel {
       }
     }
   }
-
-
 
 }

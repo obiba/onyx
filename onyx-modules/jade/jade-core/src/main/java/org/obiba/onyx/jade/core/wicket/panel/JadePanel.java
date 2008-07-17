@@ -1,6 +1,7 @@
 package org.obiba.onyx.jade.core.wicket.panel;
 
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.Model;
 
 public class JadePanel extends Panel {
 
@@ -9,6 +10,7 @@ public class JadePanel extends Panel {
   public JadePanel(String id) {
     super(id);
     add(new InstrumentTypeSelectionPanel("content"));
+    add(new InstrumentPanel("wizard", new Model("instrument")));
   }
 
 }
