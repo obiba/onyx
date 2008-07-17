@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.jade.core.DataType;
+import org.obiba.onyx.util.data.DataType;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
