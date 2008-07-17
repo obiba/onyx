@@ -55,7 +55,7 @@ public class Data implements Serializable {
         break;
         
       case DATA:
-        
+        if(!value.getClass().isAssignableFrom(byte[].class)) throw new IllegalArgumentException("DataType " + type + " expected, " + value.getClass().getName() + " received.");
         break;
 
       default:
