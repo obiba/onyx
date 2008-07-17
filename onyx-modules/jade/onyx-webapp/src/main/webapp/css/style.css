@@ -364,6 +364,17 @@ text-align:center;
   line-height:18px;
 }
 
+/*************** Wizard ********************/
+
+form.wizard {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #375FB7;
+  padding:5px;
+}
+
+/*************** End Wizard ********************/
+
 /*************** Entity Table ********************/
 
 table.entityTable {
