@@ -64,7 +64,7 @@ public class InstrumentLauncherPanel extends Panel {
 
           log.info("codeBase=" + instrument.getCodeBase());
           final Properties props = new Properties();
-          props.setProperty("baseServiceUrl", makeUrl("remoting"));
+          props.setProperty("org.obiba.onyx.remoting.url", makeUrl("remoting"));
           props.setProperty("codebaseUrl", makeUrl("clients/" + instrument.getCodeBase()));
           props.setProperty("jnlpPath", context.getRealPath("/clients/" + instrument.getCodeBase() + "/launch.jnlp"));
 

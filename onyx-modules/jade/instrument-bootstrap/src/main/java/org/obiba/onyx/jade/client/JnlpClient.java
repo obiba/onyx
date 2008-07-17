@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.util.Properties;
 
 import org.obiba.onyx.jade.instrument.AbstractInstrumentRunner;
-import org.obiba.onyx.jade.remote.RemoteService;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
@@ -28,10 +27,6 @@ public class JnlpClient {
     // Run the instrument specific code.
     AbstractInstrumentRunner instrumentRunner = (AbstractInstrumentRunner) appContext.getBean("instrumentRunner");
     instrumentRunner.run();
-
-    // Test instrument remote services.
-    RemoteService instrumentService = instrumentRunner.getInstrRemoteService();
-    System.out.println("RemoteService says: " + instrumentService.echo("Hello World test367!"));
 
   }
 

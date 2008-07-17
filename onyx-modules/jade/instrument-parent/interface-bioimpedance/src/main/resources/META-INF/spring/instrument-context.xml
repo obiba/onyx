@@ -5,7 +5,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
   <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.tanita.Tbf310InstrumentRunner">
-    <property name="instrRemoteService" ref="remoteService" />
+    <property name="instrumentExecutionService" ref="instrumentExecutionService" />
   </bean>
 
 </beans>
