@@ -128,7 +128,7 @@ public class InstrumentRunValue extends AbstractEntity {
   }
 
   public <T> T getValue() {
-    return getData().getValue();
+    return (T)getData().getValue();
   }
 
   public Data getData() {
