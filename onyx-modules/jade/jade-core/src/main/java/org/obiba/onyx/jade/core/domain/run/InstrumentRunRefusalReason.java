@@ -1,4 +1,4 @@
-package org.obiba.onyx.jade.core.domain.instrument;
+package org.obiba.onyx.jade.core.domain.run;
 
 public enum InstrumentRunRefusalReason {
   DEFECTIVE_INSTRUMENT, PARTICIPANT_REFUSAL, MEDICAL_REASON, OTHER

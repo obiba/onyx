@@ -6,9 +6,10 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 
   <tx:annotation-driven transaction-manager="transactionManager" />
 
-  <!-- bean id="instrumentService" class="org.obiba.onyx.jade.core.service.impl.hibernate.ServiceHibernateImpl" scope="singleton">
-    <property name="sessionFactory" ref="sessionFactory"/>
-    <property name="persistenceManager" ref="persistenceManager"/>
-    </bean-->
+  <bean id="instrumentRunService"
+    class="org.obiba.onyx.jade.core.service.impl.hibernate.InstrumentRunServiceHibernateImpl" scope="singleton">
+    <property name="sessionFactory" ref="sessionFactory" />
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
 
 </beans>

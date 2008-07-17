@@ -1,4 +1,4 @@
-package org.obiba.onyx.jade.core.domain.instrument;
+package org.obiba.onyx.jade.core.domain.run;
 
 import java.util.Date;
 
@@ -11,6 +11,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.obiba.core.domain.AbstractEntity;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 
 @Entity
 public class InstrumentRunValue extends AbstractEntity {

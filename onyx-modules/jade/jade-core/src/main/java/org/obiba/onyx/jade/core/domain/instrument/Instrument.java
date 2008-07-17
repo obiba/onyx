@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 
 @Entity
 public class Instrument extends AbstractEntity {

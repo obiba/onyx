@@ -29,14 +29,14 @@
         <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter</value>
         <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter</value>
         <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter</value>
-        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentRun</value>
-        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentRunValue</value>
-        <value>org.obiba.onyx.jade.core.domain.instrument.ParticipantInterview</value>
         <value>org.obiba.onyx.jade.core.domain.instrument.InputSource</value>
         <value>org.obiba.onyx.jade.core.domain.instrument.ParticipantPropertySource</value>
         <value>org.obiba.onyx.jade.core.domain.instrument.FixedSource</value>
         <value>org.obiba.onyx.jade.core.domain.instrument.OperatorSource</value>
         <value>org.obiba.onyx.jade.core.domain.instrument.OutputParameterSource</value>
+        <value>org.obiba.onyx.jade.core.domain.run.InstrumentRun</value>
+        <value>org.obiba.onyx.jade.core.domain.run.InstrumentRunValue</value>
+        <value>org.obiba.onyx.jade.core.domain.run.ParticipantInterview</value>
       </list>
     </property>
     <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration" />
