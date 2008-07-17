@@ -34,7 +34,7 @@ public class InstrumentRun extends AbstractEntity {
   private Date timeStart;
   
   @Temporal(TemporalType.TIMESTAMP)
-  private Date timeComplete;
+  private Date timeEnd;
   
   @Enumerated(EnumType.STRING)
   private InstrumentRunRefusalReason refusalReason;
@@ -78,12 +78,12 @@ public class InstrumentRun extends AbstractEntity {
     this.timeStart = timeStart;
   }
 
-  public Date getTimeComplete() {
-    return timeComplete;
+  public Date getTimeEnd() {
+    return timeEnd;
   }
 
-  public void setTimeComplete(Date timeComplete) {
-    this.timeComplete = timeComplete;
+  public void setTimeEnd(Date timeEnd) {
+    this.timeEnd = timeEnd;
   }
 
   public InstrumentRunRefusalReason getRefusalReason() {

@@ -1,5 +1,6 @@
 package org.obiba.onyx.jade.core.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
@@ -11,9 +12,33 @@ import org.obiba.onyx.jade.core.service.InstrumentRunService;
 
 public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManagerAwareService implements InstrumentRunService {
 
-  public InstrumentRun createInstrumentRun(Instrument instrument) {
-    // TODO Auto-generated method stub
-    return null;
+  public InstrumentRun createInstrumentRun(ParticipantInterview participantInterview, Instrument instrument) {
+    InstrumentRun run = new InstrumentRun();
+    run.setParticipantInterview(participantInterview);
+    run.setInstrument(instrument);
+    run.setStatus(InstrumentRunStatus.IN_PROGRESS);
+    run.setTimeStart(new Date());
+
+    return getPersistenceManager().save(run);
+  }
+
+  public void cancelInstrumentRun(InstrumentRun instrumentRun) {
+    endInstrumentRun(instrumentRun, InstrumentRunStatus.CANCELED);
+  }
+  
+  public void failInstrumentRun(InstrumentRun instrumentRun) {
+    endInstrumentRun(instrumentRun, InstrumentRunStatus.IN_ERROR);
+  }
+  
+  public void completeInstrumentRun(InstrumentRun instrumentRun) {
+    endInstrumentRun(instrumentRun, InstrumentRunStatus.COMPLETED);
+  }
+  
+  private void endInstrumentRun(InstrumentRun instrumentRun, InstrumentRunStatus status) {
+    instrumentRun.setStatus(status);
+    instrumentRun.setTimeEnd(new Date());
+    
+    getPersistenceManager().save(instrumentRun);
   }
 
   private List<InstrumentRun> getInstrumentRuns(Instrument instrument, ParticipantInterview participantInterview, InstrumentRunStatus status) {
