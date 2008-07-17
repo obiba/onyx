@@ -132,7 +132,7 @@
     <vendor>Tanita</vendor>
     <model>TBF 310</model>
     <status>ACTIVE</status>
-    <codeBase>interface-bioimpedance-1.0-M1-SNAPSHOT-zip</codeBase>
+    <codeBase>interface-bioimpedance-zip</codeBase>
     <instrumentType reference="bim" />
   </instrument>
 
@@ -159,7 +159,7 @@
     <vendor>GE</vendor>
     <model>CardioSoft</model>
     <status>ACTIVE</status>
-    <codeBase>interface-ecg-1.0-M1-SNAPSHOT-zip</codeBase>
+    <codeBase>interface-ecg-zip</codeBase>
     <instrumentType reference="ecg" />
   </instrument>
 
