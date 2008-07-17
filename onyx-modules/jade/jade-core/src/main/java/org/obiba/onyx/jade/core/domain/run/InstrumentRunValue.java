@@ -6,11 +6,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.obiba.core.domain.AbstractEntity;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 
 @Entity
@@ -18,6 +21,14 @@ public class InstrumentRunValue extends AbstractEntity {
 
   private static final long serialVersionUID = 267079755213810737L;
 
+  @ManyToOne
+  @JoinColumn(name = "instrument_run_id")
+  private InstrumentRun instrumentRun;
+  
+  @ManyToOne
+  @JoinColumn(name = "instrument_parameter_id")
+  private InstrumentParameter instrumentParameter;
+  
   private Boolean booleanValue;
 
   @Temporal(TemporalType.TIMESTAMP)
@@ -42,6 +53,22 @@ public class InstrumentRunValue extends AbstractEntity {
   public InstrumentRunValue() {
   }
 
+  public InstrumentRun getInstrumentRun() {
+    return instrumentRun;
+  }
+
+  public void setInstrumentRun(InstrumentRun instrumentRun) {
+    this.instrumentRun = instrumentRun;
+  }
+
+  public InstrumentParameter getInstrumentParameter() {
+    return instrumentParameter;
+  }
+  
+  public void setInstrumentParameter(InstrumentParameter instrumentParameter) {
+    this.instrumentParameter = instrumentParameter;
+  }
+  
   public Boolean getBooleanValue() {
     return booleanValue;
   }

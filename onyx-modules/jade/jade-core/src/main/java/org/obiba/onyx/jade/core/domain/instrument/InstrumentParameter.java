@@ -1,5 +1,8 @@
 package org.obiba.onyx.jade.core.domain.instrument;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -11,9 +14,11 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.util.data.DataType;
 
 @Entity
@@ -41,6 +46,9 @@ public abstract class InstrumentParameter extends AbstractEntity {
   @ManyToOne
   @JoinColumn(name = "instrument_id")
   private Instrument instrument;
+
+  @OneToMany(mappedBy = "instrumentParameter")
+  private List<InstrumentRunValue> instrumentRunValues;
 
   public String getName() {
     return name;
@@ -88,6 +96,17 @@ public abstract class InstrumentParameter extends AbstractEntity {
 
   public void setInstrument(Instrument instrument) {
     this.instrument = instrument;
+  }
+
+  public List<InstrumentRunValue> getInstrumentRunValues() {
+    return instrumentRunValues != null ? instrumentRunValues : (instrumentRunValues = new ArrayList<InstrumentRunValue>());
+  }
+
+  public void addInstrumentRunValue(InstrumentRunValue value) {
+    if(value != null) {
+      getInstrumentRunValues().add(value);
+      value.setInstrumentParameter(this);
+    }
   }
 
 }

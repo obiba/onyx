@@ -50,7 +50,7 @@ public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManager
     return getPersistenceManager().match(template);
   }
 
-  public List<InstrumentRun> getCompletedInstrumentRuns(Instrument instrument, ParticipantInterview participantInterview) {
+  public List<InstrumentRun> getCompletedInstrumentRuns(ParticipantInterview participantInterview, Instrument instrument) {
     return getInstrumentRuns(instrument, participantInterview, InstrumentRunStatus.COMPLETED);
   }
 

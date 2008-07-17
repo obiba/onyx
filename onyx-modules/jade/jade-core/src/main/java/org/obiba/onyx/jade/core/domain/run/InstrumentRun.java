@@ -1,6 +1,8 @@
 package org.obiba.onyx.jade.core.domain.run;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +10,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -22,6 +25,9 @@ public class InstrumentRun extends AbstractEntity {
   @ManyToOne
   @JoinColumn(name = "participant_interview_id")
   private ParticipantInterview participantInterview;
+  
+  @OneToMany(mappedBy = "instrumentRun")
+  private List<InstrumentRunValue> instrumentRunValues;
 
   @ManyToOne
   @JoinColumn(name = "instrument_id")
@@ -54,6 +60,17 @@ public class InstrumentRun extends AbstractEntity {
     this.participantInterview = participantInterview;
   }
 
+  public List<InstrumentRunValue> getInstrumentRunValues() {
+    return instrumentRunValues != null ? instrumentRunValues : (instrumentRunValues = new ArrayList<InstrumentRunValue>());
+  }
+
+  public void addInstrumentRunValue(InstrumentRunValue value) {
+    if (value != null) {
+      getInstrumentRunValues().add(value);
+      value.setInstrumentRun(this);
+    }
+  }
+  
   public Instrument getInstrument() {
     return instrument;
   }
@@ -106,4 +123,5 @@ public class InstrumentRun extends AbstractEntity {
     this.refusalReasonComment = refusalReasonComment;
   }
 
+  
 }
