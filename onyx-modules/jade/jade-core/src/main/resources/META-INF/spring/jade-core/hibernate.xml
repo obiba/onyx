@@ -30,6 +30,7 @@
         <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter</value>
         <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter</value>
         <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentRun</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentRunValue</value>
         <value>org.obiba.onyx.jade.core.domain.instrument.ParticipantInterview</value>
         <value>org.obiba.onyx.jade.core.domain.instrument.InputSource</value>
         <value>org.obiba.onyx.jade.core.domain.instrument.ParticipantPropertySource</value>

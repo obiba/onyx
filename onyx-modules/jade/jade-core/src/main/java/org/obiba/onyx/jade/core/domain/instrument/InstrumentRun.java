@@ -1,6 +1,9 @@
 package org.obiba.onyx.jade.core.domain.instrument;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -19,6 +22,15 @@ public class InstrumentRun extends AbstractEntity {
   @JoinColumn(name = "instrument_id")
   private Instrument instrument;
 
+  @Enumerated(EnumType.STRING)
+  private InstrumentRunStatus status;
+  
+  @Enumerated(EnumType.STRING)
+  private InstrumentRunRefusalReason refusalReason;
+  
+  @Column(length = 2000)
+  private String refusalReasonComment;
+  
   public InstrumentRun() {
     super();
   }
@@ -37,6 +49,34 @@ public class InstrumentRun extends AbstractEntity {
 
   public void setInstrument(Instrument instrument) {
     this.instrument = instrument;
+  }
+
+  public InstrumentRunStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(InstrumentRunStatus status) {
+    this.status = status;
+  }
+
+  public InstrumentRunRefusalReason getRefusalReason() {
+    return refusalReason;
+  }
+
+  public boolean isRefused() {
+    return refusalReason != null;
+  }
+  
+  public void setRefusalReason(InstrumentRunRefusalReason refusalReason) {
+    this.refusalReason = refusalReason;
+  }
+
+  public String getRefusalReasonComment() {
+    return refusalReasonComment;
+  }
+
+  public void setRefusalReasonComment(String refusalReasonComment) {
+    this.refusalReasonComment = refusalReasonComment;
   }
 
 }
