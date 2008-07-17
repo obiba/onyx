@@ -15,6 +15,8 @@ import javax.persistence.TemporalType;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
+import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 
 @Entity
 public class InstrumentRunValue extends AbstractEntity {
@@ -24,11 +26,11 @@ public class InstrumentRunValue extends AbstractEntity {
   @ManyToOne
   @JoinColumn(name = "instrument_run_id")
   private InstrumentRun instrumentRun;
-  
+
   @ManyToOne
   @JoinColumn(name = "instrument_parameter_id")
   private InstrumentParameter instrumentParameter;
-  
+
   private Boolean booleanValue;
 
   @Temporal(TemporalType.TIMESTAMP)
@@ -64,57 +66,9 @@ public class InstrumentRunValue extends AbstractEntity {
   public InstrumentParameter getInstrumentParameter() {
     return instrumentParameter;
   }
-  
+
   public void setInstrumentParameter(InstrumentParameter instrumentParameter) {
     this.instrumentParameter = instrumentParameter;
-  }
-  
-  public Boolean getBooleanValue() {
-    return booleanValue;
-  }
-
-  public void setBooleanValue(Boolean booleanValue) {
-    this.booleanValue = booleanValue;
-  }
-
-  public Date getDateValue() {
-    return dateValue;
-  }
-
-  public void setDateValue(Date dateValue) {
-    this.dateValue = dateValue;
-  }
-
-  public Double getDecimalValue() {
-    return decimalValue;
-  }
-
-  public void setDecimalValue(Double decimalValue) {
-    this.decimalValue = decimalValue;
-  }
-
-  public Long getIntegerValue() {
-    return integerValue;
-  }
-
-  public void setIntegerValue(Long integerValue) {
-    this.integerValue = integerValue;
-  }
-
-  public String getTextValue() {
-    return textValue;
-  }
-
-  public void setTextValue(String textValue) {
-    this.textValue = textValue;
-  }
-
-  public byte[] getDataValue() {
-    return dataValue;
-  }
-
-  public void setDataValue(byte[] dataValue) {
-    this.dataValue = dataValue;
   }
 
   public InstrumentParameterCaptureMethod getCaptureMethod() {
@@ -131,6 +85,82 @@ public class InstrumentRunValue extends AbstractEntity {
 
   public void setValueIntegrity(ValueIntegrity valueIntegrity) {
     this.valueIntegrity = valueIntegrity;
+  }
+
+  public DataType getDataType() {
+    return instrumentParameter.getDataType();
+  }
+
+  public void setData(Data data) {
+
+    if(data != null) {
+      if(data.getType() == getDataType()) {
+
+        switch(getDataType()) {
+        case BOOLEAN:
+          booleanValue = data.getValue();
+          break;
+
+        case DATE:
+          dateValue = data.getValue();
+          break;
+
+        case DECIMAL:
+          decimalValue = data.getValue();
+          break;
+
+        case INTEGER:
+          integerValue = data.getValue();
+          break;
+
+        case TEXT:
+          textValue = data.getValue();
+          break;
+
+        case DATA:
+          dataValue = data.getValue();
+          break;
+        }
+      } else {
+        throw new IllegalArgumentException("DataType " + getDataType() + " expected, " + data.getType() + " received.");
+      }
+    }
+  }
+
+  public <T> T getValue() {
+    return getData().getValue();
+  }
+
+  public Data getData() {
+    Data data = null;
+
+    switch(getDataType()) {
+    case BOOLEAN:
+      data = new Data(getDataType(), booleanValue);
+      break;
+
+    case DATE:
+      data = new Data(getDataType(), dateValue);
+      break;
+
+    case DECIMAL:
+      data = new Data(getDataType(), decimalValue);
+      break;
+
+    case INTEGER:
+      data = new Data(getDataType(), integerValue);
+      break;
+
+    case TEXT:
+      data = new Data(getDataType(), textValue);
+      break;
+
+    case DATA:
+      data = new Data(getDataType(), dataValue);
+      break;
+    }
+
+    return data;
   }
 
 }
