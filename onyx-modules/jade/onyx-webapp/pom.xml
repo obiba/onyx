@@ -153,7 +153,7 @@
           <useSubDirectoryPerArtifact>true</useSubDirectoryPerArtifact>
           <stripVersion>true</stripVersion>
           <!-- This says to unpack the zip files directly into the webapp's directory -->
-          <outputDirectory>${project.build.directory}/${project.build.finalName}/clients</outputDirectory>
+          <outputDirectory>${project.build.directory}/${project.build.finalName}/instruments</outputDirectory>
         </configuration>
       </plugin>
     </plugins>
