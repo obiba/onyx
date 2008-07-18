@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
+import javax.comm.CommDriver;
 import javax.comm.CommPortIdentifier;
 import javax.comm.SerialPort;
 import javax.comm.SerialPortEvent;
@@ -127,7 +128,7 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
     saveDataBtn = new JButton("Sauvegarder");
     saveDataBtn.setMnemonic('S');
     saveDataBtn.setEnabled(false);
-    saveDataBtn.setToolTipText("Sauvegarder les mesures et retourner à l'interface CaG");
+    saveDataBtn.setToolTipText("Sauvegarder les mesures et retourner ï¿½ l'interface CaG");
 
     // Initialize serial port.
     portName = "TANITA Body Composition Analyzer";
@@ -194,7 +195,7 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
     int wConfirmation;
     while(serialPort == null || !serialPort.isCTS()) {
 
-      wConfirmation = JOptionPane.showConfirmDialog(appWindow, "La communication n'a pu être établie\n" + "avec l'appareil de bioimpédance!\n\n" + "Vérifiez si les câbles sont bien\n" + "branchés et appuyer ensuite sur OK.", "Problème de communication", JOptionPane.OK_CANCEL_OPTION);
+      wConfirmation = JOptionPane.showConfirmDialog(appWindow, "La communication n'a pu ï¿½tre ï¿½tablie\n" + "avec l'appareil de bioimpï¿½dance!\n\n" + "Vï¿½rifiez si les cï¿½bles sont bien\n" + "branchï¿½s et appuyer ensuite sur OK.", "Problï¿½me de communication", JOptionPane.OK_CANCEL_OPTION);
 
       if(wConfirmation == JOptionPane.OK_OPTION) {
 
@@ -230,7 +231,7 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
     if(wBodyTypeCode.endsWith("0")) {
       bodyTypeTxt.setText("Standard");
     } else if(wBodyTypeCode.endsWith("2")) {
-      bodyTypeTxt.setText("Athlétique");
+      bodyTypeTxt.setText("Athlï¿½tique");
     }
 
     String wGender = pOutputData[1];
@@ -300,7 +301,7 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
 
       } catch(IOException wErrorReadingDataOnSerialPort) {
         tanitaData = new StringBuffer();
-        JOptionPane.showMessageDialog(appWindow, "Une erreur s'est produite lors de la communication\n" + "des résultats par l'appareil de bioimpédance." + "Veuillez reprendre les mesures SVP.", "Erreur de communication", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(appWindow, "Une erreur s'est produite lors de la communication\n" + "des rï¿½sultats par l'appareil de bioimpï¿½dance." + "Veuillez reprendre les mesures SVP.", "Erreur de communication", JOptionPane.ERROR_MESSAGE);
       }
 
       break;
@@ -373,12 +374,12 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
     addDataField(genderTxt, wResultPanel, "Sexe :", "");
     addDataField(heightTxt, wResultPanel, "Taille :", " cm");
     addDataField(weightTxt, wResultPanel, "Poids :", " kg");
-    addDataField(impedanceTxt, wResultPanel, "Résistance :", " \u03A9");
+    addDataField(impedanceTxt, wResultPanel, "Rï¿½sistance :", " \u03A9");
     addDataField(fatPctTxt, wResultPanel, "% graisse :", " %");
     addDataField(fatMassTxt, wResultPanel, "Masse grasse :", " kg");
     addDataField(ffmTxt, wResultPanel, "Masse maigre :", " kg");
     addDataField(tbwTxt, wResultPanel, "Masse hydrique :", " kg");
-    addDataField(ageTxt, wResultPanel, "Âge :", " ans");
+    addDataField(ageTxt, wResultPanel, "ï¿½ge :", " ans");
     addDataField(bmiTxt, wResultPanel, "IMC :", "");
     addDataField(bmrTxt, wResultPanel, "MB :", " kJ");
 
@@ -462,7 +463,6 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
 
   }
 
-
   /**
    * Displays a confirmation window when the application is closed by the user without saving.
    */
@@ -471,7 +471,7 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
     // Ask for confirmation only if data has been fetch from the device.
     if(saveDataBtn.isEnabled()) {
 
-      int wConfirmation = JOptionPane.showConfirmDialog(appWindow, "Voulez-vous vraiment fermer cette fenètre?\n" + "(les données affichées seront perdues)", "Confirmation", JOptionPane.YES_NO_OPTION);
+      int wConfirmation = JOptionPane.showConfirmDialog(appWindow, "Voulez-vous vraiment fermer cette fenï¿½tre?\n" + "(les donnï¿½es affichï¿½es seront perdues)", "Confirmation", JOptionPane.YES_NO_OPTION);
 
       // If confirmed, application is closed.
       if(wConfirmation == JOptionPane.YES_OPTION) {
@@ -497,6 +497,13 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
   }
 
   public void launchExternalSoftware() {
+    String drivername = "com.sun.comm.Win32Driver";
+    try {
+      CommDriver driver = (CommDriver) Class.forName(drivername).newInstance();
+      driver.initialize();
+    } catch(Exception e) {
+      throw new RuntimeException(e);
+    }
     buildGUI();
   }
 
@@ -523,18 +530,16 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
      * mainDatabaseConn.commit(); } catch(SQLException wSqlEx) { try { mainDatabaseConn.rollback(); throw new
      * RuntimeException( wSqlEx ); } catch ( Exception wCouldNotRollback ) { throw new RuntimeException(
      * wCouldNotRollback ); } }
-     */    
+     */
     return null;
-  }  
-  
+  }
+
   public void deleteOldMeasurements() {
-    // Measurements are not persisted locally.    
+    // Measurements are not persisted locally.
   }
 
   public void setInput() {
     // Instrument inputs are provided using a manual interface (keypad).
   }
-
-
 
 }
