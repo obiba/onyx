@@ -113,6 +113,8 @@
             <!-- causes a version attribute to be output in each jar resource element, optional, default is false -->
             <outputJarVersions>false</outputJarVersions>
             <verbose>false</verbose>
+            
+            <resourcesDirectory>src/main/resources/config</resourcesDirectory>
 
           </configuration>
         </plugin>

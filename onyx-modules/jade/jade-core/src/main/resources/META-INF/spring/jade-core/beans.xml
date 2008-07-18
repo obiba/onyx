@@ -13,7 +13,8 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
   </bean>
 
   <bean id="jadeDatabaseSeed" class="org.obiba.onyx.jade.core.wicket.seed.JadeDatabaseSeed" scope="singleton">
-    <property name="resource" value="classpath:/jade-core/instrumentSeed.xml" />
+    <property name="resource" value="classpath:/instruments/" />
+    <property name="instrumentsDir" value="instruments" />
     <property name="developmentSeed" value="true" />
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="instrumentService" ref="instrumentService" />

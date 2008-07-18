@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<linked-list>
+
+  <!-- Instruments -->
+  <!-- BIOIMP1 -->
+  <instrument id="bioimp1">
+    <name>BioImp 1</name>
+    <vendor>Tanita</vendor>
+    <model>TBF 310</model>
+    <status>ACTIVE</status>
+    <codeBase>interface-bioimpedance-zip</codeBase>
+    <instrumentType>
+      <name>BIM</name>
+    </instrumentType>
+  </instrument>
+
+  <input>
+    <name>Height</name>
+    <description>Measured height</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="measured_height" />
+  </input>
+
+  <outputParameterSource id="measured_height">
+    <instrumentType>
+      <name>STA</name>
+    </instrumentType>
+    <parameterName>Height</parameterName>
+  </outputParameterSource>
+
+</linked-list>
