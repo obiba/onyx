@@ -38,6 +38,11 @@
         <executions>
           <execution>
             <id>make-jnlp</id>
+            <configuration>
+              <jnlp>
+                <inputTemplateResourcePath>${project.basedir}</inputTemplateResourcePath>
+              </jnlp>
+            </configuration>
           </execution>
         </executions>
       </plugin>
