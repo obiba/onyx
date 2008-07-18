@@ -6,6 +6,9 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 
   <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.tanita.Tbf310InstrumentRunner">
     <property name="instrumentExecutionService" ref="instrumentExecutionService" />
+    <property name="workDir" value="tbf310InHouseApp" />
+    <property name="executable" value="tbf310InHouseApp" />
+    <property name="tbf310CommPort" value="COM6" />    
   </bean>
 
 </beans>

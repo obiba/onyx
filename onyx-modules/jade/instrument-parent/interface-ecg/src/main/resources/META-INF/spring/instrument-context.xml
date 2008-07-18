@@ -5,6 +5,8 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
   <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.gehealthcare.CardiosoftInstrumentRunner">
-    <property name="instrRemoteService" ref="remoteService" />
+    <property name="instrumentExecutionService" ref="instrumentExecutionService" />
+    <property name="workDir" value="c:\\CARDIO" />
+    <property name="executable" value="Cardio.exe" />    
   </bean>
 </beans>
