@@ -18,7 +18,7 @@
   <resources>
     <j2se version="$j2seVersion"/>
      $dependencies
-     <nativelib href="lib/win32com.jar"/>
+     <nativelib href="lib/win32com-2.0.3.jar"/>
   </resources>
   <application-desc main-class="${mainClass}">
     <argument><![CDATA[__config__]]></argument>
