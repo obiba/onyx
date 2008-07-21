@@ -2,19 +2,7 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
   default-autowire="no">
 
-  <bean id="hibernateCacheConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-    <property name="properties">
-      <value>
-        <![CDATA[
-          hibernate.generate_statistics true
-          hibernate.cache.use_structured_entries true
-          hibernate.cache.use_query_cache=true
-          hibernate.cache.provider_class=org.hibernate.cache.EhCacheProvider
-        ]]>
-      </value>
-    </property>
-  </bean>
-
+  <import resource="classpath:/test-hibernate-config.xml" />
   <import resource="classpath:/test-db-config.xml" />
   <import resource="classpath:META-INF/spring/jade-core/context.xml" />
 

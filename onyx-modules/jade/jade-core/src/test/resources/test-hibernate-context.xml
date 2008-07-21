@@ -1,0 +1,69 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+  default-autowire="no">
+
+  <bean id="hibernateCacheConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="properties">
+      <value>
+        <![CDATA[
+          hibernate.generate_statistics true
+          hibernate.cache.use_structured_entries true
+          hibernate.cache.use_query_cache=true
+          hibernate.cache.provider_class=org.hibernate.cache.EhCacheProvider
+        ]]>
+      </value>
+    </property>
+  </bean>
+  
+  <bean id="hibernateConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="propertiesArray">
+      <list>
+        <ref bean="hibernateCacheConfig" />
+        <ref bean="hibernateDbConfig" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- Use a friendlier NamingStrategy -->
+  <bean id="namingStrategy" class="org.hibernate.cfg.ImprovedNamingStrategy" />
+
+  <!-- The Hibernate SessionFactory -->
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+    <property name="dataSource">
+      <ref bean="dataSource" />
+    </property>
+    <property name="namingStrategy">
+      <ref bean="namingStrategy" />
+    </property>
+    <property name="annotatedClasses">
+      <list>
+        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentType</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.Instrument</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.InputSource</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.ParticipantPropertySource</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.FixedSource</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.OperatorSource</value>
+        <value>org.obiba.onyx.jade.core.domain.instrument.OutputParameterSource</value>
+        <value>org.obiba.onyx.jade.core.domain.run.InstrumentRun</value>
+        <value>org.obiba.onyx.jade.core.domain.run.InstrumentRunValue</value>
+        <value>org.obiba.onyx.jade.core.domain.run.ParticipantInterview</value>
+      </list>
+    </property>
+    <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration" />
+    <property name="hibernateProperties" ref="hibernateConfig" />
+  </bean>
+
+  <!-- Hook the SessionFactory to a platform TransactionManager -->
+  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+
+  <bean id="persistenceManager" class="org.obiba.core.service.impl.hibernate.PersistenceManagerHibernateImpl">
+    <property name="sessionFactory" ref="sessionFactory" />
+  </bean>
+
+</beans>

@@ -5,19 +5,8 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
   <import resource="classpath:/META-INF/spring/remote-api-server.xml" />
-
-  <bean id="hibernateCacheConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-    <property name="properties">
-      <value>
-        <![CDATA[
-          hibernate.generate_statistics true
-          hibernate.cache.use_structured_entries true
-          hibernate.cache.use_query_cache=true
-          hibernate.cache.provider_class=org.hibernate.cache.EhCacheProvider
-        ]]>
-      </value>
-    </property>
-  </bean>
+  
+  <import resource="hibernate.xml" />
 
   <!-- These are mutualy exclusive (each defines a dataSource bean) -->
   <import resource="hsql-datasource.xml" />
