@@ -5,6 +5,8 @@
   <instrumentType id="sta">
     <name>STA</name>
     <description>Height measurement</description>
+    <module>jade</module>
+    <pos>1</pos>
 
     <dependentTypes>
       <instrumentType reference="bim" />
@@ -16,6 +18,8 @@
   <instrumentType id="bim">
     <name>BIM</name>
     <description>Bioimpedance measurement</description>
+    <module>jade</module>
+    <pos>2</pos>
 
     <dependsOnTypes>
       <instrumentType reference="sta" />
@@ -30,6 +34,8 @@
   <instrumentType id="spi">
     <name>SPI</name>
     <description>Spirometry measurement</description>
+    <module>jade</module>
+    <pos>4</pos>
 
     <dependsOnTypes>
       <instrumentType reference="sta" />
@@ -41,6 +47,8 @@
   <instrumentType id="ecg">
     <name>ECG</name>
     <description>Electrocardiogram measurement</description>
+    <module>jade</module>
+    <pos>3</pos>
   </instrumentType>
 
 </linked-list>
