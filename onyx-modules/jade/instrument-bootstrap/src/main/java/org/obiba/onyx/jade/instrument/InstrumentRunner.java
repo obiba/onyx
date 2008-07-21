@@ -1,6 +1,9 @@
 package org.obiba.onyx.jade.instrument;
 
 import java.util.Collection;
+import java.util.Map;
+
+import org.obiba.onyx.util.data.Data;
 
 
 public interface InstrumentRunner {
@@ -12,6 +15,6 @@ public interface InstrumentRunner {
   public void setInput();    
   
   // Retrieve output from external software once measurements have been taken.
-  public Collection retrieveOutput(); 
+  public Map<String, Data> retrieveOutput(); 
 
 }
