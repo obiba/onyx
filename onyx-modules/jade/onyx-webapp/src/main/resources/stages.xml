@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<linked-list>
+
+  <!-- Stages -->
+  <stage id="sta">
+    <name>STA</name>
+    <description>Height measurement</description>
+    <module>jade</module>
+    <index>1</index>
+  </stage>
+  
+  <stage id="bim">
+    <name>BIM</name>
+    <description>Bioimpedance measurement</description>
+    <module>jade</module>
+    <index>2</index>
+  </stage>
+  
+  <stage id="spi">
+    <name>SPI</name>
+    <description>Spirometry measurement</description>
+    <module>jade</module>
+    <index>4</index>
+  </stage>
+  
+  <stage id="ecg">
+    <name>ECG</name>
+    <description>Electrocardiogram measurement</description>
+    <module>jade</module>
+    <index>3</index>
+  </stage>
+    
+</linked-list>

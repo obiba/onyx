@@ -3,6 +3,7 @@ package org.obiba.onyx.jade.core.domain.instrument;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -11,13 +12,21 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.obiba.onyx.engine.Stage;
+import org.hibernate.annotations.Index;
+import org.obiba.core.domain.AbstractEntity;
 
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "name" }) })
-public class InstrumentType extends Stage {
+public class InstrumentType extends AbstractEntity {
 
   private static final long serialVersionUID = 23414234L;
+
+  @Column(length = 200)
+  @Index(name = "name_index")
+  private String name;
+
+  @Column(length = 200)
+  private String description;
 
   @OneToMany(mappedBy = "instrumentType")
   private List<Instrument> instruments;
@@ -30,13 +39,27 @@ public class InstrumentType extends Stage {
   private List<InstrumentType> dependentTypes;
 
   public InstrumentType() {
-    setModule("jade");
   }
 
   public InstrumentType(String name, String description) {
-    setName(name);
-    setDescription(description);
-    setModule("jade");
+    this.name = name;
+    this.description = description;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   public List<Instrument> getInstruments() {
@@ -67,6 +90,6 @@ public class InstrumentType extends Stage {
   
   @Override
   public String toString() {
-    return getName();
+    return name;
   }
 }

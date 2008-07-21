@@ -23,6 +23,7 @@
     </property>
     <property name="annotatedClasses">
       <list>
+        <value>org.obiba.onyx.engine.Stage</value>
         <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentType</value>
         <value>org.obiba.onyx.jade.core.domain.instrument.Instrument</value>
         <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter</value>

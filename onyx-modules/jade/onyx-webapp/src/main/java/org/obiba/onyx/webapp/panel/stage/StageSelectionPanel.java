@@ -15,6 +15,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.engine.Stage;
@@ -37,7 +38,7 @@ public class StageSelectionPanel extends Panel {
 
   public StageSelectionPanel(String id) {
     super(id);
-    add(new OnyxEntityList<Stage>("list", new StageProvider(), new StageListColumnProvider(), new Model("Stage list")));
+    add(new OnyxEntityList<Stage>("list", new StageProvider(), new StageListColumnProvider(), new StringResourceModel("StageList", StageSelectionPanel.this, null)));
   }
 
   private class StageProvider extends SortableDataProviderEntityServiceImpl<Stage> {
@@ -46,7 +47,7 @@ public class StageSelectionPanel extends Panel {
 
     public StageProvider() {
       super(queryService, Stage.class);
-      setSort(new SortParam("pos", true));
+      setSort(new SortParam("index", true));
     }
 
   }
@@ -61,9 +62,9 @@ public class StageSelectionPanel extends Panel {
 
     @SuppressWarnings("serial")
     public StageListColumnProvider() {
-      columns.add(new PropertyColumn(new Model("#"), "pos", "pos"));
-      columns.add(new PropertyColumn(new Model("Name"), "name", "name"));
-      columns.add(new PropertyColumn(new Model("Description"), "description", "description"));
+      columns.add(new PropertyColumn(new Model("#"), "index", "index"));
+      columns.add(new PropertyColumn(new StringResourceModel("Name", StageSelectionPanel.this, null), "name", "name"));
+      columns.add(new PropertyColumn(new StringResourceModel("Description", StageSelectionPanel.this, null), "description", "description"));
       columns.add(new PropertyColumn(new Model("Module"), "module", "module"));
       columns.add(new AbstractColumn(new Model("")) {
 

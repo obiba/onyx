@@ -1,8 +1,8 @@
 <dataset>
 
-  <instrument_type id="1" name="STA" description="Height" module="jade" pos="1" />
-  <instrument_type id="2" name="BIM" description="Bioimpedance" module="jade" pos="2" />
-  <instrument_type id="3" name="SPI" description="Spirometry" module="jade" pos="3" />
+  <instrument_type id="1" name="STA" description="Height" />
+  <instrument_type id="2" name="BIM" description="Bioimpedance" />
+  <instrument_type id="3" name="SPI" description="Spirometry" />
 
   <instrument_type_dependencies instrument_type_id="2" depends_on_instrument_type_id="1" />
   <instrument_type_dependencies instrument_type_id="3" depends_on_instrument_type_id="1" />
