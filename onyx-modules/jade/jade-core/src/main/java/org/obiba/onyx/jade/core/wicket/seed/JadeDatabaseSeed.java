@@ -34,7 +34,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed implements App
 
   private static final String MANUAL_INSTRUMENTS_XML = "manual-instruments-descriptor.xml";
 
-  private static final String INSTRUMENT_XML = "instrument-descriptor.xml";
+  private static final String INSTRUMENT_XML = "lib/instrument-descriptor.xml";
 
   private PersistenceManager persistenceManager;
 
@@ -80,7 +80,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed implements App
       // look for instruments descriptor in instrument packages
       Resource root = applicationContext.getResource(instrumentsDir + "/");
       for(File instDir : root.getFile().listFiles()) {
-        Resource res = root.createRelative(instDir.getName() + "/lib/" + INSTRUMENT_XML);
+        Resource res = root.createRelative(instDir.getName() + "/" + INSTRUMENT_XML);
         if(res.exists()) xmlResources.add(res);
       }
 
