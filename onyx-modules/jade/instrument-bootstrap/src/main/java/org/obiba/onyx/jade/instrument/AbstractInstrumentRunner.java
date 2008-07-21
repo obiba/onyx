@@ -10,12 +10,13 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
+import org.obiba.onyx.util.data.Data;
 
 public abstract class AbstractInstrumentRunner implements InstrumentRunner {
 
@@ -114,7 +115,7 @@ public abstract class AbstractInstrumentRunner implements InstrumentRunner {
 
   }
 
-  public void sendOutputToServer(Collection wData) {
+  public void sendOutputToServer(Map<String, Data> dataToSend) {
     // Send collected data to server
   }
 

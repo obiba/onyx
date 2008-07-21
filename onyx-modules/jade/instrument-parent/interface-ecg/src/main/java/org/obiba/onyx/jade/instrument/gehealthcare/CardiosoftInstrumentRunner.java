@@ -1,8 +1,9 @@
 package org.obiba.onyx.jade.instrument.gehealthcare;
 
-import java.util.Collection;
+import java.util.Map;
 
 import org.obiba.onyx.jade.instrument.AbstractInstrumentRunner;
+import org.obiba.onyx.util.data.Data;
 
 public class CardiosoftInstrumentRunner extends AbstractInstrumentRunner {
 
@@ -16,7 +17,7 @@ public class CardiosoftInstrumentRunner extends AbstractInstrumentRunner {
     
   }
 
-  public Collection retrieveOutput() {
+  public Map<String, Data> retrieveOutput() {
     // TODO Auto-generated method stub
     return null;
   }
