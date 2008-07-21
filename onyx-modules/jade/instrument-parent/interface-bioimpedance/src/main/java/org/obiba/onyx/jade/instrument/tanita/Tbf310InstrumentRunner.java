@@ -11,7 +11,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
+import java.util.Map;
 
 import javax.comm.CommDriver;
 import javax.comm.CommPortIdentifier;
@@ -30,6 +30,7 @@ import javax.swing.JRootPane;
 import javax.swing.JTextField;
 
 import org.obiba.onyx.jade.instrument.AbstractInstrumentRunner;
+import org.obiba.onyx.util.data.Data;
 
 /**
  * This is a simple Swing application that connects to a bioimpedance and weight device (Tanita Body Composition
@@ -128,7 +129,7 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
     saveDataBtn = new JButton("Sauvegarder");
     saveDataBtn.setMnemonic('S');
     saveDataBtn.setEnabled(false);
-    saveDataBtn.setToolTipText("Sauvegarder les mesures et retourner ï¿½ l'interface CaG");
+    saveDataBtn.setToolTipText("Sauvegarder les mesures et retourner à l'interface CaG");
 
     // Initialize serial port.
     portName = "TANITA Body Composition Analyzer";
@@ -195,7 +196,7 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
     int wConfirmation;
     while(serialPort == null || !serialPort.isCTS()) {
 
-      wConfirmation = JOptionPane.showConfirmDialog(appWindow, "La communication n'a pu ï¿½tre ï¿½tablie\n" + "avec l'appareil de bioimpï¿½dance!\n\n" + "Vï¿½rifiez si les cï¿½bles sont bien\n" + "branchï¿½s et appuyer ensuite sur OK.", "Problï¿½me de communication", JOptionPane.OK_CANCEL_OPTION);
+      wConfirmation = JOptionPane.showConfirmDialog(appWindow, "La communication n'a pu être établie\n" + "avec l'appareil de bioimpédance!\n\n" + "Vérifiez si les câbles sont bien\n" + "branchés et appuyer ensuite sur OK.", "Problème de communication", JOptionPane.OK_CANCEL_OPTION);
 
       if(wConfirmation == JOptionPane.OK_OPTION) {
 
@@ -231,7 +232,7 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
     if(wBodyTypeCode.endsWith("0")) {
       bodyTypeTxt.setText("Standard");
     } else if(wBodyTypeCode.endsWith("2")) {
-      bodyTypeTxt.setText("Athlï¿½tique");
+      bodyTypeTxt.setText("Athlétique");
     }
 
     String wGender = pOutputData[1];
@@ -301,7 +302,7 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
 
       } catch(IOException wErrorReadingDataOnSerialPort) {
         tanitaData = new StringBuffer();
-        JOptionPane.showMessageDialog(appWindow, "Une erreur s'est produite lors de la communication\n" + "des rï¿½sultats par l'appareil de bioimpï¿½dance." + "Veuillez reprendre les mesures SVP.", "Erreur de communication", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(appWindow, "Une erreur s'est produite lors de la communication\n" + "des résultats par l'appareil de bioimpédance." + "Veuillez reprendre les mesures SVP.", "Erreur de communication", JOptionPane.ERROR_MESSAGE);
       }
 
       break;
@@ -374,12 +375,12 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
     addDataField(genderTxt, wResultPanel, "Sexe :", "");
     addDataField(heightTxt, wResultPanel, "Taille :", " cm");
     addDataField(weightTxt, wResultPanel, "Poids :", " kg");
-    addDataField(impedanceTxt, wResultPanel, "Rï¿½sistance :", " \u03A9");
+    addDataField(impedanceTxt, wResultPanel, "Résistance :", " \u03A9");
     addDataField(fatPctTxt, wResultPanel, "% graisse :", " %");
     addDataField(fatMassTxt, wResultPanel, "Masse grasse :", " kg");
     addDataField(ffmTxt, wResultPanel, "Masse maigre :", " kg");
     addDataField(tbwTxt, wResultPanel, "Masse hydrique :", " kg");
-    addDataField(ageTxt, wResultPanel, "ï¿½ge :", " ans");
+    addDataField(ageTxt, wResultPanel, "Âge :", " ans");
     addDataField(bmiTxt, wResultPanel, "IMC :", "");
     addDataField(bmrTxt, wResultPanel, "MB :", " kJ");
 
@@ -471,7 +472,7 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
     // Ask for confirmation only if data has been fetch from the device.
     if(saveDataBtn.isEnabled()) {
 
-      int wConfirmation = JOptionPane.showConfirmDialog(appWindow, "Voulez-vous vraiment fermer cette fenï¿½tre?\n" + "(les donnï¿½es affichï¿½es seront perdues)", "Confirmation", JOptionPane.YES_NO_OPTION);
+      int wConfirmation = JOptionPane.showConfirmDialog(appWindow, "Voulez-vous vraiment fermer cette fenètre?\n" + "(les données affichées seront perdues)", "Confirmation", JOptionPane.YES_NO_OPTION);
 
       // If confirmed, application is closed.
       if(wConfirmation == JOptionPane.YES_OPTION) {
@@ -497,6 +498,9 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
   }
 
   public void launchExternalSoftware() {
+    
+    // Load the driver used by Java Communication API (javax.comm) to establish communication with com ports.
+    System.setSecurityManager(null);
     String drivername = "com.sun.comm.Win32Driver";
     try {
       CommDriver driver = (CommDriver) Class.forName(drivername).newInstance();
@@ -504,33 +508,29 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
     } catch(Exception e) {
       throw new RuntimeException(e);
     }
+    
     buildGUI();
   }
 
-  public Collection retrieveOutput() {
+  public Map<String, Data> retrieveOutput() {
     // TODO define interface
-    /*
-     * try { // Delete old data (if exist). PreparedStatement wDeleteStatement =
-     * mainDatabaseConn.prepareStatement("delete from bioimpedance_weight " + "where interview_id = ?");
-     * wDeleteStatement.setInt(1, interviewId); wDeleteStatement.executeUpdate(); // Insert bioimpedance and weight data
-     * in database. PreparedStatement wInsert = mainDatabaseConn.prepareStatement("insert into bioimpedance_weight " + "(
-     * interview_id, weight, impedance, bmi, bmr, fat_free_mass, fat_mass, " + " total_water, pct_fat, sex, height, age,
-     * creation_time, last_upd_time ) " + "values( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate(), sysdate() )");
-     * 
-     * wInsert.setInt(1, interviewId); wInsert.setDouble(2, new Double(weightTxt.getText())); wInsert.setDouble(3, new
-     * Double(impedanceTxt.getText())); wInsert.setDouble(4, new Double(bmiTxt.getText())); wInsert.setDouble(5, new
-     * Double(bmrTxt.getText())); wInsert.setDouble(6, new Double(ffmTxt.getText())); wInsert.setDouble(7, new
-     * Double(fatMassTxt.getText())); wInsert.setDouble(8, new Double(tbwTxt.getText())); wInsert.setDouble(9, new
-     * Double(fatPctTxt.getText())); wInsert.setString(10, genderTxt.getText().equals("Homme") ? "MALE" : "FEMALE");
-     * wInsert.setInt(11, new Integer(heightTxt.getText())); wInsert.setInt(12, new Integer(ageTxt.getText()));
-     * wInsert.executeUpdate(); // Set measurement as completed and save end time in the database.
-     * flagMeasurementAsCompleted("BIOIMPEDANCE", mainDatabaseConn); flagMeasurementAsCompleted("WEIGHT",
-     * mainDatabaseConn);
-     * 
-     * mainDatabaseConn.commit(); } catch(SQLException wSqlEx) { try { mainDatabaseConn.rollback(); throw new
-     * RuntimeException( wSqlEx ); } catch ( Exception wCouldNotRollback ) { throw new RuntimeException(
-     * wCouldNotRollback ); } }
-     */
+
+
+  /*  weightTxt.getText();
+    impedanceTxt.getText();
+    bmiTxt.getText();
+    bmrTxt.getText();
+    ffmTxt.getText();
+    fatMassTxt.getText();
+    tbwTxt.getText();
+    fatPctTxt.getText();
+    genderTxt.getText().equals("Homme") ? "MALE" : "FEMALE";
+    heightTxt.getText();
+    ageTxt.getText();*/
+   
+    //flagMeasurementAsCompleted("BIOIMPEDANCE", mainDatabaseConn);
+    //flagMeasurementAsCompleted("WEIGHT", mainDatabaseConn);
+
     return null;
   }
 
