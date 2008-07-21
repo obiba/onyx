@@ -7,6 +7,7 @@ import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.webapp.panel.base.MenuBar;
 
 public abstract class BasePage extends WebPage implements IAjaxIndicatorAware {
@@ -23,7 +24,7 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware {
 
     add(new MenuBar("menuBar"));
 
-    add(new Label("baseAjaxIndicator", "Processing..."));
+    add(new Label("baseAjaxIndicator", new StringResourceModel("Processing", this, null)));
   }
 
   /**
