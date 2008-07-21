@@ -1,9 +1,10 @@
 package org.obiba.onyx.engine;
 
-import javax.persistence.Entity;
+import javax.persistence.MappedSuperclass;
+
 import org.obiba.core.domain.AbstractEntity;
 
-@Entity
+@MappedSuperclass
 public class Stage extends AbstractEntity {
 
   private static final long serialVersionUID = 8309472904104798783L;
@@ -13,6 +14,8 @@ public class Stage extends AbstractEntity {
   private String module;
 
   private String description;
+  
+  private Integer pos;
 
   public String getName() {
     return name;
@@ -36,6 +39,14 @@ public class Stage extends AbstractEntity {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public Integer getPos() {
+    return pos;
+  }
+
+  public void setPos(Integer pos) {
+    this.pos = pos;
   }
 
 }
