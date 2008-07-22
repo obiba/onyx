@@ -14,7 +14,7 @@
       </value>
     </property>
   </bean>
-  
+
   <bean id="hibernateConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
     <property name="propertiesArray">
       <list>
@@ -36,22 +36,24 @@
       <ref bean="namingStrategy" />
     </property>
     <property name="annotatedClasses">
-      <list>
-        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentType</value>
-        <value>org.obiba.onyx.jade.core.domain.instrument.Instrument</value>
-        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter</value>
-        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter</value>
-        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter</value>
-        <value>org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter</value>
-        <value>org.obiba.onyx.jade.core.domain.instrument.InputSource</value>
-        <value>org.obiba.onyx.jade.core.domain.instrument.ParticipantPropertySource</value>
-        <value>org.obiba.onyx.jade.core.domain.instrument.FixedSource</value>
-        <value>org.obiba.onyx.jade.core.domain.instrument.OperatorSource</value>
-        <value>org.obiba.onyx.jade.core.domain.instrument.OutputParameterSource</value>
-        <value>org.obiba.onyx.jade.core.domain.run.InstrumentRun</value>
-        <value>org.obiba.onyx.jade.core.domain.run.InstrumentRunValue</value>
-        <value>org.obiba.onyx.jade.core.domain.run.ParticipantInterview</value>
-      </list>
+      <bean class="org.obiba.onyx.spring.AnnotatedBeanFinderFactoryBean">
+
+        <!-- Use Apache Ant Pattern -->
+        <property name="searchPatterns">
+          <set>
+            <value>classpath*:org/obiba/**/*.class</value>
+          </set>
+        </property>
+
+        <!-- Specify annotations to look for in classes -->
+        <property name="annotationClasses">
+          <set>
+            <value>javax.persistence.Entity</value>
+            <value>javax.persistence.Embeddable</value>
+            <value>javax.persistence.MappedSuperclass</value>
+          </set>
+        </property>
+      </bean>
     </property>
     <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration" />
     <property name="hibernateProperties" ref="hibernateConfig" />
