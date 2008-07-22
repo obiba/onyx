@@ -5,8 +5,13 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
   <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.gehealthcare.CardiosoftInstrumentRunner">
-    <property name="instrumentExecutionService" ref="instrumentExecutionService" />
-    <property name="workDir" value="c:\\CARDIO" />
-    <property name="executable" value="Cardio.exe" />    
+    <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
+    <property name="externalAppHelper" ref="externalAppHelper"/> 
   </bean>
+  
+  <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">
+    <property name="workDir" value="c:\\CARDIO" />
+    <property name="executable" value="Cardio.exe" />  
+  </bean>  
+  
 </beans>

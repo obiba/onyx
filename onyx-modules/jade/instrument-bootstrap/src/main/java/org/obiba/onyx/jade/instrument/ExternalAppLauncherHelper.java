@@ -11,26 +11,16 @@ import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JOptionPane;
 
-import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
-import org.obiba.onyx.util.data.Data;
-
-public abstract class AbstractInstrumentRunner implements InstrumentRunner {
-
-  protected InstrumentExecutionService instrumentExecutionService;
+public class ExternalAppLauncherHelper {
 
   // Working directory for external software.
   protected String workDir;
 
   // Executable of external software.
   protected String executable;
-
-  public AbstractInstrumentRunner() {
-    super();
-  }
 
   public void launchExternalSoftware() {
 
@@ -87,9 +77,13 @@ public abstract class AbstractInstrumentRunner implements InstrumentRunner {
 
   }
 
-  private boolean isSotfwareAlreadyStarted() {
+  public boolean isSotfwareAlreadyStarted() {
+    return isSotfwareAlreadyStarted(getExecutable());
+  }
 
-    File wFile = new File(System.getProperty("java.io.tmpdir") + getExecutable() + ".lock");
+  public boolean isSotfwareAlreadyStarted(String lockName) {
+
+    File wFile = new File(System.getProperty("java.io.tmpdir") + lockName + ".lock");
 
     try {
 
@@ -114,35 +108,15 @@ public abstract class AbstractInstrumentRunner implements InstrumentRunner {
     }
 
   }
-
-  public void sendOutputToServer(Map<String, Data> dataToSend) {
-    // Send collected data to server
-  }
-
-  public void run() {
-
+ 
+  public void launch() {
     if(!isSotfwareAlreadyStarted()) {
-
-      deleteOldMeasurements();
-      setInput();
       launchExternalSoftware();
-      sendOutputToServer(retrieveOutput());
-      deleteOldMeasurements();
-
     } else {
       JOptionPane.showMessageDialog(null, getExecutable() + " already lock for execution.  Please make sure that another instance is not running.", "Cannot start application!", JOptionPane.ERROR_MESSAGE);
-    }
-
+    }  
   }
-
-  public InstrumentExecutionService getInstrumentExecutionService() {
-    return instrumentExecutionService;
-  }
-
-  public void setInstrumentExecutionService(InstrumentExecutionService instrumentExecutionService) {
-    this.instrumentExecutionService = instrumentExecutionService;
-  }
-
+  
   public String getExecutable() {
     return executable;
   }

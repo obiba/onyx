@@ -11,6 +11,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.comm.CommDriver;
@@ -29,8 +30,11 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
 
-import org.obiba.onyx.jade.instrument.AbstractInstrumentRunner;
+import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
+import org.obiba.onyx.jade.instrument.InstrumentRunner;
+import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 
 /**
  * This is a simple Swing application that connects to a bioimpedance and weight device (Tanita Body Composition
@@ -39,8 +43,15 @@ import org.obiba.onyx.util.data.Data;
  * @author cag-mboulanger
  * 
  */
-public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements SerialPortEventListener {
+public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEventListener {
 
+  // Injected by spring.
+  protected InstrumentExecutionService instrumentExecutionService;
+
+  // Injected by spring.
+  protected ExternalAppLauncherHelper externalAppHelper;
+
+  // Injected by spring.
   protected String tbf310CommPort;
 
   // Interface components
@@ -142,6 +153,22 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
      * true );
      */
 
+  }
+
+  public InstrumentExecutionService getInstrumentExecutionService() {
+    return instrumentExecutionService;
+  }
+
+  public void setInstrumentExecutionService(InstrumentExecutionService instrumentExecutionService) {
+    this.instrumentExecutionService = instrumentExecutionService;
+  }
+
+  public ExternalAppLauncherHelper getExternalAppHelper() {
+    return externalAppHelper;
+  }
+
+  public void setExternalAppHelper(ExternalAppLauncherHelper externalAppHelper) {
+    this.externalAppHelper = externalAppHelper;
   }
 
   /**
@@ -315,11 +342,6 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
    */
   public void buildGUI() {
 
-    // Save start time in database.
-    // TODO define interface
-    // saveStartDate("BIOIMPEDANCE", mainDatabaseConn, interviewId);
-    // saveStartDate("WEIGHT", mainDatabaseConn, interviewId);
-
     appWindow = new JFrame("TANITA Body Composition Analyzer");
 
     appWindow.setAlwaysOnTop(true);
@@ -400,19 +422,7 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
     // Save button listener.
     saveDataBtn.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        try {
-          sendOutputToServer(retrieveOutput());
-
-          // If an error occurred while saving...
-        } catch(Exception wCouldNotSaveData) {
-          try {
-            // TODO define interface
-            // flagMeasurementError("BIOIMPEDANCE", mainDatabaseConn, "APP_ERROR",
-            // DataCollectingUtil.getExceptionStr(wCouldNotSaveData));
-          } catch(Exception wEx) {
-            wEx.printStackTrace();
-          }
-        }
+        sendOutputToServer(retrieveOutput());
         System.exit(0);
       }
     });
@@ -498,7 +508,7 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
   }
 
   public void launchExternalSoftware() {
-    
+
     // Load the driver used by Java Communication API (javax.comm) to establish communication with com ports.
     System.setSecurityManager(null);
     String drivername = "com.sun.comm.Win32Driver";
@@ -508,38 +518,50 @@ public class Tbf310InstrumentRunner extends AbstractInstrumentRunner implements 
     } catch(Exception e) {
       throw new RuntimeException(e);
     }
-    
+
     buildGUI();
   }
 
   public Map<String, Data> retrieveOutput() {
-    // TODO define interface
 
+    Map<String, Data> wOutput = new HashMap<String, Data>();
+    wOutput.put("weight", new Data(DataType.DECIMAL, weightTxt.getText()));
+    wOutput.put("impedance", new Data(DataType.INTEGER, impedanceTxt.getText()));
+    wOutput.put("bmi", new Data(DataType.DECIMAL, bmiTxt.getText()));
+    wOutput.put("bmr", new Data(DataType.INTEGER, bmrTxt.getText()));
+    wOutput.put("fatFreeMass", new Data(DataType.DECIMAL, ffmTxt.getText()));
+    wOutput.put("fatMass", new Data(DataType.DECIMAL, fatMassTxt.getText()));
+    wOutput.put("totalBodyWater", new Data(DataType.DECIMAL, tbwTxt.getText()));
+    wOutput.put("fatPct", new Data(DataType.DECIMAL, fatPctTxt.getText()));
+    wOutput.put("gender", new Data(DataType.TEXT, genderTxt.getText().equals("Homme") ? "MALE" : "FEMALE )"));
+    wOutput.put("height", new Data(DataType.INTEGER, heightTxt.getText()));
+    wOutput.put("age", new Data(DataType.INTEGER, ageTxt.getText()));
 
-  /*  weightTxt.getText();
-    impedanceTxt.getText();
-    bmiTxt.getText();
-    bmrTxt.getText();
-    ffmTxt.getText();
-    fatMassTxt.getText();
-    tbwTxt.getText();
-    fatPctTxt.getText();
-    genderTxt.getText().equals("Homme") ? "MALE" : "FEMALE";
-    heightTxt.getText();
-    ageTxt.getText();*/
-   
-    //flagMeasurementAsCompleted("BIOIMPEDANCE", mainDatabaseConn);
-    //flagMeasurementAsCompleted("WEIGHT", mainDatabaseConn);
-
-    return null;
+    return wOutput;
   }
 
-  public void deleteOldMeasurements() {
-    // Measurements are not persisted locally.
+  public void sendOutputToServer(Map<String, Data> dataToSend) {
+    // Send collected data to server
   }
 
-  public void setInput() {
-    // Instrument inputs are provided using a manual interface (keypad).
+  public void initialize() {
+    // TODO Auto-generated method stub
+
+  }
+
+  public void run() {
+
+    if(!externalAppHelper.isSotfwareAlreadyStarted("tbf310InstrumentRunner")) {
+      launchExternalSoftware();
+    } else {
+      JOptionPane.showMessageDialog(null, "Tanita TBF-310 already lock for execution.  Please make sure that another instance is not running.", "Cannot start application!", JOptionPane.ERROR_MESSAGE);
+    }
+
+  }
+
+  public void shutdown() {
+    // TODO Auto-generated method stub
+
   }
 
 }

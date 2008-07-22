@@ -1,25 +1,44 @@
 package org.obiba.onyx.jade.instrument.gehealthcare;
 
-import java.util.Map;
+import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
+import org.obiba.onyx.jade.instrument.InstrumentRunner;
+import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 
-import org.obiba.onyx.jade.instrument.AbstractInstrumentRunner;
-import org.obiba.onyx.util.data.Data;
+public class CardiosoftInstrumentRunner implements InstrumentRunner {
 
-public class CardiosoftInstrumentRunner extends AbstractInstrumentRunner {
+  // Injected by spring.
+  protected InstrumentExecutionService instrumentExecutionService;
 
-  public void deleteOldMeasurements() {
-    // TODO Auto-generated method stub
- 
+  // Injected by spring.
+  ExternalAppLauncherHelper externalAppHelper;
+
+  public InstrumentExecutionService getInstrumentExecutionService() {
+    return instrumentExecutionService;
   }
 
-  public void setInput() {
-    // TODO Auto-generated method stub
-    
+  public void setInstrumentExecutionService(InstrumentExecutionService instrumentExecutionService) {
+    this.instrumentExecutionService = instrumentExecutionService;
   }
 
-  public Map<String, Data> retrieveOutput() {
-    // TODO Auto-generated method stub
-    return null;
+  public ExternalAppLauncherHelper getExternalAppHelper() {
+    return externalAppHelper;
+  }
+
+  public void setExternalAppHelper(ExternalAppLauncherHelper externalAppHelper) {
+    this.externalAppHelper = externalAppHelper;
+  }
+
+  public void initialize() {
+    System.out.println( "*** Initializing Cardiosoft Runner ***" );
+  }
+
+  public void run() {
+    System.out.println( "*** Running Cardiosoft Runner ***" );    
+    externalAppHelper.launch();
+  }
+
+  public void shutdown() {
+    System.out.println( "*** Shutdown Cardiosoft Runner ***" );
   }
 
 }

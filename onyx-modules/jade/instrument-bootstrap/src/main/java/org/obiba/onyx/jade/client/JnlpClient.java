@@ -3,7 +3,7 @@ package org.obiba.onyx.jade.client;
 import java.io.ByteArrayInputStream;
 import java.util.Properties;
 
-import org.obiba.onyx.jade.instrument.AbstractInstrumentRunner;
+import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
@@ -11,22 +11,40 @@ import org.springframework.core.io.ClassPathResource;
 
 public class JnlpClient {
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
 
+    // Create application context.
     GenericApplicationContext appContext = loadAppContext(args);
-    runInstrument(appContext);
 
-    Thread.sleep(3000);
-    appContext.destroy();
+    // Launch measurement process.
+    InstrumentRunner instrumentRunner = (InstrumentRunner) appContext.getBean("instrumentRunner");
+    try {
+
+      instrumentRunner.initialize();
+
+      try {
+        instrumentRunner.run();
+
+      } finally {
+
+        try {
+          instrumentRunner.shutdown();
+        } catch(Exception wExDuringShutdown) {
+          // Errors during shutdown are ignored.
+        }
+
+      }
+
+    } catch(Exception wEx) {
+      throw new RuntimeException("Error while running instrument!", wEx);
+
+    } finally {
+      
+      // Make sure application context is destroyed.
+      appContext.destroy();
+    }
 
     System.exit(0);
-  }
-
-  protected static void runInstrument(GenericApplicationContext appContext) {
-
-    // Run the instrument specific code.
-    AbstractInstrumentRunner instrumentRunner = (AbstractInstrumentRunner) appContext.getBean("instrumentRunner");
-    instrumentRunner.run();
 
   }
 
