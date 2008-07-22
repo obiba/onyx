@@ -8,7 +8,7 @@
     <vendor>Tanita</vendor>
     <model>TBF 310</model>
     <status>ACTIVE</status>
-    <codeBase>interface-bioimpedance-zip</codeBase>
+    <codeBase></codeBase>
     <instrumentType>
       <name>BIM</name>
     </instrumentType>

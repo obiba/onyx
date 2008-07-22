@@ -8,7 +8,7 @@
     <vendor>GE</vendor>
     <model>CardioSoft</model>
     <status>ACTIVE</status>
-    <codeBase>interface-ecg-zip</codeBase>
+    <codeBase></codeBase>
     <instrumentType>
       <name>ECG</name>
     </instrumentType>

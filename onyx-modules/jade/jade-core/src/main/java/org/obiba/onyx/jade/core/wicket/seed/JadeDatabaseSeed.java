@@ -107,6 +107,13 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed implements App
           Instrument instrument = (Instrument) entity;
           InstrumentType type = instrumentService.getInstrumentType(instrument.getInstrumentType().getName());
           instrument.setInstrumentType(type);
+          // find code base:
+          // resource is in .../<codeBase>/lib/instrument-descriptor.xml
+          try {
+            instrument.setCodeBase(getResource().getFile().getParentFile().getParentFile().getName());
+          } catch(IOException e) {
+            // ignore, not a file based resource
+          }
         } else if(entity instanceof OutputParameterSource) {
           OutputParameterSource source = (OutputParameterSource) entity;
           InstrumentType type = instrumentService.getInstrumentType(source.getInstrumentType().getName());
