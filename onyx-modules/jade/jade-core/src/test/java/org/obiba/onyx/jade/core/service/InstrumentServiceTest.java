@@ -1,4 +1,4 @@
-package org.obiba.onyx.jade.core.test.service;
+package org.obiba.onyx.jade.core.service;
 
 import java.util.List;
 
