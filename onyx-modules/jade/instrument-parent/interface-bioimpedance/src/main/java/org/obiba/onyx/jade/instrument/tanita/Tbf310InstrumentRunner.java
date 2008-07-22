@@ -422,7 +422,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     // Save button listener.
     saveDataBtn.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        sendOutputToServer(retrieveOutput());
+        sendOutputToServer();
         System.exit(0);
       }
     });
@@ -522,7 +522,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     buildGUI();
   }
 
-  public Map<String, Data> retrieveOutput() {
+  public void sendOutputToServer() {
 
     Map<String, Data> wOutput = new HashMap<String, Data>();
     wOutput.put("weight", new Data(DataType.DECIMAL, weightTxt.getText()));
@@ -537,11 +537,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     wOutput.put("height", new Data(DataType.INTEGER, heightTxt.getText()));
     wOutput.put("age", new Data(DataType.INTEGER, ageTxt.getText()));
 
-    return wOutput;
-  }
-
-  public void sendOutputToServer(Map<String, Data> dataToSend) {
-    // Send collected data to server
+    instrumentExecutionService.addOutputParameterValues( wOutput );
   }
 
   public void initialize() {
