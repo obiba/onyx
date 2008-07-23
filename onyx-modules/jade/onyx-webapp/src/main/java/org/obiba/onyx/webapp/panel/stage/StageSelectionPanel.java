@@ -47,7 +47,7 @@ public class StageSelectionPanel extends Panel {
 
     public StageProvider() {
       super(queryService, Stage.class);
-      setSort(new SortParam("index", true));
+      setSort(new SortParam("displayOrder", true));
     }
 
   }
@@ -62,7 +62,7 @@ public class StageSelectionPanel extends Panel {
 
     @SuppressWarnings("serial")
     public StageListColumnProvider() {
-      columns.add(new PropertyColumn(new Model("#"), "index", "index"));
+      columns.add(new PropertyColumn(new Model("#"), "displayOrder", "displayOrder"));
       columns.add(new PropertyColumn(new StringResourceModel("Name", StageSelectionPanel.this, null), "name", "name"));
       columns.add(new PropertyColumn(new StringResourceModel("Description", StageSelectionPanel.this, null), "description", "description"));
       columns.add(new PropertyColumn(new Model("Module"), "module", "module"));

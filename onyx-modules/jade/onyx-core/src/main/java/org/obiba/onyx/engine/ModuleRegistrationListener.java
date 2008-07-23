@@ -24,6 +24,7 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
     if(modules != null) {
       for(Module module : modules.values()) {
         log.info("Unresgitering module '{}' of type {}", module.getName(), module.getClass().getSimpleName());
+        module.shutdown();
         registry.unregisterModule(module.getName());
       }
     }
@@ -35,6 +36,7 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
     if(modules != null) {
       for(Module module : modules.values()) {
         log.info("Resgitering module '{}' of type {}", module.getName(), module.getClass().getSimpleName());
+        module.initialize();
         registry.registerModule(module);
       }
     }

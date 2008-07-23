@@ -1,6 +1,12 @@
 package org.obiba.onyx.engine;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 import org.obiba.core.domain.AbstractEntity;
 
@@ -15,7 +21,14 @@ public class Stage extends AbstractEntity {
 
   private String description;
   
-  private Integer index;
+  private Integer displayOrder;
+  
+  @ManyToMany
+  @JoinTable(name = "stage_dependencies", joinColumns = @JoinColumn(name = "stage_id"), inverseJoinColumns = @JoinColumn(name = "depends_on_stage_id"))
+  private List<Stage> dependsOnStages;
+
+  @ManyToMany(mappedBy = "dependsOnStages")
+  private List<Stage> dependentStages;
 
   public String getName() {
     return name;
@@ -41,12 +54,32 @@ public class Stage extends AbstractEntity {
     this.description = description;
   }
 
-  public Integer getIndex() {
-    return index;
+  public Integer getDisplayOrder() {
+    return displayOrder;
   }
 
-  public void setIndex(Integer index) {
-    this.index = index;
+  public void setDisplayOrder(Integer displayOrder) {
+    this.displayOrder = displayOrder;
+  }
+  
+  public List<Stage> getDependsOnStages() {
+    return dependsOnStages != null ? dependsOnStages : (dependsOnStages = new ArrayList<Stage>());
+  }
+
+  public List<Stage> getDependentStages() {
+    return dependentStages != null ? dependentStages : (dependentStages = new ArrayList<Stage>());
+  }
+  
+  public void addDependentStage(Stage stage) {
+    if (!this.equals(stage)) {
+      getDependentStages().add(stage);
+      stage.getDependsOnStages().add(this);
+    }
+  }
+  
+  @Override
+  public String toString() {
+    return module + ":" + name;// + ":{dependsOn=" + getDependsOnStages()+ "}";
   }
 
 }

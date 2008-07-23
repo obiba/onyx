@@ -6,28 +6,28 @@
     <name>STA</name>
     <description>Height measurement</description>
     <module>jade</module>
-    <index>1</index>
+    <displayOrder>1</displayOrder>
   </stage>
   
   <stage id="bim">
     <name>BIM</name>
     <description>Bioimpedance measurement</description>
     <module>jade</module>
-    <index>2</index>
+    <displayOrder>2</displayOrder>
   </stage>
   
   <stage id="spi">
     <name>SPI</name>
     <description>Spirometry measurement</description>
     <module>jade</module>
-    <index>4</index>
+    <displayOrder>4</displayOrder>
   </stage>
   
   <stage id="ecg">
     <name>ECG</name>
     <description>Electrocardiogram measurement</description>
     <module>jade</module>
-    <index>3</index>
+    <displayOrder>3</displayOrder>
   </stage>
     
 </linked-list>

@@ -1,15 +1,19 @@
 package org.obiba.onyx.engine;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface Module {
 
   public String getName();
 
-  public StageExecution startStage(Stage stage);
+  public void initialize();
+  
+  public void shutdown();
+  
+  public StageExecution start(Stage stage);
 
   public StageExecution resume(Stage stage);
   
-  public List<Stage> getStages();
+  public Collection<Stage> getStages();
 
 }
