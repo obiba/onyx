@@ -24,7 +24,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="resourcePatterns">
       <list>
         <value>instruments/instrumentTypes-descriptor.xml</value>
-        <value>instruments/manual-instruments-descriptor.xml</value>
         <value>instruments/**/instrument-descriptor.xml</value>
       </list>
     </property>
