@@ -29,7 +29,7 @@ public class HomePage extends BasePage {
       }
     }
     
-    Participant participant = participantService.getParticipant();
+    Participant participant = participantService.getCurrentParticipant();
     add(new Label("participant", participant.getFirstName() + " " + participant.getLastName()));
     
     add(new StageSelectionPanel("stage-list", getFeedbackPanel()));

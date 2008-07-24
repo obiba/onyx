@@ -4,6 +4,6 @@ import org.obiba.onyx.core.domain.Participant;
 
 public interface ParticipantService {
   
-  public Participant getParticipant();
+  public Participant getCurrentParticipant();
   
 }

@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DefaultParticipantServiceImpl extends PersistenceManagerAwareService implements ParticipantService {
 
-  public Participant getParticipant() {
+  public Participant getCurrentParticipant() {
     Participant template = new Participant();
     template.setFirstName("Michel");
     template.setLastName("Tremblay");

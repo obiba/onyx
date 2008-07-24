@@ -93,7 +93,7 @@ public class JadeModule implements Module, ApplicationContextAware {
   public boolean isCompleted(Stage stage) {
     InstrumentType instrumentType = getInstrumentType(stage);
 
-    instrumentRunService.getLastCompletedInstrumentRun(instrumentRunService.getParticipantInterview(participantService.getParticipant()), instrumentType);
+    instrumentRunService.getLastCompletedInstrumentRun(instrumentRunService.getParticipantInterview(participantService.getCurrentParticipant()), instrumentType);
 
     return false;
   }
