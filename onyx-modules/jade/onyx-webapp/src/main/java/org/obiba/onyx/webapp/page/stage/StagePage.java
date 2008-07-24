@@ -21,7 +21,6 @@ public class StagePage extends BasePage {
 
     Stage stage = (Stage) stageModel.getObject();
     Module module = registry.getModule(stage.getModule());
-    module.getStages();
     add(module.start(stage).createStageComponent("stage-component"));
   }
 

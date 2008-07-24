@@ -12,12 +12,17 @@ import org.obiba.onyx.engine.StageExecution;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
-public class JadeModule implements Module {
+public class JadeModule implements Module, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(JadeModule.class);
   
   private EntityQueryService queryService;
+  
+  private ApplicationContext applicationContext;
 
   public void setQueryService(EntityQueryService queryService) {
     this.queryService = queryService;
@@ -32,7 +37,16 @@ public class JadeModule implements Module {
   }
 
   public StageExecution start(Stage stage) {
-    return new JadeStageExecution(new JadeStage(this, getInstrumentType(stage)));
+    JadeStageExecution exec = getCurrentStageExecution();
+    // TODO check a stage execution is not already on the way in this session scope
+    exec.setStage(new JadeStage(this, getInstrumentType(stage)));
+    exec.start();
+    return exec;
+    //return new JadeStageExecution(new JadeStage(this, getInstrumentType(stage)));
+  }
+  
+  private JadeStageExecution getCurrentStageExecution() {
+    return (JadeStageExecution)applicationContext.getBean("jadeStageExecution");
   }
 
   private InstrumentType getInstrumentType(Stage stage) {
@@ -69,6 +83,10 @@ public class JadeModule implements Module {
 
   public void shutdown() {
     log.info("shutdown");
+  }
+
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.applicationContext = applicationContext;
   }
 
 }
