@@ -107,19 +107,9 @@
     </dependency>
 
     <dependency>
-      <groupId>org.obiba.jade.instrument</groupId>
-      <artifactId>interface-bioimpedance</artifactId>
-      <version>${project.version}</version>
-      <type>zip</type>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.obiba.jade.instrument</groupId>
-      <artifactId>interface-ecg</artifactId>
-      <version>${project.version}</version>
-      <type>zip</type>
-      <scope>provided</scope>
+      <groupId>ant-contrib</groupId>
+      <artifactId>ant-contrib</artifactId>
+      <version>1.0b2</version>
     </dependency>
 
   </dependencies>
@@ -132,29 +122,45 @@
       </plugin>
 
       <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>2.0</version>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.1</version>
         <executions>
           <execution>
-            <!-- 
-              Copy the webstart bundles in as a resource
-              before packaging starts.
-            -->
             <phase>process-resources</phase>
+            <configuration>
+              <tasks>
+
+                <!--
+                  Place any ant task here. You can add anything
+                  you can add between <target> and </target> in a
+                  build.xml.
+                -->
+
+                <copy todir="${project.build.directory}/${project.build.finalName}/instruments">
+                  <fileset dir="${project.basedir}/../instrument-parent/src/main/resources/instruments">
+                    <include name="**/*.*" />
+                  </fileset>
+                </copy>
+
+                <copy todir="${project.build.directory}/${project.build.finalName}/instruments">
+                  <fileset dir="${project.basedir}/../instrument-parent">
+                    <include name="interface-*/target/jnlp/**/*.*" />
+                  </fileset>
+                  <chainedmapper>
+                    <filtermapper>
+                      <replacestring from="\" to="/" />
+                      <replacestring from="/target/jnlp" to="/" />
+                    </filtermapper>
+                  </chainedmapper>
+                </copy>
+
+              </tasks>
+            </configuration>
             <goals>
-              <goal>unpack-dependencies</goal>
+              <goal>run</goal>
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <includeGroupIds>org.obiba.jade.instrument</includeGroupIds>
-          <includeTypes>zip</includeTypes>
-          <includeScope>provided</includeScope>
-          <useSubDirectoryPerArtifact>true</useSubDirectoryPerArtifact>
-          <stripVersion>true</stripVersion>
-          <!-- This says to unpack the zip files directly into the webapp's directory -->
-          <outputDirectory>${project.build.directory}/${project.build.finalName}/instruments</outputDirectory>
-        </configuration>
       </plugin>
     </plugins>
   </build>

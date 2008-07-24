@@ -23,8 +23,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="jadeDatabaseSeed" class="org.obiba.onyx.jade.core.wicket.seed.JadeDatabaseSeed" scope="singleton">
     <property name="resourcePatterns">
       <list>
-        <value>classpath:/instruments/instrumentTypes-descriptor.xml</value>
-        <value>classpath:/instruments/manual-instruments-descriptor.xml</value>
+        <value>instruments/instrumentTypes-descriptor.xml</value>
+        <value>instruments/manual-instruments-descriptor.xml</value>
         <value>instruments/**/instrument-descriptor.xml</value>
       </list>
     </property>
