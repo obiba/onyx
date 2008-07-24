@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
+import org.obiba.onyx.core.domain.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
@@ -39,6 +40,17 @@ public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManager
     instrumentRun.setTimeEnd(new Date());
 
     getPersistenceManager().save(instrumentRun);
+  }
+
+  public ParticipantInterview getParticipantInterview(Participant participant) {
+    ParticipantInterview template = new ParticipantInterview(participant);
+    ParticipantInterview interview = getPersistenceManager().matchOne(template);
+    
+    if (interview == null) {
+      interview = getPersistenceManager().save(template);
+    }
+    
+    return interview;
   }
 
   private List<InstrumentRun> getInstrumentRuns(Instrument instrument, ParticipantInterview participantInterview, InstrumentRunStatus status) {

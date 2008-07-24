@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.StageExecution;
@@ -27,8 +28,14 @@ public class JadeModule implements Module, ApplicationContextAware {
 
   private ApplicationContext applicationContext;
 
+  private ParticipantService participantService;
+
   public void setQueryService(EntityQueryService queryService) {
     this.queryService = queryService;
+  }
+
+  public void setParticipantService(ParticipantService participantService) {
+    this.participantService = participantService;
   }
 
   public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
@@ -85,12 +92,12 @@ public class JadeModule implements Module, ApplicationContextAware {
 
   public boolean isCompleted(Stage stage) {
     InstrumentType instrumentType = getInstrumentType(stage);
-    
-    instrumentRunService.getLastCompletedInstrumentRun(null, instrumentType);
+
+    instrumentRunService.getLastCompletedInstrumentRun(instrumentRunService.getParticipantInterview(participantService.getParticipant()), instrumentType);
 
     return false;
   }
-  
+
   public void initialize() {
     log.info("initialize");
   }
@@ -102,7 +109,5 @@ public class JadeModule implements Module, ApplicationContextAware {
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
   }
-
-
 
 }

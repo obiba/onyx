@@ -1,24 +1,32 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:aop="http://www.springframework.org/schema/aop"
   xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
   <bean id="applicationBean" class="org.obiba.onyx.webapp.OnyxApplication" scope="singleton" />
+
+  <bean id="participantService" class="org.obiba.onyx.core.service.impl.DefaultParticipantServiceImpl"
+    scope="session">
+    <property name="persistenceManager" ref="persistenceManager" />
+    <aop:scoped-proxy />
+  </bean>
 
   <bean id="moduleRegistry" class="org.obiba.onyx.engine.ModuleRegistry" />
 
   <bean id="moduleRegistrationListener" class="org.obiba.onyx.engine.ModuleRegistrationListener">
     <property name="moduleRegistry" ref="moduleRegistry" />
   </bean>
-  
+
   <bean id="onyxDatabaseSeed" class="org.obiba.onyx.webapp.seed.OnyxDatabaseSeed" scope="singleton">
     <property name="resource" value="classpath:/stages.xml" />
     <property name="developmentSeed" value="true" />
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
-  
+
   <bean id="onyxApplicationStartupListener" class="org.obiba.wicket.util.seed.DatabaseSeedWebApplicationStartupListener"
     scope="singleton">
     <property name="databaseSeeds">
