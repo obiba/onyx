@@ -139,6 +139,7 @@
                 <copy todir="${project.build.directory}/${project.build.finalName}/instruments">
                   <fileset dir="${project.basedir}/../instrument-parent">
                     <include name="interface-*/target/jnlp/**/*.*" />
+                    <exclude name="interface-*/target/jnlp/**/instrument-descriptor.xml" />
                   </fileset>
                   <chainedmapper>
                     <filtermapper>
@@ -147,6 +148,18 @@
                     </filtermapper>
                   </chainedmapper>
                 </copy>
+
+                <copy todir="${project.build.directory}/${project.build.finalName}/instruments">
+                  <fileset dir="${project.basedir}/../instrument-parent">
+                    <include name="interface-*/target/jnlp/**/instrument-descriptor.xml" />
+                  </fileset>
+                  <chainedmapper>
+                    <filtermapper>
+                      <replacestring from="\" to="/" />
+                      <replacestring from="/target/jnlp/lib" to="/" />
+                    </filtermapper>
+                  </chainedmapper>
+                </copy>                
 
               </tasks>
             </configuration>
