@@ -27,6 +27,10 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware {
     add(new Label("baseAjaxIndicator", new StringResourceModel("Processing", this, null)));
   }
 
+  protected FeedbackPanel getFeedbackPanel() {
+    return feedbackPanel;
+  }
+
   /**
    * @see org.apache.wicket.ajax.IAjaxIndicatorAware#getAjaxIndicatorMarkupId()
    */

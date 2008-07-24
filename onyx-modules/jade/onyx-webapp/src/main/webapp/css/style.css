@@ -378,7 +378,6 @@ form.wizard {
 /*************** Entity Table ********************/
 
 table.entityTable {
-  width: 500px;
   border-width: 1px;
   border-style: solid;
   border-color: #375FB7;

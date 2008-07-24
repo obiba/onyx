@@ -17,5 +17,7 @@ public interface Module {
   public StageExecution getCurrentStageExecution();
   
   public Collection<Stage> getStages();
+  
+  public boolean isCompleted(Stage stage);
 
 }

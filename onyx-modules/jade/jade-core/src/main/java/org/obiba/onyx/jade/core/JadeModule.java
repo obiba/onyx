@@ -10,6 +10,7 @@ import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.StageExecution;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -19,13 +20,19 @@ import org.springframework.context.ApplicationContextAware;
 public class JadeModule implements Module, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(JadeModule.class);
-  
+
   private EntityQueryService queryService;
-  
+
+  private InstrumentRunService instrumentRunService;
+
   private ApplicationContext applicationContext;
 
   public void setQueryService(EntityQueryService queryService) {
     this.queryService = queryService;
+  }
+
+  public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
+    this.instrumentRunService = instrumentRunService;
   }
 
   public String getName() {
@@ -41,11 +48,11 @@ public class JadeModule implements Module, ApplicationContextAware {
     // TODO check a stage execution is not already on the way in this session scope
     exec.start(new JadeStage(this, getInstrumentType(stage)));
     return exec;
-    //return new JadeStageExecution(new JadeStage(this, getInstrumentType(stage)));
+    // return new JadeStageExecution(new JadeStage(this, getInstrumentType(stage)));
   }
-  
+
   public JadeStageExecution getCurrentStageExecution() {
-    return (JadeStageExecution)applicationContext.getBean("jadeStageExecution");
+    return (JadeStageExecution) applicationContext.getBean("jadeStageExecution");
   }
 
   private InstrumentType getInstrumentType(Stage stage) {
@@ -56,26 +63,34 @@ public class JadeModule implements Module, ApplicationContextAware {
   public Collection<Stage> getStages() {
     Collection<Stage> stages = new ArrayList<Stage>();
     Map<InstrumentType, Stage> map = new HashMap<InstrumentType, Stage>();
-    
+
     for(InstrumentType type : queryService.list(InstrumentType.class)) {
-      Stage stage = new JadeStage(this, type);  
+      Stage stage = new JadeStage(this, type);
       stages.add(stage);
       map.put(type, stage);
     }
-    
+
     // set dependencies
-    for (Stage stage : stages) {
-      InstrumentType type = ((JadeStage)stage).getInstrumentType();
-      for (InstrumentType dependentType : type.getDependentTypes()) {
+    for(Stage stage : stages) {
+      InstrumentType type = ((JadeStage) stage).getInstrumentType();
+      for(InstrumentType dependentType : type.getDependentTypes()) {
         stage.addDependentStage(map.get(dependentType));
       }
     }
-    
+
     log.info("JadeStages=" + stages);
-    
+
     return stages;
   }
 
+  public boolean isCompleted(Stage stage) {
+    InstrumentType instrumentType = getInstrumentType(stage);
+    
+    instrumentRunService.getLastCompletedInstrumentRun(null, instrumentType);
+
+    return false;
+  }
+  
   public void initialize() {
     log.info("initialize");
   }
@@ -87,5 +102,7 @@ public class JadeModule implements Module, ApplicationContextAware {
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
   }
+
+
 
 }

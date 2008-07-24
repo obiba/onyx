@@ -1,5 +1,6 @@
 package org.obiba.onyx.engine;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,5 +19,9 @@ public class ModuleRegistry {
 
   public Module getModule(String name) {
     return modules.get(name);
+  }
+  
+  public Collection<Module> getModules() {
+    return modules.values();
   }
 }

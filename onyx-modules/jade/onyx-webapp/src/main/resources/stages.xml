@@ -7,6 +7,12 @@
     <description>Height measurement</description>
     <module>jade</module>
     <displayOrder>1</displayOrder>
+    
+    <dependentStages>
+      <stage reference="bim" />
+      <stage reference="spi" />
+    </dependentStages>
+    
   </stage>
   
   <stage id="bim">
@@ -14,6 +20,15 @@
     <description>Bioimpedance measurement</description>
     <module>jade</module>
     <displayOrder>2</displayOrder>
+    
+    <dependsOnStages>
+      <stage reference="sta" />
+    </dependsOnStages>
+
+    <dependentStages>
+      <stage reference="spi" />
+    </dependentStages>
+    
   </stage>
   
   <stage id="spi">
@@ -21,6 +36,12 @@
     <description>Spirometry measurement</description>
     <module>jade</module>
     <displayOrder>4</displayOrder>
+    
+    <dependsOnStages>
+      <stage reference="sta" />
+      <stage reference="bim" />
+    </dependsOnStages>
+    
   </stage>
   
   <stage id="ecg">
