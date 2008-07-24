@@ -10,7 +10,7 @@ public interface StageExecution {
   
   public void interrupt();
 
-  public void start();
+  public void start(Stage stage);
   
   public void stop();
   

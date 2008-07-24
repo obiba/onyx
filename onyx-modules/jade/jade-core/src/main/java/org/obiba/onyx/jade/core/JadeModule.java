@@ -39,13 +39,12 @@ public class JadeModule implements Module, ApplicationContextAware {
   public StageExecution start(Stage stage) {
     JadeStageExecution exec = getCurrentStageExecution();
     // TODO check a stage execution is not already on the way in this session scope
-    exec.setStage(new JadeStage(this, getInstrumentType(stage)));
-    exec.start();
+    exec.start(new JadeStage(this, getInstrumentType(stage)));
     return exec;
     //return new JadeStageExecution(new JadeStage(this, getInstrumentType(stage)));
   }
   
-  private JadeStageExecution getCurrentStageExecution() {
+  public JadeStageExecution getCurrentStageExecution() {
     return (JadeStageExecution)applicationContext.getBean("jadeStageExecution");
   }
 

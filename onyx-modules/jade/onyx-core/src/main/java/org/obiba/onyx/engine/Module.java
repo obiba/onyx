@@ -14,6 +14,8 @@ public interface Module {
 
   public StageExecution resume(Stage stage);
   
+  public StageExecution getCurrentStageExecution();
+  
   public Collection<Stage> getStages();
 
 }
