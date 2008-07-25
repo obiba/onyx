@@ -1,5 +1,6 @@
 package org.obiba.onyx.webapp.page.stage;
 
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.ModuleRegistry;
@@ -21,7 +22,16 @@ public class StagePage extends BasePage {
 
     Stage stage = (Stage) stageModel.getObject();
     Module module = registry.getModule(stage.getModule());
-    add(module.start(stage).createStageComponent("stage-component"));
+    Stage currentStage = module.getCurrentStageExecution().getStage(); 
+    if(currentStage != null && currentStage.getName().equals(stage.getName())) {
+      add(new Label("action", "resuming..."));
+      add(module.resume(stage).createStageComponent("stage-component"));
+    }
+    else {
+      add(new Label("action", "starting..."));
+      add(module.start(stage).createStageComponent("stage-component"));
+    }
+    
   }
 
 }

@@ -7,15 +7,16 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <tx:annotation-driven transaction-manager="transactionManager" />
 
+  <bean id="jadeStageExecution" class="org.obiba.onyx.jade.core.JadeStageExecution" scope="session"
+    init-method="initialize" destroy-method="shutdown">
+    <aop:scoped-proxy />
+  </bean>
+  
   <bean id="jadeOnyxModule" class="org.obiba.onyx.jade.core.JadeModule">
     <property name="queryService" ref="persistenceManager" />
     <property name="instrumentRunService" ref="instrumentRunService" />
     <property name="participantService" ref="participantService" />
-  </bean>
-
-  <bean id="jadeStageExecution" class="org.obiba.onyx.jade.core.JadeStageExecution" scope="session"
-    init-method="initialize" destroy-method="shutdown">
-    <aop:scoped-proxy />
+    <property name="stageExecution" ref="jadeStageExecution" />
   </bean>
 
   <bean id="instrumentService" class="org.obiba.onyx.jade.core.service.impl.DefaultInstrumentServiceImpl">

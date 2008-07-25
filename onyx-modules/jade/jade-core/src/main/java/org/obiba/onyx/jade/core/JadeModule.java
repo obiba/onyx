@@ -18,7 +18,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-public class JadeModule implements Module, ApplicationContextAware {
+public class JadeModule implements Module {
 
   private static final Logger log = LoggerFactory.getLogger(JadeModule.class);
 
@@ -26,9 +26,9 @@ public class JadeModule implements Module, ApplicationContextAware {
 
   private InstrumentRunService instrumentRunService;
 
-  private ApplicationContext applicationContext;
-
   private ParticipantService participantService;
+  
+  private StageExecution stageExecution;
 
   public void setQueryService(EntityQueryService queryService) {
     this.queryService = queryService;
@@ -36,6 +36,10 @@ public class JadeModule implements Module, ApplicationContextAware {
 
   public void setParticipantService(ParticipantService participantService) {
     this.participantService = participantService;
+  }
+
+  public void setStageExecution(StageExecution stageExecution) {
+    this.stageExecution = stageExecution;
   }
 
   public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
@@ -47,19 +51,20 @@ public class JadeModule implements Module, ApplicationContextAware {
   }
 
   public StageExecution resume(Stage stage) {
-    throw new UnsupportedOperationException("resume");
+    // TODO check a stage execution is not already on the way in this session scope
+    stageExecution.resume();
+    return stageExecution;
   }
 
   public StageExecution start(Stage stage) {
-    JadeStageExecution exec = getCurrentStageExecution();
     // TODO check a stage execution is not already on the way in this session scope
-    exec.start(new JadeStage(this, getInstrumentType(stage)));
-    return exec;
+    stageExecution.start(new JadeStage(this, getInstrumentType(stage)));
+    return stageExecution;
     // return new JadeStageExecution(new JadeStage(this, getInstrumentType(stage)));
   }
 
-  public JadeStageExecution getCurrentStageExecution() {
-    return (JadeStageExecution) applicationContext.getBean("jadeStageExecution");
+  public StageExecution getCurrentStageExecution() {
+    return stageExecution;
   }
 
   private InstrumentType getInstrumentType(Stage stage) {
@@ -104,10 +109,6 @@ public class JadeModule implements Module, ApplicationContextAware {
 
   public void shutdown() {
     log.info("shutdown");
-  }
-
-  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-    this.applicationContext = applicationContext;
   }
 
 }
