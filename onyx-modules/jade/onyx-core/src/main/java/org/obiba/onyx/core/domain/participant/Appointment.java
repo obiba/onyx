@@ -2,6 +2,7 @@ package org.obiba.onyx.core.domain.participant;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
@@ -9,6 +10,7 @@ import javax.persistence.TemporalType;
 
 import org.obiba.core.domain.AbstractEntity;
 
+@Entity
 public class Appointment extends AbstractEntity {
 
   private static final long serialVersionUID = 6009569414177913575L;
