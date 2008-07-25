@@ -27,7 +27,7 @@ public class Participant extends AbstractEntity {
   @OneToOne(mappedBy = "participant")
   private Interview interview;
 
-  @OneToMany(mappedBy = "particpant")
+  @OneToMany(mappedBy = "participant")
   private List<Appointment> appointments;
 
   public String getFirstName() {
