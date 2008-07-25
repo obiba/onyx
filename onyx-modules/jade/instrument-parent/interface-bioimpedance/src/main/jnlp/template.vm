@@ -18,7 +18,7 @@
   <resources>
     <j2se version="$j2seVersion"/>
      $dependencies
-     <nativelib href="lib/win32com-2.0.3.jar"/>
+     <nativelib href="lib/rxtx-lib-2.1.7-r2.jar"/>
   </resources>
   <application-desc main-class="${mainClass}">
     <argument><![CDATA[__config__]]></argument>
