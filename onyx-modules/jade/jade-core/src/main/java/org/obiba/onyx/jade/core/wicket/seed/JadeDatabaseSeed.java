@@ -51,7 +51,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
           // find code base:
           // resource is in .../<codeBase>/lib/instrument-descriptor.xml
           try {
-            instrument.setCodeBase(resource.getFile().getParentFile().getParentFile().getName());
+            instrument.setCodeBase(resource.getFile().getParentFile().getName());
           } catch(IOException e) {
             // ignore, not a file based resource
           }
