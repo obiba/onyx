@@ -1,7 +1,7 @@
 package org.obiba.onyx.core.service.impl;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
-import org.obiba.onyx.core.domain.Participant;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.springframework.transaction.annotation.Transactional;
 

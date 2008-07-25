@@ -47,12 +47,12 @@ public class JadeStageExecution implements StageExecution {
     status = StageExecutionStatus.READY;
   }
 
-  public void initialize() {
-    log.info("initialize");
+  public void init() {
+    log.info("init");
   }
 
-  public void shutdown() {
-    log.info("shutdown");
+  public void cleanup() {
+    log.info("cleanup");
   }
 
   public StageExecutionStatus getStatus() {

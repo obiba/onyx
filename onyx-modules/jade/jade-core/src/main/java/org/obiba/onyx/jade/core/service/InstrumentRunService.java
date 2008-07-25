@@ -2,7 +2,7 @@ package org.obiba.onyx.jade.core.service;
 
 import java.util.List;
 
-import org.obiba.onyx.core.domain.Participant;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;

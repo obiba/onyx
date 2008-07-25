@@ -7,8 +7,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <tx:annotation-driven transaction-manager="transactionManager" />
 
-  <bean id="jadeStageExecution" class="org.obiba.onyx.jade.core.JadeStageExecution" scope="session"
-    init-method="initialize" destroy-method="shutdown">
+  <bean id="jadeStageExecution" class="org.obiba.onyx.jade.core.JadeStageExecution" scope="session">
     <aop:scoped-proxy />
   </bean>
   

@@ -4,9 +4,9 @@ import org.apache.wicket.Component;
 
 public interface StageExecution {
 
-  public void initialize();
+  public void init();
   
-  public void shutdown();
+  public void cleanup();
   
   public void interrupt();
   

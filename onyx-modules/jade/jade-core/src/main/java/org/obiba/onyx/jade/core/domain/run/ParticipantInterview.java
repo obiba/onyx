@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
 import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.core.domain.Participant;
+import org.obiba.onyx.core.domain.participant.Participant;
 
 @Entity
 public class ParticipantInterview extends AbstractEntity {
