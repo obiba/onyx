@@ -17,8 +17,9 @@
 #end
   <resources>
     <j2se version="$j2seVersion"/>
+## Make sure the nativelib resource is defined before the others. This is required due to http://jira.codehaus.org/browse/MWEBSTART-8
+     <nativelib href="lib/rxtx-lib-2.1.7-r2-win32.jar"/>
      $dependencies
-     <nativelib href="lib/rxtx-lib-2.1.7-r2.jar"/>
   </resources>
   <application-desc main-class="${mainClass}">
     <argument><![CDATA[__config__]]></argument>
