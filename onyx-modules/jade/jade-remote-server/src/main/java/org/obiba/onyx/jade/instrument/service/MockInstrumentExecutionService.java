@@ -6,8 +6,12 @@ import java.util.Map;
 
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MockInstrumentExecutionService implements InstrumentExecutionService {
+
+  private static final Logger log = LoggerFactory.getLogger(MockInstrumentExecutionService.class);
 
   private Participant participant;
 
@@ -19,9 +23,13 @@ public class MockInstrumentExecutionService implements InstrumentExecutionServic
   }
 
   public void addOutputParameterValue(String name, Data value) {
+    log.info("Received output parameter value '{}' -> '{}'", name, value.getValue());
   }
 
   public void addOutputParameterValues(Map<String, Data> values) {
+    for(String key : values.keySet()) {
+      addOutputParameterValue(key, values.get(key));
+    }
   }
 
   public Map<String, Data> getInputParametersValue(String... parameters) {

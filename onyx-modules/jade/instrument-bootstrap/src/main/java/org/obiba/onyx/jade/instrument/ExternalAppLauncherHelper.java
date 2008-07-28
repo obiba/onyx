@@ -83,7 +83,7 @@ public class ExternalAppLauncherHelper {
 
   public boolean isSotfwareAlreadyStarted(String lockName) {
 
-    File wFile = new File(System.getProperty("java.io.tmpdir") + lockName + ".lock");
+    File wFile = new File(System.getProperty("java.io.tmpdir"), lockName + ".lock");
 
     try {
 
@@ -108,15 +108,15 @@ public class ExternalAppLauncherHelper {
     }
 
   }
- 
+
   public void launch() {
     if(!isSotfwareAlreadyStarted()) {
       launchExternalSoftware();
     } else {
       JOptionPane.showMessageDialog(null, getExecutable() + " already lock for execution.  Please make sure that another instance is not running.", "Cannot start application!", JOptionPane.ERROR_MESSAGE);
-    }  
+    }
   }
-  
+
   public String getExecutable() {
     return executable;
   }

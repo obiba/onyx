@@ -36,6 +36,8 @@ import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a simple Swing application that connects to a bioimpedance and weight device (Tanita Body Composition
@@ -45,6 +47,8 @@ import org.obiba.onyx.util.data.DataType;
  * 
  */
 public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEventListener {
+
+  private static final Logger log = LoggerFactory.getLogger(Tbf310InstrumentRunner.class);
 
   // Injected by spring.
   protected InstrumentExecutionService instrumentExecutionService;
@@ -84,6 +88,9 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
   private JButton saveDataBtn;
 
+  /** Lock used to block the main thread as long as the UI has not finished its job */
+  private final Object uiLock = new Object();
+
   class ResultTextField extends JTextField {
 
     private static final long serialVersionUID = 1L;
@@ -110,13 +117,8 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
   private String portOwnerName;
 
-  /**
-   * Class constructor.
-   * 
-   * @param pPortName COMx port name (ex: COM2, COM4, ... ).
-   * @param pSerialDevice A name for the serial device opening the port.
-   * 
-   */
+  private boolean shutdown = false;
+
   public Tbf310InstrumentRunner() throws Exception {
 
     // Initialize interface components.
@@ -139,7 +141,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     saveDataBtn = new JButton("Sauvegarder");
     saveDataBtn.setMnemonic('S');
     saveDataBtn.setEnabled(false);
-    saveDataBtn.setToolTipText("Sauvegarder les mesures et retourner é l'interface CaG");
+    saveDataBtn.setToolTipText("Sauvegarder les mesures et retourner à l'interface CaG");
 
     // Initialize serial port.
     portOwnerName = "TANITA Body Composition Analyzer";
@@ -166,27 +168,39 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   public void setExternalAppHelper(ExternalAppLauncherHelper externalAppHelper) {
     this.externalAppHelper = externalAppHelper;
   }
-  
+
+  public String getTbf310CommPort() {
+    return tbf310CommPort;
+  }
+
+  public void setTbf310CommPort(String tbf310CommPort) {
+    this.tbf310CommPort = tbf310CommPort;
+  }
+
   /**
    * Establish the connection with the device connected to the serial port.
    */
   private void setupSerialPort() {
 
     try {
-    	Enumeration en = CommPortIdentifier.getPortIdentifiers();
-    	while (en.hasMoreElements()) {
-    		CommPortIdentifier type = (CommPortIdentifier) en.nextElement();
-			System.out.println("type.name=" + type.getName()+" type.portType=" + type.getPortType());
-		} 
-    	
+      // List all ports found to the console. Used for debugging...
+      Enumeration en = CommPortIdentifier.getPortIdentifiers();
+      while(en != null && en.hasMoreElements()) {
+        CommPortIdentifier type = (CommPortIdentifier) en.nextElement();
+        System.out.println("type.name=" + type.getName() + " type.portType=" + type.getPortType());
+      }
+
       // If port already open, close it.
       if(serialPort != null) {
         serialPort.close();
         serialPort = null;
       }
 
-      // Initialize serial port attributes.=
+      // Initialize serial port attributes.
+      log.info("Fetching communication port {}", getTbf310CommPort());
       CommPortIdentifier wPortId = CommPortIdentifier.getPortIdentifier(getTbf310CommPort());
+
+      log.info("Opening communication port {}", getTbf310CommPort());
       serialPort = (SerialPort) wPortId.open(portOwnerName, 2000);
 
       // Make sure the port is "Clear To Send"
@@ -225,7 +239,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     int wConfirmation;
     while(serialPort == null || !serialPort.isCTS()) {
 
-      wConfirmation = JOptionPane.showConfirmDialog(appWindow, "La communication n'a pu être établie\n" + "avec l'appareil de bioimpédance!\n\n" + "Vérifiez si les cables sont bien\n" + "branchés et appuyer ensuite sur OK.", "Problème de communication", JOptionPane.OK_CANCEL_OPTION);
+      wConfirmation = JOptionPane.showConfirmDialog(appWindow, "La communication n'a pu être établie\n" + "avec l'appareil de bioimpédance!\n\n" + "Vérifiez si les cables sont bien\n" + "branchés et appuyez ensuite sur OK.", "Problème de communication", JOptionPane.OK_CANCEL_OPTION);
 
       if(wConfirmation == JOptionPane.OK_OPTION) {
 
@@ -233,7 +247,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
         setupSerialPort();
 
       } else {
-        System.exit(0);
+        exitUI();
       }
 
     }
@@ -298,7 +312,10 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
       // If serial is not CTS, it means that the cable was disconnected.
       // Attempt to reestablish the connection.
-      reestablishConnection();
+      if(shutdown == false) {
+        // Only try to reestablish if we're not shutting down the application.
+        reestablishConnection();
+      }
 
       break;
 
@@ -342,7 +359,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   /**
    * Builds the GUI which will display the bioimpedance results.
    */
-  public void buildGUI() {
+  private void buildGUI() {
 
     appWindow = new JFrame("TANITA Body Composition Analyzer");
 
@@ -377,11 +394,21 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   }
 
   /**
+   * Signals that the UI has finished its job.
+   */
+  private void exitUI() {
+    appWindow.setVisible(false);
+    synchronized(uiLock) {
+      uiLock.notify();
+    }
+  }
+
+  /**
    * Puts together the GUI main panel component.
    * 
    * @return
    */
-  protected JPanel buildMainPanel() {
+  private JPanel buildMainPanel() {
 
     JPanel wMainPanel = new JPanel();
     wMainPanel.setBackground(new Color(206, 231, 255));
@@ -404,7 +431,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     addDataField(fatMassTxt, wResultPanel, "Masse grasse :", " kg");
     addDataField(ffmTxt, wResultPanel, "Masse maigre :", " kg");
     addDataField(tbwTxt, wResultPanel, "Masse hydrique :", " kg");
-    addDataField(ageTxt, wResultPanel, "ége :", " ans");
+    addDataField(ageTxt, wResultPanel, "Âge :", " ans");
     addDataField(bmiTxt, wResultPanel, "IMC :", "");
     addDataField(bmrTxt, wResultPanel, "MB :", " kJ");
 
@@ -425,7 +452,6 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     saveDataBtn.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         sendOutputToServer();
-        System.exit(0);
       }
     });
 
@@ -450,7 +476,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
    * @param pLabel A label which will be displayed to the left of the field.
    * @param pUnits Units which will be displayed to the right of the field.
    */
-  protected void addDataField(JTextField pField, JPanel pTargetPanel, String pLabel, String pUnits) {
+  private void addDataField(JTextField pField, JPanel pTargetPanel, String pLabel, String pUnits) {
 
     // Create field sub panel.
     JPanel wFieldPanel = new JPanel();
@@ -488,60 +514,62 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
       // If confirmed, application is closed.
       if(wConfirmation == JOptionPane.YES_OPTION) {
-        try {
-          // mainDatabaseConn.close();
-        } catch(Exception wEx) {
-        }
-        System.exit(0);
+        exitUI();
       }
 
     } else {
-      System.exit(0);
+      exitUI();
     }
 
   }
 
-  public String getTbf310CommPort() {
-    return tbf310CommPort;
-  }
-
-  public void setTbf310CommPort(String tbf310CommPort) {
-    this.tbf310CommPort = tbf310CommPort;
-  }
-
-  public void launchExternalSoftware() {
-
-    // Load the driver used by Java Communication API (javax.comm) to establish communication with com ports.
-    System.setSecurityManager(null);
-    buildGUI();
-  }
-
-  public void sendOutputToServer() {
+  private void sendOutputToServer() {
 
     Map<String, Data> wOutput = new HashMap<String, Data>();
-    wOutput.put("weight", new Data(DataType.DECIMAL, weightTxt.getText()));
-    wOutput.put("impedance", new Data(DataType.INTEGER, impedanceTxt.getText()));
-    wOutput.put("bmi", new Data(DataType.DECIMAL, bmiTxt.getText()));
-    wOutput.put("bmr", new Data(DataType.INTEGER, bmrTxt.getText()));
-    wOutput.put("fatFreeMass", new Data(DataType.DECIMAL, ffmTxt.getText()));
-    wOutput.put("fatMass", new Data(DataType.DECIMAL, fatMassTxt.getText()));
-    wOutput.put("totalBodyWater", new Data(DataType.DECIMAL, tbwTxt.getText()));
-    wOutput.put("fatPct", new Data(DataType.DECIMAL, fatPctTxt.getText()));
+    wOutput.put("weight", getDecimalValue(weightTxt));
+    wOutput.put("impedance", getIntegerValue(impedanceTxt));
+    wOutput.put("bmi", getDecimalValue(bmiTxt));
+    wOutput.put("bmr", getIntegerValue(bmrTxt));
+    wOutput.put("fatFreeMass", getDecimalValue(ffmTxt));
+    wOutput.put("fatMass", getDecimalValue(fatMassTxt));
+    wOutput.put("totalBodyWater", getDecimalValue(tbwTxt));
+    wOutput.put("fatPct", getDecimalValue(fatPctTxt));
     wOutput.put("gender", new Data(DataType.TEXT, genderTxt.getText().equals("Homme") ? "MALE" : "FEMALE )"));
-    wOutput.put("height", new Data(DataType.INTEGER, heightTxt.getText()));
-    wOutput.put("age", new Data(DataType.INTEGER, ageTxt.getText()));
-
+    wOutput.put("height", getIntegerValue(heightTxt));
+    wOutput.put("age", getIntegerValue(ageTxt));
     instrumentExecutionService.addOutputParameterValues(wOutput);
+    exitUI();
+  }
+
+  private Data getIntegerValue(JTextField f) {
+    return new Data(DataType.INTEGER, new Integer(f.getText().trim()));
+  }
+
+  private Data getDecimalValue(JTextField f) {
+    return new Data(DataType.DECIMAL, new Double(f.getText().trim()));
   }
 
   public void initialize() {
-	  setupSerialPort();
+    log.info("Initializing Tanita Runner");
+    setupSerialPort();
   }
 
   public void run() {
 
     if(!externalAppHelper.isSotfwareAlreadyStarted("tbf310InstrumentRunner")) {
-      launchExternalSoftware();
+      buildGUI();
+
+      // Obtain the lock outside the UI thread. This will block until the UI releases the lock, at which point it should
+      // be safe to exit the main thread.
+      synchronized(uiLock) {
+        try {
+          uiLock.wait();
+        } catch(InterruptedException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+      }
+      log.info("Lock obtained. Exiting software.");
     } else {
       JOptionPane.showMessageDialog(null, "Tanita TBF-310 already lock for execution.  Please make sure that another instance is not running.", "Cannot start application!", JOptionPane.ERROR_MESSAGE);
     }
@@ -549,8 +577,16 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   }
 
   public void shutdown() {
-    // TODO Auto-generated method stub
-
+    log.info("Shuting down runner");
+    shutdown = true;
+    if(serialPort != null) {
+      try {
+        log.info("Closing serial port");
+        serialPort.close();
+      } catch(Exception e) {
+        // ignore
+      }
+    }
   }
 
 }

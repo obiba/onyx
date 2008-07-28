@@ -4,12 +4,15 @@ import java.io.ByteArrayInputStream;
 import java.util.Properties;
 
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 public class JnlpClient {
+  private static final Logger log = LoggerFactory.getLogger(JnlpClient.class);
 
   public static void main(String[] args) {
 
@@ -18,32 +21,41 @@ public class JnlpClient {
 
     // Launch measurement process.
     InstrumentRunner instrumentRunner = (InstrumentRunner) appContext.getBean("instrumentRunner");
+    if(instrumentRunner == null) {
+
+    }
+    log.info("Instrument Runner Type is {}", instrumentRunner.getClass().getName());
     try {
 
+      log.info("Initializing runner");
       instrumentRunner.initialize();
 
       try {
+        log.info("Executing runner");
         instrumentRunner.run();
-
       } finally {
 
         try {
+          log.info("Shutting down runner");
           instrumentRunner.shutdown();
-        } catch(Exception wExDuringShutdown) {
+        } catch(Exception e) {
           // Errors during shutdown are ignored.
+          log.warn("An exception was caught during shutdown, but will be ignored: {}", e.getMessage());
+          log.debug("Exception caught:", e);
         }
 
       }
 
     } catch(Exception wEx) {
-      throw new RuntimeException("Error while running instrument!", wEx);
-
+      log.error("Unexpected error while executing runner {}", wEx);
     } finally {
-      
+
       // Make sure application context is destroyed.
+      log.info("Destroying application context");
       appContext.destroy();
     }
 
+    log.info("Exiting VM");
     System.exit(0);
 
   }

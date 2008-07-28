@@ -42,12 +42,12 @@ public class Data implements Serializable {
         break;
         
       case DECIMAL:
-        if(!value.getClass().isAssignableFrom(Double.class) || !value.getClass().isAssignableFrom(Float.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + value.getClass().getName() + " received.");
+        if(!value.getClass().isAssignableFrom(Double.class) && !value.getClass().isAssignableFrom(Float.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + value.getClass().getName() + " received.");
         
         break;
         
       case INTEGER:
-        if(!value.getClass().isAssignableFrom(Long.class) || !value.getClass().isAssignableFrom(Integer.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + value.getClass().getName() + " received.");
+        if(!value.getClass().isAssignableFrom(Long.class) && !value.getClass().isAssignableFrom(Integer.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + value.getClass().getName() + " received.");
         break;
         
       case TEXT:
