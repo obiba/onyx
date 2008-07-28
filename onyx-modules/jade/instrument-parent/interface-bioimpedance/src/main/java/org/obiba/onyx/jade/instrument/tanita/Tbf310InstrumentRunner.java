@@ -16,6 +16,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -107,9 +108,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
   private boolean portIsAvailable = false;
 
-  private String portName;
-
-  private String serialDevice;
+  private String portOwnerName;
 
   /**
    * Class constructor.
@@ -140,13 +139,10 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     saveDataBtn = new JButton("Sauvegarder");
     saveDataBtn.setMnemonic('S');
     saveDataBtn.setEnabled(false);
-    saveDataBtn.setToolTipText("Sauvegarder les mesures et retourner ï¿½ l'interface CaG");
+    saveDataBtn.setToolTipText("Sauvegarder les mesures et retourner é l'interface CaG");
 
     // Initialize serial port.
-    portName = "TANITA Body Composition Analyzer";
-    serialDevice = getTbf310CommPort();
-    setupSerialPort();
-
+    portOwnerName = "TANITA Body Composition Analyzer";
     // Test string
     /*
      * setTanitaData( parseTanitaData( "0,2,185,110.6,431,28.4,31.4,79.2,58.0,27,32.3,9771" ) ); saveDataBtn.setEnabled(
@@ -170,23 +166,28 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   public void setExternalAppHelper(ExternalAppLauncherHelper externalAppHelper) {
     this.externalAppHelper = externalAppHelper;
   }
-
+  
   /**
    * Establish the connection with the device connected to the serial port.
    */
   private void setupSerialPort() {
 
     try {
-
+    	Enumeration en = CommPortIdentifier.getPortIdentifiers();
+    	while (en.hasMoreElements()) {
+    		CommPortIdentifier type = (CommPortIdentifier) en.nextElement();
+			System.out.println("type.name=" + type.getName()+" type.portType=" + type.getPortType());
+		} 
+    	
       // If port already open, close it.
       if(serialPort != null) {
         serialPort.close();
         serialPort = null;
       }
 
-      // Initialize serial port attributes.
-      CommPortIdentifier wPortId = CommPortIdentifier.getPortIdentifier(portName);
-      serialPort = (SerialPort) wPortId.open(serialDevice, 2000);
+      // Initialize serial port attributes.=
+      CommPortIdentifier wPortId = CommPortIdentifier.getPortIdentifier(getTbf310CommPort());
+      serialPort = (SerialPort) wPortId.open(portOwnerName, 2000);
 
       // Make sure the port is "Clear To Send"
       if(serialPort.isCTS()) {
@@ -210,6 +211,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
     } catch(Exception wCouldNotAccessSerialPort) {
       portIsAvailable = false;
+      wCouldNotAccessSerialPort.printStackTrace();
     }
 
   }
@@ -223,7 +225,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     int wConfirmation;
     while(serialPort == null || !serialPort.isCTS()) {
 
-      wConfirmation = JOptionPane.showConfirmDialog(appWindow, "La communication n'a pu ï¿½tre ï¿½tablie\n" + "avec l'appareil de bioimpï¿½dance!\n\n" + "Vï¿½rifiez si les cï¿½bles sont bien\n" + "branchï¿½s et appuyer ensuite sur OK.", "Problï¿½me de communication", JOptionPane.OK_CANCEL_OPTION);
+      wConfirmation = JOptionPane.showConfirmDialog(appWindow, "La communication n'a pu être établie\n" + "avec l'appareil de bioimpédance!\n\n" + "Vérifiez si les cables sont bien\n" + "branchés et appuyer ensuite sur OK.", "Problème de communication", JOptionPane.OK_CANCEL_OPTION);
 
       if(wConfirmation == JOptionPane.OK_OPTION) {
 
@@ -259,7 +261,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     if(wBodyTypeCode.endsWith("0")) {
       bodyTypeTxt.setText("Standard");
     } else if(wBodyTypeCode.endsWith("2")) {
-      bodyTypeTxt.setText("Athlï¿½tique");
+      bodyTypeTxt.setText("Athlétique");
     }
 
     String wGender = pOutputData[1];
@@ -329,7 +331,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
       } catch(IOException wErrorReadingDataOnSerialPort) {
         tanitaData = new StringBuffer();
-        JOptionPane.showMessageDialog(appWindow, "Une erreur s'est produite lors de la communication\n" + "des rï¿½sultats par l'appareil de bioimpï¿½dance." + "Veuillez reprendre les mesures SVP.", "Erreur de communication", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(appWindow, "Une erreur s'est produite lors de la communication\n" + "des résultats par l'appareil de bioimpédance." + "Veuillez reprendre les mesures SVP.", "Erreur de communication", JOptionPane.ERROR_MESSAGE);
       }
 
       break;
@@ -397,12 +399,12 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     addDataField(genderTxt, wResultPanel, "Sexe :", "");
     addDataField(heightTxt, wResultPanel, "Taille :", " cm");
     addDataField(weightTxt, wResultPanel, "Poids :", " kg");
-    addDataField(impedanceTxt, wResultPanel, "Rï¿½sistance :", " \u03A9");
+    addDataField(impedanceTxt, wResultPanel, "Résistance :", " \u03A9");
     addDataField(fatPctTxt, wResultPanel, "% graisse :", " %");
     addDataField(fatMassTxt, wResultPanel, "Masse grasse :", " kg");
     addDataField(ffmTxt, wResultPanel, "Masse maigre :", " kg");
     addDataField(tbwTxt, wResultPanel, "Masse hydrique :", " kg");
-    addDataField(ageTxt, wResultPanel, "ï¿½ge :", " ans");
+    addDataField(ageTxt, wResultPanel, "ége :", " ans");
     addDataField(bmiTxt, wResultPanel, "IMC :", "");
     addDataField(bmrTxt, wResultPanel, "MB :", " kJ");
 
@@ -482,7 +484,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     // Ask for confirmation only if data has been fetch from the device.
     if(saveDataBtn.isEnabled()) {
 
-      int wConfirmation = JOptionPane.showConfirmDialog(appWindow, "Voulez-vous vraiment fermer cette fenï¿½tre?\n" + "(les donnï¿½es affichï¿½es seront perdues)", "Confirmation", JOptionPane.YES_NO_OPTION);
+      int wConfirmation = JOptionPane.showConfirmDialog(appWindow, "Voulez-vous vraiment fermer cette fenêtre?\n" + "(les données affichées seront perdues)", "Confirmation", JOptionPane.YES_NO_OPTION);
 
       // If confirmed, application is closed.
       if(wConfirmation == JOptionPane.YES_OPTION) {
@@ -533,8 +535,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   }
 
   public void initialize() {
-    // TODO Auto-generated method stub
-
+	  setupSerialPort();
   }
 
   public void run() {
