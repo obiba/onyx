@@ -88,7 +88,7 @@
 
 .menu, .menu ul li {
 	color: #FFFFFF;
-	background:  #AEB659;
+	background:  #888888;
 }
 
 .menu ul {
@@ -109,12 +109,12 @@
 }
 
 .menu a:hover, .menu li:hover {
-	background-color: #CAD08D !important;
+	background-color: #AAAAAA !important;
   	color: #375FB7 !important;
   	text-decoration:none;
 }
 .menu li:hover>a {
-	background-color: #CAD08D !important;
+	background-color: #AAAAAA !important;
   	color: #375FB7 !important;
   	text-decoration:none;
 }
@@ -123,18 +123,18 @@
 }
 .menu ul>li + li {	/* and remove the top border on all but first item in the list */
 	border-top: 0;
-	background-color: #AEB659;
+	background-color: #888888;
 }
 
 .menu li li:hover>ul {	/* inset 2nd+ submenus, to show off overlapping */
 	top: 5px;
 	left: 90%;
-	background-color: #CAD08D;
+	background-color: #AAAAAA;
 }
 .menu li li:hover ul{
 	top: 5px;
 	left: 90%;
-	background-color: #CAD08D;
+	background-color: #AAAAAA;
 }
 
 /* special colouring for "Main menu:", and for "xx submenu" items in ADxMenu

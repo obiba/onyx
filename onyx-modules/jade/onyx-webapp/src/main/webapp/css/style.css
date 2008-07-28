@@ -43,16 +43,16 @@ A:hover {
 }
 
 #pageHeader {
-	height: 100px;
+	height: 40px;
 	border-bottom:1px solid #FFFFFF;
 }
 
 #pageHeader1 {
-	height: 100px;
+	height: 40px;
 	width:1000px;
 	float:left;
 	background-color: #375FB7;
-	background-image: url('../images/bkg.jpg');
+	background-image: url('../images/bannerTopRepeater.gif');
 	background-repeat: repeat;
 	background-position: left top;
 }
@@ -94,7 +94,7 @@ A:hover {
 
 
 #menuBar {
-  background-color: #AEB659;
+  background-color: #888888;
   height:25px;
   color: #FFFFFF;
   font-family: verdana, arial, sans-serif;
@@ -322,7 +322,7 @@ text-align:center;
 #pageFooter {
   height: 30px;
   clear: both;
-  background-color: #AEB659;
+  background-color: #888888;
 }
 
 #pageFooter a{
@@ -412,7 +412,7 @@ table.entityTable .navigator em {
 }
 
 table.entityTable th {
-  background-color: #CAD08D;
+  background-color: #AAAAAA;
   padding: 3px;
   border: 1px solid #FFFFFF;
   border-style:solid;
@@ -466,7 +466,7 @@ td.gertTableDataKey {
 	width:30%;
 	color: #003366;
 	font-weight:bold;
-	background-color: #CAD08D;
+	background-color: #AAAAAA;
 	padding-right: 5px;
 	padding-left: 5px;
 	padding-top:2px;
@@ -478,7 +478,7 @@ td.gertTableDataKeyIndent {
 	width:30%;
 	color: #003366;
 	font-weight:bold;
-	background-color: #CAD08D;
+	background-color: #AAAAAA;
 	padding-right: 5px;
 	padding-left: 15px;
 	padding-top:2px;
