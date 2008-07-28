@@ -8,7 +8,8 @@
     <vendor>Tanita</vendor>
     <model>TBF 310</model>
     <status>ACTIVE</status>
-    <codeBase></codeBase>
+    <serialNumber>1234567890</serialNumber>    
+    <barcode>bioimp1</barcode>
     <instrumentType>
       <name>BIM</name>
     </instrumentType>

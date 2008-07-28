@@ -22,6 +22,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.request.target.basic.RedirectRequestTarget;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.Streams;
 import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
@@ -29,6 +30,7 @@ import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 import org.apache.wicket.util.string.interpolator.VariableInterpolator;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.service.InstrumentDescriptorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +41,11 @@ public class InstrumentLauncherPanel extends Panel {
   private static final Logger log = LoggerFactory.getLogger(InstrumentLauncherPanel.class);
 
   private Instrument instrument;
+
+  private String instrumentCodeBase;
+
+  @SpringBean
+  private InstrumentDescriptorService instrumentDescriptorService;
 
   @SuppressWarnings("serial")
   public InstrumentLauncherPanel(String id, IModel instrumentTypeModel) {
@@ -52,6 +59,7 @@ public class InstrumentLauncherPanel extends Panel {
     List<Instrument> instruments = type.getInstruments();
     if(instruments.size() > 0) {
       instrument = instruments.get(0);
+      instrumentCodeBase = instrumentDescriptorService.getCodeBase(instrument.getBarcode());      
     }
 
     Button button = new Button("start") {
@@ -59,16 +67,16 @@ public class InstrumentLauncherPanel extends Panel {
       public void onSubmit() {
         log.info("Start " + InstrumentLauncherPanel.this.getModelObject() + " !");
 
-        if(instrument != null && instrument.getCodeBase() != null) {
+        if(instrument != null && instrumentCodeBase != null) {
           ServletContext context = ((WebApplication) RequestCycle.get().getApplication()).getServletContext();
 
-          log.info("codeBase=" + instrument.getCodeBase());
+          log.info("codeBase=" + instrumentCodeBase);
           final Properties props = new Properties();
           props.setProperty("org.obiba.onyx.remoting.url", makeUrl("remoting"));
-          props.setProperty("codebaseUrl", makeUrl("instruments/" + instrument.getCodeBase()));
-          props.setProperty("jnlpPath", context.getRealPath("/instruments/" + instrument.getCodeBase() + "/launch.jnlp"));
+          props.setProperty("codebaseUrl", makeUrl(instrumentCodeBase));
+          props.setProperty("jnlpPath", context.getRealPath("/" + instrumentCodeBase + "/launch.jnlp"));
 
-          ResourceReference jnlpReference = new ResourceReference(instrument.getCodeBase()) {
+          ResourceReference jnlpReference = new ResourceReference(instrumentCodeBase) {
             protected Resource newResource() {
               return new JnlpResource(props);
             }
@@ -79,7 +87,7 @@ public class InstrumentLauncherPanel extends Panel {
       }
     };
     form.add(button);
-    button.setEnabled(instrument != null && instrument.getCodeBase() != null);
+    button.setEnabled(instrument != null && instrumentCodeBase != null);
 
   }
 

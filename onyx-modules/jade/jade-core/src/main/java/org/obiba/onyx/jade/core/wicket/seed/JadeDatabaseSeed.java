@@ -13,6 +13,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.OutputParameterSource;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantPropertySource;
+import org.obiba.onyx.jade.core.service.InstrumentDescriptorService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.wicket.util.seed.XstreamResourceDatabaseSeed;
 import org.slf4j.Logger;
@@ -28,6 +29,8 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
   private PersistenceManager persistenceManager;
 
   private InstrumentService instrumentService;
+  
+  private InstrumentDescriptorService instrumentDescriptorService;
 
   public void setPersistenceManager(PersistenceManager persistenceManager) {
     this.persistenceManager = persistenceManager;
@@ -37,6 +40,14 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
     this.instrumentService = instrumentService;
   }
   
+  public InstrumentDescriptorService getInstrumentDescriptorService() {
+    return instrumentDescriptorService;
+  }
+
+  public void setInstrumentDescriptorService(InstrumentDescriptorService instrumentDescriptorService) {
+    this.instrumentDescriptorService = instrumentDescriptorService;
+  }
+
   @SuppressWarnings("unchecked")
   @Override
   protected void handleXstreamResult(Resource resource, Object result) {
@@ -50,11 +61,14 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
           instrument.setInstrumentType(type);
           // find code base:
           // resource is in .../<codeBase>/lib/instrument-descriptor.xml
-          try {
-            instrument.setCodeBase(resource.getFile().getParentFile().getName());
-          } catch(IOException e) {
-            // ignore, not a file based resource
+
+          try {                
+            instrumentDescriptorService.addCodeBase( instrument.getBarcode(), resource.getFile().getParentFile().getParentFile().getName() + "/" + resource.getFile().getParentFile().getName());          
+          } catch ( IOException wEx ) {
+            log.error( "Cannot find resource : "  + resource.getDescription() );
+            throw new RuntimeException( wEx );
           }
+
         } else if(entity instanceof OutputParameterSource) {
           OutputParameterSource source = (OutputParameterSource) entity;
           InstrumentType type = instrumentService.getInstrumentType(source.getInstrumentType().getName());

@@ -32,6 +32,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="developmentSeed" value="true" />
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="instrumentService" ref="instrumentService" />
+    <property name="instrumentDescriptorService" ref="instrumentDescriptorService" /> 
   </bean>
+  
+  <bean id="instrumentDescriptorService" class="org.obiba.onyx.jade.core.service.impl.DefaultInstrumentDescriptorServiceImpl"/>
+ 
 
 </beans>
