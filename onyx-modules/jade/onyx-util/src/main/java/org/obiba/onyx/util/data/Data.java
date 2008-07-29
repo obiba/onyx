@@ -26,36 +26,36 @@ public class Data implements Serializable {
 
   @SuppressWarnings("unchecked")
   public <T> T getValue() {
-    return (T)value;
+    return (T) value;
   }
 
   public void setValue(Serializable value) {
     if(value != null) {
-      
+      Class<?> valueClass = value.getClass();
+
       switch(type) {
       case BOOLEAN:
-        if(!value.getClass().isAssignableFrom(Boolean.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + value.getClass().getName() + " received.");
+        if(!valueClass.isAssignableFrom(Boolean.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
         break;
-        
+
       case DATE:
-        if(!value.getClass().isAssignableFrom(Date.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + value.getClass().getName() + " received.");
+        if(!valueClass.isAssignableFrom(Date.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
         break;
-        
+
       case DECIMAL:
-        if(!value.getClass().isAssignableFrom(Double.class) && !value.getClass().isAssignableFrom(Float.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + value.getClass().getName() + " received.");
-        
+        if(!valueClass.isAssignableFrom(Double.class) && !valueClass.isAssignableFrom(Float.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
         break;
-        
+
       case INTEGER:
-        if(!value.getClass().isAssignableFrom(Long.class) && !value.getClass().isAssignableFrom(Integer.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + value.getClass().getName() + " received.");
+        if(!valueClass.isAssignableFrom(Long.class) && !valueClass.isAssignableFrom(Integer.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
         break;
-        
+
       case TEXT:
-        if(!value.getClass().isAssignableFrom(String.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + value.getClass().getName() + " received.");
+        if(!valueClass.isAssignableFrom(String.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
         break;
-        
+
       case DATA:
-        if(!value.getClass().isAssignableFrom(byte[].class)) throw new IllegalArgumentException("DataType " + type + " expected, " + value.getClass().getName() + " received.");
+        if(!valueClass.isAssignableFrom(byte[].class)) throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
         break;
 
       default:
