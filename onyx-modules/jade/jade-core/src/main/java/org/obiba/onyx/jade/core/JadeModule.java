@@ -1,22 +1,28 @@
 package org.obiba.onyx.jade.core;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.wicket.Component;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;
-import org.obiba.onyx.engine.StageExecution;
+import org.obiba.onyx.engine.state.IStageExecution;
+import org.obiba.onyx.engine.state.InProgressState;
+import org.obiba.onyx.engine.state.ReadyState;
+import org.obiba.onyx.engine.state.StageExecutionContext;
+import org.obiba.onyx.engine.state.StageState;
+import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
+import org.obiba.onyx.jade.core.wicket.panel.JadePanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 public class JadeModule implements Module {
 
@@ -27,8 +33,8 @@ public class JadeModule implements Module {
   private InstrumentRunService instrumentRunService;
 
   private ParticipantService participantService;
-  
-  private StageExecution stageExecution;
+
+  private Map<Serializable, Map<Serializable, StageExecutionContext>> interviewStageContexts = new HashMap<Serializable, Map<Serializable, StageExecutionContext>>();
 
   public void setQueryService(EntityQueryService queryService) {
     this.queryService = queryService;
@@ -38,33 +44,12 @@ public class JadeModule implements Module {
     this.participantService = participantService;
   }
 
-  public void setStageExecution(StageExecution stageExecution) {
-    this.stageExecution = stageExecution;
-  }
-
   public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
     this.instrumentRunService = instrumentRunService;
   }
 
   public String getName() {
     return "jade";
-  }
-
-  public StageExecution resume(Stage stage) {
-    // TODO check a stage execution is not already on the way in this session scope
-    stageExecution.resume();
-    return stageExecution;
-  }
-
-  public StageExecution start(Stage stage) {
-    // TODO check a stage execution is not already on the way in this session scope
-    stageExecution.start(new JadeStage(this, getInstrumentType(stage)));
-    return stageExecution;
-    // return new JadeStageExecution(new JadeStage(this, getInstrumentType(stage)));
-  }
-
-  public StageExecution getCurrentStageExecution() {
-    return stageExecution;
   }
 
   private InstrumentType getInstrumentType(Stage stage) {
@@ -95,20 +80,99 @@ public class JadeModule implements Module {
     return stages;
   }
 
-  public boolean isCompleted(Stage stage) {
-    InstrumentType instrumentType = getInstrumentType(stage);
-
-    instrumentRunService.getLastCompletedInstrumentRun(instrumentRunService.getParticipantInterview(participantService.getCurrentParticipant()), instrumentType);
-
-    return false;
-  }
-
   public void initialize() {
     log.info("initialize");
   }
 
   public void shutdown() {
     log.info("shutdown");
+  }
+
+  public IStageExecution getStageExecution(Interview interview, Stage stage) {
+    Map<Serializable, StageExecutionContext> contexts = interviewStageContexts.get(interview.getId());
+    if(contexts == null) {
+      contexts = new HashMap<Serializable, StageExecutionContext>();
+      interviewStageContexts.put(interview.getId(), contexts);
+    }
+    StageExecutionContext exec = contexts.get(stage.getId());
+
+    if(exec == null) {
+      // create
+      exec = new StageExecutionContext(interview, stage);
+
+      // TODO add edges
+      StageState ready = new JadeReadyState();
+      StageState inProgress = new JadeInProgressState(getInstrumentType(stage));
+      exec.addEdge(ready, TransitionEvent.START, inProgress);
+      exec.addEdge(inProgress, TransitionEvent.CANCEL, ready);
+      exec.setInitialState(ready);
+
+      contexts.put(stage.getId(), exec);
+    }
+
+    return exec;
+  }
+
+  private class JadeReadyState extends ReadyState {
+
+    @Override
+    protected void skip() {
+      // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    protected void start() {
+      // TODO Auto-generated method stub
+
+    }
+
+    public void restoreFromMemento(Object memento) {
+      // TODO Auto-generated method stub
+
+    }
+
+    public Object saveToMemento() {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+  }
+
+  private class JadeInProgressState extends InProgressState {
+
+    private InstrumentType instrumentType;
+
+    public JadeInProgressState(InstrumentType instrumentType) {
+      this.instrumentType = instrumentType;
+    }
+
+    @Override
+    protected void cancel() {
+      // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    protected void interrupt() {
+      // TODO Auto-generated method stub
+
+    }
+
+    public Component getWidget(String id) {
+      return new JadePanel(id, instrumentType);
+    }
+
+    public void restoreFromMemento(Object memento) {
+      // TODO Auto-generated method stub
+
+    }
+
+    public Object saveToMemento() {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
   }
 
 }

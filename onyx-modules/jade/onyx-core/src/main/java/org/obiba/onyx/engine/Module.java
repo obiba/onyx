@@ -2,22 +2,19 @@ package org.obiba.onyx.engine;
 
 import java.util.Collection;
 
+import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.engine.state.IStageExecution;
+
 public interface Module {
 
   public String getName();
 
-  public void initialize();
-  
-  public void shutdown();
-  
-  public StageExecution start(Stage stage);
+  public IStageExecution getStageExecution(Interview interview, Stage stage);
 
-  public StageExecution resume(Stage stage);
-  
-  public StageExecution getCurrentStageExecution();
-  
+  public void initialize();
+
+  public void shutdown();
+
   public Collection<Stage> getStages();
-  
-  public boolean isCompleted(Stage stage);
 
 }

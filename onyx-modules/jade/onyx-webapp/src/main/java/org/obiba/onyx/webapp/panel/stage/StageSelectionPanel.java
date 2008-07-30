@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
@@ -23,11 +22,15 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.engine.Action;
+import org.obiba.onyx.engine.ActionInstance;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
-import org.obiba.onyx.engine.StageExecution;
-import org.obiba.onyx.engine.StageExecutionStatus;
+import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.webapp.page.stage.StagePage;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
@@ -47,15 +50,18 @@ public class StageSelectionPanel extends Panel {
 
   @SpringBean
   private ModuleRegistry moduleRegistry;
-  
+
+  @SpringBean(name = "participantService")
+  private ParticipantService participantService;
+
   private FeedbackPanel feedbackPanel;
 
   public StageSelectionPanel(String id, FeedbackPanel feedbackPanel) {
     super(id);
     setOutputMarkupId(true);
-    
+
     this.feedbackPanel = feedbackPanel;
-    
+
     add(new OnyxEntityList<Stage>("list", new StageProvider(), new StageListColumnProvider(), new StringResourceModel("StageList", StageSelectionPanel.this, null)));
   }
 
@@ -86,27 +92,28 @@ public class StageSelectionPanel extends Panel {
       columns.add(new AbstractColumn(new StringResourceModel("DependsOn", StageSelectionPanel.this, null)) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Stage stage = (Stage)rowModel.getObject();
+          Stage stage = (Stage) rowModel.getObject();
           String dependsOn = "";
-          for (Stage dep : stage.getDependsOnStages()) {
-            if (dependsOn.length()>0)
-              dependsOn += ", ";
+          for(Stage dep : stage.getDependsOnStages()) {
+            if(dependsOn.length() > 0) dependsOn += ", ";
             dependsOn += dep.getName();
           }
           cellItem.add(new Label(componentId, dependsOn));
         }
-        
+
       });
       columns.add(new AbstractColumn(new StringResourceModel("Completed", StageSelectionPanel.this, null)) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Stage stage = (Stage)rowModel.getObject();
-          cellItem.add(new Label(componentId, "" + moduleRegistry.getModule(stage.getModule()).isCompleted(stage)));
+          Stage stage = (Stage) rowModel.getObject();
+          IStageExecution exec = moduleRegistry.getModule(stage.getModule()).getStageExecution(participantService.getCurrentParticipant().getInterview(), stage);
+
+          cellItem.add(new Label(componentId, Boolean.toString(exec.isCompleted())));
         }
 
       });
 
-      //columns.add(new PropertyColumn(new Model("Module"), "module", "module"));
+      // columns.add(new PropertyColumn(new Model("Module"), "module", "module"));
       columns.add(new AbstractColumn(new Model("")) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
@@ -144,54 +151,53 @@ public class StageSelectionPanel extends Panel {
 
       Form form = new Form("form", model);
       add(form);
-      
-      
 
-      Button button = new Button("start") {
+      Button startButton = new Button("start") {
 
         @Override
         public void onSubmit() {
           log.info("Start " + model.getObject());
+          Stage stage = (Stage) model.getObject();
+          Interview interview = participantService.getCurrentParticipant().getInterview();
+          IStageExecution exec = moduleRegistry.getModule(((Stage) model.getObject()).getModule()).getStageExecution(interview, stage);
+
+          ActionInstance instance = new ActionInstance();
+          instance.setActionType(ActionType.EXECUTE);
+          // TODO form to get instance values + persistency
+          exec.doAction(instance);
+          
           setResponsePage(new StagePage(model));
         }
       };
-      form.add(button);
-      
+      startButton.setVisible(false);
+      form.add(startButton);
+
       AjaxButton cancelButton = new AjaxButton("cancel") {
 
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form form) {
-          moduleRegistry.getModule(((Stage) model.getObject()).getModule()).getCurrentStageExecution().stop();
+          Stage stage = (Stage) model.getObject();
+          Interview interview = participantService.getCurrentParticipant().getInterview();
+          IStageExecution exec = moduleRegistry.getModule(((Stage) model.getObject()).getModule()).getStageExecution(interview, stage);
+
           target.addComponent(StageSelectionPanel.this);
           target.addComponent(feedbackPanel);
         }
-        
+
       };
-      cancelButton.setVisible(false);      
+      cancelButton.setVisible(false);
       form.add(cancelButton);
-      
+
       // stage execution context
       Stage stage = (Stage) model.getObject();
+      Interview interview = participantService.getCurrentParticipant().getInterview();
       Module module = moduleRegistry.getModule(stage.getModule());
-      StageExecution exec = module.getCurrentStageExecution();
-      if(!exec.getStatus().equals(StageExecutionStatus.READY)) {
-        if(exec.getStage().getName().equals(stage.getName())) {
-          button.add(new AttributeModifier("value", new Model("Resume")));
-          cancelButton.setVisible(true);
-        }
-        else {
-          button.setEnabled(false);
-        }
+      IStageExecution exec = module.getStageExecution(interview, stage);
+      for(Action action : exec.getActions()) {
+        if(action.getType().equals(ActionType.EXECUTE)) startButton.setVisible(true);
+        else if(action.getType().equals(ActionType.STOP)) cancelButton.setVisible(true);
       }
-      
-      // stage dependencies
-      for (Stage dep : stage.getDependsOnStages()) {
-        if (!module.isCompleted(dep)) {
-          button.setEnabled(false);
-          break;
-        }
-      }
-      
+
     }
   }
 }

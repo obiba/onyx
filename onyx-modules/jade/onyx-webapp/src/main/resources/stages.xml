@@ -9,7 +9,6 @@
     <displayOrder>1</displayOrder>
     
     <dependentStages>
-      <stage reference="bim" />
       <stage reference="spi" />
     </dependentStages>
     
@@ -20,10 +19,6 @@
     <description>Bioimpedance measurement</description>
     <module>jade</module>
     <displayOrder>2</displayOrder>
-    
-    <dependsOnStages>
-      <stage reference="sta" />
-    </dependsOnStages>
 
     <dependentStages>
       <stage reference="spi" />
