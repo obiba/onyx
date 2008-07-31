@@ -6,6 +6,7 @@ package org.obiba.onyx.jade.engine.state;
 import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.state.AbstractStageState;
+import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.wicket.panel.JadePanel;
 import org.slf4j.Logger;
@@ -25,12 +26,19 @@ public class JadeInProgressState extends AbstractStageState {
     return new JadePanel(id, instrumentType);
   }
 
-  public void onStop(Action action) {
+  @Override
+  public void stop(Action action) {
     log.info("Jade Stage {} is stopping", super.getStage().getName());
+    // Invalidate current instrument run
+    castEvent(TransitionEvent.CANCEL);
   }
 
-  public void onComplete(Action action) {
+  @Override
+  public void complete(Action action) {
     log.info("Jade Stage {} is completing", super.getStage().getName());
+    // Finish current instrument run
+    super.complete(action);
+    castEvent(TransitionEvent.COMPLETE);
   }
 
   @Override

@@ -88,6 +88,10 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
     stageState.stop(action);
   }
 
+  public void complete(Action action) {
+    stageState.complete(action);
+  }
+
   public Component getWidget(String id) {
     return stageState.getWidget(id);
   }

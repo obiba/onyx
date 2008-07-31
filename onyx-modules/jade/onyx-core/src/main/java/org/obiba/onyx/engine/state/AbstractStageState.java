@@ -57,7 +57,7 @@ public abstract class AbstractStageState implements IStageExecution {
   public void stop(Action action) {
   }
 
-  public void send() {
+  public void complete(Action action) {
   }
 
   public Component getWidget(String id) {

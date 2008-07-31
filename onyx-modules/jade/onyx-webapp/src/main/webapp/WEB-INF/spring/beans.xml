@@ -10,12 +10,11 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
   <bean id="applicationBean" class="org.obiba.onyx.webapp.OnyxApplication" scope="singleton" />
 
   <bean id="moduleRegistry" class="org.obiba.onyx.engine.ModuleRegistry" />
-  
+
   <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl"
     scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="moduleRegistry" ref="moduleRegistry" />
-    <aop:scoped-proxy />
   </bean>
 
   <bean id="moduleRegistrationListener" class="org.obiba.onyx.engine.ModuleRegistrationListener">

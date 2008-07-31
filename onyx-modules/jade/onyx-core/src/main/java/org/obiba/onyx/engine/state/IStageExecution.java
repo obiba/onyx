@@ -18,6 +18,8 @@ public interface IStageExecution {
 
   public void interrupt(Action action);
 
+  public void complete(Action action);
+
   public Component getWidget(String id);
 
   public boolean isInteractive();
