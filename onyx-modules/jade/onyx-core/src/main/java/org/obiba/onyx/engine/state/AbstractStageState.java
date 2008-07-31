@@ -3,6 +3,7 @@ package org.obiba.onyx.engine.state;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.Stage;
@@ -12,7 +13,7 @@ import org.obiba.onyx.engine.Stage;
  * @author Yannick Marcon
  * 
  */
-public abstract class StageState implements IStageExecution {
+public abstract class AbstractStageState implements IStageExecution {
 
   private ITransitionEventSink eventSink;
 
@@ -59,4 +60,19 @@ public abstract class StageState implements IStageExecution {
   public void send() {
   }
 
+  public Component getWidget(String id) {
+    return null;
+  }
+
+  public boolean isCompleted() {
+    return false;
+  }
+
+  public boolean isFinal() {
+    return false;
+  }
+
+  public boolean isInteractive() {
+    return false;
+  }
 }

@@ -43,7 +43,7 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
     transitionListeners.remove(listener);
   }
 
-  public void addEdge(StageState source, TransitionEvent event, StageState target) {
+  public void addEdge(AbstractStageState source, TransitionEvent event, AbstractStageState target) {
     Map<TransitionEvent, IStageExecution> stateEdges = edges.get(source);
     if(stateEdges == null) {
       stateEdges = new HashMap<TransitionEvent, IStageExecution>();
