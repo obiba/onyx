@@ -10,18 +10,20 @@ public interface IStageExecution {
 
   public List<Action> getActions();
 
-  public void doAction(ActionInstance action);
+  public void execute(ActionInstance action);
+
+  public void skip(ActionInstance action);
+
+  public void stop(ActionInstance action);
+
+  public void interrupt(ActionInstance action);
 
   public Component getWidget(String id);
 
   public boolean isInteractive();
-  
+
   public boolean isCompleted();
-  
+
   public boolean isFinal();
-
-  public Object saveToMemento();
-
-  public void restoreFromMemento(Object memento);
 
 }

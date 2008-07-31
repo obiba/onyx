@@ -1,12 +1,10 @@
 package org.obiba.onyx.engine.state;
 
-public enum TransitionEvent {
-
-  START("start"), SKIP("skip"), CANCEL("cancel"), RESUME("resume"), INTERRUPT("interrupt"), COMPLETE("complete"), SEND("send");
+public class TransitionEvent {
 
   private String name;
 
-  private TransitionEvent(String name) {
+  public TransitionEvent(String name) {
     this.name = name;
   }
 

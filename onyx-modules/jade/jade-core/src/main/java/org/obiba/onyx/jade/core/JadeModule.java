@@ -10,6 +10,7 @@ import org.apache.wicket.Component;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.engine.ActionInstance;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
@@ -17,7 +18,6 @@ import org.obiba.onyx.engine.state.InProgressState;
 import org.obiba.onyx.engine.state.ReadyState;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.StageState;
-import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.panel.JadePanel;
@@ -103,8 +103,8 @@ public class JadeModule implements Module {
       // TODO add edges
       StageState ready = new JadeReadyState();
       StageState inProgress = new JadeInProgressState(getInstrumentType(stage));
-      exec.addEdge(ready, TransitionEvent.START, inProgress);
-      exec.addEdge(inProgress, TransitionEvent.CANCEL, ready);
+      exec.addEdge(ready, JadeReadyState.EXECUTE, inProgress);
+      exec.addEdge(inProgress, JadeInProgressState.STOP, ready);
       exec.setInitialState(ready);
 
       contexts.put(stage.getId(), exec);
@@ -113,28 +113,14 @@ public class JadeModule implements Module {
     return exec;
   }
 
-  private class JadeReadyState extends ReadyState {
+  private static class JadeReadyState extends ReadyState {
 
-    @Override
-    protected void skip() {
-      // TODO Auto-generated method stub
-
+    public void onExecute(ActionInstance action) {
+      log.info("Jade Stage {} is starting", super.getStage().getName());
     }
 
-    @Override
-    protected void start() {
-      // TODO Auto-generated method stub
-
-    }
-
-    public void restoreFromMemento(Object memento) {
-      // TODO Auto-generated method stub
-
-    }
-
-    public Object saveToMemento() {
-      // TODO Auto-generated method stub
-      return null;
+    public void onSkip(ActionInstance action) {
+      log.info("Jade Stage {} is skipping", super.getStage().getName());
     }
 
   }
@@ -147,30 +133,16 @@ public class JadeModule implements Module {
       this.instrumentType = instrumentType;
     }
 
-    @Override
-    protected void cancel() {
-      // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    protected void interrupt() {
-      // TODO Auto-generated method stub
-
-    }
-
     public Component getWidget(String id) {
       return new JadePanel(id, instrumentType);
     }
 
-    public void restoreFromMemento(Object memento) {
-      // TODO Auto-generated method stub
-
+    public void onStop(ActionInstance action) {
+      log.info("Jade Stage {} is stopping", super.getStage().getName());
     }
 
-    public Object saveToMemento() {
-      // TODO Auto-generated method stub
-      return null;
+    public void onComplete(ActionInstance action) {
+      log.info("Jade Stage {} is completing", super.getStage().getName());
     }
 
   }

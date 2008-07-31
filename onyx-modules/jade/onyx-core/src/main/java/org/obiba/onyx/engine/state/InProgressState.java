@@ -3,47 +3,34 @@ package org.obiba.onyx.engine.state;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionInstance;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.state.transition.StoppableState;
+import org.obiba.onyx.engine.state.transition.CompletableState;
 
-public abstract class InProgressState extends StageState {
+public abstract class InProgressState extends StageState implements CompletableState, StoppableState {
 
   protected InProgressState() {
     addAction(new Action(ActionType.STOP));
-    addAction(new Action(ActionType.PAUSE));
   }
 
-  public void doAction(ActionInstance action) {
-    switch(action.getActionType()) {
-    case PAUSE:
-      interrupt();
-      castEvent(TransitionEvent.INTERRUPT);
-      break;
-
-    case STOP:
-      cancel();
-      castEvent(TransitionEvent.CANCEL);
-      break;
-      
-    default:
-      break;
-    }
+  @Override
+  public void stop(ActionInstance action) {
+    onStop(action);
+    castEvent(STOP);
   }
 
-  protected abstract void interrupt();
-  
-  protected abstract void cancel();
-  
-  protected void complete() {
-    castEvent(TransitionEvent.COMPLETE);
+  public void complete() {
+    onComplete(null);
+    castEvent(COMPLETE);
   }
 
   public boolean isInteractive() {
     return true;
   }
-  
+
   public boolean isFinal() {
     return false;
   }
-  
+
   public boolean isCompleted() {
     return false;
   }

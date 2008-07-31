@@ -4,49 +4,40 @@ import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionInstance;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.state.transition.SkippableState;
+import org.obiba.onyx.engine.state.transition.ExecutableState;
 
+public abstract class ReadyState extends StageState implements ExecutableState, SkippableState {
 
-public abstract class ReadyState extends StageState {
-  
   protected ReadyState() {
     addAction(new Action(ActionType.EXECUTE));
     addAction(new Action(ActionType.SKIP));
   }
-  
-  public void doAction(ActionInstance action) {
-    switch(action.getActionType()) {
-    case EXECUTE:
-      start();
-      castEvent(TransitionEvent.START);
-      break;
 
-    case SKIP:
-      skip();
-      castEvent(TransitionEvent.SKIP);
-      break;
-      
-    default:
-      break;
-    }
-    
+  @Override
+  public void execute(ActionInstance action) {
+    onExecute(action);
+    castEvent(EXECUTE);
   }
-  
-  protected abstract void start();
-  
-  protected abstract void skip();
-  
+
+  @Override
+  public void skip(ActionInstance action) {
+    onSkip(action);
+    castEvent(SKIP);
+  }
+
   public Component getWidget(String id) {
     return null;
   }
-  
+
   public boolean isInteractive() {
     return false;
   }
-  
+
   public boolean isFinal() {
     return false;
   }
-  
+
   public boolean isCompleted() {
     return false;
   }

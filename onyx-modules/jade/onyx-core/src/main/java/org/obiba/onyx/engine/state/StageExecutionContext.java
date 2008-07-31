@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 public class StageExecutionContext implements IStageExecution, ITransitionEventSink {
 
   private static final Logger log = LoggerFactory.getLogger(StageExecutionContext.class);
-  
+
   private Stage stage;
 
   private Interview interview;
@@ -51,11 +51,13 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
     }
     stateEdges.put(event, target);
     source.setEventSink(this);
+    source.setStage(stage);
     target.setEventSink(this);
+    target.setStage(stage);
   }
 
   public void castEvent(TransitionEvent event) {
-    log.info("castEvent("+event+") from " + stageState.getClass().getSimpleName());
+    log.info("castEvent(" + event + ") from " + stageState.getClass().getSimpleName());
     Map<TransitionEvent, IStageExecution> stateEdges = edges.get(stageState);
     if(stateEdges != null) {
       stageState = stateEdges.get(event);
@@ -66,12 +68,24 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
     log.info("                 to " + stageState.getClass().getSimpleName());
   }
 
-  public void doAction(ActionInstance action) {
-    stageState.doAction(action);
-  }
-
   public List<Action> getActions() {
     return stageState.getActions();
+  }
+
+  public void execute(ActionInstance action) {
+    stageState.execute(action);
+  }
+
+  public void interrupt(ActionInstance action) {
+    stageState.interrupt(action);
+  }
+
+  public void skip(ActionInstance action) {
+    stageState.skip(action);
+  }
+
+  public void stop(ActionInstance action) {
+    stageState.stop(action);
   }
 
   public Component getWidget(String id) {
@@ -88,16 +102,6 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
 
   public boolean isCompleted() {
     return stageState.isCompleted();
-  }
-
-  public void restoreFromMemento(Object memento) {
-    // TODO Auto-generated method stub
-
-  }
-
-  public Object saveToMemento() {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   public Stage getStage() {

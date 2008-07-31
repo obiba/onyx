@@ -112,7 +112,7 @@ public class StageSelectionPanel extends Panel {
         }
 
       });
-      
+
       columns.add(new AbstractColumn(new Model("Actions")) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
@@ -175,8 +175,8 @@ public class StageSelectionPanel extends Panel {
           ActionInstance instance = new ActionInstance();
           instance.setActionType(ActionType.EXECUTE);
           // TODO form to get instance values + persistency
-          exec.doAction(instance);
-          
+          instance.getActionType().act(exec, instance);
+
           setResponsePage(new StagePage(model));
         }
       };

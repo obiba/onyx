@@ -1,20 +1,32 @@
 package org.obiba.onyx.engine;
 
+import org.obiba.onyx.engine.state.IStageExecution;
+
 public enum ActionType {
-  EXECUTE("Start"), STOP("Cancel"), PAUSE("Pause"), SKIP("Skip");
+  EXECUTE {
+    @Override
+    public void act(IStageExecution execution, ActionInstance instance) {
+      execution.execute(instance);
+    }
+  },
+  STOP {
+    @Override
+    public void act(IStageExecution execution, ActionInstance instance) {
+      execution.stop(instance);
+    }
+  },
+  INTERRUPT {
+    @Override
+    public void act(IStageExecution execution, ActionInstance instance) {
+      execution.interrupt(instance);
+    }
+  },
+  SKIP {
+    @Override
+    public void act(IStageExecution execution, ActionInstance instance) {
+      execution.skip(instance);
+    }
+  };
 
-  private String name;
-  
-  private ActionType(String name) {
-    this.name = name;
-  }
-  
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public String toString() {
-    return name;
-  }
+  public abstract void act(IStageExecution execution, ActionInstance instance);
 }
