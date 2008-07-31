@@ -1,4 +1,4 @@
-package org.obiba.onyx.webapp.panel.base;
+package org.obiba.onyx.webapp.base.panel;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -8,7 +8,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.webapp.page.base.BasePage;
+import org.obiba.onyx.webapp.base.page.BasePage;
 
 /**
  * Base page menu bar.

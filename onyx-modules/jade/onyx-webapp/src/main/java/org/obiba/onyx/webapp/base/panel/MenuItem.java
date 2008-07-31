@@ -1,4 +1,4 @@
-package org.obiba.onyx.webapp.panel.base;
+package org.obiba.onyx.webapp.base.panel;
 
 import java.util.ArrayList;
 import java.util.List;

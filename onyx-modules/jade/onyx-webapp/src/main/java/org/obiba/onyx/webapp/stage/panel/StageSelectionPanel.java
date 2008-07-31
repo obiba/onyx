@@ -1,4 +1,4 @@
-package org.obiba.onyx.webapp.panel.stage;
+package org.obiba.onyx.webapp.stage.panel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,8 +31,8 @@ import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
-import org.obiba.onyx.webapp.page.stage.StagePage;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
+import org.obiba.onyx.webapp.stage.page.StagePage;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;

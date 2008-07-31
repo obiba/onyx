@@ -1,4 +1,4 @@
-package org.obiba.onyx.webapp.page.stage;
+package org.obiba.onyx.webapp.stage.page;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -9,7 +9,7 @@ import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
-import org.obiba.onyx.webapp.page.base.BasePage;
+import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

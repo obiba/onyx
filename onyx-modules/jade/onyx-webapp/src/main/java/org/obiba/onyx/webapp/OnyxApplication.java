@@ -5,7 +5,7 @@ import java.util.Map;
 import org.apache.wicket.Application;
 import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.obiba.onyx.webapp.page.home.HomePage;
+import org.obiba.onyx.webapp.home.page.HomePage;
 import org.obiba.wicket.application.WebApplicationStartupListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
