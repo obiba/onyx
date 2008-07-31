@@ -33,4 +33,8 @@ public class JadeInProgressState extends AbstractStageState {
     log.info("Jade Stage {} is completing", super.getStage().getName());
   }
 
+  @Override
+  public boolean isInteractive() {
+    return true;
+  }
 }
