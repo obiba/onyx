@@ -1,65 +1,100 @@
 package org.obiba.onyx.engine;
 
+import java.util.Date;
 
-public class Action {
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-  private ActionType type;
+import org.obiba.core.domain.AbstractEntity;
+import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.user.User;
 
-  private boolean askPassword = false;
+@Entity
+public class Action extends AbstractEntity {
 
-  private boolean commentMandatory = true;
+  private static final long serialVersionUID = -943609521870150739L;
 
-  private boolean reasonMandatory = false;
+  @ManyToOne
+  private User user;
 
-  private String iconPath;
+  @ManyToOne
+  private Interview interview;
 
-  public Action(ActionType type) {
-    this.type = type;
+  @Enumerated(EnumType.STRING)
+  private ActionType actionType;
+
+  @ManyToOne
+  private Stage stage;
+
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date dateTime;
+
+  private String comment;
+
+  private String eventReason;
+
+  public Action() {
+    super();
   }
 
-  public ActionType getType() {
-    return type;
+  public final User getUser() {
+    return user;
   }
 
-  public void setType(ActionType type) {
-    this.type = type;
+  public final void setUser(User user) {
+    this.user = user;
   }
 
-  public boolean isAskPassword() {
-    return askPassword;
+  public final Interview getInterview() {
+    return interview;
   }
 
-  public void setAskPassword(boolean askPassword) {
-    this.askPassword = askPassword;
+  public final void setInterview(Interview interview) {
+    this.interview = interview;
   }
 
-  public boolean isCommentMandatory() {
-    return commentMandatory;
+  public final ActionType getActionType() {
+    return actionType;
   }
 
-  public void setCommentMandatory(boolean commentMandatory) {
-    this.commentMandatory = commentMandatory;
+  public final void setActionType(ActionType actionType) {
+    this.actionType = actionType;
   }
 
-  public boolean isReasonMandatory() {
-    return reasonMandatory;
+  public final Stage getStage() {
+    return stage;
   }
 
-  public void setReasonMandatory(boolean reasonMandatory) {
-    this.reasonMandatory = reasonMandatory;
+  public final void setStage(Stage stage) {
+    this.stage = stage;
   }
 
-  public String getIconPath() {
-    return iconPath;
+  public final Date getDateTime() {
+    return dateTime;
   }
 
-  public void setIconPath(String iconPath) {
-    this.iconPath = iconPath;
+  public final void setDateTime(Date dateTime) {
+    this.dateTime = dateTime;
   }
-  
-  @Override
-  public String toString() {
-    return type.toString();
+
+  public final String getComment() {
+    return comment;
+  }
+
+  public final void setComment(String comment) {
+    this.comment = comment;
+  }
+
+  public final String getEventReason() {
+    return eventReason;
+  }
+
+  public final void setEventReason(String eventReason) {
+    this.eventReason = eventReason;
   }
 
 }

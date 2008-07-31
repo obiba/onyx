@@ -24,8 +24,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionInstance;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.ModuleRegistry;
@@ -172,7 +172,7 @@ public class StageSelectionPanel extends Panel {
           Interview interview = participantService.getCurrentParticipant().getInterview();
           IStageExecution exec = moduleRegistry.getModule(((Stage) model.getObject()).getModule()).getStageExecution(interview, stage);
 
-          ActionInstance instance = new ActionInstance();
+          Action instance = new Action();
           instance.setActionType(ActionType.EXECUTE);
           // TODO form to get instance values + persistency
           instance.getActionType().act(exec, instance);
@@ -204,7 +204,7 @@ public class StageSelectionPanel extends Panel {
       Interview interview = participantService.getCurrentParticipant().getInterview();
       Module module = moduleRegistry.getModule(stage.getModule());
       IStageExecution exec = module.getStageExecution(interview, stage);
-      for(Action action : exec.getActions()) {
+      for(ActionDefinition action : exec.getActions()) {
         if(action.getType().equals(ActionType.EXECUTE)) startButton.setVisible(true);
         else if(action.getType().equals(ActionType.STOP)) cancelButton.setVisible(true);
       }
