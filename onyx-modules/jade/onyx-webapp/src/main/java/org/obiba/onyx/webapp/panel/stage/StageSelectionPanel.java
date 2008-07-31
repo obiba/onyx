@@ -112,6 +112,17 @@ public class StageSelectionPanel extends Panel {
         }
 
       });
+      
+      columns.add(new AbstractColumn(new Model("Actions")) {
+
+        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+          Stage stage = (Stage) rowModel.getObject();
+          IStageExecution exec = moduleRegistry.getModule(stage.getModule()).getStageExecution(participantService.getCurrentParticipant().getInterview(), stage);
+
+          cellItem.add(new Label(componentId, exec.getActions().toString()));
+        }
+
+      });
 
       // columns.add(new PropertyColumn(new Model("Module"), "module", "module"));
       columns.add(new AbstractColumn(new Model("")) {

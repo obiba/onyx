@@ -56,5 +56,10 @@ public class Action {
   public void setIconPath(String iconPath) {
     this.iconPath = iconPath;
   }
+  
+  @Override
+  public String toString() {
+    return type.toString();
+  }
 
 }
