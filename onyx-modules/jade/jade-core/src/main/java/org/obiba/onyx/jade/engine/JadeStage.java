@@ -1,4 +1,4 @@
-package org.obiba.onyx.jade.core;
+package org.obiba.onyx.jade.engine;
 
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;

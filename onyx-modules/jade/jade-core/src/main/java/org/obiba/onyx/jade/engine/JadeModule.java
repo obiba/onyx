@@ -1,4 +1,4 @@
-package org.obiba.onyx.jade.core;
+package org.obiba.onyx.jade.engine;
 
 import java.io.Serializable;
 import java.util.ArrayList;
