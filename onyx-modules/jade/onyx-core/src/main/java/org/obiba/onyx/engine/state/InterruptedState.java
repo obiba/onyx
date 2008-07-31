@@ -8,7 +8,7 @@ public abstract class InterruptedState extends StageState {
 
   protected InterruptedState() {
     addAction(new Action(ActionType.EXECUTE));
-    addAction(new Action(ActionType.STOP));
+    addAction(new Action(ActionType.CANCEL));
   }
 
   public void doAction(ActionInstance action) {
@@ -18,7 +18,7 @@ public abstract class InterruptedState extends StageState {
       castEvent(TransitionEvent.RESUME);
       break;
 
-    case STOP:
+    case CANCEL:
       cancel();
       castEvent(TransitionEvent.CANCEL);
       break;

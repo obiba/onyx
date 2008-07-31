@@ -7,7 +7,7 @@ import org.obiba.onyx.engine.ActionType;
 public abstract class CompletedState extends StageState {
 
   protected CompletedState() {
-    addAction(new Action(ActionType.STOP));
+    addAction(new Action(ActionType.CANCEL));
     addAction(new Action(ActionType.EXECUTE));
   }
 
@@ -18,7 +18,7 @@ public abstract class CompletedState extends StageState {
       castEvent(TransitionEvent.RESUME);
       break;
 
-    case STOP:
+    case CANCEL:
       cancel();
       castEvent(TransitionEvent.CANCEL);
       break;

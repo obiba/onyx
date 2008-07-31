@@ -7,12 +7,12 @@ import org.obiba.onyx.engine.ActionType;
 public abstract class SkippedState extends StageState {
 
   protected SkippedState() {
-    addAction(new Action(ActionType.STOP));
+    addAction(new Action(ActionType.CANCEL));
   }
 
   public void doAction(ActionInstance action) {
     switch(action.getActionType()) {
-    case STOP:
+    case CANCEL:
       cancel();
       castEvent(TransitionEvent.CANCEL);
       break;
