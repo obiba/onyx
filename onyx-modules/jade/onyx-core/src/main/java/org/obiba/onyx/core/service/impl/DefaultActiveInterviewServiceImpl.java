@@ -53,7 +53,10 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   public void doAction(Stage stage, Action action) {
     action.setInterview(getCurrentParticipant().getInterview());
     action.setStage(stage);
-    // TODO persist action
+    action.setDateTime(new Date());
+    // TODO add user etc.
+    getPersistenceManager().save(action);
+    
     IStageExecution exec = getStageExecution(stage);
     action.getActionType().act(exec, action);
   }
