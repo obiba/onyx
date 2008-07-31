@@ -206,7 +206,7 @@ public class StageSelectionPanel extends Panel {
       IStageExecution exec = module.getStageExecution(interview, stage);
       for(Action action : exec.getActions()) {
         if(action.getType().equals(ActionType.EXECUTE)) startButton.setVisible(true);
-        else if(action.getType().equals(ActionType.CANCEL)) cancelButton.setVisible(true);
+        else if(action.getType().equals(ActionType.STOP)) cancelButton.setVisible(true);
       }
 
     }

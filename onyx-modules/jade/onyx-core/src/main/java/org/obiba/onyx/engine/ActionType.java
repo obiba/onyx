@@ -1,7 +1,7 @@
 package org.obiba.onyx.engine;
 
 public enum ActionType {
-  EXECUTE("Start"), CANCEL("Cancel"), PAUSE("Pause"), SKIP("Skip");
+  EXECUTE("Start"), STOP("Cancel"), PAUSE("Pause"), SKIP("Skip");
 
   private String name;
   

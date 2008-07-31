@@ -7,7 +7,7 @@ import org.obiba.onyx.engine.ActionType;
 public abstract class InProgressState extends StageState {
 
   protected InProgressState() {
-    addAction(new Action(ActionType.CANCEL));
+    addAction(new Action(ActionType.STOP));
     addAction(new Action(ActionType.PAUSE));
   }
 
@@ -18,7 +18,7 @@ public abstract class InProgressState extends StageState {
       castEvent(TransitionEvent.INTERRUPT);
       break;
 
-    case CANCEL:
+    case STOP:
       cancel();
       castEvent(TransitionEvent.CANCEL);
       break;
