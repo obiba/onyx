@@ -23,7 +23,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
-import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
@@ -51,8 +51,8 @@ public class StageSelectionPanel extends Panel {
   @SpringBean
   private ModuleRegistry moduleRegistry;
 
-  @SpringBean(name = "participantService")
-  private ParticipantService participantService;
+  @SpringBean(name = "activeInterviewService")
+  private ActiveInterviewService activeInterviewService;
 
   private FeedbackPanel feedbackPanel;
 
@@ -106,7 +106,7 @@ public class StageSelectionPanel extends Panel {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Stage stage = (Stage) rowModel.getObject();
-          IStageExecution exec = moduleRegistry.getModule(stage.getModule()).getStageExecution(participantService.getCurrentParticipant().getInterview(), stage);
+          IStageExecution exec = activeInterviewService.getStageExecution(stage);
 
           cellItem.add(new Label(componentId, Boolean.toString(exec.isCompleted())));
         }
@@ -117,7 +117,7 @@ public class StageSelectionPanel extends Panel {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Stage stage = (Stage) rowModel.getObject();
-          IStageExecution exec = moduleRegistry.getModule(stage.getModule()).getStageExecution(participantService.getCurrentParticipant().getInterview(), stage);
+          IStageExecution exec = activeInterviewService.getStageExecution(stage);
 
           cellItem.add(new Label(componentId, exec.getActions().toString()));
         }
@@ -169,7 +169,7 @@ public class StageSelectionPanel extends Panel {
         public void onSubmit() {
           log.info("Start " + model.getObject());
           Stage stage = (Stage) model.getObject();
-          Interview interview = participantService.getCurrentParticipant().getInterview();
+          Interview interview = activeInterviewService.getCurrentParticipant().getInterview();
           IStageExecution exec = moduleRegistry.getModule(((Stage) model.getObject()).getModule()).getStageExecution(interview, stage);
 
           Action instance = new Action();
@@ -188,7 +188,7 @@ public class StageSelectionPanel extends Panel {
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form form) {
           Stage stage = (Stage) model.getObject();
-          Interview interview = participantService.getCurrentParticipant().getInterview();
+          Interview interview = activeInterviewService.getCurrentParticipant().getInterview();
           IStageExecution exec = moduleRegistry.getModule(((Stage) model.getObject()).getModule()).getStageExecution(interview, stage);
 
           target.addComponent(StageSelectionPanel.this);
@@ -201,7 +201,7 @@ public class StageSelectionPanel extends Panel {
 
       // stage execution context
       Stage stage = (Stage) model.getObject();
-      Interview interview = participantService.getCurrentParticipant().getInterview();
+      Interview interview = activeInterviewService.getCurrentParticipant().getInterview();
       Module module = moduleRegistry.getModule(stage.getModule());
       IStageExecution exec = module.getStageExecution(interview, stage);
       for(ActionDefinition action : exec.getActions()) {

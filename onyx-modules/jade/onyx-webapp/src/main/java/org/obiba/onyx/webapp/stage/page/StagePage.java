@@ -4,7 +4,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.participant.Interview;
-import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
@@ -21,14 +21,14 @@ public class StagePage extends BasePage {
   @SpringBean
   private ModuleRegistry registry;
 
-  @SpringBean(name = "participantService")
-  private ParticipantService participantService;
+  @SpringBean(name = "activeInterviewService")
+  private ActiveInterviewService activeInterviewService;
 
   public StagePage(DetachableEntityModel stageModel) {
     super();
 
     Stage stage = (Stage) stageModel.getObject();
-    Interview interview = participantService.getCurrentParticipant().getInterview();
+    Interview interview = activeInterviewService.getCurrentParticipant().getInterview();
     Module module = registry.getModule(stage.getModule());
     IStageExecution exec = module.getStageExecution(interview, stage);
 

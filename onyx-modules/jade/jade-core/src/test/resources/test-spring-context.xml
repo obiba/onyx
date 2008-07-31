@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
   default-autowire="no">
   
-  <bean id="participantService" class="org.obiba.onyx.core.service.impl.DefaultParticipantServiceImpl">
+  <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl">
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
   

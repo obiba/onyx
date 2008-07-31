@@ -5,11 +5,21 @@ import java.util.Date;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.engine.Module;
+import org.obiba.onyx.engine.ModuleRegistry;
+import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.engine.state.IStageExecution;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class DefaultParticipantServiceImpl extends PersistenceManagerAwareService implements ParticipantService {
+public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareService implements ActiveInterviewService {
+
+  private ModuleRegistry moduleRegistry;
+  
+  public void setModuleRegistry(ModuleRegistry moduleRegistry) {
+    this.moduleRegistry = moduleRegistry;
+  }
 
   public Participant getCurrentParticipant() {
     Participant template = new Participant();
@@ -31,5 +41,11 @@ public class DefaultParticipantServiceImpl extends PersistenceManagerAwareServic
     }
     
     return participant;
+  }
+
+  public IStageExecution getStageExecution(Stage stage) {
+    Module module = moduleRegistry.getModule(stage.getModule());
+    
+    return module.getStageExecution(getCurrentParticipant().getInterview(), stage);
   }
 }
