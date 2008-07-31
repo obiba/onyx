@@ -169,8 +169,7 @@ public class StageSelectionPanel extends Panel {
         public void onSubmit() {
           log.info("Start " + model.getObject());
           Stage stage = (Stage) model.getObject();
-          Interview interview = activeInterviewService.getCurrentParticipant().getInterview();
-          IStageExecution exec = moduleRegistry.getModule(((Stage) model.getObject()).getModule()).getStageExecution(interview, stage);
+          IStageExecution exec = activeInterviewService.getStageExecution(stage);
 
           Action instance = new Action();
           instance.setActionType(ActionType.EXECUTE);
