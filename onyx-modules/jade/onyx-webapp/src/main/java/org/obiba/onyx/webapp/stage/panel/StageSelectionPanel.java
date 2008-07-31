@@ -169,12 +169,11 @@ public class StageSelectionPanel extends Panel {
         public void onSubmit() {
           log.info("Start " + model.getObject());
           Stage stage = (Stage) model.getObject();
-          IStageExecution exec = activeInterviewService.getStageExecution(stage);
 
-          Action instance = new Action();
-          instance.setActionType(ActionType.EXECUTE);
+          Action action = new Action();
+          action.setActionType(ActionType.EXECUTE);
           // TODO form to get instance values + persistency
-          instance.getActionType().act(exec, instance);
+          activeInterviewService.doAction(stage, action);
 
           setResponsePage(new StagePage(model));
         }
@@ -186,10 +185,6 @@ public class StageSelectionPanel extends Panel {
 
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form form) {
-          Stage stage = (Stage) model.getObject();
-          Interview interview = activeInterviewService.getCurrentParticipant().getInterview();
-          IStageExecution exec = moduleRegistry.getModule(((Stage) model.getObject()).getModule()).getStageExecution(interview, stage);
-
           target.addComponent(StageSelectionPanel.this);
           target.addComponent(feedbackPanel);
         }

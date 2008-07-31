@@ -6,6 +6,7 @@ import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
@@ -47,5 +48,13 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     Module module = moduleRegistry.getModule(stage.getModule());
     
     return module.getStageExecution(getCurrentParticipant().getInterview(), stage);
+  }
+
+  public void doAction(Stage stage, Action action) {
+    action.setInterview(getCurrentParticipant().getInterview());
+    action.setStage(stage);
+    // TODO persist action
+    IStageExecution exec = getStageExecution(stage);
+    action.getActionType().act(exec, action);
   }
 }
