@@ -21,7 +21,7 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
 
   private Interview interview;
 
-  private IStageExecution stageState;
+  private IStageExecution currentState;
 
   private Map<IStageExecution, Map<TransitionEvent, IStageExecution>> edges = new HashMap<IStageExecution, Map<TransitionEvent, IStageExecution>>();
 
@@ -57,55 +57,55 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
   }
 
   public void castEvent(TransitionEvent event) {
-    log.info("castEvent(" + event + ") from " + stageState.getClass().getSimpleName());
-    Map<TransitionEvent, IStageExecution> stateEdges = edges.get(stageState);
+    log.info("castEvent(" + event + ") from " + currentState.getClass().getSimpleName());
+    Map<TransitionEvent, IStageExecution> stateEdges = edges.get(currentState);
     if(stateEdges != null) {
-      stageState = stateEdges.get(event);
+      currentState = stateEdges.get(event);
       for(ITransitionListener listener : transitionListeners) {
         listener.onTransition(this);
       }
     }
-    log.info("                 to " + stageState.getClass().getSimpleName());
+    log.info("                 to " + currentState.getClass().getSimpleName());
   }
 
   public List<ActionDefinition> getActions() {
-    return stageState.getActions();
+    return currentState.getActions();
   }
 
   public void execute(Action action) {
-    stageState.execute(action);
+    currentState.execute(action);
   }
 
   public void interrupt(Action action) {
-    stageState.interrupt(action);
+    currentState.interrupt(action);
   }
 
   public void skip(Action action) {
-    stageState.skip(action);
+    currentState.skip(action);
   }
 
   public void stop(Action action) {
-    stageState.stop(action);
+    currentState.stop(action);
   }
 
   public void complete(Action action) {
-    stageState.complete(action);
+    currentState.complete(action);
   }
 
   public Component getWidget(String id) {
-    return stageState.getWidget(id);
+    return currentState.getWidget(id);
   }
 
   public boolean isInteractive() {
-    return stageState.isInteractive();
+    return currentState.isInteractive();
   }
 
   public boolean isFinal() {
-    return stageState.isFinal();
+    return currentState.isFinal();
   }
 
   public boolean isCompleted() {
-    return stageState.isCompleted();
+    return currentState.isCompleted();
   }
 
   public Stage getStage() {
@@ -125,7 +125,7 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
   }
 
   public void setInitialState(IStageExecution stageState) {
-    this.stageState = stageState;
+    this.currentState = stageState;
   }
 
 }
