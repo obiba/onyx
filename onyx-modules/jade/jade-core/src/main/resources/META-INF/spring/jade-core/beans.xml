@@ -6,8 +6,8 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
   <tx:annotation-driven transaction-manager="transactionManager" />
-  
-  <bean id="jadeOnyxModule" class="org.obiba.onyx.jade.core.JadeModule">
+
+  <bean id="jadeOnyxModule" class="org.obiba.onyx.jade.engine.JadeModule">
     <property name="queryService" ref="persistenceManager" />
     <property name="instrumentRunService" ref="instrumentRunService" />
     <property name="participantService" ref="participantService" />
@@ -27,10 +27,11 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="developmentSeed" value="true" />
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="instrumentService" ref="instrumentService" />
-    <property name="instrumentDescriptorService" ref="instrumentDescriptorService" /> 
+    <property name="instrumentDescriptorService" ref="instrumentDescriptorService" />
   </bean>
-  
-  <bean id="instrumentDescriptorService" class="org.obiba.onyx.jade.core.service.impl.DefaultInstrumentDescriptorServiceImpl"/>
- 
+
+  <bean id="instrumentDescriptorService"
+    class="org.obiba.onyx.jade.core.service.impl.DefaultInstrumentDescriptorServiceImpl" />
+
 
 </beans>
