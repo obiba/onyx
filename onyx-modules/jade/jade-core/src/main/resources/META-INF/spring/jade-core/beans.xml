@@ -9,8 +9,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="jadeOnyxModule" class="org.obiba.onyx.jade.engine.JadeModule">
     <property name="queryService" ref="persistenceManager" />
-    <property name="instrumentRunService" ref="instrumentRunService" />
-    <property name="participantService" ref="participantService" />
   </bean>
 
   <bean id="instrumentService" class="org.obiba.onyx.jade.core.service.impl.DefaultInstrumentServiceImpl">
