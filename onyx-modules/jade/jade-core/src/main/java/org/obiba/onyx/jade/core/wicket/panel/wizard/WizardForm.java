@@ -3,8 +3,6 @@ package org.obiba.onyx.jade.core.wicket.panel.wizard;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.IAjaxCallDecorator;
-import org.apache.wicket.ajax.calldecorator.AjaxCallDecorator;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -22,8 +20,8 @@ public class WizardForm extends Form {
   private static final Logger log = LoggerFactory.getLogger(WizardForm.class);
 
   /**
-   * Indicates whether the action was canceled or not. TODO: should probably go
-   * in an Action interface or abstract class of some sort
+   * Indicates whether the action was canceled or not. TODO: should probably go in an Action interface or abstract class
+   * of some sort
    */
   private boolean canceled = false;
 
@@ -40,22 +38,8 @@ public class WizardForm extends Form {
       private static final long serialVersionUID = 0L;
 
       @Override
-      protected IAjaxCallDecorator getAjaxCallDecorator() {
-        return new AjaxCallDecorator() {
-
-          private static final long serialVersionUID = -6689010365115709867L;
-
-          @Override
-          public CharSequence decorateScript(CharSequence script) {
-            return "jQuery('#" + WizardForm.this.getMarkupId() + " input').addClass('disabled').attr('disabled','disabled');" + script;
-          }
-        };
-
-      }
-
-      @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-        // TODO
+
       }
 
     };
@@ -159,8 +143,8 @@ public class WizardForm extends Form {
     }
 
     /**
-     * Overriden to enable the behaviour if the component is disabled. We want
-     * to append the attribute when the component is disabled.
+     * Overriden to enable the behaviour if the component is disabled. We want to append the attribute when the
+     * component is disabled.
      */
     @Override
     public boolean isEnabled(Component component) {
