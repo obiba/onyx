@@ -1,18 +1,18 @@
 package org.obiba.onyx.engine.state;
 
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionInstance;
+import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.transition.StoppableState;
 
 public abstract class SkippedState extends StageState implements StoppableState {
 
   protected SkippedState() {
-    addAction(new Action(ActionType.STOP));
+    addAction(new ActionDefinition(ActionType.STOP));
   }
 
   @Override
-  public void stop(ActionInstance action) {
+  public void stop(Action action) {
     onStop(action);
     castEvent(STOP);
   }

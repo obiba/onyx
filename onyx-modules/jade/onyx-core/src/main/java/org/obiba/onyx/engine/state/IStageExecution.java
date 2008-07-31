@@ -4,19 +4,19 @@ import java.util.List;
 
 import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionInstance;
+import org.obiba.onyx.engine.ActionDefinition;
 
 public interface IStageExecution {
 
-  public List<Action> getActions();
+  public List<ActionDefinition> getActions();
 
-  public void execute(ActionInstance action);
+  public void execute(Action action);
 
-  public void skip(ActionInstance action);
+  public void skip(Action action);
 
-  public void stop(ActionInstance action);
+  public void stop(Action action);
 
-  public void interrupt(ActionInstance action);
+  public void interrupt(Action action);
 
   public Component getWidget(String id);
 

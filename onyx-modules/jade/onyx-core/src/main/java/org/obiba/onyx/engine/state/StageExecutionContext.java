@@ -8,7 +8,7 @@ import java.util.Map;
 import org.apache.wicket.Component;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionInstance;
+import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,23 +68,23 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
     log.info("                 to " + stageState.getClass().getSimpleName());
   }
 
-  public List<Action> getActions() {
+  public List<ActionDefinition> getActions() {
     return stageState.getActions();
   }
 
-  public void execute(ActionInstance action) {
+  public void execute(Action action) {
     stageState.execute(action);
   }
 
-  public void interrupt(ActionInstance action) {
+  public void interrupt(Action action) {
     stageState.interrupt(action);
   }
 
-  public void skip(ActionInstance action) {
+  public void skip(Action action) {
     stageState.skip(action);
   }
 
-  public void stop(ActionInstance action) {
+  public void stop(Action action) {
     stageState.stop(action);
   }
 

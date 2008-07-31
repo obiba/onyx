@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionInstance;
+import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.Stage;
 
 /**
@@ -18,7 +18,7 @@ public abstract class StageState implements IStageExecution {
 
   private Stage stage;
 
-  protected List<Action> actions = new ArrayList<Action>();
+  protected List<ActionDefinition> actions = new ArrayList<ActionDefinition>();
 
   public void setStage(Stage stage) {
     this.stage = stage;
@@ -36,24 +36,24 @@ public abstract class StageState implements IStageExecution {
     this.eventSink = eventSink;
   }
 
-  protected void addAction(Action action) {
+  protected void addAction(ActionDefinition action) {
     actions.add(action);
   }
 
-  public List<Action> getActions() {
+  public List<ActionDefinition> getActions() {
     return actions;
   }
 
-  public void execute(ActionInstance action) {
+  public void execute(Action action) {
   }
 
-  public void interrupt(ActionInstance action) {
+  public void interrupt(Action action) {
   }
 
-  public void skip(ActionInstance action) {
+  public void skip(Action action) {
   }
 
-  public void stop(ActionInstance action) {
+  public void stop(Action action) {
   }
 
   public void send() {
