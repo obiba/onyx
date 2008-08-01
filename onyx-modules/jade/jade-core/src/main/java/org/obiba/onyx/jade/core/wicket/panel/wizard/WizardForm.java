@@ -13,7 +13,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WizardForm extends Form {
+public abstract class WizardForm extends Form {
 
   private static final long serialVersionUID = 8829452703870884599L;
 
@@ -39,7 +39,7 @@ public class WizardForm extends Form {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-
+        onFinish(target, form);
       }
 
     };
@@ -87,13 +87,26 @@ public class WizardForm extends Form {
       @Override
       public void onClick(AjaxRequestTarget target) {
         canceled = true;
-        // TODO
+        onCancel(target);
       }
 
     };
     link.add(new AttributeModifier("value", true, new StringResourceModel("Cancel", WizardForm.this, null)));
     add(link);
   }
+
+  /**
+   * Called when finish is clicked.
+   * @param target
+   * @param form
+   */
+  public abstract void onFinish(AjaxRequestTarget target, Form form);
+  
+  /**
+   * Called when cancel is clicked.
+   * @param target
+   */
+  public abstract void onCancel(AjaxRequestTarget target);
 
   public Component getNextLink() {
     return get("nextLink");

@@ -3,13 +3,14 @@ package org.obiba.onyx.jade.core.wicket.panel;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.jade.core.wicket.panel.wizard.WizardForm;
 import org.obiba.onyx.jade.core.wicket.panel.wizard.WizardPanel;
 import org.obiba.onyx.jade.core.wicket.panel.wizard.WizardStepPanel;
 
-public class InstrumentPanel extends WizardPanel {
+public abstract class InstrumentPanel extends WizardPanel {
 
   private static final long serialVersionUID = 390982191889443136L;
 
@@ -19,14 +20,14 @@ public class InstrumentPanel extends WizardPanel {
 
   @Override
   public WizardForm createForm(String componentId) {
-    return new AddForm(componentId);
+    return new InstrumentForm(componentId);
   }
 
-  private class AddForm extends WizardForm {
+  private class InstrumentForm extends WizardForm {
 
     private static final long serialVersionUID = 1L;
 
-    public AddForm(String id) {
+    public InstrumentForm(String id) {
       super(id);
 
       WizardStepPanel step1 = new StepOnePanel("step", this);
@@ -43,7 +44,21 @@ public class InstrumentPanel extends WizardPanel {
       step1.handleWizardState(this, null);
     }
 
+    @Override
+    public void onFinish(AjaxRequestTarget target, Form form) {
+      InstrumentPanel.this.onFinish(target, form);
+    }
+
+    @Override
+    public void onCancel(AjaxRequestTarget target) {
+      InstrumentPanel.this.onCancel(target);
+    }
+
   }
+  
+  public abstract void onFinish(AjaxRequestTarget target, Form form);
+  
+  public abstract void onCancel(AjaxRequestTarget target);
 
   private class StepOnePanel extends WizardStepPanel {
 

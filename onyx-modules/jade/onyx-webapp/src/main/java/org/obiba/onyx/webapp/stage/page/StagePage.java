@@ -1,5 +1,7 @@
 package org.obiba.onyx.webapp.stage.page;
 
+import java.io.Serializable;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
@@ -8,6 +10,9 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
+import org.obiba.onyx.engine.state.ITransitionListener;
+import org.obiba.onyx.engine.state.ITransitionSource;
+import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.webapp.action.panel.ActionsPanel;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.interview.page.InterviewPage;
@@ -21,6 +26,7 @@ public class StagePage extends BasePage {
   @SpringBean
   private ActiveInterviewService activeInterviewService;
 
+  @SuppressWarnings("serial")
   public StagePage(IModel stageModel) {
     super();
 
@@ -45,8 +51,26 @@ public class StagePage extends BasePage {
     if(!exec.isInteractive()) {
       add(new EmptyPanel("stage-component"));
     } else {
+      if (exec instanceof ITransitionSource) {
+        ((ITransitionSource)exec).addTransitionListener(new StageInteractionEndListener());
+      }
       add(exec.getWidget("stage-component"));
     }
+  }
+  
+  @SuppressWarnings("serial")
+  private class StageInteractionEndListener implements ITransitionListener, Serializable {
+
+    public void onTransition(IStageExecution execution, TransitionEvent event) {
+      if (!execution.isInteractive()) {
+        setResponsePage(InterviewPage.class);
+      }
+    }
+
+    public boolean isListening() {
+      return false;
+    }
+
   }
 
 }

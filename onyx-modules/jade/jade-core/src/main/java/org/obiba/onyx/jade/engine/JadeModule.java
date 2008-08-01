@@ -8,7 +8,7 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.engine.state.JadeCompletedState;
 import org.obiba.onyx.jade.engine.state.JadeInProgressState;
 import org.obiba.onyx.jade.engine.state.JadeReadyState;
 import org.obiba.onyx.jade.engine.state.JadeSkippedState;
@@ -29,11 +29,6 @@ public class JadeModule implements Module {
     return "jade";
   }
 
-  private InstrumentType getInstrumentType(Stage stage) {
-    InstrumentType template = new InstrumentType(stage.getName(), null);
-    return queryService.matchOne(template);
-  }
-
   public void initialize() {
     log.info("initialize");
   }
@@ -46,12 +41,15 @@ public class JadeModule implements Module {
     StageExecutionContext exec = new StageExecutionContext(interview, stage);
 
     AbstractStageState ready = new JadeReadyState();
-    AbstractStageState inProgress = new JadeInProgressState(getInstrumentType(stage));
+    AbstractStageState inProgress = new JadeInProgressState(stage);
     AbstractStageState skipped = new JadeSkippedState();
+    AbstractStageState completed = new JadeCompletedState();
     exec.addEdge(ready, TransitionEvent.START, inProgress);
     exec.addEdge(ready, TransitionEvent.SKIP, skipped);
     exec.addEdge(inProgress, TransitionEvent.CANCEL, ready);
+    exec.addEdge(inProgress, TransitionEvent.COMPLETE, completed);
     exec.addEdge(skipped, TransitionEvent.CANCEL, ready);
+    exec.addEdge(completed, TransitionEvent.CANCEL, ready);
     exec.setInitialState(ready);
 
     return exec;

@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 
 /**
@@ -19,7 +20,9 @@ public abstract class AbstractStageState implements IStageExecution {
 
   private Stage stage;
 
-  protected List<ActionDefinition> actions = new ArrayList<ActionDefinition>();
+  protected List<ActionDefinition> actionDefinitions = new ArrayList<ActionDefinition>();
+  
+  protected List<ActionDefinition> systemActionDefinitions = new ArrayList<ActionDefinition>();
 
   public void setStage(Stage stage) {
     this.stage = stage;
@@ -38,11 +41,35 @@ public abstract class AbstractStageState implements IStageExecution {
   }
 
   protected void addAction(ActionDefinition action) {
-    actions.add(action);
+    actionDefinitions.add(action);
   }
 
-  public List<ActionDefinition> getActions() {
-    return actions;
+  public List<ActionDefinition> getActionDefinitions() {
+    return actionDefinitions;
+  }
+  
+  public ActionDefinition getActionDefinition(ActionType type) {
+    for (ActionDefinition def : actionDefinitions) {
+      if (def.getType().equals(type))
+        return def;
+    }
+    return null;
+  }
+  
+  public ActionDefinition getSystemActionDefinition(ActionType type) {
+    for (ActionDefinition def : systemActionDefinitions) {
+      if (def.getType().equals(type))
+        return def;
+    }
+    return null;
+  }
+  
+  protected void addSystemAction(ActionDefinition action) {
+    systemActionDefinitions.add(action);
+  }
+
+  public List<ActionDefinition> getSystemActionDefinitions() {
+    return systemActionDefinitions;
   }
 
   public void execute(Action action) {

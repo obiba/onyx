@@ -35,7 +35,7 @@ public abstract class ActionsPanel extends Panel {
     RepeatingView repeating = new RepeatingView("repeating");
     add(repeating);
     
-    for (final ActionDefinition actionDef : exec.getActions()) {
+    for (final ActionDefinition actionDef : exec.getActionDefinitions()) {
       WebMarkupContainer item = new WebMarkupContainer(repeating.newChildId());
       repeating.add(item);
       

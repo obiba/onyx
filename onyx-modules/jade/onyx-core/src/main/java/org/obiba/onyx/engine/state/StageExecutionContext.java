@@ -11,11 +11,12 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StageExecutionContext implements IStageExecution, ITransitionEventSink, IMemento {
+public class StageExecutionContext implements IStageExecution, ITransitionEventSink, IMemento, ITransitionSource {
 
   private static final Logger log = LoggerFactory.getLogger(StageExecutionContext.class);
 
@@ -44,6 +45,10 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
   public void removeTransitionListener(ITransitionListener listener) {
     transitionListeners.remove(listener);
   }
+  
+  public void removeAllTransitionListener() {
+    transitionListeners.clear();
+  }
 
   public void addEdge(AbstractStageState source, TransitionEvent event, AbstractStageState target) {
     Map<TransitionEvent, IStageExecution> stateEdges = edges.get(source);
@@ -59,19 +64,38 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
   }
 
   public void castEvent(TransitionEvent event) {
-    
+
     Map<TransitionEvent, IStageExecution> stateEdges = edges.get(currentState);
     if(stateEdges != null) {
       currentState = stateEdges.get(event);
+      List<ITransitionListener> transitionListenersToRemove = new ArrayList<ITransitionListener>();
+      log.debug("transitionListeners.size="+transitionListeners.size());
       for(ITransitionListener listener : transitionListeners) {
-        listener.onTransition(this);
+        listener.onTransition(this, event);
+        if (!listener.isListening())
+          transitionListenersToRemove.add(listener);
+      }
+      for(ITransitionListener listener : transitionListenersToRemove) {
+        transitionListeners.remove(listener);
       }
     }
     log.info("castEvent(" + event + ") from " + currentState.getClass().getSimpleName() + " to " + currentState.getClass().getSimpleName());
   }
 
-  public List<ActionDefinition> getActions() {
-    return currentState.getActions();
+  public List<ActionDefinition> getActionDefinitions() {
+    return currentState.getActionDefinitions();
+  }
+
+  public List<ActionDefinition> getSystemActionDefinitions() {
+    return currentState.getSystemActionDefinitions();
+  }
+
+  public ActionDefinition getActionDefinition(ActionType type) {
+    return currentState.getActionDefinition(type);
+  }
+
+  public ActionDefinition getSystemActionDefinition(ActionType type) {
+    return currentState.getSystemActionDefinition(type);
   }
 
   public void execute(Action action) {
