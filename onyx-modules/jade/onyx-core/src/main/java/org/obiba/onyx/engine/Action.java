@@ -46,6 +46,7 @@ public class Action extends AbstractEntity {
 
   public Action(ActionDefinition definition) {
     this.type = definition.getType();
+    dateTime = new Date();
   }
   
   public final User getUser() {
@@ -102,6 +103,11 @@ public class Action extends AbstractEntity {
 
   public final void setEventReason(String eventReason) {
     this.eventReason = eventReason;
+  }
+  
+  @Override
+  public String toString() {
+    return "[" + type + " " + dateTime + "]";
   }
 
 }
