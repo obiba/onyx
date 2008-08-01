@@ -17,7 +17,7 @@ public class HomePage extends BasePage {
   public HomePage() {
     super();
 
-    Participant participant = activeInterviewService.getCurrentParticipant();
+    Participant participant = activeInterviewService.getParticipant();
     Link link = new Link("link") {
 
       @Override

@@ -45,6 +45,8 @@ public class Interview extends AbstractEntity {
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
+  
+  private Boolean closed;
 
   public Interview() {
   }
@@ -105,4 +107,11 @@ public class Interview extends AbstractEntity {
     this.user = user;
   }
 
+  public void setClosed(Boolean closed) {
+    this.closed = closed;
+  }
+
+  public boolean isClosed() {
+    return closed != null ? closed : (closed = false);
+  }
 }

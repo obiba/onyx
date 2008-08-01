@@ -7,7 +7,7 @@ public interface Module {
 
   public String getName();
 
-  public IStageExecution getStageExecution(Interview interview, Stage stage);
+  public IStageExecution createStageExecution(Interview interview, Stage stage);
 
   public void initialize();
 

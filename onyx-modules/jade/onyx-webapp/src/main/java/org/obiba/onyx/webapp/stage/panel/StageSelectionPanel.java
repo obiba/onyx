@@ -195,9 +195,9 @@ public class StageSelectionPanel extends Panel {
 
       // stage execution context
       Stage stage = (Stage) model.getObject();
-      Interview interview = activeInterviewService.getCurrentParticipant().getInterview();
+      Interview interview = activeInterviewService.getInterview();
       Module module = moduleRegistry.getModule(stage.getModule());
-      IStageExecution exec = module.getStageExecution(interview, stage);
+      IStageExecution exec = module.createStageExecution(interview, stage);
       for(ActionDefinition action : exec.getActions()) {
         if(action.getType().equals(ActionType.EXECUTE)) startButton.setVisible(true);
         else if(action.getType().equals(ActionType.STOP)) cancelButton.setVisible(true);

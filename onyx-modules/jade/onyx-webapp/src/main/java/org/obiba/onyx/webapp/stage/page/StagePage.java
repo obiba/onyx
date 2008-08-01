@@ -3,10 +3,7 @@ package org.obiba.onyx.webapp.stage.page;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.engine.Module;
-import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.webapp.base.page.BasePage;
@@ -19,18 +16,13 @@ public class StagePage extends BasePage {
   private static final Logger log = LoggerFactory.getLogger(StagePage.class);
 
   @SpringBean
-  private ModuleRegistry registry;
-
-  @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   public StagePage(DetachableEntityModel stageModel) {
     super();
 
     Stage stage = (Stage) stageModel.getObject();
-    Interview interview = activeInterviewService.getCurrentParticipant().getInterview();
-    Module module = registry.getModule(stage.getModule());
-    IStageExecution exec = module.getStageExecution(interview, stage);
+    IStageExecution exec = activeInterviewService.getStageExecution(stage);
 
     if(!exec.isInteractive()) {
       add(new Label("action", "not applicable..."));

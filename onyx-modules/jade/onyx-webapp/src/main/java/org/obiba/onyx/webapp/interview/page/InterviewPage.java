@@ -15,7 +15,7 @@ public class InterviewPage extends BasePage {
   public InterviewPage() {
     super();
 
-    Participant participant = activeInterviewService.getCurrentParticipant();
+    Participant participant = activeInterviewService.getParticipant();
     add(new Label("participant", participant.getFirstName() + " " + participant.getLastName()));
 
     add(new StageSelectionPanel("stage-list", getFeedbackPanel()));

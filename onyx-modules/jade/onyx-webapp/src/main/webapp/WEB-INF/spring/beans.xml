@@ -12,7 +12,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
   <bean id="moduleRegistry" class="org.obiba.onyx.engine.ModuleRegistry" />
 
   <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl"
-    scope="session">
+    scope="session" destroy-method="shutdown">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="moduleRegistry" ref="moduleRegistry" />
   </bean>

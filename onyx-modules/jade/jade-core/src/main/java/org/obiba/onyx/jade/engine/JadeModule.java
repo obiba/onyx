@@ -1,9 +1,5 @@
 package org.obiba.onyx.jade.engine;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.engine.Module;
@@ -23,8 +19,6 @@ public class JadeModule implements Module {
   private static final Logger log = LoggerFactory.getLogger(JadeModule.class);
 
   private EntityQueryService queryService;
-
-  private Map<Serializable, Map<Serializable, StageExecutionContext>> interviewStageContexts = new HashMap<Serializable, Map<Serializable, StageExecutionContext>>();
 
   public void setQueryService(EntityQueryService queryService) {
     this.queryService = queryService;
@@ -47,26 +41,14 @@ public class JadeModule implements Module {
     log.info("shutdown");
   }
 
-  public IStageExecution getStageExecution(Interview interview, Stage stage) {
-    Map<Serializable, StageExecutionContext> contexts = interviewStageContexts.get(interview.getId());
-    if(contexts == null) {
-      contexts = new HashMap<Serializable, StageExecutionContext>();
-      interviewStageContexts.put(interview.getId(), contexts);
-    }
-    StageExecutionContext exec = contexts.get(stage.getId());
+  public IStageExecution createStageExecution(Interview interview, Stage stage) {
+    StageExecutionContext exec = new StageExecutionContext(interview, stage);
 
-    if(exec == null) {
-      // create
-      exec = new StageExecutionContext(interview, stage);
-
-      AbstractStageState ready = new JadeReadyState();
-      AbstractStageState inProgress = new JadeInProgressState(getInstrumentType(stage));
-      exec.addEdge(ready, TransitionEvent.START, inProgress);
-      exec.addEdge(inProgress, TransitionEvent.CANCEL, ready);
-      exec.setInitialState(ready);
-
-      contexts.put(stage.getId(), exec);
-    }
+    AbstractStageState ready = new JadeReadyState();
+    AbstractStageState inProgress = new JadeInProgressState(getInstrumentType(stage));
+    exec.addEdge(ready, TransitionEvent.START, inProgress);
+    exec.addEdge(inProgress, TransitionEvent.CANCEL, ready);
+    exec.setInitialState(ready);
 
     return exec;
   }

@@ -6,14 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.Component;
+import org.obiba.onyx.core.domain.IMemento;
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StageExecutionContext implements IStageExecution, ITransitionEventSink {
+public class StageExecutionContext implements IStageExecution, ITransitionEventSink, IMemento {
 
   private static final Logger log = LoggerFactory.getLogger(StageExecutionContext.class);
 
@@ -126,6 +128,28 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
 
   public void setInitialState(IStageExecution stageState) {
     this.currentState = stageState;
+  }
+
+  public void restoreFromMemento(Object memento) {
+    if (memento instanceof StageExecutionMemento) {
+      StageExecutionMemento stageMemento = (StageExecutionMemento)memento;
+      this.interview = stageMemento.getInterview();
+      this.stage = stageMemento.getStage();
+      for (IStageExecution exec : edges.keySet()) {
+        if (exec.getClass().getSimpleName().equals(stageMemento.getState())) {
+          this.currentState = exec;
+        }
+      }
+    }
+  }
+
+  public Object saveToMemento() {
+    StageExecutionMemento memento = new StageExecutionMemento();
+    memento.setInterview(interview);
+    memento.setStage(stage);
+    memento.setState(currentState.getClass().getSimpleName());
+    
+    return memento;
   }
 
 }

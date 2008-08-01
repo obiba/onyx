@@ -5,6 +5,8 @@ package org.obiba.onyx.jade.engine.state;
 
 import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
+import org.obiba.onyx.engine.ActionDefinition;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
@@ -20,6 +22,7 @@ public class JadeInProgressState extends AbstractStageState {
 
   public JadeInProgressState(InstrumentType instrumentType) {
     this.instrumentType = instrumentType;
+    addAction(new ActionDefinition(ActionType.STOP));
   }
 
   public Component getWidget(String id) {
