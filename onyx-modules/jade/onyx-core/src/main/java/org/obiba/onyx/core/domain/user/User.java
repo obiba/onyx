@@ -22,6 +22,8 @@ public class User extends AbstractEntity {
   
   private String password;
   
+  private String email;
+  
   @Enumerated(EnumType.STRING)
   private Role role;
   
@@ -70,5 +72,15 @@ public class User extends AbstractEntity {
       interview.setUser(this);
     }
   }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+  
+  
   
 }
