@@ -79,7 +79,7 @@ public abstract class ActionsPanel extends Panel {
           modal.setContent(new ActionDefinitionPanel(modal.getContentId(), actionDef) {
 
             @Override
-            public void onSubmit(AjaxRequestTarget target) {
+            public void onClick(AjaxRequestTarget target) {
               modal.close(target);
             }
             

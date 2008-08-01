@@ -31,7 +31,7 @@ public abstract class ActionDefinitionPanel extends Panel {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         cancelled = false;
-        ActionDefinitionPanel.this.onSubmit(target);
+        ActionDefinitionPanel.this.onClick(target);
       }
       
     });
@@ -41,6 +41,7 @@ public abstract class ActionDefinitionPanel extends Panel {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         cancelled = true;
+        ActionDefinitionPanel.this.onClick(target);
       }
       
     });
@@ -54,5 +55,5 @@ public abstract class ActionDefinitionPanel extends Panel {
     return cancelled;
   }
   
-  public abstract void onSubmit(AjaxRequestTarget target);
+  public abstract void onClick(AjaxRequestTarget target);
 }
