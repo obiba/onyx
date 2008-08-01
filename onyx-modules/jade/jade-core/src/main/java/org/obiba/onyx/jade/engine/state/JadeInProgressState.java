@@ -48,4 +48,9 @@ public class JadeInProgressState extends AbstractStageState {
   public boolean isInteractive() {
     return true;
   }
+  
+  @Override
+  public String getMessage() {
+    return "In Progress";
+  }
 }

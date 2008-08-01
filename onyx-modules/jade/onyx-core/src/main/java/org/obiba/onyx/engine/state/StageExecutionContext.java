@@ -59,7 +59,7 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
   }
 
   public void castEvent(TransitionEvent event) {
-    log.info("castEvent(" + event + ") from " + currentState.getClass().getSimpleName());
+    
     Map<TransitionEvent, IStageExecution> stateEdges = edges.get(currentState);
     if(stateEdges != null) {
       currentState = stateEdges.get(event);
@@ -67,7 +67,7 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
         listener.onTransition(this);
       }
     }
-    log.info("                 to " + currentState.getClass().getSimpleName());
+    log.info("castEvent(" + event + ") from " + currentState.getClass().getSimpleName() + " to " + currentState.getClass().getSimpleName());
   }
 
   public List<ActionDefinition> getActions() {
@@ -110,6 +110,10 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
     return currentState.isCompleted();
   }
 
+  public String getMessage() {
+    return currentState.getMessage();
+  }
+
   public Stage getStage() {
     return stage;
   }
@@ -131,12 +135,12 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
   }
 
   public void restoreFromMemento(Object memento) {
-    if (memento instanceof StageExecutionMemento) {
-      StageExecutionMemento stageMemento = (StageExecutionMemento)memento;
+    if(memento instanceof StageExecutionMemento) {
+      StageExecutionMemento stageMemento = (StageExecutionMemento) memento;
       this.interview = stageMemento.getInterview();
       this.stage = stageMemento.getStage();
-      for (IStageExecution exec : edges.keySet()) {
-        if (exec.getClass().getSimpleName().equals(stageMemento.getState())) {
+      for(IStageExecution exec : edges.keySet()) {
+        if(exec.getClass().getSimpleName().equals(stageMemento.getState())) {
           this.currentState = exec;
         }
       }
@@ -148,7 +152,7 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
     memento.setInterview(interview);
     memento.setStage(stage);
     memento.setState(currentState.getClass().getSimpleName());
-    
+
     return memento;
   }
 

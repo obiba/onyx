@@ -75,4 +75,8 @@ public abstract class AbstractStageState implements IStageExecution {
   public boolean isInteractive() {
     return false;
   }
+  
+  public String getMessage() {
+    return "";
+  }
 }

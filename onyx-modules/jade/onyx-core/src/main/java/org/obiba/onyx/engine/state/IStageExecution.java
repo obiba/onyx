@@ -27,5 +27,7 @@ public interface IStageExecution {
   public boolean isCompleted();
 
   public boolean isFinal();
+  
+  public String getMessage();
 
 }

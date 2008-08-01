@@ -26,4 +26,9 @@ public class JadeSkippedState extends AbstractStageState {
     castEvent(TransitionEvent.CANCEL);
   }
 
+  @Override
+  public String getMessage() {
+    return "Skipped";
+  }
+  
 }
