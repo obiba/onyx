@@ -5,6 +5,8 @@ import java.util.Map;
 import org.apache.wicket.Application;
 import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
+import org.obiba.onyx.core.service.UserService;
+import org.obiba.onyx.webapp.config.page.InitConfigPage;
 import org.obiba.onyx.webapp.home.page.HomePage;
 import org.obiba.wicket.application.WebApplicationStartupListener;
 import org.slf4j.Logger;
@@ -13,6 +15,16 @@ import org.slf4j.LoggerFactory;
 public class OnyxApplication extends SpringWebApplication {
 
   private final Logger log = LoggerFactory.getLogger(OnyxApplication.class);
+
+  private UserService userService;
+
+  public UserService getUserService() {
+    return userService;
+  }
+
+  public void setUserService(UserService userService) {
+    this.userService = userService;
+  }
 
   protected void init() {
     log.info("Onyx Web Application is starting");
@@ -50,7 +62,11 @@ public class OnyxApplication extends SpringWebApplication {
 
   @Override
   public Class<?> getHomePage() {
-    return HomePage.class;
+    if(userService.getUserCount() > 0 ) {
+      return HomePage.class;
+    } else {
+      return InitConfigPage.class;
+    }
   }
 
   public boolean isDevelopmentMode() {

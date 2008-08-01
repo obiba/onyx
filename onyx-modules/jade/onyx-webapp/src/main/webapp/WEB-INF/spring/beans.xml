@@ -7,7 +7,17 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-  <bean id="applicationBean" class="org.obiba.onyx.webapp.OnyxApplication" scope="singleton" />
+  <bean id="userService" class="org.obiba.onyx.core.service.impl.DefaultUserServiceImpl">
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+
+  <bean id="appConfigService" class="org.obiba.onyx.core.service.impl.DefaultAppConfigurationServiceImpl">
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+
+  <bean id="applicationBean" class="org.obiba.onyx.webapp.OnyxApplication" scope="singleton">
+    <property name="userService" ref="userService" />
+  </bean>
 
   <bean id="moduleRegistry" class="org.obiba.onyx.engine.ModuleRegistry" />
 
