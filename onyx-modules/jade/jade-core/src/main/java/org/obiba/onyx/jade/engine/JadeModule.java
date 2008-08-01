@@ -11,6 +11,7 @@ import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.engine.state.JadeInProgressState;
 import org.obiba.onyx.jade.engine.state.JadeReadyState;
+import org.obiba.onyx.jade.engine.state.JadeSkippedState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,8 +47,11 @@ public class JadeModule implements Module {
 
     AbstractStageState ready = new JadeReadyState();
     AbstractStageState inProgress = new JadeInProgressState(getInstrumentType(stage));
+    AbstractStageState skipped = new JadeSkippedState();
     exec.addEdge(ready, TransitionEvent.START, inProgress);
+    exec.addEdge(ready, TransitionEvent.SKIP, skipped);
     exec.addEdge(inProgress, TransitionEvent.CANCEL, ready);
+    exec.addEdge(skipped, TransitionEvent.CANCEL, ready);
     exec.setInitialState(ready);
 
     return exec;
