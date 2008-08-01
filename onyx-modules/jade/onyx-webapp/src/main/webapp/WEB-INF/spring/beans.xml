@@ -36,13 +36,20 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
     <property name="developmentSeed" value="true" />
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
+  
+  <bean id="testDatabaseSeed" class="org.obiba.onyx.webapp.seed.TestDatabaseSeed" scope="singleton">
+    <property name="resource" value="classpath:/appConfiguration.xml" /> 
+    <property name="developmentSeed" value="true" />
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>  
 
   <bean id="onyxApplicationStartupListener" class="org.obiba.wicket.util.seed.DatabaseSeedWebApplicationStartupListener"
     scope="singleton">
     <property name="databaseSeeds">
       <list>
+        <ref bean="testDatabaseSeed" />       
         <ref bean="onyxDatabaseSeed" />
-        <ref bean="jadeDatabaseSeed" />
+        <ref bean="jadeDatabaseSeed" />       
       </list>
     </property>
   </bean>
