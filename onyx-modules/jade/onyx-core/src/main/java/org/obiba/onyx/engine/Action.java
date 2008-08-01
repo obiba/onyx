@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -19,15 +20,18 @@ public class Action extends AbstractEntity {
   private static final long serialVersionUID = -943609521870150739L;
 
   @ManyToOne
+  @JoinColumn(name="user_id")
   private User user;
 
   @ManyToOne
+  @JoinColumn(name="interview_id")
   private Interview interview;
 
   @Enumerated(EnumType.STRING)
-  private ActionType actionType;
+  private ActionType type;
 
   @ManyToOne
+  @JoinColumn(name="stage_id")
   private Stage stage;
 
   @Temporal(TemporalType.TIMESTAMP)
@@ -38,9 +42,12 @@ public class Action extends AbstractEntity {
   private String eventReason;
 
   public Action() {
-    super();
   }
 
+  public Action(ActionDefinition definition) {
+    this.type = definition.getType();
+  }
+  
   public final User getUser() {
     return user;
   }
@@ -58,11 +65,11 @@ public class Action extends AbstractEntity {
   }
 
   public final ActionType getActionType() {
-    return actionType;
+    return type;
   }
 
   public final void setActionType(ActionType actionType) {
-    this.actionType = actionType;
+    this.type = actionType;
   }
 
   public final Stage getStage() {

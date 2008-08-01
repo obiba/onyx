@@ -16,7 +16,7 @@ public class JadeSkippedState extends AbstractStageState {
   private static final Logger log = LoggerFactory.getLogger(JadeSkippedState.class);
 
   public JadeSkippedState() {
-    addAction(new ActionDefinition(ActionType.STOP));
+    addAction(new ActionDefinition(ActionType.STOP, "Cancel"));
   }
 
   @Override

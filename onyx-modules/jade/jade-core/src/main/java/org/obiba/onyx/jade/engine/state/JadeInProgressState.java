@@ -22,7 +22,7 @@ public class JadeInProgressState extends AbstractStageState {
 
   public JadeInProgressState(InstrumentType instrumentType) {
     this.instrumentType = instrumentType;
-    addAction(new ActionDefinition(ActionType.STOP));
+    addAction(new ActionDefinition(ActionType.STOP, "Cancel"));
   }
 
   public Component getWidget(String id) {

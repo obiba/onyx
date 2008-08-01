@@ -16,8 +16,8 @@ public class JadeReadyState extends AbstractStageState {
   private static final Logger log = LoggerFactory.getLogger(JadeReadyState.class);
 
   public JadeReadyState() {
-    addAction(new ActionDefinition(ActionType.EXECUTE));
-    addAction(new ActionDefinition(ActionType.SKIP));
+    addAction(new ActionDefinition(ActionType.EXECUTE, "Start"));
+    addAction(new ActionDefinition(ActionType.SKIP, "Skip"));
   }
 
   @Override
@@ -31,7 +31,7 @@ public class JadeReadyState extends AbstractStageState {
   public void skip(Action action) {
     super.skip(action);
     log.info("Jade Stage {} is skipping", super.getStage().getName());
-    // castEvent(TransitionEvent.SKIP);
+    castEvent(TransitionEvent.SKIP);
   }
 
 }

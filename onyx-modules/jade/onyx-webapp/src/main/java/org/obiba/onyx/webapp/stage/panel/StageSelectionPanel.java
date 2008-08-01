@@ -31,6 +31,7 @@ import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
+import org.obiba.onyx.webapp.action.panel.ActionsPanel;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
 import org.obiba.onyx.webapp.stage.page.StagePage;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
@@ -51,7 +52,7 @@ public class StageSelectionPanel extends Panel {
   @SpringBean
   private ModuleRegistry moduleRegistry;
 
-  @SpringBean(name = "activeInterviewService")
+  @SpringBean
   private ActiveInterviewService activeInterviewService;
 
   private FeedbackPanel feedbackPanel;
@@ -128,7 +129,17 @@ public class StageSelectionPanel extends Panel {
       columns.add(new AbstractColumn(new Model("")) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          cellItem.add(new StageStarter(componentId, new DetachableEntityModel(queryService, rowModel.getObject())));
+          Stage stage = (Stage) rowModel.getObject();
+          IStageExecution exec = activeInterviewService.getStageExecution(stage);
+          cellItem.add(new ActionsPanel(componentId, stage, exec) {
+
+            @Override
+            public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action) {
+              target.addComponent(StageSelectionPanel.this);
+            }
+            
+          });
+          //cellItem.add(new StageStarter(componentId, new DetachableEntityModel(queryService, rowModel.getObject())));
         }
 
       });
