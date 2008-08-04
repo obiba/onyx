@@ -101,7 +101,6 @@ public class InitConfigPage extends BasePage {
     }
 
     public void onSubmit() {
-      System.out.println(model.getConfig().getStudyName());
       saveConfiguration();
       uploadStudyLogo();
       setResponsePage(HomePage.class);
