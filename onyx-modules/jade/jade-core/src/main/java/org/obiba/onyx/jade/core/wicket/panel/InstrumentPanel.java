@@ -6,9 +6,9 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
-import org.obiba.onyx.jade.core.wicket.panel.wizard.WizardForm;
-import org.obiba.onyx.jade.core.wicket.panel.wizard.WizardPanel;
-import org.obiba.onyx.jade.core.wicket.panel.wizard.WizardStepPanel;
+import org.obiba.onyx.wicket.wizard.WizardForm;
+import org.obiba.onyx.wicket.wizard.WizardPanel;
+import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
 public abstract class InstrumentPanel extends WizardPanel {
 

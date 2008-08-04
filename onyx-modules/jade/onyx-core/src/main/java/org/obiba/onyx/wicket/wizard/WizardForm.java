@@ -1,4 +1,4 @@
-package org.obiba.onyx.jade.core.wicket.panel.wizard;
+package org.obiba.onyx.wicket.wizard;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
