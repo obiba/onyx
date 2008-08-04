@@ -73,12 +73,12 @@ legend {
 }
 
 #pageHeader {
-	height: 40px;
+	height: 25px;
 	border-bottom:1px solid #FFFFFF;
 }
 
 #pageHeader1 {
-	height: 40px;
+	height: 25px;
 	width:1000px;
 	float:left;
 	text-align:right;
@@ -411,19 +411,19 @@ form.wizard {
 /*************** Entity Table ********************/
 
 table.entityTable {
-  border-width: 1px;
+  /*border-width: 1px;
   border-style: solid;
   border-color: #375FB7;
-  padding:1px;
+  padding:1px;*/
 }
 
 table.entityTable tr.titleToolbar {
-  font-weight: bold;
-  color: #F6F8FF;
+  /*color: #F6F8FF;
   background-color: #375FB7;
-  border-width: 1px;
-  border-style: solid;
   border-color: #375FB7;
+  border-width: 1px;
+  border-style: solid;*/
+  font-weight: bold;
   padding: 3px;
 }
 
