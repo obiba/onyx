@@ -2,6 +2,7 @@ package org.obiba.onyx.jade.core.wicket.panel;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,7 +60,7 @@ public class InstrumentLauncherPanel extends Panel {
     List<Instrument> instruments = type.getInstruments();
     if(instruments.size() > 0) {
       instrument = instruments.get(0);
-      instrumentCodeBase = instrumentDescriptorService.getCodeBase(instrument.getBarcode());      
+      instrumentCodeBase = instrumentDescriptorService.getCodeBase(instrument.getBarcode());
     }
 
     Button button = new Button("start") {
@@ -74,7 +75,7 @@ public class InstrumentLauncherPanel extends Panel {
           final Properties props = new Properties();
           props.setProperty("org.obiba.onyx.remoting.url", makeUrl("remoting"));
           props.setProperty("codebaseUrl", makeUrl(instrumentCodeBase));
-          props.setProperty("jnlpPath", context.getRealPath("/" + instrumentCodeBase + "/launch.jnlp"));
+          props.setProperty("jnlpPath", context.getRealPath(File.separatorChar + instrumentCodeBase + File.separatorChar + "launch.jnlp"));
 
           ResourceReference jnlpReference = new ResourceReference(instrumentCodeBase) {
             protected Resource newResource() {

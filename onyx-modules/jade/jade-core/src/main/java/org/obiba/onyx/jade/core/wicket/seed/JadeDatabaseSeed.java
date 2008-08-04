@@ -29,7 +29,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
   private PersistenceManager persistenceManager;
 
   private InstrumentService instrumentService;
-  
+
   private InstrumentDescriptorService instrumentDescriptorService;
 
   public void setPersistenceManager(PersistenceManager persistenceManager) {
@@ -39,7 +39,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
   public void setInstrumentService(InstrumentService instrumentService) {
     this.instrumentService = instrumentService;
   }
-  
+
   public InstrumentDescriptorService getInstrumentDescriptorService() {
     return instrumentDescriptorService;
   }
@@ -62,11 +62,11 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
           // find code base:
           // resource is in .../<codeBase>/lib/instrument-descriptor.xml
 
-          try {                
-            instrumentDescriptorService.addCodeBase( instrument.getBarcode(), resource.getFile().getParentFile().getParentFile().getName() + "/" + resource.getFile().getParentFile().getName());          
-          } catch ( IOException wEx ) {
-            log.error( "Cannot find resource : "  + resource.getDescription() );
-            throw new RuntimeException( wEx );
+          try {
+            instrumentDescriptorService.addCodeBase(instrument.getBarcode(), resource.getFile().getParentFile().getParentFile().getName() + "/" + resource.getFile().getParentFile().getName());
+          } catch(IOException cannotFindResource) {
+            log.error("Cannot find resource : " + resource.getDescription());
+            throw new RuntimeException(cannotFindResource);
           }
 
         } else if(entity instanceof OutputParameterSource) {
