@@ -74,18 +74,18 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     StageExecutionContext exec = contexts.get(stage.getId());
 
     if(exec == null) {
+
+      Module module = moduleRegistry.getModule(stage.getModule());
+      exec = (StageExecutionContext)module.createStageExecution(getInterview(), stage);
+      contexts.put(stage.getId(), exec);
       
       // try to find it in memory
       StageExecutionMemento template = new StageExecutionMemento();
       template.setStage(stage);
       template.setInterview(getInterview());
       StageExecutionMemento memento = getPersistenceManager().matchOne(template);
-      // TODO...
-      
-      if (exec == null) {
-        Module module = moduleRegistry.getModule(stage.getModule());
-        exec = (StageExecutionContext)module.createStageExecution(getInterview(), stage);
-        contexts.put(stage.getId(), exec);
+      if (memento != null) {
+        exec.restoreFromMemento(memento);
       }
     }
     
@@ -105,7 +105,18 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   
   public void shutdown() {
     log.info("shutdown");
-    // TODO persist stage execution states
+    for (Serializable interviewId : interviewStageContexts.keySet()) {
+      Map<Serializable, StageExecutionContext> contexts = interviewStageContexts.get(interviewId);
+      for (Serializable stageId : contexts.keySet()) {
+        // persist in a memento
+        StageExecutionMemento template = new StageExecutionMemento();
+        template.setStage(getPersistenceManager().get(Stage.class, stageId));
+        template.setInterview(getPersistenceManager().get(Interview.class, interviewId));
+        StageExecutionContext exec = contexts.get(stageId);
+        StageExecutionMemento memento = (StageExecutionMemento)exec.saveToMemento(getPersistenceManager().matchOne(template));
+        getPersistenceManager().save(memento);
+      }
+    }
   }
 
 }

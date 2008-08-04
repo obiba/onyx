@@ -172,13 +172,20 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
     }
   }
 
-  public Object saveToMemento() {
-    StageExecutionMemento memento = new StageExecutionMemento();
-    memento.setInterview(interview);
-    memento.setStage(stage);
-    memento.setState(currentState.getClass().getSimpleName());
+  public Object saveToMemento(Object memento) {
+    StageExecutionMemento myMemento = null;
+    if (memento == null)
+      myMemento = new StageExecutionMemento();
+    else if (memento instanceof StageExecutionMemento)
+      myMemento = (StageExecutionMemento)memento;
+    else
+      throw new IllegalArgumentException("StageExecutionMemento is expected.");
+    
+    myMemento.setInterview(interview);
+    myMemento.setStage(stage);
+    myMemento.setState(currentState.getClass().getSimpleName());
 
-    return memento;
+    return myMemento;
   }
 
 }
