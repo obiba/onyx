@@ -81,6 +81,9 @@ legend {
 	height: 40px;
 	width:1000px;
 	float:left;
+	text-align:right;
+	font-weight:bold;
+	color:#FFFFFF;
 	background-color: #375FB7;
 	background-image: url('../images/bannerTopRepeater.gif');
 	background-repeat: repeat;
