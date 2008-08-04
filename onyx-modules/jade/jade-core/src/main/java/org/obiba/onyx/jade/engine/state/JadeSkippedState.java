@@ -5,7 +5,6 @@ package org.obiba.onyx.jade.engine.state;
 
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
-import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
@@ -16,8 +15,8 @@ public class JadeSkippedState extends AbstractStageState {
   private static final Logger log = LoggerFactory.getLogger(JadeSkippedState.class);
 
   public JadeSkippedState() {
-    addAction(new ActionDefinition(ActionType.STOP, "Cancel"));
-    addAction(new ActionDefinition(ActionType.COMMENT, "Comment"));
+    addAction(ActionDefinition.CANCEL_ACTION);
+    addAction(ActionDefinition.COMMENT_ACTION);
   }
 
   @Override
@@ -31,5 +30,5 @@ public class JadeSkippedState extends AbstractStageState {
   public String getMessage() {
     return "Skipped";
   }
-  
+
 }

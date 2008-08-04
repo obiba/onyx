@@ -1,17 +1,31 @@
 <wicket:panel>
-  <p><span wicket:id="label"/></p>
+  <div class="header">
+  	<span wicket:id="description"/>
+  </div>
   <form wicket:id="form">
   	<table>
   	  <tr>
-  	    <td>Comment</td>
-  		<td><input type="textarea" /></td>
+  	    <td valign="top"><wicket:message key="Comment" /></td>
+  		<td>
+  			<textarea wicket:id="comment" rows="3" cols="40">
+  			</textarea></td>
   	  </tr>
-  	  <tr>
-  	    <td colspan="2">
-  	     	<input type="submit" value="Continue" wicket:id="submit"/>
-            <input type="button" value="Cancel" wicket:id="cancel"/>
-  	    </td>
-  	  </tr>
+  	  <tr wicket:id="reasons"></tr>
   	</table>
+  	<div class="footer">
+  		<input type="submit" wicket:message="value:Continue" wicket:id="submit"/>
+        <input type="button" wicket:message="value:Cancel" wicket:id="cancel"/>
+    </div>
   </form>
 </wicket:panel>
+<wicket:fragment wicket:id="reasonsFragment">
+  	  <tr>
+  	    <td valign="top"><wicket:message key="Reasons" /></td>
+  		<td align="left">
+  			<select wicket:id="reasonsSelect"/></td>
+  	  </tr>
+</wicket:fragment>
+<wicket:fragment wicket:id="trFragment">
+  	  <tr>
+  	  </tr>
+</wicket:fragment>

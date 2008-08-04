@@ -384,6 +384,22 @@ text-align:center;
   line-height:18px;
 }
 
+/*************** Modal Window ********************/
+
+div.wicket-modal div.w_content_1 div.header {
+  text-align: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 3px;
+}
+
+div.wicket-modal div.w_content_1 div.footer {
+  text-align: center;
+  margin-top: 10px;
+}
+
+/*************** End Modal Window ********************/
+
 /*************** Wizard ********************/
 
 form.wizard {

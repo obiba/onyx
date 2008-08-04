@@ -80,7 +80,7 @@ public abstract class ActionWindow extends Panel {
       }
       
     });
-    modal.setTitle("New Action.");
+    modal.setTitle(actionDefinition.getLabel());
     modal.show(target);
   }
 

@@ -8,6 +8,7 @@ import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunRefusalReason;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +17,15 @@ public class JadeReadyState extends AbstractStageState {
   private static final Logger log = LoggerFactory.getLogger(JadeReadyState.class);
 
   public JadeReadyState() {
-    addAction(new ActionDefinition(ActionType.EXECUTE, "Start"));
-    addAction(new ActionDefinition(ActionType.SKIP, "Skip"));
-    addAction(new ActionDefinition(ActionType.COMMENT, "Comment"));
+    addAction(ActionDefinition.START_ACTION);
+    ActionDefinition def = new ActionDefinition(ActionType.SKIP, "Skip", "Please explain why this stage is skipped.");
+    for (InstrumentRunRefusalReason reason : InstrumentRunRefusalReason.values()) {
+      def.addReason(reason.toString());
+      if (def.getDefaultReason() == null)
+        def.setDefaultReason(reason.toString());
+    }
+    addAction(def);
+    addAction(ActionDefinition.COMMENT_ACTION);
   }
 
   @Override

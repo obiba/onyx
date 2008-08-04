@@ -6,7 +6,6 @@ package org.obiba.onyx.jade.engine.state;
 import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
-import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
@@ -22,9 +21,9 @@ public class JadeInProgressState extends AbstractStageState {
 
   public JadeInProgressState(Stage stage) {
     this.stage = stage;
-    addAction(new ActionDefinition(ActionType.STOP, "Cancel"));
-    addSystemAction(new ActionDefinition(ActionType.COMPLETE, "Complete"));
-    addAction(new ActionDefinition(ActionType.COMMENT, "Comment"));
+    addAction(ActionDefinition.CANCEL_ACTION);
+    addSystemAction(ActionDefinition.COMPLETE_ACTION);
+    addAction(ActionDefinition.COMMENT_ACTION);
   }
 
   public Component getWidget(String id) {
