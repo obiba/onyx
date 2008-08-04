@@ -23,20 +23,15 @@ import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.webapp.action.panel.ActionsPanel;
-import org.obiba.onyx.webapp.interview.page.InterviewPage;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
 import org.obiba.onyx.webapp.stage.page.StagePage;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class StageSelectionPanel extends Panel {
 
   private static final long serialVersionUID = 6282742572162384139L;
-
-  private static final Logger log = LoggerFactory.getLogger(StageSelectionPanel.class);
 
   @SpringBean
   private EntityQueryService queryService;
@@ -45,7 +40,7 @@ public class StageSelectionPanel extends Panel {
   private ActiveInterviewService activeInterviewService;
 
   private ActionWindow modal;
-  
+
   private OnyxEntityList<Stage> list;
 
   @SuppressWarnings("serial")
@@ -61,7 +56,6 @@ public class StageSelectionPanel extends Panel {
         if(!exec.isInteractive()) {
           target.addComponent(feedbackPanel);
           target.addComponent(list);
-          //setResponsePage(InterviewPage.class);
         } else {
           setResponsePage(new StagePage(stage));
         }

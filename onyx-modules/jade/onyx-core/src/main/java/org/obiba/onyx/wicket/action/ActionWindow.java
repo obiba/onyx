@@ -57,10 +57,6 @@ public abstract class ActionWindow extends Panel {
    */
   public abstract void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action);
 
-  public void show(AjaxRequestTarget target) {
-    modal.show(target);
-  }
-
   public void close(AjaxRequestTarget target) {
     modal.close(target);
   }
@@ -73,6 +69,7 @@ public abstract class ActionWindow extends Panel {
     modal.setTitle(title);
   }
   
+  @SuppressWarnings("serial")
   public void show(AjaxRequestTarget target, Stage stage, ActionDefinition actionDefinition) {
     this.stage = stage;
     modal.setContent(new ActionDefinitionPanel(modal.getContentId(), actionDefinition) {
