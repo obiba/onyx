@@ -45,7 +45,7 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
   public void removeTransitionListener(ITransitionListener listener) {
     transitionListeners.remove(listener);
   }
-  
+
   public void removeAllTransitionListener() {
     transitionListeners.clear();
   }
@@ -69,11 +69,12 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
     if(stateEdges != null) {
       currentState = stateEdges.get(event);
       List<ITransitionListener> transitionListenersToRemove = new ArrayList<ITransitionListener>();
-      log.debug("transitionListeners.size="+transitionListeners.size());
+      log.debug("transitionListeners.size=" + transitionListeners.size());
       for(ITransitionListener listener : transitionListeners) {
         listener.onTransition(this, event);
-        if (!listener.isListening())
+        if(listener.removeAfterTransition()) {
           transitionListenersToRemove.add(listener);
+        }
       }
       for(ITransitionListener listener : transitionListenersToRemove) {
         transitionListeners.remove(listener);

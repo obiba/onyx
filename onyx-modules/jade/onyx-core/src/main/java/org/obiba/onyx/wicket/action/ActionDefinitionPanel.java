@@ -1,4 +1,4 @@
-package org.obiba.onyx.webapp.action.panel;
+package org.obiba.onyx.wicket.action;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;

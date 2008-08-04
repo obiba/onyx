@@ -23,7 +23,10 @@ import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.webapp.action.panel.ActionsPanel;
+import org.obiba.onyx.webapp.interview.page.InterviewPage;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
+import org.obiba.onyx.webapp.stage.page.StagePage;
+import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 import org.slf4j.Logger;
@@ -41,15 +44,32 @@ public class StageSelectionPanel extends Panel {
   @SpringBean
   private ActiveInterviewService activeInterviewService;
 
-  private FeedbackPanel feedbackPanel;
+  private ActionWindow modal;
+  
+  private OnyxEntityList<Stage> list;
 
-  public StageSelectionPanel(String id, FeedbackPanel feedbackPanel) {
+  @SuppressWarnings("serial")
+  public StageSelectionPanel(String id, final FeedbackPanel feedbackPanel) {
     super(id);
     setOutputMarkupId(true);
 
-    this.feedbackPanel = feedbackPanel;
+    add(modal = new ActionWindow("modal") {
 
-    add(new OnyxEntityList<Stage>("list", new StageProvider(), new StageListColumnProvider(), new StringResourceModel("StageList", StageSelectionPanel.this, null)));
+      @Override
+      public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action) {
+        IStageExecution exec = activeInterviewService.getStageExecution(stage);
+        if(!exec.isInteractive()) {
+          target.addComponent(feedbackPanel);
+          target.addComponent(list);
+          //setResponsePage(InterviewPage.class);
+        } else {
+          setResponsePage(new StagePage(stage));
+        }
+      }
+
+    });
+
+    add(list = new OnyxEntityList<Stage>("list", new StageProvider(), new StageListColumnProvider(), new StringResourceModel("StageList", StageSelectionPanel.this, null)));
   }
 
   private class StageProvider extends SortableDataProviderEntityServiceImpl<Stage> {
@@ -106,15 +126,7 @@ public class StageSelectionPanel extends Panel {
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Stage stage = (Stage) rowModel.getObject();
           IStageExecution exec = activeInterviewService.getStageExecution(stage);
-          cellItem.add(new ActionsPanel(componentId, stage, exec) {
-
-            @Override
-            public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action) {
-              target.addComponent(StageSelectionPanel.this);
-              target.addComponent(feedbackPanel);
-            }
-
-          });
+          cellItem.add(new ActionsPanel(componentId, stage, exec, modal));
         }
 
       });

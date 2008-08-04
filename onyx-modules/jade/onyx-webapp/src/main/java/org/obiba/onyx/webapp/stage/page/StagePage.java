@@ -16,59 +16,60 @@ import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.webapp.action.panel.ActionsPanel;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.interview.page.InterviewPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.obiba.onyx.wicket.action.ActionWindow;
 
 public class StagePage extends BasePage {
-
-  private static final Logger log = LoggerFactory.getLogger(StagePage.class);
-
+  
   @SpringBean
   private ActiveInterviewService activeInterviewService;
 
   @SuppressWarnings("serial")
-  public StagePage(IModel stageModel) {
+  public StagePage(Stage stage) {
     super();
 
-    Stage stage = (Stage) stageModel.getObject();
     IStageExecution exec = activeInterviewService.getStageExecution(stage);
-
-    add(new ActionsPanel("action", stage, exec) {
+    
+    final ActionWindow modal;
+    add(modal = new ActionWindow("modal") {
 
       @Override
       public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action) {
         IStageExecution exec = activeInterviewService.getStageExecution(stage);
-        if (!exec.isInteractive()) {
+        if(!exec.isInteractive()) {
           setResponsePage(InterviewPage.class);
-        }
-        else {
-          setResponsePage(new StagePage(StagePage.this.getModel()));
+        } else {
+          setResponsePage(new StagePage(stage));
         }
       }
-
+      
     });
 
+    add(new ActionsPanel("action", stage, exec, modal));
+    
     if(!exec.isInteractive()) {
       add(new EmptyPanel("stage-component"));
     } else {
-      if (exec instanceof ITransitionSource) {
-        ((ITransitionSource)exec).addTransitionListener(new StageInteractionEndListener());
+      if(exec instanceof ITransitionSource) {
+        ((ITransitionSource) exec).addTransitionListener(new StageInteractionEndListener());
       }
       add(exec.getWidget("stage-component"));
     }
   }
-  
+
   @SuppressWarnings("serial")
   private class StageInteractionEndListener implements ITransitionListener, Serializable {
 
+    private boolean remove = false;
+
     public void onTransition(IStageExecution execution, TransitionEvent event) {
-      if (!execution.isInteractive()) {
+      if(!execution.isInteractive()) {
         setResponsePage(InterviewPage.class);
+        remove = true;
       }
     }
 
-    public boolean isListening() {
-      return false;
+    public boolean removeAfterTransition() {
+      return remove;
     }
 
   }
