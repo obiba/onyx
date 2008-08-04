@@ -24,6 +24,7 @@ public class JadeInProgressState extends AbstractStageState {
     this.stage = stage;
     addAction(new ActionDefinition(ActionType.STOP, "Cancel"));
     addSystemAction(new ActionDefinition(ActionType.COMPLETE, "Complete"));
+    addAction(new ActionDefinition(ActionType.COMMENT, "Comment"));
   }
 
   public Component getWidget(String id) {

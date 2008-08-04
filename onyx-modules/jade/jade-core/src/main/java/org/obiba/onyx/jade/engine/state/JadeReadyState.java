@@ -18,6 +18,7 @@ public class JadeReadyState extends AbstractStageState {
   public JadeReadyState() {
     addAction(new ActionDefinition(ActionType.EXECUTE, "Start"));
     addAction(new ActionDefinition(ActionType.SKIP, "Skip"));
+    addAction(new ActionDefinition(ActionType.COMMENT, "Comment"));
   }
 
   @Override

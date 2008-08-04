@@ -17,6 +17,7 @@ public class JadeSkippedState extends AbstractStageState {
 
   public JadeSkippedState() {
     addAction(new ActionDefinition(ActionType.STOP, "Cancel"));
+    addAction(new ActionDefinition(ActionType.COMMENT, "Comment"));
   }
 
   @Override
