@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
+import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
@@ -37,6 +38,8 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     Participant template = new Participant();
     template.setFirstName("Michel");
     template.setLastName("Tremblay");
+    template.setGender(Gender.MALE);
+    template.setBirthDate(new Date(5555555));
 
     Participant participant = getPersistenceManager().matchOne(template);
 

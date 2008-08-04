@@ -1,10 +1,31 @@
 <html>
   <body>
     <wicket:extend>
-    	<p>
-    		Participant Interview: <span wicket:id="participant" />
-    	</p>
-        <span wicket:id="stage-list" />
+    	<table style="width: 100%">
+    		<tr>
+    			<td>
+    				<fieldset>
+    					<legend><wicket:message key="Participant" /></legend>
+    					<span wicket:id="participant" />
+					</fieldset>
+    			</td>
+    			<td valign="top">
+    				<fieldset>
+    					<legend><wicket:message key="Interview" /></legend>
+    					<span wicket:id="interview" />
+					</fieldset>
+    			</td>
+    		</tr>
+    		<tr>
+    			<td colspan="2">
+    				<fieldset>
+    					<legend><wicket:message key="Stages" /></legend>
+    					<span wicket:id="stage-list" />
+					</fieldset>
+    				
+    			</td>
+    		</tr>
+    	</table>
     </wicket:extend>
   </body>
 </html>

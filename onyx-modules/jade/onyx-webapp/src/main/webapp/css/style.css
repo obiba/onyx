@@ -32,19 +32,6 @@ label {
   font-weight:bold;
 }
 
-fieldset {
-  border: 1px solid #781351;
-  width: 200px;
-}
-
-legend {
-  color: #fff;
-  background: #ffa20c;
-  border: 1px solid #781351;
-  padding: 2px 6px;
-  font-size=12px;
-}
-
 .required {
 	background: #FFB6C1;
 }
@@ -415,6 +402,7 @@ table.entityTable {
   border-style: solid;
   border-color: #375FB7;
   padding:1px;*/
+  width:100%;
 }
 
 table.entityTable tr.titleToolbar {
@@ -475,6 +463,105 @@ table.entityTable td {
 }
 
 /*************** End Entity Table ********************/
+
+/*******************KEY VALUE TABLE LAYOUT************************************/
+
+table.keyValueTable {
+	/*border-width: 1px;
+	border-style: solid;
+	border-color: #666666;
+	padding:1px;
+	width:500px;*/
+}
+
+.properties table.keyValueTable {
+	border: none;
+	padding:0px;
+	width:100%;
+}
+
+.properties td.keyValueTableKey {
+	font-weight:normal;
+}
+
+.form-data table.keyValueTable {
+	border: none;
+	padding:0px;
+	width:100%;
+}
+
+.form-data td.keyValueTableKey {
+	height:30px;
+}
+
+
+.dashboard-panel-content table.keyValueTable {
+	border: none;
+	padding:0px;
+}
+
+td.keyValueTableHeader {
+	font-weight: bold;
+	color: #F6F8FF;
+	background-color: #888888;
+	border-bottom: 1px solid #FFFFFF;
+	padding: 3px;
+
+}
+
+td.keyValueTableKey {
+	width:30%;
+	color: #666666;
+	font-weight:bold;
+	background-color: #F1E0AD;
+	padding-right: 5px;
+	padding-left: 5px;
+	padding-top:2px;
+	padding-bottom:2px;
+	border-bottom: 1px solid #FFFFFF; 
+}
+
+td.keyValueTableKeyIndent {
+	/*width:30%;*/
+	color: #666666;
+	font-weight:bold;
+	background-color: #cccccc;
+	padding-right: 5px;
+	padding-left: 15px;
+	padding-top:2px;
+	padding-bottom:2px;
+	border-bottom: 1px solid #FFFFFF; 
+}
+
+td.keyValueTableValue {
+	color: #666666;
+	background-color: #ffffff;
+}
+
+td.keyValueTableValueEven {
+	color: #666666;
+	background-color: #ffffff;
+	padding-right: 5px;
+	padding-left: 5px;
+}
+
+td.keyValueTableValueOdd {
+	color: #666666;
+	background-color: #E1E3E5;
+	padding-right: 5px;
+	padding-left: 5px;
+	border-bottom: 1px solid #FFFFFF; 
+}
+
+.small table.keyValueTable {
+  width:300px;
+}
+
+.small table.keyValueTable td.keyValueTableKey {
+  width:75%;
+}
+
+/*******************END KEY VALUE TABLE LAYOUT********************************/
 
 table.gertTable {
 	border-width: 1px;

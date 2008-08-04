@@ -21,6 +21,8 @@ public class Participant extends AbstractEntity {
 
   private String lastName;
 
+  private Gender gender;
+  
   @Temporal(TemporalType.TIMESTAMP)
   private Date birthDate;
 
@@ -44,6 +46,14 @@ public class Participant extends AbstractEntity {
 
   public void setLastName(String lastName) {
     this.lastName = lastName;
+  }
+
+  public Gender getGender() {
+    return gender;
+  }
+
+  public void setGender(Gender gender) {
+    this.gender = gender;
   }
 
   public Date getBirthDate() {
