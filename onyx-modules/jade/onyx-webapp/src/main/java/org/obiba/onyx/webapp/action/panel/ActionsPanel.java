@@ -6,27 +6,21 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.engine.ActionDefinition;
-import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.wicket.action.ActionWindow;
-import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 
 public class ActionsPanel extends Panel {
 
   private static final long serialVersionUID = 5855667390712874428L;
 
-  @SpringBean
-  private EntityQueryService queryService;
-
   @SuppressWarnings( { "serial", "serial" })
-  public ActionsPanel(String id, final Stage stage, IStageExecution exec, final ActionWindow modal) {
+  public ActionsPanel(String id, IModel stageModel, IStageExecution exec, final ActionWindow modal) {
     super(id);
     setOutputMarkupId(true);
-    setModel(new DetachableEntityModel(queryService, stage));
+    setModel(stageModel);
     
     RepeatingView repeating = new RepeatingView("repeating");
     add(repeating);
@@ -39,7 +33,7 @@ public class ActionsPanel extends Panel {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          modal.show(target, stage, actionDef);
+          modal.show(target, ActionsPanel.this.getModel(), actionDef);
         }
 
       };

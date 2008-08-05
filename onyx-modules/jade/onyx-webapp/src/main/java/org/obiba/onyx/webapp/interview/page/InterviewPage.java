@@ -21,8 +21,9 @@ public class InterviewPage extends BasePage {
     super();
 
     Participant participant = activeInterviewService.getParticipant();
-
-    if(participant == null) {
+    Interview interview = activeInterviewService.getInterview();
+    
+    if(participant == null || interview == null) {
       setResponsePage(WebApplication.get().getHomePage());
     } else {
 
@@ -32,8 +33,7 @@ public class InterviewPage extends BasePage {
       kvPanel.addRow(new StringResourceModel("Gender", this, null), new StringResourceModel("Gender." + participant.getGender(), this, null));
       kvPanel.addRow(new StringResourceModel("BirthDate", this, null), DateUtils.getDateModel(new PropertyModel(participant, "birthDate")));
       add(kvPanel);
-
-      Interview interview = activeInterviewService.getInterview();
+      
       kvPanel = new KeyValueDataPanel("interview");
       kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateUtils.getDateModel(new PropertyModel(interview, "startDate")));
       kvPanel.addRow(new StringResourceModel("EndDate", this, null), DateUtils.getDateModel(new PropertyModel(interview, "stopDate")));

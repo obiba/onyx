@@ -26,6 +26,7 @@ import org.obiba.onyx.webapp.action.panel.ActionsPanel;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
 import org.obiba.onyx.webapp.stage.page.StagePage;
 import org.obiba.onyx.wicket.action.ActionWindow;
+import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 
@@ -57,7 +58,7 @@ public class StageSelectionPanel extends Panel {
           target.addComponent(feedbackPanel);
           target.addComponent(list);
         } else {
-          setResponsePage(new StagePage(stage));
+          setResponsePage(new StagePage(new DetachableEntityModel(queryService, stage)));
         }
       }
 
@@ -120,7 +121,7 @@ public class StageSelectionPanel extends Panel {
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Stage stage = (Stage) rowModel.getObject();
           IStageExecution exec = activeInterviewService.getStageExecution(stage);
-          cellItem.add(new ActionsPanel(componentId, stage, exec, modal));
+          cellItem.add(new ActionsPanel(componentId, new DetachableEntityModel(queryService, stage), exec, modal));
         }
 
       });

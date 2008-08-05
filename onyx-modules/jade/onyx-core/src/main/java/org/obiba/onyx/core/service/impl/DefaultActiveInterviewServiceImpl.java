@@ -42,19 +42,24 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   }
 
   public Interview getInterview() {
-    if(currentParticipant.getInterview() == null) {
-      Interview interview = new Interview();
+    if(currentParticipant == null) return null;
+
+    Interview interview = currentParticipant.getInterview();
+
+    if(interview == null) {
+      interview = new Interview();
       interview.setParticipant(currentParticipant);
       interview.setStartDate(new Date());
       interview.setStatus(InterviewStatus.IN_PROGRESS);
-      getPersistenceManager().save(interview);
+      interview = getPersistenceManager().save(interview);
       currentParticipant = getPersistenceManager().refresh(currentParticipant);
     }
 
-    return currentParticipant.getInterview();
+    return interview;
   }
 
   public IStageExecution getStageExecution(Stage stage) {
+    if(currentParticipant == null) return null;
 
     // try to find it in memory
     Interview interview = getInterview();

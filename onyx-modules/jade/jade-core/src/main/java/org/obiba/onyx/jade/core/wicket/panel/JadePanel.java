@@ -4,6 +4,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -27,11 +28,14 @@ public class JadePanel extends Panel implements IEngineComponentAware {
   private ActiveInterviewService activeInterviewService;
 
   private ActionWindow actionWindow;
+  
+  private IModel stageModel;
 
   @SuppressWarnings("serial")
-  public JadePanel(String id, final Stage stage) {
+  public JadePanel(String id, final IModel stageModel) {
     super(id);
-    InstrumentType type = getInstrumentType(stage);
+    this.stageModel = stageModel;
+    InstrumentType type = getInstrumentType((Stage)stageModel.getObject());
     setModel(new DetachableEntityModel(queryService, type));
 
     add(new Label("description", type.getDescription()));
@@ -42,19 +46,19 @@ public class JadePanel extends Panel implements IEngineComponentAware {
 
       @Override
       public void onCancel(AjaxRequestTarget target) {
-        IStageExecution exec = activeInterviewService.getStageExecution(stage);
+        IStageExecution exec = activeInterviewService.getStageExecution((Stage)stageModel.getObject());
         ActionDefinition actionDef = exec.getActionDefinition(ActionType.STOP);
         if(actionDef != null) {
-          actionWindow.show(target, stage, actionDef);
+          actionWindow.show(target, stageModel, actionDef);
         }
       }
 
       @Override
       public void onFinish(AjaxRequestTarget target, Form form) {
-        IStageExecution exec = activeInterviewService.getStageExecution(stage);
+        IStageExecution exec = activeInterviewService.getStageExecution((Stage)stageModel.getObject());
         ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
         if(actionDef != null) {
-          actionWindow.show(target, stage, actionDef);
+          actionWindow.show(target, stageModel, actionDef);
         }
       }
 

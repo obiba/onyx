@@ -8,7 +8,7 @@ public class ActionDefinition implements Serializable {
 
   private static final long serialVersionUID = 5052458659458743800L;
 
-  public static final ActionDefinition START_ACTION = new ActionDefinition(ActionType.EXECUTE, "Start", "Please give some comments before starting this stage.");
+  public static final ActionDefinition START_ACTION = new ActionDefinition(ActionType.EXECUTE, "Start", "Please give some comments before starting this stage.", true);
 
   public static final ActionDefinition CANCEL_ACTION = new ActionDefinition(ActionType.STOP, "Cancel", "Please explain why you are cancelling this stage.");
 
@@ -42,6 +42,12 @@ public class ActionDefinition implements Serializable {
   public ActionDefinition(ActionType type, String label, String description) {
     this(type, label);
     this.description = description;
+  }
+  
+  public ActionDefinition(ActionType type, String label, String description, boolean askPassword) {
+    this(type, label);
+    this.description = description;
+    this.askPassword = askPassword;
   }
 
   public ActionType getType() {

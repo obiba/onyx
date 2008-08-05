@@ -23,7 +23,7 @@ public abstract class ActionWindow extends Panel {
 
   private ModalWindow modal;
   
-  private Stage stage;
+  private IModel stageModel;
 
   @SuppressWarnings("serial")
   public ActionWindow(String id) {
@@ -43,8 +43,8 @@ public abstract class ActionWindow extends Panel {
         if(!pane.isCancelled()) {
           Action action = pane.getAction();
           log.info("action=" + action);
-          activeInterviewService.doAction(stage, action);
-          onActionPerformed(target, stage, action);
+          activeInterviewService.doAction((Stage)stageModel.getObject(), action);
+          onActionPerformed(target, (Stage)stageModel.getObject(), action);
         }
       }
     });
@@ -70,8 +70,8 @@ public abstract class ActionWindow extends Panel {
   }
   
   @SuppressWarnings("serial")
-  public void show(AjaxRequestTarget target, Stage stage, ActionDefinition actionDefinition) {
-    this.stage = stage;
+  public void show(AjaxRequestTarget target, IModel stageModel, ActionDefinition actionDefinition) {
+    this.stageModel = stageModel;
     modal.setContent(new ActionDefinitionPanel(modal.getContentId(), actionDefinition) {
 
       @Override

@@ -3,8 +3,10 @@ package org.obiba.onyx.webapp.stage.page;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
@@ -20,10 +22,14 @@ public class StagePage extends BasePage {
 
   @SpringBean
   private ActiveInterviewService activeInterviewService;
+  
+  @SpringBean
+  private EntityQueryService queryService;
 
   @SuppressWarnings("serial")
-  public StagePage(Stage stage) {
+  public StagePage(IModel stageModel) {
     super();
+    setModel(stageModel);
 
     Participant participant = activeInterviewService.getParticipant();
 
@@ -31,7 +37,7 @@ public class StagePage extends BasePage {
       setResponsePage(WebApplication.get().getHomePage());
     } else {
 
-      IStageExecution exec = activeInterviewService.getStageExecution(stage);
+      IStageExecution exec = activeInterviewService.getStageExecution((Stage)getModelObject());
 
       final ActionWindow modal;
       add(modal = new ActionWindow("modal") {
@@ -42,13 +48,13 @@ public class StagePage extends BasePage {
           if(!exec.isInteractive()) {
             setResponsePage(InterviewPage.class);
           } else {
-            setResponsePage(new StagePage(stage));
+            setResponsePage(new StagePage(StagePage.this.getModel()));
           }
         }
 
       });
 
-      add(new ActionsPanel("action", stage, exec, modal));
+      add(new ActionsPanel("action", getModel(), exec, modal));
 
       if(!exec.isInteractive()) {
         add(new EmptyPanel("stage-component"));

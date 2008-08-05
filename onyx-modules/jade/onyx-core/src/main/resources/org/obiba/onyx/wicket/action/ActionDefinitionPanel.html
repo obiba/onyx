@@ -8,10 +8,7 @@
   	    <td valign="top" class="keyValueTableKey"><wicket:message key="FieldTeamMember" /></td>
   		<td class="keyValueTableValueOdd">...</td>
   	  </tr>
-  	  <tr>
-  	    <td valign="top" class="keyValueTableKey"><wicket:message key="Password" /></td>
-  		<td class="keyValueTableValueEven"><input type="password" wicket:id="password" /></td>
-  	  </tr>
+  	  <tr wicket:id="password"></tr>
   	  <tr>
   	    <td valign="top" class="keyValueTableKey"><wicket:message key="Participant" /></td>
   		<td class="keyValueTableValueOdd"><span wicket:id="participant"/></td>
@@ -34,6 +31,12 @@
     </div>
   </form>
 </wicket:panel>
+<wicket:fragment wicket:id="passwordFragment">
+  	  <tr>
+  	    <td valign="top" class="keyValueTableKey"><wicket:message key="Password" /></td>
+  		<td class="keyValueTableValueEven"><input type="password" wicket:id="password" /></td>
+  	  </tr>
+</wicket:fragment>
 <wicket:fragment wicket:id="reasonsFragment">
   	  <tr>
   	    <td valign="top" class="keyValueTableKey"><wicket:message key="Reasons" /></td>

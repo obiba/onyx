@@ -54,9 +54,12 @@ public abstract class ActionDefinitionPanel extends Panel {
     
     form.add(new Label("participant", activeInterviewService.getParticipant().getFullName()));
 
-    User operatorTemplate = new User();
-    PasswordTextField pwdTextField = new PasswordTextField("password", new PropertyModel(operatorTemplate, "password"));
-    form.add(pwdTextField.add(new RequiredFormFieldBehavior()));
+    if (definition.isAskPassword()) {
+      form.add(new PasswordFragment("password"));
+    }
+    else {
+      form.add(new Fragment("password", "trFragment", this));
+    }
 
     Participant participantTemplate = new Participant();
     TextField participantBarcode = new TextField("confirmBarcode", new PropertyModel(participantTemplate, "barCode"));
@@ -122,6 +125,17 @@ public abstract class ActionDefinitionPanel extends Panel {
     public ReasonsFragment(String id, List<String> reasons) {
       super(id, "reasonsFragment", ActionDefinitionPanel.this);
       add(new DropDownChoice("reasonsSelect", new PropertyModel(ActionDefinitionPanel.this, "action.eventReason"), reasons));
+    }
+
+  }
+  
+  private class PasswordFragment extends Fragment {
+
+    public PasswordFragment(String id) {
+      super(id, "passwordFragment", ActionDefinitionPanel.this);
+      User operatorTemplate = new User();
+      PasswordTextField pwdTextField = new PasswordTextField("password", new PropertyModel(operatorTemplate, "password"));
+      add(pwdTextField.add(new RequiredFormFieldBehavior()));
     }
 
   }

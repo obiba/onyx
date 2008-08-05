@@ -12,6 +12,7 @@ import org.obiba.onyx.jade.engine.state.JadeCompletedState;
 import org.obiba.onyx.jade.engine.state.JadeInProgressState;
 import org.obiba.onyx.jade.engine.state.JadeReadyState;
 import org.obiba.onyx.jade.engine.state.JadeSkippedState;
+import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +42,7 @@ public class JadeModule implements Module {
     StageExecutionContext exec = new StageExecutionContext(interview, stage);
 
     AbstractStageState ready = new JadeReadyState();
-    AbstractStageState inProgress = new JadeInProgressState(stage);
+    AbstractStageState inProgress = new JadeInProgressState(new DetachableEntityModel(queryService, stage));
     AbstractStageState skipped = new JadeSkippedState();
     AbstractStageState completed = new JadeCompletedState();
     exec.addEdge(ready, TransitionEvent.START, inProgress);

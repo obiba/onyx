@@ -4,9 +4,9 @@
 package org.obiba.onyx.jade.engine.state;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.model.IModel;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
-import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.wicket.panel.JadePanel;
@@ -17,17 +17,17 @@ public class JadeInProgressState extends AbstractStageState {
 
   private static final Logger log = LoggerFactory.getLogger(JadeInProgressState.class);
 
-  private Stage stage;
+  private IModel stageModel;
 
-  public JadeInProgressState(Stage stage) {
-    this.stage = stage;
+  public JadeInProgressState(IModel stageModel) {
+    this.stageModel = stageModel;
     addAction(ActionDefinition.CANCEL_ACTION);
     addSystemAction(ActionDefinition.COMPLETE_ACTION);
     addAction(ActionDefinition.COMMENT_ACTION);
   }
 
   public Component getWidget(String id) {
-    return new JadePanel(id, stage);
+    return new JadePanel(id, stageModel);
   }
 
   @Override
