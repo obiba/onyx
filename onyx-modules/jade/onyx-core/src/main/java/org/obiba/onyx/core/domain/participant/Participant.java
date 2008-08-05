@@ -96,4 +96,8 @@ public class Participant extends AbstractEntity {
   public void setBarcode(String barcode) {
     this.barCode = barcode;
   }
+
+  public String getFullName() {
+    return getFirstName() + " " + getLastName();
+  }
 }

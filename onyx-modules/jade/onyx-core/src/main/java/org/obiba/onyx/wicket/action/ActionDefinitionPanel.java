@@ -3,6 +3,7 @@ package org.obiba.onyx.wicket.action;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -50,6 +51,8 @@ public abstract class ActionDefinitionPanel extends Panel {
 
     Form form = new Form("form");
     add(form);
+    
+    form.add(new Label("participant", activeInterviewService.getParticipant().getFullName()));
 
     User operatorTemplate = new User();
     PasswordTextField pwdTextField = new PasswordTextField("password", new PropertyModel(operatorTemplate, "password"));
@@ -93,10 +96,10 @@ public abstract class ActionDefinitionPanel extends Panel {
 
     });
 
-    form.add(new AjaxButton("cancel") {
+    form.add(new AjaxLink("cancel") {
 
       @Override
-      protected void onSubmit(AjaxRequestTarget target, Form form) {
+      public void onClick(AjaxRequestTarget target) {
         cancelled = true;
         ActionDefinitionPanel.this.onClick(target);
       }
