@@ -31,6 +31,7 @@ public class InterviewPage extends BasePage {
     kvPanel = new KeyValueDataPanel("interview");
     kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateUtils.getDateModel(new PropertyModel(interview, "startDate")));
     kvPanel.addRow(new StringResourceModel("EndDate", this, null), DateUtils.getDateModel(new PropertyModel(interview, "stopDate")));
+    kvPanel.addRow(new StringResourceModel("Status", this, null), new StringResourceModel("InterviewStatus." + interview.getStatus(), this, null));
     add(kvPanel);
 
     add(new StageSelectionPanel("stage-list", getFeedbackPanel()));

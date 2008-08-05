@@ -8,6 +8,7 @@ import java.util.Map;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -53,6 +54,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
       Interview interview = new Interview();
       interview.setParticipant(participant);
       interview.setStartDate(new Date());
+      interview.setStatus(InterviewStatus.IN_PROGRESS);
       getPersistenceManager().save(interview);
       participant = getPersistenceManager().refresh(participant);
     }
@@ -115,7 +117,11 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
         template.setStage(getPersistenceManager().get(Stage.class, stageId));
         template.setInterview(getPersistenceManager().get(Interview.class, interviewId));
         StageExecutionContext exec = contexts.get(stageId);
-        StageExecutionMemento memento = (StageExecutionMemento)exec.saveToMemento(getPersistenceManager().matchOne(template));
+        //StageExecutionMemento memento = (StageExecutionMemento)exec.saveToMemento(getPersistenceManager().matchOne(template));
+        StageExecutionMemento memento = getPersistenceManager().matchOne(template);
+        if (memento == null) {
+          memento = template;
+        }
         getPersistenceManager().save(memento);
       }
     }
