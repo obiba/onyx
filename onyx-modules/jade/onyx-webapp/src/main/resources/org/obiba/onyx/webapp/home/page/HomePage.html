@@ -1,9 +1,18 @@
 <html>
   <body>
     <wicket:extend>
-    	<p>
-    		Participant Interview: <a wicket:id="link"><span wicket:id="participant" /></a>
-    	</p>
+    	<p><wicket:message key="participantExactSearchMsg" /></p>
+		<p>
+			<form wicket:id="configurationForm">
+				<label for="barCode"><wicket:message key="barCode" /></label>
+				<input wicket:id="barCode" id="barCode" type="text" size="20"/>
+				
+				<a href="#" wicket:id="goToParticipant">&gt;&gt;</a>
+			</form>
+		</p>
+		<p>
+			<a href="#" wicket:id="receiveParticipants"><wicket:message key="receiveParticipants" /></a>
+		</p>
     </wicket:extend>
   </body>
 </html>

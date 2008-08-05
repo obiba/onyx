@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<linked-list>
+
+  <participant>
+    <firstName>Jerald</firstName>
+    <lastName>Benjamín</lastName>
+    <gender>MALE</gender>
+    <barCode>101</barCode>
+  </participant>
+  
+  <participant>
+    <firstName>Nathalie</firstName>
+    <lastName>Albin</lastName>
+    <gender>FEMALE</gender>
+    <barCode>102</barCode>
+  </participant>
+  
+  <participant>
+    <firstName>Nazario</firstName>
+    <lastName>Cupid</lastName>
+    <gender>MALE</gender>
+    <barCode>103</barCode>
+  </participant>
+
+</linked-list>
