@@ -5,21 +5,21 @@
     <firstName>Jerald</firstName>
     <lastName>Benjamín</lastName>
     <gender>MALE</gender>
-    <barCode>101</barCode>
+    <barCode>1</barCode>
   </participant>
   
   <participant>
     <firstName>Nathalie</firstName>
     <lastName>Albin</lastName>
     <gender>FEMALE</gender>
-    <barCode>102</barCode>
+    <barCode>2</barCode>
   </participant>
   
   <participant>
     <firstName>Nazario</firstName>
     <lastName>Cupid</lastName>
     <gender>MALE</gender>
-    <barCode>103</barCode>
+    <barCode>3</barCode>
   </participant>
 
 </linked-list>
