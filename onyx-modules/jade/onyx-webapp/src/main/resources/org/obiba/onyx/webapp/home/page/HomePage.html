@@ -4,10 +4,10 @@
     	<p><wicket:message key="participantExactSearchMsg" /></p>
 		<p>
 			<form wicket:id="configurationForm">
-				<label for="barCode"><wicket:message key="barCode" /></label>
+				<label for="barCode"><wicket:message key="ParticipantBarcode" /></label>
 				<input wicket:id="barCode" id="barCode" type="text" size="20"/>
 				
-				<a href="#" wicket:id="goToParticipant">&gt;&gt;</a>
+				<input type="submit" wicket:message="value:GoToInterview" wicket:id="submit"/>
 			</form>
 		</p>
 		<p>

@@ -1,7 +1,8 @@
 package org.obiba.onyx.webapp.home.page;
 
+
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
@@ -54,31 +55,23 @@ public class HomePage extends BasePage {
       barCode.add(new RequiredFormFieldBehavior());
       add(barCode);
 
-      add(new SubmitLink("goToParticipant") {
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public void onSubmit() {
-          super.onSubmit();
-
-          Participant template = (Participant) ParticipantSearchForm.this.getModelObject();
-          Participant participant = queryService.matchOne(template);
-          
-          // Participant found, display interview page.
-          if(participant != null) {
-            activeInterviewService.setParticipant(participant);
-            setResponsePage(InterviewPage.class);
-            
-          // Not found, display error message in feedback panel.
-          } else {
-            error((new StringResourceModel("participantNotFound", this, ParticipantSearchForm.this.getModel())).getString());
-          }
-
-        }
-
-      });
-
+      add(new Button("submit"));      
+    }
+    
+    @Override
+    protected void onSubmit() {
+      Participant template = (Participant) ParticipantSearchForm.this.getModelObject();
+      Participant participant = queryService.matchOne(template);
+      
+      // Participant found, display interview page.
+      if(participant != null) {
+        activeInterviewService.setParticipant(participant);
+        setResponsePage(InterviewPage.class);
+        
+      // Not found, display error message in feedback panel.
+      } else {
+        error((new StringResourceModel("participantNotFound", this, ParticipantSearchForm.this.getModel())).getString());
+      }
     }
   }
 
