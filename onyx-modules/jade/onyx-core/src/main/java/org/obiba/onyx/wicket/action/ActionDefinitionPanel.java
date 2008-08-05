@@ -7,17 +7,35 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.IErrorMessageSource;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.IValidationError;
+import org.apache.wicket.validation.IValidator;
+import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
+import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class ActionDefinitionPanel extends Panel {
 
   private static final long serialVersionUID = -5173222062528691764L;
+
+  private static final Logger log = LoggerFactory.getLogger(ActionDefinitionPanel.class);
+
+  @SpringBean
+  private ActiveInterviewService activeInterviewService;
 
   private boolean cancelled = true;
 
@@ -32,6 +50,29 @@ public abstract class ActionDefinitionPanel extends Panel {
 
     Form form = new Form("form");
     add(form);
+
+    User operatorTemplate = new User();
+    PasswordTextField pwdTextField = new PasswordTextField("password", new PropertyModel(operatorTemplate, "password"));
+    form.add(pwdTextField.add(new RequiredFormFieldBehavior()));
+
+    Participant participantTemplate = new Participant();
+    TextField participantBarcode = new TextField("confirmBarcode", new PropertyModel(participantTemplate, "barCode"));
+    participantBarcode.add(new IValidator() {
+
+      public void validate(IValidatable validatable) {
+        if(!activeInterviewService.getParticipant().getBarcode().equals(validatable.getValue())) {
+          validatable.error(new IValidationError() {
+
+            public String getErrorMessage(IErrorMessageSource messageSource) {
+              return "NotTheRightParticipant";
+            }
+
+          });
+        }
+      }
+
+    });
+    form.add(participantBarcode.add(new RequiredFormFieldBehavior()));
 
     form.add(new TextArea("comment", new PropertyModel(this, "action.comment")));
 

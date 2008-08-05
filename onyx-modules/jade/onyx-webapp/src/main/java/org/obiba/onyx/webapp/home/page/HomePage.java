@@ -1,7 +1,5 @@
 package org.obiba.onyx.webapp.home.page;
 
-import java.io.Serializable;
-
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextField;
@@ -11,11 +9,11 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.interview.page.InterviewPage;
+import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
 public class HomePage extends BasePage {
 

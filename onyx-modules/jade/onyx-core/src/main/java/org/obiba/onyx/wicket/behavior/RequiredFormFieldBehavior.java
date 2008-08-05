@@ -1,4 +1,4 @@
-package org.obiba.onyx.behavior;
+package org.obiba.onyx.wicket.behavior;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.AttributeAppender;

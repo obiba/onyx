@@ -21,7 +21,6 @@ import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.obiba.onyx.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.core.domain.application.AppConfiguration;
 import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.User;
@@ -29,6 +28,7 @@ import org.obiba.onyx.core.service.AppConfigurationService;
 import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.home.page.HomePage;
+import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
 public class InitConfigPage extends BasePage {
 

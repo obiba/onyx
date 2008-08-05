@@ -5,12 +5,24 @@
   <form wicket:id="form">
   	<table>
   	  <tr>
-  	    <td valign="top"><wicket:message key="Comment" /></td>
-  		<td>
+  	    <td valign="top" align="right"><wicket:message key="FieldTeamMember" /></td>
+  		<td align="left">...</td>
+  	  </tr>
+  	  <tr>
+  	    <td valign="top" align="right"><wicket:message key="Password" /></td>
+  		<td align="left"><input type="password" wicket:id="password" /></td>
+  	  </tr>
+  	  <tr>
+  	    <td valign="top" align="right"><wicket:message key="ConfirmParticipantCode" /></td>
+  		<td align="left"><input type="text" wicket:id="confirmBarcode" /></td>
+  	  </tr>
+  	  <tr wicket:id="reasons"></tr>
+  	  <tr>
+  	    <td valign="top" align="right"><wicket:message key="Comment" /></td>
+  		<td align="left">
   			<textarea wicket:id="comment" rows="3" cols="40">
   			</textarea></td>
   	  </tr>
-  	  <tr wicket:id="reasons"></tr>
   	</table>
   	<div class="footer">
   		<input type="submit" wicket:message="value:Continue" wicket:id="submit"/>
@@ -20,7 +32,7 @@
 </wicket:panel>
 <wicket:fragment wicket:id="reasonsFragment">
   	  <tr>
-  	    <td valign="top"><wicket:message key="Reasons" /></td>
+  	    <td valign="top" align="right"><wicket:message key="Reasons" /></td>
   		<td align="left">
   			<select wicket:id="reasonsSelect"/></td>
   	  </tr>
