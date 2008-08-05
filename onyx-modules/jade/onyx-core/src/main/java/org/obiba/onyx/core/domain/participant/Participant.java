@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
@@ -20,12 +22,15 @@ public class Participant extends AbstractEntity {
   private String firstName;
 
   private String lastName;
-
+  
+  @Enumerated(EnumType.STRING)
   private Gender gender;
   
-  @Temporal(TemporalType.TIMESTAMP)
+  @Temporal(TemporalType.DATE)
   private Date birthDate;
 
+  private String barCode;
+  
   @OneToOne(mappedBy = "participant")
   private Interview interview;
 
@@ -82,5 +87,13 @@ public class Participant extends AbstractEntity {
       getAppointments().add(appointment);
       appointment.setParticipant(this);
     }
+  }
+
+  public String getBarcode() {
+    return barCode;
+  }
+
+  public void setBarcode(String barcode) {
+    this.barCode = barcode;
   }
 }
