@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
+import org.obiba.onyx.core.domain.IMemento;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
@@ -105,26 +106,32 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
 
     IStageExecution exec = getStageExecution(stage);
     action.getActionType().act(exec, action);
+    
+    // persist in memento
+    if (exec instanceof IMemento) {
+      StageExecutionMemento template = new StageExecutionMemento();
+      template.setStage(stage);
+      template.setInterview(action.getInterview());
+      StageExecutionMemento memento = (StageExecutionMemento)((IMemento)exec).saveToMemento(getPersistenceManager().matchOne(template));
+      getPersistenceManager().save(memento);
+    }
+    
   }
   
   public void shutdown() {
     log.info("shutdown");
-    for (Serializable interviewId : interviewStageContexts.keySet()) {
-      Map<Serializable, StageExecutionContext> contexts = interviewStageContexts.get(interviewId);
-      for (Serializable stageId : contexts.keySet()) {
-        // persist in a memento
-        StageExecutionMemento template = new StageExecutionMemento();
-        template.setStage(getPersistenceManager().get(Stage.class, stageId));
-        template.setInterview(getPersistenceManager().get(Interview.class, interviewId));
-        StageExecutionContext exec = contexts.get(stageId);
-        //StageExecutionMemento memento = (StageExecutionMemento)exec.saveToMemento(getPersistenceManager().matchOne(template));
-        StageExecutionMemento memento = getPersistenceManager().matchOne(template);
-        if (memento == null) {
-          memento = template;
-        }
-        getPersistenceManager().save(memento);
-      }
-    }
+//    for (Serializable interviewId : interviewStageContexts.keySet()) {
+//      Map<Serializable, StageExecutionContext> contexts = interviewStageContexts.get(interviewId);
+//      for (Serializable stageId : contexts.keySet()) {
+//        // persist in a memento
+//        StageExecutionMemento template = new StageExecutionMemento();
+//        template.setStage(getPersistenceManager().get(Stage.class, stageId));
+//        template.setInterview(getPersistenceManager().get(Interview.class, interviewId));
+//        StageExecutionContext exec = contexts.get(stageId);
+//        StageExecutionMemento memento = (StageExecutionMemento)exec.saveToMemento(getPersistenceManager().matchOne(template));
+//        getPersistenceManager().save(memento);
+//      }
+//    }
   }
 
   public void setParticipant(Participant participant) {
