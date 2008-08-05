@@ -6,16 +6,40 @@ import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 
+/**
+ * Session active participant's interview service.
+ * @author Yannick Marcon
+ *
+ */
 public interface ActiveInterviewService {
+
+  /**
+   * Set the current participant to deal with.
+   * @param participant
+   */
+  public void setParticipant(Participant participant);
   
+  /**
+   * Get the current participant.
+   * @return null if none set
+   */
   public Participant getParticipant();
   
+  /**
+   * Get current participant's interview.
+   * @return null if no participant set
+   */
   public Interview getInterview();
   
+  /**
+   * Get the stage execution object for given stage, in the interview of current participant.
+   * @param stage
+   * @return
+   */
   public IStageExecution getStageExecution(Stage stage);
   
   /**
-   * Persist and perform action on the stage.
+   * Persist and perform action on the stage, in the interview of current participant.
    * @param stage
    * @param action
    */

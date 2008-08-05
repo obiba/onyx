@@ -26,6 +26,8 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
 
   private static final Logger log = LoggerFactory.getLogger(DefaultActiveInterviewServiceImpl.class);
   
+  private Participant currentParticipant = null;
+  
   private ModuleRegistry moduleRegistry;
   
   private Map<Serializable, Map<Serializable, StageExecutionContext>> interviewStageContexts = new HashMap<Serializable, Map<Serializable, StageExecutionContext>>();
@@ -117,6 +119,10 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
         getPersistenceManager().save(memento);
       }
     }
+  }
+
+  public void setParticipant(Participant participant) {
+    this.currentParticipant = participant;
   }
 
 }
