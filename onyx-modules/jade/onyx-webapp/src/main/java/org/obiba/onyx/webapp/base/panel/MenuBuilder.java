@@ -44,7 +44,8 @@ public class MenuBuilder {
     final List<MenuItem> menuItems = new ArrayList<MenuItem>();
 
     menuItems.add(new MenuItem(Application.get().getHomePage(), "Home"));
-    menuItems.add(new MenuItem(ParticipantSearchPage.class, "Search"));
+    menuItems.add(new MenuItem(ParticipantSearchPage.class, "Participant"));
+    menuItems.add(new MenuItem(Application.get().getHomePage(), "Administration"));
 
     // Creating the DataView containing the whole menu
     container.add(new DataView("menuItem", new ListDataProvider(menuItems)) {

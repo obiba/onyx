@@ -24,8 +24,10 @@
     								</td>
     							</tr>
     						</table>
-							
 						</form>
+						<div style="margin-top:10px;">
+							<a wicket:id="advanced"><wicket:message key="AdvancedSearch" /></a>
+						</div>
 					</fieldset>
     			</td>
     			<td valign="top">
@@ -39,6 +41,10 @@
     			<td colspan="2">
     				<fieldset>
     					<legend><wicket:message key="Participants" /></legend>
+    					<div style="text-align: right;">
+    						<a wicket:id="print"><wicket:message key="Print" /></a>
+    						<a wicket:id="excel">Excel</a>
+    					</div>
     					<span wicket:id="participant-list" />
 					</fieldset>
     				

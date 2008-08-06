@@ -90,6 +90,15 @@ public class ParticipantSearchPage extends BasePage {
       }
 
     });
+    
+    add(new AjaxLink("advanced") {
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+
+      }
+
+    });
 
     add(new AjaxLink("volunteer") {
 
@@ -99,8 +108,26 @@ public class ParticipantSearchPage extends BasePage {
       }
 
     });
+    
+    add(new AjaxLink("print") {
 
-    participantList = new OnyxEntityList<Participant>("participant-list", new ParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+
+      }
+
+    });
+    
+    add(new AjaxLink("excel") {
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+
+      }
+
+    });
+
+    participantList = new OnyxEntityList<Participant>("participant-list", new AppointedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
     add(participantList);
   }
 

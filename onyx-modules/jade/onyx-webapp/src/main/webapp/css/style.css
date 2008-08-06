@@ -5,7 +5,7 @@ http://creativecommons.org/licenses/by-nc/2.5/
 */
 
 body {
-  text-align: center;
+  text-align: left;
   background: #F6F8FF;
   margin-top:10px;
   margin-bottom:10px;
@@ -43,6 +43,10 @@ label {
   background: white;
   font-size=10px;
   color: #00008B;
+}
+
+div.banner {
+	margin-top: 5px;
 }
 
 #pageWrapper {
