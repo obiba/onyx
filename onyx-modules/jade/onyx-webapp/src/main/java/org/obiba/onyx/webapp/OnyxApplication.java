@@ -13,13 +13,13 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.PackageName;
 import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.webapp.config.page.InitConfigPage;
+import org.obiba.onyx.webapp.home.page.HomePage;
 import org.obiba.onyx.webapp.interview.page.InterviewPage;
 import org.obiba.onyx.webapp.login.page.LoginPage;
 import org.obiba.onyx.webapp.stage.page.StagePage;
 import org.obiba.wicket.application.WebApplicationStartupListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class OnyxApplication extends SpringWebApplication implements IUnauthorizedComponentInstantiationListener {
 
@@ -77,7 +77,11 @@ public class OnyxApplication extends SpringWebApplication implements IUnauthoriz
   @Override
   public Class<?> getHomePage() {
     if(userService.getUserCount() > 0) {
-      return LoginPage.class;
+      if(OnyxAuthenticatedSession.get().isSignedIn()) {
+        return HomePage.class;
+      } else {
+        return LoginPage.class;
+      }
     } else {
       return InitConfigPage.class;
     }
@@ -118,7 +122,7 @@ public class OnyxApplication extends SpringWebApplication implements IUnauthoriz
 
     public boolean terminateOnException();
   }
-  
+
   @Override
   public Session newSession(Request request, Response response) {
     return new OnyxAuthenticatedSession(this, request);
@@ -127,5 +131,5 @@ public class OnyxApplication extends SpringWebApplication implements IUnauthoriz
   public void onUnauthorizedInstantiation(Component component) {
     // TODO Auto-generated method stub
   }
-  
+
 }

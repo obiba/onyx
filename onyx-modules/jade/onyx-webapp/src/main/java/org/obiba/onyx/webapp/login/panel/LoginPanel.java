@@ -2,7 +2,6 @@ package org.obiba.onyx.webapp.login.panel;
 
 import org.apache.wicket.authentication.panel.SignInPanel;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
-import org.obiba.onyx.webapp.home.page.HomePage;
 
 public class LoginPanel extends SignInPanel {
 
@@ -24,7 +23,7 @@ public class LoginPanel extends SignInPanel {
   }
 
   public void onSignInSucceeded() {
-    setResponsePage(HomePage.class);
+    setResponsePage(getApplication().getHomePage());
   }
   
 }

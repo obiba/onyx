@@ -27,7 +27,6 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.AppConfigurationService;
 import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.webapp.base.page.BasePage;
-import org.obiba.onyx.webapp.home.page.HomePage;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
 public class InitConfigPage extends BasePage {
@@ -103,7 +102,7 @@ public class InitConfigPage extends BasePage {
     public void onSubmit() {
       saveConfiguration();
       uploadStudyLogo();
-      setResponsePage(HomePage.class);
+      setResponsePage(getApplication().getHomePage());
 
     }
 
