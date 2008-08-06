@@ -67,4 +67,19 @@
     <participant reference="p3"/>
   </appointment>
   
+  <!-- Participant -->  
+  <participant id="p4">
+    <firstName>Luc</firstName>
+    <lastName>Champagne</lastName>
+    <gender>MALE</gender>
+    <barcode>4</barcode>
+    <birthDate>1975-06-08 10:16:04.0 EST</birthDate>
+    <lastAppointmentDate>2008-08-06 08:46:04.0 EST</lastAppointmentDate>
+  </participant>  
+  
+  <appointment>
+    <date>2008-08-06 08:46:04.0 EST</date>
+    <participant reference="p4"/>
+  </appointment>  
+  
 </linked-list>
