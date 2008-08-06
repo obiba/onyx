@@ -21,6 +21,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
@@ -138,6 +139,19 @@ public class ParticipantSearchPage extends BasePage {
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Participant p = (Participant)rowModel.getObject();
           cellItem.add(new Label(componentId, DateUtils.getDateModel(new Model(p.getBirthDate()))));
+        }
+        
+      });
+      columns.add(new AbstractColumn(new StringResourceModel("Appointment", ParticipantSearchPage.this, null)) {
+        
+        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+          Participant p = (Participant)rowModel.getObject();
+          Appointment appointment = null;
+          for (Appointment app : p.getAppointments()) {
+            if (appointment == null)
+              appointment = app;
+          }
+          cellItem.add(new Label(componentId, DateUtils.getFullDateModel(new Model(appointment.getDate()))));
         }
         
       });

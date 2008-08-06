@@ -18,4 +18,13 @@ public class DateUtils {
       return new Model("");
   }
   
+  public static IModel getFullDateModel(IModel dateModel) {
+    Date date = (Date) dateModel.getObject();
+    if(date != null) {
+      String dateStr = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.MEDIUM, SimpleDateFormat.SHORT, WebSession.get().getLocale()).format(date);
+      return new Model(dateStr);
+    } else
+      return new Model("");
+  }
+  
 }
