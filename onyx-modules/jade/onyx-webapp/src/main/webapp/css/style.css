@@ -32,7 +32,10 @@ label {
 }
 
 .required {
-	background: #FFB6C1;
+	/*background: #FFB6C1;*/
+	/*background-image:url(../images/icons/16X16/warning.gif);
+	background-position:top right;
+	background-repeat:no-repeat;*/
 }
 
 .subLegend {
