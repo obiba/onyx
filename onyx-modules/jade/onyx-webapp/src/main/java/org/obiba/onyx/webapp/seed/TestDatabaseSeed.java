@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.onyx.core.domain.application.AppConfiguration;
+import org.obiba.onyx.core.domain.participant.Appointment;
+import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.wicket.util.seed.XstreamResourceDatabaseSeed;
@@ -22,6 +24,7 @@ public class TestDatabaseSeed extends XstreamResourceDatabaseSeed {
     this.persistenceManager = persistenceManager;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   protected void handleXstreamResult(Resource resource, Object result) {
     if(result != null && result instanceof List) {
@@ -40,6 +43,8 @@ public class TestDatabaseSeed extends XstreamResourceDatabaseSeed {
     xstream.alias("config", AppConfiguration.class);
     xstream.alias("user", User.class);
     xstream.alias("participant", Participant.class);
+    xstream.alias("interview", Interview.class);
+    xstream.alias("appointment", Appointment.class);
 
   }
 }

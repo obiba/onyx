@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <linked-list>
 
-  <participant>
+  <!-- Participant -->
+  <participant id="p1">
     <firstName>Jerald</firstName>
     <lastName>Benjamín</lastName>
     <gender>MALE</gender>
@@ -9,7 +10,20 @@
     <birthDate>1969-02-22 15:16:04.0 EST</birthDate>
   </participant>
   
-  <participant>
+  <interview>
+    <startDate>2008-08-06 10:16:04.0 EST</startDate>
+    <status>IN_PROGRESS</status>
+    <closed>false</closed>
+    <participant reference="p1"/>
+  </interview>
+  
+  <appointment>
+    <date>2008-08-06 10:16:04.0 EST</date>
+    <participant reference="p1"/>
+  </appointment>
+  
+  <!-- Participant -->
+  <participant id="p2">
     <firstName>Nathalie</firstName>
     <lastName>Albin</lastName>
     <gender>FEMALE</gender>
@@ -17,7 +31,20 @@
     <birthDate>1973-01-15 18:23:01.0 EST</birthDate>
   </participant>
   
-  <participant>
+  <interview>
+    <startDate>2008-07-04 18:16:04.0 EST</startDate>
+    <status>IN_PROGRESS</status>
+    <closed>false</closed>
+    <participant reference="p2"/>
+  </interview>
+  
+  <appointment>
+    <date>2008-07-04 10:16:04.0 EST</date>
+    <participant reference="p2"/>
+  </appointment>
+  
+  <!-- Participant -->
+  <participant id="p3">
     <firstName>Nazario</firstName>
     <lastName>Cupid</lastName>
     <gender>MALE</gender>
@@ -25,4 +52,16 @@
     <birthDate>1939-11-11 10:16:04.0 EST</birthDate>
   </participant>
 
+  <interview>
+    <startDate>2008-08-01 13:16:04.0 EST</startDate>
+    <status>IN_PROGRESS</status>
+    <closed>false</closed>
+    <participant reference="p3"/>
+  </interview>
+  
+  <appointment>
+    <date>2008-08-01 12:16:04.0 EST</date>
+    <participant reference="p3"/>
+  </appointment>
+  
 </linked-list>
