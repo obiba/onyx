@@ -32,7 +32,7 @@ public class Interview extends AbstractEntity {
   private Date stopDate;
 
   @OneToOne
-  @PrimaryKeyJoinColumn
+  @JoinColumn(name = "participant_id")
   private Participant participant;
 
   @ManyToMany
