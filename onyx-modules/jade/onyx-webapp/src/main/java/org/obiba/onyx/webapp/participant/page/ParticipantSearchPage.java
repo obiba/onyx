@@ -2,6 +2,8 @@ package org.obiba.onyx.webapp.participant.page;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -21,18 +23,29 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.core.domain.participant.Appointment;
+import org.obiba.core.service.PagingClause;
+import org.obiba.core.service.SortingClause;
+import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
 import org.obiba.onyx.webapp.util.DateUtils;
 import org.obiba.wicket.markup.html.table.FilteredSortableDataProviderEntityServiceImpl;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
+import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ParticipantSearchPage extends BasePage {
 
+  private static final Logger log = LoggerFactory.getLogger(ParticipantSearchPage.class);
+
   @SpringBean
   private EntityQueryService queryService;
+
+  @SpringBean
+  private ParticipantService participantService;
 
   private OnyxEntityList<Participant> participantList;
 
@@ -61,7 +74,7 @@ public class ParticipantSearchPage extends BasePage {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-        OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
+        OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new AppointedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
         replaceParticipantList(target, replacement);
       }
 
@@ -71,7 +84,7 @@ public class ParticipantSearchPage extends BasePage {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-        OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("CurrentInterviews", ParticipantSearchPage.this, null));
+        OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new InterviewedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("CurrentInterviews", ParticipantSearchPage.this, null));
         replaceParticipantList(target, replacement);
       }
 
@@ -97,18 +110,81 @@ public class ParticipantSearchPage extends BasePage {
     target.addComponent(participantList);
   }
 
-  private class ParticipantProvider extends FilteredSortableDataProviderEntityServiceImpl<Participant> {
+  @SuppressWarnings("serial")
+  private class ParticipantProvider extends SortableDataProviderEntityServiceImpl<Participant> {
 
-    private static final long serialVersionUID = 6022606267778869L;
+    private Participant template;
 
     public ParticipantProvider(Participant template) {
-      super(queryService, template);
+      super(queryService, Participant.class);
+      this.template = template;
       setSort(new SortParam("lastName", true));
     }
 
-    public ParticipantProvider(Participant template, String sortParam) {
-      super(queryService, template);
-      setSort(new SortParam(sortParam, true));
+    @Override
+    protected List<Participant> getList(PagingClause paging, SortingClause... clauses) {
+      return participantService.getParticipants(template.getBarcode(), template.getLastName(), paging, clauses);
+    }
+
+    @Override
+    public int size() {
+      return participantService.countParticipants(template.getBarcode(), template.getLastName());
+    }
+
+  }
+
+  @SuppressWarnings("serial")
+  private class AppointedParticipantProvider extends SortableDataProviderEntityServiceImpl<Participant> {
+
+    private Participant template;
+
+    private Date from;
+
+    private Date to;
+
+    public AppointedParticipantProvider(Participant template) {
+      super(queryService, Participant.class);
+      setSort(new SortParam("lastAppointmentDate", false));
+      this.template = template;
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(new Date());
+      cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+      this.from = cal.getTime();
+      cal.add(Calendar.DAY_OF_MONTH, 1);
+      this.to = cal.getTime();
+    }
+
+    @Override
+    protected List<Participant> getList(PagingClause paging, SortingClause... clauses) {
+      return participantService.getParticipants(template.getBarcode(), template.getLastName(), from, to, paging, clauses);
+    }
+
+    @Override
+    public int size() {
+      return participantService.countParticipants(template.getBarcode(), template.getLastName(), from, to);
+    }
+
+  }
+
+  @SuppressWarnings("serial")
+  private class InterviewedParticipantProvider extends SortableDataProviderEntityServiceImpl<Participant> {
+
+    private Participant template;
+
+    public InterviewedParticipantProvider(Participant template) {
+      super(queryService, Participant.class);
+      setSort(new SortParam("lastName", true));
+      this.template = template;
+    }
+
+    @Override
+    protected List<Participant> getList(PagingClause paging, SortingClause... clauses) {
+      return participantService.getParticipants(template.getBarcode(), template.getLastName(), InterviewStatus.IN_PROGRESS, paging, clauses);
+    }
+
+    @Override
+    public int size() {
+      return participantService.countParticipants(template.getBarcode(), template.getLastName(), InterviewStatus.IN_PROGRESS);
     }
 
   }
@@ -129,38 +205,43 @@ public class ParticipantSearchPage extends BasePage {
       columns.add(new AbstractColumn(new StringResourceModel("Gender", ParticipantSearchPage.this, null), "gender") {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Participant p = (Participant)rowModel.getObject();
+          Participant p = (Participant) rowModel.getObject();
           cellItem.add(new Label(componentId, new StringResourceModel("Gender." + p.getGender(), ParticipantSearchPage.this, null)));
         }
-        
+
       });
       columns.add(new AbstractColumn(new StringResourceModel("BirthDate", ParticipantSearchPage.this, null), "birthDate") {
-        
+
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Participant p = (Participant)rowModel.getObject();
+          Participant p = (Participant) rowModel.getObject();
           cellItem.add(new Label(componentId, DateUtils.getDateModel(new Model(p.getBirthDate()))));
         }
-        
+
       });
-      columns.add(new AbstractColumn(new StringResourceModel("Appointment", ParticipantSearchPage.this, null)) {
-        
+      columns.add(new AbstractColumn(new StringResourceModel("Appointment", ParticipantSearchPage.this, null), "lastAppointmentDate") {
+
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Participant p = (Participant)rowModel.getObject();
-          Appointment appointment = null;
-          for (Appointment app : p.getAppointments()) {
-            if (appointment == null)
-              appointment = app;
-          }
-          cellItem.add(new Label(componentId, DateUtils.getFullDateModel(new Model(appointment.getDate()))));
+          Participant p = (Participant) rowModel.getObject();
+          cellItem.add(new Label(componentId, DateUtils.getFullDateModel(new Model(p.getLastAppointmentDate()))));
         }
-        
+
+      });
+      columns.add(new AbstractColumn(new StringResourceModel("Interview", ParticipantSearchPage.this, null)) {
+
+        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+          Participant p = (Participant) rowModel.getObject();
+          if(p.getInterview() != null) cellItem.add(new Label(componentId, new StringResourceModel("InterviewStatus." + p.getInterview().getStatus(), ParticipantSearchPage.this, null)));
+          else
+            cellItem.add(new Label(componentId));
+        }
+
       });
       columns.add(new AbstractColumn(new StringResourceModel("Actions", ParticipantSearchPage.this, null)) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           cellItem.add(new Label(componentId));
         }
-        
+
       });
     }
 

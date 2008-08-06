@@ -36,6 +36,9 @@ public class Participant extends AbstractEntity {
 
   @OneToMany(mappedBy = "participant")
   private List<Appointment> appointments;
+  
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date lastAppointmentDate;
 
   public String getFirstName() {
     return firstName;
@@ -95,6 +98,14 @@ public class Participant extends AbstractEntity {
 
   public void setBarcode(String barcode) {
     this.barcode = barcode;
+  }
+
+  public Date getLastAppointmentDate() {
+    return lastAppointmentDate;
+  }
+
+  public void setLastAppointmentDate(Date lastAppointmentDate) {
+    this.lastAppointmentDate = lastAppointmentDate;
   }
 
   public String getFullName() {

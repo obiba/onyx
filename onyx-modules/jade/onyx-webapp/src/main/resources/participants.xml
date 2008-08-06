@@ -3,11 +3,12 @@
 
   <!-- Participant -->
   <participant id="p1">
-    <firstName>Jerald</firstName>
-    <lastName>Benjamín</lastName>
+    <firstName>Michel</firstName>
+    <lastName>Tremblay</lastName>
     <gender>MALE</gender>
     <barcode>1</barcode>
     <birthDate>1969-02-22 15:16:04.0 EST</birthDate>
+    <lastAppointmentDate>2008-08-06 10:16:04.0 EST</lastAppointmentDate>
   </participant>
   
   <interview>
@@ -24,11 +25,12 @@
   
   <!-- Participant -->
   <participant id="p2">
-    <firstName>Nathalie</firstName>
-    <lastName>Albin</lastName>
+    <firstName>Linda</firstName>
+    <lastName>Lemay</lastName>
     <gender>FEMALE</gender>
     <barcode>2</barcode>
     <birthDate>1973-01-15 18:23:01.0 EST</birthDate>
+    <lastAppointmentDate>2008-07-04 10:16:04.0 EST</lastAppointmentDate>
   </participant>
   
   <interview>
@@ -45,11 +47,12 @@
   
   <!-- Participant -->
   <participant id="p3">
-    <firstName>Nazario</firstName>
-    <lastName>Cupid</lastName>
+    <firstName>Richard</firstName>
+    <lastName>Desjardins</lastName>
     <gender>MALE</gender>
     <barcode>3</barcode>
     <birthDate>1939-11-11 10:16:04.0 EST</birthDate>
+    <lastAppointmentDate>2008-08-01 12:16:04.0 EST</lastAppointmentDate>
   </participant>
 
   <interview>
