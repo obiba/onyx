@@ -6,10 +6,12 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.panel.HeaderPanel;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
 
@@ -28,7 +30,11 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware {
     feedbackPanel.setOutputMarkupId(true);
     add(feedbackPanel);
 
-    add(new HeaderPanel("header"));
+    if(((OnyxAuthenticatedSession) getSession()).isSignedIn()) {
+      add(new HeaderPanel("header"));
+    } else {
+      add(new EmptyPanel("header"));
+    }
 
     add(new MenuBar("menuBar"));
 

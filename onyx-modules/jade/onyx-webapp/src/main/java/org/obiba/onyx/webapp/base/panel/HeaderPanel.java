@@ -10,6 +10,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.AppConfiguration;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
+import org.obiba.onyx.webapp.login.page.LoginPage;
 
 public class HeaderPanel extends Panel {
 
@@ -25,7 +27,18 @@ public class HeaderPanel extends Panel {
     
     add(new Label("studyName", new PropertyModel(model, "config.studyName")));
     add(new Label("siteName", new PropertyModel(model, "config.siteName")));
-    add(new Label("userLoggedIn", new PropertyModel(model, "userLoggedIn.name")));    
+    add(new Label("userLoggedIn", new PropertyModel(model, "userLoggedIn.name")));
+    
+    add(new Link("quit") {
+      
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick() {
+        OnyxAuthenticatedSession.get().signOut();
+        setResponsePage(LoginPage.class);
+      }
+    });
 
   }
 
@@ -34,9 +47,7 @@ public class HeaderPanel extends Panel {
     private static final long serialVersionUID = 1L;
 
     public User getUserLoggedIn() {
-      User user = new User();
-      user.setName("Dev User");
-      return user;
+      return OnyxAuthenticatedSession.get().getUser();
     }
 
     public AppConfiguration getConfig() {

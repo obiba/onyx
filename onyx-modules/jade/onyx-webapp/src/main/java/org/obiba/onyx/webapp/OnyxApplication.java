@@ -3,19 +3,25 @@ package org.obiba.onyx.webapp;
 import java.util.Map;
 
 import org.apache.wicket.Application;
+import org.apache.wicket.Component;
+import org.apache.wicket.Request;
+import org.apache.wicket.Response;
+import org.apache.wicket.Session;
+import org.apache.wicket.authorization.IUnauthorizedComponentInstantiationListener;
 import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.PackageName;
 import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.webapp.config.page.InitConfigPage;
-import org.obiba.onyx.webapp.home.page.HomePage;
 import org.obiba.onyx.webapp.interview.page.InterviewPage;
+import org.obiba.onyx.webapp.login.page.LoginPage;
 import org.obiba.onyx.webapp.stage.page.StagePage;
 import org.obiba.wicket.application.WebApplicationStartupListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OnyxApplication extends SpringWebApplication {
+
+public class OnyxApplication extends SpringWebApplication implements IUnauthorizedComponentInstantiationListener {
 
   private final Logger log = LoggerFactory.getLogger(OnyxApplication.class);
 
@@ -71,7 +77,7 @@ public class OnyxApplication extends SpringWebApplication {
   @Override
   public Class<?> getHomePage() {
     if(userService.getUserCount() > 0) {
-      return HomePage.class;
+      return LoginPage.class;
     } else {
       return InitConfigPage.class;
     }
@@ -112,4 +118,14 @@ public class OnyxApplication extends SpringWebApplication {
 
     public boolean terminateOnException();
   }
+  
+  @Override
+  public Session newSession(Request request, Response response) {
+    return new OnyxAuthenticatedSession(this, request);
+  }
+
+  public void onUnauthorizedInstantiation(Component component) {
+    // TODO Auto-generated method stub
+  }
+  
 }
