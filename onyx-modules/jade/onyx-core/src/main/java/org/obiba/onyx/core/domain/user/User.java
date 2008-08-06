@@ -1,5 +1,7 @@
 package org.obiba.onyx.core.domain.user;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,16 +19,18 @@ public class User extends AbstractEntity {
   private static final long serialVersionUID = -2200053643926715563L;
 
   private String name;
-  
+
   private String login;
-  
+
   private String password;
-  
+
   private String email;
-  
+
+  private Boolean deleted;
+
   @Enumerated(EnumType.STRING)
   private Role role;
-  
+
   @OneToMany(mappedBy = "user")
   private List<Interview> interviews;
 
@@ -65,9 +69,9 @@ public class User extends AbstractEntity {
   public List<Interview> getInterviews() {
     return interviews != null ? interviews : (interviews = new ArrayList<Interview>());
   }
-  
+
   public void addInterview(Interview interview) {
-    if (interview != null) {
+    if(interview != null) {
       getInterviews().add(interview);
       interview.setUser(this);
     }
@@ -80,7 +84,44 @@ public class User extends AbstractEntity {
   public void setEmail(String email) {
     this.email = email;
   }
-  
-  
-  
+
+  public boolean isDeleted() {
+    if(deleted == null) return false;
+    else
+      return deleted;
+  }
+
+  public void setDeleted(Boolean deleted) {
+    this.deleted = deleted;
+  }
+
+  /**
+   * Digest the password into a predefined algorithm.
+   * @param password
+   * @return
+   */
+  public static String digest(String password) {
+    try {
+      return convertToHex(MessageDigest.getInstance("SHA").digest(password.getBytes()));
+    } catch(NoSuchAlgorithmException e) {
+      e.printStackTrace();
+      return password;
+    }
+  }
+
+  private static String convertToHex(byte[] data) {
+    StringBuffer buf = new StringBuffer();
+    for(int i = 0; i < data.length; i++) {
+      int halfbyte = (data[i] >>> 4) & 0x0F;
+      int two_halfs = 0;
+      do {
+        if((0 <= halfbyte) && (halfbyte <= 9)) buf.append((char) ('0' + halfbyte));
+        else
+          buf.append((char) ('a' + (halfbyte - 10)));
+        halfbyte = data[i] & 0x0F;
+      } while(two_halfs++ < 1);
+    }
+    return buf.toString();
+  }
+
 }
