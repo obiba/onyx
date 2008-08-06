@@ -27,25 +27,26 @@ import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.webapp.base.page.BasePage;
+import org.obiba.onyx.webapp.interview.page.InterviewPage;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
 import org.obiba.onyx.webapp.util.DateUtils;
-import org.obiba.wicket.markup.html.table.FilteredSortableDataProviderEntityServiceImpl;
+import org.obiba.wicket.markup.html.link.LinkList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ParticipantSearchPage extends BasePage {
-
-  private static final Logger log = LoggerFactory.getLogger(ParticipantSearchPage.class);
 
   @SpringBean
   private EntityQueryService queryService;
 
   @SpringBean
   private ParticipantService participantService;
+
+  @SpringBean
+  private ActiveInterviewService activeInterviewService;
 
   private OnyxEntityList<Participant> participantList;
 
@@ -239,7 +240,29 @@ public class ParticipantSearchPage extends BasePage {
       columns.add(new AbstractColumn(new StringResourceModel("Actions", ParticipantSearchPage.this, null)) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          cellItem.add(new Label(componentId));
+          List<String> actions = new ArrayList<String>();
+          final Participant p = (Participant) rowModel.getObject();
+          actions.add("View");
+          if(p.getBarcode() == null) actions.add("Receive");
+
+          cellItem.add(new LinkList(componentId, actions) {
+
+            @Override
+            public void onClick(Object obj) {
+              if(obj.equals("View")) {
+                activeInterviewService.setParticipant(p);
+                setResponsePage(InterviewPage.class);
+              } else if(obj.equals("Receive")) {
+                // setResponsePage(ParticipantReceptionPage.class);;
+              }
+            }
+            
+            @Override
+            public String getDisplayString(Object obj) {
+              return ParticipantSearchPage.this.getString((String)obj);
+            }
+
+          });
         }
 
       });
