@@ -245,7 +245,7 @@ public class ParticipantSearchPage extends BasePage {
           actions.add("View");
           if(p.getBarcode() == null) actions.add("Receive");
 
-          cellItem.add(new LinkList(componentId, actions) {
+          cellItem.add(new LinkList(componentId, actions, "") {
 
             @Override
             public void onClick(Object obj) {
