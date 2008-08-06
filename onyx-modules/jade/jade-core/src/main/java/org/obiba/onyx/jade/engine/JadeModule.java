@@ -42,7 +42,7 @@ public class JadeModule implements Module {
     StageExecutionContext exec = new StageExecutionContext(interview, stage);
 
     AbstractStageState ready = new JadeReadyState();
-    AbstractStageState inProgress = new JadeInProgressState(new DetachableEntityModel(queryService, stage));
+    AbstractStageState inProgress = new JadeInProgressState(stage);
     AbstractStageState skipped = new JadeSkippedState();
     AbstractStageState completed = new JadeCompletedState();
     exec.addEdge(ready, TransitionEvent.START, inProgress);

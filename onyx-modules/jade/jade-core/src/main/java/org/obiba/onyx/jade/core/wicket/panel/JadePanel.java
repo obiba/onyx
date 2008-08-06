@@ -1,10 +1,13 @@
 package org.obiba.onyx.jade.core.wicket.panel;
 
+import java.io.Serializable;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -28,37 +31,37 @@ public class JadePanel extends Panel implements IEngineComponentAware {
   private ActiveInterviewService activeInterviewService;
 
   private ActionWindow actionWindow;
-  
-  private IModel stageModel;
+
+  private JadeModel model;
 
   @SuppressWarnings("serial")
-  public JadePanel(String id, final IModel stageModel) {
+  public JadePanel(String id, Stage stage) {
     super(id);
-    this.stageModel = stageModel;
-    InstrumentType type = getInstrumentType((Stage)stageModel.getObject());
-    setModel(new DetachableEntityModel(queryService, type));
+    InstrumentType type = getInstrumentType(stage);
+    // get a fresh stage from hibernate
+    model = new JadeModel(new DetachableEntityModel(queryService, queryService.get(Stage.class, stage.getId())), new DetachableEntityModel(queryService, type));
 
     add(new Label("description", type.getDescription()));
 
-    add(new InstrumentLauncherPanel("launcher", getModel()));
+    add(new InstrumentLauncherPanel("launcher", model.getIntrumentTypeModel()));
 
-    add(new InstrumentPanel("content", getModel()) {
+    add(new InstrumentPanel("content", model.getIntrumentTypeModel()) {
 
       @Override
       public void onCancel(AjaxRequestTarget target) {
-        IStageExecution exec = activeInterviewService.getStageExecution((Stage)stageModel.getObject());
+        IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
         ActionDefinition actionDef = exec.getActionDefinition(ActionType.STOP);
         if(actionDef != null) {
-          actionWindow.show(target, stageModel, actionDef);
+          actionWindow.show(target, model.getStageModel(), actionDef);
         }
       }
 
       @Override
       public void onFinish(AjaxRequestTarget target, Form form) {
-        IStageExecution exec = activeInterviewService.getStageExecution((Stage)stageModel.getObject());
+        IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
         ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
         if(actionDef != null) {
-          actionWindow.show(target, stageModel, actionDef);
+          actionWindow.show(target, model.getStageModel(), actionDef);
         }
       }
 
@@ -72,6 +75,35 @@ public class JadePanel extends Panel implements IEngineComponentAware {
 
   public void setActionWindwon(ActionWindow window) {
     this.actionWindow = window;
+  }
+
+  @SuppressWarnings("serial")
+  private class JadeModel implements Serializable {
+    private IModel intrumentTypeModel;
+
+    private IModel stageModel;
+
+    public JadeModel(IModel stageModel, IModel instrumentTypeModel) {
+      this.intrumentTypeModel = instrumentTypeModel;
+      this.stageModel = stageModel;
+    }
+
+    public InstrumentType getIntrumentType() {
+      return (InstrumentType) intrumentTypeModel.getObject();
+    }
+
+    public Stage getStage() {
+      return (Stage) stageModel.getObject();
+    }
+
+    public IModel getIntrumentTypeModel() {
+      return intrumentTypeModel;
+    }
+
+    public IModel getStageModel() {
+      return stageModel;
+    }
+
   }
 
 }
