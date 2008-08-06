@@ -6,6 +6,7 @@
     <lastName>Benjamín</lastName>
     <gender>MALE</gender>
     <barcode>1</barcode>
+    <birthDate>1969-02-22 15:16:04.0 EST</birthDate>
   </participant>
   
   <participant>
@@ -13,6 +14,7 @@
     <lastName>Albin</lastName>
     <gender>FEMALE</gender>
     <barcode>2</barcode>
+    <birthDate>1973-01-15 18:23:01.0 EST</birthDate>
   </participant>
   
   <participant>
@@ -20,6 +22,7 @@
     <lastName>Cupid</lastName>
     <gender>MALE</gender>
     <barcode>3</barcode>
+    <birthDate>1939-11-11 10:16:04.0 EST</birthDate>
   </participant>
 
 </linked-list>
