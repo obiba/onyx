@@ -13,6 +13,11 @@ public class OnyxEntityList<T> extends EntityListTablePanel<T> {
     super(id, type, columns, title);
     setAllowColumnSelection(false);
   }
+  
+  public OnyxEntityList(String id, T template, IColumnProvider columns, IModel title) {
+    super(id, template, columns, title);
+    setAllowColumnSelection(false);
+  }
 
   public OnyxEntityList(String id, SortableDataProvider dataProvider, IColumnProvider columns, IModel title) {
     super(id, dataProvider, columns, title, 100);

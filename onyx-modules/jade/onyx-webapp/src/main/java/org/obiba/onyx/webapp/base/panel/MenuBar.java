@@ -6,8 +6,6 @@ import java.util.Locale;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.webapp.base.page.BasePage;
 
 /**
@@ -18,9 +16,6 @@ import org.obiba.onyx.webapp.base.page.BasePage;
 public class MenuBar extends Panel {
 
   private static final long serialVersionUID = 1L;
-
-  @SpringBean
-  private EntityQueryService queryService;
 
   public MenuBar(String id) {
     super(id);

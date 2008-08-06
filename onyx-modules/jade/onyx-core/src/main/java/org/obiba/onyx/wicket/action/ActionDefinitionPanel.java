@@ -62,7 +62,7 @@ public abstract class ActionDefinitionPanel extends Panel {
     }
 
     Participant participantTemplate = new Participant();
-    TextField participantBarcode = new TextField("confirmBarcode", new PropertyModel(participantTemplate, "barCode"));
+    TextField participantBarcode = new TextField("confirmBarcode", new PropertyModel(participantTemplate, "barcode"));
     participantBarcode.add(new IValidator() {
 
       public void validate(IValidatable validatable) {

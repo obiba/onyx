@@ -51,7 +51,7 @@ public class HomePage extends BasePage {
 
       setModel(new Model(new Participant()));
 
-      TextField barCode = new TextField("barCode", new PropertyModel(getModelObject(), "barCode"));
+      TextField barCode = new TextField("barCode", new PropertyModel(getModelObject(), "barcode"));
       barCode.add(new RequiredFormFieldBehavior());
       add(barCode);
 

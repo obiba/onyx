@@ -269,8 +269,8 @@ div#feedback {
 div#feedback ul {
   text-align: left;
   width:400px;
-  background-color: #F6FCEC;
-  border:1px solid #336799;
+  /*background-color: #F6FCEC;
+  border:1px solid #336799;*/
   padding:10px;
   /*padding-left: 40px;*/
  /* margin-top:10px;

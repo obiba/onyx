@@ -29,7 +29,7 @@ public class Participant extends AbstractEntity {
   @Temporal(TemporalType.DATE)
   private Date birthDate;
 
-  private String barCode;
+  private String barcode;
   
   @OneToOne(mappedBy = "participant")
   private Interview interview;
@@ -90,11 +90,11 @@ public class Participant extends AbstractEntity {
   }
 
   public String getBarcode() {
-    return barCode;
+    return barcode;
   }
 
   public void setBarcode(String barcode) {
-    this.barCode = barcode;
+    this.barcode = barcode;
   }
 
   public String getFullName() {

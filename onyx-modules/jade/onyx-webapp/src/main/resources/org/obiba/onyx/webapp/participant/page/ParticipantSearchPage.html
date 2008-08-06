@@ -1,0 +1,50 @@
+<html>
+  <body>
+    <wicket:extend>
+    	<table style="width: 100%">
+    		<tr>
+    			<td>
+    				<fieldset>
+    					<legend><wicket:message key="ParticipantSearch" /></legend>
+    					<form wicket:id="searchForm">
+    						<table class="keyValueTable">
+    							<tr>
+    								<td class="keyValueTableKey"><wicket:message key="Code" /></td>
+    								<td class="keyValueTableValueOdd"><input wicket:id="barcode" type="text" size="20"/></td>
+    							</tr>
+    							<tr>
+    								<td class="keyValueTableKey"><wicket:message key="Name" /></td>
+    								<td class="keyValueTableValueEven"><input wicket:id="name" type="text" size="20"/></td>
+    							</tr>
+    							<tr>
+    								<td colspan="2">
+    									<input type="submit" wicket:message="value:Search" wicket:id="submit"/>
+    									<input type="submit" wicket:message="value:AppointmentsOfTheDay" wicket:id="appointments"/>
+    									<input type="submit" wicket:message="value:CurrentInterviews" wicket:id="interviews"/>
+    								</td>
+    							</tr>
+    						</table>
+							
+						</form>
+					</fieldset>
+    			</td>
+    			<td valign="top">
+    				<fieldset>
+    					<legend><wicket:message key="Action" /></legend>
+    					<a wicket:id="volunteer"><wicket:message key="EnrollVolunteer" /></a>
+					</fieldset>
+    			</td>
+    		</tr>
+    		<tr>
+    			<td colspan="2">
+    				<fieldset>
+    					<legend><wicket:message key="Participants" /></legend>
+    					<span wicket:id="participant-list" />
+					</fieldset>
+    				
+    			</td>
+    		</tr>
+    	</table>
+    </wicket:extend>
+  </body>
+</html>
