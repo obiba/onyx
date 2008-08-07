@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -31,9 +32,11 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.webapp.base.page.BasePage;
+import org.obiba.onyx.webapp.bubble.panel.BubblePopupPanel;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
+import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.webapp.util.DateUtils;
-import org.obiba.wicket.markup.html.link.LinkList;
+import org.obiba.wicket.markup.html.link.AjaxLinkList;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
@@ -54,10 +57,14 @@ public class ParticipantSearchPage extends BasePage {
 
   private Participant template = new Participant();
 
+  private BubblePopupPanel bubble;
+  
   @SuppressWarnings("serial")
   public ParticipantSearchPage() {
     super();
 
+    add(bubble = new BubblePopupPanel("bubble"));
+    
     Form form = new Form("searchForm");
     add(form);
 
@@ -268,27 +275,29 @@ public class ParticipantSearchPage extends BasePage {
       });
       columns.add(new AbstractColumn(new StringResourceModel("Actions", ParticipantSearchPage.this, null)) {
 
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          List<String> actions = new ArrayList<String>();
+        public void populateItem(final Item cellItem, String componentId, IModel rowModel) {
+          final List<IModel> actions = new ArrayList<IModel>();
           final Participant p = (Participant) rowModel.getObject();
-          actions.add("View");
-          if(p.getBarcode() == null) actions.add("Receive");
+          actions.add(new Model("View"));
+          actions.add(new Model("Interview"));
+          if(p.getBarcode() == null) actions.add(new Model("Receive"));
 
-          cellItem.add(new LinkList(componentId, actions, "") {
+          cellItem.add(new AjaxLinkList(componentId, actions, "") {
 
             @Override
-            public void onClick(Object obj) {
-              if(obj.equals("View")) {
+            public void onClick(IModel model, AjaxRequestTarget target) {
+              if (actions.indexOf(model)==0) {
+                bubble.setContent(target, new ParticipantPanel(bubble.getContentId(), p));
+                bubble.place(target, (Component)cellItem.getParent());
+                bubble.show(target);
+              }
+              else if (actions.indexOf(model)==1) {
                 activeInterviewService.setParticipant(p);
                 setResponsePage(InterviewPage.class);
-              } else if(obj.equals("Receive")) {
-                setResponsePage(new ParticipantReceptionPage(new DetachableEntityModel(queryService, p)));;
               }
-            }
-            
-            @Override
-            public String getDisplayString(Object obj) {
-              return ParticipantSearchPage.this.getString((String)obj);
+              else {
+                setResponsePage(new ParticipantReceptionPage(new DetachableEntityModel(queryService, p)));
+              }
             }
 
           });
