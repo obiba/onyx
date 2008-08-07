@@ -71,7 +71,7 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
     AssociationCriteria criteria = AssociationCriteria.create(Participant.class, getSession());
 
     if(barcode != null) criteria.add("barcode", Operation.eq, barcode);
-    if(likeName != null) criteria.add("lastName", Operation.ilike, likeName);
+    if(likeName != null) criteria.add("lastName", Operation.ilike, likeName + "%");
     if(paging != null) criteria.addPagingClause(paging);
     if(clauses != null) criteria.addSortingClauses(clauses);
 
