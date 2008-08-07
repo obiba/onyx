@@ -6,7 +6,9 @@
     <login>administrator</login>
     <password>password</password>
     <email>test@obiba.org</email>
-    <role>SYSTEM_ADMINISTRATOR</role>
+    <role>
+      <name>SYSTEM_ADMINISTRATOR</name>
+    </role>
   </user>
   
   <config>

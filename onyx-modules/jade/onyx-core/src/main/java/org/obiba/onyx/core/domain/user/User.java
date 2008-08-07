@@ -5,14 +5,20 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Interview;
 
+@TypeDefs({
+  @TypeDef(name="role", typeClass=RoleType.class  
+  ) // Register the role type
+})
 @Entity
 public class User extends AbstractEntity {
 
@@ -28,7 +34,8 @@ public class User extends AbstractEntity {
 
   private Boolean deleted;
 
-  @Enumerated(EnumType.STRING)
+  @Type(type="role")
+  @Column(length=30)
   private Role role;
 
   @OneToMany(mappedBy = "user")
