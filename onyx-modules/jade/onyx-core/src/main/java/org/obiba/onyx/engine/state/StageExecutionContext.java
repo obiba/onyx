@@ -64,7 +64,7 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
   }
 
   public void castEvent(TransitionEvent event) {
-
+    log.info("castEvent(" + event + ") from " + currentState.getClass().getSimpleName());
     Map<TransitionEvent, IStageExecution> stateEdges = edges.get(currentState);
     if(stateEdges != null) {
       currentState = stateEdges.get(event);
@@ -80,7 +80,7 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
         transitionListeners.remove(listener);
       }
     }
-    log.info("castEvent(" + event + ") from " + currentState.getClass().getSimpleName() + " to " + currentState.getClass().getSimpleName());
+    log.info("castEvent(" + event + ") to " + currentState.getClass().getSimpleName());
   }
 
   public List<ActionDefinition> getActionDefinitions() {
