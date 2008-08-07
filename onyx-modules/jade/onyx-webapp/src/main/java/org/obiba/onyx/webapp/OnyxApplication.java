@@ -4,18 +4,23 @@ import java.util.Map;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.Component;
+import org.apache.wicket.Page;
 import org.apache.wicket.Request;
 import org.apache.wicket.Response;
+import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.Session;
 import org.apache.wicket.authorization.IUnauthorizedComponentInstantiationListener;
+import org.apache.wicket.authorization.UnauthorizedInstantiationException;
+import org.apache.wicket.authorization.strategies.role.RoleAuthorizationStrategy;
+import org.apache.wicket.markup.html.pages.AccessDeniedPage;
 import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.PackageName;
 import org.obiba.onyx.core.service.UserService;
+import org.obiba.onyx.webapp.authentication.UserRolesAuthorizer;
 import org.obiba.onyx.webapp.config.page.InitConfigPage;
 import org.obiba.onyx.webapp.home.page.HomePage;
 import org.obiba.onyx.webapp.login.page.LoginPage;
-import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 import org.obiba.onyx.webapp.stage.page.StagePage;
 import org.obiba.wicket.application.WebApplicationStartupListener;
@@ -55,6 +60,9 @@ public class OnyxApplication extends SpringWebApplication implements IUnauthoriz
     // nice urls
     mount("participant", PackageName.forClass(ParticipantSearchPage.class));
     mount("stage", PackageName.forClass(StagePage.class));
+
+    getSecuritySettings().setAuthorizationStrategy(new RoleAuthorizationStrategy(new UserRolesAuthorizer()));
+    getSecuritySettings().setUnauthorizedComponentInstantiationListener(this);
 
     log.info("Onyx Web Application has been started");
   }
@@ -130,7 +138,21 @@ public class OnyxApplication extends SpringWebApplication implements IUnauthoriz
   }
 
   public void onUnauthorizedInstantiation(Component component) {
-    // TODO Auto-generated method stub
+    // If there is a sign in page class declared, and the unauthorized component is a page, but it's not the sign in
+    // page
+    if(component instanceof Page) {
+      if(!OnyxAuthenticatedSession.get().isSignedIn()) {
+        // Redirect to intercept page to let the user sign in
+        throw new RestartResponseAtInterceptPageException(LoginPage.class);
+      } else {
+        // User is signed in but doesn't have the proper access rights. Display error and redirect accordingly.
+        throw new RestartResponseAtInterceptPageException(AccessDeniedPage.class);
+      }
+    } else {
+      // The component was not a page, so show an error message in the FeedbackPanel of the page
+      component.error("You do not have sufficient privileges to see this component.");
+      throw new UnauthorizedInstantiationException(component.getClass());
+    }
   }
 
 }

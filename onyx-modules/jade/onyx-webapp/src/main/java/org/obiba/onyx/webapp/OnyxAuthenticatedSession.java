@@ -2,12 +2,12 @@ package org.obiba.onyx.webapp;
 
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
+import org.apache.wicket.authorization.strategies.role.Roles;
 import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.user.User;
-
 
 public final class OnyxAuthenticatedSession extends WebSession {
 
@@ -72,18 +72,25 @@ public final class OnyxAuthenticatedSession extends WebSession {
     invalidateNow();
   }
 
-  
- /*
-   * public Roles getRoles() { if (isSignedIn()) {
-   * 
-   * //Prepare the role list in a string provided to the Wicket Roles class. StringBuilder roleList = new
-   * StringBuilder(); Iterator<Role> it = user.getRoles().iterator(); while (it.hasNext()) {
-   * roleList.append(it.next().getName());
-   * 
-   * if (it.hasNext()) { roleList.append(","); } }
-   * 
-   * Roles userRoles = new Roles(roleList.toString()); return userRoles; } return null; }
-   */
-  
+  public Roles getRoles() {
+    if(isSignedIn()) {
+
+      // Prepare the role list in a string provided to the Wicket Roles class. 
+//      StringBuilder roleList = new StringBuilder();
+//      Iterator<Role> it = user.getRoles().iterator();
+//      while(it.hasNext()) {
+//        roleList.append(it.next().getName());
+//
+//        if(it.hasNext()) {
+//          roleList.append(",");
+//        }
+//      }
+//
+//      Roles userRoles = new Roles(roleList.toString());
+      Roles userRoles = new Roles(user.getRole().toString());
+      return userRoles;
+    }
+    return null;
+  }
 
 }

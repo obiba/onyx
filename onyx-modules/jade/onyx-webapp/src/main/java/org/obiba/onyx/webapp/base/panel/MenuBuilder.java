@@ -21,8 +21,8 @@ import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 
 /**
- * Builds the menu that will appear in the menu bar and in the home page. Only
- * page links current user is allowed to go are visible.
+ * Builds the menu that will appear in the menu bar and in the home page. Only page links current user is allowed to go
+ * are visible.
  * @author Yannick Marcon
  * 
  */
@@ -44,7 +44,7 @@ public class MenuBuilder {
   public static void build(final MarkupContainer container, boolean fullMenu) {
     final List<MenuItem> menuItems = new ArrayList<MenuItem>();
 
-    if ( OnyxAuthenticatedSession.get().isSignedIn() ) {
+    if(OnyxAuthenticatedSession.get().isSignedIn()) {
       menuItems.add(new MenuItem(Application.get().getHomePage(), "Home"));
       menuItems.add(new MenuItem(ParticipantSearchPage.class, "Participant"));
       menuItems.add(new MenuItem(Application.get().getHomePage(), "Administration"));
@@ -76,11 +76,9 @@ public class MenuBuilder {
         };
 
         item.add(menuItemDataView);
-        /*
-         * if (menuItem.getRoles() != null) {
-         * MetaDataRoleAuthorizationStrategy.authorize(item, RENDER,
-         * menuItem.getRoles().toString()); }
-         */
+        if(menuItem.getRoles() != null) {
+          MetaDataRoleAuthorizationStrategy.authorize(item, RENDER, menuItem.getRoles().toString());
+        }
       }
     });
 
@@ -88,8 +86,8 @@ public class MenuBuilder {
 
   private static AbstractLink getLink(String linkId, Class<?> pageClass, PageParameters parameters, String labelId, String label, Component component) {
     AbstractLink link;
-    if (pageClass == null) link = new BookmarkablePageLink(linkId, component.getPage().getClass(), component.getPage().getPageParameters());
-    else if (parameters != null) link = new BookmarkablePageLink(linkId, pageClass, parameters);
+    if(pageClass == null) link = new BookmarkablePageLink(linkId, component.getPage().getClass(), component.getPage().getPageParameters());
+    else if(parameters != null) link = new BookmarkablePageLink(linkId, pageClass, parameters);
     else
       link = new BookmarkablePageLink(linkId, pageClass);
 
@@ -100,7 +98,7 @@ public class MenuBuilder {
   private static void setPageview(Component c, MenuItem mi) {
     // Menu item will be displayed only if user has the roles to see the page
     AuthorizeInstantiation authorizationAnnotation = mi.getPage().getAnnotation(AuthorizeInstantiation.class);
-    if (authorizationAnnotation != null) {
+    if(authorizationAnnotation != null) {
       String[] authorizedRoles = authorizationAnnotation.value();
       MetaDataRoleAuthorizationStrategy.authorize(c, Component.RENDER, StringUtil.stringArrayToString(authorizedRoles));
     }

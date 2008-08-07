@@ -1,5 +1,6 @@
 package org.obiba.onyx.webapp.participant.page;
 
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebApplication;
@@ -13,6 +14,7 @@ import org.obiba.onyx.webapp.stage.panel.StageSelectionPanel;
 import org.obiba.onyx.webapp.util.DateUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 
+@AuthorizeInstantiation({"SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR"})
 public class InterviewPage extends BasePage {
 
   @SpringBean(name = "activeInterviewService")
