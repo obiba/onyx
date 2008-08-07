@@ -8,6 +8,6 @@
   
   <import resource="classpath:/test-hibernate-config.xml" />
   <import resource="classpath:/test-db-config.xml" />
-  <import resource="classpath:META-INF/spring/jade-core/context.xml" />
+  <import resource="classpath:META-INF/spring/onyx-core/context.xml" />
 
 </beans>
