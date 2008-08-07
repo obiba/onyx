@@ -14,7 +14,7 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.webapp.action.panel.ActionsPanel;
 import org.obiba.onyx.webapp.base.page.BasePage;
-import org.obiba.onyx.webapp.interview.page.InterviewPage;
+import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.action.ActionWindow;
 

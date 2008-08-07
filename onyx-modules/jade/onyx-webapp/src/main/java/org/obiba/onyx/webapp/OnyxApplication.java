@@ -14,8 +14,9 @@ import org.apache.wicket.util.lang.PackageName;
 import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.webapp.config.page.InitConfigPage;
 import org.obiba.onyx.webapp.home.page.HomePage;
-import org.obiba.onyx.webapp.interview.page.InterviewPage;
 import org.obiba.onyx.webapp.login.page.LoginPage;
+import org.obiba.onyx.webapp.participant.page.InterviewPage;
+import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 import org.obiba.onyx.webapp.stage.page.StagePage;
 import org.obiba.wicket.application.WebApplicationStartupListener;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public class OnyxApplication extends SpringWebApplication implements IUnauthoriz
     });
 
     // nice urls
-    mount("interview", PackageName.forClass(InterviewPage.class));
+    mount("participant", PackageName.forClass(ParticipantSearchPage.class));
     mount("stage", PackageName.forClass(StagePage.class));
 
     log.info("Onyx Web Application has been started");

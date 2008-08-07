@@ -1,4 +1,4 @@
-package org.obiba.onyx.webapp.interview.page;
+package org.obiba.onyx.webapp.participant.page;
 
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;

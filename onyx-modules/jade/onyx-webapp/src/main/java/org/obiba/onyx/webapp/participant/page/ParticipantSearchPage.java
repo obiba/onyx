@@ -30,7 +30,6 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.webapp.base.page.BasePage;
-import org.obiba.onyx.webapp.interview.page.InterviewPage;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
 import org.obiba.onyx.webapp.util.DateUtils;
 import org.obiba.wicket.markup.html.link.LinkList;
