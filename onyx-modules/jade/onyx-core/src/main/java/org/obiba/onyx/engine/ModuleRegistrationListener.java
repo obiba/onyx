@@ -10,6 +10,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+/**
+ * Get the {@link Module} from the Spring application context and (un)registrate them. 
+ * @author Yannick Marcon
+ *
+ */
 public class ModuleRegistrationListener implements WebApplicationStartupListener, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(ModuleRegistrationListener.class);

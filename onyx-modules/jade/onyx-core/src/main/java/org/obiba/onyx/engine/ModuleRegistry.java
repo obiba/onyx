@@ -5,6 +5,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Registry from which a {@link Module} can be get from its name.
+ * @see Stage
+ * @author Yannick Marcon
+ *
+ */
 public class ModuleRegistry {
 
   private Map<String, Module> modules = Collections.synchronizedMap(new HashMap<String, Module>());

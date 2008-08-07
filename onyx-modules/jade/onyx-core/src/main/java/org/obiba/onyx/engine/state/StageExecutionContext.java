@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.Component;
+import org.obiba.core.domain.IEntity;
 import org.obiba.onyx.core.domain.IMemento;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
@@ -16,6 +17,16 @@ import org.obiba.onyx.engine.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The stage execution context is the entry point of stage state machines. It holds the current state, and performs the
+ * {@link TransitionEvent} based state transitions. As a {@link ITransitionSource} it will inform the
+ * {@link ITransitionListener} about the transition event. All the method calls defined by {@link IStageExecution} will be forwarded 
+ * to the {@link IStageExecution} holding the current state.
+ * 
+ * @see State Machine Design Pattern http://dotnet.zcu.cz/NET_2006/Papers_2006/short/B31-full.pdf
+ * @author Yannick Marcon
+ * 
+ */
 public class StageExecutionContext implements IStageExecution, ITransitionEventSink, IMemento, ITransitionSource {
 
   private static final Logger log = LoggerFactory.getLogger(StageExecutionContext.class);
@@ -159,7 +170,7 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
     this.currentState = stageState;
   }
 
-  public void restoreFromMemento(Object memento) {
+  public void restoreFromMemento(IEntity memento) {
     if(memento instanceof StageExecutionMemento) {
       StageExecutionMemento stageMemento = (StageExecutionMemento) memento;
       this.interview = stageMemento.getInterview();
@@ -172,18 +183,16 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
     }
   }
 
-  public Object saveToMemento(Object memento) {
+  public IEntity saveToMemento(IEntity memento) {
     StageExecutionMemento myMemento = null;
-    if (memento == null) {
+    if(memento == null) {
       myMemento = new StageExecutionMemento();
       myMemento.setInterview(interview);
       myMemento.setStage(stage);
-    }
-    else if (memento instanceof StageExecutionMemento)
-      myMemento = (StageExecutionMemento)memento;
+    } else if(memento instanceof StageExecutionMemento) myMemento = (StageExecutionMemento) memento;
     else
       throw new IllegalArgumentException("StageExecutionMemento is expected.");
-    
+
     myMemento.setState(currentState.getClass().getSimpleName());
 
     return myMemento;

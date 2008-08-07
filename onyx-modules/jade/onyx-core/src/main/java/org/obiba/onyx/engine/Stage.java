@@ -11,6 +11,13 @@ import javax.persistence.ManyToMany;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Interview;
 
+/**
+ * Stage is associated to a module, through its name.
+ * 
+ * @see Module
+ * @author Yannick Marcon
+ *
+ */
 @Entity
 public class Stage extends AbstractEntity {
 

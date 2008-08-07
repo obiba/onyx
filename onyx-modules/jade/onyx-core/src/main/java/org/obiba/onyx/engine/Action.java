@@ -14,6 +14,13 @@ import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.user.User;
 
+/**
+ * Action is the track of who did what, when on who and why in the Onyx system.
+ * 
+ * @see ActionType
+ * @author Yannick Marcon
+ *
+ */
 @Entity
 public class Action extends AbstractEntity {
 
