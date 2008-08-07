@@ -31,6 +31,8 @@ public class Participant extends AbstractEntity {
 
   private String barcode;
   
+  private String receptionComment;
+  
   @OneToOne(mappedBy = "participant")
   private Interview interview;
 
@@ -111,4 +113,13 @@ public class Participant extends AbstractEntity {
   public String getFullName() {
     return getFirstName() + " " + getLastName();
   }
+
+  public String getReceptionComment() {
+    return receptionComment;
+  }
+
+  public void setReceptionComment(String receptionComment) {
+    this.receptionComment = receptionComment;
+  }
+
 }

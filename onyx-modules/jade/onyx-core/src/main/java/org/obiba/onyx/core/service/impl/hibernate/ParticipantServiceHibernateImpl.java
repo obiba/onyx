@@ -78,4 +78,9 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
     return criteria;
   }
 
+  public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment) {
+    participant.setBarcode(barcode);
+    participant.setReceptionComment(receptionComment);
+    persistenceManager.save(participant);
+  }
 }

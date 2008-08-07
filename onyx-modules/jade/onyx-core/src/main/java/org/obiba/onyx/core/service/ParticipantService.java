@@ -44,5 +44,7 @@ public interface ParticipantService {
   public List<Participant> getParticipants(String barcode, String likeName, Date from, Date to, PagingClause paging, SortingClause... clauses);
   
   public int countParticipants(String barcode, String likeName, Date from, Date to);
+
+  public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment);
   
 }
