@@ -4,7 +4,6 @@ package org.obiba.onyx.webapp.home.page;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -29,16 +28,6 @@ public class HomePage extends BasePage {
     super();
 
     add(new ParticipantSearchForm("configurationForm"));
-
-    add(new Link("receiveParticipants") {
-
-      private static final long serialVersionUID = 1L;
-
-      public void onClick() {
-        // To be implemented
-      }
-
-    });
 
   }
 

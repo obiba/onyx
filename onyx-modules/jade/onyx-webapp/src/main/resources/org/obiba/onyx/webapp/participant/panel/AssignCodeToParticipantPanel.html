@@ -1,0 +1,19 @@
+<wicket:panel>
+	<form wicket:id="assignCodeToParticipantForm">    
+	    <fieldset>     		
+			<table>
+				<tr>
+		    		<td><label for="participantCode"><wicket:message key="participantCode" /></label></td>
+		    		<td><input wicket:id="participantCode" id="participantCode" type="text" size="20"/></td>
+		    	</tr>
+				<tr>
+		    		<td><label for="comment"><wicket:message key="comment" /></label></td>
+		    		<td><textarea cols="30" rows="3" wicket:id="comment" name="comment"></textarea></td>
+		    	</tr>				        				        				        	        		
+			</table>
+	    </fieldset> 
+	    
+	    <input type="submit" wicket:id="submit" wicket:message="value:Save"> 		
+	    <input type="button" wicket:id="cancel" wicket:message="value:cancel"> 
+	</form>
+</wicket:panel>

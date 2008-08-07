@@ -17,6 +17,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.ListDataProvider;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.core.util.StringUtil;
+import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 
 /**
@@ -43,9 +44,11 @@ public class MenuBuilder {
   public static void build(final MarkupContainer container, boolean fullMenu) {
     final List<MenuItem> menuItems = new ArrayList<MenuItem>();
 
-    menuItems.add(new MenuItem(Application.get().getHomePage(), "Home"));
-    menuItems.add(new MenuItem(ParticipantSearchPage.class, "Participant"));
-    menuItems.add(new MenuItem(Application.get().getHomePage(), "Administration"));
+    if ( OnyxAuthenticatedSession.get().isSignedIn() ) {
+      menuItems.add(new MenuItem(Application.get().getHomePage(), "Home"));
+      menuItems.add(new MenuItem(ParticipantSearchPage.class, "Participant"));
+      menuItems.add(new MenuItem(Application.get().getHomePage(), "Administration"));
+    }
 
     // Creating the DataView containing the whole menu
     container.add(new DataView("menuItem", new ListDataProvider(menuItems)) {

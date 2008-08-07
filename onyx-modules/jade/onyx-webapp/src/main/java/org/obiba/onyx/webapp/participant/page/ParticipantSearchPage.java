@@ -33,6 +33,7 @@ import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
 import org.obiba.onyx.webapp.util.DateUtils;
 import org.obiba.wicket.markup.html.link.LinkList;
+import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 
@@ -279,7 +280,7 @@ public class ParticipantSearchPage extends BasePage {
                 activeInterviewService.setParticipant(p);
                 setResponsePage(InterviewPage.class);
               } else if(obj.equals("Receive")) {
-                // setResponsePage(ParticipantReceptionPage.class);;
+                setResponsePage(new ParticipantReceptionPage(new DetachableEntityModel(queryService, p)));;
               }
             }
             
