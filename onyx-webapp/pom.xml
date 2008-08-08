@@ -5,16 +5,16 @@
   <modelVersion>4.0.0</modelVersion>
 
   <name>Onyx Web Application</name>
+  <description>Assessment Center Web Application</description>
 
   <groupId>org.obiba.onyx</groupId>
   <artifactId>onyx-webapp</artifactId>
   <packaging>war</packaging>
 
   <parent>
-    <!-- Temporarely, the parent is Jade. This should be set to Onyx when it actually exists -->
-    <groupId>org.obiba.jade</groupId>
-    <artifactId>jade</artifactId>
-    <version>1.0-M1-SNAPSHOT</version>
+    <groupId>org.obiba.onyx</groupId>
+    <artifactId>onyx</artifactId>
+    <version>1.0-M2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -131,13 +131,13 @@
                 -->
 
                 <copy todir="${project.build.directory}/${project.build.finalName}/instruments">
-                  <fileset dir="${project.basedir}/../instrument-parent/src/main/resources/instruments">
+                  <fileset dir="${project.basedir}/../onyx-modules/jade/instrument-parent/src/main/resources/instruments">
                     <include name="**/*.*" />
                   </fileset>
                 </copy>
 
                 <copy todir="${project.build.directory}/${project.build.finalName}/instruments">
-                  <fileset dir="${project.basedir}/../instrument-parent">
+                  <fileset dir="${project.basedir}/../onyx-modules/jade/instrument-parent">
                     <include name="interface-*/target/jnlp/**/*.*" />
                     <exclude name="interface-*/target/jnlp/**/instrument-descriptor.xml" />
                   </fileset>
@@ -150,7 +150,7 @@
                 </copy>
 
                 <copy todir="${project.build.directory}/${project.build.finalName}/instruments">
-                  <fileset dir="${project.basedir}/../instrument-parent">
+                  <fileset dir="${project.basedir}/../onyx-modules/jade/instrument-parent">
                     <include name="interface-*/target/jnlp/**/instrument-descriptor.xml" />
                   </fileset>
                   <chainedmapper>

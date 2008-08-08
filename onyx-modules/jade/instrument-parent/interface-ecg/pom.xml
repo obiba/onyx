@@ -4,12 +4,13 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <name>ECG Interface</name>
+  <name>Jade ECG Interface</name>
+  <description>Physical Measurement ECG Interface</description>
 
   <parent>
     <groupId>org.obiba.jade.instrument</groupId>
     <artifactId>instrument-parent</artifactId>
-    <version>1.0-M1-SNAPSHOT</version>
+    <version>1.0-M2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 

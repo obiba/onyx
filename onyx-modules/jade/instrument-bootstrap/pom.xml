@@ -4,7 +4,8 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Instrument Bootstrap</name>
+  <name>Jade Instrument Bootstrap</name>
+  <description>Physical Measurement Instrument Bootstrap</description>
 
   <groupId>org.obiba.jade.instrument</groupId>
   <artifactId>instrument-bootstrap</artifactId>
@@ -13,7 +14,7 @@
   <parent>
     <groupId>org.obiba.jade</groupId>
     <artifactId>jade</artifactId>
-    <version>1.0-M1-SNAPSHOT</version>
+    <version>1.0-M2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 

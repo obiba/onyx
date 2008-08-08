@@ -4,7 +4,8 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Physical Measurement Core</name>
+  <name>Jade Core</name>
+  <description>Physical Measurement Core</description>
 
   <groupId>org.obiba.jade</groupId>
   <artifactId>jade-core</artifactId>
@@ -13,7 +14,7 @@
   <parent>
     <artifactId>jade</artifactId>
     <groupId>org.obiba.jade</groupId>
-    <version>1.0-M1-SNAPSHOT</version>
+    <version>1.0-M2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 

@@ -12,9 +12,9 @@
   <packaging>jar</packaging>
 
   <parent>
-    <groupId>org.obiba.jade</groupId>
-    <artifactId>jade</artifactId>
-    <version>1.0-M1-SNAPSHOT</version>
+    <groupId>org.obiba.onyx</groupId>
+    <artifactId>onyx</artifactId>
+    <version>1.0-M2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 

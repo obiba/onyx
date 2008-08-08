@@ -4,7 +4,8 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Instrument Parent POM</name>
+  <name>Jade Instrument</name>
+  <description>Physical Measurement Instrument Parent POM</description>
 
   <groupId>org.obiba.jade.instrument</groupId>
   <artifactId>instrument-parent</artifactId>
@@ -13,7 +14,7 @@
   <parent>
     <artifactId>jade</artifactId>
     <groupId>org.obiba.jade</groupId>
-    <version>1.0-M1-SNAPSHOT</version>
+    <version>1.0-M2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
