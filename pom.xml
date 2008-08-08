@@ -17,6 +17,7 @@
     <module>onyx-core</module>
     <module>onyx-modules</module>
     <module>onyx-webapp</module>
+    <module>cartagene-webapp</module>
   </modules>
 
   <dependencyManagement>

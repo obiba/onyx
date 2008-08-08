@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<linked-list>
+
+  <!-- Instruments -->
+  <!-- ECG1 -->
+  <instrument id="ecg1">
+    <name>ECG 1</name>
+    <vendor>GE</vendor>
+    <model>CardioSoft</model>
+    <serialNumber>1234567890</serialNumber>
+    <barcode>ecg1</barcode>    
+    <status>ACTIVE</status>
+    <instrumentType>
+      <name>ECG</name>
+    </instrumentType>
+  </instrument>
+
+</linked-list>

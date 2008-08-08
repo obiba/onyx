@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<linked-list>
+
+  <!-- Instruments -->
+  <!-- STA1 -->
+  <instrument id="sta1">
+    <name>Tape 1</name>
+    <vendor>Seca</vendor>
+    <model>Model 214</model>
+    <serialNumber>1234567890</serialNumber>
+    <barcode>sta01</barcode>
+    <status>ACTIVE</status>
+    <instrumentType>
+      <name>STA</name>
+    </instrumentType>
+  </instrument>
+
+  <output id="sta1_height1">
+    <name>Height 1</name>
+    <description>First height measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="sta1" />
+  </output>
+  <output id="sta1_height2">
+    <name>Height 2</name>
+    <description>Second height measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="sta1" />
+  </output>
+  <computedOutput>
+    <name>Height</name>
+    <description>Height measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <instrument reference="sta1" />
+    <algorithm>AVERAGE</algorithm>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <outputs>
+      <output reference="sta1_height1" />
+      <output reference="sta1_height2" />
+    </outputs>
+  </computedOutput>
+
+  <!-- STA2 -->
+  <instrument id="sta2">
+    <name>Tape 2</name>
+    <vendor>Seca</vendor>
+    <model>Model 214</model>
+    <serialNumber>0987654321</serialNumber>
+    <barcode>sta02</barcode>
+    <status>ACTIVE</status>
+    <instrumentType>
+      <name>STA</name>
+    </instrumentType>
+  </instrument>
+
+  <output id="sta2_height1">
+    <name>Height 1</name>
+    <description>First height measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="sta2" />
+  </output>
+  <output id="sta2_height2">
+    <name>Height 2</name>
+    <description>Second height measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="sta2" />
+  </output>
+  <computedOutput>
+    <name>Height</name>
+    <description>Height measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sta2" />
+    <algorithm>AVERAGE</algorithm>
+    <outputs>
+      <output reference="sta2_height1" />
+      <output reference="sta2_height2" />
+    </outputs>
+  </computedOutput>
+
+</linked-list>

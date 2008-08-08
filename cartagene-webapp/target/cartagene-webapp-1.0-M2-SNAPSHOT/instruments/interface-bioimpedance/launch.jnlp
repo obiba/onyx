@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp
+    spec="1.0+"
+    codebase="${codebaseUrl}">
+  <information>
+    <title>Jade Tanita TBF-310 Interface</title>
+    <vendor>Obiba</vendor>
+    <offline-allowed/>
+
+  </information>
+  <security>
+     <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.5+"/>
+     <nativelib href="lib/rxtx-lib-2.1.7-r2-win32.jar"/>
+     
+<jar href="lib/interface-bioimpedance-1.0-M2-SNAPSHOT.jar"/>
+<jar href="lib/slf4j-api-1.4.3.jar"/>
+<jar href="lib/jcl104-over-slf4j-1.4.3.jar"/>
+<jar href="lib/instrument-bootstrap-1.0-M2-SNAPSHOT.jar" main="true"/>
+<jar href="lib/jade-remote-api-1.0-M2-SNAPSHOT.jar"/>
+<jar href="lib/onyx-util-1.0-M2-SNAPSHOT.jar"/>
+<jar href="lib/spring-web-2.5.5.jar"/>
+<jar href="lib/spring-beans-2.5.5.jar"/>
+<jar href="lib/spring-core-2.5.5.jar"/>
+<jar href="lib/spring-context-2.5.5.jar"/>
+<jar href="lib/aopalliance-1.0.jar"/>
+<jar href="lib/spring-aop-2.5.5.jar"/>
+<jar href="lib/commons-httpclient-3.1.jar"/>
+<jar href="lib/commons-codec-1.2.jar"/>
+<jar href="lib/slf4j-jdk14-1.4.3.jar"/>
+<jar href="lib/rxtx-2.1.7-r2.jar"/>
+<jar href="lib/rxtx-lib-2.1.7-r2-win32.jar"/>
+
+  </resources>
+  <application-desc main-class="org.obiba.onyx.jade.client.JnlpClient">
+    <argument><![CDATA[__config__]]></argument>
+  </application-desc>
+
+</jnlp>
+

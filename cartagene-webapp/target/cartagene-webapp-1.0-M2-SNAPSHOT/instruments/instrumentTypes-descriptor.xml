@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<linked-list>
+
+  <!-- Instrument types -->
+  <instrumentType id="sta">
+    <name>STA</name>
+    <description>Height measurement</description>
+
+    <dependentTypes>
+      <instrumentType reference="bim" />
+      <instrumentType reference="spi" />
+    </dependentTypes>
+
+  </instrumentType>
+
+  <instrumentType id="bim">
+    <name>BIM</name>
+    <description>Bioimpedance measurement</description>
+
+    <dependsOnTypes>
+      <instrumentType reference="sta" />
+    </dependsOnTypes>
+
+    <dependentTypes>
+      <instrumentType reference="spi" />
+    </dependentTypes>
+
+  </instrumentType>
+
+  <instrumentType id="spi">
+    <name>SPI</name>
+    <description>Spirometry measurement</description>
+
+    <dependsOnTypes>
+      <instrumentType reference="sta" />
+      <instrumentType reference="bim" />
+    </dependsOnTypes>
+
+  </instrumentType>
+  
+  <instrumentType id="ecg">
+    <name>ECG</name>
+    <description>Electrocardiogram measurement</description>
+  </instrumentType>
+
+</linked-list>
