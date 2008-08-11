@@ -15,8 +15,11 @@ import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.wicket.wizard.InstrumentWizardForm;
 import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.action.ActionWindow;
+import org.obiba.onyx.wicket.wizard.WizardForm;
+import org.obiba.onyx.wicket.wizard.WizardPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 
 public class JadePanel extends Panel implements IEngineComponentAware {
@@ -44,24 +47,31 @@ public class JadePanel extends Panel implements IEngineComponentAware {
 
     add(new InstrumentLauncherPanel("launcher", model.getIntrumentTypeModel()));
 
-    add(new InstrumentPanel("content", model.getIntrumentTypeModel()) {
+    add(new WizardPanel("content", model.getIntrumentTypeModel()) {
 
       @Override
-      public void onCancel(AjaxRequestTarget target) {
-        IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
-        ActionDefinition actionDef = exec.getActionDefinition(ActionType.STOP);
-        if(actionDef != null) {
-          actionWindow.show(target, model.getStageModel(), actionDef);
-        }
-      }
+      public WizardForm createForm(String componentId) {
+        return new InstrumentWizardForm(componentId, getModel()) {
 
-      @Override
-      public void onFinish(AjaxRequestTarget target, Form form) {
-        IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
-        ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
-        if(actionDef != null) {
-          actionWindow.show(target, model.getStageModel(), actionDef);
-        }
+          @Override
+          public void onCancel(AjaxRequestTarget target) {
+            IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
+            ActionDefinition actionDef = exec.getActionDefinition(ActionType.STOP);
+            if(actionDef != null) {
+              actionWindow.show(target, model.getStageModel(), actionDef);
+            }
+          }
+
+          @Override
+          public void onFinish(AjaxRequestTarget target, Form form) {
+            IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
+            ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
+            if(actionDef != null) {
+              actionWindow.show(target, model.getStageModel(), actionDef);
+            }
+          }
+          
+        };
       }
 
     });

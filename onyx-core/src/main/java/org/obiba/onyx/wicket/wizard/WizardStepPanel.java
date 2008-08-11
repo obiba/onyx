@@ -1,5 +1,6 @@
 package org.obiba.onyx.wicket.wizard;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
 
@@ -31,6 +32,21 @@ public abstract class WizardStepPanel extends Panel {
     return previous;
   }
 
+  protected void setContent(AjaxRequestTarget target, Component content) {
+    if(!content.getId().equals(getContentId())) throw new IllegalArgumentException("Expected content id is " + getContentId() + " but " + content.getId() + " was found.");
+
+    Component current = get(getContentId());
+    if(current == null) {
+      add(content);
+    } else {
+      current.replaceWith(content);
+      if(target != null) {
+        target.addComponent(get(getContentId()));
+      }
+    }
+
+  }
+
   /**
    * Called when "next" button is pressed to go to this step.
    * @param form
@@ -41,5 +57,13 @@ public abstract class WizardStepPanel extends Panel {
   }
 
   public abstract void handleWizardState(WizardForm form, AjaxRequestTarget target);
+
+  public static String getContentId() {
+    return "panel";
+  }
+
+  public static String getTitleId() {
+    return "title";
+  }
 
 }
