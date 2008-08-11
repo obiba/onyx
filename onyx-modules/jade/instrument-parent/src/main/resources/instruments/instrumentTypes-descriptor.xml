@@ -12,6 +12,11 @@
     </dependentTypes>
 
   </instrumentType>
+  
+  <instrumentType id="mus">
+    <name>MUS</name>
+    <description>Muscle Strength measurement</description>
+  </instrumentType>
 
   <instrumentType id="bim">
     <name>BIM</name>

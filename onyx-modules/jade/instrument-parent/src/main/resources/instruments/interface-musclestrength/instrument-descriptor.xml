@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<linked-list>
+
+  <!-- Instruments -->
+  <!-- MUS1 -->
+  <instrument id="mus1">
+    <name>Hydraulic Hand Dynamometer 1</name>
+    <vendor>Baseline</vendor>
+    <model>Hydraulic Hand Dynamometer</model>
+    <serialNumber>????</serialNumber>
+    <barcode>mus01</barcode>
+    <status>ACTIVE</status>
+    <instrumentType>
+      <name>MUS</name>
+    </instrumentType>
+  </instrument>
+
+  <output id="mus1_right_strength1">
+    <name>Right Strength 1</name>
+    <description>First right hand muscle strength measurement</description>
+    <measurementUnit>kg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="mus1" />
+  </output>
+  <output id="mus1_right_strength2">
+    <name>Right Strength 2</name>
+    <description>Second right hand muscle strength measurement</description>
+    <measurementUnit>kg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="mus1" />
+  </output>
+  <computedOutput>
+    <name>Right Hand Muscle Strength</name>
+    <description>Right hand muscle strength measurement</description>
+    <measurementUnit>kg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <instrument reference="mus1" />
+    <algorithm>AVERAGE</algorithm>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <outputs>
+      <output reference="mus1_right_strength1" />
+      <output reference="mus1_right_strength2" />
+    </outputs>
+  </computedOutput>
+  
+  <output id="mus1_left_strength1">
+    <name>Left Strength 1</name>
+    <description>First left hand muscle strength measurement</description>
+    <measurementUnit>kg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="mus1" />
+  </output>
+  <output id="mus1_left_strength2">
+    <name>Left Strength 2</name>
+    <description>Second left hand muscle strength measurement</description>
+    <measurementUnit>kg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="mus1" />
+  </output>
+  <computedOutput>
+    <name>Left Hand Muscle Strength</name>
+    <description>Left hand muscle strength measurement</description>
+    <measurementUnit>kg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <instrument reference="mus1" />
+    <algorithm>AVERAGE</algorithm>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <outputs>
+      <output reference="mus1_left_strength1" />
+      <output reference="mus1_left_strength2" />
+    </outputs>
+  </computedOutput>
+
+</linked-list>

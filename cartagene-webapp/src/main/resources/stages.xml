@@ -15,11 +15,18 @@
     
   </stage>
   
+  <stage id="mus">
+    <name>MUS</name>
+    <description>Muscle Strength measurement</description>
+    <module>jade</module>
+    <displayOrder>2</displayOrder>
+  </stage>
+  
   <stage id="bim">
     <name>BIM</name>
     <description>Bioimpedance measurement</description>
     <module>jade</module>
-    <displayOrder>2</displayOrder>
+    <displayOrder>3</displayOrder>
 
     <dependsOnStages>
       <stage reference="sta" />
@@ -48,7 +55,7 @@
     <name>ECG</name>
     <description>Electrocardiogram measurement</description>
     <module>jade</module>
-    <displayOrder>3</displayOrder>
+    <displayOrder>5</displayOrder>
   </stage>
     
 </linked-list>
