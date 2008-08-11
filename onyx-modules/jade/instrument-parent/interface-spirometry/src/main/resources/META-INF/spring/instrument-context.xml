@@ -1,0 +1,24 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+  <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.mir.MiniSpirInstrumentRunner">
+    <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
+    <property name="externalAppHelper" ref="externalAppHelper"/> 
+    <property name="mirPath" value="C:\\Program Files\\MIR\\winspiroPRO\\"/>
+    <property name="initdbPath" value="C:\\Program Files\\MIR\\winspiroPRO\\initdb\\"/>
+    <property name="externalDbName" value="WinSpiroPRO.wdb"/>
+    <property name="externalInputName" value="patient.srv"/>
+    <property name="externalOutputName" value="Results.wsp"/>
+    <property name="externalImageName" value="FVC.jpg"/>
+  </bean>
+  
+  <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">
+    <property name="workDir" value="C:\\Program Files\\MIR\\winspiroPRO" />
+    <property name="executable" value="winspiroPRO.exe" />
+    <property name="parameterStr" value="/X" />
+  </bean>  
+  
+</beans>

@@ -14,6 +14,10 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import org.obiba.onyx.jade.client.JnlpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ExternalAppLauncherHelper {
 
   // Working directory for external software.
@@ -22,6 +26,9 @@ public class ExternalAppLauncherHelper {
   // Executable of external software.
   protected String executable;
 
+  // Parameters of external software command
+  protected String parameterStr;
+  
   public void launchExternalSoftware() {
 
     class OuputPurger extends Thread {
@@ -43,14 +50,16 @@ public class ExternalAppLauncherHelper {
         } catch(IOException wEx) {
         }
       }
-
     }
 
     List<String> command = new ArrayList<String>();
     command.add("cmd");
     command.add("/c");
-    command.add(getExecutable());
-
+    if (!getParameterStr().isEmpty())
+      command.add(getExecutable() + " " + getParameterStr());
+    else
+      command.add(getExecutable());
+      
     ProcessBuilder builder = new ProcessBuilder(command);
     builder.directory(new File(getWorkDir()));
 
@@ -125,6 +134,14 @@ public class ExternalAppLauncherHelper {
     this.executable = executable;
   }
 
+  public String getParameterStr() {
+    return parameterStr;
+  }
+
+  public void setParameterStr(String parameterStr) {
+    this.parameterStr = parameterStr;
+  }
+  
   public String getWorkDir() {
     return workDir;
   }

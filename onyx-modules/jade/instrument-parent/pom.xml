@@ -20,7 +20,8 @@
 
   <modules>
     <module>interface-bioimpedance</module>
-    <module>interface-ecg</module>    
+    <module>interface-ecg</module>
+    <module>interface-spirometry</module>
   </modules>
 
   <dependencies>
