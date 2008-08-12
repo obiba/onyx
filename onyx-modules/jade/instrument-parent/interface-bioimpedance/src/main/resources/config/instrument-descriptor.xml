@@ -15,6 +15,13 @@
     </instrumentType>
   </instrument>
 
+  <outputParameterSource id="measured_height">
+    <instrumentType>
+      <name>STA</name>
+    </instrumentType>
+    <parameterName>Height</parameterName>
+  </outputParameterSource>
+  
   <input>
     <name>Height</name>
     <description>Measured height</description>
@@ -24,12 +31,5 @@
     <instrument reference="bioimp1" />
     <inputSource reference="measured_height" />
   </input>
-
-  <outputParameterSource id="measured_height">
-    <instrumentType>
-      <name>STA</name>
-    </instrumentType>
-    <parameterName>Height</parameterName>
-  </outputParameterSource>
 
 </linked-list>

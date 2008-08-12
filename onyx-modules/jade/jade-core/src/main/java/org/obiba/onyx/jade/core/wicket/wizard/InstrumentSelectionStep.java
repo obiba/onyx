@@ -17,7 +17,9 @@ import org.obiba.onyx.wicket.wizard.WizardStepPanel;
  * 
  */
 public class InstrumentSelectionStep extends WizardStepPanel {
-  
+
+  private static final long serialVersionUID = 4489598868219932761L;
+
   @SpringBean
   private EntityQueryService queryService;
 

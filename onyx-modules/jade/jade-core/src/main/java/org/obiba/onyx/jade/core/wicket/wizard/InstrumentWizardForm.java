@@ -25,13 +25,6 @@ public abstract class InstrumentWizardForm extends WizardForm {
     instructionsStep = new InstructionsStep("step");
     outputParametersStep = new OutputParametersStep("step");
 
-    // step0.setNextStep(step1);
-    // step1.setNextStep(step2);
-    // step1.setPreviousStep(step0);
-    // step2.setNextStep(step3);
-    // step2.setPreviousStep(step1);
-    // step3.setPreviousStep(step2);
-
     add(instrumentSelectionStep);
     instrumentSelectionStep.handleWizardState(this, null);
   }

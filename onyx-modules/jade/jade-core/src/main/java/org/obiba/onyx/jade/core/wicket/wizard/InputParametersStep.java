@@ -3,8 +3,13 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.obiba.onyx.jade.core.wicket.instrument.panel.InstrumentInputPanel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.jade.core.wicket.instrument.panel.InstrumentParameterPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
@@ -12,6 +17,12 @@ public class InputParametersStep extends WizardStepPanel {
 
   private static final long serialVersionUID = 1L;
 
+  @SpringBean
+  private ActiveInterviewService activeInterviewService;
+  
+  @SpringBean
+  private ActiveInstrumentRunService activeInstrumentRunService;
+  
   DropDownChoice defChoices;
 
   public InputParametersStep(String id) {
@@ -35,7 +46,11 @@ public class InputParametersStep extends WizardStepPanel {
 
   @Override
   public void onStep(WizardForm form, AjaxRequestTarget target) {
-    setContent(target, new InstrumentInputPanel(getContentId(), new PropertyModel(form, "instrument")));
+    IModel instrumentModel = new PropertyModel(form, "instrument");
+    
+    //activeInstrumentRunService.start(activeInterviewService.getParticipant(), (Instrument)instrumentModel.getObject());
+    
+    setContent(target, new InstrumentParameterPanel(getContentId(), instrumentModel));
   }
 
 }
