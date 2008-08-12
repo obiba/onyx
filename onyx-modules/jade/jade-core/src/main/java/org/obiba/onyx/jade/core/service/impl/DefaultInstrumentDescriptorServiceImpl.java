@@ -8,20 +8,26 @@ import org.obiba.onyx.jade.core.service.InstrumentDescriptorService;
 
 public class DefaultInstrumentDescriptorServiceImpl implements InstrumentDescriptorService {
 
-  private Map<String, InstrumentDescriptor> descriptorFile;;
+  private Map<String, InstrumentDescriptor> descriptorMap;;
 
   public DefaultInstrumentDescriptorServiceImpl() {
-    descriptorFile = new HashMap<String, InstrumentDescriptor>();
+    descriptorMap = new HashMap<String, InstrumentDescriptor>();
   }
 
   public String getCodeBase(String instrumentBarCode) {
-    return descriptorFile.get(instrumentBarCode).getCodeBase();
+    InstrumentDescriptor descriptor = descriptorMap.get(instrumentBarCode);
+    if(descriptor == null) return null;
+    else
+      return descriptor.getCodeBase();
   }
 
-  public void addCodeBase(String instrumentBarCode, String codeBase) {
-    InstrumentDescriptor descriptor = new InstrumentDescriptor();
+  public void setCodeBase(String instrumentBarCode, String codeBase) {
+    InstrumentDescriptor descriptor = descriptorMap.get(instrumentBarCode);
+    if (descriptor == null) {
+      descriptor = new InstrumentDescriptor(instrumentBarCode);
+      descriptorMap.put(instrumentBarCode, descriptor);  
+    }
     descriptor.setCodeBase(codeBase);
-    descriptorFile.put(instrumentBarCode, descriptor);
   }
 
 }

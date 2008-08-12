@@ -17,6 +17,6 @@ public interface InstrumentDescriptorService {
    * @param instrumentBarCode
    * @param codeBase
    */
-  public void addCodeBase(String instrumentBarCode, String codeBase);
+  public void setCodeBase(String instrumentBarCode, String codeBase);
 
 }
