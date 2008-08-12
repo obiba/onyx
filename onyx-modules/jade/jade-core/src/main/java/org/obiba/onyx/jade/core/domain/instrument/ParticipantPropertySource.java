@@ -4,6 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
+import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
+import org.obiba.onyx.util.data.Data;
+
 @Entity
 @DiscriminatorValue("ParticipantPropertySource")
 public class ParticipantPropertySource extends InputSource {
@@ -28,6 +31,12 @@ public class ParticipantPropertySource extends InputSource {
   @Override
   public boolean isReadOnly() {
     return true;
+  }
+
+  @Override
+  public Data getData(ParticipantInterview interview) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

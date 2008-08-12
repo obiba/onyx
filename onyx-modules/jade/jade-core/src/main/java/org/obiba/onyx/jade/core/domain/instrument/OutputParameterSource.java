@@ -6,6 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
+import org.obiba.onyx.util.data.Data;
+
 @Entity
 @DiscriminatorValue("OutputParameterSource")
 public class OutputParameterSource extends InputSource {
@@ -42,6 +45,12 @@ public class OutputParameterSource extends InputSource {
 
   public void setParameterName(String parameterName) {
     this.parameterName = parameterName;
+  }
+
+  @Override
+  public Data getData(ParticipantInterview interview) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

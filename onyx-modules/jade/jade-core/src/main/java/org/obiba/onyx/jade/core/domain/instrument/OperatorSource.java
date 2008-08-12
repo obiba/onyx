@@ -3,6 +3,9 @@ package org.obiba.onyx.jade.core.domain.instrument;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
+import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
+import org.obiba.onyx.util.data.Data;
+
 @Entity
 @DiscriminatorValue("OperatorSource")
 public class OperatorSource extends InputSource {
@@ -16,6 +19,12 @@ public class OperatorSource extends InputSource {
   @Override
   public boolean isReadOnly() {
     return false;
+  }
+
+  @Override
+  public Data getData(ParticipantInterview interview) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }
