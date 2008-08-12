@@ -19,7 +19,7 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
-import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
+import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
@@ -34,6 +34,9 @@ public class InstrumentParameterPanel extends Panel {
   
   @SpringBean
   private ActiveInterviewService activeInterviewService;
+  
+  @SpringBean
+  private InputDataSourceVisitor inputDataSourceVisitor;
 
   public InstrumentParameterPanel(String id, IModel instrumentModel) {
     super(id);
@@ -43,10 +46,6 @@ public class InstrumentParameterPanel extends Panel {
     Instrument instrument = (Instrument) getModelObject();
     InstrumentInputParameter template = new InstrumentInputParameter();
     template.setInstrument(instrument);
-    
-    ParticipantInterview participantInterview = new ParticipantInterview();
-    participantInterview.setParticipant(activeInterviewService.getParticipant());
-    participantInterview = queryService.matchOne(participantInterview);
     
     KeyValueDataPanel inputs = new KeyValueDataPanel("inputs");
     for(InstrumentInputParameter param : queryService.match(template)) {
@@ -67,7 +66,7 @@ public class InstrumentParameterPanel extends Panel {
           input = new InputNumberField(KeyValueDataPanel.getRowValueId(), param.getDataType());
         }
       case AUTOMATIC:
-        Data data = param.getInputSource().getData(participantInterview);
+        Data data = inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param.getInputSource());
         IModel value = (data == null ? new Model("") : new Model((Serializable)data.getValue())); 
         input = new Label(KeyValueDataPanel.getRowValueId(), value);
       }

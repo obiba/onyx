@@ -3,8 +3,7 @@ package org.obiba.onyx.jade.core.domain.instrument;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
-import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.jade.core.service.InputSourceVisitor;
 
 @Entity
 @DiscriminatorValue("OperatorSource")
@@ -22,9 +21,8 @@ public class OperatorSource extends InputSource {
   }
 
   @Override
-  public Data getData(ParticipantInterview interview) {
-    // TODO Auto-generated method stub
-    return null;
+  public void accept(InputSourceVisitor visitor) {
+    visitor.visit(this);
   }
 
 }

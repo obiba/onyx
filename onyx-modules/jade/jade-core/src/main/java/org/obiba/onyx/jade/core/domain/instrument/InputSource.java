@@ -12,8 +12,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
 import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
-import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.jade.core.service.InputSourceVisitor;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -37,8 +36,8 @@ public abstract class InputSource extends AbstractEntity {
     }
   }
 
-  public abstract boolean isReadOnly();
+  public abstract void accept(InputSourceVisitor visitor);
   
-  public abstract Data getData(ParticipantInterview interview);
+  public abstract boolean isReadOnly();
   
 }
