@@ -1,7 +1,6 @@
 package org.obiba.onyx.jade.core.service.impl.hibernate;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
 
@@ -81,9 +80,8 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
       Object propertyValue = propertyMethod.invoke(participant);
       if(propertyMethod.invoke(participant) instanceof Gender) propertyValue = propertyValue.toString();
       
-      //Query from bd returns java.sql.date type instead of java.util.date
       if(propertyMethod.invoke(participant) instanceof Date)
-        data = new Data(DataType.DATE, new java.util.Date(Date.class.cast(propertyValue).getTime()));
+        data = new Data(DataType.DATE, (Date) propertyValue);
       else
         data = new Data(DataType.TEXT, (Serializable) propertyValue);
       

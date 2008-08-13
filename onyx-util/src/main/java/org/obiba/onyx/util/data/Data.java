@@ -39,7 +39,7 @@ public class Data implements Serializable {
         break;
 
       case DATE:
-        if(!valueClass.isAssignableFrom(Date.class)) throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
+        if(!(value instanceof Date)) throw new IllegalArgumentException("DataType " + type + " expected, " + valueClass.getName() + " received.");
         break;
 
       case DECIMAL:

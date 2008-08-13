@@ -1,5 +1,7 @@
 package org.obiba.onyx.jade.core.domain.instrument;
 
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Assert;
@@ -26,11 +28,11 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
   public void testParticipantPropertyRetriever() {
     System.out.println("*** ParticipantPropertySourceTest: Testing Data");
     Participant participant = queryService.get(Participant.class, Long.valueOf("1"));
-    
+
     ParticipantPropertySource participantPropertySource = new ParticipantPropertySource();
-    participantPropertySource.setProperty("birthDate");    
+    participantPropertySource.setProperty("birthDate");
     Data resultData = inputDataSourceVisitor.getData(participant, participantPropertySource);
-    Assert.assertEquals(new Data(DataType.DATE, new Date("1966/05/15")).getValue(), resultData.getValue());
+    Assert.assertEquals("1966-05-15", resultData.getValue().toString());
     Assert.assertEquals(DataType.DATE, resultData.getType());
     System.out.println("*** ParticipantPropertySourceTest: Step 1 Done successfully");
     
@@ -63,5 +65,4 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
     Assert.assertEquals(DataType.INTEGER, resultData.getType());
     System.out.println("*** OutputParameterSourceTest: Test Done successfully");
   }
-  
 }
