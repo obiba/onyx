@@ -8,6 +8,7 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.slf4j.Logger;
@@ -39,7 +40,16 @@ public abstract class WizardForm extends Form {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
+        log.debug("finish.onSubmit");
+        if (getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
         onFinish(target, form);
+      }
+      
+      @Override
+      protected void onError(AjaxRequestTarget target, Form form) {
+        log.debug("finish.onError");
+        if (getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
+        WizardForm.this.onError(target, form);
       }
 
     };
@@ -59,7 +69,7 @@ public abstract class WizardForm extends Form {
       }
 
     };
-    link.add(new AttributeModifier("value", true, new StringResourceModel("wizard.previous", WizardForm.this, null)));
+    link.add(new AttributeModifier("value", true, new StringResourceModel("Previous", WizardForm.this, null)));
     link.setEnabled(false);
     link.setOutputMarkupId(true);
     link.add(buttonBehavior);
@@ -71,11 +81,20 @@ public abstract class WizardForm extends Form {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
+        log.debug("next.onSubmit");
+        if (getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
         WizardForm.this.gotoNext(target);
+      }
+      
+      @Override
+      protected void onError(AjaxRequestTarget target, Form form) {
+        log.debug("next.onError");
+        if (getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
+        WizardForm.this.onError(target, form);
       }
 
     };
-    button.add(new AttributeModifier("value", true, new StringResourceModel("wizard.next", WizardForm.this, null)));
+    button.add(new AttributeModifier("value", true, new StringResourceModel("Next", WizardForm.this, null)));
     button.setOutputMarkupId(true);
     button.add(buttonBehavior);
     add(button);
@@ -94,7 +113,14 @@ public abstract class WizardForm extends Form {
     link.add(new AttributeModifier("value", true, new StringResourceModel("Cancel", WizardForm.this, null)));
     add(link);
   }
-
+  
+  /**
+   * Called after wizard form submission generates an error (on next or finish click).
+   * @param target
+   * @param form
+   */
+  public abstract void onError(AjaxRequestTarget target, Form form);
+  
   /**
    * Called when finish is clicked.
    * @param target
@@ -150,6 +176,10 @@ public abstract class WizardForm extends Form {
     this.canceled = canceled;
   }
 
+  public FeedbackPanel getFeedbackPanel() {
+    return null;
+  }
+  
   private class WizardButtonBehavior extends AttributeAppender {
 
     private static final long serialVersionUID = -2793180600410649652L;

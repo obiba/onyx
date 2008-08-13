@@ -54,7 +54,7 @@ public class JadePanel extends Panel implements IEngineComponentAware {
 
       @Override
       public WizardForm createForm(String componentId) {
-        return new InstrumentWizardForm(componentId, getModel(), JadePanel.this) {
+        return new InstrumentWizardForm(componentId, getModel()) {
 
           @Override
           public void onCancel(AjaxRequestTarget target) {
@@ -72,6 +72,16 @@ public class JadePanel extends Panel implements IEngineComponentAware {
             if(actionDef != null) {
               actionWindow.show(target, model.getStageModel(), actionDef);
             }
+          }
+
+          @Override
+          public void onError(AjaxRequestTarget target, Form form) {
+            target.addComponent(feedbackPanel);
+          }
+          
+          @Override
+          public FeedbackPanel getFeedbackPanel() {
+            return feedbackPanel;
           }
 
         };

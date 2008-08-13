@@ -1,9 +1,7 @@
 package org.obiba.onyx.jade.core.wicket.wizard;
 
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
-import org.obiba.onyx.jade.core.wicket.panel.JadePanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
@@ -18,14 +16,10 @@ public abstract class InstrumentWizardForm extends WizardForm {
   private WizardStepPanel instructionsStep;
 
   private WizardStepPanel outputParametersStep;
-  
-  private JadePanel mainPanel;
 
-  public InstrumentWizardForm(String id, IModel instrumentTypeModel, JadePanel mainPanel) {
+  public InstrumentWizardForm(String id, IModel instrumentTypeModel) {
     super(id);
-    
-    this.mainPanel = mainPanel;
-    
+
     instrumentSelectionStep = new InstrumentSelectionStep("step", this, instrumentTypeModel);
     inputParametersStep = new InputParametersStep("step");
     instructionsStep = new InstructionsStep("step");
@@ -59,8 +53,4 @@ public abstract class InstrumentWizardForm extends WizardForm {
     return outputParametersStep;
   }
 
-  public FeedbackPanel getFeedbackPanel() {
-    return mainPanel.getFeedbackPanel();
-  }  
-  
 }

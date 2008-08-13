@@ -4,6 +4,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
+import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
@@ -84,8 +85,15 @@ public class DataField extends Panel {
       };
       break;
     }
-
     add(field);
+  }
+  
+  /**
+   * Set the model that identifies the underlying field in error messages.
+   * @param labelModel
+   */
+  public void setLabel(IModel labelModel) {
+    field.setLabel(labelModel);
   }
   
   /**
@@ -106,5 +114,13 @@ public class DataField extends Panel {
   public Component setRequired(boolean required) {
     field.setRequired(required);
     return this;
+  }
+  
+  /**
+   * Get the underlying field feeback message.
+   * @return
+   */
+  public FeedbackMessage getFieldFeedbackMessage() {
+    return field.getFeedbackMessage();
   }
 }

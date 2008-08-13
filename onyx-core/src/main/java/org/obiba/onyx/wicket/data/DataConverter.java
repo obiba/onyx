@@ -58,6 +58,7 @@ public class DataConverter implements IConverter {
       break;
     }
     } catch (Exception ex) {
+      log.warn(ex.getMessage());
       ConversionException cex = new ConversionException(ex.getMessage());
       throw cex;
     }

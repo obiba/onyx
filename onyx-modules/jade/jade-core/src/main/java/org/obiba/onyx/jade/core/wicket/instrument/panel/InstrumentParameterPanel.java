@@ -1,12 +1,12 @@
 package org.obiba.onyx.jade.core.wicket.instrument.panel;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
+import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -71,7 +71,10 @@ public class InstrumentParameterPanel extends Panel {
 
       switch(runValue.getCaptureMethod()) {
       case MANUAL:
-        input = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType()).setRequired(true);
+        DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType());
+        field.setRequired(true);
+        field.setLabel(new Model(param.getName()));
+        input = field;
         break;
       case AUTOMATIC:
         Data data = inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param.getInputSource());
@@ -84,4 +87,5 @@ public class InstrumentParameterPanel extends Panel {
     add(inputs);
 
   }
+
 }
