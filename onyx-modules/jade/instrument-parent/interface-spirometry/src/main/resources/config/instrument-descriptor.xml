@@ -72,18 +72,27 @@
     <description>Participant identification number</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
+    <participantPropertySource>
+      <property>barcode</property>
+    </participantPropertySource>
   </input>  
   <input id="last_name">
     <name>LastName</name>
     <description>Participant last name</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
+    <participantPropertySource>
+      <property>lastName</property>
+    </participantPropertySource>
   </input>  
   <input id="first_name">
     <name>FirstName</name>
     <description>Participant first name</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
+    <participantPropertySource>
+      <property>firstName</property>
+    </participantPropertySource>
   </input>  
   <input id="birth_date">
     <name>BirthDate</name>
@@ -99,24 +108,36 @@
     <description>Participant gender</description>
     <dataType>BOOLEAN</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
+    <participantPropertySource>
+      <property>gender</property>
+    </participantPropertySource>
   </input>  
   <input id="ethnic_group">
     <name>EthnicGroup</name>
     <description>Participant ethnic group</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
+    <fixedSource>
+      <value>1</value>
+    </fixedSource>
   </input>  
   <input id="height">
     <name>Height</name>
     <description>Participant height</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
+    <outputParameterSource>
+      <parameterName>heigth</parameterName>
+    </outputParameterSource>
   </input>  
   <input id="weight">
     <name>Weight</name>
     <description>Participant Weight</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
+    <outputParameterSource>
+      <parameterName>weigth</parameterName>
+    </outputParameterSource>
   </input>
    
   <output id="fvc">

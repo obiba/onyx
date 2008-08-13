@@ -50,17 +50,16 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
   }
 
   public InstrumentRun getLastCompletedInstrumentRun(ParticipantInterview participantInterview, InstrumentType instrumentType) {
-    return (InstrumentRun) AssociationCriteria.create(InstrumentRun.class, getSession()).add("instrument.instrumentType", Operation.eq, instrumentType).add("participantInterview", Operation.eq, participantInterview).add("status", Operation.eq, InstrumentRunStatus.COMPLETED).addSortingClauses(new SortingClause("timeEnd", false)).getCriteria().uniqueResult();
+    return (InstrumentRun) AssociationCriteria.create(InstrumentRun.class, getSession()).add("instrument.instrumentType", Operation.eq, instrumentType).add("participantInterview", Operation.eq, participantInterview).add("status", Operation.eq, InstrumentRunStatus.COMPLETED).addSortingClauses(new SortingClause("timeEnd", false)).getCriteria().setMaxResults(1).uniqueResult();
   }
 
   public InstrumentRunValue findInstrumentRunValue(ParticipantInterview participantInterview, InstrumentType instrumentType, String parameterName) {
     InstrumentRunValue runValue = null;
     InstrumentRun run = getLastCompletedInstrumentRun(participantInterview, instrumentType);
-
+    
     if(run != null) {
       runValue = (InstrumentRunValue) AssociationCriteria.create(InstrumentRunValue.class, getSession()).add("instrumentRun", Operation.eq, run).add("instrumentParameter.name", Operation.eq, parameterName).getCriteria().uniqueResult();
     }
-
     return runValue;
   }
 
@@ -81,19 +80,16 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
 
       Object propertyValue = propertyMethod.invoke(participant);
       if(propertyMethod.invoke(participant) instanceof Gender) propertyValue = propertyValue.toString();
-
-      data = new Data(convertDataType(propertyMethod.getReturnType()), (Serializable) propertyValue);
+      
+      //Query from bd returns java.sql.date type instead of java.util.date
+      if(propertyMethod.invoke(participant) instanceof Date)
+        data = new Data(DataType.DATE, new java.util.Date(Date.class.cast(propertyValue).getTime()));
+      else
+        data = new Data(DataType.TEXT, (Serializable) propertyValue);
+      
     } catch(Exception e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
-    }
-  }
-
-  private DataType convertDataType(Class c) {
-    if(c.equals(Date.class)) {
-      return (DataType.DATE);
-    } else {
-      return (DataType.TEXT);
     }
   }
 
