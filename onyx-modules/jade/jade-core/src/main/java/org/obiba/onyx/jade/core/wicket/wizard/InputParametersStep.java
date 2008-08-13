@@ -43,7 +43,12 @@ public class InputParametersStep extends WizardStepPanel {
   public void onStep(WizardForm form, AjaxRequestTarget target) {
     IModel instrumentModel = new PropertyModel(form, "instrument");
 
-    setContent(target, new InstrumentParameterPanel(getContentId(), instrumentModel, ((InstrumentWizardForm)form).getFeedbackPanel()));
+    setContent(target, new InstrumentParameterPanel(getContentId(), instrumentModel));
+  }
+  
+  @Override
+  public void onNextSubmit(WizardForm form, AjaxRequestTarget target) {
+    target.addComponent(((InstrumentWizardForm)form).getFeedbackPanel());
   }
 
 }

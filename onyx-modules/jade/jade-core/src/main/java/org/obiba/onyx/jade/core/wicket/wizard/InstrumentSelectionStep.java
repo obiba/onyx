@@ -1,4 +1,4 @@
-package org.obiba.onyx.jade.core.wicket.wizard;
+ package org.obiba.onyx.jade.core.wicket.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
@@ -65,12 +65,6 @@ public class InstrumentSelectionStep extends WizardStepPanel {
       target.addComponent(form.getPreviousLink());
       target.addComponent(form.getNextLink());
     }
-  }
-  
-  @Override
-  public void onStep(WizardForm form, AjaxRequestTarget target) {
-    
-    super.onStep(form, target);
   }
 
 }

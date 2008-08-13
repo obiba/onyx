@@ -48,7 +48,7 @@ public class InstrumentParameterPanel extends Panel {
 
   private InstrumentRun instrumentRun;
 
-  public InstrumentParameterPanel(String id, IModel instrumentModel, final FeedbackPanel feedbackPanel) {
+  public InstrumentParameterPanel(String id, IModel instrumentModel) {
     super(id);
     setModel(new DetachableEntityModel(queryService, instrumentModel.getObject()));
     setOutputMarkupId(true);
@@ -71,15 +71,7 @@ public class InstrumentParameterPanel extends Panel {
 
       switch(runValue.getCaptureMethod()) {
       case MANUAL:
-        input = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType()).add(new OnChangeAjaxBehavior() {
-
-          @Override
-          protected void onUpdate(AjaxRequestTarget target) {
-            log.info("On field update");
-            target.addComponent(feedbackPanel);
-          }
-
-        });
+        input = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType()).setRequired(true);
         break;
       case AUTOMATIC:
         Data data = inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param.getInputSource());

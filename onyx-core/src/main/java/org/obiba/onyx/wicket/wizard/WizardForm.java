@@ -66,19 +66,19 @@ public abstract class WizardForm extends Form {
     add(link);
 
     // next button
-    link = new AjaxLink("nextLink") {
+    AjaxButton button = new AjaxButton("nextLink") {
       private static final long serialVersionUID = 0L;
 
       @Override
-      public void onClick(AjaxRequestTarget target) {
+      protected void onSubmit(AjaxRequestTarget target, Form form) {
         WizardForm.this.gotoNext(target);
       }
 
     };
-    link.add(new AttributeModifier("value", true, new StringResourceModel("wizard.next", WizardForm.this, null)));
-    link.setOutputMarkupId(true);
-    link.add(buttonBehavior);
-    add(link);
+    button.add(new AttributeModifier("value", true, new StringResourceModel("wizard.next", WizardForm.this, null)));
+    button.setOutputMarkupId(true);
+    button.add(buttonBehavior);
+    add(button);
 
     // cancel button
     link = new AjaxLink("cancelLink") {
@@ -123,6 +123,8 @@ public abstract class WizardForm extends Form {
   protected void gotoNext(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
     log.info("gotoNext.currentStep=" + currentStep.getClass().getName());
+    currentStep.onNextSubmit(WizardForm.this, target);
+    
     WizardStepPanel next = currentStep.getNextStep();
     currentStep.replaceWith(next);
     next.onStep(this, target);
@@ -133,6 +135,7 @@ public abstract class WizardForm extends Form {
   protected void gotoPrevious(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
     log.info("gotoPrevious.currentStep=" + currentStep.getClass().getName());
+    
     WizardStepPanel previous = currentStep.getPreviousStep();
     currentStep.replaceWith(previous);
     previous.handleWizardState(this, target);

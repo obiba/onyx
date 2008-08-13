@@ -48,7 +48,16 @@ public abstract class WizardStepPanel extends Panel {
   }
 
   /**
-   * Called when "next" button is pressed to go to this step.
+   * Called when "next" button submit the current step form.
+   * @param form
+   * @param target
+   */
+  public void onNextSubmit(WizardForm form, AjaxRequestTarget target) {
+    
+  }
+  
+  /**
+   * Called when "next" button was pressed to go to this step.
    * @param form
    * @param target
    */
