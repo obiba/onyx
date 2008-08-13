@@ -2,7 +2,6 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
 import org.obiba.onyx.jade.core.wicket.instrument.panel.InstrumentParameterPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -39,12 +38,6 @@ public class InputParametersStep extends WizardStepPanel {
   @Override
   public void onStep(WizardForm form, AjaxRequestTarget target) {
     setContent(target, new InstrumentParameterPanel(getContentId(), new PropertyModel(form, "instrument")));
-  }
-  
-  @Override
-  public void onNextSubmit(WizardForm form, AjaxRequestTarget target) {
-    FeedbackPanel feedback = ((InstrumentWizardForm)form).getFeedbackPanel();
-    target.addComponent(feedback);
   }
 
 }
