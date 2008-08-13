@@ -21,6 +21,10 @@ public class InstructionsStep extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
+    WizardStepPanel nextStep = ((InstrumentWizardForm) form).getOutputParametersStep();
+    setNextStep(nextStep);
+    nextStep.setPreviousStep(this);
+    
     form.getPreviousLink().setEnabled(true);
     form.getNextLink().setEnabled(true);
     form.getFinishLink().setEnabled(false);
