@@ -7,6 +7,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 
@@ -35,7 +36,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     run.setStatus(InstrumentRunStatus.IN_PROGRESS);
     run.setTimeStart(new Date());
 
-    currentRun = getPersistenceManager().save(run);
+    currentRun = run;//getPersistenceManager().save(run);
 
     return currentRun;
   }
@@ -59,6 +60,10 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     currentRun.setTimeEnd(new Date());
 
     getPersistenceManager().save(currentRun);
+    
+    for (InstrumentRunValue value : currentRun.getInstrumentRunValues()) {
+      getPersistenceManager().save(value);  
+    }
   }
 
   public InstrumentRun getInstrumentRun() {

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -34,6 +35,8 @@ public class JadePanel extends Panel implements IEngineComponentAware {
 
   private ActionWindow actionWindow;
 
+  private FeedbackPanel feedbackPanel;
+
   private JadeModel model;
 
   @SuppressWarnings("serial")
@@ -51,7 +54,7 @@ public class JadePanel extends Panel implements IEngineComponentAware {
 
       @Override
       public WizardForm createForm(String componentId) {
-        return new InstrumentWizardForm(componentId, getModel()) {
+        return new InstrumentWizardForm(componentId, getModel(), JadePanel.this) {
 
           @Override
           public void onCancel(AjaxRequestTarget target) {
@@ -70,7 +73,7 @@ public class JadePanel extends Panel implements IEngineComponentAware {
               actionWindow.show(target, model.getStageModel(), actionDef);
             }
           }
-          
+
         };
       }
 
@@ -84,6 +87,14 @@ public class JadePanel extends Panel implements IEngineComponentAware {
 
   public void setActionWindwon(ActionWindow window) {
     this.actionWindow = window;
+  }
+
+  public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
+    this.feedbackPanel = feedbackPanel;
+  }
+
+  public FeedbackPanel getFeedbackPanel() {
+    return feedbackPanel;
   }
 
   @SuppressWarnings("serial")

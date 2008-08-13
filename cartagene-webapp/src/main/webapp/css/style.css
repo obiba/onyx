@@ -412,7 +412,17 @@ form.wizard {
   border-width: 1px;
   border-style: solid;
   border-color: #375FB7;
-  padding:5px;
+  padding:20px;
+}
+
+div.wizard-title {
+  margin-bottom:10px;
+  font-weight: bold;
+}
+
+div.wizard-content {
+  margin-top:10px;
+  margin-bottom:10px;
 }
 
 /*************** End Wizard ********************/

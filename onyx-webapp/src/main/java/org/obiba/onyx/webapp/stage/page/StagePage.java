@@ -7,7 +7,6 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
@@ -19,14 +18,11 @@ import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.action.ActionWindow;
 
-@AuthorizeInstantiation({"SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR"})
+@AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class StagePage extends BasePage {
 
   @SpringBean
   private ActiveInterviewService activeInterviewService;
-  
-  @SpringBean
-  private EntityQueryService queryService;
 
   @SuppressWarnings("serial")
   public StagePage(IModel stageModel) {
@@ -39,7 +35,7 @@ public class StagePage extends BasePage {
       setResponsePage(WebApplication.get().getHomePage());
     } else {
 
-      IStageExecution exec = activeInterviewService.getStageExecution((Stage)getModelObject());
+      IStageExecution exec = activeInterviewService.getStageExecution((Stage) getModelObject());
 
       final ActionWindow modal;
       add(modal = new ActionWindow("modal") {
@@ -63,7 +59,9 @@ public class StagePage extends BasePage {
       } else {
         Component stageComponent = exec.getWidget("stage-component");
         if(stageComponent instanceof IEngineComponentAware) {
-          ((IEngineComponentAware) stageComponent).setActionWindwon(modal);
+          IEngineComponentAware comp = (IEngineComponentAware) stageComponent;
+          comp.setActionWindwon(modal);
+          comp.setFeedbackPanel(getFeedbackPanel());
         }
         add(stageComponent);
       }

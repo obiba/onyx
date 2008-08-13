@@ -2,43 +2,53 @@ package org.obiba.onyx.jade.core.wicket.instrument.panel;
 
 import java.io.Serializable;
 
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.extensions.yui.calendar.DatePicker;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.Fragment;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.validation.validator.NumberValidator;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InstrumentParameterPanel extends Panel {
 
   private static final long serialVersionUID = 3008363510160516288L;
 
+  private static final Logger log = LoggerFactory.getLogger(InstrumentParameterPanel.class);
+
   @SpringBean
   private EntityQueryService queryService;
-  
+
   @SpringBean
   private ActiveInterviewService activeInterviewService;
-  
+
   @SpringBean
   private InputDataSourceVisitor inputDataSourceVisitor;
 
-  public InstrumentParameterPanel(String id, IModel instrumentModel) {
+  @SpringBean
+  private ActiveInstrumentRunService activeInstrumentRunService;
+
+  private InstrumentRun instrumentRun;
+
+  public InstrumentParameterPanel(String id, IModel instrumentModel, final FeedbackPanel feedbackPanel) {
     super(id);
     setModel(new DetachableEntityModel(queryService, instrumentModel.getObject()));
     setOutputMarkupId(true);
@@ -46,78 +56,40 @@ public class InstrumentParameterPanel extends Panel {
     Instrument instrument = (Instrument) getModelObject();
     InstrumentInputParameter template = new InstrumentInputParameter();
     template.setInstrument(instrument);
-    
+
+    instrumentRun = activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument);
+
     KeyValueDataPanel inputs = new KeyValueDataPanel("inputs");
     for(InstrumentInputParameter param : queryService.match(template)) {
       Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getName());
       Component input = null;
-      switch(param.getCaptureMethod()) {
+      InstrumentRunValue runValue = new InstrumentRunValue();
+      // runValue.setCaptureMethod(param.getCaptureMethod());
+      runValue.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL); // for testing
+      runValue.setInstrumentParameter(param);
+      instrumentRun.addInstrumentRunValue(runValue);
+
+      switch(runValue.getCaptureMethod()) {
       case MANUAL:
-        switch(param.getDataType()) {
-        case TEXT:
-        case DATA:
-          input = new InputTextField(KeyValueDataPanel.getRowValueId());
-        case BOOLEAN:
-          input = new InputBooleanField(KeyValueDataPanel.getRowValueId());
-        case DATE:
-          input = new InputDateField(KeyValueDataPanel.getRowValueId());
-        case INTEGER:
-        case DECIMAL:
-          input = new InputNumberField(KeyValueDataPanel.getRowValueId(), param.getDataType());
-        }
+        input = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType()).add(new OnChangeAjaxBehavior() {
+
+          @Override
+          protected void onUpdate(AjaxRequestTarget target) {
+            log.info("On field update");
+            target.addComponent(feedbackPanel);
+          }
+
+        });
+        break;
       case AUTOMATIC:
         Data data = inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param.getInputSource());
-        IModel value = (data == null ? new Model("") : new Model((Serializable)data.getValue())); 
+        IModel value = (data == null ? new Model("") : new Model((Serializable) data.getValue()));
         input = new Label(KeyValueDataPanel.getRowValueId(), value);
+        break;
       }
       inputs.addRow(label, input);
     }
     add(inputs);
-  }
-
-  @SuppressWarnings("serial")
-  private class InputTextField extends Fragment {
-
-    public InputTextField(String id) {
-      super(id, "inputFieldFragment", InstrumentParameterPanel.this);
-      add(new TextField("field"));
-    }
 
   }
-
-  @SuppressWarnings("serial")
-  private class InputNumberField extends Fragment {
-
-    public InputNumberField(String id, DataType type) {
-      super(id, "inputFieldFragment", InstrumentParameterPanel.this);
-      TextField tf = new TextField("field");
-      // TODO min/max long/double
-      tf.add(NumberValidator.POSITIVE);
-      add(tf);
-    }
-
-  }
-
-  @SuppressWarnings("serial")
-  private class InputDateField extends Fragment {
-
-    public InputDateField(String id) {
-      super(id, "inputFieldFragment", InstrumentParameterPanel.this);
-      DateTextField date = new DateTextField("field");
-      date.add(new DatePicker());
-      add(date);
-    }
-
-  }
-
-  @SuppressWarnings("serial")
-  private class InputBooleanField extends Fragment {
-
-    public InputBooleanField(String id) {
-      super(id, "inputFieldFragment", InstrumentParameterPanel.this);
-      add(new CheckBox("field").add(new AttributeModifier("type", new Model("checkbox"))));
-    }
-
-  }
-
 }

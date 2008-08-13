@@ -1,5 +1,6 @@
 package org.obiba.onyx.wicket;
 
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 
 /**
@@ -14,5 +15,11 @@ public interface IEngineComponentAware {
    * @param window
    */
   public void setActionWindwon(ActionWindow window);
+  
+  /**
+   * The place to display feedback messages.
+   * @param feedback
+   */
+  public void setFeedbackPanel(FeedbackPanel feedbackPanel);
   
 }
