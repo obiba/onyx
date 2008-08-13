@@ -79,6 +79,12 @@
       <artifactId>servlet-api</artifactId>
       <version>2.3</version>
     </dependency>
+    
+    <dependency>
+      <groupId>javax.transaction</groupId>
+      <artifactId>jta</artifactId>
+      <version>1.0.1B</version>
+    </dependency>
 
   </dependencies>
 
