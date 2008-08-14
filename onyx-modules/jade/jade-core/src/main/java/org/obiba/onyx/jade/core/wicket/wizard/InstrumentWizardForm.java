@@ -16,6 +16,8 @@ public abstract class InstrumentWizardForm extends WizardForm {
   private WizardStepPanel instructionsStep;
 
   private WizardStepPanel outputParametersStep;
+  
+  private WizardStepPanel validationStep;
 
   public InstrumentWizardForm(String id, IModel instrumentTypeModel) {
     super(id);
@@ -24,6 +26,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
     inputParametersStep = new InputParametersStep("step");
     instructionsStep = new InstructionsStep("step");
     outputParametersStep = new OutputParametersStep("step");
+    validationStep = new ValidationStep("step");
 
     add(instrumentSelectionStep);
     instrumentSelectionStep.handleWizardState(this, null);
@@ -51,6 +54,10 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
   public WizardStepPanel getOutputParametersStep() {
     return outputParametersStep;
+  }
+
+  public WizardStepPanel getValidationStep() {
+    return validationStep;
   }
 
 }

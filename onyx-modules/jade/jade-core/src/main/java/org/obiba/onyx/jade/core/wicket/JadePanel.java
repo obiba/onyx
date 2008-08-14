@@ -16,6 +16,7 @@ import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.instrument.InstrumentLauncherPanel;
 import org.obiba.onyx.jade.core.wicket.wizard.InstrumentWizardForm;
 import org.obiba.onyx.wicket.IEngineComponentAware;
@@ -33,6 +34,9 @@ public class JadePanel extends Panel implements IEngineComponentAware {
 
   @SpringBean
   private ActiveInterviewService activeInterviewService;
+  
+  @SpringBean
+  private ActiveInstrumentRunService activeInstrumentRunService;
 
   private ActionWindow actionWindow;
 
@@ -59,6 +63,7 @@ public class JadePanel extends Panel implements IEngineComponentAware {
 
           @Override
           public void onCancel(AjaxRequestTarget target) {
+            activeInstrumentRunService.cancel();
             IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
             ActionDefinition actionDef = exec.getActionDefinition(ActionType.STOP);
             if(actionDef != null) {
@@ -68,6 +73,7 @@ public class JadePanel extends Panel implements IEngineComponentAware {
 
           @Override
           public void onFinish(AjaxRequestTarget target, Form form) {
+            activeInstrumentRunService.complete();
             IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
             ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
             if(actionDef != null) {

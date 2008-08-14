@@ -16,6 +16,7 @@ import javax.persistence.TemporalType;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 
 @Entity
 public class InstrumentRun extends AbstractEntity {
@@ -69,6 +70,14 @@ public class InstrumentRun extends AbstractEntity {
       getInstrumentRunValues().add(value);
       value.setInstrumentRun(this);
     }
+  }
+  
+  public InstrumentRunValue getInstrumentRunValue(InstrumentParameter instrumentParameter) {
+    for (InstrumentRunValue runValue : getInstrumentRunValues()) {
+      if (runValue.getInstrumentParameter().getId().equals(instrumentParameter.getId()))
+        return runValue;
+    }
+    return null;
   }
   
   public Instrument getInstrument() {
