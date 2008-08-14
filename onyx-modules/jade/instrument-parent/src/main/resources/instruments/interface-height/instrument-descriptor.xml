@@ -52,7 +52,7 @@
     <model>Model 214</model>
     <serialNumber>0987654321</serialNumber>
     <barcode>sta02</barcode>
-    <status>ACTIVE</status>
+    <status>INACTIVE</status>
     <instrumentType>
       <name>STA</name>
     </instrumentType>

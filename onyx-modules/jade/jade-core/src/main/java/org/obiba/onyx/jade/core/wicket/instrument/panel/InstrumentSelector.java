@@ -1,23 +1,26 @@
 package org.obiba.onyx.jade.core.wicket.instrument.panel;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.convert.IConverter;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 
-public abstract class InstrumentSelector extends Panel {
+public class InstrumentSelector extends Panel {
 
   private static final long serialVersionUID = 3920957095572085598L;
 
-  private Instrument selection = null;
+  private Instrument instrument = null;
 
   @SpringBean
   private EntityQueryService queryService;
@@ -31,36 +34,41 @@ public abstract class InstrumentSelector extends Panel {
     template.setInstrumentType((InstrumentType) getModelObject());
     template.setStatus(InstrumentStatus.ACTIVE);
 
-    DropDownChoice select = new DropDownChoice("select", new PropertyModel(this, "selection"), queryService.match(template), new IChoiceRenderer() {
+    KeyValueDataPanel selector = new KeyValueDataPanel("selector");
+    add(selector);
+    selector.addRow(new Label(KeyValueDataPanel.getRowKeyId(), new StringResourceModel("InstrumentBarcode", InstrumentSelector.this, null)), new Selector(KeyValueDataPanel.getRowValueId()));
 
-      public Object getDisplayValue(Object object) {
-        return ((Instrument) object).getName();
-      }
-
-      public String getIdValue(Object object, int index) {
-        return ((Instrument) object).getId().toString();
-      }
-
-    });
-    select.add(new OnChangeAjaxBehavior() {
-
-      @Override
-      protected void onUpdate(AjaxRequestTarget target) {
-        onInstrumentSelection(target, selection);
-      }
-
-    });
-    add(select);
+    String barcodes = "";
+    for(Instrument inst : queryService.match(template)) {
+      barcodes += inst.getBarcode() + " ";
+    }
+    add(new Label("values", barcodes));
   }
 
-  public Instrument getSelection() {
-    return selection;
+  public Instrument getInstrument() {
+    return instrument;
   }
 
-  public void setSelection(Instrument selection) {
-    this.selection = selection;
+  public void setInstrument(Instrument instrument) {
+    this.instrument = instrument;
   }
 
-  public abstract void onInstrumentSelection(AjaxRequestTarget target, Instrument instrument);
+  @SuppressWarnings("serial")
+  private class Selector extends Fragment {
 
+    public Selector(String id) {
+      super(id, "selectorFragment", InstrumentSelector.this);
+
+      final TextField tf = new RequiredTextField("field", new PropertyModel(InstrumentSelector.this, "instrument"), Instrument.class) {
+        @SuppressWarnings("unchecked")
+        @Override
+        public IConverter getConverter(Class type) {
+          return new InstrumentBarcodeConverter(queryService);
+        }
+      };
+      tf.setLabel(new StringResourceModel("InstrumentBarcode", InstrumentSelector.this, null));
+      tf.setOutputMarkupId(true);
+      add(tf);
+    }
+  }
 }

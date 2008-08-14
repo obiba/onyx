@@ -10,12 +10,15 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 
 @Entity
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "barcode" }) })
 public class Instrument extends AbstractEntity {
 
   private static final long serialVersionUID = 14533453L;
