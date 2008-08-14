@@ -52,7 +52,7 @@ public abstract class WizardStepPanel extends Panel {
    * @param form
    * @param target
    */
-  public void onNextSubmit(WizardForm form, AjaxRequestTarget target) {
+  public void onStepOut(WizardForm form, AjaxRequestTarget target) {
     
   }
   
@@ -61,7 +61,7 @@ public abstract class WizardStepPanel extends Panel {
    * @param form
    * @param target
    */
-  public void onStep(WizardForm form, AjaxRequestTarget target) {
+  public void onStepIn(WizardForm form, AjaxRequestTarget target) {
 
   }
 

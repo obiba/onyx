@@ -41,14 +41,14 @@ public abstract class WizardForm extends Form {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         log.debug("finish.onSubmit");
-        if (getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
+        if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
         onFinish(target, form);
       }
-      
+
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
         log.debug("finish.onError");
-        if (getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
+        if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
         WizardForm.this.onError(target, form);
       }
 
@@ -82,14 +82,14 @@ public abstract class WizardForm extends Form {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         log.debug("next.onSubmit");
-        if (getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
+        if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
         WizardForm.this.gotoNext(target);
       }
-      
+
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
         log.debug("next.onError");
-        if (getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
+        if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
         WizardForm.this.onError(target, form);
       }
 
@@ -113,21 +113,21 @@ public abstract class WizardForm extends Form {
     link.add(new AttributeModifier("value", true, new StringResourceModel("Cancel", WizardForm.this, null)));
     add(link);
   }
-  
+
   /**
    * Called after wizard form submission generates an error (on next or finish click).
    * @param target
    * @param form
    */
   public abstract void onError(AjaxRequestTarget target, Form form);
-  
+
   /**
    * Called when finish is clicked.
    * @param target
    * @param form
    */
   public abstract void onFinish(AjaxRequestTarget target, Form form);
-  
+
   /**
    * Called when cancel is clicked.
    * @param target
@@ -149,22 +149,26 @@ public abstract class WizardForm extends Form {
   protected void gotoNext(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
     log.info("gotoNext.currentStep=" + currentStep.getClass().getName());
-    currentStep.onNextSubmit(WizardForm.this, target);
-    
+    currentStep.onStepOut(WizardForm.this, target);
+
     WizardStepPanel next = currentStep.getNextStep();
-    currentStep.replaceWith(next);
-    next.onStep(this, target);
-    next.handleWizardState(this, target);
+    if(next != null) {
+      currentStep.replaceWith(next);
+      next.onStepIn(this, target);
+      next.handleWizardState(this, target);
+    }
     target.addComponent(this);
   }
 
   protected void gotoPrevious(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
     log.info("gotoPrevious.currentStep=" + currentStep.getClass().getName());
-    
+
     WizardStepPanel previous = currentStep.getPreviousStep();
-    currentStep.replaceWith(previous);
-    previous.handleWizardState(this, target);
+    if(previous != null) {
+      currentStep.replaceWith(previous);
+      previous.handleWizardState(this, target);
+    }
     target.addComponent(this);
   }
 
@@ -179,7 +183,7 @@ public abstract class WizardForm extends Form {
   public FeedbackPanel getFeedbackPanel() {
     return null;
   }
-  
+
   private class WizardButtonBehavior extends AttributeAppender {
 
     private static final long serialVersionUID = -2793180600410649652L;
