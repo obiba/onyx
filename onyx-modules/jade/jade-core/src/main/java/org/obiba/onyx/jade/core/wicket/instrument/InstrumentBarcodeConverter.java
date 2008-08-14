@@ -1,4 +1,4 @@
-package org.obiba.onyx.jade.core.wicket.instrument.panel;
+package org.obiba.onyx.jade.core.wicket.instrument;
 
 import java.util.Locale;
 

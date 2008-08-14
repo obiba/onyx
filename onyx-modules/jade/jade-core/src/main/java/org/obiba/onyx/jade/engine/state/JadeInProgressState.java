@@ -9,7 +9,7 @@ import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.jade.core.wicket.panel.JadePanel;
+import org.obiba.onyx.jade.core.wicket.JadePanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

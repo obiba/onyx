@@ -1,4 +1,4 @@
-package org.obiba.onyx.jade.core.wicket.panel;
+package org.obiba.onyx.jade.core.wicket;
 
 import java.io.Serializable;
 
@@ -16,6 +16,7 @@ import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.wicket.instrument.InstrumentLauncherPanel;
 import org.obiba.onyx.jade.core.wicket.wizard.InstrumentWizardForm;
 import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.action.ActionWindow;

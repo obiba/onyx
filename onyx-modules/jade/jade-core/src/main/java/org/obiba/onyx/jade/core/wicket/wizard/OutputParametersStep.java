@@ -4,7 +4,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.PropertyModel;
-import org.obiba.onyx.jade.core.wicket.instrument.panel.InstrumentOutputParameterPanel;
+import org.obiba.onyx.jade.core.wicket.instrument.InstrumentOutputParameterPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 

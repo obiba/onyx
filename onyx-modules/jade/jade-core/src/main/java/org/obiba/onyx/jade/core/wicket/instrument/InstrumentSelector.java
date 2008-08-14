@@ -1,4 +1,4 @@
-package org.obiba.onyx.jade.core.wicket.instrument.panel;
+package org.obiba.onyx.jade.core.wicket.instrument;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.RequiredTextField;

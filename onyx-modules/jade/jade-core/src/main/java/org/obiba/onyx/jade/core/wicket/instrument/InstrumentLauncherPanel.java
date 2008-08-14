@@ -1,4 +1,4 @@
-package org.obiba.onyx.jade.core.wicket.panel;
+package org.obiba.onyx.jade.core.wicket.instrument;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

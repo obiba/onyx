@@ -7,7 +7,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
-import org.obiba.onyx.jade.core.wicket.instrument.panel.InstrumentSelector;
+import org.obiba.onyx.jade.core.wicket.instrument.InstrumentSelector;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
