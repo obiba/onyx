@@ -2,7 +2,8 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.model.PropertyModel;
+import org.obiba.onyx.jade.core.wicket.instrument.InstructionsPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
@@ -14,9 +15,7 @@ public class InstructionsStep extends WizardStepPanel {
     super(id);
     setOutputMarkupId(true);
 
-    add(new Label("title", "2: Instructions"));
-
-    add(new EmptyPanel("panel"));
+    add(new Label("title", "Instructions"));
   }
 
   @Override
@@ -32,6 +31,11 @@ public class InstructionsStep extends WizardStepPanel {
       target.addComponent(form.getPreviousLink());
       target.addComponent(form.getNextLink());
     }
+  }
+  
+  @Override
+  public void onStepIn(WizardForm form, AjaxRequestTarget target) {
+    setContent(target, new InstructionsPanel(getContentId(), new PropertyModel(form, "instrument")));
   }
 
 }

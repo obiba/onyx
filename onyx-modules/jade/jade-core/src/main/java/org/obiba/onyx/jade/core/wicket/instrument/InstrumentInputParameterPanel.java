@@ -68,17 +68,18 @@ public class InstrumentInputParameterPanel extends Panel {
       runValue.setInstrumentParameter(param);
       instrumentRun.addInstrumentRunValue(runValue);
 
-      if (param.getInputSource() instanceof OperatorSource) {
-        DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType());
+      if(param.getInputSource() instanceof OperatorSource) {
+        DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType(), param.getMeasurementUnit());
         field.setRequired(true);
         field.setLabel(new Model(param.getName()));
         input = field;
-      }
-      else {
+      } else {
         Data data = inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param.getInputSource());
         runValue.setData(data);
         // TODO data is not supposed to be null ?
-        IModel value = (data == null ? new Model("") : new Model((Serializable) data.getValue()));
+        String unit = param.getMeasurementUnit();
+        if(unit == null) unit = "";
+        IModel value = (data == null ? new Model(unit) : new Model(data.getValue() + " " + unit));
         input = new Label(KeyValueDataPanel.getRowValueId(), value);
       }
       inputs.addRow(label, input);

@@ -30,13 +30,11 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
       participantInterview = getPersistenceManager().save(participantInterviewTemplate);
     }
 
-    InstrumentRun run = new InstrumentRun();
-    run.setParticipantInterview(participantInterview);
-    run.setInstrument(instrument);
-    run.setStatus(InstrumentRunStatus.IN_PROGRESS);
-    run.setTimeStart(new Date());
-
-    currentRun = run;//getPersistenceManager().save(run);
+    currentRun = new InstrumentRun();
+    currentRun.setParticipantInterview(participantInterview);
+    currentRun.setInstrument(instrument);
+    currentRun.setStatus(InstrumentRunStatus.IN_PROGRESS);
+    currentRun.setTimeStart(new Date());
 
     return currentRun;
   }
@@ -60,9 +58,9 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     currentRun.setTimeEnd(new Date());
 
     getPersistenceManager().save(currentRun);
-    
-    for (InstrumentRunValue value : currentRun.getInstrumentRunValues()) {
-      getPersistenceManager().save(value);  
+
+    for(InstrumentRunValue value : currentRun.getInstrumentRunValues()) {
+      getPersistenceManager().save(value);
     }
   }
 

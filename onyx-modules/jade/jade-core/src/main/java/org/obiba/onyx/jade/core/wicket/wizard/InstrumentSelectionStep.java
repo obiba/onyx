@@ -29,7 +29,7 @@ public class InstrumentSelectionStep extends WizardStepPanel {
     super(id);
     setOutputMarkupId(true);
 
-    add(new Label(getTitleId(), "1: Instrument Selection"));
+    add(new Label(getTitleId(), "Instrument Selection"));
 
     add(selector = new InstrumentSelector(getContentId(), instrumentTypeModel));
   }

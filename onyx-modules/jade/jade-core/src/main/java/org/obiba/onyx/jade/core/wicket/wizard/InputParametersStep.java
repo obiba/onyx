@@ -15,8 +15,7 @@ public class InputParametersStep extends WizardStepPanel {
     super(id);
     setOutputMarkupId(true);
 
-    add(new Label(getTitleId(), "2: Input Parameters"));
-
+    add(new Label(getTitleId(), "Input Parameters"));
   }
 
   @Override

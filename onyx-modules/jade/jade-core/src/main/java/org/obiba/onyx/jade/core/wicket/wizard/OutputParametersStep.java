@@ -34,7 +34,7 @@ public class OutputParametersStep extends WizardStepPanel {
   public OutputParametersStep(String id) {
     super(id);
     setOutputMarkupId(true);
-    add(new Label("title", "4: Output Parameters"));
+    add(new Label("title", "Output Parameters"));
 
     add(new EmptyPanel("panel"));
   }

@@ -1,7 +1,5 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
-import java.io.Serializable;
-
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -34,7 +32,7 @@ public class ValidationPanel extends Panel {
 
   public ValidationPanel(String id, IModel instrumentModel) {
     super(id);
-    Instrument inst = (Instrument)instrumentModel.getObject();
+    Instrument inst = (Instrument) instrumentModel.getObject();
     setOutputMarkupId(true);
 
     Instrument instrument = queryService.get(Instrument.class, inst.getId());
@@ -47,7 +45,7 @@ public class ValidationPanel extends Panel {
     for(InstrumentInputParameter param : queryService.match(templateIn)) {
       Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getName());
       InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
-      kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new Model((Serializable)runValue.getValue())));
+      kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new Model(runValue.getValue() + " " + param.getMeasurementUnit())));
     }
     add(kv);
 
@@ -57,8 +55,7 @@ public class ValidationPanel extends Panel {
     for(InstrumentOutputParameter param : queryService.match(templateOut)) {
       Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getName());
       InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
-      if (runValue != null)
-      kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new Model((Serializable)runValue.getValue())));
+      if(runValue != null) kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new Model(runValue.getValue() + " " + param.getMeasurementUnit())));
     }
     add(kv);
   }
