@@ -30,6 +30,15 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 
+  <bean id="instrumentDescriptorService"
+    class="org.obiba.onyx.jade.core.service.impl.DefaultInstrumentDescriptorServiceImpl" />
+
+  <bean id="inputDataSourceVisitor"
+    class="org.obiba.onyx.jade.core.service.impl.InputDataSourceVisitorImpl" scope="prototype">
+    <property name="queryService" ref="persistenceManager" />
+    <property name="instrumentRunService" ref="instrumentRunService" />
+  </bean>
+
   <bean id="jadeDatabaseSeed" class="org.obiba.onyx.jade.core.wicket.seed.JadeDatabaseSeed" scope="singleton">
     <property name="resourcePatterns">
       <list>
@@ -42,9 +51,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="instrumentService" ref="instrumentService" />
     <property name="instrumentDescriptorService" ref="instrumentDescriptorService" />
   </bean>
-
-  <bean id="instrumentDescriptorService"
-    class="org.obiba.onyx.jade.core.service.impl.DefaultInstrumentDescriptorServiceImpl" />
 
 
 </beans>

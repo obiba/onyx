@@ -2,6 +2,8 @@ package org.obiba.onyx.jade.core.wicket.instrument;
 
 import java.io.Serializable;
 
+import net.sf.ehcache.distribution.ManualRMICacheManagerPeerProvider;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -14,6 +16,7 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
+import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
@@ -61,23 +64,22 @@ public class InstrumentInputParameterPanel extends Panel {
       Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getName());
       Component input = null;
       InstrumentRunValue runValue = new InstrumentRunValue();
-      // runValue.setCaptureMethod(param.getCaptureMethod());
-      runValue.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL); // for testing
+      runValue.setCaptureMethod(param.getCaptureMethod());
       runValue.setInstrumentParameter(param);
       instrumentRun.addInstrumentRunValue(runValue);
 
-      switch(runValue.getCaptureMethod()) {
-      case MANUAL:
+      if (param.getInputSource() instanceof OperatorSource) {
         DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType());
         field.setRequired(true);
         field.setLabel(new Model(param.getName()));
         input = field;
-        break;
-      case AUTOMATIC:
+      }
+      else {
         Data data = inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param.getInputSource());
+        runValue.setData(data);
+        // TODO data is not supposed to be null ?
         IModel value = (data == null ? new Model("") : new Model((Serializable) data.getValue()));
         input = new Label(KeyValueDataPanel.getRowValueId(), value);
-        break;
       }
       inputs.addRow(label, input);
     }
