@@ -46,4 +46,9 @@ public interface ActiveInstrumentRunService {
    */
   public void reset();
   
+  /**
+   * Persist current {@link InstrumentRun}.
+   */
+  public void validate();
+  
 }

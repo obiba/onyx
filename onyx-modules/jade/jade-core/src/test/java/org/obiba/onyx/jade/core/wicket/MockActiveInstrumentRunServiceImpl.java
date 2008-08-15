@@ -42,4 +42,9 @@ public class MockActiveInstrumentRunServiceImpl implements ActiveInstrumentRunSe
     return null;
   }
 
+  public void validate() {
+    // TODO Auto-generated method stub
+    
+  }
+
 }

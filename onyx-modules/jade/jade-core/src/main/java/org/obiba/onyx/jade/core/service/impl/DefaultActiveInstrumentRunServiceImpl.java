@@ -78,4 +78,14 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     currentRun = null;
   }
 
+  public void validate() {
+    if(currentRun == null) return;
+    
+    getPersistenceManager().save(currentRun);
+
+    for(InstrumentRunValue value : currentRun.getInstrumentRunValues()) {
+      getPersistenceManager().save(value);
+    }
+  }
+
 }

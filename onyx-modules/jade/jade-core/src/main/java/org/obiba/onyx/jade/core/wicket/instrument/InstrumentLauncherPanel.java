@@ -1,13 +1,13 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.link.PopupSettings;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentDescriptorService;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 
 public abstract class InstrumentLauncherPanel extends Panel {
 
@@ -16,6 +16,9 @@ public abstract class InstrumentLauncherPanel extends Panel {
   private Instrument instrument;
 
   private String instrumentCodeBase;
+  
+  @SpringBean
+  private InstrumentService instrumentService;
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
@@ -44,10 +47,8 @@ public abstract class InstrumentLauncherPanel extends Panel {
       }
 
     };
-    PopupSettings popup = new PopupSettings();
-    button.setPopupSettings(popup);
     add(button);
-    button.setEnabled(instrument != null && instrumentCodeBase != null);
+    button.setVisible(instrumentService.isInteractiveInstrument(instrument));
 
   }
 

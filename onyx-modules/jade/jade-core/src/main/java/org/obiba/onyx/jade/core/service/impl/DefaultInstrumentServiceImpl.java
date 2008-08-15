@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.InstrumentService;
@@ -51,6 +54,21 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
       instrumentType.addInstrument(instrument);
       getPersistenceManager().save(instrumentType);
     }
+  }
+
+  public boolean isInteractiveInstrument(Instrument instrument) {
+    if (instrument == null) return false;
+    
+    InstrumentOutputParameter template = new InstrumentOutputParameter();
+    template.setInstrument(instrument);
+    template.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
+    
+    for (InstrumentOutputParameter param : getPersistenceManager().match(template)) {
+      if (!(param instanceof InstrumentComputedOutputParameter))
+        return true;
+    }
+    
+    return false;
   }
 
 }

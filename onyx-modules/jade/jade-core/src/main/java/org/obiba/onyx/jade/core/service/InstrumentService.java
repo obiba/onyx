@@ -57,4 +57,11 @@ public interface InstrumentService {
    */
   public void addInstrument(InstrumentType instrumentType, Instrument instrument);
   
+  /**
+   * Shall we expect data from a remote instrument application ?
+   * @param instrument
+   * @return
+   */
+  public boolean isInteractiveInstrument(Instrument instrument);
+  
 }

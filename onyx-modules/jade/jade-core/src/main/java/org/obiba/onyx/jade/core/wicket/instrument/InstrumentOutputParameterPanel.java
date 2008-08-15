@@ -1,19 +1,19 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.event.def.OnUpdateVisitor;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
@@ -23,6 +23,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMeth
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
@@ -34,11 +35,15 @@ public class InstrumentOutputParameterPanel extends Panel {
 
   private static final long serialVersionUID = 3008363510160516288L;
 
+  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(InstrumentOutputParameterPanel.class);
 
   @SpringBean
   private EntityQueryService queryService;
 
+  @SpringBean
+  private InstrumentService instrumentService;
+  
   @SpringBean
   private ActiveInterviewService activeInterviewService;
 
@@ -54,23 +59,19 @@ public class InstrumentOutputParameterPanel extends Panel {
     setModel(new DetachableEntityModel(queryService, instrumentModel.getObject()));
     setOutputMarkupId(true);
 
-    CheckBox cb = new CheckBox("manual", new PropertyModel(this, "manual"));
-    cb.add(new OnChangeAjaxBehavior() {
-
-      @Override
-      protected void onUpdate(AjaxRequestTarget target) {
-        updateInputs(target);
-      }
-
-    });
-    add(cb);
-
     // get the current instrument run or create it if there was no input parameters for this instrument
     instrumentRun = activeInstrumentRunService.getInstrumentRun();
     if(instrumentRun == null) {
       instrumentRun = activeInstrumentRunService.start(activeInterviewService.getParticipant(), (Instrument) getModelObject());
     }
 
+    if (instrumentService.isInteractiveInstrument(instrumentRun.getInstrument())) {
+      add(new ManualFragment("manual"));
+    }
+    else {
+      add(new EmptyPanel("manual"));
+    }
+    
     updateInputs(null);
   }
 
@@ -135,5 +136,25 @@ public class InstrumentOutputParameterPanel extends Panel {
       target.addComponent(inputs);
     }
   }  
+  
+  @SuppressWarnings("serial")
+  private class ManualFragment extends Fragment {
+
+    @SuppressWarnings("serial")
+    public ManualFragment(String id) {
+      super(id, "manualFragment", InstrumentOutputParameterPanel.this);
+      CheckBox cb = new CheckBox("manual", new PropertyModel(this, "manual"));
+      cb.add(new OnChangeAjaxBehavior() {
+
+        @Override
+        protected void onUpdate(AjaxRequestTarget target) {
+          updateInputs(target);
+        }
+
+      });
+      add(cb);
+    }
+    
+  }
   
 }

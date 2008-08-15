@@ -9,5 +9,8 @@
 
   <bean id="activeInstrumentRunService" class="org.obiba.onyx.jade.core.wicket.MockActiveInstrumentRunServiceImpl">
   </bean>
+  
+  <bean id="instrumentService" class="org.obiba.onyx.jade.core.wicket.MockInstrumentServiceImpl">
+  </bean>
 
 </beans>

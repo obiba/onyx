@@ -1,6 +1,8 @@
 <wicket:panel>
-	<div>
-		<input type="checkbox" wicket:id="manual" /><wicket:message key="EnterValuesManually"/>
-	</div>
+	<span wicket:id="manual" />
+	<br/>
 	<div wicket:id="inputs"/>
 </wicket:panel>
+<wicket:fragment wicket:id="manualfragment">
+	<input type="checkbox" wicket:id="manual" /><wicket:message key="EnterValuesManually"/>
+</wicket:fragment>

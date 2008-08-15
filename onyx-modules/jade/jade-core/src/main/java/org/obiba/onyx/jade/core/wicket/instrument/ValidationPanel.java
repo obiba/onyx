@@ -20,6 +20,7 @@ public class ValidationPanel extends Panel {
 
   private static final long serialVersionUID = 3008363510160516288L;
 
+  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ValidationPanel.class);
 
   @SpringBean

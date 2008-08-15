@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public abstract class InstructionsPanel extends Panel {
 
   private static final long serialVersionUID = 8250439838157103589L;
-  
+
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(InstructionsPanel.class);
 
@@ -58,25 +58,27 @@ public abstract class InstructionsPanel extends Panel {
     if(instrumentRun == null) {
       instrumentRun = activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument);
     }
-    
+    // save instrument input parameters if any for jade-remote-server
+    activeInstrumentRunService.validate();
+
     add(new InstrumentLauncherPanel("launcher") {
 
       @Override
       public void onInstrumentLaunch() {
         InstructionsPanel.this.onInstrumentLaunch();
       }
-      
+
     });
 
     final List<InstrumentRunValue> manualInputs = new ArrayList<InstrumentRunValue>();
-    for (InstrumentRunValue runValue : instrumentRun.getInstrumentRunValues()) {
-      if (runValue.getInstrumentParameter() instanceof InstrumentInputParameter && runValue.getCaptureMethod().equals(InstrumentParameterCaptureMethod.MANUAL)) {
+    for(InstrumentRunValue runValue : instrumentRun.getInstrumentRunValues()) {
+      if(runValue.getInstrumentParameter() instanceof InstrumentInputParameter && runValue.getCaptureMethod().equals(InstrumentParameterCaptureMethod.MANUAL)) {
         manualInputs.add(runValue);
       }
     }
-    
-    add(new Label("general", new StringResourceModel("StartMeasurementWithInstrument", this, new Model(new ValueMap("name="+instrument.getName())))));
-    
+
+    add(new Label("general", new StringResourceModel("StartMeasurementWithInstrument", this, new Model(new ValueMap("name=" + instrument.getName())))));
+
     add(new DataView("item", new IDataProvider() {
 
       @SuppressWarnings("unchecked")
@@ -101,21 +103,16 @@ public abstract class InstructionsPanel extends Panel {
       protected void populateItem(Item item) {
         InstrumentRunValue runValue = (InstrumentRunValue) item.getModelObject();
         InstrumentParameter param = runValue.getInstrumentParameter();
-        if(runValue != null) {
-          if(runValue.getData() != null && runValue.getData().getValue() != null) {
-            ValueMap map = new ValueMap("name="+param.getName()+",value="+runValue.getData().getValue());
-            item.add(new Label("instruction", new StringResourceModel("TypeTheValueInTheInstrument", InstructionsPanel.this, new Model(map)) ));
-          } else {
-            item.add(new Label("instruction"));
-          }
-        } else {
-          item.add(new Label("instruction"));
+        ValueMap map = new ValueMap("name=" + param.getName() + ",value=");
+        if(runValue != null && runValue.getData() != null && runValue.getData().getValue() != null) {
+          map.put("value", runValue.getData().getValue());
         }
+        item.add(new Label("instruction", new StringResourceModel("TypeTheValueInTheInstrument", InstructionsPanel.this, new Model(map))));
       }
 
     });
 
   }
-  
+
   public abstract void onInstrumentLaunch();
 }

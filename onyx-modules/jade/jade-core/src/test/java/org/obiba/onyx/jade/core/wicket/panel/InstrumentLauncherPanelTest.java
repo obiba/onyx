@@ -1,5 +1,7 @@
 package org.obiba.onyx.jade.core.wicket.panel;
 
+import java.io.Serializable;
+
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.util.tester.TestPanelSource;
@@ -12,14 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@SuppressWarnings("serial")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "InstrumentLauncherPanelTest.xml")
-public class InstrumentLauncherPanelTest {
+public class InstrumentLauncherPanelTest implements Serializable {
 
   @Autowired
-  WebApplication application;
+  transient WebApplication application;
 
-  WicketTester tester;
+  transient WicketTester tester;
 
   @Before
   public void setup() {
