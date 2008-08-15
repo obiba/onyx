@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.obiba.onyx.core.domain.participant.Gender;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
@@ -19,7 +21,10 @@ public class MockInstrumentExecutionService implements InstrumentExecutionServic
   private int value;
 
   public MockInstrumentExecutionService() {
-    participant = new Participant().setBirthdate(new Date()).setCode("5487543534").setGender(Gender.FEMALE);
+    participant = new Participant();
+    participant.setBirthDate(new Date());
+    participant.setBarcode("5487543534");
+    participant.setGender(Gender.FEMALE);
   }
 
   public void addOutputParameterValue(String name, Data value) {

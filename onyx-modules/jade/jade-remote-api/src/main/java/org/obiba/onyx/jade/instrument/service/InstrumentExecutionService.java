@@ -2,6 +2,7 @@ package org.obiba.onyx.jade.instrument.service;
 
 import java.util.Map;
 
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.Data;
 
 /**
