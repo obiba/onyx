@@ -5,6 +5,7 @@ import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.feedback.FeedbackMessage;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
@@ -26,14 +27,19 @@ public class DataField extends Panel {
 
   private FormComponent field = null;
   
+  public DataField(String id, IModel model, final DataType dataType) {
+    this(id,model,dataType, "");
+  }
+  
   /**
    * Constructor.
    * @param id
    * @param model value set is of type {@link Data}
    * @param dataType
+   * @param unit the representation of the unit for the value
    */
   @SuppressWarnings("serial")
-  public DataField(String id, IModel model, final DataType dataType) {
+  public DataField(String id, IModel model, final DataType dataType, String unit) {
     super(id);
 
     switch(dataType) {
@@ -86,6 +92,8 @@ public class DataField extends Panel {
       break;
     }
     add(field);
+    
+    add(new Label("unit", (unit == null ? "" : unit)));
   }
   
   /**
