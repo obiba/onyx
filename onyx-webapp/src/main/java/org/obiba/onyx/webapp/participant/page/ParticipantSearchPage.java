@@ -41,7 +41,7 @@ import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 
-@AuthorizeInstantiation({"SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR"})
+@AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class ParticipantSearchPage extends BasePage {
 
   @SpringBean
@@ -58,13 +58,13 @@ public class ParticipantSearchPage extends BasePage {
   private Participant template = new Participant();
 
   private BubblePopupPanel bubble;
-  
+
   @SuppressWarnings("serial")
   public ParticipantSearchPage() {
     super();
 
     add(bubble = new BubblePopupPanel("bubble"));
-    
+
     Form form = new Form("searchForm");
     add(form);
 
@@ -99,7 +99,7 @@ public class ParticipantSearchPage extends BasePage {
       }
 
     });
-    
+
     add(new AjaxLink("advanced") {
 
       @Override
@@ -117,7 +117,7 @@ public class ParticipantSearchPage extends BasePage {
       }
 
     });
-    
+
     add(new AjaxLink("print") {
 
       @Override
@@ -126,7 +126,7 @@ public class ParticipantSearchPage extends BasePage {
       }
 
     });
-    
+
     add(new AjaxLink("excel") {
 
       @Override
@@ -278,25 +278,26 @@ public class ParticipantSearchPage extends BasePage {
         public void populateItem(final Item cellItem, String componentId, IModel rowModel) {
           final List<IModel> actions = new ArrayList<IModel>();
           final Participant p = (Participant) rowModel.getObject();
-          actions.add(new Model("View"));
-          actions.add(new Model("Interview"));
-          if(p.getBarcode() == null) actions.add(new Model("Receive"));
+          actions.add(new StringResourceModel("View", ParticipantSearchPage.this, null));
+          if(p.getBarcode() != null) actions.add(new StringResourceModel("Interview", ParticipantSearchPage.this, null));
+          else
+            actions.add(new StringResourceModel("Receive", ParticipantSearchPage.this, null));
 
           cellItem.add(new AjaxLinkList(componentId, actions, "") {
 
             @Override
             public void onClick(IModel model, AjaxRequestTarget target) {
-              if (actions.indexOf(model)==0) {
+              if(actions.indexOf(model) == 0) {
                 bubble.setContent(target, new ParticipantPanel(bubble.getContentId(), p));
-                bubble.place(target, (Component)cellItem.getParent());
+                bubble.place(target, (Component) cellItem.getParent());
                 bubble.show(target);
-              }
-              else if (actions.indexOf(model)==1) {
-                activeInterviewService.setParticipant(p);
-                setResponsePage(InterviewPage.class);
-              }
-              else {
-                setResponsePage(new ParticipantReceptionPage(new DetachableEntityModel(queryService, p)));
+              } else if(actions.indexOf(model) == 1) {
+                if(p.getBarcode() != null) {
+                  activeInterviewService.setParticipant(p);
+                  setResponsePage(InterviewPage.class);
+                } else {
+                  setResponsePage(new ParticipantReceptionPage(new DetachableEntityModel(queryService, p)));
+                }
               }
             }
 
