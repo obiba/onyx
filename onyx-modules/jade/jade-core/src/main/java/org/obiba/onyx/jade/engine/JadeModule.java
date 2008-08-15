@@ -1,6 +1,5 @@
 package org.obiba.onyx.jade.engine;
 
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;
@@ -8,24 +7,18 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.jade.engine.state.JadeCompletedState;
-import org.obiba.onyx.jade.engine.state.JadeInProgressState;
-import org.obiba.onyx.jade.engine.state.JadeReadyState;
-import org.obiba.onyx.jade.engine.state.JadeSkippedState;
-import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
-public class JadeModule implements Module {
+public class JadeModule implements Module, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(JadeModule.class);
 
-  private EntityQueryService queryService;
-
-  public void setQueryService(EntityQueryService queryService) {
-    this.queryService = queryService;
-  }
-
+  private ApplicationContext applicationContext;
+  
   public String getName() {
     return "jade";
   }
@@ -41,10 +34,10 @@ public class JadeModule implements Module {
   public IStageExecution createStageExecution(Interview interview, Stage stage) {
     StageExecutionContext exec = new StageExecutionContext(interview, stage);
 
-    AbstractStageState ready = new JadeReadyState();
-    AbstractStageState inProgress = new JadeInProgressState(stage);
-    AbstractStageState skipped = new JadeSkippedState();
-    AbstractStageState completed = new JadeCompletedState();
+    AbstractStageState ready = (AbstractStageState)applicationContext.getBean("jadeReadyState");
+    AbstractStageState inProgress = (AbstractStageState)applicationContext.getBean("jadeInProgressState");
+    AbstractStageState skipped = (AbstractStageState)applicationContext.getBean("jadeSkippedState");
+    AbstractStageState completed = (AbstractStageState)applicationContext.getBean("jadeCompletedState");
     exec.addEdge(ready, TransitionEvent.START, inProgress);
     exec.addEdge(ready, TransitionEvent.SKIP, skipped);
     exec.addEdge(inProgress, TransitionEvent.CANCEL, ready);
@@ -54,6 +47,10 @@ public class JadeModule implements Module {
     exec.setInitialState(ready);
 
     return exec;
+  }
+
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.applicationContext = applicationContext;
   }
 
 }

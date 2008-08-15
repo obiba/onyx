@@ -6,34 +6,44 @@ package org.obiba.onyx.jade.engine.state;
 import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
-import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
+import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.JadePanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
-public class JadeInProgressState extends AbstractStageState {
+public class JadeInProgressState extends AbstractStageState implements InitializingBean {
 
   private static final Logger log = LoggerFactory.getLogger(JadeInProgressState.class);
 
-  private Stage stage;
+  private ActiveInstrumentRunService activeInstrumentRunService;
 
-  public JadeInProgressState(Stage stage) {
-    this.stage = stage;
+  public void setActiveInstrumentRunService(ActiveInstrumentRunService activeInstrumentRunService) {
+    this.activeInstrumentRunService = activeInstrumentRunService;
+  }
+
+  public void afterPropertiesSet() throws Exception {
     addAction(ActionDefinition.CANCEL_ACTION);
     addSystemAction(ActionDefinition.COMPLETE_ACTION);
     addAction(ActionDefinition.COMMENT_ACTION);
   }
-
+  
   public Component getWidget(String id) {
-    return new JadePanel(id, stage);
+    return new JadePanel(id, getStage());
   }
 
   @Override
   public void stop(Action action) {
     log.info("Jade Stage {} is stopping", super.getStage().getName());
     // Invalidate current instrument run
+    InstrumentRun run = activeInstrumentRunService.getInstrumentRun();
+    if(run != null) {
+      activeInstrumentRunService.cancel();
+      activeInstrumentRunService.reset();
+    }
     castEvent(TransitionEvent.CANCEL);
   }
 
@@ -41,6 +51,11 @@ public class JadeInProgressState extends AbstractStageState {
   public void complete(Action action) {
     log.info("Jade Stage {} is completing", super.getStage().getName());
     // Finish current instrument run
+    InstrumentRun run = activeInstrumentRunService.getInstrumentRun();
+    if(run != null) {
+      activeInstrumentRunService.complete();
+      activeInstrumentRunService.reset();
+    }
     castEvent(TransitionEvent.COMPLETE);
   }
 
@@ -48,9 +63,10 @@ public class JadeInProgressState extends AbstractStageState {
   public boolean isInteractive() {
     return true;
   }
-  
+
   @Override
   public String getMessage() {
     return "In Progress";
   }
+
 }

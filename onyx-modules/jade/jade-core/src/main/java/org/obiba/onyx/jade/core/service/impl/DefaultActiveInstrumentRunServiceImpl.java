@@ -76,4 +76,8 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return currentRun.getParticipantInterview().getParticipant();
   }
 
+  public void reset() {
+    currentRun = null;
+  }
+
 }

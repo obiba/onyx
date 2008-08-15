@@ -11,12 +11,18 @@ import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunRefusalReason;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
-public class JadeReadyState extends AbstractStageState {
+/**
+ * Jade Ready State, goes there each time a state is cancelled.
+ * @author Yannick Marcon
+ *
+ */
+public class JadeReadyState extends AbstractStageState implements InitializingBean {
 
   private static final Logger log = LoggerFactory.getLogger(JadeReadyState.class);
-
-  public JadeReadyState() {
+  
+  public void afterPropertiesSet() throws Exception {
     addAction(ActionDefinition.START_ACTION);
     ActionDefinition def = new ActionDefinition(ActionType.SKIP, "Skip", "Please explain why this stage is skipped.");
     for (InstrumentRunRefusalReason reason : InstrumentRunRefusalReason.values()) {
