@@ -27,7 +27,7 @@
     <description>Measured height</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>INTEGER</dataType>
-    <captureMethod>AUTOMATIC</captureMethod>
+    <captureMethod>MANUAL</captureMethod>
     <instrument reference="bioimp1" />
     <inputSource reference="measured_height" />
   </input>
