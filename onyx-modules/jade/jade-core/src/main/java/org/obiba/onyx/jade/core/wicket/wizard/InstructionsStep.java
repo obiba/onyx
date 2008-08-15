@@ -25,7 +25,7 @@ public class InstructionsStep extends WizardStepPanel {
     nextStep.setPreviousStep(this);
     
     form.getPreviousLink().setEnabled(true);
-    form.getNextLink().setEnabled(true);
+    form.getNextLink().setEnabled(false);
     form.getFinishLink().setEnabled(false);
     if(target != null) {
       target.addComponent(form.getPreviousLink());
@@ -34,8 +34,15 @@ public class InstructionsStep extends WizardStepPanel {
   }
   
   @Override
-  public void onStepIn(WizardForm form, AjaxRequestTarget target) {
-    setContent(target, new InstructionsPanel(getContentId(), new PropertyModel(form, "instrument")));
+  public void onStepIn(final WizardForm form, AjaxRequestTarget target) {
+    setContent(target, new InstructionsPanel(getContentId(), new PropertyModel(form, "instrument")) {
+
+      @Override
+      public void onInstrumentLaunch() {
+        ((InstrumentWizardForm) form).getNextLink().setEnabled(true);
+      }
+      
+    });
   }
 
 }

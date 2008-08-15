@@ -7,5 +7,7 @@
   <bean id="instrumentDescriptorService"
     class="org.obiba.onyx.jade.core.service.impl.DefaultInstrumentDescriptorServiceImpl" />
 
+  <bean id="activeInstrumentRunService" class="org.obiba.onyx.jade.core.wicket.MockActiveInstrumentRunServiceImpl">
+  </bean>
 
 </beans>

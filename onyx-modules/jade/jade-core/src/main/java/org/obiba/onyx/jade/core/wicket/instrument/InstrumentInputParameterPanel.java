@@ -1,9 +1,5 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
-import java.io.Serializable;
-
-import net.sf.ehcache.distribution.ManualRMICacheManagerPeerProvider;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -15,7 +11,6 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
@@ -32,6 +27,7 @@ public class InstrumentInputParameterPanel extends Panel {
 
   private static final long serialVersionUID = 3008363510160516288L;
 
+  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(InstrumentInputParameterPanel.class);
 
   @SpringBean

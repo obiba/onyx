@@ -28,7 +28,7 @@ import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InstructionsPanel extends Panel {
+public abstract class InstructionsPanel extends Panel {
 
   private static final long serialVersionUID = 8250439838157103589L;
   
@@ -58,6 +58,15 @@ public class InstructionsPanel extends Panel {
     if(instrumentRun == null) {
       instrumentRun = activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument);
     }
+    
+    add(new InstrumentLauncherPanel("launcher") {
+
+      @Override
+      public void onInstrumentLaunch() {
+        InstructionsPanel.this.onInstrumentLaunch();
+      }
+      
+    });
 
     final List<InstrumentRunValue> manualInputs = new ArrayList<InstrumentRunValue>();
     for (InstrumentRunValue runValue : instrumentRun.getInstrumentRunValues()) {
@@ -107,4 +116,6 @@ public class InstructionsPanel extends Panel {
     });
 
   }
+  
+  public abstract void onInstrumentLaunch();
 }
