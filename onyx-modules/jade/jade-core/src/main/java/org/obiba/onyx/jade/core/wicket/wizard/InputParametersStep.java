@@ -20,6 +20,7 @@ public class InputParametersStep extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
+    // assuming instructions necessarily follows (at least generic instructions about the instrument)
     WizardStepPanel nextStep = ((InstrumentWizardForm) form).getInstructionsStep();
     setNextStep(nextStep);
     nextStep.setPreviousStep(this);
@@ -37,6 +38,11 @@ public class InputParametersStep extends WizardStepPanel {
   @Override
   public void onStepIn(WizardForm form, AjaxRequestTarget target) {
     setContent(target, new InstrumentInputParameterPanel(getContentId(), new PropertyModel(form, "instrument")));
+  }
+  
+  @Override
+  public void onStepOut(WizardForm form, AjaxRequestTarget target) {
+    super.onStepOut(form, target);
   }
 
 }

@@ -66,6 +66,8 @@ public class InstructionsPanel extends Panel {
       }
     }
     
+    add(new Label("general", new StringResourceModel("StartMeasurementWithInstrument", this, new Model(new ValueMap("name="+instrument.getName())))));
+    
     add(new DataView("item", new IDataProvider() {
 
       @SuppressWarnings("unchecked")
@@ -92,9 +94,7 @@ public class InstructionsPanel extends Panel {
         InstrumentParameter param = runValue.getInstrumentParameter();
         if(runValue != null) {
           if(runValue.getData() != null && runValue.getData().getValue() != null) {
-            ValueMap map = new ValueMap();
-            map.put("name", param.getName());
-            map.put("value", runValue.getData().getValue());
+            ValueMap map = new ValueMap("name="+param.getName()+",value="+runValue.getData().getValue());
             item.add(new Label("instruction", new StringResourceModel("TypeTheValueInTheInstrument", InstructionsPanel.this, new Model(map)) ));
           } else {
             item.add(new Label("instruction"));
