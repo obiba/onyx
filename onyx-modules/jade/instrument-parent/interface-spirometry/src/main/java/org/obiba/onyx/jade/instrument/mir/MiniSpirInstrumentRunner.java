@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
+import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.jade.client.JnlpClient;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
-import org.obiba.onyx.jade.instrument.FileHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.data.Data;
@@ -140,10 +140,10 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
 		File currentDbFile = new File(getMirPath() + getExternalDbName()); 
 		
 		if ( backupDbFile.exists() ) {
-			FileHelper.copy(backupDbFile, currentDbFile);
+			FileUtil.copyFile(backupDbFile, currentDbFile);
 		} else {
 			new File(getInitdbPath()).mkdir();
-			FileHelper.copy( currentDbFile, backupDbFile );
+			FileUtil.copyFile( currentDbFile, backupDbFile );
 		}
 	}
   
