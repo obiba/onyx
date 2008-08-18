@@ -1,7 +1,9 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
@@ -47,6 +49,7 @@ public abstract class InstrumentLauncherPanel extends Panel {
       }
 
     };
+    button.add(new AttributeModifier("value", new StringResourceModel("Start", this, null)));
     add(button);
     button.setVisible(instrumentService.isInteractiveInstrument(instrument));
 

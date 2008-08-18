@@ -143,7 +143,7 @@ public class InstrumentOutputParameterPanel extends Panel {
     @SuppressWarnings("serial")
     public ManualFragment(String id) {
       super(id, "manualFragment", InstrumentOutputParameterPanel.this);
-      CheckBox cb = new CheckBox("manual", new PropertyModel(this, "manual"));
+      CheckBox cb = new CheckBox("manual", new PropertyModel(InstrumentOutputParameterPanel.this, "manual"));
       cb.add(new OnChangeAjaxBehavior() {
 
         @Override

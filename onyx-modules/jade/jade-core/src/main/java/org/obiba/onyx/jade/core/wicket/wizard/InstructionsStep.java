@@ -16,7 +16,7 @@ public class InstructionsStep extends WizardStepPanel {
   private static final long serialVersionUID = -2511672064460152210L;
 
   private static final Logger log = LoggerFactory.getLogger(InstructionsStep.class);
-  
+
   @SpringBean
   private InstrumentService instrumentService;
 
@@ -27,15 +27,15 @@ public class InstructionsStep extends WizardStepPanel {
     setOutputMarkupId(true);
 
     add(new Label("title", "Instructions"));
-    
+
   }
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    if (!instrumentService.isInteractiveInstrument(((InstrumentWizardForm) form).getInstrument())) {
+    if(!instrumentService.isInteractiveInstrument(((InstrumentWizardForm) form).getInstrument())) {
       launched = true;
     }
-    
+
     form.getPreviousLink().setEnabled(true);
     form.getNextLink().setEnabled(true);
     form.getFinishLink().setEnabled(false);
@@ -65,6 +65,9 @@ public class InstructionsStep extends WizardStepPanel {
       WizardStepPanel nextStep = ((InstrumentWizardForm) form).getOutputParametersStep();
       setNextStep(nextStep);
       nextStep.setPreviousStep(this);
+    } else {
+      error(getString("InstrumentApplicationMustBeStarted"));
+      if(form.getFeedbackPanel() != null) target.addComponent(form.getFeedbackPanel());
     }
   }
 
