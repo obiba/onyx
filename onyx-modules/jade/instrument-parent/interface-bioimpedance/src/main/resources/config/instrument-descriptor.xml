@@ -31,5 +31,14 @@
     <instrument reference="bioimp1" />
     <inputSource reference="measured_height" />
   </input>
+  
+  <output>
+    <name>Weight</name>
+    <description>Measured weight</description>
+    <measurementUnit>kg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp1" />
+  </output>
 
 </linked-list>
