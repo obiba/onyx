@@ -15,6 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.obiba.core.domain.AbstractEntity;
+import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 
@@ -34,6 +35,10 @@ public class InstrumentRun extends AbstractEntity {
   @JoinColumn(name = "instrument_id")
   private Instrument instrument;
 
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
+
   @Enumerated(EnumType.STRING)
   private InstrumentRunStatus status;
   
@@ -49,6 +54,9 @@ public class InstrumentRun extends AbstractEntity {
   @Column(length = 2000)
   private String refusalReasonComment;
   
+  @Column(length = 2000)
+  private String state;
+    
   public InstrumentRun() {
     super();
   }
@@ -130,6 +138,22 @@ public class InstrumentRun extends AbstractEntity {
 
   public void setRefusalReasonComment(String refusalReasonComment) {
     this.refusalReasonComment = refusalReasonComment;
+  }
+
+  public String getState() {
+    return state;
+  }
+
+  public void setState(String state) {
+    this.state = state;
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
   }
 
   

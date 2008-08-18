@@ -1,8 +1,10 @@
 package org.obiba.onyx.jade.instrument.service;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.util.data.Data;
 
 /**
@@ -16,6 +18,10 @@ import org.obiba.onyx.util.data.Data;
  */
 public interface InstrumentExecutionService {
 
+  public void setInstrumentRun(Serializable id);
+  
+  public InstrumentRun getInstrumentRun();
+  
   /**
    * Returns the name of the instrument's operator.
    * 
@@ -31,6 +37,6 @@ public interface InstrumentExecutionService {
 
   public void addOutputParameterValue(String name, Data value);
 
-  public void updateInstrumentState(Object state);
+  public void updateInstrumentRunState(Object state);
 
 }

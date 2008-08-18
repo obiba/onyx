@@ -1,0 +1,17 @@
+<dataset>
+
+  <user id="1" name="technicien_1"/>
+  <participant id="1" barcode="1" last_name="Dupont" first_name="Amélie" gender="FEMALE" birth_date="1979-09-04 00:00:00"/>
+  <interview id="1" participant_id="1"/>
+  <participant_interview id="1" participant_id="1"/>
+  
+  <instrument_run id="1" time_start="2008-08-10 08:16:00" participant_interview_id="1" status="IN_PROGRESS" user_id="1"/>
+  <instrument_parameter id="1" name="heigth" data_type="INTEGER" instrument_parameter_type="InstrumentInputParameter" measurement_unit="cm"/>
+  <instrument_parameter id="2" name="weigth" data_type="INTEGER" instrument_parameter_type="InstrumentInputParameter" measurement_unit="kg"/>
+  <instrument_parameter id="3" name="density" data_type="INTEGER" instrument_parameter_type="InstrumentOutputParameter"/>
+  <instrument_parameter id="4" name="strength" data_type="INTEGER" instrument_parameter_type="InstrumentOutputParameter"/>
+  
+  <instrument_run_value id="1" instrument_run_id="1" instrument_parameter_id="1" integer_value="185"/>
+  <instrument_run_value id="2" instrument_run_id="1" instrument_parameter_id="2" integer_value="75"/>
+  
+</dataset>

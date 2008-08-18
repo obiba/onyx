@@ -4,7 +4,8 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-  <bean name="instrumentExecutionService" class="org.obiba.onyx.jade.instrument.service.MockInstrumentExecutionService"
-    scope="session" />
+  <bean id="instrumentExecutionService" class="org.obiba.onyx.jade.instrument.service.InstrumentExecutionServiceImpl" scope="session">
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
 
 </beans>
