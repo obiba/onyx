@@ -30,18 +30,33 @@ public class TestDatabaseSeed extends XstreamResourceDatabaseSeed {
     if(result != null && result instanceof List) {
       List<Object> objects = (List<Object>) result;
       for(Object entity : objects) {
-       
+
         // Encrypt password
-        if ( entity instanceof User ) {
-          User user = (User)entity;
+        if(entity instanceof User) {
+          User user = (User) entity;
           String encryptedPassword = User.digest(user.getPassword());
           user.setPassword(encryptedPassword);
           log.info("Password: " + user.getPassword());
           log.info("Encypted Password: " + encryptedPassword);
+
+          User template = new User();
+          template.setLogin(user.getLogin());
+          for (User u : persistenceManager.match(template)) {
+            persistenceManager.delete(u);
+          }
+          if(persistenceManager.count(template) > 0) entity = null;
         }
-        
-        log.info("Seeding database with entity {} of type {}", entity, entity.getClass().getSimpleName());
-        persistenceManager.save(entity);
+        else if (entity instanceof AppConfiguration) {
+          AppConfiguration template = new AppConfiguration();
+          for (AppConfiguration conf : persistenceManager.match(template)) {
+            persistenceManager.delete(conf);
+          }
+        }
+
+        if(entity != null) {
+          log.info("Seeding database with entity {} of type {}", entity, entity.getClass().getSimpleName());
+          persistenceManager.save(entity);
+        }
       }
     }
   }

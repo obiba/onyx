@@ -51,8 +51,13 @@ public class HeaderPanel extends Panel {
     }
 
     public AppConfiguration getConfig() {
-      AppConfiguration templateConfig = new AppConfiguration();
-      return ( queryService.matchOne( templateConfig ) );
+      AppConfiguration template = new AppConfiguration();
+      //  TODO not supposed to happen, but test environment was broken
+      for (AppConfiguration conf : queryService.match(template)) {
+        return conf;
+      }
+      return null;
+      //return ( queryService.matchOne( template ) );
     }
 
   }

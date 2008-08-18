@@ -34,7 +34,13 @@ public final class OnyxAuthenticatedSession extends WebSession {
       // Try to authenticate user with database.
       User template = new User();
       template.setLogin(login);
-      User fetchedUser = queryService.matchOne(template);
+      User fetchedUser = null;
+      for (User u : queryService.match(template)) {
+        if (!u.isDeleted()) {
+          fetchedUser = u;
+          break;
+        }
+      }
       if(fetchedUser != null && !fetchedUser.isDeleted() && fetchedUser.getPassword().equals(User.digest(password))) {
         user = fetchedUser;
 
