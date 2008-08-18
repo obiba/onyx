@@ -27,6 +27,7 @@ public class StagePage extends BasePage {
   @SuppressWarnings("serial")
   public StagePage(IModel stageModel) {
     super();
+    setMenuBarVisible(false);
     setModel(stageModel);
 
     Participant participant = activeInterviewService.getParticipant();

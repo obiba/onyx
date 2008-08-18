@@ -9,16 +9,11 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.panel.HeaderPanel;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
 
 public abstract class BasePage extends WebPage implements IAjaxIndicatorAware {
-
-  @SpringBean
-  private EntityQueryService queryService;
 
   private FeedbackPanel feedbackPanel;
 
@@ -41,6 +36,10 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware {
     add(new Label("baseAjaxIndicator", new StringResourceModel("Processing", this, null)));
   }
 
+  public void setMenuBarVisible(boolean visible) {
+    get("menuBar").setVisible(visible);
+  }
+  
   protected FeedbackPanel getFeedbackPanel() {
     return feedbackPanel;
   }
