@@ -3,6 +3,7 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.instrument.InstructionsPanel;
@@ -26,7 +27,7 @@ public class InstructionsStep extends WizardStepPanel {
     super(id);
     setOutputMarkupId(true);
 
-    add(new Label("title", "Instructions"));
+    add(new Label("title", new StringResourceModel("Instructions", this, null)));
 
   }
 

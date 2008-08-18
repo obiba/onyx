@@ -3,6 +3,7 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
@@ -29,7 +30,7 @@ public class InstrumentSelectionStep extends WizardStepPanel {
     super(id);
     setOutputMarkupId(true);
 
-    add(new Label(getTitleId(), "Instrument Selection"));
+    add(new Label(getTitleId(), new StringResourceModel("InstrumentSelection", this, null)));
 
     add(selector = new InstrumentSelector(getContentId(), instrumentTypeModel));
   }
