@@ -47,4 +47,14 @@ public class MockActiveInstrumentRunServiceImpl implements ActiveInstrumentRunSe
     
   }
 
+  public void computeOutputParameters() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public InstrumentRun refresh() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

@@ -1,16 +1,25 @@
 package org.obiba.onyx.jade.core.service.impl;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameterAlgorithm;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwareService implements ActiveInstrumentRunService {
 
   private InstrumentRun currentRun = null;
@@ -68,6 +77,11 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return currentRun;
   }
 
+  public InstrumentRun refresh() {
+    if(currentRun == null) return null;
+    return getPersistenceManager().refresh(currentRun);
+  }
+
   public Participant getParticipant() {
     if(currentRun == null) return null;
 
@@ -80,11 +94,56 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
   public void validate() {
     if(currentRun == null) return;
-    
+
     getPersistenceManager().save(currentRun);
 
     for(InstrumentRunValue value : currentRun.getInstrumentRunValues()) {
       getPersistenceManager().save(value);
+    }
+  }
+
+  public void computeOutputParameters() {
+    if(currentRun == null) return;
+
+    InstrumentOutputParameter template = new InstrumentOutputParameter();
+    template.setInstrument(currentRun.getInstrument());
+
+    // TODO quick and dirty implementation, to be checked
+    for(InstrumentOutputParameter param : getPersistenceManager().match(template)) {
+      if(param instanceof InstrumentComputedOutputParameter) {
+        InstrumentComputedOutputParameter computedParam = (InstrumentComputedOutputParameter) param;
+        if(computedParam.getAlgorithm().equals(InstrumentOutputParameterAlgorithm.AVERAGE)) {
+          InstrumentRunValue computedRunValue = currentRun.getInstrumentRunValue(computedParam);
+          if(computedRunValue == null) {
+            computedRunValue = new InstrumentRunValue();
+            computedRunValue.setInstrumentParameter(computedParam);
+            computedRunValue.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
+            currentRun.addInstrumentRunValue(computedRunValue);
+          }
+
+          double sum = 0;
+          int count = 0;
+          for(InstrumentOutputParameter p : computedParam.getInstrumentOutputParameters()) {
+            count++;
+            InstrumentRunValue runValue = currentRun.getInstrumentRunValue(p);
+            if(runValue.getDataType().equals(DataType.DECIMAL)) {
+              Double value = runValue.getValue();
+              sum += value;
+            } else if(runValue.getDataType().equals(DataType.INTEGER)) {
+              Long value = runValue.getValue();
+              sum += value.doubleValue();
+            }
+          }
+          double avg = sum / count;
+
+          Serializable avgValue = null;
+          if(computedRunValue.getDataType().equals(DataType.DECIMAL)) avgValue = avg;
+          else if(computedRunValue.getDataType().equals(DataType.INTEGER)) avgValue = (new Double(avg)).longValue();
+
+          if(avgValue != null) computedRunValue.setData(new Data(computedRunValue.getDataType(), avgValue));
+
+        }
+      }
     }
   }
 

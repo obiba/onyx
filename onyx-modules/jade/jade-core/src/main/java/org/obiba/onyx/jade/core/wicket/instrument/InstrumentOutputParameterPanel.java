@@ -1,8 +1,7 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
-import java.io.Serializable;
-
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.basic.Label;
@@ -13,7 +12,9 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.time.Duration;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
@@ -24,7 +25,6 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
-import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
@@ -43,36 +43,43 @@ public class InstrumentOutputParameterPanel extends Panel {
 
   @SpringBean
   private InstrumentService instrumentService;
-  
+
   @SpringBean
   private ActiveInterviewService activeInterviewService;
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
-  private InstrumentRun instrumentRun;
-
   private boolean manual = false;
 
+  @SuppressWarnings("serial")
   public InstrumentOutputParameterPanel(String id, IModel instrumentModel) {
     super(id);
     setModel(new DetachableEntityModel(queryService, instrumentModel.getObject()));
     setOutputMarkupId(true);
 
     // get the current instrument run or create it if there was no input parameters for this instrument
-    instrumentRun = activeInstrumentRunService.getInstrumentRun();
+    InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
     if(instrumentRun == null) {
       instrumentRun = activeInstrumentRunService.start(activeInterviewService.getParticipant(), (Instrument) getModelObject());
     }
 
-    if (instrumentService.isInteractiveInstrument(instrumentRun.getInstrument())) {
+    if(instrumentService.isInteractiveInstrument(instrumentRun.getInstrument())) {
       add(new ManualFragment("manual"));
-    }
-    else {
+    } else {
       add(new EmptyPanel("manual"));
     }
-    
+
     updateInputs(null);
+
+    add(new AbstractAjaxTimerBehavior(Duration.seconds(5)) {
+
+      @Override
+      protected void onTimer(AjaxRequestTarget target) {
+        if(!isManual()) updateInputs(target);
+      }
+
+    });
   }
 
   public boolean isManual() {
@@ -82,61 +89,62 @@ public class InstrumentOutputParameterPanel extends Panel {
   public void setManual(boolean manual) {
     this.manual = manual;
   }
-  
+
   private void updateInputs(AjaxRequestTarget target) {
     InstrumentOutputParameter template = new InstrumentOutputParameter();
     template.setInstrument((Instrument) getModelObject());
-    
-    KeyValueDataPanel inputs = new KeyValueDataPanel("inputs");
+
+    InstrumentRun instrumentRun = activeInstrumentRunService.refresh();
+
+    KeyValueDataPanel outputs = new KeyValueDataPanel("outputs", new StringResourceModel("DataOutputs", this, null));
     for(InstrumentOutputParameter param : queryService.match(template)) {
       if(!(param instanceof InstrumentComputedOutputParameter)) {
         Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getName());
-        Component input = null;
-        
+        Component output = null;
+
         // case we going through this multiple times
         InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
-        if (runValue == null) {
-          runValue = new InstrumentRunValue();
-          runValue.setInstrumentParameter(param);
-          runValue.setCaptureMethod(param.getCaptureMethod());
-          instrumentRun.addInstrumentRunValue(runValue);
-        }
-        
-        // manual entry forced
-        if(manual) {
+
+        if(manual || param.getCaptureMethod().equals(InstrumentParameterCaptureMethod.MANUAL)) {
+
+          if(runValue == null) {
+            runValue = new InstrumentRunValue();
+            runValue.setInstrumentParameter(param);
+            runValue.setCaptureMethod(param.getCaptureMethod());
+            instrumentRun.addInstrumentRunValue(runValue);
+            activeInstrumentRunService.validate();
+          }
+          // manual entry forced
           runValue.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
-        }
-        
-        switch(runValue.getCaptureMethod()) {
-        case MANUAL:
+
           DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType());
           field.setRequired(true);
           field.setLabel(new Model(param.getName()));
-          input = field;
-          break;
-        case AUTOMATIC:
-          Data data = null;
-          IModel value = (data == null ? new Model("") : new Model((Serializable) data.getValue()));
-          input = new Label(KeyValueDataPanel.getRowValueId(), value);
-          break;
+          output = field;
+
+        } else if(runValue != null) {
+          output = new Label(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data.value"));
         }
-        inputs.addRow(label, input);
+
+        if(output != null) {
+          outputs.addRow(label, output);
+        }
       }
     }
-    inputs.setOutputMarkupId(true);
+    outputs.setOutputMarkupId(true);
 
-    Component currentInputs = get("inputs");
-    if(currentInputs != null) {
-      currentInputs.replaceWith(inputs);
+    Component currentOutputs = get("outputs");
+    if(currentOutputs != null) {
+      currentOutputs.replaceWith(outputs);
     } else {
-      add(inputs);
+      add(outputs);
     }
 
     if(target != null) {
-      target.addComponent(inputs);
+      target.addComponent(outputs);
     }
-  }  
-  
+  }
+
   @SuppressWarnings("serial")
   private class ManualFragment extends Fragment {
 
@@ -154,7 +162,7 @@ public class InstrumentOutputParameterPanel extends Panel {
       });
       add(cb);
     }
-    
+
   }
-  
+
 }

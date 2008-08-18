@@ -30,6 +30,8 @@ public class OutputParametersStep extends WizardStepPanel {
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
+  
+  
 
   public OutputParametersStep(String id) {
     super(id);
@@ -62,48 +64,6 @@ public class OutputParametersStep extends WizardStepPanel {
 
   @Override
   public void onStepOut(WizardForm form, AjaxRequestTarget target) {
-    // check the ones to be computed
-    InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
-
-    InstrumentOutputParameter template = new InstrumentOutputParameter();
-    template.setInstrument(instrumentRun.getInstrument());
-
-    for(InstrumentOutputParameter param : queryService.match(template)) {
-      if(param instanceof InstrumentComputedOutputParameter) {
-        InstrumentComputedOutputParameter computedParam = (InstrumentComputedOutputParameter) param;
-        if(computedParam.getAlgorithm().equals(InstrumentOutputParameterAlgorithm.AVERAGE)) {
-          InstrumentRunValue computedRunValue = instrumentRun.getInstrumentRunValue(computedParam);
-          if(computedRunValue == null) {
-            computedRunValue = new InstrumentRunValue();
-            computedRunValue.setInstrumentParameter(computedParam);
-            computedRunValue.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
-            instrumentRun.addInstrumentRunValue(computedRunValue);
-          }
-
-          double sum = 0;
-          int count = 0;
-          for(InstrumentOutputParameter p : computedParam.getInstrumentOutputParameters()) {
-            count++;
-            InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(p);
-            if (runValue.getDataType().equals(DataType.DECIMAL)) {
-            Double value = runValue.getValue();
-            sum += value;
-            }
-            else if (runValue.getDataType().equals(DataType.INTEGER)) {
-              Long value = runValue.getValue();
-              sum += value.doubleValue();
-            }
-          }
-          double avg = sum / count;
-
-          Serializable avgValue = null;
-          if(computedRunValue.getDataType().equals(DataType.DECIMAL)) avgValue = avg;
-          else if(computedRunValue.getDataType().equals(DataType.INTEGER)) avgValue = (new Double(avg)).longValue();
-
-          if(avgValue != null) computedRunValue.setData(new Data(computedRunValue.getDataType(), avgValue));
-
-        }
-      }
-    }
+    activeInstrumentRunService.computeOutputParameters();    
   }
 }

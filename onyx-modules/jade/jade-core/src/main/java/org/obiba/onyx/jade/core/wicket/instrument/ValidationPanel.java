@@ -4,6 +4,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
@@ -42,7 +43,7 @@ public class ValidationPanel extends Panel {
 
     instrumentRun = activeInstrumentRunService.getInstrumentRun();
 
-    KeyValueDataPanel kv = new KeyValueDataPanel("inputs");
+    KeyValueDataPanel kv = new KeyValueDataPanel("inputs", new StringResourceModel("DataInputs", this, null));
     for(InstrumentInputParameter param : queryService.match(templateIn)) {
       Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getName());
       InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
@@ -52,7 +53,7 @@ public class ValidationPanel extends Panel {
 
     InstrumentOutputParameter templateOut = new InstrumentOutputParameter();
     templateOut.setInstrument(instrument);
-    kv = new KeyValueDataPanel("outputs");
+    kv = new KeyValueDataPanel("outputs", new StringResourceModel("DataOutputs", this, null));
     for(InstrumentOutputParameter param : queryService.match(templateOut)) {
       Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getName());
       InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
