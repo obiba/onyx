@@ -12,7 +12,7 @@
   <instrument id="2" instrument_type_id="1" name="Tape 2" vendor="Seca" model="Model 214" status="ACTIVE" />
   <instrument id="3" instrument_type_id="2" name="BioImp 1" vendor="Tanita" model="TBF 310" status="ACTIVE" />
 
-  <participant id="1" barcode="1" last_name="Dupont" first_name="Amélie" gender="FEMALE" birth_date="1979-09-04 00:00:00"/>
+  <participant id="1" barcode="1" last_name="Dupont" first_name="Laura" gender="FEMALE" birth_date="1979-09-04 00:00:00"/>
   <interview id="1" participant_id="1"/>
   <participant_interview id="1" participant_id="1"/>
   

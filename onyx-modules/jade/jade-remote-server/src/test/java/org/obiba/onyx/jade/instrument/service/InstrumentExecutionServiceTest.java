@@ -39,7 +39,7 @@ public class InstrumentExecutionServiceTest extends BaseDefaultSpringContextTest
     System.out.println("*** InstrumentExecutionService getParticipant: Testing Data");
     instrumentExecutionService.setInstrumentRun((Serializable) Long.valueOf("1"));
     Assert.assertEquals("Dupont", instrumentExecutionService.getParticipant().getLastName());
-    Assert.assertEquals("Amélie", instrumentExecutionService.getParticipant().getFirstName());    
+    Assert.assertEquals("Laura", instrumentExecutionService.getParticipant().getFirstName());    
     System.out.println("*** InstrumentExecutionService getParticipant: Test Done successfully");
   }
   
