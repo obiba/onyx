@@ -6,8 +6,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.participant.Interview;
-import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.webapp.stage.panel.StageSelectionPanel;
@@ -23,14 +23,12 @@ public class InterviewPage extends BasePage {
   public InterviewPage() {
     super();
 
-    Participant participant = activeInterviewService.getParticipant();
-    Interview interview = activeInterviewService.getInterview();
-    
-    if(participant == null || interview == null) {
+    if(activeInterviewService.getParticipant() == null || activeInterviewService.getInterview() == null) {
       setResponsePage(WebApplication.get().getHomePage());
     } else {
+      Interview interview = activeInterviewService.setInterviewOperator(OnyxAuthenticatedSession.get().getUser());
 
-      add(new ParticipantPanel("participant", participant));
+      add(new ParticipantPanel("participant", activeInterviewService.getParticipant()));
       
       KeyValueDataPanel kvPanel = new KeyValueDataPanel("interview");
       kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateUtils.getFullDateModel(new PropertyModel(interview, "startDate")));

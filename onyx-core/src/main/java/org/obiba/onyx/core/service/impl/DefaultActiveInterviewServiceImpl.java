@@ -11,6 +11,7 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
+import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.Module;
@@ -51,8 +52,9 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
       interview.setParticipant(currentParticipant);
       interview.setStartDate(new Date());
       interview.setStatus(InterviewStatus.IN_PROGRESS);
-      interview = getPersistenceManager().save(interview);
-      currentParticipant = getPersistenceManager().refresh(currentParticipant);
+      getPersistenceManager().save(interview);
+      currentParticipant = getPersistenceManager().get(Participant.class, currentParticipant.getId());
+      interview = currentParticipant.getInterview();
     }
 
     return interview;
@@ -129,6 +131,20 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
 
   public void setParticipant(Participant participant) {
     this.currentParticipant = participant;
+  }
+
+  public Interview setInterviewOperator(User operator) {
+    Interview template = new Interview();
+    template.setParticipant(currentParticipant);
+    Interview interview = getPersistenceManager().matchOne(template);
+    
+    if(interview != null) {
+      interview.setUser(operator);
+      getPersistenceManager().save(interview);
+      currentParticipant = getPersistenceManager().get(Participant.class, currentParticipant.getId());
+    }
+    
+    return interview;
   }
 
 }

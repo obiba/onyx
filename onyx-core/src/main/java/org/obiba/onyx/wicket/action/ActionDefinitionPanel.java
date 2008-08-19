@@ -1,5 +1,6 @@
 package org.obiba.onyx.wicket.action;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -11,10 +12,12 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IErrorMessageSource;
 import org.apache.wicket.validation.IValidatable;
@@ -33,12 +36,15 @@ public abstract class ActionDefinitionPanel extends Panel {
 
   private static final long serialVersionUID = -5173222062528691764L;
 
+  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ActionDefinitionPanel.class);
 
   @SpringBean
   private ActiveInterviewService activeInterviewService;
 
   private boolean cancelled = true;
+
+  private FeedbackPanel feedback;
 
   @SuppressWarnings("serial")
   public ActionDefinitionPanel(String id, ActionDefinition definition) {
@@ -51,29 +57,26 @@ public abstract class ActionDefinitionPanel extends Panel {
 
     Form form = new Form("form");
     add(form);
-    
+
+    form.add(feedback = new FeedbackPanel("feedback"));
+    feedback.setOutputMarkupId(true);
+
     form.add(new Label("participant", activeInterviewService.getParticipant().getFullName()));
 
-    if (definition.isAskPassword()) {
+    if(definition.isAskPassword()) {
       form.add(new PasswordFragment("password"));
-    }
-    else {
+    } else {
       form.add(new Fragment("password", "trFragment", this));
     }
 
     Participant participantTemplate = new Participant();
     TextField participantBarcode = new TextField("confirmBarcode", new PropertyModel(participantTemplate, "barcode"));
+    participantBarcode.setLabel(new StringResourceModel("ConfirmParticipantCode", this, null));
     participantBarcode.add(new IValidator() {
 
       public void validate(IValidatable validatable) {
         if(!activeInterviewService.getParticipant().getBarcode().equals(validatable.getValue())) {
-          validatable.error(new IValidationError() {
-
-            public String getErrorMessage(IErrorMessageSource messageSource) {
-              return "NotTheRightParticipant";
-            }
-
-          });
+          validatable.error(new ParticipantValidationError());
         }
       }
 
@@ -94,7 +97,14 @@ public abstract class ActionDefinitionPanel extends Panel {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         cancelled = false;
+        target.addComponent(feedback);
         ActionDefinitionPanel.this.onClick(target);
+      }
+
+      @Override
+      protected void onError(AjaxRequestTarget target, Form form) {
+        cancelled = false;
+        target.addComponent(feedback);
       }
 
     });
@@ -104,6 +114,7 @@ public abstract class ActionDefinitionPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
         cancelled = true;
+        target.addComponent(feedback);
         ActionDefinitionPanel.this.onClick(target);
       }
 
@@ -118,8 +129,31 @@ public abstract class ActionDefinitionPanel extends Panel {
     return cancelled;
   }
 
+  /**
+   * Called after submit or cancel button are clicked.
+   * @param target
+   */
   public abstract void onClick(AjaxRequestTarget target);
 
+  @SuppressWarnings("serial")
+  private class ParticipantValidationError implements IValidationError, Serializable {
+
+    public String getErrorMessage(IErrorMessageSource messageSource) {
+      return ActionDefinitionPanel.this.getString("NotTheInterviewParticipant");
+    }
+
+  }
+
+  @SuppressWarnings("serial")
+  private class UserValidationError implements IValidationError, Serializable {
+
+    public String getErrorMessage(IErrorMessageSource messageSource) {
+      return ActionDefinitionPanel.this.getString("WrongOperatorPassword", null, "Wrong Operator Password");
+    }
+
+  }
+
+  @SuppressWarnings("serial")
   private class ReasonsFragment extends Fragment {
 
     public ReasonsFragment(String id, List<String> reasons) {
@@ -128,15 +162,23 @@ public abstract class ActionDefinitionPanel extends Panel {
     }
 
   }
-  
+
+  @SuppressWarnings("serial")
   private class PasswordFragment extends Fragment {
 
     public PasswordFragment(String id) {
       super(id, "passwordFragment", ActionDefinitionPanel.this);
-      User operatorTemplate = new User();
+      final User operatorTemplate = new User();
       PasswordTextField pwdTextField = new PasswordTextField("password", new PropertyModel(operatorTemplate, "password"));
       add(pwdTextField.add(new RequiredFormFieldBehavior()));
-    }
+      pwdTextField.add(new IValidator() {
 
+        public void validate(IValidatable validatable) {
+          if (!User.digest((String)validatable.getValue()).equals(activeInterviewService.getInterview().getUser().getPassword())) {
+            validatable.error(new UserValidationError());  
+          }
+        }
+      });
+    }
   }
 }

@@ -2,6 +2,7 @@ package org.obiba.onyx.core.service;
 
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
@@ -30,6 +31,12 @@ public interface ActiveInterviewService {
    * @return null if no participant set
    */
   public Interview getInterview();
+  
+  /**
+   * Set the operator for the current interview.
+   * @param operator
+   */
+  public Interview setInterviewOperator(User operator);
   
   /**
    * Get the stage execution object for given stage, in the interview of current participant.
