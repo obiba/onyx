@@ -1,5 +1,6 @@
 package org.obiba.onyx.jade.core.wicket.seed;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
           // resource is in .../<codeBase>/lib/instrument-descriptor.xml
 
           try {
-            instrumentDescriptorService.setCodeBase(instrument.getBarcode(), resource.getFile().getParentFile().getParentFile().getName() + "/" + resource.getFile().getParentFile().getName());
+            instrumentDescriptorService.setCodeBase(instrument.getBarcode(), resource.getFile().getParentFile().getParentFile().getName() + File.separatorChar + resource.getFile().getParentFile().getName());
           } catch(IOException cannotFindResource) {
             log.error("Cannot find resource : " + resource.getDescription());
             throw new RuntimeException(cannotFindResource);
