@@ -57,7 +57,7 @@ public class InstrumentInputParameterPanel extends Panel {
 
     KeyValueDataPanel inputs = new KeyValueDataPanel("inputs");
     for(InstrumentInputParameter param : queryService.match(template)) {
-      Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getName());
+      Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
       Component input = null;
       InstrumentRunValue runValue = new InstrumentRunValue();
       runValue.setCaptureMethod(param.getCaptureMethod());
@@ -70,7 +70,7 @@ public class InstrumentInputParameterPanel extends Panel {
         field.setLabel(new Model(param.getName()));
         input = field;
       } else {
-        Data data = inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param.getInputSource());
+        Data data = inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param);
         runValue.setData(data);
         // TODO data is not supposed to be null ?
         String unit = param.getMeasurementUnit();

@@ -14,92 +14,94 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class InputSourceTest extends BaseDefaultSpringContextTestCase {
 
-  @Autowired(required=true)
+  @Autowired(required = true)
   InputDataSourceVisitor inputDataSourceVisitor;
-  
-  @Autowired(required=true)
+
+  @Autowired(required = true)
   EntityQueryService queryService;
-  
+
   @Test
   @Dataset
   public void testParticipantPropertyRetriever() {
-    System.out.println("*** ParticipantPropertySourceTest: Testing Data");
     Participant participant = queryService.get(Participant.class, Long.valueOf("1"));
 
+    InstrumentInputParameter param = new InstrumentInputParameter();
     ParticipantPropertySource participantPropertySource = new ParticipantPropertySource();
     participantPropertySource.setProperty("birthDate");
-    Data resultData = inputDataSourceVisitor.getData(participant, participantPropertySource);
+    param.setDataType(DataType.DATE);
+    param.setInputSource(participantPropertySource);
+    Data resultData = inputDataSourceVisitor.getData(participant, param);
+    Assert.assertNotNull("Result Data is null", resultData);
     Assert.assertEquals("1979-09-04", resultData.getValue().toString());
     Assert.assertEquals(DataType.DATE, resultData.getType());
-    System.out.println("*** ParticipantPropertySourceTest: Step 1 Done successfully");
-    
+
     participantPropertySource.setProperty("lastName");
-    resultData = inputDataSourceVisitor.getData(participant, participantPropertySource);
+    param.setDataType(DataType.TEXT);
+    resultData = inputDataSourceVisitor.getData(participant, param);
+    Assert.assertNotNull("Result Data is null", resultData);
     Assert.assertEquals("Dupont", resultData.getValue());
     Assert.assertEquals(DataType.TEXT, resultData.getType());
-    System.out.println("*** ParticipantPropertySourceTest: Step 2 Done successfully");
-    
+
     participantPropertySource.setProperty("gender");
-    resultData = inputDataSourceVisitor.getData(participant, participantPropertySource);
+    param.setDataType(DataType.TEXT);
+    resultData = inputDataSourceVisitor.getData(participant, param);
+    Assert.assertNotNull("Result Data is null", resultData);
     Assert.assertEquals("FEMALE", resultData.getValue());
     Assert.assertEquals(DataType.TEXT, resultData.getType());
-    System.out.println("*** ParticipantPropertySourceTest: Step 3 Done successfully");
   }
-  
+
   @Test
   @Dataset
   public void testOutputParameterRetriever() {
-    System.out.println("*** OutputParameterSourceTest: Testing Data");
     Participant participant = queryService.get(Participant.class, Long.valueOf("1"));
     InstrumentType instrumentType = queryService.get(InstrumentType.class, Long.valueOf("2"));
-    
+
+    InstrumentInputParameter param = new InstrumentInputParameter();
     OutputParameterSource outputParameterSource = new OutputParameterSource();
     outputParameterSource.setParameterName("heigth");
     outputParameterSource.setInstrumentType(instrumentType);
-    
-    Data resultData = inputDataSourceVisitor.getData(participant, outputParameterSource);
+    param.setDataType(DataType.INTEGER);
+    param.setInputSource(outputParameterSource);
+
+    Data resultData = inputDataSourceVisitor.getData(participant, param);
     Assert.assertEquals(Long.valueOf(187), resultData.getValue());
     Assert.assertEquals(DataType.INTEGER, resultData.getType());
-    System.out.println("*** OutputParameterSourceTest: Test Done successfully");
   }
-  
+
   @Test
   @Dataset
   public void testInstrumentParameterValueConverter() {
-    System.out.println("*** InstrumentParameterValueConverterTest: Testing Data");
     Participant participant = queryService.get(Participant.class, Long.valueOf("1"));
-    
-    // Testing date data 
+
+    // Testing date data
     InstrumentRunValue sourceInstrumentRunValue = queryService.get(InstrumentRunValue.class, Long.valueOf("5"));
     InstrumentParameter targetInstrumentParameter = queryService.get(InstrumentParameter.class, Long.valueOf("6"));
-    
+
     InstrumentRunValue targetInstrumentRunValue = new InstrumentRunValue();
     targetInstrumentRunValue.setInstrumentParameter(targetInstrumentParameter);
-    
-    if (sourceInstrumentRunValue.getData().getValue() == null) {
+
+    if(sourceInstrumentRunValue.getData().getValue() == null) {
       sourceInstrumentRunValue.setData(new Data(DataType.DATE, participant.getBirthDate()));
     }
-    
+
     DateParameterValueConverter dateConverter = new DateParameterValueConverter();
     dateConverter.convert(targetInstrumentRunValue, sourceInstrumentRunValue);
-    
+
     InstrumentParameter finalInstrumentParameter = queryService.get(InstrumentParameter.class, Long.valueOf("8"));
     InstrumentRunValue finalInstrumentRunValue = new InstrumentRunValue();
     finalInstrumentRunValue.setInstrumentParameter(finalInstrumentParameter);
-    
+
     UnitParameterValueConverter unitConverter = new UnitParameterValueConverter();
     unitConverter.convert(finalInstrumentRunValue, targetInstrumentRunValue);
     Assert.assertEquals(Long.valueOf("28"), finalInstrumentRunValue.getValue());
-    
+
     // Testing metric data
     sourceInstrumentRunValue = queryService.get(InstrumentRunValue.class, Long.valueOf("1"));
     targetInstrumentParameter = queryService.get(InstrumentParameter.class, Long.valueOf("3"));
     targetInstrumentRunValue.setInstrumentParameter(targetInstrumentParameter);
-    
+
     unitConverter.convert(targetInstrumentRunValue, sourceInstrumentRunValue);
     Assert.assertEquals(Double.valueOf("1.85"), targetInstrumentRunValue.getValue());
-    
-    System.out.println("*** InstrumentParameterValueConverterTest: Test Done successfully");
   }
 
 }

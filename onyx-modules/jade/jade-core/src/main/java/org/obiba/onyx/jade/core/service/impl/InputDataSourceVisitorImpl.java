@@ -2,13 +2,13 @@ package org.obiba.onyx.jade.core.service.impl;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.FixedSource;
-import org.obiba.onyx.jade.core.domain.instrument.InputSource;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.instrument.OutputParameterSource;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantPropertySource;
@@ -17,18 +17,23 @@ import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
 import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InputDataSourceVisitorImpl implements InputDataSourceVisitor {
 
+  private static final Logger log = LoggerFactory.getLogger(InputDataSourceVisitorImpl.class);
+
   private EntityQueryService queryService;
-  
+
   private InstrumentRunService instrumentRunService;
-  
+
   private Data data;
 
   private Participant participant;
-  
+
+  private InstrumentInputParameter parameter;
+
   public void setQueryService(EntityQueryService queryService) {
     this.queryService = queryService;
   }
@@ -37,42 +42,71 @@ public class InputDataSourceVisitorImpl implements InputDataSourceVisitor {
     this.instrumentRunService = instrumentRunService;
   }
 
-  public Data getData(Participant participant, InputSource source) {
-    if(source == null) return null;
+  public Data getData(Participant participant, InstrumentInputParameter parameter) {
+    if(parameter == null) return null;
+    if(parameter.getInputSource() == null) return null;
 
     this.participant = participant;
+    this.parameter = parameter;
     data = null;
-    source.accept(this);
+    parameter.getInputSource().accept(this);
     return data;
   }
 
+  @SuppressWarnings("unchecked")
   public void visit(ParticipantPropertySource source) {
     Class participantClass = Participant.class;
     Method propertyMethod;
     try {
+      log.info("source.participant.property=" + source.getProperty());
       propertyMethod = participantClass.getDeclaredMethod("get" + source.getProperty().substring(0, 1).toUpperCase() + source.getProperty().substring(1));
 
       Object propertyValue = propertyMethod.invoke(participant);
-      if(propertyMethod.invoke(participant) instanceof Gender) propertyValue = propertyValue.toString();
-      
-      if(propertyMethod.invoke(participant) instanceof Date)
-        data = new Data(DataType.DATE, (Date) propertyValue);
-      else
-        data = new Data(DataType.TEXT, (Serializable) propertyValue);
-      
+      log.info("source.participant.property." + source.getProperty() + "=" + propertyValue + " " + propertyValue.getClass().getSimpleName());
+      if(propertyValue instanceof Gender) {
+        propertyValue = propertyValue.toString();
+      }
+
+      data = new Data(parameter.getDataType(), (Serializable) propertyValue);
+
     } catch(Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      log.warn("Failed getting Participant property: " + source.getProperty(), e);
     }
   }
 
   public void visit(FixedSource source) {
-    data = new Data(DataType.TEXT, source.getValue());
+    Serializable value = null;
+    if(source.getValue() != null) {
+      try {
+        switch(parameter.getDataType()) {
+        case BOOLEAN:
+          value = Boolean.parseBoolean(source.getValue());
+          break;
+        case INTEGER:
+          value = Long.parseLong(source.getValue());
+          break;
+        case DECIMAL:
+          value = Double.parseDouble(source.getValue());
+          break;
+        case DATE:
+          value = SimpleDateFormat.getInstance().parse(source.getValue());
+          break;
+        case TEXT:
+          value = source.getValue();
+          break;
+        case DATA:
+          value = source.getValue().getBytes();
+          break;
+        }
+      } catch(Exception e) {
+        log.warn("Failed getting Fixed value: " + source.getValue(), e);
+      }
+    }
+    data = new Data(parameter.getDataType(), value);
   }
 
   public void visit(OperatorSource source) {
-    // TODO Auto-generated method stub
-
+    data = null;
   }
 
   public void visit(OutputParameterSource source) {
@@ -81,7 +115,11 @@ public class InputDataSourceVisitorImpl implements InputDataSourceVisitor {
     interview = queryService.matchOne(interview);
     if(interview != null) {
       InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(interview, source.getInstrumentType(), source.getParameterName());
-      if(runValue != null) data = runValue.getData();
+      if(runValue != null) {
+        // TODO unit conversion when necessary
+        // TODO type conversion when possible (INTEGER->DECIMAL->TEXT...)
+        data = runValue.getData();
+      }
     }
   }
 }
