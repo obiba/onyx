@@ -67,19 +67,10 @@ public class InstrumentOutputParameterPanel extends Panel {
 
     if(instrumentService.isInteractiveInstrument(instrumentRun.getInstrument())) {
       add(new ManualFragment("manual"));
+      initAutomaticOutputs(null);
     } else {
       add(new EmptyPanel("manual"));
-    }
-
-    if(initAutomaticOutputs(null)) {
-      add(new AbstractAjaxTimerBehavior(Duration.seconds(5)) {
-
-        @Override
-        protected void onTimer(AjaxRequestTarget target) {
-          if(!isManual()) initAutomaticOutputs(target);
-        }
-
-      });
+      add(new EmptyPanel("automaticOutputs"));
     }
   }
 
@@ -98,33 +89,34 @@ public class InstrumentOutputParameterPanel extends Panel {
 
     InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
 
-    KeyValueDataPanel outputs = new KeyValueDataPanel("manualOutputs", new StringResourceModel("ManualDataOutputs", this, null));
-    for(InstrumentOutputParameter param : queryService.match(template)) {
-      Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
+    if(queryService.count(template) == 0) {
+      add(new EmptyPanel("manualOutputs"));
+    } else {
+      KeyValueDataPanel outputs = new KeyValueDataPanel("manualOutputs", new StringResourceModel("ManualDataOutputs", this, null));
+      for(InstrumentOutputParameter param : queryService.match(template)) {
+        Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
 
-      // case we going through this multiple times
-      InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
-      if(runValue == null) {
-        runValue = new InstrumentRunValue();
-        runValue.setInstrumentParameter(param);
-        runValue.setCaptureMethod(param.getCaptureMethod());
-        instrumentRun.addInstrumentRunValue(runValue);
-        activeInstrumentRunService.validate();
+        // case we going through this multiple times
+        InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
+        if(runValue == null) {
+          runValue = new InstrumentRunValue();
+          runValue.setInstrumentParameter(param);
+          runValue.setCaptureMethod(param.getCaptureMethod());
+          instrumentRun.addInstrumentRunValue(runValue);
+          activeInstrumentRunService.validate();
+        }
+
+        DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType());
+        field.setRequired(true);
+        field.setLabel(new Model(param.getName()));
+
+        outputs.addRow(label, field);
       }
-
-      DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType());
-      field.setRequired(true);
-      field.setLabel(new Model(param.getName()));
-
-      outputs.addRow(label, field);
+      add(outputs);
     }
-    add(outputs);
-
   }
 
-  private boolean initAutomaticOutputs(AjaxRequestTarget target) {
-    boolean updatable = false;
-
+  private void initAutomaticOutputs(AjaxRequestTarget target) {
     InstrumentOutputParameter template = new InstrumentOutputParameter();
     template.setInstrument((Instrument) getModelObject());
     template.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
@@ -134,8 +126,6 @@ public class InstrumentOutputParameterPanel extends Panel {
       newOutputs = new EmptyPanel("automaticOutputs");
     } else {
       InstrumentRun instrumentRun = activeInstrumentRunService.refresh();
-
-      updatable = true;
 
       KeyValueDataPanel outputs = new KeyValueDataPanel("automaticOutputs", new StringResourceModel("AutomaticDataOutputs", this, null));
       for(InstrumentOutputParameter param : queryService.match(template)) {
@@ -184,17 +174,28 @@ public class InstrumentOutputParameterPanel extends Panel {
     if(target != null) {
       target.addComponent(newOutputs);
     }
-
-    return updatable;
   }
 
   @SuppressWarnings("serial")
   private class ManualFragment extends Fragment {
 
+    private AbstractAjaxTimerBehavior timer;
+
     @SuppressWarnings("serial")
     public ManualFragment(String id) {
       super(id, "manualFragment", InstrumentOutputParameterPanel.this);
+      setOutputMarkupId(true);
+      timer = new AbstractAjaxTimerBehavior(Duration.seconds(5)) {
+
+        @Override
+        protected void onTimer(AjaxRequestTarget target) {
+          if(!isManual()) initAutomaticOutputs(target);
+        }
+
+      };
+
       CheckBox cb = new CheckBox("manual", new PropertyModel(InstrumentOutputParameterPanel.this, "manual"));
+      cb.setOutputMarkupId(true);
       cb.add(new OnChangeAjaxBehavior() {
 
         @Override
@@ -203,6 +204,7 @@ public class InstrumentOutputParameterPanel extends Panel {
         }
 
       });
+      add(timer);
       add(cb);
     }
 
