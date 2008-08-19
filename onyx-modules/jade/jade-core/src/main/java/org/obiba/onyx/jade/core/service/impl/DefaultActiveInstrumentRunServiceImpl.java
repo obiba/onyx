@@ -107,42 +107,41 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     InstrumentOutputParameter template = new InstrumentOutputParameter();
     template.setInstrument(currentRun.getInstrument());
+    template.setCaptureMethod(InstrumentParameterCaptureMethod.COMPUTED);
 
     // TODO quick and dirty implementation, to be checked
     for(InstrumentOutputParameter param : getPersistenceManager().match(template)) {
-      if(param instanceof InstrumentComputedOutputParameter) {
-        InstrumentComputedOutputParameter computedParam = (InstrumentComputedOutputParameter) param;
-        if(computedParam.getAlgorithm().equals(InstrumentOutputParameterAlgorithm.AVERAGE)) {
-          InstrumentRunValue computedRunValue = currentRun.getInstrumentRunValue(computedParam);
-          if(computedRunValue == null) {
-            computedRunValue = new InstrumentRunValue();
-            computedRunValue.setInstrumentParameter(computedParam);
-            computedRunValue.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
-            currentRun.addInstrumentRunValue(computedRunValue);
-          }
-
-          double sum = 0;
-          int count = 0;
-          for(InstrumentOutputParameter p : computedParam.getInstrumentOutputParameters()) {
-            count++;
-            InstrumentRunValue runValue = currentRun.getInstrumentRunValue(p);
-            if(runValue.getDataType().equals(DataType.DECIMAL)) {
-              Double value = runValue.getValue();
-              sum += value;
-            } else if(runValue.getDataType().equals(DataType.INTEGER)) {
-              Long value = runValue.getValue();
-              sum += value.doubleValue();
-            }
-          }
-          double avg = sum / count;
-
-          Serializable avgValue = null;
-          if(computedRunValue.getDataType().equals(DataType.DECIMAL)) avgValue = avg;
-          else if(computedRunValue.getDataType().equals(DataType.INTEGER)) avgValue = Math.round(avg);
-
-          if(avgValue != null) computedRunValue.setData(new Data(computedRunValue.getDataType(), avgValue));
-
+      InstrumentComputedOutputParameter computedParam = (InstrumentComputedOutputParameter) param;
+      if(computedParam.getAlgorithm().equals(InstrumentOutputParameterAlgorithm.AVERAGE)) {
+        InstrumentRunValue computedRunValue = currentRun.getInstrumentRunValue(computedParam);
+        if(computedRunValue == null) {
+          computedRunValue = new InstrumentRunValue();
+          computedRunValue.setInstrumentParameter(computedParam);
+          computedRunValue.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
+          currentRun.addInstrumentRunValue(computedRunValue);
         }
+
+        double sum = 0;
+        int count = 0;
+        for(InstrumentOutputParameter p : computedParam.getInstrumentOutputParameters()) {
+          count++;
+          InstrumentRunValue runValue = currentRun.getInstrumentRunValue(p);
+          if(runValue.getDataType().equals(DataType.DECIMAL)) {
+            Double value = runValue.getValue();
+            sum += value;
+          } else if(runValue.getDataType().equals(DataType.INTEGER)) {
+            Long value = runValue.getValue();
+            sum += value.doubleValue();
+          }
+        }
+        double avg = sum / count;
+
+        Serializable avgValue = null;
+        if(computedRunValue.getDataType().equals(DataType.DECIMAL)) avgValue = avg;
+        else if(computedRunValue.getDataType().equals(DataType.INTEGER)) avgValue = Math.round(avg);
+
+        if(avgValue != null) computedRunValue.setData(new Data(computedRunValue.getDataType(), avgValue));
+
       }
     }
   }

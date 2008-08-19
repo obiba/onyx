@@ -18,7 +18,6 @@ import org.apache.wicket.util.time.Duration;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
@@ -64,22 +63,24 @@ public class InstrumentOutputParameterPanel extends Panel {
       instrumentRun = activeInstrumentRunService.start(activeInterviewService.getParticipant(), (Instrument) getModelObject());
     }
 
+    initManualOutputs();
+
     if(instrumentService.isInteractiveInstrument(instrumentRun.getInstrument())) {
       add(new ManualFragment("manual"));
     } else {
       add(new EmptyPanel("manual"));
     }
 
-    updateInputs(null);
+    if(initAutomaticOutputs(null)) {
+      add(new AbstractAjaxTimerBehavior(Duration.seconds(5)) {
 
-    add(new AbstractAjaxTimerBehavior(Duration.seconds(5)) {
+        @Override
+        protected void onTimer(AjaxRequestTarget target) {
+          if(!isManual()) initAutomaticOutputs(target);
+        }
 
-      @Override
-      protected void onTimer(AjaxRequestTarget target) {
-        if(!isManual()) updateInputs(target);
-      }
-
-    });
+      });
+    }
   }
 
   public boolean isManual() {
@@ -90,22 +91,61 @@ public class InstrumentOutputParameterPanel extends Panel {
     this.manual = manual;
   }
 
-  private void updateInputs(AjaxRequestTarget target) {
+  private void initManualOutputs() {
     InstrumentOutputParameter template = new InstrumentOutputParameter();
     template.setInstrument((Instrument) getModelObject());
+    template.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
 
-    InstrumentRun instrumentRun = activeInstrumentRunService.refresh();
+    InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
 
-    KeyValueDataPanel outputs = new KeyValueDataPanel("outputs", new StringResourceModel("DataOutputs", this, null));
+    KeyValueDataPanel outputs = new KeyValueDataPanel("manualOutputs", new StringResourceModel("ManualDataOutputs", this, null));
     for(InstrumentOutputParameter param : queryService.match(template)) {
-      if(!(param instanceof InstrumentComputedOutputParameter)) {
-        Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getName());
+      Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
+
+      // case we going through this multiple times
+      InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
+      if(runValue == null) {
+        runValue = new InstrumentRunValue();
+        runValue.setInstrumentParameter(param);
+        runValue.setCaptureMethod(param.getCaptureMethod());
+        instrumentRun.addInstrumentRunValue(runValue);
+        activeInstrumentRunService.validate();
+      }
+
+      DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType());
+      field.setRequired(true);
+      field.setLabel(new Model(param.getName()));
+
+      outputs.addRow(label, field);
+    }
+    add(outputs);
+
+  }
+
+  private boolean initAutomaticOutputs(AjaxRequestTarget target) {
+    boolean updatable = false;
+
+    InstrumentOutputParameter template = new InstrumentOutputParameter();
+    template.setInstrument((Instrument) getModelObject());
+    template.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
+
+    Component newOutputs = null;
+    if(queryService.count(template) == 0) {
+      newOutputs = new EmptyPanel("automaticOutputs");
+    } else {
+      InstrumentRun instrumentRun = activeInstrumentRunService.refresh();
+
+      updatable = true;
+
+      KeyValueDataPanel outputs = new KeyValueDataPanel("automaticOutputs", new StringResourceModel("AutomaticDataOutputs", this, null));
+      for(InstrumentOutputParameter param : queryService.match(template)) {
+        Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
         Component output = null;
 
         // case we going through this multiple times
         InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
 
-        if(manual || param.getCaptureMethod().equals(InstrumentParameterCaptureMethod.MANUAL)) {
+        if(manual) {
 
           if(runValue == null) {
             runValue = new InstrumentRunValue();
@@ -130,19 +170,22 @@ public class InstrumentOutputParameterPanel extends Panel {
           outputs.addRow(label, output);
         }
       }
+      outputs.setOutputMarkupId(true);
+      newOutputs = outputs;
     }
-    outputs.setOutputMarkupId(true);
 
-    Component currentOutputs = get("outputs");
+    Component currentOutputs = get("automaticOutputs");
     if(currentOutputs != null) {
-      currentOutputs.replaceWith(outputs);
+      currentOutputs.replaceWith(newOutputs);
     } else {
-      add(outputs);
+      add(newOutputs);
     }
 
     if(target != null) {
-      target.addComponent(outputs);
+      target.addComponent(newOutputs);
     }
+
+    return updatable;
   }
 
   @SuppressWarnings("serial")
@@ -156,7 +199,7 @@ public class InstrumentOutputParameterPanel extends Panel {
 
         @Override
         protected void onUpdate(AjaxRequestTarget target) {
-          updateInputs(target);
+          initAutomaticOutputs(target);
         }
 
       });

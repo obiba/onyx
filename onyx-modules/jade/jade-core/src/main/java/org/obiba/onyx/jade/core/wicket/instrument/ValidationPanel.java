@@ -1,6 +1,7 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -43,23 +44,32 @@ public class ValidationPanel extends Panel {
 
     instrumentRun = activeInstrumentRunService.getInstrumentRun();
 
-    KeyValueDataPanel kv = new KeyValueDataPanel("inputs", new StringResourceModel("DataInputs", this, null));
-    for(InstrumentInputParameter param : queryService.match(templateIn)) {
-      Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getName());
-      InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
-      kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new Model(runValue.getValue() + " " + param.getMeasurementUnit())));
+    if(queryService.count(templateIn) > 0) {
+      KeyValueDataPanel kv = new KeyValueDataPanel("inputs", new StringResourceModel("DataInputs", this, null));
+      for(InstrumentInputParameter param : queryService.match(templateIn)) {
+        Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
+        InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
+        kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new Model(runValue.getValue() + " " + param.getMeasurementUnit())));
+      }
+      add(kv);
+    } else {
+      add(new EmptyPanel("inputs"));
     }
-    add(kv);
 
     InstrumentOutputParameter templateOut = new InstrumentOutputParameter();
     templateOut.setInstrument(instrument);
-    kv = new KeyValueDataPanel("outputs", new StringResourceModel("DataOutputs", this, null));
-    for(InstrumentOutputParameter param : queryService.match(templateOut)) {
-      Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getName());
-      InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
-      if(runValue != null) kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new Model(runValue.getValue() + " " + param.getMeasurementUnit())));
+
+    if(queryService.count(templateOut) > 0) {
+      KeyValueDataPanel kv = new KeyValueDataPanel("outputs", new StringResourceModel("DataOutputs", this, null));
+      for(InstrumentOutputParameter param : queryService.match(templateOut)) {
+        Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
+        InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
+        if(runValue != null) kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new Model(runValue.getValue() + " " + param.getMeasurementUnit())));
+      }
+      add(kv);
+    } else {
+      add(new EmptyPanel("outputs"));
     }
-    add(kv);
   }
 
 }
