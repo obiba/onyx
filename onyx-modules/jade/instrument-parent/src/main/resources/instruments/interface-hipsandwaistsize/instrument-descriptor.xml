@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<linked-list>
+
+  <!-- Instruments -->
+  <!-- HWC1 -->
+  <instrument id="hwc1">
+    <name>Tape 1</name>
+    <vendor>Seca</vendor>
+    <model>Seca Measuring Tape</model>
+    <barcode>hwc01</barcode>
+    <status>ACTIVE</status>
+    <instrumentType>
+      <name>HWC</name>
+    </instrumentType>
+  </instrument>
+
+  <output id="waist_size1">
+    <name>Waist Size 1</name>
+    <description>First waist size measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="hwc1" />
+  </output>
+  <output id="waist_size2">
+    <name>Waist Size 2</name>
+    <description>Second waist size measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="hwc1" />
+  </output>
+  <computedOutput>
+    <name>Waist Size</name>
+    <description>Waist size measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <instrument reference="hwc1" />
+    <algorithm>AVERAGE</algorithm>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <outputs>
+      <output reference="waist_size1" />
+      <output reference="waist_size2" />
+    </outputs>
+  </computedOutput>
+
+  <output id="hips_size1">
+    <name>Hips Size 1</name>
+    <description>First hips size measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="hwc1" />
+  </output>
+  <output id="hips_size2">
+    <name>Hips Size 2</name>
+    <description>Second hips size measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="hwc1" />
+  </output>
+  <computedOutput>
+    <name>Hips Size</name>
+    <description>Hips size measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <instrument reference="hwc1" />
+    <algorithm>AVERAGE</algorithm>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <outputs>
+      <output reference="hips_size1" />
+      <output reference="hips_size2" />
+    </outputs>
+  </computedOutput>
+  
+</linked-list>

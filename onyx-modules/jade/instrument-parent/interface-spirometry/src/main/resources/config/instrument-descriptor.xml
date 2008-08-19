@@ -80,7 +80,7 @@
   </input>  
   
   <participantPropertySource id="last_name_source">
-      <property>firstName</property>
+      <property>lastName</property>
   </participantPropertySource>
   <input id="last_name">
     <name>LastName</name>
