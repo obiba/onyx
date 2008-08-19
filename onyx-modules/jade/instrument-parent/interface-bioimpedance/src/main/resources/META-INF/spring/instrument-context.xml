@@ -8,8 +8,14 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="instrumentExecutionService" ref="instrumentExecutionService" />
     <property name="tbf310CommPort" value="COM6" />   
     <property name="externalAppHelper" ref="externalAppHelper"/> 
+    <property name="settingsHelper" ref="settingsHelper"/>     
   </bean>
   
   <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper"/>
+  
+  <bean name="settingsHelper" class="org.obiba.onyx.jade.instrument.LocalSettingsHelper">
+    <property name="settingsFileName" value="tbf310.ini" />   
+    <property name="settingsFileComment" value="Settings for Tanita TBF-310"/>
+  </bean>  
 
 </beans>

@@ -16,9 +16,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -33,11 +35,15 @@ import javax.swing.JTextField;
 
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
+import org.obiba.onyx.jade.instrument.LocalSettingsHelper;
+import org.obiba.onyx.jade.instrument.LocalSettingsHelper.CouldNotRetrieveSettingsException;
+import org.obiba.onyx.jade.instrument.LocalSettingsHelper.CouldNotSaveSettingsException;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * This is a simple Swing application that connects to a bioimpedance and weight device (Tanita Body Composition
@@ -46,19 +52,19 @@ import org.slf4j.LoggerFactory;
  * @author cag-mboulanger
  * 
  */
-public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEventListener {
+public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEventListener, InitializingBean {
 
   private static final Logger log = LoggerFactory.getLogger(Tbf310InstrumentRunner.class);
 
   // Injected by spring.
   protected InstrumentExecutionService instrumentExecutionService;
 
-  // Injected by spring.
   protected ExternalAppLauncherHelper externalAppHelper;
 
-  // Injected by spring.
-  protected String tbf310CommPort;
+  protected LocalSettingsHelper settingsHelper;
 
+  protected String tbf310CommPort;
+  
   // Interface components
   private JFrame appWindow;
 
@@ -106,7 +112,6 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
   }
 
-  // Serial port attributes
   private StringBuffer tanitaData = new StringBuffer();
 
   private InputStream inputStream;
@@ -116,8 +121,12 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   private boolean portIsAvailable = false;
 
   private String portOwnerName;
+  
+  private ArrayList<String> availablePortNames;
 
   private boolean shutdown = false;
+  
+  protected Properties tbf310LocalSettings;
 
   public Tbf310InstrumentRunner() throws Exception {
 
@@ -145,6 +154,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
     // Initialize serial port.
     portOwnerName = "TANITA Body Composition Analyzer";
+    
     // Test string
     /*
      * setTanitaData( parseTanitaData( "0,2,185,110.6,431,28.4,31.4,79.2,58.0,27,32.3,9771" ) ); saveDataBtn.setEnabled(
@@ -152,6 +162,16 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
      */
 
   }
+  
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    
+    // Attempt to retrieve settings persisted locally (if exist).
+    try {
+      tbf310LocalSettings = settingsHelper.retrieveSettings();
+    } catch (CouldNotRetrieveSettingsException e) {}
+    
+  }  
 
   public InstrumentExecutionService getInstrumentExecutionService() {
     return instrumentExecutionService;
@@ -169,26 +189,31 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     this.externalAppHelper = externalAppHelper;
   }
 
-  public String getTbf310CommPort() {
-    return tbf310CommPort;
+  public LocalSettingsHelper getSettingsHelper() {
+    return settingsHelper;
+  }
+
+  public void setSettingsHelper(LocalSettingsHelper settingsHelper) {
+    this.settingsHelper = settingsHelper;
+  }  
+  
+  public String getTbf310CommPort() { 
+    return tbf310LocalSettings.getProperty("commPort");
   }
 
   public void setTbf310CommPort(String tbf310CommPort) {
-    this.tbf310CommPort = tbf310CommPort;
+    if ( tbf310LocalSettings == null ) {
+      tbf310LocalSettings = new Properties();
+    }
+    tbf310LocalSettings.setProperty("commPort", tbf310CommPort);
   }
-
+ 
   /**
    * Establish the connection with the device connected to the serial port.
    */
   private void setupSerialPort() {
 
     try {
-      // List all ports found to the console. Used for debugging...
-      Enumeration en = CommPortIdentifier.getPortIdentifiers();
-      while(en != null && en.hasMoreElements()) {
-        CommPortIdentifier type = (CommPortIdentifier) en.nextElement();
-        System.out.println("type.name=" + type.getName() + " type.portType=" + type.getPortType());
-      }
 
       // If port already open, close it.
       if(serialPort != null) {
@@ -225,9 +250,28 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
     } catch(Exception wCouldNotAccessSerialPort) {
       portIsAvailable = false;
-      wCouldNotAccessSerialPort.printStackTrace();
+      log.warn("Could not access the specified serial port.", wCouldNotAccessSerialPort);
     }
 
+  }
+
+  private void refreshSerialPortList() {
+    
+    log.info("Refreshing serial port list..."); 
+    Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
+    availablePortNames = new ArrayList<String>();
+    
+    // Build a list of all serial ports found.   
+    while(portEnum != null && portEnum.hasMoreElements()) {
+      
+     CommPortIdentifier port = portEnum.nextElement();
+     if (port.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+        log.info("Port name={}, Port type={}", port.getName(), port.getPortType());
+        availablePortNames.add(port.getName());
+      }
+      
+    }
+    
   }
 
   /**
@@ -235,19 +279,41 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
    */
   private void reestablishConnection() {
 
+    String[] options = {"OK", "Annuler", "Configuration"}; 
+    
     // Loop until connection is reestablished.
-    int wConfirmation;
+    int confirmation;
     while(serialPort == null || !serialPort.isCTS()) {
 
-      wConfirmation = JOptionPane.showConfirmDialog(appWindow, "La communication n'a pu être établie\n" + "avec l'appareil de bioimpédance!\n\n" + "Vérifiez si les cables sont bien\n" + "branchés et appuyez ensuite sur OK.", "Problème de communication", JOptionPane.OK_CANCEL_OPTION);
-
-      if(wConfirmation == JOptionPane.OK_OPTION) {
+      confirmation = JOptionPane.showOptionDialog(appWindow, "La communication n'a pu être établie\n" + "avec l'appareil de bioimpédance!\n\n" + "Vérifiez si les cables sont bien\n" + "branchés et appuyez ensuite sur OK.", "Problème de communication", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, null, options, "OK");
+      
+      if(confirmation == 0) {
 
         // Try to reestablish connection.
         setupSerialPort();
 
-      } else {
-        exitUI();
+      } else if(confirmation == 1) {       
+        
+        // Temporary fix, need to find another solution...
+        System.exit(0);
+        //exitUI();        
+                
+      // Configuration option selected.  
+      } else if(confirmation == 2) {
+        
+        // List all serial port in a drop down list, so a new one can be selected. 
+        refreshSerialPortList();
+        String selectedPort = (String) JOptionPane.showInputDialog(appWindow, "SVP faire un choix parmi les ports disponibles...", "Configuration du port de communication", JOptionPane.QUESTION_MESSAGE, null, availablePortNames.toArray(), getTbf310CommPort());
+        setTbf310CommPort(selectedPort);
+        
+        try {
+          settingsHelper.saveSettings(tbf310LocalSettings);
+        } catch(CouldNotSaveSettingsException e) {
+          log.error("Local settings could not be persisted.", e );
+        }
+        
+        setupSerialPort();
+        
       }
 
     }
@@ -551,6 +617,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
   public void initialize() {
     log.info("Initializing Tanita Runner");
+    refreshSerialPortList();    
     setupSerialPort();
   }
 
@@ -565,11 +632,12 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
         try {
           uiLock.wait();
         } catch(InterruptedException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
+          throw new RuntimeException(e);
         }
       }
+      
       log.info("Lock obtained. Exiting software.");
+          
     } else {
       JOptionPane.showMessageDialog(null, "Tanita TBF-310 already lock for execution.  Please make sure that another instance is not running.", "Cannot start application!", JOptionPane.ERROR_MESSAGE);
     }
@@ -589,4 +657,6 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     }
   }
 
+
+  
 }
