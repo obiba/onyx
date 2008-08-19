@@ -138,7 +138,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
           Serializable avgValue = null;
           if(computedRunValue.getDataType().equals(DataType.DECIMAL)) avgValue = avg;
-          else if(computedRunValue.getDataType().equals(DataType.INTEGER)) avgValue = (new Double(avg)).longValue();
+          else if(computedRunValue.getDataType().equals(DataType.INTEGER)) avgValue = Math.round(avg);
 
           if(avgValue != null) computedRunValue.setData(new Data(computedRunValue.getDataType(), avgValue));
 
