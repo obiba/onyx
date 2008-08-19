@@ -73,7 +73,7 @@
   <input id="id">
     <name>ID</name>
     <description>Participant Barcode</description>
-    <dataType>INTEGER</dataType>
+    <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="id_source" />
     <instrument reference="spi1" />
@@ -121,7 +121,7 @@
   <input id="gender">
     <name>Gender</name>
     <description>Participant Gender</description>
-    <dataType>BOOLEAN</dataType>
+    <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="gender_source" />
     <instrument reference="spi1" />
@@ -143,12 +143,13 @@
     <instrumentType>
       <name>STA</name>
     </instrumentType>
-      <parameterName>heigth</parameterName>
+      <parameterName>Height</parameterName>
   </outputParameterSource>
   <input id="height">
     <name>Height</name>
     <description>Participant Height</description>
-    <dataType>DECIMAL</dataType>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="height_source" />
     <instrument reference="spi1" />
@@ -158,12 +159,13 @@
     <instrumentType>
       <name>BIM</name>
     </instrumentType>
-      <parameterName>weigth</parameterName>
+      <parameterName>Weight</parameterName>
     </outputParameterSource>
   <input id="weight">
     <name>Weight</name>
     <description>Participant Weight</description>
-    <dataType>DECIMAL</dataType>
+    <measurementUnit>kg</measurementUnit>
+    <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="weight_source" />
     <instrument reference="spi1" />
