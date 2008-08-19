@@ -6,7 +6,7 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
-public final class UnitParameterValueConverter extends InstrumentParameterValueConverter {
+public final class UnitParameterValueConverter implements InstrumentParameterValueConverter {
 
   public void convert(InstrumentRunValue targetInstrumentRunValue, InstrumentRunValue sourceInstrumentRunValue) {
 
