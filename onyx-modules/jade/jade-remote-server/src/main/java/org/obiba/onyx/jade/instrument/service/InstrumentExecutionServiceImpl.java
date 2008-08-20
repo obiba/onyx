@@ -1,6 +1,5 @@
 package org.obiba.onyx.jade.instrument.service;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,73 +8,89 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.util.data.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareService implements InstrumentExecutionService {
+
+  private static final Logger log = LoggerFactory.getLogger(InstrumentExecutionServiceImpl.class);
   
-  private InstrumentRun instrumentRun;
-    
+  private ActiveInstrumentRunService activeInstrumentRunService;
+
+  public void setActiveInstrumentRunService(ActiveInstrumentRunService activeInstrumentRunService) {
+    this.activeInstrumentRunService = activeInstrumentRunService;
+  }
+
+  private InstrumentRun getInstrumentRun() {
+    return activeInstrumentRunService.getInstrumentRun();
+  }
+
   public String getInstrumentOperator() {
-    return (instrumentRun.getUser().getName()); 
+    return getInstrumentRun().getUser().getName();
   }
 
   public Participant getParticipant() {
-    return (instrumentRun.getParticipantInterview().getParticipant());
+    return (getInstrumentRun().getParticipantInterview().getParticipant());
   }
 
   public Map<String, Data> getInputParametersValue(String... parameters) {
+    log.info("getInputParametersValue(" + parameters +")");
+    log.info("instrumentRun=" + getInstrumentRun());
     Map<String, Data> inputParametersValue = new HashMap<String, Data>();
-    
-    for (String parameter : parameters) {
+
+    for(String parameter : parameters) {
       InstrumentInputParameter inputParameterTemplate = new InstrumentInputParameter();
       inputParameterTemplate.setName(parameter);
       InstrumentRunValue inputParameterValueTemplate = new InstrumentRunValue();
       inputParameterValueTemplate.setInstrumentParameter(getPersistenceManager().matchOne(inputParameterTemplate));
-      inputParameterValueTemplate.setInstrumentRun(instrumentRun);
-      
+      inputParameterValueTemplate.setInstrumentRun(getInstrumentRun());
+
       InstrumentRunValue inputParameterValue = getPersistenceManager().matchOne(inputParameterValueTemplate);
       inputParametersValue.put(inputParameterValue.getInstrumentParameter().getName(), inputParameterValue.getData());
     }
     return (inputParametersValue);
-  }  
+  }
 
   public void addOutputParameterValues(Map<String, Data> values) {
-    for(String keyStr : values.keySet()) {
-      addOutputParameterValue(keyStr, values.get(keyStr));
+    for(Map.Entry<String, Data> entry : values.entrySet()) {
+      addOutputParameterValue(entry.getKey(), values.get(entry.getValue()));
     }
   }
 
   public void addOutputParameterValue(String name, Data value) {
+    log.info("addOutputParameterValue(" + name +", "+ value +")");
+    log.info("instrumentRun=" + getInstrumentRun());
     InstrumentOutputParameter template = new InstrumentOutputParameter();
     template.setName(name);
-    template.setInstrument(instrumentRun.getInstrument());
+    template.setInstrument(getInstrumentRun().getInstrument());
     InstrumentOutputParameter instrumentOutputParameter = getPersistenceManager().matchOne(template);
-    
+
     InstrumentRunValue outputParameterValue = new InstrumentRunValue();
     outputParameterValue.setInstrumentParameter(instrumentOutputParameter);
-    outputParameterValue.setInstrumentRun(instrumentRun);
-    
+    outputParameterValue.setInstrumentRun(getInstrumentRun());
+
     if(getPersistenceManager().matchOne(outputParameterValue) != null) {
       outputParameterValue = getPersistenceManager().matchOne(outputParameterValue);
     }
-    
+
     outputParameterValue.setData(value);
 
     getPersistenceManager().save(outputParameterValue);
   }
 
   public void updateInstrumentRunState(Object state) {
-    instrumentRun.setState(state.toString());
-    instrumentRun = getPersistenceManager().save(instrumentRun);
+    InstrumentRun run = getInstrumentRun();
+    InstrumentRunStatus status = InstrumentRunStatus.valueOf(state.toString());
+    if(status != null) {
+      run.setStatus(status);
+      getPersistenceManager().save(run);
+    }
   }
 
-  public void setInstrumentRun(Serializable id) {
-    this.instrumentRun = getPersistenceManager().get(InstrumentRun.class, id);
-  }
-  
-  public InstrumentRun getInstrumentRun() {
-    return (instrumentRun);
-  }
-  
 }

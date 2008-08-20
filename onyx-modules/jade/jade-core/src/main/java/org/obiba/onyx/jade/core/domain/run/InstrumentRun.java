@@ -53,9 +53,6 @@ public class InstrumentRun extends AbstractEntity {
   
   @Column(length = 2000)
   private String refusalReasonComment;
-  
-  @Column(length = 2000)
-  private String state;
     
   public InstrumentRun() {
     super();
@@ -138,14 +135,6 @@ public class InstrumentRun extends AbstractEntity {
 
   public void setRefusalReasonComment(String refusalReasonComment) {
     this.refusalReasonComment = refusalReasonComment;
-  }
-
-  public String getState() {
-    return state;
-  }
-
-  public void setState(String state) {
-    this.state = state;
   }
 
   public User getUser() {
