@@ -203,10 +203,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
   public void run() {
     log.info("*** Running Cardiosoft Runner ***");
     externalAppHelper.launch();
-  }
-
-  public void shutdown() {
-    log.info("*** Shutdown Cardiosoft Runner ***");
+    
     // Get data from external app
     try {
       FileInputStream resultInputStream = new FileInputStream(getExportPath() + getXmlFileName());
@@ -217,6 +214,15 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
       JOptionPane.showMessageDialog(null, "Error: Cardiosoft output data file not found", "Could not complete process", JOptionPane.ERROR_MESSAGE);
     } catch(Exception ex) {
       log.info("*** EXCEPTION SHUTDOWN STEP: " + ex.getStackTrace());
+    }
+  }
+
+  public void shutdown() {
+    log.info("*** Shutdown Cardiosoft Runner ***");
+    try {
+      deleteDeviceData(); // Delete current data in instrument specific database and files for privacy
+    } catch(Exception ex) {
+      log.info("*** EXCEPTION INITIALIZE STEP: " + ex.getStackTrace());
     }
   }
 

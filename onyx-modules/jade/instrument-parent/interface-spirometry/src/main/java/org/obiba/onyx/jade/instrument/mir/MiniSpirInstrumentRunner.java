@@ -219,16 +219,22 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
   public void run() {
     log.info("*** Running MIR Runner ***");
     externalAppHelper.launch();
-  }
 
-  public void shutdown() {
-    log.info("*** Shutdown MIR Runner ***");
     // Get data from external app
     try {
       LinkedHashMap<String, Double[]> results = retrieveDeviceData();
       SendDataToServer(results);
     } catch(Exception ex) {
       log.info("*** EXCEPTION SHUTDOWN STEP: " + ex.getStackTrace());
+    }
+  }
+
+  public void shutdown() {
+    log.info("*** Shutdown MIR Runner ***");
+    try {
+      deleteDeviceData(); // Delete current data in instrument specific database for privacy
+    } catch(Exception ex) {
+      log.info("*** EXCEPTION INITIALIZE STEP: " + ex.getStackTrace());
     }
   }
 }
