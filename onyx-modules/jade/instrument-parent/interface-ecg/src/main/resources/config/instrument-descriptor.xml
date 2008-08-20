@@ -13,6 +13,256 @@
     <instrumentType>
       <name>ECG</name>
     </instrumentType>
+    <instrumentParameters>
+	  <output reference="time"/>
+	  <output reference="date"/>
+	  <output reference="diagnosis"/>
+	  <output reference="conclusion"/>
+	  <output reference="filterSetting"/>
+	  <output reference="diagnosisVersion"/>
+	  
+	  <output reference="ventricularRate"/>
+	  <output reference="pQInterval"/>
+	  <output reference="pDuration"/>
+	  <output reference="qRsDuration"/>
+	  <output reference="qTInterval"/>
+	  <output reference="qTCInterval"/>
+	  <output reference="rRInterval"/>
+	  <output reference="pPInterval"/>
+	  <output reference="pAxis"/>
+	  <output reference="rAxis"/>
+	  <output reference="tAxis"/>
+	  <output reference="qRSNum"/>
+	  <output reference="pOnset"/>
+	  <output reference="pOffset"/>
+	  <output reference="qOnset"/>
+	  <output reference="qOffset"/>
+	  <output reference="tOffset"/>
+	  <output reference="sokolovLVHIndex"/>
+	  <output reference="qTDispersion"/>
+	  <output reference="qTDispersionBazett"/>	  
+	  
+	  <output reference="xml"/>
+	  <output reference="pdf"/>
+    </instrumentParameters>
   </instrument>
+  
+  <output id="time">
+    <name>Time</name>
+    <description>Time of measurement</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="date">
+    <name>Date</name>
+    <description>Date of measurement</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>  
+  <output id="diagnosis">
+    <name>Diagnosis</name>
+    <description>Diagnosis of measurement</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>  
+  <output id="conclusion">
+    <name>Conclusion</name>
+    <description>Conclusion of measurement</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>  
+  <output id="filterSetting">
+    <name>FilterSetting</name>
+    <description>Filter Settings of measurement</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>  
+  <output id="diagnosisVersion">
+    <name>DiagnosisVersion</name>
+    <description>Diagnosis Version of measurement</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>  
+  
+  <output id="ventricularRate">
+    <name>VentricularRate</name>
+    <description>Ventricular Rate</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>BPM</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="pQInterval">
+    <name>PQInterval</name>
+    <description>PQ Interval</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>ms</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="pDuration">
+    <name>PDuration</name>
+    <description>P Duration</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>ms</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="qRsDuration">
+    <name>QRSDuration</name>
+    <description>QRS Duration</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>ms</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="qTInterval">
+    <name>QTInterval</name>
+    <description>QT Interval</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>ms</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="qTCInterval">
+    <name>QTCInterval</name>
+    <description>QTC Interval</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>ms</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="rRInterval">
+    <name>RRInterval</name>
+    <description>RR Interval</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>ms</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="pPInterval">
+    <name>PPInterval</name>
+    <description>PP Interval</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>ms</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="pAxis">
+    <name>PAxis</name>
+    <description>P Axis</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>degree</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="rAxis">
+    <name>RAxis</name>
+    <description>R Axis</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>degree</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="tAxis">
+    <name>TAxis</name>
+    <description>T Axis</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>degree</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="qRSNum">
+    <name>QRSNum</name>
+    <description>QRS Number</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="pOnset">
+    <name>POnset</name>
+    <description>P Onset</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>ms</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="pOffset">
+    <name>POffset</name>
+    <description>P Offset</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>ms</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="qOnset">
+    <name>QOnset</name>
+    <description>Q Onset</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>ms</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="qOffset">
+    <name>QOffset</name>
+    <description>Q Offset</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>ms</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="tOffset">
+    <name>TOffset</name>
+    <description>T Offset</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>ms</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="sokolovLVHIndex">
+    <name>SokolovLVHIndex</name>
+    <description>Sokolov LVH Index</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>mV</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="qTDispersion">
+    <name>QTDispersion</name>
+    <description>QT Dispersion</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>ms</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="qTDispersionBazett">
+    <name>QTDispersionBazett</name>
+    <description>QT Dispersion Bazett</description>
+    <dataType>INTEGER</dataType>
+    <measurementUnit>ms</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+
+  <output id="xml">
+    <name>XmlFile</name>
+    <description>Xml File</description>
+    <dataType>DATA</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
+  <output id="pdf">
+    <name>PdfFile</name>
+    <description>Pdf File</description>
+    <dataType>DATA</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="ecg1" />
+  </output>
 
 </linked-list>
