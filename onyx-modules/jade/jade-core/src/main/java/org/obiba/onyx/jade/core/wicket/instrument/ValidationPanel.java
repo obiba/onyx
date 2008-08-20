@@ -14,6 +14,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,10 @@ public class ValidationPanel extends Panel {
       for(InstrumentInputParameter param : queryService.match(templateIn)) {
         Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
         InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
-        kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new Model(runValue.getValue() + " " + param.getMeasurementUnit())));
+        String unit = param.getMeasurementUnit();
+        if(unit == null) unit = "";
+        IModel value = (runValue.getValue() == null ? new Model(unit) : new Model(runValue.getValue() + " " + unit));
+        kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), value));
       }
       add(kv);
     } else {
@@ -64,7 +68,12 @@ public class ValidationPanel extends Panel {
       for(InstrumentOutputParameter param : queryService.match(templateOut)) {
         Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
         InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
-        if(runValue != null) kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new Model(runValue.getValue() + " " + param.getMeasurementUnit())));
+        if(runValue != null) {
+          String unit = param.getMeasurementUnit();
+          if(unit == null) unit = "";
+          IModel value = (runValue.getValue() == null ? new Model(unit) : new Model(runValue.getValue() + " " + unit));
+          kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), value));
+        }
       }
       add(kv);
     } else {
