@@ -6,6 +6,11 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.springframework.remoting.httpinvoker.CommonsHttpInvokerRequestExecutor;
 import org.springframework.remoting.httpinvoker.HttpInvokerClientConfiguration;
 
+/**
+ * Request executer that adds credentials as cookies in the http request.
+ * @author Yannick Marcon
+ *
+ */
 public class CookieRequestExecutor extends CommonsHttpInvokerRequestExecutor {
 
   private String name;
