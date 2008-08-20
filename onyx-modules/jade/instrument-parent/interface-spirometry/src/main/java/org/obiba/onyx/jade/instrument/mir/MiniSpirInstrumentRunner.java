@@ -153,17 +153,17 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
       resultFileStrm = new FileInputStream(getMirPath() + getExternalOutputName());
       BufferedReader fileReader = new BufferedReader(new InputStreamReader(resultFileStrm));
 
-      StringBuffer wResults = new StringBuffer();
+      StringBuffer results = new StringBuffer();
       String line;
       Boolean lastParam = false;
       while((line = fileReader.readLine()) != null) {
-        wResults.append(line + "\n");
+        results.append(line + "\n");
         if(line.indexOf("PIF") == 0) lastParam = true;
       }
       if(lastParam == false) JOptionPane.showMessageDialog(null, "Data is incomplete", "Could not complete process", JOptionPane.ERROR_MESSAGE);
 
       Pattern pattern = Pattern.compile("(.*)\t(.*)\t(.*)\t(.*)\t(.*)");
-      Matcher matcher = pattern.matcher(wResults.toString().replace(",", ".").replace("/", "_"));
+      Matcher matcher = pattern.matcher(results.toString().replace(",", ".").replace("/", "_"));
       String description = null;
       Double[] data = null;
 
