@@ -163,7 +163,6 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
   }
   
-  @Override
   public void afterPropertiesSet() throws Exception {
     
     // Attempt to retrieve settings persisted locally (if exist).
