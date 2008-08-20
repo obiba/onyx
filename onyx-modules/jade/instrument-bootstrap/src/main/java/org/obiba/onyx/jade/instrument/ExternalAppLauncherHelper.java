@@ -55,11 +55,12 @@ public class ExternalAppLauncherHelper {
     List<String> command = new ArrayList<String>();
     command.add("cmd");
     command.add("/c");
-    if (!getParameterStr().isEmpty())
-      command.add(getExecutable() + " " + getParameterStr());
-    else
+    
+    if (getParameterStr() == null)
       command.add(getExecutable());
-      
+    else
+      command.add(getExecutable() + " " + getParameterStr());
+    
     ProcessBuilder builder = new ProcessBuilder(command);
     builder.directory(new File(getWorkDir()));
 
