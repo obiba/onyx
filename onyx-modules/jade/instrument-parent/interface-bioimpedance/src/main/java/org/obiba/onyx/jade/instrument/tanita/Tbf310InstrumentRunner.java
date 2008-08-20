@@ -282,37 +282,43 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     String[] options = {"OK", "Annuler", "Configuration"}; 
     
     // Loop until connection is reestablished.
-    int confirmation;
+    int selectedOption;
     while(serialPort == null || !serialPort.isCTS()) {
 
-      confirmation = JOptionPane.showOptionDialog(appWindow, "La communication n'a pu être établie\n" + "avec l'appareil de bioimpédance!\n\n" + "Vérifiez si les cables sont bien\n" + "branchés et appuyez ensuite sur OK.", "Problème de communication", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, null, options, "OK");
-      
-      if(confirmation == 0) {
+      selectedOption = JOptionPane.showOptionDialog(appWindow, "La communication n'a pu être établie\n" + "avec l'appareil de bioimpédance!\n\n" + "Vérifiez si les cables sont bien\n" + "branchés et appuyez ensuite sur OK.", "Problème de communication", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, null, options, "OK");
+
+      // OK option selected.
+      if(selectedOption == 0) {
 
         // Try to reestablish connection.
         setupSerialPort();
 
-      } else if(confirmation == 1) {       
-        
+      // Cancel option selected.
+      } else if(selectedOption == 1) {
+
         // Temporary fix, need to find another solution...
-        System.exit(0);
-        //exitUI();        
-                
-      // Configuration option selected.  
-      } else if(confirmation == 2) {
-        
-        // List all serial port in a drop down list, so a new one can be selected. 
+        exitUI();
+
+      // Configuration option selected.
+      } else if(selectedOption == 2) {
+
+        // List all serial port in a drop down list, so a new one can be selected.
         refreshSerialPortList();
         String selectedPort = (String) JOptionPane.showInputDialog(appWindow, "SVP faire un choix parmi les ports disponibles...", "Configuration du port de communication", JOptionPane.QUESTION_MESSAGE, null, availablePortNames.toArray(), getTbf310CommPort());
-        setTbf310CommPort(selectedPort);
-        
-        try {
-          settingsHelper.saveSettings(tbf310LocalSettings);
-        } catch(CouldNotSaveSettingsException e) {
-          log.error("Local settings could not be persisted.", e );
+
+        if(selectedPort != null) {
+          setTbf310CommPort(selectedPort);
+
+          try {
+            settingsHelper.saveSettings(tbf310LocalSettings);
+          } catch(CouldNotSaveSettingsException e) {
+            log.error("Local settings could not be persisted.", e);
+          }
+
+          setupSerialPort();
+        } else {
+          exitUI();
         }
-        
-        setupSerialPort();
         
       }
 
@@ -467,6 +473,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     synchronized(uiLock) {
       uiLock.notify();
     }
+    setTbf310CommPort(null);
   }
 
   /**
