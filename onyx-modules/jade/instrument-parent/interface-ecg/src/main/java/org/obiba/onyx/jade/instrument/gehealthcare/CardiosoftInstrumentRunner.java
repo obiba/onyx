@@ -184,7 +184,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
       instrumentExecutionService.addOutputParameterValues(ouputToSend);
 
     } catch(FileNotFoundException fnfEx) {
-      log.info("*** Error: Cardiosoft output data file not found: " + fnfEx.getStackTrace());
+      log.error("*** Error: Cardiosoft output data file not found: ", fnfEx);
       JOptionPane.showMessageDialog(null, "Error: Cardiosoft output data file not found", "Could not complete process", JOptionPane.ERROR_MESSAGE);
     } catch(Exception e) {
       log.warn("Failed result: " + e.getMessage(), e);
@@ -196,7 +196,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
     try {
       deleteDeviceData(); // Delete ancient data in instrument specific database
     } catch(Exception ex) {
-      log.info("*** EXCEPTION INITIALIZE STEP: " + ex.getStackTrace());
+      log.error("*** EXCEPTION INITIALIZE STEP: ", ex);
     }
   }
 
@@ -210,10 +210,10 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
       CardiosoftInstrumentResultParser resultParser = new CardiosoftInstrumentResultParser(resultInputStream);
       SendDataToServer(resultParser);
     } catch(FileNotFoundException fnfEx) {
-      log.info("*** Error: Cardiosoft output data file not found: " + fnfEx.getStackTrace());
+      log.error("*** Error: Cardiosoft output data file not found: ", fnfEx);
       JOptionPane.showMessageDialog(null, "Error: Cardiosoft output data file not found", "Could not complete process", JOptionPane.ERROR_MESSAGE);
     } catch(Exception ex) {
-      log.info("*** EXCEPTION SHUTDOWN STEP: " + ex.getStackTrace());
+      log.error("*** EXCEPTION SHUTDOWN STEP: ", ex);
     }
   }
 
@@ -222,7 +222,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
     try {
       deleteDeviceData(); // Delete current data in instrument specific database and files for privacy
     } catch(Exception ex) {
-      log.info("*** EXCEPTION INITIALIZE STEP: " + ex.getStackTrace());
+      log.error("*** EXCEPTION INITIALIZE STEP: ", ex);
     }
   }
 

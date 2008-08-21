@@ -178,11 +178,11 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
       try {
         resultFileStrm.close();
       } catch(Exception ex) {
-        log.info("*** Error in closing spirometry output data file stream: " + ex.getStackTrace());
+        log.error("*** Error in closing spirometry output data file stream: ", ex);
       }
 
     } catch(FileNotFoundException fnfEx) {
-      log.info("*** Error: spirometry output data file not found: " + fnfEx.getStackTrace());
+      log.error("*** Error: spirometry output data file not found: ", fnfEx);
       JOptionPane.showMessageDialog(null, "Error: spirometry output data file not found", "Could not complete process", JOptionPane.ERROR_MESSAGE);
     }
     return outputData;
@@ -212,7 +212,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
       deleteDeviceData(); // Delete ancient data in instrument specific database
       initParticipantData(); // Create file with participant data
     } catch(Exception ex) {
-      log.info("*** EXCEPTION INITIALIZE STEP: " + ex.getStackTrace());
+      log.error("*** EXCEPTION INITIALIZE STEP: ", ex);
     }
   }
 
@@ -225,7 +225,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
       LinkedHashMap<String, Double[]> results = retrieveDeviceData();
       SendDataToServer(results);
     } catch(Exception ex) {
-      log.info("*** EXCEPTION SHUTDOWN STEP: " + ex.getStackTrace());
+      log.error("*** EXCEPTION SHUTDOWN STEP: ", ex);
     }
   }
 
@@ -234,7 +234,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     try {
       deleteDeviceData(); // Delete current data in instrument specific database for privacy
     } catch(Exception ex) {
-      log.info("*** EXCEPTION INITIALIZE STEP: " + ex.getStackTrace());
+      log.error("*** EXCEPTION INITIALIZE STEP: ", ex);
     }
   }
 }
