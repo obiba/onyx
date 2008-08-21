@@ -96,7 +96,7 @@
     <instrument reference="bone1" />
   </input>
     
-  <OperatorSource id="foot_scanned"/> 
+  <operatorSource id="foot_scanned"/> 
   <input id="foot_scanned">
     <name>FootScanned</name>
     <description>Foot Scanned</description>
