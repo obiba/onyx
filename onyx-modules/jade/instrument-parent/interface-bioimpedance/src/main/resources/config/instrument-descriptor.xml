@@ -21,24 +21,150 @@
     </instrumentType>
     <parameterName>Height</parameterName>
   </outputParameterSource>
-  
   <input>
     <name>Height</name>
     <description>Measured height</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>INTEGER</dataType>
-    <captureMethod>MANUAL</captureMethod>
+    <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
     <inputSource reference="measured_height" />
   </input>
   
-  <output>
-    <name>Weight</name>
-    <description>Measured weight</description>
+  <participantPropertySource id="birth_date_source">
+      <property>birthDate</property>
+  </participantPropertySource>
+  <input id="birth_date_in">
+    <name>Age</name>
+    <description>Participant Age</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="birth_date_source" />
+    <instrument reference="spi1" />
+  </input>
+  
+  <participantPropertySource id="gender_source">
+      <property>gender</property>
+  </participantPropertySource>  
+  <input id="gender_in">
+    <name>Gender</name>
+    <description>Participant Gender</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="gender_source" />
+    <instrument reference="spi1" />
+  </input>
+  
+  <input id="body_type_in">
+    <name>BodyType</name>
+    <description>Body type: standard or athletic</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="bioimp1" />
+  </input>
+  
+  <input id="clothes_weight">
+    <name>ClothesWeight</name>
+    <description>Clothes weight</description>
+    <dataType>DECIMAL</dataType>
     <measurementUnit>kg</measurementUnit>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="bioimp1" />
+  </input>
+  
+  
+  <output id="body_type">
+    <name>BodyType</name>
+    <description>Body type</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
   </output>
-
+  <output id="gender">
+    <name>Gender</name>
+    <description>Output gender</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp1" />
+  </output>
+  <output id="age">
+    <name>Age</name>
+    <description>Output age</description>
+    <measurementUnit>years</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp1" />
+  </output>
+  <output id="height">
+    <name>Height</name>
+    <description>Output height</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp1" />
+  </output>
+  <output id="weight">
+    <name>Weight</name>
+    <description>Measured weight</description>
+    <measurementUnit>kg</measurementUnit>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp1" />
+  </output>
+  <output id="impedance">
+    <name>Impedance</name>
+    <description>Measured body impedance</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>ohm</measurementUnit>
+    <instrument reference="bioimp1" />
+  </output>
+  <output id="bmi">
+    <name>BMI</name>
+    <description>Body mass index calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp1" />
+  </output>
+  <output id="bmr">
+    <name>BMR</name>
+    <description>Basal metabolic rate calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kJ</measurementUnit>
+    <instrument reference="bioimp1" />
+  </output>
+  <output id="fat_percentage">
+    <name>FatPercentage</name>
+    <description>Fat percentage calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>%</measurementUnit>
+    <instrument reference="bioimp1" />
+  </output>
+  <output id="fat_mass">
+    <name>FatMass</name>
+    <description>Fat mass calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp1" />
+  </output>
+  <output id="ffm">
+    <name>FatFreeMass</name>
+    <description>Fat free mass calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp1" />
+  </output>
+  <output id="tbw">
+    <name>TotalBodyWater</name>
+    <description>Total Body Water calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp1" />
+  </output>
+  
 </linked-list>
