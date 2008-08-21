@@ -36,7 +36,7 @@ public class InstrumentSelectionStep extends WizardStepPanel {
   }
 
   @Override
-  public void onStepOut(WizardForm form, AjaxRequestTarget target) {
+  public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     InstrumentWizardForm instrumentForm = (InstrumentWizardForm) form;
     Instrument instrument = selector.getInstrument();
 

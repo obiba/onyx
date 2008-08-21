@@ -63,7 +63,7 @@ public class OutputParametersStep extends WizardStepPanel {
   }
 
   @Override
-  public void onStepOut(WizardForm form, AjaxRequestTarget target) {
+  public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     activeInstrumentRunService.computeOutputParameters();    
   }
 }

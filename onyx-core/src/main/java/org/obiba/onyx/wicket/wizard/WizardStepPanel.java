@@ -52,7 +52,16 @@ public abstract class WizardStepPanel extends Panel {
    * @param form
    * @param target
    */
-  public void onStepOut(WizardForm form, AjaxRequestTarget target) {
+  public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
+    
+  }
+  
+  /**
+   * Called when "previous" button submit the current step form.
+   * @param form
+   * @param target
+   */
+  public void onStepOutPrevious(WizardForm form, AjaxRequestTarget target) {
     
   }
   

@@ -23,6 +23,8 @@ public class InstructionsStep extends WizardStepPanel {
 
   private boolean launched = false;
 
+  boolean isInteractive = false;
+
   public InstructionsStep(String id) {
     super(id);
     setOutputMarkupId(true);
@@ -33,11 +35,12 @@ public class InstructionsStep extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    if(!instrumentService.isInteractiveInstrument(((InstrumentWizardForm) form).getInstrument())) {
+    isInteractive = instrumentService.isInteractiveInstrument(((InstrumentWizardForm) form).getInstrument());
+    if(!isInteractive) {
       launched = true;
     }
 
-    form.getPreviousLink().setEnabled(true);
+    form.getPreviousLink().setEnabled(isInteractive ? !launched : true);
     form.getNextLink().setEnabled(true);
     form.getFinishLink().setEnabled(false);
     if(target != null) {
@@ -61,7 +64,16 @@ public class InstructionsStep extends WizardStepPanel {
   }
 
   @Override
-  public void onStepOut(WizardForm form, AjaxRequestTarget target) {
+  public void onStepOutPrevious(WizardForm form, AjaxRequestTarget target) {
+    if(isInteractive && launched) {
+      setPreviousStep(null);
+      form.getPreviousLink().setEnabled(false);
+      target.addComponent(form);
+    }
+  }
+
+  @Override
+  public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     if(launched) {
       WizardStepPanel nextStep = ((InstrumentWizardForm) form).getOutputParametersStep();
       setNextStep(nextStep);
