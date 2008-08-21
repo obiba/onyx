@@ -52,7 +52,7 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
 
   public void addOutputParameterValues(Map<String, Data> values) {
     for(Map.Entry<String, Data> entry : values.entrySet()) {
-      addOutputParameterValue(entry.getKey(), values.get(entry.getValue()));
+      addOutputParameterValue(entry.getKey(), entry.getValue());
     }
   }
 
