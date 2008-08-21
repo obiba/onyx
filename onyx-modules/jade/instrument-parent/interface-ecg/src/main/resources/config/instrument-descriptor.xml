@@ -13,38 +13,6 @@
     <instrumentType>
       <name>ECG</name>
     </instrumentType>
-    <instrumentParameters>
-	  <output reference="time"/>
-	  <output reference="date"/>
-	  <output reference="diagnosis"/>
-	  <output reference="conclusion"/>
-	  <output reference="filterSetting"/>
-	  <output reference="diagnosisVersion"/>
-	  
-	  <output reference="ventricularRate"/>
-	  <output reference="pQInterval"/>
-	  <output reference="pDuration"/>
-	  <output reference="qRsDuration"/>
-	  <output reference="qTInterval"/>
-	  <output reference="qTCInterval"/>
-	  <output reference="rRInterval"/>
-	  <output reference="pPInterval"/>
-	  <output reference="pAxis"/>
-	  <output reference="rAxis"/>
-	  <output reference="tAxis"/>
-	  <output reference="qRSNum"/>
-	  <output reference="pOnset"/>
-	  <output reference="pOffset"/>
-	  <output reference="qOnset"/>
-	  <output reference="qOffset"/>
-	  <output reference="tOffset"/>
-	  <output reference="sokolovLVHIndex"/>
-	  <output reference="qTDispersion"/>
-	  <output reference="qTDispersionBazett"/>	  
-	  
-	  <output reference="xml"/>
-	  <output reference="pdf"/>
-    </instrumentParameters>
   </instrument>
   
   <output id="time">

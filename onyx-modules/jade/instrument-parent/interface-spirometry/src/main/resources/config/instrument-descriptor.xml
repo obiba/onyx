@@ -13,58 +13,6 @@
     <instrumentType>
       <name>SPI</name>
     </instrumentType>
-    <instrumentParameters>
-      <input reference="id"/>
-      <input reference="last_name"/>
-      <input reference="first_name"/>
-      <input reference="birth_date"/>
-      <input reference="gender"/>
-      <input reference="ethnic_group"/>
-      <input reference="height"/>
-      <input reference="weight"/>
-      
-      <output reference="fvc"/>
-      <output reference="fev1"/>
-      <output reference="fev1_fvc"/>
-      <output reference="fev6"/>
-      <output reference="fev1_fev6"/>
-      <output reference="pef"/>
-      <output reference="fef2575"/>
-      <output reference="fev3"/>
-      <output reference="fev3_fvc"/>
-      <output reference="ela"/>
-      <output reference="fet"/>
-      <output reference="fef25"/>
-      <output reference="fef50"/>
-      <output reference="fef75"/>
-      <output reference="evol"/>
-      <output reference="fivc"/>
-      <output reference="fiv1"/>
-      <output reference="fiv1_fivc"/>
-      <output reference="pif"/>
-      
-      <output reference="fvc_pred"/>
-      <output reference="fev1_pred"/>
-      <output reference="fev1_fvc_pred"/>
-      <output reference="fev6_pred"/>
-      <output reference="fev1_fev6_pred"/>
-      <output reference="pef_pred"/>
-      <output reference="fef2575_pred"/>
-      <output reference="fev3_pred"/>
-      <output reference="fev3_fvc_pred"/>
-      <output reference="ela_pred"/>
-      <output reference="fet_pred"/>
-      <output reference="fef25_pred"/>
-      <output reference="fef50_pred"/>
-      <output reference="fef75_pred"/>
-      <output reference="evol_pred"/>
-      <output reference="fivc_pred"/>
-      <output reference="fiv1_pred"/>
-      <output reference="fiv1_fivc_pred"/>
-      <output reference="pif_pred"/>
-      
-      <output reference="fvc_image"/>
-    </instrumentParameters>
   </instrument>
   
   <participantPropertySource id="id_source">
