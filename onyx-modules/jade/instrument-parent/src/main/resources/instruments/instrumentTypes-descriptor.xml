@@ -52,5 +52,10 @@
     <name>ECG</name>
     <description>Electrocardiogram measurement</description>
   </instrumentType>
+  
+  <instrumentType id="bon">
+    <name>BON</name>
+    <description>Bone Density measurement</description>
+  </instrumentType>  
 
 </linked-list>

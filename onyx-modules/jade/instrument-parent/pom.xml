@@ -22,6 +22,7 @@
     <module>interface-bioimpedance</module>
     <module>interface-ecg</module>
     <module>interface-spirometry</module>
+    <module>interface-bonedensity</module>    
   </modules>
 
   <dependencies>
