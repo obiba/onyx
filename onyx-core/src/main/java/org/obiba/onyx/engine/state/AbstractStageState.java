@@ -14,7 +14,7 @@ import org.obiba.onyx.engine.Stage;
  * @author Yannick Marcon
  * 
  */
-public abstract class AbstractStageState implements IStageExecution {
+public abstract class AbstractStageState implements IStageExecution, ITransitionListener {
 
   private ITransitionEventSink eventSink;
 
@@ -23,6 +23,10 @@ public abstract class AbstractStageState implements IStageExecution {
   protected List<ActionDefinition> actionDefinitions = new ArrayList<ActionDefinition>();
   
   protected List<ActionDefinition> systemActionDefinitions = new ArrayList<ActionDefinition>();
+  
+  private List<IStageExecution> dependsOnStageExecutions = new ArrayList<IStageExecution>();
+
+  private List<IStageExecution> completedStageExecutions = new ArrayList<IStageExecution>();
 
   public void setStage(Stage stage) {
     this.stage = stage;
@@ -30,6 +34,41 @@ public abstract class AbstractStageState implements IStageExecution {
 
   public Stage getStage() {
     return stage;
+  }
+  
+  public void addDependsOnStageExecution(IStageExecution execution) {
+    this.dependsOnStageExecutions.add(execution);
+  }
+  
+  public void onTransition(IStageExecution execution, TransitionEvent event) {
+    if(dependsOnStageExecutions.contains(execution)) {
+
+      if(completedStageExecutions.contains(execution)) {
+        completedStageExecutions.remove(execution);
+      }
+
+      if(execution.isCompleted()) {
+        completedStageExecutions.add(execution);
+      }
+
+      onDependencyTransition(); 
+    }
+  }
+  
+  protected void onDependencyTransition() {
+    if(areDependenciesCompleted()) {
+      castEvent(TransitionEvent.VALID);
+    } else {
+      castEvent(TransitionEvent.INVALID);
+    }
+  }
+  
+  protected boolean areDependenciesCompleted() {
+    return (completedStageExecutions.size() == dependsOnStageExecutions.size());
+  }
+  
+  public boolean removeAfterTransition() {
+    return false;
   }
 
   protected void castEvent(TransitionEvent event) {

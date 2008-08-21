@@ -29,7 +29,15 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
   public void stop(Action action) {
     super.execute(action);
     log.info("Jade Stage {} is cancelling", super.getStage().getName());
-    castEvent(TransitionEvent.CANCEL);
+    if(areDependenciesCompleted()) {
+      castEvent(TransitionEvent.CANCEL);
+    } else {
+      castEvent(TransitionEvent.INVALID);
+    }
+  }
+  
+  protected void onDependencyTransition() {
+    // do nothing when skipped
   }
 
   @Override

@@ -9,6 +9,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="jadeOnyxModule" class="org.obiba.onyx.jade.engine.JadeModule"/>
 
+  <bean id="jadeWaitingState" class="org.obiba.onyx.jade.engine.state.JadeWaitingState" scope="prototype">
+  </bean>
+
   <bean id="jadeReadyState" class="org.obiba.onyx.jade.engine.state.JadeReadyState" scope="prototype">
   </bean>
   

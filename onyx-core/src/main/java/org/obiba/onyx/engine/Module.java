@@ -22,7 +22,7 @@ public interface Module {
    * @param stage
    * @return
    */
-  public IStageExecution createStageExecution(Interview interview, Stage stage);
+  public IStageExecution createStageExecution(Interview interview, Stage stage, IStageExecution... dependsOn);
 
   /**
    * Called at module registration.

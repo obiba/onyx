@@ -24,7 +24,11 @@ public class JadeCompletedState extends AbstractStageState implements Initializi
   public void stop(Action action) {
     super.execute(action);
     log.info("Jade Stage {} is cancelling", super.getStage().getName());
-    castEvent(TransitionEvent.CANCEL);
+    if(areDependenciesCompleted()) {
+      castEvent(TransitionEvent.CANCEL);
+    } else {
+      castEvent(TransitionEvent.INVALID);
+    }
   }
 
   @Override

@@ -8,6 +8,16 @@ package org.obiba.onyx.engine.state;
 public class TransitionEvent implements Comparable<TransitionEvent> {
 
   /**
+   * Successfull validation event.
+   */
+  public static final TransitionEvent VALID = new TransitionEvent("valid");
+  
+  /**
+   * Failed validation event.
+   */
+  public static final TransitionEvent INVALID = new TransitionEvent("invalid");
+  
+  /**
    * Default start event (usually from the beginning to the in progress state).
    */
   public static final TransitionEvent START = new TransitionEvent("start");

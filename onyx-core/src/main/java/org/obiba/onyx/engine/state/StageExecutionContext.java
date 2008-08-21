@@ -20,14 +20,14 @@ import org.slf4j.LoggerFactory;
 /**
  * The stage execution context is the entry point of stage state machines. It holds the current state, and performs the
  * {@link TransitionEvent} based state transitions. As a {@link ITransitionSource} it will inform the
- * {@link ITransitionListener} about the transition event. All the method calls defined by {@link IStageExecution} will be forwarded 
- * to the {@link IStageExecution} holding the current state.
+ * {@link ITransitionListener} about the transition event. All the method calls defined by {@link IStageExecution} will
+ * be forwarded to the {@link IStageExecution} holding the current state.
  * 
  * @see State Machine Design Pattern http://dotnet.zcu.cz/NET_2006/Papers_2006/short/B31-full.pdf
  * @author Yannick Marcon
  * 
  */
-public class StageExecutionContext implements IStageExecution, ITransitionEventSink, IMemento, ITransitionSource {
+public class StageExecutionContext implements IStageExecution, ITransitionEventSink, IMemento, ITransitionSource, ITransitionListener {
 
   private static final Logger log = LoggerFactory.getLogger(StageExecutionContext.class);
 
@@ -196,6 +196,20 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
     myMemento.setState(currentState.getClass().getSimpleName());
 
     return myMemento;
+  }
+
+  public void onTransition(IStageExecution execution, TransitionEvent event) {
+    log.info("onTransition(" + event + ") from " + currentState.getClass().getSimpleName());
+    if(currentState instanceof ITransitionListener) {
+      ((ITransitionListener) currentState).onTransition(execution, event);
+    }
+  }
+
+  public boolean removeAfterTransition() {
+    if(currentState instanceof ITransitionListener) {
+      return ((ITransitionListener) currentState).removeAfterTransition();
+    }
+    return false;
   }
 
 }

@@ -1,8 +1,11 @@
 package org.obiba.onyx.core.service.impl;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
@@ -75,7 +78,17 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     if(exec == null) {
 
       Module module = moduleRegistry.getModule(stage.getModule());
-      exec = (StageExecutionContext) module.createStageExecution(getInterview(), stage);
+      if (stage.getDependsOnStages().size()>0) {
+        List<IStageExecution> dependsOnStageList = new ArrayList<IStageExecution>();
+        for (Stage dependsOnStage : stage.getDependsOnStages()) {
+          dependsOnStageList.add(getStageExecution(dependsOnStage));
+        }
+        exec = (StageExecutionContext) module.createStageExecution(getInterview(), stage, dependsOnStageList.toArray(new IStageExecution[dependsOnStageList.size()]));
+      }
+      else {
+        exec = (StageExecutionContext) module.createStageExecution(getInterview(), stage);  
+      }
+      
       contexts.put(stage.getId(), exec);
 
       // try to find it in memory
