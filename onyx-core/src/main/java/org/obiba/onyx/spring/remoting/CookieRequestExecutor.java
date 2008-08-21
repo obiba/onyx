@@ -1,4 +1,4 @@
-package org.obiba.onyx.spring.remote;
+package org.obiba.onyx.spring.remoting;
 
 import java.io.IOException;
 
