@@ -5,8 +5,6 @@ import java.util.Map;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
@@ -20,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareService implements InstrumentExecutionService {
 
   private static final Logger log = LoggerFactory.getLogger(InstrumentExecutionServiceImpl.class);
-  
+
   private ActiveInstrumentRunService activeInstrumentRunService;
 
   public void setActiveInstrumentRunService(ActiveInstrumentRunService activeInstrumentRunService) {
@@ -40,20 +38,15 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
   }
 
   public Map<String, Data> getInputParametersValue(String... parameters) {
-    log.info("getInputParametersValue(" + parameters +")");
+    log.info("getInputParametersValue(" + parameters + ")");
     log.info("instrumentRun=" + getInstrumentRun());
     Map<String, Data> inputParametersValue = new HashMap<String, Data>();
 
-    for(String parameter : parameters) {
-      InstrumentInputParameter inputParameterTemplate = new InstrumentInputParameter();
-      inputParameterTemplate.setName(parameter);
-      InstrumentRunValue inputParameterValueTemplate = new InstrumentRunValue();
-      inputParameterValueTemplate.setInstrumentParameter(getPersistenceManager().matchOne(inputParameterTemplate));
-      inputParameterValueTemplate.setInstrumentRun(getInstrumentRun());
-
-      InstrumentRunValue inputParameterValue = getPersistenceManager().matchOne(inputParameterValueTemplate);
+    for(String parameterName : parameters) {
+      InstrumentRunValue inputParameterValue = activeInstrumentRunService.getInputInstrumentRunValue(parameterName);
       inputParametersValue.put(inputParameterValue.getInstrumentParameter().getName(), inputParameterValue.getData());
     }
+
     return (inputParametersValue);
   }
 
@@ -64,23 +57,10 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
   }
 
   public void addOutputParameterValue(String name, Data value) {
-    log.info("addOutputParameterValue(" + name +", "+ value +")");
+    log.info("addOutputParameterValue(" + name + ", " + value + ")");
     log.info("instrumentRun=" + getInstrumentRun());
-    InstrumentOutputParameter template = new InstrumentOutputParameter();
-    template.setName(name);
-    template.setInstrument(getInstrumentRun().getInstrument());
-    InstrumentOutputParameter instrumentOutputParameter = getPersistenceManager().matchOne(template);
-
-    InstrumentRunValue outputParameterValue = new InstrumentRunValue();
-    outputParameterValue.setInstrumentParameter(instrumentOutputParameter);
-    outputParameterValue.setInstrumentRun(getInstrumentRun());
-
-    if(getPersistenceManager().matchOne(outputParameterValue) != null) {
-      outputParameterValue = getPersistenceManager().matchOne(outputParameterValue);
-    }
-
+    InstrumentRunValue outputParameterValue = activeInstrumentRunService.getOutputInstrumentRunValue(name);
     outputParameterValue.setData(value);
-
     getPersistenceManager().save(outputParameterValue);
   }
 

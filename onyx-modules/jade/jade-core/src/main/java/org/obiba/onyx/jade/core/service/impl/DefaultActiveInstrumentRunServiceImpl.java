@@ -7,6 +7,7 @@ import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameterAlgorithm;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
@@ -144,6 +145,63 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
       }
     }
+  }
+
+  public InstrumentRunValue getOutputInstrumentRunValue(String parameterName) {
+    if(currentRun == null) return null;
+
+    InstrumentOutputParameter instrumentOutputParameter = new InstrumentOutputParameter();
+    instrumentOutputParameter.setName(parameterName);
+    instrumentOutputParameter.setInstrument(currentRun.getInstrument());
+    instrumentOutputParameter = getPersistenceManager().matchOne(instrumentOutputParameter);
+
+    if(instrumentOutputParameter == null) {
+      throw new IllegalArgumentException("No such output parameter name for instrument " + currentRun.getInstrument().getName() + " :" + parameterName);
+    }
+
+    InstrumentRunValue valueTemplate = new InstrumentRunValue();
+    valueTemplate.setInstrumentParameter(instrumentOutputParameter);
+    valueTemplate.setInstrumentRun(currentRun);
+
+    InstrumentRunValue outputParameterValue = getPersistenceManager().matchOne(valueTemplate);
+
+    if(outputParameterValue == null) {
+      valueTemplate.setCaptureMethod(instrumentOutputParameter.getCaptureMethod());
+      outputParameterValue = getPersistenceManager().save(valueTemplate);
+      // refresh
+      currentRun = getPersistenceManager().get(InstrumentRun.class, currentRun.getId());
+    }
+
+    return outputParameterValue;
+  }
+
+  @Override
+  public InstrumentRunValue getInputInstrumentRunValue(String parameterName) {
+    if(currentRun == null) return null;
+    
+    InstrumentInputParameter instrumentInputParameter = new InstrumentInputParameter();
+    instrumentInputParameter.setName(parameterName);
+    instrumentInputParameter.setInstrument(currentRun.getInstrument());
+    instrumentInputParameter = getPersistenceManager().matchOne(instrumentInputParameter);
+    
+    if (instrumentInputParameter == null) {
+      throw new IllegalArgumentException("No such input parameter name for instrument " + currentRun.getInstrument().getName() + " :" + parameterName);
+    }
+    
+    InstrumentRunValue valueTemplate = new InstrumentRunValue();
+    valueTemplate.setInstrumentParameter(instrumentInputParameter);
+    valueTemplate.setInstrumentRun(currentRun);
+
+    InstrumentRunValue inputParameterValue = getPersistenceManager().matchOne(valueTemplate);
+    
+    if(inputParameterValue == null) {
+      valueTemplate.setCaptureMethod(instrumentInputParameter.getCaptureMethod());
+      inputParameterValue = getPersistenceManager().save(valueTemplate);
+      // refresh
+      currentRun = getPersistenceManager().get(InstrumentRun.class, currentRun.getId());
+    }
+    
+    return inputParameterValue;
   }
 
 }

@@ -5,6 +5,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,6 +57,16 @@ public class MockActiveInstrumentRunServiceImpl extends PersistenceManagerAwareS
   }
 
   public void validate() {
+  }
+
+  public InstrumentRunValue getOutputInstrumentRunValue(String parameterName) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  
+  public InstrumentRunValue getInputInstrumentRunValue(String parameterName) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }
