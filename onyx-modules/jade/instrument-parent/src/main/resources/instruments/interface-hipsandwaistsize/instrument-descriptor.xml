@@ -16,7 +16,7 @@
 
   <output id="waist_size1">
     <name>Waist Size 1</name>
-    <description>First waist size measurement</description>
+    <description>First Waist Size Measurement</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -24,7 +24,7 @@
   </output>
   <output id="waist_size2">
     <name>Waist Size 2</name>
-    <description>Second waist size measurement</description>
+    <description>Second Waist Size Measurement</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -32,7 +32,7 @@
   </output>
   <computedOutput>
     <name>Waist Size</name>
-    <description>Waist size measurement</description>
+    <description>Average Waist Size Measurement</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>INTEGER</dataType>
     <instrument reference="hwc1" />
@@ -46,7 +46,7 @@
 
   <output id="hips_size1">
     <name>Hips Size 1</name>
-    <description>First hips size measurement</description>
+    <description>First Hips Size Measurement</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -54,7 +54,7 @@
   </output>
   <output id="hips_size2">
     <name>Hips Size 2</name>
-    <description>Second hips size measurement</description>
+    <description>Second Hips Size Measurement</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -62,7 +62,7 @@
   </output>
   <computedOutput>
     <name>Hips Size</name>
-    <description>Hips size measurement</description>
+    <description>Average Hips Size Measurement</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>INTEGER</dataType>
     <instrument reference="hwc1" />
