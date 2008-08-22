@@ -8,6 +8,7 @@ import org.obiba.onyx.util.data.DataType;
 
 public final class UnitParameterValueConverter implements InstrumentParameterValueConverter {
 
+  @SuppressWarnings("unchecked")
   public void convert(InstrumentRunValue targetInstrumentRunValue, InstrumentRunValue sourceInstrumentRunValue) {
 
     Unit sourceUnit = Unit.valueOf(sourceInstrumentRunValue.getInstrumentParameter().getMeasurementUnit());

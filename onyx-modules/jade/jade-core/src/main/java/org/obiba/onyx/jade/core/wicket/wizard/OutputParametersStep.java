@@ -1,23 +1,12 @@
 package org.obiba.onyx.jade.core.wicket.wizard;
 
-import java.io.Serializable;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameterAlgorithm;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.instrument.InstrumentOutputParameterPanel;
-import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
@@ -26,12 +15,7 @@ public class OutputParametersStep extends WizardStepPanel {
   private static final long serialVersionUID = 6617334507631332206L;
 
   @SpringBean
-  private EntityQueryService queryService;
-
-  @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
-  
-  
 
   public OutputParametersStep(String id) {
     super(id);
@@ -46,7 +30,7 @@ public class OutputParametersStep extends WizardStepPanel {
     WizardStepPanel nextStep = ((InstrumentWizardForm) form).getValidationStep();
     setNextStep(nextStep);
     nextStep.setPreviousStep(this);
-    
+
     form.getNextLink().setEnabled(true);
     form.getPreviousLink().setEnabled(true);
     form.getFinishLink().setEnabled(false);
@@ -64,6 +48,6 @@ public class OutputParametersStep extends WizardStepPanel {
 
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
-    activeInstrumentRunService.computeOutputParameters();    
+    activeInstrumentRunService.computeOutputParameters();
   }
 }
