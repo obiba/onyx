@@ -14,7 +14,6 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
-import org.obiba.onyx.util.data.Data;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
