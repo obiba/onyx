@@ -41,7 +41,7 @@
   </input>
   
   <fixedSource id="body_type_source">
-      <value>Standard</value>
+      <value>STANDARD</value>
   </fixedSource>
   <input id="body_type_in">
     <name>BodyType</name>
