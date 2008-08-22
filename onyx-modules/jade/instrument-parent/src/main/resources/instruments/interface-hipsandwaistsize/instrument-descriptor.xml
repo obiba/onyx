@@ -37,7 +37,7 @@
     <dataType>INTEGER</dataType>
     <instrument reference="hwc1" />
     <algorithm>AVERAGE</algorithm>
-    <captureMethod>AUTOMATIC</captureMethod>
+    <captureMethod>COMPUTED</captureMethod>
     <outputs>
       <output reference="waist_size1" />
       <output reference="waist_size2" />
@@ -67,7 +67,7 @@
     <dataType>INTEGER</dataType>
     <instrument reference="hwc1" />
     <algorithm>AVERAGE</algorithm>
-    <captureMethod>AUTOMATIC</captureMethod>
+    <captureMethod>COMPUTED</captureMethod>
     <outputs>
       <output reference="hips_size1" />
       <output reference="hips_size2" />
