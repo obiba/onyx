@@ -64,5 +64,12 @@
     <module>jade</module>
     <displayOrder>6</displayOrder>
   </stage>
+  
+  <stage id="bon">
+    <name>BON</name>
+    <description>Bone Density measurement</description>
+    <module>jade</module>
+    <displayOrder>7</displayOrder>
+  </stage>  
     
 </linked-list>

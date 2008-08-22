@@ -40,7 +40,7 @@
     <property>barcode</property>
   </participantPropertySource>
   <input id="id">
-    <name>ID</name>
+    <name>id</name>
     <description>Participant Barcode</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -52,7 +52,7 @@
       <property>lastName</property>
   </participantPropertySource>
   <input id="last_name">
-    <name>LastName</name>
+    <name>last_name</name>
     <description>Participant Last Name</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -64,7 +64,7 @@
       <property>firstName</property>
   </participantPropertySource> 
   <input id="first_name">
-    <name>FirstName</name>
+    <name>first_name</name>
     <description>Participant First Name</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -76,7 +76,7 @@
       <property>birthDate</property>
   </participantPropertySource>
   <input id="birth_date">
-    <name>BirthDate</name>
+    <name>birth_date</name>
     <description>Participant Date of Birth</description>
     <dataType>DATE</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -88,7 +88,7 @@
       <property>gender</property>
   </participantPropertySource>  
   <input id="gender">
-    <name>Gender</name>
+    <name>gender</name>
     <description>Participant Gender</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -96,18 +96,28 @@
     <instrument reference="bone1" />
   </input>
     
-  <operatorSource id="foot_scanned"/> 
+  <operatorSource id="foot_scanned_source"/> 
   <input id="foot_scanned">
-    <name>FootScanned</name>
+    <name>foot_scanned</name>
     <description>Foot Scanned</description>
     <dataType>TEXT</dataType>
     <captureMethod>MANUAL</captureMethod>
-    <inputSource reference="foot_scanned" />
+    <inputSource reference="foot_scanned_source" />
     <instrument reference="bone1" />
-  </input>    
+  </input> 
+
+  <operatorSource id="serialnumber_source"/> 
+  <input id="serialnumber">
+    <name>serialnumber</name>
+    <description>Achilles Express Serial No</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <inputSource reference="serialnumber_source" />
+    <instrument reference="bone1" />
+  </input>  
 
   <output id="assessment">
-    <name>assessment</name>
+    <name>Assessment</name>
     <description>Assessment</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -115,7 +125,7 @@
     <instrument reference="bone1" />
   </output> 
   <output id="fxrisk">
-    <name>fxrisk</name>
+    <name>Fracture Risk</name>
     <description>Fracture Risk</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -123,7 +133,7 @@
     <instrument reference="bone1" />
   </output>  
   <output id="total">
-    <name>total</name>
+    <name>Stiffness Index Result</name>
     <description>Stiffness Index Result</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -131,7 +141,7 @@
     <instrument reference="bone1" />
   </output>  
   <output id="tscore">
-    <name>tscore</name>
+    <name>T-Score</name>
     <description>T-Score</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -139,7 +149,7 @@
     <instrument reference="bone1" />
   </output>   
   <output id="zscore">
-    <name>zscore</name>
+    <name>Z-Score</name>
     <description>Z-Score</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -147,7 +157,7 @@
     <instrument reference="bone1" />
   </output> 
   <output id="percentnormal">
-    <name>percentnormal</name>
+    <name>% Young Adult</name>
     <description>% Young Adult</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -155,7 +165,7 @@
     <instrument reference="bone1" />
   </output> 
   <output id="agematched">
-    <name>agematched</name>
+    <name>% Age Matched</name>
     <description>% Age Matched</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -163,7 +173,7 @@
     <instrument reference="bone1" />
   </output>     
   <output id="achillesbitmap">
-    <name>achillesbitmap</name>
+    <name>Stiffness Index graph</name>
     <description>Stiffness Index graph</description>
     <dataType>DATA</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -171,7 +181,7 @@
     <instrument reference="bone1" />
   </output>      
   <output id="stiffnessindex">
-    <name>stiffnessindex</name>
+    <name>Stiffness Index</name>
     <description>Stiffness Index</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -179,7 +189,7 @@
     <instrument reference="bone1" />
   </output>        
   <output id="achillesbitmap2">
-    <name>achillesbitmap2</name>
+    <name>Ultrasound Graphic</name>
     <description>Ultrasound Graphic</description>
     <dataType>DATA</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -187,7 +197,7 @@
     <instrument reference="bone1" />
   </output> 
   <output id="sos">
-    <name>sos</name>
+    <name>Speed of Ultrasound</name>
     <description>Speed of Ultrasound</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -195,23 +205,23 @@
     <instrument reference="bone1" />
   </output>  
   <output id="bua">
-    <name>bua</name>
+    <name>Broadband Ultrasound Attenuation</name>
     <description>Broadband Ultrasound Attenuation</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
     <instrument reference="bone1" />
   </output>    
-  <output id="bua">
-    <name>bua</name>
-    <description>Broadband Ultrasound Attenuation</description>
-    <dataType>DECIMAL</dataType>
+  <output id="foot_scanned">
+    <name>Foot Scanned</name>
+    <description>Foot Scanned</description>
+    <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
     <instrument reference="bone1" />
-  </output> 
+  </output>    
   <output id="appversion">
-    <name>appversion</name>
+    <name>Achilles Software Version</name>
     <description>Achilles Software Version</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -219,7 +229,7 @@
     <instrument reference="bone1" />
   </output>      
   <output id="roi_x">
-    <name>roi_x</name>
+    <name>Region of Intersection X coordinate</name>
     <description>Region of Intersection X coordinate</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -227,7 +237,7 @@
     <instrument reference="bone1" />
   </output>
   <output id="roi_y">
-    <name>roi_y</name>
+    <name>Region of Intersection Y coordinate</name>
     <description>Region of Intersection Y coordinate</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -235,20 +245,12 @@
     <instrument reference="bone1" />
   </output> 
   <output id="roi_z">
-    <name>roi_z</name>
+    <name>Region of Intersection Z coordinate</name>
     <description>Region of Intersection Z coordinate</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
     <instrument reference="bone1" />
-  </output>   
-  <output id="serialnumber">
-    <name>serialnumber</name>
-    <description>Serial Number</description>
-    <dataType>TEXT</dataType>
-    <captureMethod>AUTOMATIC</captureMethod>
-    <measurementUnit></measurementUnit>
-    <instrument reference="bone1" />
-  </output>      
+  </output>         
    
 </linked-list>
