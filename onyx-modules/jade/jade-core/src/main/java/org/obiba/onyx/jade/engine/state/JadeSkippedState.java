@@ -6,6 +6,7 @@ package org.obiba.onyx.jade.engine.state;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.state.AbstractStageState;
+import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,7 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
     }
   }
   
-  protected void onDependencyTransition() {
+  protected void onDependencyTransition(IStageExecution execution, TransitionEvent event) {
     // do nothing when skipped
   }
 

@@ -48,4 +48,8 @@ public class JadeReadyState extends AbstractStageState implements InitializingBe
     castEvent(TransitionEvent.SKIP);
   }
 
+  @Override
+  public String getMessage() {
+    return "Ready";
+  }
 }

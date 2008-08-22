@@ -1,12 +1,11 @@
-/**
- * 
- */
 package org.obiba.onyx.jade.engine.state;
 
+import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.ITransitionListener;
+import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunRefusalReason;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +28,18 @@ public class JadeWaitingState extends AbstractStageState implements Initializing
     }
     addAction(def);
     addAction(ActionDefinition.COMMENT_ACTION);
+  }
+
+  @Override
+  public void skip(Action action) {
+    super.skip(action);
+    log.info("Jade Stage {} is skipping", super.getStage().getName());
+    castEvent(TransitionEvent.SKIP);
+  }
+
+  @Override
+  public String getMessage() {
+    return "Waiting";
   }
 
 }

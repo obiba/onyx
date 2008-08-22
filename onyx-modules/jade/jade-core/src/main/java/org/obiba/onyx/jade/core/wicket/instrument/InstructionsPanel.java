@@ -103,7 +103,7 @@ public abstract class InstructionsPanel extends Panel {
       protected void populateItem(Item item) {
         InstrumentRunValue runValue = (InstrumentRunValue) item.getModelObject();
         InstrumentParameter param = runValue.getInstrumentParameter();
-        ValueMap map = new ValueMap("name=" + param.getName() + ",value=");
+        ValueMap map = new ValueMap("name=" + param.getDescription() + ",value=");
         if(runValue != null && runValue.getData() != null && runValue.getData().getValue() != null) {
           map.put("value", runValue.getData().getValue());
         }

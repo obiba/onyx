@@ -116,7 +116,7 @@ public class StageSelectionPanel extends Panel {
 
       });
 
-      columns.add(new AbstractColumn(new Model("")) {
+      columns.add(new AbstractColumn(new Model("Actions")) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Stage stage = (Stage) rowModel.getObject();
