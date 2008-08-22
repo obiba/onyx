@@ -156,10 +156,9 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     portOwnerName = "TANITA Body Composition Analyzer";
     
     // Test string
-    /*
-     * setTanitaData( parseTanitaData( "0,2,185,110.6,431,28.4,31.4,79.2,58.0,27,32.3,9771" ) ); saveDataBtn.setEnabled(
-     * true );
-     */
+    /*setTanitaData(parseTanitaData("0,2,185,110.6,431,28.4,31.4,79.2,58.0,27,32.3,9771"));
+    saveDataBtn.setEnabled(true);*/
+     
 
   }
   
@@ -344,16 +343,16 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
     String wBodyTypeCode = pOutputData[0];
     if(wBodyTypeCode.endsWith("0")) {
-      bodyTypeTxt.setText("Standard");
+      bodyTypeTxt.setText("STANDARD");
     } else if(wBodyTypeCode.endsWith("2")) {
-      bodyTypeTxt.setText("Athlétique");
+      bodyTypeTxt.setText("ATHLETIC");
     }
 
     String wGender = pOutputData[1];
     if(wGender.equals("1")) {
-      genderTxt.setText("Homme");
+      genderTxt.setText("MALE");
     } else if(wGender.equals("2")) {
-      genderTxt.setText("Femme");
+      genderTxt.setText("FEMALE");
     }
 
     heightTxt.setText(pOutputData[2]);
@@ -597,24 +596,25 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
   private void sendOutputToServer() {
 
-    Map<String, Data> wOutput = new HashMap<String, Data>();
-    wOutput.put("weight", getDecimalValue(weightTxt));
-    wOutput.put("impedance", getIntegerValue(impedanceTxt));
-    wOutput.put("bmi", getDecimalValue(bmiTxt));
-    wOutput.put("bmr", getIntegerValue(bmrTxt));
-    wOutput.put("fatFreeMass", getDecimalValue(ffmTxt));
-    wOutput.put("fatMass", getDecimalValue(fatMassTxt));
-    wOutput.put("totalBodyWater", getDecimalValue(tbwTxt));
-    wOutput.put("fatPct", getDecimalValue(fatPctTxt));
-    wOutput.put("gender", new Data(DataType.TEXT, genderTxt.getText().equals("Homme") ? "MALE" : "FEMALE )"));
-    wOutput.put("height", getIntegerValue(heightTxt));
-    wOutput.put("age", getIntegerValue(ageTxt));
-    instrumentExecutionService.addOutputParameterValues(wOutput);
+    Map<String, Data> output = new HashMap<String, Data>();
+    output.put("BodyType", new Data(DataType.TEXT, bodyTypeTxt.getText()));
+    output.put("Weight", getDecimalValue(weightTxt));
+    output.put("Impedance", getIntegerValue(impedanceTxt));
+    output.put("BMI", getDecimalValue(bmiTxt));
+    output.put("BMR", getIntegerValue(bmrTxt));
+    output.put("FatFreeMass", getDecimalValue(ffmTxt));
+    output.put("FatMass", getDecimalValue(fatMassTxt));
+    output.put("TotalBodyWater", getDecimalValue(tbwTxt));
+    output.put("FatPercentage", getDecimalValue(fatPctTxt));
+    output.put("Gender", new Data(DataType.TEXT, genderTxt.getText().equals("Homme") ? "MALE" : "FEMALE"));
+    output.put("Height", getIntegerValue(heightTxt));
+    output.put("Age", getIntegerValue(ageTxt));
+    instrumentExecutionService.addOutputParameterValues(output);
     exitUI();
   }
 
   private Data getIntegerValue(JTextField f) {
-    return new Data(DataType.INTEGER, new Integer(f.getText().trim()));
+    return new Data(DataType.INTEGER, new Long(f.getText().trim()));
   }
 
   private Data getDecimalValue(JTextField f) {

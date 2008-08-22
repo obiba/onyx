@@ -56,27 +56,27 @@
   </input>
   
   <fixedSource id="body_type_source">
-    <value>Standard</value>
-  </fixedSource>
+      <value>Standard</value>
+  </fixedSource>   
   <input id="body_type_in">
     <name>BodyType</name>
     <description>Body type</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
-    <inputSource reference="body_type_source" />
+    <inputSource reference="body_type_source" />    
     <instrument reference="bioimp1" />
   </input>
   
   <fixedSource id="clothes_weight_source">
-    <value>1</value>
-  </fixedSource>
+      <value>1</value>
+  </fixedSource>   
   <input id="clothes_weight">
     <name>ClothesWeight</name>
     <description>Clothes weight</description>
     <dataType>DECIMAL</dataType>
     <measurementUnit>kg</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
-    <inputSource reference="clothes_weight_source" />
+    <inputSource reference="clothes_weight_source" />      
     <instrument reference="bioimp1" />
   </input>
   
@@ -84,21 +84,20 @@
   <output id="body_type">
     <name>BodyType</name>
     <description>Body type</description>
-    <dataType>INTEGER</dataType>
+    <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
   </output>
   <output id="gender">
     <name>Gender</name>
     <description>Output gender</description>
-    <dataType>INTEGER</dataType>
+    <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
   </output>
   <output id="age">
     <name>Age</name>
     <description>Output age</description>
-    <measurementUnit>years</measurementUnit>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
@@ -119,14 +118,6 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
   </output>
-  <output id="impedance">
-    <name>Impedance</name>
-    <description>Measured body impedance</description>
-    <dataType>INTEGER</dataType>
-    <captureMethod>AUTOMATIC</captureMethod>
-    <measurementUnit>ohm</measurementUnit>
-    <instrument reference="bioimp1" />
-  </output>
   <output id="bmi">
     <name>BMI</name>
     <description>Body mass index calculated</description>
@@ -137,11 +128,19 @@
   <output id="bmr">
     <name>BMR</name>
     <description>Basal metabolic rate calculated</description>
-    <dataType>DECIMAL</dataType>
+    <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>kJ</measurementUnit>
     <instrument reference="bioimp1" />
   </output>
+  <output id="impedance">
+    <name>Impedance</name>
+    <description>Measured body impedance</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>ohm</measurementUnit>
+    <instrument reference="bioimp1" />
+  </output>  
   <output id="fat_percentage">
     <name>FatPercentage</name>
     <description>Fat percentage calculated</description>
