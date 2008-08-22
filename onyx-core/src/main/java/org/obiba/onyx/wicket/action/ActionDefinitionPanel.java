@@ -61,6 +61,8 @@ public abstract class ActionDefinitionPanel extends Panel {
     form.add(feedback = new FeedbackPanel("feedback"));
     feedback.setOutputMarkupId(true);
 
+    form.add(new Label("operator", activeInterviewService.getInterview().getUser().getName()));
+    
     form.add(new Label("participant", activeInterviewService.getParticipant().getFullName()));
 
     if(definition.isAskPassword()) {
