@@ -37,7 +37,7 @@
     <dataType>INTEGER</dataType>
     <instrument reference="mus1" />
     <algorithm>AVERAGE</algorithm>
-    <captureMethod>AUTOMATIC</captureMethod>
+    <captureMethod>COMPUTED</captureMethod>
     <outputs>
       <output reference="mus1_right_strength1" />
       <output reference="mus1_right_strength2" />
@@ -67,7 +67,7 @@
     <dataType>INTEGER</dataType>
     <instrument reference="mus1" />
     <algorithm>AVERAGE</algorithm>
-    <captureMethod>AUTOMATIC</captureMethod>
+    <captureMethod>COMPUTED</captureMethod>
     <outputs>
       <output reference="mus1_left_strength1" />
       <output reference="mus1_left_strength2" />
