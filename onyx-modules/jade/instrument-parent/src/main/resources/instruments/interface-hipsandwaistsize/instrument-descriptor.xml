@@ -4,7 +4,7 @@
   <!-- Instruments -->
   <!-- HWC1 -->
   <instrument id="hwc1">
-    <name>Tape 1</name>
+    <name>Hips Waist Tape 1</name>
     <vendor>Seca</vendor>
     <model>Seca Measuring Tape</model>
     <barcode>hwc01</barcode>
