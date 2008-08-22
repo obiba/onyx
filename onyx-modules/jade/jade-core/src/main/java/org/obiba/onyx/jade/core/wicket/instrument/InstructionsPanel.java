@@ -24,10 +24,22 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMeth
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
+import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Get the input parameters that are from read-only sources and give the instructions to the operator:
+ * <ul>
+ * <li>General information with instrument launcher (if available)</li>
+ * <li>instructions to enter manually captured input parameters (if needed)</li>
+ * </ul>
+ * @author Yannick Marcon
+ * 
+ */
 public abstract class InstructionsPanel extends Panel {
 
   private static final long serialVersionUID = 8250439838157103589L;
@@ -44,7 +56,11 @@ public abstract class InstructionsPanel extends Panel {
   @SpringBean
   private ActiveInterviewService activeInterviewService;
 
-  private InstrumentRun instrumentRun;
+  @SpringBean
+  private InputDataSourceVisitor inputDataSourceVisitor;
+
+  @SpringBean
+  private InstrumentService instrumentService;
 
   @SuppressWarnings("serial")
   public InstructionsPanel(String id, IModel instrumentModel) {
@@ -54,13 +70,29 @@ public abstract class InstructionsPanel extends Panel {
 
     Instrument instrument = (Instrument) getModelObject();
 
-    instrumentRun = activeInstrumentRunService.getInstrumentRun();
+    InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
     if(instrumentRun == null) {
       instrumentRun = activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument);
     }
+
+    // get the data from not read-only input parameters sources
+    for(InstrumentInputParameter param : instrumentService.getInstrumentInputParameter(instrument, true)) {
+      InstrumentRunValue runValue = new InstrumentRunValue();
+      runValue.setCaptureMethod(param.getCaptureMethod());
+      runValue.setInstrumentParameter(param);
+
+      if(queryService.count(runValue) == 0) {
+        Data data = inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param);
+        runValue.setData(data);
+        instrumentRun.addInstrumentRunValue(runValue);
+      }
+    }
+
     // save instrument input parameters if any for jade-remote-server
     activeInstrumentRunService.validate();
 
+    // general instructions and launcher
+    add(new Label("general", new StringResourceModel("StartMeasurementWithInstrument", this, new Model(new ValueMap("name=" + instrument.getName())))));
     add(new InstrumentLauncherPanel("launcher") {
 
       @Override
@@ -70,15 +102,13 @@ public abstract class InstructionsPanel extends Panel {
 
     });
 
+    // manual input parameters instructions
     final List<InstrumentRunValue> manualInputs = new ArrayList<InstrumentRunValue>();
     for(InstrumentRunValue runValue : instrumentRun.getInstrumentRunValues()) {
       if(runValue.getInstrumentParameter() instanceof InstrumentInputParameter && runValue.getCaptureMethod().equals(InstrumentParameterCaptureMethod.MANUAL)) {
         manualInputs.add(runValue);
       }
     }
-
-    add(new Label("general", new StringResourceModel("StartMeasurementWithInstrument", this, new Model(new ValueMap("name=" + instrument.getName())))));
-
     add(new DataView("item", new IDataProvider() {
 
       @SuppressWarnings("unchecked")
@@ -114,5 +144,9 @@ public abstract class InstructionsPanel extends Panel {
 
   }
 
+  /**
+   * Called when instrument launcher is clicked.
+   */
   public abstract void onInstrumentLaunch();
+
 }

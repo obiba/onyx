@@ -2,7 +2,9 @@ package org.obiba.onyx.jade.core.service;
 
 import java.util.List;
 
+import org.obiba.onyx.jade.core.domain.instrument.InputSource;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 
 public interface InstrumentService {
@@ -64,4 +66,19 @@ public interface InstrumentService {
    */
   public boolean isInteractiveInstrument(Instrument instrument);
   
+  /**
+   * Get the {@link InstrumentInputParameter}s that have a {@link InputSource} read only (or not).
+   * @param instrument
+   * @param readOnlySource
+   * @return
+   */
+  public List<InstrumentInputParameter> getInstrumentInputParameter(Instrument instrument, boolean readOnlySource);
+  
+  /**
+   * Count the {@link InstrumentInputParameter}s that have a {@link InputSource} read only (or not).
+   * @param instrument
+   * @param readOnlySource
+   * @return
+   */
+  public int countInstrumentInputParameter(Instrument instrument, boolean readOnlySource);
 }

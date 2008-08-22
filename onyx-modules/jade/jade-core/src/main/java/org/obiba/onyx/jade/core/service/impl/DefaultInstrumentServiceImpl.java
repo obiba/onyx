@@ -1,9 +1,11 @@
 package org.obiba.onyx.jade.core.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
@@ -63,6 +65,24 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     template.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
 
     return getPersistenceManager().count(template) > 0;
+  }
+
+  public int countInstrumentInputParameter(Instrument instrument, boolean readOnlySource) {
+    return getInstrumentInputParameter(instrument, readOnlySource).size();
+  }
+
+  public List<InstrumentInputParameter> getInstrumentInputParameter(Instrument instrument, boolean readOnlySource) {
+    List<InstrumentInputParameter> list = new ArrayList<InstrumentInputParameter>();
+    InstrumentInputParameter template = new InstrumentInputParameter();
+    template.setInstrument(instrument);
+    
+    for (InstrumentInputParameter param : getPersistenceManager().match(template)) {
+      if (param.getInputSource() != null && param.getInputSource().isReadOnly() == readOnlySource) {
+        list.add(param);
+      }
+    }
+    
+    return list;
   }
 
 }

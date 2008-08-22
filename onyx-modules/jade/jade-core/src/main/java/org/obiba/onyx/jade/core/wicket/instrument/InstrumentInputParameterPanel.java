@@ -1,6 +1,5 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -11,18 +10,21 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
-import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
-import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
-import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Get the input parameters that requires operator provisionning.
+ * @author Yannick Marcon
+ *
+ */
 public class InstrumentInputParameterPanel extends Panel {
 
   private static final long serialVersionUID = 3008363510160516288L;
@@ -34,10 +36,10 @@ public class InstrumentInputParameterPanel extends Panel {
   private EntityQueryService queryService;
 
   @SpringBean
-  private ActiveInterviewService activeInterviewService;
+  private InstrumentService instrumentService;
 
   @SpringBean
-  private InputDataSourceVisitor inputDataSourceVisitor;
+  private ActiveInterviewService activeInterviewService;
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
@@ -50,38 +52,24 @@ public class InstrumentInputParameterPanel extends Panel {
     setOutputMarkupId(true);
 
     Instrument instrument = (Instrument) getModelObject();
-    InstrumentInputParameter template = new InstrumentInputParameter();
-    template.setInstrument(instrument);
 
     instrumentRun = activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument);
 
     KeyValueDataPanel inputs = new KeyValueDataPanel("inputs");
-    for(InstrumentInputParameter param : queryService.match(template)) {
+    for(InstrumentInputParameter param : instrumentService.getInstrumentInputParameter(instrument, false)) {
       Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
-      Component input = null;
       InstrumentRunValue runValue = new InstrumentRunValue();
       runValue.setCaptureMethod(param.getCaptureMethod());
       runValue.setInstrumentParameter(param);
       instrumentRun.addInstrumentRunValue(runValue);
 
-      if(param.getInputSource() instanceof OperatorSource) {
-        DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType(), param.getMeasurementUnit());
-        field.setRequired(true);
-        field.setLabel(new Model(param.getName()));
-        input = field;
-      } else {
-        Data data = inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param);
-        runValue.setData(data);
-        // TODO data is not supposed to be null ?
-        String unit = param.getMeasurementUnit();
-        if(unit == null) unit = "";
-        IModel value = (data == null ? new Model(unit) : new Model(data.getValue() + " " + unit));
-        input = new Label(KeyValueDataPanel.getRowValueId(), value);
-      }
-      inputs.addRow(label, input);
+      DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType(), param.getMeasurementUnit());
+      field.setRequired(true);
+      field.setLabel(new Model(param.getName()));
+
+      inputs.addRow(label, field);
     }
     add(inputs);
-
   }
 
 }

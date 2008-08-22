@@ -5,9 +5,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.instrument.InstrumentSelector;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
@@ -21,7 +20,7 @@ public class InstrumentSelectionStep extends WizardStepPanel {
   private static final long serialVersionUID = 4489598868219932761L;
 
   @SpringBean
-  private EntityQueryService queryService;
+  private InstrumentService instrumentService;
 
   private InstrumentSelector selector;
 
@@ -43,9 +42,7 @@ public class InstrumentSelectionStep extends WizardStepPanel {
     if(instrument != null) {
       instrumentForm.setInstrument(instrument);
 
-      InstrumentInputParameter template = new InstrumentInputParameter();
-      template.setInstrument(instrument);
-      if(queryService.count(template) > 0) {
+      if(instrumentService.countInstrumentInputParameter(instrument, false) > 0) {
         setNextStep(instrumentForm.getInputParametersStep());
         instrumentForm.getInputParametersStep().setPreviousStep(InstrumentSelectionStep.this);
       } else {
