@@ -200,8 +200,8 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     // Save the FVC image
     File FVCFile = new File(getMirPath() + getExternalImageName());
     String fileContent = Streams.readString(new FileInputStream(FVCFile), "UTF-8");
-    ByteArrayInputStream FVCInputStream = new ByteArrayInputStream(fileContent.getBytes("UTF-8"));
-    ouputToSend.put("FVCImage", new Data(DataType.DATA, (Serializable) FVCInputStream));
+    byte[] FVCInput = fileContent.getBytes("UTF-8");
+    ouputToSend.put("FVCImage", new Data(DataType.DATA, (Serializable) FVCInput));
 
     instrumentExecutionService.addOutputParameterValues(ouputToSend);
   }

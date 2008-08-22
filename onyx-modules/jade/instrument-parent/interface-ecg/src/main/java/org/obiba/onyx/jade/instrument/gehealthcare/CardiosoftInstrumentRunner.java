@@ -173,13 +173,13 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
       // Save the xml and pdf files
       File xmlFile = new File(getExportPath() + getXmlFileName());
       String fileContent = Streams.readString(new FileInputStream(xmlFile), "UTF-8");
-      ByteArrayInputStream xmlInputStream = new ByteArrayInputStream(fileContent.getBytes("UTF-8"));
-      ouputToSend.put("xmlFile", new Data(DataType.DATA, (Serializable) xmlInputStream));
+      byte[] xmlInput = fileContent.getBytes("UTF-8");
+      ouputToSend.put("xmlFile", new Data(DataType.DATA, (Serializable) xmlInput));
 
       File pdfFile = new File(getExportPath() + getPdfFileName());
       fileContent = Streams.readString(new FileInputStream(pdfFile), "UTF-8");
-      ByteArrayInputStream pdfInputStream = new ByteArrayInputStream(fileContent.getBytes("UTF-8"));
-      ouputToSend.put("pdfFile", new Data(DataType.DATA, (Serializable) pdfInputStream));
+      byte[] pdfInput = fileContent.getBytes("UTF-8");
+      ouputToSend.put("pdfFile", new Data(DataType.DATA, (Serializable) pdfInput));
 
       instrumentExecutionService.addOutputParameterValues(ouputToSend);
 
