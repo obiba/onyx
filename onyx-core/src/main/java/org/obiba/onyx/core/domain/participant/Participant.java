@@ -1,9 +1,12 @@
 package org.obiba.onyx.core.domain.participant;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -120,6 +123,19 @@ public class Participant extends AbstractEntity {
 
   public void setReceptionComment(String receptionComment) {
     this.receptionComment = receptionComment;
+  }
+  
+  public Long getAge() {
+    Calendar todayCal = Calendar.getInstance();
+    Calendar birthCal = Calendar.getInstance();
+    
+    birthCal.setTime((Date) getBirthDate());
+    Long age = todayCal.getTimeInMillis() - birthCal.getTimeInMillis();
+    Double ageDouble = SI.MILLI(SI.SECOND).getConverterTo(NonSI.YEAR).convert(Double.valueOf(age.toString()));
+    ageDouble = Math.floor(ageDouble);
+    age = Math.round(ageDouble);
+    
+    return (age);
   }
 
 }

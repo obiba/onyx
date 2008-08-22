@@ -31,16 +31,16 @@
     <inputSource reference="measured_height" />
   </input>
   
-  <participantPropertySource id="birth_date_source">
-      <property>birthDate</property>
+  <participantPropertySource id="age_source">
+      <property>age</property>
   </participantPropertySource>
-  <input id="birth_date_in">
+  <input id="age_in">
     <name>Age</name>
     <description>Participant Age</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
-    <inputSource reference="birth_date_source" />
-    <instrument reference="spi1" />
+    <inputSource reference="age_source" />
+    <instrument reference="bioimp1" />
   </input>
   
   <participantPropertySource id="gender_source">
@@ -52,23 +52,31 @@
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="gender_source" />
-    <instrument reference="spi1" />
-  </input>
-  
-  <input id="body_type_in">
-    <name>BodyType</name>
-    <description>Body type: standard or athletic</description>
-    <dataType>TEXT</dataType>
-    <captureMethod>MANUAL</captureMethod>
     <instrument reference="bioimp1" />
   </input>
   
+  <fixedSource id="body_type_source">
+    <value>Standard</value>
+  </fixedSource>
+  <input id="body_type_in">
+    <name>BodyType</name>
+    <description>Body type</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="body_type_source" />
+    <instrument reference="bioimp1" />
+  </input>
+  
+  <fixedSource id="clothes_weight_source">
+    <value>1</value>
+  </fixedSource>
   <input id="clothes_weight">
     <name>ClothesWeight</name>
     <description>Clothes weight</description>
     <dataType>DECIMAL</dataType>
     <measurementUnit>kg</measurementUnit>
-    <captureMethod>MANUAL</captureMethod>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="clothes_weight_source" />
     <instrument reference="bioimp1" />
   </input>
   
