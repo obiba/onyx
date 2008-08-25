@@ -1,28 +1,19 @@
 package org.obiba.onyx.jade.instrument.gehealthcare;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.FilenameFilter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
 
 import org.apache.wicket.util.io.Streams;
 import org.obiba.core.util.FileUtil;
-import org.obiba.onyx.core.domain.participant.Gender;
-import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.client.JnlpClient;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;

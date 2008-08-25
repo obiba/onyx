@@ -2,7 +2,6 @@ package org.obiba.onyx.jade.instrument.mir;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -123,8 +122,8 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
       Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue("ID", "LastName", "FirstName", "Gender", "Height", "Weight", "EthnicGroup", "BirthDate");
       BufferedWriter inputFileWriter = new BufferedWriter(new FileWriter(externalAppInputFile));
       inputFileWriter.write("[Identification]\n");
-      for(String keyStr : inputData.keySet()) {
-        inputFileWriter.write(keyStr + "=" + inputData.get(keyStr).getValue().toString() + "\n");
+      for(Map.Entry<String, Data> entry : inputData.entrySet()) {
+        inputFileWriter.write(entry.getKey() + "=" + entry.getValue().getValue().toString() + "\n");
       }
       inputFileWriter.close();
     } catch(Exception ex) {
@@ -147,10 +146,14 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
   private LinkedHashMap<String, Double[]> retrieveDeviceData() throws Exception {
 
     InputStream resultFileStrm = null;
+    InputStreamReader resultReader = null;
+    BufferedReader fileReader = null;
+    
     LinkedHashMap<String, Double[]> outputData = new LinkedHashMap<String, Double[]>();
     try {
       resultFileStrm = new FileInputStream(getMirPath() + getExternalOutputName());
-      BufferedReader fileReader = new BufferedReader(new InputStreamReader(resultFileStrm));
+      resultReader = new InputStreamReader(resultFileStrm);
+      fileReader = new BufferedReader(resultReader);
 
       StringBuffer results = new StringBuffer();
       String line;
@@ -159,6 +162,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
         results.append(line + "\n");
         if(line.indexOf("PIF") == 0) lastParam = true;
       }
+      
       if(lastParam == false) JOptionPane.showMessageDialog(null, "Data is incomplete", "Could not complete process", JOptionPane.ERROR_MESSAGE);
 
       Pattern pattern = Pattern.compile("(.*)\t(.*)\t(.*)\t(.*)\t(.*)");
@@ -174,30 +178,30 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
         outputData.put(description, data);
       }
 
-      try {
-        resultFileStrm.close();
-      } catch(Exception ex) {
-        log.error("*** Error in closing spirometry output data file stream: ", ex);
-      }
-
     } catch(FileNotFoundException fnfEx) {
       log.error("*** Error: spirometry output data file not found: ", fnfEx);
       JOptionPane.showMessageDialog(null, "Error: spirometry output data file not found", "Could not complete process", JOptionPane.ERROR_MESSAGE);
     }
+    
+    finally {
+      resultFileStrm.close();
+      fileReader.close();
+      resultReader.close();
+    }
+    
     return outputData;
   }
 
-  public void SendDataToServer(LinkedHashMap<String, Double[]> results) throws Exception {
+  public void sendDataToServer(LinkedHashMap<String, Double[]> results) throws Exception {
     Map<String, Data> ouputToSend = new HashMap<String, Data>();
 
-    for(String keyStr : results.keySet()) {
-      Double[] valueArray = results.get(keyStr);
-      if(keyStr.indexOf("ELA") == 0) {
-        ouputToSend.put(keyStr, new Data(DataType.INTEGER, Math.round(valueArray[0])));
-        ouputToSend.put(keyStr + "_pred", new Data(DataType.INTEGER, Math.round(valueArray[1])));
+    for(Map.Entry<String, Double[]> entry: results.entrySet()) {
+      if(entry.getKey().indexOf("ELA") == 0) {
+        ouputToSend.put(entry.getKey(), new Data(DataType.INTEGER, Math.round(entry.getValue()[0])));
+        ouputToSend.put(entry.getKey() + "_pred", new Data(DataType.INTEGER, Math.round(entry.getValue()[1])));
       } else {
-        ouputToSend.put(keyStr, new Data(DataType.DECIMAL, valueArray[0]));
-        ouputToSend.put(keyStr + "_pred", new Data(DataType.DECIMAL, valueArray[1]));
+        ouputToSend.put(entry.getKey(), new Data(DataType.DECIMAL, entry.getValue()[0]));
+        ouputToSend.put(entry.getKey() + "_pred", new Data(DataType.DECIMAL, entry.getValue()[1]));
       }
     }
 
@@ -227,7 +231,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     // Get data from external app
     try {
       LinkedHashMap<String, Double[]> results = retrieveDeviceData();
-      SendDataToServer(results);
+      sendDataToServer(results);
     } catch(Exception ex) {
       log.error("*** EXCEPTION SHUTDOWN STEP: ", ex);
     }
