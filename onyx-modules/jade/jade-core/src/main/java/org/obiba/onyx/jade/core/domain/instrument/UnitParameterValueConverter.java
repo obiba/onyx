@@ -6,8 +6,19 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
+/**
+ * Unit converter
+ * @author acarey
+ */
+
 public final class UnitParameterValueConverter implements InstrumentParameterValueConverter {
 
+  /**
+   * Convert the value from a source unit to a target unit
+   * Note: if the value is an age, the method adjusts the value to return the right age
+   * @param targetInstrumentRunValue
+   * @param sourceInstrumentRunValue
+   */
   @SuppressWarnings("unchecked")
   public void convert(InstrumentRunValue targetInstrumentRunValue, InstrumentRunValue sourceInstrumentRunValue) {
 

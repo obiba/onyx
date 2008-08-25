@@ -7,8 +7,18 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
+/**
+ * Data converter from date (DataType.DATE) to duration (DataType.INTEGER)
+ * @author acarey
+ */
+
 public class DateParameterValueConverter implements InstrumentParameterValueConverter{
   
+  /**
+   * Convert a date to a duration in milliseconds 
+   * @param targetInstrumentRunValue
+   * @param sourceInstrumentRunValue
+   */
   public void convert(InstrumentRunValue targetInstrumentRunValue, InstrumentRunValue sourceInstrumentRunValue){
     
     InstrumentParameter sourceInsrumentParameter = sourceInstrumentRunValue.getInstrumentParameter();
