@@ -107,8 +107,8 @@
     <instrumentType>
       <name>BIM</name>
     </instrumentType>
-      <parameterName>Weight</parameterName>
-    </outputParameterSource>
+    <parameterName>Weight</parameterName>
+  </outputParameterSource>
   <input id="weight">
     <name>Weight</name>
     <description>Participant Weight</description>
@@ -194,7 +194,7 @@
   <output id="ela">
     <name>ELA</name>
     <description>Measured ELA</description>
-    <dataType>DECIMAL</dataType>
+    <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>year</measurementUnit>
     <instrument reference="spi1" />
@@ -347,7 +347,7 @@
   <output id="ela_pred">
     <name>ELA_pred</name>
     <description>Predicted ELA</description>
-    <dataType>DECIMAL</dataType>
+    <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>year</measurementUnit>
     <instrument reference="spi1" />

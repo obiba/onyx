@@ -192,8 +192,13 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
 
     for(String keyStr : results.keySet()) {
       Double[] valueArray = results.get(keyStr);
-      ouputToSend.put(keyStr, new Data(DataType.DECIMAL, valueArray[0]));
-      ouputToSend.put(keyStr + "_pred", new Data(DataType.DECIMAL, valueArray[1]));
+      if(keyStr.indexOf("ELA") == 0) {
+        ouputToSend.put(keyStr, new Data(DataType.INTEGER, Math.round(valueArray[0])));
+        ouputToSend.put(keyStr + "_pred", new Data(DataType.INTEGER, Math.round(valueArray[1])));
+      } else {
+        ouputToSend.put(keyStr, new Data(DataType.DECIMAL, valueArray[0]));
+        ouputToSend.put(keyStr + "_pred", new Data(DataType.DECIMAL, valueArray[1]));
+      }
     }
 
     // Save the FVC image
