@@ -162,14 +162,16 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
     try {
       Field[] resultParserFields = resultParserClass.getDeclaredFields();
       for(Field field : resultParserFields) {
-        if(field.getName().equalsIgnoreCase("doc") || field.getName().equalsIgnoreCase("xpath") || field.getName().equalsIgnoreCase("xmldocument")) continue;
+        if(field.getName().equalsIgnoreCase("doc") || field.getName().equalsIgnoreCase("xpath") || field.getName().equalsIgnoreCase("xmldocument"))
+          continue;
         method = resultParserClass.getDeclaredMethod("get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1));
         Object value = method.invoke(resultParser);
+        if (value == null) continue;
         if(value instanceof Long) ouputToSend.put(field.getName(), new Data(DataType.INTEGER, (Serializable) value));
         else
           ouputToSend.put(field.getName(), new Data(DataType.TEXT, (Serializable) value));
       }
-
+      
       // Save the xml and pdf files
       File xmlFile = new File(getExportPath() + getXmlFileName());
       String fileContent = Streams.readString(new FileInputStream(xmlFile), "UTF-8");
@@ -182,7 +184,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
       ouputToSend.put("pdfFile", new Data(DataType.DATA, (Serializable) pdfInput));
 
       instrumentExecutionService.addOutputParameterValues(ouputToSend);
-
+      
     } catch(FileNotFoundException fnfEx) {
       log.error("*** Error: Cardiosoft output data file not found: ", fnfEx);
       JOptionPane.showMessageDialog(null, "Error: Cardiosoft output data file not found", "Could not complete process", JOptionPane.ERROR_MESSAGE);

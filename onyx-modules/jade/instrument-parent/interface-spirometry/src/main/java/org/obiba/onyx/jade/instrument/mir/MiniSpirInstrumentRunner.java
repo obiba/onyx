@@ -121,7 +121,6 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     File externalAppInputFile = new File(getMirPath() + getExternalInputName());
     try {
       Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue("ID", "LastName", "FirstName", "Gender", "Height", "Weight", "EthnicGroup", "BirthDate");
-
       BufferedWriter inputFileWriter = new BufferedWriter(new FileWriter(externalAppInputFile));
       inputFileWriter.write("[Identification]\n");
       for(String keyStr : inputData.keySet()) {

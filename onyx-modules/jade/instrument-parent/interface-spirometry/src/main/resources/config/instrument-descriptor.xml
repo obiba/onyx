@@ -91,7 +91,7 @@
     <instrumentType>
       <name>STA</name>
     </instrumentType>
-      <parameterName>Height</parameterName>
+    <parameterName>Height</parameterName>
   </outputParameterSource>
   <input id="height">
     <name>Height</name>
@@ -184,7 +184,7 @@
     <instrument reference="spi1" />
   </output>  
   <output id="fev3_fvc">
-    <name>FEV3/FVC</name>
+    <name>FEV3_FVC</name>
     <description>Measured FEV3/FVC</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -337,7 +337,7 @@
     <instrument reference="spi1" />
   </output>  
   <output id="fev3_fvc_pred">
-    <name>FEV3/FVC_pred</name>
+    <name>FEV3_FVC_pred</name>
     <description>Predicted FEV3/FVC</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>

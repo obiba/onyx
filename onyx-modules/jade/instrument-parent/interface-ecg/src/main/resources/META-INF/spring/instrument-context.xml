@@ -12,7 +12,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="databasePath" value="C:\\CARDIO\\DATABASE\\"/>
     <property name="exportPath" value="C:\\CARDIO\\Export\\"/>
     <property name="settingsFileName" value="CARDIO.INI"/>
-    <property name="xmlFileName" value="Cartagene.XML"/>
+    <property name="xmlFileName" value="cartagene.xml"/>
     <property name="pdfFileName" value="cartagene.pdf"/>
   </bean>
   
