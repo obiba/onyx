@@ -23,6 +23,11 @@ import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Specified instrument runner for the ECG 
+ * @author acarey
+ */
+
 public class CardiosoftInstrumentRunner implements InstrumentRunner {
 
   private static final Logger log = LoggerFactory.getLogger(JnlpClient.class);
@@ -118,13 +123,18 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
     this.pdfFileName = pdfFileName;
   }
 
+  /**
+   * Replace the instrument configuration file if needed
+   * Delete the result database and files
+   * @throws Exception
+   */
   protected void deleteDeviceData() throws Exception {
     // Overwrite the CardioSoft configuration file
     File backupSettingsFile = new File(getInitPath() + getSettingsFileName());
     File currentSettingsFile = new File(getCardioPath() + getSettingsFileName());
     if(backupSettingsFile.exists() && !(backupSettingsFile.lastModified() == currentSettingsFile.lastModified())) {
       FileUtil.copyFile(backupSettingsFile, currentSettingsFile);
-      FileUtil.copyFile(currentSettingsFile, backupSettingsFile);// to set same lastModified property
+      FileUtil.copyFile(currentSettingsFile, backupSettingsFile); // to set same lastModified property
     }
 
     // Delete the Pervasive database files
@@ -145,6 +155,11 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
     reportFile.delete();
   }
 
+  /**
+   * Place the results and xml and pdf files into a map object to send them to the server for persistence
+   * @param resultParser
+   * @throws Exception
+   */
   public void SendDataToServer(CardiosoftInstrumentResultParser resultParser) throws Exception {
     Map<String, Data> ouputToSend = new HashMap<String, Data>();
 
@@ -184,15 +199,23 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
     }
   }
 
+  /**
+   * Implements parent method initialize from InstrumentRunner
+   * Delete results from previous measurement
+   */
   public void initialize() {
     log.info("*** Initializing Cardiosoft Runner ***");
     try {
-      deleteDeviceData(); // Delete ancient data in instrument specific database
+      deleteDeviceData();
     } catch(Exception ex) {
       log.error("*** EXCEPTION INITIALIZE STEP: ", ex);
     }
   }
 
+  /**
+   * Implements parent method run from InstrumentRunner
+   * Launch the external application, retrieve and send the data  
+   */
   public void run() {
     log.info("*** Running Cardiosoft Runner ***");
     externalAppHelper.launch();
@@ -210,13 +233,16 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
     }
   }
 
+  /**
+   * Implements parent method shutdown from InstrumentRunner
+   * Delete results from current measurement
+   */
   public void shutdown() {
     log.info("*** Shutdown Cardiosoft Runner ***");
     try {
-      deleteDeviceData(); // Delete current data in instrument specific database and files for privacy
+      deleteDeviceData();
     } catch(Exception ex) {
       log.error("*** EXCEPTION INITIALIZE STEP: ", ex);
     }
   }
-
 }

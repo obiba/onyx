@@ -17,6 +17,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+/**
+ * Inspired from class Interface_CaG.EcgCollector by dbujold
+ * Parse ecg xml result file and return a object containing the data
+ * @author acarey
+ */
+
 public class CardiosoftInstrumentResultParser {
 
   // The whole XML document
@@ -79,6 +85,11 @@ public class CardiosoftInstrumentResultParser {
 
   private Document doc;
 
+  /**
+   * Constructor parsing the xml file
+   * @param pFileStream
+   * @throws IOException
+   */
   @SuppressWarnings("deprecation")
   public CardiosoftInstrumentResultParser(InputStream pFileStream) throws IOException {
     try {
@@ -301,17 +312,12 @@ public class CardiosoftInstrumentResultParser {
     tOffset = extractMeasurement("TOffset");
   }
 
-  /*private String extractMeasurementAndUnit(String tagName) throws XPathExpressionException {
-    String measurement = xpath.evaluate("//RestingECGMeasurements/" + tagName + "/text()", doc, XPathConstants.STRING).toString();
-    String measurementUnit = xpath.evaluate("//RestingECGMeasurements/" + tagName + "/attribute::units", doc, XPathConstants.STRING).toString();
-
-    if(measurement.equals("")) {
-      return "None";
-    } else {
-      return measurement + ' ' + measurementUnit;
-    }
-  }*/
-  
+  /**
+   * Extracts data corresponding to the parameter
+   * @param tagName
+   * @return the result as a Long
+   * @throws XPathExpressionException
+   */
   private Long extractMeasurement(String tagName) throws XPathExpressionException {
     String measurement = xpath.evaluate("//RestingECGMeasurements/" + tagName + "/text()", doc, XPathConstants.STRING).toString();
     

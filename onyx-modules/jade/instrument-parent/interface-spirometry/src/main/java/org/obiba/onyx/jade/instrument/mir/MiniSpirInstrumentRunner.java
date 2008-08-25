@@ -28,6 +28,11 @@ import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Specified instrument runner for the Spirometer 
+ * @author acarey
+ */
+
 public class MiniSpirInstrumentRunner implements InstrumentRunner {
 
   private static final Logger log = LoggerFactory.getLogger(JnlpClient.class);
@@ -113,10 +118,11 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     this.externalImageName = externalImageName;
   }
 
+  /**
+   * Retrieve participant data from the database and write them in the spirometer input file
+   * @throws Exception
+   */
   public void initParticipantData() throws Exception {
-    // normally should retrieve latest data from database with current participant
-
-    // Write participant data in spirometer input file
     File externalAppInputFile = new File(getMirPath() + getExternalInputName());
     try {
       Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue("ID", "LastName", "FirstName", "Gender", "Height", "Weight", "EthnicGroup", "BirthDate");
@@ -131,6 +137,10 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     }
   }
 
+  /**
+   * Replace the result database with a backup version
+   * @throws Exception
+   */
   protected void deleteDeviceData() throws Exception {
     File backupDbFile = new File(getInitdbPath() + getExternalDbName());
     File currentDbFile = new File(getMirPath() + getExternalDbName());
@@ -143,6 +153,11 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     }
   }
 
+  /**
+   * Retrieve the data from the result file 
+   * @return a map with the result data
+   * @throws Exception
+   */
   private LinkedHashMap<String, Double[]> retrieveDeviceData() throws Exception {
 
     InputStream resultFileStrm = null;
@@ -191,7 +206,12 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     
     return outputData;
   }
-
+  
+  /**
+   * Send the results to the server for persistence
+   * @param results
+   * @throws Exception
+   */
   public void sendDataToServer(LinkedHashMap<String, Double[]> results) throws Exception {
     Map<String, Data> ouputToSend = new HashMap<String, Data>();
 
@@ -214,21 +234,28 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     instrumentExecutionService.addOutputParameterValues(ouputToSend);
   }
 
+  /**
+   * Implements parent method initialize from InstrumentRunner
+   * Delete results from previous measurement and initiate the input file to be read by the external application
+   */
   public void initialize() {
     log.info("*** Initializing MIR Runner ***");
     try {
-      deleteDeviceData(); // Delete ancient data in instrument specific database
-      initParticipantData(); // Create file with participant data
+      deleteDeviceData();
+      initParticipantData();
     } catch(Exception ex) {
       log.error("*** EXCEPTION INITIALIZE STEP: ", ex);
     }
   }
-
+  
+  /**
+   * Implements parent method run from InstrumentRunner
+   * Launch the external application, retrieve and send the data
+   */
   public void run() {
     log.info("*** Running MIR Runner ***");
     externalAppHelper.launch();
 
-    // Get data from external app
     try {
       LinkedHashMap<String, Double[]> results = retrieveDeviceData();
       sendDataToServer(results);
@@ -236,11 +263,15 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
       log.error("*** EXCEPTION SHUTDOWN STEP: ", ex);
     }
   }
-
+  
+  /**
+   * Implements parent method shutdown from InstrumentRunner
+   * Delete results from current measurement
+   */
   public void shutdown() {
     log.info("*** Shutdown MIR Runner ***");
     try {
-      deleteDeviceData(); // Delete current data in instrument specific database for privacy
+      deleteDeviceData();
     } catch(Exception ex) {
       log.error("*** EXCEPTION INITIALIZE STEP: ", ex);
     }
