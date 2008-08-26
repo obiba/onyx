@@ -26,6 +26,8 @@ public interface InstrumentExecutionService {
   public Participant getParticipant();
 
   public Map<String, Data> getInputParametersValue(String... parameters);
+  
+  public Data getInputParameterValue(String parameter);
 
   public void addOutputParameterValues(Map<String, Data> values);
 

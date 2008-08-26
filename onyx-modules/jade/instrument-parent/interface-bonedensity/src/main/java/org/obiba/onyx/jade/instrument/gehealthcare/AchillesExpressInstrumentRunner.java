@@ -1,14 +1,15 @@
 package org.obiba.onyx.jade.instrument.gehealthcare;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.wicket.util.io.Streams;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.jade.client.JnlpClient;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
@@ -23,7 +24,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 public class AchillesExpressInstrumentRunner implements InstrumentRunner, InitializingBean {
 
-  private static final Logger log = LoggerFactory.getLogger(JnlpClient.class);
+  private static final Logger log = LoggerFactory.getLogger(AchillesExpressInstrumentRunner.class);
 
   // Injected by spring.
   protected InstrumentExecutionService instrumentExecutionService;
@@ -33,8 +34,6 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
   private JdbcTemplate achillesExpressDb;
 
   Participant participant;
-
-  Map<String, Data> operatorInputData;
 
   public InstrumentExecutionService getInstrumentExecutionService() {
     return instrumentExecutionService;
@@ -62,21 +61,15 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
 
   public void afterPropertiesSet() throws Exception {
     participant = instrumentExecutionService.getParticipant();
-    operatorInputData = instrumentExecutionService.getInputParametersValue("foot_scanned", "serialnumber");
   }
 
   public void setAchillesExpressConfig() {
 
-    achillesExpressDb.update("update Configuration set CompressPrompt = ?, BackupPrompt = ?, SerialNumber = ?, COMPort = ?, TargetDevice = ? ", new PreparedStatementSetter() {
+    achillesExpressDb.update("update Configuration set CompressPrompt = ?, BackupPrompt = ?, TargetDevice = ? ", new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
         ps.setInt(1, 2);
         ps.setInt(2, 2);
-
-        // TODO find a way to set the serial number in the db (set text in a longbinary)
-        ps.setString(3, (String) operatorInputData.get("serialnumber").getValue());
-
-        ps.setString(4, "7");
-        ps.setString(5, "Express");
+        ps.setString(3, "Express");
       }
     });
 
@@ -98,7 +91,7 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
           ps.setString(5, "F");
         }
 
-        ps.setString(6, (String) operatorInputData.get("foot_scanned").getValue());
+        ps.setString(6, (String) instrumentExecutionService.getInputParameterValue("foot_scanned").getValue());
       }
     });
 
@@ -112,6 +105,8 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
   @SuppressWarnings("unchecked")
   private Map<String, Data> retrieveDeviceData() {
 
+    log.info("retrieveDeviceData");
+
     return (Map<String, Data>) achillesExpressDb.query("select assessment, fxrisk, total, tscore, zscore, agematched, percentnormal, sidescanned, stiffnessindex, patients.chart_num, results.SOS, results.BUA, achillesbitmap, achillesbitmap2, appversion, roi_x, roi_y, roi_s from results, patients where results.chart_num = patients.chart_num and patients.chart_num = ?", new PreparedStatementSetter() {
 
       public void setValues(PreparedStatement ps) throws SQLException {
@@ -123,6 +118,8 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
     new ResultSetExtractor() {
 
       public Object extractData(ResultSet rs) throws SQLException {
+
+        rs.next();
 
         Map<String, Data> boneDensityData = new HashMap<String, Data>();
         boneDensityData.put("Assessment", new Data(DataType.DECIMAL, rs.getDouble("assessment")));
@@ -139,7 +136,21 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
         boneDensityData.put("Achilles Software Version", new Data(DataType.TEXT, rs.getString("appversion")));
         boneDensityData.put("Region of Intersection X coordinate", new Data(DataType.INTEGER, rs.getLong("roi_x")));
         boneDensityData.put("Region of Intersection Y coordinate", new Data(DataType.INTEGER, rs.getLong("roi_y")));
-        boneDensityData.put("Region of Intersection Z coordinate", new Data(DataType.INTEGER, rs.getLong("roi_z")));
+        boneDensityData.put("Region of Intersection Z coordinate", new Data(DataType.INTEGER, rs.getLong("roi_s")));
+
+        try {
+          String achillebitmapData = Streams.readString(rs.getBinaryStream("achillesbitmap"), "UTF-8");
+          boneDensityData.put("Stiffness Index graph", new Data(DataType.DATA, achillebitmapData.getBytes()));
+        } catch(IOException couldNotReadGraph) {
+          throw new RuntimeException("Could not retrieve Stiffness Index Graph from Achilles Express", couldNotReadGraph);
+        }
+
+        try {
+          String achillebitmapData2 = Streams.readString(rs.getBinaryStream("achillesbitmap"), "UTF-8");
+          boneDensityData.put("Ultrasound Graphic", new Data(DataType.DATA, achillebitmapData2.getBytes()));
+        } catch(IOException couldNotReadGraph) {
+          throw new RuntimeException("Could not retrieve Ultrasound Graphic from Achilles Express", couldNotReadGraph);
+        }
 
         return boneDensityData;
       }
@@ -153,38 +164,26 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
   }
 
   public void initialize() {
-    log.info("*** Initializing Achilles Express Runner ***");
-    try {
-      log.info("Cleaning up local database");
-      deleteLocalData();
-      log.info("Setting Achilles Express configuration");
-      setAchillesExpressConfig();
-      log.info("Sending participant data");
-      setParticipantData();
-      
-      throw new RuntimeException(new Exception("test"));
-    } catch(Exception ex) {
-      log.error("*** EXCEPTION INITIALIZE STEP: ", ex);
-    }
+    log.info("Cleaning up local database");
+    deleteLocalData();
+    log.info("Setting Achilles Express configuration");
+    setAchillesExpressConfig();
+    log.info("Sending participant data");
+    setParticipantData();
   }
 
   public void run() {
-    log.info("*** Running Achilles Express Runner ***");
-    log.info("Launching external software");
+    log.info("Launching Achilles Express software");
     externalAppHelper.launch();
-    log.info("Retrieving measurements and sending data to server");
-    sendDataToServer(retrieveDeviceData());
-
+    log.info("Retrieving measurements");
+    Map<String, Data> data = retrieveDeviceData();
+    log.info("Sending data to server");
+    sendDataToServer(data);
   }
 
   public void shutdown() {
-    log.info("*** Shutting down Achilles Express Runner ***");
-    try {
-      log.info("Cleaning up local database");
-      deleteLocalData();
-    } catch(Exception ex) {
-      log.error("*** EXCEPTION SHUTDOWN STEP: ", ex);
-    }
+    log.info("Cleaning up local database");
+    deleteLocalData();
   }
 
 }

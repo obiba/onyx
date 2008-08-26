@@ -50,6 +50,10 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
     return (inputParametersValue);
   }
 
+  public Data getInputParameterValue(String parameterName) {
+    return activeInstrumentRunService.getInputInstrumentRunValue(parameterName).getData();
+  }  
+  
   public void addOutputParameterValues(Map<String, Data> values) {
     for(Map.Entry<String, Data> entry : values.entrySet()) {
       addOutputParameterValue(entry.getKey(), entry.getValue());
@@ -72,5 +76,6 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
       getPersistenceManager().save(run);
     }
   }
+
 
 }

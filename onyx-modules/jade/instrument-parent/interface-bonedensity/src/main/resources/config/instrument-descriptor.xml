@@ -106,16 +106,6 @@
     <instrument reference="bone1" />
   </input> 
 
-  <operatorSource id="serialnumber_source"/> 
-  <input id="serialnumber">
-    <name>serialnumber</name>
-    <description>Achilles Express Serial No</description>
-    <dataType>TEXT</dataType>
-    <captureMethod>MANUAL</captureMethod>
-    <inputSource reference="serialnumber_source" />
-    <instrument reference="bone1" />
-  </input>  
-
   <output id="assessment">
     <name>Assessment</name>
     <description>Assessment</description>

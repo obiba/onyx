@@ -33,6 +33,8 @@ public class JnlpClient {
       try {
         log.info("Executing runner");
         instrumentRunner.run();
+      } catch ( Exception e) {
+        log.error("Unexpected error while executing runner {}", e);
       } finally {
 
         try {
@@ -46,8 +48,8 @@ public class JnlpClient {
 
       }
 
-    } catch(Exception wEx) {
-      log.error("Unexpected error while executing runner {}", wEx);
+    } catch(Exception ex) {
+      log.error("Unexpected error while initializing runner {}", ex);
     } finally {
 
       // Make sure application context is destroyed.
