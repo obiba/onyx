@@ -8,7 +8,13 @@
     <gender>MALE</gender>
     <barcode>1</barcode>
     <birthDate>1969-02-22 15:16:04.0 EST</birthDate>
-    <lastAppointmentDate>2008-08-06 10:16:04.0 EST</lastAppointmentDate>
+    <street>Queen Mary</street>
+    <apartment>100</apartment>
+    <city>Montreal</city>
+    <province>QC</province>
+    <country>Canada</country>
+    <postalCode>H3V 1A2</postalCode>
+    <phone>5144841111</phone>
   </participant>
   
   <interview>
@@ -19,6 +25,7 @@
   </interview>
   
   <appointment>
+    <appointmentCode>3893948901</appointmentCode>
     <date>2008-08-06 10:16:04.0 EST</date>
     <participant reference="p1"/>
   </appointment>
@@ -30,7 +37,13 @@
     <gender>FEMALE</gender>
     <barcode>2</barcode>
     <birthDate>1973-01-15 18:23:01.0 EST</birthDate>
-    <lastAppointmentDate>2008-07-04 10:16:04.0 EST</lastAppointmentDate>
+    <street>Queen Mary</street>
+    <apartment>200</apartment>
+    <city>Montreal</city>
+    <province>QC</province>
+    <country>Canada</country>
+    <postalCode>H3V 1A2</postalCode>
+    <phone>5144842222</phone>
   </participant>
   
   <interview>
@@ -41,6 +54,7 @@
   </interview>
   
   <appointment>
+    <appointmentCode>3893948902</appointmentCode>
     <date>2008-07-04 10:16:04.0 EST</date>
     <participant reference="p2"/>
   </appointment>
@@ -52,7 +66,13 @@
     <gender>MALE</gender>
     <barcode>3</barcode>
     <birthDate>1939-11-11 10:16:04.0 EST</birthDate>
-    <lastAppointmentDate>2008-08-01 12:16:04.0 EST</lastAppointmentDate>
+    <street>Queen Mary</street>
+    <apartment>300</apartment>
+    <city>Montreal</city>
+    <province>QC</province>
+    <country>Canada</country>
+    <postalCode>H3V 1A2</postalCode>
+    <phone>5144843333</phone>
   </participant>
 
   <interview>
@@ -63,6 +83,7 @@
   </interview>
   
   <appointment>
+    <appointmentCode>3893948903</appointmentCode> 
     <date>2008-08-01 12:16:04.0 EST</date>
     <participant reference="p3"/>
   </appointment>
@@ -73,10 +94,17 @@
     <lastName>Champagne</lastName>
     <gender>MALE</gender>
     <birthDate>1975-06-08 10:16:04.0 EST</birthDate>
-    <lastAppointmentDate>2008-08-06 08:46:04.0 EST</lastAppointmentDate>
+    <street>Queen Mary</street>
+    <apartment>400</apartment>
+    <city>Montreal</city>
+    <province>QC</province>
+    <country>Canada</country>
+    <postalCode>H3V 1A2</postalCode>
+    <phone>5144844444</phone>
   </participant>  
   
   <appointment>
+    <appointmentCode>3893948904</appointmentCode>
     <date>2008-08-06 08:46:04.0 EST</date>
     <participant reference="p4"/>
   </appointment>  
@@ -88,10 +116,17 @@
     <lastName>Malkovitch</lastName>
     <gender>MALE</gender>
     <birthDate>1965-06-08 10:16:04.0 EST</birthDate>
-    <lastAppointmentDate>2008-08-06 08:46:04.0 EST</lastAppointmentDate>
+    <street>Queen Mary</street>
+    <apartment>500</apartment>
+    <city>Montreal</city>
+    <province>QC</province>
+    <country>Canada</country>
+    <postalCode>H3V 1A2</postalCode>
+    <phone>5144845555</phone>
   </participant>  
   
   <appointment>
+    <appointmentCode>3893948905</appointmentCode>
     <date>2008-08-06 09:46:04.0 EST</date>
     <participant reference="p5"/>
   </appointment> 
@@ -103,10 +138,17 @@
     <lastName>Dufresne</lastName>
     <gender>FEMALE</gender>
     <birthDate>1970-03-01 10:16:04.0 EST</birthDate>
-    <lastAppointmentDate>2008-08-06 08:46:04.0 EST</lastAppointmentDate>
+    <street>Queen Mary</street>
+    <apartment>600</apartment>
+    <city>Montreal</city>
+    <province>QC</province>
+    <country>Canada</country>
+    <postalCode>H3V 1A2</postalCode>
+    <phone>5144846666</phone>
   </participant>  
   
   <appointment>
+    <appointmentCode>3893948906</appointmentCode>
     <date>2008-08-06 08:46:04.0 EST</date>
     <participant reference="p6"/>
   </appointment> 
@@ -118,14 +160,20 @@
     <lastName>Champlain</lastName>
     <gender>FEMALE</gender>
     <birthDate>1985-09-18 10:16:04.0 EST</birthDate>
-    <lastAppointmentDate>2008-08-06 08:46:04.0 EST</lastAppointmentDate>
+    <street>Queen Mary</street>
+    <apartment>700</apartment>
+    <city>Montreal</city>
+    <province>QC</province>
+    <country>Canada</country>
+    <postalCode>H3V 1A2</postalCode>
+    <phone>5144847777</phone>
   </participant>  
   
   <appointment>
+    <appointmentCode>3893948907</appointmentCode>
     <date>2008-08-06 08:46:04.0 EST</date>
     <participant reference="p7"/>
   </appointment> 
-  
   
   <!-- Participant -->  
   <participant id="p8">
@@ -133,10 +181,17 @@
     <lastName>Belouga</lastName>
     <gender>MALE</gender>
     <birthDate>1973-06-28 10:16:04.0 EST</birthDate>
-    <lastAppointmentDate>2008-08-06 08:46:04.0 EST</lastAppointmentDate>
+    <street>Queen Mary</street>
+    <apartment>800</apartment>
+    <city>Montreal</city>
+    <province>QC</province>
+    <country>Canada</country>
+    <postalCode>H3V 1A2</postalCode>
+    <phone>5144848888</phone>
   </participant>  
   
   <appointment>
+    <appointmentCode>3893948908</appointmentCode>
     <date>2008-08-06 08:46:04.0 EST</date>
     <participant reference="p8"/>
   </appointment> 

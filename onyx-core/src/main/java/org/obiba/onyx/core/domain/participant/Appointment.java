@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -15,10 +16,12 @@ public class Appointment extends AbstractEntity {
 
   private static final long serialVersionUID = 6009569414177913575L;
 
+  private String appointmentCode;
+  
   @Temporal(TemporalType.TIMESTAMP)
   public Date date;
 
-  @ManyToOne
+  @OneToOne
   @JoinColumn(name = "participant_id")
   public Participant participant;
 
@@ -30,6 +33,14 @@ public class Appointment extends AbstractEntity {
     this.date = date;
   }
 
+  public String getAppointmentCode() {
+    return appointmentCode;
+  }
+
+  public void setAppointmentCode(String appointmentCode) {
+    this.appointmentCode = appointmentCode;
+  }
+  
   public Date getDate() {
     return date;
   }

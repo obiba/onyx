@@ -36,14 +36,25 @@ public class Participant extends AbstractEntity {
   
   private String receptionComment;
   
+  private String street;
+  
+  private String apartment;
+  
+  private String city;
+  
+  private String province;
+  
+  private String country;
+  
+  private String postalCode;
+  
+  private String phone;
+  
+  @OneToOne(mappedBy = "participant")
+  private Appointment appointment;
+  
   @OneToOne(mappedBy = "participant")
   private Interview interview;
-
-  @OneToMany(mappedBy = "participant")
-  private List<Appointment> appointments;
-  
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date lastAppointmentDate;
 
   public String getFirstName() {
     return firstName;
@@ -77,6 +88,15 @@ public class Participant extends AbstractEntity {
     this.birthDate = birthDate;
   }
 
+  public Appointment getAppointment() {
+    return appointment;
+  }
+
+  public void setAppointment(Appointment appointment) {
+    this.appointment = appointment;
+    this.appointment.setParticipant(this);
+  }
+  
   public Interview getInterview() {
     return interview;
   }
@@ -85,32 +105,13 @@ public class Participant extends AbstractEntity {
     this.interview = interview;
     this.interview.setParticipant(this);
   }
-
-  public List<Appointment> getAppointments() {
-    return appointments != null ? appointments : (appointments = new ArrayList<Appointment>());
-  }
-
-  public void addAppointment(Appointment appointment) {
-    if(appointment != null) {
-      getAppointments().add(appointment);
-      appointment.setParticipant(this);
-    }
-  }
-
+  
   public String getBarcode() {
     return barcode;
   }
 
   public void setBarcode(String barcode) {
     this.barcode = barcode;
-  }
-
-  public Date getLastAppointmentDate() {
-    return lastAppointmentDate;
-  }
-
-  public void setLastAppointmentDate(Date lastAppointmentDate) {
-    this.lastAppointmentDate = lastAppointmentDate;
   }
 
   public String getFullName() {
@@ -136,6 +137,62 @@ public class Participant extends AbstractEntity {
     age = Math.round(ageDouble);
     
     return (age);
+  }
+
+  public String getStreet() {
+    return street;
+  }
+
+  public void setStreet(String street) {
+    this.street = street;
+  }
+
+  public String getApartment() {
+    return apartment;
+  }
+
+  public void setApartment(String apartment) {
+    this.apartment = apartment;
+  }
+
+  public String getCity() {
+    return city;
+  }
+
+  public void setCity(String city) {
+    this.city = city;
+  }
+
+  public String getProvince() {
+    return province;
+  }
+
+  public void setProvince(String province) {
+    this.province = province;
+  }
+
+  public String getCountry() {
+    return country;
+  }
+
+  public void setCountry(String country) {
+    this.country = country;
+  }
+
+  public String getPostalCode() {
+    return postalCode;
+  }
+
+  public void setPostalCode(String postalCode) {
+    this.postalCode = postalCode;
+  }
+
+  public String getPhone() {
+    return phone;
+  }
+
+  public void setPhone(String phone) {
+    this.phone = phone;
   }
 
 }

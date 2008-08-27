@@ -6,11 +6,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
@@ -32,7 +32,6 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.webapp.base.page.BasePage;
-import org.obiba.onyx.webapp.bubble.panel.BubblePopupPanel;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.webapp.util.DateUtils;
@@ -57,14 +56,14 @@ public class ParticipantSearchPage extends BasePage {
 
   private Participant template = new Participant();
 
-  private BubblePopupPanel bubble;
-
+  private ModalWindow participantDetailsModalWindow;
+  
   @SuppressWarnings("serial")
   public ParticipantSearchPage() {
     super();
 
-    add(bubble = new BubblePopupPanel("bubble"));
-
+    add(participantDetailsModalWindow = new ModalWindow("participantDetailsModalWindow"));    
+    
     Form form = new Form("searchForm");
     add(form);
 
@@ -181,7 +180,7 @@ public class ParticipantSearchPage extends BasePage {
 
     public AppointedParticipantProvider(Participant template) {
       super(queryService, Participant.class);
-      setSort(new SortParam("lastAppointmentDate", false));
+      
       this.template = template;
       Calendar cal = Calendar.getInstance();
       cal.setTime(new Date());
@@ -255,14 +254,6 @@ public class ParticipantSearchPage extends BasePage {
         }
 
       });
-      columns.add(new AbstractColumn(new StringResourceModel("Appointment", ParticipantSearchPage.this, null), "lastAppointmentDate") {
-
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Participant p = (Participant) rowModel.getObject();
-          cellItem.add(new Label(componentId, DateUtils.getFullDateModel(new Model(p.getLastAppointmentDate()))));
-        }
-
-      });
       columns.add(new AbstractColumn(new StringResourceModel("Interview", ParticipantSearchPage.this, null)) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
@@ -288,9 +279,8 @@ public class ParticipantSearchPage extends BasePage {
             @Override
             public void onClick(IModel model, AjaxRequestTarget target) {
               if(actions.indexOf(model) == 0) {
-                bubble.setContent(target, new ParticipantPanel(bubble.getContentId(), p));
-                bubble.place(target, (Component) cellItem.getParent());
-                bubble.show(target);
+                participantDetailsModalWindow.setContent(new ParticipantPanel("content", p));
+                participantDetailsModalWindow.show(target);
               } else if(actions.indexOf(model) == 1) {
                 if(p.getBarcode() != null) {
                   activeInterviewService.setParticipant(p);

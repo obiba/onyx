@@ -22,10 +22,21 @@ public class ParticipantPanel extends Panel {
     setModel(new DetachableEntityModel(queryService, participant));
     
     KeyValueDataPanel kvPanel = new KeyValueDataPanel("participant");
-    kvPanel.addRow(new StringResourceModel("FirstName", this, null), new PropertyModel(participant, "firstName"));
-    kvPanel.addRow(new StringResourceModel("LastName", this, null), new PropertyModel(participant, "lastName"));
+
+    kvPanel.addRow(new StringResourceModel("ParticipantCode", this, null), new PropertyModel(participant, "barcode"));
+    kvPanel.addRow(new StringResourceModel("AppointmentCode", this, null), new PropertyModel(participant, "appointment.appointmentCode")); 
+    kvPanel.addRow(new StringResourceModel("Name", this, null), new PropertyModel(participant, "fullName"));
     kvPanel.addRow(new StringResourceModel("Gender", this, null), new StringResourceModel("Gender." + participant.getGender(), this, null));
     kvPanel.addRow(new StringResourceModel("BirthDate", this, null), DateUtils.getDateModel(new PropertyModel(participant, "birthDate")));
+
+    kvPanel.addRow(new StringResourceModel("Street", this, null), new PropertyModel(participant, "street"));
+    kvPanel.addRow(new StringResourceModel("Apartment", this, null), new PropertyModel(participant, "apartment"));
+    kvPanel.addRow(new StringResourceModel("City", this, null), new PropertyModel(participant, "city"));
+    kvPanel.addRow(new StringResourceModel("Province", this, null), new PropertyModel(participant, "province"));
+    kvPanel.addRow(new StringResourceModel("Country", this, null), new PropertyModel(participant, "country"));
+    kvPanel.addRow(new StringResourceModel("PostalCode", this, null), new PropertyModel(participant, "postalCode"));
+    kvPanel.addRow(new StringResourceModel("Phone", this, null), new PropertyModel(participant, "phone"));
+        
     add(kvPanel);
   }
   

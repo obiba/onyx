@@ -28,17 +28,9 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     appointment.setParticipant(participant);
     appointment = getPersistenceManager().save(appointment);
     
-    participant.setLastAppointmentDate(getLatestAppointment(participant).getDate());
     getPersistenceManager().save(participant);
     
     return appointment;
-  }
-
-  public Appointment getLatestAppointment(Participant participant) {
-    Appointment template = new Appointment();
-    template.setParticipant(participant);
-    
-    return getPersistenceManager().matchOne(template, SortingClause.create("date", false));
   }
 
   public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment) {

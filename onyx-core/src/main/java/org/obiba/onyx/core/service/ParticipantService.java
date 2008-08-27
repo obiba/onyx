@@ -25,14 +25,7 @@ public interface ParticipantService {
    * @return
    */
   public Appointment addAppointment(Participant participant, Date date);
-  
-  /**
-   * Get the latest appointment for the participant.
-   * @param participant
-   * @return null if none
-   */
-  public Appointment getLatestAppointment(Participant participant);
-  
+    
   public List<Participant> getParticipants(String barcode, String likeName, PagingClause paging, SortingClause... clauses);
   
   public int countParticipants(String barcode, String likeName);

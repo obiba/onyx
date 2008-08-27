@@ -55,15 +55,19 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
 
   public List<Participant> getParticipants(String barcode, String likeName, Date from, Date to, PagingClause paging, SortingClause... clauses) {
     AssociationCriteria criteria = getCriteria(barcode, likeName, paging, clauses);
-    if(from != null) criteria.add("lastAppointmentDate", Operation.ge, from);
-    if(to != null) criteria.add("lastAppointmentDate", Operation.le, to);
+
+    if(from != null) criteria.add("appointment.date", Operation.ge, from);
+    if(to != null) criteria.add("appointment.date", Operation.le, to);
+
     return criteria.list();
   }
 
   public int countParticipants(String barcode, String likeName, Date from, Date to) {
     AssociationCriteria criteria = getCriteria(barcode, likeName, null);
-    if(from != null) criteria.add("lastAppointmentDate", Operation.ge, from);
-    if(to != null) criteria.add("lastAppointmentDate", Operation.le, to);
+
+    if(from != null) criteria.add("appointment.date", Operation.ge, from);
+    if(to != null) criteria.add("appointment.date", Operation.le, to);
+
     return criteria.count();
   }
 
