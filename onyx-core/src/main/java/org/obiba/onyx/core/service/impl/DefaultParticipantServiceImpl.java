@@ -41,5 +41,11 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     return getPersistenceManager().matchOne(template, SortingClause.create("date", false));
   }
 
+  public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment) {
+    participant.setBarcode(barcode);
+    participant.setReceptionComment(receptionComment);
+    persistenceManager.save(participant);
+  }
+
   
 }
