@@ -86,7 +86,7 @@
     <description>Systolic Pressure</description>
     <measurementUnit>mmHg</measurementUnit>
     <dataType>INTEGER</dataType>
-    <captureMethod>AUTOMATIC</captureMethod>
+    <captureMethod>MANUAL</captureMethod>
     <inputSource reference="systolic_pressure_source" />
     <instrument reference="blp1" />
   </input>  
@@ -102,7 +102,7 @@
     <description>Diastolic Pressure</description>
     <measurementUnit>mmHg</measurementUnit>
     <dataType>INTEGER</dataType>
-    <captureMethod>AUTOMATIC</captureMethod>
+    <captureMethod>MANUAL</captureMethod>
     <inputSource reference="diastolic_pressure_source" />
     <instrument reference="blp1" />
   </input>
