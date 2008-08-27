@@ -23,6 +23,7 @@
     <module>interface-ecg</module>
     <module>interface-spirometry</module>
     <module>interface-bonedensity</module>    
+    <module>interface-arterialstiffness</module>
   </modules>
 
   <dependencies>

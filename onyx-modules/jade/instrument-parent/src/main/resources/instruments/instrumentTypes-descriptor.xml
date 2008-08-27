@@ -58,4 +58,16 @@
     <description>Bone Density measurement</description>
   </instrumentType>  
 
+  <instrumentType id="art">
+    <name>ART</name>
+    <description>Arterial Stiffness measurement</description>
+    
+    <!--
+    <dependsOnTypes>
+      <instrumentType reference="blp" />
+    </dependsOnTypes>
+    -->
+    
+  </instrumentType>
+  
 </linked-list>
