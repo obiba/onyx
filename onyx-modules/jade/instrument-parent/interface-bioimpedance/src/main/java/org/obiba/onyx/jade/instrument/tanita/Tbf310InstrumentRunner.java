@@ -19,8 +19,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -93,6 +95,8 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   private JTextField bmrTxt;
 
   private JButton saveDataBtn;
+  
+  private ResourceBundle resourceBundle;
 
   /** Lock used to block the main thread as long as the UI has not finished its job */
   private final Object uiLock = new Object();
@@ -130,6 +134,8 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
   public Tbf310InstrumentRunner() throws Exception {
 
+    resourceBundle = ResourceBundle.getBundle("bioimpedance-instrument", Locale.ENGLISH);
+    
     // Initialize interface components.
     bodyTypeTxt = new ResultTextField();
     bodyTypeTxt.setHorizontalAlignment(JTextField.LEFT);
@@ -147,19 +153,14 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     ageTxt = new ResultTextField();
     bmiTxt = new ResultTextField();
     bmrTxt = new ResultTextField();
-    saveDataBtn = new JButton("Sauvegarder");
+    saveDataBtn = new JButton(resourceBundle.getString("Save"));
     saveDataBtn.setMnemonic('S');
     saveDataBtn.setEnabled(false);
-    saveDataBtn.setToolTipText("Sauvegarder les mesures et retourner à l'interface CaG");
+    saveDataBtn.setToolTipText(resourceBundle.getString("ToolTip.Save_and_return"));
 
     // Initialize serial port.
     portOwnerName = "TANITA Body Composition Analyzer";
     
-    // Test string
-    /*setTanitaData(parseTanitaData("0,2,185,110.6,431,28.4,31.4,79.2,58.0,27,32.3,9771"));
-    saveDataBtn.setEnabled(true);*/
-     
-
   }
   
   public void afterPropertiesSet() throws Exception {
@@ -277,13 +278,13 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
    */
   private void reestablishConnection() {
 
-    String[] options = {"OK", "Annuler", "Configuration"}; 
+    String[] options = {resourceBundle.getString("OK"), resourceBundle.getString("Cancel"), resourceBundle.getString("Settings")}; 
     
     // Loop until connection is reestablished.
     int selectedOption;
     while(serialPort == null || !serialPort.isCTS()) {
 
-      selectedOption = JOptionPane.showOptionDialog(appWindow, "La communication n'a pu être établie\n" + "avec l'appareil de bioimpédance!\n\n" + "Vérifiez si les cables sont bien\n" + "branchés et appuyez ensuite sur OK.", "Problème de communication", JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, null, options, "OK");
+      selectedOption = JOptionPane.showOptionDialog(appWindow, resourceBundle.getString("Err.No_communication"), resourceBundle.getString("Title.Communication_problem"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, null, options, resourceBundle.getString("OK"));
 
       // OK option selected.
       if(selectedOption == 0) {
@@ -302,7 +303,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
         // List all serial port in a drop down list, so a new one can be selected.
         refreshSerialPortList();
-        String selectedPort = (String) JOptionPane.showInputDialog(appWindow, "SVP faire un choix parmi les ports disponibles...", "Configuration du port de communication", JOptionPane.QUESTION_MESSAGE, null, availablePortNames.toArray(), getTbf310CommPort());
+        String selectedPort = (String) JOptionPane.showInputDialog(appWindow, resourceBundle.getString("Instruction.Choose_port"), resourceBundle.getString("Title.Settings"), JOptionPane.QUESTION_MESSAGE, null, availablePortNames.toArray(), getTbf310CommPort());
 
         if(selectedPort != null) {
           setTbf310CommPort(selectedPort);
@@ -418,7 +419,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
       } catch(IOException wErrorReadingDataOnSerialPort) {
         tanitaData = new StringBuffer();
-        JOptionPane.showMessageDialog(appWindow, "Une erreur s'est produite lors de la communication\n" + "des résultats par l'appareil de bioimpédance." + "Veuillez reprendre les mesures SVP.", "Erreur de communication", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(appWindow, resourceBundle.getString("Err.Result_communication"), resourceBundle.getString("Title.Communication_error"), JOptionPane.ERROR_MESSAGE);
       }
 
       break;
@@ -431,7 +432,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
    */
   private void buildGUI() {
 
-    appWindow = new JFrame("TANITA Body Composition Analyzer");
+    appWindow = new JFrame(resourceBundle.getString("Title.Tanita"));
 
     appWindow.setAlwaysOnTop(true);
     appWindow.setUndecorated(true);
@@ -493,27 +494,27 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     wResultPanel.setLayout(wResultPanelLayout);
     wResultPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     wMainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    addDataField(bodyTypeTxt, wResultPanel, "Type Corporel :", "");
-    addDataField(genderTxt, wResultPanel, "Sexe :", "");
-    addDataField(heightTxt, wResultPanel, "Taille :", " cm");
-    addDataField(weightTxt, wResultPanel, "Poids :", " kg");
-    addDataField(impedanceTxt, wResultPanel, "Résistance :", " \u03A9");
-    addDataField(fatPctTxt, wResultPanel, "% graisse :", " %");
-    addDataField(fatMassTxt, wResultPanel, "Masse grasse :", " kg");
-    addDataField(ffmTxt, wResultPanel, "Masse maigre :", " kg");
-    addDataField(tbwTxt, wResultPanel, "Masse hydrique :", " kg");
-    addDataField(ageTxt, wResultPanel, "Âge :", " ans");
-    addDataField(bmiTxt, wResultPanel, "IMC :", "");
-    addDataField(bmrTxt, wResultPanel, "MB :", " kJ");
+    addDataField(bodyTypeTxt, wResultPanel, resourceBundle.getString("Body_type"), null);
+    addDataField(genderTxt, wResultPanel, resourceBundle.getString("Gender"), null);
+    addDataField(heightTxt, wResultPanel, resourceBundle.getString("Height"), resourceBundle.getString("cm"));
+    addDataField(weightTxt, wResultPanel, resourceBundle.getString("Weight"), resourceBundle.getString("kg"));
+    addDataField(impedanceTxt, wResultPanel, resourceBundle.getString("Impedance"), resourceBundle.getString("Ohm"));
+    addDataField(fatPctTxt, wResultPanel, resourceBundle.getString("Fat_percentage"), resourceBundle.getString("%"));
+    addDataField(fatMassTxt, wResultPanel, resourceBundle.getString("Fat_mass"), resourceBundle.getString("kg"));
+    addDataField(ffmTxt, wResultPanel, resourceBundle.getString("Fat_free_mass"), resourceBundle.getString("kg"));
+    addDataField(tbwTxt, wResultPanel, resourceBundle.getString("Total_body_water"), resourceBundle.getString("kg"));
+    addDataField(ageTxt, wResultPanel, resourceBundle.getString("Age"), resourceBundle.getString("years"));
+    addDataField(bmiTxt, wResultPanel, resourceBundle.getString("BMI"), null);
+    addDataField(bmrTxt, wResultPanel, resourceBundle.getString("BMR"), resourceBundle.getString("kJ"));
 
     // Add the action buttons sub panel.
     JPanel wButtonPanel = new JPanel();
     wButtonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     wButtonPanel.setLayout(new BoxLayout(wButtonPanel, BoxLayout.X_AXIS));
     wButtonPanel.setBackground(new Color(206, 231, 255));
-    JButton wCancelBtn = new JButton("Annuler");
+    JButton wCancelBtn = new JButton(resourceBundle.getString("Cancel"));
     wCancelBtn.setMnemonic('A');
-    wCancelBtn.setToolTipText("Annuler la prise de mesure");
+    wCancelBtn.setToolTipText(resourceBundle.getString("ToolTip.Cancel_measurement"));
     wButtonPanel.add(Box.createHorizontalGlue());
     wButtonPanel.add(saveDataBtn);
     wButtonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -556,7 +557,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     wFieldPanel.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 
     // Add field label.
-    JLabel wFieldLabel = new JLabel(pLabel);
+    JLabel wFieldLabel = new JLabel(pLabel + ":");
     wFieldLabel.setPreferredSize(new Dimension(100, 60));
     wFieldPanel.add(wFieldLabel);
 
@@ -564,10 +565,12 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     wFieldPanel.add(pField);
 
     // Add units label.
-    JLabel wFieldUnit = new JLabel(pUnits);
-    wFieldUnit.setPreferredSize(new Dimension(30, 60));
-    wFieldPanel.add(wFieldUnit);
-
+    if(pUnits != null){
+      JLabel wFieldUnit = new JLabel(" " + pUnits);
+      wFieldUnit.setPreferredSize(new Dimension(30, 60));
+      wFieldPanel.add(wFieldUnit);
+    }
+    
     // Add sub panel to main panel.
     pTargetPanel.add(wFieldPanel);
 
@@ -581,7 +584,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     // Ask for confirmation only if data has been fetch from the device.
     if(saveDataBtn.isEnabled()) {
 
-      int wConfirmation = JOptionPane.showConfirmDialog(appWindow, "Voulez-vous vraiment fermer cette fenêtre?\n" + "(les données affichées seront perdues)", "Confirmation", JOptionPane.YES_NO_OPTION);
+      int wConfirmation = JOptionPane.showConfirmDialog(appWindow, resourceBundle.getString("Confirmation.Close_window"), resourceBundle.getString("Title.Confirmation"), JOptionPane.YES_NO_OPTION);
 
       // If confirmed, application is closed.
       if(wConfirmation == JOptionPane.YES_OPTION) {
@@ -645,7 +648,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
       log.info("Lock obtained. Exiting software.");
           
     } else {
-      JOptionPane.showMessageDialog(null, "Tanita TBF-310 already lock for execution.  Please make sure that another instance is not running.", "Cannot start application!", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(null, resourceBundle.getString("Err.Application_lock"), resourceBundle.getString("Title.Cannot_start_application"), JOptionPane.ERROR_MESSAGE);
     }
 
   }
