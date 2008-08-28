@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -128,14 +129,19 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
    * Delete the result database and files
    * @throws Exception
    */
-  protected void deleteDeviceData() throws Exception {
+  protected void deleteDeviceData() {
     // Overwrite the CardioSoft configuration file
     File backupSettingsFile = new File(getInitPath() + getSettingsFileName());
     File currentSettingsFile = new File(getCardioPath() + getSettingsFileName());
-    if(backupSettingsFile.exists() && !(backupSettingsFile.lastModified() == currentSettingsFile.lastModified())) {
-      FileUtil.copyFile(backupSettingsFile, currentSettingsFile);
-      FileUtil.copyFile(currentSettingsFile, backupSettingsFile); // to set same lastModified property
+    try {
+      if(backupSettingsFile.exists() && !(backupSettingsFile.lastModified() == currentSettingsFile.lastModified())) {
+        FileUtil.copyFile(backupSettingsFile, currentSettingsFile);
+        FileUtil.copyFile(currentSettingsFile, backupSettingsFile); // to set same lastModified property
+      }      
+    } catch(IOException ioEx) {
+      throw new RuntimeException("Error in deleteDeviceData IOException ", ioEx);
     }
+    
 
     // Delete the Pervasive database files
     FilenameFilter filter = new FilenameFilter() {
@@ -160,7 +166,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
    * @param resultParser
    * @throws Exception
    */
-  public void SendDataToServer(CardiosoftInstrumentResultParser resultParser) throws Exception {
+  public void SendDataToServer(CardiosoftInstrumentResultParser resultParser) {
     Map<String, Data> ouputToSend = new HashMap<String, Data>();
 
     Class resultParserClass = CardiosoftInstrumentResultParser.class;
@@ -204,12 +210,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
    * Delete results from previous measurement
    */
   public void initialize() {
-    log.info("*** Initializing Cardiosoft Runner ***");
-    try {
-      deleteDeviceData();
-    } catch(Exception ex) {
-      log.error("*** EXCEPTION INITIALIZE STEP: ", ex);
-    }
+    deleteDeviceData();
   }
 
   /**
@@ -217,20 +218,20 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
    * Launch the external application, retrieve and send the data  
    */
   public void run() {
-    log.info("*** Running Cardiosoft Runner ***");
     externalAppHelper.launch();
+    FileInputStream resultInputStream;
     
     // Get data from external app
     try {
-      FileInputStream resultInputStream = new FileInputStream(getExportPath() + getXmlFileName());
-      CardiosoftInstrumentResultParser resultParser = new CardiosoftInstrumentResultParser(resultInputStream);
-      SendDataToServer(resultParser);
+      resultInputStream = new FileInputStream(getExportPath() + getXmlFileName());
     } catch(FileNotFoundException fnfEx) {
-      log.error("*** Error: Cardiosoft output data file not found: ", fnfEx);
       JOptionPane.showMessageDialog(null, "Error: Cardiosoft output data file not found", "Could not complete process", JOptionPane.ERROR_MESSAGE);
-    } catch(Exception ex) {
-      log.error("*** EXCEPTION SHUTDOWN STEP: ", ex);
+      throw new RuntimeException("Error: Cardiosoft output data file not found: ", fnfEx);
     }
+    
+    CardiosoftInstrumentResultParser resultParser = new CardiosoftInstrumentResultParser(resultInputStream);
+    SendDataToServer(resultParser);
+    
   }
 
   /**
@@ -238,11 +239,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
    * Delete results from current measurement
    */
   public void shutdown() {
-    log.info("*** Shutdown Cardiosoft Runner ***");
-    try {
-      deleteDeviceData();
-    } catch(Exception ex) {
-      log.error("*** EXCEPTION INITIALIZE STEP: ", ex);
-    }
+    deleteDeviceData();
+    
   }
 }

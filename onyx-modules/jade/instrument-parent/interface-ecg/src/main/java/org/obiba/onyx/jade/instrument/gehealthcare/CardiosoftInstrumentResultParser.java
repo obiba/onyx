@@ -91,7 +91,7 @@ public class CardiosoftInstrumentResultParser {
    * @throws IOException
    */
   @SuppressWarnings("deprecation")
-  public CardiosoftInstrumentResultParser(InputStream pFileStream) throws IOException {
+  public CardiosoftInstrumentResultParser(InputStream pFileStream) {
     try {
       // First read the whole file to keep a copy in the EcgCollector object.
       BufferedReader fileReader = new BufferedReader(new InputStreamReader(pFileStream));
@@ -119,11 +119,13 @@ public class CardiosoftInstrumentResultParser {
       extractFilterSetting();
       extractRestingEcgMeasurements();
     } catch(XPathExpressionException e) {
-      System.out.println("Invalid XPath expression. Stopping XML data extraction.");
+      throw new RuntimeException("Invalid XPath expression. Stopping XML data extraction.", e);
     } catch(ParserConfigurationException e) {
-      System.out.println("An error has occured while trying to initialize the XPath parser.");
+      throw new RuntimeException("An error has occured while trying to initialize the XPath parser.", e);
     } catch(SAXException e) {
-      System.out.println("An error has occured while trying to initialize the XPath parser.");
+      throw new RuntimeException("An error has occured while trying to initialize the XPath parser.", e);
+    } catch(IOException ioEx) {
+      throw new RuntimeException("Error: CardiosoftInstrumentResultParser IOException ", ioEx);
     }
   }
 
