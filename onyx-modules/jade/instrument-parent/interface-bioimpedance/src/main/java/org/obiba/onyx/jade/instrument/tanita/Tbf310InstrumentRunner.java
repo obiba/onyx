@@ -134,7 +134,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
   public Tbf310InstrumentRunner() throws Exception {
 
-    resourceBundle = ResourceBundle.getBundle("bioimpedance-instrument", Locale.ENGLISH);
+    resourceBundle = ResourceBundle.getBundle("bioimpedance-instrument", Locale.getDefault());
     
     // Initialize interface components.
     bodyTypeTxt = new ResultTextField();
