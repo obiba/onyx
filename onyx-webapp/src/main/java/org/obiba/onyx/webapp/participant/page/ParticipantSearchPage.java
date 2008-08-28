@@ -33,6 +33,7 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
+import org.obiba.onyx.webapp.participant.panel.ParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.webapp.util.DateUtils;
 import org.obiba.wicket.markup.html.link.AjaxLinkList;
@@ -61,8 +62,10 @@ public class ParticipantSearchPage extends BasePage {
   @SuppressWarnings("serial")
   public ParticipantSearchPage() {
     super();
-
-    add(participantDetailsModalWindow = new ModalWindow("participantDetailsModalWindow"));    
+        
+    participantDetailsModalWindow = new ModalWindow("participantDetailsModalWindow");
+    participantDetailsModalWindow.setTitle(new StringResourceModel("Participant", this, null));
+    add(participantDetailsModalWindow);     
     
     Form form = new Form("searchForm");
     add(form);
@@ -279,7 +282,7 @@ public class ParticipantSearchPage extends BasePage {
             @Override
             public void onClick(IModel model, AjaxRequestTarget target) {
               if(actions.indexOf(model) == 0) {
-                participantDetailsModalWindow.setContent(new ParticipantPanel("content", p));
+                participantDetailsModalWindow.setContent(new ParticipantModalPanel("content", new ParticipantPanel("content", p), participantDetailsModalWindow));
                 participantDetailsModalWindow.show(target);
               } else if(actions.indexOf(model) == 1) {
                 if(p.getBarcode() != null) {
