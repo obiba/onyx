@@ -4,9 +4,9 @@
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://ci12:3306/nk_phenotype_dev"/>
-        <property name="username" value="admin"/>
-        <property name="password" value="vl40df3"/>
+        <property name="url" value="jdbc:mysql://132.204.211.183:3306/onyx"/>
+        <property name="username" value="onyxuser"/>
+        <property name="password" value="R5yx75tg"/>
     </bean>
 
     <bean id="hibernateDbConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
