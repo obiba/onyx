@@ -1,6 +1,9 @@
 package org.obiba.onyx.core.service;
 
+import java.util.Date;
+
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.engine.Action;
@@ -51,5 +54,7 @@ public interface ActiveInterviewService {
    * @param action
    */
   public void doAction(Stage stage, Action action);
+  
+  public void setStatus(InterviewStatus status, Date stopDate);
   
 }

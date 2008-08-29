@@ -43,8 +43,12 @@ public abstract class ActionWindow extends Panel {
         if(!pane.isCancelled()) {
           Action action = pane.getAction();
           log.info("action=" + action);
-          activeInterviewService.doAction((Stage)stageModel.getObject(), action);
-          onActionPerformed(target, (Stage)stageModel.getObject(), action);
+          Stage stage = null;
+          if (stageModel != null) {
+            stage = (Stage)stageModel.getObject();
+          }
+          activeInterviewService.doAction(stage, action);
+          onActionPerformed(target, stage, action);
         }
       }
     });
