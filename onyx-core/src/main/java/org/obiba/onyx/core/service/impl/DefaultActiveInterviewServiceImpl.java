@@ -111,16 +111,18 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     // TODO add user etc.
     getPersistenceManager().save(action);
 
-    IStageExecution exec = getStageExecution(stage);
-    action.getActionType().act(exec, action);
-
-    // persist in memento
-    if(exec instanceof IMemento) {
-      StageExecutionMemento template = new StageExecutionMemento();
-      template.setStage(stage);
-      template.setInterview(action.getInterview());
-      StageExecutionMemento memento = (StageExecutionMemento) ((IMemento) exec).saveToMemento(getPersistenceManager().matchOne(template));
-      getPersistenceManager().save(memento);
+    if ( stage != null ) {
+      IStageExecution exec = getStageExecution(stage);
+      action.getActionType().act(exec, action);
+      
+      // persist in memento
+      if(exec instanceof IMemento) {
+        StageExecutionMemento template = new StageExecutionMemento();
+        template.setStage(stage);
+        template.setInterview(action.getInterview());
+        StageExecutionMemento memento = (StageExecutionMemento) ((IMemento) exec).saveToMemento(getPersistenceManager().matchOne(template));
+        getPersistenceManager().save(memento);
+      }
     }
 
   }
