@@ -20,7 +20,15 @@ public class MenuBar extends Panel {
   public MenuBar(String id) {
     super(id);
 
+    buildMenus();
+    buildAddOns();
+  }
+
+  protected void buildMenus() {
     MenuBuilder.build(this);
+  }
+  
+  protected void buildAddOns() {
     // language selection
     AjaxLanguageChoicePanel languageSelect = new AjaxLanguageChoicePanel("languageSelect", new StringResourceModel("language", this, null), Arrays.asList(new Locale[] { Locale.FRENCH, Locale.ENGLISH })) {
 
@@ -44,5 +52,4 @@ public class MenuBar extends Panel {
     languageSelect.setSelectedLanguage(getSession().getLocale());
     add(languageSelect);
   }
-
 }

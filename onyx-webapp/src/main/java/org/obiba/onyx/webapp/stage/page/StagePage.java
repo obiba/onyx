@@ -15,6 +15,8 @@ import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.webapp.action.panel.ActionsPanel;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.page.InterviewPage;
+import org.obiba.onyx.webapp.stage.panel.StageHeaderPanel;
+import org.obiba.onyx.webapp.stage.panel.StageMenuBar;
 import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.action.ActionWindow;
 
@@ -27,7 +29,7 @@ public class StagePage extends BasePage {
   @SuppressWarnings("serial")
   public StagePage(IModel stageModel) {
     super();
-    setMenuBarVisible(false);
+    setMenuBarVisible(true);
     setModel(stageModel);
 
     Participant participant = activeInterviewService.getParticipant();
@@ -35,7 +37,20 @@ public class StagePage extends BasePage {
     if(participant == null) {
       setResponsePage(WebApplication.get().getHomePage());
     } else {
-
+      //
+      // Modify header.
+      //
+      remove("header");
+      add(new StageHeaderPanel("header"));
+      
+      //
+      // Modify menu bar.
+      //
+      remove("menuBar");
+      StageMenuBar menuBar = new StageMenuBar("menuBar");
+      menuBar.setInfoLabel((Stage)stageModel.getObject(), participant);
+      add(menuBar);
+      
       IStageExecution exec = activeInterviewService.getStageExecution((Stage) getModelObject());
 
       final ActionWindow modal;
