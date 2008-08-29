@@ -111,10 +111,10 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     // TODO add user etc.
     getPersistenceManager().save(action);
 
-    if ( stage != null ) {
+    if (stage != null) {
       IStageExecution exec = getStageExecution(stage);
       action.getActionType().act(exec, action);
-      
+
       // persist in memento
       if(exec instanceof IMemento) {
         StageExecutionMemento template = new StageExecutionMemento();
@@ -124,7 +124,6 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
         getPersistenceManager().save(memento);
       }
     }
-
   }
 
   public void shutdown() {
@@ -160,6 +159,20 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     }
     
     return interview;
+  }
+
+  public void setStatus(InterviewStatus status, Date stopDate) {
+    Interview template = new Interview();
+    template.setParticipant(currentParticipant);
+    Interview interview = getPersistenceManager().matchOne(template);
+    
+    if(interview != null) {
+      interview.setStatus(status);
+      if (stopDate != null) {
+        interview.setStopDate(stopDate);
+      }
+      getPersistenceManager().save(interview);
+    }
   }
 
 }
