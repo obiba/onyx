@@ -14,6 +14,7 @@ import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.page.BasePage;
@@ -45,11 +46,9 @@ public class InterviewPage extends BasePage {
       kvPanel.addRow(new StringResourceModel("Status", this, null), new StringResourceModel("InterviewStatus." + interview.getStatus(), this, null));
       add(kvPanel);
       
-      final ActionDefinition cancelDef = ActionDefinition.CANCEL_ACTION;
-      cancelDef.setLabel(new StringResourceModel("CancelInterview", this, null).getString());
+      final ActionDefinition cancelDef = new ActionDefinition(ActionType.STOP, new StringResourceModel("CancelInterview", this, null).getString(), new StringResourceModel("ExplainCancelInterview", this, null).getString());
       cancelDef.addReasons(new String[] {"A", "B", "C", "D", "E"});
       cancelDef.setAskPassword(true);
-      cancelDef.setDescription(new StringResourceModel("ExplainCancelInterview", this, null).getString());
       
       final ActionWindow actionWindow = new ActionWindow("modal"){
 
