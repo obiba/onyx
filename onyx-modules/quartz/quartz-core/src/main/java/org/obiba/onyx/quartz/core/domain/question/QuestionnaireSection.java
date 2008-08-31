@@ -8,6 +8,8 @@ public class QuestionnaireSection implements Serializable {
 
 	private QuestionnaireVersion questionnaireVersion;
 	
+	private QuestionnaireSection parentQuestionnaireSection;
+	
 	private String label;
 	
 	private Integer displayInParentOrder;
@@ -53,8 +55,24 @@ public class QuestionnaireSection implements Serializable {
 		}
 	}
 	
+	public QuestionnaireSection getParentQuestionnaireSection() {
+		return parentQuestionnaireSection;
+	}
+
+	public void setParentQuestionnaireSection(
+			QuestionnaireSection parentQuestionnaireSection) {
+		this.parentQuestionnaireSection = parentQuestionnaireSection;
+	}
+
 	public List<QuestionnaireSection> getQuestionnaireSections() {
 		return questionnaireSections != null ? questionnaireSections : (questionnaireSections = new ArrayList<QuestionnaireSection>());
+	}
+	
+	public void addQuestionnaireSection(QuestionnaireSection questionnaireSection) {
+		if (questionnaireSection != null) {
+			getQuestionnaireSections().add(questionnaireSection);
+			questionnaireSection.setParentQuestionnaireSection(this);
+		}
 	}
 	
 }

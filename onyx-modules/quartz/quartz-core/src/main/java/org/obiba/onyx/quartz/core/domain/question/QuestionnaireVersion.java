@@ -133,4 +133,11 @@ public class QuestionnaireVersion implements Serializable {
 				: (questionnaireSections = new ArrayList<QuestionnaireSection>());
 	}
 
+	public void addQuestionnaireSection(
+			QuestionnaireSection questionnaireSection) {
+		if (questionnaireSection != null) {
+			getQuestionnaireSections().add(questionnaireSection);
+			questionnaireSection.setQuestionnaireVersion(this);
+		}
+	}
 }

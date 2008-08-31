@@ -8,11 +8,15 @@ public class Questionnaire implements Serializable {
 
 	private String name;
 
-	private String currentVersion;
+	private QuestionnaireVersion currentQuestionnaireVersion;
 	
 	private List<QuestionnaireVersion> questionnaireVersions;
 
 	public Questionnaire() {
+	}
+	
+	public Questionnaire(String name) {
+		this.name = name;
 	}
 
 	public String getName() {
@@ -23,12 +27,12 @@ public class Questionnaire implements Serializable {
 		this.name = name;
 	}
 
-	public String getCurrentVersion() {
-		return currentVersion;
+	public QuestionnaireVersion getCurrentQuestionnaireVersion() {
+		return currentQuestionnaireVersion;
 	}
 
-	public void setCurrentVersion(String currentVersion) {
-		this.currentVersion = currentVersion;
+	public void setCurrentQuestionnaireVersion(QuestionnaireVersion currentQuestionnaireVersion) {
+		this.currentQuestionnaireVersion = currentQuestionnaireVersion;
 	}
 
 	public List<QuestionnaireVersion> getQuestionnaireVersions() {
