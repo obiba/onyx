@@ -4,9 +4,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Type;
@@ -31,6 +34,8 @@ public class User extends AbstractEntity {
   private String password;
 
   private String email;
+  
+  private Locale language;
 
   private Boolean deleted;
 
@@ -102,6 +107,14 @@ public class User extends AbstractEntity {
     this.deleted = deleted;
   }
 
+  public Locale getLanguage() {
+    return language;
+  }
+
+  public void setLanguage(Locale language) {
+    this.language = language;
+  }
+  
   /**
    * Digest the password into a predefined algorithm.
    * @param password
@@ -130,5 +143,4 @@ public class User extends AbstractEntity {
     }
     return buf.toString();
   }
-
 }

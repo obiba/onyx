@@ -12,6 +12,7 @@ import org.obiba.onyx.core.domain.application.AppConfiguration;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.login.page.LoginPage;
+import org.obiba.onyx.webapp.user.page.ProfilePage;
 
 public class HeaderPanel extends Panel {
 
@@ -28,6 +29,17 @@ public class HeaderPanel extends Panel {
     add(new Label("studyName", new PropertyModel(model, "config.studyName")));
     add(new Label("siteName", new PropertyModel(model, "config.siteName")));
     add(new Label("userLoggedIn", new PropertyModel(model, "userLoggedIn.name")));
+    
+    add(new Link("profile"){
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick() {
+        OnyxAuthenticatedSession.get().getUser();
+        setResponsePage(ProfilePage.class);
+      }
+    });
     
     add(new Link("quit") {
       
