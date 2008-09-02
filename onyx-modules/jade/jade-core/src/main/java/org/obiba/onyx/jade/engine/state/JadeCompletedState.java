@@ -17,7 +17,6 @@ public class JadeCompletedState extends AbstractStageState implements Initializi
 
   public void afterPropertiesSet() throws Exception {
     addAction(ActionDefinition.CANCEL_ACTION);
-    addAction(ActionDefinition.COMMENT_ACTION);
   }
   
   @Override

@@ -28,7 +28,6 @@ public class JadeInProgressState extends AbstractStageState implements Initializ
   public void afterPropertiesSet() throws Exception {
     addAction(ActionDefinition.CANCEL_ACTION);
     addSystemAction(ActionDefinition.COMPLETE_ACTION);
-    addAction(ActionDefinition.COMMENT_ACTION);
   }
   
   public Component getWidget(String id) {

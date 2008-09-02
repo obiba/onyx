@@ -31,7 +31,6 @@ public class JadeReadyState extends AbstractStageState implements InitializingBe
         def.setDefaultReason(reason.toString());
     }
     addAction(def);
-    addAction(ActionDefinition.COMMENT_ACTION);
   }
 
   @Override

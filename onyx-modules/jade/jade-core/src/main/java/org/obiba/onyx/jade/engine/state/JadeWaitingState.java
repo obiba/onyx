@@ -26,8 +26,7 @@ public class JadeWaitingState extends AbstractStageState implements Initializing
       def.addReason(reason.toString());
       if(def.getDefaultReason() == null) def.setDefaultReason(reason.toString());
     }
-    addAction(def);
-    addAction(ActionDefinition.COMMENT_ACTION);
+    addAction(def);;
   }
 
   @Override
