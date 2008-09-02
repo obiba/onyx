@@ -47,7 +47,7 @@ public abstract class ActionWindow extends Panel {
           if (stageModel != null) {
             stage = (Stage)stageModel.getObject();
           }
-          activeInterviewService.doAction(stage, action);
+          activeInterviewService.doAction(stage, action, null);
           onActionPerformed(target, stage, action);
         }
       }

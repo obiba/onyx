@@ -53,7 +53,7 @@ public interface ActiveInterviewService {
    * @param stage
    * @param action
    */
-  public void doAction(Stage stage, Action action);
+  public void doAction(Stage stage, Action action, User user);
   
   public void setStatus(InterviewStatus status, Date stopDate);
   

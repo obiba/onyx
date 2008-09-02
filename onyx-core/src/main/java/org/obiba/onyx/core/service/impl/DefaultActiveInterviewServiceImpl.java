@@ -2,7 +2,6 @@ package org.obiba.onyx.core.service.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -104,11 +103,12 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     return exec;
   }
 
-  public void doAction(Stage stage, Action action) {
+  public void doAction(Stage stage, Action action, User user) {
     action.setInterview(getParticipant().getInterview());
     action.setStage(stage);
     action.setDateTime(new Date());
     // TODO add user etc.
+    action.setUser(user);
     getPersistenceManager().save(action);
 
     if (stage != null) {
