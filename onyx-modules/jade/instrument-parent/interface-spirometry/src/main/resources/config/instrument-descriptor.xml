@@ -113,7 +113,7 @@
     <name>Weight</name>
     <description>Participant Weight</description>
     <measurementUnit>kg</measurementUnit>
-    <dataType>INTEGER</dataType>
+    <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="weight_source" />
     <instrument reference="spi1" />
