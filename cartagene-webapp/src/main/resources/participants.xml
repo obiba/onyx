@@ -127,7 +127,7 @@
   
   <appointment>
     <appointmentCode>3893948905</appointmentCode>
-    <date>2008-08-06 09:46:04.0 EST</date>
+    <date>2008-09-02 09:46:04.0 EST</date>
     <participant reference="p5"/>
   </appointment> 
   
@@ -149,7 +149,7 @@
   
   <appointment>
     <appointmentCode>3893948906</appointmentCode>
-    <date>2008-08-06 08:46:04.0 EST</date>
+    <date>2008-09-02 08:46:04.0 EST</date>
     <participant reference="p6"/>
   </appointment> 
   
@@ -171,7 +171,7 @@
   
   <appointment>
     <appointmentCode>3893948907</appointmentCode>
-    <date>2008-08-06 08:46:04.0 EST</date>
+    <date>2008-09-02 08:46:04.0 EST</date>
     <participant reference="p7"/>
   </appointment> 
   
