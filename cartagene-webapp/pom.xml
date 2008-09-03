@@ -41,6 +41,12 @@
       <version>${project.version}</version>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>org.obiba.marble</groupId>
+      <artifactId>marble-core</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.obiba</groupId>

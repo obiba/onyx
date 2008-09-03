@@ -7,8 +7,10 @@ import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.AbstractStageState;
+import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunRefusalReason;
+import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -18,7 +20,7 @@ import org.springframework.beans.factory.InitializingBean;
  * @author Yannick Marcon
  *
  */
-public class JadeReadyState extends AbstractStageState implements InitializingBean {
+public class JadeReadyState extends AbstractJadeStageState implements InitializingBean {
 
   private static final Logger log = LoggerFactory.getLogger(JadeReadyState.class);
   
@@ -32,7 +34,7 @@ public class JadeReadyState extends AbstractStageState implements InitializingBe
     }
     addAction(def);
   }
-
+  
   @Override
   public void execute(Action action) {
     super.execute(action);
@@ -49,6 +51,11 @@ public class JadeReadyState extends AbstractStageState implements InitializingBe
 
   @Override
   public String getMessage() {
+    return "Ready";
+  }
+
+  @Override
+  public String getName() {
     return "Ready";
   }
 }

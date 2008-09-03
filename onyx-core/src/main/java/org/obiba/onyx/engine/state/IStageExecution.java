@@ -6,6 +6,7 @@ import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.util.data.Data;
 
 /**
  * State Machine interface, exposed by {@link StageExecutionContext}.
@@ -16,6 +17,12 @@ import org.obiba.onyx.engine.ActionType;
  */
 public interface IStageExecution {
 
+  /**
+   * Get the name identifying this stage execution.
+   * @return
+   */
+  public String getName();
+  
   /**
    * Get the action definitions, exposed to user by Onyx.
    * @return
@@ -109,5 +116,12 @@ public interface IStageExecution {
    * @return
    */
   public String getMessage();
+  
+  /**
+   * Get the {@link Data} corresponding to the given for stage execution dependency resolution.
+   * @param key
+   * @return the Data or null if not applicable
+   */
+  public Data getData(String key);
 
 }

@@ -8,6 +8,9 @@ import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.util.data.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for Stage states.
@@ -16,6 +19,8 @@ import org.obiba.onyx.engine.Stage;
  */
 public abstract class AbstractStageState implements IStageExecution, ITransitionListener {
 
+  private static final Logger log = LoggerFactory.getLogger(AbstractStageState.class);
+  
   private ITransitionEventSink eventSink;
 
   private Stage stage;
@@ -36,6 +41,18 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
 
   protected List<IStageExecution> getDependsOnStageExecutions() {
     return dependsOnStageExecutions;
+  }
+
+  /**
+   * Get a depends on stage execution by its name.
+   * @param name
+   * @return null if not found
+   */
+  protected IStageExecution getDependsOnStageExecutions(String name) {
+    for(IStageExecution exec : dependsOnStageExecutions) {
+      if(exec.getName().equals(name)) return exec;
+    }
+    return null;
   }
 
   public void addDependsOnStageExecution(IStageExecution execution) {
@@ -138,5 +155,10 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
 
   public String getMessage() {
     return "";
+  }
+
+  @Override
+  public Data getData(String key) {
+    return null;
   }
 }

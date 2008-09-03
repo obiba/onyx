@@ -15,6 +15,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
   <!-- Import Onyx and modules core context -->
   <import resource="classpath:META-INF/spring/onyx-core/context.xml" />
   <import resource="classpath:META-INF/spring/jade-core/context.xml" />
+  <import resource="classpath:META-INF/spring/marble-core/context.xml" />
   
   <import resource="beans.xml" />
 

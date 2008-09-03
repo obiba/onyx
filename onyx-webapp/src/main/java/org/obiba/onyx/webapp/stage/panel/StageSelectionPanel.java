@@ -91,7 +91,7 @@ public class StageSelectionPanel extends Panel {
       columns.add(new PropertyColumn(new Model("#"), "displayOrder", "displayOrder"));
       columns.add(new PropertyColumn(new StringResourceModel("Name", StageSelectionPanel.this, null), "name", "name"));
       columns.add(new PropertyColumn(new StringResourceModel("Description", StageSelectionPanel.this, null), "description", "description"));
-      columns.add(new AbstractColumn(new StringResourceModel("DependsOn", StageSelectionPanel.this, null)) {
+      additional.add(new AbstractColumn(new StringResourceModel("DependsOn", StageSelectionPanel.this, null)) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Stage stage = (Stage) rowModel.getObject();
@@ -105,7 +105,7 @@ public class StageSelectionPanel extends Panel {
 
       });
 
-      columns.add(new AbstractColumn(new Model("Message")) {
+      columns.add(new AbstractColumn(new Model("Status")) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Stage stage = (Stage) rowModel.getObject();

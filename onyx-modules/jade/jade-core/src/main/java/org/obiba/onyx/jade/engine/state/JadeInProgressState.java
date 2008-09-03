@@ -6,7 +6,6 @@ package org.obiba.onyx.jade.engine.state;
 import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
-import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
@@ -15,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
-public class JadeInProgressState extends AbstractStageState implements InitializingBean {
+public class JadeInProgressState extends AbstractJadeStageState implements InitializingBean {
 
   private static final Logger log = LoggerFactory.getLogger(JadeInProgressState.class);
 
@@ -29,7 +28,7 @@ public class JadeInProgressState extends AbstractStageState implements Initializ
     addAction(ActionDefinition.CANCEL_ACTION);
     addSystemAction(ActionDefinition.COMPLETE_ACTION);
   }
-  
+
   public Component getWidget(String id) {
     return new JadePanel(id, getStage());
   }
@@ -70,6 +69,11 @@ public class JadeInProgressState extends AbstractStageState implements Initializ
   @Override
   public String getMessage() {
     return "In Progress";
+  }
+
+  @Override
+  public String getName() {
+    return "InProgress";
   }
 
 }

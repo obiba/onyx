@@ -86,6 +86,11 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
       return "Ready";
     }
 
+    @Override
+    public String getName() {
+      return "Ready";
+    }
+
   }
 
   public class InProgressState extends AbstractStageState {
@@ -119,6 +124,11 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     public String getMessage() {
       return "InProgress";
     }
+    
+    @Override
+    public String getName() {
+      return "InProgress";
+    }
 
   }
 
@@ -143,6 +153,11 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     
     @Override
     public String getMessage() {
+      return "Completed";
+    }
+    
+    @Override
+    public String getName() {
       return "Completed";
     }
   }

@@ -14,6 +14,7 @@ import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -150,6 +151,12 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
     return currentState.getMessage();
   }
 
+  public Data getData(String key) {
+    Data data = currentState.getData(key);
+    log.info(getName() + ":" + currentState.getName() + ".data." + key + "=" + data);
+    return data;
+  }
+  
   public Stage getStage() {
     return stage;
   }
@@ -210,6 +217,12 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
       return ((ITransitionListener) currentState).removeAfterTransition();
     }
     return false;
+  }
+
+  @Override
+  public String getName() {
+    // do not expose current state name
+    return stage.getModule() + ":" + stage.getName();
   }
 
 }
