@@ -1,4 +1,4 @@
-package org.obiba.onyx.cartagene.hibernate;
+package org.obiba.onyx.cartagene.hibernate.util;
 
 import java.io.ByteArrayInputStream;
 import java.util.Properties;
