@@ -29,6 +29,7 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
+import org.obiba.onyx.wicket.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +64,10 @@ public abstract class ActionDefinitionPanel extends Panel {
 
     form.add(new Label("operator", activeInterviewService.getInterview().getUser().getName()));
     
-    form.add(new Label("participant", activeInterviewService.getParticipant().getFullName()));
+    Participant participant = activeInterviewService.getParticipant();
+    form.add(new Label("participantName", participant.getFullName()));
+    form.add(new Label("participantGender", new StringResourceModel("Gender." + participant.getGender(), this, null)));
+    form.add(new Label("participantBirthDate", DateUtils.getDateModel(new Model(participant.getBirthDate()))));
 
     if(definition.isAskPassword()) {
       form.add(new PasswordFragment("password"));

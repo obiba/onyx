@@ -6,14 +6,27 @@
   	<span wicket:id="feedback" />
   	<table class="keyValueTable">
   	  <tr>
+  	    <td valign="top" class="keyValueTableKey"><wicket:message key="Participant" /></td>
+  		<td class="keyValueTableValueOdd"><span wicket:id="participantName"/></td>
+  	  </tr>
+  	  
+  	  <tr>
+  	    <td valign="top" class="keyValueTableKey"><wicket:message key="Gender" /></td>
+  		<td class="keyValueTableValueOdd"><span wicket:id="participantGender"/></td>
+  	  </tr>
+  	  
+  	  <tr>
+  	    <td valign="top" class="keyValueTableKey"><wicket:message key="BirthDate" /></td>
+  		<td class="keyValueTableValueOdd"><span wicket:id="participantBirthDate"/></td>
+  	  </tr>
+  	  <tr>
+  	    <td colspan="2">&nbsp;</td>
+  	  </tr>
+  	  <tr>
   	    <td valign="top" class="keyValueTableKey"><wicket:message key="FieldTeamMember" /></td>
   		<td class="keyValueTableValueOdd"><span wicket:id="operator"/></td>
   	  </tr>
   	  <tr wicket:id="password"></tr>
-  	  <tr>
-  	    <td valign="top" class="keyValueTableKey"><wicket:message key="Participant" /></td>
-  		<td class="keyValueTableValueOdd"><span wicket:id="participant"/></td>
-  	  </tr>
   	  <tr>
   	    <td valign="top" class="keyValueTableKey"><wicket:message key="ConfirmParticipantCode" /></td>
   		<td class="keyValueTableValueEven"><input type="text" wicket:id="confirmBarcode" /></td>

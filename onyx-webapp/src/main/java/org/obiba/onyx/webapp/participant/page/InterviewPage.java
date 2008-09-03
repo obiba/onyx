@@ -20,8 +20,8 @@ import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.webapp.stage.panel.StageSelectionPanel;
-import org.obiba.onyx.webapp.util.DateUtils;
 import org.obiba.onyx.wicket.action.ActionWindow;
+import org.obiba.onyx.wicket.util.DateUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 
 @AuthorizeInstantiation({"SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR"})

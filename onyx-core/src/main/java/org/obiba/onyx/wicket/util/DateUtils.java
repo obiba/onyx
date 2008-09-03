@@ -1,4 +1,4 @@
-package org.obiba.onyx.webapp.util;
+package org.obiba.onyx.wicket.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

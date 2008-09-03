@@ -35,7 +35,7 @@ import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
 import org.obiba.onyx.webapp.participant.panel.ParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
-import org.obiba.onyx.webapp.util.DateUtils;
+import org.obiba.onyx.wicket.util.DateUtils;
 import org.obiba.wicket.markup.html.link.AjaxLinkList;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
