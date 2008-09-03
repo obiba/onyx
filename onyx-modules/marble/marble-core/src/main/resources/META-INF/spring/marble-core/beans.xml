@@ -1,0 +1,28 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+  <tx:annotation-driven transaction-manager="transactionManager" />
+  
+  <bean id="marbleOnyxModule" class="org.obiba.onyx.marble.engine.MarbleModule"/>
+
+  <bean id="marbleReadyState" class="org.obiba.onyx.marble.engine.state.MarbleReadyState" scope="prototype">
+    <property name="activeConsentService" ref="activeConsentService" />
+  </bean>
+  
+  <bean id="marbleInProgressState" class="org.obiba.onyx.marble.engine.state.MarbleInProgressState" scope="prototype">
+    <property name="activeConsentService" ref="activeConsentService" />
+  </bean>
+  
+  <bean id="marbleCompletedState" class="org.obiba.onyx.marble.engine.state.MarbleCompletedState" scope="prototype">
+    <property name="activeConsentService" ref="activeConsentService" />
+  </bean>
+  
+  <bean id="activeConsentService" class="org.obiba.onyx.marble.core.service.impl.DefaultActiveConsentServiceImpl" scope="session">
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+
+</beans>
