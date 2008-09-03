@@ -1,17 +1,15 @@
 package org.obiba.onyx.webapp.stage.panel;
 
-import java.text.SimpleDateFormat;
-
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.Model;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
+import org.obiba.onyx.wicket.util.DateUtils;
 
 public class StageMenuBar extends MenuBar {
 
   private static final long serialVersionUID = 8805458043658346936L;
-
-  private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd");
 
   private String infoLabel;
 
@@ -26,7 +24,7 @@ public class StageMenuBar extends MenuBar {
   }
 
   public void setInfoLabel(Stage stage, Participant participant) {
-    infoLabel = stage.getName() + ": " + participant.getLastName() + ", " + participant.getFirstName() + "   " + dateFormatter.format(participant.getBirthDate());
+    infoLabel = stage.getName() + ": " + participant.getFullName() + ", " + DateUtils.getDateModel(new Model(participant.getBirthDate())).getObject().toString();
 
     buildMenus();
   }

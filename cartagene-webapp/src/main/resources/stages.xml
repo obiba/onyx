@@ -11,7 +11,7 @@
   
   <stage id="sta">
     <name>STA</name>
-    <description>Height measurement</description>
+    <description>Height Measurement</description>
     <module>jade</module>
     <displayOrder>2</displayOrder>
     
@@ -23,7 +23,7 @@
   
   <stage id="hwc">
     <name>HWC</name>
-    <description>Hips and Waist Size measurement</description>
+    <description>Hips and Waist Size Measurement</description>
     <module>jade</module>
     <displayOrder>3</displayOrder>  
       
@@ -35,7 +35,7 @@
   
   <stage id="mus">
     <name>MUS</name>
-    <description>Muscle Strength measurement</description>
+    <description>Grip Strength Measurement</description>
     <module>jade</module>
     <displayOrder>4</displayOrder>
         
@@ -47,7 +47,7 @@
   
   <stage id="bim">
     <name>BIM</name>
-    <description>Bioimpedance measurement</description>
+    <description>Weight and Bioimpedance Measurement</description>
     <module>jade</module>
     <displayOrder>5</displayOrder>
 
@@ -60,7 +60,7 @@
   
   <stage id="spi">
     <name>SPI</name>
-    <description>Spirometry measurement</description>
+    <description>Spirometry Measurement</description>
     <module>jade</module>
     <displayOrder>6</displayOrder>
     
@@ -74,7 +74,7 @@
   
   <stage id="ecg">
     <name>ECG</name>
-    <description>Electrocardiogram measurement</description>
+    <description>Electrocardiogram Measurement</description>
     <module>jade</module>
     <displayOrder>7</displayOrder>
     
@@ -86,7 +86,7 @@
   
   <stage id="bon">
     <name>BON</name>
-    <description>Bone Density measurement</description>
+    <description>Bone Density Measurement</description>
     <module>jade</module>
     <displayOrder>8</displayOrder>
     
@@ -98,7 +98,7 @@
     
   <stage id="art">
     <name>ART</name>
-    <description>Arterial Stiffness measurement</description>
+    <description>Arterial Stiffness Measurement</description>
     <module>jade</module>
     <displayOrder>9</displayOrder>
     
