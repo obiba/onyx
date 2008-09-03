@@ -35,13 +35,13 @@
       <ref bean="namingStrategy" />
     </property>
     <property name="annotatedClasses">
-      <ref bean="annotatedBeanFinderFactoryBean" />
+      <ref bean="annotatedHibernateClasses" />
     </property>
     <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration" />
     <property name="hibernateProperties" ref="hibernateConfig" />
   </bean>
 
-  <bean id="annotatedBeanFinderFactoryBean" class="org.obiba.onyx.spring.AnnotatedBeanFinderFactoryBean">
+  <bean id="annotatedHibernateClasses" class="org.obiba.onyx.spring.AnnotatedBeanFinderFactoryBean">
     <!-- Use Apache Ant Pattern -->
     <property name="searchPatterns">
       <set>

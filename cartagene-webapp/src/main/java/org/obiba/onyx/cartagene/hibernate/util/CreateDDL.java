@@ -63,7 +63,7 @@ public class CreateDDL {
     try {
       AnnotationConfiguration conf = new AnnotationConfiguration();
 
-      Set<Class<?>> annotatedClasses = (Set<Class<?>>) appContext.getBean("annotatedBeanFinderFactoryBean");
+      Set<Class<?>> annotatedClasses = (Set<Class<?>>) appContext.getBean("annotatedHibernateClasses");
       for(Class cl : annotatedClasses) {
         conf.addAnnotatedClass(cl);
       }
