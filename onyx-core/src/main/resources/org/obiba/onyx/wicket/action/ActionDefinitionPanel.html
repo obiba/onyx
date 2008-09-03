@@ -12,7 +12,7 @@
   	  
   	  <tr>
   	    <td valign="top" class="keyValueTableKey"><wicket:message key="Gender" /></td>
-  		<td class="keyValueTableValueOdd"><span wicket:id="participantGender"/></td>
+  		<td class="keyValueTableValueEven"><span wicket:id="participantGender"/></td>
   	  </tr>
   	  
   	  <tr>
@@ -28,12 +28,15 @@
   	  </tr>
   	  <tr wicket:id="password"></tr>
   	  <tr>
-  	    <td valign="top" class="keyValueTableKey"><wicket:message key="ConfirmParticipantCode" /></td>
-  		<td class="keyValueTableValueEven"><input type="text" wicket:id="confirmBarcode" /></td>
+  	    <td colspan="2">&nbsp;</td>
+  	  </tr>
+  	  <tr>
+  	    <td valign="top" class="keyValueTableKey"><wicket:message key="ParticipantCode" /></td>
+  		<td class="keyValueTableValueOdd"><input type="text" wicket:id="confirmBarcode" /></td>
   	  </tr>
   	  <tr>
   	    <td valign="top" class="keyValueTableKey"><wicket:message key="Comment" /></td>
-  		<td class="keyValueTableValueOdd">
+  		<td class="keyValueTableValueEven">
   			<textarea wicket:id="comment" rows="3" cols="40">
   			</textarea></td>
   	  </tr>
@@ -54,7 +57,7 @@
 <wicket:fragment wicket:id="reasonsFragment">
   	  <tr>
   	    <td valign="top" class="keyValueTableKey"><wicket:message key="Reasons" /></td>
-  		<td class="keyValueTableValueEven">
+  		<td class="keyValueTableValueOdd">
   			<select wicket:id="reasonsSelect"/></td>
   	  </tr>
 </wicket:fragment>

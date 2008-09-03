@@ -38,7 +38,7 @@ public class InterviewPage extends BasePage {
     } else {
       Interview interview = activeInterviewService.setInterviewOperator(OnyxAuthenticatedSession.get().getUser());
 
-      add(new ParticipantPanel("participant", activeInterviewService.getParticipant()));
+      add(new ParticipantPanel("participant", activeInterviewService.getParticipant(), true));
       
       KeyValueDataPanel kvPanel = new KeyValueDataPanel("interview");
       kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateUtils.getFullDateModel(new PropertyModel(interview, "startDate")));
