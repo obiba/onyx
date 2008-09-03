@@ -2,12 +2,14 @@ package org.obiba.onyx.webapp.seed;
 
 import java.util.List;
 
+import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.onyx.core.domain.application.AppConfiguration;
 import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.engine.Stage;
 import org.obiba.wicket.util.seed.XstreamResourceDatabaseSeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +61,12 @@ public class TestDatabaseSeed extends XstreamResourceDatabaseSeed {
         }
       }
     }
+  }
+  
+  @Override
+  protected boolean shouldSeed(WebApplication application) {
+    boolean seed = super.shouldSeed(application);
+    return seed && (persistenceManager.count(User.class) == 0);
   }
 
   @Override
