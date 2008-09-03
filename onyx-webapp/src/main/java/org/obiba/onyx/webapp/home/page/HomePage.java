@@ -61,7 +61,7 @@ public class HomePage extends BasePage {
         
       // Not found, display error message in feedback panel.
       } else {
-        error((new StringResourceModel("participantNotFound", this, ParticipantSearchForm.this.getModel())).getString());
+        error((new StringResourceModel("ParticipantNotFound", this, ParticipantSearchForm.this.getModel())).getString());
       }
     }
   }
