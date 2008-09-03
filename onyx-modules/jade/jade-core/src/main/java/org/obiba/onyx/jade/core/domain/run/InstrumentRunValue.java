@@ -11,6 +11,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
@@ -127,6 +128,7 @@ public class InstrumentRunValue extends AbstractEntity {
     }
   }
 
+  @Transient
   @SuppressWarnings("unchecked")
   public <T> T getValue() {
     return (T)getData().getValue();
