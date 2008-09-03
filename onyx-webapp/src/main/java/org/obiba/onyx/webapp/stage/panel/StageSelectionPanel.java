@@ -111,7 +111,7 @@ public class StageSelectionPanel extends Panel {
           Stage stage = (Stage) rowModel.getObject();
           IStageExecution exec = activeInterviewService.getStageExecution(stage);
 
-          cellItem.add(new Label(componentId, exec.getMessage()));
+          cellItem.add(new Label(componentId, getString("Stage." + exec.getMessage(), null, exec.getMessage())));
         }
 
       });

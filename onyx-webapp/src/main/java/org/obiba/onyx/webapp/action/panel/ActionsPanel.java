@@ -7,7 +7,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.wicket.action.ActionWindow;
@@ -21,7 +20,7 @@ public class ActionsPanel extends Panel {
     super(id);
     setOutputMarkupId(true);
     setModel(stageModel);
-    
+
     RepeatingView repeating = new RepeatingView("repeating");
     add(repeating);
 
@@ -37,7 +36,7 @@ public class ActionsPanel extends Panel {
         }
 
       };
-      link.add(new Label("action", new Model(actionDef.getLabel())));
+      link.add(new Label("action", getString(actionDef.getLabel(), null, actionDef.getLabel())));
       item.add(link);
 
     }

@@ -84,7 +84,7 @@ public abstract class ActionWindow extends Panel {
       }
       
     });
-    modal.setTitle(actionDefinition.getLabel());
+    modal.setTitle(getString(actionDefinition.getLabel(), null, actionDefinition.getLabel()));
     modal.show(target);
   }
 
