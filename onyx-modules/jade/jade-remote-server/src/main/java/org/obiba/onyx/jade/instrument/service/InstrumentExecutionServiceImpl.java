@@ -38,15 +38,12 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
   }
 
   public Map<String, Data> getInputParametersValue(String... parameters) {
-    log.info("getInputParametersValue(" + parameters + ")");
-    log.info("instrumentRun=" + getInstrumentRun());
     Map<String, Data> inputParametersValue = new HashMap<String, Data>();
-
     for(String parameterName : parameters) {
       InstrumentRunValue inputParameterValue = activeInstrumentRunService.getInputInstrumentRunValue(parameterName);
       inputParametersValue.put(inputParameterValue.getInstrumentParameter().getName(), inputParameterValue.getData());
     }
-
+    log.info("getInputParametersValue(" + parameters + ")=" + inputParametersValue);
     return (inputParametersValue);
   }
 
@@ -62,7 +59,6 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
 
   public void addOutputParameterValue(String name, Data value) {
     log.info("addOutputParameterValue(" + name + ", " + value + ")");
-    log.info("instrumentRun=" + getInstrumentRun());
     InstrumentRunValue outputParameterValue = activeInstrumentRunService.getOutputInstrumentRunValue(name);
     outputParameterValue.setData(value);
     getPersistenceManager().save(outputParameterValue);
