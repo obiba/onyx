@@ -9,6 +9,7 @@ public class StageHeaderPanel extends HeaderPanel {
   public StageHeaderPanel(String id) {
     super(id);
     
+    remove("profile");
     remove("quit");
   }
 }
