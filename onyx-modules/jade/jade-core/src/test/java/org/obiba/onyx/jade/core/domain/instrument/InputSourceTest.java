@@ -1,5 +1,7 @@
 package org.obiba.onyx.jade.core.domain.instrument;
 
+import java.util.Date;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
@@ -10,10 +12,15 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class InputSourceTest extends BaseDefaultSpringContextTestCase {
 
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(InputSourceTest.class);
+  
   @Autowired(required = true)
   InputDataSourceVisitor inputDataSourceVisitor;
 
@@ -83,7 +90,9 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
     if(sourceInstrumentRunValue.getData().getValue() == null) {
       sourceInstrumentRunValue.setData(new Data(DataType.DATE, participant.getBirthDate()));
     }
-
+    Date date = sourceInstrumentRunValue.getValue();
+    log.info("date=" + date);
+    
     DateParameterValueConverter dateConverter = new DateParameterValueConverter();
     dateConverter.convert(targetInstrumentRunValue, sourceInstrumentRunValue);
 
@@ -93,7 +102,7 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
 
     UnitParameterValueConverter unitConverter = new UnitParameterValueConverter();
     unitConverter.convert(finalInstrumentRunValue, targetInstrumentRunValue);
-    Assert.assertEquals(Long.valueOf("28"), finalInstrumentRunValue.getValue());
+    Assert.assertEquals(Long.valueOf("29"), finalInstrumentRunValue.getValue());
 
     // Testing metric data
     sourceInstrumentRunValue = queryService.get(InstrumentRunValue.class, Long.valueOf("1"));
