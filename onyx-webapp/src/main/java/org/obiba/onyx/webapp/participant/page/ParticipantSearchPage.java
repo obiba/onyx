@@ -58,25 +58,47 @@ public class ParticipantSearchPage extends BasePage {
   private Participant template = new Participant();
 
   private ModalWindow participantDetailsModalWindow;
-  
+
   @SuppressWarnings("serial")
   public ParticipantSearchPage() {
     super();
-        
+
     participantDetailsModalWindow = new ModalWindow("participantDetailsModalWindow");
     participantDetailsModalWindow.setTitle(new StringResourceModel("Participant", this, null));
-    add(participantDetailsModalWindow);     
-    
+    add(participantDetailsModalWindow);
+
     Form form = new Form("searchForm");
     add(form);
 
     form.add(new TextField("barcode", new PropertyModel(template, "barcode")));
-    form.add(new TextField("name", new PropertyModel(template, "LastName")));
+
+    form.add(new AjaxButton("searchByCode", form) {
+
+      @Override
+      protected void onSubmit(AjaxRequestTarget target, Form form) {
+        OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantByCodeProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
+        replaceParticipantList(target, replacement);
+      }
+
+    });
+
+    form.add(new TextField("lastName", new PropertyModel(template, "lastName")));
+
+    form.add(new AjaxButton("searchByLastName", form) {
+
+      @Override
+      protected void onSubmit(AjaxRequestTarget target, Form form) {
+        OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantByLastNameProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
+        replaceParticipantList(target, replacement);
+      }
+
+    });
+
     form.add(new AjaxButton("submit", form) {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-        OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
+        OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantProvider(), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
         replaceParticipantList(target, replacement);
       }
 
@@ -96,7 +118,7 @@ public class ParticipantSearchPage extends BasePage {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-        OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new InterviewedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("CurrentInterviews", ParticipantSearchPage.this, null));
+        OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new InterviewedParticipantProvider(), new ParticipantListColumnProvider(), new StringResourceModel("CurrentInterviews", ParticipantSearchPage.this, null));
         replaceParticipantList(target, replacement);
       }
 
@@ -152,9 +174,52 @@ public class ParticipantSearchPage extends BasePage {
   @SuppressWarnings("serial")
   private class ParticipantProvider extends SortableDataProviderEntityServiceImpl<Participant> {
 
+    public ParticipantProvider() {
+      super(queryService, Participant.class);
+      setSort(new SortParam("lastName", true));
+    }
+
+    @Override
+    protected List<Participant> getList(PagingClause paging, SortingClause... clauses) {
+      return participantService.getParticipants(null, null, paging, clauses);
+    }
+
+    @Override
+    public int size() {
+      return participantService.countParticipants(null, null);
+    }
+
+  }
+
+  @SuppressWarnings("serial")
+  private class ParticipantByCodeProvider extends SortableDataProviderEntityServiceImpl<Participant> {
+
     private Participant template;
 
-    public ParticipantProvider(Participant template) {
+    public ParticipantByCodeProvider(Participant template) {
+      super(queryService, Participant.class);
+      this.template = template;
+      setSort(new SortParam("barcode", true));
+    }
+
+    @Override
+    protected List<Participant> getList(PagingClause paging, SortingClause... clauses) {
+      return participantService.getParticipants(template.getBarcode(), null, paging, clauses);
+    }
+
+    @Override
+    public int size() {
+      return participantService.countParticipants(template.getBarcode(), null);
+    }
+
+  }
+
+  @SuppressWarnings("serial")
+  private class ParticipantByLastNameProvider extends SortableDataProviderEntityServiceImpl<Participant> {
+
+    private Participant template;
+
+    public ParticipantByLastNameProvider(Participant template) {
       super(queryService, Participant.class);
       this.template = template;
       setSort(new SortParam("lastName", true));
@@ -162,12 +227,12 @@ public class ParticipantSearchPage extends BasePage {
 
     @Override
     protected List<Participant> getList(PagingClause paging, SortingClause... clauses) {
-      return participantService.getParticipants(template.getBarcode(), template.getLastName(), paging, clauses);
+      return participantService.getParticipants(null, template.getLastName(), paging, clauses);
     }
 
     @Override
     public int size() {
-      return participantService.countParticipants(template.getBarcode(), template.getLastName());
+      return participantService.countParticipants(null, template.getLastName());
     }
 
   }
@@ -183,7 +248,7 @@ public class ParticipantSearchPage extends BasePage {
 
     public AppointedParticipantProvider(Participant template) {
       super(queryService, Participant.class);
-      
+
       this.template = template;
       Calendar cal = Calendar.getInstance();
       cal.setTime(new Date());
@@ -208,22 +273,19 @@ public class ParticipantSearchPage extends BasePage {
   @SuppressWarnings("serial")
   private class InterviewedParticipantProvider extends SortableDataProviderEntityServiceImpl<Participant> {
 
-    private Participant template;
-
-    public InterviewedParticipantProvider(Participant template) {
+    public InterviewedParticipantProvider() {
       super(queryService, Participant.class);
       setSort(new SortParam("lastName", true));
-      this.template = template;
     }
 
     @Override
     protected List<Participant> getList(PagingClause paging, SortingClause... clauses) {
-      return participantService.getParticipants(template.getBarcode(), template.getLastName(), InterviewStatus.IN_PROGRESS, paging, clauses);
+      return participantService.getParticipants(null, null, InterviewStatus.IN_PROGRESS, paging, clauses);
     }
 
     @Override
     public int size() {
-      return participantService.countParticipants(template.getBarcode(), template.getLastName(), InterviewStatus.IN_PROGRESS);
+      return participantService.countParticipants(null, null, InterviewStatus.IN_PROGRESS);
     }
 
   }
@@ -238,9 +300,9 @@ public class ParticipantSearchPage extends BasePage {
 
     @SuppressWarnings("serial")
     public ParticipantListColumnProvider() {
-      columns.add(new PropertyColumn(new StringResourceModel("Code", ParticipantSearchPage.this, null), "barcode", "barcode"));
-      columns.add(new PropertyColumn(new StringResourceModel("FirstName", ParticipantSearchPage.this, null), "firstName", "firstName"));
+      columns.add(new PropertyColumn(new StringResourceModel("ParticipantCode", ParticipantSearchPage.this, null), "barcode", "barcode"));
       columns.add(new PropertyColumn(new StringResourceModel("LastName", ParticipantSearchPage.this, null), "lastName", "lastName"));
+      columns.add(new PropertyColumn(new StringResourceModel("FirstName", ParticipantSearchPage.this, null), "firstName", "firstName"));
       columns.add(new AbstractColumn(new StringResourceModel("Gender", ParticipantSearchPage.this, null), "gender") {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
@@ -257,7 +319,17 @@ public class ParticipantSearchPage extends BasePage {
         }
 
       });
-      columns.add(new AbstractColumn(new StringResourceModel("Interview", ParticipantSearchPage.this, null)) {
+
+      columns.add(new AbstractColumn(new StringResourceModel("Appointment", ParticipantSearchPage.this, null), "appointment.date") {
+
+        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+          Participant p = (Participant) rowModel.getObject();
+          cellItem.add(new Label(componentId, DateUtils.getFullDateModel(new Model(p.getAppointment().getDate()))));
+        }
+
+      });
+
+      columns.add(new AbstractColumn(new StringResourceModel("Status", ParticipantSearchPage.this, null)) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Participant p = (Participant) rowModel.getObject();

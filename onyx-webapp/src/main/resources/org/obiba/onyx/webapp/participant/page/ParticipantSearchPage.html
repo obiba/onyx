@@ -13,13 +13,19 @@
     							<tr>
     								<td class="keyValueTableKey"><wicket:message key="Code" /></td>
     								<td class="keyValueTableValueOdd"><input wicket:id="barcode" type="text" size="20"/></td>
+    								<td>
+    								    <input type="submit" wicket:message="value:Go" wicket:id="searchByCode"/>
+    								</td>
     							</tr>
     							<tr>
     								<td class="keyValueTableKey"><wicket:message key="LastName" /></td>
-    								<td class="keyValueTableValueEven"><input wicket:id="name" type="text" size="20"/></td>
+    								<td class="keyValueTableValueEven"><input wicket:id="lastName" type="text" size="20"/></td>
+    								<td>
+    								    <input type="submit" wicket:message="value:Go" wicket:id="searchByLastName"/>
+    								</td>
     							</tr>
     							<tr>
-    								<td colspan="2">
+    								<td colspan="3">
     									<input type="submit" wicket:message="value:Search" wicket:id="submit"/>
     									<input type="submit" wicket:message="value:AppointmentsOfTheDay" wicket:id="appointments"/>
     									<input type="submit" wicket:message="value:CurrentInterviews" wicket:id="interviews"/>
