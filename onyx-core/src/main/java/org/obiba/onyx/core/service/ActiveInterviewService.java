@@ -1,6 +1,7 @@
 package org.obiba.onyx.core.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
@@ -56,5 +57,12 @@ public interface ActiveInterviewService {
   public void doAction(Stage stage, Action action, User user);
   
   public void setStatus(InterviewStatus status, Date stopDate);
+  
+  /**
+   * Get a list of all the comments for the current interview.
+   * 
+   * @return  The list of comment
+   */
+  public List<Action> getInterviewComments();
   
 }

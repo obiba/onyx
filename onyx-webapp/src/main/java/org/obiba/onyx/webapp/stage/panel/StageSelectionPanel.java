@@ -30,7 +30,7 @@ import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 
-public class StageSelectionPanel extends Panel {
+public abstract class StageSelectionPanel extends Panel {
 
   private static final long serialVersionUID = 6282742572162384139L;
 
@@ -67,6 +67,8 @@ public class StageSelectionPanel extends Panel {
     add(list = new OnyxEntityList<Stage>("list", new StageProvider(), new StageListColumnProvider(), new StringResourceModel("StageList", StageSelectionPanel.this, null)));
   }
 
+  abstract public void onViewComments(AjaxRequestTarget target);
+
   private class StageProvider extends SortableDataProviderEntityServiceImpl<Stage> {
 
     private static final long serialVersionUID = 6022606267778864539L;
@@ -89,7 +91,6 @@ public class StageSelectionPanel extends Panel {
     @SuppressWarnings("serial")
     public StageListColumnProvider() {
       columns.add(new PropertyColumn(new Model("#"), "displayOrder", "displayOrder"));
-      //columns.add(new PropertyColumn(new StringResourceModel("Name", StageSelectionPanel.this, null), "name", "name"));
       columns.add(new PropertyColumn(new StringResourceModel("Name", StageSelectionPanel.this, null), "description", "description"));
       additional.add(new AbstractColumn(new StringResourceModel("DependsOn", StageSelectionPanel.this, null)) {
 
@@ -104,14 +105,22 @@ public class StageSelectionPanel extends Panel {
         }
 
       });
-
       columns.add(new AbstractColumn(new StringResourceModel("Status", StageSelectionPanel.this, null)) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Stage stage = (Stage) rowModel.getObject();
           IStageExecution exec = activeInterviewService.getStageExecution(stage);
 
-          cellItem.add(new Label(componentId, getString("Stage." + exec.getMessage(), null, exec.getMessage())));
+          cellItem.add(new Label(componentId, exec.getMessage()));
+        }
+
+      });
+
+      columns.add(new AbstractColumn(new StringResourceModel("StartEndTime", StageSelectionPanel.this, null)) {
+
+        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+          Stage stage = (Stage) rowModel.getObject();
+          cellItem.add(new StageStartEndTimePanel(componentId, stage));
         }
 
       });
@@ -125,6 +134,41 @@ public class StageSelectionPanel extends Panel {
         }
 
       });
+
+      columns.add(new AbstractColumn(new StringResourceModel("Comments", StageSelectionPanel.this, null)) {
+
+        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+          List<Action> interviewComments = activeInterviewService.getInterviewComments();
+          Stage stage = (Stage) rowModel.getObject();
+
+          boolean foundActionComments = false;
+          for(Action action : interviewComments) {
+            if(action.getStage() != null && action.getStage().getId() == stage.getId()) {
+              foundActionComments = true;
+              break;
+            }
+          }
+
+          // Show link only if there are existing comments for the selected Stage
+          if(foundActionComments) {
+            cellItem.add(new ViewCommentsActionPanel(componentId) {
+
+              private static final long serialVersionUID = 1L;
+
+              @Override
+              public void onViewComments(AjaxRequestTarget target) {
+                StageSelectionPanel.this.onViewComments(target);
+              }
+
+            });
+
+          } else {
+            cellItem.add(new Label(componentId, ""));
+          }
+        }
+
+      });
+
     }
 
     public List<IColumn> getAdditionalColumns() {

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.IMemento;
 import org.obiba.onyx.core.domain.participant.Interview;
@@ -173,6 +174,21 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
       }
       getPersistenceManager().save(interview);
     }
+  }
+  
+  public List<Action> getInterviewComments() {
+    Action template = new Action();
+    template.setInterview(getInterview()); 
+    List<Action> actions = getPersistenceManager().match(template, new SortingClause("dateTime", false)); 
+    List<Action> comments = new ArrayList<Action>();
+    
+    for(Action action : actions) {
+      if (action.getComment() != null ) {
+        comments.add(action);
+      }
+    }  
+    
+    return comments;
   }
 
 }
