@@ -18,12 +18,11 @@ import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
-import org.apache.wicket.util.io.Streams;
-import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.jade.client.JnlpClient;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
+import org.obiba.onyx.jade.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
@@ -36,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 public class MiniSpirInstrumentRunner implements InstrumentRunner {
 
+  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(JnlpClient.class);
 
   // Injected by spring.
@@ -235,7 +235,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     // Save the FVC image
     try {
       File FVCFile = new File(getMirPath() + getExternalImageName());
-      String fileContent = Streams.readString(new FileInputStream(FVCFile), "UTF-8");
+      String fileContent = FileUtil.readString(new FileInputStream(FVCFile), "UTF-8");
       byte[] FVCInput = fileContent.getBytes("UTF-8");
       ouputToSend.put("FVCImage", new Data(DataType.DATA, (Serializable) FVCInput));
     } catch(FileNotFoundException fnfEx) {

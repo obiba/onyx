@@ -13,12 +13,11 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
-import org.apache.wicket.util.io.Streams;
-import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.jade.client.JnlpClient;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
+import org.obiba.onyx.jade.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
@@ -186,12 +185,12 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
       
       // Save the xml and pdf files
       File xmlFile = new File(getExportPath() + getXmlFileName());
-      String fileContent = Streams.readString(new FileInputStream(xmlFile), "UTF-8");
+      String fileContent = FileUtil.readString(new FileInputStream(xmlFile), "UTF-8");
       byte[] xmlInput = fileContent.getBytes("UTF-8");
       ouputToSend.put("xmlFile", new Data(DataType.DATA, (Serializable) xmlInput));
 
       File pdfFile = new File(getExportPath() + getPdfFileName());
-      fileContent = Streams.readString(new FileInputStream(pdfFile), "UTF-8");
+      fileContent = FileUtil.readString(new FileInputStream(pdfFile), "UTF-8");
       byte[] pdfInput = fileContent.getBytes("UTF-8");
       ouputToSend.put("pdfFile", new Data(DataType.DATA, (Serializable) pdfInput));
 

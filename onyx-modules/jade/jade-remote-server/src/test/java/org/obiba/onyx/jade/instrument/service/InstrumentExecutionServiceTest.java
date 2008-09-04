@@ -53,8 +53,8 @@ public class InstrumentExecutionServiceTest {
   @Dataset
   public void getParticipant() {
     Assert.assertNotNull("No InstrumentRun", activeInstrumentRunService.getInstrumentRun());
-    Assert.assertEquals("Dupont", instrumentExecutionService.getParticipant().getLastName());
-    Assert.assertEquals("Laura", instrumentExecutionService.getParticipant().getFirstName());   
+    Assert.assertEquals("Dupont", instrumentExecutionService.getParticipantLastName());
+    Assert.assertEquals("Laura", instrumentExecutionService.getParticipantFirstName());   
   }
   
   @Test

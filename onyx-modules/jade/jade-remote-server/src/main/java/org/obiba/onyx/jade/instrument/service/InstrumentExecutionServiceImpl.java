@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
-import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
@@ -32,9 +31,13 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
   public String getInstrumentOperator() {
     return getInstrumentRun().getUser().getName();
   }
+  
+  public String getParticipantFirstName() {
+    return (getInstrumentRun().getParticipantInterview().getParticipant().getFirstName());
+  }
 
-  public Participant getParticipant() {
-    return (getInstrumentRun().getParticipantInterview().getParticipant());
+  public String getParticipantLastName() {
+    return (getInstrumentRun().getParticipantInterview().getParticipant().getLastName());
   }
 
   public Map<String, Data> getInputParametersValue(String... parameters) {
@@ -72,6 +75,8 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
       getPersistenceManager().save(run);
     }
   }
+
+
 
 
 }
