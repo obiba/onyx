@@ -1,5 +1,6 @@
 package org.obiba.onyx.jade.instrument.service;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.obiba.onyx.util.data.Data;
@@ -22,9 +23,15 @@ public interface InstrumentExecutionService {
    */
   public String getInstrumentOperator();
 
+  public String getParticipantID();
+  
   public String getParticipantLastName();
   
   public String getParticipantFirstName();
+  
+  public Date getParticipantBirthDate();
+  
+  public String getParticipantGender();
 
   public Map<String, Data> getInputParametersValue(String... parameters);
   

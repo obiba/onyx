@@ -4,15 +4,14 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.wicket.util.io.Streams;
-import org.obiba.onyx.core.domain.participant.Gender;
-import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
+import org.obiba.onyx.jade.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
@@ -33,7 +32,11 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
 
   private JdbcTemplate achillesExpressDb;
 
-  Participant participant;
+  private String participantID;
+  private String participantFirstName;
+  private String participantLastName;
+  private Date participantBirthDate;
+  private String participantGender;
 
   public InstrumentExecutionService getInstrumentExecutionService() {
     return instrumentExecutionService;
@@ -60,7 +63,10 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
   }
 
   public void afterPropertiesSet() throws Exception {
-    participant = instrumentExecutionService.getParticipant();
+    participantFirstName = instrumentExecutionService.getParticipantFirstName();
+    participantLastName = instrumentExecutionService.getParticipantLastName();
+    participantID = instrumentExecutionService.getParticipantID();
+    participantBirthDate = instrumentExecutionService.getParticipantBirthDate();
   }
 
   public void setAchillesExpressConfig() {
@@ -79,13 +85,12 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
 
     achillesExpressDb.update("insert into Patients ( Chart_Num, FName, LName, DOB, Sex, Foot ) values( ?, ?, ?, ?, ?, ? )", new PreparedStatementSetter() {
       public void setValues(PreparedStatement ps) throws SQLException {
-        ps.setString(1, participant.getBarcode());
-        ps.setString(2, participant.getFirstName());
-        ps.setString(3, participant.getLastName());
-        ps.setDate(4, new java.sql.Date(participant.getBirthDate().getTime()));
+        ps.setString(1, participantID);
+        ps.setString(2, participantFirstName);
+        ps.setString(3, participantLastName);
+        ps.setDate(4, new java.sql.Date(participantBirthDate.getTime()));
 
-        Gender gender = participant.getGender();
-        if(gender.equals(Gender.MALE)) {
+        if(participantGender.equals("MALE")) {
           ps.setString(5, "M");
         } else {
           ps.setString(5, "F");
@@ -110,7 +115,7 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
     return (Map<String, Data>) achillesExpressDb.query("select assessment, fxrisk, total, tscore, zscore, agematched, percentnormal, sidescanned, stiffnessindex, patients.chart_num, results.SOS, results.BUA, achillesbitmap, achillesbitmap2, appversion, roi_x, roi_y, roi_s from results, patients where results.chart_num = patients.chart_num and patients.chart_num = ?", new PreparedStatementSetter() {
 
       public void setValues(PreparedStatement ps) throws SQLException {
-        ps.setString(1, participant.getBarcode());
+        ps.setString(1, participantID);
       }
 
     },
@@ -139,14 +144,14 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
         boneDensityData.put("Region of Intersection Z coordinate", new Data(DataType.INTEGER, rs.getLong("roi_s")));
 
         try {
-          String achillebitmapData = Streams.readString(rs.getBinaryStream("achillesbitmap"), "UTF-8");
+          String achillebitmapData = FileUtil.readString(rs.getBinaryStream("achillesbitmap"), "UTF-8");
           boneDensityData.put("Stiffness Index graph", new Data(DataType.DATA, achillebitmapData.getBytes()));
         } catch(IOException couldNotReadGraph) {
           throw new RuntimeException("Could not retrieve Stiffness Index Graph from Achilles Express", couldNotReadGraph);
         }
 
         try {
-          String achillebitmapData2 = Streams.readString(rs.getBinaryStream("achillesbitmap"), "UTF-8");
+          String achillebitmapData2 = FileUtil.readString(rs.getBinaryStream("achillesbitmap"), "UTF-8");
           boneDensityData.put("Ultrasound Graphic", new Data(DataType.DATA, achillebitmapData2.getBytes()));
         } catch(IOException couldNotReadGraph) {
           throw new RuntimeException("Could not retrieve Ultrasound Graphic from Achilles Express", couldNotReadGraph);

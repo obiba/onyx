@@ -1,5 +1,6 @@
 package org.obiba.onyx.jade.instrument.service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +40,18 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
   public String getParticipantLastName() {
     return (getInstrumentRun().getParticipantInterview().getParticipant().getLastName());
   }
+  
+  public Date getParticipantBirthDate() {
+    return (getInstrumentRun().getParticipantInterview().getParticipant().getBirthDate());
+  }
+
+  public String getParticipantGender() {
+    return (getInstrumentRun().getParticipantInterview().getParticipant().getGender().toString());
+  }
+
+  public String getParticipantID() {
+    return (getInstrumentRun().getParticipantInterview().getParticipant().getBarcode());
+  }
 
   public Map<String, Data> getInputParametersValue(String... parameters) {
     Map<String, Data> inputParametersValue = new HashMap<String, Data>();
@@ -75,6 +88,8 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
       getPersistenceManager().save(run);
     }
   }
+
+  
 
 
 
