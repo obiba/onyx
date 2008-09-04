@@ -194,8 +194,4 @@
     </plugins>
   </build>
 
-  <properties>
-    <jetty.version>6.1.4</jetty.version>
-  </properties>
-
 </project>

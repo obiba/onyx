@@ -90,7 +90,7 @@
     <dependency>
       <groupId>javax.annotation</groupId>
       <artifactId>jsr250-api</artifactId>
-      <version>1.0</version>
+      <version>${jsr250-api.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -117,7 +117,7 @@
     <dependency>
       <groupId>org.jscience</groupId>
       <artifactId>jscience</artifactId>
-      <version>4.3.1</version>
+      <version>${jscience.version}</version>
     </dependency>
 
   </dependencies>
