@@ -363,7 +363,7 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
-        <version>${slf4j-log4j12.version}</version>
+        <version>${slf4j.version}</version>
         <scope>test</scope>
       </dependency>
 
@@ -544,7 +544,6 @@
     <obiba.commons.version>1.0.1-SNAPSHOT</obiba.commons.version>
     <jta.version>1.0.1B</jta.version>
     <hsqldb.version>1.8.0.7</hsqldb.version>
-    <slf4j-log4j12.version>1.4.3</slf4j-log4j12.version>
     <dbunit.version>2.2.2</dbunit.version>
     <junit.version>4.4</junit.version>
     <db4o.version>7.1.27.9108</db4o.version>
