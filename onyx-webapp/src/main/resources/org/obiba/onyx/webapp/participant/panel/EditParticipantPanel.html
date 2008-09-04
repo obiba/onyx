@@ -1,0 +1,106 @@
+<wicket:panel>
+  <div wicket:id="feedback" class="feedback"></div>
+  
+  <form wicket:id="editParticipantForm">
+    <table class="keyValueTable">
+      <tbody>
+        <tr>
+		  <td class="keyValueTableKey">
+		    <label for="firstName"><wicket:message key="FirstName" /></label>
+		  </td>
+		  <td class="keyValueTableValueOdd">
+		    <input wicket:id="firstName" id="firstName" type="text" size="20"/>
+		  </td>
+	    </tr>
+	    <tr>
+		  <td class="keyValueTableKey">
+		    <label for="lastName"><wicket:message key="LastName" /></label>
+		  </td>
+		  <td class="keyValueTableValueEven">
+		    <input wicket:id="lastName" id="lastName" type="text" size="20"/>
+		  </td>
+	    </tr>
+	    <tr>
+		  <td class="keyValueTableKey">
+		    <label for="gender"><wicket:message key="Gender" /></label>
+		  </td>
+		  <td class="keyValueTableValueOdd">
+		    <select wicket:id="gender" id="gender">
+		      <option>Female</option>
+		      <option>Male</option>
+		    </select>
+		  </td>
+	    </tr>
+	    <tr>
+		  <td class="keyValueTableKey">
+		    <label for="birthDate"><wicket:message key="BirthDate" /></label>
+		  </td>
+		  <td class="keyValueTableValueOdd">
+		    <div wicket:id="birthDate" />
+		  </td>
+	    </tr>
+	    <tr>
+		  <td class="keyValueTableKey">
+		    <label for="street"><wicket:message key="Street" /></label>
+		  </td>
+		  <td class="keyValueTableValueEven">
+		    <input wicket:id="street" id="street" type="text" size="20"/>
+		  </td>
+	    </tr>
+	    <tr>
+		  <td class="keyValueTableKey">
+		    <label for="apartment"><wicket:message key="Apartment" /></label>
+		  </td>
+		  <td class="keyValueTableValueOdd">
+		    <input wicket:id="apartment" id="apartment" type="text" size="20"/>
+		  </td>
+	    </tr>
+	    <tr>
+		  <td class="keyValueTableKey">
+		    <label for="city"><wicket:message key="City" /></label>
+		  </td>
+		  <td class="keyValueTableValueEven">
+		    <input wicket:id="city" id="city" type="text" size="20"/>
+		  </td>
+	    </tr>
+	    <tr>
+		  <td class="keyValueTableKey">
+		    <label for="province"><wicket:message key="Province" /></label>
+		  </td>
+		  <td class="keyValueTableValueOdd">
+		    <select wicket:id="province" id="province">
+		      <option>province1</option>
+		      <option>province2</option>
+		    </select>
+		  </td>
+	    </tr>
+	    <tr>
+		  <td class="keyValueTableKey">
+		    <label for="country"><wicket:message key="Country" /></label>
+		  </td>
+		  <td class="keyValueTableValueEven">
+		    <input wicket:id="country" id="country" type="text" size="20"/>
+		  </td>
+	    </tr>
+	    <tr>
+		  <td class="keyValueTableKey">
+		    <label for="postalCode"><wicket:message key="PostalCode" /></label>
+		  </td>
+		  <td class="keyValueTableValueOdd">
+		    <input wicket:id="postalCode" id="postalCode" type="text" size="20"/>
+		  </td>
+	    </tr>
+	    <tr>
+		  <td class="keyValueTableKey">
+		    <label for="phone"><wicket:message key="Phone" /></label>
+		  </td>
+		  <td class="keyValueTableValueEven">
+		    <input wicket:id="phone" id="phone" type="text" size="20"/>
+		  </td>
+	    </tr>
+	  </tbody>
+	</table>
+	    
+    <input type="button" wicket:id="saveAction" wicket:message="value:Save" />
+  </form>
+</wicket:panel>

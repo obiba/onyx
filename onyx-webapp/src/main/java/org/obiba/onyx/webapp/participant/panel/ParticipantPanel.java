@@ -6,13 +6,12 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.wicket.util.DateUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 
 public class ParticipantPanel extends Panel {
 
-  private static final long serialVersionUID = 3349313197922143705L;
+  private static final long serialVersionUID = 1L;
 
   @SpringBean
   private EntityQueryService queryService;
@@ -24,14 +23,15 @@ public class ParticipantPanel extends Panel {
   public ParticipantPanel(String id, Participant participant, boolean shortList) {
     super(id);
     setModel(new DetachableEntityModel(queryService, participant));
+    setOutputMarkupId(true);
 
     KeyValueDataPanel kvPanel = new KeyValueDataPanel("participant");
 
     kvPanel.addRow(new StringResourceModel("ParticipantCode", this, null), new PropertyModel(participant, "barcode"));
-    kvPanel.addRow(new StringResourceModel("AppointmentCode", this, null), new PropertyModel(participant, "appointment.appointmentCode"));
+    kvPanel.addRow(new StringResourceModel("AppointmentCode", this, null), new PropertyModel(participant, "appointment.appointmentCode")); 
     kvPanel.addRow(new StringResourceModel("Name", this, null), new PropertyModel(participant, "fullName"));
-    kvPanel.addRow(new StringResourceModel("Gender", this, null), new StringResourceModel("Gender." + participant.getGender(), this, null));
-    kvPanel.addRow(new StringResourceModel("BirthDate", this, null), DateUtils.getDateModel(new PropertyModel(participant, "birthDate")));
+    kvPanel.addRow(new StringResourceModel("Gender", this, null), new PropertyModel(this, "localizedGender"));
+    kvPanel.addRow(new StringResourceModel("BirthDate", this, null), new PropertyModel(participant, "birthDate"));
 
     if(!shortList) {
       kvPanel.addRow(new StringResourceModel("Street", this, null), new PropertyModel(participant, "street"));
@@ -46,4 +46,7 @@ public class ParticipantPanel extends Panel {
     add(kvPanel);
   }
 
+  public String getLocalizedGender() {
+    return getString("Gender."+((Participant)getModelObject()).getGender());
+  } 
 }

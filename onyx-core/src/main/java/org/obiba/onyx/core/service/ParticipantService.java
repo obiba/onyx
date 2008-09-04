@@ -40,4 +40,5 @@ public interface ParticipantService {
 
   public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment);
   
+  public void updateParticipant(Participant participant);
 }

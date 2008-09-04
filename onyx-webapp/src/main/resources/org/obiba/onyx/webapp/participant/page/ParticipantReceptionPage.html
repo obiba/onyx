@@ -1,9 +1,13 @@
 <html>
   <body>
     <wicket:extend>
+        <div wicket:id="editParticipantModalWindow" />
+        
 		<fieldset>
 			<legend><wicket:message key="participantInfo" /></legend>    
 			<span wicket:id="participantPanel"/>
+			
+			<a style="float: right;" href="#" wicket:id="editParticipantAction"><span wicket:id="editParticipantLabel" /></a>
 		</fieldset>
 		<fieldset>
 			<legend><wicket:message key="instructions" /></legend>    
