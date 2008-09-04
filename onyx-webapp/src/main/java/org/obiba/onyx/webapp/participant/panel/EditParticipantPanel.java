@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.validation.validator.PatternValidator;
@@ -84,10 +85,10 @@ public class EditParticipantPanel extends Panel {
 
       setModel(new Model(participant));
 
-      add(new TextField("firstName", new PropertyModel(getModelObject(), "firstName")).setRequired(true));
-      add(new TextField("lastName", new PropertyModel(getModelObject(), "lastName")).setRequired(true));
+      add(new TextField("firstName", new PropertyModel(getModelObject(), "firstName")).setRequired(true).setLabel(new StringResourceModel("FirstName", null)));
+      add(new TextField("lastName", new PropertyModel(getModelObject(), "lastName")).setRequired(true).setLabel(new StringResourceModel("LastName", null)));
       add(createGenderDropDown());
-      add(new DateField("birthDate", new PropertyModel(getModelObject(), "birthDate")).setRequired(true).setOutputMarkupId(true));
+      add(new DateField("birthDate", new PropertyModel(getModelObject(), "birthDate")).setRequired(true).setLabel(new StringResourceModel("BirthDate", null)));
       add(new TextField("street", new PropertyModel(getModelObject(), "street")));
       add(new TextField("apartment", new PropertyModel(getModelObject(), "apartment")));
       add(new TextField("city", new PropertyModel(getModelObject(), "city")));
@@ -126,6 +127,7 @@ public class EditParticipantPanel extends Panel {
       };
       genderDropDown.setType(Gender.class);
       genderDropDown.setRequired(true);
+      genderDropDown.setLabel(new StringResourceModel("Gender", null));
       genderDropDown.setOutputMarkupId(true);
 
       return genderDropDown;
