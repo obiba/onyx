@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.yui.calendar.DateField;
@@ -109,6 +110,15 @@ public class EditParticipantPanel extends Panel {
         }
       };
       add(submitLink);
+      
+      @SuppressWarnings("serial")
+      AjaxLink cancelLink = new AjaxLink("cancelAction") {
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          EditParticipantPanel.this.parentWindow.close(target);
+        }
+      };
+      add(cancelLink);
     }
 
     public void onSubmit() {
