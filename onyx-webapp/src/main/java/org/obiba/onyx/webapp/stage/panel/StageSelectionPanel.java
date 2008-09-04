@@ -57,6 +57,7 @@ public abstract class StageSelectionPanel extends Panel {
         if(!exec.isInteractive()) {
           target.addComponent(feedbackPanel);
           target.addComponent(list);
+          StageSelectionPanel.this.onActionPerformed(target, stage, action);
         } else {
           setResponsePage(new StagePage(new DetachableEntityModel(queryService, stage)));
         }
@@ -68,6 +69,8 @@ public abstract class StageSelectionPanel extends Panel {
   }
 
   abstract public void onViewComments(AjaxRequestTarget target);
+
+  abstract public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action);
 
   private class StageProvider extends SortableDataProviderEntityServiceImpl<Stage> {
 

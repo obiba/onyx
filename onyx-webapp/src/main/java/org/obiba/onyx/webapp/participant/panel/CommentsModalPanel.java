@@ -46,7 +46,7 @@ public abstract class CommentsModalPanel extends Panel {
     this.commentsWindow = commentsWindow;
     commentList = activeInterviewService.getInterviewComments();    
 
-    add(new ParticipantPanel("participant", activeInterviewService.getParticipant()));
+    add(new ParticipantPanel("participant", activeInterviewService.getParticipant(),true));
     add(new CommentForm("commentForm"));
 
     add(feedback = new FeedbackPanel("feedback"));

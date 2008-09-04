@@ -169,6 +169,12 @@ public class InterviewPage extends BasePage {
           });          
           commentsWindow.show(target);
         }
+
+        @Override
+        public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action) {
+          InterviewPage.this.updateCommentsCount();
+          target.addComponent(InterviewPage.this.commentsCount); 
+        }
         
       });
     }
