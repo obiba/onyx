@@ -64,7 +64,15 @@ public class Data implements Serializable {
     }
     this.value = value;
   }
-  
+
+  public String getValueAsString() {
+    if(type != DataType.DATA) {
+      return value != null ? value.toString() : null;
+    }
+    // TODO determine how to output a meaningful value for byte arrays
+    return "";
+  }
+
   @Override
   public String toString() {
     return "[" + type + ":" + value + "]";

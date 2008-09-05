@@ -153,7 +153,7 @@ public class InstrumentOutputParameterPanel extends Panel {
           output = field;
 
         } else if(runValue != null) {
-          output = new Label(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data.value"));
+          output = new Label(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data.valueAsString"));
         }
 
         if(output != null) {

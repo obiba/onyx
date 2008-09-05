@@ -49,10 +49,7 @@ public class ValidationPanel extends Panel {
       for(InstrumentInputParameter param : queryService.match(templateIn)) {
         Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
         InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
-        String unit = param.getMeasurementUnit();
-        if(unit == null) unit = "";
-        IModel value = (runValue.getValue() == null ? new Model(unit) : new Model(runValue.getValue() + " " + unit));
-        kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), value));
+        kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new RunValueLabelModel(runValue)));
       }
       add(kv);
     } else {
@@ -68,15 +65,24 @@ public class ValidationPanel extends Panel {
         Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
         InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
         if(runValue != null) {
-          String unit = param.getMeasurementUnit();
-          if(unit == null) unit = "";
-          IModel value = (runValue.getValue() == null ? new Model(unit) : new Model(runValue.getValue() + " " + unit));
-          kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), value));
+          kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new RunValueLabelModel(runValue)));
         }
       }
       add(kv);
     } else {
       add(new EmptyPanel("outputs"));
+    }
+  }
+
+  private class RunValueLabelModel extends Model {
+
+    private static final long serialVersionUID = 1338477100531673569L;
+
+    public RunValueLabelModel(InstrumentRunValue runValue) {
+      String unit = runValue.getInstrumentParameter().getMeasurementUnit();
+      if(unit == null) unit = "";
+      String label = runValue.getValue() == null ? unit : runValue.getData().getValueAsString() + " " + unit;
+      setObject(label);
     }
   }
 
