@@ -4,7 +4,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.webapp.base.page.BasePage;
@@ -28,7 +27,9 @@ public class ParticipantReceptionPage extends BasePage {
     //
     final ModalWindow editParticipantModalWindow = new ModalWindow("editParticipantModalWindow");
     editParticipantModalWindow.setTitle(new StringResourceModel("Participant", this, null));
-    editParticipantModalWindow.setContent(new EditParticipantPanel("content", (Participant)participantModel.getObject(), participantPanel, editParticipantModalWindow));
+    editParticipantModalWindow.setInitialHeight(350);
+    editParticipantModalWindow.setInitialWidth(400);
+    editParticipantModalWindow.setContent(new EditParticipantPanel("content", (Participant) participantModel.getObject(), participantPanel, editParticipantModalWindow));
     add(editParticipantModalWindow);
 
     @SuppressWarnings("serial")
@@ -38,7 +39,6 @@ public class ParticipantReceptionPage extends BasePage {
         editParticipantModalWindow.show(target);
       }
     };
-    link.add(new Label("editParticipantLabel", new StringResourceModel("Edit", this, null)));
 
     add(link);
   }

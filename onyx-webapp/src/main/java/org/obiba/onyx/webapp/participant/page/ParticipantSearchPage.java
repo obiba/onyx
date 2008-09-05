@@ -65,6 +65,8 @@ public class ParticipantSearchPage extends BasePage {
 
     participantDetailsModalWindow = new ModalWindow("participantDetailsModalWindow");
     participantDetailsModalWindow.setTitle(new StringResourceModel("Participant", this, null));
+    participantDetailsModalWindow.setInitialHeight(300);
+    participantDetailsModalWindow.setInitialWidth(400);
     add(participantDetailsModalWindow);
 
     Form form = new Form("searchForm");
@@ -312,7 +314,7 @@ public class ParticipantSearchPage extends BasePage {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Participant p = (Participant) rowModel.getObject();
-          cellItem.add(new Label(componentId, DateUtils.getDateModel(new Model(p.getBirthDate()))));
+          cellItem.add(new Label(componentId, DateUtils.getShortDateModel(new Model(p.getBirthDate()))));
         }
 
       });
