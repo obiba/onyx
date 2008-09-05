@@ -106,9 +106,9 @@ public class InstrumentOutputParameterPanel extends Panel {
           activeInstrumentRunService.validate();
         }
 
-        DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType());
+        DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType(), param.getMeasurementUnit());
         field.setRequired(true);
-        field.setLabel(new Model(param.getName()));
+        field.setLabel(new Model(param.getDescription()));
 
         outputs.addRow(label, field);
       }
