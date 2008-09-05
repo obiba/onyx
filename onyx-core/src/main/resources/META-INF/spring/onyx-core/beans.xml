@@ -9,6 +9,10 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 
+  <bean id="stageExecutionContext" class="org.obiba.onyx.engine.state.StageExecutionContext" scope="prototype">
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+
   <bean id="appConfigService" class="org.obiba.onyx.core.service.impl.DefaultAppConfigurationServiceImpl">
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>

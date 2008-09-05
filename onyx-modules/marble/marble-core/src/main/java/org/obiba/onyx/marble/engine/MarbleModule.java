@@ -16,7 +16,9 @@ public class MarbleModule implements Module, ApplicationContextAware {
   private ApplicationContext applicationContext;
 
   public IStageExecution createStageExecution(Interview interview, Stage stage, IStageExecution... dependsOn) {
-    StageExecutionContext exec = new StageExecutionContext(interview, stage);
+    StageExecutionContext exec = (StageExecutionContext) applicationContext.getBean("stageExecutionContext");
+    exec.setStage(stage);
+    exec.setInterview(interview);
 
     AbstractStageState ready = (AbstractStageState) applicationContext.getBean("marbleReadyState");
     AbstractStageState inProgress = (AbstractStageState) applicationContext.getBean("marbleInProgressState");

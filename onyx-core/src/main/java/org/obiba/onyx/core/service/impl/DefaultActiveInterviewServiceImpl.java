@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
-import org.obiba.onyx.core.domain.IMemento;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -78,17 +77,16 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     if(exec == null) {
 
       Module module = moduleRegistry.getModule(stage.getModule());
-      if (stage.getDependsOnStages().size()>0) {
+      if(stage.getDependsOnStages().size() > 0) {
         List<IStageExecution> dependsOnStageList = new ArrayList<IStageExecution>();
-        for (Stage dependsOnStage : stage.getDependsOnStages()) {
+        for(Stage dependsOnStage : stage.getDependsOnStages()) {
           dependsOnStageList.add(getStageExecution(dependsOnStage));
         }
         exec = (StageExecutionContext) module.createStageExecution(getInterview(), stage, dependsOnStageList.toArray(new IStageExecution[dependsOnStageList.size()]));
+      } else {
+        exec = (StageExecutionContext) module.createStageExecution(getInterview(), stage);
       }
-      else {
-        exec = (StageExecutionContext) module.createStageExecution(getInterview(), stage);  
-      }
-      
+
       contexts.put(stage.getId(), exec);
 
       // try to find it in memory
@@ -112,36 +110,14 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     action.setUser(user);
     getPersistenceManager().save(action);
 
-    if (stage != null) {
+    if(stage != null) {
       IStageExecution exec = getStageExecution(stage);
       action.getActionType().act(exec, action);
-
-      // persist in memento
-      if(exec instanceof IMemento) {
-        StageExecutionMemento template = new StageExecutionMemento();
-        template.setStage(stage);
-        template.setInterview(action.getInterview());
-        StageExecutionMemento memento = (StageExecutionMemento) ((IMemento) exec).saveToMemento(getPersistenceManager().matchOne(template));
-        getPersistenceManager().save(memento);
-      }
     }
   }
 
   public void shutdown() {
     log.info("shutdown");
-    // for (Serializable interviewId : interviewStageContexts.keySet()) {
-    // Map<Serializable, StageExecutionContext> contexts = interviewStageContexts.get(interviewId);
-    // for (Serializable stageId : contexts.keySet()) {
-    // // persist in a memento
-    // StageExecutionMemento template = new StageExecutionMemento();
-    // template.setStage(getPersistenceManager().get(Stage.class, stageId));
-    // template.setInterview(getPersistenceManager().get(Interview.class, interviewId));
-    // StageExecutionContext exec = contexts.get(stageId);
-    // StageExecutionMemento memento =
-    // (StageExecutionMemento)exec.saveToMemento(getPersistenceManager().matchOne(template));
-    // getPersistenceManager().save(memento);
-    // }
-    // }
   }
 
   public void setParticipant(Participant participant) {
@@ -152,13 +128,13 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     Interview template = new Interview();
     template.setParticipant(currentParticipant);
     Interview interview = getPersistenceManager().matchOne(template);
-    
+
     if(interview != null) {
       interview.setUser(operator);
       getPersistenceManager().save(interview);
       currentParticipant = getPersistenceManager().get(Participant.class, currentParticipant.getId());
     }
-    
+
     return interview;
   }
 
@@ -166,28 +142,28 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     Interview template = new Interview();
     template.setParticipant(currentParticipant);
     Interview interview = getPersistenceManager().matchOne(template);
-    
+
     if(interview != null) {
       interview.setStatus(status);
-      if (stopDate != null) {
+      if(stopDate != null) {
         interview.setStopDate(stopDate);
       }
       getPersistenceManager().save(interview);
     }
   }
-  
+
   public List<Action> getInterviewComments() {
     Action template = new Action();
-    template.setInterview(getInterview()); 
-    List<Action> actions = getPersistenceManager().match(template, new SortingClause("dateTime", false)); 
+    template.setInterview(getInterview());
+    List<Action> actions = getPersistenceManager().match(template, new SortingClause("dateTime", false));
     List<Action> comments = new ArrayList<Action>();
-    
+
     for(Action action : actions) {
-      if (action.getComment() != null ) {
+      if(action.getComment() != null) {
         comments.add(action);
       }
-    }  
-    
+    }
+
     return comments;
   }
 
