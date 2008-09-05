@@ -3,6 +3,8 @@ package org.obiba.onyx.webapp.home.page;
 
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
@@ -14,6 +16,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.page.InterviewPage;
+import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
 @AuthorizeInstantiation({"SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR"})
@@ -30,6 +33,12 @@ public class HomePage extends BasePage {
     super();
 
     add(new ParticipantSearchForm("configurationForm"));
+    
+    add(new AjaxLink("search") {
+      public void onClick(AjaxRequestTarget target) {
+        setResponsePage(ParticipantSearchPage.class);
+      }
+    });
 
   }
 

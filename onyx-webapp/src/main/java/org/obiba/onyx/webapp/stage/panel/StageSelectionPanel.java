@@ -19,6 +19,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
@@ -128,15 +129,17 @@ public abstract class StageSelectionPanel extends Panel {
 
       });
 
-      columns.add(new AbstractColumn(new Model("Actions")) {
+      if(activeInterviewService.getInterview().getStatus().equals(InterviewStatus.IN_PROGRESS)) {
+        columns.add(new AbstractColumn(new Model("Actions")) {
 
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Stage stage = (Stage) rowModel.getObject();
-          IStageExecution exec = activeInterviewService.getStageExecution(stage);
-          cellItem.add(new ActionsPanel(componentId, new DetachableEntityModel(queryService, stage), exec, modal));
-        }
+          public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+            Stage stage = (Stage) rowModel.getObject();
+            IStageExecution exec = activeInterviewService.getStageExecution(stage);
+            cellItem.add(new ActionsPanel(componentId, new DetachableEntityModel(queryService, stage), exec, modal));
+          }
 
-      });
+        });
+      }
 
       columns.add(new AbstractColumn(new StringResourceModel("Comments", StageSelectionPanel.this, null)) {
 

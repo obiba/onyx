@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.wicket.Component;
 import org.obiba.core.domain.IEntity;
+import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.IMemento;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
@@ -28,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Yannick Marcon
  * 
  */
-public class StageExecutionContext implements IStageExecution, ITransitionEventSink, IMemento, ITransitionSource, ITransitionListener {
+public class StageExecutionContext extends PersistenceManagerAwareService implements IStageExecution, ITransitionEventSink, IMemento, ITransitionSource, ITransitionListener {
 
   private static final Logger log = LoggerFactory.getLogger(StageExecutionContext.class);
 
@@ -93,6 +94,16 @@ public class StageExecutionContext implements IStageExecution, ITransitionEventS
       }
     }
     log.info("castEvent(" + event + ") to " + currentState.getClass().getSimpleName());
+    
+    saveState();
+  }
+  
+  private void saveState() {
+    StageExecutionMemento template = new StageExecutionMemento();
+    template.setStage(stage);
+    template.setInterview(interview);
+    StageExecutionMemento memento = (StageExecutionMemento) saveToMemento(getPersistenceManager().matchOne(template));
+    getPersistenceManager().save(memento);
   }
 
   public List<ActionDefinition> getActionDefinitions() {

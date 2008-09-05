@@ -1,13 +1,10 @@
 package org.obiba.onyx.jade.instrument.atcor;
 
-import java.sql.ResultSet;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.wicket.util.io.Streams;
-import org.obiba.onyx.core.domain.participant.Gender;
-import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.atcor.dao.SphygmoCorDao;
@@ -39,7 +36,15 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
 
   private SphygmoCorDao sphygmoCorDao;
 
-  private Participant participant;
+  private String participantID;
+  
+  private String participantLastName;
+  
+  private String participantFirstName;
+  
+  private Date participantBirthDate;
+  
+  private String participantGender;
 
   //
   // Methods
@@ -51,13 +56,17 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     sphygmoCorDao.deleteAllPatients();
 
     // Fetch the current participant's data.
-    participant = instrumentExecutionService.getParticipant();
+    participantID = instrumentExecutionService.getParticipantID();
+    participantLastName = instrumentExecutionService.getParticipantLastName();
+    participantFirstName = instrumentExecutionService.getParticipantFirstName();
+    participantBirthDate = instrumentExecutionService.getParticipantBirthDate();
+    participantGender = instrumentExecutionService.getParticipantGender();
 
     // Use the participant data to create a new patient in the AtCor database.
     // NOTE: Populate the PATIENT_ID field (VARCHAR) with the participant's barcode,
     // and the PATIENT_NO field (INTEGER) with the number 1 (since there can never
     // be more than one patient at a time, we can always use the same number).
-    sphygmoCorDao.addPatient(SYSTEM_ID, STUDY_ID, participant.getBarcode(), 1, participant.getLastName(), participant.getFirstName(), new java.sql.Date(participant.getBirthDate().getTime()), participant.getGender().toString());
+    sphygmoCorDao.addPatient(SYSTEM_ID, STUDY_ID, participantID, 1, participantLastName, participantFirstName, new java.sql.Date(participantBirthDate.getTime()), participantGender);
   }
 
   public void run() {

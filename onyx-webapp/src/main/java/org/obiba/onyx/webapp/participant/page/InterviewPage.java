@@ -126,7 +126,7 @@ public class InterviewPage extends BasePage {
         public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action) {
           Calendar todayCal = Calendar.getInstance();
           activeInterviewService.setStatus(InterviewStatus.CANCELLED, todayCal.getTime());
-          setResponsePage(getApplication().getHomePage());
+          setResponsePage(InterviewPage.class);
         }
         
       };

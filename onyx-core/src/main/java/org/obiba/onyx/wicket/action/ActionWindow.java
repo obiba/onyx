@@ -22,7 +22,7 @@ public abstract class ActionWindow extends Panel {
   private ActiveInterviewService activeInterviewService;
 
   private ModalWindow modal;
-  
+
   private IModel stageModel;
 
   @SuppressWarnings("serial")
@@ -44,8 +44,8 @@ public abstract class ActionWindow extends Panel {
           Action action = pane.getAction();
           log.info("action=" + action);
           Stage stage = null;
-          if (stageModel != null) {
-            stage = (Stage)stageModel.getObject();
+          if(stageModel != null) {
+            stage = (Stage) stageModel.getObject();
           }
           activeInterviewService.doAction(stage, action, activeInterviewService.getInterview().getUser());
           onActionPerformed(target, stage, action);
@@ -72,7 +72,7 @@ public abstract class ActionWindow extends Panel {
   public void setTitle(IModel title) {
     modal.setTitle(title);
   }
-  
+
   @SuppressWarnings("serial")
   public void show(AjaxRequestTarget target, IModel stageModel, ActionDefinition actionDefinition) {
     this.stageModel = stageModel;
@@ -82,9 +82,11 @@ public abstract class ActionWindow extends Panel {
       public void onClick(AjaxRequestTarget target) {
         modal.close(target);
       }
-      
+
     });
-    modal.setTitle(((Stage)stageModel.getObject()).getDescription() + ": " + getString(actionDefinition.getLabel(), null, actionDefinition.getLabel()));
+    if(stageModel != null && stageModel.getObject() != null) modal.setTitle(((Stage) stageModel.getObject()).getDescription() + ": " + getString(actionDefinition.getLabel(), null, actionDefinition.getLabel()));
+    else
+      modal.setTitle(getString(actionDefinition.getLabel(), null, actionDefinition.getLabel()));
     modal.show(target);
   }
 
