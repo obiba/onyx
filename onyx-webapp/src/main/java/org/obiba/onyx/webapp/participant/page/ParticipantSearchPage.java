@@ -181,12 +181,12 @@ public class ParticipantSearchPage extends BasePage {
 
     @Override
     protected List<Participant> getList(PagingClause paging, SortingClause... clauses) {
-      return participantService.getParticipants(null, null, paging, clauses);
+      return queryService.list(Participant.class, paging, clauses);
     }
 
     @Override
     public int size() {
-      return participantService.countParticipants(null, null);
+      return queryService.count(Participant.class);
     }
 
   }
@@ -204,12 +204,12 @@ public class ParticipantSearchPage extends BasePage {
 
     @Override
     protected List<Participant> getList(PagingClause paging, SortingClause... clauses) {
-      return participantService.getParticipants(template.getBarcode(), null, paging, clauses);
+      return participantService.getParticipantsByCode(template.getBarcode(), paging, clauses);
     }
 
     @Override
     public int size() {
-      return participantService.countParticipants(template.getBarcode(), null);
+      return participantService.countParticipantsByCode(template.getBarcode());
     }
 
   }
@@ -227,21 +227,19 @@ public class ParticipantSearchPage extends BasePage {
 
     @Override
     protected List<Participant> getList(PagingClause paging, SortingClause... clauses) {
-      return participantService.getParticipants(null, template.getLastName(), paging, clauses);
+      return participantService.getParticipantsByLastName(template.getLastName(), paging, clauses);
     }
 
     @Override
     public int size() {
-      return participantService.countParticipants(null, template.getLastName());
+      return participantService.countParticipantsByLastName(template.getLastName());
     }
 
   }
 
   @SuppressWarnings("serial")
   private class AppointedParticipantProvider extends SortableDataProviderEntityServiceImpl<Participant> {
-
-    private Participant template;
-
+    
     private Date from;
 
     private Date to;
@@ -249,7 +247,6 @@ public class ParticipantSearchPage extends BasePage {
     public AppointedParticipantProvider(Participant template) {
       super(queryService, Participant.class);
 
-      this.template = template;
       Calendar cal = Calendar.getInstance();
       cal.setTime(new Date());
       cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
@@ -260,12 +257,12 @@ public class ParticipantSearchPage extends BasePage {
 
     @Override
     protected List<Participant> getList(PagingClause paging, SortingClause... clauses) {
-      return participantService.getParticipants(template.getBarcode(), template.getLastName(), from, to, paging, clauses);
+      return participantService.getParticipants(from, to, paging, clauses);
     }
 
     @Override
     public int size() {
-      return participantService.countParticipants(template.getBarcode(), template.getLastName(), from, to);
+      return participantService.countParticipants(from, to);
     }
 
   }
@@ -280,12 +277,12 @@ public class ParticipantSearchPage extends BasePage {
 
     @Override
     protected List<Participant> getList(PagingClause paging, SortingClause... clauses) {
-      return participantService.getParticipants(null, null, InterviewStatus.IN_PROGRESS, paging, clauses);
+      return participantService.getParticipants(InterviewStatus.IN_PROGRESS, paging, clauses);
     }
 
     @Override
     public int size() {
-      return participantService.countParticipants(null, null, InterviewStatus.IN_PROGRESS);
+      return participantService.countParticipants(InterviewStatus.IN_PROGRESS);
     }
 
   }

@@ -10,14 +10,14 @@ import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 
 public interface ParticipantService {
-  
+
   /**
    * Persist the new participant from the given model.
    * @param model
    * @return
    */
   public Participant createParticipant(Participant model);
-  
+
   /**
    * Add an appointment to participant.
    * @param participant
@@ -25,20 +25,36 @@ public interface ParticipantService {
    * @return
    */
   public Appointment addAppointment(Participant participant, Date date);
-    
-  public List<Participant> getParticipants(String barcode, String likeName, PagingClause paging, SortingClause... clauses);
+
+  /**
+   * 
+   * @param code participant code or appointment code
+   * @param paging
+   * @param clauses
+   * @return
+   */
+  public List<Participant> getParticipantsByCode(String code, PagingClause paging, SortingClause... clauses);
+
+  /**
+   * 
+   * @param code participant code or appointment code
+   * @return
+   */
+  public int countParticipantsByCode(String code);
   
-  public int countParticipants(String barcode, String likeName);
+  public List<Participant> getParticipantsByLastName(String likeName, PagingClause paging, SortingClause... clauses);
   
-  public List<Participant> getParticipants(String barcode, String likeName, InterviewStatus status, PagingClause paging, SortingClause... clauses);
-  
-  public int countParticipants(String barcode, String likeName, InterviewStatus status);
-  
-  public List<Participant> getParticipants(String barcode, String likeName, Date from, Date to, PagingClause paging, SortingClause... clauses);
-  
-  public int countParticipants(String barcode, String likeName, Date from, Date to);
+  public int countParticipantsByLastName(String likeName);
+
+  public List<Participant> getParticipants(InterviewStatus status, PagingClause paging, SortingClause... clauses);
+
+  public int countParticipants(InterviewStatus status);
+
+  public List<Participant> getParticipants(Date from, Date to, PagingClause paging, SortingClause... clauses);
+
+  public int countParticipants(Date from, Date to);
 
   public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment);
-  
+
   public void updateParticipant(Participant participant);
 }
