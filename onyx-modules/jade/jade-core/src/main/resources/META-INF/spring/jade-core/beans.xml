@@ -49,7 +49,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <value>instruments/**/instrument-descriptor.xml</value>
       </list>
     </property>
-    <property name="developmentSeed" value="true" />
+    <property name="developmentSeed" value="false" />
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="instrumentService" ref="instrumentService" />
     <property name="instrumentDescriptorService" ref="instrumentDescriptorService" />
