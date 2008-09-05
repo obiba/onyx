@@ -109,8 +109,8 @@ public class InterviewPage extends BasePage {
       });
 
       KeyValueDataPanel kvPanel = new KeyValueDataPanel("interview");
-      kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateUtils.getFullDateModel(new PropertyModel(interview, "startDate")));
-      kvPanel.addRow(new StringResourceModel("EndDate", this, null), DateUtils.getFullDateModel(new PropertyModel(interview, "stopDate")));
+      kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateUtils.getShortDateTimeModel(new PropertyModel(interview, "startDate")));
+      kvPanel.addRow(new StringResourceModel("EndDate", this, null), DateUtils.getShortDateTimeModel(new PropertyModel(interview, "stopDate")));
       kvPanel.addRow(new StringResourceModel("Status", this, null), new StringResourceModel("InterviewStatus." + interview.getStatus(), this, null));
       add(kvPanel);
       

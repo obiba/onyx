@@ -321,7 +321,7 @@ public class ParticipantSearchPage extends BasePage {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Participant p = (Participant) rowModel.getObject();
-          cellItem.add(new Label(componentId, DateUtils.getFullDateModel(new Model(p.getAppointment().getDate()))));
+          cellItem.add(new Label(componentId, DateUtils.getShortDateTimeModel(new Model(p.getAppointment().getDate()))));
         }
 
       });

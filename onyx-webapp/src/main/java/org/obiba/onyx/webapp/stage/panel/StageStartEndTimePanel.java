@@ -32,9 +32,9 @@ public class StageStartEndTimePanel extends Panel {
     List<Action> actionList = queryService.match(template);
 
     if(activeInterviewService.getStageExecution(stage).isCompleted()) {
-      add(new Label("endTime", DateUtils.getFullDateModel(new PropertyModel(actionList.get(actionList.size() - 1), "dateTime"))));
+      add(new Label("endTime", DateUtils.getShortDateTimeModel(new PropertyModel(actionList.get(actionList.size() - 1), "dateTime"))));
       add(new Label("separator", "-")); 
-      add(new Label("startTime", DateUtils.getFullDateModel(new PropertyModel(actionList.get(0), "dateTime"))));      
+      add(new Label("startTime", DateUtils.getShortDateTimeModel(new PropertyModel(actionList.get(0), "dateTime"))));      
     } else {
       add(new Label("endTime", ""));
       add(new Label("separator", ""));      
