@@ -8,7 +8,7 @@
     <vendor>MIR</vendor>
     <model>MiniSpir</model>
     <serialNumber>1234567890</serialNumber>
-    <barcode>spi1</barcode>    
+    <barcode>CAG0189</barcode>    
     <status>ACTIVE</status>
     <instrumentType>
       <name>SPI</name>
