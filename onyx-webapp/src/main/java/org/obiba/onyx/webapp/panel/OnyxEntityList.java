@@ -20,7 +20,7 @@ public class OnyxEntityList<T> extends EntityListTablePanel<T> {
   }
 
   public OnyxEntityList(String id, SortableDataProvider dataProvider, IColumnProvider columns, IModel title) {
-    super(id, dataProvider, columns, title, 100);
+    super(id, dataProvider, columns, title, 50);
     setAllowColumnSelection(false);
   }
   
