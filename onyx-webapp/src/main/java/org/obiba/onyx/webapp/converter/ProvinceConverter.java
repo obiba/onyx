@@ -1,10 +1,8 @@
 package org.obiba.onyx.webapp.converter;
 
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import org.apache.wicket.util.convert.IConverter;
-import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Province;
 
 public class ProvinceConverter implements IConverter {
