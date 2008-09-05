@@ -72,7 +72,7 @@ public class CreateDDL {
       conf.setNamingStrategy(ImprovedNamingStrategy.INSTANCE);
 
       Properties props = new Properties();
-      props.put("hibernate.dialect", "org.hibernate.dialect.MySQLInnoDBDialect");
+      props.put("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
 
       conf.addProperties(props);
       return conf;
