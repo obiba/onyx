@@ -2,11 +2,11 @@ package org.obiba.onyx.core.service.impl;
 
 import java.util.Date;
 
-import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Default implementation (non hibernate specific) of Participant Service
@@ -14,6 +14,7 @@ import org.obiba.onyx.core.service.ParticipantService;
  * @author Yannick Marcon
  * 
  */
+@Transactional
 public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAwareService implements ParticipantService {
 
   public Participant createParticipant(Participant model) {
@@ -40,19 +41,6 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
   }
 
   public void updateParticipant(Participant participant) {
-    Participant p = getPersistenceManager().get(Participant.class, participant.getId());
-    p.setFirstName(participant.getFirstName());
-    p.setLastName(participant.getLastName());
-    p.setGender(participant.getGender());
-    p.setBirthDate(participant.getBirthDate());
-    p.setStreet(participant.getStreet());
-    p.setApartment(participant.getApartment());
-    p.setCity(participant.getCity());
-    p.setProvince(participant.getProvince());
-    p.setCountry(participant.getCountry());
-    p.setPostalCode(participant.getPostalCode());
-    p.setPhone(participant.getPhone());
-
-    persistenceManager.save(p);
+    persistenceManager.save(participant);
   }
 }
