@@ -3,6 +3,7 @@ package org.obiba.onyx.core.service.impl.hibernate;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.obiba.core.service.PagingClause;
@@ -89,22 +90,40 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
   }
 
   public List<Participant> getParticipantsByCode(String code, PagingClause paging, SortingClause... clauses) {
-    AssociationCriteria criteria = getCriteria(paging, clauses);
-
-    if(code != null) {
-      criteria.add("barcode", Operation.eq, code);
-    }
-
-    return criteria.list();
+    Query participantQuery = createParticipantsByCodeQuery(code);
+    
+    participantQuery.setMaxResults(paging.getLimit());
+    participantQuery.setFirstResult(paging.getOffset());
+    
+    return participantQuery.list();
   }
 
   public int countParticipantsByCode(String code) {
-    AssociationCriteria criteria = getCriteria(null, (SortingClause[])null);
+    Query participantQuery = createParticipantsByCodeQuery(code);
 
-    if(code != null) {
-      criteria.add("barcode", Operation.eq, code);
+    List results = participantQuery.list();
+    
+    int count = 0;
+    
+    if (results != null) {
+      count = results.size();  
     }
-
-    return criteria.count();
+    
+    return count;
+  }
+  
+  private Query createParticipantsByCodeQuery(String code) {
+    Query participantQuery = null;
+    
+    if(code != null) {
+      participantQuery = getSession().createQuery("from Participant p where p.barcode = :barcode or p.appointment.appointmentCode = :appointmentCode");
+      participantQuery.setString("barcode", code);      
+      participantQuery.setString("appointmentCode", code);
+    }
+    else {
+      participantQuery = getSession().createQuery("from Participant");  
+    }
+    
+    return participantQuery;
   }
 }
