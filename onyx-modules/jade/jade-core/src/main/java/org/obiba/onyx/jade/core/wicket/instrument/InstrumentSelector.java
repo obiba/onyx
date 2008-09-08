@@ -1,5 +1,6 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
+import org.apache.wicket.Application;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.TextField;
@@ -8,6 +9,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
 import org.obiba.core.service.EntityQueryService;
@@ -42,7 +44,12 @@ public class InstrumentSelector extends Panel {
     for(Instrument inst : queryService.match(template)) {
       barcodes += inst.getBarcode() + " ";
     }
-    add(new Label("values", barcodes));
+    Label debugField = new Label("values", barcodes);
+    if(Application.DEVELOPMENT.equalsIgnoreCase(WebApplication.get().getConfigurationType()) == false) {
+      // Hide the debug field when not in development mode
+      debugField.setVisible(false);
+    }
+    add(debugField);
   }
 
   public Instrument getInstrument() {
