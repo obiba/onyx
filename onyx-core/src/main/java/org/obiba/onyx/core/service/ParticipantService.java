@@ -8,6 +8,7 @@ import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.user.User;
 
 public interface ParticipantService {
 
@@ -54,7 +55,7 @@ public interface ParticipantService {
 
   public int countParticipants(Date from, Date to);
 
-  public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment);
+  public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment, User user);
 
   public void updateParticipant(Participant participant);
 }

@@ -4,8 +4,13 @@ import java.util.Date;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Appointment;
+import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.engine.Action;
+import org.obiba.onyx.engine.ActionType;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -34,10 +39,32 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     return appointment;
   }
 
-  public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment) {
+  public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment, User user) {
     participant.setBarcode(barcode);
-    participant.setReceptionComment(receptionComment);
     persistenceManager.save(participant);
+    
+    //
+    // Create an interview for the participant, in the IN_PROGRESS state.
+    //
+    // TODO: Revisit whether the interview should be in the IN_PROGRESS state
+    // or instead in the NOT_STARTED state a this point.
+    //
+    Interview interview = new Interview();
+    interview.setParticipant(participant);
+    interview.setStartDate(new Date());
+    interview.setStatus(InterviewStatus.IN_PROGRESS);
+    getPersistenceManager().save(interview);
+    
+    // Persist the reception comment, if there is one.
+    if (receptionComment != null && receptionComment.trim().length() != 0) {
+      Action receptionCommentAction = new Action();
+      receptionCommentAction.setActionType(ActionType.COMMENT);
+      receptionCommentAction.setDateTime(new Date());
+      receptionCommentAction.setComment(receptionComment);
+      receptionCommentAction.setUser(user);
+      receptionCommentAction.setInterview(interview);
+      persistenceManager.save(receptionCommentAction);
+    }
   }
 
   public void updateParticipant(Participant participant) {

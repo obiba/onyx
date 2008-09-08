@@ -12,6 +12,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
@@ -44,7 +45,8 @@ public class AssignCodeToParticipantPanel extends Panel {
       participantCode.add(new RequiredFormFieldBehavior());
       add(participantCode);
 
-      add(new TextArea("comment", new PropertyModel(getModelObject(), "receptionComment")));
+      final Model receptionCommentModel = new Model();
+      add(new TextArea("comment", receptionCommentModel));
 
       add(new Button("submit", participant ) {
 
@@ -56,7 +58,7 @@ public class AssignCodeToParticipantPanel extends Panel {
 
           Participant participant = (Participant)AssignCodeToParticipantForm.this.getModelObject();
           
-          participantService.assignCodeToParticipant((Participant) getModelObject(), participant.getBarcode(), participant.getReceptionComment());
+          participantService.assignCodeToParticipant((Participant) getModelObject(), participant.getBarcode(), (String)receptionCommentModel.getObject(), OnyxAuthenticatedSession.get().getUser());
 
           setResponsePage(ParticipantSearchPage.class);
         }
