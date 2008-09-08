@@ -53,7 +53,7 @@ public class InterviewPage extends BasePage {
       final ModalWindow commentsWindow;
       add(commentsWindow = new ModalWindow("addCommentsModal"));
       commentsWindow.setTitle(new StringResourceModel("CommentsWindow", this, null));
-      commentsWindow.setInitialHeight(600);
+      commentsWindow.setInitialHeight(400);
       commentsWindow.setInitialWidth(600);
 
       commentsWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
