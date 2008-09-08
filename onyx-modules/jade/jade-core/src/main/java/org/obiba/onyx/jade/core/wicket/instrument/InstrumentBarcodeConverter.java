@@ -7,6 +7,7 @@ import org.apache.wicket.util.convert.IConverter;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 
 /**
  * Converts the instrument barcode, supposed to be unique, to the corresponding instrument. 
@@ -19,9 +20,12 @@ public class InstrumentBarcodeConverter implements IConverter {
   private EntityQueryService queryService;
 
   private boolean activeOnly;
+  
+  private InstrumentType instrumentType;
 
-  public InstrumentBarcodeConverter(EntityQueryService queryService) {
+  public InstrumentBarcodeConverter(EntityQueryService queryService, InstrumentType instrumentType) {
     this(queryService, true);
+    this.instrumentType = instrumentType;
   }
 
   public InstrumentBarcodeConverter(EntityQueryService queryService, boolean activeOnly) {
@@ -33,6 +37,7 @@ public class InstrumentBarcodeConverter implements IConverter {
     if(value == null) return null;
     Instrument template = new Instrument();
     template.setBarcode(value);
+    template.setInstrumentType(instrumentType);
     Instrument instrument = queryService.matchOne(template);
 
     if (instrument == null) {
