@@ -248,6 +248,7 @@ public class ParticipantSearchPage extends BasePage {
 
     public AppointedParticipantProvider(Participant template) {
       super(queryService, Participant.class);
+      setSort(new SortParam("appointment.date", true));
 
       Calendar cal = Calendar.getInstance();
       cal.setTime(new Date());
