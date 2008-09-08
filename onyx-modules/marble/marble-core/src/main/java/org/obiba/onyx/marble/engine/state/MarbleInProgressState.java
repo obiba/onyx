@@ -34,6 +34,12 @@ public class MarbleInProgressState extends AbstractMarbleStageState implements I
   }
 
   @Override
+  public void stop(Action action) {
+    log.info("Marble Stage {} is canceling", super.getStage().getName());
+    castEvent(TransitionEvent.CANCEL);
+  }
+  
+  @Override
   public boolean isInteractive() {
     return true;
   }
