@@ -70,7 +70,7 @@ public class InstrumentSelector extends Panel {
         @SuppressWarnings("unchecked")
         @Override
         public IConverter getConverter(Class type) {
-          return new InstrumentBarcodeConverter(queryService);
+          return new InstrumentBarcodeConverter(queryService, (InstrumentType)InstrumentSelector.this.getModelObject());
         }
       };
       tf.setLabel(new StringResourceModel("InstrumentBarcode", InstrumentSelector.this, null));
