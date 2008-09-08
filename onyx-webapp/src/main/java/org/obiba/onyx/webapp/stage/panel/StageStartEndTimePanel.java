@@ -9,6 +9,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.wicket.util.DateUtils;
 
@@ -31,14 +32,23 @@ public class StageStartEndTimePanel extends Panel {
 
     List<Action> actionList = queryService.match(template);
 
+    // Find the last action of type EXECUTE for this stage
+    // Also save the last action in the list (most recent action)
+    Action lastExecuteAction = null;
+    Action lastAction = null;
+    for(Action action : actionList) {
+      if(action.getActionType() == ActionType.EXECUTE) lastExecuteAction = action;
+      lastAction = action;
+    }
+
     if(activeInterviewService.getStageExecution(stage).isCompleted()) {
-      add(new Label("endTime", DateUtils.getShortDateTimeModel(new PropertyModel(actionList.get(actionList.size() - 1), "dateTime"))));
-      add(new Label("separator", "-")); 
-      add(new Label("startTime", DateUtils.getShortDateTimeModel(new PropertyModel(actionList.get(0), "dateTime"))));      
+      add(new Label("endTime", DateUtils.getShortDateTimeModel(new PropertyModel(lastAction, "dateTime"))));
+      add(new Label("separator", "-"));
+      add(new Label("startTime", DateUtils.getShortDateTimeModel(new PropertyModel(lastExecuteAction, "dateTime"))));
     } else {
       add(new Label("endTime", ""));
-      add(new Label("separator", ""));      
-      add(new Label("startTime", ""));      
+      add(new Label("separator", ""));
+      add(new Label("startTime", ""));
     }
 
   }
