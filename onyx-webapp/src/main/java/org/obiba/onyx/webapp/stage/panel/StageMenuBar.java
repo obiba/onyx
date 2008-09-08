@@ -24,7 +24,7 @@ public class StageMenuBar extends MenuBar {
   }
 
   public void setInfoLabel(Stage stage, Participant participant) {
-    infoLabel = stage.getName() + ": " + participant.getFullName() + ", " + DateUtils.getDateModel(new Model(participant.getBirthDate())).getObject().toString();
+    infoLabel = stage.getDescription() + ": " + participant.getFullName() + " - "  + participant.getBarcode() + " - " + DateUtils.getDateModel(new Model(participant.getBirthDate())).getObject().toString();
 
     buildMenus();
   }
