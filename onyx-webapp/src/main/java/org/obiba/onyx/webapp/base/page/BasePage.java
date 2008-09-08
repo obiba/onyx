@@ -4,16 +4,19 @@ import java.util.Locale;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
+import org.apache.wicket.markup.html.IHeaderContributor;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.resources.JavascriptResourceReference;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.panel.HeaderPanel;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
 
-public abstract class BasePage extends WebPage implements IAjaxIndicatorAware {
+public abstract class BasePage extends WebPage implements IAjaxIndicatorAware, IHeaderContributor {
 
   private FeedbackPanel feedbackPanel;
 
@@ -39,7 +42,7 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware {
   public void setMenuBarVisible(boolean visible) {
     get("menuBar").setVisible(visible);
   }
-  
+
   protected FeedbackPanel getFeedbackPanel() {
     return feedbackPanel;
   }
@@ -53,6 +56,10 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware {
 
   public void onLanguageUpdate(Locale language, AjaxRequestTarget target) {
     setResponsePage(getPage());
+  }
+
+  public void renderHead(IHeaderResponse response) {
+    response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "onyx.js"));
   }
 
 }
