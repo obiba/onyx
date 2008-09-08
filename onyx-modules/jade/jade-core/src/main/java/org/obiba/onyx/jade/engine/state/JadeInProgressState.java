@@ -6,8 +6,10 @@ package org.obiba.onyx.jade.engine.state;
 import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunRefusalReason;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.JadePanel;
 import org.slf4j.Logger;
@@ -25,7 +27,13 @@ public class JadeInProgressState extends AbstractJadeStageState implements Initi
   }
 
   public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinition.CANCEL_ACTION);
+    ActionDefinition def = new ActionDefinition(ActionType.STOP, "Cancel", "Please explain why you are cancelling this stage.");
+    for (InstrumentRunRefusalReason reason : InstrumentRunRefusalReason.values()) {
+      def.addReason(reason.toString());
+      if (def.getDefaultReason() == null)
+        def.setDefaultReason(reason.toString());
+    }
+    addAction(def);
     addSystemAction(ActionDefinition.COMPLETE_ACTION);
   }
 
