@@ -69,19 +69,33 @@ public abstract class InstructionsPanel extends Panel {
     setOutputMarkupId(true);
 
     Instrument instrument = (Instrument) getModelObject();
+    log.info("instrument.name=" + instrument.getName());
 
     InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
+    log.info("instrumentRun=" + instrumentRun);
     if(instrumentRun == null) {
       instrumentRun = activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument);
     }
+    log.info("instrumentRun.instrument.name=" + instrumentRun.getInstrument().getName());
 
     // get the data from not read-only input parameters sources
     for(InstrumentInputParameter param : instrumentService.getInstrumentInputParameter(instrument, true)) {
       InstrumentRunValue runValue = new InstrumentRunValue();
       runValue.setCaptureMethod(param.getCaptureMethod());
       runValue.setInstrumentParameter(param);
+      // runValue.setInstrumentRun(instrumentRun);
+      log.info("instrumentRun.instrumentParameter.name=" + runValue.getInstrumentParameter().getName());
 
-      if(queryService.count(runValue) == 0) {
+      // find run values among the current instrument run values
+      boolean found = false;
+      for(InstrumentRunValue v : instrumentRun.getInstrumentRunValues()) {
+        if(v.getInstrumentParameter().getName().equals(param.getName())) {
+          found = true;
+          break;
+        }
+      }
+      // add the run value if not found
+      if(!found) {
         Data data = inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param);
         runValue.setData(data);
         instrumentRun.addInstrumentRunValue(runValue);
@@ -109,6 +123,7 @@ public abstract class InstructionsPanel extends Panel {
         manualInputs.add(runValue);
       }
     }
+    log.info("manualInputs.size=" + manualInputs.size());
     add(new DataView("item", new IDataProvider() {
 
       @SuppressWarnings("unchecked")
