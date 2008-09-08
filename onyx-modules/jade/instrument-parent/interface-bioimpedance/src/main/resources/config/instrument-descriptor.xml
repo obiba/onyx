@@ -4,33 +4,33 @@
   <!-- Instruments -->
   <!-- BIOIMP1 -->
   <instrument id="bioimp1">
-    <name>BioImp 1</name>
+    <name>Tanita TBF 310</name>
     <vendor>Tanita</vendor>
     <model>TBF 310</model>
     <status>ACTIVE</status>
-    <serialNumber>1234567890</serialNumber>    
+    <serialNumber>1234567890</serialNumber>
     <barcode>CAG1001</barcode>
     <instrumentType>
       <name>BIM</name>
     </instrumentType>
   </instrument>
-  
+
   <fixedSource id="clothes_weight_source">
-      <value>1</value>
-  </fixedSource>   
+    <value>1</value>
+  </fixedSource>
   <input id="clothes_weight">
     <name>ClothesWeight</name>
     <description>Clothes weight</description>
     <dataType>DECIMAL</dataType>
     <measurementUnit>kg</measurementUnit>
     <captureMethod>MANUAL</captureMethod>
-    <inputSource reference="clothes_weight_source" />      
+    <inputSource reference="clothes_weight_source" />
     <instrument reference="bioimp1" />
   </input>
-  
+
   <participantPropertySource id="gender_source">
-      <property>gender</property>
-  </participantPropertySource>  
+    <property>gender</property>
+  </participantPropertySource>
   <input id="gender_in">
     <name>Gender</name>
     <description>Participant Gender</description>
@@ -39,21 +39,21 @@
     <inputSource reference="gender_source" />
     <instrument reference="bioimp1" />
   </input>
-  
+
   <fixedSource id="body_type_source">
-      <value>STANDARD</value>
+    <value>STANDARD</value>
   </fixedSource>
   <input id="body_type_in">
     <name>BodyType</name>
     <description>Body type</description>
     <dataType>TEXT</dataType>
     <captureMethod>MANUAL</captureMethod>
-    <inputSource reference="body_type_source" />    
+    <inputSource reference="body_type_source" />
     <instrument reference="bioimp1" />
   </input>
-  
+
   <participantPropertySource id="age_source">
-      <property>age</property>
+    <property>age</property>
   </participantPropertySource>
   <input id="age_in">
     <name>Age</name>
@@ -63,7 +63,7 @@
     <inputSource reference="age_source" />
     <instrument reference="bioimp1" />
   </input>
-  
+
   <outputParameterSource id="measured_height">
     <instrumentType>
       <name>STA</name>
@@ -79,7 +79,7 @@
     <instrument reference="bioimp1" />
     <inputSource reference="measured_height" />
   </input>
-  
+
   <output id="body_type">
     <name>BodyType</name>
     <description>Body type</description>
@@ -87,7 +87,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
   </output>
-  
+
   <output id="gender">
     <name>Gender</name>
     <description>Output gender</description>
@@ -95,7 +95,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
   </output>
-  
+
   <output id="age">
     <name>Age</name>
     <description>Output age</description>
@@ -103,7 +103,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
   </output>
-  
+
   <output id="height">
     <name>Height</name>
     <description>Output height</description>
@@ -112,7 +112,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
   </output>
-  
+
   <output id="weight">
     <name>Weight</name>
     <description>Measured weight</description>
@@ -121,7 +121,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
   </output>
-  
+
   <output id="bmi">
     <name>BMI</name>
     <description>Body mass index calculated</description>
@@ -129,7 +129,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
   </output>
-  
+
   <output id="bmr">
     <name>BMR</name>
     <description>Basal metabolic rate calculated</description>
@@ -138,7 +138,7 @@
     <measurementUnit>kJ</measurementUnit>
     <instrument reference="bioimp1" />
   </output>
-  
+
   <output id="impedance">
     <name>Impedance</name>
     <description>Measured body impedance</description>
@@ -146,8 +146,8 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>ohm</measurementUnit>
     <instrument reference="bioimp1" />
-  </output>  
-  
+  </output>
+
   <output id="fat_percentage">
     <name>FatPercentage</name>
     <description>Fat percentage calculated</description>
@@ -156,7 +156,7 @@
     <measurementUnit>%</measurementUnit>
     <instrument reference="bioimp1" />
   </output>
-  
+
   <output id="fat_mass">
     <name>FatMass</name>
     <description>Fat mass calculated</description>
@@ -165,7 +165,7 @@
     <measurementUnit>kg</measurementUnit>
     <instrument reference="bioimp1" />
   </output>
-  
+
   <output id="ffm">
     <name>FatFreeMass</name>
     <description>Fat free mass calculated</description>
@@ -174,7 +174,7 @@
     <measurementUnit>kg</measurementUnit>
     <instrument reference="bioimp1" />
   </output>
-  
+
   <output id="tbw">
     <name>TotalBodyWater</name>
     <description>Total Body Water calculated</description>
@@ -183,5 +183,5 @@
     <measurementUnit>kg</measurementUnit>
     <instrument reference="bioimp1" />
   </output>
-  
+
 </linked-list>
