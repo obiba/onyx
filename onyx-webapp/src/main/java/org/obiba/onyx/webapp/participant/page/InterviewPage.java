@@ -115,7 +115,8 @@ public class InterviewPage extends BasePage {
       add(kvPanel);
       
       final ActionDefinition cancelDef = new ActionDefinition(ActionType.STOP, new StringResourceModel("CancelInterview", this, null).getString(), new StringResourceModel("ExplainCancelInterview", this, null).getString());
-      cancelDef.addReasons(new String[] {"A", "B", "C", "D", "E"});
+      cancelDef.addReasons(new String[] {"Reason 1", "Reason 2", "Reason 3", "Other"});
+      cancelDef.setDefaultReason("Reason 1");
       cancelDef.setAskPassword(true);
       
       final ActionWindow actionWindow = new ActionWindow("modal"){
