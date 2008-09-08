@@ -9,7 +9,7 @@
     <model>TBF 310</model>
     <status>ACTIVE</status>
     <serialNumber>1234567890</serialNumber>    
-    <barcode>bioimp1</barcode>
+    <barcode>CAG1001</barcode>
     <instrumentType>
       <name>BIM</name>
     </instrumentType>
