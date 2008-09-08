@@ -83,6 +83,7 @@ public abstract class CommentsModalPanel extends Panel {
 
       final TextArea newComment = new TextArea("newComment", new PropertyModel(getModelObject(), "comment"));
       newComment.add(new RequiredFormFieldBehavior());
+      newComment.setLabel(new StringResourceModel("NewComment", CommentsModalPanel.this, null));
       add(newComment);
 
       add(new AjaxButton("saveComment", this) {
