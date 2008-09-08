@@ -8,6 +8,7 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -141,7 +142,7 @@ public abstract class CommentsModalPanel extends Panel {
       }
       kvPanel.addRow(new StringResourceModel("Stage", this, null), stageModel);
       kvPanel.addRow(new StringResourceModel("MadeBy", this, null), new PropertyModel(comment, "user.name"));
-      kvPanel.addRow(new StringResourceModel("Comment", this, null), new PropertyModel(comment, "comment"));
+      kvPanel.addRow(new StringResourceModel("Comment", this, null), new MultiLineLabel( KeyValueDataPanel.getRowValueId(), new PropertyModel(comment, "comment") ));
       item.add(kvPanel);
 
     }
