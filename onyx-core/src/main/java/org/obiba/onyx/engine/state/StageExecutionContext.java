@@ -77,7 +77,7 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
   }
 
   public void castEvent(TransitionEvent event) {
-    log.info("castEvent(" + event + ") from " + currentState.getClass().getSimpleName());
+    log.info("castEvent({}) from stage {} in state {}", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
     Map<TransitionEvent, IStageExecution> stateEdges = edges.get(currentState);
     if(stateEdges != null) {
       currentState = stateEdges.get(event);
@@ -93,11 +93,11 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
         transitionListeners.remove(listener);
       }
     }
-    log.info("castEvent(" + event + ") to " + currentState.getClass().getSimpleName());
-    
+    log.info("castEvent({}) from stage {} now in state {}", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
+
     saveState();
   }
-  
+
   private void saveState() {
     StageExecutionMemento template = new StageExecutionMemento();
     template.setStage(stage);
@@ -167,7 +167,7 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
     log.info(getName() + ":" + currentState.getName() + ".data." + key + "=" + data);
     return data;
   }
-  
+
   public Stage getStage() {
     return stage;
   }
