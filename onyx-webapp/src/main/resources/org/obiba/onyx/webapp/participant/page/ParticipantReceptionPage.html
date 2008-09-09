@@ -2,18 +2,22 @@
   <body>
     <wicket:extend>
         <div wicket:id="editParticipantModalWindow" />
-        
-		<fieldset>
-			<legend><wicket:message key="participantInfo" /></legend>    
-			<span wicket:id="participantPanel"/>
-			
-			<a style="float: right;" href="#" wicket:id="editParticipantAction"><span wicket:id="editParticipantLabel" /></a>
-		</fieldset>
-		<fieldset>
-			<legend><wicket:message key="instructions" /></legend>    
-			<wicket:message key="receiveParticipantInstructions" />
-		</fieldset> 	  
-		<div wicket:id="assignCodeToParticipantPanel"/>				
+        <div>
+			<fieldset>
+				<legend><wicket:message key="participantInfo" /></legend>    
+				<span wicket:id="participantPanel"/>
+				<input type="button" wicket:id="editParticipantAction" wicket:message="value:EditParticipantInfo" />
+			</fieldset>
+        </div>
+        <br/>
+        <div>
+			<fieldset>
+				<legend><wicket:message key="instructions" /></legend>    
+				<wicket:message key="receiveParticipantInstructions" />
+			</fieldset>
+        </div>
+        <br/>
+        <div wicket:id="assignCodeToParticipantPanel"/>
     </wicket:extend>   
   </body>
 </html>

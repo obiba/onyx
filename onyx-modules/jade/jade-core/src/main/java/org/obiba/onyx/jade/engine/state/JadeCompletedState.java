@@ -5,7 +5,9 @@ package org.obiba.onyx.jade.engine.state;
 
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunRefusalReason;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -15,7 +17,13 @@ public class JadeCompletedState extends AbstractJadeStageState implements Initia
   private static final Logger log = LoggerFactory.getLogger(JadeCompletedState.class);
 
   public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinition.CANCEL_ACTION);
+    ActionDefinition def = new ActionDefinition(ActionType.STOP, "Cancel", "Please explain why you are cancelling this stage.");
+    for (InstrumentRunRefusalReason reason : InstrumentRunRefusalReason.values()) {
+      def.addReason(reason.toString());
+      if (def.getDefaultReason() == null)
+        def.setDefaultReason(reason.toString());
+    }
+    addAction(def);
   }
 
   @Override

@@ -23,7 +23,7 @@ import org.obiba.onyx.util.data.DataType;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "instrument_parameter_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "instrument_parameter_type", discriminatorType = DiscriminatorType.STRING, length=100)
 @DiscriminatorValue("InstrumentParameter")
 public abstract class InstrumentParameter extends AbstractEntity {
 

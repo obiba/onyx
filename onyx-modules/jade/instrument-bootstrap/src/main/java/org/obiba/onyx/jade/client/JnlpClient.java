@@ -1,7 +1,9 @@
 package org.obiba.onyx.jade.client;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.LogManager;
 
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.slf4j.Logger;
@@ -14,8 +16,10 @@ import org.springframework.core.io.ClassPathResource;
 public class JnlpClient {
   private static final Logger log = LoggerFactory.getLogger(JnlpClient.class);
 
-  public static void main(String[] args) {
-
+  public static void main(String[] args) throws Exception  {
+    
+    LogManager.getLogManager().readConfiguration(JnlpClient.class.getResourceAsStream("/logging.properties"));
+      
     // Create application context.
     GenericApplicationContext appContext = loadAppContext(args);
 

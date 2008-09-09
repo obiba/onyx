@@ -6,6 +6,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.instrument.InstrumentSelector;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -21,6 +22,9 @@ public class InstrumentSelectionStep extends WizardStepPanel {
 
   @SpringBean
   private InstrumentService instrumentService;
+  
+  @SpringBean
+  private ActiveInstrumentRunService activeInstrumentRunService;
 
   private InstrumentSelector selector;
 
@@ -39,6 +43,7 @@ public class InstrumentSelectionStep extends WizardStepPanel {
     InstrumentWizardForm instrumentForm = (InstrumentWizardForm) form;
     Instrument instrument = selector.getInstrument();
 
+    activeInstrumentRunService.reset();
     if(instrument != null) {
       instrumentForm.setInstrument(instrument);
 

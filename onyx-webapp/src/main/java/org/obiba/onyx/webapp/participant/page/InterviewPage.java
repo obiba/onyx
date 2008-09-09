@@ -53,7 +53,7 @@ public class InterviewPage extends BasePage {
       final ModalWindow commentsWindow;
       add(commentsWindow = new ModalWindow("addCommentsModal"));
       commentsWindow.setTitle(new StringResourceModel("CommentsWindow", this, null));
-      commentsWindow.setInitialHeight(600);
+      commentsWindow.setInitialHeight(400);
       commentsWindow.setInitialWidth(600);
 
       commentsWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
@@ -109,13 +109,14 @@ public class InterviewPage extends BasePage {
       });
 
       KeyValueDataPanel kvPanel = new KeyValueDataPanel("interview");
-      kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateUtils.getFullDateModel(new PropertyModel(interview, "startDate")));
-      kvPanel.addRow(new StringResourceModel("EndDate", this, null), DateUtils.getFullDateModel(new PropertyModel(interview, "stopDate")));
+      kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateUtils.getShortDateTimeModel(new PropertyModel(interview, "startDate")));
+      kvPanel.addRow(new StringResourceModel("EndDate", this, null), DateUtils.getShortDateTimeModel(new PropertyModel(interview, "stopDate")));
       kvPanel.addRow(new StringResourceModel("Status", this, null), new StringResourceModel("InterviewStatus." + interview.getStatus(), this, null));
       add(kvPanel);
       
       final ActionDefinition cancelDef = new ActionDefinition(ActionType.STOP, new StringResourceModel("CancelInterview", this, null).getString(), new StringResourceModel("ExplainCancelInterview", this, null).getString());
-      cancelDef.addReasons(new String[] {"A", "B", "C", "D", "E"});
+      cancelDef.addReasons(new String[] {"Reason 1", "Reason 2", "Reason 3", "Other"});
+      cancelDef.setDefaultReason("Reason 1");
       cancelDef.setAskPassword(true);
       
       final ActionWindow actionWindow = new ActionWindow("modal"){

@@ -45,6 +45,7 @@ public class InstrumentRunValue extends AbstractEntity {
   private String textValue;
 
   @Lob
+  @Column(length = Integer.MAX_VALUE)
   private byte[] dataValue;
 
   @Enumerated(EnumType.STRING)

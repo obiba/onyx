@@ -625,14 +625,17 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   }
 
   public void initialize() {
-    log.info("Initializing Tanita Runner");
-    refreshSerialPortList();    
+    log.info("Refresh serial port list");
+    refreshSerialPortList(); 
+    log.info("Setup serial port");
     setupSerialPort();
   }
 
   public void run() {
 
     if(!externalAppHelper.isSotfwareAlreadyStarted("tbf310InstrumentRunner")) {
+
+      log.info("Starting TBF-310 GUI");      
       buildGUI();
 
       // Obtain the lock outside the UI thread. This will block until the UI releases the lock, at which point it should
@@ -654,7 +657,6 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   }
 
   public void shutdown() {
-    log.info("Shuting down runner");
     shutdown = true;
     if(serialPort != null) {
       try {

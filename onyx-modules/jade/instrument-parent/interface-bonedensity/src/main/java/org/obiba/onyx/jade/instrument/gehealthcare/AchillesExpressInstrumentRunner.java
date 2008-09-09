@@ -67,6 +67,7 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
     participantLastName = instrumentExecutionService.getParticipantLastName();
     participantID = instrumentExecutionService.getParticipantID();
     participantBirthDate = instrumentExecutionService.getParticipantBirthDate();
+    participantGender = instrumentExecutionService.getParticipantGender();
   }
 
   public void setAchillesExpressConfig() {

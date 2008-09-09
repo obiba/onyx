@@ -8,7 +8,7 @@
     <vendor>GE Healthcare</vendor>
     <model>Achilles Express</model>
     <serialNumber>1234567890</serialNumber>
-    <barcode>bone1</barcode>    
+    <barcode>CAG0210</barcode>    
     <status>ACTIVE</status>
     <instrumentType>
       <name>BON</name>

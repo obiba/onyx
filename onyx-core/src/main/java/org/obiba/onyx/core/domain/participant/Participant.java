@@ -1,19 +1,17 @@
 package org.obiba.onyx.core.domain.participant;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.obiba.core.domain.AbstractEntity;
 
@@ -25,34 +23,32 @@ public class Participant extends AbstractEntity {
   private String firstName;
 
   private String lastName;
-  
+
   @Enumerated(EnumType.STRING)
   private Gender gender;
-  
+
   @Temporal(TemporalType.DATE)
   private Date birthDate;
 
   private String barcode;
-  
-  private String receptionComment;
-  
+
   private String street;
-  
+
   private String apartment;
-  
+
   private String city;
-  
+
   private String province;
-  
+
   private String country;
-  
+
   private String postalCode;
-  
+
   private String phone;
-  
+
   @OneToOne(mappedBy = "participant")
   private Appointment appointment;
-  
+
   @OneToOne(mappedBy = "participant")
   private Interview interview;
 
@@ -96,7 +92,7 @@ public class Participant extends AbstractEntity {
     this.appointment = appointment;
     this.appointment.setParticipant(this);
   }
-  
+
   public Interview getInterview() {
     return interview;
   }
@@ -105,7 +101,7 @@ public class Participant extends AbstractEntity {
     this.interview = interview;
     this.interview.setParticipant(this);
   }
-  
+
   public String getBarcode() {
     return barcode;
   }
@@ -118,24 +114,17 @@ public class Participant extends AbstractEntity {
     return getFirstName() + " " + getLastName();
   }
 
-  public String getReceptionComment() {
-    return receptionComment;
-  }
-
-  public void setReceptionComment(String receptionComment) {
-    this.receptionComment = receptionComment;
-  }
-  
+  @Transient
   public Long getAge() {
     Calendar todayCal = Calendar.getInstance();
     Calendar birthCal = Calendar.getInstance();
-    
+
     birthCal.setTime((Date) getBirthDate());
     Long age = todayCal.getTimeInMillis() - birthCal.getTimeInMillis();
     Double ageDouble = SI.MILLI(SI.SECOND).getConverterTo(NonSI.YEAR).convert(Double.valueOf(age.toString()));
     ageDouble = Math.floor(ageDouble);
     age = Math.round(ageDouble);
-    
+
     return (age);
   }
 

@@ -65,7 +65,7 @@ public class InstrumentInputParameterPanel extends Panel {
 
       DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType(), param.getMeasurementUnit());
       field.setRequired(true);
-      field.setLabel(new Model(param.getName()));
+      field.setLabel(new Model(param.getDescription()));
 
       inputs.addRow(label, field);
     }

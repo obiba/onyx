@@ -106,9 +106,9 @@ public class InstrumentOutputParameterPanel extends Panel {
           activeInstrumentRunService.validate();
         }
 
-        DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType());
+        DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType(), param.getMeasurementUnit());
         field.setRequired(true);
-        field.setLabel(new Model(param.getName()));
+        field.setLabel(new Model(param.getDescription()));
 
         outputs.addRow(label, field);
       }
@@ -153,7 +153,7 @@ public class InstrumentOutputParameterPanel extends Panel {
           output = field;
 
         } else if(runValue != null) {
-          output = new Label(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data.value"));
+          output = new Label(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data.valueAsString"));
         }
 
         if(output != null) {

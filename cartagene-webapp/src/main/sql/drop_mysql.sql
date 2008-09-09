@@ -25,7 +25,6 @@ alter table stage_execution_memento drop foreign key FKA9968B11FEB07DB7;
 alter table stage_interview drop foreign key FKB1A769809CC9BF1A;
 alter table stage_interview drop foreign key FKB1A76980A1F0E478;
 drop table if exists action;
-drop table if exists an_entity;
 drop table if exists app_configuration;
 drop table if exists appointment;
 drop table if exists input_source;
