@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.yui.calendar.DateField;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -49,8 +50,6 @@ public class EditParticipantPanel extends Panel {
    */
   private static final String PHONE_REGEX = "\\d{3}-\\d{3}-\\d{4}";
 
-  private static final String[] GENDER_OPTIONS = { "F", "M" };
-
   @SpringBean
   private ParticipantService participantService;
 
@@ -89,7 +88,7 @@ public class EditParticipantPanel extends Panel {
       add(new TextField("firstName", new PropertyModel(getModelObject(), "firstName")).setRequired(true).setLabel(new StringResourceModel("FirstName", null)));
       add(new TextField("lastName", new PropertyModel(getModelObject(), "lastName")).setRequired(true).setLabel(new StringResourceModel("LastName", null)));
       add(createGenderDropDown());
-      add(new DateField("birthDate", new PropertyModel(getModelObject(), "birthDate")).setRequired(true).setLabel(new StringResourceModel("BirthDate", null)));
+      add(createBirthDateField());
       add(new TextField("street", new PropertyModel(getModelObject(), "street")));
       add(new TextField("apartment", new PropertyModel(getModelObject(), "apartment")));
       add(new TextField("city", new PropertyModel(getModelObject(), "city")));
@@ -126,6 +125,21 @@ public class EditParticipantPanel extends Panel {
       participantService.updateParticipant(participant);
     }
 
+    @SuppressWarnings("serial")
+    private DateField createBirthDateField() {
+      DateField birthDateField = new DateField("birthDate", new PropertyModel(getModelObject(), "birthDate")) {
+        protected DateTextField newDateTextField(String id, PropertyModel dateFieldModel)
+        {
+          return DateTextField.forDatePattern(id, dateFieldModel, "yyyy-MM-dd");
+        }
+      };
+      
+      birthDateField.setRequired(true);
+      birthDateField.setLabel(new StringResourceModel("BirthDate", null));
+      
+      return birthDateField;
+    }
+    
     @SuppressWarnings("serial")
     private DropDownChoice createGenderDropDown() {
       DropDownChoice genderDropDown = new DropDownChoice("gender", new PropertyModel(getModelObject(), "gender"), Arrays.asList(Gender.values()), new GenderRenderer()) {
