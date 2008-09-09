@@ -43,9 +43,9 @@ public interface ParticipantService {
    */
   public int countParticipantsByCode(String code);
   
-  public List<Participant> getParticipantsByLastName(String likeName, PagingClause paging, SortingClause... clauses);
+  public List<Participant> getParticipantsByName(String likeName, PagingClause paging, SortingClause... clauses);
   
-  public int countParticipantsByLastName(String likeName);
+  public int countParticipantsByName(String likeName);
 
   public List<Participant> getParticipants(InterviewStatus status, PagingClause paging, SortingClause... clauses);
 

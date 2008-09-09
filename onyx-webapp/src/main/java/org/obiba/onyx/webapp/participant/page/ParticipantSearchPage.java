@@ -229,12 +229,12 @@ public class ParticipantSearchPage extends BasePage {
 
     @Override
     protected List<Participant> getList(PagingClause paging, SortingClause... clauses) {
-      return participantService.getParticipantsByLastName(template.getLastName(), paging, clauses);
+      return participantService.getParticipantsByName(template.getLastName(), paging, clauses);
     }
 
     @Override
     public int size() {
-      return participantService.countParticipantsByLastName(template.getLastName());
+      return participantService.countParticipantsByName(template.getLastName());
     }
 
   }

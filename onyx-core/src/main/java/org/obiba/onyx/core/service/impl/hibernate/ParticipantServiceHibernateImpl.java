@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.hibernate.AssociationCriteria;
@@ -13,6 +14,8 @@ import org.obiba.core.service.impl.hibernate.AssociationCriteria.Operation;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.impl.DefaultParticipantServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -23,6 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceImpl {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(ParticipantServiceHibernateImpl.class);
 
   private SessionFactory factory;
 
@@ -41,7 +47,7 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
   }
 
   public int countParticipants(InterviewStatus status) {
-    AssociationCriteria criteria = getCriteria(null, (SortingClause[])null);
+    AssociationCriteria criteria = getCriteria(null, (SortingClause[]) null);
     if(status != null) criteria.add("interview.status", Operation.eq, status);
     return criteria.count();
   }
@@ -56,7 +62,7 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
   }
 
   public int countParticipants(Date from, Date to) {
-    AssociationCriteria criteria = getCriteria(null, (SortingClause[])null);
+    AssociationCriteria criteria = getCriteria(null, (SortingClause[]) null);
 
     if(from != null) criteria.add("appointment.date", Operation.ge, from);
     if(to != null) criteria.add("appointment.date", Operation.le, to);
@@ -73,57 +79,67 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
     return criteria;
   }
 
-  public List<Participant> getParticipantsByLastName(String likeName, PagingClause paging, SortingClause... clauses) {
+  public List<Participant> getParticipantsByName(String likeName, PagingClause paging, SortingClause... clauses) {
+    return getCriteriaByName(likeName, null, (SortingClause[]) null).list();
+  }
+
+  public int countParticipantsByName(String likeName) {
+    return getCriteriaByName(likeName, null, (SortingClause[]) null).count();
+  }
+
+  private AssociationCriteria getCriteriaByName(String likeName, PagingClause paging, SortingClause... clauses) {
     AssociationCriteria criteria = getCriteria(paging, clauses);
 
-    if(likeName != null) criteria.add("lastName", Operation.ilike, likeName + "%");
+    if(likeName != null) {
+      int idx = likeName.indexOf(' ');
+      if(idx != -1) {
+        String likeFirstName = likeName.substring(0, idx);
+        String likeLastName = likeName.substring(idx + 1, likeName.length());
+        criteria.add("firstName", Operation.ilike, "%" + likeFirstName + "%").add("lastName", Operation.ilike, "%" + likeLastName + "%");
+      } else {
+        criteria.getCriteria().add(Restrictions.or(Restrictions.ilike("firstName", "%" + likeName + "%"), Restrictions.ilike("lastName", "%" + likeName + "%")));
+      }
+    }
 
-    return criteria.list();
+    return criteria;
   }
 
-  public int countParticipantsByLastName(String likeName) {
-    AssociationCriteria criteria = getCriteria(null, (SortingClause[])null);
-
-    if(likeName != null) criteria.add("lastName", Operation.ilike, likeName + "%");
-
-    return criteria.count();
-  }
-
+  @SuppressWarnings("unchecked")
   public List<Participant> getParticipantsByCode(String code, PagingClause paging, SortingClause... clauses) {
     Query participantQuery = createParticipantsByCodeQuery(code);
-    
+
     participantQuery.setMaxResults(paging.getLimit());
     participantQuery.setFirstResult(paging.getOffset());
-    
+
     return participantQuery.list();
   }
 
+  @SuppressWarnings("unchecked")
   public int countParticipantsByCode(String code) {
     Query participantQuery = createParticipantsByCodeQuery(code);
 
     List results = participantQuery.list();
-    
+
     int count = 0;
-    
-    if (results != null) {
-      count = results.size();  
+
+    if(results != null) {
+      count = results.size();
     }
-    
+
     return count;
   }
-  
+
   private Query createParticipantsByCodeQuery(String code) {
     Query participantQuery = null;
-    
+
     if(code != null) {
       participantQuery = getSession().createQuery("from Participant p where p.barcode = :barcode or p.appointment.appointmentCode = :appointmentCode");
-      participantQuery.setString("barcode", code);      
+      participantQuery.setString("barcode", code);
       participantQuery.setString("appointmentCode", code);
+    } else {
+      participantQuery = getSession().createQuery("from Participant");
     }
-    else {
-      participantQuery = getSession().createQuery("from Participant");  
-    }
-    
+
     return participantQuery;
   }
 }
