@@ -68,6 +68,19 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
   }
 
   public void updateParticipant(Participant participant) {
-    persistenceManager.save(participant);
+    Participant p = getPersistenceManager().get(Participant.class, participant.getId());
+    p.setFirstName(participant.getFirstName());
+    p.setLastName(participant.getLastName());
+    p.setGender(participant.getGender());
+    p.setBirthDate(participant.getBirthDate());
+    p.setStreet(participant.getStreet());
+    p.setApartment(participant.getApartment());
+    p.setCity(participant.getCity());
+    p.setProvince(participant.getProvince());
+    p.setCountry(participant.getCountry());
+    p.setPostalCode(participant.getPostalCode());
+    p.setPhone(participant.getPhone());
+
+    persistenceManager.save(p);
   }
 }

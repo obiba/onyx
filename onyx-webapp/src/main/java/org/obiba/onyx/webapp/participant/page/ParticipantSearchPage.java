@@ -241,7 +241,7 @@ public class ParticipantSearchPage extends BasePage {
 
   @SuppressWarnings("serial")
   private class AppointedParticipantProvider extends SortableDataProviderEntityServiceImpl<Participant> {
-    
+
     private Date from;
 
     private Date to;
@@ -324,7 +324,19 @@ public class ParticipantSearchPage extends BasePage {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Participant p = (Participant) rowModel.getObject();
-          cellItem.add(new Label(componentId, DateUtils.getShortDateTimeModel(new Model(p.getAppointment().getDate()))));
+
+          //
+          // Added for the demo, in case participant does not have an appointment (!), in
+          // which case an ugly internal error would result. 
+          // 
+          // NOTE: This check should not be necessary and could probably be safely removed.
+          //
+          if(p.getAppointment() != null) {
+            cellItem.add(new Label(componentId, DateUtils.getShortDateTimeModel(new Model(p.getAppointment().getDate()))));
+          }
+          else {
+            cellItem.add(new Label(componentId, ""));
+          }
         }
 
       });
