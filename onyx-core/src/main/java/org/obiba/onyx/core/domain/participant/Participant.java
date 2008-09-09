@@ -9,13 +9,16 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import org.obiba.core.domain.AbstractEntity;
 
 @Entity
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"barcode", "enrollmentId"})})
 public class Participant extends AbstractEntity {
 
   private static final long serialVersionUID = 7720576329990574921L;
@@ -31,6 +34,8 @@ public class Participant extends AbstractEntity {
   private Date birthDate;
 
   private String barcode;
+  
+  private String enrollmentId;
 
   private String street;
 
@@ -108,6 +113,14 @@ public class Participant extends AbstractEntity {
 
   public void setBarcode(String barcode) {
     this.barcode = barcode;
+  }
+
+  protected String getEnrollmentId() {
+    return enrollmentId;
+  }
+
+  protected void setEnrollmentId(String enrollmentId) {
+    this.enrollmentId = enrollmentId;
   }
 
   public String getFullName() {
