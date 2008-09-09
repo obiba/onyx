@@ -61,12 +61,18 @@ public abstract class CommentsModalPanel extends Panel {
     previousComments.add(new CommentsDataView("comment-list", new CommentsDataProvider()));
     previousComments.setOutputMarkupId(true);
 
-    if(commentList.size() == 0) {
-      previousComments.add(new Label("noComments", new StringResourceModel("NoComments", this, null)));
-    } else {
-      previousComments.add(new Label("noComments", ""));
-    }
+    previousComments.add(new Label("noComments", new StringResourceModel("NoComments", this, null)) {
+      private static final long serialVersionUID = 1L;
 
+      @Override
+      public boolean isVisible() {
+        if(commentList.size() == 0) {
+          return true;
+        }
+        return false;
+      }
+    });
+    
     commentsWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
 
       private static final long serialVersionUID = 1L;
@@ -89,7 +95,7 @@ public abstract class CommentsModalPanel extends Panel {
 
       setModel(new Model(new Action()));
 
-      final TextArea newComment = new TextArea("newComment", new PropertyModel(getModelObject(), "comment"));
+      final TextArea newComment = new TextArea("newComment", new PropertyModel(getModel(), "comment"));
       newComment.add(new RequiredFormFieldBehavior());
       newComment.setOutputMarkupId(true);
       add(newComment);
@@ -105,11 +111,10 @@ public abstract class CommentsModalPanel extends Panel {
           CommentsModalPanel.this.onAddComments(target);
           
           commentList = activeInterviewService.getInterviewComments();
-          previousComments.addOrReplace(new Label("noComments", ""));
           target.addComponent(previousComments);
           
-          /*CommentForm.this.getModel().setObject(new Action());
-          target.addComponent(newComment);*/
+          CommentForm.this.getModel().setObject(new Action());
+          target.addComponent(newComment);
         }
 
         protected void onError(AjaxRequestTarget target, Form form) {
