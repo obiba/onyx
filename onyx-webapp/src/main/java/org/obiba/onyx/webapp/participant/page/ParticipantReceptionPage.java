@@ -27,7 +27,7 @@ public class ParticipantReceptionPage extends BasePage {
     //
     final ModalWindow editParticipantModalWindow = new ModalWindow("editParticipantModalWindow");
     editParticipantModalWindow.setTitle(new StringResourceModel("Participant", this, null));
-    editParticipantModalWindow.setInitialHeight(350);
+    editParticipantModalWindow.setInitialHeight(435);
     editParticipantModalWindow.setInitialWidth(400);
     editParticipantModalWindow.setContent(new EditParticipantPanel("content", (Participant) participantModel.getObject(), participantPanel, editParticipantModalWindow));
     add(editParticipantModalWindow);
