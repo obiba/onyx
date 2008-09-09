@@ -7,8 +7,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -25,6 +25,7 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
+import org.obiba.onyx.wicket.util.DateUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 
 public abstract class CommentsModalPanel extends Panel {
@@ -40,24 +41,29 @@ public abstract class CommentsModalPanel extends Panel {
 
   private List<Action> commentList;
 
+  WebMarkupContainer previousComments;
+
   public CommentsModalPanel(final ModalWindow commentsWindow) {
 
     super("content");
     this.commentsWindow = commentsWindow;
-    commentList = activeInterviewService.getInterviewComments();    
+    commentList = activeInterviewService.getInterviewComments();
+    setOutputMarkupId(true);
 
-    add(new ParticipantPanel("participant", activeInterviewService.getParticipant(),true));
+    add(new ParticipantPanel("participant", activeInterviewService.getParticipant(), true));
     add(new CommentForm("commentForm"));
 
     add(feedback = new FeedbackPanel("feedback"));
     feedback.setOutputMarkupId(true);
-    
-    add(new CommentsDataView("comment-list", new CommentsDataProvider()));
+
+    add(previousComments = new WebMarkupContainer("previousComments"));
+    previousComments.add(new CommentsDataView("comment-list", new CommentsDataProvider()));
+    previousComments.setOutputMarkupId(true);
 
     if(commentList.size() == 0) {
-      add(new Label("noComments", new StringResourceModel("NoComments", this, null)));
+      previousComments.add(new Label("noComments", new StringResourceModel("NoComments", this, null)));
     } else {
-      add(new Label("noComments", ""));
+      previousComments.add(new Label("noComments", ""));
     }
 
     commentsWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
@@ -84,7 +90,7 @@ public abstract class CommentsModalPanel extends Panel {
 
       final TextArea newComment = new TextArea("newComment", new PropertyModel(getModelObject(), "comment"));
       newComment.add(new RequiredFormFieldBehavior());
-      newComment.setLabel(new StringResourceModel("NewComment", CommentsModalPanel.this, null));
+      newComment.setOutputMarkupId(true);
       add(newComment);
 
       add(new AjaxButton("saveComment", this) {
@@ -96,7 +102,13 @@ public abstract class CommentsModalPanel extends Panel {
           comment.setActionType(ActionType.COMMENT);
           activeInterviewService.doAction(null, comment, activeInterviewService.getInterview().getUser());
           CommentsModalPanel.this.onAddComments(target);
-          commentsWindow.close(target);
+          
+          commentList = activeInterviewService.getInterviewComments();
+          previousComments.addOrReplace(new Label("noComments", ""));
+          target.addComponent(previousComments);
+          
+          newComment.setModel(new PropertyModel(new Model(new Action()), "comment"));
+          target.addComponent(newComment);
         }
 
         protected void onError(AjaxRequestTarget target, Form form) {
@@ -133,7 +145,7 @@ public abstract class CommentsModalPanel extends Panel {
       Action comment = (Action) item.getModelObject();
 
       KeyValueDataPanel kvPanel = new KeyValueDataPanel("comment-panel");
-      kvPanel.addRow(new StringResourceModel("CommentTime", this, null), new PropertyModel(comment, "dateTime"));
+      kvPanel.addRow(new StringResourceModel("CommentTime", this, null), DateUtils.getFullDateModel(new PropertyModel(comment, "dateTime")));
       IModel stageModel;
       if(comment.getStage() != null) {
         stageModel = new PropertyModel(comment, "stage.description");
