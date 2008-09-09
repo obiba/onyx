@@ -32,7 +32,8 @@ public class MockActiveInstrumentRunServiceImpl extends PersistenceManagerAwareS
       //System.out.println("++++++++++++++++++++++++ run.count=" + getPersistenceManager().count(InstrumentRun.class));
       run = new InstrumentRun();//getPersistenceManager().get(InstrumentRun.class, 1l);
       run.setUser(new User());
-      run.getUser().setName("technicien_1");
+      run.getUser().setLastName("technicien_1");
+      run.getUser().setFirstName("tech");
       run.setParticipantInterview(new ParticipantInterview());
       run.getParticipantInterview().setParticipant(new Participant());
       run.getParticipantInterview().getParticipant().setLastName("Dupont");

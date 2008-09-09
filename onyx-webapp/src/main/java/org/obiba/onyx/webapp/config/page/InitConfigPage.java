@@ -64,10 +64,14 @@ public class InitConfigPage extends BasePage {
       siteNo.add(new RequiredFormFieldBehavior());
       add(siteNo.add(StringValidator.maximumLength(30)));
 
-      TextField administratorName = new TextField("name", new PropertyModel(model, "user.name"));
+      TextField administratorName = new TextField("lastName", new PropertyModel(model, "user.lastName"));
       administratorName.add(new RequiredFormFieldBehavior());
       add(administratorName.add(StringValidator.maximumLength(30)));
 
+      TextField administratorFirstName = new TextField("firstName", new PropertyModel(model, "user.firstName"));
+      administratorFirstName.add(new RequiredFormFieldBehavior());
+      add(administratorFirstName.add(StringValidator.maximumLength(30)));
+      
       TextField administratorUserLogin = new TextField("login", new PropertyModel(model, "user.login"));
       administratorUserLogin.add(new RequiredFormFieldBehavior());
       add(administratorUserLogin.add(StringValidator.maximumLength(30)));
@@ -140,7 +144,7 @@ public class InitConfigPage extends BasePage {
 
       // Setup administrator user.
       User user = model.getUser();
-      user.setRole(Role.SYSTEM_ADMINISTRATOR);
+      user.addRole(Role.SYSTEM_ADMINISTRATOR);
       userService.createUser(user);
 
       // Save initial application configuration.

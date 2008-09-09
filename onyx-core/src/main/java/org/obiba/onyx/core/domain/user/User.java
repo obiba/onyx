@@ -3,31 +3,31 @@ package org.obiba.onyx.core.domain.user;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.user.Role;
 
-@TypeDefs({
-  @TypeDef(name="role", typeClass=RoleType.class  
-  ) // Register the role type
-})
 @Entity
 public class User extends AbstractEntity {
 
   private static final long serialVersionUID = -2200053643926715563L;
 
-  private String name;
+  private String lastName;
+  
+  private String firstName;
 
   private String login;
 
@@ -39,21 +39,40 @@ public class User extends AbstractEntity {
 
   private Boolean deleted;
 
-  @Type(type="role")
-  @Column(length=30)
-  private Role role;
-
+  @Enumerated(EnumType.STRING)
+  private Status status;
+  
+  @ManyToMany
+  @JoinTable(
+          name="user_roles",
+          joinColumns = { @JoinColumn(name="user_id") },
+          inverseJoinColumns = @JoinColumn(name="role_id")
+  )
+  private Set<Role> roles;
+  
   @OneToMany(mappedBy = "user")
   private List<Interview> interviews;
 
-  public String getName() {
-    return name;
+  public String getLastName() {
+    return lastName;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
   }
 
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+  
+  public String getFullName() {
+    return getFirstName() + " " + getLastName();
+  }
+  
   public String getLogin() {
     return login;
   }
@@ -69,15 +88,25 @@ public class User extends AbstractEntity {
   public void setPassword(String password) {
     this.password = password;
   }
-
-  public Role getRole() {
-    return role;
+  
+  public Set<Role> getRoles() {
+    return (roles != null) ? roles : (roles = new HashSet<Role>());
+  }
+  
+  public void setRoles(Set<Role> roles) { this.roles = roles; }
+  
+  public void addRole(Role role) {
+    getRoles().add(role);
+  }
+  
+  public Status getStatus() {
+    return status;
   }
 
-  public void setRole(Role role) {
-    this.role = role;
+  public void setStatus(Status status) {
+    this.status = status;
   }
-
+  
   public List<Interview> getInterviews() {
     return interviews != null ? interviews : (interviews = new ArrayList<Interview>());
   }
@@ -106,7 +135,7 @@ public class User extends AbstractEntity {
   public void setDeleted(Boolean deleted) {
     this.deleted = deleted;
   }
-
+  
   public Locale getLanguage() {
     return language;
   }

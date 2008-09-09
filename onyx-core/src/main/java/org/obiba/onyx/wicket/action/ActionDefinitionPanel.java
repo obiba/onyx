@@ -62,7 +62,7 @@ public abstract class ActionDefinitionPanel extends Panel {
     form.add(feedback = new FeedbackPanel("feedback"));
     feedback.setOutputMarkupId(true);
 
-    form.add(new Label("operator", activeInterviewService.getInterview().getUser().getName()));
+    form.add(new Label("operator", activeInterviewService.getInterview().getUser().getFullName()));
     
     Participant participant = activeInterviewService.getParticipant();
     form.add(new Label("participantName", participant.getFullName()));

@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <linked-list>
 
+  <role id="sysAdmin">
+    <name>SYSTEM_ADMINISTRATOR</name>
+  </role>
+  <role id="partManager">
+    <name>PARTICIPANT_MANAGER</name>
+  </role>
+  <role id="dataOperator">
+    <name>DATA_COLLECTION_OPERATOR</name>
+  </role>
   <user>
-    <name>ONYX Administrator</name>
+    <lastName>ONYX Administrator</lastName>
+    <firstName>The</firstName>    
     <login>administrator</login>
     <password>password</password>
     <email>test@obiba.org</email>
-    <role>
-      <name>SYSTEM_ADMINISTRATOR</name>
-    </role>
+    <status>ACTIVE</status>
+    <deleted>false</deleted>
+    <roles>
+    	<role reference="sysAdmin"/>
+    </roles>
   </user>
   
   <config>

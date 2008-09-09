@@ -1,8 +1,17 @@
 package org.obiba.onyx.core.domain.user;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
-public class Role implements Serializable, Comparable<Role> {
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+
+import org.obiba.core.domain.AbstractEntity;
+import org.obiba.onyx.core.domain.user.User;
+
+@Entity
+public class Role extends AbstractEntity implements Serializable, Comparable<Role> {
 
   private static final long serialVersionUID = -5985745491689725964L;
 
@@ -14,6 +23,9 @@ public class Role implements Serializable, Comparable<Role> {
 
   private String name = null;
 
+  @ManyToMany(mappedBy = "roles")
+  private Set<User> users;
+  
   public Role() {
   }
 
@@ -52,4 +64,14 @@ public class Role implements Serializable, Comparable<Role> {
     return name.hashCode();
   }
 
+  public Set<User> getUsers() {
+    return users != null ? users : (users = new HashSet<User>());
+  }
+
+  public void addUser(User user) {
+    if(user != null) {
+      getUsers().add(user);
+    }
+
+  }
 }

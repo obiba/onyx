@@ -8,6 +8,7 @@ import org.obiba.onyx.core.domain.application.AppConfiguration;
 import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.wicket.util.seed.XstreamResourceDatabaseSeed;
@@ -74,10 +75,11 @@ public class TestDatabaseSeed extends XstreamResourceDatabaseSeed {
     super.initializeXstream(xstream);
 
     xstream.alias("config", AppConfiguration.class);
+    xstream.alias("role", Role.class);
     xstream.alias("user", User.class);
     xstream.alias("participant", Participant.class);
     xstream.alias("interview", Interview.class);
     xstream.alias("appointment", Appointment.class);
-
+    
   }
 }

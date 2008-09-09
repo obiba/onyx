@@ -30,7 +30,7 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
   }
 
   public String getInstrumentOperator() {
-    return getInstrumentRun().getUser().getName();
+    return getInstrumentRun().getUser().getFullName();
   }
   
   public String getParticipantFirstName() {

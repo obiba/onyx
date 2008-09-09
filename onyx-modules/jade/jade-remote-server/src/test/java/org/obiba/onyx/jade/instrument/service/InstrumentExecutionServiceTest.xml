@@ -1,6 +1,6 @@
 <dataset>
 
-  <user id="1" name="technicien_1"/>
+  <user id="1" last_name="technicien_1" first_name="tech"/>
   <participant id="1" barcode="1" last_name="Dupont" first_name="Laura" gender="FEMALE" birth_date="1979-09-04 00:00:00"/>
   <interview id="1" participant_id="1"/>
   <participant_interview id="1" participant_id="1"/>

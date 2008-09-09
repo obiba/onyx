@@ -28,7 +28,7 @@ public class HeaderPanel extends Panel {
     
     add(new Label("studyName", new PropertyModel(model, "config.studyName")));
     add(new Label("siteName", new PropertyModel(model, "config.siteName")));
-    add(new Label("userLoggedIn", new PropertyModel(model, "userLoggedIn.name")));
+    add(new Label("userLoggedIn", new PropertyModel(model, "userLoggedIn.fullName")));
     
     add(new Link("profile"){
 

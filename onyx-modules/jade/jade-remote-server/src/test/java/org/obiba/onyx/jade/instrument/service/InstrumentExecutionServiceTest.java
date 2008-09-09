@@ -46,7 +46,7 @@ public class InstrumentExecutionServiceTest {
   @Dataset
   public void getOperator() {
     Assert.assertNotNull("No InstrumentRun", activeInstrumentRunService.getInstrumentRun());
-    Assert.assertEquals("technicien_1", instrumentExecutionService.getInstrumentOperator());
+    Assert.assertEquals("tech technicien_1", instrumentExecutionService.getInstrumentOperator());
   }
   
   @Test

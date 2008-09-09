@@ -19,6 +19,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.obiba.core.util.StringUtil;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
+import org.obiba.onyx.webapp.user.page.UserSearchPage;
 
 /**
  * Builds the menu that will appear in the menu bar and in the home page. Only page links current user is allowed to go
@@ -47,7 +48,8 @@ public class MenuBuilder {
     if(OnyxAuthenticatedSession.get().isSignedIn()) {
       menuItems.add(new MenuItem(Application.get().getHomePage(), "Home"));
       menuItems.add(new MenuItem(ParticipantSearchPage.class, "Participant"));
-      menuItems.add(new MenuItem(Application.get().getHomePage(), "Administration"));
+      if (OnyxAuthenticatedSession.get().getRoles().hasRole("SYSTEM_ADMINISTRATOR"))
+        menuItems.add(new MenuItem(UserSearchPage.class, "Administration"));;
     }
 
     // Creating the DataView containing the whole menu

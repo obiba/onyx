@@ -6,6 +6,7 @@ import java.util.Locale;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.StringResourceModel;
+import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.page.BasePage;
 
 /**
@@ -46,8 +47,7 @@ public class MenuBar extends Panel {
 
     };
     if(getSession().getLocale() != null && getSession().getLocale().getLanguage().equals("fr")) getSession().setLocale(Locale.FRENCH);
-    else
-      getSession().setLocale(Locale.ENGLISH);
+    else getSession().setLocale(Locale.ENGLISH);
 
     languageSelect.setSelectedLanguage(getSession().getLocale());
     add(languageSelect);

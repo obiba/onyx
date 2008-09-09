@@ -1,5 +1,7 @@
 package org.obiba.onyx.webapp;
 
+import java.util.Iterator;
+
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
 import org.apache.wicket.authorization.strategies.role.Roles;
@@ -7,6 +9,7 @@ import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.User;
 
 public final class OnyxAuthenticatedSession extends WebSession {
@@ -44,6 +47,9 @@ public final class OnyxAuthenticatedSession extends WebSession {
       if(fetchedUser != null && !fetchedUser.isDeleted() && fetchedUser.getPassword().equals(User.digest(password))) {
         user = fetchedUser;
 
+        if(user.getLanguage() != null)
+          setLocale(user.getLanguage());
+        
         // Forcing initialization of user's roles
         // user.getRoles().size();
       }
@@ -82,18 +88,14 @@ public final class OnyxAuthenticatedSession extends WebSession {
     if(isSignedIn()) {
 
       // Prepare the role list in a string provided to the Wicket Roles class. 
-//      StringBuilder roleList = new StringBuilder();
-//      Iterator<Role> it = user.getRoles().iterator();
-//      while(it.hasNext()) {
-//        roleList.append(it.next().getName());
-//
-//        if(it.hasNext()) {
-//          roleList.append(",");
-//        }
-//      }
-//
-//      Roles userRoles = new Roles(roleList.toString());
-      Roles userRoles = new Roles(user.getRole().toString());
+      StringBuilder roleList = new StringBuilder();
+      for (Role r : queryService.matchOne(user).getRoles()) {
+        if (roleList.length()!= 0)
+          roleList.append(",");
+        roleList.append(r.getName());
+      }
+      
+      Roles userRoles = new Roles(roleList.toString());
       return userRoles;
     }
     return null;
