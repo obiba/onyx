@@ -9,6 +9,7 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -107,8 +108,8 @@ public abstract class CommentsModalPanel extends Panel {
           previousComments.addOrReplace(new Label("noComments", ""));
           target.addComponent(previousComments);
           
-          newComment.setModel(new PropertyModel(new Model(new Action()), "comment"));
-          target.addComponent(newComment);
+          /*CommentForm.this.getModel().setObject(new Action());
+          target.addComponent(newComment);*/
         }
 
         protected void onError(AjaxRequestTarget target, Form form) {
@@ -145,7 +146,7 @@ public abstract class CommentsModalPanel extends Panel {
       Action comment = (Action) item.getModelObject();
 
       KeyValueDataPanel kvPanel = new KeyValueDataPanel("comment-panel");
-      kvPanel.addRow(new StringResourceModel("CommentTime", this, null), DateUtils.getFullDateModel(new PropertyModel(comment, "dateTime")));
+      kvPanel.addRow(new StringResourceModel("CommentTime", this, null), DateUtils.getDateTimeModel(new PropertyModel(comment, "dateTime")));
       IModel stageModel;
       if(comment.getStage() != null) {
         stageModel = new PropertyModel(comment, "stage.description");
