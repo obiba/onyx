@@ -11,7 +11,7 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
-import org.obiba.onyx.wicket.util.DateUtils;
+import org.obiba.onyx.wicket.util.DateModelUtils;
 
 public class StageStartEndTimePanel extends Panel {
 
@@ -42,9 +42,9 @@ public class StageStartEndTimePanel extends Panel {
     }
 
     if(activeInterviewService.getStageExecution(stage).isCompleted()) {
-      add(new Label("endTime", DateUtils.getShortDateTimeModel(new PropertyModel(lastAction, "dateTime"))));
+      add(new Label("endTime", DateModelUtils.getShortDateTimeModel(new PropertyModel(lastAction, "dateTime"))));
       add(new Label("separator", "-"));
-      add(new Label("startTime", DateUtils.getShortDateTimeModel(new PropertyModel(lastExecuteAction, "dateTime"))));
+      add(new Label("startTime", DateModelUtils.getShortDateTimeModel(new PropertyModel(lastExecuteAction, "dateTime"))));
     } else {
       add(new Label("endTime", ""));
       add(new Label("separator", ""));

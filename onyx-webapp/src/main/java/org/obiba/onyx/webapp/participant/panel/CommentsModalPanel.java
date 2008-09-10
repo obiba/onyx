@@ -26,7 +26,7 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
-import org.obiba.onyx.wicket.util.DateUtils;
+import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 
 public abstract class CommentsModalPanel extends Panel {
@@ -151,7 +151,7 @@ public abstract class CommentsModalPanel extends Panel {
       Action comment = (Action) item.getModelObject();
 
       KeyValueDataPanel kvPanel = new KeyValueDataPanel("comment-panel");
-      kvPanel.addRow(new StringResourceModel("CommentTime", this, null), DateUtils.getDateTimeModel(new PropertyModel(comment, "dateTime")));
+      kvPanel.addRow(new StringResourceModel("CommentTime", this, null), DateModelUtils.getDateTimeModel(new PropertyModel(comment, "dateTime")));
       IModel stageModel;
       if(comment.getStage() != null) {
         stageModel = new PropertyModel(comment, "stage.description");

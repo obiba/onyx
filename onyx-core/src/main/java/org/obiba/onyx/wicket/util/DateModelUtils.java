@@ -7,7 +7,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebSession;
 
-public class DateUtils {
+public class DateModelUtils {
 
   public static IModel getShortDateTimeModel(IModel dateModel) {
     return new FormatingDateTimeModel(SimpleDateFormat.SHORT, dateModel);

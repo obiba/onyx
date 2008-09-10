@@ -35,7 +35,7 @@ import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
 import org.obiba.onyx.webapp.participant.panel.ParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
-import org.obiba.onyx.wicket.util.DateUtils;
+import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.link.AjaxLinkList;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
@@ -315,7 +315,7 @@ public class ParticipantSearchPage extends BasePage {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Participant p = (Participant) rowModel.getObject();
-          cellItem.add(new Label(componentId, DateUtils.getShortDateModel(new Model(p.getBirthDate()))));
+          cellItem.add(new Label(componentId, DateModelUtils.getShortDateModel(new Model(p.getBirthDate()))));
         }
 
       });
@@ -324,7 +324,7 @@ public class ParticipantSearchPage extends BasePage {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Participant p = (Participant) rowModel.getObject();
-          cellItem.add(new Label(componentId, DateUtils.getShortDateTimeModel(new Model(p.getAppointment().getDate()))));
+          cellItem.add(new Label(componentId, DateModelUtils.getShortDateTimeModel(new Model(p.getAppointment().getDate()))));
         }
 
       });

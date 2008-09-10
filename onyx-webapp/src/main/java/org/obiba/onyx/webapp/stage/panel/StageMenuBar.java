@@ -5,7 +5,7 @@ import org.apache.wicket.model.Model;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
-import org.obiba.onyx.wicket.util.DateUtils;
+import org.obiba.onyx.wicket.util.DateModelUtils;
 
 public class StageMenuBar extends MenuBar {
 
@@ -24,7 +24,7 @@ public class StageMenuBar extends MenuBar {
   }
 
   public void setInfoLabel(Stage stage, Participant participant) {
-    infoLabel = stage.getDescription() + ": " + participant.getFullName() + " - "  + participant.getBarcode() + " - " + DateUtils.getDateModel(new Model(participant.getBirthDate())).getObject().toString();
+    infoLabel = stage.getDescription() + ": " + participant.getFullName() + " - "  + participant.getBarcode() + " - " + DateModelUtils.getDateModel(new Model(participant.getBirthDate())).getObject().toString();
 
     buildMenus();
   }

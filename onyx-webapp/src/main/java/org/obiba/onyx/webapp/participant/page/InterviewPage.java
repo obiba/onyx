@@ -29,7 +29,7 @@ import org.obiba.onyx.webapp.participant.panel.CommentsModalPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.webapp.stage.panel.StageSelectionPanel;
 import org.obiba.onyx.wicket.action.ActionWindow;
-import org.obiba.onyx.wicket.util.DateUtils;
+import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
@@ -195,12 +195,12 @@ public class InterviewPage extends BasePage {
 
     public String getStartDate() {
       Date date = activeInterviewService.getInterview().getStartDate();
-      return date == null ? "" : DateUtils.getShortDateTimeModel(new Model(date)).getObject().toString();
+      return date == null ? "" : DateModelUtils.getShortDateTimeModel(new Model(date)).getObject().toString();
     }
 
     public String getEndDate() {
       Date date = activeInterviewService.getInterview().getEndDate();
-      return date == null ? "" : DateUtils.getShortDateTimeModel(new Model(date)).getObject().toString();
+      return date == null ? "" : DateModelUtils.getShortDateTimeModel(new Model(date)).getObject().toString();
     }
 
     public String getStatus() {

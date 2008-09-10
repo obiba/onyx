@@ -6,7 +6,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.wicket.util.DateUtils;
+import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 
@@ -34,7 +34,7 @@ public class ParticipantPanel extends Panel {
     kvPanel.addRow(new StringResourceModel("AppointmentCode", this, null), new PropertyModel(participant, "appointment.appointmentCode"));
     kvPanel.addRow(new StringResourceModel("Name", this, null), new PropertyModel(participant, "fullName"));
     kvPanel.addRow(new StringResourceModel("Gender", this, null), new PropertyModel(this, "localizedGender"));
-    kvPanel.addRow(new StringResourceModel("BirthDate", this, null), DateUtils.getShortDateModel(new PropertyModel(participant, "birthDate")));
+    kvPanel.addRow(new StringResourceModel("BirthDate", this, null), DateModelUtils.getShortDateModel(new PropertyModel(participant, "birthDate")));
 
     if(!shortList) {
       kvPanel.addRow(new StringResourceModel("Street", this, null), new PropertyModel(participant, "street"));
