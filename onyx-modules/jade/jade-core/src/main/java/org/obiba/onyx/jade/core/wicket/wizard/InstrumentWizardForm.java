@@ -30,6 +30,8 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
     add(instrumentSelectionStep);
     instrumentSelectionStep.handleWizardState(this, null);
+   
+    getCancelLink().setVisible(false);
   }
 
   public Instrument getInstrument() {

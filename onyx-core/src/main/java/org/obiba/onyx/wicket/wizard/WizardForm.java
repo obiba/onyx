@@ -145,6 +145,10 @@ public abstract class WizardForm extends Form {
   public Component getFinishLink() {
     return get("finish");
   }
+  
+  public Component getCancelLink() {
+    return get("cancelLink");
+  }
 
   protected void gotoNext(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
