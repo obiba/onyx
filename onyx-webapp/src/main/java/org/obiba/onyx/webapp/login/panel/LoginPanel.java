@@ -1,7 +1,10 @@
 package org.obiba.onyx.webapp.login.panel;
 
 import org.apache.wicket.authentication.panel.SignInPanel;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
+import org.obiba.onyx.wicket.util.JavascriptEventAlert;
 
 public class LoginPanel extends SignInPanel {
 
@@ -10,6 +13,21 @@ public class LoginPanel extends SignInPanel {
   public LoginPanel(String id) {
     super(id, false);
     remove("feedback");
+
+    Link link = new Link("forgotPassword"){
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick() {
+        // TODO Auto-generated method stub
+        return;
+      }
+      
+    };
+    link.add(new JavascriptEventAlert("onclick", new StringResourceModel("ForgotPasswordMessage", LoginPanel.this, null)));
+    add(link);
+    
   }
 
   /**
@@ -25,5 +43,5 @@ public class LoginPanel extends SignInPanel {
   public void onSignInSucceeded() {
     setResponsePage(getApplication().getHomePage());
   }
-  
+
 }
