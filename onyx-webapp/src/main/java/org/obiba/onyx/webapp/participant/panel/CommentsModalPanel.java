@@ -126,7 +126,7 @@ public abstract class CommentsModalPanel extends Panel {
           target.addComponent(newComment);
 
           // Display a message confirming that the comment was saved.
-          info(new StringResourceModel("NewCommentAddedConfirmation", this, null, new Object[] { DateUtils.getDateTimeModel(new Model(new Date(System.currentTimeMillis()))) }).getString());
+          info(new StringResourceModel("NewCommentAddedConfirmation", this, null, new Object[] { DateModelUtils.getDateTimeModel(new Model(new Date(System.currentTimeMillis()))) }).getString());
           target.addComponent(feedback);
         }
 
