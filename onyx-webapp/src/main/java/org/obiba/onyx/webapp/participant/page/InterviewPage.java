@@ -8,7 +8,6 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -111,17 +110,17 @@ public class InterviewPage extends BasePage {
           commentsWindow.show(target);
         }
       });
-      
+
       ActiveInterviewModel interviewModel = new ActiveInterviewModel();
 
       KeyValueDataPanel kvPanel = new KeyValueDataPanel("interview");
       kvPanel.addRow(new StringResourceModel("StartDate", this, null), new PropertyModel(interviewModel, "startDate"));
       kvPanel.addRow(new StringResourceModel("EndDate", this, null), new PropertyModel(interviewModel, "endDate"));
       Action act = activeInterviewService.getStatusAction();
-//      ValueMap map = null;
-//      if(act != null && act.getEventReason() != null) {
-//        map = new ValueMap("reason=" + act.getEventReason());
-//      }
+      // ValueMap map = null;
+      // if(act != null && act.getEventReason() != null) {
+      // map = new ValueMap("reason=" + act.getEventReason());
+      // }
       kvPanel.addRow(new StringResourceModel("Status", this, null), new PropertyModel(interviewModel, "status"));
       add(kvPanel);
 
@@ -195,19 +194,20 @@ public class InterviewPage extends BasePage {
     viewComments.addOrReplace(commentsCount = new Label("commentsCount", String.valueOf(activeInterviewService.getInterviewComments().size())));
     commentsCount.setOutputMarkupId(true);
   }
-  
+
+  @SuppressWarnings("serial")
   private class ActiveInterviewModel implements Serializable {
-    
+
     public String getStartDate() {
       Date date = activeInterviewService.getInterview().getStartDate();
       return date == null ? "" : DateUtils.getShortDateTimeModel(new Model(date)).getObject().toString();
     }
-    
+
     public String getEndDate() {
       Date date = activeInterviewService.getInterview().getEndDate();
       return date == null ? "" : DateUtils.getShortDateTimeModel(new Model(date)).getObject().toString();
     }
-    
+
     public String getStatus() {
       Action act = activeInterviewService.getStatusAction();
       ValueMap map = null;
