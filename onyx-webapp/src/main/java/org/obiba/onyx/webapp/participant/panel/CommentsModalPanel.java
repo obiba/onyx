@@ -1,5 +1,6 @@
 package org.obiba.onyx.webapp.participant.panel;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
@@ -57,10 +59,12 @@ public abstract class CommentsModalPanel extends Panel {
     add(feedback = new FeedbackPanel("feedback"));
     feedback.setOutputMarkupId(true);
 
+    // The WebMarkupContainer is needed to allow the DataView update through Ajax. The DataView cannot be update directly.
     add(previousComments = new WebMarkupContainer("previousComments"));
     previousComments.add(new CommentsDataView("comment-list", new CommentsDataProvider()));
     previousComments.setOutputMarkupId(true);
 
+    // No comment message is only visible when there is no comment for the current interview.
     previousComments.add(new Label("noComments", new StringResourceModel("NoComments", this, null)) {
       private static final long serialVersionUID = 1L;
 
@@ -72,7 +76,7 @@ public abstract class CommentsModalPanel extends Panel {
         return false;
       }
     });
-    
+
     commentsWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
 
       private static final long serialVersionUID = 1L;
@@ -100,21 +104,30 @@ public abstract class CommentsModalPanel extends Panel {
       newComment.setOutputMarkupId(true);
       add(newComment);
 
+      // Save a new comment.
       add(new AjaxButton("saveComment", this) {
 
         private static final long serialVersionUID = 1L;
 
         protected void onSubmit(AjaxRequestTarget target, Form form) {
+
+          // Add new comment to interview.
           Action comment = (Action) CommentForm.this.getModelObject();
           comment.setActionType(ActionType.COMMENT);
           activeInterviewService.doAction(null, comment, activeInterviewService.getInterview().getUser());
           CommentsModalPanel.this.onAddComments(target);
-          
+
+          // Refresh previous comments list.
           commentList = activeInterviewService.getInterviewComments();
           target.addComponent(previousComments);
-          
+
+          // Reset new comment form.
           CommentForm.this.getModel().setObject(new Action());
           target.addComponent(newComment);
+
+          // Display a message confirming that the comment was saved.
+          info(new StringResourceModel("NewCommentAddedConfirmation", this, null, new Object[] { DateUtils.getDateTimeModel(new Model(new Date(System.currentTimeMillis()))) }).getString());
+          target.addComponent(feedback);
         }
 
         protected void onError(AjaxRequestTarget target, Form form) {
@@ -159,8 +172,9 @@ public abstract class CommentsModalPanel extends Panel {
         stageModel = new StringResourceModel("GeneralComment", this, null);
       }
       kvPanel.addRow(new StringResourceModel("Stage", this, null), stageModel);
-      kvPanel.addRow(new StringResourceModel("MadeBy", this, null), new PropertyModel(comment, "user.name"));
-      kvPanel.addRow(new StringResourceModel("Comment", this, null), new MultiLineLabel( KeyValueDataPanel.getRowValueId(), new PropertyModel(comment, "comment") ));
+      User currentUser = comment.getUser();
+      kvPanel.addRow(new StringResourceModel("MadeBy", this, null), new Label(KeyValueDataPanel.getRowValueId(), currentUser.getFirstName() + " " + currentUser.getLastName()));
+      kvPanel.addRow(new StringResourceModel("Comment", this, null), new MultiLineLabel(KeyValueDataPanel.getRowValueId(), new PropertyModel(comment, "comment")));
       item.add(kvPanel);
 
     }
