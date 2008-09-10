@@ -18,6 +18,7 @@ import org.apache.wicket.markup.html.link.ILinkListener;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
@@ -27,13 +28,10 @@ import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.Status;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserService;
-import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
 import org.obiba.onyx.webapp.user.panel.UserPanel;
-import org.obiba.onyx.wicket.action.ActionDefinitionPanel;
 import org.obiba.wicket.markup.html.panel.ConfirmLinkPanel;
 import org.obiba.wicket.markup.html.panel.LinkPanel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
@@ -41,27 +39,27 @@ import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR" })
 public class UserSearchPage extends BasePage {
-  
+
   @SpringBean
   private EntityQueryService queryService;
-  
+
   @SpringBean
   private UserService userService;
-  
+
   private OnyxEntityList<User> userList;
-  
+
   private User template = new User();
-  
+
   private ModalWindow userDetailsModalWindow;
-  
+
   @SuppressWarnings("serial")
   public UserSearchPage() {
-
     super();
-        
+    setModel(new Model(new User()));
+
     userDetailsModalWindow = new ModalWindow("userDetailsModalWindow");
     userDetailsModalWindow.setTitle(new StringResourceModel("UserManagement", this, null));
-    
+
     userDetailsModalWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
       public boolean onCloseButtonClicked(AjaxRequestTarget target) {
         // same as cancel
@@ -76,26 +74,25 @@ public class UserSearchPage extends BasePage {
     });
     userDetailsModalWindow.setInitialWidth(400);
     userDetailsModalWindow.setInitialHeight(450);
-    add(userDetailsModalWindow);     
-    
+    add(userDetailsModalWindow);
+
     add(new AjaxLink("addUser") {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        User user = new User();
-        userDetailsModalWindow.setContent(new UserPanel("content", user, userDetailsModalWindow));
+        userDetailsModalWindow.setContent(new UserPanel("content", UserSearchPage.this.getModel(), userDetailsModalWindow));
         userDetailsModalWindow.show(target);
       }
 
     });
-    
+
     template.setDeleted(false);
-    
+
     userList = new OnyxEntityList<User>("user-list", new UserProvider(template), new UserListColumnProvider(), new StringResourceModel("UserList", UserSearchPage.this, null));
     add(userList);
-  
+
   }
-  
+
   @SuppressWarnings("serial")
   private class UserProvider extends SortableDataProviderEntityServiceImpl<User> {
 
@@ -106,7 +103,7 @@ public class UserSearchPage extends BasePage {
       this.template = template;
       setSort(new SortParam("lastName", true));
     }
-    
+
     @Override
     protected List<User> getList(PagingClause paging, SortingClause... clauses) {
       return userService.getUsers(template.isDeleted(), paging, clauses);
@@ -118,7 +115,7 @@ public class UserSearchPage extends BasePage {
     }
 
   }
-  
+
   private class UserListColumnProvider implements IColumnProvider, Serializable {
 
     private static final long serialVersionUID = 1141339694945247910L;
@@ -132,69 +129,63 @@ public class UserSearchPage extends BasePage {
       columns.add(new PropertyColumn(new StringResourceModel("LastName", UserSearchPage.this, null), "lastName", "lastName"));
       columns.add(new PropertyColumn(new StringResourceModel("FirstName", UserSearchPage.this, null), "firstName", "firstName"));
       columns.add(new PropertyColumn(new StringResourceModel("Email", UserSearchPage.this, null), "email", "email"));
-      
+
       columns.add(new AbstractColumn(new StringResourceModel("Role(s)", UserSearchPage.this, null)) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           StringBuilder roleList = new StringBuilder();
-          User u = (User) rowModel.getObject();
-          
-          for(Role r : u.getRoles()) {
-            if (roleList.length()!= 0)
-              roleList.append(", ");
-            roleList.append(new StringResourceModel("Role." + ((Role)r).getName(), UserSearchPage.this, null).getString());
+
+          for(Role r : getUser(rowModel).getRoles()) {
+            if(roleList.length() != 0) roleList.append(", ");
+            roleList.append(new StringResourceModel("Role." + ((Role) r).getName(), UserSearchPage.this, null).getString());
           }
-          
+
           cellItem.add(new Label(componentId, roleList.toString()));
         }
 
       });
-      
+
       columns.add(new AbstractColumn(new StringResourceModel("Status", UserSearchPage.this, null)) {
 
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          final User user = ((User)rowModel.getObject());
+        public void populateItem(Item cellItem, String componentId, final IModel rowModel) {
           LinkPanel statusLink = new LinkPanel(componentId, new ILinkListener() {
 
             public void onLinkClicked() {
               Status newStatus;
-              if(user.getStatus().equals(Status.ACTIVE)) newStatus = Status.INACTIVE;
-              else newStatus = Status.ACTIVE;
-              userService.changeStatus(user, newStatus);
+              if(getUser(rowModel).getStatus().equals(Status.ACTIVE)) newStatus = Status.INACTIVE;
+              else
+                newStatus = Status.ACTIVE;
+              userService.changeStatus(getUser(rowModel), newStatus);
             }
-            
-          }, new StringResourceModel("Status." + user.getStatus(), UserSearchPage.this, null));
-          
-          if (OnyxAuthenticatedSession.get().getUser().getLogin().equals(user.getLogin()))
-            cellItem.add(new Label(componentId, new StringResourceModel("Status." + user.getStatus(), UserSearchPage.this, null)));
-          else 
+
+          }, new StringResourceModel("Status." + getUser(rowModel).getStatus(), UserSearchPage.this, null));
+
+          if(OnyxAuthenticatedSession.get().getUser().getLogin().equals(getUser(rowModel).getLogin())) cellItem.add(new Label(componentId, new StringResourceModel("Status." + getUser(rowModel).getStatus(), UserSearchPage.this, null)));
+          else
             cellItem.add(statusLink);
         }
       });
-      
+
       columns.add(new HeaderlessColumn() {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          final User user = ((User)rowModel.getObject());
-          cellItem.add(new LinkFragment(componentId, user));
+          cellItem.add(new LinkFragment(componentId, rowModel));
         }
       });
 
       columns.add(new HeaderlessColumn() {
 
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          final User user = ((User)rowModel.getObject());
-          ConfirmLinkPanel deleteLink = new ConfirmLinkPanel(componentId, new StringResourceModel("Delete", UserSearchPage.this, null),
-            new StringResourceModel("ConfirmDeleteUser", UserSearchPage.this, null, new Object[]{ user.getFullName()})) {
+        public void populateItem(Item cellItem, String componentId, final IModel rowModel) {
+          ConfirmLinkPanel deleteLink = new ConfirmLinkPanel(componentId, new StringResourceModel("Delete", UserSearchPage.this, null), new StringResourceModel("ConfirmDeleteUser", UserSearchPage.this, null, new Object[] { getUser(rowModel).getFullName() })) {
 
             private static final long serialVersionUID = 1L;
-  
+
             @Override
             public void onClick() {
-              userService.deleteUser(user);
+              userService.deleteUser(getUser(rowModel));
             }
           };
-          if (OnyxAuthenticatedSession.get().getUser().getLogin().equals(user.getLogin())) deleteLink.setVisible(false);
+          if(OnyxAuthenticatedSession.get().getUser().getLogin().equals(getUser(rowModel).getLogin())) deleteLink.setVisible(false);
           cellItem.add(deleteLink);
         }
       });
@@ -216,13 +207,17 @@ public class UserSearchPage extends BasePage {
       return columns;
     }
 
+    protected User getUser(IModel rowModel) {
+      return (User) rowModel.getObject();
+    }
+
   }
-  
+
   public class LinkFragment extends Fragment {
-    
+
     private static final long serialVersionUID = 1L;
 
-    public LinkFragment(String id, final User user) {
+    public LinkFragment(String id, final IModel rowModel) {
       super(id, "linkFragment", UserSearchPage.this);
       add(new AjaxLink("editLink") {
 
@@ -231,12 +226,12 @@ public class UserSearchPage extends BasePage {
         @Override
         public void onClick(AjaxRequestTarget target) {
           // TODO Auto-generated method stub
-          userDetailsModalWindow.setContent(new UserPanel("content", user, userDetailsModalWindow));
+          userDetailsModalWindow.setContent(new UserPanel("content", rowModel, userDetailsModalWindow));
           userDetailsModalWindow.show(target);
         }
-        
+
       });
-      
+
     }
   }
 }

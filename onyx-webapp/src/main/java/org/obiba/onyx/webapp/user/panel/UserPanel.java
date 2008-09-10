@@ -14,11 +14,13 @@ import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.hibernate.dialect.Oracle10gDialect;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.user.Role;
@@ -46,48 +48,51 @@ public class UserPanel extends Panel {
   
   private FeedbackPanel feedbackPanel;
   
-  public UserPanel(String id, User user, final ModalWindow modalWindow) {
-    super(id);
+  public UserPanel(String id, IModel model, final ModalWindow modalWindow) {
+    super(id, model);
     userModalWindow = modalWindow;
-    add(new UserPanelForm("userPanelForm", user));
+    add(new UserPanelForm("userPanelForm", model));
   }
   
+  /**
+   * @author cag-acarey
+   *  Expect User entity in IModel
+   *  {@link User}
+   */
   private class UserPanelForm extends Form {
 
     private static final long serialVersionUID = 1L;
     
-    public UserPanelForm(String id, User user) {
-      super(id);
-
-      setModel(new Model(user));
+    public UserPanelForm(String id, IModel model) {
+      super(id, model);
       
       feedbackPanel = new FeedbackPanel("feedback");
       feedbackPanel.setOutputMarkupId(true);
       add(feedbackPanel);
       
-      TextField lastName = new TextField("lastName", new PropertyModel(getModelObject(), "lastName"));
+      TextField lastName = new TextField("lastName", new PropertyModel(getModel(), "lastName"));
       lastName.add(new RequiredFormFieldBehavior());
       add(lastName);
       
-      TextField firstName = new TextField("firstName", new PropertyModel(getModelObject(), "firstName"));
+      TextField firstName = new TextField("firstName", new PropertyModel(getModel(), "firstName"));
       firstName.add(new RequiredFormFieldBehavior());
       add(firstName);
       
-      TextField login = new TextField("login", new PropertyModel(getModelObject(), "login"));
+      TextField login = new TextField("login", new PropertyModel(getModel(), "login"));
       login.add(new RequiredFormFieldBehavior());
       login.setEnabled(false);
       add(login);
       
-      PasswordTextField password = new PasswordTextField("password", new PropertyModel(getModelObject(), "password"));
+      PasswordTextField password = new PasswordTextField("password", new PropertyModel(getModel(), "password"));
       password.setRequired(false);
       add(password);
       
-      TextField email = new TextField("email", new PropertyModel(getModelObject(), "email"));
+      TextField email = new TextField("email", new PropertyModel(getModel(), "email"));
       email.add(new RequiredFormFieldBehavior());
       email.add(EmailAddressValidator.getInstance());
       add(email);
       
-      ListMultipleChoice roles = new ListMultipleChoice("roles", new PropertyModel(getModelObject(), "roles"), roleService.getRoles(SortingClause.create("name")));
+      ListMultipleChoice roles = new ListMultipleChoice("roles", new PropertyModel(getModel(), "roles"), roleService.getRoles(SortingClause.create("name")));
       roles.setRequired(true);
       roles.setChoiceRenderer(new IChoiceRenderer() {
         
@@ -110,13 +115,12 @@ public class UserPanel extends Panel {
         @Override
         protected void onLanguageUpdate(Locale language, AjaxRequestTarget target) {
           if(language == null) language = Locale.ENGLISH;
-          User user = (User) UserPanelForm.this.getModelObject();
-          user.setLanguage(language);
+          getUser().setLanguage(language);
         }
 
       };
-      if(user.getLanguage() != null)
-        languageSelect.setSelectedLanguage(user.getLanguage());
+      if(getUser().getLanguage() != null)
+        languageSelect.setSelectedLanguage(getUser().getLanguage());
       add(languageSelect);
       
       add(new AjaxButton("submit") {
@@ -176,6 +180,10 @@ public class UserPanel extends Panel {
           userModalWindow.close(target);
         }
       });
+    }
+    
+    protected User getUser() {
+      return (User)getModelObject();
     }
   }
   
