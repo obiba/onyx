@@ -28,7 +28,7 @@ public class Interview extends AbstractEntity {
   private Date startDate;
 
   @Temporal(TemporalType.TIMESTAMP)
-  private Date stopDate;
+  private Date endDate;
 
   @OneToOne
   @JoinColumn(name = "participant_id")
@@ -63,12 +63,12 @@ public class Interview extends AbstractEntity {
     this.startDate = startDate;
   }
 
-  public Date getStopDate() {
-    return stopDate;
+  public Date getEndDate() {
+    return endDate;
   }
 
-  public void setStopDate(Date stopDate) {
-    this.stopDate = stopDate;
+  public void setEndDate(Date endDate) {
+    this.endDate = endDate;
   }
 
   public Participant getParticipant() {

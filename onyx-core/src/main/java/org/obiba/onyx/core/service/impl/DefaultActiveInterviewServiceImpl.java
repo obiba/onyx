@@ -16,6 +16,7 @@ import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
@@ -138,15 +139,15 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     return interview;
   }
 
-  public void setStatus(InterviewStatus status, Date stopDate) {
+  public void setStatus(InterviewStatus status) {
     Interview template = new Interview();
     template.setParticipant(currentParticipant);
     Interview interview = getPersistenceManager().matchOne(template);
 
     if(interview != null) {
       interview.setStatus(status);
-      if(stopDate != null) {
-        interview.setStopDate(stopDate);
+      if(status.equals(InterviewStatus.CANCELLED) || status.equals(InterviewStatus.COMPLETED)) {
+        interview.setEndDate(new Date());
       }
       getPersistenceManager().save(interview);
     }
@@ -165,6 +166,26 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     }
 
     return comments;
+  }
+
+  public Action getStatusAction() {
+    Interview interview = getInterview();
+    Action template = new Action();
+    template.setInterview(interview);
+    switch(interview.getStatus()) {
+    case CANCELLED:
+      template.setActionType(ActionType.STOP);
+      break;
+    case COMPLETED:
+      template.setActionType(ActionType.COMPLETE);
+      break;
+    }
+
+    List<Action> actions = getPersistenceManager().match(template, new SortingClause("dateTime", false));
+
+    if(actions.size() > 0) return actions.get(0);
+    else
+      return null;
   }
 
 }

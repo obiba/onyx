@@ -56,7 +56,11 @@ public interface ActiveInterviewService {
    */
   public void doAction(Stage stage, Action action, User user);
   
-  public void setStatus(InterviewStatus status, Date stopDate);
+  /**
+   * Set the status of the current interview.
+   * @param status
+   */
+  public void setStatus(InterviewStatus status);
   
   /**
    * Get a list of all the comments for the current interview.
@@ -64,5 +68,11 @@ public interface ActiveInterviewService {
    * @return  The list of comment
    */
   public List<Action> getInterviewComments();
+  
+  /**
+   * Get the {@link Action} associated to interview status.
+   * @return
+   */
+  public Action getStatusAction();
   
 }
