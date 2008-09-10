@@ -177,14 +177,12 @@ public class EditParticipantPanel extends Panel {
   @SuppressWarnings("serial")
   private class GenderRenderer implements IChoiceRenderer {
 
-    @Override
     public Object getDisplayValue(Object object) {
       Locale locale = EditParticipantPanel.this.getLocale();
       ResourceBundle resourceBundle = ResourceBundle.getBundle("org.obiba.onyx.webapp.OnyxApplication", locale);
       return resourceBundle.getString("Gender."+object.toString());
     }
 
-    @Override
     public String getIdValue(Object object, int index) {
       return object.toString();
     }
@@ -193,12 +191,10 @@ public class EditParticipantPanel extends Panel {
   @SuppressWarnings("serial")
   private class ProvinceRenderer implements IChoiceRenderer {
 
-    @Override
     public Object getDisplayValue(Object object) {
       return object.toString();
     }
 
-    @Override
     public String getIdValue(Object object, int index) {
       return object.toString();
     }

@@ -51,7 +51,6 @@ public class JadeReadyState extends AbstractJadeStageState implements Initializi
     return "Ready";
   }
 
-  @Override
   public String getName() {
     return "Ready";
   }

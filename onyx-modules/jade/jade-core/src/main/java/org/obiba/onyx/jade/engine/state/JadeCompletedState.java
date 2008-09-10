@@ -48,7 +48,6 @@ public class JadeCompletedState extends AbstractJadeStageState implements Initia
     return true;
   }
 
-  @Override
   public String getName() {
     return "Completed";
   }

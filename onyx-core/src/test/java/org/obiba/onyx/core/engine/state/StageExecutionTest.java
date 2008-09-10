@@ -164,7 +164,6 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
       return "Waiting";
     }
 
-    @Override
     public String getName() {
       return "Waiting";
     }
@@ -190,7 +189,6 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
       return "Ready";
     }
 
-    @Override
     public String getName() {
       return "Ready";
     }
@@ -229,7 +227,6 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
       return "InProgress";
     }
     
-    @Override
     public String getName() {
       return "InProgress";
     }
@@ -260,7 +257,6 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
       return "Completed";
     }
     
-    @Override
     public String getName() {
       return "Completed";
     }

@@ -44,7 +44,6 @@ public class MarbleReadyState extends AbstractMarbleStageState implements Initia
     return "Ready";
   }
 
-  @Override
   public String getName() {
     return "Ready";
   }

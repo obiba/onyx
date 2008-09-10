@@ -10,13 +10,10 @@ public class GenderConverter implements IConverter {
 
   private static final long serialVersionUID = 1L;
 
-  @Override
   public Object convertToObject(String value, Locale locale) {
     return Gender.valueOf(value);
   }
 
-
-  @Override
   public String convertToString(Object value, Locale locale) {
     String stringValue = null;
 

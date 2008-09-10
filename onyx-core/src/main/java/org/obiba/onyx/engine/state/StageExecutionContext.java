@@ -230,7 +230,6 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
     return false;
   }
 
-  @Override
   public String getName() {
     // do not expose current state name
     return stage.getModule() + ":" + stage.getName();

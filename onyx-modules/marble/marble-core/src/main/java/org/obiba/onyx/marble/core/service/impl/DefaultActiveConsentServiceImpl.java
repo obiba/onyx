@@ -11,17 +11,14 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
   
   private Boolean consent = true;
   
-  @Override
   public Boolean getConsent() {
     return consent;
   }
   
-  @Override
   public void setConsent(Boolean consent) {
     this.consent = consent;
   }
 
-  @Override
   public void validate() {
     // TODO Auto-generated method stub
     

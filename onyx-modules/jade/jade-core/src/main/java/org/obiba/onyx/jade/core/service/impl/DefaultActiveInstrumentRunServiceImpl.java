@@ -174,8 +174,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     return outputParameterValue;
   }
-
-  @Override
+  
   public InstrumentRunValue getInputInstrumentRunValue(String parameterName) {
     if(currentRun == null) return null;
     

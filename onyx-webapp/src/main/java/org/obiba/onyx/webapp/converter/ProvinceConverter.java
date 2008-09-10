@@ -9,12 +9,10 @@ public class ProvinceConverter implements IConverter {
 
   private static final long serialVersionUID = 1L;
 
-  @Override
   public Object convertToObject(String value, Locale locale) {
     return Province.valueOf(value);
   }
 
-  @Override
   public String convertToString(Object value, Locale locale) {
     String stringValue = null;
 

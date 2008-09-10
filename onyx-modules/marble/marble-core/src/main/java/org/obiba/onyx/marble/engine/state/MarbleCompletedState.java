@@ -35,7 +35,6 @@ public class MarbleCompletedState extends AbstractMarbleStageState implements In
     return true;
   }
 
-  @Override
   public String getName() {
     return "Completed";
   }

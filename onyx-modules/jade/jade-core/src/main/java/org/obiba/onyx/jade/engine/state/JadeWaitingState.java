@@ -41,7 +41,6 @@ public class JadeWaitingState extends AbstractJadeStageState implements Initiali
     return "Waiting";
   }
 
-  @Override
   public String getName() {
     return "Waiting";
   }
