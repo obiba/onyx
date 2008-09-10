@@ -20,24 +20,24 @@ import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 public abstract class ChangePasswordPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
-  
+
   @SpringBean
   UserService userService;
-  
+
   public ChangePasswordPanel(String id) {
     super(id);
     add(new ChangePasswordForm("changePasswordForm"));
   }
-  
+
   private class ChangePasswordForm extends Form {
 
     private static final long serialVersionUID = 1L;
 
     ChangePasswordPanelModel model = new ChangePasswordPanelModel();
-    
+
     public ChangePasswordForm(String id) {
       super(id);
-      
+
       PasswordTextField password = new PasswordTextField("password", new PropertyModel(model, "password"));
       password.add(new RequiredFormFieldBehavior());
       add(password);
@@ -45,10 +45,10 @@ public abstract class ChangePasswordPanel extends Panel {
       PasswordTextField confirmPassword = new PasswordTextField("confirmPassword", new PropertyModel(model, "confirmPassword"));
       confirmPassword.add(new RequiredFormFieldBehavior());
       add(confirmPassword);
-      
+
       // Validate that the password and the confirmed password are the same.
       add(new EqualPasswordInputValidator(password, confirmPassword));
-      
+
       add(new Button("submit") {
 
         private static final long serialVersionUID = 1L;
@@ -56,11 +56,11 @@ public abstract class ChangePasswordPanel extends Panel {
         @Override
         public void onSubmit() {
           super.onSubmit();
-          
+
           String password = model.getPassword();
-          
+
           User user = OnyxAuthenticatedSession.get().getUser();
-          if (userService.isNewPassword(user, User.digest(password))) {
+          if(userService.isNewPassword(user, User.digest(password))) {
             User template = new User();
             template.setId(user.getId());
             try {
@@ -75,7 +75,7 @@ public abstract class ChangePasswordPanel extends Panel {
             onFailure();
           }
         }
-        
+
       });
 
       add(new AjaxLink("cancel") {
@@ -84,11 +84,10 @@ public abstract class ChangePasswordPanel extends Panel {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          setResponsePage(getApplication().getHomePage());
+          int currentPageId = getPage().getPageMapEntry().getNumericId();
+          setResponsePage(getPage().getPageMap().get((currentPageId - 1), -1));
         }
-
       });
-
     }
   }
 
@@ -97,30 +96,33 @@ public abstract class ChangePasswordPanel extends Panel {
    * 
    */
   public abstract void onSuccess();
-  
+
   /**
    * Called when password check or update failed.
    * 
    */
   public abstract void onFailure();
-    
+
   private class ChangePasswordPanelModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     private String password;
+
     private String confirmPassword;
 
     public String getPassword() {
       return password;
     }
+
     public void setPassword(String password) {
       this.password = password;
     }
-    
+
     public String getConfirmPassword() {
       return confirmPassword;
     }
+
     public void setConfirmPassword(String confirmPassword) {
       this.confirmPassword = confirmPassword;
     }
