@@ -116,11 +116,6 @@ public class InterviewPage extends BasePage {
       KeyValueDataPanel kvPanel = new KeyValueDataPanel("interview");
       kvPanel.addRow(new StringResourceModel("StartDate", this, null), new PropertyModel(interviewModel, "startDate"));
       kvPanel.addRow(new StringResourceModel("EndDate", this, null), new PropertyModel(interviewModel, "endDate"));
-      Action act = activeInterviewService.getStatusAction();
-      // ValueMap map = null;
-      // if(act != null && act.getEventReason() != null) {
-      // map = new ValueMap("reason=" + act.getEventReason());
-      // }
       kvPanel.addRow(new StringResourceModel("Status", this, null), new PropertyModel(interviewModel, "status"));
       add(kvPanel);
 
