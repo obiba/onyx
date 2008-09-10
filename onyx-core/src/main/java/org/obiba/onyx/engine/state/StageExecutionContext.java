@@ -236,4 +236,11 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
     return stage.getModule() + ":" + stage.getName();
   }
 
+  public void setReason(Action reason) {
+    currentState.setReason(reason);
+  }
+
+  public Action getReason() {
+    return currentState.getReason();
+  }
 }

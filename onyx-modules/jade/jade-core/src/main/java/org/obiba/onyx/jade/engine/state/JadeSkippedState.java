@@ -42,7 +42,15 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
 
   @Override
   public String getMessage() {
-    return "Skipped";
+    String message = "Skipped";
+    
+    Action reason = getReason();
+    
+    if (reason != null) {
+      message += " (" + reason.getEventReason() + ")";
+    }
+
+    return message;
   }
 
   @Override

@@ -22,7 +22,7 @@ public interface IStageExecution {
    * @return
    */
   public String getName();
-  
+
   /**
    * Get the action definitions, exposed to user by Onyx.
    * @return
@@ -116,7 +116,7 @@ public interface IStageExecution {
    * @return
    */
   public String getMessage();
-  
+
   /**
    * Get the {@link Data} corresponding to the given for stage execution dependency resolution.
    * @param key
@@ -124,4 +124,17 @@ public interface IStageExecution {
    */
   public Data getData(String key);
 
+  /**
+   * Sets the reason for the state (i.e., the action that caused the transition to the current state).
+   * 
+   * @param reason the reason for the state
+   */
+  public void setReason(Action reason);
+
+  /**
+   * Returns the reason for the state (i.e., the action that caused the transition to the current state).
+   * 
+   * @return the reason for the state
+   */
+  public Action getReason();
 }

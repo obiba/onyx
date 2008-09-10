@@ -31,6 +31,12 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
 
   private List<IStageExecution> dependsOnStageExecutions = new ArrayList<IStageExecution>();
 
+  /**
+   * The reason the stage is in its current state (i.e., the action that caused the stage
+   * to transition to this state).
+   */
+  private Action reason;
+  
   public void setStage(Stage stage) {
     this.stage = stage;
   }
@@ -160,5 +166,13 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   @Override
   public Data getData(String key) {
     return null;
+  }
+  
+  public void setReason(Action reason) {
+    this.reason = reason;  
+  }
+  
+  public Action getReason() {
+    return reason;
   }
 }

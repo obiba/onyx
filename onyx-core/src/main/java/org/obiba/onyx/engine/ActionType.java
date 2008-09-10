@@ -43,6 +43,7 @@ public enum ActionType {
     @Override
     public void act(IStageExecution execution, Action action) {
       execution.interrupt(action);
+      execution.setReason(action);
     }
   },
   /**
@@ -61,6 +62,7 @@ public enum ActionType {
     @Override
     public void act(IStageExecution execution, Action action) {
       execution.skip(action);
+      execution.setReason(action);
     }
   };
 
