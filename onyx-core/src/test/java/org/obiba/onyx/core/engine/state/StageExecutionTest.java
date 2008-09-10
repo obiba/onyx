@@ -9,6 +9,7 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
+import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.StageExecutionContext;
@@ -92,7 +93,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     Assert.assertNull("Memento is not null", memento);
     
     
-    doTransition(ActionDefinition.START_ACTION);
+    doTransition(ActionDefinitionBuilder.START_ACTION);
     Assert.assertEquals("InProgress", context1.getMessage());
     Assert.assertEquals(false, context1.isCompleted());
     memento = getMemento(context1);
@@ -103,18 +104,18 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     Assert.assertNotNull("Memento is null", memento);
     Assert.assertEquals("WaitingState", memento.getState());
     
-    doTransition(ActionDefinition.CANCEL_ACTION);
+    doTransition(ActionDefinitionBuilder.CANCEL_ACTION);
     Assert.assertEquals("Ready", context1.getMessage());
     Assert.assertEquals(false, context1.isCompleted());
     
-    doTransition(ActionDefinition.START_ACTION);
+    doTransition(ActionDefinitionBuilder.START_ACTION);
     Assert.assertEquals("InProgress", context1.getMessage());
     Assert.assertEquals(true, context1.isInteractive());
     
-    doTransition(ActionDefinition.COMMENT_ACTION);
+    doTransition(ActionDefinitionBuilder.COMMENT_ACTION);
     Assert.assertEquals("InProgress", context1.getMessage());
     
-    doTransition(ActionDefinition.COMPLETE_ACTION);
+    doTransition(ActionDefinitionBuilder.COMPLETE_ACTION);
     Assert.assertEquals(true, context1.isCompleted());
     Assert.assertEquals("Completed", context1.getMessage());
     Assert.assertEquals(false, context1.isInteractive());
@@ -123,13 +124,13 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     Assert.assertNotNull("Memento is null", memento);
     Assert.assertEquals("ReadyState", memento.getState());
     
-    doTransition(ActionDefinition.COMMENT_ACTION);
+    doTransition(ActionDefinitionBuilder.COMMENT_ACTION);
     Assert.assertEquals("Completed", context1.getMessage());
     
-    doTransition(ActionDefinition.CANCEL_ACTION);
+    doTransition(ActionDefinitionBuilder.CANCEL_ACTION);
     Assert.assertEquals("Ready", context1.getMessage());
     
-    doTransition(ActionDefinition.COMMENT_ACTION);
+    doTransition(ActionDefinitionBuilder.COMMENT_ACTION);
     Assert.assertEquals("Ready", context1.getMessage());
     Assert.assertEquals(false, context1.isInteractive());
     memento = getMemento(context1);
@@ -173,8 +174,8 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
   public class ReadyState extends AbstractStageState {
 
     public ReadyState() {
-      addAction(ActionDefinition.START_ACTION);
-      addAction(ActionDefinition.COMMENT_ACTION);
+      addAction(ActionDefinitionBuilder.START_ACTION);
+      addAction(ActionDefinitionBuilder.COMMENT_ACTION);
     }
 
     @Override
@@ -199,9 +200,9 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
   public class InProgressState extends AbstractStageState {
 
     public InProgressState() {
-      addAction(ActionDefinition.CANCEL_ACTION);
-      addSystemAction(ActionDefinition.COMPLETE_ACTION);
-      addAction(ActionDefinition.COMMENT_ACTION);
+      addAction(ActionDefinitionBuilder.CANCEL_ACTION);
+      addSystemAction(ActionDefinitionBuilder.COMPLETE_ACTION);
+      addAction(ActionDefinitionBuilder.COMMENT_ACTION);
     }
 
     @Override
@@ -238,8 +239,8 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
   public class CompletedState extends AbstractStageState {
 
     public CompletedState() {
-      addAction(ActionDefinition.CANCEL_ACTION);
-      addAction(ActionDefinition.COMMENT_ACTION);
+      addAction(ActionDefinitionBuilder.CANCEL_ACTION);
+      addAction(ActionDefinitionBuilder.COMMENT_ACTION);
     }
 
     @Override

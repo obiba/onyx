@@ -5,7 +5,7 @@ package org.obiba.onyx.marble.engine.state;
 
 import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinition;
+import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.marble.core.wicket.MarblePanel;
 import org.slf4j.Logger;
@@ -15,10 +15,10 @@ import org.springframework.beans.factory.InitializingBean;
 public class MarbleInProgressState extends AbstractMarbleStageState implements InitializingBean {
 
   private static final Logger log = LoggerFactory.getLogger(MarbleInProgressState.class);
-  
+
   public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinition.CANCEL_ACTION);
-    addSystemAction(ActionDefinition.COMPLETE_ACTION);
+    addAction(ActionDefinitionBuilder.CANCEL_ACTION);
+    addSystemAction(ActionDefinitionBuilder.COMPLETE_ACTION);
   }
 
   public Component getWidget(String id) {
@@ -38,7 +38,7 @@ public class MarbleInProgressState extends AbstractMarbleStageState implements I
     log.info("Marble Stage {} is canceling", super.getStage().getName());
     castEvent(TransitionEvent.CANCEL);
   }
-  
+
   @Override
   public boolean isInteractive() {
     return true;

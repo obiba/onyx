@@ -4,7 +4,7 @@
 package org.obiba.onyx.jade.engine.state;
 
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinition;
+import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.TransitionEvent;
@@ -15,14 +15,14 @@ import org.springframework.beans.factory.InitializingBean;
 /**
  * Jade Skipped State.
  * @author Yannick Marcon
- *
+ * 
  */
 public class JadeSkippedState extends AbstractStageState implements InitializingBean {
 
   private static final Logger log = LoggerFactory.getLogger(JadeSkippedState.class);
 
   public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinition.CANCEL_ACTION);
+    addAction(ActionDefinitionBuilder.CANCEL_ACTION);
   }
 
   @Override
@@ -35,7 +35,7 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
       castEvent(TransitionEvent.INVALID);
     }
   }
-  
+
   protected void onDependencyTransition(IStageExecution execution, TransitionEvent event) {
     // do nothing when skipped
   }

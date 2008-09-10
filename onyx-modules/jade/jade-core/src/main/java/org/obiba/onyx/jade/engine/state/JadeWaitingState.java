@@ -2,6 +2,7 @@ package org.obiba.onyx.jade.engine.state;
 
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
+import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.ITransitionListener;
 import org.obiba.onyx.engine.state.TransitionEvent;
@@ -20,7 +21,7 @@ public class JadeWaitingState extends AbstractJadeStageState implements Initiali
   private static final Logger log = LoggerFactory.getLogger(JadeWaitingState.class);
 
   public void afterPropertiesSet() throws Exception {
-    ActionDefinition def = new ActionDefinition(ActionType.SKIP, "Skip", "Please explain why this stage is skipped.");
+    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.SKIP, "Skip").setDescription("You may explain why this stage is skipped.").getActionDefinition();
     for(InstrumentRunRefusalReason reason : InstrumentRunRefusalReason.values()) {
       def.addReason(reason.toString());
       if(def.getDefaultReason() == null) def.setDefaultReason(reason.toString());

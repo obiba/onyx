@@ -20,6 +20,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
+import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
@@ -121,10 +122,9 @@ public class InterviewPage extends BasePage {
 
       // Interview cancellation
 
-      final ActionDefinition cancelInterviewDef = new ActionDefinition(ActionType.STOP, new StringResourceModel("CancelInterview", this, null).getString(), new StringResourceModel("ExplainCancelInterview", this, null).getString());
+      final ActionDefinition cancelInterviewDef = ActionDefinitionBuilder.create(ActionType.STOP, new StringResourceModel("CancelInterview", this, null).getString()).setDescription(new StringResourceModel("ExplainCancelInterview", this, null).getString()).setAskPassword(true).getActionDefinition();
       cancelInterviewDef.addReasons(new String[] { "Reason 1", "Reason 2", "Reason 3", "Other" });
       cancelInterviewDef.setDefaultReason("Reason 1");
-      cancelInterviewDef.setAskPassword(true);
 
       final ActionWindow interviewActionWindow = new ActionWindow("modal") {
 
