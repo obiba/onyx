@@ -241,7 +241,7 @@ public class ParticipantSearchPage extends BasePage {
 
   @SuppressWarnings("serial")
   private class AppointedParticipantProvider extends SortableDataProviderEntityServiceImpl<Participant> {
-    
+
     private Date from;
 
     private Date to;
@@ -324,7 +324,9 @@ public class ParticipantSearchPage extends BasePage {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Participant p = (Participant) rowModel.getObject();
-          cellItem.add(new Label(componentId, DateModelUtils.getShortDateTimeModel(new Model(p.getAppointment().getDate()))));
+          if(p.getAppointment() != null) cellItem.add(new Label(componentId, DateModelUtils.getShortDateTimeModel(new Model(p.getAppointment().getDate()))));
+          else
+            cellItem.add(new Label(componentId, ""));
         }
 
       });

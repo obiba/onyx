@@ -31,7 +31,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
 
   private static final Logger log = LoggerFactory.getLogger(DefaultActiveInterviewServiceImpl.class);
 
-  private Participant currentParticipant = null;
+  private Serializable currentParticipantId = null;
 
   private ModuleRegistry moduleRegistry;
 
@@ -42,11 +42,14 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   }
 
   public Participant getParticipant() {
-    return currentParticipant;
+    if (currentParticipantId == null)
+      return null;
+    return getPersistenceManager().get(Participant.class, currentParticipantId);
   }
 
   public Interview getInterview() {
-    if(currentParticipant == null) return null;
+    Participant currentParticipant = getParticipant();
+    if(currentParticipantId == null) return null;
 
     Interview interview = currentParticipant.getInterview();
 
@@ -64,6 +67,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   }
 
   public IStageExecution getStageExecution(Stage stage) {
+    Participant currentParticipant = getParticipant();
     if(currentParticipant == null) return null;
 
     // try to find it in memory
@@ -107,7 +111,6 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     action.setInterview(getParticipant().getInterview());
     action.setStage(stage);
     action.setDateTime(new Date());
-    // TODO add user etc.
     action.setUser(user);
     getPersistenceManager().save(action);
 
@@ -122,10 +125,13 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   }
 
   public void setParticipant(Participant participant) {
-    this.currentParticipant = participant;
+    this.currentParticipantId = participant.getId();
   }
 
   public Interview setInterviewOperator(User operator) {
+    Participant currentParticipant = getParticipant();
+    if(currentParticipant == null) return null;
+    
     Interview template = new Interview();
     template.setParticipant(currentParticipant);
     Interview interview = getPersistenceManager().matchOne(template);
@@ -140,6 +146,9 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   }
 
   public void setStatus(InterviewStatus status) {
+    Participant currentParticipant = getParticipant();
+    if(currentParticipant == null) return;
+    
     Interview template = new Interview();
     template.setParticipant(currentParticipant);
     Interview interview = getPersistenceManager().matchOne(template);
