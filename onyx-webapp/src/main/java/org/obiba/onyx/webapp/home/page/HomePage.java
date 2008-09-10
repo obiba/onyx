@@ -53,6 +53,7 @@ public class HomePage extends BasePage {
 
       TextField barCode = new TextField("barCode", new PropertyModel(getModelObject(), "barcode"));
       barCode.add(new RequiredFormFieldBehavior());
+      barCode.setLabel(new StringResourceModel("ParticipantCode", HomePage.this, null));
       add(barCode);
 
       add(new Button("submit"));      
