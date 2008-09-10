@@ -22,7 +22,7 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
   private static final Logger log = LoggerFactory.getLogger(JadeSkippedState.class);
 
   public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinitionBuilder.CANCEL_ACTION);
+    addAction(ActionDefinitionBuilder.CANCEL_SKIPPED_ACTION);
   }
 
   @Override

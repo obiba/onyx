@@ -24,6 +24,11 @@ public class ActionDefinitionBuilder implements Serializable {
   public static final ActionDefinition CANCEL_ACTION = ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may enter a comment before cancelling this stage.").getActionDefinition();
 
   /**
+   * Cancel action for a skipped stage (requires a different description).
+   */
+  public static final ActionDefinition CANCEL_SKIPPED_ACTION = ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("Please explain why you are reinstating this stage.").getActionDefinition();
+  
+  /**
    * Default comment action.
    */
   public static final ActionDefinition COMMENT_ACTION = ActionDefinitionBuilder.create(ActionType.COMMENT, "Comment").setDescription("You may enter a free comment.").getActionDefinition();
