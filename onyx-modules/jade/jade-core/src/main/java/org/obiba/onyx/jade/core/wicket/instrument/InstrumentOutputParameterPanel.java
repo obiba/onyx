@@ -51,6 +51,8 @@ public class InstrumentOutputParameterPanel extends Panel {
 
   private boolean manual = false;
 
+  private ManualFragment manualFragment = new ManualFragment("manual");
+
   @SuppressWarnings("serial")
   public InstrumentOutputParameterPanel(String id, IModel instrumentModel) {
     super(id);
@@ -66,8 +68,8 @@ public class InstrumentOutputParameterPanel extends Panel {
     initManualOutputs();
 
     if(instrumentService.isInteractiveInstrument(instrumentRun.getInstrument())) {
-      add(new ManualFragment("manual"));
       initAutomaticOutputs(null);
+      add(manualFragment);
     } else {
       add(new EmptyPanel("manual"));
       add(new EmptyPanel("automaticOutputs"));
@@ -117,6 +119,7 @@ public class InstrumentOutputParameterPanel extends Panel {
   }
 
   private void initAutomaticOutputs(AjaxRequestTarget target) {
+    manualFragment.setVisible(false);
     InstrumentOutputParameter template = new InstrumentOutputParameter();
     template.setInstrument((Instrument) getModelObject());
     template.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
@@ -134,9 +137,9 @@ public class InstrumentOutputParameterPanel extends Panel {
 
         // case we going through this multiple times
         InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
-
+        
         if(manual) {
-
+          manualFragment.setVisible(true);
           if(runValue == null) {
             runValue = new InstrumentRunValue();
             runValue.setInstrumentParameter(param);
@@ -144,16 +147,21 @@ public class InstrumentOutputParameterPanel extends Panel {
             instrumentRun.addInstrumentRunValue(runValue);
             activeInstrumentRunService.validate();
           }
-          // manual entry forced
-          runValue.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
 
+          if(runValue.getData().getValueAsString() == null)
+            runValue.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
+          
           DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType());
           field.setRequired(true);
+          if(runValue.getCaptureMethod().equals(InstrumentParameterCaptureMethod.AUTOMATIC)) field.setFieldEnabled(false);
           field.setLabel(new Model(param.getName()));
           output = field;
 
-        } else if(runValue != null) {
+        } else if(runValue != null && runValue.getData() != null && runValue.getData().getValueAsString() != null) {
           output = new Label(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data.valueAsString"));
+        } else {
+          manualFragment.setVisible(true);
+          output = new Label(KeyValueDataPanel.getRowValueId(), "");
         }
 
         if(output != null) {

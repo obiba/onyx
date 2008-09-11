@@ -128,6 +128,11 @@ public class DataField extends Panel {
   public void setLabel(IModel labelModel) {
     input.getField().setLabel(labelModel);
   }
+  
+  public void setFieldEnabled(boolean enabled) {
+    input.getField().setEnabled(enabled);
+  }
+  
 
   /**
    * Add a behavior to underlying field.
