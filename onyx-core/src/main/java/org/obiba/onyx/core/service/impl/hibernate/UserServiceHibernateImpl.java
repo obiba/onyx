@@ -12,6 +12,12 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.impl.DefaultUserServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Implementation of hibernate specific methods of User Service
+ * @see#UserService.
+ * @author acarey
+ * 
+ */
 @Transactional
 public class UserServiceHibernateImpl extends DefaultUserServiceImpl {
   
