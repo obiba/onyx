@@ -17,6 +17,7 @@ import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
 @Entity
@@ -140,23 +141,23 @@ public class InstrumentRunValue extends AbstractEntity {
 
     switch(getDataType()) {
     case BOOLEAN:
-      data = new Data(getDataType(), booleanValue);
+      data = DataBuilder.buildBoolean(booleanValue);
       break;
 
     case DATE:
-      data = new Data(getDataType(), dateValue);
+      data = DataBuilder.buildDate(dateValue);
       break;
 
     case DECIMAL:
-      data = new Data(getDataType(), decimalValue);
+      data = DataBuilder.buildDecimal(decimalValue);
       break;
 
     case INTEGER:
-      data = new Data(getDataType(), integerValue);
+      data = DataBuilder.buildInteger(integerValue);
       break;
 
     case TEXT:
-      data = new Data(getDataType(), textValue);
+      data = DataBuilder.buildText(textValue);
       break;
 
     case DATA:

@@ -14,6 +14,7 @@ import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.jade.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -128,36 +129,24 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
         rs.next();
 
         Map<String, Data> boneDensityData = new HashMap<String, Data>();
-        boneDensityData.put("Assessment", new Data(DataType.DECIMAL, rs.getDouble("assessment")));
-        boneDensityData.put("Fracture Risk", new Data(DataType.DECIMAL, rs.getDouble("fxrisk")));
-        boneDensityData.put("Stiffness Index Result", new Data(DataType.DECIMAL, rs.getDouble("total")));
-        boneDensityData.put("T-Score", new Data(DataType.DECIMAL, rs.getDouble("tscore")));
-        boneDensityData.put("Z-Score", new Data(DataType.DECIMAL, rs.getDouble("zscore")));
-        boneDensityData.put("% Age Matched", new Data(DataType.DECIMAL, rs.getDouble("agematched")));
-        boneDensityData.put("% Young Adult", new Data(DataType.DECIMAL, rs.getDouble("percentnormal")));
-        boneDensityData.put("Foot Scanned", new Data(DataType.TEXT, rs.getString("sidescanned")));
-        boneDensityData.put("Stiffness Index", new Data(DataType.DECIMAL, rs.getDouble("stiffnessindex")));
-        boneDensityData.put("Speed of Ultrasound", new Data(DataType.DECIMAL, rs.getDouble("SOS")));
-        boneDensityData.put("Broadband Ultrasound Attenuation", new Data(DataType.DECIMAL, rs.getDouble("BUA")));
-        boneDensityData.put("Achilles Software Version", new Data(DataType.TEXT, rs.getString("appversion")));
-        boneDensityData.put("Region of Intersection X coordinate", new Data(DataType.INTEGER, rs.getLong("roi_x")));
-        boneDensityData.put("Region of Intersection Y coordinate", new Data(DataType.INTEGER, rs.getLong("roi_y")));
-        boneDensityData.put("Region of Intersection Z coordinate", new Data(DataType.INTEGER, rs.getLong("roi_s")));
-
-        try {
-          String achillebitmapData = FileUtil.readString(rs.getBinaryStream("achillesbitmap"), "UTF-8");
-          boneDensityData.put("Stiffness Index graph", new Data(DataType.DATA, achillebitmapData.getBytes()));
-        } catch(IOException couldNotReadGraph) {
-          throw new RuntimeException("Could not retrieve Stiffness Index Graph from Achilles Express", couldNotReadGraph);
-        }
-
-        try {
-          String achillebitmapData2 = FileUtil.readString(rs.getBinaryStream("achillesbitmap"), "UTF-8");
-          boneDensityData.put("Ultrasound Graphic", new Data(DataType.DATA, achillebitmapData2.getBytes()));
-        } catch(IOException couldNotReadGraph) {
-          throw new RuntimeException("Could not retrieve Ultrasound Graphic from Achilles Express", couldNotReadGraph);
-        }
-
+        boneDensityData.put("Assessment", DataBuilder.buildDecimal(rs.getDouble("assessment")));
+        boneDensityData.put("Fracture Risk", DataBuilder.buildDecimal(rs.getDouble("fxrisk")));
+        boneDensityData.put("Stiffness Index Result", DataBuilder.buildDecimal(rs.getDouble("total")));
+        boneDensityData.put("T-Score", DataBuilder.buildDecimal(rs.getDouble("tscore")));
+        boneDensityData.put("Z-Score", DataBuilder.buildDecimal(rs.getDouble("zscore")));
+        boneDensityData.put("% Age Matched", DataBuilder.buildDecimal(rs.getDouble("agematched")));
+        boneDensityData.put("% Young Adult", DataBuilder.buildDecimal(rs.getDouble("percentnormal")));
+        boneDensityData.put("Foot Scanned", DataBuilder.buildText(rs.getString("sidescanned")));
+        boneDensityData.put("Stiffness Index", DataBuilder.buildDecimal(rs.getDouble("stiffnessindex")));
+        boneDensityData.put("Speed of Ultrasound", DataBuilder.buildDecimal( rs.getDouble("SOS")));
+        boneDensityData.put("Broadband Ultrasound Attenuation",DataBuilder.buildDecimal( rs.getDouble("BUA")));
+        boneDensityData.put("Achilles Software Version", DataBuilder.buildText( rs.getString("appversion")));
+        boneDensityData.put("Region of Intersection X coordinate", DataBuilder.buildInteger(rs.getLong("roi_x")));
+        boneDensityData.put("Region of Intersection Y coordinate",DataBuilder.buildInteger( rs.getLong("roi_y")));
+        boneDensityData.put("Region of Intersection Z coordinate", DataBuilder.buildInteger(rs.getLong("roi_s")));
+        boneDensityData.put("Stiffness Index graph", DataBuilder.buildBinary(rs.getBinaryStream("achillesbitmap")));
+        boneDensityData.put("Ultrasound Graphic", DataBuilder.buildBinary(rs.getBinaryStream("achillesbitmap2")));        
+        
         return boneDensityData;
       }
 

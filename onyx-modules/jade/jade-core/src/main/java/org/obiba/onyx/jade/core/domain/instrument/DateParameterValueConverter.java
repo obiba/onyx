@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
-import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
 /**
@@ -12,24 +12,23 @@ import org.obiba.onyx.util.data.DataType;
  * @author acarey
  */
 
-public class DateParameterValueConverter implements InstrumentParameterValueConverter{
-  
+public class DateParameterValueConverter implements InstrumentParameterValueConverter {
+
   /**
-   * Convert a date to a duration in milliseconds 
+   * Convert a date to a duration in milliseconds
    * @param targetInstrumentRunValue
    * @param sourceInstrumentRunValue
    */
-  public void convert(InstrumentRunValue targetInstrumentRunValue, InstrumentRunValue sourceInstrumentRunValue){
-    
+  public void convert(InstrumentRunValue targetInstrumentRunValue, InstrumentRunValue sourceInstrumentRunValue) {
+
     InstrumentParameter sourceInsrumentParameter = sourceInstrumentRunValue.getInstrumentParameter();
-    
-    if (!sourceInsrumentParameter.getDataType().equals(DataType.DATE) && !targetInstrumentRunValue.getDataType().equals(DataType.INTEGER))
-      return;
-    
+
+    if(!sourceInsrumentParameter.getDataType().equals(DataType.DATE) && !targetInstrumentRunValue.getDataType().equals(DataType.INTEGER)) return;
+
     Calendar todayCal = Calendar.getInstance();
     Calendar birthCal = Calendar.getInstance();
     birthCal.setTime((Date) sourceInstrumentRunValue.getValue());
-    targetInstrumentRunValue.setData(new Data (targetInstrumentRunValue.getDataType(), todayCal.getTimeInMillis() - birthCal.getTimeInMillis()));
+    targetInstrumentRunValue.setData(DataBuilder.buildInteger(todayCal.getTimeInMillis() - birthCal.getTimeInMillis()));
   }
 
 }

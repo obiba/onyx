@@ -24,6 +24,7 @@ import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.jade.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -146,14 +147,14 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     File backupDbFile = new File(getInitdbPath() + getExternalDbName());
     File currentDbFile = new File(getMirPath() + getExternalDbName());
 
-    try{
+    try {
       if(backupDbFile.exists()) {
         FileUtil.copyFile(backupDbFile, currentDbFile);
       } else {
         new File(getInitdbPath()).mkdir();
         FileUtil.copyFile(currentDbFile, backupDbFile);
       }
-    } catch (Exception ex) {
+    } catch(Exception ex) {
       throw new RuntimeException("Error in MiniSpirInstrumentRunner deleteDeviceData: ", ex);
     }
   }
@@ -197,11 +198,11 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
         data[1] = Double.valueOf(matcher.group(4));
         outputData.put(description, data);
       }
-      
+
       resultFileStrm.close();
       fileReader.close();
       resultReader.close();
-      
+
     } catch(FileNotFoundException fnfEx) {
       JOptionPane.showMessageDialog(null, "Error: spirometry output data file not found", "Could not complete process", JOptionPane.ERROR_MESSAGE);
       throw new RuntimeException("Error: spirometry output data file not found", fnfEx);
@@ -224,26 +225,18 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
 
     for(Map.Entry<String, Double[]> entry : results.entrySet()) {
       if(entry.getKey().indexOf("ELA") == 0) {
-        ouputToSend.put(entry.getKey(), new Data(DataType.INTEGER, Math.round(entry.getValue()[0])));
-        ouputToSend.put(entry.getKey() + "_pred", new Data(DataType.INTEGER, Math.round(entry.getValue()[1])));
+        ouputToSend.put(entry.getKey(), DataBuilder.buildInteger(Math.round(entry.getValue()[0])));
+        ouputToSend.put(entry.getKey() + "_pred", DataBuilder.buildInteger(Math.round(entry.getValue()[1])));
       } else {
-        ouputToSend.put(entry.getKey(), new Data(DataType.DECIMAL, entry.getValue()[0]));
-        ouputToSend.put(entry.getKey() + "_pred", new Data(DataType.DECIMAL, entry.getValue()[1]));
+        ouputToSend.put(entry.getKey(), DataBuilder.buildDecimal( entry.getValue()[0]));
+        ouputToSend.put(entry.getKey() + "_pred", DataBuilder.buildDecimal(entry.getValue()[1]));
       }
     }
 
     // Save the FVC image
-    try {
-      File FVCFile = new File(getMirPath() + getExternalImageName());
-      String fileContent = FileUtil.readString(new FileInputStream(FVCFile), "UTF-8");
-      byte[] FVCInput = fileContent.getBytes("UTF-8");
-      ouputToSend.put("FVCImage", new Data(DataType.DATA, (Serializable) FVCInput));
-    } catch(FileNotFoundException fnfEx) {
-      throw new RuntimeException("Error: sendDataToServer FileNotFoundException ", fnfEx);
-    } catch(IOException ioEx) {
-      throw new RuntimeException("Error: sendDataToServer IOException", ioEx);
-    }
-    
+    File FVCFile = new File(getMirPath() + getExternalImageName());
+    ouputToSend.put("FVCImage", DataBuilder.buildBinary(FVCFile));
+
     instrumentExecutionService.addOutputParameterValues(ouputToSend);
   }
 
@@ -269,6 +262,6 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
    * Implements parent method shutdown from InstrumentRunner Delete results from current measurement
    */
   public void shutdown() {
-      deleteDeviceData();
+    deleteDeviceData();
   }
 }

@@ -19,6 +19,7 @@ import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.jade.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -178,29 +179,23 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
         method = resultParserClass.getDeclaredMethod("get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1));
         Object value = method.invoke(resultParser);
         if (value == null) continue;
-        if(value instanceof Long) ouputToSend.put(field.getName(), new Data(DataType.INTEGER, (Serializable) value));
+        if(value instanceof Long) ouputToSend.put(field.getName(), DataBuilder.buildInteger((Long)value));
         else
-          ouputToSend.put(field.getName(), new Data(DataType.TEXT, (Serializable) value));
+          ouputToSend.put(field.getName(), DataBuilder.buildText(value.toString()));
       }
       
       // Save the xml and pdf files
       File xmlFile = new File(getExportPath() + getXmlFileName());
-      String fileContent = FileUtil.readString(new FileInputStream(xmlFile), "UTF-8");
-      byte[] xmlInput = fileContent.getBytes("UTF-8");
-      ouputToSend.put("xmlFile", new Data(DataType.DATA, (Serializable) xmlInput));
+      ouputToSend.put("xmlFile", DataBuilder.buildBinary(xmlFile));
 
       File pdfFile = new File(getExportPath() + getPdfFileName());
-      fileContent = FileUtil.readString(new FileInputStream(pdfFile), "UTF-8");
-      byte[] pdfInput = fileContent.getBytes("UTF-8");
-      ouputToSend.put("pdfFile", new Data(DataType.DATA, (Serializable) pdfInput));
+      ouputToSend.put("pdfFile", DataBuilder.buildBinary(pdfFile));
 
       instrumentExecutionService.addOutputParameterValues(ouputToSend);
-      
-    } catch(FileNotFoundException fnfEx) {
-      log.error("*** Error: Cardiosoft output data file not found: ", fnfEx);
-      JOptionPane.showMessageDialog(null, "Error: Cardiosoft output data file not found", "Could not complete process", JOptionPane.ERROR_MESSAGE);
+
     } catch(Exception e) {
-      log.warn("Failed result: " + e.getMessage(), e);
+      log.error("Failed result: " + e.getMessage(), e);
+      throw new RuntimeException(e);
     }
   }
 

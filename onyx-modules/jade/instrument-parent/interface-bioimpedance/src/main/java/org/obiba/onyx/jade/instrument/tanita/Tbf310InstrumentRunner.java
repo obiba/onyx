@@ -42,6 +42,7 @@ import org.obiba.onyx.jade.instrument.LocalSettingsHelper.CouldNotRetrieveSettin
 import org.obiba.onyx.jade.instrument.LocalSettingsHelper.CouldNotSaveSettingsException;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +67,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   protected LocalSettingsHelper settingsHelper;
 
   protected String tbf310CommPort;
-  
+
   // Interface components
   private JFrame appWindow;
 
@@ -95,7 +96,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   private JTextField bmrTxt;
 
   private JButton saveDataBtn;
-  
+
   private ResourceBundle resourceBundle;
 
   /** Lock used to block the main thread as long as the UI has not finished its job */
@@ -125,17 +126,17 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   private boolean portIsAvailable = false;
 
   private String portOwnerName;
-  
+
   private ArrayList<String> availablePortNames;
 
   private boolean shutdown = false;
-  
+
   protected Properties tbf310LocalSettings;
 
   public Tbf310InstrumentRunner() throws Exception {
 
     resourceBundle = ResourceBundle.getBundle("bioimpedance-instrument", Locale.getDefault());
-    
+
     // Initialize interface components.
     bodyTypeTxt = new ResultTextField();
     bodyTypeTxt.setHorizontalAlignment(JTextField.LEFT);
@@ -160,17 +161,18 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
     // Initialize serial port.
     portOwnerName = "TANITA Body Composition Analyzer";
-    
+
   }
-  
+
   public void afterPropertiesSet() throws Exception {
-    
+
     // Attempt to retrieve settings persisted locally (if exist).
     try {
       tbf310LocalSettings = settingsHelper.retrieveSettings();
-    } catch (CouldNotRetrieveSettingsException e) {}
-    
-  }  
+    } catch(CouldNotRetrieveSettingsException e) {
+    }
+
+  }
 
   public InstrumentExecutionService getInstrumentExecutionService() {
     return instrumentExecutionService;
@@ -194,19 +196,19 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
   public void setSettingsHelper(LocalSettingsHelper settingsHelper) {
     this.settingsHelper = settingsHelper;
-  }  
-  
-  public String getTbf310CommPort() { 
+  }
+
+  public String getTbf310CommPort() {
     return tbf310LocalSettings.getProperty("commPort");
   }
 
   public void setTbf310CommPort(String tbf310CommPort) {
-    if ( tbf310LocalSettings == null ) {
+    if(tbf310LocalSettings == null) {
       tbf310LocalSettings = new Properties();
     }
     tbf310LocalSettings.setProperty("commPort", tbf310CommPort);
   }
- 
+
   /**
    * Establish the connection with the device connected to the serial port.
    */
@@ -255,22 +257,22 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   }
 
   private void refreshSerialPortList() {
-    
-    log.info("Refreshing serial port list..."); 
+
+    log.info("Refreshing serial port list...");
     Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
     availablePortNames = new ArrayList<String>();
-    
-    // Build a list of all serial ports found.   
+
+    // Build a list of all serial ports found.
     while(portEnum != null && portEnum.hasMoreElements()) {
-      
-     CommPortIdentifier port = portEnum.nextElement();
-     if (port.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+
+      CommPortIdentifier port = portEnum.nextElement();
+      if(port.getPortType() == CommPortIdentifier.PORT_SERIAL) {
         log.info("Port name={}, Port type={}", port.getName(), port.getPortType());
         availablePortNames.add(port.getName());
       }
-      
+
     }
-    
+
   }
 
   /**
@@ -278,8 +280,8 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
    */
   private void reestablishConnection() {
 
-    String[] options = {resourceBundle.getString("OK"), resourceBundle.getString("Cancel"), resourceBundle.getString("Settings")}; 
-    
+    String[] options = { resourceBundle.getString("OK"), resourceBundle.getString("Cancel"), resourceBundle.getString("Settings") };
+
     // Loop until connection is reestablished.
     int selectedOption;
     while(serialPort == null || !serialPort.isCTS()) {
@@ -292,13 +294,13 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
         // Try to reestablish connection.
         setupSerialPort();
 
-      // Cancel option selected.
+        // Cancel option selected.
       } else if(selectedOption == 1) {
 
         // Temporary fix, need to find another solution...
         exitUI();
 
-      // Configuration option selected.
+        // Configuration option selected.
       } else if(selectedOption == 2) {
 
         // List all serial port in a drop down list, so a new one can be selected.
@@ -318,7 +320,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
         } else {
           exitUI();
         }
-        
+
       }
 
     }
@@ -565,12 +567,12 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     wFieldPanel.add(pField);
 
     // Add units label.
-    if(pUnits != null){
+    if(pUnits != null) {
       JLabel wFieldUnit = new JLabel(" " + pUnits);
       wFieldUnit.setPreferredSize(new Dimension(30, 60));
       wFieldPanel.add(wFieldUnit);
     }
-    
+
     // Add sub panel to main panel.
     pTargetPanel.add(wFieldPanel);
 
@@ -600,7 +602,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   private void sendOutputToServer() {
 
     Map<String, Data> output = new HashMap<String, Data>();
-    output.put("BodyType", new Data(DataType.TEXT, bodyTypeTxt.getText()));
+    output.put("BodyType", DataBuilder.buildText(bodyTypeTxt.getText()));
     output.put("Weight", getDecimalValue(weightTxt));
     output.put("Impedance", getIntegerValue(impedanceTxt));
     output.put("BMI", getDecimalValue(bmiTxt));
@@ -609,7 +611,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     output.put("FatMass", getDecimalValue(fatMassTxt));
     output.put("TotalBodyWater", getDecimalValue(tbwTxt));
     output.put("FatPercentage", getDecimalValue(fatPctTxt));
-    output.put("Gender", new Data(DataType.TEXT, genderTxt.getText()));
+    output.put("Gender", DataBuilder.buildText(genderTxt.getText()));
     output.put("Height", getIntegerValue(heightTxt));
     output.put("Age", getIntegerValue(ageTxt));
     instrumentExecutionService.addOutputParameterValues(output);
@@ -617,16 +619,16 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   }
 
   private Data getIntegerValue(JTextField f) {
-    return new Data(DataType.INTEGER, new Long(f.getText().trim()));
+    return DataBuilder.buildInteger(new Long(f.getText().trim()));
   }
 
   private Data getDecimalValue(JTextField f) {
-    return new Data(DataType.DECIMAL, new Double(f.getText().trim()));
+    return DataBuilder.buildDecimal(new Double(f.getText().trim()));
   }
 
   public void initialize() {
     log.info("Refresh serial port list");
-    refreshSerialPortList(); 
+    refreshSerialPortList();
     log.info("Setup serial port");
     setupSerialPort();
   }
@@ -635,7 +637,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
     if(!externalAppHelper.isSotfwareAlreadyStarted("tbf310InstrumentRunner")) {
 
-      log.info("Starting TBF-310 GUI");      
+      log.info("Starting TBF-310 GUI");
       buildGUI();
 
       // Obtain the lock outside the UI thread. This will block until the UI releases the lock, at which point it should
@@ -647,9 +649,9 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
           throw new RuntimeException(e);
         }
       }
-      
+
       log.info("Lock obtained. Exiting software.");
-          
+
     } else {
       JOptionPane.showMessageDialog(null, resourceBundle.getString("Err.Application_lock"), resourceBundle.getString("Title.Cannot_start_application"), JOptionPane.ERROR_MESSAGE);
     }
@@ -668,6 +670,4 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     }
   }
 
-
-  
 }

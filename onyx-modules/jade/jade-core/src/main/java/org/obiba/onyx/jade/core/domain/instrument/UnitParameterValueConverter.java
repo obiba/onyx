@@ -4,6 +4,7 @@ import javax.measure.unit.Unit;
 
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
 /**
@@ -29,12 +30,12 @@ public final class UnitParameterValueConverter implements InstrumentParameterVal
 
     switch(targetInstrumentRunValue.getInstrumentParameter().getDataType()) {
     case DECIMAL:
-      targetInstrumentRunValue.setData(new Data(DataType.DECIMAL, newValue));
+      targetInstrumentRunValue.setData(DataBuilder.buildDecimal(newValue));
       break;
 
     case INTEGER:
       if(targetUnit.toString().equalsIgnoreCase("year")) newValue = Math.floor(newValue);
-      targetInstrumentRunValue.setData(new Data(DataType.INTEGER, Math.round(newValue)));
+      targetInstrumentRunValue.setData(DataBuilder.buildInteger(Math.round(newValue)));
       break;
     }
 
