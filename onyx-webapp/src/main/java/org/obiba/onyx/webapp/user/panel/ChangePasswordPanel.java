@@ -17,6 +17,11 @@ import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
+/**
+ * Defines form for password changing
+ * @author acarey
+ *
+ */
 public abstract class ChangePasswordPanel extends Panel {
 
   private static final long serialVersionUID = 1L;

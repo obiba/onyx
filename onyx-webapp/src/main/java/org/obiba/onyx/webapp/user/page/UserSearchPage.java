@@ -37,6 +37,13 @@ import org.obiba.wicket.markup.html.panel.LinkPanel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 
+/**
+ * Displays the list of users
+ * Contains a link to edit user info, to add a new user and to delete an existing user
+ * Contains a toggle to change user status 
+ * @author acarey
+ *
+ */
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR" })
 public class UserSearchPage extends BasePage {
 

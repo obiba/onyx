@@ -13,6 +13,11 @@ import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.base.panel.AjaxLanguageChoicePanel;
 import org.obiba.onyx.webapp.user.panel.ChangePasswordPanel;
 
+/**
+ * Allows the signed user to change his password and preferred language
+ * @author acarey
+ * 
+ */
 public class ProfilePage extends BasePage {
 
   @SpringBean
