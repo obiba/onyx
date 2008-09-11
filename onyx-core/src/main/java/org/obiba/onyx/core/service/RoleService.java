@@ -7,6 +7,11 @@ import org.obiba.onyx.core.domain.user.Role;
 
 public interface RoleService {
 
+  /**
+   * Returns the list of roles
+   * @param clauses
+   * @return
+   */
   public List<Role> getRoles(SortingClause... clauses);
   
 }
