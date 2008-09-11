@@ -9,6 +9,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -24,7 +25,6 @@ import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
-import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 
 public class AssignCodeToParticipantPanel extends Panel {
 
@@ -36,11 +36,11 @@ public class AssignCodeToParticipantPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  public AssignCodeToParticipantPanel(String id, DetachableEntityModel participant) {
+  public AssignCodeToParticipantPanel(String id, IModel participantModel) {
 
     super(id);
 
-    add(new AssignCodeToParticipantForm("assignCodeToParticipantForm", participant));
+    add(new AssignCodeToParticipantForm("assignCodeToParticipantForm", participantModel));
 
   }
 
@@ -49,12 +49,11 @@ public class AssignCodeToParticipantPanel extends Panel {
     private static final long serialVersionUID = 1L;
 
     @SuppressWarnings("serial")
-    public AssignCodeToParticipantForm(String id, DetachableEntityModel participant) {
+    public AssignCodeToParticipantForm(String id, final IModel participantModel) {
       super(id);
+      final Participant participantTemplate = new Participant();
 
-      setModel(new Model(new Participant()));
-
-      TextField participantCode = new TextField("participantCode", new PropertyModel(getModelObject(), "barcode"));
+      TextField participantCode = new TextField("participantCode", new PropertyModel(participantTemplate, "barcode"));
       participantCode.add(new RequiredFormFieldBehavior());
       participantCode.add(new IValidator() {
 
@@ -62,34 +61,27 @@ public class AssignCodeToParticipantPanel extends Panel {
           Participant template = new Participant();
           template.setBarcode((String) validatable.getValue());
           if(queryService.count(template) > 0) {
-            validatable.error(new ParticipantIDValidationError((String)validatable.getValue()));          }
+            validatable.error(new ParticipantIDValidationError((String) validatable.getValue()));
+          }
         }
 
       });
       add(participantCode);
 
+      // TODO comment at reception time
       final Model receptionCommentModel = new Model();
       add(new TextArea("comment", receptionCommentModel));
 
-      add(new Button("submit", participant) {
-
-        private static final long serialVersionUID = 1L;
+      add(new Button("submit", participantModel) {
 
         @Override
         public void onSubmit() {
-          super.onSubmit();
-
-          Participant participant = (Participant) AssignCodeToParticipantForm.this.getModelObject();
-
-          participantService.assignCodeToParticipant((Participant) getModelObject(), participant.getBarcode(), (String) receptionCommentModel.getObject(), OnyxAuthenticatedSession.get().getUser());
-
+          participantService.assignCodeToParticipant((Participant) participantModel.getObject(), participantTemplate.getBarcode(), (String) receptionCommentModel.getObject(), OnyxAuthenticatedSession.get().getUser());
           setResponsePage(ParticipantSearchPage.class);
         }
       });
 
       add(new AjaxLink("cancel") {
-
-        private static final long serialVersionUID = 1L;
 
         @Override
         public void onClick(AjaxRequestTarget target) {

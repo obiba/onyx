@@ -14,6 +14,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
+import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -31,12 +32,16 @@ import org.obiba.onyx.webapp.stage.panel.StageSelectionPanel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
+import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class InterviewPage extends BasePage {
 
-  @SpringBean(name = "activeInterviewService")
+  @SpringBean
   private ActiveInterviewService activeInterviewService;
+  
+  @SpringBean
+  private EntityQueryService queryService;
 
   private Label commentsCount;
 
@@ -51,7 +56,7 @@ public class InterviewPage extends BasePage {
       final Interview interview = activeInterviewService.setInterviewOperator(OnyxAuthenticatedSession.get().getUser());
       Participant participant = activeInterviewService.getParticipant();
 
-      add(new ParticipantPanel("participant", participant, true));
+      add(new ParticipantPanel("participant", new DetachableEntityModel(queryService, participant), true));
 
       // Create modal comments window
       final ModalWindow commentsWindow;

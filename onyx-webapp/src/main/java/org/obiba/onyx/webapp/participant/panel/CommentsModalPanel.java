@@ -23,6 +23,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
@@ -30,13 +31,17 @@ import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
+import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 
 public abstract class CommentsModalPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  @SpringBean(name = "activeInterviewService")
+  @SpringBean
   private ActiveInterviewService activeInterviewService;
+
+  @SpringBean
+  private EntityQueryService queryService;
 
   private ModalWindow commentsWindow;
 
@@ -53,7 +58,7 @@ public abstract class CommentsModalPanel extends Panel {
     commentList = activeInterviewService.getInterviewComments();
     setOutputMarkupId(true);
 
-    add(new ParticipantPanel("participant", activeInterviewService.getParticipant(), true));
+    add(new ParticipantPanel("participant", new DetachableEntityModel(queryService, activeInterviewService.getParticipant()), true));
     add(new CommentForm("commentForm"));
 
     add(feedback = new FeedbackPanel("feedback"));

@@ -18,6 +18,7 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -36,8 +37,8 @@ import org.obiba.onyx.webapp.panel.OnyxEntityList;
 import org.obiba.onyx.webapp.participant.panel.ParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.wicket.util.DateModelUtils;
+import org.obiba.wicket.JavascriptEventConfirmation;
 import org.obiba.wicket.markup.html.link.AjaxLinkList;
-import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 
@@ -80,6 +81,12 @@ public class ParticipantSearchPage extends BasePage {
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantByCodeProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
         replaceParticipantList(target, replacement);
+        target.addComponent(getFeedbackPanel());
+      }
+      
+      @Override
+      protected void onError(AjaxRequestTarget target, Form form) {
+        target.addComponent(getFeedbackPanel());
       }
 
     });
@@ -92,6 +99,12 @@ public class ParticipantSearchPage extends BasePage {
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantByLastNameProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
         replaceParticipantList(target, replacement);
+        target.addComponent(getFeedbackPanel());
+      }
+      
+      @Override
+      protected void onError(AjaxRequestTarget target, Form form) {
+        target.addComponent(getFeedbackPanel());
       }
 
     });
@@ -102,6 +115,12 @@ public class ParticipantSearchPage extends BasePage {
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantProvider(), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
         replaceParticipantList(target, replacement);
+        target.addComponent(getFeedbackPanel());
+      }
+      
+      @Override
+      protected void onError(AjaxRequestTarget target, Form form) {
+        target.addComponent(getFeedbackPanel());
       }
 
     });
@@ -112,6 +131,12 @@ public class ParticipantSearchPage extends BasePage {
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new AppointedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
         replaceParticipantList(target, replacement);
+        target.addComponent(getFeedbackPanel());
+      }
+      
+      @Override
+      protected void onError(AjaxRequestTarget target, Form form) {
+        target.addComponent(getFeedbackPanel());
       }
 
     });
@@ -122,15 +147,12 @@ public class ParticipantSearchPage extends BasePage {
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new InterviewedParticipantProvider(), new ParticipantListColumnProvider(), new StringResourceModel("CurrentInterviews", ParticipantSearchPage.this, null));
         replaceParticipantList(target, replacement);
+        target.addComponent(getFeedbackPanel());
       }
-
-    });
-
-    add(new AjaxLink("advanced") {
-
+      
       @Override
-      public void onClick(AjaxRequestTarget target) {
-
+      protected void onError(AjaxRequestTarget target, Form form) {
+        target.addComponent(getFeedbackPanel());
       }
 
     });
@@ -139,19 +161,27 @@ public class ParticipantSearchPage extends BasePage {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-
+        // TODO enroll volunteer
+        target.addComponent(getFeedbackPanel());
       }
 
     });
 
-    add(new AjaxLink("print") {
+    Link link = new Link("update") {
 
       @Override
-      public void onClick(AjaxRequestTarget target) {
-
+      public void onClick() {
+        try {
+          participantService.updateParticipantList();
+          info(ParticipantSearchPage.this.getString("ParticipantsListSuccessfullyUpdated"));
+        } catch (Exception e) {
+          error(e.getMessage());
+        }
       }
 
-    });
+    };
+    link.add(new JavascriptEventConfirmation("onclick", new StringResourceModel("ConfirmParticipantsListUpdate", this, null)));
+    add(link);
 
     add(new AjaxLink("excel") {
 
@@ -343,7 +373,7 @@ public class ParticipantSearchPage extends BasePage {
       });
       columns.add(new AbstractColumn(new StringResourceModel("Actions", ParticipantSearchPage.this, null)) {
 
-        public void populateItem(final Item cellItem, String componentId, IModel rowModel) {
+        public void populateItem(final Item cellItem, String componentId, final IModel rowModel) {
           final List<IModel> actions = new ArrayList<IModel>();
           final Participant p = (Participant) rowModel.getObject();
           actions.add(new StringResourceModel("View", ParticipantSearchPage.this, null));
@@ -356,14 +386,14 @@ public class ParticipantSearchPage extends BasePage {
             @Override
             public void onClick(IModel model, AjaxRequestTarget target) {
               if(actions.indexOf(model) == 0) {
-                participantDetailsModalWindow.setContent(new ParticipantModalPanel("content", new ParticipantPanel("content", p), participantDetailsModalWindow));
+                participantDetailsModalWindow.setContent(new ParticipantModalPanel("content", new ParticipantPanel("content", rowModel), participantDetailsModalWindow));
                 participantDetailsModalWindow.show(target);
               } else if(actions.indexOf(model) == 1) {
                 if(p.getBarcode() != null) {
                   activeInterviewService.setParticipant(p);
                   setResponsePage(InterviewPage.class);
                 } else {
-                  setResponsePage(new ParticipantReceptionPage(new DetachableEntityModel(queryService, p)));
+                  setResponsePage(new ParticipantReceptionPage(rowModel));
                 }
               }
             }

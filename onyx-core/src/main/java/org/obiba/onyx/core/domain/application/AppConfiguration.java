@@ -15,6 +15,8 @@ public class AppConfiguration extends AbstractEntity {
 
   private String siteNo;
 
+  private String participantDirectoryPath;
+
   public String getStudyName() {
     return studyName;
   }
@@ -37,6 +39,14 @@ public class AppConfiguration extends AbstractEntity {
 
   public void setSiteNo(String siteNo) {
     this.siteNo = siteNo;
+  }
+
+  public String getParticipantDirectoryPath() {
+    return participantDirectoryPath;
+  }
+
+  public void setParticipantDirectoryPath(String participantDirectoryPath) {
+    this.participantDirectoryPath = participantDirectoryPath;
   }
 
 }

@@ -131,13 +131,16 @@
     <dependency>
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
-      <version>${commons-httpclient.version}</version>
     </dependency>
 
 	<dependency>
       <groupId>org.jscience</groupId>
       <artifactId>jscience</artifactId>
-      <version>${jscience.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
     </dependency>
     
   </dependencies>

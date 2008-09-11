@@ -27,6 +27,7 @@
     <siteName>ONYX Test Site</siteName>
     <siteNo>0123456789</siteNo>
     <studyName>CARTaGENE</studyName>
+    <participantDirectoryPath>src/main/resources/participants</participantDirectoryPath>
   </config>
 
 </linked-list>

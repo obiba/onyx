@@ -58,4 +58,9 @@ public interface ParticipantService {
   public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment, User user);
 
   public void updateParticipant(Participant participant);
+  
+  /**
+   * Look in the special directory the participant list and add/update the participant/appointment list.
+   */
+  public void updateParticipantList();
 }

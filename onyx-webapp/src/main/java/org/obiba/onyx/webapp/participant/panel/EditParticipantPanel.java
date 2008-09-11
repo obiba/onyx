@@ -16,7 +16,7 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -28,10 +28,15 @@ import org.obiba.onyx.core.domain.participant.Province;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.webapp.converter.GenderConverter;
 import org.obiba.onyx.webapp.converter.ProvinceConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EditParticipantPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(EditParticipantPanel.class);
 
   /**
    * Regular expression used to validate postal codes.
@@ -53,21 +58,18 @@ public class EditParticipantPanel extends Panel {
   @SpringBean
   private ParticipantService participantService;
 
-  private ParticipantPanel participantPanel;
-
   private ModalWindow parentWindow;
 
   private Form editParticipantForm;
 
   private FeedbackPanel feedbackPanel;
 
-  public EditParticipantPanel(String id, Participant participant, ParticipantPanel participantPanel, ModalWindow parentWindow) {
+  public EditParticipantPanel(String id, IModel participantModel, ModalWindow parentWindow) {
     super(id);
 
-    this.participantPanel = participantPanel;
     this.parentWindow = parentWindow;
 
-    editParticipantForm = new EditParticipantForm("editParticipantForm", participant);
+    editParticipantForm = new EditParticipantForm("editParticipantForm", participantModel);
     add(editParticipantForm);
 
     feedbackPanel = new FeedbackPanel("feedback");
@@ -80,27 +82,27 @@ public class EditParticipantPanel extends Panel {
     private static final long serialVersionUID = 1L;
 
     @SuppressWarnings("serial")
-    public EditParticipantForm(String id, Participant participant) {
+    public EditParticipantForm(String id, final IModel participantModel) {
       super(id);
+      setModel(participantModel);
 
-      setModel(new Model(participant));
-
-      add(new TextField("firstName", new PropertyModel(getModelObject(), "firstName")).setRequired(true).setLabel(new StringResourceModel("FirstName", null)));
-      add(new TextField("lastName", new PropertyModel(getModelObject(), "lastName")).setRequired(true).setLabel(new StringResourceModel("LastName", null)));
+      add(new TextField("firstName", new PropertyModel(getModel(), "firstName")).setRequired(true).setLabel(new StringResourceModel("FirstName", null)));
+      add(new TextField("lastName", new PropertyModel(getModel(), "lastName")).setRequired(true).setLabel(new StringResourceModel("LastName", null)));
       add(createGenderDropDown());
       add(createBirthDateField());
-      add(new TextField("street", new PropertyModel(getModelObject(), "street")));
-      add(new TextField("apartment", new PropertyModel(getModelObject(), "apartment")));
-      add(new TextField("city", new PropertyModel(getModelObject(), "city")));
+      add(new TextField("street", new PropertyModel(getModel(), "street")));
+      add(new TextField("apartment", new PropertyModel(getModel(), "apartment")));
+      add(new TextField("city", new PropertyModel(getModel(), "city")));
       add(createProvinceDropDown());
-      add(new TextField("country", new PropertyModel(getModelObject(), "country")));
-      add(new TextField("postalCode", new PropertyModel(getModelObject(), "postalCode")).add(new PatternValidator(POSTAL_CODE_REGEX)));
-      add(new TextField("phone", new PropertyModel(getModelObject(), "phone")).add(new PatternValidator(PHONE_REGEX)));
+      add(new TextField("country", new PropertyModel(getModel(), "country")));
+      add(new TextField("postalCode", new PropertyModel(getModel(), "postalCode")).add(new PatternValidator(POSTAL_CODE_REGEX)));
+      add(new TextField("phone", new PropertyModel(getModel(), "phone")).add(new PatternValidator(PHONE_REGEX)));
 
       @SuppressWarnings("serial")
       AjaxSubmitLink submitLink = new AjaxSubmitLink("saveAction") {
         protected void onSubmit(AjaxRequestTarget target, Form form) {
-          target.addComponent(EditParticipantPanel.this.participantPanel);
+          Participant participant = (Participant) EditParticipantForm.this.getModelObject();
+          participantService.updateParticipant(participant);
           EditParticipantPanel.this.parentWindow.close(target);
         }
 
@@ -109,7 +111,7 @@ public class EditParticipantPanel extends Panel {
         }
       };
       add(submitLink);
-      
+
       @SuppressWarnings("serial")
       AjaxLink cancelLink = new AjaxLink("cancelAction") {
         @Override
@@ -120,29 +122,23 @@ public class EditParticipantPanel extends Panel {
       add(cancelLink);
     }
 
-    public void onSubmit() {
-      Participant participant = (Participant) getModelObject();
-      participantService.updateParticipant(participant);
-    }
-
     @SuppressWarnings("serial")
     private DateField createBirthDateField() {
-      DateField birthDateField = new DateField("birthDate", new PropertyModel(getModelObject(), "birthDate")) {
-        protected DateTextField newDateTextField(String id, PropertyModel dateFieldModel)
-        {
+      DateField birthDateField = new DateField("birthDate", new PropertyModel(getModel(), "birthDate")) {
+        protected DateTextField newDateTextField(String id, PropertyModel dateFieldModel) {
           return DateTextField.forDatePattern(id, dateFieldModel, "yyyy-MM-dd");
         }
       };
-      
+
       birthDateField.setRequired(true);
       birthDateField.setLabel(new StringResourceModel("BirthDate", null));
-      
+
       return birthDateField;
     }
-    
+
     @SuppressWarnings("serial")
     private DropDownChoice createGenderDropDown() {
-      DropDownChoice genderDropDown = new DropDownChoice("gender", new PropertyModel(getModelObject(), "gender"), Arrays.asList(Gender.values()), new GenderRenderer()) {
+      DropDownChoice genderDropDown = new DropDownChoice("gender", new PropertyModel(getModel(), "gender"), Arrays.asList(Gender.values()), new GenderRenderer()) {
         @SuppressWarnings("unchecked")
         @Override
         public IConverter getConverter(Class type) {
@@ -156,10 +152,10 @@ public class EditParticipantPanel extends Panel {
 
       return genderDropDown;
     }
-    
+
     @SuppressWarnings("serial")
     private DropDownChoice createProvinceDropDown() {
-      DropDownChoice provinceDropDown = new DropDownChoice("province", new PropertyModel(getModelObject(), "province"), Arrays.asList(Province.values()), new ProvinceRenderer()) {
+      DropDownChoice provinceDropDown = new DropDownChoice("province", new PropertyModel(getModel(), "province"), Arrays.asList(Province.values()), new ProvinceRenderer()) {
         @SuppressWarnings("unchecked")
         @Override
         public IConverter getConverter(Class type) {
@@ -180,14 +176,14 @@ public class EditParticipantPanel extends Panel {
     public Object getDisplayValue(Object object) {
       Locale locale = EditParticipantPanel.this.getLocale();
       ResourceBundle resourceBundle = ResourceBundle.getBundle("org.obiba.onyx.webapp.OnyxApplication", locale);
-      return resourceBundle.getString("Gender."+object.toString());
+      return resourceBundle.getString("Gender." + object.toString());
     }
 
     public String getIdValue(Object object, int index) {
       return object.toString();
     }
   }
-  
+
   @SuppressWarnings("serial")
   private class ProvinceRenderer implements IChoiceRenderer {
 
