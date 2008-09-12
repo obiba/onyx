@@ -24,7 +24,6 @@ import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.Status;
 import org.obiba.onyx.core.domain.user.User;
-import org.obiba.onyx.core.service.RoleService;
 import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.webapp.base.panel.AjaxLanguageChoicePanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -43,9 +42,6 @@ public class UserPanel extends Panel {
 
   @SpringBean
   private EntityQueryService queryService;
-
-  @SpringBean
-  private RoleService roleService;
 
   private ModalWindow userModalWindow;
 
@@ -93,7 +89,7 @@ public class UserPanel extends Panel {
       email.add(EmailAddressValidator.getInstance());
       add(email);
 
-      ListMultipleChoice roles = new ListMultipleChoice("roles", new PropertyModel(getModel(), "roles"), roleService.getRoles(SortingClause.create("name")));
+      ListMultipleChoice roles = new ListMultipleChoice("roles", new PropertyModel(getModel(), "roles"), userService.getRoles(SortingClause.create("name")));
       roles.setRequired(true);
       roles.setChoiceRenderer(new IChoiceRenderer() {
 

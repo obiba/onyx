@@ -29,6 +29,13 @@ public class UserServiceTest extends BaseDefaultSpringContextTestCase {
   
   @Test
   @Dataset
+  public void testGetRoles() {
+    List<Role> roleList = userService.getRoles(new SortingClause("name"));
+    Assert.assertEquals(3, roleList.size());
+  }
+  
+  @Test
+  @Dataset
   public void testGetUsers() {
     List<User> userList = userService.getUsers(false, new PagingClause(0), new SortingClause("lastName"));
     Assert.assertEquals(3, userList.size());

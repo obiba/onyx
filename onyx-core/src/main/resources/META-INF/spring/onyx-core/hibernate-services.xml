@@ -18,10 +18,4 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
   
-  <bean id="roleService"
-    class="org.obiba.onyx.core.service.impl.hibernate.RoleServiceHibernateImpl" scope="singleton">
-    <property name="sessionFactory" ref="sessionFactory" />
-    <property name="persistenceManager" ref="persistenceManager" />
-  </bean>
-
 </beans>

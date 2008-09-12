@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
+import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.Status;
 import org.obiba.onyx.core.domain.user.User;
 
@@ -77,4 +78,11 @@ public interface UserService {
    * @param user
    */
   public void setUser(User user);
+  
+  /**
+   * Returns the list of roles
+   * @param clauses
+   * @return
+   */
+  public List<Role> getRoles(SortingClause... clauses);
 }

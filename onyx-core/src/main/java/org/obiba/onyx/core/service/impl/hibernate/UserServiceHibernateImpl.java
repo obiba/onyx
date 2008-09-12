@@ -8,6 +8,7 @@ import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.hibernate.AssociationCriteria;
 import org.obiba.core.service.impl.hibernate.AssociationCriteria.Operation;
+import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.impl.DefaultUserServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,16 +33,28 @@ public class UserServiceHibernateImpl extends DefaultUserServiceImpl {
   }
   
   public List<User> getUsers(boolean isDeleted, PagingClause paging, SortingClause... clauses) {
-    return getCriteria(isDeleted, paging, clauses).list();
+    return getUserCriteria(isDeleted, paging, clauses).list();
   }
   
-  private AssociationCriteria getCriteria(boolean isDeleted, PagingClause paging, SortingClause... clauses) {
+  private AssociationCriteria getUserCriteria(boolean isDeleted, PagingClause paging, SortingClause... clauses) {
     AssociationCriteria criteria = AssociationCriteria.create(User.class, getSession());
 
     if (isDeleted == false) criteria.add("deleted", Operation.eq, isDeleted);
     if(paging != null) criteria.addPagingClause(paging);
     if(clauses != null) criteria.addSortingClauses(clauses);
     
+    return criteria;
+  }
+  
+  public List<Role> getRoles(SortingClause... clauses) {
+    return getRoleCriteria(clauses).list();
+  }
+  
+  private AssociationCriteria getRoleCriteria(SortingClause... clauses) {
+    AssociationCriteria criteria = AssociationCriteria.create(Role.class, getSession());
+
+    if(clauses != null) criteria.addSortingClauses(clauses);
+
     return criteria;
   }
   
