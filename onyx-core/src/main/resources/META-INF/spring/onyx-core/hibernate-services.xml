@@ -10,6 +10,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     class="org.obiba.onyx.core.service.impl.hibernate.ParticipantServiceHibernateImpl" scope="singleton">
     <property name="sessionFactory" ref="sessionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />
+    <property name="participantReader" ref="participantReader" />
   </bean>
   
   <bean id="userService"

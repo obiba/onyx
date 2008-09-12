@@ -1,31 +1,19 @@
 package org.obiba.onyx.core.service;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
-import org.obiba.onyx.core.domain.participant.Appointment;
+import org.obiba.core.validation.exception.ValidationRuntimeException;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 
 public interface ParticipantService {
-
-  /**
-   * Persist the new participant from the given model.
-   * @param model
-   * @return
-   */
-  public Participant createParticipant(Participant model);
-
-  /**
-   * Add an appointment to participant.
-   * @param participant
-   * @param date
-   * @return
-   */
-  public Appointment addAppointment(Participant participant, Date date);
 
   /**
    * 
@@ -42,9 +30,9 @@ public interface ParticipantService {
    * @return
    */
   public int countParticipantsByCode(String code);
-  
+
   public List<Participant> getParticipantsByName(String likeName, PagingClause paging, SortingClause... clauses);
-  
+
   public int countParticipantsByName(String likeName);
 
   public List<Participant> getParticipants(InterviewStatus status, PagingClause paging, SortingClause... clauses);
@@ -58,9 +46,15 @@ public interface ParticipantService {
   public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment, User user);
 
   public void updateParticipant(Participant participant);
-  
+
   /**
    * Look in the special directory the participant list and add/update the participant/appointment list.
    */
-  public void updateParticipantList();
+  public void updateParticipantList() throws ValidationRuntimeException;
+
+  /**
+   * Update participants and their appointment from the given participants file.
+   * @param participantsList
+   */
+  public void updateParticipants(InputStream participantsListStream) throws ValidationRuntimeException;
 }

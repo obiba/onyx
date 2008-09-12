@@ -27,7 +27,7 @@ public class ParticipantPanel extends Panel {
     if(participant.getBarcode() != null) {
       kvPanel.addRow(new StringResourceModel("ParticipantCode", this, null), new PropertyModel(getModel(), "barcode"));
     }
-    kvPanel.addRow(new StringResourceModel("AppointmentCode", this, null), new PropertyModel(getModel(), "appointment.appointmentCode"));
+    kvPanel.addRow(new StringResourceModel("AppointmentCode", this, null), new PropertyModel(getModel(), "enrollmentId"));
     kvPanel.addRow(new StringResourceModel("Name", this, null), new PropertyModel(getModel(), "fullName"));
     kvPanel.addRow(new StringResourceModel("Gender", this, null), new PropertyModel(this, "localizedGender"));
     kvPanel.addRow(new StringResourceModel("BirthDate", this, null), DateModelUtils.getShortDateModel(new PropertyModel(getModel(), "birthDate")));

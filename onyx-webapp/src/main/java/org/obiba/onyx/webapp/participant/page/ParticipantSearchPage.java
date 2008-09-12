@@ -25,9 +25,11 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.value.ValueMap;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
+import org.obiba.core.validation.exception.ValidationRuntimeException;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -41,10 +43,16 @@ import org.obiba.wicket.JavascriptEventConfirmation;
 import org.obiba.wicket.markup.html.link.AjaxLinkList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.validation.ObjectError;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class ParticipantSearchPage extends BasePage {
 
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(ParticipantSearchPage.class);
+  
   @SpringBean
   private EntityQueryService queryService;
 
@@ -174,8 +182,17 @@ public class ParticipantSearchPage extends BasePage {
         try {
           participantService.updateParticipantList();
           info(ParticipantSearchPage.this.getString("ParticipantsListSuccessfullyUpdated"));
-        } catch (Exception e) {
-          error(e.getMessage());
+        } catch (ValidationRuntimeException e) {
+          for (ObjectError oe : e.getAllObjectErrors()) {
+            Object[] args = oe.getArguments();
+            IModel model = null;
+            if (args != null && args.length == 2) {
+              ValueMap map = new ValueMap("line="+args[0]+",id="+args[1]);
+              model = new Model(map);
+            }
+            error(ParticipantSearchPage.this.getString(oe.getCode(), model, oe.getDefaultMessage()));
+          }
+          log.error("Failed updating participants", e);
         }
       }
 

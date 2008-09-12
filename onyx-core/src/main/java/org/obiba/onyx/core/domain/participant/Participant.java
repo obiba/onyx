@@ -115,11 +115,11 @@ public class Participant extends AbstractEntity {
     this.barcode = barcode;
   }
 
-  protected String getEnrollmentId() {
+  public String getEnrollmentId() {
     return enrollmentId;
   }
 
-  protected void setEnrollmentId(String enrollmentId) {
+  public void setEnrollmentId(String enrollmentId) {
     this.enrollmentId = enrollmentId;
   }
 

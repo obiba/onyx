@@ -142,4 +142,8 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
 
     return participantQuery;
   }
+  
+  protected List<Participant> getNotReceivedParticipants() {
+    return getSession().createCriteria(Participant.class).add(Restrictions.isNull("barcode")).list();
+  }
 }

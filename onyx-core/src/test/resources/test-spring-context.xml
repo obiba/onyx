@@ -6,6 +6,8 @@
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
   
+  <bean id="participantReader" class="org.obiba.onyx.core.service.ParticipantExcelReader" scope="prototype" />
+  
   <import resource="classpath:/test-hibernate-config.xml" />
   <import resource="classpath:/test-db-config.xml" />
   <import resource="classpath:META-INF/spring/onyx-core/context.xml" />
