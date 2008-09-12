@@ -18,8 +18,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
   <bean id="testDatabaseSeed" class="org.obiba.onyx.webapp.seed.TestDatabaseSeed" scope="singleton">
     <property name="resourcePatterns">
       <list>
-        <value>classpath:/appConfiguration.xml</value>
-        <!--value>classpath:/participants.xml</value-->        
+        <value>classpath:/appConfiguration.xml</value>       
       </list>
     </property>
     <property name="developmentSeed" value="true" />

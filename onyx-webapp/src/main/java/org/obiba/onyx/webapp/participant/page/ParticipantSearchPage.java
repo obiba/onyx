@@ -186,8 +186,12 @@ public class ParticipantSearchPage extends BasePage {
           for (ObjectError oe : e.getAllObjectErrors()) {
             Object[] args = oe.getArguments();
             IModel model = null;
-            if (args != null && args.length == 2) {
+            if (oe.getCode().equals("ParticipantInterviewCompletedWithAppointmentInTheFuture") && args != null && args.length == 4) {
               ValueMap map = new ValueMap("line="+args[0]+",id="+args[1]);
+              model = new Model(map);
+            }
+            else if (oe.getCode().equals("WrongParticipantSiteName") && args != null && args.length >= 3) {
+              ValueMap map = new ValueMap("line="+args[0]+",id="+args[1]+",site="+args[2]);
               model = new Model(map);
             }
             error(ParticipantSearchPage.this.getString(oe.getCode(), model, oe.getDefaultMessage()));
