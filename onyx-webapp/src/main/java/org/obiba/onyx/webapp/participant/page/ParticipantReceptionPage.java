@@ -32,11 +32,10 @@ public class ParticipantReceptionPage extends BasePage {
     editParticipantModalWindow.setContent(new EditParticipantPanel("content", participantModel, editParticipantModalWindow));
     editParticipantModalWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
 
-      @Override
       public void onClose(AjaxRequestTarget target) {
         target.addComponent(participantPanel);
       }
-      
+
     });
     add(editParticipantModalWindow);
 

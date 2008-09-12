@@ -68,7 +68,7 @@ public class DataConverter implements IConverter {
   public String convertToString(Object value, Locale locale) {
     Data data = (Data) value;
     if(data == null || data.getValue() == null) return null;
-    return data.getValue().toString();
+    return data.getValueAsString();
   }
 
 }

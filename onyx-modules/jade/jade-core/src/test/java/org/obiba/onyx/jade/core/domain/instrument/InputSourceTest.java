@@ -20,7 +20,7 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(InputSourceTest.class);
-  
+
   @Autowired(required = true)
   InputDataSourceVisitor inputDataSourceVisitor;
 
@@ -30,7 +30,7 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
   @Test
   @Dataset
   public void testParticipantPropertyRetriever() {
-    Participant participant = queryService.get(Participant.class, Long.valueOf("1"));
+    Participant participant = queryService.get(Participant.class, 1l);
 
     InstrumentInputParameter param = new InstrumentInputParameter();
     ParticipantPropertySource participantPropertySource = new ParticipantPropertySource();
@@ -39,7 +39,7 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
     param.setInputSource(participantPropertySource);
     Data resultData = inputDataSourceVisitor.getData(participant, param);
     Assert.assertNotNull("Result Data is null", resultData);
-    Assert.assertEquals("1979-09-04", resultData.getValue().toString());
+    Assert.assertEquals("1979-09-04", resultData.getValueAsString());
     Assert.assertEquals(DataType.DATE, resultData.getType());
 
     participantPropertySource.setProperty("lastName");
@@ -60,8 +60,8 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
   @Test
   @Dataset
   public void testOutputParameterRetriever() {
-    Participant participant = queryService.get(Participant.class, Long.valueOf("1"));
-    InstrumentType instrumentType = queryService.get(InstrumentType.class, Long.valueOf("2"));
+    Participant participant = queryService.get(Participant.class, 1l);
+    InstrumentType instrumentType = queryService.get(InstrumentType.class, 2l);
 
     InstrumentInputParameter param = new InstrumentInputParameter();
     OutputParameterSource outputParameterSource = new OutputParameterSource();
@@ -78,11 +78,11 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
   @Test
   @Dataset
   public void testInstrumentParameterValueConverter() {
-    Participant participant = queryService.get(Participant.class, Long.valueOf("1"));
+    Participant participant = queryService.get(Participant.class, 1l);
 
     // Testing date data
-    InstrumentRunValue sourceInstrumentRunValue = queryService.get(InstrumentRunValue.class, Long.valueOf("5"));
-    InstrumentParameter targetInstrumentParameter = queryService.get(InstrumentParameter.class, Long.valueOf("6"));
+    InstrumentRunValue sourceInstrumentRunValue = queryService.get(InstrumentRunValue.class, 5l);
+    InstrumentParameter targetInstrumentParameter = queryService.get(InstrumentParameter.class, 6l);
 
     InstrumentRunValue targetInstrumentRunValue = new InstrumentRunValue();
     targetInstrumentRunValue.setInstrumentParameter(targetInstrumentParameter);
@@ -92,11 +92,11 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
     }
     Date date = sourceInstrumentRunValue.getValue();
     log.info("date=" + date);
-    
+
     DateParameterValueConverter dateConverter = new DateParameterValueConverter();
     dateConverter.convert(targetInstrumentRunValue, sourceInstrumentRunValue);
 
-    InstrumentParameter finalInstrumentParameter = queryService.get(InstrumentParameter.class, Long.valueOf("8"));
+    InstrumentParameter finalInstrumentParameter = queryService.get(InstrumentParameter.class, 8l);
     InstrumentRunValue finalInstrumentRunValue = new InstrumentRunValue();
     finalInstrumentRunValue.setInstrumentParameter(finalInstrumentParameter);
 
@@ -105,8 +105,8 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
     Assert.assertEquals(Long.valueOf("29"), finalInstrumentRunValue.getValue());
 
     // Testing metric data
-    sourceInstrumentRunValue = queryService.get(InstrumentRunValue.class, Long.valueOf("1"));
-    targetInstrumentParameter = queryService.get(InstrumentParameter.class, Long.valueOf("3"));
+    sourceInstrumentRunValue = queryService.get(InstrumentRunValue.class, 1l);
+    targetInstrumentParameter = queryService.get(InstrumentParameter.class, 3l);
     targetInstrumentRunValue.setInstrumentParameter(targetInstrumentParameter);
 
     unitConverter.convert(targetInstrumentRunValue, sourceInstrumentRunValue);

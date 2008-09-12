@@ -9,7 +9,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,7 +24,6 @@ import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.jade.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
-import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,7 +129,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
       BufferedWriter inputFileWriter = new BufferedWriter(new FileWriter(externalAppInputFile));
       inputFileWriter.write("[Identification]\n");
       for(Map.Entry<String, Data> entry : inputData.entrySet()) {
-        inputFileWriter.write(entry.getKey() + "=" + entry.getValue().getValue().toString() + "\n");
+        inputFileWriter.write(entry.getKey() + "=" + entry.getValue().getValueAsString() + "\n");
       }
       inputFileWriter.close();
     } catch(Exception ex) {
@@ -228,7 +226,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
         ouputToSend.put(entry.getKey(), DataBuilder.buildInteger(Math.round(entry.getValue()[0])));
         ouputToSend.put(entry.getKey() + "_pred", DataBuilder.buildInteger(Math.round(entry.getValue()[1])));
       } else {
-        ouputToSend.put(entry.getKey(), DataBuilder.buildDecimal( entry.getValue()[0]));
+        ouputToSend.put(entry.getKey(), DataBuilder.buildDecimal(entry.getValue()[0]));
         ouputToSend.put(entry.getKey() + "_pred", DataBuilder.buildDecimal(entry.getValue()[1]));
       }
     }

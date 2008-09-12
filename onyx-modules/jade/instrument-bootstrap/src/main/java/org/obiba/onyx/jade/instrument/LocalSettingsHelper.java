@@ -1,10 +1,12 @@
 package org.obiba.onyx.jade.instrument;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Properties;
 
 /**
@@ -13,7 +15,8 @@ import java.util.Properties;
  * they can retrieved the next time the interface is launched.
  * 
  * Practically, this allows a user to setup an instrument interface the first time it is launched, without having to
- * worry about setting it up on each run, because the local configuration is kept on disk, and can be retrieved automatically.
+ * worry about setting it up on each run, because the local configuration is kept on disk, and can be retrieved
+ * automatically.
  */
 public class LocalSettingsHelper {
 
@@ -39,9 +42,9 @@ public class LocalSettingsHelper {
     }
 
     try {
-      FileWriter commPortSettingFile = new FileWriter(SETTINGS_DIR + File.separatorChar + settingsFileName);
-      settings.store(commPortSettingFile, settingsFileComment);
-
+      OutputStream os = new FileOutputStream(new File(SETTINGS_DIR, settingsFileName));
+      settings.store(os, settingsFileComment);
+      os.close();
     } catch(IOException couldNotPersistSettingsToLocalFile) {
       throw new CouldNotSaveSettingsException(couldNotPersistSettingsToLocalFile);
     }
@@ -56,19 +59,26 @@ public class LocalSettingsHelper {
    */
   public Properties retrieveSettings() throws CouldNotRetrieveSettingsException {
 
-    FileReader reader;
+    InputStream is;
     Properties settings = new Properties();
     try {
-      reader = new FileReader(SETTINGS_DIR + File.separatorChar + settingsFileName);
+      is = new FileInputStream(new File(SETTINGS_DIR, settingsFileName));
 
       try {
-        settings.load(reader);
+        settings.load(is);
       } catch(IOException cannotReadSettingsFile) {
         throw new CouldNotRetrieveSettingsException(cannotReadSettingsFile);
       }
-
     } catch(FileNotFoundException settingsFileDontExist) {
       throw new CouldNotRetrieveSettingsException(settingsFileDontExist);
+    }
+
+    try {
+      if(is != null) {
+        is.close();
+      }
+    } catch(Exception e) {
+      // Ignore
     }
 
     return settings;
