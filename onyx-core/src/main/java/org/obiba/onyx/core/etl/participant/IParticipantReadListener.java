@@ -12,4 +12,11 @@ public interface IParticipantReadListener {
    */
   public void onParticipantRead(int line, Participant participant) throws ValidationRuntimeException;
   
+  /**
+   * Called after last participant was read, at the end of the stream, recalling the last line.
+   * @param line
+   * @throws ValidationRuntimeException
+   */
+  public void onParticipantReadEnd(int line) throws ValidationRuntimeException;
+  
 }

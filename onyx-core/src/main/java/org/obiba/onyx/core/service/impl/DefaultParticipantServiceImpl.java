@@ -104,42 +104,65 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
   public void updateParticipants(InputStream participantsListStream) throws ValidationRuntimeException {
 
+    final AppConfiguration appConfig = getPersistenceManager().matchOne(new AppConfiguration());
+
+    final ValidationRuntimeException vex = new ValidationRuntimeException();
+
     if(!participantReaderCallbackInitialized) {
       participantReader.addParticipantReadListener(new IParticipantReadListener() {
 
         public void onParticipantRead(int line, Participant participant) throws ValidationRuntimeException {
           log.debug("reading participant={} {}", participant.getEnrollmentId(), participant.getFullName());
-          Participant persistedParticipant = new Participant();
-          persistedParticipant.setEnrollmentId(participant.getEnrollmentId());
-          persistedParticipant = getPersistenceManager().matchOne(persistedParticipant);
-          if(persistedParticipant == null) {
-            log.info("adding participant={}", participant.getEnrollmentId());
-            getPersistenceManager().save(participant);
-            getPersistenceManager().save(participant.getAppointment());
+
+          if(!appConfig.getSiteName().equals(participant.getSiteName())) {
+            log.error("WrongParticipantSiteName");
+            vex.reject(participant, "WrongParticipantSiteName", new String[] { Integer.toString(line), participant.getEnrollmentId(), participant.getSiteName(), appConfig.getSiteName() }, "Wrong Participant site name at line " + line + ": " + participant.getSiteName() + ", expecting " + appConfig.getSiteName());
+            if(vex.getAllObjectErrors().size() == 10) {
+              throw vex;
+            }
           } else {
-            log.debug("persistedParticipant.interview={}", persistedParticipant.getInterview());
-            if(persistedParticipant.getInterview() != null && persistedParticipant.getInterview().getStatus().equals(InterviewStatus.COMPLETED)) {
-              // error if new appointment date is in the future
-              Date newAppointmentDate = participant.getAppointment().getDate();
-              if(newAppointmentDate != null && newAppointmentDate.compareTo(new Date()) > 0) {
-                throw new ValidationRuntimeException(participant, "ParticipantInterviewCompletedWithAppointmentInTheFuture", new String[] { Integer.toString(line), participant.getEnrollmentId() }, "Participant's interview is completed, but new appointment date is in the future.");
-              }
-              // else ignore
+            Participant persistedParticipant = new Participant();
+            persistedParticipant.setEnrollmentId(participant.getEnrollmentId());
+            persistedParticipant = getPersistenceManager().matchOne(persistedParticipant);
+
+            if(persistedParticipant == null) {
+              log.info("adding participant={}", participant.getEnrollmentId());
+              getPersistenceManager().save(participant);
+              getPersistenceManager().save(participant.getAppointment());
             } else {
-              // update its appointment date
-              Appointment appointment = persistedParticipant.getAppointment();
-              if(persistedParticipant.getAppointment() == null) {
-                log.info("adding participant.appointment={}", participant.getEnrollmentId());
-                appointment = participant.getAppointment();
-                appointment.setParticipant(persistedParticipant);
-                getPersistenceManager().save(appointment);
+              log.debug("persistedParticipant.interview={}", persistedParticipant.getInterview());
+              if(persistedParticipant.getInterview() != null && persistedParticipant.getInterview().getStatus().equals(InterviewStatus.COMPLETED)) {
+                // error if new appointment date is in the future
+                Date newAppointmentDate = participant.getAppointment().getDate();
+                if(newAppointmentDate != null && newAppointmentDate.compareTo(new Date()) > 0) {
+                  log.error("ParticipantInterviewCompletedWithAppointmentInTheFuture");
+                  vex.reject(participant, "ParticipantInterviewCompletedWithAppointmentInTheFuture", new String[] { Integer.toString(line), participant.getEnrollmentId() }, "Participant's interview is completed, but new appointment date is in the future.");
+                  if(vex.getAllObjectErrors().size() == 10) {
+                    throw vex;
+                  }
+                }
+                // else ignore
               } else {
-                log.info("updating participant.appointment={}", participant.getEnrollmentId());
-                persistedParticipant.getAppointment().setDate(participant.getAppointment().getDate());
-                getPersistenceManager().save(persistedParticipant.getAppointment());
+                // update its appointment date
+                Appointment appointment = persistedParticipant.getAppointment();
+                if(persistedParticipant.getAppointment() == null) {
+                  log.info("adding participant.appointment={}", participant.getEnrollmentId());
+                  appointment = participant.getAppointment();
+                  appointment.setParticipant(persistedParticipant);
+                  getPersistenceManager().save(appointment);
+                } else {
+                  log.info("updating participant.appointment={}", participant.getEnrollmentId());
+                  persistedParticipant.getAppointment().setDate(participant.getAppointment().getDate());
+                  getPersistenceManager().save(persistedParticipant.getAppointment());
+                }
               }
             }
           }
+        }
+
+        @Override
+        public void onParticipantReadEnd(int line) throws ValidationRuntimeException {
+          if(vex.getAllObjectErrors().size() > 0) throw vex;
         }
       });
       participantReaderCallbackInitialized = true;

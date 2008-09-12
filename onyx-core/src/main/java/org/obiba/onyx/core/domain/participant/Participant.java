@@ -18,7 +18,7 @@ import javax.persistence.UniqueConstraint;
 import org.obiba.core.domain.AbstractEntity;
 
 @Entity
-@Table(uniqueConstraints={@UniqueConstraint(columnNames={"barcode", "enrollmentId"})})
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "barcode", "enrollmentId" }) })
 public class Participant extends AbstractEntity {
 
   private static final long serialVersionUID = 7720576329990574921L;
@@ -34,8 +34,10 @@ public class Participant extends AbstractEntity {
   private Date birthDate;
 
   private String barcode;
-  
+
   private String enrollmentId;
+
+  private String siteName;
 
   private String street;
 
@@ -56,6 +58,14 @@ public class Participant extends AbstractEntity {
 
   @OneToOne(mappedBy = "participant")
   private Interview interview;
+
+  public String getSiteName() {
+    return siteName;
+  }
+
+  public void setSiteName(String siteName) {
+    this.siteName = siteName;
+  }
 
   public String getFirstName() {
     return firstName;

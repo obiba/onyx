@@ -65,6 +65,10 @@ public abstract class AbstractParticipantExcelReader implements IParticipantRead
         }
       }
     }
+    
+    for(IParticipantReadListener listener : listeners) {
+      listener.onParticipantReadEnd(line);
+    }
   }
 
   protected abstract Participant processParticipant(HSSFRow row, HSSFFormulaEvaluator evaluator);

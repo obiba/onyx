@@ -17,6 +17,7 @@ public class ParticipantExcelReader extends AbstractParticipantExcelReader {
   protected Participant processParticipant(HSSFRow row, HSSFFormulaEvaluator evaluator) {
     Participant participant = new Participant();
 
+    participant.setSiteName(getTextValue(row, evaluator, row.getCell(2)));
     participant.setFirstName(getTextValue(row, evaluator, row.getCell(5)));
     participant.setLastName(getTextValue(row, evaluator, row.getCell(4)));
     Long id = getNumericValue(row, evaluator, row.getCell(3)).longValue();
