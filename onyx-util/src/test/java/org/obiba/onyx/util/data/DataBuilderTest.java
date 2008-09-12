@@ -3,6 +3,7 @@ package org.obiba.onyx.util.data;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
@@ -58,10 +59,10 @@ public class DataBuilderTest {
   }
 
   @Test
-  public void testBuildBinary() throws IOException {
+  public void testBuildBinary() throws IOException, URISyntaxException {
 
     // Get source file size
-    File file = new File("/test.jpg");
+    File file = new File(getClass().getResource("/test.jpg").toURI());
     long fileSize = file.length();
 
     // Get source file checksum
@@ -82,10 +83,10 @@ public class DataBuilderTest {
    
     Assert.assertEquals(binaryData.getType(), DataType.DATA);
     
-    // Verify source file and target byte[] are of the same length 
+    // Verify that source file and target byte[] are of the same length 
     Assert.assertEquals(((byte[]) binaryData.getValue()).length, fileSize);
 
-    // Verify source file and target byte[] have the same checksum
+    // Verify that source file and target byte[] have the same checksum
     Adler32 checksumTest = new Adler32();
     checksumTest.update((byte[]) binaryData.getValue());
     Assert.assertEquals(checksumTest.getValue(), inputStream.getChecksum().getValue());
