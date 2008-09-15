@@ -162,7 +162,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
    * @return a map with the result data
    * @throws Exception
    */
-  private LinkedHashMap<String, Double[]> retrieveDeviceData() {
+  LinkedHashMap<String, Double[]> retrieveDeviceData() {
 
     InputStream resultFileStrm = null;
     InputStreamReader resultReader = null;
