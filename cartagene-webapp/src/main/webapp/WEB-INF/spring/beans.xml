@@ -11,7 +11,6 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 
   <bean id="onyxDatabaseSeed" class="org.obiba.onyx.webapp.seed.OnyxDatabaseSeed" scope="singleton">
     <property name="resource" value="classpath:/stages.xml" />
-    <property name="developmentSeed" value="true" />
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 

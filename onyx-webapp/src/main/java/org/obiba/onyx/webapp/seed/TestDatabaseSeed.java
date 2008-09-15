@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.core.service.PersistenceManager;
-import org.obiba.onyx.core.domain.application.AppConfiguration;
+import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -49,9 +49,9 @@ public class TestDatabaseSeed extends XstreamResourceDatabaseSeed {
           }
           if(persistenceManager.count(template) > 0) entity = null;
         }
-        else if (entity instanceof AppConfiguration) {
-          AppConfiguration template = new AppConfiguration();
-          for (AppConfiguration conf : persistenceManager.match(template)) {
+        else if (entity instanceof ApplicationConfiguration) {
+          ApplicationConfiguration template = new ApplicationConfiguration();
+          for (ApplicationConfiguration conf : persistenceManager.match(template)) {
             persistenceManager.delete(conf);
           }
         }
@@ -74,7 +74,7 @@ public class TestDatabaseSeed extends XstreamResourceDatabaseSeed {
   protected void initializeXstream(XStream xstream) {
     super.initializeXstream(xstream);
 
-    xstream.alias("config", AppConfiguration.class);
+    xstream.alias("config", ApplicationConfiguration.class);
     xstream.alias("role", Role.class);
     xstream.alias("user", User.class);
     xstream.alias("participant", Participant.class);

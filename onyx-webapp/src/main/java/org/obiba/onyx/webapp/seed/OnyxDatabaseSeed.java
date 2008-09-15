@@ -34,8 +34,7 @@ public class OnyxDatabaseSeed extends XstreamResourceDatabaseSeed {
   
   @Override
   protected boolean shouldSeed(WebApplication application) {
-    boolean seed = super.shouldSeed(application);
-    return seed && (persistenceManager.count(Stage.class) == 0);
+    return (persistenceManager.count(Stage.class) == 0);
   }
   
   @Override

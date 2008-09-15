@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.core.validation.exception.ValidationRuntimeException;
-import org.obiba.onyx.core.domain.application.AppConfiguration;
+import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
@@ -78,8 +78,13 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
   }
 
   public void updateParticipantList() throws ValidationRuntimeException {
-    AppConfiguration appConfig = new AppConfiguration();
+    ApplicationConfiguration appConfig = new ApplicationConfiguration();
     appConfig = getPersistenceManager().matchOne(appConfig);
+    if(appConfig.getParticipantDirectoryPath() == null) {
+      ValidationRuntimeException vex = new ValidationRuntimeException();
+      vex.reject("NoParticipantsListRepository", "No participants list repository.");
+      throw vex;
+    }
 
     File dir = new File(appConfig.getParticipantDirectoryPath());
     log.info("participantDirectory={}", dir.getAbsolutePath());
@@ -91,7 +96,9 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     }
 
     if(lastModifiedFile == null) {
-      throw new ValidationRuntimeException("NoParticipantsListFileFound", "No participants list file found.");
+      ValidationRuntimeException vex = new ValidationRuntimeException();
+      vex.reject("NoParticipantsListFileFound", new String[] { appConfig.getParticipantDirectoryPath() }, "No participants list file found in: " + appConfig.getParticipantDirectoryPath());
+      throw vex;
     }
 
     log.info("participantFile={}", lastModifiedFile.getAbsolutePath());
@@ -104,7 +111,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
   public void updateParticipants(InputStream participantsListStream) throws ValidationRuntimeException {
 
-    final AppConfiguration appConfig = getPersistenceManager().matchOne(new AppConfiguration());
+    final ApplicationConfiguration appConfig = getPersistenceManager().matchOne(new ApplicationConfiguration());
 
     final ValidationRuntimeException vex = new ValidationRuntimeException();
 
@@ -163,6 +170,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
         public void onParticipantReadEnd(int line) throws ValidationRuntimeException {
           if(vex.getAllObjectErrors().size() > 0) throw vex;
         }
+        
       });
       participantReaderCallbackInitialized = true;
     }

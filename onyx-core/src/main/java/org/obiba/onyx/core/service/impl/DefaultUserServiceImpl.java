@@ -3,6 +3,7 @@ package org.obiba.onyx.core.service.impl;
 import java.util.Locale;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
+import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.Status;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserService;
@@ -85,4 +86,7 @@ public abstract class DefaultUserServiceImpl extends PersistenceManagerAwareServ
     getPersistenceManager().save(template);
   }
 
+  public Role createRole(Role role) {
+    return getPersistenceManager().save(role);
+  }
 }

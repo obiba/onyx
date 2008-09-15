@@ -9,7 +9,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 
-  <bean id="appConfigService" class="org.obiba.onyx.core.service.impl.DefaultAppConfigurationServiceImpl">
+  <bean id="appConfigService" class="org.obiba.onyx.core.service.impl.DefaultApplicationConfigurationServiceImpl">
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 

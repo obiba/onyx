@@ -8,7 +8,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.core.domain.application.AppConfiguration;
+import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.login.page.LoginPage;
@@ -62,10 +62,10 @@ public class HeaderPanel extends Panel {
       return OnyxAuthenticatedSession.get().getUser();
     }
 
-    public AppConfiguration getConfig() {
-      AppConfiguration template = new AppConfiguration();
+    public ApplicationConfiguration getConfig() {
+      ApplicationConfiguration template = new ApplicationConfiguration();
       //  TODO not supposed to happen, but test environment was broken
-      for (AppConfiguration conf : queryService.match(template)) {
+      for (ApplicationConfiguration conf : queryService.match(template)) {
         return conf;
       }
       return null;

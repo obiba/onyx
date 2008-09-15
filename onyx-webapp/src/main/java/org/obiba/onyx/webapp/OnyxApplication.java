@@ -18,7 +18,7 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.PackageName;
 import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.webapp.authentication.UserRolesAuthorizer;
-import org.obiba.onyx.webapp.config.page.InitConfigPage;
+import org.obiba.onyx.webapp.config.page.ApplicationConfigurationPage;
 import org.obiba.onyx.webapp.home.page.HomePage;
 import org.obiba.onyx.webapp.login.page.LoginPage;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
@@ -92,7 +92,7 @@ public class OnyxApplication extends SpringWebApplication implements IUnauthoriz
         return LoginPage.class;
       }
     } else {
-      return InitConfigPage.class;
+      return ApplicationConfigurationPage.class;
     }
   }
 

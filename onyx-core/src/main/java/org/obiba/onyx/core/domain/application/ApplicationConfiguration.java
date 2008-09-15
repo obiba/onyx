@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import org.obiba.core.domain.AbstractEntity;
 
 @Entity
-public class AppConfiguration extends AbstractEntity {
+public class ApplicationConfiguration extends AbstractEntity {
 
   private static final long serialVersionUID = -943397281652866650L;
 

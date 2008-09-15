@@ -40,7 +40,7 @@ public interface UserService {
    */
   public void changeStatus(User user, Status status);
   
-  /*
+  /**
    * User creation during the application configuration
    */
   public void createUser(User user);
@@ -78,6 +78,13 @@ public interface UserService {
    * @param user
    */
   public void setUser(User user);
+  
+  /**
+   * Create the given role.
+   * @param role
+   * @return
+   */
+  public Role createRole(Role role);
   
   /**
    * Returns the list of roles
