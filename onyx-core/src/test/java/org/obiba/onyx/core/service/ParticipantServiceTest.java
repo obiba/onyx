@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.test.spring.Dataset;
@@ -13,6 +14,9 @@ import org.obiba.core.validation.exception.ValidationRuntimeException;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.engine.Action;
+import org.obiba.onyx.engine.ActionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +34,7 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
 
   @Autowired(required = true)
   ParticipantService participantService;
-
+  
   @Test
   @Dataset
   public void testParticipantByCode() {
@@ -66,6 +70,57 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
     Assert.assertEquals(2, participantService.countParticipants(from, to));
   }
 
+  @Test
+  @Dataset
+  public void testAssignCodeToParticipantWithNoComment() {
+    long participantId = 4l;
+    long userId = 1l; // administrator
+    String barcode = "100004";
+    
+    Participant participant = persistenceManager.get(Participant.class, participantId);
+    Assert.assertNotNull(participant);
+    
+    User user = persistenceManager.get(User.class, userId);
+    Assert.assertNotNull(user);
+    
+    participantService.assignCodeToParticipant(participant, barcode, null, user);
+    
+    // Verify that the bar code was persisted.
+    participant = persistenceManager.get(Participant.class, 4l);
+    Assert.assertEquals(barcode, participant.getBarcode());
+  }
+  
+  @Test
+  @Dataset
+  public void testAssignCodeToParticipantWithComment() {
+    long participantId = 4l;
+    long userId = 1l; // administrator
+    String barcode = "100004";
+    String receptionComment = "test comment";
+    
+    Participant participant = persistenceManager.get(Participant.class, participantId);
+    Assert.assertNotNull(participant);
+    
+    User user = persistenceManager.get(User.class, userId);
+    Assert.assertNotNull(user);
+    
+    participantService.assignCodeToParticipant(participant, barcode, receptionComment, user);
+    
+    // Verify that the bar code was persisted.
+    participant = persistenceManager.get(Participant.class, participantId);
+    Assert.assertEquals(barcode, participant.getBarcode());
+    
+    // Verify that the comment was persisted.
+    Action commentTemplate = new Action();
+    commentTemplate.setActionType(ActionType.COMMENT);
+    commentTemplate.setComment(receptionComment);
+    commentTemplate.setUser(user);
+    commentTemplate.setInterview(participant.getInterview());
+    List<Action> comments = persistenceManager.match(commentTemplate, new PagingClause(0));
+    Assert.assertTrue(comments.size() == 1);
+    Assert.assertEquals(comments.get(0).getComment(), receptionComment);
+  }
+  
   @Test
   @Dataset(filenames={"AppConfigurationForParticipantServiceTest.xml"})
   public void testParticipantReader() {
@@ -135,5 +190,7 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
       Assert.fail(e.getMessage());
       e.printStackTrace();
     }
+
   }
+
 }

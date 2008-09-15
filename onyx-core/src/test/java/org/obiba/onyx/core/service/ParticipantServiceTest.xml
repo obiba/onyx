@@ -1,5 +1,8 @@
 <dataset>
-
+  <role id="1" name="SYSTEM_ADMINISTRATOR"/>
+  <user id="1" last_name="Administrator" first_name="ONYX" login="administrator" password="password" email="test@obiba.org" status="ACTIVE" deleted="false"/>
+  <user_roles user_id="1" role_id="1"/>
+      
   <participant id="1" 
     barcode="1" 
     first_name="Suzan"
@@ -43,4 +46,22 @@
     appointment_code="100003"
     date="2008-10-01 10:00:00"
     participant_id="3" />
+    
+  <participant id="4" 
+    first_name="Dennis"
+    last_name="Spathis"
+    gender="MALE"
+    birth_date="1972-10-01 00:00:00" />
+
+  <appointment id="4"
+    appointment_code="100004"
+    date="2008-07-01 09:00:00"
+    participant_id="4" />
+
+  <!--
+    Need this, otherwise DbUnit will delete interviews prior to actions, causing
+    an Integrity constraint violation.
+  -->
+  <action />
+   
 </dataset>
