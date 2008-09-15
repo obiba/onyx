@@ -160,7 +160,6 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
           }
         }
 
-        @Override
         public void onParticipantReadEnd(int line) throws ValidationRuntimeException {
           if(vex.getAllObjectErrors().size() > 0) throw vex;
         }
