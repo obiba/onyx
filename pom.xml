@@ -581,7 +581,7 @@
     <spring.version>2.5.5</spring.version>
     <spring-remoting.version>2.0.8</spring-remoting.version>
     <slf4j.version>1.4.3</slf4j.version>
-    <obiba.commons.version>1.0.1-SNAPSHOT</obiba.commons.version>
+    <obiba.commons.version>1.0.2-SNAPSHOT</obiba.commons.version>
     <jta.version>1.0.1B</jta.version>
     <hsqldb.version>1.8.0.7</hsqldb.version>
     <dbunit.version>2.2.2</dbunit.version>
