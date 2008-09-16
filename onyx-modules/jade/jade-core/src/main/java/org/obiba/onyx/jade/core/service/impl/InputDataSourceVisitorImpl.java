@@ -1,7 +1,8 @@
 package org.obiba.onyx.jade.core.service.impl;
 
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 
 import org.obiba.core.service.EntityQueryService;
@@ -53,21 +54,20 @@ public class InputDataSourceVisitorImpl implements InputDataSourceVisitor {
     return data;
   }
 
-  @SuppressWarnings("unchecked")
   public void visit(ParticipantPropertySource source) {
-    Class participantClass = Participant.class;
-    Method propertyMethod;
     try {
       log.info("source.participant.property=" + source.getProperty());
-      propertyMethod = participantClass.getDeclaredMethod("get" + source.getProperty().substring(0, 1).toUpperCase() + source.getProperty().substring(1));
+      for(PropertyDescriptor pd : Introspector.getBeanInfo(Participant.class).getPropertyDescriptors()) {
+        if(source.getProperty().equals(pd.getName())) {
+          Object propertyValue = pd.getReadMethod().invoke(participant);
+          log.info("source.participant.property." + source.getProperty() + "=" + propertyValue + " " + propertyValue.getClass().getSimpleName());
+          if(propertyValue instanceof Gender) {
+            propertyValue = propertyValue.toString();
+          }
 
-      Object propertyValue = propertyMethod.invoke(participant);
-      log.info("source.participant.property." + source.getProperty() + "=" + propertyValue + " " + propertyValue.getClass().getSimpleName());
-      if(propertyValue instanceof Gender) {
-        propertyValue = propertyValue.toString();
+          data = new Data(parameter.getDataType(), (Serializable) propertyValue);
+        }
       }
-
-      data = new Data(parameter.getDataType(), (Serializable) propertyValue);
 
     } catch(Exception e) {
       log.warn("Failed getting Participant property: " + source.getProperty(), e);

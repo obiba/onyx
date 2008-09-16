@@ -1,13 +1,12 @@
 package org.obiba.onyx.jade.instrument.gehealthcare;
 
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,12 +19,11 @@ import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.jade.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
-import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Specified instrument runner for the ECG 
+ * Specified instrument runner for the ECG
  * @author acarey
  */
 
@@ -125,8 +123,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
   }
 
   /**
-   * Replace the instrument configuration file if needed
-   * Delete the result database and files
+   * Replace the instrument configuration file if needed Delete the result database and files
    * @throws Exception
    */
   protected void deleteDeviceData() {
@@ -137,11 +134,10 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
       if(backupSettingsFile.exists() && !(backupSettingsFile.lastModified() == currentSettingsFile.lastModified())) {
         FileUtil.copyFile(backupSettingsFile, currentSettingsFile);
         FileUtil.copyFile(currentSettingsFile, backupSettingsFile); // to set same lastModified property
-      }      
+      }
     } catch(IOException ioEx) {
       throw new RuntimeException("Error in deleteDeviceData IOException ", ioEx);
     }
-    
 
     // Delete the Pervasive database files
     FilenameFilter filter = new FilenameFilter() {
@@ -166,24 +162,20 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
    * @param resultParser
    * @throws Exception
    */
-  public void SendDataToServer(CardiosoftInstrumentResultParser resultParser) {
+  public void sendDataToServer(CardiosoftInstrumentResultParser resultParser) {
     Map<String, Data> ouputToSend = new HashMap<String, Data>();
 
-    Class resultParserClass = CardiosoftInstrumentResultParser.class;
-    Method method;
     try {
-      Field[] resultParserFields = resultParserClass.getDeclaredFields();
-      for(Field field : resultParserFields) {
-        if(field.getName().equalsIgnoreCase("doc") || field.getName().equalsIgnoreCase("xpath") || field.getName().equalsIgnoreCase("xmldocument"))
-          continue;
-        method = resultParserClass.getDeclaredMethod("get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1));
-        Object value = method.invoke(resultParser);
-        if (value == null) continue;
-        if(value instanceof Long) ouputToSend.put(field.getName(), DataBuilder.buildInteger((Long)value));
-        else
-          ouputToSend.put(field.getName(), DataBuilder.buildText(value.toString()));
+      for(PropertyDescriptor pd : Introspector.getBeanInfo(CardiosoftInstrumentResultParser.class).getPropertyDescriptors()) {
+        if(pd.getName().equalsIgnoreCase("doc") || pd.getName().equalsIgnoreCase("xpath") || pd.getName().equalsIgnoreCase("xmldocument")) {
+          Object value = pd.getReadMethod().invoke(resultParser);
+          if(value == null) continue;
+          if(value instanceof Long) ouputToSend.put(pd.getName(), DataBuilder.buildInteger((Long) value));
+          else
+            ouputToSend.put(pd.getName(), DataBuilder.buildText(value.toString()));
+        }
       }
-      
+
       // Save the xml and pdf files
       File xmlFile = new File(getExportPath() + getXmlFileName());
       ouputToSend.put("xmlFile", DataBuilder.buildBinary(xmlFile));
@@ -200,21 +192,19 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
   }
 
   /**
-   * Implements parent method initialize from InstrumentRunner
-   * Delete results from previous measurement
+   * Implements parent method initialize from InstrumentRunner Delete results from previous measurement
    */
   public void initialize() {
     deleteDeviceData();
   }
 
   /**
-   * Implements parent method run from InstrumentRunner
-   * Launch the external application, retrieve and send the data  
+   * Implements parent method run from InstrumentRunner Launch the external application, retrieve and send the data
    */
   public void run() {
     externalAppHelper.launch();
     FileInputStream resultInputStream;
-    
+
     // Get data from external app
     try {
       resultInputStream = new FileInputStream(getExportPath() + getXmlFileName());
@@ -222,18 +212,17 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
       JOptionPane.showMessageDialog(null, "Error: Cardiosoft output data file not found", "Could not complete process", JOptionPane.ERROR_MESSAGE);
       throw new RuntimeException("Error: Cardiosoft output data file not found: ", fnfEx);
     }
-    
+
     CardiosoftInstrumentResultParser resultParser = new CardiosoftInstrumentResultParser(resultInputStream);
-    SendDataToServer(resultParser);
-    
+    sendDataToServer(resultParser);
+
   }
 
   /**
-   * Implements parent method shutdown from InstrumentRunner
-   * Delete results from current measurement
+   * Implements parent method shutdown from InstrumentRunner Delete results from current measurement
    */
   public void shutdown() {
     deleteDeviceData();
-    
+
   }
 }
