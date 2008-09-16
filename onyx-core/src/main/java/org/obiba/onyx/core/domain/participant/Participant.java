@@ -37,7 +37,7 @@ public class Participant extends AbstractEntity {
 
   private String enrollmentId;
 
-  private String siteName;
+  private String siteNo;
 
   private String street;
 
@@ -59,12 +59,12 @@ public class Participant extends AbstractEntity {
   @OneToOne(mappedBy = "participant")
   private Interview interview;
 
-  public String getSiteName() {
-    return siteName;
+  public String getSiteNo() {
+    return siteNo;
   }
 
-  public void setSiteName(String siteName) {
-    this.siteName = siteName;
+  public void setSiteNo(String siteNo) {
+    this.siteNo = siteNo;
   }
 
   public String getFirstName() {

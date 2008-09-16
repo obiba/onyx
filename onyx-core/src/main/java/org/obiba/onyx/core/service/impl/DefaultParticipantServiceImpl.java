@@ -121,9 +121,9 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
         public void onParticipantRead(int line, Participant participant) throws ValidationRuntimeException {
           log.debug("reading participant={} {}", participant.getEnrollmentId(), participant.getFullName());
 
-          if(!appConfig.getSiteName().equals(participant.getSiteName())) {
+          if(!appConfig.getSiteNo().equals(participant.getSiteNo())) {
             log.error("WrongParticipantSiteName");
-            vex.reject(participant, "WrongParticipantSiteName", new String[] { Integer.toString(line), participant.getEnrollmentId(), participant.getSiteName(), appConfig.getSiteName() }, "Wrong Participant site name at line " + line + ": " + participant.getSiteName() + ", expecting " + appConfig.getSiteName());
+            vex.reject(participant, "WrongParticipantSiteName", new String[] { Integer.toString(line), participant.getEnrollmentId(), participant.getSiteNo(), appConfig.getSiteNo() }, "Wrong Participant site name at line " + line + ": " + participant.getSiteNo() + ", expecting " + appConfig.getSiteName());
             if(vex.getAllObjectErrors().size() == 10) {
               throw vex;
             }
@@ -133,7 +133,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
             persistedParticipant = getPersistenceManager().matchOne(persistedParticipant);
 
             if(persistedParticipant == null) {
-              log.info("adding participant={}", participant.getEnrollmentId());
+              log.debug("adding participant={}", participant.getEnrollmentId());
               getPersistenceManager().save(participant);
               getPersistenceManager().save(participant.getAppointment());
             } else {
@@ -153,12 +153,12 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
                 // update its appointment date
                 Appointment appointment = persistedParticipant.getAppointment();
                 if(persistedParticipant.getAppointment() == null) {
-                  log.info("adding participant.appointment={}", participant.getEnrollmentId());
+                  log.debug("adding participant.appointment={}", participant.getEnrollmentId());
                   appointment = participant.getAppointment();
                   appointment.setParticipant(persistedParticipant);
                   getPersistenceManager().save(appointment);
                 } else {
-                  log.info("updating participant.appointment={}", participant.getEnrollmentId());
+                  log.debug("updating participant.appointment={}", participant.getEnrollmentId());
                   persistedParticipant.getAppointment().setDate(participant.getAppointment().getDate());
                   getPersistenceManager().save(persistedParticipant.getAppointment());
                 }
@@ -178,10 +178,10 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     // do some clean up before updating
     for(Participant p : getNotReceivedParticipants()) {
       if(p.getAppointment() != null) {
-        log.info("removing appointment.appointmentCode={}", p.getAppointment().getAppointmentCode());
+        log.debug("removing appointment.appointmentCode={}", p.getAppointment().getAppointmentCode());
         getPersistenceManager().delete(p.getAppointment());
       }
-      log.info("removing participant.enrollmentId={}", p.getEnrollmentId());
+      log.debug("removing participant.enrollmentId={}", p.getEnrollmentId());
       getPersistenceManager().delete(p);
     }
 

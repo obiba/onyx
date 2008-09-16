@@ -2,11 +2,15 @@ package org.obiba.onyx.webapp.config.page;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Session;
+import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
@@ -107,12 +111,26 @@ public class ApplicationConfigurationPage extends BasePage {
       setMaxSize(Bytes.megabytes(2));
       setMultiPart(true);
 
-      add(new TextField("participantUpdateDirectory", new PropertyModel(model, "participantDirectoryPath")) {
-        @Override
-        protected String getInputType() {
-          return "file";
+      AutoCompleteTextField participantUpdateDirectory = new AutoCompleteTextField("participantUpdateDirectory", new PropertyModel(model, "participantDirectoryPath")) {
+        
+        @SuppressWarnings("unchecked")
+        protected Iterator getChoices(String input) {
+          File dir = new File(input);
+          List<String> choices = new ArrayList<String>();
+          if (dir.exists()) {
+            choices.add(dir.getAbsolutePath());
+            for (File subDir : dir.listFiles()) {
+              if (subDir.isDirectory() && !subDir.getName().startsWith(".")) {
+                choices.add(subDir.getAbsolutePath());
+              }
+            }
+          }
+          return choices.iterator();
         }
-      });
+        
+      };
+      participantUpdateDirectory.add(new RequiredFormFieldBehavior());
+      add(participantUpdateDirectory);
 
       add(new Button("saveButton"));
     }
@@ -191,9 +209,8 @@ public class ApplicationConfigurationPage extends BasePage {
     }
 
     public void setParticipantDirectoryPath(String path) {
-      log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> participantsListFilePath={}", path);
-      String dirPath = new File(path).getParentFile().getAbsolutePath();
-      log.info("participantsListDirPath={}", dirPath);
+      String dirPath = new File(path).getAbsolutePath();
+      log.info("participantDirectoryPath={}", dirPath);
       config.setParticipantDirectoryPath(dirPath);
     }
 

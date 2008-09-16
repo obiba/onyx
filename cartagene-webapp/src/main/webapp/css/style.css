@@ -390,6 +390,23 @@ text-align:center;
   line-height:18px;
 }
 
+/*************** Wicket Autocomplete ********************/
+
+div.wicket-aa {
+  font-size: 10px;
+  background-color: white;
+  border-width: 1px;
+  border-color: #cccccc;
+  border-style: solid;
+  padding: 2px;
+  margin: 1px 0 0 0;
+  text-align:left;
+}
+div.wicket-aa ul { list-style:none; padding: 2px; margin:0; }
+div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0; }
+
+/*************** End Wicket Autocomplete ********************/
+
 /*************** Modal Window ********************/
 
 div.wicket-modal div.w_content_1 div.header {
