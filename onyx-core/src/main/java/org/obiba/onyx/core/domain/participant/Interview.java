@@ -1,15 +1,11 @@
 package org.obiba.onyx.core.domain.participant;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
@@ -17,7 +13,6 @@ import javax.persistence.TemporalType;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.user.User;
-import org.obiba.onyx.engine.Stage;
 
 @Entity
 public class Interview extends AbstractEntity {
@@ -34,17 +29,13 @@ public class Interview extends AbstractEntity {
   @JoinColumn(name = "participant_id")
   private Participant participant;
 
-  @ManyToMany
-  @JoinTable(name = "stage_interview", joinColumns = @JoinColumn(name = "stage_id"), inverseJoinColumns = @JoinColumn(name = "interview_id"))
-  private List<Stage> stages;
-
   @Enumerated(EnumType.STRING)
   private InterviewStatus status;
 
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
-  
+
   private Boolean closed;
 
   public Interview() {
@@ -77,17 +68,6 @@ public class Interview extends AbstractEntity {
 
   public void setParticipant(Participant participant) {
     this.participant = participant;
-  }
-
-  public List<Stage> getStages() {
-    return stages != null ? stages : (stages = new ArrayList<Stage>());
-  }
-
-  public void addStage(Stage stage) {
-    if(stage != null) {
-      getStages().add(stage);
-      stage.addInterview(this);
-    }
   }
 
   public InterviewStatus getStatus() {
