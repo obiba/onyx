@@ -167,7 +167,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
 
     try {
       for(PropertyDescriptor pd : Introspector.getBeanInfo(CardiosoftInstrumentResultParser.class).getPropertyDescriptors()) {
-        if(pd.getName().equalsIgnoreCase("doc") || pd.getName().equalsIgnoreCase("xpath") || pd.getName().equalsIgnoreCase("xmldocument")) {
+        if(!pd.getName().equalsIgnoreCase("doc") & !pd.getName().equalsIgnoreCase("xpath") & !pd.getName().equalsIgnoreCase("xmldocument") & !pd.getName().equalsIgnoreCase("class")) {
           Object value = pd.getReadMethod().invoke(resultParser);
           if(value == null) continue;
           if(value instanceof Long) ouputToSend.put(pd.getName(), DataBuilder.buildInteger((Long) value));
