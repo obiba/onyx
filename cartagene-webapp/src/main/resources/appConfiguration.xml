@@ -24,8 +24,8 @@
   </user>
   
   <config>
-    <siteName>cag001</siteName>
-    <siteNo>0123456789</siteNo>
+    <siteName>CHUM</siteName>
+    <siteNo>cag001</siteNo>
     <studyName>CARTaGENE</studyName>
     <participantDirectoryPath>src/main/resources/participants</participantDirectoryPath>
   </config>
