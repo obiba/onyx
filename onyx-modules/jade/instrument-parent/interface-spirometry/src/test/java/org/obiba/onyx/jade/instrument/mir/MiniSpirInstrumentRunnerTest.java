@@ -45,11 +45,14 @@ public class MiniSpirInstrumentRunnerTest {
     minispirInstrumentRunner.setExternalImageName("FVC.jpg");
     minispirInstrumentRunner.setExternalInputName("patient.srv");
     minispirInstrumentRunner.setExternalOutputName("Results.wsp");
-    minispirInstrumentRunner.setInitdbPath(new File(getClass().getResource("/WinSpiroPRO.wdb").getFile()).getParent() + "/");
+    
+    String resourcesParentDir = new File(getClass().getResource("/WinSpiroPRO.wdb").getFile()).getParent();
+    minispirInstrumentRunner.setInitdbPath(new File(resourcesParentDir, File.separator ).getPath());
 
     // Create a test directory to simulate WinSpiro software installation path.
-    (new File("target/test-spirometry")).mkdir();
-    minispirInstrumentRunner.setMirPath("target/test-spirometry/");
+    String winSpiroSimulatedPath = "target" + File.separator + "test-spirometry";
+    (new File(winSpiroSimulatedPath)).mkdir();
+    minispirInstrumentRunner.setMirPath(winSpiroSimulatedPath);
 
     // Cannot mock ExternalAppLauncherHelper (without EasyMock extension!),
     // so for now, use the class itself with the launch method overridden to
