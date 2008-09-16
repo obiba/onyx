@@ -20,7 +20,7 @@
     <module>interface-bioimpedance-tanita-tbf310</module>
     <module>interface-ecg</module>
     <module>interface-spirometry</module>
-    <module>interface-bonedensity</module>    
+    <module>interface-bonedensity-achillesexpress</module>    
     <module>interface-arterialstiffness-sphygmocor</module>
   </modules>
 
