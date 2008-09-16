@@ -5,7 +5,7 @@ import java.util.Locale;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
@@ -15,11 +15,13 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.Status;
@@ -40,12 +42,11 @@ public class UserPanel extends Panel {
   @SpringBean
   private UserService userService;
 
-  @SpringBean
-  private EntityQueryService queryService;
-
   private ModalWindow userModalWindow;
 
   private FeedbackPanel feedbackPanel;
+
+  private PasswordTextField password;
 
   public UserPanel(String id, IModel model, final ModalWindow modalWindow) {
     super(id, model);
@@ -60,8 +61,9 @@ public class UserPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    public UserPanelForm(String id, IModel model) {
-      super(id, model);
+    public UserPanelForm(String id, final IModel model) {
+      super(id);
+      setModel(model);
 
       feedbackPanel = new FeedbackPanel("feedback");
       feedbackPanel.setOutputMarkupId(true);
@@ -80,8 +82,9 @@ public class UserPanel extends Panel {
       login.setEnabled(false);
       add(login);
 
-      PasswordTextField password = new PasswordTextField("password", new PropertyModel(getModel(), "password"));
-      password.setRequired(false);
+      password = new PasswordTextField("password", new Model(new String()));
+      password.setRequired(getUser().getLogin() == null);
+      if(getUser().getLogin() != null) password.add(new PasswordValidator());
       add(password);
 
       TextField email = new TextField("email", new PropertyModel(getModel(), "email"));
@@ -119,45 +122,23 @@ public class UserPanel extends Panel {
       if(getUser().getLanguage() != null) languageSelect.setSelectedLanguage(getUser().getLanguage());
       add(languageSelect);
 
-      add(new AjaxButton("submit") {
+      add(new AjaxSubmitLink("submit") {
 
         private static final long serialVersionUID = 1L;
 
         @Override
         public void onSubmit(AjaxRequestTarget target, Form form) {
           super.onSubmit();
-          User newUser = (User) UserPanelForm.this.getModelObject();
-          User oldUser = new User();
+          User user = (User) UserPanelForm.this.getModelObject();
+          String newPassword = UserPanel.this.password.getModelObjectAsString();
 
-          if(newUser.getLogin() != null) {
-            oldUser.setLogin(newUser.getLogin());
-            oldUser = queryService.matchOne(oldUser);
-            if(newUser.getPassword() == null) newUser.setPassword(oldUser.getPassword());
-            else {
-              if(!oldUser.getPassword().equals(User.digest(newUser.getPassword()))) {
-                newUser.setPassword(User.digest(newUser.getPassword()));
-              } else {
-                feedbackPanel.error(new StringResourceModel("PasswordPreviouslyUsed", this, null).getString());
-                onError(target, form);
-                return;
-              }
-            }
+          if(newPassword != "") user.setPassword(User.digest(newPassword));
+          if(user.getLogin() == null) generateLogin(user);
+          if(user.getLanguage() == null) user.setLanguage(Locale.ENGLISH);
+          if(user.getStatus() == null) user.setStatus(Status.ACTIVE);
+          user.setDeleted(false);
 
-          } else {
-            if(newUser.getPassword() == null) {
-              feedbackPanel.error(new StringResourceModel("PasswordRequired", this, null).getString());
-              onError(target, form);
-              return;
-            } else {
-              generateLogin(newUser);
-            }
-          }
-
-          if(newUser.getLanguage() == null) newUser.setLanguage(Locale.ENGLISH);
-          newUser.setStatus(Status.ACTIVE);
-          newUser.setDeleted(false);
-
-          userService.setUser(newUser);
+          userService.createOrUpdateUser(user);
           userModalWindow.close(target);
         }
 
@@ -176,6 +157,20 @@ public class UserPanel extends Panel {
           userModalWindow.close(target);
         }
       });
+    }
+
+    private class PasswordValidator extends AbstractValidator {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      protected void onValidate(IValidatable validatable) {
+        String newPassword = validatable.getValue().toString();
+
+        if(getUser().getPassword().equals(User.digest(newPassword))) {
+          feedbackPanel.error(new StringResourceModel("PasswordPreviouslyUsed", UserPanel.this, null).getString());
+        }
+      }
     }
 
     protected User getUser() {

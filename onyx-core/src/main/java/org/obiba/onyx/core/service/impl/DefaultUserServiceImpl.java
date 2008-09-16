@@ -1,5 +1,6 @@
 package org.obiba.onyx.core.service.impl;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
@@ -28,24 +29,24 @@ public abstract class DefaultUserServiceImpl extends PersistenceManagerAwareServ
     return getPersistenceManager().matchOne(template);
   }
 
-  public void changeStatus(User user, Status status) {
-    User userToChange = getPersistenceManager().matchOne(user);
-    userToChange.setStatus(status);
-    getPersistenceManager().save(userToChange);
+  public void updateStatus(Serializable userId, Status status) {
+    User user = loadUser(userId);
+    user.setStatus(status);
+    getPersistenceManager().save(user);
   }
 
   public void createUser(User user) {
     getPersistenceManager().save(user);
   }
 
-  public void deleteUser(User user) {
-    User userToDelete = getPersistenceManager().matchOne(user);
-    userToDelete.setDeleted(true);
-    getPersistenceManager().save(userToDelete);
+  public void deleteUser(Serializable userId) {
+    User user = loadUser(userId);
+    user.setDeleted(true);
+    getPersistenceManager().save(user);
   }
 
-  public void setUserLanguage(User template, Locale language) {
-    User user = getPersistenceManager().matchOne(template);
+  public void updateUserLanguage(Serializable userId, Locale language) {
+    User user = loadUser(userId);
     user.setLanguage(language);
     getPersistenceManager().save(user);
   }
@@ -58,17 +59,16 @@ public abstract class DefaultUserServiceImpl extends PersistenceManagerAwareServ
     return (getPersistenceManager().matchOne(template) == null);
   }
 
-  public void setPassword(User template, String password) {
-    User user = getPersistenceManager().matchOne(template);
+  public void updatePassword(Serializable userId, String password) {
+    User user = loadUser(userId);
     user.setPassword(password);
     getPersistenceManager().save(user);
   }
 
-  public void setUser(User user) {
+  public void createOrUpdateUser(User user) {
     User template = new User();
     if(user.getId() != null) {
-      template.setLogin(user.getLogin());
-      template = getPersistenceManager().matchOne(template);
+      template = loadUser(user.getId());
 
       if(!user.getLastName().equals(template.getLastName())) template.setLastName(user.getLastName());
       if(!user.getFirstName().equals(template.getFirstName())) template.setFirstName(user.getFirstName());
@@ -79,7 +79,6 @@ public abstract class DefaultUserServiceImpl extends PersistenceManagerAwareServ
       if(!user.getRoles().equals(template.getRoles())) {
         template.setRoles(user.getRoles());
       }
-
     } else {
       template = user;
     }
@@ -88,5 +87,12 @@ public abstract class DefaultUserServiceImpl extends PersistenceManagerAwareServ
 
   public Role createRole(Role role) {
     return getPersistenceManager().save(role);
+  }
+  
+  private User loadUser(Serializable userId) {
+    User user = getPersistenceManager().get(User.class, userId);
+    if (user == null)
+      throw new IllegalArgumentException("Invalid user id");
+    return user;
   }
 }

@@ -62,7 +62,6 @@ public class UserSearchPage extends BasePage {
   @SuppressWarnings("serial")
   public UserSearchPage() {
     super();
-    setModel(new Model(new User()));
 
     userDetailsModalWindow = new ModalWindow("userDetailsModalWindow");
     userDetailsModalWindow.setTitle(new StringResourceModel("UserManagement", this, null));
@@ -87,7 +86,7 @@ public class UserSearchPage extends BasePage {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        userDetailsModalWindow.setContent(new UserPanel("content", UserSearchPage.this.getModel(), userDetailsModalWindow));
+        userDetailsModalWindow.setContent(new UserPanel("content", new Model(new User()), userDetailsModalWindow));
         userDetailsModalWindow.show(target);
       }
 
@@ -162,7 +161,7 @@ public class UserSearchPage extends BasePage {
               if(getUser(rowModel).getStatus().equals(Status.ACTIVE)) newStatus = Status.INACTIVE;
               else
                 newStatus = Status.ACTIVE;
-              userService.changeStatus(getUser(rowModel), newStatus);
+              userService.updateStatus(getUser(rowModel).getId(), newStatus);
             }
 
           }, new StringResourceModel("Status." + getUser(rowModel).getStatus(), UserSearchPage.this, null));
@@ -189,7 +188,7 @@ public class UserSearchPage extends BasePage {
 
             @Override
             public void onClick() {
-              userService.deleteUser(getUser(rowModel));
+              userService.deleteUser(getUser(rowModel).getId());
             }
           };
           if(OnyxAuthenticatedSession.get().getUser().getLogin().equals(getUser(rowModel).getLogin())) deleteLink.setVisible(false);

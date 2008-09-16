@@ -34,7 +34,7 @@ public class ProfilePage extends BasePage {
       protected void onLanguageUpdate(Locale language, AjaxRequestTarget target) {
         if(language == null) return;
         getSession().setLocale(language);
-        userService.setUserLanguage(OnyxAuthenticatedSession.get().getUser(), language);
+        userService.updateUserLanguage(OnyxAuthenticatedSession.get().getUser().getId(), language);
         setResponsePage(getPage());
       }
 

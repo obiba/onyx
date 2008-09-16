@@ -1,5 +1,6 @@
 package org.obiba.onyx.core.service;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
 
@@ -38,7 +39,7 @@ public interface UserService {
    * @param user
    * @param status
    */
-  public void changeStatus(User user, Status status);
+  public void updateStatus(Serializable userId, Status status);
   
   /**
    * User creation during the application configuration
@@ -49,14 +50,14 @@ public interface UserService {
    * Delete specified user by setting the "deleted" field to "true"
    * @param user
    */
-  public void deleteUser(User user);
+  public void deleteUser(Serializable userId);
   
   /**
    * Update the language of the specified user
    * @param template
    * @param language
    */
-  public void setUserLanguage(User template, Locale language);
+  public void updateUserLanguage(Serializable userId, Locale language);
   
   /**
    * Check if password was not previously given to the given user.
@@ -71,13 +72,13 @@ public interface UserService {
    * @param template
    * @param password
    */
-  public void setPassword(User template, String password);
+  public void updatePassword(Serializable userId, String password);
   
   /**
    * Create a user when id is not provided, otherwise, updates the changed fields
    * @param user
    */
-  public void setUser(User user);
+  public void createOrUpdateUser(User user);
   
   /**
    * Create the given role.

@@ -66,10 +66,8 @@ public abstract class ChangePasswordPanel extends Panel {
 
           User user = OnyxAuthenticatedSession.get().getUser();
           if(userService.isNewPassword(user, User.digest(password))) {
-            User template = new User();
-            template.setId(user.getId());
             try {
-              userService.setPassword(template, User.digest(password));
+              userService.updatePassword(user.getId(), User.digest(password));
               onSuccess();
             } catch(Exception e) {
               e.printStackTrace();

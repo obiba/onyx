@@ -57,22 +57,22 @@ public class UserServiceTest extends BaseDefaultSpringContextTestCase {
   
   @Test
   @Dataset
-  public void testChangeStatus() {
-    userService.changeStatus(persistenceManager.get(User.class, Long.valueOf("2")), Status.INACTIVE);
+  public void testUpdateStatus() {
+    userService.updateStatus(Long.valueOf("2"), Status.INACTIVE);
     Assert.assertEquals(Status.INACTIVE, persistenceManager.get(User.class, Long.valueOf("2")).getStatus());
   }
   
   @Test
   @Dataset
   public void testDeleteUser() {
-    userService.deleteUser(persistenceManager.get(User.class, Long.valueOf("2")));
+    userService.deleteUser(Long.valueOf("2"));
     Assert.assertEquals(true, persistenceManager.get(User.class, Long.valueOf("2")).isDeleted());
   }
   
   @Test
   @Dataset
-  public void testSetUserlanguage() {
-    userService.setUserLanguage(persistenceManager.get(User.class, Long.valueOf("2")), Locale.FRENCH);
+  public void testUpdateUserlanguage() {
+    userService.updateUserLanguage(Long.valueOf("2"), Locale.FRENCH);
     Assert.assertEquals(Locale.FRENCH, persistenceManager.get(User.class, Long.valueOf("2")).getLanguage());
   }
   
@@ -84,17 +84,17 @@ public class UserServiceTest extends BaseDefaultSpringContextTestCase {
  
   @Test
   @Dataset
-  public void testSetpassword() {
-    userService.setPassword(persistenceManager.get(User.class, Long.valueOf("2")), "newpasswordforuser");
+  public void testUpdatePassword() {
+    userService.updatePassword(Long.valueOf("2"), "newpasswordforuser");
     Assert.assertEquals("newpasswordforuser", persistenceManager.get(User.class, Long.valueOf("2")).getPassword());
   }
   
   @Test
   @Dataset
-  public void testSetUser() {
+  public void testCreateOrUpdateUser() {
     User modifUser = persistenceManager.get(User.class, Long.valueOf("3"));
     modifUser.setFirstName("Paul");
-    userService.setUser(modifUser);
+    userService.createOrUpdateUser(modifUser);
     Assert.assertEquals("Paul", persistenceManager.get(User.class, Long.valueOf("3")).getFirstName());
     
     User newUser = new User();
@@ -106,10 +106,10 @@ public class UserServiceTest extends BaseDefaultSpringContextTestCase {
     newUser.setLanguage(Locale.ENGLISH);
     newUser.setStatus(Status.ACTIVE);
     Set<Role> roles = new HashSet<Role>();
-    roles.add(Role.PARTICIPANT_MANAGER);
+    roles.add(persistenceManager.get(Role.class, Long.valueOf("2")));
     newUser.setRoles(roles);
     
-    userService.setUser(newUser);
+    userService.createOrUpdateUser(newUser);
     Assert.assertEquals("Tremblay", userService.getUserWithLogin("mtremblay").getLastName());
     Assert.assertEquals(Long.valueOf("4"), userService.getUserWithLogin("mtremblay").getId());    
   }
