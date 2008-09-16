@@ -9,7 +9,7 @@
   <groupId>org.obiba.onyx</groupId>
   <artifactId>onyx</artifactId>
   <packaging>pom</packaging>
-  <version>1.0-M2</version>
+  <version>1.0-M3-SNAPSHOT</version>
 
   <modules>
     <module>onyx-util</module>
@@ -579,8 +579,8 @@
   </repositories>
 
   <scm>
-    <connection>scm:svn:https://svn.obiba.org/onyx/tags/releases/1.0-M2</connection>
-    <developerConnection>scm:svn:https://svn.obiba.org/onyx/tags/releases/1.0-M2</developerConnection>
+    <connection>scm:svn:http://svn.obiba.org/onyx/trunk</connection>
+    <developerConnection>scm:svn:https://svn.obiba.org/obiba-commons/trunk</developerConnection>
   </scm>
 
   <properties>
