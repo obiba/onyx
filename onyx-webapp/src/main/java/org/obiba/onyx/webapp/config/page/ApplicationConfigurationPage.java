@@ -23,6 +23,10 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
+import org.apache.wicket.validation.IErrorMessageSource;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.IValidationError;
+import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
@@ -117,7 +121,7 @@ public class ApplicationConfigurationPage extends BasePage {
         protected Iterator getChoices(String input) {
           File dir = new File(input);
           List<String> choices = new ArrayList<String>();
-          if (dir.exists()) {
+          if (dir.exists() && dir.isDirectory()) {
             choices.add(dir.getAbsolutePath());
             for (File subDir : dir.listFiles()) {
               if (subDir.isDirectory() && !subDir.getName().startsWith(".")) {
@@ -129,6 +133,19 @@ public class ApplicationConfigurationPage extends BasePage {
         }
         
       };
+      participantUpdateDirectory.add(new AbstractValidator() {
+        
+        protected void onValidate(IValidatable validatable) {
+          File dir = new File((String)validatable.getValue());
+          if (!dir.exists()) {
+            validatable.error(new ParticipantsListDirectoryValidationError("ParticipantsListRepositoryDoesNotExist"));
+          }
+          else if (!dir.isDirectory()) {
+            validatable.error(new ParticipantsListDirectoryValidationError("ParticipantsListRepositoryIsNotDirectory"));
+          }
+        }
+        
+      });
       participantUpdateDirectory.add(new RequiredFormFieldBehavior());
       add(participantUpdateDirectory);
 
@@ -139,7 +156,6 @@ public class ApplicationConfigurationPage extends BasePage {
       saveConfiguration();
       uploadStudyLogo();
       setResponsePage(getApplication().getHomePage());
-
     }
 
     private void uploadStudyLogo() {
@@ -217,6 +233,21 @@ public class ApplicationConfigurationPage extends BasePage {
     public String getParticipantDirectoryPath() {
       return config.getParticipantDirectoryPath();
     }
+  }
+  
+  @SuppressWarnings("serial")
+  private class ParticipantsListDirectoryValidationError implements IValidationError,Serializable {
+
+    private String key;
+    
+    public ParticipantsListDirectoryValidationError(String key) {
+      this.key = key;
+    }
+    
+    public String getErrorMessage(IErrorMessageSource messageSource) {
+      return ApplicationConfigurationPage.this.getString(key);
+    }
+    
   }
 
 }
