@@ -18,11 +18,4 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <dependencies>
-    <dependency>
-      <groupId>net.sf.opencsv</groupId>
-      <artifactId>opencsv</artifactId>
-      <version>1.8</version>
-    </dependency>
-  </dependencies>
 </project>
