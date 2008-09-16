@@ -38,7 +38,7 @@ public class MiniSpirInstrumentRunnerTest {
   File miniSpirDbFile;
 
   @Before
-  public void setUp() {
+  public void setUp() throws URISyntaxException {
 
     minispirInstrumentRunner = new MiniSpirInstrumentRunner();
     minispirInstrumentRunner.setExternalDbName("WinSpiroPRO.wdb");
@@ -46,7 +46,7 @@ public class MiniSpirInstrumentRunnerTest {
     minispirInstrumentRunner.setExternalInputName("patient.srv");
     minispirInstrumentRunner.setExternalOutputName("Results.wsp");
     
-    String resourcesParentDir = new File(getClass().getResource("/WinSpiroPRO.wdb").getFile()).getParent();
+    String resourcesParentDir = new File(getClass().getResource("/WinSpiroPRO.wdb").toURI().getPath()).getParent();
     minispirInstrumentRunner.setInitdbPath(new File(resourcesParentDir, File.separator ).getPath());
 
     // Create a test directory to simulate WinSpiro software installation path.
