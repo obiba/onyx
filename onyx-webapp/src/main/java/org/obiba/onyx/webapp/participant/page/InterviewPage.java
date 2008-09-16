@@ -80,7 +80,7 @@ public class InterviewPage extends BasePage {
         private static final long serialVersionUID = 1L;
 
         public void onClick(AjaxRequestTarget target) {
-          commentsWindow.setContent(new CommentsModalPanel(commentsWindow) {
+          commentsWindow.setContent(new CommentsModalPanel("content", commentsWindow) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -103,7 +103,7 @@ public class InterviewPage extends BasePage {
         private static final long serialVersionUID = 1L;
 
         public void onClick(AjaxRequestTarget target) {
-          commentsWindow.setContent(new CommentsModalPanel(commentsWindow) {
+          commentsWindow.setContent(new CommentsModalPanel("content", commentsWindow) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -166,7 +166,7 @@ public class InterviewPage extends BasePage {
 
         @Override
         public void onViewComments(AjaxRequestTarget target) {
-          commentsWindow.setContent(new CommentsModalPanel(commentsWindow) {
+          commentsWindow.setContent(new CommentsModalPanel("content", commentsWindow) {
 
             private static final long serialVersionUID = 1L;
 

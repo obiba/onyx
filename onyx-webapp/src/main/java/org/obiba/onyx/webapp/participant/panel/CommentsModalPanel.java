@@ -51,9 +51,8 @@ public abstract class CommentsModalPanel extends Panel {
 
   WebMarkupContainer previousComments;
 
-  public CommentsModalPanel(final ModalWindow commentsWindow) {
-
-    super("content");
+  public CommentsModalPanel(String id, final ModalWindow commentsWindow) {
+    super(id);
     this.commentsWindow = commentsWindow;
     commentList = activeInterviewService.getInterviewComments();
     setOutputMarkupId(true);
