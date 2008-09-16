@@ -17,7 +17,7 @@
   </parent>
 
   <modules>
-    <module>interface-bioimpedance</module>
+    <module>interface-bioimpedance-tanita-tbf310</module>
     <module>interface-ecg</module>
     <module>interface-spirometry</module>
     <module>interface-bonedensity</module>    
