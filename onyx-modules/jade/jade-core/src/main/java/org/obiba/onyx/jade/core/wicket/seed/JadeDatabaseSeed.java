@@ -82,8 +82,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
 
   @Override
   protected boolean shouldSeed(WebApplication application) {
-    boolean seed = super.shouldSeed(application);
-    return seed && (persistenceManager.list(InstrumentType.class).size() == 0);
+    return (persistenceManager.list(InstrumentType.class).size() == 0);
   }
 
   @Override
