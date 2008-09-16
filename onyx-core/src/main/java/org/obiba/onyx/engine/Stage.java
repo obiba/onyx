@@ -9,14 +9,13 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.core.domain.participant.Interview;
 
 /**
  * Stage is associated to a module, through its name.
  * 
  * @see Module
  * @author Yannick Marcon
- *
+ * 
  */
 @Entity
 public class Stage extends AbstractEntity {
@@ -37,9 +36,6 @@ public class Stage extends AbstractEntity {
 
   @ManyToMany(mappedBy = "dependsOnStages")
   private List<Stage> dependentStages;
-
-  @ManyToMany(mappedBy = "stages")
-  private List<Interview> interviews;
 
   public String getName() {
     return name;
@@ -86,17 +82,6 @@ public class Stage extends AbstractEntity {
       getDependentStages().add(stage);
       stage.getDependsOnStages().add(this);
     }
-  }
-
-  public List<Interview> getInterviews() {
-    return interviews != null ? interviews : (interviews = new ArrayList<Interview>());
-  }
-
-  public void addInterview(Interview interview) {
-    if(interview != null) {
-      getInterviews().add(interview);
-    }
-
   }
 
   @Override
