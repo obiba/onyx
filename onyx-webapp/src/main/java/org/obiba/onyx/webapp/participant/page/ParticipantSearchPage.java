@@ -52,7 +52,7 @@ public class ParticipantSearchPage extends BasePage {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ParticipantSearchPage.class);
-  
+
   @SpringBean
   private EntityQueryService queryService;
 
@@ -87,11 +87,16 @@ public class ParticipantSearchPage extends BasePage {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-        OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantByCodeProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
+        OnyxEntityList<Participant> replacement;
+        if(template.getBarcode() == null) {
+          replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantProvider(), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
+        } else {
+          replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantByCodeProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("ParticipantsByCode", ParticipantSearchPage.this, new Model(new ValueMap("code=" + template.getBarcode()))));
+        }
         replaceParticipantList(target, replacement);
         target.addComponent(getFeedbackPanel());
       }
-      
+
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
         target.addComponent(getFeedbackPanel());
@@ -105,11 +110,16 @@ public class ParticipantSearchPage extends BasePage {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-        OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantByLastNameProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
+        OnyxEntityList<Participant> replacement;
+        if(template.getLastName() == null) {
+          replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantProvider(), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
+        } else {
+          replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantByNameProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("ParticipantsByName", ParticipantSearchPage.this, new Model(new ValueMap("name=" + template.getLastName()))));
+        }
         replaceParticipantList(target, replacement);
         target.addComponent(getFeedbackPanel());
       }
-      
+
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
         target.addComponent(getFeedbackPanel());
@@ -125,7 +135,7 @@ public class ParticipantSearchPage extends BasePage {
         replaceParticipantList(target, replacement);
         target.addComponent(getFeedbackPanel());
       }
-      
+
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
         target.addComponent(getFeedbackPanel());
@@ -141,7 +151,7 @@ public class ParticipantSearchPage extends BasePage {
         replaceParticipantList(target, replacement);
         target.addComponent(getFeedbackPanel());
       }
-      
+
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
         target.addComponent(getFeedbackPanel());
@@ -157,7 +167,7 @@ public class ParticipantSearchPage extends BasePage {
         replaceParticipantList(target, replacement);
         target.addComponent(getFeedbackPanel());
       }
-      
+
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
         target.addComponent(getFeedbackPanel());
@@ -182,16 +192,15 @@ public class ParticipantSearchPage extends BasePage {
         try {
           participantService.updateParticipantList();
           info(ParticipantSearchPage.this.getString("ParticipantsListSuccessfullyUpdated"));
-        } catch (ValidationRuntimeException e) {
-          for (ObjectError oe : e.getAllObjectErrors()) {
+        } catch(ValidationRuntimeException e) {
+          for(ObjectError oe : e.getAllObjectErrors()) {
             Object[] args = oe.getArguments();
             IModel model = null;
-            if (oe.getCode().equals("ParticipantInterviewCompletedWithAppointmentInTheFuture") && args != null && args.length == 4) {
-              ValueMap map = new ValueMap("line="+args[0]+",id="+args[1]);
+            if(oe.getCode().equals("ParticipantInterviewCompletedWithAppointmentInTheFuture") && args != null && args.length == 4) {
+              ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1]);
               model = new Model(map);
-            }
-            else if (oe.getCode().equals("WrongParticipantSiteName") && args != null && args.length >= 3) {
-              ValueMap map = new ValueMap("line="+args[0]+",id="+args[1]+",site="+args[2]);
+            } else if(oe.getCode().equals("WrongParticipantSiteName") && args != null && args.length >= 3) {
+              ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1] + ",site=" + args[2]);
               model = new Model(map);
             }
             error(ParticipantSearchPage.this.getString(oe.getCode(), model, oe.getDefaultMessage()));
@@ -268,11 +277,11 @@ public class ParticipantSearchPage extends BasePage {
   }
 
   @SuppressWarnings("serial")
-  private class ParticipantByLastNameProvider extends SortableDataProviderEntityServiceImpl<Participant> {
+  private class ParticipantByNameProvider extends SortableDataProviderEntityServiceImpl<Participant> {
 
     private Participant template;
 
-    public ParticipantByLastNameProvider(Participant template) {
+    public ParticipantByNameProvider(Participant template) {
       super(queryService, Participant.class);
       this.template = template;
       setSort(new SortParam("lastName", true));
