@@ -158,7 +158,7 @@ public class InstrumentOutputParameterPanel extends Panel {
           output = field;
 
         } else if(runValue != null && runValue.getData() != null && runValue.getData().getValueAsString() != null) {
-          output = new Label(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data.valueAsString"));
+          output = new Label(KeyValueDataPanel.getRowValueId(), new RunValueLabelModel(runValue));
         } else {
           manualFragment.setVisible(true);
           output = new Label(KeyValueDataPanel.getRowValueId(), "");

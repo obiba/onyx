@@ -61,6 +61,7 @@ public class InstrumentLauncher implements Serializable {
       props.setProperty("jnlpPath", context.getRealPath(File.separatorChar + instrumentCodeBase + File.separatorChar + "launch.jnlp"));
 
       log.info("Current language is = {} getDisplayLanguage()", Session.get().getLocale().getDisplayLanguage());
+      props.setProperty("locale", Session.get().getLocale().getLanguage());
 
       ResourceReference jnlpReference = new ResourceReference(instrumentCodeBase + "_" + Session.get().getId() + "_" + Session.get().getLocale().getLanguage()) {
 
