@@ -43,7 +43,6 @@ import org.obiba.onyx.jade.instrument.LocalSettingsHelper.CouldNotSaveSettingsEx
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
-import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -67,6 +66,8 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
   protected LocalSettingsHelper settingsHelper;
 
   protected String tbf310CommPort;
+
+  protected Locale locale;
 
   // Interface components
   private JFrame appWindow;
@@ -135,8 +136,6 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
   public Tbf310InstrumentRunner() throws Exception {
 
-    resourceBundle = ResourceBundle.getBundle("bioimpedance-instrument", Locale.getDefault());
-
     // Initialize interface components.
     bodyTypeTxt = new ResultTextField();
     bodyTypeTxt.setHorizontalAlignment(JTextField.LEFT);
@@ -154,14 +153,13 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     ageTxt = new ResultTextField();
     bmiTxt = new ResultTextField();
     bmrTxt = new ResultTextField();
-    saveDataBtn = new JButton(resourceBundle.getString("Save"));
+    saveDataBtn = new JButton();
     saveDataBtn.setMnemonic('S');
     saveDataBtn.setEnabled(false);
-    saveDataBtn.setToolTipText(resourceBundle.getString("ToolTip.Save_and_return"));
 
     // Initialize serial port.
     portOwnerName = "TANITA Body Composition Analyzer";
-
+    
   }
 
   public void afterPropertiesSet() throws Exception {
@@ -171,6 +169,12 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
       tbf310LocalSettings = settingsHelper.retrieveSettings();
     } catch(CouldNotRetrieveSettingsException e) {
     }
+    
+    log.info("Setting bioimpedance-locale to {}", getLocale().getDisplayLanguage());
+
+    resourceBundle = ResourceBundle.getBundle("bioimpedance-instrument", getLocale());
+    saveDataBtn.setToolTipText(resourceBundle.getString("ToolTip.Save_and_return"));
+    saveDataBtn.setText(resourceBundle.getString("Save"));
 
   }
 
@@ -668,6 +672,14 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
         // ignore
       }
     }
+  }
+
+  public Locale getLocale() {
+    return locale;
+  }
+
+  public void setLocale(Locale locale) {
+    this.locale = locale;
   }
 
 }

@@ -12,9 +12,11 @@ import java.util.Properties;
 
 import javax.servlet.ServletContext;
 
+import org.apache.wicket.Application;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Resource;
 import org.apache.wicket.ResourceReference;
+import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.WebResource;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WebRequest;
@@ -47,25 +49,29 @@ public class InstrumentLauncher implements Serializable {
   @SuppressWarnings("serial")
   public void launch() {
     if(instrument != null && instrumentCodeBase != null) {
-      log.info("launch " + instrument.getInstrumentType() + " !");
+      log.info("launch {} !", instrument.getInstrumentType());
 
       ServletContext context = ((WebApplication) RequestCycle.get().getApplication()).getServletContext();
 
-      log.info("codeBase=" + instrumentCodeBase);
+      log.info("codeBase={}", instrumentCodeBase);
       final Properties props = new Properties();
       props.setProperty("org.obiba.onyx.remoting.url", makeUrl("remoting"));
       props.setProperty("codebaseUrl", makeUrl(instrumentCodeBase));
-      props.setProperty("jSessionId", ((WebRequest)RequestCycle.get().getRequest()).getCookie("JSESSIONID").getValue());
+      props.setProperty("jSessionId", ((WebRequest) RequestCycle.get().getRequest()).getCookie("JSESSIONID").getValue());
       props.setProperty("jnlpPath", context.getRealPath(File.separatorChar + instrumentCodeBase + File.separatorChar + "launch.jnlp"));
 
-      ResourceReference jnlpReference = new ResourceReference(instrumentCodeBase) {
+      log.info("Current language is = {} getDisplayLanguage()", Session.get().getLocale().getDisplayLanguage());
+
+      ResourceReference jnlpReference = new ResourceReference(instrumentCodeBase + "_" + Session.get().getId() + "_" + Session.get().getLocale().getLanguage()) {
+
         protected Resource newResource() {
           return new JnlpResource(props);
         }
       };
       String url = RequestCycle.get().urlFor(jnlpReference).toString();
-      log.info("url=" + url);
+      log.info("url={}", url);
       RequestCycle.get().setRequestTarget(new RedirectRequestTarget(url));
+
     }
   }
 

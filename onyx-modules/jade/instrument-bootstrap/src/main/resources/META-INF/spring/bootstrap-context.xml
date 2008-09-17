@@ -6,5 +6,9 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
   <import resource="classpath:/META-INF/spring/remote-api-client.xml"/>
+  
+  <bean name="locale" class="java.util.Locale">
+    <constructor-arg value="${locale}"/>
+  </bean>
 
 </beans>

@@ -1,7 +1,6 @@
 package org.obiba.onyx.jade.client;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.LogManager;
 
