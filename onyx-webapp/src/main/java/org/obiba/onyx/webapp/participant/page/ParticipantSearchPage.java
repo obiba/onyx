@@ -196,7 +196,7 @@ public class ParticipantSearchPage extends BasePage {
             }
             error(ParticipantSearchPage.this.getString(oe.getCode(), model, oe.getDefaultMessage()));
           }
-          log.error("Failed updating participants", e);
+          log.error("Failed updating participants: {}", e.toString());
         }
       }
 
