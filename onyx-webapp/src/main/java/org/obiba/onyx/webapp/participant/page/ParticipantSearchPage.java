@@ -1,6 +1,7 @@
 package org.obiba.onyx.webapp.participant.page;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,6 +25,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.target.resource.ResourceStreamRequestTarget;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.core.service.EntityQueryService;
@@ -43,6 +45,7 @@ import org.obiba.wicket.JavascriptEventConfirmation;
 import org.obiba.wicket.markup.html.link.AjaxLinkList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
+import org.obiba.wicket.util.resource.CsvResourceStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.ObjectError;
@@ -89,7 +92,7 @@ public class ParticipantSearchPage extends BasePage {
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         OnyxEntityList<Participant> replacement;
         if(template.getBarcode() == null) {
-          replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantProvider(), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
+          replacement = getAllParticipantsList();
         } else {
           replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantByCodeProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("ParticipantsByCode", ParticipantSearchPage.this, new Model(new ValueMap("code=" + template.getBarcode()))));
         }
@@ -112,7 +115,7 @@ public class ParticipantSearchPage extends BasePage {
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         OnyxEntityList<Participant> replacement;
         if(template.getLastName() == null) {
-          replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantProvider(), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
+          replacement = getAllParticipantsList();
         } else {
           replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantByNameProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("ParticipantsByName", ParticipantSearchPage.this, new Model(new ValueMap("name=" + template.getLastName()))));
         }
@@ -131,7 +134,7 @@ public class ParticipantSearchPage extends BasePage {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-        OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantProvider(), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
+        OnyxEntityList<Participant> replacement = getAllParticipantsList();
         replaceParticipantList(target, replacement);
         target.addComponent(getFeedbackPanel());
       }
@@ -213,17 +216,29 @@ public class ParticipantSearchPage extends BasePage {
     link.add(new JavascriptEventConfirmation("onclick", new StringResourceModel("ConfirmParticipantsListUpdate", this, null)));
     add(link);
 
-    add(new AjaxLink("excel") {
+    add(new Link("excel") {
 
       @Override
-      public void onClick(AjaxRequestTarget target) {
+      public void onClick() {
+        getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(participantList.getReportStream()) {
+          @Override
+          public String getFileName() {
+            SimpleDateFormat formater = new SimpleDateFormat("yyyyMMdd_HHmm");
+            String name = formater.format(new Date()) + "_participants";
 
+            return name + "." + CsvResourceStream.FILE_SUFFIX;
+          }
+        });
       }
 
     });
 
     participantList = new OnyxEntityList<Participant>("participant-list", new AppointedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
     add(participantList);
+  }
+
+  private OnyxEntityList<Participant> getAllParticipantsList() {
+    return new OnyxEntityList<Participant>("participant-list", new ParticipantProvider(), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
   }
 
   private void replaceParticipantList(AjaxRequestTarget target, OnyxEntityList<Participant> replacement) {
