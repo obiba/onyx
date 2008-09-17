@@ -1,12 +1,10 @@
 package org.obiba.onyx.webapp.home.page;
 
-
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -19,7 +17,7 @@ import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
-@AuthorizeInstantiation({"SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR"})
+@AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class HomePage extends BasePage {
 
   @SpringBean
@@ -33,12 +31,8 @@ public class HomePage extends BasePage {
     super();
 
     add(new ParticipantSearchForm("configurationForm"));
-    
-    add(new AjaxLink("search") {
-      public void onClick(AjaxRequestTarget target) {
-        setResponsePage(ParticipantSearchPage.class);
-      }
-    });
+
+    add(new BookmarkablePageLink("search", ParticipantSearchPage.class));
 
   }
 
@@ -56,20 +50,20 @@ public class HomePage extends BasePage {
       barCode.setLabel(new StringResourceModel("ParticipantCode", HomePage.this, null));
       add(barCode);
 
-      add(new Button("submit"));      
+      add(new Button("submit"));
     }
-    
+
     @Override
     protected void onSubmit() {
       Participant template = (Participant) ParticipantSearchForm.this.getModelObject();
       Participant participant = queryService.matchOne(template);
-      
+
       // Participant found, display interview page.
       if(participant != null) {
         activeInterviewService.setParticipant(participant);
         setResponsePage(InterviewPage.class);
-        
-      // Not found, display error message in feedback panel.
+
+        // Not found, display error message in feedback panel.
       } else {
         error((new StringResourceModel("ParticipantNotFound", this, ParticipantSearchForm.this.getModel())).getString());
       }
