@@ -87,12 +87,20 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     }
 
     File dir = new File(appConfig.getParticipantDirectoryPath());
-    log.info("participantDirectory={}", dir.getAbsolutePath());
+    log.debug("participantDirectory={}", dir.getAbsolutePath());
     File lastModifiedFile = null;
-    for(File f : dir.listFiles()) {
-      if(f.isFile() && (lastModifiedFile == null || (f.lastModified() > lastModifiedFile.lastModified()))) {
-        lastModifiedFile = f;
+    if(dir.exists() && dir.isDirectory()) {
+      File[] dirContent = dir.listFiles();
+      if(dirContent != null) {
+        for(File f : dirContent) {
+          if(f.isFile() && (lastModifiedFile == null || (f.lastModified() > lastModifiedFile.lastModified()))) {
+            lastModifiedFile = f;
+          }
+        }
       }
+    }
+    else {
+      log.error("Participants update list repository does not exists or is not a directory: {}", dir.getAbsolutePath());
     }
 
     if(lastModifiedFile == null) {
@@ -170,7 +178,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
         public void onParticipantReadEnd(int line) throws ValidationRuntimeException {
           if(vex.getAllObjectErrors().size() > 0) throw vex;
         }
-        
+
       });
       participantReaderCallbackInitialized = true;
     }
