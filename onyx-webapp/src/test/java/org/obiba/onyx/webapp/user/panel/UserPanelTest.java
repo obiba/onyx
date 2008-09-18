@@ -76,7 +76,7 @@ public class UserPanelTest {
     Assert.assertEquals("Nathalie", formTester.getTextComponentValue("firstName"));
     Assert.assertEquals("ndupont@obiba.org", formTester.getTextComponentValue("email"));
     Assert.assertEquals(Locale.ENGLISH, formTester.getForm().get("languageSelect:localeSelect").getModelObject());
-    Assert.assertArrayEquals(getUserRoles().toArray(), ((Set<Role>) formTester.getForm().get("roles").getModelObject()).toArray());
+    assertSetsEquals(getUserRoles(), (Set<Role>) formTester.getForm().get("roles").getModelObject());
   }
 
   @Test
@@ -167,7 +167,8 @@ public class UserPanelTest {
     tester.assertNoErrorMessage();
     verify(userServiceMock);
     Assert.assertEquals("Tremblay", u.getLastName());
-    Assert.assertArrayEquals(getUserRoles().toArray(), u.getRoles().toArray());
+    // Assert that two Sets are identical
+    assertSetsEquals(getUserRoles(), u.getRoles());
   }
 
   private User newUserTest() {
@@ -208,6 +209,12 @@ public class UserPanelTest {
     roleList.add(roleInstance);
 
     return (roleList);
+  }
+
+  private void assertSetsEquals(Set<?> lhs, Set<?> rhs) {
+    // Assert that lhs contains all the items in rhs AND that rhs contains all the items in lhs
+    // Testing both sides assures us that one set is not simply a subset of the other
+    Assert.assertTrue(lhs.containsAll(rhs) && rhs.containsAll(lhs));
   }
 
 }
