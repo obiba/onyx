@@ -88,11 +88,10 @@ public abstract class DefaultUserServiceImpl extends PersistenceManagerAwareServ
   public Role createRole(Role role) {
     return getPersistenceManager().save(role);
   }
-  
+
   private User loadUser(Serializable userId) {
     User user = getPersistenceManager().get(User.class, userId);
-    if (user == null)
-      throw new IllegalArgumentException("Invalid user id");
+    if(user == null) throw new IllegalArgumentException("Invalid user id");
     return user;
   }
 }

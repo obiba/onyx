@@ -20,7 +20,7 @@ public interface UserService {
    * @return
    */
   public List<User> getUsers(boolean isDeleted, PagingClause paging, SortingClause... clauses);
-  
+
   /**
    * Returns the count of users
    * @return
@@ -33,32 +33,32 @@ public interface UserService {
    * @return
    */
   public User getUserWithLogin(String login);
-  
+
   /**
    * Change the status of the specified user
    * @param user
    * @param status
    */
   public void updateStatus(Serializable userId, Status status);
-  
+
   /**
    * User creation during the application configuration
    */
   public void createUser(User user);
-  
+
   /**
    * Delete specified user by setting the "deleted" field to "true"
    * @param user
    */
   public void deleteUser(Serializable userId);
-  
+
   /**
    * Update the language of the specified user
    * @param template
    * @param language
    */
   public void updateUserLanguage(Serializable userId, Locale language);
-  
+
   /**
    * Check if password was not previously given to the given user.
    * @param user
@@ -73,20 +73,20 @@ public interface UserService {
    * @param password
    */
   public void updatePassword(Serializable userId, String password);
-  
+
   /**
    * Create a user when id is not provided, otherwise, updates the changed fields
    * @param user
    */
   public void createOrUpdateUser(User user);
-  
+
   /**
    * Create the given role.
    * @param role
    * @return
    */
   public Role createRole(Role role);
-  
+
   /**
    * Returns the list of roles
    * @param clauses

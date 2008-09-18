@@ -20,14 +20,14 @@ import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 /**
  * Defines form for password changing
  * @author acarey
- *
+ * 
  */
 public abstract class ChangePasswordPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
   @SpringBean
-  UserService userService;
+  private UserService userService;
 
   public ChangePasswordPanel(String id) {
     super(id);
