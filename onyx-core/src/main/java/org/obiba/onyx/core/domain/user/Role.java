@@ -1,14 +1,10 @@
 package org.obiba.onyx.core.domain.user;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
 
 import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.core.domain.user.User;
 
 @Entity
 public class Role extends AbstractEntity implements Serializable, Comparable<Role> {
@@ -23,9 +19,6 @@ public class Role extends AbstractEntity implements Serializable, Comparable<Rol
 
   private String name = null;
 
-  @ManyToMany(mappedBy = "roles")
-  private Set<User> users;
-  
   public Role() {
   }
 
@@ -64,14 +57,4 @@ public class Role extends AbstractEntity implements Serializable, Comparable<Rol
     return name.hashCode();
   }
 
-  public Set<User> getUsers() {
-    return users != null ? users : (users = new HashSet<User>());
-  }
-
-  public void addUser(User user) {
-    if(user != null) {
-      getUsers().add(user);
-    }
-
-  }
 }
