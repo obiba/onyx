@@ -129,7 +129,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
       BufferedWriter inputFileWriter = new BufferedWriter(new FileWriter(externalAppInputFile));
       inputFileWriter.write("[Identification]\n");
       for(Map.Entry<String, Data> entry : inputData.entrySet()) {
-        inputFileWriter.write(entry.getKey() + "=" + entry.getValue().getValueAsString() + "\n");
+        inputFileWriter.write(entry.getKey() + "=" + ((entry.getKey().equals("Gender")) ? getGenderConverter(entry.getValue()) : entry.getValue().getValueAsString()) + "\n");
       }
       inputFileWriter.close();
     } catch(Exception ex) {
@@ -236,6 +236,12 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     ouputToSend.put("FVCImage", DataBuilder.buildBinary(FVCFile));
 
     instrumentExecutionService.addOutputParameterValues(ouputToSend);
+  }
+
+  private int getGenderConverter(Data data) {
+    if(data.getValueAsString().equals("MALE")) return 0;
+    else
+      return 1;
   }
 
   /**
