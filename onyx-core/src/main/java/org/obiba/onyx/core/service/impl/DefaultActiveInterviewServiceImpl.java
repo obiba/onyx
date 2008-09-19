@@ -35,6 +35,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
 
   private ModuleRegistry moduleRegistry;
 
+  // Map of Interview.id to Map of Stage.id to StageExecutionContext
   private Map<Serializable, Map<Serializable, StageExecutionContext>> interviewStageContexts = new HashMap<Serializable, Map<Serializable, StageExecutionContext>>();
 
   public void setModuleRegistry(ModuleRegistry moduleRegistry) {
@@ -42,8 +43,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   }
 
   public Participant getParticipant() {
-    if (currentParticipantId == null)
-      return null;
+    if(currentParticipantId == null) return null;
     return getPersistenceManager().get(Participant.class, currentParticipantId);
   }
 
@@ -80,16 +80,13 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     StageExecutionContext exec = contexts.get(stage.getId());
 
     if(exec == null) {
-
       Module module = moduleRegistry.getModule(stage.getModule());
-      if(stage.getDependsOnStages().size() > 0) {
-        List<IStageExecution> dependsOnStageList = new ArrayList<IStageExecution>();
-        for(Stage dependsOnStage : stage.getDependsOnStages()) {
-          dependsOnStageList.add(getStageExecution(dependsOnStage));
+      exec = (StageExecutionContext) module.createStageExecution(getInterview(), stage);
+
+      for(StageExecutionContext sec : contexts.values()) {
+        if(exec.getStage().getStageDependencyCondition().isDependentOn(sec.getStage().getName())) {
+          sec.addTransitionListener(exec);
         }
-        exec = (StageExecutionContext) module.createStageExecution(getInterview(), stage, dependsOnStageList.toArray(new IStageExecution[dependsOnStageList.size()]));
-      } else {
-        exec = (StageExecutionContext) module.createStageExecution(getInterview(), stage);
       }
 
       contexts.put(stage.getId(), exec);
@@ -102,9 +99,22 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
       if(memento != null) {
         exec.restoreFromMemento(memento);
       }
+
     }
 
     return exec;
+  }
+
+  public IStageExecution getStageExecution(String stageName) {
+
+    Stage template = new Stage();
+    template.setName(stageName);
+    Stage stage = getPersistenceManager().matchOne(template);
+    if(stage == null) {
+      throw new IllegalArgumentException("Invalid stage name " + stageName);
+    }
+
+    return getStageExecution(stage);
   }
 
   public void doAction(Stage stage, Action action, User user) {
@@ -131,7 +141,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   public Interview setInterviewOperator(User operator) {
     Participant currentParticipant = getParticipant();
     if(currentParticipant == null) return null;
-    
+
     Interview template = new Interview();
     template.setParticipant(currentParticipant);
     Interview interview = getPersistenceManager().matchOne(template);
@@ -148,7 +158,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   public void setStatus(InterviewStatus status) {
     Participant currentParticipant = getParticipant();
     if(currentParticipant == null) return;
-    
+
     Interview template = new Interview();
     template.setParticipant(currentParticipant);
     Interview interview = getPersistenceManager().matchOne(template);

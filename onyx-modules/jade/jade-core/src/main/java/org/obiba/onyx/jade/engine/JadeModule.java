@@ -1,6 +1,7 @@
 package org.obiba.onyx.jade.engine;
 
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.AbstractStageState;
@@ -20,6 +21,8 @@ public class JadeModule implements Module, ApplicationContextAware {
 
   private ApplicationContext applicationContext;
 
+  private ActiveInterviewService activeInterviewService;
+
   public String getName() {
     return "jade";
   }
@@ -33,10 +36,10 @@ public class JadeModule implements Module, ApplicationContextAware {
   }
 
   public IStageExecution createStageExecution(Interview interview, Stage stage, IStageExecution... dependsOn) {
-    StageExecutionContext exec = (StageExecutionContext)applicationContext.getBean("stageExecutionContext");
+    StageExecutionContext exec = (StageExecutionContext) applicationContext.getBean("stageExecutionContext");
     exec.setStage(stage);
     exec.setInterview(interview);
-    
+
     AbstractStageState ready = (AbstractStageState) applicationContext.getBean("jadeReadyState");
     AbstractStageState inProgress = (AbstractStageState) applicationContext.getBean("jadeInProgressState");
     AbstractStageState skipped = (AbstractStageState) applicationContext.getBean("jadeSkippedState");
@@ -47,31 +50,21 @@ public class JadeModule implements Module, ApplicationContextAware {
     exec.addEdge(inProgress, TransitionEvent.COMPLETE, completed);
     exec.addEdge(skipped, TransitionEvent.CANCEL, ready);
     exec.addEdge(completed, TransitionEvent.CANCEL, ready);
-    
-    if (dependsOn != null && dependsOn.length>0) {
-      AbstractStageState waiting = (AbstractStageState) applicationContext.getBean("jadeWaitingState");
-      exec.addEdge(waiting, TransitionEvent.VALID, ready);
-      exec.addEdge(waiting, TransitionEvent.INVALID, waiting);
-      exec.addEdge(waiting, TransitionEvent.SKIP, skipped);
-      exec.addEdge(ready, TransitionEvent.INVALID, waiting);
-      exec.addEdge(skipped, TransitionEvent.INVALID, waiting);
-      exec.addEdge(completed, TransitionEvent.INVALID, waiting);
-      exec.setInitialState(waiting);
-      
-      for (IStageExecution dependsOnExec : dependsOn) {
-        if (dependsOnExec instanceof ITransitionSource) {
-          ((ITransitionSource)dependsOnExec).addTransitionListener(exec);
-          waiting.addDependsOnStageExecution(dependsOnExec);
-          ready.addDependsOnStageExecution(dependsOnExec);
-          skipped.addDependsOnStageExecution(dependsOnExec);
-          completed.addDependsOnStageExecution(dependsOnExec);
-        }
-      }
-    }
-    else {
-      exec.setInitialState(ready);
-    }
 
+    // if (dependsOn != null && dependsOn.length>0) {
+    AbstractStageState waiting = (AbstractStageState) applicationContext.getBean("jadeWaitingState");
+    exec.addEdge(waiting, TransitionEvent.VALID, ready);
+    exec.addEdge(waiting, TransitionEvent.INVALID, waiting);
+    exec.addEdge(waiting, TransitionEvent.SKIP, skipped);
+    exec.addEdge(ready, TransitionEvent.INVALID, waiting);
+    exec.addEdge(skipped, TransitionEvent.INVALID, waiting);
+    exec.addEdge(completed, TransitionEvent.INVALID, waiting);
+
+    if(stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService)) {
+      exec.setInitialState(ready);
+    } else {
+      exec.setInitialState(waiting);
+    }
     return exec;
   }
 
@@ -79,4 +72,7 @@ public class JadeModule implements Module, ApplicationContextAware {
     this.applicationContext = applicationContext;
   }
 
+  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
+    this.activeInterviewService = activeInterviewService;
+  }
 }

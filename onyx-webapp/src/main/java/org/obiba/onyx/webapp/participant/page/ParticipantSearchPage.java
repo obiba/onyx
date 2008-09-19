@@ -62,7 +62,7 @@ public class ParticipantSearchPage extends BasePage {
   @SpringBean
   private ParticipantService participantService;
 
-  @SpringBean
+  @SpringBean(name="activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   private OnyxEntityList<Participant> participantList;

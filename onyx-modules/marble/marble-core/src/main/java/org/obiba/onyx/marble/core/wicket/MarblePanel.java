@@ -32,7 +32,7 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
   @SpringBean
   private EntityQueryService queryService;
 
-  @SpringBean
+  @SpringBean(name="activeInterviewService")
   private ActiveInterviewService activeInterviewService;
   
   @SpringBean

@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.core.service.PersistenceManager;
+import org.obiba.onyx.engine.PreviousStageDependencyCondition;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.engine.StageDependencyCondition;
 import org.obiba.wicket.util.seed.XstreamResourceDatabaseSeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +21,7 @@ public class OnyxDatabaseSeed extends XstreamResourceDatabaseSeed {
   public void setPersistenceManager(PersistenceManager persistenceManager) {
     this.persistenceManager = persistenceManager;
   }
-  
+
   @SuppressWarnings("unchecked")
   @Override
   protected void handleXstreamResult(Object result) {
@@ -31,15 +33,17 @@ public class OnyxDatabaseSeed extends XstreamResourceDatabaseSeed {
       }
     }
   }
-  
+
   @Override
   protected boolean shouldSeed(WebApplication application) {
     return (persistenceManager.count(Stage.class) == 0);
   }
-  
+
   @Override
   protected void initializeXstream(XStream xstream) {
     super.initializeXstream(xstream);
     xstream.alias("stage", Stage.class);
+    xstream.alias("stageDependencyCondition", StageDependencyCondition.class);
+    xstream.alias("previousStageDependencyCondition", PreviousStageDependencyCondition.class);
   }
 }

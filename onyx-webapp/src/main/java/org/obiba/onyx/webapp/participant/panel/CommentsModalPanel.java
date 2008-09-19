@@ -37,7 +37,7 @@ public abstract class CommentsModalPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  @SpringBean
+  @SpringBean(name="activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   @SpringBean

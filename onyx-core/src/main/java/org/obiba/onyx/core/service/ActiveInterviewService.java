@@ -50,6 +50,13 @@ public interface ActiveInterviewService {
   public IStageExecution getStageExecution(Stage stage);
   
   /**
+   * Get the stage execution object for given stage name, in the interview of current participant.
+   * @param stageName
+   * @return
+   */
+  public IStageExecution getStageExecution(String stageName);
+  
+  /**
    * Persist and perform action on the stage, in the interview of current participant.
    * @param stage
    * @param action

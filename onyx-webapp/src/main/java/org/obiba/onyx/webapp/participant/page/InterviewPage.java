@@ -37,7 +37,7 @@ import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class InterviewPage extends BasePage {
 
-  @SpringBean
+  @SpringBean(name="activeInterviewService")
   private ActiveInterviewService activeInterviewService;
   
   @SpringBean

@@ -53,7 +53,7 @@ public abstract class InstructionsPanel extends Panel {
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
-  @SpringBean
+  @SpringBean(name="activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   @SpringBean

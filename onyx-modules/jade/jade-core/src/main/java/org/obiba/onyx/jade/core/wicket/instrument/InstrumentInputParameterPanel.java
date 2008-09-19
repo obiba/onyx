@@ -38,7 +38,7 @@ public class InstrumentInputParameterPanel extends Panel {
   @SpringBean
   private InstrumentService instrumentService;
 
-  @SpringBean
+  @SpringBean(name="activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   @SpringBean

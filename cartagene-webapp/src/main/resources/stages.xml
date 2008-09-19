@@ -15,10 +15,9 @@
     <module>jade</module>
     <displayOrder>2</displayOrder>
     
-    <dependsOnStages>
-      <stage reference="con" />
-    </dependsOnStages>
-    
+    <stageDependencyCondition class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+      <stageName>CON</stageName>
+    </stageDependencyCondition>  
   </stage>
   
   <stage id="sit">
@@ -27,10 +26,9 @@
     <module>jade</module>
     <displayOrder>3</displayOrder>
     
-    <dependsOnStages>
-      <stage reference="con" />
-    </dependsOnStages>
-    
+    <stageDependencyCondition class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+      <stageName>CON</stageName>
+    </stageDependencyCondition>
   </stage>
   
   <stage id="hwc">
@@ -39,10 +37,9 @@
     <module>jade</module>
     <displayOrder>4</displayOrder>  
       
-    <dependsOnStages>
-      <stage reference="con" />
-    </dependsOnStages>
-    
+    <stageDependencyCondition class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+      <stageName>CON</stageName>
+    </stageDependencyCondition>
   </stage>
   
   <stage id="mus">
@@ -51,23 +48,24 @@
     <module>jade</module>
     <displayOrder>5</displayOrder>
         
-    <dependsOnStages>
-      <stage reference="con" />
-    </dependsOnStages>
-    
+    <stageDependencyCondition class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+      <stageName>CON</stageName>
+    </stageDependencyCondition>
   </stage>
   
+<!--  
   <stage id="bim">
     <name>BIM</name>
     <description>Weight and Bioimpedance Measurement</description>
     <module>jade</module>
     <displayOrder>6</displayOrder>
 
-    <dependsOnStages>
-      <stage reference="con" />
-      <stage reference="sta" />
-    </dependsOnStages>
-    
+    <stageDependencyCondition class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+      <stageName>CON</stageName>
+    </stageDependencyCondition>
+    <stageDependencyCondition class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+      <stageName>STA</stageName>
+    </stageDependencyCondition>
   </stage>
   
   <stage id="wei">
@@ -76,10 +74,12 @@
     <module>jade</module>
     <displayOrder>7</displayOrder>
     
-    <dependsOnStages>
-      <stage reference="con" />
-    </dependsOnStages>
-    
+    <stageDependencyCondition class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+      <stageName>CON</stageName>
+    </stageDependencyCondition>
+    <stageDependencyCondition class="org.obiba.onyx.engine.ExclusiveStageDependencyCondition">
+      <stageName>CON</stageName>
+    </stageDependencyCondition>
   </stage>
   
   <stage id="spi">
@@ -130,6 +130,6 @@
       <stage reference="con" />
     </dependsOnStages>
     
-  </stage>
+  </stage> -->
   
 </linked-list>

@@ -38,7 +38,7 @@ public abstract class StageSelectionPanel extends Panel {
   @SpringBean
   private EntityQueryService queryService;
 
-  @SpringBean
+  @SpringBean(name="activeInterviewService")
   private ActiveInterviewService activeInterviewService;
   
   private ActionWindow modal;

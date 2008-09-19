@@ -18,7 +18,7 @@ public class StageStartEndTimePanel extends Panel {
   @SpringBean
   private EntityQueryService queryService;
 
-  @SpringBean
+  @SpringBean(name="activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   private static final long serialVersionUID = 1L;

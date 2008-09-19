@@ -23,7 +23,7 @@ public class HomePage extends BasePage {
   @SpringBean
   private EntityQueryService queryService;
 
-  @SpringBean
+  @SpringBean(name="activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   @SuppressWarnings("serial")

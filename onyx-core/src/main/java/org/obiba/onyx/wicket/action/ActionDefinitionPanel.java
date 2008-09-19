@@ -40,7 +40,7 @@ public abstract class ActionDefinitionPanel extends Panel {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ActionDefinitionPanel.class);
 
-  @SpringBean
+  @SpringBean(name="activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   private boolean cancelled = true;

@@ -217,7 +217,7 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
   }
 
   public void onTransition(IStageExecution execution, TransitionEvent event) {
-    log.info("onTransition(" + event + ") from " + currentState.getClass().getSimpleName());
+    log.info("onTransition({}) from stage {} in state {}", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
     if(currentState instanceof ITransitionListener) {
       ((ITransitionListener) currentState).onTransition(execution, event);
     }

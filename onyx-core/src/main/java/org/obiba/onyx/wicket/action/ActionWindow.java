@@ -18,7 +18,7 @@ public abstract class ActionWindow extends Panel {
 
   private static final Logger log = LoggerFactory.getLogger(ActionWindow.class);
 
-  @SpringBean
+  @SpringBean(name="activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   private ModalWindow modal;

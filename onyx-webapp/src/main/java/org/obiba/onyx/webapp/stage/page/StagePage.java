@@ -23,7 +23,7 @@ import org.obiba.onyx.wicket.action.ActionWindow;
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class StagePage extends BasePage {
 
-  @SpringBean
+  @SpringBean(name="activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   @SuppressWarnings("serial")

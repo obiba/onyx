@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.Component;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
@@ -36,6 +37,8 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   private List<IStageExecution> dependsOnStageExecutions = new ArrayList<IStageExecution>();
 
   protected ApplicationContext context;
+
+  private ActiveInterviewService activeInterviewService;
 
   public void setApplicationContext(ApplicationContext context) {
     this.context = context;
@@ -81,9 +84,7 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   }
 
   public void onTransition(IStageExecution execution, TransitionEvent event) {
-    if(dependsOnStageExecutions.contains(execution)) {
-      onDependencyTransition(execution, event);
-    }
+    onDependencyTransition(execution, event);
   }
 
   protected void onDependencyTransition(IStageExecution execution, TransitionEvent event) {
@@ -95,9 +96,8 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   }
 
   protected boolean areDependenciesCompleted() {
-    for(IStageExecution exec : dependsOnStageExecutions) {
-      if(!exec.isCompleted()) return false;
-    }
+    if (stage.getStageDependencyCondition() != null)
+      return stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService);
     return true;
   }
 
@@ -189,5 +189,9 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
 
   public Action getReason() {
     return reason;
+  }
+
+  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
+    this.activeInterviewService = activeInterviewService;
   }
 }

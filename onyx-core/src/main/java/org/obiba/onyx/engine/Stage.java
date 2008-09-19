@@ -3,11 +3,14 @@ package org.obiba.onyx.engine;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.Cascade;
 import org.obiba.core.domain.AbstractEntity;
 
 /**
@@ -36,6 +39,9 @@ public class Stage extends AbstractEntity {
 
   @ManyToMany(mappedBy = "dependsOnStages")
   private List<Stage> dependentStages;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  private StageDependencyCondition stageDependencyCondition;
 
   public String getName() {
     return name;
@@ -69,6 +75,14 @@ public class Stage extends AbstractEntity {
     this.displayOrder = displayOrder;
   }
 
+  public StageDependencyCondition getStageDependencyCondition() {
+    return stageDependencyCondition;
+  }
+
+  public void setStageDependencyCondition(StageDependencyCondition stageDependencyCondition) {
+    this.stageDependencyCondition = stageDependencyCondition;
+  }
+
   public List<Stage> getDependsOnStages() {
     return dependsOnStages != null ? dependsOnStages : (dependsOnStages = new ArrayList<Stage>());
   }
@@ -88,5 +102,4 @@ public class Stage extends AbstractEntity {
   public String toString() {
     return module + ":" + name;// + ":{dependsOn=" + getDependsOnStages()+ "}";
   }
-
 }
