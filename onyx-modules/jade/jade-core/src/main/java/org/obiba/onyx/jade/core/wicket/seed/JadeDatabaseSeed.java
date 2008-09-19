@@ -1,7 +1,9 @@
 package org.obiba.onyx.jade.core.wicket.seed;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.core.service.PersistenceManager;
@@ -10,6 +12,7 @@ import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.instrument.OutputParameterSource;
@@ -54,6 +57,8 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
   protected void handleXstreamResult(Resource resource, Object result) {
     if(result != null && result instanceof List) {
       List<Object> objects = (List<Object>) result;
+
+      Set<String> parameterNames = new HashSet<String>(10);
       for(Object entity : objects) {
         log.info("Seeding database from [" + resource + "] with entity {} of type {}", entity, entity.getClass().getSimpleName());
         if(entity instanceof Instrument) {
@@ -74,6 +79,14 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
           OutputParameterSource source = (OutputParameterSource) entity;
           InstrumentType type = instrumentService.getInstrumentType(source.getInstrumentType().getName());
           source.setInstrumentType(type);
+        } else if(entity instanceof InstrumentParameter) {
+          InstrumentParameter parameter = (InstrumentParameter) entity;
+
+          // Add the name to the set. If the Set already contains the name, throw an exception describing the problem.
+          if(parameterNames.add(parameter.getName()) == false) {
+            log.error("The instrument descriptor {} contains multiple parameters with name {}. Instrument parameters must have a unique name for within its instrument.", resource.getDescription(), parameter.getName());
+            throw new IllegalStateException("The instrument descriptor " + resource.getDescription() + " contains multiple parameters with name " + parameter.getName() + ". Instrument parameters must have a unique name for within its instrument.");
+          }
         }
         persistenceManager.save(entity);
       }
@@ -97,7 +110,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
     xstream.alias("fixedSource", FixedSource.class);
     xstream.alias("participantPropertySource", ParticipantPropertySource.class);
     xstream.alias("outputParameterSource", OutputParameterSource.class);
-    xstream.alias("operatorSource", OperatorSource.class);    
+    xstream.alias("operatorSource", OperatorSource.class);
   }
 
 }
