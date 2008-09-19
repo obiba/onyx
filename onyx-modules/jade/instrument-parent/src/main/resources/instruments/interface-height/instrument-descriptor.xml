@@ -14,6 +14,12 @@
       <name>STA</name>
     </instrumentType>
   </instrument>
+  
+  <contraIndication>
+    <instrument reference="sta1" />
+    <name>StandUnassisted</name>
+    <description>Is Participant unable to stand unassisted ?</description>
+  </contraIndication>
 
   <output id="sta1_height1">
     <name>Height 1</name>
@@ -42,49 +48,6 @@
     <outputs>
       <output reference="sta1_height1" />
       <output reference="sta1_height2" />
-    </outputs>
-  </computedOutput>
-
-  <!-- STA2 -->
-  <instrument id="sta2">
-    <name>Tape 2</name>
-    <vendor>Seca</vendor>
-    <model>Model 214</model>
-    <serialNumber>0987654321</serialNumber>
-    <barcode>sta02</barcode>
-    <status>INACTIVE</status>
-    <instrumentType>
-      <name>STA</name>
-    </instrumentType>
-  </instrument>
-
-  <output id="sta2_height1">
-    <name>Height 1</name>
-    <description>First height measurement</description>
-    <measurementUnit>cm</measurementUnit>
-    <dataType>DECIMAL</dataType>
-    <captureMethod>MANUAL</captureMethod>
-    <instrument reference="sta2" />
-  </output>
-  <output id="sta2_height2">
-    <name>Height 2</name>
-    <description>Second height measurement</description>
-    <measurementUnit>cm</measurementUnit>
-    <dataType>DECIMAL</dataType>
-    <captureMethod>MANUAL</captureMethod>
-    <instrument reference="sta2" />
-  </output>
-  <computedOutput>
-    <name>Height</name>
-    <description>Height measurement</description>
-    <measurementUnit>cm</measurementUnit>
-    <dataType>DECIMAL</dataType>
-    <captureMethod>COMPUTED</captureMethod>
-    <instrument reference="sta2" />
-    <algorithm>AVERAGE</algorithm>
-    <outputs>
-      <output reference="sta2_height1" />
-      <output reference="sta2_height2" />
     </outputs>
   </computedOutput>
 

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.core.service.PersistenceManager;
+import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
 import org.obiba.onyx.jade.core.domain.instrument.FixedSource;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
@@ -104,6 +105,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
     super.initializeXstream(xstream);
     xstream.alias("instrumentType", InstrumentType.class);
     xstream.alias("instrument", Instrument.class);
+    xstream.alias("contraIndication", ContraIndication.class);
     xstream.alias("input", InstrumentInputParameter.class);
     xstream.alias("output", InstrumentOutputParameter.class);
     xstream.alias("computedOutput", InstrumentComputedOutputParameter.class);
