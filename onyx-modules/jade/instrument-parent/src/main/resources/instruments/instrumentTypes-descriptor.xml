@@ -42,6 +42,11 @@
 
   </instrumentType>
 
+  <instrumentType id="wei">
+    <name>WEI</name>
+    <description>Weight measurement</description>
+  </instrumentType>
+
   <instrumentType id="spi">
     <name>SPI</name>
     <description>Spirometry measurement</description>

@@ -70,11 +70,23 @@
     
   </stage>
   
+  <stage id="wei">
+    <name>WEI</name>
+    <description>Weight Measurement</description>
+    <module>jade</module>
+    <displayOrder>7</displayOrder>
+    
+    <dependsOnStages>
+      <stage reference="con" />
+    </dependsOnStages>
+    
+  </stage>
+  
   <stage id="spi">
     <name>SPI</name>
     <description>Spirometry Measurement</description>
     <module>jade</module>
-    <displayOrder>7</displayOrder>
+    <displayOrder>8</displayOrder>
     
     <dependsOnStages>
       <stage reference="con" />
@@ -88,7 +100,7 @@
     <name>ECG</name>
     <description>Electrocardiogram Measurement</description>
     <module>jade</module>
-    <displayOrder>8</displayOrder>
+    <displayOrder>9</displayOrder>
     
     <dependsOnStages>
       <stage reference="con" />
@@ -100,7 +112,7 @@
     <name>BON</name>
     <description>Bone Density Measurement</description>
     <module>jade</module>
-    <displayOrder>9</displayOrder>
+    <displayOrder>10</displayOrder>
     
     <dependsOnStages>
       <stage reference="con" />
@@ -112,7 +124,7 @@
     <name>ART</name>
     <description>Arterial Stiffness Measurement</description>
     <module>jade</module>
-    <displayOrder>10</displayOrder>
+    <displayOrder>11</displayOrder>
     
     <dependsOnStages>
       <stage reference="con" />

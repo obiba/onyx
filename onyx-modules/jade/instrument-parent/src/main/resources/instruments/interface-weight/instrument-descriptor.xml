@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<linked-list>
+
+  <!-- Instruments -->
+  <!-- WEI1 -->
+  <instrument id="wei1">
+    <name>Tanita TBF 310</name>
+    <vendor>Tanita</vendor>
+    <model>TBF 310</model>
+    <serialNumber>1234567890</serialNumber>
+    <barcode>wei01</barcode>
+    <status>ACTIVE</status>
+    <instrumentType>
+      <name>WEI</name>
+    </instrumentType>
+  </instrument>
+  
+  <output id="wei1_weight1">
+    <name>Weight 1</name>
+    <description>First Weight Measurement</description>
+    <measurementUnit>kg</measurementUnit>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="wei1" />
+  </output>
+  <output id="wei1_weight2">
+    <name>Weight 2</name>
+    <description>Second Weight Measurement</description>
+    <measurementUnit>kg</measurementUnit>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="wei1" />
+  </output>
+  <computedOutput>
+    <name>Weight</name>
+    <description>Average Weight Measurement</description>
+    <measurementUnit>kg</measurementUnit>
+    <dataType>DECIMAL</dataType>
+    <instrument reference="wei1" />
+    <algorithm>AVERAGE</algorithm>
+    <captureMethod>COMPUTED</captureMethod>
+    <outputs>
+      <output reference="wei1_weight1" />
+      <output reference="wei1_weight2" />
+    </outputs>
+  </computedOutput>
+
+  
+
+</linked-list>
