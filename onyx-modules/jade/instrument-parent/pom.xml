@@ -87,29 +87,12 @@
             </jnlp>
 
             <sign>
-              <keystore>fillme</keystore>
-              <keypass>fillme</keypass><!-- we need to override passwords easily from the command line. ${keypass} -->
-              <storepass>fillme</storepass><!-- ${storepass} -->
-              <!--storetype>fillme</storetype-->
-              <alias>fillme</alias>
-
-              <!--validity>fillme</validity-->
-
-              <!-- only required for generating the keystore -->
-              <dnameCn>fillme</dnameCn>
-              <dnameOu>fillme</dnameOu>
-              <dnameO>fillme</dnameO>
-              <dnameL>fillme</dnameL>
-              <dnameSt>fillme</dnameSt>
-              <dnameC>fillme</dnameC>
+              <keystore>${project.build.directory}/../../jade.jks</keystore>
+              <keypass>onyxadmin</keypass><!-- we need to override passwords easily from the command line. ${keypass} -->
+              <storepass>onyxadmin</storepass>
+              <alias>jade</alias>
 
               <verify>true</verify><!-- verify that the signing operation succeeded -->
-
-              <!-- KEYSTORE MANAGEMENT -->
-              <keystoreConfig>
-                <delete>true</delete><!-- delete the keystore -->
-                <gen>true</gen><!-- optional shortcut to generate the store. -->
-              </keystoreConfig>
             </sign>
 
             <!-- causes a version attribute to be output in each jar resource element, optional, default is false -->
