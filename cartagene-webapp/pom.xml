@@ -127,7 +127,7 @@
 
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.1</version>
+        <version>1.2</version>
         <executions>
           <execution>
             <phase>process-resources</phase>
@@ -169,8 +169,12 @@
                       <replacestring from="/target/jnlp/lib" to="/" />
                     </filtermapper>
                   </chainedmapper>
-                </copy>                
+                </copy>
 
+                <signjar alias="jade" keystore="${basedir}/cartagene.jks" lazy="true" storepass="onyxadmin">
+                    <fileset dir="${project.build.directory}/${project.build.finalName}/instruments" includes="**/*.jar" />
+                </signjar>
+                
               </tasks>
             </configuration>
             <goals>

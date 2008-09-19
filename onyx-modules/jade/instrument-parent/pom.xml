@@ -86,14 +86,6 @@
 
             </jnlp>
 
-            <sign>
-              <keystore>${project.build.directory}/../../jade.jks</keystore>
-              <keypass>onyxadmin</keypass><!-- we need to override passwords easily from the command line. ${keypass} -->
-              <storepass>onyxadmin</storepass>
-              <alias>jade</alias>
-
-              <verify>true</verify><!-- verify that the signing operation succeeded -->
-            </sign>
 
             <!-- causes a version attribute to be output in each jar resource element, optional, default is false -->
             <outputJarVersions>false</outputJarVersions>
