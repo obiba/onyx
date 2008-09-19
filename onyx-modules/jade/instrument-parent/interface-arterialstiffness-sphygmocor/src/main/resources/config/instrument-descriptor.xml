@@ -75,6 +75,30 @@
     <instrument reference="sphygmoCor1" />
   </input>
 
+  <fixedSource id="systolic_pressure_source">
+    <value>123</value>
+  </fixedSource>
+  <input id="systolic_pressure">
+    <name>SystolicPressure</name>
+    <description>Systolic Pressure</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="systolic_pressure_source" />
+    <instrument reference="sphygmoCor1" />
+  </input>
+  
+  <fixedSource id="diastolic_pressure_source">
+    <value>65</value>
+  </fixedSource>
+  <input id="diastolic_pressure">
+    <name>DiastolicPressure</name>
+    <description>Diastolic Pressure</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="diastolic_pressure_source" />
+    <instrument reference="sphygmoCor1" />
+  </input>  
+
   <!-- 
     <outputParameterSource id="systolic_pressure_source">
     <instrumentType>
@@ -459,5 +483,13 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="sphygmoCor1" />
   </output>
+  
+  <output id="Operator_Index">
+    <name>Operator_Index</name>
+    <description>Operator Index</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output> 
 
 </linked-list>

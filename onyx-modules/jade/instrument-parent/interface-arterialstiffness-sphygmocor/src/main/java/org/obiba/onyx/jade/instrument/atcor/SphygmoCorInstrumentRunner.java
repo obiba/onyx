@@ -1,5 +1,10 @@
 package org.obiba.onyx.jade.instrument.atcor;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,10 +27,6 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
 
   private static final Logger log = LoggerFactory.getLogger(SphygmoCorInstrumentRunner.class);
 
-  private static final String SYSTEM_ID = "01400";
-
-  private static final String STUDY_ID = "DATA";
-
   //
   // Instance variables
   //
@@ -36,15 +37,17 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
 
   private SphygmoCorDao sphygmoCorDao;
 
-  private String participantID;
-  
   private String participantLastName;
-  
+
   private String participantFirstName;
-  
+
   private Date participantBirthDate;
-  
+
   private String participantGender;
+
+  private Long systolicPressure;
+
+  private Long diastolicPressure;
 
   //
   // Methods
@@ -55,18 +58,42 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     sphygmoCorDao.deleteAllOutput();
     sphygmoCorDao.deleteAllPatients();
 
-    // Fetch the current participant's data.
-    participantID = instrumentExecutionService.getParticipantID();
+    // Fetch the current participant's data.   
     participantLastName = instrumentExecutionService.getParticipantLastName();
     participantFirstName = instrumentExecutionService.getParticipantFirstName();
     participantBirthDate = instrumentExecutionService.getParticipantBirthDate();
     participantGender = instrumentExecutionService.getParticipantGender();
 
-    // Use the participant data to create a new patient in the AtCor database.
-    // NOTE: Populate the PATIENT_ID field (VARCHAR) with the participant's barcode,
-    // and the PATIENT_NO field (INTEGER) with the number 1 (since there can never
-    // be more than one patient at a time, we can always use the same number).
-    sphygmoCorDao.addPatient(SYSTEM_ID, STUDY_ID, participantID, 1, participantLastName, participantFirstName, new java.sql.Date(participantBirthDate.getTime()), participantGender);
+    systolicPressure = instrumentExecutionService.getInputParameterValue("SystolicPressure").getValue();
+    diastolicPressure = instrumentExecutionService.getInputParameterValue("DiastolicPressure").getValue();
+
+    writeSphygmoCorInputFile();
+
+  }
+
+  private void writeSphygmoCorInputFile() {
+    BufferedWriter localInputFile = null;
+    try {
+      localInputFile = new BufferedWriter(new FileWriter(externalAppHelper.getWorkDir() + File.separator + "patient.txt"));
+      localInputFile.write(participantFirstName + "\n");
+      localInputFile.write(participantLastName + "\n");
+
+      SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+      localInputFile.write(formatter.format(participantBirthDate) + "\n");
+
+      localInputFile.write(participantGender + "\n");
+      localInputFile.write(instrumentExecutionService.getParticipantID() + "\n");
+      localInputFile.write(systolicPressure + "\n");
+      localInputFile.write(diastolicPressure + "\n");
+    } catch(IOException e) {
+      log.error("Could not write input file!");
+      throw new RuntimeException(e);
+    } finally {
+      try {
+        localInputFile.close();
+      } catch(Exception e) {
+      }
+    }
   }
 
   public void run() {
@@ -74,11 +101,11 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
 
     // Launch the SphygmoCor software.
     externalAppHelper.launch();
-
+        
     // Retrieve the output (measurements taken for the current participant).
     // NOTE: The getOutput method returns the output as a List of Maps. There
     // *should* only be one Map, corresponding to the single run.
-    List output = sphygmoCorDao.getOutput(SYSTEM_ID, STUDY_ID, 1);
+    List output = sphygmoCorDao.getOutput(Integer.parseInt(instrumentExecutionService.getParticipantID()));
 
     if(output != null) {
       // Send the data to the server.
@@ -154,6 +181,7 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     outputToSend.put("Central_T2_ED_Percent", new Data(DataType.DECIMAL, new Double((Float) data.get("C_T2ED"))));
     outputToSend.put("Central_Confidence_Level_of_T1", new Data(DataType.INTEGER, new Long((Integer) data.get("C_QUALITY_T1"))));
     outputToSend.put("Central_Confidence_Level_of_T2", new Data(DataType.INTEGER, new Long((Integer) data.get("C_QUALITY_T2"))));
+    outputToSend.put("Operator_Index", new Data(DataType.DECIMAL, new Double((Float) data.get("P_QC_OTHER4"))));
 
     instrumentExecutionService.addOutputParameterValues(outputToSend);
   }

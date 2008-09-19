@@ -26,7 +26,7 @@ public class JdbcSphygmoCorDao extends NamedParameterJdbcDaoSupport implements S
 
   private static final String DELETE_ALL_OUTPUT_SQL = "delete from M_PWA";
 
-  private static final String GET_OUTPUT_SQL = "select * from M_PWA where SYSTEM_ID = :systemId and STUDY_ID = :studyId and PATIENT_NO = :patientNo";
+  private static final String GET_OUTPUT_SQL = "select * from M_PWA, PATIENT where PATIENT_ID = :patientNo and M_PWA.PATIENT_NO = PATIENT.PATIENT_NO";
 
   //
   // Methods
@@ -75,11 +75,8 @@ public class JdbcSphygmoCorDao extends NamedParameterJdbcDaoSupport implements S
     getNamedParameterJdbcTemplate().update(DELETE_ALL_OUTPUT_SQL, paramMap);
   }
 
-  public List getOutput(String systemId, String studyId, int patientNo) {
+  public List getOutput(int patientNo) {
     Map paramMap = new HashMap();
-
-    paramMap.put("systemId", systemId);
-    paramMap.put("studyId", studyId);
     paramMap.put("patientNo", patientNo);
 
     List matches = getNamedParameterJdbcTemplate().queryForList(GET_OUTPUT_SQL, paramMap);
@@ -101,7 +98,7 @@ public class JdbcSphygmoCorDao extends NamedParameterJdbcDaoSupport implements S
     // sphygmoCorDao.addPatient("01400", "DATA", "4AAA", 1, "Spathis", "Stella", new java.sql.Date(new
     // java.util.Date().getTime()), "FEMALE".toString());
 
-    List output = sphygmoCorDao.getOutput("01400", "DATA", 1);
+    List output = sphygmoCorDao.getOutput(1);
 
     if(output != null) {
       System.out.println("Got output!");

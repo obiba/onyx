@@ -15,5 +15,5 @@ public interface SphygmoCorDao {
 
   public void deleteAllOutput();
 
-  public List getOutput(String systemId, String studyId, int patientNo);
+  public List getOutput(int patientNo);
 }

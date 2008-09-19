@@ -26,7 +26,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
   
   <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
     <property name="driverClassName" value="sun.jdbc.odbc.JdbcOdbcDriver" />
-    <property name="url" value="jdbc:odbc:Driver={MicroSoft Access Driver (*.mdb)};DBQ=c:/Program Files/AtCor/SphygmoCor CvMS/data/scor.mdb" />    
+    <property name="url" value="jdbc:odbc:Driver={MicroSoft Access Driver (*.mdb)};DBQ=c:/Program Files/AtCor/SphygmoCor CvMS/data/scor.xyz" />    
     <property name="username" value="" />
     <property name="password" value="" />
     
