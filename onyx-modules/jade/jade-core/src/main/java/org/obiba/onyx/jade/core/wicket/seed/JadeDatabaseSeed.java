@@ -59,7 +59,8 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
     if(result != null && result instanceof List) {
       List<Object> objects = (List<Object>) result;
 
-      Set<String> parameterNames = new HashSet<String>(10);
+      Set<String> inputParameterNames = new HashSet<String>(10);
+      Set<String> outputParameterNames = new HashSet<String>(10);
       for(Object entity : objects) {
         log.info("Seeding database from [" + resource + "] with entity {} of type {}", entity, entity.getClass().getSimpleName());
         if(entity instanceof Instrument) {
@@ -83,10 +84,20 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
         } else if(entity instanceof InstrumentParameter) {
           InstrumentParameter parameter = (InstrumentParameter) entity;
 
+          String type;
+          Set<String> names;
+          if(entity instanceof InstrumentInputParameter) {
+            type = "input";
+            names = inputParameterNames;
+          } else {
+            type = "output";
+            names = outputParameterNames;
+          }
+
           // Add the name to the set. If the Set already contains the name, throw an exception describing the problem.
-          if(parameterNames.add(parameter.getName()) == false) {
-            log.error("The instrument descriptor {} contains multiple parameters with name {}. Instrument parameters must have a unique name for within its instrument.", resource.getDescription(), parameter.getName());
-            throw new IllegalStateException("The instrument descriptor " + resource.getDescription() + " contains multiple parameters with name " + parameter.getName() + ". Instrument parameters must have a unique name for within its instrument.");
+          if(names.add(parameter.getName()) == false) {
+            log.error("The instrument descriptor {} contains multiple {} parameters with name {}. Instrument parameters must have a unique name for within its instrument.", new Object[] { resource.getDescription(), type, parameter.getName() });
+            throw new IllegalStateException("The instrument descriptor " + resource.getDescription() + " contains multiple " + type + " parameters with name " + parameter.getName() + ". Instrument parameters must have a unique name for within its instrument.");
           }
         }
         persistenceManager.save(entity);
