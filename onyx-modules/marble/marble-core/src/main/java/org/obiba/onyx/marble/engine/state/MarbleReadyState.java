@@ -39,13 +39,8 @@ public class MarbleReadyState extends AbstractMarbleStageState implements Initia
     castEvent(TransitionEvent.START);
   }
 
-  @Override
-  public String getMessage() {
-    return "Ready";
-  }
-
   public String getName() {
-    return "Ready";
+    return "Marble.Ready";
   }
 
 }

@@ -3,6 +3,8 @@
  */
 package org.obiba.onyx.jade.engine.state;
 
+import java.util.Locale;
+
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.state.AbstractStageState;
@@ -42,19 +44,22 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
 
   @Override
   public String getMessage() {
-    String message = "Skipped";
+    Locale locale = userSessionService.getLocale();
     
-    Action reason = getReason();
+    String state = getName();
+    String reason = (getReason() != null) ? getReason().getEventReason() : null;    
+    
+    String message = context.getMessage(state, null, locale);
     
     if (reason != null) {
-      message += " (" + reason.getEventReason() + ")";
+      message += " (" + context.getMessage(reason, null, locale) + ")";
     }
-
+    
     return message;
   }
 
   public String getName() {
-    return "Skipped";
+    return "Jade.Skipped";
   }
 
 }

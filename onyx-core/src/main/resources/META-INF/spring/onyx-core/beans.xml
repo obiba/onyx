@@ -25,4 +25,8 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
     <property name="moduleRegistry" ref="moduleRegistry" />
   </bean>
 
+  <bean id="baseStageState" class="org.obiba.onyx.engine.state.AbstractStageState"
+    abstract="true">
+    <property name="userSessionService" ref="userSessionService" />
+  </bean>
 </beans>

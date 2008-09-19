@@ -44,13 +44,8 @@ public class MarbleInProgressState extends AbstractMarbleStageState implements I
     return true;
   }
 
-  @Override
-  public String getMessage() {
-    return "In Progress";
-  }
-
   public String getName() {
-    return "InProgress";
+    return "Marble.InProgress";
   }
 
 }

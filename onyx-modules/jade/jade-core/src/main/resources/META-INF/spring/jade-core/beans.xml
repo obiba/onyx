@@ -9,20 +9,20 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="jadeOnyxModule" class="org.obiba.onyx.jade.engine.JadeModule"/>
 
-  <bean id="jadeWaitingState" class="org.obiba.onyx.jade.engine.state.JadeWaitingState" scope="prototype">
+  <bean id="jadeWaitingState" parent="baseStageState" class="org.obiba.onyx.jade.engine.state.JadeWaitingState" scope="prototype">
   </bean>
 
-  <bean id="jadeReadyState" class="org.obiba.onyx.jade.engine.state.JadeReadyState" scope="prototype">
+  <bean id="jadeReadyState" parent="baseStageState" class="org.obiba.onyx.jade.engine.state.JadeReadyState" scope="prototype">
   </bean>
   
-  <bean id="jadeInProgressState" class="org.obiba.onyx.jade.engine.state.JadeInProgressState" scope="prototype">
+  <bean id="jadeInProgressState" parent="baseStageState" class="org.obiba.onyx.jade.engine.state.JadeInProgressState" scope="prototype">
     <property name="activeInstrumentRunService" ref="activeInstrumentRunService" />
   </bean>
   
-  <bean id="jadeSkippedState" class="org.obiba.onyx.jade.engine.state.JadeSkippedState" scope="prototype">
+  <bean id="jadeSkippedState" parent="baseStageState" class="org.obiba.onyx.jade.engine.state.JadeSkippedState" scope="prototype">
   </bean>
   
-  <bean id="jadeCompletedState" class="org.obiba.onyx.jade.engine.state.JadeCompletedState" scope="prototype">
+  <bean id="jadeCompletedState" parent="baseStageState" class="org.obiba.onyx.jade.engine.state.JadeCompletedState" scope="prototype">
   </bean>
   
   <bean id="instrumentService" class="org.obiba.onyx.jade.core.service.impl.DefaultInstrumentServiceImpl">

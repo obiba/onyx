@@ -36,13 +36,8 @@ public class JadeWaitingState extends AbstractJadeStageState implements Initiali
     castEvent(TransitionEvent.SKIP);
   }
 
-  @Override
-  public String getMessage() {
-    return "Waiting";
-  }
-
   public String getName() {
-    return "Waiting";
+    return "Jade.Waiting";
   }
 
 }

@@ -9,15 +9,15 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   
   <bean id="marbleOnyxModule" class="org.obiba.onyx.marble.engine.MarbleModule"/>
 
-  <bean id="marbleReadyState" class="org.obiba.onyx.marble.engine.state.MarbleReadyState" scope="prototype">
+  <bean id="marbleReadyState" parent="baseStageState" class="org.obiba.onyx.marble.engine.state.MarbleReadyState" scope="prototype">
     <property name="activeConsentService" ref="activeConsentService" />
   </bean>
   
-  <bean id="marbleInProgressState" class="org.obiba.onyx.marble.engine.state.MarbleInProgressState" scope="prototype">
+  <bean id="marbleInProgressState" parent="baseStageState" class="org.obiba.onyx.marble.engine.state.MarbleInProgressState" scope="prototype">
     <property name="activeConsentService" ref="activeConsentService" />
   </bean>
   
-  <bean id="marbleCompletedState" class="org.obiba.onyx.marble.engine.state.MarbleCompletedState" scope="prototype">
+  <bean id="marbleCompletedState" parent="baseStageState" class="org.obiba.onyx.marble.engine.state.MarbleCompletedState" scope="prototype">
     <property name="activeConsentService" ref="activeConsentService" />
   </bean>
   

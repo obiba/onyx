@@ -2,8 +2,10 @@ package org.obiba.onyx.engine.state;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.wicket.Component;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
@@ -11,16 +13,18 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 /**
  * Base class for Stage states.
  * @author Yannick Marcon
  * 
  */
-public abstract class AbstractStageState implements IStageExecution, ITransitionListener {
+public abstract class AbstractStageState implements IStageExecution, ITransitionListener, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(AbstractStageState.class);
-  
+
   private ITransitionEventSink eventSink;
 
   private Stage stage;
@@ -31,12 +35,23 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
 
   private List<IStageExecution> dependsOnStageExecutions = new ArrayList<IStageExecution>();
 
+  protected ApplicationContext context;
+
+  public void setApplicationContext(ApplicationContext context) {
+    this.context = context;
+  }
+
+  protected UserSessionService userSessionService;
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
+  }
+
   /**
-   * The reason the stage is in its current state (i.e., the action that caused the stage
-   * to transition to this state).
+   * The reason the stage is in its current state (i.e., the action that caused the stage to transition to this state).
    */
   private Action reason;
-  
+
   public void setStage(Stage stage) {
     this.stage = stage;
   }
@@ -160,17 +175,18 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   }
 
   public String getMessage() {
-    return "";
+    Locale locale = userSessionService.getLocale();
+    return context.getMessage(getName(), null, locale);
   }
 
   public Data getData(String key) {
     return null;
   }
-  
+
   public void setReason(Action reason) {
-    this.reason = reason;  
+    this.reason = reason;
   }
-  
+
   public Action getReason() {
     return reason;
   }

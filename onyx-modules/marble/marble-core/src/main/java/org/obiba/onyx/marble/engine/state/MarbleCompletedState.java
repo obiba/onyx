@@ -26,17 +26,12 @@ public class MarbleCompletedState extends AbstractMarbleStageState implements In
   }
 
   @Override
-  public String getMessage() {
-    return "Completed";
-  }
-
-  @Override
   public boolean isCompleted() {
     return true;
   }
 
   public String getName() {
-    return "Completed";
+    return "Marble.Completed";
   }
 
 }

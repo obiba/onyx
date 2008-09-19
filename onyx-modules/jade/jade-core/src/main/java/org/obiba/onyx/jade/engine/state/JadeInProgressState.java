@@ -74,13 +74,8 @@ public class JadeInProgressState extends AbstractJadeStageState implements Initi
     return true;
   }
 
-  @Override
-  public String getMessage() {
-    return "In Progress";
-  }
-
   public String getName() {
-    return "InProgress";
+    return "Jade.InProgress";
   }
 
 }

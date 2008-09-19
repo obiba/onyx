@@ -46,12 +46,7 @@ public class JadeReadyState extends AbstractJadeStageState implements Initializi
     castEvent(TransitionEvent.SKIP);
   }
 
-  @Override
-  public String getMessage() {
-    return "Ready";
-  }
-
   public String getName() {
-    return "Ready";
+    return "Jade.Ready";
   }
 }

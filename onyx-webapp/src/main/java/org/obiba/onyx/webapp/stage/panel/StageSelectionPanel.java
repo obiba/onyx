@@ -40,7 +40,7 @@ public abstract class StageSelectionPanel extends Panel {
 
   @SpringBean
   private ActiveInterviewService activeInterviewService;
-
+  
   private ActionWindow modal;
 
   private OnyxEntityList<Stage> list;
@@ -112,10 +112,14 @@ public abstract class StageSelectionPanel extends Panel {
       columns.add(new AbstractColumn(new StringResourceModel("Status", StageSelectionPanel.this, null)) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Stage stage = (Stage) rowModel.getObject();
-          IStageExecution exec = activeInterviewService.getStageExecution(stage);
+          final Stage stage = (Stage) rowModel.getObject();
 
-          cellItem.add(new Label(componentId, exec.getMessage()));
+          cellItem.add(new Label(componentId, new Model() {
+            public Object getObject() {
+              IStageExecution exec = activeInterviewService.getStageExecution(stage);
+              return exec.getMessage();
+            }
+          }));
         }
 
       });
