@@ -45,6 +45,9 @@ public class Instrument extends AbstractEntity {
   @ManyToOne
   @JoinColumn(name = "instrument_type_id")
   private InstrumentType instrumentType;
+  
+  @OneToMany(mappedBy = "instrument")
+  private List<ContraIndication> contraIndications;
 
   @OneToMany(mappedBy = "instrument")
   private List<InstrumentParameter> instrumentParameters;
@@ -135,4 +138,15 @@ public class Instrument extends AbstractEntity {
     }
   }
 
+  public List<ContraIndication> getContraIndications() {
+    return contraIndications != null ? contraIndications : (contraIndications = new ArrayList<ContraIndication>());
+  }
+
+  
+  public void addContraIndication(ContraIndication contraIndication) {
+    if (contraIndication != null) {
+      getContraIndications().add(contraIndication);
+      contraIndication.setInstrument(this);
+    }
+  }
 }
