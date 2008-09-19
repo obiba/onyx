@@ -1,8 +1,12 @@
 package org.obiba.onyx.jade.instrument.atcor;
 
-import static org.junit.Assert.*;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -41,7 +45,7 @@ public class SphygmoCorInstrumentRunnerTest {
         // do nothing
       }
     };
-    externalAppHelper.setWorkDir("C:\\Program Files\\AtCor\\SphygmoCor CvMS");
+    externalAppHelper.setWorkDir("target");
     
     sphygmoCorInstrumentRunner.setExternalAppHelper(externalAppHelper);
     
