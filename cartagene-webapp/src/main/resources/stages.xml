@@ -21,11 +21,23 @@
     
   </stage>
   
+  <stage id="sit">
+    <name>SIT</name>
+    <description>Sitting Height Measurement</description>
+    <module>jade</module>
+    <displayOrder>3</displayOrder>
+    
+    <dependsOnStages>
+      <stage reference="con" />
+    </dependsOnStages>
+    
+  </stage>
+  
   <stage id="hwc">
     <name>HWC</name>
     <description>Hips and Waist Size Measurement</description>
     <module>jade</module>
-    <displayOrder>3</displayOrder>  
+    <displayOrder>4</displayOrder>  
       
     <dependsOnStages>
       <stage reference="con" />
@@ -37,7 +49,7 @@
     <name>MUS</name>
     <description>Grip Strength Measurement</description>
     <module>jade</module>
-    <displayOrder>4</displayOrder>
+    <displayOrder>5</displayOrder>
         
     <dependsOnStages>
       <stage reference="con" />
@@ -49,7 +61,7 @@
     <name>BIM</name>
     <description>Weight and Bioimpedance Measurement</description>
     <module>jade</module>
-    <displayOrder>5</displayOrder>
+    <displayOrder>6</displayOrder>
 
     <dependsOnStages>
       <stage reference="con" />
@@ -62,7 +74,7 @@
     <name>SPI</name>
     <description>Spirometry Measurement</description>
     <module>jade</module>
-    <displayOrder>6</displayOrder>
+    <displayOrder>7</displayOrder>
     
     <dependsOnStages>
       <stage reference="con" />
@@ -76,7 +88,7 @@
     <name>ECG</name>
     <description>Electrocardiogram Measurement</description>
     <module>jade</module>
-    <displayOrder>7</displayOrder>
+    <displayOrder>8</displayOrder>
     
     <dependsOnStages>
       <stage reference="con" />
@@ -88,7 +100,7 @@
     <name>BON</name>
     <description>Bone Density Measurement</description>
     <module>jade</module>
-    <displayOrder>8</displayOrder>
+    <displayOrder>9</displayOrder>
     
     <dependsOnStages>
       <stage reference="con" />
@@ -100,7 +112,7 @@
     <name>ART</name>
     <description>Arterial Stiffness Measurement</description>
     <module>jade</module>
-    <displayOrder>9</displayOrder>
+    <displayOrder>10</displayOrder>
     
     <dependsOnStages>
       <stage reference="con" />

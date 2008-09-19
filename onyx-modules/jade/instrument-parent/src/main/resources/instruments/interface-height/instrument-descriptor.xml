@@ -19,7 +19,7 @@
     <name>Height 1</name>
     <description>First Height Measurement</description>
     <measurementUnit>cm</measurementUnit>
-    <dataType>INTEGER</dataType>
+    <dataType>DECIMAL</dataType>
     <captureMethod>MANUAL</captureMethod>
     <instrument reference="sta1" />
   </output>
@@ -27,7 +27,7 @@
     <name>Height 2</name>
     <description>Second Height Measurement</description>
     <measurementUnit>cm</measurementUnit>
-    <dataType>INTEGER</dataType>
+    <dataType>DECIMAL</dataType>
     <captureMethod>MANUAL</captureMethod>
     <instrument reference="sta1" />
   </output>
@@ -35,7 +35,7 @@
     <name>Height</name>
     <description>Average Height Measurement</description>
     <measurementUnit>cm</measurementUnit>
-    <dataType>INTEGER</dataType>
+    <dataType>DECIMAL</dataType>
     <instrument reference="sta1" />
     <algorithm>AVERAGE</algorithm>
     <captureMethod>COMPUTED</captureMethod>
@@ -62,7 +62,7 @@
     <name>Height 1</name>
     <description>First height measurement</description>
     <measurementUnit>cm</measurementUnit>
-    <dataType>INTEGER</dataType>
+    <dataType>DECIMAL</dataType>
     <captureMethod>MANUAL</captureMethod>
     <instrument reference="sta2" />
   </output>
@@ -70,7 +70,7 @@
     <name>Height 2</name>
     <description>Second height measurement</description>
     <measurementUnit>cm</measurementUnit>
-    <dataType>INTEGER</dataType>
+    <dataType>DECIMAL</dataType>
     <captureMethod>MANUAL</captureMethod>
     <instrument reference="sta2" />
   </output>
@@ -78,7 +78,7 @@
     <name>Height</name>
     <description>Height measurement</description>
     <measurementUnit>cm</measurementUnit>
-    <dataType>INTEGER</dataType>
+    <dataType>DECIMAL</dataType>
     <captureMethod>COMPUTED</captureMethod>
     <instrument reference="sta2" />
     <algorithm>AVERAGE</algorithm>

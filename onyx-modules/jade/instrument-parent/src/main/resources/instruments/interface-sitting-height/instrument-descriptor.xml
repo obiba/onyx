@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<linked-list>
+
+  <!-- Instruments -->
+  <!-- SIT1 -->
+  <instrument id="sit1">
+    <name>Tape 1</name>
+    <vendor>Seca</vendor>
+    <model>Model 214</model>
+    <serialNumber>1234567890</serialNumber>
+    <barcode>sit01</barcode>
+    <status>ACTIVE</status>
+    <instrumentType>
+      <name>SIT</name>
+    </instrumentType>
+  </instrument>
+
+  <output id="sit1_height1">
+    <name>Sitting Height 1</name>
+    <description>First Sitting Height Measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="sit1" />
+  </output>
+  <output id="sit1_height2">
+    <name>Sitting Height 2</name>
+    <description>Second Sitting Height Measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="sit1" />
+  </output>
+  <computedOutput>
+    <name>Sitting Height</name>
+    <description>Average Sitting Height Measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>DECIMAL</dataType>
+    <instrument reference="sit1" />
+    <algorithm>AVERAGE</algorithm>
+    <captureMethod>COMPUTED</captureMethod>
+    <outputs>
+      <output reference="sit1_height1" />
+      <output reference="sit1_height2" />
+    </outputs>
+  </computedOutput>
+
+  
+
+</linked-list>

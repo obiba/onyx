@@ -1,6 +1,8 @@
 package org.obiba.onyx.jade.core.service.impl;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Date;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
@@ -138,7 +140,10 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
         double avg = sum / count;
 
         Serializable avgValue = null;
-        if(computedRunValue.getDataType().equals(DataType.DECIMAL)) avgValue = avg;
+        if(computedRunValue.getDataType().equals(DataType.DECIMAL)) {
+          long avgInt = Math.round(avg*100);
+          avgValue = (double) avgInt/100;
+        }
         else if(computedRunValue.getDataType().equals(DataType.INTEGER)) avgValue = Math.round(avg);
 
         if(avgValue != null) computedRunValue.setData(new Data(computedRunValue.getDataType(), avgValue));

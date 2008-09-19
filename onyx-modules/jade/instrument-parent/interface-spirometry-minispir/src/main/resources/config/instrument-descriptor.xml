@@ -97,7 +97,7 @@
     <name>Height</name>
     <description>Participant Height</description>
     <measurementUnit>cm</measurementUnit>
-    <dataType>INTEGER</dataType>
+    <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="height_source" />
     <instrument reference="spi1" />

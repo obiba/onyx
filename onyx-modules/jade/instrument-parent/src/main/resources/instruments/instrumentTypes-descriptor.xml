@@ -13,6 +13,11 @@
 
   </instrumentType>
   
+  <instrumentType id="sta">
+    <name>SIT</name>
+    <description>Sitting Height measurement</description>
+  </instrumentType>
+  
   <instrumentType id="hwc">
     <name>HWC</name>
     <description>Hips and Waist Size measurement</description>
