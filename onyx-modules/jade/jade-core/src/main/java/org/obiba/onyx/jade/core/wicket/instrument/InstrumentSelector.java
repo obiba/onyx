@@ -16,6 +16,7 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.wicket.contraindication.InstrumentTypeContraIndicationPanel;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 
 public class InstrumentSelector extends Panel {
@@ -50,6 +51,8 @@ public class InstrumentSelector extends Panel {
       debugField.setVisible(false);
     }
     add(debugField);
+    
+    add(new InstrumentTypeContraIndicationPanel("cis", instrumentTypeModel));
   }
 
   public Instrument getInstrument() {
