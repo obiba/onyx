@@ -1,6 +1,5 @@
 package org.obiba.onyx.core.engine.state;
 
-import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,12 +8,14 @@ import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.PreviousStageDependencyCondition;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.AbstractStageState;
+import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
@@ -41,10 +42,24 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
   @Before
   public void setUp() {
 
-    activeInterviewService = EasyMock.createMock(ActiveInterviewService.class);
-  //  EasyMock.expect(activeInterviewService.getStageExecution("dummy1")).andReturn(context1);
-    EasyMock.expect(activeInterviewService.getStageExecution("dummy2")).andReturn(context2);
-    EasyMock.replay(activeInterviewService);
+    activeInterviewService = new DefaultActiveInterviewServiceImpl() {
+      @Override
+      public PersistenceManager getPersistenceManager() {
+        return persistenceManager;
+      }
+
+      @Override
+      public IStageExecution getStageExecution(String stageName) {
+        if(stageName.equals("dummy1")) return context1;
+        if(stageName.equals("dummy2")) return context2;
+        throw new IllegalArgumentException("Unexpected stage name " + stageName);
+      }
+
+      @Override
+      public IStageExecution getStageExecution(Stage stage) {
+        return getStageExecution(stage.getName());
+      }
+    };
 
     Stage stage1 = new Stage();
     stage1.setName("dummy1");
@@ -94,66 +109,119 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     return persistenceManager.matchOne(memento);
   }
 
-  @Test
-  public void testTransition() {
+  private void assertInitialState() {
     Assert.assertEquals("Ready", context1.getMessage());
     StageExecutionMemento memento = getMemento(context1);
     Assert.assertNull("Memento is not null", memento);
     memento = getMemento(context2);
     Assert.assertNull("Memento is not null", memento);
+  }
 
-    doTransition(ActionDefinitionBuilder.START_ACTION);
+  @Test
+  public void testSimpleTransition() {
+    assertInitialState();
+
+    // Send the START event in the first state machine
+    doAction(ActionDefinitionBuilder.START_ACTION);
     Assert.assertEquals("InProgress", context1.getMessage());
     Assert.assertEquals(false, context1.isCompleted());
-    memento = getMemento(context1);
+    StageExecutionMemento memento = getMemento(context1);
     Assert.assertNotNull("Memento is null", memento);
     Assert.assertEquals("InProgressState", memento.getState());
     Assert.assertEquals("Waiting", context2.getMessage());
     memento = getMemento(context2);
     Assert.assertNotNull("Memento is null", memento);
     Assert.assertEquals("WaitingState", memento.getState());
+  }
 
-    doTransition(ActionDefinitionBuilder.CANCEL_ACTION);
+  @Test
+  public void testCancelInProgress() {
+    doAction(ActionDefinitionBuilder.START_ACTION);
+    Assert.assertEquals("InProgress", context1.getMessage());
+    Assert.assertEquals("Waiting", context2.getMessage());
+
+    doAction(ActionDefinitionBuilder.CANCEL_ACTION);
     Assert.assertEquals("Ready", context1.getMessage());
     Assert.assertEquals(false, context1.isCompleted());
+    Assert.assertEquals("Waiting", context2.getMessage());
+  }
 
-    doTransition(ActionDefinitionBuilder.START_ACTION);
+  @Test
+  public void testCommentDuringInProgress() {
+    doAction(ActionDefinitionBuilder.START_ACTION);
     Assert.assertEquals("InProgress", context1.getMessage());
-    Assert.assertEquals(true, context1.isInteractive());
+    Assert.assertEquals("Waiting", context2.getMessage());
 
-    doTransition(ActionDefinitionBuilder.COMMENT_ACTION);
+    doAction(ActionDefinitionBuilder.COMMENT_ACTION);
     Assert.assertEquals("InProgress", context1.getMessage());
+    Assert.assertEquals("Waiting", context2.getMessage());
+  }
 
-    doTransition(ActionDefinitionBuilder.COMPLETE_ACTION);
+  @Test
+  public void testCompleteInProgress() {
+    doAction(ActionDefinitionBuilder.START_ACTION);
+    Assert.assertEquals("InProgress", context1.getMessage());
+    Assert.assertEquals("Waiting", context2.getMessage());
+
+    // complete the first stage and make assert that the second becomes ready
+    doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
     Assert.assertEquals(true, context1.isCompleted());
     Assert.assertEquals("Completed", context1.getMessage());
     Assert.assertEquals(false, context1.isInteractive());
     Assert.assertEquals("Ready", context2.getMessage());
-    memento = getMemento(context2);
+    StageExecutionMemento memento = getMemento(context2);
     Assert.assertNotNull("Memento is null", memento);
     Assert.assertEquals("ReadyState", memento.getState());
+  }
 
-    doTransition(ActionDefinitionBuilder.COMMENT_ACTION);
-    Assert.assertEquals("Completed", context1.getMessage());
-
-    doTransition(ActionDefinitionBuilder.CANCEL_ACTION);
-    Assert.assertEquals("Ready", context1.getMessage());
-
-    doTransition(ActionDefinitionBuilder.COMMENT_ACTION);
+  @Test
+  public void testCancelCompleted() {
+    doAction(ActionDefinitionBuilder.START_ACTION);
+    doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
+    doAction(ActionDefinitionBuilder.CANCEL_ACTION);
     Assert.assertEquals("Ready", context1.getMessage());
     Assert.assertEquals(false, context1.isInteractive());
-    memento = getMemento(context1);
+    StageExecutionMemento memento = getMemento(context1);
     Assert.assertNotNull("Memento is null", memento);
     Assert.assertEquals("ReadyState", memento.getState());
     Assert.assertEquals("Waiting", context2.getMessage());
     memento = getMemento(context2);
     Assert.assertNotNull("Memento is null", memento);
     Assert.assertEquals("WaitingState", memento.getState());
-
   }
 
-  private void doTransition(ActionDefinition definition) {
-    definition.getType().act(context1, new Action(definition));
+  @Test
+  public void testCancelFirstWhenBothAreCompleted() {
+    doAction(ActionDefinitionBuilder.START_ACTION);
+    doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
+    doAction(context2, ActionDefinitionBuilder.START_ACTION);
+    doAction(context2, ActionDefinitionBuilder.COMPLETE_ACTION);
+    Assert.assertEquals("Completed", context1.getMessage());
+    Assert.assertEquals("Completed", context2.getMessage());
+
+    doAction(ActionDefinitionBuilder.CANCEL_ACTION);
+    Assert.assertEquals("Ready", context1.getMessage());
+    Assert.assertEquals(false, context1.isInteractive());
+    StageExecutionMemento memento = getMemento(context1);
+    Assert.assertNotNull("Memento is null", memento);
+    Assert.assertEquals("ReadyState", memento.getState());
+    Assert.assertEquals("Waiting", context2.getMessage());
+    memento = getMemento(context2);
+    Assert.assertNotNull("Memento is null", memento);
+    Assert.assertEquals("WaitingState", memento.getState());
+  }
+
+  private void doAction(ActionDefinition definition) {
+    doAction(context1, definition);
+  }
+
+  /**
+   * Mimics an Action on the specified context.
+   * @param context
+   * @param definition
+   */
+  private void doAction(StageExecutionContext context, ActionDefinition definition) {
+    definition.getType().act(context, new Action(definition));
   }
 
   public class WaitingState extends AbstractStageState {
