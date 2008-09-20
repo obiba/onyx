@@ -80,7 +80,12 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
     log.info("castEvent({}) from stage {} in state {}", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
     Map<TransitionEvent, IStageExecution> stateEdges = edges.get(currentState);
     if(stateEdges != null) {
-      currentState = stateEdges.get(event);
+      IStageExecution newState = stateEdges.get(event);
+      if(newState == null) {
+        log.error("Stage {} in state {} received event {} that has no edge to any other state. Either the state machine is missing edges (to determine what the new state should be) or the event should have never been received by the current state.", new Object[] { stage.getName(), currentState.getClass().getSimpleName(), event });
+        throw new IllegalStateException("No destination state");
+      }
+      currentState = newState;
       List<ITransitionListener> transitionListenersToRemove = new ArrayList<ITransitionListener>();
       log.debug("transitionListeners.size=" + transitionListeners.size());
       for(ITransitionListener listener : transitionListeners) {
