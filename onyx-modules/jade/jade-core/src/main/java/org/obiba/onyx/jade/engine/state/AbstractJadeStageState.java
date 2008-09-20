@@ -1,19 +1,19 @@
 package org.obiba.onyx.jade.engine.state;
 
 import org.obiba.onyx.engine.state.AbstractStageState;
-import org.obiba.onyx.engine.state.IStageExecution;
-import org.obiba.onyx.util.data.Data;
 
 public abstract class AbstractJadeStageState extends AbstractStageState {
 
   @Override
   protected boolean areDependenciesCompleted() {
+    return super.areDependenciesCompleted();
+/* PL: This should be moved to a new class that extends StageDependencyCondition
     boolean completed = super.areDependenciesCompleted();
-    if(completed) {
+    if (completed) {
       IStageExecution consent = getDependsOnStageExecutions("marble:CON");
-      if(consent != null) {
+      if (consent != null) {
         Data consentData = consent.getData("Consent");
-        if(consentData != null) {
+        if (consentData != null) {
           Boolean value = consentData.getValue();
           return value;
         } else
@@ -21,6 +21,7 @@ public abstract class AbstractJadeStageState extends AbstractStageState {
       }
     }
     return completed;
+*/
   }
 
 }

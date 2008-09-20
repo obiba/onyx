@@ -18,8 +18,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
@@ -38,9 +38,9 @@ public abstract class StageSelectionPanel extends Panel {
   @SpringBean
   private EntityQueryService queryService;
 
-  @SpringBean(name="activeInterviewService")
+  @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
-  
+
   private ActionWindow modal;
 
   private OnyxEntityList<Stage> list;
@@ -96,19 +96,6 @@ public abstract class StageSelectionPanel extends Panel {
     public StageListColumnProvider() {
       columns.add(new PropertyColumn(new Model("#"), "displayOrder", "displayOrder"));
       columns.add(new PropertyColumn(new StringResourceModel("Name", StageSelectionPanel.this, null), "description", "description"));
-      additional.add(new AbstractColumn(new StringResourceModel("DependsOn", StageSelectionPanel.this, null)) {
-
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Stage stage = (Stage) rowModel.getObject();
-          String dependsOn = "";
-          for(Stage dep : stage.getDependsOnStages()) {
-            if(dependsOn.length() > 0) dependsOn += ", ";
-            dependsOn += dep.getName();
-          }
-          cellItem.add(new Label(componentId, dependsOn));
-        }
-
-      });
       columns.add(new AbstractColumn(new StringResourceModel("Status", StageSelectionPanel.this, null)) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {

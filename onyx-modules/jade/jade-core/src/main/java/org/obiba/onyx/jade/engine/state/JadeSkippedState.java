@@ -31,30 +31,31 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
   public void stop(Action action) {
     super.execute(action);
     log.info("Jade Stage {} is cancelling", super.getStage().getName());
-    if(areDependenciesCompleted()) {
+    if (areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
     } else {
       castEvent(TransitionEvent.INVALID);
     }
   }
 
-  protected void onDependencyTransition(IStageExecution execution, TransitionEvent event) {
+  @Override
+  public void onTransition(IStageExecution execution, TransitionEvent event) {
     // do nothing when skipped
   }
 
   @Override
   public String getMessage() {
     Locale locale = userSessionService.getLocale();
-    
+
     String state = getName();
-    String reason = (getReason() != null) ? getReason().getEventReason() : null;    
-    
+    String reason = (getReason() != null) ? getReason().getEventReason() : null;
+
     String message = context.getMessage(state, null, locale);
-    
+
     if (reason != null) {
       message += " (" + context.getMessage(reason, null, locale) + ")";
     }
-    
+
     return message;
   }
 

@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory;
  * {@link TransitionEvent} based state transitions. As a {@link ITransitionSource} it will inform the
  * {@link ITransitionListener} about the transition event. All the method calls defined by {@link IStageExecution} will
  * be forwarded to the {@link IStageExecution} holding the current state.
- * 
- * @see State Machine Design Pattern http://dotnet.zcu.cz/NET_2006/Papers_2006/short/B31-full.pdf
+ * <p>
+ * State Machine Design Pattern http://dotnet.zcu.cz/NET_2006/Papers_2006/short/B31-full.pdf
  * @author Yannick Marcon
  * 
  */
@@ -188,6 +188,33 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
     this.currentState = stageState;
   }
 
+  public void onTransition(IStageExecution execution, TransitionEvent event) {
+    log.info("Stage {} in state {} receiving onTransition({}, {})", new Object[] { stage.getName(), currentState.getClass().getSimpleName(), execution.getName(), event });
+    if(currentState instanceof ITransitionListener) {
+      ((ITransitionListener) currentState).onTransition(execution, event);
+    }
+  }
+
+  public boolean removeAfterTransition() {
+    if(currentState instanceof ITransitionListener) {
+      return ((ITransitionListener) currentState).removeAfterTransition();
+    }
+    return false;
+  }
+
+  public String getName() {
+    // do not expose current state name
+    return stage.getModule() + ":" + stage.getName();
+  }
+
+  public void setReason(Action reason) {
+    currentState.setReason(reason);
+  }
+
+  public Action getReason() {
+    return currentState.getReason();
+  }
+
   public void restoreFromMemento(IEntity memento) {
     if(memento instanceof StageExecutionMemento) {
       StageExecutionMemento stageMemento = (StageExecutionMemento) memento;
@@ -214,32 +241,5 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
     myMemento.setState(currentState.getClass().getSimpleName());
 
     return myMemento;
-  }
-
-  public void onTransition(IStageExecution execution, TransitionEvent event) {
-    log.info("onTransition({}) from stage {} in state {}", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
-    if(currentState instanceof ITransitionListener) {
-      ((ITransitionListener) currentState).onTransition(execution, event);
-    }
-  }
-
-  public boolean removeAfterTransition() {
-    if(currentState instanceof ITransitionListener) {
-      return ((ITransitionListener) currentState).removeAfterTransition();
-    }
-    return false;
-  }
-
-  public String getName() {
-    // do not expose current state name
-    return stage.getModule() + ":" + stage.getName();
-  }
-
-  public void setReason(Action reason) {
-    currentState.setReason(reason);
-  }
-
-  public Action getReason() {
-    return currentState.getReason();
   }
 }

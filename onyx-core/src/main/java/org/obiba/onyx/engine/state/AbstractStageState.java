@@ -34,26 +34,28 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
 
   protected List<ActionDefinition> systemActionDefinitions = new ArrayList<ActionDefinition>();
 
-  private List<IStageExecution> dependsOnStageExecutions = new ArrayList<IStageExecution>();
-
   protected ApplicationContext context;
 
   private ActiveInterviewService activeInterviewService;
 
-  public void setApplicationContext(ApplicationContext context) {
-    this.context = context;
-  }
-
   protected UserSessionService userSessionService;
-
-  public void setUserSessionService(UserSessionService userSessionService) {
-    this.userSessionService = userSessionService;
-  }
 
   /**
    * The reason the stage is in its current state (i.e., the action that caused the stage to transition to this state).
    */
   private Action reason;
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
+  }
+
+  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
+    this.activeInterviewService = activeInterviewService;
+  }
+
+  public void setApplicationContext(ApplicationContext context) {
+    this.context = context;
+  }
 
   public void setStage(Stage stage) {
     this.stage = stage;
@@ -63,31 +65,7 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
     return stage;
   }
 
-  protected List<IStageExecution> getDependsOnStageExecutions() {
-    return dependsOnStageExecutions;
-  }
-
-  /**
-   * Get a depends on stage execution by its name.
-   * @param name
-   * @return null if not found
-   */
-  protected IStageExecution getDependsOnStageExecutions(String name) {
-    for(IStageExecution exec : dependsOnStageExecutions) {
-      if(exec.getName().equals(name)) return exec;
-    }
-    return null;
-  }
-
-  public void addDependsOnStageExecution(IStageExecution execution) {
-    this.dependsOnStageExecutions.add(execution);
-  }
-
   public void onTransition(IStageExecution execution, TransitionEvent event) {
-    onDependencyTransition(execution, event);
-  }
-
-  protected void onDependencyTransition(IStageExecution execution, TransitionEvent event) {
     if(areDependenciesCompleted()) {
       castEvent(TransitionEvent.VALID);
     } else {
@@ -96,8 +74,7 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   }
 
   protected boolean areDependenciesCompleted() {
-    if (stage.getStageDependencyCondition() != null)
-      return stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService);
+    if(stage.getStageDependencyCondition() != null) return stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService);
     return true;
   }
 
@@ -191,7 +168,4 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
     return reason;
   }
 
-  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
-    this.activeInterviewService = activeInterviewService;
-  }
 }
