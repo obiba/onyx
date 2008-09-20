@@ -14,12 +14,6 @@
       <name>STA</name>
     </instrumentType>
   </instrument>
-  
-  <contraIndication>
-    <instrument reference="sta1" />
-    <name>StandUnassisted</name>
-    <description>Is Participant unable to stand unassisted ?</description>
-  </contraIndication>
 
   <output id="sta1_height1">
     <name>Height 1</name>
