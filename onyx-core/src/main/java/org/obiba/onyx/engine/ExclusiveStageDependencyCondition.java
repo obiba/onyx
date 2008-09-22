@@ -7,10 +7,17 @@ public class ExclusiveStageDependencyCondition extends StageDependencyCondition 
   private static final long serialVersionUID = 1L;
 
   private String stageName;
-  
+
+  public ExclusiveStageDependencyCondition() {
+  }
+
+  public ExclusiveStageDependencyCondition(String name) {
+    this.stageName = name;
+  }
+
   @Override
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
-    return (!(activeInterviewService.getStageExecution(stageName).isCompleted()));
+    return (!activeInterviewService.getStageExecution(stageName).isCompleted());
   }
 
   @Override
