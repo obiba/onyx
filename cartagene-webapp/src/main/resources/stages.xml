@@ -1,6 +1,35 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <linked-list>
 
+  <!-- Stage Dependencies -->
+  <stageDependencyCondition id="con_dependency" class="org.obiba.onyx.engine.ConsentStageDependencyCondition">
+    <stageName>CON</stageName>
+  </stageDependencyCondition>
+  <stageDependencyCondition id="sta_dependency" class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+    <stageName>STA</stageName>
+  </stageDependencyCondition>
+  <stageDependencyCondition id="bim_dependency_ex" class="org.obiba.onyx.engine.ExclusiveStageDependencyCondition">
+    <stageName>BIM</stageName>
+  </stageDependencyCondition>
+  <stageDependencyCondition id="bim_dependency" class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+    <stageName>BIM</stageName>
+  </stageDependencyCondition>
+  <stageDependencyCondition id="wei_dependency" class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+    <stageName>WEI</stageName>
+  </stageDependencyCondition>
+  
+  <stageDependencyCondition id="spi_mul_dependency_1" class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+    <leftStageDependencyCondition reference="bim_dependency"/>
+    <operator>OR</operator>
+    <rightStageDependencyCondition reference="wei_dependency"/>
+  </stageDependencyCondition>
+  
+  <stageDependencyCondition id="spi_mul_dependency_2" class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+    <leftStageDependencyCondition reference="sta_dependency"/>
+    <operator>AND</operator>
+    <rightStageDependencyCondition reference="spi_mul_dependency_1"/>
+  </stageDependencyCondition>
+  
   <!-- Stages -->
   <stage id="con">
     <name>CON</name>
@@ -14,10 +43,7 @@
     <description>Height_Measurement</description>
     <module>jade</module>
     <displayOrder>2</displayOrder>
-    
-    <stageDependencyCondition class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
-      <stageName>CON</stageName>
-    </stageDependencyCondition>  
+    <stageDependencyCondition reference="con_dependency"/>
   </stage>
   
   <stage id="sit">
@@ -25,10 +51,7 @@
     <description>Sitting_Height_Measurement</description>
     <module>jade</module>
     <displayOrder>3</displayOrder>
-    
-    <stageDependencyCondition class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
-      <stageName>CON</stageName>
-    </stageDependencyCondition>
+    <stageDependencyCondition reference="con_dependency"/>
   </stage>
   
   <stage id="hwc">
@@ -36,10 +59,7 @@
     <description>Hips_and_Waist_Size_Measurement</description>
     <module>jade</module>
     <displayOrder>4</displayOrder>  
-      
-    <stageDependencyCondition class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
-      <stageName>CON</stageName>
-    </stageDependencyCondition>
+    <stageDependencyCondition reference="con_dependency"/>
   </stage>
   
   <stage id="mus">
@@ -47,65 +67,51 @@
     <description>Grip_Strength_Measurement</description>
     <module>jade</module>
     <displayOrder>5</displayOrder>
-        
-    <stageDependencyCondition class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
-      <stageName>CON</stageName>
-    </stageDependencyCondition>
+    <stageDependencyCondition reference="con_dependency"/>
   </stage>
   
-<!--  
   <stage id="bim">
     <name>BIM</name>
     <description>Weight_and_Bioimpedance_Measurement</description>
     <module>jade</module>
     <displayOrder>6</displayOrder>
-
-    <stageDependencyCondition class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
-      <stageName>CON</stageName>
-    </stageDependencyCondition>
-    <stageDependencyCondition class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
-      <stageName>STA</stageName>
+    <stageDependencyCondition class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+      <leftStageDependencyCondition reference="con_dependency"/>
+      <operator>AND</operator>
+      <rightStageDependencyCondition reference="sta_dependency"/>
     </stageDependencyCondition>
   </stage>
-  
+
   <stage id="wei">
     <name>WEI</name>
     <description>Weight_Measurement</description>
     <module>jade</module>
     <displayOrder>7</displayOrder>
-    
-    <stageDependencyCondition class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
-      <stageName>CON</stageName>
-    </stageDependencyCondition>
-    <stageDependencyCondition class="org.obiba.onyx.engine.ExclusiveStageDependencyCondition">
-      <stageName>CON</stageName>
+    <stageDependencyCondition class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+      <leftStageDependencyCondition reference="con_dependency"/>
+      <operator>AND</operator>
+      <rightStageDependencyCondition reference="bim_dependency_ex"/>
     </stageDependencyCondition>
   </stage>
-  
+
   <stage id="spi">
     <name>SPI</name>
     <description>Spirometry_Measurement</description>
     <module>jade</module>
     <displayOrder>8</displayOrder>
-    
-    <dependsOnStages>
-      <stage reference="con" />
-      <stage reference="sta" />
-      <stage reference="bim" />
-    </dependsOnStages>
-    
+    <stageDependencyCondition class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+      <leftStageDependencyCondition reference="con_dependency"/>
+      <operator>AND</operator>
+      <rightStageDependencyCondition reference="spi_mul_dependency_2"/>
+    </stageDependencyCondition>
   </stage>
-  
+
   <stage id="ecg">
     <name>ECG</name>
     <description>Electrocardiogram_Measurement</description>
     <module>jade</module>
     <displayOrder>9</displayOrder>
-    
-    <dependsOnStages>
-      <stage reference="con" />
-    </dependsOnStages>
-    
+    <stageDependencyCondition reference="con_dependency"/>
   </stage>
   
   <stage id="bon">
@@ -113,11 +119,7 @@
     <description>Bone_Density_Measurement</description>
     <module>jade</module>
     <displayOrder>10</displayOrder>
-    
-    <dependsOnStages>
-      <stage reference="con" />
-    </dependsOnStages>
-    
+    <stageDependencyCondition reference="con_dependency"/>
   </stage>  
     
   <stage id="art">
@@ -125,11 +127,7 @@
     <description>Arterial_Stiffness_Measurement</description>
     <module>jade</module>
     <displayOrder>11</displayOrder>
-    
-    <dependsOnStages>
-      <stage reference="con" />
-    </dependsOnStages>
-    
-  </stage> -->
+    <stageDependencyCondition reference="con_dependency"/>
+  </stage>
   
 </linked-list>

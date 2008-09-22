@@ -49,4 +49,11 @@ public class JadeReadyState extends AbstractJadeStageState implements Initializi
   public String getName() {
     return "Jade.Ready";
   }
+  
+  @Override
+  protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
+    if(transitionEvent.equals(TransitionEvent.VALID)) return false;
+    else
+      return true;
+  }
 }

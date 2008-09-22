@@ -6,7 +6,6 @@ import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
-import org.obiba.onyx.engine.state.ITransitionSource;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
@@ -44,6 +43,8 @@ public class JadeModule implements Module, ApplicationContextAware {
     AbstractStageState inProgress = (AbstractStageState) applicationContext.getBean("jadeInProgressState");
     AbstractStageState skipped = (AbstractStageState) applicationContext.getBean("jadeSkippedState");
     AbstractStageState completed = (AbstractStageState) applicationContext.getBean("jadeCompletedState");
+    AbstractStageState notApplicable = (AbstractStageState) applicationContext.getBean("jadeNotApplicableState");
+    exec.addEdge(ready, TransitionEvent.NOTAPPLICABLE, notApplicable);
     exec.addEdge(ready, TransitionEvent.START, inProgress);
     exec.addEdge(ready, TransitionEvent.SKIP, skipped);
     exec.addEdge(inProgress, TransitionEvent.CANCEL, ready);
@@ -51,19 +52,24 @@ public class JadeModule implements Module, ApplicationContextAware {
     exec.addEdge(skipped, TransitionEvent.CANCEL, ready);
     exec.addEdge(completed, TransitionEvent.CANCEL, ready);
 
-    // if (dependsOn != null && dependsOn.length>0) {
     AbstractStageState waiting = (AbstractStageState) applicationContext.getBean("jadeWaitingState");
+    exec.addEdge(notApplicable, TransitionEvent.VALID, ready);
+    exec.addEdge(notApplicable, TransitionEvent.INVALID, waiting);
+    
+    // if (dependsOn != null && dependsOn.length>0) {
+    exec.addEdge(waiting, TransitionEvent.NOTAPPLICABLE, notApplicable);
     exec.addEdge(waiting, TransitionEvent.VALID, ready);
-    exec.addEdge(waiting, TransitionEvent.INVALID, waiting);
     exec.addEdge(waiting, TransitionEvent.SKIP, skipped);
     exec.addEdge(ready, TransitionEvent.INVALID, waiting);
     exec.addEdge(skipped, TransitionEvent.INVALID, waiting);
     exec.addEdge(completed, TransitionEvent.INVALID, waiting);
 
-    if(stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService)) {
+    if(stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService) == null) {
+      exec.setInitialState(waiting);
+    } else if (stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService) == true) {
       exec.setInitialState(ready);
     } else {
-      exec.setInitialState(waiting);
+      exec.setInitialState(notApplicable);
     }
     return exec;
   }

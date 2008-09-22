@@ -66,14 +66,15 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   }
 
   public void onTransition(IStageExecution execution, TransitionEvent event) {
-    if(areDependenciesCompleted()) {
-      castEvent(TransitionEvent.VALID);
-    } else {
-      castEvent(TransitionEvent.INVALID);
-    }
+    Boolean var = areDependenciesCompleted();
+
+    if(var == null) {
+      if(wantTransitionEvent(TransitionEvent.INVALID)) castEvent(TransitionEvent.INVALID);
+    } else if(var == true && wantTransitionEvent(TransitionEvent.VALID)) castEvent(TransitionEvent.VALID);
+    else if(var == false && wantTransitionEvent(TransitionEvent.NOTAPPLICABLE)) castEvent(TransitionEvent.NOTAPPLICABLE);
   }
 
-  protected boolean areDependenciesCompleted() {
+  protected Boolean areDependenciesCompleted() {
     if(stage.getStageDependencyCondition() != null) return stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService);
     return true;
   }
@@ -168,4 +169,7 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
     return reason;
   }
 
+  protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
+    return true;
+  }
 }

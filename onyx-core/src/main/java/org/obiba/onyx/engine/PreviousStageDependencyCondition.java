@@ -3,15 +3,11 @@ package org.obiba.onyx.engine;
 import javax.persistence.Entity;
 
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Entity
 public class PreviousStageDependencyCondition extends StageDependencyCondition {
 
   private static final long serialVersionUID = 1L;
-
-  private static final Logger log = LoggerFactory.getLogger(PreviousStageDependencyCondition.class);
 
   private String stageName;
 
@@ -24,7 +20,10 @@ public class PreviousStageDependencyCondition extends StageDependencyCondition {
 
   @Override
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
-    return (activeInterviewService.getStageExecution(stageName).isCompleted());
+    if (!activeInterviewService.getStageExecution(stageName).isCompleted())
+      return null;
+    else
+      return true;
   }
 
   @Override

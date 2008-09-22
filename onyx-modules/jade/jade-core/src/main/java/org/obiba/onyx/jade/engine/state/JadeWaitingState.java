@@ -40,4 +40,11 @@ public class JadeWaitingState extends AbstractJadeStageState implements Initiali
     return "Jade.Waiting";
   }
 
+  @Override
+  protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
+    if(transitionEvent.equals(TransitionEvent.INVALID)) return false;
+    else
+      return true;
+  }
+
 }

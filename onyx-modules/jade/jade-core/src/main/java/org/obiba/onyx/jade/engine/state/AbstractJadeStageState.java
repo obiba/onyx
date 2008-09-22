@@ -5,7 +5,7 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 public abstract class AbstractJadeStageState extends AbstractStageState {
 
   @Override
-  protected boolean areDependenciesCompleted() {
+  protected Boolean areDependenciesCompleted() {
     return super.areDependenciesCompleted();
 /* PL: This should be moved to a new class that extends StageDependencyCondition
     boolean completed = super.areDependenciesCompleted();

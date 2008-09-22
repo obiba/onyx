@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.core.service.PersistenceManager;
-import org.obiba.onyx.engine.PreviousStageDependencyCondition;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.StageDependencyCondition;
 import org.obiba.wicket.util.seed.XstreamResourceDatabaseSeed;
@@ -44,6 +43,5 @@ public class OnyxDatabaseSeed extends XstreamResourceDatabaseSeed {
     super.initializeXstream(xstream);
     xstream.alias("stage", Stage.class);
     xstream.alias("stageDependencyCondition", StageDependencyCondition.class);
-    xstream.alias("previousStageDependencyCondition", PreviousStageDependencyCondition.class);
   }
 }

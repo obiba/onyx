@@ -19,6 +19,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     scope="prototype">
   </bean>
 
+  <bean id="jadeNotApplicableState" parent="baseStageState"
+    class="org.obiba.onyx.jade.engine.state.JadeNotApplicableState" scope="prototype">
+  </bean>
+
   <bean id="jadeInProgressState" parent="baseStageState" class="org.obiba.onyx.jade.engine.state.JadeInProgressState"
     scope="prototype">
     <property name="activeInstrumentRunService" ref="activeInstrumentRunService" />

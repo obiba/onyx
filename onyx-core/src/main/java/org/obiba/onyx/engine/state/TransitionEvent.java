@@ -18,6 +18,11 @@ public class TransitionEvent implements Comparable<TransitionEvent> {
   public static final TransitionEvent INVALID = new TransitionEvent("invalid");
   
   /**
+   * Default counter indicate event.
+   */
+  public static final TransitionEvent NOTAPPLICABLE = new TransitionEvent("notApplicable");
+  
+  /**
    * Default start event (usually from the beginning to the in progress state).
    */
   public static final TransitionEvent START = new TransitionEvent("start");
@@ -33,7 +38,7 @@ public class TransitionEvent implements Comparable<TransitionEvent> {
   public static final TransitionEvent COMPLETE = new TransitionEvent("complete");
 
   /**
-   * Default skip event (usually from the biginning to the skipped state).
+   * Default skip event (usually from the beginning to the skipped state).
    */
   public static final TransitionEvent SKIP = new TransitionEvent("skip");
 
