@@ -1,14 +1,12 @@
 package org.obiba.onyx.webapp.participant.panel;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.easymock.EasyMock.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -25,6 +23,7 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
@@ -37,24 +36,39 @@ public class CommentsModalPanelTest implements Serializable {
 
   private transient WicketTester tester;
 
+  private ApplicationContextMock applicationContextMock;
+  
   private ActiveInterviewService activeInterviewServiceMock;
 
   private EntityQueryService queryServiceMock;
 
+  private UserSessionService userSessionServiceMock;
+  
   private CommentsModalPanel commentsModalPanel;
-
+  
   @Before
   public void setup() {
-    ApplicationContextMock mockCtx = new ApplicationContextMock();
+    applicationContextMock = new ApplicationContextMock() {
+      private static final long serialVersionUID = 1L;
+
+      // Need to override this method since the default implementation
+      // throws an UnsupportedOperationException!
+      public String getMessage(String code, Object[] args, Locale locale) {
+        return "";
+      }
+    };
 
     activeInterviewServiceMock = createMock(ActiveInterviewService.class);
-    mockCtx.putBean("activeInterviewService", activeInterviewServiceMock);
+    applicationContextMock.putBean("activeInterviewService", activeInterviewServiceMock);
 
     queryServiceMock = createMock(EntityQueryService.class);
-    mockCtx.putBean("queryService", queryServiceMock);
+    applicationContextMock.putBean("queryService", queryServiceMock);
 
+    userSessionServiceMock = createMock(UserSessionService.class);
+    applicationContextMock.putBean("userSessionService", userSessionServiceMock);
+    
     MockSpringApplication application = new MockSpringApplication();
-    application.setApplicationContext(mockCtx);
+    application.setApplicationContext(applicationContextMock);
 
     tester = new WicketTester(application);
   }
@@ -68,7 +82,11 @@ public class CommentsModalPanelTest implements Serializable {
   public void testCommentsDisplayedMostRecentFirst() {
     User user = createUser();
     Interview interview = createInterview(1l);
-    Stage stage = createStage(1l, "marble", "CON", "Participant Consent", 1);
+    
+    Stage stage = createStage(1l, "marble", "CON", "Participant_Consent", 1);
+    stage.setApplicationContext(applicationContextMock);
+    stage.setUserSessionService(userSessionServiceMock);
+    
     Participant participant = createParticipant(1l, "Suzan", "Tremblay");
     String generalComment = "general comment";
     String stageComment = "stage execute comment";
@@ -85,6 +103,10 @@ public class CommentsModalPanelTest implements Serializable {
     commentActions.add(createStageComment(user, interview, stage, ActionType.EXECUTE, now, stageComment));
     commentActions.add(createGeneralComment(user, interview, oneHourAgo, generalComment));
 
+    // Expect that UserSessionService.getLocale() is called, and return locale "en".
+    expect(userSessionServiceMock.getLocale()).andReturn(new Locale("en"));
+    expectLastCall().anyTimes();
+    
     // Expect that CommentsModalPanel calls ActiveInterviewService.getInterviewComments()
     // to retrieve all comments related to the current interview, and return the test comments.
     expect(activeInterviewServiceMock.getInterviewComments()).andReturn(commentActions);
@@ -93,6 +115,7 @@ public class CommentsModalPanelTest implements Serializable {
     // retrieve the participant currently being interviewed, and return the test participant.
     expect(activeInterviewServiceMock.getParticipant()).andReturn(participant);
 
+    replay(userSessionServiceMock);
     replay(activeInterviewServiceMock);
 
     tester.startPanel(new TestPanelSource() {
@@ -106,8 +129,9 @@ public class CommentsModalPanelTest implements Serializable {
       }
     });
 
+    verify(userSessionServiceMock);
     verify(activeInterviewServiceMock);
-   
+
     //
     // Get a reference to the FIRST comment panel and verify that it contains the most
     // recent comment -- i.e., the stage comment.
