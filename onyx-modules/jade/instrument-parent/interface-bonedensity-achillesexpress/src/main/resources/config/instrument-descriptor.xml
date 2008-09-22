@@ -99,7 +99,7 @@
   <operatorSource id="foot_scanned_source"/> 
   <input id="foot_scanned">
     <name>foot_scanned</name>
-    <description>Foot Scanned</description>
+    <description>Foot_Scanned</description>
     <dataType>TEXT</dataType>
     <captureMethod>MANUAL</captureMethod>
     <inputSource reference="foot_scanned_source" />
@@ -116,7 +116,7 @@
   </output> 
   <output id="fxrisk">
     <name>Fracture Risk</name>
-    <description>Fracture Risk</description>
+    <description>Fracture_Risk</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
@@ -124,7 +124,7 @@
   </output>  
   <output id="total">
     <name>Stiffness Index Result</name>
-    <description>Stiffness Index Result</description>
+    <description>Stiffness_Index_Result</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
@@ -148,7 +148,7 @@
   </output> 
   <output id="percentnormal">
     <name>% Young Adult</name>
-    <description>% Young Adult</description>
+    <description>%_Young_Adult</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
@@ -156,7 +156,7 @@
   </output> 
   <output id="agematched">
     <name>% Age Matched</name>
-    <description>% Age Matched</description>
+    <description>%_Age_Matched</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
@@ -164,7 +164,7 @@
   </output>     
   <output id="achillesbitmap">
     <name>Stiffness Index graph</name>
-    <description>Stiffness Index graph</description>
+    <description>Stiffness_Index_graph</description>
     <dataType>DATA</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
@@ -172,7 +172,7 @@
   </output>      
   <output id="stiffnessindex">
     <name>Stiffness Index</name>
-    <description>Stiffness Index</description>
+    <description>Stiffness_Index</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
@@ -180,7 +180,7 @@
   </output>        
   <output id="achillesbitmap2">
     <name>Ultrasound Graphic</name>
-    <description>Ultrasound Graphic</description>
+    <description>Ultrasound_Graphic</description>
     <dataType>DATA</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
@@ -188,7 +188,7 @@
   </output> 
   <output id="sos">
     <name>Speed of Ultrasound</name>
-    <description>Speed of Ultrasound</description>
+    <description>Speed_of_Ultrasound</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
@@ -196,7 +196,7 @@
   </output>  
   <output id="bua">
     <name>Broadband Ultrasound Attenuation</name>
-    <description>Broadband Ultrasound Attenuation</description>
+    <description>Broadband_Ultrasound_Attenuation</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
@@ -204,7 +204,7 @@
   </output>    
   <output id="foot_scanned">
     <name>Foot Scanned</name>
-    <description>Foot Scanned</description>
+    <description>Foot_Scanned</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
@@ -212,7 +212,7 @@
   </output>    
   <output id="appversion">
     <name>Achilles Software Version</name>
-    <description>Achilles Software Version</description>
+    <description>Achilles_Software_Version</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
@@ -220,7 +220,7 @@
   </output>      
   <output id="roi_x">
     <name>Region of Intersection X coordinate</name>
-    <description>Region of Intersection X coordinate</description>
+    <description>Region_of_Intersection_X_coordinate</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
@@ -228,7 +228,7 @@
   </output>
   <output id="roi_y">
     <name>Region of Intersection Y coordinate</name>
-    <description>Region of Intersection Y coordinate</description>
+    <description>Region_of_Intersection_Y_coordinate</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
@@ -236,7 +236,7 @@
   </output> 
   <output id="roi_z">
     <name>Region of Intersection Z coordinate</name>
-    <description>Region of Intersection Z coordinate</description>
+    <description>Region_of_Intersection_Z_coordinate</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>

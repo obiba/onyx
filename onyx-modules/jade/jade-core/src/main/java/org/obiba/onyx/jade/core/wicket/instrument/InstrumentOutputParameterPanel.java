@@ -13,10 +13,12 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
@@ -49,6 +51,9 @@ public class InstrumentOutputParameterPanel extends Panel {
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
+  @SpringBean(name="userSessionService")
+  private UserSessionService userSessionService;
+  
   private boolean manual = false;
 
   private ManualFragment manualFragment = new ManualFragment("manual");
@@ -96,6 +101,12 @@ public class InstrumentOutputParameterPanel extends Panel {
     } else {
       KeyValueDataPanel outputs = new KeyValueDataPanel("manualOutputs", new StringResourceModel("ManualDataOutputs", this, null));
       for(InstrumentOutputParameter param : queryService.match(template)) {
+        // Inject the Spring application context and the user session service
+        // into the instrument parameter. NOTE: These are dependencies of 
+        // InstrumentParameter.getDescription().
+        param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
+        param.setUserSessionService(userSessionService);
+        
         Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
 
         // case we going through this multiple times
@@ -132,6 +143,12 @@ public class InstrumentOutputParameterPanel extends Panel {
 
       KeyValueDataPanel outputs = new KeyValueDataPanel("automaticOutputs", new StringResourceModel("AutomaticDataOutputs", this, null));
       for(InstrumentOutputParameter param : queryService.match(template)) {
+        // Inject the Spring application context and the user session service
+        // into the instrument parameter. NOTE: These are dependencies of 
+        // InstrumentParameter.getDescription().
+        param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
+        param.setUserSessionService(userSessionService);
+        
         Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
         Component output = null;
 

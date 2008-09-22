@@ -20,7 +20,7 @@
   </fixedSource>
   <input id="clothes_weight">
     <name>ClothesWeight</name>
-    <description>Clothes weight</description>
+    <description>Clothes_weight</description>
     <dataType>DECIMAL</dataType>
     <measurementUnit>kg</measurementUnit>
     <captureMethod>MANUAL</captureMethod>
@@ -45,7 +45,7 @@
   </fixedSource>
   <input id="body_type_in">
     <name>BodyType</name>
-    <description>Body type</description>
+    <description>Body_type</description>
     <dataType>TEXT</dataType>
     <captureMethod>MANUAL</captureMethod>
     <inputSource reference="body_type_source" />
@@ -72,7 +72,7 @@
   </outputParameterSource>
   <input>
     <name>Height</name>
-    <description>Measured height</description>
+    <description>Measured_height</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>DECIMAL</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -82,7 +82,7 @@
 
   <output id="body_type">
     <name>BodyType</name>
-    <description>Body type</description>
+    <description>Body_type</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
@@ -90,7 +90,7 @@
 
   <output id="gender">
     <name>Gender</name>
-    <description>Output gender</description>
+    <description>Output_gender</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
@@ -98,7 +98,7 @@
 
   <output id="age">
     <name>Age</name>
-    <description>Output age</description>
+    <description>Output_age</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
@@ -106,7 +106,7 @@
 
   <output id="height">
     <name>Height</name>
-    <description>Output height</description>
+    <description>Output_height</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -115,7 +115,7 @@
 
   <output id="weight">
     <name>Weight</name>
-    <description>Measured weight</description>
+    <description>Measured_weight</description>
     <measurementUnit>kg</measurementUnit>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -124,7 +124,7 @@
 
   <output id="bmi">
     <name>BMI</name>
-    <description>Body mass index calculated</description>
+    <description>Body_mass_index_calculated</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
@@ -132,7 +132,7 @@
 
   <output id="bmr">
     <name>BMR</name>
-    <description>Basal metabolic rate calculated</description>
+    <description>Basal_metabolic_rate_calculated</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>kJ</measurementUnit>
@@ -141,7 +141,7 @@
 
   <output id="impedance">
     <name>Impedance</name>
-    <description>Measured body impedance</description>
+    <description>Measured_body_impedance</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>ohm</measurementUnit>
@@ -150,7 +150,7 @@
 
   <output id="fat_percentage">
     <name>FatPercentage</name>
-    <description>Fat percentage calculated</description>
+    <description>Fat_percentage_calculated</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
@@ -159,7 +159,7 @@
 
   <output id="fat_mass">
     <name>FatMass</name>
-    <description>Fat mass calculated</description>
+    <description>Fat_mass_calculated</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>kg</measurementUnit>
@@ -168,7 +168,7 @@
 
   <output id="ffm">
     <name>FatFreeMass</name>
-    <description>Fat free mass calculated</description>
+    <description>Fat_free_mass_calculated</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>kg</measurementUnit>
@@ -177,7 +177,7 @@
 
   <output id="tbw">
     <name>TotalBodyWater</name>
-    <description>Total Body Water calculated</description>
+    <description>Total_Body_Water_calculated</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>kg</measurementUnit>

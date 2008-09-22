@@ -80,7 +80,7 @@
   </fixedSource>
   <input id="ethnic_group">
     <name>EthnicGroup</name>
-    <description>Participant Ethnic Group</description>
+    <description>Participant_Ethnic_Group</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="ethnic_group_source" />
@@ -95,7 +95,7 @@
   </outputParameterSource>
   <input id="height">
     <name>Height</name>
-    <description>Participant Height</description>
+    <description>Participant_Height</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -111,7 +111,7 @@
   </outputParameterSource>
   <input id="weight">
     <name>Weight</name>
-    <description>Participant Weight</description>
+    <description>Participant_Weight</description>
     <measurementUnit>kg</measurementUnit>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -121,7 +121,7 @@
    
   <output id="fvc">
     <name>FVC</name>
-    <description>Measured FVC</description>
+    <description>Measured_FVC</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
@@ -129,7 +129,7 @@
   </output>  
   <output id="fev1">
     <name>FEV1</name>
-    <description>Measured FEV1</description>
+    <description>Measured_FEV1</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
@@ -137,7 +137,7 @@
   </output>  
   <output id="fev1_fvc">
     <name>FEV1_FVC</name>
-    <description>Measured FEV1/FVC</description>
+    <description>Measured_FEV1/FVC</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
@@ -145,7 +145,7 @@
   </output>  
   <output id="fev6">
     <name>FEV6</name>
-    <description>Measured FEV6</description>
+    <description>Measured_FEV6</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
@@ -153,7 +153,7 @@
   </output>  
   <output id="fev1_fev6">
     <name>FEV1_FEV6</name>
-    <description>Measured FEV1/FEV6</description>
+    <description>Measured_FEV1/FEV6</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
@@ -161,7 +161,7 @@
   </output>  
   <output id="pef">
     <name>PEF</name>
-    <description>Measured PEF</description>
+    <description>Measured_PEF</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
@@ -169,7 +169,7 @@
   </output>  
   <output id="fef2575">
     <name>FEF2575</name>
-    <description>Measured FEF2575</description>
+    <description>Measured_FEF2575</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
@@ -177,7 +177,7 @@
   </output>  
   <output id="fev3">
     <name>FEV3</name>
-    <description>Measured FEV3</description>
+    <description>Measured_FEV3</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
@@ -185,7 +185,7 @@
   </output>  
   <output id="fev3_fvc">
     <name>FEV3_FVC</name>
-    <description>Measured FEV3/FVC</description>
+    <description>Measured_FEV3/FVC</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
@@ -193,7 +193,7 @@
   </output>  
   <output id="ela">
     <name>ELA</name>
-    <description>Measured ELA</description>
+    <description>Measured_ELA</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>year</measurementUnit>
@@ -201,7 +201,7 @@
   </output>  
   <output id="fet">
     <name>FET</name>
-    <description>Measured FET</description>
+    <description>Measured_FET</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>s</measurementUnit>
@@ -209,7 +209,7 @@
   </output>  
   <output id="fef25">
     <name>FEF25</name>
-    <description>Measured FEF25</description>
+    <description>Measured_FEF25</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
@@ -217,7 +217,7 @@
   </output>  
   <output id="fef50">
     <name>FEF50</name>
-    <description>Measured FEF50</description>
+    <description>Measured_FEF50</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
@@ -225,7 +225,7 @@
   </output>  
   <output id="fef75">
     <name>FEF75</name>
-    <description>Measured FEF75</description>
+    <description>Measured_FEF75</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
@@ -233,7 +233,7 @@
   </output>  
   <output id="evol">
     <name>EVol</name>
-    <description>Measured EVol</description>
+    <description>Measured_EVol</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>mL</measurementUnit>
@@ -241,7 +241,7 @@
   </output>  
   <output id="fivc">
     <name>FIVC</name>
-    <description>Measured FIVC</description>
+    <description>Measured_FIVC</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
@@ -249,7 +249,7 @@
   </output>    
   <output id="fiv1">
     <name>FIV1</name>
-    <description>Measured FIV1</description>
+    <description>Measured_FIV1</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
@@ -257,7 +257,7 @@
   </output>  
   <output id="fiv1_fivc">
     <name>FIV1_FIVC</name>
-    <description>Measured FIV1/FIVC</description>
+    <description>Measured_FIV1/FIVC</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
@@ -265,7 +265,7 @@
   </output>  
   <output id="pif">
     <name>PIF</name>
-    <description>Measured PIF</description>
+    <description>Measured_PIF</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
@@ -274,7 +274,7 @@
     
   <output id="fvc_pred">
     <name>FVC_pred</name>
-    <description>Predicted FVC</description>
+    <description>Predicted_FVC</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
@@ -282,7 +282,7 @@
   </output>  
   <output id="fev1_pred">
     <name>FEV1_pred</name>
-    <description>Predicted FEV1</description>
+    <description>Predicted_FEV1</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
@@ -290,7 +290,7 @@
   </output>  
   <output id="fev1_fvc_pred">
     <name>FEV1_FVC_pred</name>
-    <description>Predicted FEV1/FVC</description>
+    <description>Predicted_FEV1/FVC</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
@@ -298,7 +298,7 @@
   </output>  
   <output id="fev6_pred">
     <name>FEV6_pred</name>
-    <description>Predicted FEV6</description>
+    <description>Predicted_FEV6</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
@@ -306,7 +306,7 @@
   </output>  
   <output id="fev1_fev6_pred">
     <name>FEV1_FEV6_pred</name>
-    <description>Predicted FEV1/FEV6</description>
+    <description>Predicted_FEV1/FEV6</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
@@ -314,7 +314,7 @@
   </output>  
   <output id="pef_pred">
     <name>PEF_pred</name>
-    <description>Predicted PEF</description>
+    <description>Predicted_PEF</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
@@ -322,7 +322,7 @@
   </output>  
   <output id="fef2575_pred">
     <name>FEF2575_pred</name>
-    <description>Predicted FEF2575</description>
+    <description>Predicted_FEF2575</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
@@ -330,7 +330,7 @@
   </output>  
   <output id="fev3_pred">
     <name>FEV3_pred</name>
-    <description>Predicted FEV3</description>
+    <description>Predicted_FEV3</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
@@ -338,7 +338,7 @@
   </output>  
   <output id="fev3_fvc_pred">
     <name>FEV3_FVC_pred</name>
-    <description>Predicted FEV3/FVC</description>
+    <description>Predicted_FEV3/FVC</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
@@ -346,7 +346,7 @@
   </output>
   <output id="ela_pred">
     <name>ELA_pred</name>
-    <description>Predicted ELA</description>
+    <description>Predicted_ELA</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>year</measurementUnit>
@@ -354,7 +354,7 @@
   </output>
   <output id="fet_pred">
     <name>FET_pred</name>
-    <description>Predicted FET</description>
+    <description>Predicted_FET</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>s</measurementUnit>
@@ -362,7 +362,7 @@
   </output>  
   <output id="fef25_pred">
     <name>FEF25_pred</name>
-    <description>Predicted FEF25</description>
+    <description>Predicted_FEF25</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
@@ -370,7 +370,7 @@
   </output>  
   <output id="fef50_pred">
     <name>FEF50_pred</name>
-    <description>Predicted FEF50</description>
+    <description>Predicted_FEF50</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
@@ -378,7 +378,7 @@
   </output>
   <output id="fef75_pred">
     <name>FEF75_pred</name>
-    <description>Predicted FEF75</description>
+    <description>Predicted_FEF75</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
@@ -386,7 +386,7 @@
   </output>
   <output id="evol_pred">
     <name>EVol_pred</name>
-    <description>Predicted EVol</description>
+    <description>Predicted_EVol</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>mL</measurementUnit>
@@ -394,7 +394,7 @@
   </output>
   <output id="fivc_pred">
     <name>FIVC_pred</name>
-    <description>Predicted FIVC</description>
+    <description>Predicted_FIVC</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
@@ -402,7 +402,7 @@
   </output>
   <output id="fiv1_pred">
     <name>FIV1_pred</name>
-    <description>Predicted FIV1</description>
+    <description>Predicted_FIV1</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
@@ -410,7 +410,7 @@
   </output>
   <output id="fiv1_fivc_pred">
     <name>FIV1_FIVC_pred</name>
-    <description>Predicted FIV1/FIVC</description>
+    <description>Predicted_FIV1/FIVC</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
@@ -418,7 +418,7 @@
   </output>
   <output id="pif_pred">
     <name>PIF_pred</name>
-    <description>Predicted PIF</description>
+    <description>Predicted_PIF</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
@@ -427,7 +427,7 @@
   
   <output id="fvc_image">
     <name>FVCImage</name>
-    <description>FVC Image</description>
+    <description>FVC_Image</description>
     <dataType>DATA</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="spi1" />

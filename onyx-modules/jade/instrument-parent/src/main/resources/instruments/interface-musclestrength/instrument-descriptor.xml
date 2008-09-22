@@ -16,7 +16,7 @@
 
   <output id="mus1_right_strength1">
     <name>Right Strength 1</name>
-    <description>First Right Hand Muscle Strength Measurement</description>
+    <description>First_Right_Hand_Muscle_Strength_Measurement</description>
     <measurementUnit>kg</measurementUnit>
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -24,7 +24,7 @@
   </output>
   <output id="mus1_right_strength2">
     <name>Right Strength 2</name>
-    <description>Second Right Hand Muscle Strength Measurement</description>
+    <description>Second_Right_Hand_Muscle_Strength_Measurement</description>
     <measurementUnit>kg</measurementUnit>
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -32,7 +32,7 @@
   </output>
   <computedOutput>
     <name>Right Hand Muscle Strength</name>
-    <description>Average Right Hand Muscle Strength Measurement</description>
+    <description>Average_Right_Hand_Muscle_Strength_Measurement</description>
     <measurementUnit>kg</measurementUnit>
     <dataType>INTEGER</dataType>
     <instrument reference="mus1" />
@@ -46,7 +46,7 @@
   
   <output id="mus1_left_strength1">
     <name>Left Strength 1</name>
-    <description>First Left Hand Muscle Strength Measurement</description>
+    <description>First_Left_Hand_Muscle_Strength_Measurement</description>
     <measurementUnit>kg</measurementUnit>
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -54,7 +54,7 @@
   </output>
   <output id="mus1_left_strength2">
     <name>Left Strength 2</name>
-    <description>Second Left Hand Muscle Strength Measurement</description>
+    <description>Second_Left_Hand_Muscle_Strength_Measurement</description>
     <measurementUnit>kg</measurementUnit>
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -62,7 +62,7 @@
   </output>
   <computedOutput>
     <name>Left Hand Muscle Strength</name>
-    <description>Average Left Hand Muscle Strength Measurement</description>
+    <description>Average_Left_Hand_Muscle_Strength_Measurement</description>
     <measurementUnit>kg</measurementUnit>
     <dataType>INTEGER</dataType>
     <instrument reference="mus1" />

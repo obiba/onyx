@@ -13,10 +13,12 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
@@ -62,6 +64,9 @@ public abstract class InstructionsPanel extends Panel {
   @SpringBean
   private InstrumentService instrumentService;
 
+  @SpringBean(name="userSessionService")
+  private UserSessionService userSessionService;
+  
   @SuppressWarnings("serial")
   public InstructionsPanel(String id, IModel instrumentModel) {
     super(id);
@@ -147,7 +152,14 @@ public abstract class InstructionsPanel extends Panel {
       @Override
       protected void populateItem(Item item) {
         InstrumentRunValue runValue = (InstrumentRunValue) item.getModelObject();
+        
+        // Inject the Spring application context and the user session service
+        // into the instrument parameter. NOTE: These are dependencies of 
+        // InstrumentParameter.getDescription().
         InstrumentParameter param = runValue.getInstrumentParameter();
+        param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
+        param.setUserSessionService(userSessionService);
+                
         ValueMap map = new ValueMap("name=" + param.getDescription() + ",value=");
         if(runValue != null && runValue.getData() != null && runValue.getData().getValue() != null) {
           map.put("value", runValue.getData().getValue());

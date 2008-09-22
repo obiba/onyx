@@ -17,7 +17,7 @@
 
   <output id="sit1_height1">
     <name>Sitting Height 1</name>
-    <description>First Sitting Height Measurement</description>
+    <description>First_Sitting_Height_Measurement</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>DECIMAL</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -25,7 +25,7 @@
   </output>
   <output id="sit1_height2">
     <name>Sitting Height 2</name>
-    <description>Second Sitting Height Measurement</description>
+    <description>Second_Sitting_Height_Measurement</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>DECIMAL</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -33,7 +33,7 @@
   </output>
   <computedOutput>
     <name>Sitting Height</name>
-    <description>Average Sitting Height Measurement</description>
+    <description>Average_Sitting_Height_Measurement</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>DECIMAL</dataType>
     <instrument reference="sit1" />

@@ -15,11 +15,15 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.util.data.DataType;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.NoSuchMessageException;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -50,6 +54,20 @@ public abstract class InstrumentParameter extends AbstractEntity {
   @OneToMany(mappedBy = "instrumentParameter")
   private List<InstrumentRunValue> instrumentRunValues;
 
+  @Transient
+  private transient ApplicationContext context;
+  
+  @Transient
+  private transient UserSessionService userSessionService;
+  
+  public void setApplicationContext(ApplicationContext context) {
+    this.context = context;  
+  }
+  
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
+  }
+  
   public String getName() {
     return name;
   }
@@ -59,7 +77,18 @@ public abstract class InstrumentParameter extends AbstractEntity {
   }
 
   public String getDescription() {
-    return description;
+    String retVal = description;
+    
+    if (context != null && userSessionService != null) {
+      try {
+        retVal = context.getMessage(description, null, userSessionService.getLocale());
+      }
+      catch(NoSuchMessageException ex) {
+        ; // return non-localized description
+      }
+    }
+    
+    return retVal;
   }
 
   public void setDescription(String description) {

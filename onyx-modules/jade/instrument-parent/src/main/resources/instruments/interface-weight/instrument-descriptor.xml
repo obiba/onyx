@@ -17,7 +17,7 @@
   
   <output id="wei1_weight1">
     <name>Weight 1</name>
-    <description>First Weight Measurement</description>
+    <description>First_Weight_Measurement</description>
     <measurementUnit>kg</measurementUnit>
     <dataType>DECIMAL</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -25,7 +25,7 @@
   </output>
   <output id="wei1_weight2">
     <name>Weight 2</name>
-    <description>Second Weight Measurement</description>
+    <description>Second_Weight_Measurement</description>
     <measurementUnit>kg</measurementUnit>
     <dataType>DECIMAL</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -33,7 +33,7 @@
   </output>
   <computedOutput>
     <name>Weight</name>
-    <description>Average Weight Measurement</description>
+    <description>Average_Weight_Measurement</description>
     <measurementUnit>kg</measurementUnit>
     <dataType>DECIMAL</dataType>
     <instrument reference="wei1" />

@@ -5,9 +5,11 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
@@ -44,6 +46,9 @@ public class InstrumentInputParameterPanel extends Panel {
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
+  @SpringBean(name="userSessionService")
+  private UserSessionService userSessionService;
+  
   private InstrumentRun instrumentRun;
 
   public InstrumentInputParameterPanel(String id, IModel instrumentModel) {
@@ -57,6 +62,12 @@ public class InstrumentInputParameterPanel extends Panel {
 
     KeyValueDataPanel inputs = new KeyValueDataPanel("inputs");
     for(InstrumentInputParameter param : instrumentService.getInstrumentInputParameter(instrument, false)) {
+      // Inject the Spring application context and the user session service
+      // into the instrument parameter. NOTE: These are dependencies of 
+      // InstrumentParameter.getDescription().
+      param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
+      param.setUserSessionService(userSessionService);
+      
       Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
       InstrumentRunValue runValue = new InstrumentRunValue();
       runValue.setCaptureMethod(param.getCaptureMethod());

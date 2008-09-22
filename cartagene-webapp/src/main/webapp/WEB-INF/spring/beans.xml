@@ -42,12 +42,22 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   </bean>
   
   <bean id="messageSource" 
-    class="org.springframework.context.support.ResourceBundleMessageSource">
+    class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
     <property name="basenames">
       <list>
-        <value>config/Stage</value>
-        <value>config/JadeStageState</value>
-        <value>config/MarbleStageState</value>
+        <value>classpath:config/Stage</value>
+        <value>classpath:config/JadeStageState</value>
+        <value>classpath:config/MarbleStageState</value>
+        <value>instruments/interface-height/InstrumentParameter</value>
+        <value>instruments/interface-sitting-height/InstrumentParameter</value>
+        <value>instruments/interface-hipsandwaistsize/InstrumentParameter</value>
+        <value>instruments/interface-musclestrength/InstrumentParameter</value>
+        <value>instruments/interface-weight/InstrumentParameter</value>
+        <value>instruments/interface-arterialstiffness-sphygmocor/InstrumentParameter</value>
+        <value>instruments/interface-bioimpedance-tanita-tbf310/InstrumentParameter</value>
+        <value>instruments/interface-bonedensity-achillesexpress/InstrumentParameter</value>
+        <value>instruments/interface-ecg-cardiosoft/InstrumentParameter</value>
+        <value>instruments/interface-spirometry-minispir/InstrumentParameter</value>
       </list>
     </property>
   </bean>

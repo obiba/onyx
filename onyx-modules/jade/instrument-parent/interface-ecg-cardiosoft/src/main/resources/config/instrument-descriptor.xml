@@ -17,42 +17,42 @@
   
   <output id="time">
     <name>time</name>
-    <description>Time of measurement</description>
+    <description>Time_of_measurement</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="ecg1" />
   </output>
   <output id="date">
     <name>date</name>
-    <description>Date of measurement</description>
+    <description>Date_of_measurement</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="ecg1" />
   </output>  
   <output id="diagnosis">
     <name>diagnosis</name>
-    <description>Diagnosis of measurement</description>
+    <description>Diagnosis_of_measurement</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="ecg1" />
   </output>  
   <output id="conclusion">
     <name>conclusion</name>
-    <description>Conclusion of measurement</description>
+    <description>Conclusion_of_measurement</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="ecg1" />
   </output>  
   <output id="filterSetting">
     <name>filterSetting</name>
-    <description>Filter Settings of measurement</description>
+    <description>Filter_Settings_of_measurement</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="ecg1" />
   </output>  
   <output id="diagnosisVersion">
     <name>diagnosisVersion</name>
-    <description>Diagnosis Version of measurement</description>
+    <description>Diagnosis_Version_of_measurement</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="ecg1" />
@@ -60,7 +60,7 @@
   
   <output id="ventricularRate">
     <name>ventricularRate</name>
-    <description>Ventricular Rate</description>
+    <description>Ventricular_Rate</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>BPM</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -68,7 +68,7 @@
   </output>
   <output id="pQInterval">
     <name>PQInterval</name>
-    <description>PQ Interval</description>
+    <description>PQ_Interval</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -76,7 +76,7 @@
   </output>
   <output id="pDuration">
     <name>PDuration</name>
-    <description>P Duration</description>
+    <description>P_Duration</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -84,7 +84,7 @@
   </output>
   <output id="qRsDuration">
     <name>QRsDuration</name>
-    <description>QRS Duration</description>
+    <description>QRS_Duration</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -92,7 +92,7 @@
   </output>
   <output id="qTInterval">
     <name>QTInterval</name>
-    <description>QT Interval</description>
+    <description>QT_Interval</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -100,7 +100,7 @@
   </output>
   <output id="qTCInterval">
     <name>QTCInterval</name>
-    <description>QTC Interval</description>
+    <description>QTC_Interval</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -108,7 +108,7 @@
   </output>
   <output id="rRInterval">
     <name>RRInterval</name>
-    <description>RR Interval</description>
+    <description>RR_Interval</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -116,7 +116,7 @@
   </output>
   <output id="pPInterval">
     <name>PPInterval</name>
-    <description>PP Interval</description>
+    <description>PP_Interval</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -124,7 +124,7 @@
   </output>
   <output id="pAxis">
     <name>PAxis</name>
-    <description>P Axis</description>
+    <description>P_Axis</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>degree</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -132,7 +132,7 @@
   </output>
   <output id="rAxis">
     <name>RAxis</name>
-    <description>R Axis</description>
+    <description>R_Axis</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>degree</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -140,7 +140,7 @@
   </output>
   <output id="tAxis">
     <name>TAxis</name>
-    <description>T Axis</description>
+    <description>T_Axis</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>degree</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -148,14 +148,14 @@
   </output>
   <output id="qRSNum">
     <name>QRSNum</name>
-    <description>QRS Number</description>
+    <description>QRS_Number</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="ecg1" />
   </output>
   <output id="pOnset">
     <name>POnset</name>
-    <description>P Onset</description>
+    <description>P_Onset</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -163,7 +163,7 @@
   </output>
   <output id="pOffset">
     <name>POffset</name>
-    <description>P Offset</description>
+    <description>P_Offset</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -171,7 +171,7 @@
   </output>
   <output id="qOnset">
     <name>QOnset</name>
-    <description>Q Onset</description>
+    <description>Q_Onset</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -179,7 +179,7 @@
   </output>
   <output id="qOffset">
     <name>QOffset</name>
-    <description>Q Offset</description>
+    <description>Q_Offset</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -187,7 +187,7 @@
   </output>
   <output id="tOffset">
     <name>TOffset</name>
-    <description>T Offset</description>
+    <description>T_Offset</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -195,7 +195,7 @@
   </output>
   <output id="sokolovLVHIndex">
     <name>SokolovLVHIndex</name>
-    <description>Sokolov LVH Index</description>
+    <description>Sokolov_LVH_Index</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>mV</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -203,7 +203,7 @@
   </output>
   <output id="qTDispersion">
     <name>QTDispersion</name>
-    <description>QT Dispersion</description>
+    <description>QT_Dispersion</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -211,7 +211,7 @@
   </output>
   <output id="qTDispersionBazett">
     <name>QTDispersionBazett</name>
-    <description>QT Dispersion Bazett</description>
+    <description>QT_Dispersion_Bazett</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>
@@ -220,14 +220,14 @@
 
   <output id="xmlFile">
     <name>xmlFile</name>
-    <description>Xml File</description>
+    <description>Xml_File</description>
     <dataType>DATA</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="ecg1" />
   </output>
   <output id="pdfFile">
     <name>pdfFile</name>
-    <description>Pdf File</description>
+    <description>Pdf_File</description>
     <dataType>DATA</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="ecg1" />

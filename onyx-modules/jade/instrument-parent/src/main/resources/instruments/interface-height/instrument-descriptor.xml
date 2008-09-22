@@ -24,7 +24,7 @@
 
   <output id="sta1_height1">
     <name>Height 1</name>
-    <description>First Height Measurement</description>
+    <description>First_Height_Measurement</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>DECIMAL</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -32,7 +32,7 @@
   </output>
   <output id="sta1_height2">
     <name>Height 2</name>
-    <description>Second Height Measurement</description>
+    <description>Second_Height_Measurement</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>DECIMAL</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -40,7 +40,7 @@
   </output>
   <computedOutput>
     <name>Height</name>
-    <description>Average Height Measurement</description>
+    <description>Average_Height_Measurement</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>DECIMAL</dataType>
     <instrument reference="sta1" />

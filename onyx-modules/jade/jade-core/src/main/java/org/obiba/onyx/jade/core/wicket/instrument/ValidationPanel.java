@@ -6,8 +6,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
@@ -31,6 +33,9 @@ public class ValidationPanel extends Panel {
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
+  @SpringBean(name="userSessionService")
+  private UserSessionService userSessionService;
+  
   private InstrumentRun instrumentRun;
 
   public ValidationPanel(String id, IModel instrumentModel) {
@@ -47,6 +52,12 @@ public class ValidationPanel extends Panel {
     if(queryService.count(templateIn) > 0) {
       KeyValueDataPanel kv = new KeyValueDataPanel("inputs", new StringResourceModel("DataInputs", this, null));
       for(InstrumentInputParameter param : queryService.match(templateIn)) {
+        // Inject the Spring application context and the user session service
+        // into the instrument parameter. NOTE: These are dependencies of 
+        // InstrumentParameter.getDescription().
+        param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
+        param.setUserSessionService(userSessionService);
+        
         Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
         InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
         kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new RunValueLabelModel(runValue)));
@@ -62,6 +73,12 @@ public class ValidationPanel extends Panel {
     if(queryService.count(templateOut) > 0) {
       KeyValueDataPanel kv = new KeyValueDataPanel("outputs", new StringResourceModel("DataOutputs", this, null));
       for(InstrumentOutputParameter param : queryService.match(templateOut)) {
+        // Inject the Spring application context and the user session service
+        // into the instrument parameter. NOTE: These are dependencies of 
+        // InstrumentParameter.getDescription().
+        param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
+        param.setUserSessionService(userSessionService);
+        
         Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
         InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
         if(runValue != null) {
