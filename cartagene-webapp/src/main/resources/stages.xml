@@ -4,14 +4,14 @@
   <!-- Stages -->
   <stage id="con">
     <name>CON</name>
-    <description>Participant Consent</description>
+    <description>Participant_Consent</description>
     <module>marble</module>
     <displayOrder>1</displayOrder>
   </stage>
   
   <stage id="sta">
     <name>STA</name>
-    <description>Height Measurement</description>
+    <description>Height_Measurement</description>
     <module>jade</module>
     <displayOrder>2</displayOrder>
     
@@ -22,7 +22,7 @@
   
   <stage id="sit">
     <name>SIT</name>
-    <description>Sitting Height Measurement</description>
+    <description>Sitting_Height_Measurement</description>
     <module>jade</module>
     <displayOrder>3</displayOrder>
     
@@ -33,7 +33,7 @@
   
   <stage id="hwc">
     <name>HWC</name>
-    <description>Hips and Waist Size Measurement</description>
+    <description>Hips_and_Waist_Size_Measurement</description>
     <module>jade</module>
     <displayOrder>4</displayOrder>  
       
@@ -44,7 +44,7 @@
   
   <stage id="mus">
     <name>MUS</name>
-    <description>Grip Strength Measurement</description>
+    <description>Grip_Strength_Measurement</description>
     <module>jade</module>
     <displayOrder>5</displayOrder>
         
@@ -56,7 +56,7 @@
 <!--  
   <stage id="bim">
     <name>BIM</name>
-    <description>Weight and Bioimpedance Measurement</description>
+    <description>Weight_and_Bioimpedance_Measurement</description>
     <module>jade</module>
     <displayOrder>6</displayOrder>
 
@@ -70,7 +70,7 @@
   
   <stage id="wei">
     <name>WEI</name>
-    <description>Weight Measurement</description>
+    <description>Weight_Measurement</description>
     <module>jade</module>
     <displayOrder>7</displayOrder>
     
@@ -84,7 +84,7 @@
   
   <stage id="spi">
     <name>SPI</name>
-    <description>Spirometry Measurement</description>
+    <description>Spirometry_Measurement</description>
     <module>jade</module>
     <displayOrder>8</displayOrder>
     
@@ -98,7 +98,7 @@
   
   <stage id="ecg">
     <name>ECG</name>
-    <description>Electrocardiogram Measurement</description>
+    <description>Electrocardiogram_Measurement</description>
     <module>jade</module>
     <displayOrder>9</displayOrder>
     
@@ -110,7 +110,7 @@
   
   <stage id="bon">
     <name>BON</name>
-    <description>Bone Density Measurement</description>
+    <description>Bone_Density_Measurement</description>
     <module>jade</module>
     <displayOrder>10</displayOrder>
     
@@ -122,7 +122,7 @@
     
   <stage id="art">
     <name>ART</name>
-    <description>Arterial Stiffness Measurement</description>
+    <description>Arterial_Stiffness_Measurement</description>
     <module>jade</module>
     <displayOrder>11</displayOrder>
     

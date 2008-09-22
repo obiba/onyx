@@ -16,10 +16,12 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
@@ -41,6 +43,9 @@ public abstract class StageSelectionPanel extends Panel {
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
+  @SpringBean(name="userSessionService")
+  private UserSessionService userSessionService;
+  
   private ActionWindow modal;
 
   private OnyxEntityList<Stage> list;
@@ -95,7 +100,26 @@ public abstract class StageSelectionPanel extends Panel {
     @SuppressWarnings("serial")
     public StageListColumnProvider() {
       columns.add(new PropertyColumn(new Model("#"), "displayOrder", "displayOrder"));
-      columns.add(new PropertyColumn(new StringResourceModel("Name", StageSelectionPanel.this, null), "description", "description"));
+      
+      columns.add(new AbstractColumn(new StringResourceModel("Name", StageSelectionPanel.this, null)) {
+
+        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+          // Inject the Spring application context and the user session service
+          // into the stage. NOTE: These are dependencies of Stage.getDescription().
+          final Stage stage = (Stage) rowModel.getObject();
+          stage.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
+          stage.setUserSessionService(userSessionService);
+
+          cellItem.add(new Label(componentId, new Model() {
+            public Object getObject() {
+              return stage.getDescription();
+            }
+          }));
+        }
+
+      });          
+      //new PropertyColumn(new StringResourceModel("Name", StageSelectionPanel.this, null), "description", "description"));      
+      
       columns.add(new AbstractColumn(new StringResourceModel("Status", StageSelectionPanel.this, null)) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {

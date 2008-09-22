@@ -3,8 +3,11 @@ package org.obiba.onyx.engine;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import org.obiba.core.domain.AbstractEntity;
+import org.obiba.onyx.core.service.UserSessionService;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Stage is associated to a module, through its name.
@@ -27,6 +30,20 @@ public class Stage extends AbstractEntity {
   @OneToOne(cascade = CascadeType.ALL)
   private StageDependencyCondition stageDependencyCondition;
 
+  @Transient
+  private transient ApplicationContext context;
+  
+  @Transient
+  private transient UserSessionService userSessionService;
+  
+  public void setApplicationContext(ApplicationContext context) {
+    this.context = context;  
+  }
+  
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
+  }
+  
   public String getName() {
     return name;
   }
@@ -44,7 +61,13 @@ public class Stage extends AbstractEntity {
   }
 
   public String getDescription() {
-    return description;
+    String retVal = description;
+    
+    if (context != null && userSessionService != null) {
+      retVal = context.getMessage(description, null, userSessionService.getLocale());
+    }
+    
+    return retVal;
   }
 
   public void setDescription(String description) {

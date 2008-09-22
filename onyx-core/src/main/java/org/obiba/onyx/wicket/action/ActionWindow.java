@@ -4,8 +4,10 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.Stage;
@@ -21,6 +23,9 @@ public abstract class ActionWindow extends Panel {
   @SpringBean(name="activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
+  @SpringBean(name="userSessionService")
+  private UserSessionService userSessionService;
+  
   private ModalWindow modal;
 
   private IModel stageModel;
@@ -84,7 +89,15 @@ public abstract class ActionWindow extends Panel {
       }
 
     });
-    if(stageModel != null && stageModel.getObject() != null) modal.setTitle(((Stage) stageModel.getObject()).getDescription() + ": " + getString(actionDefinition.getLabel(), null, actionDefinition.getLabel()));
+    if(stageModel != null && stageModel.getObject() != null) {
+      // Inject the Spring application context and the user session service
+      // into the stage. NOTE: These are dependencies of Stage.getDescription().
+      Stage stage = (Stage)stageModel.getObject();
+      stage.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
+      stage.setUserSessionService(userSessionService);
+      
+      modal.setTitle(((Stage) stageModel.getObject()).getDescription() + ": " + getString(actionDefinition.getLabel(), null, actionDefinition.getLabel()));
+    }
     else
       modal.setTitle(getString(actionDefinition.getLabel(), null, actionDefinition.getLabel()));
     modal.show(target);
