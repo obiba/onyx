@@ -13,34 +13,30 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.run.ContraIndicationAnswer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InstrumentTypeContraIndicationPanel extends Panel {
+public class InstrumentContraIndicationPanel extends Panel {
 
   private static final long serialVersionUID = -7360139138848577104L;
 
   @SuppressWarnings("unused")
-  private static final Logger log = LoggerFactory.getLogger(InstrumentTypeContraIndicationPanel.class);
-
-  @SpringBean
-  private EntityQueryService queryService;
+  private static final Logger log = LoggerFactory.getLogger(InstrumentContraIndicationPanel.class);
 
   private List<ContraIndicationAnswer> choices = new ArrayList<ContraIndicationAnswer>();
 
-  public InstrumentTypeContraIndicationPanel(String id, IModel instrumentTypeModel) {
-    super(id, instrumentTypeModel);
+  @SuppressWarnings("serial")
+  public InstrumentContraIndicationPanel(String id, IModel instrumentModel) {
+    super(id, instrumentModel);
 
     RepeatingView repeating = new RepeatingView("repeating");
     add(repeating);
-    
-    InstrumentType type = (InstrumentType) instrumentTypeModel.getObject();
-    for(ContraIndication ci : type.getContraIndications()) {
+
+    Instrument instrument = (Instrument) instrumentModel.getObject();
+    for(ContraIndication ci : instrument.getContraIndications()) {
       WebMarkupContainer item = new WebMarkupContainer(repeating.newChildId());
       repeating.add(item);
 
@@ -52,7 +48,7 @@ public class InstrumentTypeContraIndicationPanel extends Panel {
       RadioChoice choices = new RadioChoice("choices", new PropertyModel(choiceModel, "choice"), Arrays.asList(new String[] { "Yes", "No" }), new IChoiceRenderer() {
 
         public Object getDisplayValue(Object object) {
-          return InstrumentTypeContraIndicationPanel.this.getString(object.toString());
+          return InstrumentContraIndicationPanel.this.getString(object.toString());
         }
 
         public String getIdValue(Object object, int index) {
@@ -68,12 +64,12 @@ public class InstrumentTypeContraIndicationPanel extends Panel {
   public List<ContraIndicationAnswer> getContraIndicationAnswers() {
     return choices;
   }
-  
+
   @SuppressWarnings("serial")
   private class ContraIndicatedModel implements Serializable {
 
     private String choice;
-    
+
     private ContraIndicationAnswer answer;
 
     public ContraIndicatedModel(ContraIndication contraIndication) {

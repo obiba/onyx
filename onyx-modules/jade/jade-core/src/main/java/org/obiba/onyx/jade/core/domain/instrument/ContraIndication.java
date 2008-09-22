@@ -1,11 +1,11 @@
 package org.obiba.onyx.jade.core.domain.instrument;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
@@ -15,8 +15,9 @@ public class ContraIndication extends AbstractEntity {
 
   private static final long serialVersionUID = 13324234234234L;
 
-  @ManyToMany(mappedBy = "contraIndications")
-  private List<InstrumentType> instrumentTypes;
+  @ManyToOne
+  @JoinColumn(name = "instrument_id")
+  private Instrument instrument;
 
   @Column(length = 200)
   @Index(name = "name_index")
@@ -25,16 +26,17 @@ public class ContraIndication extends AbstractEntity {
   @Column(length = 200)
   private String description;
 
-  public List<InstrumentType> getInstrumentTypes() {
-    return instrumentTypes != null ? instrumentTypes : (instrumentTypes = new ArrayList<InstrumentType>());
+  @Enumerated(EnumType.STRING)
+  private ContraIndicationType type;
+
+  public Instrument getInstrument() {
+    return instrument;
   }
 
-  public void addInstrumentType(InstrumentType instrumentType) {
-    if (instrumentType != null) {
-      getInstrumentTypes().add(instrumentType);
-    }
+  public void setInstrument(Instrument instrument) {
+    this.instrument = instrument;
   }
-  
+
   public String getName() {
     return name;
   }
@@ -51,9 +53,17 @@ public class ContraIndication extends AbstractEntity {
     this.description = description;
   }
 
+  public ContraIndicationType getType() {
+    return type;
+  }
+
+  public void setType(ContraIndicationType type) {
+    this.type = type;
+  }
+
   @Override
   public String toString() {
     return getName();
   }
-  
+
 }

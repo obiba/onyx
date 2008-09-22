@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <linked-list>
 	
-  <contraIndication id="stand_unassisted">
-    <instrumentTypes>
-    	<instrumentType reference="sta" />
-    </instrumentTypes>
-    <name>StandUnassisted</name>
-    <description>Is Participant unable to stand unassisted ?</description>
-  </contraIndication>
-
   <!-- Instrument types -->
   <instrumentType id="sta">
     <name>STA</name>
@@ -18,10 +10,6 @@
       <instrumentType reference="bim" />
       <instrumentType reference="spi" />
     </dependentTypes>
-
-	<contraIndications>
-		<contraIndication reference="stand_unassisted" />
-	</contraIndications>
 
   </instrumentType>
 

@@ -30,10 +30,6 @@ public class InstrumentType extends AbstractEntity {
 
   @OneToMany(mappedBy = "instrumentType")
   private List<Instrument> instruments;
-  
-  @ManyToMany
-  @JoinTable(name="instrument_type_contra_indications", joinColumns=@JoinColumn(name="instrument_type_id"), inverseJoinColumns=@JoinColumn(name="contra_indication_id"))
-  private List<ContraIndication> contraIndications;
 
   @ManyToMany
   @JoinTable(name = "instrument_type_dependencies", joinColumns = @JoinColumn(name = "instrument_type_id"), inverseJoinColumns = @JoinColumn(name = "depends_on_instrument_type_id"))
@@ -84,25 +80,14 @@ public class InstrumentType extends AbstractEntity {
   public List<InstrumentType> getDependentTypes() {
     return dependentTypes != null ? dependentTypes : (dependentTypes = new ArrayList<InstrumentType>());
   }
-  
+
   public void addDependentType(InstrumentType instrumentType) {
-    if (!this.equals(instrumentType)) {
+    if(!this.equals(instrumentType)) {
       getDependentTypes().add(instrumentType);
       instrumentType.getDependsOnTypes().add(this);
     }
   }
 
-  public List<ContraIndication> getContraIndications() {
-    return contraIndications != null ? contraIndications : (contraIndications = new ArrayList<ContraIndication>());
-  }
-  
-  public void addContraIndication(ContraIndication contraIndication) {
-    if (contraIndication != null) {
-      getContraIndications().add(contraIndication);
-      contraIndication.addInstrumentType(this);
-    }
-  }
-  
   @Override
   public String toString() {
     return name;

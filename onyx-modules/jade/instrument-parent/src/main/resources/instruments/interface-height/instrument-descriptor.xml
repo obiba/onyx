@@ -15,6 +15,13 @@
     </instrumentType>
   </instrument>
 
+  <contraIndication>
+    <name>StandUnassisted</name>
+    <description>Is Participant unable to stand unassisted ?</description>
+    <type>OBSERVED</type>
+    <instrument reference="sta1" />
+  </contraIndication>
+
   <output id="sta1_height1">
     <name>Height 1</name>
     <description>First Height Measurement</description>
