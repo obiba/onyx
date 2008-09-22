@@ -67,7 +67,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="pQInterval">
-    <name>pQInterval</name>
+    <name>PQInterval</name>
     <description>PQ Interval</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
@@ -75,7 +75,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="pDuration">
-    <name>pDuration</name>
+    <name>PDuration</name>
     <description>P Duration</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
@@ -83,7 +83,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="qRsDuration">
-    <name>qRsDuration</name>
+    <name>QRsDuration</name>
     <description>QRS Duration</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
@@ -91,7 +91,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="qTInterval">
-    <name>qTInterval</name>
+    <name>QTInterval</name>
     <description>QT Interval</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
@@ -99,7 +99,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="qTCInterval">
-    <name>qTCInterval</name>
+    <name>QTCInterval</name>
     <description>QTC Interval</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
@@ -107,7 +107,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="rRInterval">
-    <name>rRInterval</name>
+    <name>RRInterval</name>
     <description>RR Interval</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
@@ -115,7 +115,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="pPInterval">
-    <name>pPInterval</name>
+    <name>PPInterval</name>
     <description>PP Interval</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
@@ -123,7 +123,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="pAxis">
-    <name>pAxis</name>
+    <name>PAxis</name>
     <description>P Axis</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>degree</measurementUnit>
@@ -131,7 +131,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="rAxis">
-    <name>rAxis</name>
+    <name>RAxis</name>
     <description>R Axis</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>degree</measurementUnit>
@@ -139,7 +139,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="tAxis">
-    <name>tAxis</name>
+    <name>TAxis</name>
     <description>T Axis</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>degree</measurementUnit>
@@ -147,14 +147,14 @@
     <instrument reference="ecg1" />
   </output>
   <output id="qRSNum">
-    <name>qRSNum</name>
+    <name>QRSNum</name>
     <description>QRS Number</description>
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="ecg1" />
   </output>
   <output id="pOnset">
-    <name>pOnset</name>
+    <name>POnset</name>
     <description>P Onset</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
@@ -162,7 +162,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="pOffset">
-    <name>pOffset</name>
+    <name>POffset</name>
     <description>P Offset</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
@@ -170,7 +170,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="qOnset">
-    <name>qOnset</name>
+    <name>QOnset</name>
     <description>Q Onset</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
@@ -178,7 +178,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="qOffset">
-    <name>qOffset</name>
+    <name>QOffset</name>
     <description>Q Offset</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
@@ -186,7 +186,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="tOffset">
-    <name>tOffset</name>
+    <name>TOffset</name>
     <description>T Offset</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
@@ -194,7 +194,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="sokolovLVHIndex">
-    <name>sokolovLVHIndex</name>
+    <name>SokolovLVHIndex</name>
     <description>Sokolov LVH Index</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>mV</measurementUnit>
@@ -202,7 +202,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="qTDispersion">
-    <name>qTDispersion</name>
+    <name>QTDispersion</name>
     <description>QT Dispersion</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
@@ -210,7 +210,7 @@
     <instrument reference="ecg1" />
   </output>
   <output id="qTDispersionBazett">
-    <name>qTDispersionBazett</name>
+    <name>QTDispersionBazett</name>
     <description>QT Dispersion Bazett</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>

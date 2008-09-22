@@ -6,11 +6,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.JOptionPane;
 
 import org.obiba.onyx.jade.client.JnlpClient;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
@@ -127,33 +124,48 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
    * @throws Exception
    */
   protected void deleteDeviceData() {
+
     // Overwrite the CardioSoft configuration file
-    File backupSettingsFile = new File(getInitPath() + getSettingsFileName());
-    File currentSettingsFile = new File(getCardioPath() + getSettingsFileName());
+    File backupSettingsFile = new File(getInitPath(), getSettingsFileName());
+    File currentSettingsFile = new File(getCardioPath(), getSettingsFileName());
     try {
-      if(backupSettingsFile.exists() && !(backupSettingsFile.lastModified() == currentSettingsFile.lastModified())) {
+      if(backupSettingsFile.exists()) {
         FileUtil.copyFile(backupSettingsFile, currentSettingsFile);
-        FileUtil.copyFile(currentSettingsFile, backupSettingsFile); // to set same lastModified property
+      } else {
+        new File(getInitPath()).mkdir();
+        FileUtil.copyFile(currentSettingsFile, backupSettingsFile);
       }
-    } catch(IOException ioEx) {
-      throw new RuntimeException("Error in deleteDeviceData IOException ", ioEx);
+    } catch(Exception ex) {
+      throw new RuntimeException("Error initializing ECG cardio.ini file", ex);
     }
 
-    // Delete the Pervasive database files
+    // Initialize the CardioSoft database
     FilenameFilter filter = new FilenameFilter() {
       public boolean accept(File dir, String name) {
         return (name.endsWith(".BTR"));
       }
     };
-    File[] databaseFiles = new File(getDatabasePath()).listFiles(filter);
-    for(int i = 0; i < databaseFiles.length; i++) {
-      databaseFiles[i].delete();
+
+    try {
+      File[] backupDatabaseFiles = new File(getInitPath()).listFiles(filter);
+      if(backupDatabaseFiles.length > 0) {
+        for(int i = 0; i < backupDatabaseFiles.length; i++) {
+          FileUtil.copyFile(backupDatabaseFiles[i], new File(getDatabasePath(), backupDatabaseFiles[i].getName()));
+        }
+      } else {
+        File[] databaseFiles = new File(getDatabasePath()).listFiles(filter);
+        for(int i = 0; i < databaseFiles.length; i++) {
+          FileUtil.copyFile(databaseFiles[i], new File(getInitPath(), databaseFiles[i].getName()));
+        }
+      }
+    } catch(Exception couldNotInitDbs) {
+      throw new RuntimeException("Error initializing ECG database files", couldNotInitDbs);
     }
 
     // Delete generated reports
-    File reportFile = new File(getExportPath() + getXmlFileName());
+    File reportFile = new File(getExportPath(), getXmlFileName());
     reportFile.delete();
-    reportFile = new File(getExportPath() + getPdfFileName());
+    reportFile = new File(getExportPath(), getPdfFileName());
     reportFile.delete();
   }
 
@@ -169,24 +181,27 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
       for(PropertyDescriptor pd : Introspector.getBeanInfo(CardiosoftInstrumentResultParser.class).getPropertyDescriptors()) {
         if(!pd.getName().equalsIgnoreCase("doc") & !pd.getName().equalsIgnoreCase("xpath") & !pd.getName().equalsIgnoreCase("xmldocument") & !pd.getName().equalsIgnoreCase("class")) {
           Object value = pd.getReadMethod().invoke(resultParser);
+          log.info("param={}",pd.getName());
           if(value == null) continue;
-          if(value instanceof Long) ouputToSend.put(pd.getName(), DataBuilder.buildInteger((Long) value));
-          else
+          log.info("value={}",value);
+          if(value instanceof Long) {
+            ouputToSend.put(pd.getName(), DataBuilder.buildInteger((Long) value));
+          } else {
             ouputToSend.put(pd.getName(), DataBuilder.buildText(value.toString()));
+          }
         }
       }
 
       // Save the xml and pdf files
-      File xmlFile = new File(getExportPath() + getXmlFileName());
+      File xmlFile = new File(getExportPath(), getXmlFileName());
       ouputToSend.put("xmlFile", DataBuilder.buildBinary(xmlFile));
 
-      File pdfFile = new File(getExportPath() + getPdfFileName());
+      File pdfFile = new File(getExportPath(), getPdfFileName());
       ouputToSend.put("pdfFile", DataBuilder.buildBinary(pdfFile));
 
       instrumentExecutionService.addOutputParameterValues(ouputToSend);
 
     } catch(Exception e) {
-      log.error("Failed result: " + e.getMessage(), e);
       throw new RuntimeException(e);
     }
   }
@@ -207,10 +222,9 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
 
     // Get data from external app
     try {
-      resultInputStream = new FileInputStream(getExportPath() + getXmlFileName());
+      resultInputStream = new FileInputStream(new File(getExportPath(), getXmlFileName()));
     } catch(FileNotFoundException fnfEx) {
-      JOptionPane.showMessageDialog(null, "Error: Cardiosoft output data file not found", "Could not complete process", JOptionPane.ERROR_MESSAGE);
-      throw new RuntimeException("Error: Cardiosoft output data file not found: ", fnfEx);
+      throw new RuntimeException("Cardiosoft output data file not found", fnfEx);
     }
 
     CardiosoftInstrumentResultParser resultParser = new CardiosoftInstrumentResultParser(resultInputStream);
