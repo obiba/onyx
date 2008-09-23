@@ -9,16 +9,17 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
 
 public class StageTest {
 
-  private MessageCapableApplicationContextMock applicationContextMock;
+  private ExtendedApplicationContextMock applicationContextMock;
   
   private UserSessionService userSessionServiceMock;
   
   @Before
   public void setUp() {
-    applicationContextMock = new MessageCapableApplicationContextMock();
+    applicationContextMock = new ExtendedApplicationContextMock();
     
     userSessionServiceMock = createMock(UserSessionService.class);
     applicationContextMock.putBean("userSessionService", userSessionServiceMock);
@@ -76,22 +77,5 @@ public class StageTest {
     verify(userSessionServiceMock);
     
     Assert.assertEquals(expectedFrenchLocalizedStageDescription, actualFrenchLocalizedStageDescription);    
-  }
-  
-  class MessageCapableApplicationContextMock extends ApplicationContextMock {
-    private static final long serialVersionUID = 1L;
-
-    private String message;
-    
-    // Need to override this method since the default implementation
-    // throws an UnsupportedOperationException!
-    public String getMessage(String code, Object[] args, Locale locale) {
-      return message;
-    }
-    
-    // This method is used to control the return value of getMessage.
-    public void setMessage(String message) {
-      this.message = message;
-    }
   }
 }
