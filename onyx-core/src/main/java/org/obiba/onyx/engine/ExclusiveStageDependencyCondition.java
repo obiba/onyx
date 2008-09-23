@@ -1,7 +1,10 @@
 package org.obiba.onyx.engine;
 
+import javax.persistence.Entity;
+
 import org.obiba.onyx.core.service.ActiveInterviewService;
 
+@Entity
 public class ExclusiveStageDependencyCondition extends StageDependencyCondition {
 
   private static final long serialVersionUID = 1L;
