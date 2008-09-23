@@ -37,9 +37,7 @@ public class Action extends AbstractEntity {
   @Enumerated(EnumType.STRING)
   private ActionType type;
 
-  @ManyToOne
-  @JoinColumn(name="stage_id")
-  private Stage stage;
+  private String stage;
 
   @Temporal(TemporalType.TIMESTAMP)
   private Date dateTime;
@@ -80,11 +78,11 @@ public class Action extends AbstractEntity {
     this.type = actionType;
   }
 
-  public final Stage getStage() {
+  public final String getStage() {
     return stage;
   }
 
-  public final void setStage(Stage stage) {
+  public final void setStage(String stage) {
     this.stage = stage;
   }
 

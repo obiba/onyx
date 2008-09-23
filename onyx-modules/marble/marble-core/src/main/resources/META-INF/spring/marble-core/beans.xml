@@ -6,22 +6,38 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
   <tx:annotation-driven transaction-manager="transactionManager" />
-  
-  <bean id="marbleOnyxModule" class="org.obiba.onyx.marble.engine.MarbleModule"/>
 
-  <bean id="marbleReadyState" parent="baseStageState" class="org.obiba.onyx.marble.engine.state.MarbleReadyState" scope="prototype">
+  <bean id="marbleOnyxModule" class="org.obiba.onyx.marble.engine.MarbleModule">
+    <property name="stages">
+      <list>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="CON" />
+          <property name="module" value="marble"/>
+          <property name="description" value="Participant_Consent" />
+          <property name="displayOrder" value="1" />
+          <property name="userSessionService" ref="userSessionService" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="marbleReadyState" parent="baseStageState" class="org.obiba.onyx.marble.engine.state.MarbleReadyState"
+    scope="prototype">
     <property name="activeConsentService" ref="activeConsentService" />
   </bean>
-  
-  <bean id="marbleInProgressState" parent="baseStageState" class="org.obiba.onyx.marble.engine.state.MarbleInProgressState" scope="prototype">
+
+  <bean id="marbleInProgressState" parent="baseStageState"
+    class="org.obiba.onyx.marble.engine.state.MarbleInProgressState" scope="prototype">
     <property name="activeConsentService" ref="activeConsentService" />
   </bean>
-  
-  <bean id="marbleCompletedState" parent="baseStageState" class="org.obiba.onyx.marble.engine.state.MarbleCompletedState" scope="prototype">
+
+  <bean id="marbleCompletedState" parent="baseStageState"
+    class="org.obiba.onyx.marble.engine.state.MarbleCompletedState" scope="prototype">
     <property name="activeConsentService" ref="activeConsentService" />
   </bean>
-  
-  <bean id="activeConsentService" class="org.obiba.onyx.marble.core.service.impl.DefaultActiveConsentServiceImpl" scope="session">
+
+  <bean id="activeConsentService" class="org.obiba.onyx.marble.core.service.impl.DefaultActiveConsentServiceImpl"
+    scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 

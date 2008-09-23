@@ -1,10 +1,7 @@
 package org.obiba.onyx.engine;
 
-import javax.persistence.Entity;
-
 import org.obiba.onyx.core.service.ActiveInterviewService;
 
-@Entity
 public class MultipleStageDependencyCondition extends StageDependencyCondition {
 
   private static final long serialVersionUID = 1L;
@@ -19,18 +16,19 @@ public class MultipleStageDependencyCondition extends StageDependencyCondition {
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
     Boolean leftResult = leftStageDependencyCondition.isDependencySatisfied(activeInterviewService);
     Boolean rightResult = rightStageDependencyCondition.isDependencySatisfied(activeInterviewService);
-    
-    if (leftResult != null && rightResult != null){
-      if (operator.equals(Operator.AND)) return (leftResult && rightResult);
-      else return (leftResult || rightResult);
+
+    if(leftResult != null && rightResult != null) {
+      if(operator.equals(Operator.AND)) return (leftResult && rightResult);
+      else
+        return (leftResult || rightResult);
     } else {
-      if (operator.equals(Operator.AND)){
-        if (leftResult != null && leftResult == false) return false;
-        if (rightResult != null && rightResult == false) return false;
+      if(operator.equals(Operator.AND)) {
+        if(leftResult != null && leftResult == false) return false;
+        if(rightResult != null && rightResult == false) return false;
         return null;
       } else {
-        if (leftResult != null) return leftResult;
-        if (rightResult != null) return rightResult;
+        if(leftResult != null) return leftResult;
+        if(rightResult != null) return rightResult;
         return null;
       }
     }
@@ -39,5 +37,17 @@ public class MultipleStageDependencyCondition extends StageDependencyCondition {
   @Override
   public boolean isDependentOn(String stageName) {
     return (leftStageDependencyCondition.isDependentOn(stageName) || rightStageDependencyCondition.isDependentOn(stageName));
+  }
+
+  public void setLeftStageDependencyCondition(StageDependencyCondition leftStageDependencyCondition) {
+    this.leftStageDependencyCondition = leftStageDependencyCondition;
+  }
+
+  public void setRightStageDependencyCondition(StageDependencyCondition rightStageDependencyCondition) {
+    this.rightStageDependencyCondition = rightStageDependencyCondition;
+  }
+
+  public void setOperator(Operator operator) {
+    this.operator = operator;
   }
 }

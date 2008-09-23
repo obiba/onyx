@@ -28,6 +28,8 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.ModuleRegistry;
+import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
@@ -42,6 +44,9 @@ public abstract class CommentsModalPanel extends Panel {
 
   @SpringBean
   private EntityQueryService queryService;
+  
+  @SpringBean
+  private ModuleRegistry moduleRegistry;
 
   private ModalWindow commentsWindow;
 
@@ -171,7 +176,7 @@ public abstract class CommentsModalPanel extends Panel {
       kvPanel.addRow(new StringResourceModel("CommentTime", this, null), DateModelUtils.getDateTimeModel(new PropertyModel(comment, "dateTime")));
       IModel stageModel;
       if(comment.getStage() != null) {
-        stageModel = new PropertyModel(comment, "stage.description");
+        stageModel = new PropertyModel(new StageModel(moduleRegistry, comment.getStage()), "description");
       } else {
         stageModel = new StringResourceModel("GeneralComment", this, null);
       }

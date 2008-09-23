@@ -31,7 +31,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="databaseSeeds">
       <list>
         <ref bean="testDatabaseSeed" />
-        <ref bean="onyxDatabaseSeed" />
         <ref bean="jadeDatabaseSeed" />
       </list>
     </property>

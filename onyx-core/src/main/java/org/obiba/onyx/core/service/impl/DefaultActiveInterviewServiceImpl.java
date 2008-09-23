@@ -77,23 +77,25 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
       contexts = new HashMap<Serializable, StageExecutionContext>();
       interviewStageContexts.put(interview.getId(), contexts);
     }
-    StageExecutionContext exec = contexts.get(stage.getId());
+    StageExecutionContext exec = contexts.get(stage.getName());
 
     if(exec == null) {
       Module module = moduleRegistry.getModule(stage.getModule());
       exec = (StageExecutionContext) module.createStageExecution(getInterview(), stage);
 
       for(StageExecutionContext sec : contexts.values()) {
-        if(exec.getStage().getStageDependencyCondition().isDependentOn(sec.getStage().getName())) {
-          sec.addTransitionListener(exec);
+        if(exec.getStage().getStageDependencyCondition() != null) {
+          if(exec.getStage().getStageDependencyCondition().isDependentOn(sec.getStage().getName())) {
+            sec.addTransitionListener(exec);
+          }
         }
       }
 
-      contexts.put(stage.getId(), exec);
+      contexts.put(stage.getName(), exec);
 
       // try to find it in memory
       StageExecutionMemento template = new StageExecutionMemento();
-      template.setStage(stage);
+      template.setStage(stage.getName());
       template.setInterview(getInterview());
       StageExecutionMemento memento = getPersistenceManager().matchOne(template);
       if(memento != null) {
@@ -106,20 +108,18 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   }
 
   public IStageExecution getStageExecution(String stageName) {
-
-    Stage template = new Stage();
-    template.setName(stageName);
-    Stage stage = getPersistenceManager().matchOne(template);
+    Stage stage = moduleRegistry.getStage(stageName);
     if(stage == null) {
       throw new IllegalArgumentException("Invalid stage name " + stageName);
     }
-
     return getStageExecution(stage);
   }
 
   public void doAction(Stage stage, Action action, User user) {
     action.setInterview(getParticipant().getInterview());
-    action.setStage(stage);
+    if(stage != null) {
+      action.setStage(stage.getName());
+    }
     action.setDateTime(new Date());
     action.setUser(user);
     getPersistenceManager().save(action);

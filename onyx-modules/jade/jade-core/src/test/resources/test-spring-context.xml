@@ -5,6 +5,8 @@
   <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl">
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
+  
+  <bean id="userSessionService" class="org.obiba.onyx.core.service.impl.UserSessionServiceBeanImpl"/>
 
   <bean id="baseStageState" class="org.obiba.onyx.engine.state.AbstractStageState"
     abstract="true">

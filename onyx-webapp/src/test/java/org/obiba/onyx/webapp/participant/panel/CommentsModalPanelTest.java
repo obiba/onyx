@@ -1,9 +1,14 @@
 package org.obiba.onyx.webapp.participant.panel;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -26,6 +31,8 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.Module;
+import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.test.MockSpringApplication;
@@ -37,15 +44,17 @@ public class CommentsModalPanelTest implements Serializable {
   private transient WicketTester tester;
 
   private ApplicationContextMock applicationContextMock;
-  
+
   private ActiveInterviewService activeInterviewServiceMock;
 
   private EntityQueryService queryServiceMock;
 
+  private ModuleRegistry moduleRegistry;
+
   private UserSessionService userSessionServiceMock;
-  
+
   private CommentsModalPanel commentsModalPanel;
-  
+
   @Before
   public void setup() {
     applicationContextMock = new ApplicationContextMock() {
@@ -64,39 +73,41 @@ public class CommentsModalPanelTest implements Serializable {
     queryServiceMock = createMock(EntityQueryService.class);
     applicationContextMock.putBean("queryService", queryServiceMock);
 
+    applicationContextMock.putBean("moduleRegistry", moduleRegistry = new ModuleRegistry());
+
     userSessionServiceMock = createMock(UserSessionService.class);
     applicationContextMock.putBean("userSessionService", userSessionServiceMock);
-    
+
     MockSpringApplication application = new MockSpringApplication();
     application.setApplicationContext(applicationContextMock);
 
     tester = new WicketTester(application);
   }
 
-  /** 
-   * Tests that all types of comments -- general and stage -- are displayed in the Previous
-   * Comments section, ordered by date (most recent first).
+  /**
+   * Tests that all types of comments -- general and stage -- are displayed in the Previous Comments section, ordered by
+   * date (most recent first).
    */
   @SuppressWarnings("serial")
   @Test
   public void testCommentsDisplayedMostRecentFirst() {
     User user = createUser();
     Interview interview = createInterview(1l);
-    
-    Stage stage = createStage(1l, "marble", "CON", "Participant_Consent", 1);
+
+    Stage stage = createStage("marble", "CON", "Participant_Consent", 1);
     stage.setApplicationContext(applicationContextMock);
     stage.setUserSessionService(userSessionServiceMock);
-    
+
     Participant participant = createParticipant(1l, "Suzan", "Tremblay");
     String generalComment = "general comment";
     String stageComment = "stage execute comment";
     Date now = new Date();
-    Date oneHourAgo = new Date(now.getTime() - 1000*60*60);
-    
+    Date oneHourAgo = new Date(now.getTime() - 1000 * 60 * 60);
+
     //
     // Create a list of two comments for this test, ordered by date (most recent first).
     //
-    // NOTE: The order corresponds to the expected order of comments returned by 
+    // NOTE: The order corresponds to the expected order of comments returned by
     // ActiveInterviewService.getInterviewComments().
     //
     List<Action> commentActions = new ArrayList<Action>();
@@ -106,7 +117,15 @@ public class CommentsModalPanelTest implements Serializable {
     // Expect that UserSessionService.getLocale() is called, and return locale "en".
     expect(userSessionServiceMock.getLocale()).andReturn(new Locale("en"));
     expectLastCall().anyTimes();
-    
+
+    // We can't mock ModuleRegistry, so we'll create a mock Module instance and register that in the ModuleRegistry... 
+    // This allows us to expect that ModuleRegistry.getStage() is called, and return the proper Stage instance
+    Module mockModule = createMock(Module.class);
+    expect(mockModule.getStages()).andReturn(Collections.singletonList(stage));
+    expectLastCall().anyTimes();
+    expect(mockModule.getName()).andReturn("MockModule");
+    expectLastCall().anyTimes();
+
     // Expect that CommentsModalPanel calls ActiveInterviewService.getInterviewComments()
     // to retrieve all comments related to the current interview, and return the test comments.
     expect(activeInterviewServiceMock.getInterviewComments()).andReturn(commentActions);
@@ -116,7 +135,10 @@ public class CommentsModalPanelTest implements Serializable {
     expect(activeInterviewServiceMock.getParticipant()).andReturn(participant);
 
     replay(userSessionServiceMock);
+    replay(mockModule);
     replay(activeInterviewServiceMock);
+
+    moduleRegistry.registerModule(mockModule);
 
     tester.startPanel(new TestPanelSource() {
       public Panel getTestPanel(String panelId) {
@@ -130,13 +152,14 @@ public class CommentsModalPanelTest implements Serializable {
     });
 
     verify(userSessionServiceMock);
+    verify(mockModule);
     verify(activeInterviewServiceMock);
 
     //
     // Get a reference to the FIRST comment panel and verify that it contains the most
     // recent comment -- i.e., the stage comment.
     //
-    // NOTE: In the current user interface, the comment string is contained in the FOURTH row 
+    // NOTE: In the current user interface, the comment string is contained in the FOURTH row
     // of the comment panel.
     //
     KeyValueDataPanel commentPanel = (KeyValueDataPanel) commentsModalPanel.get("previousComments:comment-list:1:comment-panel");
@@ -145,7 +168,7 @@ public class CommentsModalPanelTest implements Serializable {
     MultiLineLabel commentLabel = (MultiLineLabel) commentPanel.get("repeating:4:" + KeyValueDataPanel.getRowValueId());
     Assert.assertNotNull(commentLabel);
     Assert.assertEquals(stageComment, commentLabel.getModelObjectAsString());
-    
+
     //
     // Now get a reference to the SECOND comment panel and verify that it contains the
     // earlier comment -- i.e., the general comment.
@@ -172,9 +195,8 @@ public class CommentsModalPanelTest implements Serializable {
     return interview;
   }
 
-  private Stage createStage(long id, String module, String name, String description, int displayOrder) {
+  private Stage createStage(String module, String name, String description, int displayOrder) {
     Stage stage = new Stage();
-    stage.setId(id);
     stage.setModule(module);
     stage.setDisplayOrder(displayOrder);
 
@@ -208,7 +230,7 @@ public class CommentsModalPanelTest implements Serializable {
     commentAction.setActionType(type);
     commentAction.setUser(user);
     commentAction.setInterview(interview);
-    commentAction.setStage(stage);
+    commentAction.setStage(stage.getName());
     commentAction.setDateTime(date);
     commentAction.setComment(comment);
 

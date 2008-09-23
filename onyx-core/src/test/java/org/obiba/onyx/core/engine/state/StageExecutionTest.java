@@ -63,7 +63,6 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
     Stage stage1 = new Stage();
     stage1.setName("dummy1");
-    stage1 = persistenceManager.save(stage1);
 
     Interview interview = persistenceManager.save(new Interview());
     context1.setStage(stage1);
@@ -81,7 +80,6 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     Stage stage2 = new Stage();
     stage2.setName("dummy2");
     stage2.setStageDependencyCondition(new PreviousStageDependencyCondition("dummy1"));
-    stage2 = persistenceManager.save(stage2);
 
     context2.setStage(stage2);
     context2.setInterview(interview);
@@ -104,7 +102,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
   private StageExecutionMemento getMemento(StageExecutionContext context) {
     StageExecutionMemento memento = new StageExecutionMemento();
-    memento.setStage(context.getStage());
+    memento.setStage(context.getStage().getName());
     memento.setInterview(context.getInterview());
     return persistenceManager.matchOne(memento);
   }
@@ -209,6 +207,16 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     memento = getMemento(context2);
     Assert.assertNotNull("Memento is null", memento);
     Assert.assertEquals("WaitingState", memento.getState());
+  }
+
+  @Test
+  public void testCompleteThenCancelAndCompleteAgain() {
+    doAction(ActionDefinitionBuilder.START_ACTION);
+    doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
+    doAction(ActionDefinitionBuilder.CANCEL_ACTION);
+    doAction(ActionDefinitionBuilder.START_ACTION);
+    doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
+    Assert.assertEquals("Completed", context1.getMessage());
   }
 
   private void doAction(ActionDefinition definition) {

@@ -7,8 +7,143 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <tx:annotation-driven transaction-manager="transactionManager" />
 
+  <bean name="consentDependency" class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+    <property name="stageName" value="CON" />
+  </bean>
+  <bean name="staDependency" class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+    <property name="stageName" value="STA" />
+  </bean>
+
   <bean id="jadeOnyxModule" class="org.obiba.onyx.jade.engine.JadeModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
+    <property name="stages">
+      <list>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="STA" />
+          <property name="module" value="jade" />
+          <property name="description" value="Height_Measurement" />
+          <property name="displayOrder" value="2" />
+          <property name="userSessionService" ref="userSessionService" />
+          <property name="stageDependencyCondition" ref="consentDependency" />
+        </bean>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="SIT" />
+          <property name="module" value="jade" />
+          <property name="description" value="Sitting_Height_Measurement" />
+          <property name="displayOrder" value="3" />
+          <property name="userSessionService" ref="userSessionService" />
+          <property name="stageDependencyCondition" ref="consentDependency" />
+        </bean>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="HWC" />
+          <property name="module" value="jade" />
+          <property name="description" value="Hips_and_Waist_Size_Measurement" />
+          <property name="displayOrder" value="4" />
+          <property name="userSessionService" ref="userSessionService" />
+          <property name="stageDependencyCondition" ref="consentDependency" />
+        </bean>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="MUS" />
+          <property name="module" value="jade" />
+          <property name="description" value="Grip_Strength_Measurement" />
+          <property name="displayOrder" value="5" />
+          <property name="userSessionService" ref="userSessionService" />
+          <property name="stageDependencyCondition" ref="consentDependency" />
+        </bean>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="BIM" />
+          <property name="module" value="jade" />
+          <property name="description" value="Weight_and_Bioimpedance_Measurement" />
+          <property name="displayOrder" value="6" />
+          <property name="userSessionService" ref="userSessionService" />
+          <property name="stageDependencyCondition">
+            <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+              <property name="leftStageDependencyCondition" ref="consentDependency" />
+              <property name="operator" value="AND" />
+              <property name="rightStageDependencyCondition" ref="staDependency" />
+            </bean>
+          </property>
+        </bean>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="WEI" />
+          <property name="module" value="jade" />
+          <property name="description" value="Weight_Measurement" />
+          <property name="displayOrder" value="7" />
+          <property name="userSessionService" ref="userSessionService" />
+          <property name="stageDependencyCondition">
+            <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+              <property name="leftStageDependencyCondition" ref="consentDependency" />
+              <property name="operator" value="AND" />
+              <property name="rightStageDependencyCondition">
+                <bean class="org.obiba.onyx.engine.ExclusiveStageDependencyCondition">
+                  <property name="stageName" value="BIM" />
+                </bean>
+              </property>
+            </bean>
+          </property>
+        </bean>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="SPI" />
+          <property name="module" value="jade" />
+          <property name="description" value="Spirometry_Measurement" />
+          <property name="displayOrder" value="8" />
+          <property name="userSessionService" ref="userSessionService" />
+
+          <property name="stageDependencyCondition">
+            <!-- CON && STA && (BIM || WEI) -->
+            <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+              <property name="leftStageDependencyCondition" ref="consentDependency" />
+              <property name="operator" value="AND" />
+              <property name="rightStageDependencyCondition">
+                <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+                  <property name="leftStageDependencyCondition" ref="staDependency" />
+                  <property name="operator" value="AND" />
+                  <property name="rightStageDependencyCondition">
+                    <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+                      <property name="leftStageDependencyCondition">
+                        <bean class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+                          <property name="stageName" value="BIM" />
+                        </bean>
+                      </property>
+                      <property name="operator" value="OR" />
+                      <property name="rightStageDependencyCondition">
+                        <bean class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+                          <property name="stageName" value="WEI" />
+                        </bean>
+                      </property>
+                    </bean>
+                  </property>
+                </bean>
+              </property>
+            </bean>
+          </property>
+        </bean>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="ECG" />
+          <property name="module" value="jade" />
+          <property name="description" value="Electrocardiogram_Measurement" />
+          <property name="displayOrder" value="9" />
+          <property name="userSessionService" ref="userSessionService" />
+          <property name="stageDependencyCondition" ref="consentDependency" />
+        </bean>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="BON" />
+          <property name="module" value="jade" />
+          <property name="description" value="Bone_Density_Measurement" />
+          <property name="displayOrder" value="10" />
+          <property name="userSessionService" ref="userSessionService" />
+          <property name="stageDependencyCondition" ref="consentDependency" />
+        </bean>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="ART" />
+          <property name="module" value="jade" />
+          <property name="description" value="Arterial_Stiffness_Measurement" />
+          <property name="displayOrder" value="10" />
+          <property name="userSessionService" ref="userSessionService" />
+          <property name="stageDependencyCondition" ref="consentDependency" />
+        </bean>
+      </list>
+    </property>
   </bean>
 
   <bean id="jadeWaitingState" parent="baseStageState" class="org.obiba.onyx.jade.engine.state.JadeWaitingState"

@@ -1,21 +1,13 @@
 package org.obiba.onyx.engine;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
-
-import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 /**
  * Stage is associated to a module, through its name.
- * 
- * @see Module
  */
-@Entity
-public class Stage extends AbstractEntity {
+public class Stage implements ApplicationContextAware {
 
   private static final long serialVersionUID = 8309472904104798783L;
 
@@ -27,23 +19,20 @@ public class Stage extends AbstractEntity {
 
   private Integer displayOrder;
 
-  @OneToOne(cascade = CascadeType.ALL)
   private StageDependencyCondition stageDependencyCondition;
 
-  @Transient
-  private transient ApplicationContext context;
-  
-  @Transient
-  private transient UserSessionService userSessionService;
-  
+  private ApplicationContext context;
+
+  private UserSessionService userSessionService;
+
   public void setApplicationContext(ApplicationContext context) {
-    this.context = context;  
+    this.context = context;
   }
-  
+
   public void setUserSessionService(UserSessionService userSessionService) {
     this.userSessionService = userSessionService;
   }
-  
+
   public String getName() {
     return name;
   }
@@ -62,11 +51,11 @@ public class Stage extends AbstractEntity {
 
   public String getDescription() {
     String retVal = description;
-    
-    if (context != null && userSessionService != null) {
+
+    if(context != null && userSessionService != null) {
       retVal = context.getMessage(description, null, userSessionService.getLocale());
     }
-    
+
     return retVal;
   }
 

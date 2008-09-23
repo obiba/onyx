@@ -14,6 +14,7 @@ import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
@@ -33,6 +34,8 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
 
   private static final Logger log = LoggerFactory.getLogger(StageExecutionContext.class);
 
+  private ModuleRegistry moduleRegistry;
+
   private Stage stage;
 
   private Interview interview;
@@ -49,6 +52,10 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
   public StageExecutionContext(Interview interview, Stage stage) {
     this.interview = interview;
     this.stage = stage;
+  }
+
+  public void setModuleRegistry(ModuleRegistry moduleRegistry) {
+    this.moduleRegistry = moduleRegistry;
   }
 
   public void addTransitionListener(ITransitionListener listener) {
@@ -105,7 +112,7 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
 
   private void saveState() {
     StageExecutionMemento template = new StageExecutionMemento();
-    template.setStage(stage);
+    template.setStage(stage.getName());
     template.setInterview(interview);
     StageExecutionMemento memento = (StageExecutionMemento) saveToMemento(getPersistenceManager().matchOne(template));
     getPersistenceManager().save(memento);
@@ -224,7 +231,7 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
     if(memento instanceof StageExecutionMemento) {
       StageExecutionMemento stageMemento = (StageExecutionMemento) memento;
       this.interview = stageMemento.getInterview();
-      this.stage = stageMemento.getStage();
+      this.stage = this.moduleRegistry.getStage(stageMemento.getStage());
       for(IStageExecution exec : edges.keySet()) {
         if(exec.getClass().getSimpleName().equals(stageMemento.getState())) {
           this.currentState = exec;
@@ -238,7 +245,7 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
     if(memento == null) {
       myMemento = new StageExecutionMemento();
       myMemento.setInterview(interview);
-      myMemento.setStage(stage);
+      myMemento.setStage(stage.getName());
     } else if(memento instanceof StageExecutionMemento) myMemento = (StageExecutionMemento) memento;
     else
       throw new IllegalArgumentException("StageExecutionMemento is expected.");

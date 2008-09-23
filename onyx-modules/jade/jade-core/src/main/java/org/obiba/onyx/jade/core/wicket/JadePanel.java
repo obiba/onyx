@@ -13,11 +13,13 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.wicket.wizard.InstrumentWizardForm;
 import org.obiba.onyx.wicket.IEngineComponentAware;
+import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardPanel;
@@ -30,8 +32,11 @@ public class JadePanel extends Panel implements IEngineComponentAware {
   @SpringBean
   private EntityQueryService queryService;
 
-  @SpringBean(name="activeInterviewService")
+  @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
+
+  @SpringBean
+  private ModuleRegistry moduleRegistry;
 
   private ActionWindow actionWindow;
 
@@ -43,8 +48,7 @@ public class JadePanel extends Panel implements IEngineComponentAware {
   public JadePanel(String id, Stage stage) {
     super(id);
     InstrumentType type = getInstrumentType(stage);
-    // get a fresh stage from hibernate
-    model = new JadeModel(new DetachableEntityModel(queryService, queryService.get(Stage.class, stage.getId())), new DetachableEntityModel(queryService, type));
+    model = new JadeModel(new StageModel(moduleRegistry, stage.getName()), new DetachableEntityModel(queryService, type));
 
     add(new Label("description", type.getDescription()));
 

@@ -28,7 +28,7 @@ public class StageStartEndTimePanel extends Panel {
 
     Action template = new Action();
     template.setInterview(activeInterviewService.getInterview());
-    template.setStage(stage);
+    template.setStage(stage.getName());
 
     List<Action> actionList = queryService.match(template);
 

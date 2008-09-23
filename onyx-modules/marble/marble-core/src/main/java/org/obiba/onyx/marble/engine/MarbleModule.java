@@ -1,5 +1,7 @@
 package org.obiba.onyx.marble.engine;
 
+import java.util.List;
+
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;
@@ -14,6 +16,8 @@ import org.springframework.context.ApplicationContextAware;
 public class MarbleModule implements Module, ApplicationContextAware {
 
   private ApplicationContext applicationContext;
+
+  private List<Stage> stages;
 
   public IStageExecution createStageExecution(Interview interview, Stage stage, IStageExecution... dependsOn) {
     StageExecutionContext exec = (StageExecutionContext) applicationContext.getBean("stageExecutionContext");
@@ -39,13 +43,17 @@ public class MarbleModule implements Module, ApplicationContextAware {
   }
 
   public void initialize() {
-    // TODO Auto-generated method stub
-
   }
 
   public void shutdown() {
-    // TODO Auto-generated method stub
+  }
 
+  public List<Stage> getStages() {
+    return stages;
+  }
+
+  public void setStages(List<Stage> stages) {
+    this.stages = stages;
   }
 
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

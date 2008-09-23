@@ -2,50 +2,46 @@ package org.obiba.onyx.webapp.stage.panel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
-import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
+import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
+import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.webapp.action.panel.ActionsPanel;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
 import org.obiba.onyx.webapp.stage.page.StagePage;
+import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
-import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
-import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 
 public abstract class StageSelectionPanel extends Panel {
 
   private static final long serialVersionUID = 6282742572162384139L;
 
-  @SpringBean
-  private EntityQueryService queryService;
-
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
-  @SpringBean(name="userSessionService")
-  private UserSessionService userSessionService;
-  
+  @SpringBean
+  private ModuleRegistry moduleRegistry;
+
   private ActionWindow modal;
 
   private OnyxEntityList<Stage> list;
@@ -65,7 +61,7 @@ public abstract class StageSelectionPanel extends Panel {
           target.addComponent(list);
           StageSelectionPanel.this.onActionPerformed(target, stage, action);
         } else {
-          setResponsePage(new StagePage(new DetachableEntityModel(queryService, stage)));
+          setResponsePage(new StagePage(new StageModel(moduleRegistry, stage)));
         }
       }
 
@@ -78,13 +74,24 @@ public abstract class StageSelectionPanel extends Panel {
 
   abstract public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action);
 
-  private class StageProvider extends SortableDataProviderEntityServiceImpl<Stage> {
+  private class StageProvider extends SortableDataProvider {
 
     private static final long serialVersionUID = 6022606267778864539L;
 
     public StageProvider() {
-      super(queryService, Stage.class);
-      setSort(new SortParam("displayOrder", true));
+    }
+
+    public Iterator iterator(int first, int count) {
+      List<Stage> stages = moduleRegistry.listStages();
+      return stages.iterator();
+    }
+
+    public IModel model(Object object) {
+      return new StageModel(moduleRegistry, (Stage) object);
+    }
+
+    public int size() {
+      return moduleRegistry.listStages().size();
     }
 
   }
@@ -99,34 +106,22 @@ public abstract class StageSelectionPanel extends Panel {
 
     @SuppressWarnings("serial")
     public StageListColumnProvider() {
-      columns.add(new PropertyColumn(new Model("#"), "displayOrder", "displayOrder"));
-      
+      columns.add(new PropertyColumn(new Model("#"), "displayOrder"));
+
       columns.add(new AbstractColumn(new StringResourceModel("Name", StageSelectionPanel.this, null)) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          // Inject the Spring application context and the user session service
-          // into the stage. NOTE: These are dependencies of Stage.getDescription().
-          final Stage stage = (Stage) rowModel.getObject();
-          stage.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
-          stage.setUserSessionService(userSessionService);
-
-          cellItem.add(new Label(componentId, new Model() {
-            public Object getObject() {
-              return stage.getDescription();
-            }
-          }));
+          cellItem.add(new Label(componentId, new PropertyModel(rowModel, "description")));
         }
 
-      });          
-      //new PropertyColumn(new StringResourceModel("Name", StageSelectionPanel.this, null), "description", "description"));      
-      
+      });
+
       columns.add(new AbstractColumn(new StringResourceModel("Status", StageSelectionPanel.this, null)) {
 
-        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          final Stage stage = (Stage) rowModel.getObject();
-
+        public void populateItem(Item cellItem, String componentId, final IModel rowModel) {
           cellItem.add(new Label(componentId, new Model() {
             public Object getObject() {
+              Stage stage = (Stage) rowModel.getObject();
               IStageExecution exec = activeInterviewService.getStageExecution(stage);
               return exec.getMessage();
             }
@@ -150,7 +145,7 @@ public abstract class StageSelectionPanel extends Panel {
           public void populateItem(Item cellItem, String componentId, IModel rowModel) {
             Stage stage = (Stage) rowModel.getObject();
             IStageExecution exec = activeInterviewService.getStageExecution(stage);
-            cellItem.add(new ActionsPanel(componentId, new DetachableEntityModel(queryService, stage), exec, modal));
+            cellItem.add(new ActionsPanel(componentId, rowModel, exec, modal));
           }
 
         });
@@ -164,7 +159,7 @@ public abstract class StageSelectionPanel extends Panel {
 
           boolean foundActionComments = false;
           for(Action action : interviewComments) {
-            if(action.getStage() != null && action.getStage().getId() == stage.getId()) {
+            if(action.getStage() != null && action.getStage().equals(stage.getName())) {
               foundActionComments = true;
               break;
             }
@@ -209,5 +204,4 @@ public abstract class StageSelectionPanel extends Panel {
     }
 
   }
-
 }

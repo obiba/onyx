@@ -6,7 +6,6 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.util.data.Data;
 
-@Entity
 public class ConsentStageDependencyCondition extends StageDependencyCondition {
 
   private static final long serialVersionUID = 1L;
