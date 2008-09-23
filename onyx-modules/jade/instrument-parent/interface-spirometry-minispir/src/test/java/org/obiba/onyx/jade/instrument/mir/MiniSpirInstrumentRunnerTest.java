@@ -45,12 +45,12 @@ public class MiniSpirInstrumentRunnerTest {
     minispirInstrumentRunner.setExternalImageName("FVC.jpg");
     minispirInstrumentRunner.setExternalInputName("patient.srv");
     minispirInstrumentRunner.setExternalOutputName("Results.wsp");
-    
+
     String resourcesParentDir = new File(getClass().getResource("/WinSpiroPRO.wdb").toURI().getPath()).getParent();
-    minispirInstrumentRunner.setInitdbPath(new File(resourcesParentDir, File.separator ).getPath());
+    minispirInstrumentRunner.setInitdbPath(new File(resourcesParentDir, File.separator).getPath());
 
     // Create a test directory to simulate WinSpiro software installation path.
-    String winSpiroSimulatedPath = "target" + File.separator + "test-spirometry";
+    String winSpiroSimulatedPath = "target" + File.separator + "test-spirometry" + File.separator;
     (new File(winSpiroSimulatedPath)).mkdir();
     minispirInstrumentRunner.setMirPath(winSpiroSimulatedPath);
 
@@ -68,14 +68,17 @@ public class MiniSpirInstrumentRunnerTest {
     instrumentExecutionServiceMock = createMock(InstrumentExecutionService.class);
     minispirInstrumentRunner.setInstrumentExecutionService(instrumentExecutionServiceMock);
 
-    initDbFile = new File(minispirInstrumentRunner.getInitdbPath() + minispirInstrumentRunner.getExternalDbName());
-    miniSpirDbFile = new File(minispirInstrumentRunner.getMirPath() + minispirInstrumentRunner.getExternalDbName());
+    initDbFile = new File(minispirInstrumentRunner.getInitdbPath(), minispirInstrumentRunner.getExternalDbName());
+    miniSpirDbFile = new File(minispirInstrumentRunner.getMirPath(), minispirInstrumentRunner.getExternalDbName());
 
   }
 
   @Test
   public void testInitialize() throws FileNotFoundException, IOException {
 
+    // Write some arbitrary data to simulate database access by external software.
+    (new FileOutputStream(miniSpirDbFile)).write((byte) 234432141);
+    
     // Insure that the previous participant data is deleted.
     minispirInstrumentRunner.deleteDeviceData();
 
@@ -99,13 +102,13 @@ public class MiniSpirInstrumentRunnerTest {
     // Generate the input file for WinSpiro.
     minispirInstrumentRunner.initParticipantData();
     verify(instrumentExecutionServiceMock);
-    
+
     // Verify that input file has been created.
     File inputFile = new File(minispirInstrumentRunner.getMirPath() + minispirInstrumentRunner.getExternalInputName());
     Assert.assertTrue(inputFile.exists());
 
   }
-  
+
   private java.util.Date getBirthDate() {
     Calendar c = Calendar.getInstance();
     c.set(Calendar.YEAR, 1964);
@@ -113,19 +116,16 @@ public class MiniSpirInstrumentRunnerTest {
     c.set(Calendar.DAY_OF_MONTH, 12);
 
     return c.getTime();
-  }  
+  }
 
   @SuppressWarnings("unchecked")
   @Test
   public void testRun() throws FileNotFoundException, IOException, URISyntaxException {
     externalAppHelper.launch();
 
-    // Write some arbitrary data to simulate database access by external software.
-    (new FileOutputStream(miniSpirDbFile)).write((byte) 234432141);
-
     // Copy the result file + image file to test directory.
-    FileUtil.copyFile(new File(getClass().getResource("/Results.wsp").toURI()), new File(minispirInstrumentRunner.getMirPath() + minispirInstrumentRunner.getExternalOutputName()));
-    FileUtil.copyFile(new File(getClass().getResource("/FVC.jpg").toURI()), new File(minispirInstrumentRunner.getMirPath() + minispirInstrumentRunner.getExternalImageName()));
+    FileUtil.copyFile(new File(getClass().getResource("/Results.wsp").toURI()), new File(minispirInstrumentRunner.getMirPath(), minispirInstrumentRunner.getExternalOutputName()));
+    FileUtil.copyFile(new File(getClass().getResource("/FVC.jpg").toURI()), new File(minispirInstrumentRunner.getMirPath(), minispirInstrumentRunner.getExternalImageName()));
 
     // Read the results file.
     LinkedHashMap<String, Double[]> results = minispirInstrumentRunner.retrieveDeviceData();
@@ -176,11 +176,14 @@ public class MiniSpirInstrumentRunnerTest {
   }
 
   @Test
-  public void testShutdown() {
+  public void testShutdown() throws FileNotFoundException, IOException {
 
-    minispirInstrumentRunner.shutdown();
+    // Write some arbitrary data to simulate database access by external software.
+    (new FileOutputStream(miniSpirDbFile)).write((byte) 234432141);
     
-    // Verify that the WinSpiro database content has been cleared successfully. 
+    minispirInstrumentRunner.shutdown();
+
+    // Verify that the WinSpiro database content has been cleared successfully.
     Assert.assertEquals(initDbFile.length(), miniSpirDbFile.length());
 
   }
