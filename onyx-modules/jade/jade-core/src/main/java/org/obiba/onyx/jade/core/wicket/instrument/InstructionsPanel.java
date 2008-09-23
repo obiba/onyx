@@ -151,20 +151,24 @@ public abstract class InstructionsPanel extends Panel {
 
       @Override
       protected void populateItem(Item item) {
-        InstrumentRunValue runValue = (InstrumentRunValue) item.getModelObject();
+        final InstrumentRunValue runValue = (InstrumentRunValue) item.getModelObject();
         
         // Inject the Spring application context and the user session service
         // into the instrument parameter. NOTE: These are dependencies of 
         // InstrumentParameter.getDescription().
-        InstrumentParameter param = runValue.getInstrumentParameter();
+        final InstrumentParameter param = runValue.getInstrumentParameter();
         param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
         param.setUserSessionService(userSessionService);
-                
-        ValueMap map = new ValueMap("name=" + param.getDescription() + ",value=");
-        if(runValue != null && runValue.getData() != null && runValue.getData().getValue() != null) {
-          map.put("value", runValue.getData().getValue());
-        }
-        item.add(new Label("instruction", new StringResourceModel("TypeTheValueInTheInstrument", InstructionsPanel.this, new Model(map))));
+
+        item.add(new Label("instruction", new StringResourceModel("TypeTheValueInTheInstrument", InstructionsPanel.this, new Model() {
+          public Object getObject() {
+            ValueMap map = new ValueMap("description=" + param.getDescription() + ",value=");
+            if(runValue != null && runValue.getData() != null && runValue.getData().getValue() != null) {
+              map.put("value", runValue.getData().getValue());
+            }
+            return map;
+          }
+        })));
       }
 
     });

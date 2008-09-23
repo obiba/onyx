@@ -51,14 +51,18 @@ public class ValidationPanel extends Panel {
 
     if(queryService.count(templateIn) > 0) {
       KeyValueDataPanel kv = new KeyValueDataPanel("inputs", new StringResourceModel("DataInputs", this, null));
-      for(InstrumentInputParameter param : queryService.match(templateIn)) {
+      for(final InstrumentInputParameter param : queryService.match(templateIn)) {
         // Inject the Spring application context and the user session service
         // into the instrument parameter. NOTE: These are dependencies of 
         // InstrumentParameter.getDescription().
         param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
         param.setUserSessionService(userSessionService);
         
-        Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
+        Label label = new Label(KeyValueDataPanel.getRowKeyId(), new Model() {
+          public Object getObject() {
+            return param.getDescription();
+          }
+        });
         InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
         kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new RunValueLabelModel(runValue)));
       }
@@ -72,14 +76,18 @@ public class ValidationPanel extends Panel {
 
     if(queryService.count(templateOut) > 0) {
       KeyValueDataPanel kv = new KeyValueDataPanel("outputs", new StringResourceModel("DataOutputs", this, null));
-      for(InstrumentOutputParameter param : queryService.match(templateOut)) {
+      for(final InstrumentOutputParameter param : queryService.match(templateOut)) {
         // Inject the Spring application context and the user session service
         // into the instrument parameter. NOTE: These are dependencies of 
         // InstrumentParameter.getDescription().
         param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
         param.setUserSessionService(userSessionService);
         
-        Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
+        Label label = new Label(KeyValueDataPanel.getRowKeyId(), new Model() {
+          public Object getObject() {
+            return param.getDescription();
+          }
+        });
         InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
         if(runValue != null) {
           kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new RunValueLabelModel(runValue)));

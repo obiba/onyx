@@ -33,7 +33,7 @@
   </participantPropertySource>
   <input id="gender_in">
     <name>Gender</name>
-    <description>Participant Gender</description>
+    <description>Participant_Gender</description>
     <dataType>TEXT</dataType>
     <captureMethod>MANUAL</captureMethod>
     <inputSource reference="gender_source" />
@@ -57,7 +57,7 @@
   </participantPropertySource>
   <input id="age_in">
     <name>Age</name>
-    <description>Participant Age</description>
+    <description>Participant_Age</description>
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
     <inputSource reference="age_source" />

@@ -61,14 +61,18 @@ public class InstrumentInputParameterPanel extends Panel {
     instrumentRun = activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument);
 
     KeyValueDataPanel inputs = new KeyValueDataPanel("inputs");
-    for(InstrumentInputParameter param : instrumentService.getInstrumentInputParameter(instrument, false)) {
+    for(final InstrumentInputParameter param : instrumentService.getInstrumentInputParameter(instrument, false)) {
       // Inject the Spring application context and the user session service
       // into the instrument parameter. NOTE: These are dependencies of 
       // InstrumentParameter.getDescription().
       param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
       param.setUserSessionService(userSessionService);
       
-      Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
+      Label label = new Label(KeyValueDataPanel.getRowKeyId(), new Model() {
+        public Object getObject() {
+          return param.getDescription();
+        }
+      });
       InstrumentRunValue runValue = new InstrumentRunValue();
       runValue.setCaptureMethod(param.getCaptureMethod());
       runValue.setInstrumentParameter(param);
@@ -76,7 +80,11 @@ public class InstrumentInputParameterPanel extends Panel {
 
       DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType(), param.getMeasurementUnit());
       field.setRequired(true);
-      field.setLabel(new Model(param.getDescription()));
+      field.setLabel(new Model() {
+        public Object getObject() {
+          return param.getDescription();
+        }
+      });
 
       inputs.addRow(label, field);
     }

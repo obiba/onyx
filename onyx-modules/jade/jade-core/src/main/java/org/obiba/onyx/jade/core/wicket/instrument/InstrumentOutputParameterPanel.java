@@ -100,14 +100,18 @@ public class InstrumentOutputParameterPanel extends Panel {
       add(new EmptyPanel("manualOutputs"));
     } else {
       KeyValueDataPanel outputs = new KeyValueDataPanel("manualOutputs", new StringResourceModel("ManualDataOutputs", this, null));
-      for(InstrumentOutputParameter param : queryService.match(template)) {
+      for(final InstrumentOutputParameter param : queryService.match(template)) {
         // Inject the Spring application context and the user session service
         // into the instrument parameter. NOTE: These are dependencies of 
         // InstrumentParameter.getDescription().
         param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
         param.setUserSessionService(userSessionService);
         
-        Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
+        Label label = new Label(KeyValueDataPanel.getRowKeyId(), new Model() {
+          public Object getObject() {
+            return param.getDescription();
+          }
+        });
 
         // case we going through this multiple times
         InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
@@ -121,7 +125,11 @@ public class InstrumentOutputParameterPanel extends Panel {
 
         DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType(), param.getMeasurementUnit());
         field.setRequired(true);
-        field.setLabel(new Model(param.getDescription()));
+        field.setLabel(new Model() {
+          public Object getObject() {
+            return param.getDescription();
+          }
+        });
 
         outputs.addRow(label, field);
       }
@@ -142,14 +150,18 @@ public class InstrumentOutputParameterPanel extends Panel {
       InstrumentRun instrumentRun = activeInstrumentRunService.refresh();
 
       KeyValueDataPanel outputs = new KeyValueDataPanel("automaticOutputs", new StringResourceModel("AutomaticDataOutputs", this, null));
-      for(InstrumentOutputParameter param : queryService.match(template)) {
+      for(final InstrumentOutputParameter param : queryService.match(template)) {
         // Inject the Spring application context and the user session service
         // into the instrument parameter. NOTE: These are dependencies of 
         // InstrumentParameter.getDescription().
         param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
         param.setUserSessionService(userSessionService);
         
-        Label label = new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription());
+        Label label = new Label(KeyValueDataPanel.getRowKeyId(), new Model() {
+          public Object getObject() {
+            return param.getDescription();
+          }
+        });
         Component output = null;
 
         // case we going through this multiple times
@@ -171,7 +183,11 @@ public class InstrumentOutputParameterPanel extends Panel {
           DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType());
           field.setRequired(true);
           if(runValue.getCaptureMethod().equals(InstrumentParameterCaptureMethod.AUTOMATIC)) field.setFieldEnabled(false);
-          field.setLabel(new Model(param.getName()));
+          field.setLabel(new Model() {
+            public Object getObject() {
+              return param.getDescription();
+            }
+          });
           output = field;
 
         } else if(runValue != null && runValue.getData() != null && runValue.getData().getValueAsString() != null) {
