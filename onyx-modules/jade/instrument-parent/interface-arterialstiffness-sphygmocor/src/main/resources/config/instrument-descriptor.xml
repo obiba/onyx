@@ -68,7 +68,7 @@
   </participantPropertySource>
   <input id="gender">
     <name>Gender</name>
-    <description>Participant Gender</description>
+    <description>Participant_Gender</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="gender_source" />
