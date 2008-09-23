@@ -65,6 +65,7 @@ public abstract class WizardForm extends Form {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
+        if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
         WizardForm.this.gotoPrevious(target);
       }
 
