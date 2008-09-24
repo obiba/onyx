@@ -2,6 +2,10 @@ package org.obiba.onyx.engine;
 
 import org.obiba.onyx.core.service.ActiveInterviewService;
 
+/**
+ * Most simple case of Previous Stage Dependency Condition
+ * @author acarey
+ */
 public class PreviousStageDependencyCondition extends StageDependencyCondition {
 
   private static final long serialVersionUID = 1L;
@@ -15,6 +19,10 @@ public class PreviousStageDependencyCondition extends StageDependencyCondition {
     this.stageName = name;
   }
 
+  /**
+   * returns true if stage execution is completed
+   * returns null if it's not completed
+   */
   @Override
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
     if (!activeInterviewService.getStageExecution(stageName).isCompleted())

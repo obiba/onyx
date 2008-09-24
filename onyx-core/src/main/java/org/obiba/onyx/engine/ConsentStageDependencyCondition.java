@@ -1,11 +1,13 @@
 package org.obiba.onyx.engine;
 
-import javax.persistence.Entity;
-
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.util.data.Data;
 
+/**
+ * Specific Stage Dependency condition for Consent step
+ * @author acarey
+ */
 public class ConsentStageDependencyCondition extends StageDependencyCondition {
 
   private static final long serialVersionUID = 1L;
@@ -19,14 +21,20 @@ public class ConsentStageDependencyCondition extends StageDependencyCondition {
     this.stageName = name;
   }
 
+  /**
+   * Returns a Boolean depending on the fact that the step is completed and also on its result
+   * Null if not completed
+   * True if completed and consented
+   * False if completed and not consented 
+   */
   @Override
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
     IStageExecution consent = activeInterviewService.getStageExecution(stageName);
-    if (consent != null){
-      if (!consent.isCompleted()) return null;
+    if(consent != null) {
+      if(!consent.isCompleted()) return null;
       else {
         Data consentData = consent.getData("Consent");
-        if (consentData != null) {
+        if(consentData != null) {
           return (Boolean) consentData.getValue();
         } else
           return false;

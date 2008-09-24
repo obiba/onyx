@@ -2,6 +2,11 @@ package org.obiba.onyx.engine;
 
 import org.obiba.onyx.core.service.ActiveInterviewService;
 
+/**
+ * Case of Multiple Stage Dependency Condition
+ * Compares two dependency conditions with AND or OR relation
+ * @author acarey
+ */
 public class MultipleStageDependencyCondition extends StageDependencyCondition {
 
   private static final long serialVersionUID = 1L;
@@ -12,6 +17,12 @@ public class MultipleStageDependencyCondition extends StageDependencyCondition {
 
   private StageDependencyCondition rightStageDependencyCondition;
 
+  /**
+   * Returns a Boolean depending on the AND/OR relation between the conditions
+   * If one condition is null and the relation is AND => returns null
+   * if one condition is null and the relation is OR => returns null if the not null condition is false
+   * (otherwise returns true)  
+   */
   @Override
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
     Boolean leftResult = leftStageDependencyCondition.isDependencySatisfied(activeInterviewService);

@@ -9,6 +9,10 @@ import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 
+/**
+ * jade specific stage dependency condition depending on the presence of runValues for the stage
+ * @author acarey
+ */
 public class JadeStageDependencyCondition extends StageDependencyCondition {
 
   private static final long serialVersionUID = 1L;
@@ -40,6 +44,12 @@ public class JadeStageDependencyCondition extends StageDependencyCondition {
     this.queryService = queryService;
   }
 
+  /**
+   * Returns a Boolean depending on the fact that the step is completed and also on its result
+   * Null if not completed
+   * True if completed and has InstrumentRunValues
+   * False if completed and does not have InstrumentRunValues
+   */
   @Override
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
     IStageExecution stageExecution = activeInterviewService.getStageExecution(stageName);
