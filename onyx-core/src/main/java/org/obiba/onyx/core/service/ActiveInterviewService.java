@@ -1,6 +1,5 @@
 package org.obiba.onyx.core.service;
 
-import java.util.Date;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.participant.Interview;
