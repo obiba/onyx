@@ -27,7 +27,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
   private Serializable currentRunId = null;
 
-  private Serializable instrumentTypeId;
+  private Serializable instrumentTypeId = null;
 
   public InstrumentRun start(Participant participant, Instrument instrument) {
 
@@ -102,6 +102,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
   public void reset() {
     currentRunId = null;
+    instrumentTypeId = null;
   }
 
   public void update(InstrumentRun currentRun) {

@@ -15,9 +15,13 @@ import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class InstrumentWizardForm extends WizardForm {
 
+  private static final Logger log = LoggerFactory.getLogger(InstrumentWizardForm.class);
+  
   @SpringBean
   private EntityQueryService queryService;
 
@@ -91,6 +95,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
     ContraIndication ciTemplate = new ContraIndication();
     ciTemplate.setType(ContraIndicationType.OBSERVED);
     ciTemplate.setInstrument(instrument);
+    log.info("observed.ci.count={}", queryService.count(ciTemplate));
     if(instrument != null && queryService.count(ciTemplate) > 0) {
       if(startStep == null) {
         startStep = observedContraIndicationStep;
@@ -104,6 +109,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
     // are there asked contra-indications to display ?
     ciTemplate.setType(ContraIndicationType.ASKED);
+    log.info("asked.ci.count={}", queryService.count(ciTemplate));
     if(instrument != null && queryService.count(ciTemplate) > 0) {
       if(startStep == null) {
         startStep = askedContraIndicationStep;
@@ -116,6 +122,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
     }
 
     // are there input parameters with input source that requires user provisionning ?
+    log.info("instrumentInputParameters.count={}", instrumentService.countInstrumentInputParameter(instrument, false));
     if(instrument != null && instrumentService.countInstrumentInputParameter(instrument, false) > 0) {
       if(startStep == null) {
         startStep = inputParametersStep;
@@ -129,10 +136,8 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
     // are there output parameters that are to be captured automatically from instrument (i.e. requires instrument
     // launch) ?
-    InstrumentOutputParameter opTemplate = new InstrumentOutputParameter();
-    opTemplate.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
-    opTemplate.setInstrument(instrument);
-    if(instrument != null && queryService.count(opTemplate) > 0) {
+    log.info("instrument.isInteractive={}", instrumentService.isInteractiveInstrument(instrument));
+    if(instrument != null && instrumentService.isInteractiveInstrument(instrument)) {
       if(startStep == null) {
         startStep = instructionsStep;
         lastStep = startStep;
@@ -144,10 +149,13 @@ public abstract class InstrumentWizardForm extends WizardForm {
     }
 
     // are there output parameters that are to be captured manually from instrument ?
+    InstrumentOutputParameter opTemplate = new InstrumentOutputParameter();
+    opTemplate.setInstrument(instrument);
     opTemplate.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
+    log.info("instrumentOutputParameters.MANUAL.count={}", queryService.count(opTemplate));
     if(instrument != null && queryService.count(opTemplate) > 0) {
       if(startStep == null) {
-        startStep = instructionsStep;
+        startStep = outputParametersStep;
         lastStep = startStep;
       } else {
         lastStep.setNextStep(outputParametersStep);
