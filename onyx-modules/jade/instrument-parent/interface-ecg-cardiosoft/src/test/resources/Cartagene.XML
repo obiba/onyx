@@ -99,10 +99,10 @@
 	<SimulatedPatientData>yes</SimulatedPatientData>
 	<Interpretation>
 		<Diagnosis>
-			<DiagnosisText>Rythme sinusal normal</DiagnosisText>
-			<DiagnosisText>Déviation axiale gauche</DiagnosisText>
-			<DiagnosisText>Anomalie non spécifique de l'onde T</DiagnosisText>
-			<DiagnosisText>ECG anormal</DiagnosisText>
+			<DiagnosisText>diagnosis result</DiagnosisText>
+			<DiagnosisText></DiagnosisText>
+			<DiagnosisText></DiagnosisText>
+			<DiagnosisText></DiagnosisText>
 		</Diagnosis>
 	</Interpretation>
 	<RestingECGMeasurements>
