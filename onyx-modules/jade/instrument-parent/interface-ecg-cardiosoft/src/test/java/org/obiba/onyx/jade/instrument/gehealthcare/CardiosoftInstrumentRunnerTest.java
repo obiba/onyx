@@ -121,6 +121,7 @@ public class CardiosoftInstrumentRunnerTest {
       value = pd.getReadMethod().invoke(resultParser);
      
       if (!paramName.equalsIgnoreCase("doc") && !paramName.equalsIgnoreCase("xpath") && !paramName.equalsIgnoreCase("xmldocument") && !paramName.equalsIgnoreCase("class")) {      
+        System.out.println("param= " + paramName + ", value= " + value.toString() + ", testvalue= " + testResults.getProperty(paramName));
         Assert.assertTrue(value.toString().equals(testResults.getProperty(paramName)));
       }
 
