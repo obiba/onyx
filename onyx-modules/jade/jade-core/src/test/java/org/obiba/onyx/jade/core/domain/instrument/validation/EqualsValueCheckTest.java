@@ -24,21 +24,23 @@ public class EqualsValueCheckTest {
     instrumentParameter.setDataType(DataType.BOOLEAN);
     
     // Test run value equals TRUE.
+    Data trueData = new Data(DataType.BOOLEAN, Boolean.TRUE);
+    
     InstrumentRunValue runValueTrue = new InstrumentRunValue();
     runValueTrue.setInstrumentParameter(instrumentParameter);
-    runValueTrue.setInstrumentParameter(instrumentParameter);
-    runValueTrue.setData(new Data(DataType.BOOLEAN, Boolean.TRUE));
+    runValueTrue.setData(trueData);
     
-    equalsValueCheck.setValue(Boolean.TRUE);
+    equalsValueCheck.setValue(trueData);
     Assert.assertTrue(equalsValueCheck.checkParameterValue(runValueTrue));
     
     // Test run value equals FALSE.
+    Data falseData = new Data(DataType.BOOLEAN, Boolean.FALSE);
+      
     InstrumentRunValue runValueFalse = new InstrumentRunValue();
     runValueFalse.setInstrumentParameter(instrumentParameter);
-    runValueFalse.setInstrumentParameter(instrumentParameter);
-    runValueFalse.setData(new Data(DataType.BOOLEAN, Boolean.FALSE));
+    runValueFalse.setData(falseData);
     
-    equalsValueCheck.setValue(Boolean.FALSE);
+    equalsValueCheck.setValue(falseData);
     Assert.assertTrue(equalsValueCheck.checkParameterValue(runValueFalse));
   }
   
@@ -48,21 +50,23 @@ public class EqualsValueCheckTest {
     instrumentParameter.setDataType(DataType.BOOLEAN);
     
     // Test run value equals TRUE.
+    Data trueData = new Data(DataType.BOOLEAN, Boolean.TRUE);
+      
     InstrumentRunValue runValueTrue = new InstrumentRunValue();
     runValueTrue.setInstrumentParameter(instrumentParameter);
-    runValueTrue.setInstrumentParameter(instrumentParameter);
-    runValueTrue.setData(new Data(DataType.BOOLEAN, Boolean.TRUE));
+    runValueTrue.setData(trueData);
     
-    equalsValueCheck.setValue(Boolean.FALSE); // unequal
+    equalsValueCheck.setValue(new Data(DataType.BOOLEAN, Boolean.FALSE)); // unequal
     Assert.assertFalse(equalsValueCheck.checkParameterValue(runValueTrue));
     
     // Test run value equals FALSE.
+    Data falseData = new Data(DataType.BOOLEAN, Boolean.FALSE);
+    
     InstrumentRunValue runValueFalse = new InstrumentRunValue();
     runValueFalse.setInstrumentParameter(instrumentParameter);
-    runValueFalse.setInstrumentParameter(instrumentParameter);
-    runValueFalse.setData(new Data(DataType.BOOLEAN, Boolean.FALSE));
+    runValueFalse.setData(falseData);
     
-    equalsValueCheck.setValue(Boolean.TRUE); // unequal
+    equalsValueCheck.setValue(new Data(DataType.BOOLEAN, Boolean.TRUE)); // unequal
     Assert.assertFalse(equalsValueCheck.checkParameterValue(runValueFalse));
   }
   
@@ -72,21 +76,23 @@ public class EqualsValueCheckTest {
     instrumentParameter.setDataType(DataType.INTEGER);
     
     // Test run value equals 1.
+    Data oneData = new Data(DataType.INTEGER, Long.valueOf(1));
+      
     InstrumentRunValue runValueOne = new InstrumentRunValue();
     runValueOne.setInstrumentParameter(instrumentParameter);
-    runValueOne.setInstrumentParameter(instrumentParameter);
-    runValueOne.setData(new Data(DataType.INTEGER, Long.valueOf(1)));
+    runValueOne.setData(oneData);
     
-    equalsValueCheck.setValue(Long.valueOf(1));
+    equalsValueCheck.setValue(oneData);
     Assert.assertTrue(equalsValueCheck.checkParameterValue(runValueOne));
     
     // Test run value equals Long.MAX_VALUE.
+    Data maxIntData = new Data(DataType.INTEGER, Long.MAX_VALUE);
+      
     InstrumentRunValue runValueMaxInt = new InstrumentRunValue();
     runValueMaxInt.setInstrumentParameter(instrumentParameter);
-    runValueMaxInt.setInstrumentParameter(instrumentParameter);
-    runValueMaxInt.setData(new Data(DataType.INTEGER, Long.MAX_VALUE));
+    runValueMaxInt.setData(maxIntData);
     
-    equalsValueCheck.setValue(Long.MAX_VALUE);
+    equalsValueCheck.setValue(maxIntData);
     Assert.assertTrue(equalsValueCheck.checkParameterValue(runValueMaxInt));
   }
   
@@ -96,21 +102,23 @@ public class EqualsValueCheckTest {
     instrumentParameter.setDataType(DataType.INTEGER);
     
     // Test run value equals 1.
+    Data oneData = new Data(DataType.INTEGER, Long.valueOf(1));
+      
     InstrumentRunValue runValueOne = new InstrumentRunValue();
     runValueOne.setInstrumentParameter(instrumentParameter);
-    runValueOne.setInstrumentParameter(instrumentParameter);
-    runValueOne.setData(new Data(DataType.INTEGER, Long.valueOf(1)));
+    runValueOne.setData(oneData);
     
-    equalsValueCheck.setValue(Long.MAX_VALUE); // unequal
+    equalsValueCheck.setValue(new Data(DataType.INTEGER, Long.MAX_VALUE)); // unequal
     Assert.assertFalse(equalsValueCheck.checkParameterValue(runValueOne));
     
     // Test run value equals Long.MAX_VALUE.
+    Data maxIntData = new Data(DataType.INTEGER, Long.MAX_VALUE);
+      
     InstrumentRunValue runValueMaxInt = new InstrumentRunValue();
     runValueMaxInt.setInstrumentParameter(instrumentParameter);
-    runValueMaxInt.setInstrumentParameter(instrumentParameter);
-    runValueMaxInt.setData(new Data(DataType.INTEGER, Long.MAX_VALUE));
+    runValueMaxInt.setData(maxIntData);
     
-    equalsValueCheck.setValue(Long.valueOf(1));
+    equalsValueCheck.setValue(new Data(DataType.INTEGER, Long.valueOf(1)));
     Assert.assertFalse(equalsValueCheck.checkParameterValue(runValueMaxInt));
   }
   
@@ -120,21 +128,23 @@ public class EqualsValueCheckTest {
     instrumentParameter.setDataType(DataType.DECIMAL);
     
     // Test run value equals 1.5.
+    Data onePointFiveData = new Data(DataType.DECIMAL, Double.valueOf(1.5));
+      
     InstrumentRunValue runValueOnePointFive = new InstrumentRunValue();
     runValueOnePointFive.setInstrumentParameter(instrumentParameter);
-    runValueOnePointFive.setInstrumentParameter(instrumentParameter);
-    runValueOnePointFive.setData(new Data(DataType.DECIMAL, Double.valueOf(1.5)));
+    runValueOnePointFive.setData(onePointFiveData);
     
-    equalsValueCheck.setValue(Double.valueOf(1.5));
+    equalsValueCheck.setValue(onePointFiveData);
     Assert.assertTrue(equalsValueCheck.checkParameterValue(runValueOnePointFive));
     
     // Test run value equals Double.MAX_VALUE.
+    Data maxDecimalData = new Data(DataType.DECIMAL, Double.MAX_VALUE);
+      
     InstrumentRunValue runValueMaxDecimal = new InstrumentRunValue();
     runValueMaxDecimal.setInstrumentParameter(instrumentParameter);
-    runValueMaxDecimal.setInstrumentParameter(instrumentParameter);
-    runValueMaxDecimal.setData(new Data(DataType.DECIMAL, Double.MAX_VALUE));
+    runValueMaxDecimal.setData(maxDecimalData);
     
-    equalsValueCheck.setValue(Double.MAX_VALUE);
+    equalsValueCheck.setValue(maxDecimalData);
     Assert.assertTrue(equalsValueCheck.checkParameterValue(runValueMaxDecimal));
   }
   
@@ -144,21 +154,23 @@ public class EqualsValueCheckTest {
     instrumentParameter.setDataType(DataType.DECIMAL);
     
     // Test run value equals 1.5.
+    Data onePointFiveData = new Data(DataType.DECIMAL, Double.valueOf(1.5));
+      
     InstrumentRunValue runValueOnePointFive = new InstrumentRunValue();
     runValueOnePointFive.setInstrumentParameter(instrumentParameter);
-    runValueOnePointFive.setInstrumentParameter(instrumentParameter);
-    runValueOnePointFive.setData(new Data(DataType.DECIMAL, Double.valueOf(1.5)));
+    runValueOnePointFive.setData(onePointFiveData);
     
-    equalsValueCheck.setValue(Double.MAX_VALUE); // unequal
+    equalsValueCheck.setValue(new Data(DataType.DECIMAL, Double.MIN_VALUE)); // unequal
     Assert.assertFalse(equalsValueCheck.checkParameterValue(runValueOnePointFive));
     
     // Test run value equals Double.MAX_VALUE.
+    Data maxDecimalData = new Data(DataType.DECIMAL, Double.MAX_VALUE);
+      
     InstrumentRunValue runValueMaxDecimal = new InstrumentRunValue();
     runValueMaxDecimal.setInstrumentParameter(instrumentParameter);
-    runValueMaxDecimal.setInstrumentParameter(instrumentParameter);
-    runValueMaxDecimal.setData(new Data(DataType.DECIMAL, Double.MAX_VALUE));
+    runValueMaxDecimal.setData(maxDecimalData);
     
-    equalsValueCheck.setValue(Double.valueOf(1.5)); // unequal
+    equalsValueCheck.setValue(new Data(DataType.DECIMAL, Double.valueOf(1.5))); // unequal
     Assert.assertFalse(equalsValueCheck.checkParameterValue(runValueMaxDecimal));
   }
   
@@ -168,12 +180,13 @@ public class EqualsValueCheckTest {
     instrumentParameter.setDataType(DataType.TEXT);
     
     // Test run value equals "Foo".
+    Data fooData = new Data(DataType.TEXT, "Foo");
+    
     InstrumentRunValue runValueFoo = new InstrumentRunValue();
     runValueFoo.setInstrumentParameter(instrumentParameter);
-    runValueFoo.setInstrumentParameter(instrumentParameter);
-    runValueFoo.setData(new Data(DataType.TEXT, "Foo"));
+    runValueFoo.setData(fooData);
     
-    equalsValueCheck.setValue("Foo");
+    equalsValueCheck.setValue(fooData);
     Assert.assertTrue(equalsValueCheck.checkParameterValue(runValueFoo));
   }
   
@@ -183,12 +196,13 @@ public class EqualsValueCheckTest {
     instrumentParameter.setDataType(DataType.TEXT);
     
     // Test run value equals "Foo".
+    Data fooData = new Data(DataType.TEXT, "Foo");
+    
     InstrumentRunValue runValueFoo = new InstrumentRunValue();
     runValueFoo.setInstrumentParameter(instrumentParameter);
-    runValueFoo.setInstrumentParameter(instrumentParameter);
-    runValueFoo.setData(new Data(DataType.TEXT, "Foo"));
+    runValueFoo.setData(fooData);
     
-    equalsValueCheck.setValue("Bar"); // unequal
+    equalsValueCheck.setValue(new Data(DataType.TEXT, "Bar")); // unequal
     Assert.assertFalse(equalsValueCheck.checkParameterValue(runValueFoo));
   }
 }

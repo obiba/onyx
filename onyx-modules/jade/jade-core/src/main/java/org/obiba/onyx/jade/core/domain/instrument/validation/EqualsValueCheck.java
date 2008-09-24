@@ -1,6 +1,7 @@
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.util.data.Data;
 
 /**
  * Integrity check to verify that an instrument run value is equal
@@ -14,17 +15,17 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
  */
 public class EqualsValueCheck implements IntegrityCheck {
 
-  private Object value;
+  private Data value;
   
   public EqualsValueCheck() {
-    super();  
+    super(); 
   }
   
-  public void setValue(Object value) {
+  public void setValue(Data value) {
     this.value = value;  
   }
   
-  public Object getValue() {
+  public Data getValue() {
     return this.value;
   }
   
@@ -40,10 +41,11 @@ public class EqualsValueCheck implements IntegrityCheck {
    * @return <code>true</code> if instrument run value equals configured value
    */
   public boolean checkParameterValue(InstrumentRunValue value) {
+        
     boolean isEqual = false;
     
-    if (value != null && value.getValue() != null) {
-      isEqual = value.getValue().equals(getValue());
+    if (value != null && value.getData() != null) {
+      isEqual = value.getData().equals(getValue());
     }
     else {
       isEqual = (getValue() == null);

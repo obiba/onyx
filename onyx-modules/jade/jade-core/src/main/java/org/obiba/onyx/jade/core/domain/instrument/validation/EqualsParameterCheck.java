@@ -52,14 +52,14 @@ public class EqualsParameterCheck implements IntegrityCheck {
    */
   public boolean checkParameterValue(InstrumentRunValue value) {
     // Get the other parameter's value.
-    Object paramValue = instrumentRunService.findInstrumentRunValue(
+    InstrumentRunValue paramValue = instrumentRunService.findInstrumentRunValue(
       value.getInstrumentRun().getParticipantInterview(), 
       value.getInstrumentRun().getInstrument().getInstrumentType(), 
       parameter.getName()
     );
    
     // Update the equalsValueCheck accordingly.
-    equalsValueCheck.setValue(paramValue);
+    equalsValueCheck.setValue(paramValue.getData());
 
     return equalsValueCheck.checkParameterValue(value);
   }

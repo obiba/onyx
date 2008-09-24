@@ -78,4 +78,76 @@ public class Data implements Serializable {
     return "[" + type + ":" + value + "]";
   }
 
+  @Override
+  public int hashCode() {
+    int hashCode = 0;
+    
+    if (value != null) {
+      if (type != DataType.DATA) {
+        hashCode = value.hashCode();
+      }
+      else {
+        byte[] bytes = (byte[])value;
+        int byteCount = bytes.length;
+        hashCode = byteCount != 0 ? (byteCount + bytes[0] + bytes[byteCount - 1]) % 17 : Integer.MAX_VALUE; 
+      }
+    }
+    
+    return hashCode;
+  }
+  
+  @Override
+  public boolean equals(Object otherObj) {
+    boolean isEqual = false;
+ 
+    if (otherObj instanceof Data) {
+      Data otherData = (Data)otherObj;
+      
+      if (otherData.getType().equals(type)) {
+        if (value != null) {
+          switch(type) {
+          case BOOLEAN: 
+          case INTEGER:
+          case DECIMAL:
+          case DATE:
+          case TEXT:
+            isEqual = value.equals(otherData.getValue());
+            break;
+          case DATA:
+            isEqual = byteArraysEqual((byte[])value, (byte[])otherData.getValue());
+            break;
+          }
+        }
+        else {
+          isEqual = (otherData.getValue() == null);
+        }
+      }
+    }
+    
+    return isEqual;
+  }
+  
+  private boolean byteArraysEqual(byte[] firstArray, byte[] secondArray) {
+    boolean arraysEqual = false;
+   
+    if (firstArray != null && secondArray != null) {
+      if (firstArray.length == secondArray.length) {
+        boolean mismatch = false;
+        
+        for (int i=0; i<firstArray.length; i++) {
+          if (firstArray[i] != secondArray[i]) {
+            mismatch = true;
+            break;
+          }
+        }
+        
+        arraysEqual = !mismatch;
+      }
+    }
+    else {
+      arraysEqual = (firstArray == null && secondArray == null); 
+    }
+    
+    return arraysEqual;
+  }
 }
