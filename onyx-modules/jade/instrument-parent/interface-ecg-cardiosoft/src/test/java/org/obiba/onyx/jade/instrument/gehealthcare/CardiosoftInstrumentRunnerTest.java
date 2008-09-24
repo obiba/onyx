@@ -114,6 +114,8 @@ public class CardiosoftInstrumentRunnerTest {
     Properties testResults = new Properties();
     testResults.load(getClass().getResourceAsStream("/testResults.properties"));
     
+    Assert.assertTrue(new File(getClass().getResource("/testResults.properties").toURI()).exists());
+    
     // Compare the test results file to the values extracted from the XML result file to make sure they match.
     for(PropertyDescriptor pd : Introspector.getBeanInfo(CardiosoftInstrumentResultParser.class).getPropertyDescriptors()) {
      
