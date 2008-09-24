@@ -11,22 +11,7 @@ import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 
 public class MockActiveInstrumentRunServiceImpl implements ActiveInstrumentRunService {
 
-  public void cancel() {
-    // TODO Auto-generated method stub
-    
-  }
-
-  public void complete() {
-    // TODO Auto-generated method stub
-    
-  }
-
-  public void computeOutputParameters() {
-    // TODO Auto-generated method stub
-    
-  }
-
-  public void fail() {
+  public void end() {
     // TODO Auto-generated method stub
     
   }
@@ -114,6 +99,11 @@ public class MockActiveInstrumentRunServiceImpl implements ActiveInstrumentRunSe
   }
 
   public void update(InstrumentRunValue currentRunValue) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public void computeOutputParameters() {
     // TODO Auto-generated method stub
     
   }

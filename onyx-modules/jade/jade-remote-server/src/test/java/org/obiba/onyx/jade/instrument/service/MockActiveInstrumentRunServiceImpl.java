@@ -18,16 +18,7 @@ public class MockActiveInstrumentRunServiceImpl extends PersistenceManagerAwareS
 
   private InstrumentRun run = null;
   
-  public void cancel() {
-  }
-
-  public void complete() {
-  }
-
   public void computeOutputParameters() {
-  }
-
-  public void fail() {
   }
 
   public InstrumentRun getInstrumentRun() {
@@ -117,6 +108,11 @@ public class MockActiveInstrumentRunServiceImpl extends PersistenceManagerAwareS
   }
 
   public void update(InstrumentRunValue currentRunValue) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public void end() {
     // TODO Auto-generated method stub
     
   }

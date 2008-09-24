@@ -11,6 +11,7 @@ import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunRefusalReason;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.JadePanel;
 import org.slf4j.Logger;
@@ -47,10 +48,12 @@ public class JadeInProgressState extends AbstractJadeStageState implements Initi
     // Invalidate current instrument run
     InstrumentRun run = activeInstrumentRunService.getInstrumentRun();
     if(run != null) {
-      activeInstrumentRunService.cancel();
+      run.setStatus(InstrumentRunStatus.CANCELED);
+      activeInstrumentRunService.update(run);
+      activeInstrumentRunService.end();
       activeInstrumentRunService.reset();
     }
-    if (areDependenciesCompleted() != null && areDependenciesCompleted()) {
+    if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
     } else {
       castEvent(TransitionEvent.INVALID);
@@ -61,12 +64,14 @@ public class JadeInProgressState extends AbstractJadeStageState implements Initi
   public void complete(Action action) {
     log.info("Jade Stage {} is completing", super.getStage().getName());
     // Finish current instrument run
-    InstrumentRun run = activeInstrumentRunService.getInstrumentRun();
-    if(run != null) {
-      activeInstrumentRunService.complete();
-      activeInstrumentRunService.reset();
-    }
-    castEvent(TransitionEvent.COMPLETE);
+    InstrumentRunStatus runStatus = activeInstrumentRunService.getInstrumentRunStatus();
+    activeInstrumentRunService.end();
+    activeInstrumentRunService.reset();
+
+    if(runStatus.equals(InstrumentRunStatus.CONTRA_INDICATED)) {
+      castEvent(TransitionEvent.NOTAPPLICABLE);
+    } else
+      castEvent(TransitionEvent.COMPLETE);
   }
 
   @Override

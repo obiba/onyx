@@ -69,19 +69,23 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     end(InstrumentRunStatus.COMPLETED);
   }
 
+  public void end() {
+    if(currentRunId == null) return;
+
+    InstrumentRun currentRun = getInstrumentRun();
+    currentRun.setTimeEnd(new Date());
+
+    getPersistenceManager().save(currentRun);
+  }
+  
   private void end(InstrumentRunStatus status) {
     if(currentRunId == null) return;
 
     InstrumentRun currentRun = getInstrumentRun();
-
-    currentRun.setStatus(status);
     currentRun.setTimeEnd(new Date());
-
+    currentRun.setStatus(status);
+    
     getPersistenceManager().save(currentRun);
-
-    for(InstrumentRunValue value : currentRun.getInstrumentRunValues()) {
-      getPersistenceManager().save(value);
-    }
   }
 
   public InstrumentRun getInstrumentRun() {

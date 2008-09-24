@@ -86,20 +86,10 @@ public interface ActiveInstrumentRunService {
   public Participant getParticipant();
 
   /**
-   * Complete the current {@link InstrumentRun}.
+   * Set the end date to the current {@link InstrumentRun} with its current status.
    */
-  public void complete();
-
-  /**
-   * Cancel the current {@link InstrumentRun}.
-   */
-  public void cancel();
-
-  /**
-   * Set the current {@link InstrumentRun} as being in error.
-   */
-  public void fail();
-
+  public void end();
+  
   /**
    * Make sure there is no current {@link InstrumentRun}.
    */
