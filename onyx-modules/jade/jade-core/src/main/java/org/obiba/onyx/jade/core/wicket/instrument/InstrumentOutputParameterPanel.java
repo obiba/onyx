@@ -1,5 +1,8 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -17,12 +20,10 @@ import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
 import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
@@ -45,34 +46,28 @@ public class InstrumentOutputParameterPanel extends Panel {
   @SpringBean
   private InstrumentService instrumentService;
 
-  @SpringBean(name="activeInterviewService")
-  private ActiveInterviewService activeInterviewService;
-
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
-  @SpringBean(name="userSessionService")
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
-  
+
+  private List<IModel> runValueModels;
+
   private boolean manual = false;
 
   private ManualFragment manualFragment = new ManualFragment("manual");
 
   @SuppressWarnings("serial")
-  public InstrumentOutputParameterPanel(String id, IModel instrumentModel) {
+  public InstrumentOutputParameterPanel(String id) {
     super(id);
-    setModel(new DetachableEntityModel(queryService, instrumentModel.getObject()));
     setOutputMarkupId(true);
 
-    // get the current instrument run or create it if there was no input parameters for this instrument
-    InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
-    if(instrumentRun == null) {
-      instrumentRun = activeInstrumentRunService.start(activeInterviewService.getParticipant(), (Instrument) getModelObject());
-    }
+    runValueModels = new ArrayList<IModel>();
 
     initManualOutputs();
 
-    if(instrumentService.isInteractiveInstrument(instrumentRun.getInstrument())) {
+    if(instrumentService.isInteractiveInstrument(activeInstrumentRunService.getInstrument())) {
       initAutomaticOutputs(null);
       add(manualFragment);
     } else {
@@ -91,10 +86,8 @@ public class InstrumentOutputParameterPanel extends Panel {
 
   private void initManualOutputs() {
     InstrumentOutputParameter template = new InstrumentOutputParameter();
-    template.setInstrument((Instrument) getModelObject());
+    template.setInstrument(activeInstrumentRunService.getInstrument());
     template.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
-
-    InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
 
     if(queryService.count(template) == 0) {
       add(new EmptyPanel("manualOutputs"));
@@ -102,28 +95,22 @@ public class InstrumentOutputParameterPanel extends Panel {
       KeyValueDataPanel outputs = new KeyValueDataPanel("manualOutputs", new StringResourceModel("ManualDataOutputs", this, null));
       for(final InstrumentOutputParameter param : queryService.match(template)) {
         // Inject the Spring application context and the user session service
-        // into the instrument parameter. NOTE: These are dependencies of 
+        // into the instrument parameter. NOTE: These are dependencies of
         // InstrumentParameter.getDescription().
-        param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
+        param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
         param.setUserSessionService(userSessionService);
-        
+
         Label label = new Label(KeyValueDataPanel.getRowKeyId(), new Model() {
           public Object getObject() {
             return param.getDescription();
           }
         });
 
-        // case we going through this multiple times
-        InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
-        if(runValue == null) {
-          runValue = new InstrumentRunValue();
-          runValue.setInstrumentParameter(param);
-          runValue.setCaptureMethod(param.getCaptureMethod());
-          instrumentRun.addInstrumentRunValue(runValue);
-          activeInstrumentRunService.validate();
-        }
+        InstrumentRunValue runValue = activeInstrumentRunService.getOutputInstrumentRunValue(param.getName());
+        IModel runValueModel = new DetachableEntityModel(queryService, runValue);
+        runValueModels.add(runValueModel);
 
-        DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType(), param.getMeasurementUnit());
+        DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValueModel, "data"), runValue.getDataType(), param.getMeasurementUnit());
         field.setRequired(true);
         field.setLabel(new Model() {
           public Object getObject() {
@@ -147,16 +134,14 @@ public class InstrumentOutputParameterPanel extends Panel {
     if(queryService.count(template) == 0) {
       newOutputs = new EmptyPanel("automaticOutputs");
     } else {
-      InstrumentRun instrumentRun = activeInstrumentRunService.refresh();
-
       KeyValueDataPanel outputs = new KeyValueDataPanel("automaticOutputs", new StringResourceModel("AutomaticDataOutputs", this, null));
       for(final InstrumentOutputParameter param : queryService.match(template)) {
         // Inject the Spring application context and the user session service
-        // into the instrument parameter. NOTE: These are dependencies of 
+        // into the instrument parameter. NOTE: These are dependencies of
         // InstrumentParameter.getDescription().
-        param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
+        param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
         param.setUserSessionService(userSessionService);
-        
+
         Label label = new Label(KeyValueDataPanel.getRowKeyId(), new Model() {
           public Object getObject() {
             return param.getDescription();
@@ -165,22 +150,16 @@ public class InstrumentOutputParameterPanel extends Panel {
         Component output = null;
 
         // case we going through this multiple times
-        InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
-        
+        InstrumentRunValue runValue = activeInstrumentRunService.getOutputInstrumentRunValue(param.getName());
+        IModel runValueModel = new DetachableEntityModel(queryService, runValue);
+        runValueModels.add(runValueModel);
+
         if(manual) {
           manualFragment.setVisible(true);
-          if(runValue == null) {
-            runValue = new InstrumentRunValue();
-            runValue.setInstrumentParameter(param);
-            runValue.setCaptureMethod(param.getCaptureMethod());
-            instrumentRun.addInstrumentRunValue(runValue);
-            activeInstrumentRunService.validate();
-          }
 
-          if(runValue.getData().getValueAsString() == null)
-            runValue.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
-          
-          DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType());
+          if(runValue.getData().getValueAsString() == null) runValue.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
+
+          DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValueModel, "data"), runValue.getDataType());
           field.setRequired(true);
           if(runValue.getCaptureMethod().equals(InstrumentParameterCaptureMethod.AUTOMATIC)) field.setFieldEnabled(false);
           field.setLabel(new Model() {
@@ -214,6 +193,12 @@ public class InstrumentOutputParameterPanel extends Panel {
 
     if(target != null) {
       target.addComponent(newOutputs);
+    }
+  }
+
+  public void saveOutputParameterValues() {
+    for(IModel runValueModel : runValueModels) {
+      activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
     }
   }
 

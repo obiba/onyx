@@ -16,7 +16,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
@@ -29,7 +28,6 @@ import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
-import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,12 +48,9 @@ public abstract class InstructionsPanel extends Panel {
   private static final Logger log = LoggerFactory.getLogger(InstructionsPanel.class);
 
   @SpringBean
-  private EntityQueryService queryService;
-
-  @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
-  @SpringBean(name="activeInterviewService")
+  @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   @SpringBean
@@ -64,16 +59,15 @@ public abstract class InstructionsPanel extends Panel {
   @SpringBean
   private InstrumentService instrumentService;
 
-  @SpringBean(name="userSessionService")
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
-  
+
   @SuppressWarnings("serial")
-  public InstructionsPanel(String id, IModel instrumentModel) {
+  public InstructionsPanel(String id) {
     super(id);
-    setModel(new DetachableEntityModel(queryService, instrumentModel.getObject()));
     setOutputMarkupId(true);
 
-    Instrument instrument = (Instrument) getModelObject();
+    Instrument instrument = activeInstrumentRunService.getInstrument();
     log.info("instrument.name=" + instrument.getName());
 
     InstrumentRun instrumentRun = activeInstrumentRunService.getInstrumentRun();
@@ -108,7 +102,7 @@ public abstract class InstructionsPanel extends Panel {
     }
 
     // save instrument input parameters if any for jade-remote-server
-    activeInstrumentRunService.validate();
+    activeInstrumentRunService.update(instrumentRun);
 
     // general instructions and launcher
     add(new Label("general", new StringResourceModel("StartMeasurementWithInstrument", this, new Model(new ValueMap("name=" + instrument.getName())))));
@@ -152,12 +146,12 @@ public abstract class InstructionsPanel extends Panel {
       @Override
       protected void populateItem(Item item) {
         final InstrumentRunValue runValue = (InstrumentRunValue) item.getModelObject();
-        
+
         // Inject the Spring application context and the user session service
-        // into the instrument parameter. NOTE: These are dependencies of 
+        // into the instrument parameter. NOTE: These are dependencies of
         // InstrumentParameter.getDescription().
         final InstrumentParameter param = runValue.getInstrumentParameter();
-        param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
+        param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
         param.setUserSessionService(userSessionService);
 
         item.add(new Label("instruction", new StringResourceModel("TypeTheValueInTheInstrument", InstructionsPanel.this, new Model() {

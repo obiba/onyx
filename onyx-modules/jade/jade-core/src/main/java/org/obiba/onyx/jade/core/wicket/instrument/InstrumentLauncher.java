@@ -12,7 +12,6 @@ import java.util.Properties;
 
 import javax.servlet.ServletContext;
 
-import org.apache.wicket.Application;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Resource;
 import org.apache.wicket.ResourceReference;

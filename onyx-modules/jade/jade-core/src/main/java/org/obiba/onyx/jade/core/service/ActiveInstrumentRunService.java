@@ -1,13 +1,75 @@
 package org.obiba.onyx.jade.core.service;
 
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 
 public interface ActiveInstrumentRunService {
+
+  /**
+   * Set the {@link ContraIndication} associated the current {@link InstrumentRun}.
+   * @param contraIndication
+   */
+  public void setContraIndication(ContraIndication contraIndication);
+
+  /**
+   * Get the {@link ContraIndication} associated the current {@link InstrumentRun}.
+   */
+  public ContraIndication getContraIndication();
+
+  /**
+   * Set the other contra-indication text to the current {@link InstrumentRun}.
+   * @param otherContraIndication
+   */
+  public void setOtherContraIndication(String otherContraIndication);
+
+  /**
+   * Get the other contra-indication text for the current {@link InstrumentRun}.
+   * @return
+   */
+  public String getOtherContraIndication();
+
+  /**
+   * Set the {@link InstrumentRunStatus} to the current {@link InstrumentRun}.
+   * @param status
+   */
+  public void setInstrumentRunStatus(InstrumentRunStatus status);
+  
+  /**
+   * Get the {@link InstrumentRunStatus} for the current {@link InstrumentRun}.
+   * @return
+   */
+  public InstrumentRunStatus getInstrumentRunStatus();
+  
+  /**
+   * Set the current {@link InstrumentType}.
+   * @return
+   */
+  public void setInstrumentType(InstrumentType instrumentType);
+
+  /**
+   * Get the current {@link InstrumentType}.
+   * @return
+   */
+  public InstrumentType getInstrumentType();
+
+  /**
+   * Get the current {@link InstrumentRun}.
+   * @return
+   */
+  public InstrumentRun getInstrumentRun();
+
+  /**
+   * Get the {@link Instrument} associated to the current {@link InstrumentRun}.
+   * @return
+   */
+  public Instrument getInstrument();
 
   /**
    * Create the current {@link InstrumentRun} without persisting it.
@@ -16,12 +78,6 @@ public interface ActiveInstrumentRunService {
    * @return
    */
   public InstrumentRun start(Participant participant, Instrument instrument);
-
-  /**
-   * Get the current {@link InstrumentRun}.
-   * @return
-   */
-  public InstrumentRun getInstrumentRun();
 
   /**
    * Get the associated {@link Participant}
@@ -50,15 +106,17 @@ public interface ActiveInstrumentRunService {
   public void reset();
 
   /**
-   * Read currently persisted {@link InstrumentRun}.
+   * Persist current {@link InstrumentRun}.
+   * @param currentRun
    */
-  public InstrumentRun refresh();
+  public void update(InstrumentRun currentRun);
 
   /**
-   * Persist current {@link InstrumentRun}.
+   * Persist {@link InstrumentRunValue} current {@link InstrumentRun}.
+   * @param currentRunValue
    */
-  public void validate();
-
+  public void update(InstrumentRunValue currentRunValue);
+  
   /**
    * Compute the output parameters values of {@link InstrumentComputedOutputParameter} for the current
    * {@link InstrumentRun}.
@@ -82,5 +140,5 @@ public interface ActiveInstrumentRunService {
    * @throws IllegalArgumentException if parameter name is not applicable to the {@link Instrument}
    */
   public InstrumentRunValue getInputInstrumentRunValue(String parameterName);
-  
+
 }

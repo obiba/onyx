@@ -3,7 +3,6 @@ package org.obiba.onyx.jade.core.wicket.instrument;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.SpringWebApplication;
@@ -13,7 +12,6 @@ import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
@@ -33,37 +31,32 @@ public class ValidationPanel extends Panel {
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
-  @SpringBean(name="userSessionService")
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
-  
-  private InstrumentRun instrumentRun;
 
-  public ValidationPanel(String id, IModel instrumentModel) {
+  public ValidationPanel(String id) {
     super(id);
-    Instrument inst = (Instrument) instrumentModel.getObject();
     setOutputMarkupId(true);
 
-    Instrument instrument = queryService.get(Instrument.class, inst.getId());
+    Instrument instrument = activeInstrumentRunService.getInstrument();
     InstrumentInputParameter templateIn = new InstrumentInputParameter();
     templateIn.setInstrument(instrument);
-
-    instrumentRun = activeInstrumentRunService.getInstrumentRun();
 
     if(queryService.count(templateIn) > 0) {
       KeyValueDataPanel kv = new KeyValueDataPanel("inputs", new StringResourceModel("DataInputs", this, null));
       for(final InstrumentInputParameter param : queryService.match(templateIn)) {
         // Inject the Spring application context and the user session service
-        // into the instrument parameter. NOTE: These are dependencies of 
+        // into the instrument parameter. NOTE: These are dependencies of
         // InstrumentParameter.getDescription().
-        param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
+        param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
         param.setUserSessionService(userSessionService);
-        
+
         Label label = new Label(KeyValueDataPanel.getRowKeyId(), new Model() {
           public Object getObject() {
             return param.getDescription();
           }
         });
-        InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
+        InstrumentRunValue runValue = activeInstrumentRunService.getInputInstrumentRunValue(param.getName());
         kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new RunValueLabelModel(runValue)));
       }
       add(kv);
@@ -78,17 +71,17 @@ public class ValidationPanel extends Panel {
       KeyValueDataPanel kv = new KeyValueDataPanel("outputs", new StringResourceModel("DataOutputs", this, null));
       for(final InstrumentOutputParameter param : queryService.match(templateOut)) {
         // Inject the Spring application context and the user session service
-        // into the instrument parameter. NOTE: These are dependencies of 
+        // into the instrument parameter. NOTE: These are dependencies of
         // InstrumentParameter.getDescription().
-        param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
+        param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
         param.setUserSessionService(userSessionService);
-        
+
         Label label = new Label(KeyValueDataPanel.getRowKeyId(), new Model() {
           public Object getObject() {
             return param.getDescription();
           }
         });
-        InstrumentRunValue runValue = instrumentRun.getInstrumentRunValue(param);
+        InstrumentRunValue runValue = activeInstrumentRunService.getOutputInstrumentRunValue(param.getName());
         if(runValue != null) {
           kv.addRow(label, new Label(KeyValueDataPanel.getRowValueId(), new RunValueLabelModel(runValue)));
         }
@@ -98,6 +91,5 @@ public class ValidationPanel extends Panel {
       add(new EmptyPanel("outputs"));
     }
   }
-
 
 }

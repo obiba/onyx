@@ -2,7 +2,6 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.model.PropertyModel;
 import org.obiba.onyx.jade.core.wicket.instrument.ValidationPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
@@ -31,7 +30,7 @@ public class ValidationStep extends WizardStepPanel {
 
   @Override
   public void onStepIn(WizardForm form, AjaxRequestTarget target) {
-    setContent(target, new ValidationPanel(getContentId(), new PropertyModel(form, "instrument")));
+    setContent(target, new ValidationPanel(getContentId()));
   }
 
 }

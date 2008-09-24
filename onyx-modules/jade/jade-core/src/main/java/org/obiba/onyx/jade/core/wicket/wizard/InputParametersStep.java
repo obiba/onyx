@@ -2,7 +2,6 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.jade.core.wicket.instrument.InstrumentInputParameterPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -38,7 +37,7 @@ public class InputParametersStep extends WizardStepPanel {
 
   @Override
   public void onStepIn(WizardForm form, AjaxRequestTarget target) {
-    setContent(target, new InstrumentInputParameterPanel(getContentId(), new PropertyModel(form, "instrument")));
+    setContent(target, new InstrumentInputParameterPanel(getContentId()));
   }
 
 }

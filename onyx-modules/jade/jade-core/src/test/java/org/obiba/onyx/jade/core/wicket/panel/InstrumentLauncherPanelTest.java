@@ -9,6 +9,7 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.obiba.onyx.jade.core.service.InstrumentDescriptorService;
 import org.obiba.onyx.jade.core.wicket.instrument.InstrumentLauncherPanel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -22,11 +23,15 @@ public class InstrumentLauncherPanelTest implements Serializable {
   @Autowired
   transient WebApplication application;
 
+  @Autowired
+  transient private InstrumentDescriptorService instrumentDescriptorService;
+  
   transient WicketTester tester;
 
   @Before
   public void setup() {
     tester = new WicketTester(application);
+    instrumentDescriptorService.setCodeBase("1", "/instrument");
   }
 
   @SuppressWarnings("serial")

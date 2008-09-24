@@ -16,9 +16,44 @@
   </instrument>
 
   <contraIndication>
-    <name>StandUnassisted</name>
-    <description>Is Participant unable to stand unassisted ?</description>
+    <name>StandUnassistedHandicap</name>
+    <description>Unable to stand unassisted because of a handicap</description>
     <type>OBSERVED</type>
+    <instrument reference="sta1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>StandUnassistedWheelchair</name>
+    <description>Unable to stand unassisted because of a wheelchair</description>
+    <type>OBSERVED</type>
+    <instrument reference="sta1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>StandUnassistedCast</name>
+    <description>Unable to stand unassisted because of a cast</description>
+    <type>OBSERVED</type>
+    <instrument reference="sta1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>Other</name>
+    <description>Other</description>
+    <type>OBSERVED</type>
+    <instrument reference="sta1" />
+  </contraIndication>
+
+  <contraIndication>
+    <name>A</name>
+    <description>Question A ?</description>
+    <type>ASKED</type>
+    <instrument reference="sta1" />
+  </contraIndication>
+
+  <contraIndication>
+    <name>B</name>
+    <description>Question B ?</description>
+    <type>ASKED</type>
     <instrument reference="sta1" />
   </contraIndication>
 

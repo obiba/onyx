@@ -3,7 +3,6 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.instrument.InstrumentOutputParameterPanel;
@@ -17,6 +16,8 @@ public class OutputParametersStep extends WizardStepPanel {
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
+  private InstrumentOutputParameterPanel instrumentOutputParameterPanel;
+  
   public OutputParametersStep(String id) {
     super(id);
     setOutputMarkupId(true);
@@ -27,10 +28,6 @@ public class OutputParametersStep extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    WizardStepPanel nextStep = ((InstrumentWizardForm) form).getValidationStep();
-    setNextStep(nextStep);
-    nextStep.setPreviousStep(this);
-
     form.getNextLink().setEnabled(true);
     form.getPreviousLink().setEnabled(true);
     form.getFinishLink().setEnabled(false);
@@ -43,11 +40,12 @@ public class OutputParametersStep extends WizardStepPanel {
 
   @Override
   public void onStepIn(WizardForm form, AjaxRequestTarget target) {
-    setContent(target, new InstrumentOutputParameterPanel(getContentId(), new PropertyModel(form, "instrument")));
+    setContent(target, instrumentOutputParameterPanel = new InstrumentOutputParameterPanel(getContentId()));
   }
 
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
+    instrumentOutputParameterPanel.saveOutputParameterValues();
     activeInstrumentRunService.computeOutputParameters();
   }
 }

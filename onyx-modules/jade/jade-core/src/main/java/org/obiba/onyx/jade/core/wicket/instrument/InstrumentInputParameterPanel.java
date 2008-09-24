@@ -2,13 +2,10 @@ package org.obiba.onyx.jade.core.wicket.instrument;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
@@ -18,14 +15,13 @@ import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
-import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Get the input parameters that requires operator provisionning.
  * @author Yannick Marcon
- *
+ * 
  */
 public class InstrumentInputParameterPanel extends Panel {
 
@@ -35,39 +31,30 @@ public class InstrumentInputParameterPanel extends Panel {
   private static final Logger log = LoggerFactory.getLogger(InstrumentInputParameterPanel.class);
 
   @SpringBean
-  private EntityQueryService queryService;
-
-  @SpringBean
   private InstrumentService instrumentService;
-
-  @SpringBean(name="activeInterviewService")
-  private ActiveInterviewService activeInterviewService;
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
-  @SpringBean(name="userSessionService")
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
-  
+
   private InstrumentRun instrumentRun;
 
-  public InstrumentInputParameterPanel(String id, IModel instrumentModel) {
+  public InstrumentInputParameterPanel(String id) {
     super(id);
-    setModel(new DetachableEntityModel(queryService, instrumentModel.getObject()));
     setOutputMarkupId(true);
 
-    Instrument instrument = (Instrument) getModelObject();
-
-    instrumentRun = activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument);
+    Instrument instrument = activeInstrumentRunService.getInstrument();
 
     KeyValueDataPanel inputs = new KeyValueDataPanel("inputs");
     for(final InstrumentInputParameter param : instrumentService.getInstrumentInputParameter(instrument, false)) {
       // Inject the Spring application context and the user session service
-      // into the instrument parameter. NOTE: These are dependencies of 
+      // into the instrument parameter. NOTE: These are dependencies of
       // InstrumentParameter.getDescription().
-      param.setApplicationContext(((SpringWebApplication)getApplication()).getSpringContextLocator().getSpringContext());
+      param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
       param.setUserSessionService(userSessionService);
-      
+
       Label label = new Label(KeyValueDataPanel.getRowKeyId(), new Model() {
         public Object getObject() {
           return param.getDescription();

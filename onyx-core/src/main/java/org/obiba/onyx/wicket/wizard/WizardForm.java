@@ -190,6 +190,10 @@ public abstract class WizardForm extends Form {
     return null;
   }
 
+  public static String getStepId() {
+    return "step";
+  }
+  
   private class WizardButtonBehavior extends AttributeAppender {
 
     private static final long serialVersionUID = -2793180600410649652L;

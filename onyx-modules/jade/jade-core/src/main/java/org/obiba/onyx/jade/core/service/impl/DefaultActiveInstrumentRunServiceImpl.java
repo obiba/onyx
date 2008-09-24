@@ -1,18 +1,18 @@
 package org.obiba.onyx.jade.core.service.impl;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.Date;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameterAlgorithm;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
@@ -25,10 +25,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwareService implements ActiveInstrumentRunService {
 
-  private InstrumentRun currentRun = null;
+  private Serializable currentRunId = null;
+
+  private Serializable instrumentTypeId;
 
   public InstrumentRun start(Participant participant, Instrument instrument) {
-    if(currentRun != null) {
+
+    if(currentRunId != null) {
+      InstrumentRun currentRun = getInstrumentRun();
       if(currentRun.getStatus().equals(InstrumentRunStatus.IN_PROGRESS)) {
         cancel();
       }
@@ -42,11 +46,13 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
       participantInterview = getPersistenceManager().save(participantInterviewTemplate);
     }
 
-    currentRun = new InstrumentRun();
+    InstrumentRun currentRun = new InstrumentRun();
     currentRun.setParticipantInterview(participantInterview);
     currentRun.setInstrument(instrument);
     currentRun.setStatus(InstrumentRunStatus.IN_PROGRESS);
     currentRun.setTimeStart(new Date());
+    getPersistenceManager().save(currentRun);
+    currentRunId = currentRun.getId();
 
     return currentRun;
   }
@@ -64,7 +70,9 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   private void end(InstrumentRunStatus status) {
-    if(currentRun == null) return;
+    if(currentRunId == null) return;
+
+    InstrumentRun currentRun = getInstrumentRun();
 
     currentRun.setStatus(status);
     currentRun.setTimeEnd(new Date());
@@ -77,36 +85,41 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public InstrumentRun getInstrumentRun() {
-    return currentRun;
-  }
+    if(currentRunId == null) return null;
 
-  public InstrumentRun refresh() {
-    if(currentRun == null) return null;
-    return getPersistenceManager().refresh(currentRun);
+    return getPersistenceManager().get(InstrumentRun.class, currentRunId);
   }
 
   public Participant getParticipant() {
-    if(currentRun == null) return null;
+    if(currentRunId == null) return null;
 
-    return currentRun.getParticipantInterview().getParticipant();
+    return getInstrumentRun().getParticipantInterview().getParticipant();
   }
 
   public void reset() {
-    currentRun = null;
+    currentRunId = null;
   }
 
-  public void validate() {
-    if(currentRun == null) return;
+  public void update(InstrumentRun currentRun) {
+    if(currentRunId == null) return;
+    if(currentRun == null) throw new IllegalArgumentException("Current instrument run cannot be null");
+    if(!currentRunId.equals(currentRun.getId())) throw new IllegalArgumentException("Unexpected given current instrument run");
 
     getPersistenceManager().save(currentRun);
+  }
 
-    for(InstrumentRunValue value : currentRun.getInstrumentRunValues()) {
-      getPersistenceManager().save(value);
-    }
+  public void update(InstrumentRunValue currentRunValue) {
+    if(currentRunId == null) return;
+    if(currentRunValue.getInstrumentRun() == null) throw new IllegalArgumentException("Current instrument run cannot be null");
+    if(!currentRunId.equals(currentRunValue.getInstrumentRun().getId())) throw new IllegalArgumentException("Unexpected given current instrument run");
+
+    getPersistenceManager().save(currentRunValue);
   }
 
   public void computeOutputParameters() {
-    if(currentRun == null) return;
+    if(currentRunId == null) return;
+
+    InstrumentRun currentRun = getInstrumentRun();
 
     InstrumentOutputParameter template = new InstrumentOutputParameter();
     template.setInstrument(currentRun.getInstrument());
@@ -116,13 +129,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     for(InstrumentOutputParameter param : getPersistenceManager().match(template)) {
       InstrumentComputedOutputParameter computedParam = (InstrumentComputedOutputParameter) param;
       if(computedParam.getAlgorithm().equals(InstrumentOutputParameterAlgorithm.AVERAGE)) {
-        InstrumentRunValue computedRunValue = currentRun.getInstrumentRunValue(computedParam);
-        if(computedRunValue == null) {
-          computedRunValue = new InstrumentRunValue();
-          computedRunValue.setInstrumentParameter(computedParam);
-          computedRunValue.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
-          currentRun.addInstrumentRunValue(computedRunValue);
-        }
+        InstrumentRunValue computedRunValue = getOutputInstrumentRunValue(computedParam.getName());
 
         double sum = 0;
         int count = 0;
@@ -141,19 +148,25 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
         Serializable avgValue = null;
         if(computedRunValue.getDataType().equals(DataType.DECIMAL)) {
-          long avgInt = Math.round(avg*100);
-          avgValue = (double) avgInt/100;
+          long avgInt = Math.round(avg * 100);
+          avgValue = (double) avgInt / 100;
+        } else if(computedRunValue.getDataType().equals(DataType.INTEGER)) {
+          avgValue = Math.round(avg);
         }
-        else if(computedRunValue.getDataType().equals(DataType.INTEGER)) avgValue = Math.round(avg);
 
-        if(avgValue != null) computedRunValue.setData(new Data(computedRunValue.getDataType(), avgValue));
+        if(avgValue != null) {
+          computedRunValue.setData(new Data(computedRunValue.getDataType(), avgValue));
+        }
 
+        getPersistenceManager().save(computedRunValue);
       }
     }
   }
 
   public InstrumentRunValue getOutputInstrumentRunValue(String parameterName) {
-    if(currentRun == null) return null;
+    if(currentRunId == null) return null;
+
+    InstrumentRun currentRun = getInstrumentRun();
 
     InstrumentOutputParameter instrumentOutputParameter = new InstrumentOutputParameter();
     instrumentOutputParameter.setName(parameterName);
@@ -173,39 +186,84 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     if(outputParameterValue == null) {
       valueTemplate.setCaptureMethod(instrumentOutputParameter.getCaptureMethod());
       outputParameterValue = getPersistenceManager().save(valueTemplate);
-      // refresh
-      currentRun = getPersistenceManager().get(InstrumentRun.class, currentRun.getId());
     }
 
     return outputParameterValue;
   }
-  
+
   public InstrumentRunValue getInputInstrumentRunValue(String parameterName) {
-    if(currentRun == null) return null;
-    
+    if(currentRunId == null) return null;
+
+    InstrumentRun currentRun = getInstrumentRun();
+
     InstrumentInputParameter instrumentInputParameter = new InstrumentInputParameter();
     instrumentInputParameter.setName(parameterName);
     instrumentInputParameter.setInstrument(currentRun.getInstrument());
     instrumentInputParameter = getPersistenceManager().matchOne(instrumentInputParameter);
-    
-    if (instrumentInputParameter == null) {
+
+    if(instrumentInputParameter == null) {
       throw new IllegalArgumentException("No such input parameter name for instrument " + currentRun.getInstrument().getName() + " :" + parameterName);
     }
-    
+
     InstrumentRunValue valueTemplate = new InstrumentRunValue();
     valueTemplate.setInstrumentParameter(instrumentInputParameter);
     valueTemplate.setInstrumentRun(currentRun);
 
     InstrumentRunValue inputParameterValue = getPersistenceManager().matchOne(valueTemplate);
-    
+
     if(inputParameterValue == null) {
       valueTemplate.setCaptureMethod(instrumentInputParameter.getCaptureMethod());
       inputParameterValue = getPersistenceManager().save(valueTemplate);
       // refresh
       currentRun = getPersistenceManager().get(InstrumentRun.class, currentRun.getId());
     }
-    
+
     return inputParameterValue;
+  }
+
+  public InstrumentType getInstrumentType() {
+    return getPersistenceManager().get(InstrumentType.class, instrumentTypeId);
+  }
+
+  public void setInstrumentType(InstrumentType instrumentType) {
+    this.instrumentTypeId = instrumentType.getId();
+  }
+
+  public Instrument getInstrument() {
+    return getInstrumentRun().getInstrument();
+  }
+
+  public ContraIndication getContraIndication() {
+    return getInstrumentRun().getContraIndication();
+  }
+
+  public void setContraIndication(ContraIndication contraIndication) {
+    InstrumentRun currentRun = getInstrumentRun();
+
+    currentRun.setContraIndication(contraIndication);
+    getPersistenceManager().save(currentRun);
+  }
+
+  public String getOtherContraIndication() {
+    return getInstrumentRun().getOtherContraIndication();
+  }
+
+  public void setOtherContraIndication(String otherContraIndication) {
+    InstrumentRun currentRun = getInstrumentRun();
+
+    currentRun.setOtherContraIndication(otherContraIndication);
+    getPersistenceManager().save(currentRun);
+  }
+
+  public InstrumentRunStatus getInstrumentRunStatus() {
+    return getInstrumentRun().getStatus();
+  }
+
+  public void setInstrumentRunStatus(InstrumentRunStatus status) {
+    InstrumentRun currentRun = getInstrumentRun();
+
+    currentRun.setStatus(status);
+    getPersistenceManager().save(currentRun);
   }
 
 }

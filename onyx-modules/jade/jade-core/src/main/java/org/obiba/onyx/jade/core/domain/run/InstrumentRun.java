@@ -16,6 +16,7 @@ import javax.persistence.TemporalType;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 
@@ -27,7 +28,7 @@ public class InstrumentRun extends AbstractEntity {
   @ManyToOne
   @JoinColumn(name = "participant_interview_id")
   private ParticipantInterview participantInterview;
-  
+
   @OneToMany(mappedBy = "instrumentRun")
   private List<InstrumentRunValue> instrumentRunValues;
 
@@ -41,21 +42,27 @@ public class InstrumentRun extends AbstractEntity {
 
   @Enumerated(EnumType.STRING)
   private InstrumentRunStatus status;
-  
+
   @Temporal(TemporalType.TIMESTAMP)
   private Date timeStart;
-  
+
   @Temporal(TemporalType.TIMESTAMP)
   private Date timeEnd;
-  
+
   @Enumerated(EnumType.STRING)
   private InstrumentRunRefusalReason refusalReason;
-  
+
   @Column(length = 2000)
   private String refusalReasonComment;
-  
+
+  @ManyToOne
+  @JoinColumn(name = "contra_indication_id")
+  private ContraIndication contraIndication;
+
+  private String otherContraIndication;
+
   private String runnerError;
-    
+
   public InstrumentRun() {
     super();
   }
@@ -73,20 +80,19 @@ public class InstrumentRun extends AbstractEntity {
   }
 
   public void addInstrumentRunValue(InstrumentRunValue value) {
-    if (value != null) {
+    if(value != null) {
       getInstrumentRunValues().add(value);
       value.setInstrumentRun(this);
     }
   }
-  
+
   public InstrumentRunValue getInstrumentRunValue(InstrumentParameter instrumentParameter) {
-    for (InstrumentRunValue runValue : getInstrumentRunValues()) {
-      if (runValue.getInstrumentParameter().getId().equals(instrumentParameter.getId()))
-        return runValue;
+    for(InstrumentRunValue runValue : getInstrumentRunValues()) {
+      if(runValue.getInstrumentParameter().getId().equals(instrumentParameter.getId())) return runValue;
     }
     return null;
   }
-  
+
   public Instrument getInstrument() {
     return instrument;
   }
@@ -126,7 +132,7 @@ public class InstrumentRun extends AbstractEntity {
   public boolean isRefused() {
     return refusalReason != null;
   }
-  
+
   public void setRefusalReason(InstrumentRunRefusalReason refusalReason) {
     this.refusalReason = refusalReason;
   }
@@ -147,6 +153,22 @@ public class InstrumentRun extends AbstractEntity {
     this.user = user;
   }
 
+  public ContraIndication getContraIndication() {
+    return contraIndication;
+  }
+
+  public void setContraIndication(ContraIndication contraIndication) {
+    this.contraIndication = contraIndication;
+  }
+
+  public String getOtherContraIndication() {
+    return otherContraIndication;
+  }
+
+  public void setOtherContraIndication(String otherContraIndication) {
+    this.otherContraIndication = otherContraIndication;
+  }
+
   public String getRunnerError() {
     return runnerError;
   }
@@ -155,5 +177,4 @@ public class InstrumentRun extends AbstractEntity {
     this.runnerError = runError;
   }
 
-  
 }
