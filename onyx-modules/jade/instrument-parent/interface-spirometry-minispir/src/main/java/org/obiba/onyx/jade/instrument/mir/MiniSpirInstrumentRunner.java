@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -129,7 +130,11 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
       BufferedWriter inputFileWriter = new BufferedWriter(new FileWriter(externalAppInputFile));
       inputFileWriter.write("[Identification]\n");
       for(Map.Entry<String, Data> entry : inputData.entrySet()) {
-        inputFileWriter.write(entry.getKey() + "=" + ((entry.getKey().equals("Gender")) ? getGenderConverter(entry.getValue()) : entry.getValue().getValueAsString()) + "\n");
+        if(entry.getKey().equals("BirthDate")) {
+          SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+          inputFileWriter.write(entry.getKey() + "=" + formatter.format(entry.getValue().getValue()) + "\n");
+        } else
+          inputFileWriter.write(entry.getKey() + "=" + ((entry.getKey().equals("Gender")) ? getGenderConverter(entry.getValue()) : entry.getValue().getValueAsString()) + "\n");
       }
       inputFileWriter.close();
     } catch(Exception ex) {

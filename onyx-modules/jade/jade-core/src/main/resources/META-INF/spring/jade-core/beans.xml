@@ -6,11 +6,14 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
   <tx:annotation-driven transaction-manager="transactionManager" />
-
-  <bean name="consentDependency" class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+  
+  <bean name="consentDependency" class="org.obiba.onyx.engine.ConsentStageDependencyCondition">
     <property name="stageName" value="CON" />
   </bean>
-  <bean name="staDependency" class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+  <bean name="staDependency" class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
+    <property name="instrumentService" ref="instrumentService" />
+    <property name="instrumentRunService" ref="instrumentRunService" />
+    <property name="queryService" ref="persistenceManager" />
     <property name="stageName" value="STA" />
   </bean>
 
@@ -75,8 +78,15 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
               <property name="leftStageDependencyCondition" ref="consentDependency" />
               <property name="operator" value="AND" />
               <property name="rightStageDependencyCondition">
-                <bean class="org.obiba.onyx.engine.ExclusiveStageDependencyCondition">
-                  <property name="stageName" value="BIM" />
+                <bean class="org.obiba.onyx.engine.InverseStageDependencyCondition">
+                  <property name="stageDependencyCondition">
+                    <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
+                      <property name="instrumentService" ref="instrumentService" />
+                      <property name="instrumentRunService" ref="instrumentRunService" />
+                      <property name="queryService" ref="persistenceManager" />
+                      <property name="stageName" value="BIM" />
+                    </bean>
+                  </property>
                 </bean>
               </property>
             </bean>
@@ -101,13 +111,19 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
                   <property name="rightStageDependencyCondition">
                     <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
                       <property name="leftStageDependencyCondition">
-                        <bean class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+                        <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
+                          <property name="instrumentService" ref="instrumentService" />
+                          <property name="instrumentRunService" ref="instrumentRunService" />
+                          <property name="queryService" ref="persistenceManager" />
                           <property name="stageName" value="BIM" />
                         </bean>
                       </property>
                       <property name="operator" value="OR" />
                       <property name="rightStageDependencyCondition">
-                        <bean class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+                        <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
+                          <property name="instrumentService" ref="instrumentService" />
+                          <property name="instrumentRunService" ref="instrumentRunService" />
+                          <property name="queryService" ref="persistenceManager" />
                           <property name="stageName" value="WEI" />
                         </bean>
                       </property>

@@ -53,8 +53,10 @@ public class JadeModule implements Module, ApplicationContextAware {
     exec.addEdge(ready, TransitionEvent.SKIP, skipped);
     exec.addEdge(inProgress, TransitionEvent.CANCEL, ready);
     exec.addEdge(inProgress, TransitionEvent.COMPLETE, completed);
+    exec.addEdge(inProgress, TransitionEvent.NOTAPPLICABLE, notApplicable);
     exec.addEdge(skipped, TransitionEvent.CANCEL, ready);
     exec.addEdge(completed, TransitionEvent.CANCEL, ready);
+    exec.addEdge(completed, TransitionEvent.NOTAPPLICABLE, notApplicable);
 
     AbstractStageState waiting = (AbstractStageState) applicationContext.getBean("jadeWaitingState");
     exec.addEdge(notApplicable, TransitionEvent.VALID, ready);

@@ -31,7 +31,7 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
   public void stop(Action action) {
     super.execute(action);
     log.info("Jade Stage {} is cancelling", super.getStage().getName());
-    if (areDependenciesCompleted()) {
+    if (areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
     } else {
       castEvent(TransitionEvent.INVALID);
@@ -59,6 +59,11 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
     return message;
   }
 
+  @Override
+  public boolean isCompleted() {
+    return true;
+  }
+  
   public String getName() {
     return "Jade.Skipped";
   }

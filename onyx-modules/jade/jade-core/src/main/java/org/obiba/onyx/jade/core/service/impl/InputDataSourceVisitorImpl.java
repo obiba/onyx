@@ -10,6 +10,7 @@ import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.FixedSource;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.MultipleOutputParameterSource;
 import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.instrument.OutputParameterSource;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantPropertySource;
@@ -119,6 +120,24 @@ public class InputDataSourceVisitorImpl implements InputDataSourceVisitor {
         // TODO unit conversion when necessary
         // TODO type conversion when possible (INTEGER->DECIMAL->TEXT...)
         data = runValue.getData();
+      }
+    }
+  }
+  
+  public void visit(MultipleOutputParameterSource source) {
+    ParticipantInterview interview = new ParticipantInterview();
+    interview.setParticipant(participant);
+    interview = queryService.matchOne(interview);
+
+    if(interview != null) {
+      for(OutputParameterSource outputParameterSource : source.getOutputParameterSourceList()) {
+        InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(interview, outputParameterSource.getInstrumentType(), outputParameterSource.getParameterName());
+        if(runValue != null) {
+          if (runValue.getData().getValue() != null){
+            data = runValue.getData();
+            break;
+          }
+        }
       }
     }
   }

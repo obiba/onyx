@@ -31,7 +31,7 @@ public class JadeCompletedState extends AbstractJadeStageState implements Initia
   public void stop(Action action) {
     super.execute(action);
     log.info("Jade Stage {} is cancelling", super.getStage().getName());
-    if(areDependenciesCompleted()) {
+    if (areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
     } else {
       castEvent(TransitionEvent.INVALID);

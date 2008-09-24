@@ -27,8 +27,8 @@ public class MultipleStageDependencyCondition extends StageDependencyCondition {
         if(rightResult != null && rightResult == false) return false;
         return null;
       } else {
-        if(leftResult != null) return leftResult;
-        if(rightResult != null) return rightResult;
+        if(leftResult != null) return (leftResult == true) ? leftResult : null;
+        if(rightResult != null) return (rightResult == true) ? rightResult : null;
         return null;
       }
     }

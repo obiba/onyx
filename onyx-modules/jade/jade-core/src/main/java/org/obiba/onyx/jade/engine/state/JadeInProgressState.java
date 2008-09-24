@@ -50,7 +50,7 @@ public class JadeInProgressState extends AbstractJadeStageState implements Initi
       activeInstrumentRunService.cancel();
       activeInstrumentRunService.reset();
     }
-    if(areDependenciesCompleted()) {
+    if (areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
     } else {
       castEvent(TransitionEvent.INVALID);

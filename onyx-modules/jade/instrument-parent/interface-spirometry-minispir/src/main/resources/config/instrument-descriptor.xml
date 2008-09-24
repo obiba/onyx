@@ -103,12 +103,25 @@
     <instrument reference="spi1" />
   </input>  
   
-  <outputParameterSource id="weight_source">
+  <outputParameterSource id="bim_weight_source">
     <instrumentType>
       <name>BIM</name>
     </instrumentType>
     <parameterName>Weight</parameterName>
   </outputParameterSource>
+  <outputParameterSource id="wei_weight_source">
+    <instrumentType>
+      <name>WEI</name>
+    </instrumentType>
+    <parameterName>Weight</parameterName>
+  </outputParameterSource>
+  
+  <multipleOutputParameterSource id="weight_source">
+    <outputParameterSourceList>
+      <outputParameterSource reference="bim_weight_source"/>
+      <outputParameterSource reference="wei_weight_source"/>
+    </outputParameterSourceList>
+  </multipleOutputParameterSource>
   <input id="weight">
     <name>Weight</name>
     <description>Participant_Weight</description>

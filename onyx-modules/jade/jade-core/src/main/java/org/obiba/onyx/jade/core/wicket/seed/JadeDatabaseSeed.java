@@ -1,10 +1,8 @@
 package org.obiba.onyx.jade.core.wicket.seed;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.wicket.protocol.http.WebApplication;
@@ -17,6 +15,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.domain.instrument.MultipleOutputParameterSource;
 import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.instrument.OutputParameterSource;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantPropertySource;
@@ -125,6 +124,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
     xstream.alias("fixedSource", FixedSource.class);
     xstream.alias("participantPropertySource", ParticipantPropertySource.class);
     xstream.alias("outputParameterSource", OutputParameterSource.class);
+    xstream.alias("multipleOutputParameterSource", MultipleOutputParameterSource.class);
     xstream.alias("operatorSource", OperatorSource.class);
   }
 }
