@@ -38,6 +38,8 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
 
   private InstrumentDescriptorService instrumentDescriptorService;
 
+  private boolean toPersist = false;
+
   public void setPersistenceManager(PersistenceManager persistenceManager) {
     this.persistenceManager = persistenceManager;
   }
@@ -63,7 +65,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
       Set<String> inputParameterNames = new HashSet<String>(10);
       Set<String> outputParameterNames = new HashSet<String>(10);
       for(Object entity : objects) {
-        log.info("Seeding database from [" + resource + "] with entity {} of type {}", entity, entity.getClass().getSimpleName());
+        
         if(entity instanceof Instrument) {
           Instrument instrument = (Instrument) entity;
           InstrumentType type = instrumentService.getInstrumentType(instrument.getInstrumentType().getName());
@@ -72,7 +74,9 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
           // resource is in .../<codeBase>/lib/instrument-descriptor.xml
 
           try {
-            instrumentDescriptorService.setCodeBase(instrument.getBarcode(), resource.getFile().getParentFile().getParentFile().getName() + "/" + resource.getFile().getParentFile().getName());
+            String codeBase = resource.getFile().getParentFile().getParentFile().getName() + "/" + resource.getFile().getParentFile().getName();
+            log.info("Seeding instrument descriptor service with instrument {} code base {}", instrument.getBarcode(), codeBase);
+            instrumentDescriptorService.setCodeBase(instrument.getBarcode(), codeBase);
           } catch(IOException cannotFindResource) {
             log.error("Cannot find resource : " + resource.getDescription());
             throw new RuntimeException(cannotFindResource);
@@ -96,19 +100,29 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
           }
 
           // Add the name to the set. If the Set already contains the name, throw an exception describing the problem.
-//          if(names.add(parameter.getName()) == false) {
-//            log.error("The instrument descriptor {} contains multiple {} parameters with name {}. Instrument parameters must have a unique name for within its instrument.", new Object[] { resource.getDescription(), type, parameter.getName() });
-//            throw new IllegalStateException("The instrument descriptor " + resource.getDescription() + " contains multiple " + type + " parameters with name " + parameter.getName() + ". Instrument parameters must have a unique name for within its instrument.");
-//          }
+          // if(names.add(parameter.getName()) == false) {
+          // log.error("The instrument descriptor {} contains multiple {} parameters with name {}. Instrument parameters
+          // must have a unique name for within its instrument.", new Object[] { resource.getDescription(), type,
+          // parameter.getName() });
+          // throw new IllegalStateException("The instrument descriptor " + resource.getDescription() + " contains
+          // multiple " + type + " parameters with name " + parameter.getName() + ". Instrument parameters must have a
+          // unique name for within its instrument.");
+          // }
         }
-        persistenceManager.save(entity);
+        
+        if(toPersist) {
+          log.info("Seeding database from [" + resource + "] with entity {} of type {}", entity, entity.getClass().getSimpleName());
+          persistenceManager.save(entity);
+        }
       }
     }
   }
 
   @Override
   protected boolean shouldSeed(WebApplication application) {
-    return (persistenceManager.list(InstrumentType.class).size() == 0);
+    toPersist = (persistenceManager.list(InstrumentType.class).size() == 0);
+    // read the seeding file but optionnaly persist entity (always need to seed instrument descriptor service)
+    return true;
   }
 
   @Override
