@@ -40,7 +40,7 @@ public interface InstrumentExecutionService {
   public void addOutputParameterValues(Map<String, Data> values);
 
   public void addOutputParameterValue(String name, Data value);
-
-  public void updateInstrumentRunState(Object state);
+  
+  public void instrumentRunnerError(Exception error);
 
 }

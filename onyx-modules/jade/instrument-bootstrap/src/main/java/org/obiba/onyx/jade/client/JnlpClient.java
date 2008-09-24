@@ -5,6 +5,7 @@ import java.util.Properties;
 import java.util.logging.LogManager;
 
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
+import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
@@ -13,6 +14,9 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 public class JnlpClient {
+  
+  private static InstrumentExecutionService instrumentExecutionService;
+  
   private static final Logger log = LoggerFactory.getLogger(JnlpClient.class);
 
   public static void main(String[] args) throws Exception  {
@@ -38,6 +42,7 @@ public class JnlpClient {
         instrumentRunner.run();
       } catch ( Exception e) {
         log.error("Unexpected error while executing runner {}", e);
+        instrumentExecutionService.instrumentRunnerError(e);
       } finally {
 
         try {
@@ -53,6 +58,7 @@ public class JnlpClient {
 
     } catch(Exception ex) {
       log.error("Unexpected error while initializing runner {}", ex);
+      instrumentExecutionService.instrumentRunnerError(ex);
     } finally {
 
       // Make sure application context is destroyed.
@@ -98,6 +104,14 @@ public class JnlpClient {
       throw new RuntimeException("Error! Client was unable to load application parameters.");
     }
 
+  }
+
+  public InstrumentExecutionService getInstrumentExecutionService() {
+    return instrumentExecutionService;
+  }
+
+  public void setInstrumentExecutionService(InstrumentExecutionService instrumentExecutionService) {
+    JnlpClient.instrumentExecutionService = instrumentExecutionService;
   }
 
 }

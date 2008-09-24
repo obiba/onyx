@@ -1,5 +1,8 @@
 package org.obiba.onyx.jade.instrument.service;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,13 +83,17 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
     getPersistenceManager().save(outputParameterValue);
   }
 
-  public void updateInstrumentRunState(Object state) {
+  public void instrumentRunnerError(Exception error) {
     InstrumentRun run = getInstrumentRun();
-    InstrumentRunStatus status = InstrumentRunStatus.valueOf(state.toString());
-    if(status != null) {
-      run.setStatus(status);
-      getPersistenceManager().save(run);
-    }
+    
+    // Convert error Stack trace to a String
+    Writer result = new StringWriter();
+    PrintWriter printWriter = new PrintWriter(result);
+    error.printStackTrace(printWriter);
+   
+    run.setRunnerError(result.toString());
+    run.setStatus(InstrumentRunStatus.IN_ERROR);
+    getPersistenceManager().save(run);
   }
 
   
