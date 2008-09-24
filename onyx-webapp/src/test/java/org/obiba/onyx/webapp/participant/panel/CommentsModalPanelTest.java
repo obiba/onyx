@@ -49,7 +49,7 @@ public class CommentsModalPanelTest implements Serializable {
 
   private EntityQueryService queryServiceMock;
 
-  private ModuleRegistry moduleRegistry;
+  private transient ModuleRegistry moduleRegistry;
 
   private UserSessionService userSessionServiceMock;
 
