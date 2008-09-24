@@ -9,6 +9,7 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
@@ -18,6 +19,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IErrorMessageSource;
 import org.apache.wicket.validation.IValidatable;
@@ -26,12 +28,14 @@ import org.apache.wicket.validation.IValidator;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 public abstract class ActionDefinitionPanel extends Panel {
 
@@ -42,6 +46,9 @@ public abstract class ActionDefinitionPanel extends Panel {
 
   @SpringBean(name="activeInterviewService")
   private ActiveInterviewService activeInterviewService;
+
+  @SpringBean(name = "userSessionService")
+  private UserSessionService userSessionService;
 
   private boolean cancelled = true;
 
@@ -164,7 +171,16 @@ public abstract class ActionDefinitionPanel extends Panel {
 
     public ReasonsFragment(String id, List<String> reasons) {
       super(id, "reasonsFragment", ActionDefinitionPanel.this);
-      add(new DropDownChoice("reasonsSelect", new PropertyModel(ActionDefinitionPanel.this, "action.eventReason"), reasons));
+      add(new DropDownChoice("reasonsSelect", new PropertyModel(ActionDefinitionPanel.this, "action.eventReason"), reasons, new IChoiceRenderer() {
+        public Object getDisplayValue(Object object) {
+          ApplicationContext context = ((SpringWebApplication)(ActionDefinitionPanel.this.getApplication())).getSpringContextLocator().getSpringContext();
+          return context.getMessage(object.toString(), null, userSessionService.getLocale());
+        }
+        
+        public String getIdValue(Object object, int index) {
+          return object.toString();
+        }
+      }));
     }
 
   }
