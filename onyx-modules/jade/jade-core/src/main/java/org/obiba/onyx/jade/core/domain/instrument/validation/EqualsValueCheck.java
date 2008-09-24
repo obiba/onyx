@@ -1,7 +1,11 @@
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
+import java.util.Date;
+
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
+import org.obiba.onyx.util.data.DataType;
 
 /**
  * Integrity check to verify that an instrument run value is equal
@@ -15,18 +19,97 @@ import org.obiba.onyx.util.data.Data;
  */
 public class EqualsValueCheck implements IntegrityCheck {
 
-  private Data value;
+  private DataType type;
+  
+  private Boolean booleanValue;
+
+  private Date dateValue;
+
+  private Double decimalValue;
+
+  private Long integerValue;
+
+  private String textValue;
+
+  private byte[] dataValue;
   
   public EqualsValueCheck() {
     super(); 
   }
   
-  public void setValue(Data value) {
-    this.value = value;  
+  public void setDataType(DataType type) {
+    this.type = type;
   }
   
-  public Data getValue() {
-    return this.value;
+  public DataType getDataType() {
+    return type;
+  }
+  
+  public void setData(Data data) {
+    if(data != null) {
+      if(data.getType() == getDataType()) {
+
+        switch(getDataType()) {
+        case BOOLEAN:
+          booleanValue = data.getValue();
+          break;
+
+        case DATE:
+          dateValue = data.getValue();
+          break;
+
+        case DECIMAL:
+          decimalValue = data.getValue();
+          break;
+
+        case INTEGER:
+          integerValue = data.getValue();
+          break;
+
+        case TEXT:
+          textValue = data.getValue();
+          break;
+
+        case DATA:
+          dataValue = data.getValue();
+          break;
+        }
+      } else {
+        throw new IllegalArgumentException("DataType " + getDataType() + " expected, " + data.getType() + " received.");
+      }
+    }
+  }
+ 
+  public Data getData() {
+    Data data = null;
+
+    switch(getDataType()) {
+    case BOOLEAN:
+      data = DataBuilder.buildBoolean(booleanValue);
+      break;
+
+    case DATE:
+      data = DataBuilder.buildDate(dateValue);
+      break;
+
+    case DECIMAL:
+      data = DataBuilder.buildDecimal(decimalValue);
+      break;
+
+    case INTEGER:
+      data = DataBuilder.buildInteger(integerValue);
+      break;
+
+    case TEXT:
+      data = DataBuilder.buildText(textValue);
+      break;
+
+    case DATA:
+      data = new Data(getDataType(), dataValue);
+      break;
+    }
+
+    return data;
   }
   
   //
@@ -45,10 +128,10 @@ public class EqualsValueCheck implements IntegrityCheck {
     boolean isEqual = false;
     
     if (value != null && value.getData() != null) {
-      isEqual = value.getData().equals(getValue());
+      isEqual = value.getData().equals(getData());
     }
     else {
-      isEqual = (getValue() == null);
+      isEqual = (getData() == null);
     }
     
     return isEqual;

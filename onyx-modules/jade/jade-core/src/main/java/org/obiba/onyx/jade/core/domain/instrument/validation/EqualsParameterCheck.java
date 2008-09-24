@@ -59,7 +59,7 @@ public class EqualsParameterCheck implements IntegrityCheck {
     );
    
     // Update the equalsValueCheck accordingly.
-    equalsValueCheck.setValue(paramValue.getData());
+    equalsValueCheck.setData(paramValue.getData());
 
     return equalsValueCheck.checkParameterValue(value);
   }
