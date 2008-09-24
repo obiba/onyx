@@ -114,8 +114,6 @@ public class CardiosoftInstrumentRunnerTest {
     Properties testResults = new Properties();
     testResults.load(getClass().getResourceAsStream("/testResults.properties"));
     
-    Assert.assertTrue(new File(getClass().getResource("/testResults.properties").toURI()).exists());
-    
     // Compare the test results file to the values extracted from the XML result file to make sure they match.
     for(PropertyDescriptor pd : Introspector.getBeanInfo(CardiosoftInstrumentResultParser.class).getPropertyDescriptors()) {
      
@@ -123,7 +121,6 @@ public class CardiosoftInstrumentRunnerTest {
       value = pd.getReadMethod().invoke(resultParser);
      
       if (!paramName.equalsIgnoreCase("doc") && !paramName.equalsIgnoreCase("xpath") && !paramName.equalsIgnoreCase("xmldocument") && !paramName.equalsIgnoreCase("class")) {      
-        System.out.println("param= " + paramName + ", value= " + value.toString() + ", testvalue= " + testResults.getProperty(paramName));
         Assert.assertTrue(value.toString().equals(testResults.getProperty(paramName)));
       }
 
