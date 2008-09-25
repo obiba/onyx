@@ -62,7 +62,7 @@ public class JadeStageDependencyCondition extends StageDependencyCondition {
       
       InstrumentRun instrumentRun = instrumentRunService.getLastCompletedInstrumentRun(participantInterview, instrumentService.getInstrumentType(stageName));
 
-      if(instrumentRun != null && (instrumentRun.getInstrumentRunValues().size() > 0)) return true;
+      if(instrumentRun != null && instrumentRun.getInstrumentRunValues().size() > 0) return true;
       else
         return false;
     }
