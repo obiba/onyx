@@ -15,6 +15,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
 import org.obiba.onyx.jade.core.domain.instrument.MultipleOutputParameterSource;
 import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.instrument.OutputParameterSource;
@@ -132,6 +133,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
     xstream.alias("instrumentType", InstrumentType.class);
     xstream.alias("instrument", Instrument.class);
     xstream.alias("contraIndication", ContraIndication.class);
+    xstream.alias("interpretative", InterpretativeParameter.class);
     xstream.alias("input", InstrumentInputParameter.class);
     xstream.alias("output", InstrumentOutputParameter.class);
     xstream.alias("computedOutput", InstrumentComputedOutputParameter.class);

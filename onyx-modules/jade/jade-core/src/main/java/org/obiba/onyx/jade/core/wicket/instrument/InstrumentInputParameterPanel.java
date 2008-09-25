@@ -1,20 +1,39 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Radio;
+import org.apache.wicket.markup.html.form.RadioGroup;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
+import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
+import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
-import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
+import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +49,15 @@ public class InstrumentInputParameterPanel extends Panel {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(InstrumentInputParameterPanel.class);
 
+  private static final String YES = "Yes";
+
+  private static final String NO = "No";
+
+  private static final String DOESNOT_KNOW = "DoesNotKnow";
+
+  @SpringBean
+  private EntityQueryService queryService;
+
   @SpringBean
   private InstrumentService instrumentService;
 
@@ -39,43 +67,171 @@ public class InstrumentInputParameterPanel extends Panel {
   @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
-  private InstrumentRun instrumentRun;
+  private List<RadioGroup> interpretativeRadioGroups = new ArrayList<RadioGroup>();
+
+  private List<IModel> inputRunValueModels = new ArrayList<IModel>();
+
+  private boolean observedTitleSet = false;
 
   public InstrumentInputParameterPanel(String id) {
     super(id);
     setOutputMarkupId(true);
 
-    Instrument instrument = activeInstrumentRunService.getInstrument();
+    add(new InterpretativeFragment("askedInputs", ParticipantInteractionType.ASKED));
+    add(new InterpretativeFragment("observedInputs", ParticipantInteractionType.OBSERVED));
+    add(new InputFragment("inputs"));
+  }
 
-    KeyValueDataPanel inputs = new KeyValueDataPanel("inputs");
-    for(final InstrumentInputParameter param : instrumentService.getInstrumentInputParameter(instrument, false)) {
-      // Inject the Spring application context and the user session service
-      // into the instrument parameter. NOTE: These are dependencies of
-      // InstrumentParameter.getDescription().
-      param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
-      param.setUserSessionService(userSessionService);
+  public void save() {
+    saveInterpretativeInstrumentRunValues();
+    saveInputInstrumentRunValues();
+  }
 
-      Label label = new Label(KeyValueDataPanel.getRowKeyId(), new Model() {
-        public Object getObject() {
-          return param.getDescription();
-        }
-      });
-      InstrumentRunValue runValue = new InstrumentRunValue();
-      runValue.setCaptureMethod(param.getCaptureMethod());
-      runValue.setInstrumentParameter(param);
-      instrumentRun.addInstrumentRunValue(runValue);
-
-      DataField field = new DataField(KeyValueDataPanel.getRowValueId(), new PropertyModel(runValue, "data"), runValue.getDataType(), param.getMeasurementUnit());
-      field.setRequired(true);
-      field.setLabel(new Model() {
-        public Object getObject() {
-          return param.getDescription();
-        }
-      });
-
-      inputs.addRow(label, field);
+  private void saveInterpretativeInstrumentRunValues() {
+    for(RadioGroup rg : interpretativeRadioGroups) {
+      InterpretativeSelection selection = (InterpretativeSelection) rg.getModelObject();
+      InstrumentRunValue runValue = activeInstrumentRunService.getInterpretativeInstrumentRunValue(selection.getParameterName());
+      runValue.setData(new Data(DataType.TEXT, selection.getSelectionKey()));
+      activeInstrumentRunService.update(runValue);
     }
-    add(inputs);
+  }
+
+  private void saveInputInstrumentRunValues() {
+    for(IModel runValueModel : inputRunValueModels) {
+      activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
+    }
+  }
+
+  private class InterpretativeFragment extends Fragment {
+
+    public InterpretativeFragment(String id, ParticipantInteractionType type) {
+      super(id, "interpretativeFragment", InstrumentInputParameterPanel.this);
+
+      InterpretativeParameter template = new InterpretativeParameter();
+      template.setInstrument(activeInstrumentRunService.getInstrument());
+      template.setType(type);
+
+      if(queryService.count(template) == 0) {
+        add(new EmptyPanel("title"));
+      } else if(type.equals(ParticipantInteractionType.ASKED)) {
+        add(new Label("title", new StringResourceModel("AskParticipantTheFollowingQuestions", InstrumentInputParameterPanel.this, null)));
+      } else {
+        observedTitleSet = true;
+        add(new Label("title", new StringResourceModel("ProvideTheFollowingInformation", InstrumentInputParameterPanel.this, null)));
+      }
+
+      RepeatingView repeat = new RepeatingView("repeat");
+      add(repeat);
+
+      for(final InterpretativeParameter iParam : queryService.match(template)) {
+        WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
+        repeat.add(item);
+
+        item.add(new Label("label", new PropertyModel(iParam, "description")));
+
+        // radio group without default selection
+        RadioGroup radioGroup = new RadioGroup("radioGroup", new Model());
+        interpretativeRadioGroups.add(radioGroup);
+        radioGroup.setLabel(new PropertyModel(iParam, "description"));
+        item.add(radioGroup);
+        ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { YES, NO, DOESNOT_KNOW })) {
+
+          @Override
+          protected void populateItem(ListItem listItem) {
+            final String key = listItem.getModelObjectAsString();
+            InterpretativeSelection selection = new InterpretativeSelection();
+            selection.setSelectionKey(key);
+            selection.setParameterName(iParam.getName());
+
+            listItem.add(new Radio("radio", new Model(selection)));
+            listItem.add(new Label("label", new StringResourceModel(key, InstrumentInputParameterPanel.this, null)));
+          }
+
+        }.setReuseItems(true);
+        radioGroup.add(radioList);
+        radioGroup.setRequired(true);
+      }
+    }
+
+  }
+
+  @SuppressWarnings("serial")
+  private class InterpretativeSelection implements Serializable {
+
+    private String selectionKey;
+
+    private String parameterName;
+
+    public String getSelectionKey() {
+      return selectionKey;
+    }
+
+    public void setSelectionKey(String selectionKey) {
+      this.selectionKey = selectionKey;
+    }
+
+    public boolean isSelected() {
+      return selectionKey.equals(YES) || selectionKey.equals(DOESNOT_KNOW);
+    }
+
+    public String getParameterName() {
+      return parameterName;
+    }
+
+    public void setParameterName(String parameterName) {
+      this.parameterName = parameterName;
+    }
+
+  }
+
+  private class InputFragment extends Fragment {
+
+    public InputFragment(String id) {
+      super(id, "inputFragment", InstrumentInputParameterPanel.this);
+
+      Instrument instrument = activeInstrumentRunService.getInstrument();
+      List<InstrumentInputParameter> instrumentInputParameters = instrumentService.getInstrumentInputParameter(instrument, false);
+
+      if(instrumentInputParameters.size() == 0 || observedTitleSet) {
+        add(new EmptyPanel("title"));
+      } else {
+        add(new Label("title", new StringResourceModel("ProvideTheFollowingInformation", InstrumentInputParameterPanel.this, null)));
+      }
+
+      RepeatingView repeat = new RepeatingView("repeat");
+      add(repeat);
+
+      for(final InstrumentInputParameter param : instrumentInputParameters) {
+        WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
+        repeat.add(item);
+
+        // Inject the Spring application context and the user session service
+        // into the instrument parameter. NOTE: These are dependencies of
+        // InstrumentParameter.getDescription().
+        param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
+        param.setUserSessionService(userSessionService);
+
+        Label label = new Label("label", new Model() {
+          public Object getObject() {
+            return param.getDescription();
+          }
+        });
+        item.add(label);
+
+        InstrumentRunValue runValue = activeInstrumentRunService.getInputInstrumentRunValue(param.getName());
+        IModel runValueModel = new DetachableEntityModel(queryService, runValue);
+        inputRunValueModels.add(runValueModel);
+
+        DataField field = new DataField("field", new PropertyModel(runValueModel, "data"), runValue.getDataType(), param.getMeasurementUnit());
+        field.setRequired(true);
+        field.setLabel(new Model() {
+          public Object getObject() {
+            return param.getDescription();
+          }
+        });
+        item.add(field);
+      }
+    }
   }
 
 }

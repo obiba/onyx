@@ -1,3 +1,32 @@
 <wicket:panel>
-	<div wicket:id="inputs"/>
+	<table>
+		<span wicket:id="askedInputs" />
+		<span wicket:id="observedInputs" />
+		<span wicket:id="inputs" />
+	</table>
 </wicket:panel>
+<wicket:fragment wicket:id="interpretativeFragment">
+	<tr>
+		<td colspan="2"><b><span wicket:id="title"/></b></td>
+	</tr>
+	<tr wicket:id="repeat">
+		<td><span wicket:id="label"/></td>
+		<td>
+			<span wicket:id="radioGroup">
+				<span wicket:id="radioItem">
+            		<input type="radio" wicket:id="radio"/>
+               		<span wicket:id="label"></span>
+            	</span>
+        	</span>
+        </td>
+	</tr>
+</wicket:fragment>
+<wicket:fragment wicket:id="inputFragment">
+	<tr>
+		<td colspan="2"><b><span class="wizard-title" wicket:id="title"/></b></td>
+	</tr>
+	<tr wicket:id="repeat">
+		<td><span wicket:id="label"/></td>
+		<td><span wicket:id="field"/></td>
+	</tr>
+</wicket:fragment>

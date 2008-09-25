@@ -27,7 +27,7 @@ public class ContraIndication extends AbstractEntity {
   private String description;
 
   @Enumerated(EnumType.STRING)
-  private ContraIndicationType type;
+  private ParticipantInteractionType type;
 
   public Instrument getInstrument() {
     return instrument;
@@ -53,11 +53,11 @@ public class ContraIndication extends AbstractEntity {
     this.description = description;
   }
 
-  public ContraIndicationType getType() {
+  public ParticipantInteractionType getType() {
     return type;
   }
 
-  public void setType(ContraIndicationType type) {
+  public void setType(ParticipantInteractionType type) {
     this.type = type;
   }
 

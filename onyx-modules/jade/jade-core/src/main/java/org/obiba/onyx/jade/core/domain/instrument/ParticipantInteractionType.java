@@ -1,5 +1,5 @@
 package org.obiba.onyx.jade.core.domain.instrument;
 
-public enum ContraIndicationType {
+public enum ParticipantInteractionType {
   ASKED, OBSERVED
 }

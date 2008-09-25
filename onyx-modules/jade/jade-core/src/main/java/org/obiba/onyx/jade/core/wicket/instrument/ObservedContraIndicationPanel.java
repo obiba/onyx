@@ -20,7 +20,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
-import org.obiba.onyx.jade.core.domain.instrument.ContraIndicationType;
+import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +66,7 @@ public class ObservedContraIndicationPanel extends Panel {
             boolean yes = key.equals("Yes");
             selectionModel.setContraIndication(null);
             selectionModel.setOtherContraIndication(null);
+            contraIndicationDropDownChoice.setEnabled(yes);
             contraIndicationDropDownChoice.setRequired(yes);
             otherContraIndication.setEnabled(false);
             target.addComponent(contraIndicationDropDownChoice);
@@ -82,7 +83,7 @@ public class ObservedContraIndicationPanel extends Panel {
     radioGroup.setRequired(true);
 
     ContraIndication template = new ContraIndication();
-    template.setType(ContraIndicationType.OBSERVED);
+    template.setType(ParticipantInteractionType.OBSERVED);
     template.setInstrument(activeInstrumentRunService.getInstrument());
 
     contraIndicationDropDownChoice = new DropDownChoice("ciChoice", new PropertyModel(selectionModel, "contraIndication"), queryService.match(template), new IChoiceRenderer() {

@@ -5,12 +5,13 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
-import org.obiba.onyx.jade.core.domain.instrument.ContraIndicationType;
+import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -21,7 +22,7 @@ import org.slf4j.LoggerFactory;
 public abstract class InstrumentWizardForm extends WizardForm {
 
   private static final Logger log = LoggerFactory.getLogger(InstrumentWizardForm.class);
-  
+
   @SpringBean
   private EntityQueryService queryService;
 
@@ -93,7 +94,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
     // are there observed contra-indications to display ?
     ContraIndication ciTemplate = new ContraIndication();
-    ciTemplate.setType(ContraIndicationType.OBSERVED);
+    ciTemplate.setType(ParticipantInteractionType.OBSERVED);
     ciTemplate.setInstrument(instrument);
     log.info("observed.ci.count={}", queryService.count(ciTemplate));
     if(instrument != null && queryService.count(ciTemplate) > 0) {
@@ -108,7 +109,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
     }
 
     // are there asked contra-indications to display ?
-    ciTemplate.setType(ContraIndicationType.ASKED);
+    ciTemplate.setType(ParticipantInteractionType.ASKED);
     log.info("asked.ci.count={}", queryService.count(ciTemplate));
     if(instrument != null && queryService.count(ciTemplate) > 0) {
       if(startStep == null) {
@@ -122,8 +123,12 @@ public abstract class InstrumentWizardForm extends WizardForm {
     }
 
     // are there input parameters with input source that requires user provisionning ?
+    // or interpretative questions
+    InterpretativeParameter template = new InterpretativeParameter();
+    template.setInstrument(instrument);
+    log.info("instrumentInterpretativeParameters.count={}", queryService.count(template));
     log.info("instrumentInputParameters.count={}", instrumentService.countInstrumentInputParameter(instrument, false));
-    if(instrument != null && instrumentService.countInstrumentInputParameter(instrument, false) > 0) {
+    if(instrument != null && (queryService.count(template) > 0 || instrumentService.countInstrumentInputParameter(instrument, false) > 0)) {
       if(startStep == null) {
         startStep = inputParametersStep;
         lastStep = startStep;

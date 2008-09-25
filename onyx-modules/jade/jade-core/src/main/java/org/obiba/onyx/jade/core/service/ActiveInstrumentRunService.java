@@ -130,5 +130,7 @@ public interface ActiveInstrumentRunService {
    * @throws IllegalArgumentException if parameter name is not applicable to the {@link Instrument}
    */
   public InstrumentRunValue getInputInstrumentRunValue(String parameterName);
+  
+  public InstrumentRunValue getInterpretativeInstrumentRunValue(String parameterName);
 
 }

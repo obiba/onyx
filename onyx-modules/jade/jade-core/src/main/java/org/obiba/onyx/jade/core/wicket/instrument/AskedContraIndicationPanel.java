@@ -19,7 +19,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
-import org.obiba.onyx.jade.core.domain.instrument.ContraIndicationType;
+import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,7 @@ public class AskedContraIndicationPanel extends Panel {
     add(repeat);
 
     ContraIndication template = new ContraIndication();
-    template.setType(ContraIndicationType.ASKED);
+    template.setType(ParticipantInteractionType.ASKED);
     template.setInstrument(activeInstrumentRunService.getInstrument());
     for(final ContraIndication ci : queryService.match(template)) {
       WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());

@@ -108,6 +108,11 @@ public class MockActiveInstrumentRunServiceImpl implements ActiveInstrumentRunSe
     
   }
 
+  public InstrumentRunValue getInterpretativeInstrumentRunValue(String parameterName) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
   
 
 }

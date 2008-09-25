@@ -14,6 +14,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameterAlgorithm;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
@@ -223,11 +224,37 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     if(inputParameterValue == null) {
       valueTemplate.setCaptureMethod(instrumentInputParameter.getCaptureMethod());
       inputParameterValue = getPersistenceManager().save(valueTemplate);
-      // refresh
-      currentRun = getPersistenceManager().get(InstrumentRun.class, currentRun.getId());
     }
 
     return inputParameterValue;
+  }
+
+  public InstrumentRunValue getInterpretativeInstrumentRunValue(String parameterName) {
+    if(currentRunId == null) return null;
+
+    InstrumentRun currentRun = getInstrumentRun();
+
+    InterpretativeParameter instrumentInterpretativeParameter = new InterpretativeParameter();
+    instrumentInterpretativeParameter.setName(parameterName);
+    instrumentInterpretativeParameter.setInstrument(currentRun.getInstrument());
+    instrumentInterpretativeParameter = getPersistenceManager().matchOne(instrumentInterpretativeParameter);
+
+    if(instrumentInterpretativeParameter == null) {
+      throw new IllegalArgumentException("No such interpretative parameter name for instrument " + currentRun.getInstrument().getName() + " :" + parameterName);
+    }
+
+    InstrumentRunValue valueTemplate = new InstrumentRunValue();
+    valueTemplate.setInstrumentParameter(instrumentInterpretativeParameter);
+    valueTemplate.setInstrumentRun(currentRun);
+
+    InstrumentRunValue interpretativeParameterValue = getPersistenceManager().matchOne(valueTemplate);
+
+    if(interpretativeParameterValue == null) {
+      valueTemplate.setCaptureMethod(instrumentInterpretativeParameter.getCaptureMethod());
+      interpretativeParameterValue = getPersistenceManager().save(valueTemplate);
+    }
+
+    return interpretativeParameterValue;
   }
 
   public InstrumentType getInstrumentType() {

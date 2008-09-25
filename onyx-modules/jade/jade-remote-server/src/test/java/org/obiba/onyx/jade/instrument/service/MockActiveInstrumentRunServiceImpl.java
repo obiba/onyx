@@ -117,4 +117,9 @@ public class MockActiveInstrumentRunServiceImpl extends PersistenceManagerAwareS
     
   }
 
+  public InstrumentRunValue getInterpretativeInstrumentRunValue(String parameterName) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }
