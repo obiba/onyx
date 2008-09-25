@@ -47,7 +47,7 @@ public class DataField extends Panel {
    * @param unit the representation of the unit for the value
    */
   public DataField(String id, IModel model, final DataType dataType, String unit) {
-    super(id);
+    super(id, model);
 
     input = new InputFragment("input", model, dataType);
     add(input);
