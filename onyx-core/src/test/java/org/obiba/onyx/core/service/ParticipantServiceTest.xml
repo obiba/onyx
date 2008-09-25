@@ -5,6 +5,7 @@
       
   <participant id="1" 
     barcode="1" 
+    enrollment_id="100001"
     first_name="Suzan"
     last_name="Tremblay"
     gender="FEMALE"
@@ -21,6 +22,7 @@
 
   <participant id="2" 
     barcode="2"
+    enrollment_id="100002"
     first_name="John"
     last_name="Hudson"
     gender="MALE"
@@ -37,6 +39,7 @@
    
    <participant id="3" 
     barcode="100002"
+    enrollment_id="100003"
     first_name="Rohn"
     last_name="Hudson"
     gender="MALE"
@@ -48,6 +51,7 @@
     participant_id="3" />
     
   <participant id="4" 
+    enrollment_id="100004"
     first_name="Dennis"
     last_name="Spathis"
     gender="MALE"

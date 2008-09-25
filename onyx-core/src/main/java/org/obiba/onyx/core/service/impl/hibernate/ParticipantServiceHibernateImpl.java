@@ -133,7 +133,7 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
     Query participantQuery = null;
 
     if(code != null) {
-      participantQuery = getSession().createQuery("from Participant p where p.barcode = :barcode or p.appointment.appointmentCode = :appointmentCode");
+      participantQuery = getSession().createQuery("from Participant p where p.barcode = :barcode or p.enrollmentId = :appointmentCode");
       participantQuery.setString("barcode", code);
       participantQuery.setString("appointmentCode", code);
     } else {
