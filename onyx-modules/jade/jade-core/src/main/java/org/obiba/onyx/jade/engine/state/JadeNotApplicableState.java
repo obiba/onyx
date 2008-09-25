@@ -9,6 +9,11 @@ public class JadeNotApplicableState extends AbstractJadeStageState implements In
     // TODO Auto-generated method stub
 
   }
+  
+  @Override
+  public boolean isCompleted() {
+    return true;
+  }
 
   public String getName() {
     return "Jade.NotApplicable";

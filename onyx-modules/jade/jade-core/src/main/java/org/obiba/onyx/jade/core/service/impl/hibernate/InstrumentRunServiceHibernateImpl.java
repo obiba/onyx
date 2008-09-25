@@ -1,7 +1,9 @@
 package org.obiba.onyx.jade.core.service.impl.hibernate;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.hibernate.AssociationCriteria;
 import org.obiba.core.service.impl.hibernate.AssociationCriteria.Operation;
@@ -31,7 +33,10 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
   }
 
   public InstrumentRun getLastCompletedInstrumentRun(ParticipantInterview participantInterview, InstrumentType instrumentType) {
-    return (InstrumentRun) AssociationCriteria.create(InstrumentRun.class, getSession()).add("instrument.instrumentType", Operation.eq, instrumentType).add("participantInterview", Operation.eq, participantInterview).add("status", Operation.eq, InstrumentRunStatus.COMPLETED).addSortingClauses(new SortingClause("timeEnd", false)).getCriteria().setMaxResults(1).uniqueResult();
+    Criteria criteria = AssociationCriteria.create(InstrumentRun.class, getSession()).add("instrument.instrumentType", Operation.eq, instrumentType).add("participantInterview", Operation.eq, participantInterview).addSortingClauses(new SortingClause("timeEnd", false)).getCriteria();
+    criteria.add(Restrictions.or(Restrictions.eq("status", InstrumentRunStatus.COMPLETED),Restrictions.eq("status", InstrumentRunStatus.CONTRA_INDICATED)));
+    
+    return (InstrumentRun) criteria.setMaxResults(1).uniqueResult();
   }
 
   public InstrumentRunValue findInstrumentRunValue(ParticipantInterview participantInterview, InstrumentType instrumentType, String parameterName) {
