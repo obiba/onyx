@@ -87,7 +87,7 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
     Instrument instrument = run.getInstrument();
     User user = run.getUser();
 
-    log.error("Instrument runner error encountered on {} (Vendor={}, Model={}, Barcode={}) by {} (username={}) : ", new Object[] { instrument.getName(), instrument.getVendor(), instrument.getModel(), instrument.getBarcode(), user.getFullName(), user.getLogin() });
+    log.error("Instrument runner error (run id={}) encountered on {} (Vendor={}, Model={}, Barcode={}) by {} (username={}) : ", new Object[] { run.getId(), instrument.getName(), instrument.getVendor(), instrument.getModel(), instrument.getBarcode(), user.getFullName(), user.getLogin() });
     log.error("Error stack trace:", error);
 
     run.setStatus(InstrumentRunStatus.IN_ERROR);
