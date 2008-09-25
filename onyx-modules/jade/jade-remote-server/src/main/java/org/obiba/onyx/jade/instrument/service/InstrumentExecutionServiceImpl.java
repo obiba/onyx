@@ -1,13 +1,12 @@
 package org.obiba.onyx.jade.instrument.service;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
+import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
@@ -35,7 +34,7 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
   public String getInstrumentOperator() {
     return getInstrumentRun().getUser().getFullName();
   }
-  
+
   public String getParticipantFirstName() {
     return (getInstrumentRun().getParticipantInterview().getParticipant().getFirstName());
   }
@@ -43,7 +42,7 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
   public String getParticipantLastName() {
     return (getInstrumentRun().getParticipantInterview().getParticipant().getLastName());
   }
-  
+
   public Date getParticipantBirthDate() {
     return (getInstrumentRun().getParticipantInterview().getParticipant().getBirthDate());
   }
@@ -68,8 +67,8 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
 
   public Data getInputParameterValue(String parameterName) {
     return activeInstrumentRunService.getInputInstrumentRunValue(parameterName).getData();
-  }  
-  
+  }
+
   public void addOutputParameterValues(Map<String, Data> values) {
     for(Map.Entry<String, Data> entry : values.entrySet()) {
       addOutputParameterValue(entry.getKey(), entry.getValue());
@@ -85,20 +84,14 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
 
   public void instrumentRunnerError(Exception error) {
     InstrumentRun run = getInstrumentRun();
-    
-    // Convert error Stack trace to a String
-    Writer result = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(result);
-    error.printStackTrace(printWriter);
-   
-    run.setRunnerError(result.toString());
+    Instrument instrument = run.getInstrument();
+    User user = run.getUser();
+
+    log.error("Instrument runner error encountered on {} (Vendor={}, Model={}, Barcode={}) by {} (username={}) : ", new Object[] { instrument.getName(), instrument.getVendor(), instrument.getModel(), instrument.getBarcode(), user.getFullName(), user.getLogin() });
+    log.error("Error stack trace:", error);
+
     run.setStatus(InstrumentRunStatus.IN_ERROR);
     getPersistenceManager().save(run);
   }
-
-  
-
-
-
 
 }

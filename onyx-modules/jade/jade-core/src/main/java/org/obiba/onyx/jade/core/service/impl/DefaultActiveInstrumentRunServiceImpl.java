@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
@@ -25,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwareService implements ActiveInstrumentRunService {
 
+  private UserSessionService userSessionService;
+  
   private Serializable currentRunId = null;
 
   private Serializable instrumentTypeId = null;
@@ -51,6 +54,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     currentRun.setInstrument(instrument);
     currentRun.setStatus(InstrumentRunStatus.IN_PROGRESS);
     currentRun.setTimeStart(new Date());
+    currentRun.setUser(userSessionService.getUser());
     getPersistenceManager().save(currentRun);
     currentRunId = currentRun.getId();
 
@@ -269,6 +273,14 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     currentRun.setStatus(status);
     getPersistenceManager().save(currentRun);
+  }
+
+  public UserSessionService getUserSessionService() {
+    return userSessionService;
+  }
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
   }
 
 }

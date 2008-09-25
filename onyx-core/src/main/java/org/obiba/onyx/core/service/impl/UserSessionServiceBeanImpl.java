@@ -2,6 +2,7 @@ package org.obiba.onyx.core.service.impl;
 
 import java.util.Locale;
 
+import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserSessionService;
 
 /**
@@ -23,6 +24,14 @@ public class UserSessionServiceBeanImpl implements UserSessionService {
 
   public void setLocale(Locale locale) {
     this.locale = locale;
+  }
+  
+  public User getUser() {
+    User user = new User();
+    user.setEmail("test@test.com");
+    user.setFirstName("firstname");
+    user.setLastName("lastname");
+    return user;
   }
 
 }

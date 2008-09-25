@@ -61,8 +61,6 @@ public class InstrumentRun extends AbstractEntity {
 
   private String otherContraIndication;
 
-  private String runnerError;
-
   public InstrumentRun() {
     super();
   }
@@ -167,14 +165,6 @@ public class InstrumentRun extends AbstractEntity {
 
   public void setOtherContraIndication(String otherContraIndication) {
     this.otherContraIndication = otherContraIndication;
-  }
-
-  public String getRunnerError() {
-    return runnerError;
-  }
-
-  public void setRunnerError(String runError) {
-    this.runnerError = runError;
   }
 
 }
