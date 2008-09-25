@@ -66,7 +66,6 @@ public class ObservedContraIndicationPanel extends Panel {
             boolean yes = key.equals("Yes");
             selectionModel.setContraIndication(null);
             selectionModel.setOtherContraIndication(null);
-            contraIndicationDropDownChoice.setEnabled(yes);
             contraIndicationDropDownChoice.setRequired(yes);
             otherContraIndication.setEnabled(false);
             target.addComponent(contraIndicationDropDownChoice);
@@ -99,7 +98,6 @@ public class ObservedContraIndicationPanel extends Panel {
       }
       
     });
-    contraIndicationDropDownChoice.setEnabled(false);
     contraIndicationDropDownChoice.setOutputMarkupId(true);
     contraIndicationDropDownChoice.setLabel(new StringResourceModel("ContraIndicationSelection", this, null));
     contraIndicationDropDownChoice.add(new OnChangeAjaxBehavior() {
