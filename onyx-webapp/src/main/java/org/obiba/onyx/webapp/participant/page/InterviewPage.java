@@ -128,8 +128,8 @@ public class InterviewPage extends BasePage {
       // Interview cancellation
 
       final ActionDefinition cancelInterviewDef = ActionDefinitionBuilder.create(ActionType.STOP, new StringResourceModel("CancelInterview", this, null).getString()).setDescription(new StringResourceModel("ExplainCancelInterview", this, null).getString()).setAskPassword(true).getActionDefinition();
-      cancelInterviewDef.addReasons(new String[] { "Reason 1", "Reason 2", "Reason 3", "Other" });
-      cancelInterviewDef.setDefaultReason("Reason 1");
+      cancelInterviewDef.addReasons(new String[] { "Reason1", "Reason2", "Reason3", "Other" });
+      cancelInterviewDef.setDefaultReason("Reason1");
 
       final ActionWindow interviewActionWindow = new ActionWindow("modal") {
 

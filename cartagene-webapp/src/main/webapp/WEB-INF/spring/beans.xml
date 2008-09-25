@@ -45,6 +45,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="basenames">
       <list>
         <value>classpath:config/Stage</value>
+        <value>classpath:config/ParticipantInterview</value>
         <value>classpath:config/JadeStageState</value>
         <value>classpath:config/MarbleStageState</value>
         <value>classpath:config/InstrumentParameter</value>
