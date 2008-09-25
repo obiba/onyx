@@ -3,6 +3,7 @@ package org.obiba.onyx.jade.core.domain.instrument;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -20,6 +21,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.jade.core.domain.instrument.validation.AbstractIntegrityCheck;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.context.ApplicationContext;
@@ -27,7 +29,7 @@ import org.springframework.context.NoSuchMessageException;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "instrument_parameter_type", discriminatorType = DiscriminatorType.STRING, length=100)
+@DiscriminatorColumn(name = "instrument_parameter_type", discriminatorType = DiscriminatorType.STRING, length = 100)
 @DiscriminatorValue("InstrumentParameter")
 public abstract class InstrumentParameter extends AbstractEntity {
 
@@ -54,20 +56,23 @@ public abstract class InstrumentParameter extends AbstractEntity {
   @OneToMany(mappedBy = "instrumentParameter")
   private List<InstrumentRunValue> instrumentRunValues;
 
+  @OneToMany(mappedBy = "targetParameter", cascade = CascadeType.ALL)
+  private List<AbstractIntegrityCheck> integrityChecks;
+
   @Transient
   private transient ApplicationContext context;
-  
+
   @Transient
   private transient UserSessionService userSessionService;
-  
+
   public void setApplicationContext(ApplicationContext context) {
-    this.context = context;  
+    this.context = context;
   }
-  
+
   public void setUserSessionService(UserSessionService userSessionService) {
     this.userSessionService = userSessionService;
   }
-  
+
   public String getName() {
     return name;
   }
@@ -78,16 +83,15 @@ public abstract class InstrumentParameter extends AbstractEntity {
 
   public String getDescription() {
     String retVal = description;
-    
-    if (context != null && userSessionService != null) {
+
+    if(context != null && userSessionService != null) {
       try {
         retVal = context.getMessage(description, null, userSessionService.getLocale());
-      }
-      catch(NoSuchMessageException ex) {
+      } catch(NoSuchMessageException ex) {
         ; // return non-localized description
       }
     }
-    
+
     return retVal;
   }
 
@@ -138,4 +142,14 @@ public abstract class InstrumentParameter extends AbstractEntity {
     }
   }
 
+  public List<AbstractIntegrityCheck> getIntegrityChecks() {
+    return integrityChecks != null ? integrityChecks : (integrityChecks = new ArrayList<AbstractIntegrityCheck>());
+  }
+
+  public void addIntegrityChecks(AbstractIntegrityCheck integrityCheck) {
+    if(integrityCheck != null) {
+      getIntegrityChecks().add(integrityCheck);
+      integrityCheck.setTargetParameter(this);
+    }
+  }
 }

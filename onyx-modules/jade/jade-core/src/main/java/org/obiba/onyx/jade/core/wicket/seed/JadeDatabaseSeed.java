@@ -20,6 +20,7 @@ import org.obiba.onyx.jade.core.domain.instrument.MultipleOutputParameterSource;
 import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.instrument.OutputParameterSource;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantPropertySource;
+import org.obiba.onyx.jade.core.domain.instrument.validation.EqualsValueCheck;
 import org.obiba.onyx.jade.core.service.InstrumentDescriptorService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.wicket.util.seed.XstreamResourceDatabaseSeed;
@@ -142,5 +143,6 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
     xstream.alias("outputParameterSource", OutputParameterSource.class);
     xstream.alias("multipleOutputParameterSource", MultipleOutputParameterSource.class);
     xstream.alias("operatorSource", OperatorSource.class);
+    xstream.alias("equalsValueCheck", EqualsValueCheck.class);
   }
 }
