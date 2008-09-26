@@ -437,6 +437,11 @@ div.wizard-title {
   font-weight: bold;
 }
 
+td.wizard-title {
+  margin-bottom:10px;
+  font-weight: bold;
+}
+
 div.wizard-content {
   margin-top:10px;
   margin-bottom:10px;
