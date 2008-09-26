@@ -616,7 +616,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     output.put("TotalBodyWater", getDecimalValue(tbwTxt));
     output.put("FatPercentage", getDecimalValue(fatPctTxt));
     output.put("Gender", DataBuilder.buildText(genderTxt.getText()));
-    output.put("Height", getIntegerValue(heightTxt));
+    output.put("Height", getDecimalValue(heightTxt));
     output.put("Age", getIntegerValue(ageTxt));
     instrumentExecutionService.addOutputParameterValues(output);
     exitUI();
