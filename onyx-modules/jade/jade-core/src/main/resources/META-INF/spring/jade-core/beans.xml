@@ -173,6 +173,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="jadeNotApplicableState" parent="baseStageState"
     class="org.obiba.onyx.jade.engine.state.JadeNotApplicableState" scope="prototype">
   </bean>
+  
+  <bean id="jadeContraIndicatedState" parent="baseStageState"
+    class="org.obiba.onyx.jade.engine.state.JadeContraIndicatedState" scope="prototype">
+  </bean>
 
   <bean id="jadeInProgressState" parent="baseStageState" class="org.obiba.onyx.jade.engine.state.JadeInProgressState"
     scope="prototype">

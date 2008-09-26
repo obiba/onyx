@@ -48,22 +48,32 @@ public class JadeModule implements Module, ApplicationContextAware {
     AbstractStageState skipped = (AbstractStageState) applicationContext.getBean("jadeSkippedState");
     AbstractStageState completed = (AbstractStageState) applicationContext.getBean("jadeCompletedState");
     AbstractStageState notApplicable = (AbstractStageState) applicationContext.getBean("jadeNotApplicableState");
+    AbstractStageState contraIndicated = (AbstractStageState) applicationContext.getBean("jadeContraIndicatedState"); 
+    AbstractStageState waiting = (AbstractStageState) applicationContext.getBean("jadeWaitingState");
+    
     exec.addEdge(ready, TransitionEvent.NOTAPPLICABLE, notApplicable);
     exec.addEdge(ready, TransitionEvent.START, inProgress);
     exec.addEdge(ready, TransitionEvent.SKIP, skipped);
+    exec.addEdge(ready, TransitionEvent.CONTRAINDICATED, notApplicable);
     exec.addEdge(inProgress, TransitionEvent.CANCEL, ready);
     exec.addEdge(inProgress, TransitionEvent.COMPLETE, completed);
     exec.addEdge(inProgress, TransitionEvent.NOTAPPLICABLE, notApplicable);
+    exec.addEdge(inProgress, TransitionEvent.CONTRAINDICATED, contraIndicated);
     exec.addEdge(skipped, TransitionEvent.CANCEL, ready);
+    exec.addEdge(skipped, TransitionEvent.NOTAPPLICABLE, notApplicable);
     exec.addEdge(completed, TransitionEvent.CANCEL, ready);
     exec.addEdge(completed, TransitionEvent.NOTAPPLICABLE, notApplicable);
-
-    AbstractStageState waiting = (AbstractStageState) applicationContext.getBean("jadeWaitingState");
+    exec.addEdge(completed, TransitionEvent.CONTRAINDICATED, notApplicable);
+    
+    exec.addEdge(contraIndicated, TransitionEvent.CANCEL, ready);
+    exec.addEdge(contraIndicated, TransitionEvent.INVALID, waiting);
+    
     exec.addEdge(notApplicable, TransitionEvent.VALID, ready);
     exec.addEdge(notApplicable, TransitionEvent.INVALID, waiting);
 
     // if (dependsOn != null && dependsOn.length>0) {
     exec.addEdge(waiting, TransitionEvent.NOTAPPLICABLE, notApplicable);
+    exec.addEdge(waiting, TransitionEvent.CONTRAINDICATED, notApplicable);
     exec.addEdge(waiting, TransitionEvent.VALID, ready);
     exec.addEdge(waiting, TransitionEvent.SKIP, skipped);
     exec.addEdge(ready, TransitionEvent.INVALID, waiting);

@@ -18,9 +18,14 @@ public class TransitionEvent implements Comparable<TransitionEvent> {
   public static final TransitionEvent INVALID = new TransitionEvent("invalid");
   
   /**
-   * Default counter indicate event.
+   * Default not applicable event.
    */
   public static final TransitionEvent NOTAPPLICABLE = new TransitionEvent("notApplicable");
+  
+  /**
+   * Default contra indicated event.
+   */
+  public static final TransitionEvent CONTRAINDICATED = new TransitionEvent("contraIndicated");
   
   /**
    * Default start event (usually from the beginning to the in progress state).

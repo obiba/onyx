@@ -41,6 +41,7 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
   @Override
   public void onTransition(IStageExecution execution, TransitionEvent event) {
     // do nothing when skipped
+    if (event.equals(TransitionEvent.CONTRAINDICATED)) super.onTransition(execution, event);
   }
 
   @Override
