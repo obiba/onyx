@@ -47,10 +47,8 @@ public class InstrumentSelectionStep extends WizardStepPanel {
     InstrumentWizardForm instrumentForm = (InstrumentWizardForm) form;
     Instrument instrument = selector.getInstrument();
 
-    activeInstrumentRunService.reset();
     if(instrument != null) {
       activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument);
-
       instrumentForm.setUpWizardFlow();
     } else {
       setNextStep(null);

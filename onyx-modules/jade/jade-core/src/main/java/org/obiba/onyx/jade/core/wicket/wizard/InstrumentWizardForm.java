@@ -74,9 +74,8 @@ public abstract class InstrumentWizardForm extends WizardForm {
     } else {
       // pre selected instrument
       activeInstrumentRunService.start(activeInterviewService.getParticipant(), queryService.matchOne(template));
+      startStep = setUpWizardFlow();
     }
-
-    startStep = setUpWizardFlow();
 
     add(startStep);
     startStep.onStepIn(this, null);
@@ -90,14 +89,16 @@ public abstract class InstrumentWizardForm extends WizardForm {
     WizardStepPanel startStep = null;
     WizardStepPanel lastStep = null;
 
+    // instrument is not null at this point
     Instrument instrument = activeInstrumentRunService.getInstrument();
-
+    if (instrument == null) throw new IllegalStateException("Instrument is not supposed to be null in current active instrument run.");
+    
     // are there observed contra-indications to display ?
     ContraIndication ciTemplate = new ContraIndication();
     ciTemplate.setType(ParticipantInteractionType.OBSERVED);
     ciTemplate.setInstrument(instrument);
     log.info("observed.ci.count={}", queryService.count(ciTemplate));
-    if(instrument != null && queryService.count(ciTemplate) > 0) {
+    if(queryService.count(ciTemplate) > 0) {
       if(startStep == null) {
         startStep = observedContraIndicationStep;
         lastStep = startStep;
@@ -111,7 +112,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
     // are there asked contra-indications to display ?
     ciTemplate.setType(ParticipantInteractionType.ASKED);
     log.info("asked.ci.count={}", queryService.count(ciTemplate));
-    if(instrument != null && queryService.count(ciTemplate) > 0) {
+    if(queryService.count(ciTemplate) > 0) {
       if(startStep == null) {
         startStep = askedContraIndicationStep;
         lastStep = startStep;
@@ -128,7 +129,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
     template.setInstrument(instrument);
     log.info("instrumentInterpretativeParameters.count={}", queryService.count(template));
     log.info("instrumentInputParameters.count={}", instrumentService.countInstrumentInputParameter(instrument, false));
-    if(instrument != null && (queryService.count(template) > 0 || instrumentService.countInstrumentInputParameter(instrument, false) > 0)) {
+    if(queryService.count(template) > 0 || instrumentService.countInstrumentInputParameter(instrument, false) > 0) {
       if(startStep == null) {
         startStep = inputParametersStep;
         lastStep = startStep;
@@ -142,7 +143,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
     // are there output parameters that are to be captured automatically from instrument (i.e. requires instrument
     // launch) ?
     log.info("instrument.isInteractive={}", instrumentService.isInteractiveInstrument(instrument));
-    if(instrument != null && instrumentService.isInteractiveInstrument(instrument)) {
+    if(instrumentService.isInteractiveInstrument(instrument)) {
       if(startStep == null) {
         startStep = instructionsStep;
         lastStep = startStep;
@@ -158,7 +159,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
     opTemplate.setInstrument(instrument);
     opTemplate.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
     log.info("instrumentOutputParameters.MANUAL.count={}", queryService.count(opTemplate));
-    if(instrument != null && queryService.count(opTemplate) > 0) {
+    if(queryService.count(opTemplate) > 0) {
       if(startStep == null) {
         startStep = outputParametersStep;
         lastStep = startStep;
