@@ -17,8 +17,10 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
@@ -37,6 +39,9 @@ public class ObservedContraIndicationPanel extends Panel {
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
+  
+  @SpringBean(name = "userSessionService")
+  private UserSessionService userSessionService;
 
   private DropDownChoice contraIndicationDropDownChoice;
 
@@ -90,6 +95,10 @@ public class ObservedContraIndicationPanel extends Panel {
 
       public Object getDisplayValue(Object object) {
         ContraIndication ci = (ContraIndication)object;
+        
+        ci.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
+        ci.setUserSessionService(userSessionService);
+        
         return ci.getDescription();
       }
 

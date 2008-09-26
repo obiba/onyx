@@ -16,22 +16,22 @@
   </instrument>
 
   <contraIndication>
-    <name>StandUnassistedHandicap</name>
-    <description>Unable to stand unassisted because of a handicap</description>
+    <name>UnableToStandUnassistedHandicap</name>
+    <description>UnableToStandUnassistedHandicap</description>
     <type>OBSERVED</type>
     <instrument reference="sta1" />
   </contraIndication>
   
   <contraIndication>
-    <name>StandUnassistedWheelchair</name>
-    <description>Unable to stand unassisted because of a wheelchair</description>
+    <name>UnableToStandUnassistedWheelchair</name>
+    <description>UnableToStandUnassistedWheelchair</description>
     <type>OBSERVED</type>
     <instrument reference="sta1" />
   </contraIndication>
   
   <contraIndication>
-    <name>StandUnassistedCast</name>
-    <description>Unable to stand unassisted because of a cast</description>
+    <name>UnableToStandUnassistedCast</name>
+    <description>UnableToStandUnassistedCast</description>
     <type>OBSERVED</type>
     <instrument reference="sta1" />
   </contraIndication>

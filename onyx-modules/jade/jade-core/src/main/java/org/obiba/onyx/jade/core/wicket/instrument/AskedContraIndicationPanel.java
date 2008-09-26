@@ -16,8 +16,10 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
@@ -40,6 +42,9 @@ public class AskedContraIndicationPanel extends Panel {
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
+  
+  @SpringBean(name = "userSessionService")
+  private UserSessionService userSessionService;
 
   private List<RadioGroup> radioGroups;
 
@@ -59,6 +64,9 @@ public class AskedContraIndicationPanel extends Panel {
     for(final ContraIndication ci : queryService.match(template)) {
       WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
       repeat.add(item);
+      
+      ci.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
+      ci.setUserSessionService(userSessionService);
 
       item.add(new Label("ciLabel", new PropertyModel(ci, "description")));
       
@@ -124,11 +132,6 @@ public class AskedContraIndicationPanel extends Panel {
 
     public void setContraIndication(ContraIndication contraIndication) {
       this.contraIndication = contraIndication;
-    }
-    
-    @Override
-    public String toString() {
-      return "{selection=" + selectionKey + ", ci=" + contraIndication + "}";
     }
 
   }

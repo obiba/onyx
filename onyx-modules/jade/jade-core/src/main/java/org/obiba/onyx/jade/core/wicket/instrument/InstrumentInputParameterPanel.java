@@ -102,6 +102,7 @@ public class InstrumentInputParameterPanel extends Panel {
     }
   }
 
+  @SuppressWarnings("serial")
   private class InterpretativeFragment extends Fragment {
 
     public InterpretativeFragment(String id, ParticipantInteractionType type) {
@@ -126,6 +127,9 @@ public class InstrumentInputParameterPanel extends Panel {
       for(final InterpretativeParameter iParam : queryService.match(template)) {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
+        
+        iParam.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
+        iParam.setUserSessionService(userSessionService);
 
         item.add(new Label("label", new PropertyModel(iParam, "description")));
 
@@ -184,6 +188,7 @@ public class InstrumentInputParameterPanel extends Panel {
 
   }
 
+  @SuppressWarnings("serial")
   private class InputFragment extends Fragment {
 
     public InputFragment(String id) {
@@ -211,11 +216,7 @@ public class InstrumentInputParameterPanel extends Panel {
         param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
         param.setUserSessionService(userSessionService);
 
-        Label label = new Label("label", new Model() {
-          public Object getObject() {
-            return param.getDescription();
-          }
-        });
+        Label label = new Label("label", new PropertyModel(param, "description"));
         item.add(label);
 
         InstrumentRunValue runValue = activeInstrumentRunService.getInputInstrumentRunValue(param.getName());
@@ -224,11 +225,7 @@ public class InstrumentInputParameterPanel extends Panel {
 
         DataField field = new DataField("field", new PropertyModel(runValueModel, "data"), runValue.getDataType(), param.getMeasurementUnit());
         field.setRequired(true);
-        field.setLabel(new Model() {
-          public Object getObject() {
-            return param.getDescription();
-          }
-        });
+        field.setLabel(new PropertyModel(param, "description"));
         item.add(field);
       }
     }

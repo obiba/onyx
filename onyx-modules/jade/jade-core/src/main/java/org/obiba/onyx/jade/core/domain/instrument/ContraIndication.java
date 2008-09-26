@@ -6,15 +6,25 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
+import org.obiba.onyx.core.service.UserSessionService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.NoSuchMessageException;
 
 @Entity
 public class ContraIndication extends AbstractEntity {
 
   private static final long serialVersionUID = 13324234234234L;
 
+  @Transient
+  private transient ApplicationContext context;
+
+  @Transient
+  private transient UserSessionService userSessionService;
+  
   @ManyToOne
   @JoinColumn(name = "instrument_id")
   private Instrument instrument;
@@ -28,7 +38,15 @@ public class ContraIndication extends AbstractEntity {
 
   @Enumerated(EnumType.STRING)
   private ParticipantInteractionType type;
+  
+  public void setApplicationContext(ApplicationContext context) {
+    this.context = context;
+  }
 
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
+  }
+  
   public Instrument getInstrument() {
     return instrument;
   }
@@ -46,7 +64,17 @@ public class ContraIndication extends AbstractEntity {
   }
 
   public String getDescription() {
-    return description;
+    String retVal = description;
+
+    if(context != null && userSessionService != null) {
+      try {
+        retVal = context.getMessage(description, null, userSessionService.getLocale());
+      } catch(NoSuchMessageException ex) {
+        ; // return non-localized description
+      }
+    }
+
+    return retVal;
   }
 
   public void setDescription(String description) {
