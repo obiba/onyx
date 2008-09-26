@@ -19,14 +19,18 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
+import org.apache.wicket.validation.IValidator;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
+import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.jade.core.wicket.instrument.validation.IntegrityCheckValidator;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
@@ -117,13 +121,13 @@ public class InstrumentOutputParameterPanel extends Panel {
             return param.getDescription();
           }
         });
-
+        IntegrityCheckValidator.addChecks(field, param.getIntegrityChecks());
         outputs.addRow(label, field);
       }
       add(outputs);
     }
   }
-
+  
   private void initAutomaticOutputs(AjaxRequestTarget target) {
     manualFragment.setVisible(false);
     InstrumentOutputParameter template = new InstrumentOutputParameter();

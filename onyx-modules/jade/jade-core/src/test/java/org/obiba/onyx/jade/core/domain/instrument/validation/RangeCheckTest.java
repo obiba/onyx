@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
@@ -37,25 +38,19 @@ public class RangeCheckTest {
     rangeCheck.setIntegerMaxValue(maxValue);
     
     // Test with run value in the middle of the range.
-    InstrumentRunValue runValueMiddle = new InstrumentRunValue();
-    runValueMiddle.setInstrumentParameter(instrumentParameter);
-    runValueMiddle.setData(DataBuilder.buildInteger(150l));
+    Data middleData = DataBuilder.buildInteger(150l);
 
-    Assert.assertTrue(rangeCheck.checkParameterValue(runValueMiddle, null));
+    Assert.assertTrue(rangeCheck.checkParameterValue(middleData, null, null));
 
     // Test with run value equal to the minimum.
-    InstrumentRunValue runValueMin = new InstrumentRunValue();
-    runValueMin.setInstrumentParameter(instrumentParameter);
-    runValueMin.setData(DataBuilder.buildInteger(100l));
+    Data minData = DataBuilder.buildInteger(100l);
 
-    Assert.assertTrue(rangeCheck.checkParameterValue(runValueMin, null));
+    Assert.assertTrue(rangeCheck.checkParameterValue(minData, null, null));
     
     // Test with run value equal to the maximum.
-    InstrumentRunValue runValueMax = new InstrumentRunValue();
-    runValueMax.setInstrumentParameter(instrumentParameter);
-    runValueMax.setData(DataBuilder.buildInteger(200l));
+    Data maxData = DataBuilder.buildInteger(200l);
 
-    Assert.assertTrue(rangeCheck.checkParameterValue(runValueMax, null));
+    Assert.assertTrue(rangeCheck.checkParameterValue(maxData, null, null));
   }
   
   /**
@@ -72,18 +67,14 @@ public class RangeCheckTest {
     rangeCheck.setIntegerMaxValue(maxValue);
     
     // Test with run value less than the minimum.
-    InstrumentRunValue runValueMiddle = new InstrumentRunValue();
-    runValueMiddle.setInstrumentParameter(instrumentParameter);
-    runValueMiddle.setData(DataBuilder.buildInteger(99l));
+    Data tooSmallData = DataBuilder.buildInteger(99l);
 
-    Assert.assertFalse(rangeCheck.checkParameterValue(runValueMiddle, null));
+    Assert.assertFalse(rangeCheck.checkParameterValue(tooSmallData, null, null));
 
     // Test with run value greater than the maximum.
-    InstrumentRunValue runValueMin = new InstrumentRunValue();
-    runValueMin.setInstrumentParameter(instrumentParameter);
-    runValueMin.setData(DataBuilder.buildInteger(201l));
+    Data tooBigData = DataBuilder.buildInteger(201l);
 
-    Assert.assertFalse(rangeCheck.checkParameterValue(runValueMin, null));
+    Assert.assertFalse(rangeCheck.checkParameterValue(tooBigData, null, null));
   }
   
   /**
@@ -98,11 +89,9 @@ public class RangeCheckTest {
     rangeCheck.setIntegerMaxValue(200l);
     
     // Test run value of Long.MIN_VALUE.
-    InstrumentRunValue runValueMin = new InstrumentRunValue();
-    runValueMin.setInstrumentParameter(instrumentParameter);
-    runValueMin.setData(DataBuilder.buildInteger(Long.MIN_VALUE));
+    Data minData = DataBuilder.buildInteger(Long.MIN_VALUE);
     
-    Assert.assertTrue(rangeCheck.checkParameterValue(runValueMin, null));
+    Assert.assertTrue(rangeCheck.checkParameterValue(minData, null, null));
   }
   
   /**
@@ -117,11 +106,9 @@ public class RangeCheckTest {
     rangeCheck.setIntegerMaxValue(null);
     
     // Test run value of Long.MAX_VALUE.
-    InstrumentRunValue runValueMax = new InstrumentRunValue();
-    runValueMax.setInstrumentParameter(instrumentParameter);
-    runValueMax.setData(DataBuilder.buildInteger(Long.MAX_VALUE));
+    Data maxData = DataBuilder.buildInteger(Long.MAX_VALUE);
     
-    Assert.assertTrue(rangeCheck.checkParameterValue(runValueMax, null));
+    Assert.assertTrue(rangeCheck.checkParameterValue(maxData, null, null));
   }
   
   /**
@@ -138,25 +125,19 @@ public class RangeCheckTest {
     rangeCheck.setDecimalMaxValue(maxValue);
     
     // Test with run value in the middle of the range.
-    InstrumentRunValue runValueMiddle = new InstrumentRunValue();
-    runValueMiddle.setInstrumentParameter(instrumentParameter);
-    runValueMiddle.setData(DataBuilder.buildDecimal(150.0));
+    Data middleData = DataBuilder.buildDecimal(150.0);
 
-    Assert.assertTrue(rangeCheck.checkParameterValue(runValueMiddle, null));
+    Assert.assertTrue(rangeCheck.checkParameterValue(middleData, null, null));
 
     // Test with run value equal to the minimum.
-    InstrumentRunValue runValueMin = new InstrumentRunValue();
-    runValueMin.setInstrumentParameter(instrumentParameter);
-    runValueMin.setData(DataBuilder.buildDecimal(100.0));
+    Data minData = DataBuilder.buildDecimal(100.0);
     
-    Assert.assertTrue(rangeCheck.checkParameterValue(runValueMin, null));
+    Assert.assertTrue(rangeCheck.checkParameterValue(minData, null, null));
     
     // Test with run value equal to the maximum.
-    InstrumentRunValue runValueMax = new InstrumentRunValue();
-    runValueMax.setInstrumentParameter(instrumentParameter);
-    runValueMax.setData(DataBuilder.buildDecimal(200.0));
+    Data maxData = DataBuilder.buildDecimal(200.0);
 
-    Assert.assertTrue(rangeCheck.checkParameterValue(runValueMax, null));
+    Assert.assertTrue(rangeCheck.checkParameterValue(maxData, null, null));
   }
   
   /**
@@ -173,18 +154,14 @@ public class RangeCheckTest {
     rangeCheck.setDecimalMaxValue(maxValue);
     
     // Test with run value less than the minimum.
-    InstrumentRunValue runValueMiddle = new InstrumentRunValue();
-    runValueMiddle.setInstrumentParameter(instrumentParameter);
-    runValueMiddle.setData(DataBuilder.buildDecimal(99.0));
+    Data tooSmallData = DataBuilder.buildDecimal(99.0);
 
-    Assert.assertFalse(rangeCheck.checkParameterValue(runValueMiddle, null));
+    Assert.assertFalse(rangeCheck.checkParameterValue(tooSmallData, null, null));
 
     // Test with run value greater than the maximum.
-    InstrumentRunValue runValueMin = new InstrumentRunValue();
-    runValueMin.setInstrumentParameter(instrumentParameter);
-    runValueMin.setData(DataBuilder.buildDecimal(201.0));
+    Data tooBigData = DataBuilder.buildDecimal(201.0);
 
-    Assert.assertFalse(rangeCheck.checkParameterValue(runValueMin, null));
+    Assert.assertFalse(rangeCheck.checkParameterValue(tooBigData, null, null));
   }
   
   /**
@@ -199,11 +176,9 @@ public class RangeCheckTest {
     rangeCheck.setDecimalMaxValue(200.0);
     
     // Test run value of Double.MIN_VALUE.
-    InstrumentRunValue runValueMin = new InstrumentRunValue();
-    runValueMin.setInstrumentParameter(instrumentParameter);
-    runValueMin.setData(DataBuilder.buildDecimal(Double.MIN_VALUE));
+    Data minData = DataBuilder.buildDecimal(Double.MIN_VALUE);
     
-    Assert.assertTrue(rangeCheck.checkParameterValue(runValueMin, null));
+    Assert.assertTrue(rangeCheck.checkParameterValue(minData, null, null));
   }
   
   /**
@@ -218,10 +193,8 @@ public class RangeCheckTest {
     rangeCheck.setDecimalMaxValue(null);
     
     // Test run value of Double.MAX_VALUE.
-    InstrumentRunValue runValueMax = new InstrumentRunValue();
-    runValueMax.setInstrumentParameter(instrumentParameter);
-    runValueMax.setData(DataBuilder.buildDecimal(Double.MAX_VALUE));
+    Data maxData = DataBuilder.buildDecimal(Double.MAX_VALUE);
     
-    Assert.assertTrue(rangeCheck.checkParameterValue(runValueMax, null));
+    Assert.assertTrue(rangeCheck.checkParameterValue(maxData, null, null));
   }
 }

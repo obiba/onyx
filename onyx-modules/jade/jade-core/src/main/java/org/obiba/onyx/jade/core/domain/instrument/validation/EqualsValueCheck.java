@@ -3,7 +3,7 @@ package org.obiba.onyx.jade.core.domain.instrument.validation;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
@@ -117,12 +117,12 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
    * @param runService instrument run service (not used by this check)
    * @return <code>true</code> if instrument run value equals configured value
    */
-  public boolean checkParameterValue(InstrumentRunValue runValue, InstrumentRunService runService) {
+  public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
 
     boolean isEqual = false;
 
-    if(runValue != null && runValue.getData() != null) {
-      isEqual = runValue.getData().equals(getData());
+    if(paramData != null) {
+      isEqual = paramData.equals(getData());
     } else {
       isEqual = (getData() == null);
     }

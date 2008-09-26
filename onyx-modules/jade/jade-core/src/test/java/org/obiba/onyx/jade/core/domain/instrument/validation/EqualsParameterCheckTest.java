@@ -13,6 +13,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
+import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
@@ -36,6 +37,8 @@ public class EqualsParameterCheckTest {
 
   private InstrumentRunService instrumentRunServiceMock;
   
+  private ActiveInstrumentRunService activeInstrumentRunServiceMock;
+  
   @Before
   public void setUp() {
     equalsParameterCheck = new EqualsParameterCheck();
@@ -58,6 +61,8 @@ public class EqualsParameterCheckTest {
     equalsParameterCheck.setParameter(otherParameter);
     
     instrumentRunServiceMock = createMock(InstrumentRunService.class);
+    
+    activeInstrumentRunServiceMock = createMock(ActiveInstrumentRunService.class);
   }
   
   /**
@@ -70,11 +75,6 @@ public class EqualsParameterCheckTest {
 
     // Initialize checked parameter's run value.
     Data checkedData = DataBuilder.buildInteger(100l);
-
-    InstrumentRunValue checkedRunValue = new InstrumentRunValue();
-    checkedRunValue.setInstrumentRun(instrumentRun);
-    checkedRunValue.setInstrumentParameter(checkedParameter);
-    checkedRunValue.setData(checkedData);
     
     // Initialize other parameter's run value.
     Data otherData = DataBuilder.buildInteger(100l);
@@ -83,12 +83,15 @@ public class EqualsParameterCheckTest {
     otherRunValue.setInstrumentParameter(otherParameter);
     otherRunValue.setData(otherData);
 
+    expect(activeInstrumentRunServiceMock.getInstrumentRun()).andReturn(instrumentRun);
     expect(instrumentRunServiceMock.findInstrumentRunValue(interview, instrumentType, otherParameter.getName())).andReturn(otherRunValue);    
 
+    replay(activeInstrumentRunServiceMock);
     replay(instrumentRunServiceMock);
         
-    Assert.assertTrue(equalsParameterCheck.checkParameterValue(checkedRunValue, instrumentRunServiceMock));
+    Assert.assertTrue(equalsParameterCheck.checkParameterValue(checkedData, instrumentRunServiceMock, activeInstrumentRunServiceMock));
     
+    verify(activeInstrumentRunServiceMock);
     verify(instrumentRunServiceMock);
   }
   
@@ -102,11 +105,6 @@ public class EqualsParameterCheckTest {
 
     // Initialize checked parameter's run value.
     Data checkedData = DataBuilder.buildInteger(100l);
-
-    InstrumentRunValue checkedRunValue = new InstrumentRunValue();
-    checkedRunValue.setInstrumentRun(instrumentRun);
-    checkedRunValue.setInstrumentParameter(checkedParameter);
-    checkedRunValue.setData(checkedData);
     
     // Initialize other parameter's run value.
     Data otherData = DataBuilder.buildInteger(200l);
@@ -115,12 +113,15 @@ public class EqualsParameterCheckTest {
     otherRunValue.setInstrumentParameter(otherParameter);
     otherRunValue.setData(otherData);
 
+    expect(activeInstrumentRunServiceMock.getInstrumentRun()).andReturn(instrumentRun);
     expect(instrumentRunServiceMock.findInstrumentRunValue(interview, instrumentType, otherParameter.getName())).andReturn(otherRunValue);    
 
+    replay(activeInstrumentRunServiceMock);
     replay(instrumentRunServiceMock);
         
-    Assert.assertFalse(equalsParameterCheck.checkParameterValue(checkedRunValue, instrumentRunServiceMock));
+    Assert.assertFalse(equalsParameterCheck.checkParameterValue(checkedData, instrumentRunServiceMock, activeInstrumentRunServiceMock));
     
+    verify(activeInstrumentRunServiceMock);
     verify(instrumentRunServiceMock);
   }
 }

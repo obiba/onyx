@@ -1,8 +1,9 @@
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
+import org.obiba.onyx.util.data.Data;
 
 /**
  * Interface for instrument parameter integrity checks.
@@ -31,10 +32,11 @@ public interface IntegrityCheck {
    * 
    * The nature of the "check" is specific to implementing classes.
    * 
-   * @param runValue the instrument run value to check
-   * @param runService service used to query other parameter values if needed by the 
-   *        check (<code>null</code> if not used)
+   * @param paramData the instrument run value to check
+   * @param runService service used to query other parameter values if needed by the check (<code>null</code> if not
+   * used)
+   * @param activeRunService service used to query the active instrument run (<code>null</code> if not used)
    * @return <code>true</code> if the value passes the check
    */
-  public boolean checkParameterValue(InstrumentRunValue runValue, InstrumentRunService runService);
+  public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService);
 }

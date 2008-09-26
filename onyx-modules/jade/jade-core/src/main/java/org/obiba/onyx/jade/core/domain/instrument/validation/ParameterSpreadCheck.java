@@ -6,8 +6,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
 @Entity
@@ -21,9 +24,9 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
 
   @ManyToOne
   private InstrumentParameter parameter;
-  
+
   private Integer percent;
-  
+
   public ParameterSpreadCheck() {
     rangeCheck = new RangeCheck();
   }
@@ -35,64 +38,63 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
   public InstrumentParameter getParameter() {
     return parameter;
   }
-  
+
   public DataType getValueType() {
     return getTargetParameter().getDataType();
   }
-  
+
   public void setPercent(Integer percent) {
     this.percent = percent;
   }
-  
+
   public Integer getPercent() {
     return percent;
   }
-  
+
   //
   // IntegrityCheck Methods
   //
-  
+
   @Override
-  public boolean checkParameterValue(InstrumentRunValue runValue, InstrumentRunService runService) {
+  public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
     // Get the other parameter's value.
-    InstrumentRunValue paramValue = runService.findInstrumentRunValue(runValue.getInstrumentRun().getParticipantInterview(), runValue.getInstrumentRun().getInstrument().getInstrumentType(), parameter.getName());
+    InstrumentRun instrumentRun = activeRunService.getInstrumentRun();
+    InstrumentRunValue paramValue = runService.findInstrumentRunValue(instrumentRun.getParticipantInterview(), instrumentRun.getInstrument().getInstrumentType(), parameter.getName());
 
     // Update the rangeCheck accordingly.
     rangeCheck.setTargetParameter(getTargetParameter());
-    
-    if (getValueType().equals(DataType.INTEGER)) {
-      initIntegerRangeCheck(runValue, paramValue);
-    }
-    else if (getValueType().equals(DataType.DECIMAL)){
-      initDecimalRangeCheck(runValue, paramValue);
-    }
-    else {
+
+    if(getValueType().equals(DataType.INTEGER)) {
+      initIntegerRangeCheck(paramData, paramValue.getData());
+    } else if(getValueType().equals(DataType.DECIMAL)) {
+      initDecimalRangeCheck(paramData, paramValue.getData());
+    } else {
       return false;
     }
-    
-    return rangeCheck.checkParameterValue(runValue, null);
+
+    return rangeCheck.checkParameterValue(paramData, null, null);
   }
-  
-  private void initIntegerRangeCheck(InstrumentRunValue checkedRunValue, InstrumentRunValue otherRunValue) {
-    Long otherValue = otherRunValue.getData().getValue();
-    
-    double percentValue = percent/100.0;
-    
-    Long minCheckedValue = new Double(Math.ceil((1.0 - percentValue)*otherValue.longValue())).longValue();
-    Long maxCheckedValue = new Double(Math.floor((1.0 + percentValue)*otherValue.longValue())).longValue();
-    
+
+  private void initIntegerRangeCheck(Data checkedData, Data otherData) {
+    Long otherValue = otherData.getValue();
+
+    double percentValue = percent / 100.0;
+
+    Long minCheckedValue = new Double(Math.ceil((1.0 - percentValue) * otherValue.longValue())).longValue();
+    Long maxCheckedValue = new Double(Math.floor((1.0 + percentValue) * otherValue.longValue())).longValue();
+
     rangeCheck.setIntegerMinValue(minCheckedValue);
     rangeCheck.setIntegerMaxValue(maxCheckedValue);
   }
-  
-  private void initDecimalRangeCheck(InstrumentRunValue checkedRunValue, InstrumentRunValue otherRunValue) {
-    Double otherValue = otherRunValue.getData().getValue();
-    
-    double percentValue = percent/100.0;
-    
-    Double minCheckedValue = (1.0 - percentValue)*otherValue; 
-    Double maxCheckedValue = (1.0 + percentValue)*otherValue;
-    
+
+  private void initDecimalRangeCheck(Data checkedData, Data otherData) {
+    Double otherValue = otherData.getValue();
+
+    double percentValue = percent / 100.0;
+
+    Double minCheckedValue = (1.0 - percentValue) * otherValue;
+    Double maxCheckedValue = (1.0 + percentValue) * otherValue;
+
     rangeCheck.setDecimalMinValue(minCheckedValue);
     rangeCheck.setDecimalMaxValue(maxCheckedValue);
   }
