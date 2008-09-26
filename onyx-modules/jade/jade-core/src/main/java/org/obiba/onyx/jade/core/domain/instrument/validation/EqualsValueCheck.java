@@ -57,7 +57,7 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
 
   public void setData(Data data) {
     if(data != null) {
-      if(data.getType() == getValueType()) {
+      if(data.getType().equals(getValueType())) {
 
         switch(getValueType()) {
         case BOOLEAN:

@@ -58,6 +58,7 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
     InstrumentRunValue paramValue = runService.findInstrumentRunValue(runValue.getInstrumentRun().getParticipantInterview(), runValue.getInstrumentRun().getInstrument().getInstrumentType(), parameter.getName());
 
     // Update the equalsValueCheck accordingly.
+    equalsValueCheck.setTargetParameter(getTargetParameter());
     equalsValueCheck.setData(paramValue.getData());
 
     return equalsValueCheck.checkParameterValue(runValue, null);
