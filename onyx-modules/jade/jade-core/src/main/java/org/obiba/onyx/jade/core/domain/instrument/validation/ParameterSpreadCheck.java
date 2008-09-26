@@ -69,15 +69,17 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
     else {
       return false;
     }
-
+    
     return rangeCheck.checkParameterValue(runValue, null);
   }
   
   private void initIntegerRangeCheck(InstrumentRunValue checkedRunValue, InstrumentRunValue otherRunValue) {
     Long otherValue = otherRunValue.getData().getValue();
     
-    Long minCheckedValue = Double.valueOf(Math.ceil((1.0 - percent)*otherValue.longValue())).longValue(); 
-    Long maxCheckedValue = Double.valueOf(Math.floor((1.0 + percent)*otherValue.longValue())).longValue();
+    double percentValue = percent/100.0;
+    
+    Long minCheckedValue = new Double(Math.ceil((1.0 - percentValue)*otherValue.longValue())).longValue();
+    Long maxCheckedValue = new Double(Math.floor((1.0 + percentValue)*otherValue.longValue())).longValue();
     
     rangeCheck.setIntegerMinValue(minCheckedValue);
     rangeCheck.setIntegerMaxValue(maxCheckedValue);
@@ -86,8 +88,10 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
   private void initDecimalRangeCheck(InstrumentRunValue checkedRunValue, InstrumentRunValue otherRunValue) {
     Double otherValue = otherRunValue.getData().getValue();
     
-    Double minCheckedValue = (1.0 - percent)*otherValue; 
-    Double maxCheckedValue = (1.0 + percent)*otherValue;
+    double percentValue = percent/100.0;
+    
+    Double minCheckedValue = (1.0 - percentValue)*otherValue; 
+    Double maxCheckedValue = (1.0 + percentValue)*otherValue;
     
     rangeCheck.setDecimalMinValue(minCheckedValue);
     rangeCheck.setDecimalMaxValue(maxCheckedValue);
