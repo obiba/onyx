@@ -50,6 +50,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <value>classpath:config/MarbleStageState</value>
         <value>classpath:config/InstrumentParameter</value>
         <value>instruments/interface-height/InstrumentParameter</value>
+        <value>instruments/interface-height/ContraIndication</value>
         <value>instruments/interface-sitting-height/InstrumentParameter</value>
         <value>instruments/interface-hipsandwaistsize/InstrumentParameter</value>
         <value>instruments/interface-musclestrength/InstrumentParameter</value>
