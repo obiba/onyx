@@ -1,16 +1,8 @@
 <wicket:panel>
 	<table>
-		<tr>
-			<td><div wicket:id="manualOutputs"/></td>
-		</tr>
-		<tr>
-			<td><span wicket:id="manual" /></td>
-		</tr>
-		<tr>
-			<td><div wicket:id="automaticOutputs"/></td>
+		<tr wicket:id="repeat">
+			<td><span wicket:id="label"/></td>
+			<td><span wicket:id="field"/></td>
 		</tr>
 	</table>
 </wicket:panel>
-<wicket:fragment wicket:id="manualFragment">
-	<input type="checkbox" wicket:id="manual" /><wicket:message key="EnterValuesManually"/>
-</wicket:fragment>

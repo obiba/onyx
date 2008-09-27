@@ -3,6 +3,7 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.instrument.InstrumentOutputParameterPanel;
@@ -21,7 +22,7 @@ public class OutputParametersStep extends WizardStepPanel {
   public OutputParametersStep(String id) {
     super(id);
     setOutputMarkupId(true);
-    add(new Label("title", "Output Parameters"));
+    add(new Label("title", new StringResourceModel("ProvideTheFollowingInformation", OutputParametersStep.this, null)));
 
     add(new EmptyPanel("panel"));
   }
@@ -45,7 +46,7 @@ public class OutputParametersStep extends WizardStepPanel {
 
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
-    instrumentOutputParameterPanel.saveOutputParameterValues();
+    instrumentOutputParameterPanel.saveOutputInstrumentRunValues();
     activeInstrumentRunService.computeOutputParameters();
   }
 }

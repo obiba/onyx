@@ -3,7 +3,14 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.instrument.InstructionsPanel;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 import org.slf4j.Logger;
@@ -14,6 +21,12 @@ public class InstructionsStep extends WizardStepPanel {
   private static final long serialVersionUID = -2511672064460152210L;
 
   private static final Logger log = LoggerFactory.getLogger(InstructionsStep.class);
+  
+  @SpringBean
+  private EntityQueryService queryService;
+  
+  @SpringBean
+  private ActiveInstrumentRunService activeInstrumentRunService;
 
   private boolean launched = false;
 
@@ -61,7 +74,26 @@ public class InstructionsStep extends WizardStepPanel {
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     if(launched) {
-      ((InstrumentWizardForm) form).setUpWizardFlow();
+      InstrumentOutputParameter template = new InstrumentOutputParameter();
+      template.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
+      template.setInstrument(activeInstrumentRunService.getInstrument());
+
+      boolean missing = false;
+      for(InstrumentOutputParameter param : queryService.match(template)) {
+        InstrumentRunValue runValue = activeInstrumentRunService.getOutputInstrumentRunValue(param.getName());
+        Data data = runValue.getData();
+        if (data == null || data.getValue() == null) {
+          error(getString("NoInstrumentDataSaveThem"));
+          setNextStep(null);
+          missing = true;
+          break;
+        }
+      }
+      
+      if (!missing) {
+        ((InstrumentWizardForm) form).setUpWizardFlow();  
+      }
+      
     } else {
       error(getString("InstrumentApplicationMustBeStarted"));
       setNextStep(null);
