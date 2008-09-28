@@ -3,7 +3,6 @@ package org.obiba.onyx.jade.core.wicket;
 import java.io.Serializable;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -49,8 +48,6 @@ public class JadePanel extends Panel implements IEngineComponentAware {
     super(id);
     InstrumentType type = getInstrumentType(stage);
     model = new JadeModel(new StageModel(moduleRegistry, stage.getName()), new DetachableEntityModel(queryService, type));
-
-    add(new Label("description", type.getDescription()));
 
     add(new WizardPanel("content", model.getIntrumentTypeModel()) {
 

@@ -1,16 +1,14 @@
 package org.obiba.onyx.marble.core.wicket;
 
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
@@ -28,10 +26,8 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
 
   private static final long serialVersionUID = -6692482689347742363L;
 
+  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MarblePanel.class);
-
-  @SpringBean
-  private EntityQueryService queryService;
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
@@ -56,8 +52,8 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
     add(form);
 
     form.add(new CheckBox("cb", new PropertyModel(activeConsentService, "consent")));
-    AjaxButton button;
-    form.add(button = new AjaxButton("submit", form) {
+
+    form.add(new AjaxButton("submit", form) {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
@@ -75,8 +71,18 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
       }
 
     });
-    button.add(new AttributeModifier("value", new StringResourceModel("Submit", this, null)));
 
+    form.add(new AjaxLink("cancel") {
+
+      public void onClick(AjaxRequestTarget target) {
+        IStageExecution exec = activeInterviewService.getStageExecution(stageName);
+        ActionDefinition actionDef = exec.getActionDefinition(ActionType.STOP);
+        if(actionDef != null) {
+          actionWindow.show(target, new StageModel(moduleRegistry, stageName), actionDef);
+        }
+      }
+
+    });
   }
 
   public void setActionWindwon(ActionWindow window) {

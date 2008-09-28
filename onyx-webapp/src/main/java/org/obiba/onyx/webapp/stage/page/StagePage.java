@@ -12,7 +12,6 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
-import org.obiba.onyx.webapp.action.panel.ActionsPanel;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.webapp.stage.panel.StageHeaderPanel;
@@ -23,7 +22,7 @@ import org.obiba.onyx.wicket.action.ActionWindow;
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class StagePage extends BasePage {
 
-  @SpringBean(name="activeInterviewService")
+  @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   @SuppressWarnings("serial")
@@ -42,15 +41,15 @@ public class StagePage extends BasePage {
       //
       remove("header");
       add(new StageHeaderPanel("header"));
-      
+
       //
       // Modify menu bar.
       //
       remove("menuBar");
       StageMenuBar menuBar = new StageMenuBar("menuBar");
-      menuBar.setInfoLabel((Stage)stageModel.getObject(), participant);
+      menuBar.setInfoLabel((Stage) stageModel.getObject(), participant);
       add(menuBar);
-      
+
       IStageExecution exec = activeInterviewService.getStageExecution((Stage) getModelObject());
 
       final ActionWindow modal;
@@ -67,8 +66,6 @@ public class StagePage extends BasePage {
         }
 
       });
-
-      add(new ActionsPanel("action", getModel(), exec, modal));
 
       if(!exec.isInteractive()) {
         add(new EmptyPanel("stage-component"));

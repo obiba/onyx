@@ -80,9 +80,6 @@ public abstract class InstrumentWizardForm extends WizardForm {
     add(startStep);
     startStep.onStepIn(this, null);
     startStep.handleWizardState(this, null);
-
-    // never show cancel link
-    getCancelLink().setVisible(false);
   }
 
   public WizardStepPanel setUpWizardFlow() {
