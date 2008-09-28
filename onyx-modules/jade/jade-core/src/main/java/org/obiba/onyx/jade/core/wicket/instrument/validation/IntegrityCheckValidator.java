@@ -2,6 +2,7 @@ package org.obiba.onyx.jade.core.wicket.instrument.validation;
 
 import java.util.List;
 
+import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
@@ -19,13 +20,15 @@ public class IntegrityCheckValidator extends AbstractValidator {
   private IntegrityCheck integrityCheck;
    
   @SpringBean
-  private InstrumentRunService instrumentRunService;
+  private transient InstrumentRunService instrumentRunService;
   
   @SpringBean
-  private ActiveInstrumentRunService activeInstrumentRunService;
+  private transient ActiveInstrumentRunService activeInstrumentRunService;
   
   public IntegrityCheckValidator(IntegrityCheck integrityCheck) {
-    this.integrityCheck = integrityCheck;  
+    this.integrityCheck = integrityCheck;
+    
+    InjectorHolder.getInjector().inject(this);
   }
   
   //

@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
@@ -57,13 +59,26 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
    * @return <code>true</code> if instrument run value equals value of configured other parameter
    */
   public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
+    //
     // Get the other parameter's value.
-    InstrumentRun instrumentRun = activeRunService.getInstrumentRun();
-    InstrumentRunValue paramValue = runService.findInstrumentRunValue(instrumentRun.getParticipantInterview(), instrumentRun.getInstrument().getInstrumentType(), parameter.getName());
+    //
+    InstrumentRunValue otherRunValue = null;
+    Data otherData = null;
+    
+    if (parameter instanceof InstrumentInputParameter) {
+      otherRunValue = activeRunService.getInputInstrumentRunValue(parameter.getName());
+    }
+    else if (parameter instanceof InstrumentOutputParameter) {
+      otherRunValue = activeRunService.getOutputInstrumentRunValue(parameter.getName());
+    }
+    
+    if (otherRunValue != null)  {
+      otherData = otherRunValue.getData();
+    }
 
     // Update the equalsValueCheck accordingly.
     equalsValueCheck.setTargetParameter(getTargetParameter());
-    equalsValueCheck.setData(paramValue.getData());
+    equalsValueCheck.setData(otherData);
 
     return equalsValueCheck.checkParameterValue(paramData, null, null);
   }

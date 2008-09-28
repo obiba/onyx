@@ -55,7 +55,10 @@ public class EqualsParameterCheckTest {
     instrumentRun.setInstrument(instrument);
     
     checkedParameter = new InstrumentOutputParameter();
+    checkedParameter.setName("checkedParamName");
+    
     otherParameter = new InstrumentInputParameter();
+    otherParameter.setName("otherParamName");
     
     equalsParameterCheck.setTargetParameter(checkedParameter);
     equalsParameterCheck.setParameter(otherParameter);
@@ -83,16 +86,13 @@ public class EqualsParameterCheckTest {
     otherRunValue.setInstrumentParameter(otherParameter);
     otherRunValue.setData(otherData);
 
-    expect(activeInstrumentRunServiceMock.getInstrumentRun()).andReturn(instrumentRun);
-    expect(instrumentRunServiceMock.findInstrumentRunValue(interview, instrumentType, otherParameter.getName())).andReturn(otherRunValue);    
+    expect(activeInstrumentRunServiceMock.getInputInstrumentRunValue(otherParameter.getName())).andReturn(otherRunValue);   
 
     replay(activeInstrumentRunServiceMock);
-    replay(instrumentRunServiceMock);
         
     Assert.assertTrue(equalsParameterCheck.checkParameterValue(checkedData, instrumentRunServiceMock, activeInstrumentRunServiceMock));
     
     verify(activeInstrumentRunServiceMock);
-    verify(instrumentRunServiceMock);
   }
   
   /**
@@ -113,15 +113,12 @@ public class EqualsParameterCheckTest {
     otherRunValue.setInstrumentParameter(otherParameter);
     otherRunValue.setData(otherData);
 
-    expect(activeInstrumentRunServiceMock.getInstrumentRun()).andReturn(instrumentRun);
-    expect(instrumentRunServiceMock.findInstrumentRunValue(interview, instrumentType, otherParameter.getName())).andReturn(otherRunValue);    
-
+    expect(activeInstrumentRunServiceMock.getInputInstrumentRunValue(otherParameter.getName())).andReturn(otherRunValue);
+   
     replay(activeInstrumentRunServiceMock);
-    replay(instrumentRunServiceMock);
         
     Assert.assertFalse(equalsParameterCheck.checkParameterValue(checkedData, instrumentRunServiceMock, activeInstrumentRunServiceMock));
     
     verify(activeInstrumentRunServiceMock);
-    verify(instrumentRunServiceMock);
   }
 }

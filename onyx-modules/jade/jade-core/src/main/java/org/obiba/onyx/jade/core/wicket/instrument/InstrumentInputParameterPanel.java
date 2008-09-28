@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Radio;
@@ -225,12 +227,18 @@ public class InstrumentInputParameterPanel extends Panel {
         item.add(label);
 
         InstrumentRunValue runValue = activeInstrumentRunService.getInputInstrumentRunValue(param.getName());
-        IModel runValueModel = new DetachableEntityModel(queryService, runValue);
+        final IModel runValueModel = new DetachableEntityModel(queryService, runValue);
         inputRunValueModels.add(runValueModel);
 
         DataField field = new DataField("field", new PropertyModel(runValueModel, "data"), runValue.getDataType(), param.getMeasurementUnit());
         field.setRequired(true);
         field.setLabel(new PropertyModel(param, "description"));
+        field.add(new OnChangeAjaxBehavior() {
+          @Override
+          protected void onUpdate(AjaxRequestTarget target) {
+            activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
+          }
+        });
         IntegrityCheckValidator.addChecks(field, param.getIntegrityChecks());
         item.add(field);
       }
