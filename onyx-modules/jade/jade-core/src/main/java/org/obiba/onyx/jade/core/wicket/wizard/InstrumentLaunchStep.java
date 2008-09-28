@@ -7,34 +7,35 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
-import org.obiba.onyx.jade.core.wicket.instrument.InstructionsPanel;
+import org.obiba.onyx.jade.core.wicket.instrument.InstrumentLaunchPanel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InstructionsStep extends WizardStepPanel {
+public class InstrumentLaunchStep extends WizardStepPanel {
 
   private static final long serialVersionUID = -2511672064460152210L;
 
-  private static final Logger log = LoggerFactory.getLogger(InstructionsStep.class);
-  
+  private static final Logger log = LoggerFactory.getLogger(InstrumentLaunchStep.class);
+
   @SpringBean
   private EntityQueryService queryService;
-  
+
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
   private boolean launched = false;
 
-  public InstructionsStep(String id) {
+  public InstrumentLaunchStep(String id) {
     super(id);
     setOutputMarkupId(true);
 
-    add(new Label("title", new StringResourceModel("Instructions", this, null)));
+    add(new Label("title", new StringResourceModel("InstrumentApplicationLaunch", this, null)));
   }
 
   @Override
@@ -51,11 +52,12 @@ public class InstructionsStep extends WizardStepPanel {
   @SuppressWarnings("serial")
   @Override
   public void onStepIn(final WizardForm form, AjaxRequestTarget target) {
-    setContent(target, new InstructionsPanel(getContentId()) {
+    setContent(target, new InstrumentLaunchPanel(getContentId()) {
 
       @Override
       public void onInstrumentLaunch() {
         log.info("onInstrumentLaunch");
+        activeInstrumentRunService.setInstrumentRunStatus(InstrumentRunStatus.IN_PROGRESS);
         launched = true;
       }
 
@@ -74,30 +76,35 @@ public class InstructionsStep extends WizardStepPanel {
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     if(launched) {
-      InstrumentOutputParameter template = new InstrumentOutputParameter();
-      template.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
-      template.setInstrument(activeInstrumentRunService.getInstrument());
+      if(InstrumentRunStatus.IN_ERROR.equals(activeInstrumentRunService.getInstrumentRunStatus())) {
+        error(getString("InstrumentApplicationError"));
+        setNextStep(null);
+      } else {
+        InstrumentOutputParameter template = new InstrumentOutputParameter();
+        template.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
+        template.setInstrument(activeInstrumentRunService.getInstrument());
 
-      boolean missing = false;
-      for(InstrumentOutputParameter param : queryService.match(template)) {
-        InstrumentRunValue runValue = activeInstrumentRunService.getOutputInstrumentRunValue(param.getName());
-        Data data = runValue.getData();
-        if (data == null || data.getValue() == null) {
-          error(getString("NoInstrumentDataSaveThem"));
-          setNextStep(null);
-          missing = true;
-          break;
+        boolean completed = true;
+        for(InstrumentOutputParameter param : queryService.match(template)) {
+          InstrumentRunValue runValue = activeInstrumentRunService.getOutputInstrumentRunValue(param.getName());
+          Data data = runValue.getData();
+          if(data == null || data.getValue() == null) {
+            error(getString("NoInstrumentDataSaveThem"));
+            setNextStep(null);
+            completed = false;
+            break;
+          }
+        }
+
+        if(completed) {
+          // TODO integrity check
+          ((InstrumentWizardForm) form).setUpWizardFlow();
         }
       }
-      
-      if (!missing) {
-        ((InstrumentWizardForm) form).setUpWizardFlow();  
-      }
-      
+
     } else {
       error(getString("InstrumentApplicationMustBeStarted"));
       setNextStep(null);
-      if(form.getFeedbackPanel() != null) target.addComponent(form.getFeedbackPanel());
     }
   }
 

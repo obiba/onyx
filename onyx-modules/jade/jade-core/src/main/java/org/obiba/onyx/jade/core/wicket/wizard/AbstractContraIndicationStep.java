@@ -35,7 +35,12 @@ public abstract class AbstractContraIndicationStep extends WizardStepPanel {
       // no possibility to come back
       // nextStep.setPreviousStep(this);
       setNextStep(nextStep);
+      nextStep.setPreviousStep(this);
       log.debug("Contra-indicated by {} ({})", ci, activeInstrumentRunService.getOtherContraIndication());
+    }
+    else {
+      // do it in case of back and forth
+      ((InstrumentWizardForm)form).setUpWizardFlow();
     }
   }
 
@@ -47,6 +52,7 @@ public abstract class AbstractContraIndicationStep extends WizardStepPanel {
     if(target != null) {
       target.addComponent(form.getPreviousLink());
       target.addComponent(form.getNextLink());
+      target.addComponent(form.getFinishLink());
     }
   }
 

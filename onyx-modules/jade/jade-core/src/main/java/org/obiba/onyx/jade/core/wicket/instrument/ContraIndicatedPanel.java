@@ -11,26 +11,30 @@ import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 
-
 public class ContraIndicatedPanel extends Panel {
 
   private static final long serialVersionUID = 9014406108097758044L;
-  
+
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
-  
+
   @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
-  
+
   public ContraIndicatedPanel(String id) {
     super(id);
-    
+
     ContraIndication ci = activeInstrumentRunService.getContraIndication();
-    
+
     ci.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
     ci.setUserSessionService(userSessionService);
-    
-    add(new Label("label", new StringResourceModel("ReasonForContraIndication", this, new Model(new ValueMap("ci=" + ci.getDescription())))));
+
+    String reason = ci.getDescription();
+    if(ci.getName().equals("Other")) {
+      reason += " (" + activeInstrumentRunService.getOtherContraIndication() + ")";
+    }
+
+    add(new Label("label", new StringResourceModel("ReasonForContraIndication", this, new Model(new ValueMap("ci=" + reason)))));
   }
 
 }

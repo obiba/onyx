@@ -36,7 +36,7 @@ public class ContraIndicatedStep extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    form.getPreviousLink().setEnabled(false);
+    form.getPreviousLink().setEnabled(true);
     form.getNextLink().setEnabled(false);
     form.getFinishLink().setEnabled(true);
     if(target != null) {

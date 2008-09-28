@@ -60,9 +60,9 @@ public abstract class InstrumentWizardForm extends WizardForm {
     observedContraIndicationStep = new ObservedContraIndicationStep(getStepId());
     askedContraIndicationStep = new AskedContraIndicationStep(getStepId());
     inputParametersStep = new InputParametersStep(getStepId());
-    instructionsStep = new InstructionsStep(getStepId());
+    instructionsStep = new InstrumentLaunchStep(getStepId());
     outputParametersStep = new OutputParametersStep(getStepId());
-    validationStep = new ValidationStep(getStepId());
+    validationStep = new ConclusionStep(getStepId());
 
     // do we need to select the instrument ?
     Instrument template = new Instrument();

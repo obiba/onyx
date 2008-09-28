@@ -2,24 +2,25 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
-import org.obiba.onyx.jade.core.wicket.instrument.ValidationPanel;
+import org.obiba.onyx.jade.core.wicket.instrument.ConclusionPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
-public class ValidationStep extends WizardStepPanel {
+public class ConclusionStep extends WizardStepPanel {
 
   private static final long serialVersionUID = -2477348071975440201L;
 
   @SpringBean
   protected ActiveInstrumentRunService activeInstrumentRunService;
   
-  public ValidationStep(String id) {
+  public ConclusionStep(String id) {
     super(id);
 
-    add(new Label("title", "Validation"));
+    add(new Label("title", new StringResourceModel("Conclusion", ConclusionStep.this, null)));
   }
 
   @Override
@@ -36,9 +37,8 @@ public class ValidationStep extends WizardStepPanel {
 
   @Override
   public void onStepIn(WizardForm form, AjaxRequestTarget target) {
-    // TODO change this when integrity check will be added
     activeInstrumentRunService.setInstrumentRunStatus(InstrumentRunStatus.COMPLETED);
-    setContent(target, new ValidationPanel(getContentId()));
+    setContent(target, new ConclusionPanel(getContentId()));
   }
 
 }
