@@ -36,6 +36,13 @@
     </instrumentParameters>
   </instrument>
   
+  <contraIndication>
+    <name>Other</name>
+    <description>Other</description>
+    <type>OBSERVED</type>
+    <instrument reference="bone1" />
+  </contraIndication>
+  
   <participantPropertySource id="id_source">
     <property>barcode</property>
   </participantPropertySource>

@@ -14,6 +14,20 @@
       <name>SIT</name>
     </instrumentType>
   </instrument>
+  
+  <contraIndication>
+    <name>UnableToSitUnassistedCast</name>
+    <description>UnableToSitUnassistedCast</description>
+    <type>OBSERVED</type>
+    <instrument reference="sit1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>Other</name>
+    <description>Other</description>
+    <type>OBSERVED</type>
+    <instrument reference="sit1" />
+  </contraIndication>
 
   <output id="sit1_height1">
     <name>Sitting Height 1</name>

@@ -15,6 +15,13 @@
     </instrumentType>
   </instrument>
   
+  <contraIndication>
+    <name>Other</name>
+    <description>Other</description>
+    <type>OBSERVED</type>
+    <instrument reference="spi1" />
+  </contraIndication>
+  
   <participantPropertySource id="id_source">
     <property>barcode</property>
   </participantPropertySource>

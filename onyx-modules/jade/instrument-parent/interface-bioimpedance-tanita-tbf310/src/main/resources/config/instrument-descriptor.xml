@@ -14,6 +14,34 @@
       <name>BIM</name>
     </instrumentType>
   </instrument>
+  
+  <contraIndication>
+    <name>UnableToStandUnassistedHandicap</name>
+    <description>UnableToStandUnassistedHandicap</description>
+    <type>OBSERVED</type>
+    <instrument reference="bioimp1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>UnableToStandUnassistedWheelchair</name>
+    <description>UnableToStandUnassistedWheelchair</description>
+    <type>OBSERVED</type>
+    <instrument reference="bioimp1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>UnableToStandUnassistedCast</name>
+    <description>UnableToStandUnassistedCast</description>
+    <type>OBSERVED</type>
+    <instrument reference="bioimp1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>Other</name>
+    <description>Other</description>
+    <type>OBSERVED</type>
+    <instrument reference="bioimp1" />
+  </contraIndication>
 
   <fixedSource id="clothes_weight_source">
     <value>1</value>

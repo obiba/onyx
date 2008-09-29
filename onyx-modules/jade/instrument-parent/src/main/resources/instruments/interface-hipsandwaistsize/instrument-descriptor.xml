@@ -13,6 +13,34 @@
       <name>HWC</name>
     </instrumentType>
   </instrument>
+  
+  <contraIndication>
+    <name>UnableToStandUnassistedHandicap</name>
+    <description>UnableToStandUnassistedHandicap</description>
+    <type>OBSERVED</type>
+    <instrument reference="hwc1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>UnableToStandUnassistedWheelchair</name>
+    <description>UnableToStandUnassistedWheelchair</description>
+    <type>OBSERVED</type>
+    <instrument reference="hwc1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>UnableToStandUnassistedCast</name>
+    <description>UnableToStandUnassistedCast</description>
+    <type>OBSERVED</type>
+    <instrument reference="hwc1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>Other</name>
+    <description>Other</description>
+    <type>OBSERVED</type>
+    <instrument reference="hwc1" />
+  </contraIndication>
 
   <output id="waist_size1">
     <name>Waist Size 1</name>

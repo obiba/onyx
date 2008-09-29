@@ -15,6 +15,13 @@
     </instrumentType>
   </instrument>
   
+  <contraIndication>
+    <name>Other</name>
+    <description>Other</description>
+    <type>OBSERVED</type>
+    <instrument reference="wei1" />
+  </contraIndication>
+  
   <output id="wei1_weight1">
     <name>Weight 1</name>
     <description>First_Weight_Measurement</description>

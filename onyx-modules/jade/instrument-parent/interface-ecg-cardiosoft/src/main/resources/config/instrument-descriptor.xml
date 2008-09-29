@@ -15,6 +15,13 @@
     </instrumentType>
   </instrument>
   
+  <contraIndication>
+    <name>Other</name>
+    <description>Other</description>
+    <type>OBSERVED</type>
+    <instrument reference="ecg1" />
+  </contraIndication>
+  
   <output id="time">
     <name>time</name>
     <description>Time_of_measurement</description>
