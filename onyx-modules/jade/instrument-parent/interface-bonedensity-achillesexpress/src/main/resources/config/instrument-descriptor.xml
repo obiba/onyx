@@ -37,9 +37,23 @@
   </instrument>
   
   <contraIndication>
+    <name>OpenWoundsBreaksSoresOnFeet</name>
+    <description>OpenWoundsBreaksSoresOnFeet</description>
+    <type>OBSERVED</type>
+    <instrument reference="bone1" />
+  </contraIndication>
+  
+  <contraIndication>
     <name>Other</name>
     <description>Other</description>
     <type>OBSERVED</type>
+    <instrument reference="bone1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>OpenWoundsBreaksSoresOnFeet</name>
+    <description>OpenWoundsBreaksSoresOnFeet</description>
+    <type>ASKED</type>
     <instrument reference="bone1" />
   </contraIndication>
   

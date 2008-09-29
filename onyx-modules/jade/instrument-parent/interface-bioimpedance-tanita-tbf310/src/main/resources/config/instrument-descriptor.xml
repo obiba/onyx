@@ -42,6 +42,13 @@
     <type>OBSERVED</type>
     <instrument reference="bioimp1" />
   </contraIndication>
+  
+  <contraIndication>
+    <name>IrremovableMetallicDevice</name>
+    <description>IrremovableMetallicDevice</description>
+    <type>ASKED</type>
+    <instrument reference="bioimp1" />
+  </contraIndication>
 
   <fixedSource id="clothes_weight_source">
     <value>1</value>

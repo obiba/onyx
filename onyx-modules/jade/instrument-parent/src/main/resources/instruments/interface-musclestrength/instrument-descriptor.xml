@@ -41,6 +41,20 @@
     <type>OBSERVED</type>
     <instrument reference="mus1" />
   </contraIndication>
+  
+  <contraIndication>
+    <name>HandOrWristArthritisAndOtherProblem</name>
+    <description>HandOrWristArthritisAndOtherProblem</description>
+    <type>ASKED</type>
+    <instrument reference="mus1" />
+  </contraIndication>
+
+  <contraIndication>
+    <name>HandOrWristSurgery</name>
+    <description>HandOrWristSurgery</description>
+    <type>ASKED</type>
+    <instrument reference="mus1" />
+  </contraIndication>
 
   <output id="mus1_right_strength1">
     <name>Right Strength 1</name>
