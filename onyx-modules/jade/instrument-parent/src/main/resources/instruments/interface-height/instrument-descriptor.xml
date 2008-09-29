@@ -43,20 +43,6 @@
     <instrument reference="sta1" />
   </contraIndication>
 
-  <contraIndication>
-    <name>A</name>
-    <description>Question A ?</description>
-    <type>ASKED</type>
-    <instrument reference="sta1" />
-  </contraIndication>
-
-  <contraIndication>
-    <name>B</name>
-    <description>Question B ?</description>
-    <type>ASKED</type>
-    <instrument reference="sta1" />
-  </contraIndication>
-
   <output id="sta1_height1">
     <name>Height 1</name>
     <description>First_Height_Measurement</description>
