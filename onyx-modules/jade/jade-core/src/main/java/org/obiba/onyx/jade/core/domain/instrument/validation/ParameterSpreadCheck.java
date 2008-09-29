@@ -90,14 +90,14 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
 
     return rangeCheck.checkParameterValue(paramData, null, activeRunService);
   }
-
-  @Override
-  public Map<String, String> getFeedbackVariables() {
-    Map<String, String> variablesMap = super.getFeedbackVariables();
-    variablesMap.put("parameter", parameter.getDescription());
-    variablesMap.put("percent", percent.toString());
+  
+  protected Object[] getDescriptionArgs() {
+    // Set the parameter's context and user session service to ensure
+    // proper localization.
+    parameter.setApplicationContext(context);
+    parameter.setUserSessionService(userSessionService);
     
-    return variablesMap;
+    return new Object[] { getTargetParameter().getDescription(), parameter.getDescription(), percent };
   }
   
   private void initIntegerRangeCheck(Data checkedData, Data otherData) {

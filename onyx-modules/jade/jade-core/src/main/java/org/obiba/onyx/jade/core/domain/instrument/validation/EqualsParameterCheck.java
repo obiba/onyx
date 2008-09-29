@@ -84,11 +84,12 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
     return equalsValueCheck.checkParameterValue(paramData, null, null);
   }
   
-  @Override
-  public Map<String, String> getFeedbackVariables() {
-    Map<String, String> variablesMap = super.getFeedbackVariables();
-    variablesMap.put("parameter", parameter.getDescription());
+  protected Object[] getDescriptionArgs() {
+    // Set the parameter's context and user session service to ensure
+    // proper localization.
+    parameter.setApplicationContext(context);
+    parameter.setUserSessionService(userSessionService);
     
-    return variablesMap;
+    return new Object[] { getTargetParameter().getDescription(), parameter.getDescription() };
   }
 }

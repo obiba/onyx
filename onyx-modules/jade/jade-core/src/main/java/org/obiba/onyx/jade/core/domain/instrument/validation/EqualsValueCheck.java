@@ -5,12 +5,17 @@ import java.util.Map;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
+import org.apache.wicket.Application;
+import org.apache.wicket.spring.SpringWebApplication;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Integrity check to verify that an instrument run value is equal to a given (fixed) value.
@@ -33,11 +38,11 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
   private Double decimalValue;
 
   private String textValue;
-
+  
   public EqualsValueCheck() {
     super();
   }
-
+  
   public DataType getValueType() {
     return getTargetParameter().getDataType();
   }
@@ -132,12 +137,8 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
 
     return isEqual;
   }
-
-  @Override
-  public Map<String, String> getFeedbackVariables() {
-    Map<String, String> variablesMap = super.getFeedbackVariables();
-    variablesMap.put("value", getData().getValueAsString());
-    
-    return variablesMap;
+  
+  protected Object[] getDescriptionArgs() {
+    return new Object[] { getTargetParameter().getDescription(), getData().getValue() };
   }
 }

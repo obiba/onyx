@@ -2,10 +2,12 @@ package org.obiba.onyx.jade.core.domain.instrument.validation;
 
 import java.util.Map;
 
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Interface for instrument parameter integrity checks.
@@ -41,13 +43,15 @@ public interface IntegrityCheck {
    * @return <code>true</code> if the value passes the check
    */
   public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService);
-  
+    
   /**
-   * Returns a map of variables that may be used in error messages. 
+   * Returns a (localized) description of the check performed.
    * 
-   * The variables are specific to implementing classes.
-   * 
-   * @return map of check variables
+   * @return localized description
    */
-  public Map<String, String> getFeedbackVariables();
+  public String getDescription();
+  
+  public void setApplicationContext(ApplicationContext context);
+  
+  public void setUserSessionService(UserSessionService userSessionService);
 }

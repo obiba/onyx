@@ -8,14 +8,20 @@ import javax.persistence.Entity;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
+import org.obiba.onyx.jade.core.wicket.instrument.InstrumentInputParameterPanel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @DiscriminatorValue("RangeCheck")
 public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck {
 
   private static final long serialVersionUID = 1L;
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(RangeCheck.class);
 
   private Long integerMinValueMale;
 
@@ -90,25 +96,18 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
 
     return false;
   }
-
-  @Override
-  public Map<String, String> getFeedbackVariables() {
-    Map<String, String> variablesMap = super.getFeedbackVariables();
-    
+  
+  protected Object[] getDescriptionArgs() {
+    Object[] args = null;
+   
     if (getValueType().equals(DataType.INTEGER)) {
-      variablesMap.put("minValueMale", (integerMinValueMale != null) ? integerMinValueMale.toString() : "0");
-      variablesMap.put("maxValueMale", (integerMaxValueMale != null) ? integerMaxValueMale.toString() : "9999");
-      variablesMap.put("minValueFemale", (integerMinValueFemale != null) ? integerMinValueFemale.toString() : "0");
-      variablesMap.put("maxValueFemale", (integerMaxValueFemale != null) ? integerMaxValueFemale.toString() : "9999");
+      args = new Object[] { getTargetParameter().getDescription(), integerMinValueMale, integerMaxValueMale, integerMinValueFemale, integerMaxValueFemale };  
     }
     else if (getValueType().equals(DataType.DECIMAL)) {
-      variablesMap.put("minValueMale", (decimalMinValueMale != null) ? decimalMinValueMale.toString() : "0.0");
-      variablesMap.put("maxValueMale", (decimalMaxValueMale != null) ? decimalMaxValueMale.toString() : "9999.0");
-      variablesMap.put("minValueFemale", (decimalMinValueFemale != null) ? decimalMinValueFemale.toString() : "0.0");
-      variablesMap.put("maxValueFemale", (decimalMaxValueFemale != null) ? decimalMaxValueFemale.toString() : "9999.0");
-    } 
+      args = new Object[] { getTargetParameter().getDescription(), decimalMinValueMale, decimalMaxValueMale, decimalMinValueFemale, decimalMaxValueFemale };      
+    }
     
-    return variablesMap;
+    return args;
   }
   
   private boolean checkIntegerParameterValue(Data paramData, Gender gender) {
