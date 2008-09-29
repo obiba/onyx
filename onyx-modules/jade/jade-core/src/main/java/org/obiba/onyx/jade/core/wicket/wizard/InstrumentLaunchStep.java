@@ -1,12 +1,20 @@
 package org.obiba.onyx.jade.core.wicket.wizard;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.wicket.Application;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
+import org.obiba.onyx.jade.core.domain.instrument.validation.AbstractIntegrityCheck;
+import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
@@ -29,6 +37,9 @@ public class InstrumentLaunchStep extends WizardStepPanel {
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
+  @SpringBean
+  private UserSessionService userSessionService;
+  
   private boolean launched = false;
 
   public InstrumentLaunchStep(String id) {
@@ -84,8 +95,11 @@ public class InstrumentLaunchStep extends WizardStepPanel {
         template.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
         template.setInstrument(activeInstrumentRunService.getInstrument());
 
+        List<InstrumentOutputParameter> outputParams = queryService.match(template);
+        
         boolean completed = true;
-        for(InstrumentOutputParameter param : queryService.match(template)) {
+        
+        for(InstrumentOutputParameter param : outputParams) {
           InstrumentRunValue runValue = activeInstrumentRunService.getOutputInstrumentRunValue(param.getName());
           Data data = runValue.getData();
           if(data == null || data.getValue() == null) {
@@ -97,8 +111,23 @@ public class InstrumentLaunchStep extends WizardStepPanel {
         }
 
         if(completed) {
-          // TODO integrity check
-          ((InstrumentWizardForm) form).setUpWizardFlow();
+          // Perform each output parameter's integrity checks.
+          List<IntegrityCheck> failedChecks = checkIntegrity(outputParams);
+          
+          if (failedChecks.isEmpty()) {
+            ((InstrumentWizardForm) form).setUpWizardFlow();
+          } else {
+            for (IntegrityCheck failedCheck : failedChecks) {
+              // Set the integrity check's context and user session service to ensure
+              // proper localization of the error message.
+              failedCheck.setApplicationContext(((SpringWebApplication)Application.get()).getSpringContextLocator().getSpringContext());
+              failedCheck.setUserSessionService(userSessionService);
+              
+              error(failedCheck.getDescription());
+            }
+            
+            setNextStep(null);
+          }
         }
       }
 
@@ -108,4 +137,29 @@ public class InstrumentLaunchStep extends WizardStepPanel {
     }
   }
 
+  /**
+   * For each output parameter, performs all integrity checks.
+   *  
+   * @param outputParams output parameters
+   * @return list of integrity checks that failed (empty list if none)
+   */
+  private List<IntegrityCheck> checkIntegrity(List<InstrumentOutputParameter> outputParams) {
+     List<IntegrityCheck> failedChecks = new ArrayList<IntegrityCheck>();
+     
+     for (InstrumentOutputParameter param : outputParams) {
+       List<AbstractIntegrityCheck> integrityChecks = param.getIntegrityChecks();
+       
+       for (AbstractIntegrityCheck integrityCheck : integrityChecks) {
+         InstrumentRunValue runValue = activeInstrumentRunService.getOutputInstrumentRunValue(param.getName());
+         Data paramData = (runValue != null) ? runValue.getData() : null;
+
+         if (!integrityCheck.checkParameterValue(paramData, null, activeInstrumentRunService)) {
+           failedChecks.add(integrityCheck);
+           break; // stop checking parameter after first failure (but continue checking other parameters!)
+         }
+       }
+     }
+     
+     return failedChecks;
+  }
 }
