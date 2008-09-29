@@ -2,12 +2,10 @@ package org.obiba.onyx.jade.core.wicket.run;
 
 import java.util.List;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -29,6 +27,7 @@ import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 
 public class InstrumentRunPanel extends Panel {
@@ -100,7 +99,7 @@ public class InstrumentRunPanel extends Panel {
     interpretative.setInstrument(run.getInstrument());
 
     if(queryService.count(interpretative) > 0) {
-      add(new DataFragment("interpretatives", new StringResourceModel("Interpretatives", this, null), queryService.match(interpretative)));
+      add(getKeyValueDataPanel("interpretatives", new StringResourceModel("Interpretatives", this, null), queryService.match(interpretative)));
     } else {
       add(new EmptyPanel("interpretatives"));
     }
@@ -110,7 +109,7 @@ public class InstrumentRunPanel extends Panel {
 
     if(queryService.count(input) > 0) {
       String key = isInteractive ? "InstrumentInputs" : "OperatorInputs";
-      add(new DataFragment("inputs", new StringResourceModel(key, this, null), queryService.match(input)));
+      add(getKeyValueDataPanel("inputs", new StringResourceModel(key, this, null), queryService.match(input)));
     } else {
       add(new EmptyPanel("inputs"));
     }
@@ -120,56 +119,50 @@ public class InstrumentRunPanel extends Panel {
 
     if(queryService.count(output) > 0) {
       String key = isInteractive ? "InstrumentOutputs" : "OperatorOutputs";
-      add(new DataFragment("outputs", new StringResourceModel(key, this, null), queryService.match(output)));
+      add(getKeyValueDataPanel("outputs", new StringResourceModel(key, this, null), queryService.match(output)));
     } else {
       add(new EmptyPanel("outputs"));
     }
   }
 
-  @SuppressWarnings("serial")
-  private class DataFragment extends Fragment {
+  @SuppressWarnings("unchecked")
+  private Component getKeyValueDataPanel(String id, IModel titleModel, List parameters) {
 
-    @SuppressWarnings("unchecked")
-    public DataFragment(String id, IModel titleModel, List parameters) {
-      super(id, "dataFragment", InstrumentRunPanel.this);
+    KeyValueDataPanel kvPanel = new KeyValueDataPanel(id, titleModel);
+    add(kvPanel);
 
-      add(new Label("title", titleModel));
+    InstrumentRun run = (InstrumentRun) getModelObject();
+    for(Object parameter : parameters) {
+      InstrumentParameter param = (InstrumentParameter) parameter;
+      InstrumentRunValue runValue = run.getInstrumentRunValue(param);
 
-      RepeatingView repeat = new RepeatingView("repeat");
-      add(repeat);
+      // do not show COMPUTED values or misssing values
+      if(runValue != null && !runValue.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
 
-      InstrumentRun run = (InstrumentRun) InstrumentRunPanel.this.getModelObject();
-      for(Object parameter : parameters) {
-        InstrumentParameter param = (InstrumentParameter) parameter;
-        InstrumentRunValue runValue = run.getInstrumentRunValue(param);
+        // Inject the Spring application context and the user session service
+        // into the instrument parameter. NOTE: These are dependencies of
+        // InstrumentParameter.getDescription().
+        param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
+        param.setUserSessionService(userSessionService);
 
-        // do not show COMPUTED values or misssing values
-        if(runValue != null && !runValue.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
-          WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
-          repeat.add(item);
+        Label label = new Label(KeyValueDataPanel.getRowKeyId(), new PropertyModel(param, "description"));
 
-          // Inject the Spring application context and the user session service
-          // into the instrument parameter. NOTE: These are dependencies of
-          // InstrumentParameter.getDescription().
-          param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
-          param.setUserSessionService(userSessionService);
-
-          item.add(new Label("label", new PropertyModel(param, "description")));
-
-          Data data = runValue.getData();
-          if(data != null && data.getValue() != null) {
-            String unit = param.getMeasurementUnit();
-            if(unit == null) {
-              unit = "";
-            }
-            item.add(new Label("value", data.getValueAsString() + " " + unit));
-          } else {
-            item.add(new Label("value"));
+        Data data = runValue.getData();
+        Label value;
+        if(data != null && data.getValue() != null) {
+          String unit = param.getMeasurementUnit();
+          if(unit == null) {
+            unit = "";
           }
+          value = new Label(KeyValueDataPanel.getRowValueId(), data.getValueAsString() + " " + unit);
+        } else {
+          value = new Label(KeyValueDataPanel.getRowValueId());
         }
+
+        kvPanel.addRow(label, value);
       }
     }
 
+    return kvPanel;
   }
-
 }
