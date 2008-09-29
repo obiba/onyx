@@ -1,6 +1,7 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
 import org.apache.wicket.markup.html.panel.Panel;
+import org.obiba.onyx.jade.core.wicket.run.InstrumentRunPanel;
 
 public class ConclusionPanel extends Panel {
 
@@ -9,6 +10,8 @@ public class ConclusionPanel extends Panel {
   public ConclusionPanel(String id) {
     super(id);
     setOutputMarkupId(true);
+    
+    add(new InstrumentRunPanel("run"));
   }
 
 }
