@@ -1,6 +1,8 @@
 package org.obiba.onyx.jade.core.wicket.instrument.validation;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -47,6 +49,16 @@ public class IntegrityCheckValidator extends AbstractValidator {
   @Override
   protected String resourceKey() {
     return integrityCheck.getClass().getSimpleName();
+  }
+  
+  @SuppressWarnings("unchecked")
+  @Override
+  protected Map variablesMap(IValidatable validatable)
+  {
+    Map resourceModel = super.variablesMap(validatable);
+    resourceModel.putAll(integrityCheck.getFeedbackVariables());
+    
+    return resourceModel;
   }
   
   //

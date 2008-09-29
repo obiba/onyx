@@ -1,5 +1,8 @@
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
@@ -128,5 +131,13 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
     }
 
     return isEqual;
+  }
+
+  @Override
+  public Map<String, String> getFeedbackVariables() {
+    Map<String, String> variablesMap = super.getFeedbackVariables();
+    variablesMap.put("value", getData().getValueAsString());
+    
+    return variablesMap;
   }
 }

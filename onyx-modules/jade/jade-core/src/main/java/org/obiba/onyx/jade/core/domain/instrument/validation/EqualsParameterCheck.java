@@ -1,5 +1,7 @@
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
+import java.util.Map;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -8,7 +10,6 @@ import javax.persistence.Transient;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
@@ -81,5 +82,13 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
     equalsValueCheck.setData(otherData);
 
     return equalsValueCheck.checkParameterValue(paramData, null, null);
+  }
+  
+  @Override
+  public Map<String, String> getFeedbackVariables() {
+    Map<String, String> variablesMap = super.getFeedbackVariables();
+    variablesMap.put("parameter", parameter.getDescription());
+    
+    return variablesMap;
   }
 }

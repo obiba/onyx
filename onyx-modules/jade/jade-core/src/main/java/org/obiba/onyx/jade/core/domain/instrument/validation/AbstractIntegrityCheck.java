@@ -1,5 +1,8 @@
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
@@ -36,4 +39,11 @@ public abstract class AbstractIntegrityCheck extends AbstractEntity implements I
   //
 
   public abstract boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService);
+  
+  public Map<String, String> getFeedbackVariables() {
+    Map<String, String> variablesMap = new HashMap<String, String>();
+  
+    // Return empty map.
+    return variablesMap;
+  }
 }

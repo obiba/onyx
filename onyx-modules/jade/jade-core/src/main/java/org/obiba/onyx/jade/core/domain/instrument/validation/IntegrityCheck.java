@@ -1,5 +1,7 @@
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
+import java.util.Map;
+
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
@@ -39,4 +41,13 @@ public interface IntegrityCheck {
    * @return <code>true</code> if the value passes the check
    */
   public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService);
+  
+  /**
+   * Returns a map of variables that may be used in error messages. 
+   * 
+   * The variables are specific to implementing classes.
+   * 
+   * @return map of check variables
+   */
+  public Map<String, String> getFeedbackVariables();
 }

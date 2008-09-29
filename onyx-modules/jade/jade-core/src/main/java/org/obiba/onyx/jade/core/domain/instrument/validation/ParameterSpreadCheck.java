@@ -1,5 +1,7 @@
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
+import java.util.Map;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -90,6 +92,15 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
     return rangeCheck.checkParameterValue(paramData, null, null);
   }
 
+  @Override
+  public Map<String, String> getFeedbackVariables() {
+    Map<String, String> variablesMap = super.getFeedbackVariables();
+    variablesMap.put("parameter", parameter.getDescription());
+    variablesMap.put("percent", percent.toString());
+    
+    return variablesMap;
+  }
+  
   private void initIntegerRangeCheck(Data checkedData, Data otherData) {
     Long otherValue = otherData.getValue();
 

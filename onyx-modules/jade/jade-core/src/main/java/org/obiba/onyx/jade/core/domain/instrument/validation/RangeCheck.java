@@ -1,5 +1,7 @@
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
+import java.util.Map;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
@@ -61,6 +63,22 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
     return false;
   }
 
+  @Override
+  public Map<String, String> getFeedbackVariables() {
+    Map<String, String> variablesMap = super.getFeedbackVariables();
+    
+    if (getValueType().equals(DataType.INTEGER)) {
+      variablesMap.put("minValue", integerMinValue.toString());
+      variablesMap.put("maxValue", integerMaxValue.toString());
+    }
+    else if (getValueType().equals(DataType.DECIMAL)) {
+      variablesMap.put("minValue", decimalMinValue.toString());
+      variablesMap.put("maxValue", decimalMaxValue.toString());
+    } 
+    
+    return variablesMap;
+  }
+  
   private boolean checkIntegerParameterValue(Data paramData) {
     boolean withinRange = true;
 
