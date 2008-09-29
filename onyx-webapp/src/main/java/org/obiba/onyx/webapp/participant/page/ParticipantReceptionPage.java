@@ -1,5 +1,6 @@
 package org.obiba.onyx.webapp.participant.page;
 
+import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
@@ -15,12 +16,12 @@ import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 public class ParticipantReceptionPage extends BasePage {
 
   @SuppressWarnings("serial")
-  public ParticipantReceptionPage(IModel participantModel) {
+  public ParticipantReceptionPage(IModel participantModel, Page sourcePage) {
     super();
 
     final ParticipantPanel participantPanel = new ParticipantPanel("participantPanel", participantModel);
     add(participantPanel);
-    add(new AssignCodeToParticipantPanel("assignCodeToParticipantPanel", participantModel));
+    add(new AssignCodeToParticipantPanel("assignCodeToParticipantPanel", participantModel, sourcePage));
 
     //
     // Add the Edit Participant pop-up.

@@ -438,7 +438,7 @@ public class ParticipantSearchPage extends BasePage {
                   activeInterviewService.setParticipant(p);
                   setResponsePage(InterviewPage.class);
                 } else {
-                  setResponsePage(new ParticipantReceptionPage(rowModel));
+                  setResponsePage(new ParticipantReceptionPage(rowModel, ParticipantSearchPage.this));
                 }
               }
             }

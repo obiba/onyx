@@ -2,6 +2,7 @@ package org.obiba.onyx.webapp.participant.panel;
 
 import java.io.Serializable;
 
+import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.form.Button;
@@ -33,12 +34,16 @@ public class AssignCodeToParticipantPanel extends Panel {
 
   @SpringBean
   private EntityQueryService queryService;
+  
+  private Page sourcePage;
 
   private static final long serialVersionUID = 1L;
 
-  public AssignCodeToParticipantPanel(String id, IModel participantModel) {
+  public AssignCodeToParticipantPanel(String id, IModel participantModel, Page sourcePage) {
 
     super(id);
+    
+    this.sourcePage = sourcePage;
 
     add(new AssignCodeToParticipantForm("assignCodeToParticipantForm", participantModel));
 
@@ -77,7 +82,7 @@ public class AssignCodeToParticipantPanel extends Panel {
         @Override
         public void onSubmit() {
           participantService.assignCodeToParticipant((Participant) participantModel.getObject(), participantTemplate.getBarcode(), (String) receptionCommentModel.getObject(), OnyxAuthenticatedSession.get().getUser());
-          setResponsePage(ParticipantSearchPage.class);
+          setResponsePage(sourcePage);
         }
       });
 
@@ -85,7 +90,7 @@ public class AssignCodeToParticipantPanel extends Panel {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          setResponsePage(ParticipantSearchPage.class);
+          setResponsePage(sourcePage);
         }
 
       });
