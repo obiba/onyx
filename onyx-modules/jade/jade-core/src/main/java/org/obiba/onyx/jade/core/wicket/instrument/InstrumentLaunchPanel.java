@@ -126,9 +126,14 @@ public abstract class InstrumentLaunchPanel extends Panel {
       item.add(new Label("instruction", new StringResourceModel("TypeTheValueInTheInstrument", InstrumentLaunchPanel.this, new Model() {
         public Object getObject() {
           InstrumentRunValue runValue = activeInstrumentRunService.getInputInstrumentRunValue(param.getName());
-          ValueMap map = new ValueMap("description=" + param.getDescription() + ",value=");
+          ValueMap map = new ValueMap("description=" + param.getDescription());
           if(runValue.getData() != null && runValue.getData().getValue() != null) {
-            map.put("value", runValue.getData().getValue());
+            map.put("value", runValue.getData().getValueAsString());
+            String unit = param.getMeasurementUnit();
+            if(unit == null) {
+              unit = "";
+            }
+            map.put("unit", unit);
           }
           return map;
         }
