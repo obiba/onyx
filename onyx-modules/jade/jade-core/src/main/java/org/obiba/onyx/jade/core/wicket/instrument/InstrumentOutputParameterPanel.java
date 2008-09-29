@@ -3,8 +3,8 @@ package org.obiba.onyx.jade.core.wicket.instrument;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -80,9 +80,8 @@ public class InstrumentOutputParameterPanel extends Panel {
         DataField field = new DataField("field", new PropertyModel(runValueModel, "data"), runValue.getDataType(), param.getMeasurementUnit());
         field.setRequired(true);
         field.setLabel(new PropertyModel(param, "description"));
-        field.add(new OnChangeAjaxBehavior() {
-          @Override
-          protected void onUpdate(AjaxRequestTarget target) {
+        field.add(new AjaxEventBehavior("onblur") {
+          protected void onEvent(AjaxRequestTarget target) {
             activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
           }
         });

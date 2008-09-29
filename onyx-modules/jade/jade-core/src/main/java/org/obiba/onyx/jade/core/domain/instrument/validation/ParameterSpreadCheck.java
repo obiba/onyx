@@ -10,7 +10,6 @@ import javax.persistence.Transient;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
@@ -89,7 +88,7 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
       return false;
     }
 
-    return rangeCheck.checkParameterValue(paramData, null, null);
+    return rangeCheck.checkParameterValue(paramData, null, activeRunService);
   }
 
   @Override
@@ -109,8 +108,10 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
     Long minCheckedValue = new Double(Math.ceil((1.0 - percentValue) * otherValue.longValue())).longValue();
     Long maxCheckedValue = new Double(Math.floor((1.0 + percentValue) * otherValue.longValue())).longValue();
 
-    rangeCheck.setIntegerMinValue(minCheckedValue);
-    rangeCheck.setIntegerMaxValue(maxCheckedValue);
+    rangeCheck.setIntegerMinValueMale(minCheckedValue);
+    rangeCheck.setIntegerMaxValueMale(maxCheckedValue);
+    rangeCheck.setIntegerMinValueFemale(minCheckedValue);
+    rangeCheck.setIntegerMaxValueFemale(maxCheckedValue);
   }
 
   private void initDecimalRangeCheck(Data checkedData, Data otherData) {
@@ -121,7 +122,9 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
     Double minCheckedValue = (1.0 - percentValue) * otherValue;
     Double maxCheckedValue = (1.0 + percentValue) * otherValue;
 
-    rangeCheck.setDecimalMinValue(minCheckedValue);
-    rangeCheck.setDecimalMaxValue(maxCheckedValue);
+    rangeCheck.setDecimalMinValueMale(minCheckedValue);
+    rangeCheck.setDecimalMaxValueMale(maxCheckedValue);
+    rangeCheck.setDecimalMinValueFemale(minCheckedValue);
+    rangeCheck.setDecimalMaxValueFemale(maxCheckedValue);
   }
 }
