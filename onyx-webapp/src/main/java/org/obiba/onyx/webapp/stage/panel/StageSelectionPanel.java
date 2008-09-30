@@ -19,6 +19,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
@@ -31,10 +32,15 @@ import org.obiba.onyx.webapp.stage.page.StagePage;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class StageSelectionPanel extends Panel {
 
   private static final long serialVersionUID = 6282742572162384139L;
+  
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(StageSelectionPanel.class);
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
@@ -45,19 +51,31 @@ public abstract class StageSelectionPanel extends Panel {
   private ActionWindow modal;
 
   private OnyxEntityList<Stage> list;
+  
+  private FeedbackPanel feedbackPanel;
 
   @SuppressWarnings("serial")
-  public StageSelectionPanel(String id, final FeedbackPanel feedbackPanel) {
+  public StageSelectionPanel(String id, FeedbackPanel feedbackPanel) {
     super(id);
     setOutputMarkupId(true);
 
+    this.feedbackPanel = feedbackPanel;
+    
+    for (Stage stage : moduleRegistry.listStages()) {
+      IStageExecution exec = activeInterviewService.getStageExecution(stage);
+      if (exec.isInteractive()) {
+        log.warn("Wrong status for " + stage.getName());
+        feedbackPanel.warn(getString("WrongStatusForStage", new Model(new ValueMap("name=" + stage.getDescription()))));
+      }
+    }
+    
     add(modal = new ActionWindow("modal") {
 
       @Override
       public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action) {
         IStageExecution exec = activeInterviewService.getStageExecution(stage);
         if(!exec.isInteractive()) {
-          target.addComponent(feedbackPanel);
+          target.addComponent(StageSelectionPanel.this.feedbackPanel);
           target.addComponent(list);
           StageSelectionPanel.this.onActionPerformed(target, stage, action);
         } else {
