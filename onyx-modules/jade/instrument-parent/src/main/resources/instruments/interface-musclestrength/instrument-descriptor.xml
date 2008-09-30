@@ -63,6 +63,15 @@
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
     <instrument reference="mus1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="mus1_right_strength1" />
+        <integerMinValueMale>0</integerMinValueMale>
+        <integerMaxValueMale>120</integerMaxValueMale>
+        <integerMinValueFemale>0</integerMinValueFemale>
+        <integerMaxValueFemale>120</integerMaxValueFemale>
+      </rangeCheck>
+    </integrityChecks>
   </output>
   <output id="mus1_right_strength2">
     <name>Right Strength 2</name>
@@ -71,6 +80,20 @@
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
     <instrument reference="mus1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="mus1_right_strength2" />
+        <integerMinValueMale>0</integerMinValueMale>
+        <integerMaxValueMale>120</integerMaxValueMale>
+        <integerMinValueFemale>0</integerMinValueFemale>
+        <integerMaxValueFemale>120</integerMaxValueFemale>
+      </rangeCheck>
+      <parameterSpreadCheck>
+        <targetParameter reference="mus1_right_strength2" />
+        <parameter reference="mus1_right_strength1" />
+        <percent>10</percent>
+      </parameterSpreadCheck>
+    </integrityChecks>
   </output>
   <computedOutput>
     <name>Right Hand Muscle Strength</name>
@@ -93,6 +116,15 @@
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
     <instrument reference="mus1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="mus1_left_strength1" />
+        <integerMinValueMale>0</integerMinValueMale>
+        <integerMaxValueMale>120</integerMaxValueMale>
+        <integerMinValueFemale>0</integerMinValueFemale>
+        <integerMaxValueFemale>120</integerMaxValueFemale>
+      </rangeCheck>
+    </integrityChecks>
   </output>
   <output id="mus1_left_strength2">
     <name>Left Strength 2</name>
@@ -101,6 +133,20 @@
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
     <instrument reference="mus1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="mus1_left_strength2" />
+        <integerMinValueMale>0</integerMinValueMale>
+        <integerMaxValueMale>120</integerMaxValueMale>
+        <integerMinValueFemale>0</integerMinValueFemale>
+        <integerMaxValueFemale>120</integerMaxValueFemale>
+      </rangeCheck>
+      <parameterSpreadCheck>
+        <targetParameter reference="mus1_left_strength2" />
+        <parameter reference="mus1_left_strength1" />
+        <percent>10</percent>
+      </parameterSpreadCheck>
+    </integrityChecks>
   </output>
   <computedOutput>
     <name>Left Hand Muscle Strength</name>
