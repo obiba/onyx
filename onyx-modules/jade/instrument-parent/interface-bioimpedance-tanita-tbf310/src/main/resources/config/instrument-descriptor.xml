@@ -114,7 +114,7 @@
     </instrumentType>
     <parameterName>Height</parameterName>
   </outputParameterSource>
-  <input>
+  <input id="height_in">
     <name>Height</name>
     <description>Measured_height</description>
     <measurementUnit>cm</measurementUnit>
@@ -130,6 +130,12 @@
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="body_type" />
+        <parameter reference="body_type_in" />
+      </equalsParameterCheck>
+    </integrityChecks>    
   </output>
 
   <output id="gender">
@@ -138,6 +144,12 @@
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="gender" />
+        <parameter reference="gender_in" />
+      </equalsParameterCheck>
+    </integrityChecks>      
   </output>
 
   <output id="age">
@@ -146,6 +158,12 @@
     <dataType>INTEGER</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="age" />
+        <parameter reference="age_in" />
+      </equalsParameterCheck>
+    </integrityChecks>      
   </output>
 
   <output id="height">
@@ -155,6 +173,12 @@
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="height" />
+        <parameter reference="height_in" />
+      </equalsParameterCheck>
+    </integrityChecks>   
   </output>
 
   <output id="weight">
@@ -163,7 +187,7 @@
     <measurementUnit>kg</measurementUnit>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
-    <instrument reference="bioimp1" />
+    <instrument reference="bioimp1" />   
   </output>
 
   <output id="bmi">
