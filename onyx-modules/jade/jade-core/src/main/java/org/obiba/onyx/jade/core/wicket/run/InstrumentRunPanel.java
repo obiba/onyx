@@ -27,6 +27,7 @@ import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 
@@ -93,6 +94,14 @@ public class InstrumentRunPanel extends Panel {
   private void build() {
     InstrumentRun run = (InstrumentRun) InstrumentRunPanel.this.getModelObject();
 
+    KeyValueDataPanel kvPanel = new KeyValueDataPanel("run", new StringResourceModel("RunInfo", this, null));
+    add(kvPanel);
+    kvPanel.addRow(new StringResourceModel("Operator", this, null), new PropertyModel(run, "user.fullName"));
+    kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateModelUtils.getShortDateTimeModel(new PropertyModel(run, "timeStart")));
+    if(run.getTimeEnd() != null) {
+      kvPanel.addRow(new StringResourceModel("EndDate", this, null), DateModelUtils.getShortDateTimeModel(new PropertyModel(run, "timeEnd")));
+    }
+
     boolean isInteractive = instrumentService.isInteractiveInstrument(run.getInstrument());
 
     InterpretativeParameter interpretative = new InterpretativeParameter();
@@ -150,10 +159,9 @@ public class InstrumentRunPanel extends Panel {
         Data data = runValue.getData();
         Label value;
         if(data != null && data.getValue() != null) {
-          if (param instanceof InterpretativeParameter) {
+          if(param instanceof InterpretativeParameter) {
             value = new Label(KeyValueDataPanel.getRowValueId(), new StringResourceModel(data.getValueAsString(), this, null));
-          }
-          else {
+          } else {
             String unit = param.getMeasurementUnit();
             if(unit == null) {
               unit = "";
