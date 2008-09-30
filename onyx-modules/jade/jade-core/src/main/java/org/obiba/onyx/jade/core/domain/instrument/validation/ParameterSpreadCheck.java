@@ -30,6 +30,8 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
 
   private Integer percent;
 
+  private Integer offset;
+  
   public ParameterSpreadCheck() {
     rangeCheck = new RangeCheck();
   }
@@ -54,41 +56,68 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
     return percent;
   }
 
+  public void setOffset(Integer offset) {
+    this.offset = offset;
+  }
+
+  public Integer getOffset() {
+    return offset;
+  }
+  
   //
   // IntegrityCheck Methods
   //
 
   @Override
   public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
-    //
-    // Get the other parameter's value.
-    //
-    InstrumentRunValue otherRunValue = null;
-    Data otherData = null;
+    if (parameter != null && (percent != null || offset != null)) {
+      //
+      // Get the other parameter's value.
+      //
+      InstrumentRunValue otherRunValue = null;
+      Data otherData = null;
+      
+      if (parameter instanceof InstrumentInputParameter) {
+        otherRunValue = activeRunService.getInputInstrumentRunValue(parameter.getName());
+      }
+      else if (parameter instanceof InstrumentOutputParameter) {
+        otherRunValue = activeRunService.getOutputInstrumentRunValue(parameter.getName());
+      }
+      
+      if (otherRunValue != null)  {
+        otherData = otherRunValue.getData();
+      }
+  
+      // Update the rangeCheck accordingly.
+      rangeCheck.setTargetParameter(getTargetParameter());
+  
+      if(getValueType().equals(DataType.INTEGER)) {
+        initIntegerRangeCheck(paramData, otherData);
+      } else if(getValueType().equals(DataType.DECIMAL)) {
+        initDecimalRangeCheck(paramData, otherData);
+      } else {
+        return false;
+      }
+
+      return rangeCheck.checkParameterValue(paramData, null, activeRunService);
+    }
+    else {
+      return true;
+    }
+  }
+  
+  @Override
+  protected String getDescriptionKey() {
+    String descriptionKey = super.getDescriptionKey();
     
-    if (parameter instanceof InstrumentInputParameter) {
-      otherRunValue = activeRunService.getInputInstrumentRunValue(parameter.getName());
+    if (percent != null && offset == null) {
+      descriptionKey += "_PercentOnly";
     }
-    else if (parameter instanceof InstrumentOutputParameter) {
-      otherRunValue = activeRunService.getOutputInstrumentRunValue(parameter.getName());
+    else if (percent == null && offset != null) {
+      descriptionKey += "_OffsetOnly";
     }
     
-    if (otherRunValue != null)  {
-      otherData = otherRunValue.getData();
-    }
-
-    // Update the rangeCheck accordingly.
-    rangeCheck.setTargetParameter(getTargetParameter());
-
-    if(getValueType().equals(DataType.INTEGER)) {
-      initIntegerRangeCheck(paramData, otherData);
-    } else if(getValueType().equals(DataType.DECIMAL)) {
-      initDecimalRangeCheck(paramData, otherData);
-    } else {
-      return false;
-    }
-
-    return rangeCheck.checkParameterValue(paramData, null, activeRunService);
+    return descriptionKey;
   }
   
   protected Object[] getDescriptionArgs() {
@@ -97,17 +126,40 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
     parameter.setApplicationContext(context);
     parameter.setUserSessionService(userSessionService);
     
-    return new Object[] { getTargetParameter().getDescription(), parameter.getDescription(), percent };
+    if (percent != null && offset == null) {
+      return new Object[] { getTargetParameter().getDescription(), parameter.getDescription(), percent };
+    }
+    else if (percent == null && offset != null) {
+      return new Object[] { getTargetParameter().getDescription(), parameter.getDescription(), offset, getTargetParameter().getMeasurementUnit() };
+    }
+    else {
+      return new Object[] { getTargetParameter().getDescription(), parameter.getDescription(), percent, offset, getTargetParameter().getMeasurementUnit() };
+    }
   }
   
   private void initIntegerRangeCheck(Data checkedData, Data otherData) {
     Long otherValue = otherData.getValue();
 
-    double percentValue = percent / 100.0;
+    Long minCheckedValue = otherValue;
+    Long maxCheckedValue = otherValue;
+    
+    if (percent != null) {
+      double percentValue = percent / 100.0;
 
-    Long minCheckedValue = new Double(Math.ceil((1.0 - percentValue) * otherValue.longValue())).longValue();
-    Long maxCheckedValue = new Double(Math.floor((1.0 + percentValue) * otherValue.longValue())).longValue();
+      minCheckedValue = new Double(Math.ceil((1.0 - percentValue) * otherValue.longValue())).longValue();
+      maxCheckedValue = new Double(Math.floor((1.0 + percentValue) * otherValue.longValue())).longValue();
+    }
+    
+    if (offset != null) {
+      minCheckedValue = minCheckedValue - offset;
+      maxCheckedValue = maxCheckedValue + offset; 
+    }
 
+    if (percent == null && offset == null) {
+      minCheckedValue = null;
+      maxCheckedValue = null;
+    }
+    
     rangeCheck.setIntegerMinValueMale(minCheckedValue);
     rangeCheck.setIntegerMaxValueMale(maxCheckedValue);
     rangeCheck.setIntegerMinValueFemale(minCheckedValue);
@@ -117,11 +169,26 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
   private void initDecimalRangeCheck(Data checkedData, Data otherData) {
     Double otherValue = otherData.getValue();
 
-    double percentValue = percent / 100.0;
+    Double minCheckedValue = otherValue.doubleValue();
+    Double maxCheckedValue = otherValue.doubleValue();
+    
+    if (percent != null) {
+      double percentValue = percent / 100.0;
 
-    Double minCheckedValue = (1.0 - percentValue) * otherValue;
-    Double maxCheckedValue = (1.0 + percentValue) * otherValue;
-
+      minCheckedValue = (1.0 - percentValue) * otherValue;
+      maxCheckedValue = (1.0 + percentValue) * otherValue;
+    }
+    
+    if (offset != null) {
+      minCheckedValue = minCheckedValue - offset.longValue();
+      maxCheckedValue = maxCheckedValue + offset.longValue(); 
+    }
+    
+    if (percent == null && offset == null) {
+      minCheckedValue = null;
+      maxCheckedValue = null;
+    }
+    
     rangeCheck.setDecimalMinValueMale(minCheckedValue);
     rangeCheck.setDecimalMaxValueMale(maxCheckedValue);
     rangeCheck.setDecimalMinValueFemale(minCheckedValue);

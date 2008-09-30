@@ -66,10 +66,14 @@ public abstract class AbstractIntegrityCheck extends AbstractEntity implements I
       targetParameter.setApplicationContext(context);
       targetParameter.setUserSessionService(userSessionService);
       
-      retVal = context.getMessage(getClass().getSimpleName(), getDescriptionArgs(), userSessionService.getLocale());
+      retVal = context.getMessage(getDescriptionKey(), getDescriptionArgs(), userSessionService.getLocale());
     }
 
     return retVal;    
+  }
+  
+  protected String getDescriptionKey() {
+    return getClass().getSimpleName();
   }
   
   protected abstract Object[] getDescriptionArgs();
