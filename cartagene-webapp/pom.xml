@@ -162,7 +162,7 @@
                 <copy todir="${project.build.directory}/${project.build.finalName}/instruments">
                   <fileset dir="${project.basedir}/../onyx-modules/jade/instrument-parent">
                     <include name="interface-*/target/jnlp/**/instrument-descriptor.xml" />
-                    <include name="interface-*/target/jnlp/**/InstrumentParameter*.properties" />
+                    <include name="interface-*/target/jnlp/**/*.properties" />
                   </fileset>
                   <chainedmapper>
                     <filtermapper>
