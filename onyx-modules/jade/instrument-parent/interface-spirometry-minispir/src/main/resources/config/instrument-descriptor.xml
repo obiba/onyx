@@ -71,6 +71,51 @@
     <instrument reference="spi1" />
   </contraIndication>
   
+  <interpretative>
+    <name>Bronchodilator</name>
+    <description>Bronchodilator</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>OBSERVED</type>
+    <instrument reference="bioimp1" />
+  </interpretative>
+  
+  <interpretative>
+    <name>Smoked</name>
+    <description>Smoked</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>OBSERVED</type>
+    <instrument reference="bioimp1" />
+  </interpretative>
+  
+  <interpretative>
+    <name>Alcohol</name>
+    <description>Alcohol</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>OBSERVED</type>
+    <instrument reference="bioimp1" />
+  </interpretative>
+  
+  <interpretative>
+    <name>HeartyMeal</name>
+    <description>HeartyMeal</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>OBSERVED</type>
+    <instrument reference="bioimp1" />
+  </interpretative>
+  
+  <interpretative>
+    <name>Coffee</name>
+    <description>Coffee</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>OBSERVED</type>
+    <instrument reference="bioimp1" />
+  </interpretative>
+  
   <participantPropertySource id="id_source">
     <property>barcode</property>
   </participantPropertySource>

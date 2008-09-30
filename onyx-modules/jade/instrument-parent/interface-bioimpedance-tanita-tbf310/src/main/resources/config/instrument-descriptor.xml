@@ -49,6 +49,15 @@
     <type>ASKED</type>
     <instrument reference="bioimp1" />
   </contraIndication>
+  
+  <interpretative>
+    <name>PhysicalActivityLast24Hours</name>
+    <description>PhysicalActivityLast24Hours</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>OBSERVED</type>
+    <instrument reference="bioimp1" />
+  </interpretative>
 
   <fixedSource id="clothes_weight_source">
     <value>1</value>
