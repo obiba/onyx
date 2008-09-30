@@ -50,6 +50,15 @@
     <dataType>DECIMAL</dataType>
     <captureMethod>MANUAL</captureMethod>
     <instrument reference="wei1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="wei1_weight1" />
+        <decimalMinValueMale>0.0</decimalMinValueMale>
+        <decimalMaxValueMale>300.0</decimalMaxValueMale>
+        <decimalMinValueFemale>0.0</decimalMinValueFemale>
+        <decimalMaxValueFemale>300.0</decimalMaxValueFemale>
+      </rangeCheck>
+    </integrityChecks>
   </output>
   <output id="wei1_weight2">
     <name>Weight 2</name>
@@ -58,6 +67,15 @@
     <dataType>DECIMAL</dataType>
     <captureMethod>MANUAL</captureMethod>
     <instrument reference="wei1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="wei1_weight2" />
+        <decimalMinValueMale>0.0</decimalMinValueMale>
+        <decimalMaxValueMale>300.0</decimalMaxValueMale>
+        <decimalMinValueFemale>0.0</decimalMinValueFemale>
+        <decimalMaxValueFemale>300.0</decimalMaxValueFemale>
+      </rangeCheck>
+    </integrityChecks>
   </output>
   <computedOutput>
     <name>Weight</name>
