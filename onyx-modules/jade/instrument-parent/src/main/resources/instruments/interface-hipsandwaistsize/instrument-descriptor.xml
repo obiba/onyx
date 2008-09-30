@@ -49,6 +49,15 @@
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
     <instrument reference="hwc1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="waist_size1" />
+        <integerMinValueMale>20</integerMinValueMale>
+        <integerMaxValueMale>199</integerMaxValueMale>
+        <integerMinValueFemale>20</integerMinValueFemale>
+        <integerMaxValueFemale>199</integerMaxValueFemale>
+      </rangeCheck>
+    </integrityChecks>    
   </output>
   <output id="waist_size2">
     <name>Waist Size 2</name>
@@ -57,6 +66,21 @@
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
     <instrument reference="hwc1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="waist_size2" />
+        <integerMinValueMale>20</integerMinValueMale>
+        <integerMaxValueMale>199</integerMaxValueMale>
+        <integerMinValueFemale>20</integerMinValueFemale>
+        <integerMaxValueFemale>199</integerMaxValueFemale>
+      </rangeCheck>
+      <parameterSpreadCheck>
+        <targetParameter reference="waist_size1" />
+        <parameter reference="waist_size2" />
+        <percent>5</percent>
+        <offset>1</offset>
+      </parameterSpreadCheck>      
+    </integrityChecks>    
   </output>
   <computedOutput>
     <name>Waist Size</name>
@@ -79,6 +103,15 @@
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
     <instrument reference="hwc1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="hips_size1" />
+        <integerMinValueMale>20</integerMinValueMale>
+        <integerMaxValueMale>199</integerMaxValueMale>
+        <integerMinValueFemale>20</integerMinValueFemale>
+        <integerMaxValueFemale>199</integerMaxValueFemale>
+      </rangeCheck>
+    </integrityChecks>    
   </output>
   <output id="hips_size2">
     <name>Hips Size 2</name>
@@ -87,6 +120,21 @@
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
     <instrument reference="hwc1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="hips_size1" />
+        <integerMinValueMale>20</integerMinValueMale>
+        <integerMaxValueMale>199</integerMaxValueMale>
+        <integerMinValueFemale>20</integerMinValueFemale>
+        <integerMaxValueFemale>199</integerMaxValueFemale>
+      </rangeCheck>
+      <parameterSpreadCheck>
+        <targetParameter reference="hips_size1" />
+        <parameter reference="hips_size2" />
+        <percent>5</percent>
+        <offset>1</offset>
+      </parameterSpreadCheck>        
+    </integrityChecks>      
   </output>
   <computedOutput>
     <name>Hips Size</name>
