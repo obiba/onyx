@@ -59,6 +59,15 @@
     <dataType>DECIMAL</dataType>
     <captureMethod>MANUAL</captureMethod>
     <instrument reference="sta1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="sta1_height1" />
+        <decimalMinValueMale>70.0</decimalMinValueMale>
+        <decimalMaxValueMale>213.0</decimalMaxValueMale>
+        <decimalMinValueFemale>70.0</decimalMinValueFemale>
+        <decimalMaxValueFemale>213.0</decimalMaxValueFemale>
+      </rangeCheck>
+    </integrityChecks>
   </output>
   <output id="sta1_height2">
     <name>Height 2</name>
@@ -67,6 +76,20 @@
     <dataType>DECIMAL</dataType>
     <captureMethod>MANUAL</captureMethod>
     <instrument reference="sta1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="sta1_height2" />
+        <decimalMinValueMale>70.0</decimalMinValueMale>
+        <decimalMaxValueMale>213.0</decimalMaxValueMale>
+        <decimalMinValueFemale>70.0</decimalMinValueFemale>
+        <decimalMaxValueFemale>213.0</decimalMaxValueFemale>
+      </rangeCheck>
+      <parameterSpreadCheck>
+        <targetParameter reference="sta1_height2" />
+        <parameter reference="sta1_height1" />
+        <offset>1</offset>
+      </parameterSpreadCheck>
+    </integrityChecks>
   </output>
   <computedOutput>
     <name>Height</name>
