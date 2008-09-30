@@ -88,20 +88,25 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
         otherData = otherRunValue.getData();
       }
   
-      // Update the rangeCheck accordingly.
-      rangeCheck.setTargetParameter(getTargetParameter());
-  
-      if(getValueType().equals(DataType.INTEGER)) {
-        initIntegerRangeCheck(paramData, otherData);
-      } else if(getValueType().equals(DataType.DECIMAL)) {
-        initDecimalRangeCheck(paramData, otherData);
-      } else {
-        return false;
-      }
+      if (otherData != null && otherData.getValue() != null) {
+        // Update the rangeCheck accordingly.
+        rangeCheck.setTargetParameter(getTargetParameter());
+    
+        if(getValueType().equals(DataType.INTEGER)) {
+          initIntegerRangeCheck(paramData, otherData);
+        } else if(getValueType().equals(DataType.DECIMAL)) {
+          initDecimalRangeCheck(paramData, otherData);
+        } else {
+          return false;
+        }
 
-      return rangeCheck.checkParameterValue(paramData, null, activeRunService);
+        return rangeCheck.checkParameterValue(paramData, null, activeRunService);
+      }
+      else { // no need to check the spread if the other parameter does not yet have a value
+        return true;
+      }
     }
-    else {
+    else { // nothing to check!
       return true;
     }
   }
