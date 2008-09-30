@@ -17,8 +17,57 @@
   
   <contraIndication>
     <name>Other</name>
-    <description>Other</description>
+    <description>Other_CI</description>
     <type>OBSERVED</type>
+    <instrument reference="spi1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>HeartAttack</name>
+    <description>HeartAttack</description>
+    <type>ASKED</type>
+    <instrument reference="spi1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>AbdominalThoracicEyeSurgery</name>
+    <description>AbdominalThoracicEyeSurgery</description>
+    <type>ASKED</type>
+    <instrument reference="spi1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>ChestInfection</name>
+    <description>ChestInfection</description>
+    <type>ASKED</type>
+    <instrument reference="spi1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>Tuberculosis</name>
+    <description>Tuberculosis</description>
+    <type>ASKED</type>
+    <instrument reference="spi1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>DetachedRetina</name>
+    <description>DetachedRetina</description>
+    <type>ASKED</type>
+    <instrument reference="spi1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>Pneumothorax</name>
+    <description>Pneumothorax</description>
+    <type>ASKED</type>
+    <instrument reference="spi1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>Stoma</name>
+    <description>Stoma</description>
+    <type>ASKED</type>
     <instrument reference="spi1" />
   </contraIndication>
   

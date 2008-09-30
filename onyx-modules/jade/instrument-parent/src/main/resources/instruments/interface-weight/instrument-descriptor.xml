@@ -16,8 +16,29 @@
   </instrument>
   
   <contraIndication>
+    <name>UnableToStandUnassistedHandicap</name>
+    <description>UnableToStandUnassistedHandicap</description>
+    <type>OBSERVED</type>
+    <instrument reference="wei1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>UnableToStandUnassistedWheelchair</name>
+    <description>UnableToStandUnassistedWheelchair</description>
+    <type>OBSERVED</type>
+    <instrument reference="wei1" />
+  </contraIndication>
+  
+  <contraIndication>
+    <name>UnableToStandUnassistedCast</name>
+    <description>UnableToStandUnassistedCast</description>
+    <type>OBSERVED</type>
+    <instrument reference="wei1" />
+  </contraIndication>
+  
+  <contraIndication>
     <name>Other</name>
-    <description>Other</description>
+    <description>Other_CI</description>
     <type>OBSERVED</type>
     <instrument reference="wei1" />
   </contraIndication>

@@ -80,9 +80,30 @@ public class InstrumentInputParameterPanel extends Panel {
     super(id);
     setOutputMarkupId(true);
 
-    add(new InterpretativeFragment("askedInputs", ParticipantInteractionType.ASKED));
-    add(new InterpretativeFragment("observedInputs", ParticipantInteractionType.OBSERVED));
-    add(new InputFragment("inputs"));
+    InterpretativeParameter template = new InterpretativeParameter();
+    template.setInstrument(activeInstrumentRunService.getInstrument());
+    template.setType(ParticipantInteractionType.ASKED);
+    if(queryService.count(template) == 0) {
+      add(new EmptyPanel("askedInputs"));
+    } else {
+      add(new InterpretativeFragment("askedInputs", queryService.match(template), ParticipantInteractionType.ASKED));
+    }
+
+    template.setType(ParticipantInteractionType.OBSERVED);
+    if(queryService.count(template) == 0) {
+      add(new EmptyPanel("observedInputs"));
+    } else {
+      add(new InterpretativeFragment("observedInputs", queryService.match(template), ParticipantInteractionType.OBSERVED));
+    }
+
+    Instrument instrument = activeInstrumentRunService.getInstrument();
+    List<InstrumentInputParameter> instrumentInputParameters = instrumentService.getInstrumentInputParameter(instrument, false);
+
+    if(instrumentInputParameters.size() == 0) {
+      add(new EmptyPanel("inputs"));
+    } else {
+      add(new InputFragment("inputs", instrumentInputParameters));
+    }
   }
 
   public void save() {
@@ -108,16 +129,10 @@ public class InstrumentInputParameterPanel extends Panel {
   @SuppressWarnings("serial")
   private class InterpretativeFragment extends Fragment {
 
-    public InterpretativeFragment(String id, ParticipantInteractionType type) {
+    public InterpretativeFragment(String id, List<InterpretativeParameter> interpretativeParameters, ParticipantInteractionType type) {
       super(id, "interpretativeFragment", InstrumentInputParameterPanel.this);
 
-      InterpretativeParameter template = new InterpretativeParameter();
-      template.setInstrument(activeInstrumentRunService.getInstrument());
-      template.setType(type);
-
-      if(queryService.count(template) == 0) {
-        add(new EmptyPanel("title"));
-      } else if(type.equals(ParticipantInteractionType.ASKED)) {
+      if(type.equals(ParticipantInteractionType.ASKED)) {
         add(new Label("title", new StringResourceModel("AskParticipantTheFollowingQuestions", InstrumentInputParameterPanel.this, null)));
       } else {
         observedTitleSet = true;
@@ -127,10 +142,10 @@ public class InstrumentInputParameterPanel extends Panel {
       RepeatingView repeat = new RepeatingView("repeat");
       add(repeat);
 
-      for(final InterpretativeParameter iParam : queryService.match(template)) {
+      for(final InterpretativeParameter iParam : interpretativeParameters) {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
-        
+
         iParam.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
         iParam.setUserSessionService(userSessionService);
 
@@ -194,11 +209,8 @@ public class InstrumentInputParameterPanel extends Panel {
   @SuppressWarnings("serial")
   private class InputFragment extends Fragment {
 
-    public InputFragment(String id) {
+    public InputFragment(String id, List<InstrumentInputParameter> instrumentInputParameters) {
       super(id, "inputFragment", InstrumentInputParameterPanel.this);
-
-      Instrument instrument = activeInstrumentRunService.getInstrument();
-      List<InstrumentInputParameter> instrumentInputParameters = instrumentService.getInstrumentInputParameter(instrument, false);
 
       if(instrumentInputParameters.size() == 0 || observedTitleSet) {
         add(new EmptyPanel("title"));

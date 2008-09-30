@@ -24,10 +24,19 @@
   
   <contraIndication>
     <name>Other</name>
-    <description>Other</description>
+    <description>Other_CI</description>
     <type>OBSERVED</type>
     <instrument reference="sit1" />
   </contraIndication>
+
+  <interpretative>
+    <name>Kyphosis</name>
+    <description>Kyphosis</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>OBSERVED</type>
+    <instrument reference="sta1" />
+  </interpretative>
 
   <output id="sit1_height1">
     <name>Sitting Height 1</name>

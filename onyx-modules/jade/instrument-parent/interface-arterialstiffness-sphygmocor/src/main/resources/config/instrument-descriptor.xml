@@ -17,7 +17,7 @@
   
   <contraIndication>
     <name>Other</name>
-    <description>Other</description>
+    <description>Other_CI</description>
     <type>OBSERVED</type>
     <instrument reference="sphygmoCor1" />
   </contraIndication>

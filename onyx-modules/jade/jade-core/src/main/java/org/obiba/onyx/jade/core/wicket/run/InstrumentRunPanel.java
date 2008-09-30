@@ -150,11 +150,16 @@ public class InstrumentRunPanel extends Panel {
         Data data = runValue.getData();
         Label value;
         if(data != null && data.getValue() != null) {
-          String unit = param.getMeasurementUnit();
-          if(unit == null) {
-            unit = "";
+          if (param instanceof InterpretativeParameter) {
+            value = new Label(KeyValueDataPanel.getRowValueId(), new StringResourceModel(data.getValueAsString(), this, null));
           }
-          value = new Label(KeyValueDataPanel.getRowValueId(), data.getValueAsString() + " " + unit);
+          else {
+            String unit = param.getMeasurementUnit();
+            if(unit == null) {
+              unit = "";
+            }
+            value = new Label(KeyValueDataPanel.getRowValueId(), data.getValueAsString() + " " + unit);
+          }
         } else {
           value = new Label(KeyValueDataPanel.getRowValueId());
         }

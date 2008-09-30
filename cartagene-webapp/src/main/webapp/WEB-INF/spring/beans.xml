@@ -63,6 +63,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <value>instruments/interface-bonedensity-achillesexpress/ContraIndication</value>
         <value>instruments/interface-ecg-cardiosoft/InstrumentParameter</value>
         <value>instruments/interface-spirometry-minispir/InstrumentParameter</value>
+        <value>instruments/interface-spirometry-minispir/ContraIndication</value>
       </list>
     </property>
   </bean>

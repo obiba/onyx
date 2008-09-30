@@ -36,6 +36,42 @@
     </instrumentParameters>
   </instrument>
   
+  <interpretative>
+    <name>FractureLeftFoot</name>
+    <description>FractureLeftFoot</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>ASKED</type>
+    <instrument reference="sta1" />
+  </interpretative>
+  
+  <interpretative>
+    <name>FractureRightFoot</name>
+    <description>FractureRightFoot</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>ASKED</type>
+    <instrument reference="sta1" />
+  </interpretative>
+  
+  <interpretative>
+    <name>MetalWorkLeftHeel</name>
+    <description>MetalWorkLeftHeel</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>ASKED</type>
+    <instrument reference="sta1" />
+  </interpretative>
+  
+  <interpretative>
+    <name>MetalWorkRightHeel</name>
+    <description>MetalWorkRightHeel</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>ASKED</type>
+    <instrument reference="sta1" />
+  </interpretative>
+  
   <contraIndication>
     <name>OpenWoundsBreaksSoresOnFeet</name>
     <description>OpenWoundsBreaksSoresOnFeet</description>
@@ -45,7 +81,7 @@
   
   <contraIndication>
     <name>Other</name>
-    <description>Other</description>
+    <description>Other_CI</description>
     <type>OBSERVED</type>
     <instrument reference="bone1" />
   </contraIndication>
