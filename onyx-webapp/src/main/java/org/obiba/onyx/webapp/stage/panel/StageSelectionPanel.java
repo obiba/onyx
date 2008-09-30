@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 public abstract class StageSelectionPanel extends Panel {
 
   private static final long serialVersionUID = 6282742572162384139L;
-  
+
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(StageSelectionPanel.class);
 
@@ -51,7 +51,7 @@ public abstract class StageSelectionPanel extends Panel {
   private ActionWindow modal;
 
   private OnyxEntityList<Stage> list;
-  
+
   private FeedbackPanel feedbackPanel;
 
   @SuppressWarnings("serial")
@@ -60,21 +60,16 @@ public abstract class StageSelectionPanel extends Panel {
     setOutputMarkupId(true);
 
     this.feedbackPanel = feedbackPanel;
-    
-    for (Stage stage : moduleRegistry.listStages()) {
-      IStageExecution exec = activeInterviewService.getStageExecution(stage);
-      if (exec.isInteractive()) {
-        log.warn("Wrong status for " + stage.getName());
-        feedbackPanel.warn(getString("WrongStatusForStage", new Model(new ValueMap("name=" + stage.getDescription()))));
-      }
-    }
-    
+
+    checkStageStatus();
+
     add(modal = new ActionWindow("modal") {
 
       @Override
       public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action) {
         IStageExecution exec = activeInterviewService.getStageExecution(stage);
         if(!exec.isInteractive()) {
+          checkStageStatus();
           target.addComponent(StageSelectionPanel.this.feedbackPanel);
           target.addComponent(list);
           StageSelectionPanel.this.onActionPerformed(target, stage, action);
@@ -86,6 +81,16 @@ public abstract class StageSelectionPanel extends Panel {
     });
 
     add(list = new OnyxEntityList<Stage>("list", new StageProvider(), new StageListColumnProvider(), new StringResourceModel("StageList", StageSelectionPanel.this, null)));
+  }
+
+  private void checkStageStatus() {
+    for(Stage stage : moduleRegistry.listStages()) {
+      IStageExecution exec = activeInterviewService.getStageExecution(stage);
+      if(exec.isInteractive()) {
+        log.warn("Wrong status for " + stage.getName());
+        feedbackPanel.warn(getString("WrongStatusForStage", new Model(new ValueMap("name=" + stage.getDescription()))));
+      }
+    }
   }
 
   abstract public void onViewComments(AjaxRequestTarget target);
