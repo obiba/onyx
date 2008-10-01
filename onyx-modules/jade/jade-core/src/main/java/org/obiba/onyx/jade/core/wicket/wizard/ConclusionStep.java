@@ -36,7 +36,7 @@ public class ConclusionStep extends WizardStepPanel {
   }
 
   @Override
-  public void onStepIn(WizardForm form, AjaxRequestTarget target) {
+  public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
     activeInstrumentRunService.setInstrumentRunStatus(InstrumentRunStatus.COMPLETED);
     setContent(target, new ConclusionPanel(getContentId()));
   }

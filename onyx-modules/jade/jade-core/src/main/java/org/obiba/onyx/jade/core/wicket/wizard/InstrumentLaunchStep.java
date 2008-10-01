@@ -62,7 +62,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
 
   @SuppressWarnings("serial")
   @Override
-  public void onStepIn(final WizardForm form, AjaxRequestTarget target) {
+  public void onStepInNext(final WizardForm form, AjaxRequestTarget target) {
     setContent(target, new InstrumentLaunchPanel(getContentId()) {
 
       @Override

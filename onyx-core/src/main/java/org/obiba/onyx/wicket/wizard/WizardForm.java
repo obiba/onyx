@@ -159,7 +159,7 @@ public abstract class WizardForm extends Form {
     WizardStepPanel next = currentStep.getNextStep();
     if(next != null) {
       currentStep.replaceWith(next);
-      next.onStepIn(this, target);
+      next.onStepInNext(this, target);
       next.handleWizardState(this, target);
     }
     target.addComponent(this);
@@ -173,6 +173,7 @@ public abstract class WizardForm extends Form {
     WizardStepPanel previous = currentStep.getPreviousStep();
     if(previous != null) {
       currentStep.replaceWith(previous);
+      previous.onStepInPrevious(this, target);
       previous.handleWizardState(this, target);
     }
     target.addComponent(this);

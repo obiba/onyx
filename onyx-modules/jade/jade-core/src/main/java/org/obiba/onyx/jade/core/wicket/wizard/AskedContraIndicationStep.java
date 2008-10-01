@@ -23,9 +23,9 @@ public class AskedContraIndicationStep extends AbstractContraIndicationStep {
 
     add(new Label(getTitleId(), new StringResourceModel("AskedContraIndication", this, null)));
   }
-
+  
   @Override
-  public void onStepIn(WizardForm form, AjaxRequestTarget target) {
+  public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
     setContent(target, askedContraIndicationPanel = new AskedContraIndicationPanel(getContentId()));
   }
 

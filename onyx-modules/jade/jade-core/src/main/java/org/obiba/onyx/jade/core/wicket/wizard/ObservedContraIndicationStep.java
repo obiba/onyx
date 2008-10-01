@@ -23,8 +23,16 @@ public class ObservedContraIndicationStep extends AbstractContraIndicationStep {
   }
 
   @Override
-  public void onStepIn(WizardForm form, AjaxRequestTarget target) {
+  public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
     setContent(target, new ObservedContraIndicationPanel(getContentId()));
+  }
+  
+  @Override
+  public void onStepInPrevious(WizardForm form, AjaxRequestTarget target) {
+    // in we are coming from the asked CI step we have to flush the previously selected CI
+    if (getNextStep().equals(((InstrumentWizardForm)form).getAskedContraIndicationStep())) {
+      activeInstrumentRunService.setContraIndication(null);
+    }
   }
 
 }

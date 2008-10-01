@@ -43,11 +43,11 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
   private WizardStepPanel inputParametersStep;
 
-  private WizardStepPanel instructionsStep;
+  private WizardStepPanel instrumentLaunchStep;
 
   private WizardStepPanel outputParametersStep;
 
-  private WizardStepPanel validationStep;
+  private WizardStepPanel conclusionStep;
 
   public InstrumentWizardForm(String id, IModel instrumentTypeModel) {
     super(id);
@@ -60,9 +60,9 @@ public abstract class InstrumentWizardForm extends WizardForm {
     observedContraIndicationStep = new ObservedContraIndicationStep(getStepId());
     askedContraIndicationStep = new AskedContraIndicationStep(getStepId());
     inputParametersStep = new InputParametersStep(getStepId());
-    instructionsStep = new InstrumentLaunchStep(getStepId());
+    instrumentLaunchStep = new InstrumentLaunchStep(getStepId());
     outputParametersStep = new OutputParametersStep(getStepId());
-    validationStep = new ConclusionStep(getStepId());
+    conclusionStep = new ConclusionStep(getStepId());
 
     // do we need to select the instrument ?
     Instrument template = new Instrument();
@@ -78,7 +78,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
     }
 
     add(startStep);
-    startStep.onStepIn(this, null);
+    startStep.onStepInNext(this, null);
     startStep.handleWizardState(this, null);
   }
 
@@ -142,12 +142,12 @@ public abstract class InstrumentWizardForm extends WizardForm {
     log.info("instrument.isInteractive={}", instrumentService.isInteractiveInstrument(instrument));
     if(instrumentService.isInteractiveInstrument(instrument)) {
       if(startStep == null) {
-        startStep = instructionsStep;
+        startStep = instrumentLaunchStep;
         lastStep = startStep;
       } else {
-        lastStep.setNextStep(instructionsStep);
-        instructionsStep.setPreviousStep(lastStep);
-        lastStep = instructionsStep;
+        lastStep.setNextStep(instrumentLaunchStep);
+        instrumentLaunchStep.setPreviousStep(lastStep);
+        lastStep = instrumentLaunchStep;
       }
     }
 
@@ -169,12 +169,12 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
     // validation: final step
     if(startStep == null) {
-      startStep = validationStep;
+      startStep = conclusionStep;
       lastStep = startStep;
     } else {
-      lastStep.setNextStep(validationStep);
-      validationStep.setPreviousStep(lastStep);
-      lastStep = validationStep;
+      lastStep.setNextStep(conclusionStep);
+      conclusionStep.setPreviousStep(lastStep);
+      lastStep = conclusionStep;
     }
 
     return startStep;
@@ -184,20 +184,28 @@ public abstract class InstrumentWizardForm extends WizardForm {
     return instrumentSelectionStep;
   }
 
+  public WizardStepPanel getObservedContraIndicationStep() {
+    return observedContraIndicationStep;
+  }
+
+  public WizardStepPanel getAskedContraIndicationStep() {
+    return askedContraIndicationStep;
+  }
+
   public WizardStepPanel getInputParametersStep() {
     return inputParametersStep;
   }
 
-  public WizardStepPanel getInstructionsStep() {
-    return instructionsStep;
+  public WizardStepPanel getInstrumentLaunchStep() {
+    return instrumentLaunchStep;
   }
 
   public WizardStepPanel getOutputParametersStep() {
     return outputParametersStep;
   }
 
-  public WizardStepPanel getValidationStep() {
-    return validationStep;
+  public WizardStepPanel getConclusionStep() {
+    return conclusionStep;
   }
 
 }

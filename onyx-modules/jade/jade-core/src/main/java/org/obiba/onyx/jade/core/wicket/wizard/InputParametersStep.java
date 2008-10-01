@@ -32,7 +32,7 @@ public class InputParametersStep extends WizardStepPanel {
   }
 
   @Override
-  public void onStepIn(WizardForm form, AjaxRequestTarget target) {
+  public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
     setContent(target, instrumentInputParameterPanel = new InstrumentInputParameterPanel(getContentId()));
   }
 

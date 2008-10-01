@@ -29,7 +29,7 @@ public class ContraIndicatedStep extends WizardStepPanel {
   }
 
   @Override
-  public void onStepIn(WizardForm form, AjaxRequestTarget target) {
+  public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
     activeInstrumentRunService.setInstrumentRunStatus(InstrumentRunStatus.CONTRA_INDICATED);
     setContent(target, new ContraIndicatedPanel(getContentId()));
   }

@@ -40,7 +40,7 @@ public class OutputParametersStep extends WizardStepPanel {
   }
 
   @Override
-  public void onStepIn(WizardForm form, AjaxRequestTarget target) {
+  public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
     setContent(target, instrumentOutputParameterPanel = new InstrumentOutputParameterPanel(getContentId()));
   }
 

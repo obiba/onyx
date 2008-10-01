@@ -48,7 +48,7 @@ public abstract class WizardStepPanel extends Panel {
   }
 
   /**
-   * Called when "next" button submit the current step form.
+   * Called when "next" button submit the current step form to go to next step.
    * @param form
    * @param target
    */
@@ -57,7 +57,7 @@ public abstract class WizardStepPanel extends Panel {
   }
   
   /**
-   * Called when "previous" button submit the current step form.
+   * Called when "previous" button was pressed to leave this step by going to previous step.
    * @param form
    * @param target
    */
@@ -66,11 +66,20 @@ public abstract class WizardStepPanel extends Panel {
   }
   
   /**
-   * Called when "next" button was pressed to go to this step.
+   * Called when "next" button was pressed to go to this step coming from previous step.
    * @param form
    * @param target
    */
-  public void onStepIn(WizardForm form, AjaxRequestTarget target) {
+  public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
+
+  }
+  
+  /**
+   * Called when "previous" button was pressed to go to this step coming from next step.
+   * @param form
+   * @param target
+   */
+  public void onStepInPrevious(WizardForm form, AjaxRequestTarget target) {
 
   }
 
