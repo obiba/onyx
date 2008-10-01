@@ -1,6 +1,5 @@
 package org.obiba.onyx.jade.instrument.gehealthcare;
 
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,9 +10,7 @@ import java.util.Map;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
-import org.obiba.onyx.jade.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,7 +111,7 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
 
     log.info("retrieveDeviceData");
 
-    return (Map<String, Data>) achillesExpressDb.query("select assessment, fxrisk, total, tscore, zscore, agematched, percentnormal, sidescanned, stiffnessindex, patients.chart_num, results.SOS, results.BUA, achillesbitmap, achillesbitmap2, appversion, roi_x, roi_y, roi_s from results, patients where results.chart_num = patients.chart_num and patients.chart_num = ?", new PreparedStatementSetter() {
+    return (Map<String, Data>) achillesExpressDb.query("select assessment, fxrisk, total, tscore, zscore, agematched, percentnormal, sidescanned, stiffnessindex, patients.chart_num, results.SOS, results.BUA, achillesbitmap, achillesbitmap2, appversion, roi_x, roi_y, roi_s, patients.Chart_Num, patients.FName, patients.LName, patients.Sex, patients.DOB from results, patients where results.chart_num = patients.chart_num and patients.chart_num = ?", new PreparedStatementSetter() {
 
       public void setValues(PreparedStatement ps) throws SQLException {
         ps.setString(1, participantID);
@@ -129,6 +126,14 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
         rs.next();
 
         Map<String, Data> boneDensityData = new HashMap<String, Data>();
+        boneDensityData.put("Participant Barcode", DataBuilder.buildText(rs.getString("Chart_Num")));
+        boneDensityData.put("Participant First Name", DataBuilder.buildText(rs.getString("FName")));
+        boneDensityData.put("Participant Last Name", DataBuilder.buildText(rs.getString("LName")));        
+        boneDensityData.put("Participant Date of Birth", DataBuilder.buildDate(rs.getDate("DOB")));  
+        
+        String gender = rs.getString("Sex").equals("M")?"MALE":"FEMALE";
+        boneDensityData.put("Participant Gender", DataBuilder.buildText(gender));           
+        
         boneDensityData.put("Assessment", DataBuilder.buildDecimal(rs.getDouble("assessment")));
         boneDensityData.put("Fracture Risk", DataBuilder.buildDecimal(rs.getDouble("fxrisk")));
         boneDensityData.put("Stiffness Index Result", DataBuilder.buildDecimal(rs.getDouble("total")));
