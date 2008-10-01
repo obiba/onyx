@@ -9,6 +9,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -174,8 +175,13 @@ public class InstrumentInputParameterPanel extends Panel {
               radioGroup.setModel(selectionModel);
             }
 
-            listItem.add(new Radio("radio", selectionModel));
-            listItem.add(new Label("label", new StringResourceModel(key, InstrumentInputParameterPanel.this, null)));
+            Radio radio = new Radio("radio", selectionModel);
+            radio.setLabel(new StringResourceModel(key, InstrumentInputParameterPanel.this, null));
+            
+            FormComponentLabel radioLabel = new FormComponentLabel("radioLabel", radio);
+            listItem.add(radioLabel);
+            radioLabel.add(radio);
+            radioLabel.add(new Label("label", radio.getLabel()));
           }
 
         }.setReuseItems(true);

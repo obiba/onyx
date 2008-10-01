@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -84,8 +85,13 @@ public class AskedContraIndicationPanel extends Panel {
           selection.setContraIndication(ci);
           selection.setSelectionKey(key);
           
-          listItem.add(new Radio("radio", new Model(selection)));
-          listItem.add(new Label("label", new StringResourceModel(key, AskedContraIndicationPanel.this, null)));
+          Radio radio = new Radio("radio", new Model(selection));
+          radio.setLabel(new StringResourceModel(key, AskedContraIndicationPanel.this, null));
+          
+          FormComponentLabel radioLabel = new FormComponentLabel("radioLabel", radio);
+          listItem.add(radioLabel);
+          radioLabel.add(radio);
+          radioLabel.add(new Label("label", radio.getLabel()).setRenderBodyOnly(true));
         }
 
       }.setReuseItems(true);

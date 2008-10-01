@@ -8,6 +8,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
@@ -86,8 +87,12 @@ public class ObservedContraIndicationPanel extends Panel {
           }
 
         });
-        item.add(radio);
-        item.add(new Label("label", new StringResourceModel(key, ObservedContraIndicationPanel.this, null)));
+        radio.setLabel(new StringResourceModel(key, ObservedContraIndicationPanel.this, null));
+        
+        FormComponentLabel radioLabel = new FormComponentLabel("radioLabel", radio);
+        item.add(radioLabel);
+        radioLabel.add(radio);
+        radioLabel.add(new Label("label", radio.getLabel()).setRenderBodyOnly(true));
       }
 
     }.setReuseItems(true);
