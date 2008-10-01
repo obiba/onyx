@@ -38,7 +38,7 @@ public class ObservedContraIndicationPanel extends Panel {
   private static final String YES = "Yes";
 
   private static final String NO = "No";
-  
+
   private static final String OTHER = "Other";
 
   @SpringBean
@@ -53,7 +53,7 @@ public class ObservedContraIndicationPanel extends Panel {
   private DropDownChoice contraIndicationDropDownChoice;
 
   private TextArea otherContraIndication;
-  
+
   private Label otherLabel;
 
   private ContraIndicationSelection selectionModel;
@@ -77,9 +77,11 @@ public class ObservedContraIndicationPanel extends Panel {
 
           @Override
           protected void onEvent(AjaxRequestTarget target) {
+            log.info("onChange={}", key);
             boolean yes = key.equals(YES);
             selectionModel.setSelection(key);
             selectionModel.setContraIndication(null);
+            selectionModel.setOtherContraIndication(null);
             contraIndicationDropDownChoice.setEnabled(yes);
             contraIndicationDropDownChoice.setRequired(yes);
             setOtherVisible(false);
@@ -88,7 +90,7 @@ public class ObservedContraIndicationPanel extends Panel {
 
         });
         radio.setLabel(new StringResourceModel(key, ObservedContraIndicationPanel.this, null));
-        
+
         FormComponentLabel radioLabel = new FormComponentLabel("radioLabel", radio);
         item.add(radioLabel);
         radioLabel.add(radio);
@@ -128,28 +130,28 @@ public class ObservedContraIndicationPanel extends Panel {
       protected void onUpdate(AjaxRequestTarget target) {
         // make sure the right radio is selected
         selectionModel.setSelection(selectionModel.getContraIndication() != null ? YES : NO);
+        activeInstrumentRunService.setOtherContraIndication(null);
         setOtherVisible(selectionModel.getContraIndication() != null && selectionModel.getContraIndication().getName().equals(OTHER));
         target.addComponent(ObservedContraIndicationPanel.this);
       }
 
     });
     add(contraIndicationDropDownChoice);
-    
+
     add(otherLabel = new Label("otherLabel", new StringResourceModel("IfOtherPleaseSpecify", this, null)));
-    
+
     otherContraIndication = new TextArea("otherCi", new PropertyModel(selectionModel, "otherContraIndication"));
     otherContraIndication.setOutputMarkupId(true);
     otherContraIndication.setLabel(new StringResourceModel("OtherContraIndication", this, null));
     add(otherContraIndication);
-    
+
     setOtherVisible(false);
   }
-  
+
   private void setOtherVisible(boolean visible) {
     otherLabel.setVisible(visible);
     otherContraIndication.setVisible(visible);
     otherContraIndication.setRequired(visible);
-    selectionModel.setOtherContraIndication(null);
   }
 
   @SuppressWarnings("serial")
