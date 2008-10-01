@@ -3,220 +3,31 @@ package org.obiba.onyx.jade.instrument.tanita;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
-import gnu.io.SerialPortEventListener;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Enumeration;
+import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.JTextField;
 
-import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
-import org.obiba.onyx.jade.instrument.InstrumentRunner;
-import org.obiba.onyx.jade.instrument.LocalSettingsHelper;
-import org.obiba.onyx.jade.instrument.LocalSettingsHelper.CouldNotRetrieveSettingsException;
-import org.obiba.onyx.jade.instrument.LocalSettingsHelper.CouldNotSaveSettingsException;
-import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataBuilder;
-import org.slf4j.Logger;
+import org.obiba.onyx.util.data.DataType;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
-/**
- * This is a simple Swing application that connects to a bioimpedance and weight device (Tanita Body Composition
- * Analyzer). It allows the data to retrieve automatically through the serial port of the device.
- * 
- * @author cag-mboulanger
- * 
- */
-public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEventListener, InitializingBean {
-
-  private static final Logger log = LoggerFactory.getLogger(Tbf310InstrumentRunner.class);
-
-  // Injected by spring.
-  protected InstrumentExecutionService instrumentExecutionService;
-
-  protected ExternalAppLauncherHelper externalAppHelper;
-
-  protected LocalSettingsHelper settingsHelper;
-
-  protected String tbf310CommPort;
-
-  protected Locale locale;
-
-  // Interface components
-  private JFrame appWindow;
-
-  private JTextField bodyTypeTxt;
-
-  private JTextField genderTxt;
-
-  private JTextField heightTxt;
-
-  private JTextField weightTxt;
-
-  private JTextField impedanceTxt;
-
-  private JTextField fatPctTxt;
-
-  private JTextField fatMassTxt;
-
-  private JTextField ffmTxt;
-
-  private JTextField tbwTxt;
-
-  private JTextField ageTxt;
-
-  private JTextField bmiTxt;
-
-  private JTextField bmrTxt;
-
-  private JButton saveDataBtn;
-
-  private ResourceBundle resourceBundle;
-
-  /** Lock used to block the main thread as long as the UI has not finished its job */
-  private final Object uiLock = new Object();
-
-  class ResultTextField extends JTextField {
-
-    private static final long serialVersionUID = 1L;
-
-    public ResultTextField() {
-      super();
-      this.setEditable(false);
-      this.setSelectionColor(Color.WHITE);
-      this.setBackground(Color.WHITE);
-      this.setHorizontalAlignment(JTextField.RIGHT);
-      this.setPreferredSize(new Dimension(30, 0));
-    }
-
-  }
-
-  private StringBuffer tanitaData = new StringBuffer();
-
-  private InputStream inputStream;
-
-  private SerialPort serialPort = null;
-
-  private boolean portIsAvailable = false;
-
-  private String portOwnerName;
-
-  private ArrayList<String> availablePortNames;
-
-  private boolean shutdown = false;
-
-  protected Properties tbf310LocalSettings;
+public class Tbf310InstrumentRunner extends TanitaInstrument {
 
   public Tbf310InstrumentRunner() throws Exception {
 
-    // Initialize interface components.
-    bodyTypeTxt = new ResultTextField();
-    bodyTypeTxt.setHorizontalAlignment(JTextField.LEFT);
-    bodyTypeTxt.setPreferredSize(new Dimension(100, 0));
-    genderTxt = new ResultTextField();
-    genderTxt.setHorizontalAlignment(JTextField.LEFT);
-    genderTxt.setPreferredSize(new Dimension(100, 0));
-    heightTxt = new ResultTextField();
-    weightTxt = new ResultTextField();
-    impedanceTxt = new ResultTextField();
-    fatPctTxt = new ResultTextField();
-    fatMassTxt = new ResultTextField();
-    ffmTxt = new ResultTextField();
-    tbwTxt = new ResultTextField();
-    ageTxt = new ResultTextField();
-    bmiTxt = new ResultTextField();
-    bmrTxt = new ResultTextField();
-    saveDataBtn = new JButton();
-    saveDataBtn.setMnemonic('S');
-    saveDataBtn.setEnabled(false);
-
-    // Initialize serial port.
-    portOwnerName = "TANITA Body Composition Analyzer";
-    
-  }
-
-  public void afterPropertiesSet() throws Exception {
-
-    // Attempt to retrieve settings persisted locally (if exist).
-    try {
-      tbf310LocalSettings = settingsHelper.retrieveSettings();
-    } catch(CouldNotRetrieveSettingsException e) {
-    }
-    
-    log.info("Setting bioimpedance-locale to {}", getLocale().getDisplayLanguage());
-
-    resourceBundle = ResourceBundle.getBundle("bioimpedance-instrument", getLocale());
-    saveDataBtn.setToolTipText(resourceBundle.getString("ToolTip.Save_and_return"));
-    saveDataBtn.setText(resourceBundle.getString("Save"));
-
-  }
-
-  public InstrumentExecutionService getInstrumentExecutionService() {
-    return instrumentExecutionService;
-  }
-
-  public void setInstrumentExecutionService(InstrumentExecutionService instrumentExecutionService) {
-    this.instrumentExecutionService = instrumentExecutionService;
-  }
-
-  public ExternalAppLauncherHelper getExternalAppHelper() {
-    return externalAppHelper;
-  }
-
-  public void setExternalAppHelper(ExternalAppLauncherHelper externalAppHelper) {
-    this.externalAppHelper = externalAppHelper;
-  }
-
-  public LocalSettingsHelper getSettingsHelper() {
-    return settingsHelper;
-  }
-
-  public void setSettingsHelper(LocalSettingsHelper settingsHelper) {
-    this.settingsHelper = settingsHelper;
-  }
-
-  public String getTbf310CommPort() {
-    return tbf310LocalSettings.getProperty("commPort");
-  }
-
-  public void setTbf310CommPort(String tbf310CommPort) {
-    if(tbf310LocalSettings == null) {
-      tbf310LocalSettings = new Properties();
-    }
-    tbf310LocalSettings.setProperty("commPort", tbf310CommPort);
-  }
+    super();
+    log = LoggerFactory.getLogger(Tbf310InstrumentRunner.class);
+ }
 
   /**
    * Establish the connection with the device connected to the serial port.
    */
-  private void setupSerialPort() {
+  public void setupSerialPort() {
 
     try {
 
@@ -227,13 +38,16 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
       }
 
       // Initialize serial port attributes.
-      log.info("Fetching communication port {}", getTbf310CommPort());
-      CommPortIdentifier wPortId = CommPortIdentifier.getPortIdentifier(getTbf310CommPort());
+      log.info("Fetching communication port {}", getTanitaCommPort());
+      CommPortIdentifier wPortId = CommPortIdentifier.getPortIdentifier(getTanitaCommPort());
 
-      log.info("Opening communication port {}", getTbf310CommPort());
+      log.info("Opening communication port {}", getTanitaCommPort());
       serialPort = (SerialPort) wPortId.open(portOwnerName, 2000);
 
       // Make sure the port is "Clear To Send"
+      serialPort.setSerialPortParams(baudeRate, dataLength, stopBit, parity);
+      bufferedReader = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
+
       if(serialPort.isCTS()) {
 
         // Set serial port parameters.
@@ -243,9 +57,6 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
         serialPort.notifyOnCarrierDetect(true);
         serialPort.notifyOnRingIndicator(true);
         serialPort.notifyOnDSR(true);
-        serialPort.setSerialPortParams(2400, SerialPort.DATABITS_7, SerialPort.STOPBITS_1, SerialPort.PARITY_EVEN);
-
-        inputStream = serialPort.getInputStream();
 
         portIsAvailable = true;
 
@@ -257,88 +68,70 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
       portIsAvailable = false;
       log.warn("Could not access the specified serial port.", wCouldNotAccessSerialPort);
     }
-
-  }
-
-  private void refreshSerialPortList() {
-
-    log.info("Refreshing serial port list...");
-    Enumeration<CommPortIdentifier> portEnum = CommPortIdentifier.getPortIdentifiers();
-    availablePortNames = new ArrayList<String>();
-
-    // Build a list of all serial ports found.
-    while(portEnum != null && portEnum.hasMoreElements()) {
-
-      CommPortIdentifier port = portEnum.nextElement();
-      if(port.getPortType() == CommPortIdentifier.PORT_SERIAL) {
-        log.info("Port name={}, Port type={}", port.getName(), port.getPortType());
-        availablePortNames.add(port.getName());
-      }
-
-    }
-
   }
 
   /**
-   * Reestablish a lost connection.
-   */
-  private void reestablishConnection() {
-
-    String[] options = { resourceBundle.getString("OK"), resourceBundle.getString("Cancel"), resourceBundle.getString("Settings") };
-
-    // Loop until connection is reestablished.
-    int selectedOption;
-    while(serialPort == null || !serialPort.isCTS()) {
-
-      selectedOption = JOptionPane.showOptionDialog(appWindow, resourceBundle.getString("Err.No_communication"), resourceBundle.getString("Title.Communication_problem"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE, null, options, resourceBundle.getString("OK"));
-
-      // OK option selected.
-      if(selectedOption == 0) {
-
-        // Try to reestablish connection.
-        setupSerialPort();
-
-        // Cancel option selected.
-      } else if(selectedOption == 1) {
-
-        // Temporary fix, need to find another solution...
-        exitUI();
-
-        // Configuration option selected.
-      } else if(selectedOption == 2) {
-
-        // List all serial port in a drop down list, so a new one can be selected.
-        refreshSerialPortList();
-        String selectedPort = (String) JOptionPane.showInputDialog(appWindow, resourceBundle.getString("Instruction.Choose_port"), resourceBundle.getString("Title.Settings"), JOptionPane.QUESTION_MESSAGE, null, availablePortNames.toArray(), getTbf310CommPort());
-
-        if(selectedPort != null) {
-          setTbf310CommPort(selectedPort);
-
-          try {
-            settingsHelper.saveSettings(tbf310LocalSettings);
-          } catch(CouldNotSaveSettingsException e) {
-            log.error("Local settings could not be persisted.", e);
-          }
-
-          setupSerialPort();
-        } else {
-          exitUI();
-        }
-
-      }
-
-    }
-
-  }
-
-  /**
-   * Parses the Bioimpedance device output string (Tanita).
+   * Handles any serial port events from the Tanita.
    * 
-   * @param pTanitaOutput Output string.
-   * @return Parsed output string.
+   * @param pTanitaOutput The serial port event.
    */
-  private String[] parseTanitaData(String pTanitaOutput) {
-    return pTanitaOutput.split(",");
+  public void serialEvent(SerialPortEvent pEvent) {
+
+    switch(pEvent.getEventType()) {
+    
+    // Clear to send
+    case SerialPortEvent.CTS:
+
+      // If serial is not CTS, it means that the cable was disconnected.
+      // Attempt to reestablish the connection.
+      if(shutdown == false) {
+        // Only try to reestablish if we're not shutting down the
+        // application.
+        reestablishConnection();
+      }
+
+      break;
+
+    // Data is available at the serial port, so read it...
+    case SerialPortEvent.DATA_AVAILABLE:
+
+      try {
+
+        // Parse and sets the data in the GUI.
+        String wResponse = bufferedReader.readLine().trim();
+        setTanitaData(parseTanitaData(wResponse));
+
+        // Enable save button, so data can be saved.
+        saveDataBtn.setEnabled(true);
+      } catch(IOException wErrorReadingDataOnSerialPort) {
+        JOptionPane.showMessageDialog(appWindow, tanitaResourceBundle.getString("Err.Result_communication"), tanitaResourceBundle.getString("Title.Communication_error"), JOptionPane.ERROR_MESSAGE);
+      }
+      break;
+    }
+  }
+
+  public void run() {
+
+    if(!externalAppHelper.isSotfwareAlreadyStarted("tbf310InstrumentRunner")) {
+
+      log.info("Starting TBF-310 GUI");
+      buildGUI();
+
+      // Obtain the lock outside the UI thread. This will block until the UI releases the lock, at which point it should
+      // be safe to exit the main thread.
+      synchronized(uiLock) {
+        try {
+          uiLock.wait();
+        } catch(InterruptedException e) {
+          throw new RuntimeException(e);
+        }
+      }
+
+      log.info("Lock obtained. Exiting software.");
+
+    } else {
+      JOptionPane.showMessageDialog(null, tanitaResourceBundle.getString("Err.Application_lock"), tanitaResourceBundle.getString("Title.Cannot_start_application"), JOptionPane.ERROR_MESSAGE);
+    }
   }
 
   /**
@@ -346,7 +139,7 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
    * 
    * @param pOutputData The parsed output data from the Tanita.
    */
-  private void setTanitaData(String[] pOutputData) {
+  protected void setTanitaData(String[] pOutputData) {
 
     String wBodyTypeCode = pOutputData[0];
     if(wBodyTypeCode.endsWith("0")) {
@@ -375,238 +168,12 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
 
   }
 
-  /**
-   * Handles any serial port events from the Tanita.
-   * 
-   * @param pTanitaOutput The serial port event.
-   */
-  public void serialEvent(SerialPortEvent pEvent) {
-
-    switch(pEvent.getEventType()) {
-
-    // Clear to send
-    case SerialPortEvent.CTS:
-
-      // If serial is not CTS, it means that the cable was disconnected.
-      // Attempt to reestablish the connection.
-      if(shutdown == false) {
-        // Only try to reestablish if we're not shutting down the application.
-        reestablishConnection();
-      }
-
-      break;
-
-    // Data is available at the serial port, so read it...
-    case SerialPortEvent.DATA_AVAILABLE:
-
-      try {
-
-        // Read the serial port until there is nothing left to read.
-        StringBuffer readBuffer = new StringBuffer();
-
-        while(inputStream.available() > 0) {
-          readBuffer.append((char) inputStream.read());
-        }
-
-        // Append the data we just read to the output string.
-        tanitaData.append(readBuffer.toString());
-
-        // If data ends with a carriage return, this means
-        // that we have reach the end of the output string (Tanita output).
-        if(tanitaData.toString().endsWith("\r\n")) {
-
-          // Parse and sets the data in the GUI.
-          setTanitaData(parseTanitaData(tanitaData.toString()));
-
-          // Enable save button, so data can be saved.
-          saveDataBtn.setEnabled(true);
-
-        }
-
-      } catch(IOException wErrorReadingDataOnSerialPort) {
-        tanitaData = new StringBuffer();
-        JOptionPane.showMessageDialog(appWindow, resourceBundle.getString("Err.Result_communication"), resourceBundle.getString("Title.Communication_error"), JOptionPane.ERROR_MESSAGE);
-      }
-
-      break;
-
-    }
-  }
-
-  /**
-   * Builds the GUI which will display the bioimpedance results.
-   */
-  private void buildGUI() {
-
-    appWindow = new JFrame(resourceBundle.getString("Title.Tanita"));
-
-    appWindow.setAlwaysOnTop(true);
-    appWindow.setUndecorated(true);
-    appWindow.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
-    appWindow.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
-    appWindow.addWindowListener(new WindowAdapter() {
-      public void windowClosing(WindowEvent e) {
-        confirmOnExit();
-      }
-    });
-
-    appWindow.getContentPane().add(buildMainPanel(), BorderLayout.CENTER);
-
-    appWindow.pack();
-    appWindow.setSize(460, 260);
-
-    // Display the GUI in the middle of the screen.
-    Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
-    appWindow.setLocation(SCREEN_SIZE.width / 2 - 420 / 2, SCREEN_SIZE.height / 2 - 260 / 2);
-
-    appWindow.setBackground(Color.white);
-    appWindow.setVisible(true);
-
-    // If serial port is not available display error message
-    if(!portIsAvailable) {
-      reestablishConnection();
-    }
-
-  }
-
-  /**
-   * Signals that the UI has finished its job.
-   */
-  private void exitUI() {
-    appWindow.setVisible(false);
-    synchronized(uiLock) {
-      uiLock.notify();
-    }
-    setTbf310CommPort(null);
-  }
-
-  /**
-   * Puts together the GUI main panel component.
-   * 
-   * @return
-   */
-  private JPanel buildMainPanel() {
-
-    JPanel wMainPanel = new JPanel();
-    wMainPanel.setBackground(new Color(206, 231, 255));
-    wMainPanel.setLayout(new BoxLayout(wMainPanel, BoxLayout.Y_AXIS));
-
-    // Add the results sub panel.
-    JPanel wResultPanel = new JPanel();
-    GridLayout wResultPanelLayout = new GridLayout(0, 2);
-    wResultPanel.setBackground(new Color(206, 231, 255));
-    wResultPanelLayout.setHgap(60);
-    wResultPanel.setLayout(wResultPanelLayout);
-    wResultPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    wMainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    addDataField(bodyTypeTxt, wResultPanel, resourceBundle.getString("Body_type"), null);
-    addDataField(genderTxt, wResultPanel, resourceBundle.getString("Gender"), null);
-    addDataField(heightTxt, wResultPanel, resourceBundle.getString("Height"), resourceBundle.getString("cm"));
-    addDataField(weightTxt, wResultPanel, resourceBundle.getString("Weight"), resourceBundle.getString("kg"));
-    addDataField(impedanceTxt, wResultPanel, resourceBundle.getString("Impedance"), resourceBundle.getString("Ohm"));
-    addDataField(fatPctTxt, wResultPanel, resourceBundle.getString("Fat_percentage"), resourceBundle.getString("%"));
-    addDataField(fatMassTxt, wResultPanel, resourceBundle.getString("Fat_mass"), resourceBundle.getString("kg"));
-    addDataField(ffmTxt, wResultPanel, resourceBundle.getString("Fat_free_mass"), resourceBundle.getString("kg"));
-    addDataField(tbwTxt, wResultPanel, resourceBundle.getString("Total_body_water"), resourceBundle.getString("kg"));
-    addDataField(ageTxt, wResultPanel, resourceBundle.getString("Age"), resourceBundle.getString("years"));
-    addDataField(bmiTxt, wResultPanel, resourceBundle.getString("BMI"), null);
-    addDataField(bmrTxt, wResultPanel, resourceBundle.getString("BMR"), resourceBundle.getString("kJ"));
-
-    // Add the action buttons sub panel.
-    JPanel wButtonPanel = new JPanel();
-    wButtonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-    wButtonPanel.setLayout(new BoxLayout(wButtonPanel, BoxLayout.X_AXIS));
-    wButtonPanel.setBackground(new Color(206, 231, 255));
-    JButton wCancelBtn = new JButton(resourceBundle.getString("Cancel"));
-    wCancelBtn.setMnemonic('A');
-    wCancelBtn.setToolTipText(resourceBundle.getString("ToolTip.Cancel_measurement"));
-    wButtonPanel.add(Box.createHorizontalGlue());
-    wButtonPanel.add(saveDataBtn);
-    wButtonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-    wButtonPanel.add(wCancelBtn);
-
-    // Save button listener.
-    saveDataBtn.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        sendOutputToServer();
-      }
-    });
-
-    // Cancel button listener.
-    wCancelBtn.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        confirmOnExit();
-      }
-    });
-
-    wMainPanel.add(wResultPanel);
-    wMainPanel.add(wButtonPanel);
-
-    return wMainPanel;
-  }
-
-  /**
-   * Adds a data field to the GUI.
-   * 
-   * @param pField JTextField object.
-   * @param pTargetPanel Target panel to which the data field will be added.
-   * @param pLabel A label which will be displayed to the left of the field.
-   * @param pUnits Units which will be displayed to the right of the field.
-   */
-  private void addDataField(JTextField pField, JPanel pTargetPanel, String pLabel, String pUnits) {
-
-    // Create field sub panel.
-    JPanel wFieldPanel = new JPanel();
-    wFieldPanel.setBackground(new Color(206, 231, 255));
-    wFieldPanel.setLayout(new BoxLayout(wFieldPanel, BoxLayout.X_AXIS));
-    wFieldPanel.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
-
-    // Add field label.
-    JLabel wFieldLabel = new JLabel(pLabel + ":");
-    wFieldLabel.setPreferredSize(new Dimension(100, 60));
-    wFieldPanel.add(wFieldLabel);
-
-    // Add text field.
-    wFieldPanel.add(pField);
-
-    // Add units label.
-    if(pUnits != null) {
-      JLabel wFieldUnit = new JLabel(" " + pUnits);
-      wFieldUnit.setPreferredSize(new Dimension(30, 60));
-      wFieldPanel.add(wFieldUnit);
-    }
-
-    // Add sub panel to main panel.
-    pTargetPanel.add(wFieldPanel);
-
-  }
-
-  /**
-   * Displays a confirmation window when the application is closed by the user without saving.
-   */
-  private void confirmOnExit() {
-
-    // Ask for confirmation only if data has been fetch from the device.
-    if(saveDataBtn.isEnabled()) {
-
-      int wConfirmation = JOptionPane.showConfirmDialog(appWindow, resourceBundle.getString("Confirmation.Close_window"), resourceBundle.getString("Title.Confirmation"), JOptionPane.YES_NO_OPTION);
-
-      // If confirmed, application is closed.
-      if(wConfirmation == JOptionPane.YES_OPTION) {
-        exitUI();
-      }
-
-    } else {
-      exitUI();
-    }
-
-  }
-
-  private void sendOutputToServer() {
+  public void sendOutputToServer() {
+    log.info("Sending output of tanita to server...");
 
     Map<String, Data> output = new HashMap<String, Data>();
-    output.put("BodyType", DataBuilder.buildText(bodyTypeTxt.getText()));
+
+    output.put("BodyType", new Data(DataType.TEXT, bodyTypeTxt.getText()));
     output.put("Weight", getDecimalValue(weightTxt));
     output.put("Impedance", getIntegerValue(impedanceTxt));
     output.put("BMI", getDecimalValue(bmiTxt));
@@ -615,71 +182,12 @@ public class Tbf310InstrumentRunner implements InstrumentRunner, SerialPortEvent
     output.put("FatMass", getDecimalValue(fatMassTxt));
     output.put("TotalBodyWater", getDecimalValue(tbwTxt));
     output.put("FatPercentage", getDecimalValue(fatPctTxt));
-    output.put("Gender", DataBuilder.buildText(genderTxt.getText()));
+    output.put("Gender", new Data(DataType.TEXT, genderTxt.getText()));
     output.put("Height", getDecimalValue(heightTxt));
     output.put("Age", getIntegerValue(ageTxt));
+
     instrumentExecutionService.addOutputParameterValues(output);
+    log.info("Sending output of tanita to server done...");
     exitUI();
   }
-
-  private Data getIntegerValue(JTextField f) {
-    return DataBuilder.buildInteger(new Long(f.getText().trim()));
-  }
-
-  private Data getDecimalValue(JTextField f) {
-    return DataBuilder.buildDecimal(new Double(f.getText().trim()));
-  }
-
-  public void initialize() {
-    log.info("Refresh serial port list");
-    refreshSerialPortList();
-    log.info("Setup serial port");
-    setupSerialPort();
-  }
-
-  public void run() {
-
-    if(!externalAppHelper.isSotfwareAlreadyStarted("tbf310InstrumentRunner")) {
-
-      log.info("Starting TBF-310 GUI");
-      buildGUI();
-
-      // Obtain the lock outside the UI thread. This will block until the UI releases the lock, at which point it should
-      // be safe to exit the main thread.
-      synchronized(uiLock) {
-        try {
-          uiLock.wait();
-        } catch(InterruptedException e) {
-          throw new RuntimeException(e);
-        }
-      }
-
-      log.info("Lock obtained. Exiting software.");
-
-    } else {
-      JOptionPane.showMessageDialog(null, resourceBundle.getString("Err.Application_lock"), resourceBundle.getString("Title.Cannot_start_application"), JOptionPane.ERROR_MESSAGE);
-    }
-
-  }
-
-  public void shutdown() {
-    shutdown = true;
-    if(serialPort != null) {
-      try {
-        log.info("Closing serial port");
-        serialPort.close();
-      } catch(Exception e) {
-        // ignore
-      }
-    }
-  }
-
-  public Locale getLocale() {
-    return locale;
-  }
-
-  public void setLocale(Locale locale) {
-    this.locale = locale;
-  }
-
 }
