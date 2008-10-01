@@ -26,6 +26,8 @@ public abstract class AbstractIntegrityCheck extends AbstractEntity implements I
   @JoinColumn(name = "instrument_parameter_id")
   private InstrumentParameter targetParameter;
 
+  private String customizedDescription;
+  
   @Transient
   protected transient ApplicationContext context;
   
@@ -48,6 +50,14 @@ public abstract class AbstractIntegrityCheck extends AbstractEntity implements I
     return targetParameter;
   }
 
+  public void setCustomizedDescription(String customizedDescription) {
+    this.customizedDescription = customizedDescription;  
+  }
+  
+  public String getCustomizedDescription() {
+    return customizedDescription;
+  }
+  
   //
   // IntegrityCheck Methods
   //
@@ -70,7 +80,13 @@ public abstract class AbstractIntegrityCheck extends AbstractEntity implements I
   }
   
   protected String getDescriptionKey(ActiveInstrumentRunService activeRunService) {
-    return getClass().getSimpleName();
+    String descriptionKey = getCustomizedDescription();
+    
+    if (descriptionKey == null) {
+      descriptionKey = getClass().getSimpleName();
+    }
+    
+    return descriptionKey;
   }
   
   protected abstract Object[] getDescriptionArgs(ActiveInstrumentRunService activeRunService);
