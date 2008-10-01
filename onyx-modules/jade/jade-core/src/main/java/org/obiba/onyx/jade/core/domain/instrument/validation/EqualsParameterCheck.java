@@ -60,6 +60,11 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
    * @return <code>true</code> if instrument run value equals value of configured other parameter
    */
   public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
+    // If the other parameter has not been specified, there is nothing to check!
+    if (parameter == null) {
+      return true;
+    }
+    
     //
     // Get the other parameter's value.
     //
