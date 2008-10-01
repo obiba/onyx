@@ -248,6 +248,13 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
     <instrument reference="spi1" />
+    <integrityChecks>
+      <parameterSpreadCheck>
+        <targetParameter reference="fev1" />
+        <parameter reference="fvc" />
+        <percent>5</percent>
+      </parameterSpreadCheck>
+    </integrityChecks>
   </output>  
   <output id="fev1_fvc">
     <name>FEV1_FVC</name>
