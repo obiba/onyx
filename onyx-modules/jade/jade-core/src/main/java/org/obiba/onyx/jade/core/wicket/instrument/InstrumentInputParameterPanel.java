@@ -142,19 +142,22 @@ public class InstrumentInputParameterPanel extends Panel {
       RepeatingView repeat = new RepeatingView("repeat");
       add(repeat);
 
-      for(final InterpretativeParameter iParam : interpretativeParameters) {
+      for(final InterpretativeParameter param : interpretativeParameters) {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
-        iParam.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
-        iParam.setUserSessionService(userSessionService);
+        param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
+        param.setUserSessionService(userSessionService);
 
-        item.add(new Label("label", new PropertyModel(iParam, "description")));
+        item.add(new Label("label", new PropertyModel(param, "description")));
 
+        Data data = activeInstrumentRunService.getInterpretativeInstrumentRunValue(param.getName()).getData();
+        final String defaultDataValue = data != null ? data.getValueAsString() : null;
+        
         // radio group without default selection
-        RadioGroup radioGroup = new RadioGroup("radioGroup", new Model());
+        final RadioGroup radioGroup = new RadioGroup("radioGroup", new Model());
         interpretativeRadioGroups.add(radioGroup);
-        radioGroup.setLabel(new PropertyModel(iParam, "description"));
+        radioGroup.setLabel(new PropertyModel(param, "description"));
         item.add(radioGroup);
         ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { YES, NO, DOESNOT_KNOW })) {
 
@@ -163,9 +166,15 @@ public class InstrumentInputParameterPanel extends Panel {
             final String key = listItem.getModelObjectAsString();
             InterpretativeSelection selection = new InterpretativeSelection();
             selection.setSelectionKey(key);
-            selection.setParameterName(iParam.getName());
+            selection.setParameterName(param.getName());
+            
+            Model selectionModel = new Model(selection);
+            
+            if (key.equals(defaultDataValue)) {
+              radioGroup.setModel(selectionModel);
+            }
 
-            listItem.add(new Radio("radio", new Model(selection)));
+            listItem.add(new Radio("radio", selectionModel));
             listItem.add(new Label("label", new StringResourceModel(key, InstrumentInputParameterPanel.this, null)));
           }
 
