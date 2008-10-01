@@ -154,7 +154,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
           <property name="name" value="ART" />
           <property name="module" value="jade" />
           <property name="description" value="Arterial_Stiffness_Measurement" />
-          <property name="displayOrder" value="10" />
+          <property name="displayOrder" value="11" />
           <property name="userSessionService" ref="userSessionService" />
           <property name="stageDependencyCondition" ref="consentDependency" />
         </bean>
