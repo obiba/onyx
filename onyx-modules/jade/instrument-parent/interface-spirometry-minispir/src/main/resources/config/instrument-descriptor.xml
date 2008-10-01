@@ -121,7 +121,7 @@
   </participantPropertySource>
   <input id="id">
     <name>ID</name>
-    <description>Participant Barcode</description>
+    <description>Participant_Barcode</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="id_source" />
@@ -131,9 +131,9 @@
   <participantPropertySource id="last_name_source">
       <property>lastName</property>
   </participantPropertySource>
-  <input id="last_name">
+  <input id="last_name_in">
     <name>LastName</name>
-    <description>Participant Last Name</description>
+    <description>Participant_Last_Name</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="last_name_source" />
@@ -143,9 +143,9 @@
   <participantPropertySource id="first_name_source">
       <property>firstName</property>
   </participantPropertySource> 
-  <input id="first_name">
+  <input id="first_name_in">
     <name>FirstName</name>
-    <description>Participant First Name</description>
+    <description>Participant_First_Name</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="first_name_source" />
@@ -155,9 +155,9 @@
   <participantPropertySource id="birth_date_source">
       <property>birthDate</property>
   </participantPropertySource>
-  <input id="birth_date">
+  <input id="birth_date_in">
     <name>BirthDate</name>
-    <description>Participant Date of Birth</description>
+    <description>Participant_Date_of_Birth</description>
     <dataType>DATE</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="birth_date_source" />
@@ -167,7 +167,7 @@
   <participantPropertySource id="gender_source">
       <property>gender</property>
   </participantPropertySource>  
-  <input id="gender">
+  <input id="gender_in">
     <name>Gender</name>
     <description>Participant_Gender</description>
     <dataType>TEXT</dataType>
@@ -232,7 +232,68 @@
     <inputSource reference="weight_source" />
     <instrument reference="spi1" />
   </input>
-   
+
+  <output id="last_name">
+    <name>Participant Last Name</name>
+    <description>Participant_Last_Name</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="spi1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="last_name" />
+        <parameter reference="last_name_in" />
+        <customizedDescription>EqualsParameterCheck_Spirometry_MiniSpir</customizedDescription>        
+      </equalsParameterCheck>
+    </integrityChecks>        
+  </output>  
+  <output id="first_name">
+    <name>Participant First Name</name>
+    <description>Participant_First_Name</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="spi1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="first_name" />
+        <parameter reference="first_name_in" />
+        <customizedDescription>EqualsParameterCheck_Spirometry_MiniSpir</customizedDescription>        
+      </equalsParameterCheck>
+    </integrityChecks>    
+  </output>
+  <output id="birth_date">
+    <name>Participant Date of Birth</name>
+    <description>Participant_Date_of_Birth</description>
+    <dataType>DATE</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="spi1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="birth_date" />
+        <parameter reference="birth_date_in" />
+        <customizedDescription>EqualsParameterCheck_Spirometry_MiniSpir</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>    
+  </output>
+  <output id="gender">
+    <name>Participant Gender</name>
+    <description>Participant_Gender</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="spi1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="gender" />
+        <parameter reference="gender_in" />
+        <customizedDescription>EqualsParameterCheck_Spirometry_MiniSpir</customizedDescription>        
+      </equalsParameterCheck>
+    </integrityChecks>      
+  </output>
+  
   <output id="fvc">
     <name>FVC</name>
     <description>Measured_FVC</description>
