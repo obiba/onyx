@@ -76,15 +76,6 @@ public class InstrumentLaunchStep extends WizardStepPanel {
   }
 
   @Override
-  public void onStepOutPrevious(WizardForm form, AjaxRequestTarget target) {
-    if(launched) {
-      setPreviousStep(null);
-      form.getPreviousLink().setEnabled(false);
-      target.addComponent(form);
-    }
-  }
-
-  @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     if(launched) {
       if(InstrumentRunStatus.IN_ERROR.equals(activeInstrumentRunService.getInstrumentRunStatus())) {
