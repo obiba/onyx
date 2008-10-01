@@ -1,10 +1,13 @@
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.apache.wicket.Application;
@@ -38,6 +41,9 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
   private Double decimalValue;
 
   private String textValue;
+
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date dateValue;
   
   public EqualsValueCheck() {
     super();
@@ -62,6 +68,10 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
   public void setTextValue(String value) {
     textValue = value;
   }
+  
+  public void setDateValue(Date value) {
+    dateValue = value;
+  }
 
   public void setData(Data data) {
     if(data != null) {
@@ -82,6 +92,10 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
 
         case TEXT:
           textValue = data.getValue();
+          break;
+          
+        case DATE:
+          dateValue = data.getValue();
           break;
         }
       } else {
@@ -109,6 +123,9 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
     case TEXT:
       data = DataBuilder.buildText(textValue);
       break;
+      
+    case DATE:
+      data = DataBuilder.buildDate(dateValue);
     }
 
     return data;
