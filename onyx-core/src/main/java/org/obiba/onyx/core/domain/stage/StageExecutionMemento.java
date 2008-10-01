@@ -6,6 +6,7 @@ import javax.persistence.ManyToOne;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.engine.Action;
 
 @Entity
 public class StageExecutionMemento extends AbstractEntity {
@@ -17,6 +18,10 @@ public class StageExecutionMemento extends AbstractEntity {
   @ManyToOne
   @JoinColumn(name = "interview_id")
   private Interview interview;
+  
+  @ManyToOne
+  @JoinColumn(name = "action_id")
+  private Action action;
 
   private String state;
 
@@ -37,6 +42,14 @@ public class StageExecutionMemento extends AbstractEntity {
 
   public void setInterview(Interview interview) {
     this.interview = interview;
+  }
+
+  public Action getAction() {
+    return action;
+  }
+
+  public void setAction(Action action) {
+    this.action = action;
   }
 
   public String getState() {

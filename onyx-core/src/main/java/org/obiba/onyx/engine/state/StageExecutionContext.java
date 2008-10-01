@@ -221,6 +221,7 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
 
   public void setReason(Action reason) {
     currentState.setReason(reason);
+    saveState();
   }
 
   public Action getReason() {
@@ -237,6 +238,7 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
           this.currentState = exec;
         }
       }
+      this.currentState.setReason(stageMemento.getAction());
     }
   }
 
@@ -251,6 +253,7 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
       throw new IllegalArgumentException("StageExecutionMemento is expected.");
 
     myMemento.setState(currentState.getClass().getSimpleName());
+    myMemento.setAction(currentState.getReason());
 
     return myMemento;
   }
