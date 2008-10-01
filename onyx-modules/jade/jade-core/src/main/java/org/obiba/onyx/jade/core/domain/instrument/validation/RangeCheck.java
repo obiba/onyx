@@ -6,6 +6,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 import org.obiba.onyx.core.domain.participant.Gender;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.instrument.InstrumentInputParameterPanel;
@@ -97,14 +98,28 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
     return false;
   }
   
-  protected Object[] getDescriptionArgs() {
+  protected Object[] getDescriptionArgs(ActiveInstrumentRunService activeRunService) {
     Object[] args = null;
    
+    // For male participants, return the min/max values for males; for female participants,
+    // return the min/max values for females.
+    Participant participant = activeRunService.getParticipant();
+    
     if (getValueType().equals(DataType.INTEGER)) {
-      args = new Object[] { getTargetParameter().getDescription(), integerMinValueMale, integerMaxValueMale, integerMinValueFemale, integerMaxValueFemale };  
+      if (participant.getGender().equals(Gender.MALE)) {
+        args = new Object[] { getTargetParameter().getDescription(), integerMinValueMale, integerMaxValueMale };
+      }
+      else if (participant.getGender().equals(Gender.FEMALE)) {
+        args = new Object[] { getTargetParameter().getDescription(), integerMinValueFemale, integerMaxValueFemale };
+      }
     }
     else if (getValueType().equals(DataType.DECIMAL)) {
-      args = new Object[] { getTargetParameter().getDescription(), decimalMinValueMale, decimalMaxValueMale, decimalMinValueFemale, decimalMaxValueFemale };      
+      if (participant.getGender().equals(Gender.MALE)) {
+        args = new Object[] { getTargetParameter().getDescription(), decimalMinValueMale, decimalMaxValueMale };
+      }
+      else if (participant.getGender().equals(Gender.FEMALE)) {
+        args = new Object[] { getTargetParameter().getDescription(), decimalMinValueFemale, decimalMaxValueFemale };
+      }
     }
     
     return args;

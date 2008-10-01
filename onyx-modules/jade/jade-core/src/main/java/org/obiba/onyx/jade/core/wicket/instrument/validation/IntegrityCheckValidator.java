@@ -75,7 +75,7 @@ public class IntegrityCheckValidator extends AbstractValidator {
     }
   }
   
-  static class IntegrityCheckValidationError implements IValidationError, Serializable {    
+  class IntegrityCheckValidationError implements IValidationError, Serializable {    
     private static final long serialVersionUID = 1L;
 
     private IntegrityCheck integrityCheck;
@@ -85,7 +85,7 @@ public class IntegrityCheckValidator extends AbstractValidator {
     }
     
     public String getErrorMessage(IErrorMessageSource messageSource) {
-      return integrityCheck.getDescription();
+      return integrityCheck.getDescription(activeInstrumentRunService);
     }
   }
 }

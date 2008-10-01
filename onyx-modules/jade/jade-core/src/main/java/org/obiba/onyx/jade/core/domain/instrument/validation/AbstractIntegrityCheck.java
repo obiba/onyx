@@ -1,8 +1,5 @@
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
@@ -57,7 +54,7 @@ public abstract class AbstractIntegrityCheck extends AbstractEntity implements I
 
   public abstract boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService);
   
-  public String getDescription() {
+  public String getDescription(ActiveInstrumentRunService activeRunService) {
     String retVal = getClass().getSimpleName();
 
     if(context != null && userSessionService != null) {
@@ -66,15 +63,15 @@ public abstract class AbstractIntegrityCheck extends AbstractEntity implements I
       targetParameter.setApplicationContext(context);
       targetParameter.setUserSessionService(userSessionService);
       
-      retVal = context.getMessage(getDescriptionKey(), getDescriptionArgs(), userSessionService.getLocale());
+      retVal = context.getMessage(getDescriptionKey(activeRunService), getDescriptionArgs(activeRunService), userSessionService.getLocale());
     }
 
     return retVal;    
   }
   
-  protected String getDescriptionKey() {
+  protected String getDescriptionKey(ActiveInstrumentRunService activeRunService) {
     return getClass().getSimpleName();
   }
   
-  protected abstract Object[] getDescriptionArgs();
+  protected abstract Object[] getDescriptionArgs(ActiveInstrumentRunService activeRunService);
 }

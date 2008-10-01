@@ -112,8 +112,8 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
   }
   
   @Override
-  protected String getDescriptionKey() {
-    String descriptionKey = super.getDescriptionKey();
+  protected String getDescriptionKey(ActiveInstrumentRunService activeRunService) {
+    String descriptionKey = super.getDescriptionKey(activeRunService);
     
     if (percent != null && offset == null) {
       descriptionKey += "_PercentOnly";
@@ -125,7 +125,7 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
     return descriptionKey;
   }
   
-  protected Object[] getDescriptionArgs() {
+  protected Object[] getDescriptionArgs(ActiveInstrumentRunService activeRunService) {
     // Set the parameter's context and user session service to ensure
     // proper localization.
     parameter.setApplicationContext(context);

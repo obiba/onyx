@@ -123,7 +123,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
               failedCheck.setApplicationContext(((SpringWebApplication)Application.get()).getSpringContextLocator().getSpringContext());
               failedCheck.setUserSessionService(userSessionService);
               
-              error(failedCheck.getDescription());
+              error(failedCheck.getDescription(activeInstrumentRunService));
             }
             
             setNextStep(null);

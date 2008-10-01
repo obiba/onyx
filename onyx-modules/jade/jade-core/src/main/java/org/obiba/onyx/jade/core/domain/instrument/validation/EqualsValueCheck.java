@@ -138,7 +138,7 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
     return isEqual;
   }
   
-  protected Object[] getDescriptionArgs() {
+  protected Object[] getDescriptionArgs(ActiveInstrumentRunService activeRunService) {
     return new Object[] { getTargetParameter().getDescription(), getData().getValue() };
   }
 }

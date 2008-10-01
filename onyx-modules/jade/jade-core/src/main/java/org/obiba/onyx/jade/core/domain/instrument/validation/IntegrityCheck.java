@@ -47,9 +47,16 @@ public interface IntegrityCheck {
   /**
    * Returns a (localized) description of the check performed.
    * 
+   * If a check's behaviour varies based on features of the measurement context, the 
+   * check's description may also be different in different contexts. For example, a 
+   * range check that specifies different ranges for male and female participants may
+   * return one description when the current participant is male and another when the 
+   * current participant is female. 
+   * 
+   * @param activeRunService service used to query the measurement context
    * @return localized description
    */
-  public String getDescription();
+  public String getDescription(ActiveInstrumentRunService activeRunService);
   
   public void setApplicationContext(ApplicationContext context);
   

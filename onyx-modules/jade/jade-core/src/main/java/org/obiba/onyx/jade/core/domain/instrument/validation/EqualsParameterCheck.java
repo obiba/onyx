@@ -84,7 +84,7 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
     return equalsValueCheck.checkParameterValue(paramData, null, null);
   }
   
-  protected Object[] getDescriptionArgs() {
+  protected Object[] getDescriptionArgs(ActiveInstrumentRunService activeRunService) {
     // Set the parameter's context and user session service to ensure
     // proper localization.
     parameter.setApplicationContext(context);
