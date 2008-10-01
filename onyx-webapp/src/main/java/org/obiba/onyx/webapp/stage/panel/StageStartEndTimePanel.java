@@ -41,7 +41,7 @@ public class StageStartEndTimePanel extends Panel {
       lastAction = action;
     }
 
-    if(activeInterviewService.getStageExecution(stage).isCompleted() && lastAction != null && (lastAction.getActionType() != ActionType.SKIP)) {
+    if(activeInterviewService.getStageExecution(stage).isCompleted() && lastAction != null && lastExecuteAction != null && (lastAction.getActionType() != ActionType.SKIP)) {
       add(new Label("endTime", DateModelUtils.getShortDateTimeModel(new PropertyModel(lastAction, "dateTime"))));
       add(new Label("separator", "-"));
       add(new Label("startTime", DateModelUtils.getShortDateTimeModel(new PropertyModel(lastExecuteAction, "dateTime"))));
