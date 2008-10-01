@@ -34,12 +34,16 @@ public class ObservedContraIndicationPanel extends Panel {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ObservedContraIndicationPanel.class);
 
+  private static final String YES = "Yes";
+
+  private static final String NO = "No";
+
   @SpringBean
   private EntityQueryService queryService;
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
-  
+
   @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
 
@@ -58,7 +62,7 @@ public class ObservedContraIndicationPanel extends Panel {
     RadioGroup radioGroup = new RadioGroup("radioGroup", new PropertyModel(selectionModel, "selection"));
     radioGroup.setLabel(new StringResourceModel("YesNo", this, null));
     add(radioGroup);
-    ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { "Yes", "No" })) {
+    ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { YES, NO })) {
 
       @Override
       protected void populateItem(ListItem item) {
@@ -68,7 +72,8 @@ public class ObservedContraIndicationPanel extends Panel {
 
           @Override
           protected void onEvent(AjaxRequestTarget target) {
-            boolean yes = key.equals("Yes");
+            boolean yes = key.equals(YES);
+            selectionModel.setSelection(key);
             selectionModel.setContraIndication(null);
             selectionModel.setOtherContraIndication(null);
             contraIndicationDropDownChoice.setEnabled(yes);
@@ -94,19 +99,19 @@ public class ObservedContraIndicationPanel extends Panel {
     contraIndicationDropDownChoice = new DropDownChoice("ciChoice", new PropertyModel(selectionModel, "contraIndication"), queryService.match(template), new IChoiceRenderer() {
 
       public Object getDisplayValue(Object object) {
-        ContraIndication ci = (ContraIndication)object;
-        
+        ContraIndication ci = (ContraIndication) object;
+
         ci.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
         ci.setUserSessionService(userSessionService);
-        
+
         return ci.getDescription();
       }
 
       public String getIdValue(Object object, int index) {
-        ContraIndication ci = (ContraIndication)object;
+        ContraIndication ci = (ContraIndication) object;
         return ci.getName();
       }
-      
+
     });
     contraIndicationDropDownChoice.setOutputMarkupId(true);
     contraIndicationDropDownChoice.setLabel(new StringResourceModel("ContraIndicationSelection", this, null));
@@ -116,9 +121,11 @@ public class ObservedContraIndicationPanel extends Panel {
       protected void onUpdate(AjaxRequestTarget target) {
         selectionModel.setOtherContraIndication(null);
         boolean other = selectionModel.getContraIndication() != null && selectionModel.getContraIndication().getName().equals("Other");
+        // make sure the right radio is selected
+        selectionModel.setSelection(selectionModel.getContraIndication() != null ? YES : NO);
         otherContraIndication.setEnabled(other);
         otherContraIndication.setRequired(other);
-        target.addComponent(otherContraIndication);
+        target.addComponent(ObservedContraIndicationPanel.this);
       }
 
     });
