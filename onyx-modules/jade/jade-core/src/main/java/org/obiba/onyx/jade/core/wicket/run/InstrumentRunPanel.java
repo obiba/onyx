@@ -78,10 +78,7 @@ public class InstrumentRunPanel extends Panel {
   public InstrumentRunPanel(String id, IModel instrumentTypeModel) {
     super(id);
 
-    ParticipantInterview template = new ParticipantInterview();
-    template.setParticipant(activeInterviewService.getParticipant());
-
-    InstrumentRun run = instrumentRunService.getLastCompletedInstrumentRun(queryService.matchOne(template), (InstrumentType) instrumentTypeModel.getObject());
+    InstrumentRun run = instrumentRunService.getLastCompletedInstrumentRun(activeInterviewService.getParticipant(), (InstrumentType) instrumentTypeModel.getObject());
     if(run == null) {
       throw new IllegalStateException("No instrument run in session.");
     }

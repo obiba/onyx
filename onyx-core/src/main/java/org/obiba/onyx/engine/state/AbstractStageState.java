@@ -24,6 +24,7 @@ import org.springframework.context.ApplicationContextAware;
  */
 public abstract class AbstractStageState implements IStageExecution, ITransitionListener, ApplicationContextAware {
 
+  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AbstractStageState.class);
 
   private ITransitionEventSink eventSink;
@@ -36,7 +37,7 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
 
   protected ApplicationContext context;
 
-  private ActiveInterviewService activeInterviewService;
+  protected ActiveInterviewService activeInterviewService;
 
   protected UserSessionService userSessionService;
 

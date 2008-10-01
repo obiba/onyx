@@ -13,7 +13,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean name="staDependency" class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
     <property name="instrumentService" ref="instrumentService" />
     <property name="instrumentRunService" ref="instrumentRunService" />
-    <property name="queryService" ref="persistenceManager" />
     <property name="stageName" value="STA" />
   </bean>
 
@@ -83,7 +82,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
                     <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
                       <property name="instrumentService" ref="instrumentService" />
                       <property name="instrumentRunService" ref="instrumentRunService" />
-                      <property name="queryService" ref="persistenceManager" />
                       <property name="stageName" value="BIM" />
                     </bean>
                   </property>
@@ -114,7 +112,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
                         <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
                           <property name="instrumentService" ref="instrumentService" />
                           <property name="instrumentRunService" ref="instrumentRunService" />
-                          <property name="queryService" ref="persistenceManager" />
                           <property name="stageName" value="BIM" />
                         </bean>
                       </property>
@@ -123,7 +120,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
                         <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
                           <property name="instrumentService" ref="instrumentService" />
                           <property name="instrumentRunService" ref="instrumentRunService" />
-                          <property name="queryService" ref="persistenceManager" />
                           <property name="stageName" value="WEI" />
                         </bean>
                       </property>
@@ -189,6 +185,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="jadeCompletedState" parent="baseStageState" class="org.obiba.onyx.jade.engine.state.JadeCompletedState"
     scope="prototype">
+    <property name="instrumentRunService" ref="instrumentRunService" />
+    <property name="instrumentService" ref="instrumentService" />
   </bean>
 
   <bean id="instrumentService" class="org.obiba.onyx.jade.core.service.impl.DefaultInstrumentServiceImpl">
@@ -207,7 +205,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="inputDataSourceVisitor" class="org.obiba.onyx.jade.core.service.impl.InputDataSourceVisitorImpl"
     scope="prototype">
-    <property name="queryService" ref="persistenceManager" />
     <property name="instrumentRunService" ref="instrumentRunService" />
   </bean>
 

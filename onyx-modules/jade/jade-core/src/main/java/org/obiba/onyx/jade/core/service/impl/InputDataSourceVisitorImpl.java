@@ -5,7 +5,6 @@ import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.FixedSource;
@@ -15,7 +14,6 @@ import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.instrument.OutputParameterSource;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantPropertySource;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
-import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
 import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
@@ -26,8 +24,6 @@ public class InputDataSourceVisitorImpl implements InputDataSourceVisitor {
 
   private static final Logger log = LoggerFactory.getLogger(InputDataSourceVisitorImpl.class);
 
-  private EntityQueryService queryService;
-
   private InstrumentRunService instrumentRunService;
 
   private Data data;
@@ -35,10 +31,6 @@ public class InputDataSourceVisitorImpl implements InputDataSourceVisitor {
   private Participant participant;
 
   private InstrumentInputParameter parameter;
-
-  public void setQueryService(EntityQueryService queryService) {
-    this.queryService = queryService;
-  }
 
   public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
     this.instrumentRunService = instrumentRunService;
@@ -111,32 +103,21 @@ public class InputDataSourceVisitorImpl implements InputDataSourceVisitor {
   }
 
   public void visit(OutputParameterSource source) {
-    ParticipantInterview interview = new ParticipantInterview();
-    interview.setParticipant(participant);
-    interview = queryService.matchOne(interview);
-    if(interview != null) {
-      InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(interview, source.getInstrumentType(), source.getParameterName());
-      if(runValue != null) {
-        // TODO unit conversion when necessary
-        // TODO type conversion when possible (INTEGER->DECIMAL->TEXT...)
-        data = runValue.getData();
-      }
+    InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, source.getInstrumentType(), source.getParameterName());
+    if(runValue != null) {
+      // TODO unit conversion when necessary
+      // TODO type conversion when possible (INTEGER->DECIMAL->TEXT...)
+      data = runValue.getData();
     }
   }
-  
-  public void visit(MultipleOutputParameterSource source) {
-    ParticipantInterview interview = new ParticipantInterview();
-    interview.setParticipant(participant);
-    interview = queryService.matchOne(interview);
 
-    if(interview != null) {
-      for(OutputParameterSource outputParameterSource : source.getOutputParameterSourceList()) {
-        InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(interview, outputParameterSource.getInstrumentType(), outputParameterSource.getParameterName());
-        if(runValue != null) {
-          if (runValue.getData().getValue() != null){
-            data = runValue.getData();
-            break;
-          }
+  public void visit(MultipleOutputParameterSource source) {
+    for(OutputParameterSource outputParameterSource : source.getOutputParameterSourceList()) {
+      InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, outputParameterSource.getInstrumentType(), outputParameterSource.getParameterName());
+      if(runValue != null) {
+        if(runValue.getData().getValue() != null) {
+          data = runValue.getData();
+          break;
         }
       }
     }

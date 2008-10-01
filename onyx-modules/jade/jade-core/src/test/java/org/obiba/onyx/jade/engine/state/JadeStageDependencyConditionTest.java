@@ -44,7 +44,6 @@ public class JadeStageDependencyConditionTest {
     
     dependencyCondition = new JadeStageDependencyCondition();
     dependencyCondition.setStageName("stageMock");
-    dependencyCondition.setQueryService(queryServiceMock);
     dependencyCondition.setInstrumentService(instrumentServiceMock);
     dependencyCondition.setInstrumentRunService(instrumentRunServiceMock);
     
@@ -93,19 +92,16 @@ public class JadeStageDependencyConditionTest {
         
     expect(activeInterviewServiceMock.getStageExecution("stageMock")).andReturn(stageExecution);
     expect(activeInterviewServiceMock.getParticipant()).andReturn(newTestParticipant());
-    expect(queryServiceMock.matchOne((ParticipantInterview) EasyMock.anyObject())).andReturn(new ParticipantInterview());
     expect(instrumentServiceMock.getInstrumentType("stageMock")).andReturn(newTestInstrumentType());
-    expect(instrumentRunServiceMock.getLastCompletedInstrumentRun((ParticipantInterview) EasyMock.anyObject(), (InstrumentType) EasyMock.anyObject())).andReturn(newTestInstrumentRun(false));
+    expect(instrumentRunServiceMock.getLastCompletedInstrumentRun((Participant) EasyMock.anyObject(), (InstrumentType) EasyMock.anyObject())).andReturn(newTestInstrumentRun(false));
     
     replay(activeInterviewServiceMock);
-    replay(queryServiceMock);
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
 
     Boolean conditionResult = dependencyCondition.isDependencySatisfied(activeInterviewServiceMock);
 
     verify(activeInterviewServiceMock);
-    verify(queryServiceMock);
     verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
 
@@ -129,19 +125,16 @@ public class JadeStageDependencyConditionTest {
         
     expect(activeInterviewServiceMock.getStageExecution("stageMock")).andReturn(stageExecution);
     expect(activeInterviewServiceMock.getParticipant()).andReturn(newTestParticipant());
-    expect(queryServiceMock.matchOne((ParticipantInterview) EasyMock.anyObject())).andReturn(new ParticipantInterview());
     expect(instrumentServiceMock.getInstrumentType("stageMock")).andReturn(newTestInstrumentType());
-    expect(instrumentRunServiceMock.getLastCompletedInstrumentRun((ParticipantInterview) EasyMock.anyObject(), (InstrumentType) EasyMock.anyObject())).andReturn(newTestInstrumentRun(true));
+    expect(instrumentRunServiceMock.getLastCompletedInstrumentRun((Participant) EasyMock.anyObject(), (InstrumentType) EasyMock.anyObject())).andReturn(newTestInstrumentRun(true));
     
     replay(activeInterviewServiceMock);
-    replay(queryServiceMock);
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
 
     Boolean conditionResult = dependencyCondition.isDependencySatisfied(activeInterviewServiceMock);
 
     verify(activeInterviewServiceMock);
-    verify(queryServiceMock);
     verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
 

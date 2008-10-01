@@ -17,8 +17,6 @@ public class JadeStageDependencyCondition extends StageDependencyCondition {
 
   private static final long serialVersionUID = 1L;
 
-  private EntityQueryService queryService;
-
   private InstrumentRunService instrumentRunService;
 
   private InstrumentService instrumentService;
@@ -40,10 +38,6 @@ public class JadeStageDependencyCondition extends StageDependencyCondition {
     this.instrumentService = instrumentService;
   }
 
-  public void setQueryService(EntityQueryService queryService) {
-    this.queryService = queryService;
-  }
-
   /**
    * Returns a Boolean depending on the fact that the step is completed and also on its result
    * Null if not completed
@@ -56,11 +50,7 @@ public class JadeStageDependencyCondition extends StageDependencyCondition {
 
     if(!stageExecution.isCompleted()) return null;
     else {
-      ParticipantInterview participantInterview = new ParticipantInterview();
-      participantInterview.setParticipant(activeInterviewService.getParticipant());
-      participantInterview = queryService.matchOne(participantInterview);
-      
-      InstrumentRun instrumentRun = instrumentRunService.getLastCompletedInstrumentRun(participantInterview, instrumentService.getInstrumentType(stageName));
+      InstrumentRun instrumentRun = instrumentRunService.getLastCompletedInstrumentRun(activeInterviewService.getParticipant(), instrumentService.getInstrumentType(stageName));
 
       if(instrumentRun != null && instrumentRun.getInstrumentRunValues().size() > 0) return true;
       else

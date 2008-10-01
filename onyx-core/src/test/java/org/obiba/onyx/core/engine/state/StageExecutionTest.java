@@ -45,8 +45,6 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
   StageExecutionContext context3;
   
   ActiveInterviewService activeInterviewService;
-
-  private boolean noResult = true;
   
   @Before
   public void setUp() {
@@ -336,7 +334,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
   public class WaitingState extends AbstractStageState {
 
     public WaitingState() {
-      setActiveInterviewService(activeInterviewService);
+      setActiveInterviewService(StageExecutionTest.this.activeInterviewService);
     }
 
     @Override
@@ -360,7 +358,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
   public class ReadyState extends AbstractStageState {
 
     public ReadyState() {
-      setActiveInterviewService(activeInterviewService);
+      setActiveInterviewService(StageExecutionTest.this.activeInterviewService);
       addAction(ActionDefinitionBuilder.START_ACTION);
       addAction(ActionDefinitionBuilder.COMMENT_ACTION);
     }
@@ -392,7 +390,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
   public class InProgressState extends AbstractStageState {
 
     public InProgressState() {
-      setActiveInterviewService(activeInterviewService);
+      setActiveInterviewService(StageExecutionTest.this.activeInterviewService);
       addAction(ActionDefinitionBuilder.CANCEL_ACTION);
       addSystemAction(ActionDefinitionBuilder.COMPLETE_ACTION);
       addAction(ActionDefinitionBuilder.COMMENT_ACTION);
@@ -431,7 +429,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
   public class CompletedState extends AbstractStageState {
 
     public CompletedState() {
-      setActiveInterviewService(activeInterviewService);
+      setActiveInterviewService(StageExecutionTest.this.activeInterviewService);
       addAction(ActionDefinitionBuilder.CANCEL_ACTION);
       addAction(ActionDefinitionBuilder.COMMENT_ACTION);
     }
@@ -468,7 +466,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
   public class NotApplicableState extends AbstractStageState {
 
     public NotApplicableState() {
-      setActiveInterviewService(activeInterviewService);
+      setActiveInterviewService(StageExecutionTest.this.activeInterviewService);
     }
 
     @Override
