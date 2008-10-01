@@ -37,6 +37,8 @@ public class ObservedContraIndicationPanel extends Panel {
   private static final String YES = "Yes";
 
   private static final String NO = "No";
+  
+  private static final String OTHER = "Other";
 
   @SpringBean
   private EntityQueryService queryService;
@@ -50,6 +52,8 @@ public class ObservedContraIndicationPanel extends Panel {
   private DropDownChoice contraIndicationDropDownChoice;
 
   private TextArea otherContraIndication;
+  
+  private Label otherLabel;
 
   private ContraIndicationSelection selectionModel;
 
@@ -75,12 +79,10 @@ public class ObservedContraIndicationPanel extends Panel {
             boolean yes = key.equals(YES);
             selectionModel.setSelection(key);
             selectionModel.setContraIndication(null);
-            selectionModel.setOtherContraIndication(null);
             contraIndicationDropDownChoice.setEnabled(yes);
             contraIndicationDropDownChoice.setRequired(yes);
-            otherContraIndication.setEnabled(false);
-            target.addComponent(contraIndicationDropDownChoice);
-            target.addComponent(otherContraIndication);
+            setOtherVisible(false);
+            target.addComponent(ObservedContraIndicationPanel.this);
           }
 
         });
@@ -119,24 +121,30 @@ public class ObservedContraIndicationPanel extends Panel {
 
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        selectionModel.setOtherContraIndication(null);
-        boolean other = selectionModel.getContraIndication() != null && selectionModel.getContraIndication().getName().equals("Other");
         // make sure the right radio is selected
         selectionModel.setSelection(selectionModel.getContraIndication() != null ? YES : NO);
-        otherContraIndication.setEnabled(other);
-        otherContraIndication.setRequired(other);
+        setOtherVisible(selectionModel.getContraIndication() != null && selectionModel.getContraIndication().getName().equals(OTHER));
         target.addComponent(ObservedContraIndicationPanel.this);
       }
 
     });
     add(contraIndicationDropDownChoice);
-
+    
+    add(otherLabel = new Label("otherLabel", new StringResourceModel("IfOtherPleaseSpecify", this, null)));
+    
     otherContraIndication = new TextArea("otherCi", new PropertyModel(selectionModel, "otherContraIndication"));
     otherContraIndication.setOutputMarkupId(true);
-    otherContraIndication.setEnabled(false);
     otherContraIndication.setLabel(new StringResourceModel("OtherContraIndication", this, null));
     add(otherContraIndication);
-
+    
+    setOtherVisible(false);
+  }
+  
+  private void setOtherVisible(boolean visible) {
+    otherLabel.setVisible(visible);
+    otherContraIndication.setVisible(visible);
+    otherContraIndication.setRequired(visible);
+    selectionModel.setOtherContraIndication(null);
   }
 
   @SuppressWarnings("serial")
