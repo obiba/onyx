@@ -133,6 +133,7 @@ public class UserSearchPage extends BasePage {
     public UserListColumnProvider() {
       columns.add(new PropertyColumn(new StringResourceModel("LastName", UserSearchPage.this, null), "lastName", "lastName"));
       columns.add(new PropertyColumn(new StringResourceModel("FirstName", UserSearchPage.this, null), "firstName", "firstName"));
+      columns.add(new PropertyColumn(new StringResourceModel("login", UserSearchPage.this, null), "login", "login"));
       columns.add(new PropertyColumn(new StringResourceModel("Email", UserSearchPage.this, null), "email", "email"));
 
       columns.add(new AbstractColumn(new StringResourceModel("Role(s)", UserSearchPage.this, null)) {
