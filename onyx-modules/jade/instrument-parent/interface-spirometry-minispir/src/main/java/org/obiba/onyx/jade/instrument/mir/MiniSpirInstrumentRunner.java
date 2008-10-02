@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,6 +44,8 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
 
   protected ExternalAppLauncherHelper externalAppHelper;
 
+  private Set<String> expectedOutputParameterNames;
+  
   private String mirPath;
 
   private String initdbPath;
@@ -227,6 +230,10 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     Map<String, Data> ouputToSend = new HashMap<String, Data>();
 
     for(Map.Entry<String, Double[]> entry : results.entrySet()) {
+      if (!expectedOutputParameterNames.contains(entry.getKey())) {
+        log.info("Output parameter {} is not expected but has an entry in result file.", entry.getKey());
+        continue;
+      }
       if(entry.getKey().indexOf("ELA") == 0) {
         ouputToSend.put(entry.getKey(), DataBuilder.buildInteger(Math.round(entry.getValue()[0])));
         ouputToSend.put(entry.getKey() + "_pred", DataBuilder.buildInteger(Math.round(entry.getValue()[1])));
@@ -272,5 +279,13 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
    */
   public void shutdown() {
     deleteDeviceData();
+  }
+
+  public Set<String> getExpectedOutputParameterNames() {
+    return expectedOutputParameterNames;
+  }
+
+  public void setExpectedOutputParameterNames(Set<String> expectedOutputParameterNames) {
+    this.expectedOutputParameterNames = expectedOutputParameterNames;
   }
 }

@@ -7,6 +7,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
   <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.mir.MiniSpirInstrumentRunner">
     <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
     <property name="externalAppHelper" ref="externalAppHelper"/> 
+    <property name="expectedOutputParameterNames" ref="expectedOutputParameterNames"/>
     <property name="mirPath" value="C:\\Program Files\\MIR\\winspiroPRO\\"/>
     <property name="initdbPath" value="C:\\Program Files\\MIR\\winspiroPRO\\initdb\\"/>
     <property name="externalDbName" value="WinSpiroPRO.wdb"/>
@@ -19,6 +20,51 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="workDir" value="C:\\Program Files\\MIR\\winspiroPRO" />
     <property name="executable" value="winspiroPRO.exe" />
     <property name="parameterStr" value="/X" />
-  </bean>  
+  </bean>
+  
+  <bean id="expectedOutputParameterNames" class="org.springframework.beans.factory.config.SetFactoryBean">
+    <property name="sourceSet">
+      <set>
+        <value>FVC</value>
+        <value>FEV1</value>
+        <value>FEV1_FVC</value>
+        <value>FEV6</value>
+        <value>FEV1_FEV6</value>
+        <value>PEF</value>
+        <value>FEF2575</value>
+        <value>FEV3</value>
+        <value>FEV3_FVC</value>
+        <value>ELA</value>
+        <value>FET</value>
+        <value>FEF25</value>
+        <value>FEF50</value>
+        <value>FEF75</value>
+        <value>EVol</value>
+        <value>FIVC</value>
+        <value>FIV1</value>
+        <value>FIV1_FIVC</value>
+        <value>PIF</value>
+        <value>FVC_pred</value>
+        <value>FEV1_pred</value>
+        <value>FEV1_FVC_pred</value>
+        <value>FEV6_pred</value>
+        <value>FEV1_FEV6_pred</value>
+        <value>PEF_pred</value>
+        <value>FEF2575_pred</value>
+        <value>FEV3_pred</value>
+        <value>FEV3_FVC_pred</value>
+        <value>ELA_pred</value>
+        <value>FET_pred</value>
+        <value>FEF25_pred</value>
+        <value>FEF50_pred</value>
+        <value>FEF75_pred</value>
+        <value>EVol_pred</value>
+        <value>FIVC_pred</value>
+        <value>FIV1_pred</value>
+        <value>FIV1_FIVC_pred</value>
+        <value>PIF_pred</value>
+      </set>
+    </property>
+  </bean>
   
 </beans>

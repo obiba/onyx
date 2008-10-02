@@ -11,10 +11,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,6 +35,8 @@ public class MiniSpirInstrumentRunnerTest {
   private MiniSpirInstrumentRunner minispirInstrumentRunner;
 
   private InstrumentExecutionService instrumentExecutionServiceMock;
+  
+  private Set<String> expectedOutputParameterNamesSet = new HashSet<String>();
 
   File initDbFile;
 
@@ -67,7 +72,11 @@ public class MiniSpirInstrumentRunnerTest {
     // Create a mock instrumentExecutionService for testing.
     instrumentExecutionServiceMock = createMock(InstrumentExecutionService.class);
     minispirInstrumentRunner.setInstrumentExecutionService(instrumentExecutionServiceMock);
-
+    
+    // Create the outputParameterNamesExpected set
+    setExpectedOutputParameterNames();
+    minispirInstrumentRunner.setExpectedOutputParameterNames(expectedOutputParameterNamesSet);
+    
     initDbFile = new File(minispirInstrumentRunner.getInitdbPath(), minispirInstrumentRunner.getExternalDbName());
     miniSpirDbFile = new File(minispirInstrumentRunner.getMirPath(), minispirInstrumentRunner.getExternalDbName());
 
@@ -187,5 +196,52 @@ public class MiniSpirInstrumentRunnerTest {
     Assert.assertEquals(initDbFile.length(), miniSpirDbFile.length());
 
   }
-
+  
+  private void setExpectedOutputParameterNames() {
+    String elements[] = { "last_name",
+        "first_name",
+        "birth_date",
+        "gender",
+        "fvc",
+        "fev1",
+        "fev1_fvc",
+        "fev6",
+        "fev1_fev6",
+        "pef",
+        "fef2575",
+        "fev3",
+        "fev3_fvc",
+        "ela",
+        "fet",
+        "fef25",
+        "fef50",
+        "fef75",
+        "evol",
+        "fivc",
+        "fiv1",
+        "fiv1_fivc",
+        "pif",
+        "fvc_pred",
+        "fev1_pred",
+        "fev1_fvc_pred",
+        "fev6_pred",
+        "fev1_fev6_pred",
+        "pef_pred",
+        "fef2575_pred",
+        "fev3_pred",
+        "fev3_fvc_pred",
+        "ela_pred",
+        "fet_pred",
+        "fef25_pred",
+        "fef50_pred",
+        "fef75_pred",
+        "evol_pred",
+        "fivc_pred",
+        "fiv1_pred",
+        "fiv1_fivc_pred",
+        "pif_pred",
+        "fvc_image"};
+    
+    expectedOutputParameterNamesSet.addAll(new HashSet<String>(Arrays.asList(elements)));
+  }
 }
