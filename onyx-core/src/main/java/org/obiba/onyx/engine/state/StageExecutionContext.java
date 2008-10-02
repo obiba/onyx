@@ -93,6 +93,8 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
         throw new IllegalStateException("No destination state");
       }
       currentState = newState;
+      // reinit the reason why transition event occured (there may be no action at all).
+      currentState.setReason(null);
       List<ITransitionListener> transitionListenersToRemove = new ArrayList<ITransitionListener>();
       log.debug("transitionListeners.size=" + transitionListeners.size());
       for(ITransitionListener listener : transitionListeners) {
@@ -221,6 +223,7 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
 
   public void setReason(Action reason) {
     currentState.setReason(reason);
+    // persist the action
     saveState();
   }
 
