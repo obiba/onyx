@@ -42,14 +42,7 @@
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="ecg1" />
-  </output>  
-  <output id="conclusion">
-    <name>conclusion</name>
-    <description>Conclusion_of_measurement</description>
-    <dataType>TEXT</dataType>
-    <captureMethod>AUTOMATIC</captureMethod>
-    <instrument reference="ecg1" />
-  </output>  
+  </output>    
   <output id="filterSetting">
     <name>filterSetting</name>
     <description>Filter_Settings_of_measurement</description>
@@ -195,30 +188,6 @@
   <output id="tOffset">
     <name>TOffset</name>
     <description>T_Offset</description>
-    <dataType>INTEGER</dataType>
-    <measurementUnit>ms</measurementUnit>
-    <captureMethod>AUTOMATIC</captureMethod>
-    <instrument reference="ecg1" />
-  </output>
-  <output id="sokolovLVHIndex">
-    <name>SokolovLVHIndex</name>
-    <description>Sokolov_LVH_Index</description>
-    <dataType>INTEGER</dataType>
-    <measurementUnit>mV</measurementUnit>
-    <captureMethod>AUTOMATIC</captureMethod>
-    <instrument reference="ecg1" />
-  </output>
-  <output id="qTDispersion">
-    <name>QTDispersion</name>
-    <description>QT_Dispersion</description>
-    <dataType>INTEGER</dataType>
-    <measurementUnit>ms</measurementUnit>
-    <captureMethod>AUTOMATIC</captureMethod>
-    <instrument reference="ecg1" />
-  </output>
-  <output id="qTDispersionBazett">
-    <name>QTDispersionBazett</name>
-    <description>QT_Dispersion_Bazett</description>
     <dataType>INTEGER</dataType>
     <measurementUnit>ms</measurementUnit>
     <captureMethod>AUTOMATIC</captureMethod>

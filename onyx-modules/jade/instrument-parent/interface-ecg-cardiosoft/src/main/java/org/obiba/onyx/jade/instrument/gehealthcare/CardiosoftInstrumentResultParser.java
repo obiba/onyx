@@ -18,8 +18,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Inspired from class Interface_CaG.EcgCollector by dbujold
- * Parse ecg xml result file and return a object containing the data
+ * Inspired from class Interface_CaG.EcgCollector by dbujold Parse ecg xml result file and return a object containing
+ * the data
  * @author acarey
  */
 
@@ -33,8 +33,6 @@ public class CardiosoftInstrumentResultParser {
   private String date;
 
   private String diagnosis;
-
-  private String conclusion;
 
   private String filterSetting;
 
@@ -57,17 +55,11 @@ public class CardiosoftInstrumentResultParser {
 
   private Long pPInterval;
 
-  private Long sokolovLVHIndex;
-
   private Long pAxis;
 
   private Long rAxis;
 
   private Long tAxis;
-
-  private Long qTDispersion;
-
-  private Long qTDispersionBazett;
 
   private Long qRSNum;
 
@@ -145,10 +137,6 @@ public class CardiosoftInstrumentResultParser {
     return diagnosis;
   }
 
-  public String getConclusion() {
-    return conclusion;
-  }
-
   public String getFilterSetting() {
     return filterSetting;
   }
@@ -189,10 +177,6 @@ public class CardiosoftInstrumentResultParser {
     return pPInterval;
   }
 
-  public Long getSokolovLVHIndex() {
-    return sokolovLVHIndex;
-  }
-
   public Long getPAxis() {
     return pAxis;
   }
@@ -203,14 +187,6 @@ public class CardiosoftInstrumentResultParser {
 
   public Long getTAxis() {
     return tAxis;
-  }
-
-  public Long getQTDispersion() {
-    return qTDispersion;
-  }
-
-  public Long getQTDispersionBazett() {
-    return qTDispersionBazett;
   }
 
   public Long getQRSNum() {
@@ -276,7 +252,7 @@ public class CardiosoftInstrumentResultParser {
         conclusionSb.append("\n");
       }
     }
-    conclusion = conclusionSb.toString();
+
   }
 
   /**
@@ -300,12 +276,9 @@ public class CardiosoftInstrumentResultParser {
     qTCInterval = extractMeasurement("QTCInterval");
     rRInterval = extractMeasurement("RRInterval");
     pPInterval = extractMeasurement("PPInterval");
-    sokolovLVHIndex = extractMeasurement("SokolovLVHIndex");
     pAxis = extractMeasurement("PAxis");
     rAxis = extractMeasurement("RAxis");
     tAxis = extractMeasurement("TAxis");
-    qTDispersion = extractMeasurement("QTDispersion");
-    qTDispersionBazett = extractMeasurement("QTDispersionBazett");
     qRSNum = Long.valueOf(xpath.evaluate("//RestingECGMeasurements/QRSNum/text()", doc, XPathConstants.STRING).toString());
     pOnset = extractMeasurement("POnset");
     pOffset = extractMeasurement("POffset");
@@ -322,7 +295,7 @@ public class CardiosoftInstrumentResultParser {
    */
   private Long extractMeasurement(String tagName) throws XPathExpressionException {
     String measurement = xpath.evaluate("//RestingECGMeasurements/" + tagName + "/text()", doc, XPathConstants.STRING).toString();
-    
+
     if(measurement.equals("")) {
       return null;
     } else {

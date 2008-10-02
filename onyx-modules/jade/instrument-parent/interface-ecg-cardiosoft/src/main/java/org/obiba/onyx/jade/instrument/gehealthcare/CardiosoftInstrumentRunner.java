@@ -221,13 +221,12 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
     // Get data from external app
     try {
       resultInputStream = new FileInputStream(new File(getExportPath(), getXmlFileName()));
+      CardiosoftInstrumentResultParser resultParser = new CardiosoftInstrumentResultParser(resultInputStream);
+      sendDataToServer(resultParser);      
     } catch(FileNotFoundException fnfEx) {
-      throw new RuntimeException("Cardiosoft output data file not found", fnfEx);
+      log.error("Cardiosoft output data file not found");
     }
-
-    CardiosoftInstrumentResultParser resultParser = new CardiosoftInstrumentResultParser(resultInputStream);
-    sendDataToServer(resultParser);
-
+    
   }
 
   /**
