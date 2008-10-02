@@ -122,15 +122,15 @@
     <instrument reference="hwc1" />
     <integrityChecks>
       <rangeCheck>
-        <targetParameter reference="hips_size1" />
+        <targetParameter reference="hips_size2" />
         <integerMinValueMale>20</integerMinValueMale>
         <integerMaxValueMale>199</integerMaxValueMale>
         <integerMinValueFemale>20</integerMinValueFemale>
         <integerMaxValueFemale>199</integerMaxValueFemale>
       </rangeCheck>
       <parameterSpreadCheck>
-        <targetParameter reference="hips_size1" />
-        <parameter reference="hips_size2" />
+        <targetParameter reference="hips_size2" />
+        <parameter reference="hips_size1" />
         <percent>5</percent>
         <offset>1</offset>
       </parameterSpreadCheck>        
