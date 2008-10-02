@@ -96,6 +96,7 @@ public class Tbf310InstrumentRunner extends TanitaInstrument {
     case SerialPortEvent.DATA_AVAILABLE:
 
       try {
+        if(bufferedReader.ready()){
 
         // Parse and sets the data in the GUI.
         String wResponse = bufferedReader.readLine().trim();
@@ -103,7 +104,9 @@ public class Tbf310InstrumentRunner extends TanitaInstrument {
 
         // Enable save button, so data can be saved.
         saveDataBtn.setEnabled(true);
-      } catch(IOException wErrorReadingDataOnSerialPort) {
+        }
+      } 
+      catch(IOException wErrorReadingDataOnSerialPort) {
         JOptionPane.showMessageDialog(appWindow, tanitaResourceBundle.getString("Err.Result_communication"), tanitaResourceBundle.getString("Title.Communication_error"), JOptionPane.ERROR_MESSAGE);
       }
       break;

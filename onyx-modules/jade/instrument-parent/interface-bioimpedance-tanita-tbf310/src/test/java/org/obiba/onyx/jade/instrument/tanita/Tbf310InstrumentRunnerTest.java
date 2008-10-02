@@ -24,7 +24,7 @@ public class Tbf310InstrumentRunnerTest {
   private InstrumentExecutionService instrumentExecutionServiceMock;
   
   @Before
-  public void setUp() throws Exception {
+  public void setUp() throws Exception{
 
     tbf310InstrumentRunner = new Tbf310InstrumentRunner();
 
@@ -49,7 +49,7 @@ public class Tbf310InstrumentRunnerTest {
    * successfully retrieved (normal case).
    */
   @Test
-  public void testRun() throws FileNotFoundException, IOException, URISyntaxException {
+  public void testRun(){
     externalAppHelper.launch();
 
     // Parse the results
@@ -68,6 +68,13 @@ public class Tbf310InstrumentRunnerTest {
     Assert.assertEquals(String.valueOf(27),tbf310InstrumentRunner.getAgeTxt().getText());
     Assert.assertEquals(String.valueOf(32.3),tbf310InstrumentRunner.getBmiTxt().getText());
     Assert.assertEquals(String.valueOf(9771),tbf310InstrumentRunner.getBmrTxt().getText());
+   
+    instrumentExecutionServiceMock.addOutputParameterValues((Map<String, Data>) anyObject());
+   /* replay(instrumentExecutionServiceMock);
+
+    // Make sure that the results are sent to the server.
+    tbf310InstrumentRunner.sendOutputToServer();
+    verify(instrumentExecutionServiceMock);*/
     }
 
   @Test 
