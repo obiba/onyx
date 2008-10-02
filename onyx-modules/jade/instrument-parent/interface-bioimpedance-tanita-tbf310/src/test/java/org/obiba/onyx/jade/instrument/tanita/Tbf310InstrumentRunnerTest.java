@@ -1,16 +1,21 @@
 package org.obiba.onyx.jade.instrument.tanita;
 
+import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
+import org.obiba.onyx.util.data.Data;
 
 public class Tbf310InstrumentRunnerTest {
 
@@ -63,9 +68,6 @@ public class Tbf310InstrumentRunnerTest {
     Assert.assertEquals(String.valueOf(27),tbf310InstrumentRunner.getAgeTxt().getText());
     Assert.assertEquals(String.valueOf(32.3),tbf310InstrumentRunner.getBmiTxt().getText());
     Assert.assertEquals(String.valueOf(9771),tbf310InstrumentRunner.getBmrTxt().getText());
-   
-    // Make sure that the results are sent to the server.
-    tbf310InstrumentRunner.sendOutputToServer();
     }
 
   @Test 
