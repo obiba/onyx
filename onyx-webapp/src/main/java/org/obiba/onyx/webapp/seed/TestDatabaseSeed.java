@@ -1,6 +1,9 @@
 package org.obiba.onyx.webapp.seed;
 
+import java.io.File;
 import java.util.List;
+
+import javax.servlet.ServletContext;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.core.service.PersistenceManager;
@@ -10,7 +13,6 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.User;
-import org.obiba.onyx.engine.Stage;
 import org.obiba.wicket.util.seed.XstreamResourceDatabaseSeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,15 +46,27 @@ public class TestDatabaseSeed extends XstreamResourceDatabaseSeed {
 
           User template = new User();
           template.setLogin(user.getLogin());
-          for (User u : persistenceManager.match(template)) {
+          for(User u : persistenceManager.match(template)) {
             persistenceManager.delete(u);
           }
           if(persistenceManager.count(template) > 0) entity = null;
-        }
-        else if (entity instanceof ApplicationConfiguration) {
+        } else if(entity instanceof ApplicationConfiguration) {
           ApplicationConfiguration template = new ApplicationConfiguration();
-          for (ApplicationConfiguration conf : persistenceManager.match(template)) {
+          for(ApplicationConfiguration conf : persistenceManager.match(template)) {
             persistenceManager.delete(conf);
+          }
+          ApplicationConfiguration appConfig = (ApplicationConfiguration) entity;
+          File participantDirectory = new File(appConfig.getParticipantDirectoryPath());
+          log.debug("participantDirectoryPath={}", appConfig.getParticipantDirectoryPath());
+          if(!participantDirectory.exists()) {
+            // get the webapp root from servlet context
+            ServletContext context = ((WebApplication) WebApplication.get()).getServletContext();
+            appConfig.setParticipantDirectoryPath(context.getRealPath(appConfig.getParticipantDirectoryPath()));
+            participantDirectory = new File(appConfig.getParticipantDirectoryPath());
+            log.debug("new participantDirectoryPath={}", appConfig.getParticipantDirectoryPath());
+            if(!participantDirectory.exists()) {
+              throw new IllegalArgumentException("Wrong participant repository: " + appConfig.getParticipantDirectoryPath());
+            }
           }
         }
 
@@ -63,7 +77,7 @@ public class TestDatabaseSeed extends XstreamResourceDatabaseSeed {
       }
     }
   }
-  
+
   @Override
   protected boolean shouldSeed(WebApplication application) {
     boolean seed = super.shouldSeed(application);
@@ -80,6 +94,6 @@ public class TestDatabaseSeed extends XstreamResourceDatabaseSeed {
     xstream.alias("participant", Participant.class);
     xstream.alias("interview", Interview.class);
     xstream.alias("appointment", Appointment.class);
-    
+
   }
 }

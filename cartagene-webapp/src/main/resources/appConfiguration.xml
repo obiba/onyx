@@ -27,8 +27,8 @@
     <siteName>CHUM</siteName>
     <siteNo>cag001</siteNo>
     <studyName>CARTaGENE</studyName>
-    <!-- /var/lib/tomcat-6/webapps/cartagene-webapp/participants -->
-    <participantDirectoryPath>target/cartagene-webapp/participants</participantDirectoryPath>
+    <!-- can be absolute or relative to webapp root -->
+    <participantDirectoryPath>/participants</participantDirectoryPath>
   </config>
 
 </linked-list>
