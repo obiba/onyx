@@ -103,7 +103,7 @@
   </participantPropertySource>
   <input id="id">
     <name>id</name>
-    <description>Participant Barcode</description>
+    <description>Participant_Barcode</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="id_source" />
@@ -115,7 +115,7 @@
   </participantPropertySource>
   <input id="last_name">
     <name>last_name</name>
-    <description>Participant Last Name</description>
+    <description>Participant_Last_Name</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="last_name_source" />
@@ -127,7 +127,7 @@
   </participantPropertySource>
   <input id="first_name">
     <name>first_name</name>
-    <description>Participant First Name</description>
+    <description>Participant_First_Name</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="first_name_source" />
@@ -139,7 +139,7 @@
   </participantPropertySource>
   <input id="birth_date">
     <name>birth_date</name>
-    <description>Participant Date of Birth</description>
+    <description>Participant_Date_of_Birth</description>
     <dataType>DATE</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="birth_date_source" />
@@ -170,7 +170,7 @@
 
   <output id="Chart_Num">
     <name>Participant Barcode</name>
-    <description>Participant Barcode</description>
+    <description>Participant_Barcode</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
@@ -185,7 +185,7 @@
   </output>
   <output id="LName">
     <name>Participant Last Name</name>
-    <description>Participant Last Name</description>
+    <description>Participant_Last_Name</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
@@ -200,7 +200,7 @@
   </output>  
   <output id="FName">
     <name>Participant First Name</name>
-    <description>Participant First Name</description>
+    <description>Participant_First_Name</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
@@ -215,7 +215,7 @@
   </output>
   <output id="DOB">
     <name>Participant Date of Birth</name>
-    <description>Participant Date of Birth</description>
+    <description>Participant_Date_of_Birth</description>
     <dataType>DATE</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
@@ -229,7 +229,7 @@
   </output>
   <output id="Sex">
     <name>Participant Gender</name>
-    <description>Participant Gender</description>
+    <description>Participant_Gender</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
