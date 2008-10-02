@@ -66,7 +66,7 @@ public class Tbf310InstrumentRunner extends TanitaInstrument {
 
     } catch(Exception wCouldNotAccessSerialPort) {
       portIsAvailable = false;
-      log.warn("Could not access the specified serial port.", wCouldNotAccessSerialPort);
+      log.warn("Could not access the specified serial port.");
     }
   }
 
