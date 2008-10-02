@@ -47,6 +47,8 @@ public class UserPanel extends Panel {
   private FeedbackPanel feedbackPanel;
 
   private PasswordTextField password;
+  
+  private AjaxLanguageChoicePanel language;
 
   public UserPanel(String id, IModel model, final ModalWindow modalWindow) {
     super(id, model);
@@ -108,19 +110,20 @@ public class UserPanel extends Panel {
       });
       add(roles);
 
-      AjaxLanguageChoicePanel languageSelect = new AjaxLanguageChoicePanel("languageSelect", null, Arrays.asList(new Locale[] { Locale.FRENCH, Locale.ENGLISH })) {
+      language = new AjaxLanguageChoicePanel("languageSelect", null, Arrays.asList(new Locale[] { Locale.FRENCH, Locale.ENGLISH })) {
 
         private static final long serialVersionUID = 1L;
 
         @Override
         protected void onLanguageUpdate(Locale language, AjaxRequestTarget target) {
           if(language == null) language = Locale.ENGLISH;
-          getUser().setLanguage(language);
+          //getUser().setLanguage(language);
         }
 
       };
-      if(getUser().getLanguage() != null) languageSelect.setSelectedLanguage(getUser().getLanguage());
-      add(languageSelect);
+      
+      if(getUser().getLanguage() != null) language.setSelectedLanguage(getUser().getLanguage());
+      add(language);
 
       add(new AjaxSubmitLink("submit") {
 
@@ -131,10 +134,11 @@ public class UserPanel extends Panel {
           super.onSubmit();
           User user = (User) UserPanelForm.this.getModelObject();
           String newPassword = UserPanel.this.password.getModelObjectAsString();
-
+          Locale newLanguage = UserPanel.this.language.getSelectedLanguage();
+          
           if(newPassword != "") user.setPassword(User.digest(newPassword));
           if(user.getLogin() == null) generateLogin(user);
-          if(user.getLanguage() == null) user.setLanguage(Locale.ENGLISH);
+          user.setLanguage((newLanguage == null) ?  Locale.ENGLISH : newLanguage);
           if(user.getStatus() == null) user.setStatus(Status.ACTIVE);
           user.setDeleted(false);
 
