@@ -3,6 +3,7 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
+import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
@@ -25,12 +26,14 @@ public abstract class AbstractContraIndicationStep extends WizardStepPanel {
     super(id);
     // TODO Auto-generated constructor stub
   }
+  
+  protected abstract ParticipantInteractionType getParticipantInteractionType();
 
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     // exit if a ci is selected
     ContraIndication ci = activeInstrumentRunService.getContraIndication();
-    if(ci != null) {
+    if(ci != null && ci.getType().equals(getParticipantInteractionType())) {
       WizardStepPanel nextStep = new ContraIndicatedStep(WizardForm.getStepId());
       // no possibility to come back
       // nextStep.setPreviousStep(this);

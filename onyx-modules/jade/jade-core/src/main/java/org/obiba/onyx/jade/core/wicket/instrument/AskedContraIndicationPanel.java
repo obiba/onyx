@@ -59,6 +59,7 @@ public class AskedContraIndicationPanel extends Panel {
     RepeatingView repeat = new RepeatingView("repeat");
     add(repeat);
 
+    final ContraIndication defaultCi = activeInstrumentRunService.getContraIndication();
     ContraIndication template = new ContraIndication();
     template.setType(ParticipantInteractionType.ASKED);
     template.setInstrument(activeInstrumentRunService.getInstrument());
@@ -72,7 +73,7 @@ public class AskedContraIndicationPanel extends Panel {
       item.add(new Label("ciLabel", new PropertyModel(ci, "description")));
       
       // radio group without default selection
-      RadioGroup radioGroup = new RadioGroup("radioGroup", new Model());
+      final RadioGroup radioGroup = new RadioGroup("radioGroup", new Model());
       radioGroups.add(radioGroup);
       radioGroup.setLabel(new PropertyModel(ci, "description"));
       item.add(radioGroup);
@@ -85,8 +86,17 @@ public class AskedContraIndicationPanel extends Panel {
           selection.setContraIndication(ci);
           selection.setSelectionKey(key);
           
-          Radio radio = new Radio("radio", new Model(selection));
+          Model selectModel = new Model(selection);
+          
+          Radio radio = new Radio("radio", selectModel);
           radio.setLabel(new StringResourceModel(key, AskedContraIndicationPanel.this, null));
+          
+          // set default selection
+          // cannot decide if yes/no/dontknow was selected, so only deal with case the default ci is not null
+          // and it was because yes was selected
+          if (key.equals(YES) && defaultCi != null && (defaultCi.getType().equals(ci.getType()) & defaultCi.getName().equals(ci.getName()))) {
+            radioGroup.setModel(selectModel);
+          }
           
           FormComponentLabel radioLabel = new FormComponentLabel("radioLabel", radio);
           listItem.add(radioLabel);
