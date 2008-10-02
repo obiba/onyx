@@ -4,24 +4,24 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-  <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.tanita.Bc418InstrumentRunner">
+  <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.tanita.Tbf310InstrumentRunner">
     <property name="instrumentExecutionService" ref="instrumentExecutionService" />
     <property name="tanitaCommPort" value="COM6" /> 
-    
-    <property name="baudeRate" value="4800" />  
-    <property name="dataLength" value="8" /> 
-    <property name="parity" value="0" /> 
-    <property name="stopBit" value="1" />   
+   	
+   	<property name="baudeRate" value="2400" />  
+    <property name="dataLength" value="7" /> 
+    <property name="parity" value="1" /> 
+    <property name="stopBit" value="1" />    
     <property name="externalAppHelper" ref="externalAppHelper"/> 
     <property name="settingsHelper" ref="settingsHelper"/>     
-    <property name="locale" ref="locale"/>
+    <property name="locale" ref="locale"/>     
   </bean>
   
   <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper"/>
   
   <bean name="settingsHelper" class="org.obiba.onyx.jade.instrument.LocalSettingsHelper">
-    <property name="settingsFileName" value="BC418.ini" />   
-    <property name="settingsFileComment" value="Settings for Tanita BC-418"/>
+    <property name="settingsFileName" value="tbf310.ini" />   
+    <property name="settingsFileComment" value="Settings for Tanita TBF-310"/>
   </bean>  
 
 </beans>

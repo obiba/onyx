@@ -1,0 +1,27 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+  <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.tanita.Bc418InstrumentRunner">
+    <property name="instrumentExecutionService" ref="instrumentExecutionService" />
+    <property name="tanitaCommPort" value="COM6" /> 
+    
+    <property name="baudeRate" value="4800" />  
+    <property name="dataLength" value="8" /> 
+    <property name="parity" value="0" /> 
+    <property name="stopBit" value="1" />   
+    <property name="externalAppHelper" ref="externalAppHelper"/> 
+    <property name="settingsHelper" ref="settingsHelper"/>     
+    <property name="locale" ref="locale"/>
+  </bean>
+  
+  <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper"/>
+  
+  <bean name="settingsHelper" class="org.obiba.onyx.jade.instrument.LocalSettingsHelper">
+    <property name="settingsFileName" value="BC418.ini" />   
+    <property name="settingsFileComment" value="Settings for Tanita BC-418"/>
+  </bean>  
+
+</beans>
