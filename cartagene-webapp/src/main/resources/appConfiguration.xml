@@ -27,8 +27,8 @@
     <siteName>CHUM</siteName>
     <siteNo>cag001</siteNo>
     <studyName>CARTaGENE</studyName>
-    <!-- /var/lib/tomcat-6/webapps/cartagene-webapp/WEB-INF/classes/participants -->
-    <participantDirectoryPath>src/main/resources/participants</participantDirectoryPath>
+    <!-- /var/lib/tomcat-6/webapps/cartagene-webapp/participants -->
+    <participantDirectoryPath>target/cartagene-webapp/participants</participantDirectoryPath>
   </config>
 
 </linked-list>
