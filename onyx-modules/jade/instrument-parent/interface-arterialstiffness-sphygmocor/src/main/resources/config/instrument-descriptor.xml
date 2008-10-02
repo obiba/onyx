@@ -49,7 +49,7 @@
   <participantPropertySource id="first_name_source">
     <property>firstName</property>
   </participantPropertySource>
-  <input id="first_name">
+  <input id="first_name_in">
     <name>FirstName</name>
     <description>Participant First Name</description>
     <dataType>TEXT</dataType>
@@ -139,6 +139,112 @@
     <instrument reference="blp1" />
     </input>
   -->
+
+  <output id="PATIENT_ID">
+    <name>Participant Barcode</name>
+    <description>Participant Barcode</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="sphygmoCor1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="PATIENT_ID" />
+        <parameter reference="id" />
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>      
+  </output>
+  <output id="FAM_NAME">
+    <name>Participant Last Name</name>
+    <description>Participant Last Name</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="sphygmoCor1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="FAM_NAME" />
+        <parameter reference="last_name" />
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>        
+      </equalsParameterCheck>
+    </integrityChecks>        
+  </output>  
+  <output id="FIRST_NAME">
+    <name>Participant First Name</name>
+    <description>Participant First Name</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="sphygmoCor1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="FIRST_NAME" />
+        <parameter reference="first_name_in" />
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>        
+      </equalsParameterCheck>
+    </integrityChecks>    
+  </output>
+  <output id="DOB">
+    <name>Participant Date of Birth</name>
+    <description>Participant Date of Birth</description>
+    <dataType>DATE</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="sphygmoCor1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="DOB" />
+        <parameter reference="birth_date" />
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>        
+      </equalsParameterCheck>
+    </integrityChecks>  
+  </output> 
+  <output id="SEX">
+    <name>Participant Gender</name>
+    <description>Participant Gender</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="sphygmoCor1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="SEX" />
+        <parameter reference="gender" />
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>        
+      </equalsParameterCheck>
+    </integrityChecks>      
+  </output>
+  <output id="SP">
+    <name>Systolic Pressure</name>
+    <description>Systolic Pressure</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="sphygmoCor1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="SP" />
+        <parameter reference="systolic_pressure" />
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>        
+      </equalsParameterCheck>
+    </integrityChecks>      
+  </output>
+  <output id="DP">
+    <name>Diastolic Pressure</name>
+    <description>Diastolic Pressure</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="sphygmoCor1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="DP" />
+        <parameter reference="diastolic_pressure" />
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>        
+      </equalsParameterCheck>
+    </integrityChecks>      
+  </output>
 
   <output id="Peripheral_Pulse_Quality_Control_Pulse_Height">
     <name>Peripheral_Pulse_Quality_Control_Pulse_Height</name>

@@ -15,6 +15,7 @@ import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.atcor.dao.SphygmoCorDao;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +59,7 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     sphygmoCorDao.deleteAllOutput();
     sphygmoCorDao.deleteAllPatients();
 
-    // Fetch the current participant's data.   
+    // Fetch the current participant's data.
     participantLastName = instrumentExecutionService.getParticipantLastName();
     participantFirstName = instrumentExecutionService.getParticipantFirstName();
     participantBirthDate = instrumentExecutionService.getParticipantBirthDate();
@@ -75,8 +76,8 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     BufferedWriter localInputFile = null;
     try {
       localInputFile = new BufferedWriter(new FileWriter(externalAppHelper.getWorkDir() + File.separator + "patient.txt"));
-      localInputFile.write(participantFirstName + "\n");
       localInputFile.write(participantLastName + "\n");
+      localInputFile.write(participantFirstName + "\n");
 
       SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
       localInputFile.write(formatter.format(participantBirthDate) + "\n");
@@ -101,7 +102,7 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
 
     // Launch the SphygmoCor software.
     externalAppHelper.launch();
-        
+
     // Retrieve the output (measurements taken for the current participant).
     // NOTE: The getOutput method returns the output as a List of Maps. There
     // *should* only be one Map, corresponding to the single run.
@@ -135,6 +136,14 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
   private void sendDataToServer(Map data) {
 
     Map<String, Data> outputToSend = new HashMap<String, Data>();
+
+    outputToSend.put("Participant Barcode", DataBuilder.buildText((String) data.get("PATIENT_ID")));
+    outputToSend.put("Participant First Name", DataBuilder.buildText((String) data.get("FIRST_NAME")));
+    outputToSend.put("Participant Last Name", DataBuilder.buildText((String) data.get("FAM_NAME")));
+    outputToSend.put("Participant Date of Birth", DataBuilder.buildDate((Date)data.get("DOB")));
+    outputToSend.put("Participant Gender", DataBuilder.buildText((String) data.get("SEX")));
+    outputToSend.put("Systolic Pressure", DataBuilder.buildInteger(((Float)data.get("SP")).longValue()));
+    outputToSend.put("Diastolic Pressure", DataBuilder.buildInteger(((Float) data.get("DP")).longValue()));
 
     outputToSend.put("Peripheral_Pulse_Quality_Control_Pulse_Height", new Data(DataType.DECIMAL, new Double((Float) data.get("P_QC_PH"))));
     outputToSend.put("Peripheral_Pulse_Quality_Control_Pulse_Height_Variation", new Data(DataType.DECIMAL, new Double((Float) data.get("P_QC_PHV"))));
