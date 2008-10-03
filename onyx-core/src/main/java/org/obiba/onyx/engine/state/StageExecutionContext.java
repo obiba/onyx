@@ -260,4 +260,8 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
 
     return myMemento;
   }
+  
+  public ActionType getStartingActionType() {
+    return currentState.getStartingActionType();
+  }
 }

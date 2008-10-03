@@ -11,6 +11,7 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 
 public class StageStartEndTimePanel extends Panel {
@@ -18,7 +19,7 @@ public class StageStartEndTimePanel extends Panel {
   @SpringBean
   private EntityQueryService queryService;
 
-  @SpringBean(name="activeInterviewService")
+  @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   private static final long serialVersionUID = 1L;
@@ -41,7 +42,9 @@ public class StageStartEndTimePanel extends Panel {
       lastAction = action;
     }
 
-    if(activeInterviewService.getStageExecution(stage).isCompleted() && lastAction != null && lastExecuteAction != null && (lastAction.getActionType() != ActionType.SKIP)) {
+    IStageExecution exec = activeInterviewService.getStageExecution(stage);
+
+    if(exec.isCompleted() && (exec.getStartingActionType() == ActionType.EXECUTE)) {
       add(new Label("endTime", DateModelUtils.getShortDateTimeModel(new PropertyModel(lastAction, "dateTime"))));
       add(new Label("separator", "-"));
       add(new Label("startTime", DateModelUtils.getShortDateTimeModel(new PropertyModel(lastExecuteAction, "dateTime"))));
