@@ -1,5 +1,7 @@
 package org.obiba.onyx.webapp.stage.page;
 
+import java.util.Locale;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
@@ -79,6 +81,11 @@ public class StagePage extends BasePage {
         add(stageComponent);
       }
     }
+  }
+
+  @Override
+  public void onLanguageUpdate(Locale language, AjaxRequestTarget target) {
+    setResponsePage(new StagePage(StagePage.this.getModel()));
   }
 
 }
