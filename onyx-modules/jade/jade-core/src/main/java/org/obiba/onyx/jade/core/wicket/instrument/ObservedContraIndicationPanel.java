@@ -64,13 +64,13 @@ public class ObservedContraIndicationPanel extends Panel {
     setOutputMarkupId(true);
 
     selectionModel = new ContraIndicationSelection();
-    RadioGroup radioGroup = new RadioGroup("radioGroup", new PropertyModel(selectionModel, "selection"));
+    final RadioGroup radioGroup = new RadioGroup("radioGroup", new PropertyModel(selectionModel, "selection"));
     radioGroup.setLabel(new StringResourceModel("YesNo", this, null));
     add(radioGroup);
     ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { YES, NO })) {
 
       @Override
-      protected void populateItem(ListItem item) {
+      protected void populateItem(final ListItem item) {
         final String key = item.getModelObjectAsString();
         Radio radio = new Radio("radio", item.getModel());
         radio.add(new AjaxEventBehavior("onchange") {
@@ -79,6 +79,7 @@ public class ObservedContraIndicationPanel extends Panel {
           protected void onEvent(AjaxRequestTarget target) {
             log.info("onChange={}", key);
             boolean yes = key.equals(YES);
+            radioGroup.setModel(item.getModel());
             selectionModel.setSelection(key);
             selectionModel.setContraIndication(null);
             selectionModel.setOtherContraIndication(null);
