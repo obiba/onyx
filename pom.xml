@@ -569,7 +569,7 @@
 
   <scm>
     <connection>scm:svn:http://svn.obiba.org/onyx/trunk</connection>
-    <developerConnection>scm:svn:https://svn.obiba.org/obiba-commons/trunk</developerConnection>
+    <developerConnection>scm:svn:https://svn.obiba.org/onyx/trunk</developerConnection>
   </scm>
 
   <properties>
