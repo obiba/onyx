@@ -2,6 +2,13 @@ package org.obiba.onyx.quartz.core.domain.question;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.IterativeQuestion;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 
 import com.thoughtworks.xstream.XStream;
 

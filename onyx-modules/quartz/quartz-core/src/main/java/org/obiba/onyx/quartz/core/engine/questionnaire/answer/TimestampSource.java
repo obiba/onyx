@@ -1,4 +1,4 @@
-package org.obiba.onyx.quartz.core.domain.answer;
+package org.obiba.onyx.quartz.core.engine.questionnaire.answer;
 
 import java.util.Date;
 

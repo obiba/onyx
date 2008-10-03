@@ -1,8 +1,8 @@
-package org.obiba.onyx.quartz.core.domain.answer;
+package org.obiba.onyx.quartz.core.engine.questionnaire.answer;
 
 import java.io.Serializable;
 
-import org.obiba.onyx.quartz.core.domain.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.util.data.Data;
 
 public abstract class AnswerSource implements Serializable {

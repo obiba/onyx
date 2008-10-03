@@ -1,4 +1,4 @@
-package org.obiba.onyx.quartz.core.domain.question;
+package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.io.Serializable;
 import java.util.ArrayList;

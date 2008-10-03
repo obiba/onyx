@@ -1,10 +1,10 @@
-package org.obiba.onyx.quartz.core.domain.question;
+package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.obiba.onyx.quartz.core.domain.condition.Condition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 
 public class Question implements Serializable, ILocalizable {
 

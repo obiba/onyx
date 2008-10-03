@@ -1,7 +1,7 @@
-package org.obiba.onyx.quartz.core.domain.condition;
+package org.obiba.onyx.quartz.core.engine.questionnaire.condition;
 
-import org.obiba.onyx.quartz.core.domain.question.Category;
-import org.obiba.onyx.quartz.core.domain.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 
 public class AnswerCondition extends Condition {
 

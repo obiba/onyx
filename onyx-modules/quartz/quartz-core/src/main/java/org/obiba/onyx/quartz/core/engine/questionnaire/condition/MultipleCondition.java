@@ -1,4 +1,4 @@
-package org.obiba.onyx.quartz.core.domain.condition;
+package org.obiba.onyx.quartz.core.engine.questionnaire.condition;
 
 public class MultipleCondition extends Condition {
 
