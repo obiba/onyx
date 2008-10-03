@@ -12,7 +12,7 @@
   <parent>
     <artifactId>jade</artifactId>
     <groupId>org.obiba.jade</groupId>
-    <version>1.0-M4-SNAPSHOT</version>
+    <version>1.0-M3-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -20,7 +20,7 @@
     <dependency>
       <groupId>org.obiba.onyx</groupId>
       <artifactId>onyx-core</artifactId>
-      <version>1.0-M3-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
   
     <dependency>
