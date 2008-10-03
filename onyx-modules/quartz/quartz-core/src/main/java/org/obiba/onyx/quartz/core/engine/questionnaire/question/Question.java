@@ -10,11 +10,11 @@ public class Question implements Serializable, ILocalizable {
 
 	private static final long serialVersionUID = -7795909448581432466L;
 
-	private Page page;
-
 	private String name;
 
 	private String number;
+
+	private Page page;
 
 	private Boolean mandatory;
 

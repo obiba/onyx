@@ -8,13 +8,13 @@ public class Page implements Serializable, ILocalizable {
 
 	private static final long serialVersionUID = -7732601103831162009L;
 
-	private Section questionnaireSection;
-
 	private String name;
-	
-	private List<Question> questions;
+
+	private Section questionnaireSection;
 	
 	private Questionnaire questionnaire;
+	
+	private List<Question> questions;
 
 	public Section getQuestionnaireSection() {
 		return questionnaireSection;

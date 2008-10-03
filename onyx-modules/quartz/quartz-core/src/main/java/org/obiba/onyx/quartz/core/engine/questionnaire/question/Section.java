@@ -8,11 +8,11 @@ public class Section implements Serializable, ILocalizable {
 
 	private static final long serialVersionUID = -1624223156473292196L;
 
+	private String name;
+
 	private Questionnaire questionnaire;
 
 	private Section parentSection;
-
-	private String name;
 
 	private List<Page> pages;
 
