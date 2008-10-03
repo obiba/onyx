@@ -10,6 +10,11 @@ import org.obiba.onyx.jade.core.service.InputSourceVisitor;
 public class OperatorSource extends InputSource {
 
   private static final long serialVersionUID = -5502454360982L;
+  
+  /**
+   * CSV style separated default values.
+   */
+  private String choices;
 
   public OperatorSource() {
     super();
@@ -23,6 +28,14 @@ public class OperatorSource extends InputSource {
   @Override
   public void accept(InputSourceVisitor visitor) {
     visitor.visit(this);
+  }
+
+  public String getChoices() {
+    return choices;
+  }
+
+  public void setChoices(String choices) {
+    this.choices = choices;
   }
 
 }

@@ -29,11 +29,13 @@ import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
+import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.instrument.validation.IntegrityCheckValidator;
+import org.obiba.onyx.util.StringUtil;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
@@ -154,7 +156,7 @@ public class InstrumentInputParameterPanel extends Panel {
 
         Data data = activeInstrumentRunService.getInterpretativeInstrumentRunValue(param.getName()).getData();
         final String defaultDataValue = data != null ? data.getValueAsString() : null;
-        
+
         // radio group without default selection
         final RadioGroup radioGroup = new RadioGroup("radioGroup", new Model());
         interpretativeRadioGroups.add(radioGroup);
@@ -168,16 +170,16 @@ public class InstrumentInputParameterPanel extends Panel {
             InterpretativeSelection selection = new InterpretativeSelection();
             selection.setSelectionKey(key);
             selection.setParameterName(param.getName());
-            
+
             Model selectionModel = new Model(selection);
-            
-            if (key.equals(defaultDataValue)) {
+
+            if(key.equals(defaultDataValue)) {
               radioGroup.setModel(selectionModel);
             }
 
             Radio radio = new Radio("radio", selectionModel);
             radio.setLabel(new StringResourceModel(key, InstrumentInputParameterPanel.this, null));
-            
+
             FormComponentLabel radioLabel = new FormComponentLabel("radioLabel", radio);
             listItem.add(radioLabel);
             radioLabel.add(radio);
@@ -253,7 +255,23 @@ public class InstrumentInputParameterPanel extends Panel {
         final IModel runValueModel = new DetachableEntityModel(queryService, runValue);
         inputRunValueModels.add(runValueModel);
 
-        DataField field = new DataField("field", new PropertyModel(runValueModel, "data"), runValue.getDataType(), param.getMeasurementUnit());
+        List<Data> choices = null;
+        if(param.getInputSource() instanceof OperatorSource) {
+          List<String> strChoices = StringUtil.getCSVString(((OperatorSource) param.getInputSource()).getChoices());
+          if(strChoices.size() > 0) {
+            choices = new ArrayList<Data>();
+            for(String str : strChoices) {
+              choices.add(new Data(param.getDataType(), str));
+            }
+          }
+        }
+
+        DataField field;
+        if(choices != null && choices.size() > 0) {
+          field = new DataField("field", new PropertyModel(runValueModel, "data"), runValue.getDataType(), choices, param.getMeasurementUnit());
+        } else {
+          field = new DataField("field", new PropertyModel(runValueModel, "data"), runValue.getDataType(), param.getMeasurementUnit());
+        }
         field.setRequired(true);
         field.setLabel(new PropertyModel(param, "description"));
         field.add(new AjaxFormComponentUpdatingBehavior("onblur") {
