@@ -14,112 +14,80 @@ public class QuestionnaireSerializationTest {
 		xstream = new XStream();
 		xstream.setMode(XStream.ID_REFERENCES);
 		xstream.alias("questionnaire", Questionnaire.class);
-		xstream.alias("questionnaireVersion", QuestionnaireVersion.class);
-		xstream.alias("section", QuestionnaireSection.class);
-		xstream.alias("page", QuestionnairePage.class);
-		xstream.alias("question", ChoiceQuestion.class);
-		xstream.alias("array", ArrayQuestion.class);
+		xstream.alias("section", Section.class);
+		xstream.alias("page", Page.class);
+		xstream.alias("question", Question.class);
 		xstream.alias("iterative", IterativeQuestion.class);
-		xstream.alias("codeAnswer", CodeAnswer.class);
-		xstream.alias("questionCodeAnswer", QuestionCodeAnswer.class);
+		xstream.alias("category", Category.class);
+		xstream.alias("questionCategory", QuestionCategory.class);
 	}
 	
 	@Test
 	public void testQuestionnaire() {
-		Questionnaire questionnaire = new Questionnaire("Health Questionnaire");
+		Questionnaire questionnaire = new Questionnaire("Health Questionnaire", "1.0");
+				
+		Section firstSection = new Section();
+		firstSection.setName("S1");
+		questionnaire.addSection(firstSection);
+		Section section = new Section();
+		section.setName("S1.1");
+		firstSection.addSection(section);
 		
-		QuestionnaireVersion questionnaireVersion = new QuestionnaireVersion();
-		questionnaireVersion.setVersion("1.0");
-		questionnaire.addQuestionnaireVersion(questionnaireVersion);
+		Page page = new Page();
+		questionnaire.addPage(page);
+		page.setName("P1");
+		section.addPage(page);
 		
-		questionnaireVersion = new QuestionnaireVersion();
-		questionnaireVersion.setVersion("2.0");
-		questionnaire.addQuestionnaireVersion(questionnaireVersion);
+		Category c1 = new Category();
+		c1.setName("YES");
 		
-		questionnaire.setCurrentQuestionnaireVersion(questionnaireVersion);
+		Category c2 = new Category();
+		c2.setName("NO");
 		
-		QuestionnaireSection firstSection = new QuestionnaireSection();
-		firstSection.setDisplayInParentOrder(1);
-		firstSection.setLabel("First Section");
-		questionnaireVersion.addQuestionnaireSection(firstSection);
-		QuestionnaireSection section = new QuestionnaireSection();
-		section.setDisplayInParentOrder(1);
-		section.setLabel("First Sub-Section");
-		firstSection.addQuestionnaireSection(section);
+		Category c3 = new Category();
+		c3.setName("DONT_KNOW");
 		
-		QuestionnairePage page = new QuestionnairePage();
-		page.setDisplayInParentOrder(1);
-		page.setDisplayOrder(1);
-		page.setLabel("Make sure you understand.");
-		section.addQuestionnairePage(page);
-		
-		CodeAnswer c1 = new CodeAnswer();
-		c1.setCode("01");
-		c1.setLabel("Yes");
-		
-		CodeAnswer c2 = new CodeAnswer();
-		c2.setCode("02");
-		c2.setLabel("No");
-		
-		CodeAnswer c3 = new CodeAnswer();
-		c3.setCode("03");
-		c3.setLabel("Don't Know");
-		
-		ChoiceQuestion question = new ChoiceQuestion();
-		question.setLabel("Are your sure ?");
-		question.setInstructions("Don't be rude.");
-		question.setCaption("Make the right choice.");
-		question.setDisplayInParentOrder(1);
-		question.setCodeAnswerLayout(CodeAnswerLayout.LIST);
+		Question question = new Question();
+		question.setName("Q1");
 		question.setMandatory(false);
 		question.setMultiple(false);
 		page.addQuestion(question);
 		
-		QuestionCodeAnswer code = new QuestionCodeAnswer();
+		QuestionCategory code = new QuestionCategory();
 		code.setCodeAnswer(c1);
-		code.setDisplayInQuestionOrder(1);
 		code.setSelected(true);
-		question.addQuestionCodeAnswer(code);
+		question.addQuestionCategories(code);
 		
-		code = new QuestionCodeAnswer();
+		code = new QuestionCategory();
 		code.setCodeAnswer(c2);
-		code.setDisplayInQuestionOrder(2);
 		code.setSelected(false);
-		question.addQuestionCodeAnswer(code);
+		question.addQuestionCategories(code);
 		
-		code = new QuestionCodeAnswer();
+		code = new QuestionCategory();
 		code.setCodeAnswer(c3);
-		code.setDisplayInQuestionOrder(3);
 		code.setSelected(false);
-		question.addQuestionCodeAnswer(code);
+		question.addQuestionCategories(code);
 		
-		question = new ChoiceQuestion();
-		question.setLabel("Are you really sure ?");
-		question.setInstructions("Don't be so rude.");
-		question.setCaption("Make the damn right choice.");
-		question.setDisplayInParentOrder(2);
-		question.setCodeAnswerLayout(CodeAnswerLayout.DROPDOWN);
+		question = new Question();
+		question.setName("Q2");
 		question.setMandatory(true);
 		question.setMultiple(false);
 		page.addQuestion(question);
 		
-		code = new QuestionCodeAnswer();
+		code = new QuestionCategory();
 		code.setCodeAnswer(c1);
-		code.setDisplayInQuestionOrder(1);
 		code.setSelected(true);
-		question.addQuestionCodeAnswer(code);
+		question.addQuestionCategories(code);
 		
-		code = new QuestionCodeAnswer();
+		code = new QuestionCategory();
 		code.setCodeAnswer(c2);
-		code.setDisplayInQuestionOrder(2);
 		code.setSelected(false);
-		question.addQuestionCodeAnswer(code);
+		question.addQuestionCategories(code);
 		
-		code = new QuestionCodeAnswer();
+		code = new QuestionCategory();
 		code.setCodeAnswer(c3);
-		code.setDisplayInQuestionOrder(3);
 		code.setSelected(false);
-		question.addQuestionCodeAnswer(code);
+		question.addQuestionCategories(code);
 		
 		System.out.println(xstream.toXML(questionnaire));
 	}

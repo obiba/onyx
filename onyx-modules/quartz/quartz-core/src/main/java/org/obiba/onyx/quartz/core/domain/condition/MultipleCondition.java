@@ -1,7 +1,8 @@
 package org.obiba.onyx.quartz.core.domain.condition;
 
-
 public class MultipleCondition extends Condition {
+
+	private static final long serialVersionUID = 2969604617578085834L;
 
 	private Condition condition1;
 
@@ -34,6 +35,13 @@ public class MultipleCondition extends Condition {
 
 	public void setConditionOperator(ConditionOperator conditionOperator) {
 		this.conditionOperator = conditionOperator;
+	}
+
+	public boolean isToBeAnswered() {
+		if (conditionOperator.equals(ConditionOperator.AND))
+			return condition1.isToBeAnswered() & condition2.isToBeAnswered();
+		else
+			return condition1.isToBeAnswered() | condition2.isToBeAnswered();
 	}
 
 }

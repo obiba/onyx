@@ -1,12 +1,14 @@
 package org.obiba.onyx.quartz.core.domain.question;
 
 import java.io.Serializable;
-import java.util.Date;
 
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
-public class OpenAnswerDefinition implements Serializable {
-	
+public class OpenAnswerDefinition implements Serializable, ILocalizable {
+
+	private static final long serialVersionUID = -7756577128502621726L;
+
 	private String name;
 
 	private DataType dataType;
@@ -23,13 +25,7 @@ public class OpenAnswerDefinition implements Serializable {
 
 	private String usualMaxValue;
 
-	private String defaultTextValue;
-
-	private Long defaultIntegerValue;
-
-	private Double defaultDecimalValue;
-	
-	private Date defaultDateValue;
+	private Data defaultData;
 
 	public OpenAnswerDefinition() {
 	}
@@ -98,36 +94,16 @@ public class OpenAnswerDefinition implements Serializable {
 		this.usualMaxValue = usualMaxValue;
 	}
 
-	public String getDefaultTextValue() {
-		return defaultTextValue;
+	public Data getDefaultData() {
+		return defaultData;
 	}
 
-	public void setDefaultTextValue(String defaultTextValue) {
-		this.defaultTextValue = defaultTextValue;
+	public void setDefaultData(Data defaultData) {
+		this.defaultData = defaultData;
 	}
 
-	public Long getDefaultIntegerValue() {
-		return defaultIntegerValue;
-	}
-
-	public void setDefaultIntegerValue(Long defaultIntegerValue) {
-		this.defaultIntegerValue = defaultIntegerValue;
-	}
-
-	public Double getDefaultDecimalValue() {
-		return defaultDecimalValue;
-	}
-
-	public void setDefaultDecimalValue(Double defaultDecimalValue) {
-		this.defaultDecimalValue = defaultDecimalValue;
-	}
-
-	public Date getDefaultDateValue() {
-		return defaultDateValue;
-	}
-
-	public void setDefaultDateValue(Date defaultDateValue) {
-		this.defaultDateValue = defaultDateValue;
+	public String getPropertyKey(String property) {
+		return getClass().getSimpleName() + "." + getName() + "." + property;
 	}
 
 }

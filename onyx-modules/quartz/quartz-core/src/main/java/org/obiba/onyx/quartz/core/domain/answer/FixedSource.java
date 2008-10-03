@@ -1,18 +1,19 @@
 package org.obiba.onyx.quartz.core.domain.answer;
 
+import org.obiba.onyx.util.data.Data;
+
 public class FixedSource extends AnswerSource {
 
-	private String value;
+	private static final long serialVersionUID = 1L;
+	
+	private Data data;
 
-	public FixedSource() {
+	public void setData(Data data) {
+		this.data = data;
 	}
 
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
+	public Data getData() {
+		return data;
 	}
 
 }

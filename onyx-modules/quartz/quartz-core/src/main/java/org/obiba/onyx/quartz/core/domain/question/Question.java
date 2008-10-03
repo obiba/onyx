@@ -6,44 +6,36 @@ import java.util.List;
 
 import org.obiba.onyx.quartz.core.domain.condition.Condition;
 
-public abstract class Question implements Serializable {
+public class Question implements Serializable, ILocalizable {
 
-	private QuestionnairePage questionnairePage;
+	private static final long serialVersionUID = -7795909448581432466L;
+
+	private Page page;
 
 	private String name;
 
 	private String number;
 
-	private String label;
-
-	private String instructions;
-
-	private String caption;
-
-	private String help;
-
-	private String image;
-
-	private Integer displayInParentOrder;
-
 	private Boolean mandatory;
 
 	private Boolean multiple;
 
-	private CodeAnswerLayout codeAnswerLayout;
+	private List<QuestionCategory> questionCategories;
 
-	private List<QuestionCodeAnswer> questionCodeAnswers;
-	
 	private OpenAnswerDefinition openAnswerDefinition;
-	
+
 	private Condition condition;
 
-	public QuestionnairePage getQuestionnairePage() {
-		return questionnairePage;
+	private Question parentQuestion;
+
+	private List<Question> questions;
+
+	public Page getPage() {
+		return page;
 	}
 
-	public void setQuestionnairePage(QuestionnairePage questionnairePage) {
-		this.questionnairePage = questionnairePage;
+	public void setPage(Page page) {
+		this.page = page;
 	}
 
 	public String getName() {
@@ -62,46 +54,6 @@ public abstract class Question implements Serializable {
 		this.number = number;
 	}
 
-	public String getLabel() {
-		return label;
-	}
-
-	public void setLabel(String label) {
-		this.label = label;
-	}
-
-	public String getInstructions() {
-		return instructions;
-	}
-
-	public void setInstructions(String instructions) {
-		this.instructions = instructions;
-	}
-
-	public String getCaption() {
-		return caption;
-	}
-
-	public void setCaption(String caption) {
-		this.caption = caption;
-	}
-
-	public String getHelp() {
-		return help;
-	}
-
-	public void setHelp(String help) {
-		this.help = help;
-	}
-
-	public Integer getDisplayInParentOrder() {
-		return displayInParentOrder;
-	}
-
-	public void setDisplayInParentOrder(Integer displayInParentOrder) {
-		this.displayInParentOrder = displayInParentOrder;
-	}
-
 	public Boolean getMandatory() {
 		return mandatory;
 	}
@@ -118,31 +70,15 @@ public abstract class Question implements Serializable {
 		this.multiple = multiple;
 	}
 
-	public CodeAnswerLayout getCodeAnswerLayout() {
-		return codeAnswerLayout;
+	public List<QuestionCategory> getQuestionCategories() {
+		return questionCategories != null ? questionCategories
+				: (questionCategories = new ArrayList<QuestionCategory>());
 	}
 
-	public void setCodeAnswerLayout(CodeAnswerLayout codeAnswerLayout) {
-		this.codeAnswerLayout = codeAnswerLayout;
-	}
-
-	public String getImage() {
-		return image;
-	}
-
-	public void setImage(String image) {
-		this.image = image;
-	}
-
-	public List<QuestionCodeAnswer> getQuestionCodeAnswers() {
-		return questionCodeAnswers != null ? questionCodeAnswers
-				: (questionCodeAnswers = new ArrayList<QuestionCodeAnswer>());
-	}
-
-	public void addQuestionCodeAnswer(QuestionCodeAnswer questionCodeAnswer) {
-		if (questionCodeAnswer != null) {
-			getQuestionCodeAnswers().add(questionCodeAnswer);
-			questionCodeAnswer.setQuestion(this);
+	public void addQuestionCategories(QuestionCategory questionCategory) {
+		if (questionCategory != null) {
+			getQuestionCategories().add(questionCategory);
+			questionCategory.setQuestion(this);
 		}
 	}
 
@@ -150,7 +86,8 @@ public abstract class Question implements Serializable {
 		return openAnswerDefinition;
 	}
 
-	public void setOpenAnswerDefinition(OpenAnswerDefinition openAnswerDefinition) {
+	public void setOpenAnswerDefinition(
+			OpenAnswerDefinition openAnswerDefinition) {
 		this.openAnswerDefinition = openAnswerDefinition;
 	}
 
@@ -161,5 +98,28 @@ public abstract class Question implements Serializable {
 	public void setCondition(Condition condition) {
 		this.condition = condition;
 	}
-	
+
+	public Question getParentQuestion() {
+		return parentQuestion;
+	}
+
+	public void setParentQuestion(Question parentQuestion) {
+		this.parentQuestion = parentQuestion;
+	}
+
+	public List<Question> getQuestions() {
+		return questions != null ? questions
+				: (questions = new ArrayList<Question>());
+	}
+
+	public void addQuestion(Question question) {
+		if (question != null) {
+			getQuestions().add(question);
+		}
+	}
+
+	public String getPropertyKey(String property) {
+		return getClass().getSimpleName() + "." + getName() + "." + property;
+	}
+
 }

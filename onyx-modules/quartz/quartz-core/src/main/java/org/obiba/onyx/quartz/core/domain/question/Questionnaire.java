@@ -3,20 +3,25 @@ package org.obiba.onyx.quartz.core.domain.question;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class Questionnaire implements Serializable {
+public class Questionnaire implements Serializable, ILocalizable {
+
+	private static final long serialVersionUID = -9079010396321478385L;
 
 	private String name;
 
-	private QuestionnaireVersion currentQuestionnaireVersion;
-	
-	private List<QuestionnaireVersion> questionnaireVersions;
+	private String version;
 
-	public Questionnaire() {
-	}
+	private List<Locale> locales;
+
+	private List<Section> sections;
 	
-	public Questionnaire(String name) {
+	private List<Page> pages;
+
+	public Questionnaire(String name, String version) {
 		this.name = name;
+		this.version = version;
 	}
 
 	public String getName() {
@@ -27,24 +32,48 @@ public class Questionnaire implements Serializable {
 		this.name = name;
 	}
 
-	public QuestionnaireVersion getCurrentQuestionnaireVersion() {
-		return currentQuestionnaireVersion;
+	public String getVersion() {
+		return version;
 	}
 
-	public void setCurrentQuestionnaireVersion(QuestionnaireVersion currentQuestionnaireVersion) {
-		this.currentQuestionnaireVersion = currentQuestionnaireVersion;
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
-	public List<QuestionnaireVersion> getQuestionnaireVersions() {
-		return questionnaireVersions != null ? questionnaireVersions : (questionnaireVersions = new ArrayList<QuestionnaireVersion>());
+	public List<Locale> getLocales() {
+		return locales != null ? locales : (locales = new ArrayList<Locale>());
 	}
-	
-	public void addQuestionnaireVersion(QuestionnaireVersion questionnaireVersion) {
-		if (questionnaireVersion != null) {
-			getQuestionnaireVersions().add(questionnaireVersion);
-			questionnaireVersion.setQuestionnaire(this);
+
+	public void addLocale(Locale locale) {
+		if (locale != null) {
+			getLocales().add(locale);
 		}
 	}
-	
 
+	public List<Section> getSections() {
+		return sections != null ? sections
+				: (sections = new ArrayList<Section>());
+	}
+
+	public void addSection(Section questionnaireSection) {
+		if (questionnaireSection != null) {
+			getSections().add(questionnaireSection);
+			questionnaireSection.setQuestionnaire(this);
+		}
+	}
+
+	public List<Page> getPages() {
+		return pages != null ? pages : (pages = new ArrayList<Page>());
+	}
+	
+	public void addPage(Page page) {
+		if (page != null) {
+			getPages().add(page);
+			page.setQuestionnaire(this);
+		}
+	}
+
+	public String getPropertyKey(String property) {
+		return getClass().getSimpleName() + "." + getName() + "." + property;
+	}
 }

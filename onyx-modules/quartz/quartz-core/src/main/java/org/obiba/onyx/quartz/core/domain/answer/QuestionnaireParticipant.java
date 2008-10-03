@@ -8,23 +8,21 @@ import javax.persistence.Entity;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.quartz.core.domain.question.QuestionnairePage;
-import org.obiba.onyx.quartz.core.domain.question.QuestionnaireVersion;
 
 @Entity
 public class QuestionnaireParticipant extends AbstractEntity {
 
+	private static final long serialVersionUID = -4091599688342582439L;
+
 	private Participant participant;
 
-	private QuestionnaireVersion questionnaireVersion;
+	private String questionnaireName;
+
+	private String questionnaireVersion;
 
 	private Locale locale;
 
-	private QuestionnairePage currentQuestionnairePage;
-
-	private QuestionnairePage lastVisitedQuestionnairePage;
-
-	private List<ParticipantAnswer> participantAnswers;
+	private List<QuestionAnswer> questionAnswers;
 
 	public Participant getParticipant() {
 		return participant;
@@ -32,15 +30,6 @@ public class QuestionnaireParticipant extends AbstractEntity {
 
 	public void setParticipant(Participant participant) {
 		this.participant = participant;
-	}
-
-	public QuestionnaireVersion getQuestionnaireVersion() {
-		return questionnaireVersion;
-	}
-
-	public void setQuestionnaireVersion(
-			QuestionnaireVersion questionnaireVersion) {
-		this.questionnaireVersion = questionnaireVersion;
 	}
 
 	public Locale getLocale() {
@@ -51,33 +40,31 @@ public class QuestionnaireParticipant extends AbstractEntity {
 		this.locale = locale;
 	}
 
-	public QuestionnairePage getCurrentQuestionnairePage() {
-		return currentQuestionnairePage;
+	public String getQuestionnaireName() {
+		return questionnaireName;
 	}
 
-	public void setCurrentQuestionnairePage(
-			QuestionnairePage currentQuestionnairePage) {
-		this.currentQuestionnairePage = currentQuestionnairePage;
+	public void setQuestionnaireName(String questionnaireName) {
+		this.questionnaireName = questionnaireName;
 	}
 
-	public QuestionnairePage getLastVisitedQuestionnairePage() {
-		return lastVisitedQuestionnairePage;
+	public String getQuestionnaireVersion() {
+		return questionnaireVersion;
 	}
 
-	public void setLastVisitedQuestionnairePage(
-			QuestionnairePage lastVisitedQuestionnairePage) {
-		this.lastVisitedQuestionnairePage = lastVisitedQuestionnairePage;
+	public void setQuestionnaireVersion(String questionnaireVersion) {
+		this.questionnaireVersion = questionnaireVersion;
 	}
 
-	public List<ParticipantAnswer> getParticipantAnswers() {
-		return participantAnswers != null ? participantAnswers
-				: (participantAnswers = new ArrayList<ParticipantAnswer>());
+	public List<QuestionAnswer> getParticipantAnswers() {
+		return questionAnswers != null ? questionAnswers
+				: (questionAnswers = new ArrayList<QuestionAnswer>());
 	}
 
-	public void addParticipantAnswer(ParticipantAnswer participantAnswer) {
-		if (participantAnswer != null) {
-			getParticipantAnswers().add(participantAnswer);
-			participantAnswer.setQuestionnaireParticipant(this);
+	public void addParticipantAnswer(QuestionAnswer questionAnswers) {
+		if (questionAnswers != null) {
+			getParticipantAnswers().add(questionAnswers);
+			questionAnswers.setQuestionnaireParticipant(this);
 		}
 	}
 
