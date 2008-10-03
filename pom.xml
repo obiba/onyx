@@ -568,8 +568,8 @@
   </repositories>
 
   <scm>
-    <connection>scm:svn:https://svn.obiba.org/onyx/tags/releases/jade-1.0-M3</connection>
-    <developerConnection>scm:svn:https://svn.obiba.org/onyx/tags/releases/jade-1.0-M3</developerConnection>
+    <connection>scm:svn:http://svn.obiba.org/onyx/trunk</connection>
+    <developerConnection>scm:svn:https://svn.obiba.org/obiba-commons/trunk</developerConnection>
   </scm>
 
   <properties>

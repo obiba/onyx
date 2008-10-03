@@ -8,6 +8,7 @@
 
   <groupId>org.obiba.jade</groupId>
   <artifactId>jade</artifactId>
+  <version>1.0-M4-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <parent>

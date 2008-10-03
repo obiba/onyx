@@ -30,13 +30,13 @@
     <dependency>
       <groupId>org.obiba.jade</groupId>
       <artifactId>jade-core</artifactId>
-      <version>${project.version}</version>
+      <version>1.0-M4-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.obiba.jade</groupId>
       <artifactId>jade-remote-server</artifactId>
-      <version>${project.version}</version>
+      <version>1.0-M4-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
