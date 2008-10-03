@@ -173,4 +173,8 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
     return true;
   }
+  
+  public ActionType getStartingActionType() {
+    return null;
+  }
 }

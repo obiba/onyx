@@ -79,4 +79,8 @@ public class JadeCompletedState extends AbstractJadeStageState implements Initia
     return "Jade.Completed";
   }
 
+  @Override
+  public ActionType getStartingActionType() {
+    return ActionType.EXECUTE;
+  }
 }

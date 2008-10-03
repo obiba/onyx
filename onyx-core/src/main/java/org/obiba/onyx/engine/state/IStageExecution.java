@@ -137,4 +137,12 @@ public interface IStageExecution {
    * @return the reason for the state
    */
   public Action getReason();
+
+  /**
+   * Returns the starting action type for the state (i.e., the first action that caused the transition to the current
+   * state).
+   * 
+   * @return the actionType for the state
+   */
+  public ActionType getStartingActionType();
 }

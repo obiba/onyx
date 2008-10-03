@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinitionBuilder;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.TransitionEvent;
@@ -69,4 +70,9 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
     return "Jade.Skipped";
   }
 
+  @Override
+  public ActionType getStartingActionType() {
+    return ActionType.SKIP;
+  }
+  
 }
