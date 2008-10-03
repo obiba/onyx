@@ -49,7 +49,7 @@ public class InstrumentSelectionStep extends WizardStepPanel {
 
     if(instrument != null) {
       activeInstrumentRunService.start(activeInterviewService.getParticipant(), instrument);
-      instrumentForm.setUpWizardFlow();
+      setNextStep(instrumentForm.setUpWizardFlow());
     } else {
       setNextStep(null);
     }
