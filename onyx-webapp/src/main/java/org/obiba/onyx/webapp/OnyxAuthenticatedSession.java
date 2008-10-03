@@ -89,7 +89,11 @@ public final class OnyxAuthenticatedSession extends WebSession {
 
       // Prepare the role list in a string provided to the Wicket Roles class. 
       StringBuilder roleList = new StringBuilder();
-      for (Role r : queryService.matchOne(user).getRoles()) {
+      
+      User template = new User();
+      template.setLogin(user.getLogin());
+      
+      for (Role r : queryService.matchOne(template).getRoles()) {
         if (roleList.length()!= 0)
           roleList.append(",");
         roleList.append(r.getName());
