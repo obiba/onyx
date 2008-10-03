@@ -567,7 +567,7 @@ public class TanitaInstrument implements InstrumentRunner, InitializingBean, Ser
     // Add units label.
     if(pUnits != null) {
       JLabel wFieldUnit = new JLabel(" " + pUnits);
-      wFieldUnit.setPreferredSize(new Dimension(30, 60));
+      wFieldUnit.setPreferredSize(new Dimension(45, 60));
       wFieldPanel.add(wFieldUnit);
     }
 
@@ -655,12 +655,12 @@ public class TanitaInstrument implements InstrumentRunner, InitializingBean, Ser
   public void initialize() {
     log.info("Refresh serial port list");
     refreshSerialPortList();
-    log.info("Setup serial port");
+   /* log.info("Setup serial port");
     setupSerialPort();
     // If serial port is not available display error message
     if(!portIsAvailable) {
       reestablishConnection();
-    }
+    }*/
   }
 
   public void run() {
