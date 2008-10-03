@@ -8,12 +8,12 @@
   <groupId>org.obiba.onyx</groupId>
   <artifactId>onyx-modules</artifactId>
   <packaging>pom</packaging>
-  <version>1.0-M3-SNAPSHOT</version>
+  <version>1.0-M3-20081003</version>
 
   <parent>
     <artifactId>onyx</artifactId>
     <groupId>org.obiba.onyx</groupId>
-    <version>1.0-M3-SNAPSHOT</version>
+    <version>1.0-M3-20081003</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 

@@ -8,12 +8,13 @@
 
   <groupId>org.obiba.jade</groupId>
   <artifactId>jade</artifactId>
+  <version>1.0-M3</version>
   <packaging>pom</packaging>
 
   <parent>
     <artifactId>onyx-modules</artifactId>
     <groupId>org.obiba.onyx</groupId>
-    <version>1.0-M3-SNAPSHOT</version>
+    <version>1.0-M3-20081003</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
