@@ -1,8 +1,6 @@
 package org.obiba.onyx.webapp.participant.panel;
 
 import java.util.Arrays;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -18,16 +16,13 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.Province;
 import org.obiba.onyx.core.service.ParticipantService;
-import org.obiba.onyx.webapp.converter.GenderConverter;
-import org.obiba.onyx.webapp.converter.ProvinceConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,8 +55,6 @@ public class EditParticipantPanel extends Panel {
 
   private ModalWindow parentWindow;
 
-  private Form editParticipantForm;
-
   private FeedbackPanel feedbackPanel;
 
   public EditParticipantPanel(String id, IModel participantModel, ModalWindow parentWindow) {
@@ -69,7 +62,7 @@ public class EditParticipantPanel extends Panel {
 
     this.parentWindow = parentWindow;
 
-    editParticipantForm = new EditParticipantForm("editParticipantForm", participantModel);
+    Form editParticipantForm = new EditParticipantForm("editParticipantForm", participantModel);
     add(editParticipantForm);
 
     feedbackPanel = new FeedbackPanel("feedback");
@@ -86,8 +79,8 @@ public class EditParticipantPanel extends Panel {
       super(id);
       setModel(participantModel);
 
-      add(new TextField("firstName", new PropertyModel(getModel(), "firstName")).setRequired(true).setLabel(new StringResourceModel("FirstName", null)));
-      add(new TextField("lastName", new PropertyModel(getModel(), "lastName")).setRequired(true).setLabel(new StringResourceModel("LastName", null)));
+      add(new TextField("firstName", new PropertyModel(getModel(), "firstName")).setRequired(true).setLabel(new ResourceModel("FirstName")));
+      add(new TextField("lastName", new PropertyModel(getModel(), "lastName")).setRequired(true).setLabel(new ResourceModel("LastName")));
       add(createGenderDropDown());
       add(createBirthDateField());
       add(new TextField("street", new PropertyModel(getModel(), "street")));
@@ -131,7 +124,7 @@ public class EditParticipantPanel extends Panel {
       };
 
       birthDateField.setRequired(true);
-      birthDateField.setLabel(new StringResourceModel("BirthDate", null));
+      birthDateField.setLabel(new ResourceModel("BirthDate"));
 
       return birthDateField;
     }
@@ -139,15 +132,17 @@ public class EditParticipantPanel extends Panel {
     @SuppressWarnings("serial")
     private DropDownChoice createGenderDropDown() {
       DropDownChoice genderDropDown = new DropDownChoice("gender", new PropertyModel(getModel(), "gender"), Arrays.asList(Gender.values()), new GenderRenderer()) {
-        @SuppressWarnings("unchecked")
+
         @Override
-        public IConverter getConverter(Class type) {
-          return new GenderConverter();
+        protected boolean localizeDisplayValues() {
+          // Returning true will make the parent class lookup the value returned by the call
+          // to GenderRenderer.getDisplayValue() as a key in the localizer
+          // (ie: localizer.getString(renderer.getDisplayValue())
+          return true;
         }
       };
-      genderDropDown.setType(Gender.class);
       genderDropDown.setRequired(true);
-      genderDropDown.setLabel(new StringResourceModel("Gender", null));
+      genderDropDown.setLabel(new ResourceModel("Gender"));
       genderDropDown.setOutputMarkupId(true);
 
       return genderDropDown;
@@ -155,14 +150,7 @@ public class EditParticipantPanel extends Panel {
 
     @SuppressWarnings("serial")
     private DropDownChoice createProvinceDropDown() {
-      DropDownChoice provinceDropDown = new DropDownChoice("province", new PropertyModel(getModel(), "province"), Arrays.asList(Province.values()), new ProvinceRenderer()) {
-        @SuppressWarnings("unchecked")
-        @Override
-        public IConverter getConverter(Class type) {
-          return new ProvinceConverter();
-        }
-      };
-      provinceDropDown.setType(Province.class);
+      DropDownChoice provinceDropDown = new DropDownChoice("province", new PropertyModel(getModel(), "province"), Arrays.asList(Province.values()), new ProvinceRenderer());
       provinceDropDown.setRequired(true);
       provinceDropDown.setOutputMarkupId(true);
 
@@ -174,9 +162,8 @@ public class EditParticipantPanel extends Panel {
   private class GenderRenderer implements IChoiceRenderer {
 
     public Object getDisplayValue(Object object) {
-      Locale locale = EditParticipantPanel.this.getLocale();
-      ResourceBundle resourceBundle = ResourceBundle.getBundle("org.obiba.onyx.webapp.OnyxApplication", locale);
-      return resourceBundle.getString("Gender." + object.toString());
+      // Prepend "Gender." to generate the proper resource bundle key
+      return "Gender." + object.toString();
     }
 
     public String getIdValue(Object object, int index) {

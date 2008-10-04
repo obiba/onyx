@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.participant.Province;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.wicket.test.MockSpringApplication;
 
@@ -59,6 +60,7 @@ public class EditParticipantPanelTest {
         return new EditParticipantPanel(panelId, new Model(p), new ModalWindow("bogus"));
       }
     });
+    tester.dumpPage();
 
     FormTester formTester = tester.newFormTester("panel:editParticipantForm");
 
@@ -83,7 +85,7 @@ public class EditParticipantPanelTest {
     p.setBarcode("1234");
     p.setBirthDate(new Date());
     p.setCity("Montréal");
-    p.setProvince("QC");
+    p.setProvince(Province.QC);
     p.setGender(Gender.MALE);
     return p;
   }

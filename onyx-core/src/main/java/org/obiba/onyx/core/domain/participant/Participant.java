@@ -45,7 +45,8 @@ public class Participant extends AbstractEntity {
 
   private String city;
 
-  private String province;
+  @Enumerated(EnumType.STRING)
+  private Province province;
 
   private String country;
 
@@ -175,11 +176,11 @@ public class Participant extends AbstractEntity {
     this.city = city;
   }
 
-  public String getProvince() {
+  public Province getProvince() {
     return province;
   }
 
-  public void setProvince(String province) {
+  public void setProvince(Province province) {
     this.province = province;
   }
 
