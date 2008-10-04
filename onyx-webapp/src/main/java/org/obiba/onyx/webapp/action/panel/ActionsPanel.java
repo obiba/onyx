@@ -7,6 +7,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.ResourceModel;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.wicket.action.ActionWindow;
@@ -36,7 +37,7 @@ public class ActionsPanel extends Panel {
         }
 
       };
-      link.add(new Label("action", getString(actionDef.getLabel(), null, actionDef.getLabel())));
+      link.add(new Label("action", new ResourceModel(actionDef.getLabel(), actionDef.getLabel())));
       item.add(link);
 
     }
