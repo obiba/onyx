@@ -15,6 +15,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.validation.AbstractIntegrityCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
+import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheckType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
@@ -129,7 +130,8 @@ public class InstrumentLaunchStep extends WizardStepPanel {
   }
 
   /**
-   * For each output parameter, performs all integrity checks.
+   * For each output parameter, performs all integrity checks of type
+   * <code>ERROR</code>.
    *  
    * @param outputParams output parameters
    * @return list of integrity checks that failed (empty list if none)
@@ -141,6 +143,11 @@ public class InstrumentLaunchStep extends WizardStepPanel {
        List<AbstractIntegrityCheck> integrityChecks = param.getIntegrityChecks();
        
        for (AbstractIntegrityCheck integrityCheck : integrityChecks) {
+         // Skip non-ERROR type checks.
+         if (!integrityCheck.getType().equals(IntegrityCheckType.ERROR)) {
+           continue;
+         }
+         
          InstrumentRunValue runValue = activeInstrumentRunService.getOutputInstrumentRunValue(param.getName());
          Data paramData = (runValue != null) ? runValue.getData() : null;
 
