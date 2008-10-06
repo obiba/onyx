@@ -24,6 +24,7 @@ import org.obiba.onyx.webapp.home.page.HomePage;
 import org.obiba.onyx.webapp.login.page.LoginPage;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 import org.obiba.onyx.webapp.stage.page.StagePage;
+import org.obiba.runtime.Version;
 import org.obiba.wicket.application.WebApplicationStartupListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,8 @@ public class OnyxApplication extends SpringWebApplication implements IUnauthoriz
   private final Logger log = LoggerFactory.getLogger(OnyxApplication.class);
 
   private UserService userService;
+  
+  private Version version;
 
   public UserService getUserService() {
     return userService;
@@ -40,6 +43,14 @@ public class OnyxApplication extends SpringWebApplication implements IUnauthoriz
 
   public void setUserService(UserService userService) {
     this.userService = userService;
+  }
+
+  public Version getVersion() {
+    return version;
+  }
+
+  public void setVersion(Version version) {
+    this.version = version;
   }
 
   protected void init() {

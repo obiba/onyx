@@ -2,6 +2,7 @@ package org.obiba.onyx.webapp.base.page;
 
 import java.util.Locale;
 
+import org.apache.wicket.Application;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.html.IHeaderContributor;
@@ -12,6 +13,7 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.resources.JavascriptResourceReference;
 import org.apache.wicket.model.StringResourceModel;
+import org.obiba.onyx.webapp.OnyxApplication;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.panel.HeaderPanel;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
@@ -27,7 +29,7 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware, I
     feedbackPanel = new FeedbackPanel("feedback");
     feedbackPanel.setOutputMarkupId(true);
     add(feedbackPanel);
-
+    
     if(((OnyxAuthenticatedSession) getSession()).isSignedIn()) {
       add(new HeaderPanel("header"));
     } else {
@@ -35,6 +37,7 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware, I
     }
 
     add(new MenuBar("menuBar"));
+    add(new Label("version", ((OnyxApplication)getApplication()).getVersion().toString()));
 
     add(new Label("baseAjaxIndicator", new StringResourceModel("Processing", this, null)));
   }

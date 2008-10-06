@@ -1,7 +1,5 @@
 package org.obiba.onyx.webapp;
 
-import java.util.Iterator;
-
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
 import org.apache.wicket.authorization.strategies.role.Roles;
