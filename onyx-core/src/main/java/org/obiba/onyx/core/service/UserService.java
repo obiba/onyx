@@ -19,13 +19,13 @@ public interface UserService {
    * @param clauses
    * @return
    */
-  public List<User> getUsers(boolean isDeleted, PagingClause paging, SortingClause... clauses);
+  public List<User> getUsers(User template, PagingClause paging, SortingClause... clauses);
 
   /**
    * Returns the count of users
    * @return
    */
-  public int getUserCount();
+  public int getUserCount(User template);
 
   /**
    * Gives the user with the specified login

@@ -32,14 +32,18 @@ public class UserServiceHibernateImpl extends DefaultUserServiceImpl {
     return factory.getCurrentSession();
   }
   
-  public List<User> getUsers(boolean isDeleted, PagingClause paging, SortingClause... clauses) {
-    return getUserCriteria(isDeleted, paging, clauses).list();
+  public List<User> getUsers(User template, PagingClause paging, SortingClause... clauses) {
+    return getUserCriteria(template, paging, clauses).list();
   }
   
-  private AssociationCriteria getUserCriteria(boolean isDeleted, PagingClause paging, SortingClause... clauses) {
+  public int getUserCount(User template) {
+    return getUserCriteria(template, null, (SortingClause) null).count();
+  }
+  
+  private AssociationCriteria getUserCriteria(User template, PagingClause paging, SortingClause... clauses) {
     AssociationCriteria criteria = AssociationCriteria.create(User.class, getSession());
 
-    if (isDeleted == false) criteria.add("deleted", Operation.eq, isDeleted);
+    if (template.isDeleted() == false) criteria.add("deleted", Operation.eq, template.isDeleted());
     if(paging != null) criteria.addPagingClause(paging);
     if(clauses != null) criteria.addSortingClauses(clauses);
     

@@ -32,6 +32,7 @@ import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.user.Role;
+import org.obiba.onyx.core.domain.user.Status;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.obiba.onyx.core.service.UserService;
@@ -116,35 +117,34 @@ public class ApplicationConfigurationPage extends BasePage {
       setMultiPart(true);
 
       AutoCompleteTextField participantUpdateDirectory = new AutoCompleteTextField("participantUpdateDirectory", new PropertyModel(model, "participantDirectoryPath")) {
-        
+
         @SuppressWarnings("unchecked")
         protected Iterator getChoices(String input) {
           File dir = new File(input);
           List<String> choices = new ArrayList<String>();
-          if (dir.exists() && dir.isDirectory()) {
+          if(dir.exists() && dir.isDirectory()) {
             choices.add(dir.getAbsolutePath());
-            for (File subDir : dir.listFiles()) {
-              if (subDir.isDirectory() && !subDir.getName().startsWith(".")) {
+            for(File subDir : dir.listFiles()) {
+              if(subDir.isDirectory() && !subDir.getName().startsWith(".")) {
                 choices.add(subDir.getAbsolutePath());
               }
             }
           }
           return choices.iterator();
         }
-        
+
       };
       participantUpdateDirectory.add(new AbstractValidator() {
-        
+
         protected void onValidate(IValidatable validatable) {
-          File dir = new File((String)validatable.getValue());
-          if (!dir.exists()) {
+          File dir = new File((String) validatable.getValue());
+          if(!dir.exists()) {
             validatable.error(new ParticipantsListDirectoryValidationError("ParticipantsListRepositoryDoesNotExist"));
-          }
-          else if (!dir.isDirectory()) {
+          } else if(!dir.isDirectory()) {
             validatable.error(new ParticipantsListDirectoryValidationError("ParticipantsListRepositoryIsNotDirectory"));
           }
         }
-        
+
       });
       participantUpdateDirectory.add(new RequiredFormFieldBehavior());
       add(participantUpdateDirectory);
@@ -200,6 +200,8 @@ public class ApplicationConfigurationPage extends BasePage {
       user.setPassword(User.digest(user.getPassword()));
       user.addRole(adminRole);
       user.setLanguage(Session.get().getLocale());
+      user.setDeleted(false);
+      user.setStatus(Status.ACTIVE);
       userService.createUser(user);
 
       // Save initial application configuration.
@@ -234,20 +236,20 @@ public class ApplicationConfigurationPage extends BasePage {
       return config.getParticipantDirectoryPath();
     }
   }
-  
+
   @SuppressWarnings("serial")
-  private class ParticipantsListDirectoryValidationError implements IValidationError,Serializable {
+  private class ParticipantsListDirectoryValidationError implements IValidationError, Serializable {
 
     private String key;
-    
+
     public ParticipantsListDirectoryValidationError(String key) {
       this.key = key;
     }
-    
+
     public String getErrorMessage(IErrorMessageSource messageSource) {
       return ApplicationConfigurationPage.this.getString(key);
     }
-    
+
   }
 
 }

@@ -19,10 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public abstract class DefaultUserServiceImpl extends PersistenceManagerAwareService implements UserService {
 
-  public int getUserCount() {
-    return getPersistenceManager().count(User.class);
-  }
-
   public User getUserWithLogin(String login) {
     User template = new User();
     template.setLogin(login);

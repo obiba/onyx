@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.pages.AccessDeniedPage;
 import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.PackageName;
+import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.webapp.authentication.UserRolesAuthorizer;
 import org.obiba.onyx.webapp.config.page.ApplicationConfigurationPage;
@@ -85,7 +86,10 @@ public class OnyxApplication extends SpringWebApplication implements IUnauthoriz
 
   @Override
   public Class<?> getHomePage() {
-    if(userService.getUserCount() > 0) {
+    User template = new User();
+    template.setDeleted(false);
+
+    if(userService.getUserCount(template) > 0) {
       if(OnyxAuthenticatedSession.get().isSignedIn()) {
         return HomePage.class;
       } else {

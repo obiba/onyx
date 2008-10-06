@@ -111,12 +111,12 @@ public class UserSearchPage extends BasePage {
 
     @Override
     protected List<User> getList(PagingClause paging, SortingClause... clauses) {
-      return userService.getUsers(template.isDeleted(), paging, clauses);
+      return userService.getUsers(template, paging, clauses);
     }
 
     @Override
     public int size() {
-      return userService.getUserCount();
+      return userService.getUserCount(template);
     }
 
   }

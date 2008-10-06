@@ -37,14 +37,18 @@ public class UserServiceTest extends BaseDefaultSpringContextTestCase {
   @Test
   @Dataset
   public void testGetUsers() {
-    List<User> userList = userService.getUsers(false, new PagingClause(0), new SortingClause("lastName"));
+    User template = new User();
+    template.setDeleted(false);
+    List<User> userList = userService.getUsers(template, new PagingClause(0), new SortingClause("lastName"));
     Assert.assertEquals(3, userList.size());
   }
   
   @Test
   @Dataset
   public void testGetUserCount() {
-    Assert.assertEquals(3, userService.getUserCount());
+    User template = new User();
+    template.setDeleted(false);
+    Assert.assertEquals(3, userService.getUserCount(template));
   }
   
   @Test
