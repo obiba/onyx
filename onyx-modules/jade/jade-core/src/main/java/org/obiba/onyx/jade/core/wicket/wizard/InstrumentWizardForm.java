@@ -48,6 +48,8 @@ public abstract class InstrumentWizardForm extends WizardForm {
   private WizardStepPanel outputParametersStep;
 
   private WizardStepPanel conclusionStep;
+  
+  private WizardStepPanel warningStep;
 
   public InstrumentWizardForm(String id, IModel instrumentTypeModel) {
     super(id);
@@ -61,9 +63,13 @@ public abstract class InstrumentWizardForm extends WizardForm {
     askedContraIndicationStep = new AskedContraIndicationStep(getStepId());
     inputParametersStep = new InputParametersStep(getStepId());
     instrumentLaunchStep = new InstrumentLaunchStep(getStepId());
-    outputParametersStep = new OutputParametersStep(getStepId());
     conclusionStep = new ConclusionStep(getStepId());
-
+    warningStep = new WarningsStep(getStepId());
+    outputParametersStep = new OutputParametersStep(getStepId(), conclusionStep, warningStep);
+    
+    warningStep.setNextStep(conclusionStep);
+    warningStep.setPreviousStep(outputParametersStep);
+    
     // do we need to select the instrument ?
     Instrument template = new Instrument();
     template.setInstrumentType((InstrumentType) instrumentTypeModel.getObject());

@@ -3,6 +3,8 @@ package org.obiba.onyx.jade.core.domain.instrument.validation;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
@@ -22,6 +24,9 @@ import org.springframework.context.ApplicationContext;
 @DiscriminatorColumn(name = "integrity_check_type", discriminatorType = DiscriminatorType.STRING, length = 100)
 public abstract class AbstractIntegrityCheck extends AbstractEntity implements IntegrityCheck {
 
+  @Enumerated(EnumType.STRING)
+  private IntegrityCheckType type;
+ 
   @ManyToOne
   @JoinColumn(name = "instrument_parameter_id")
   private InstrumentParameter targetParameter;
@@ -40,6 +45,18 @@ public abstract class AbstractIntegrityCheck extends AbstractEntity implements I
   
   public void setUserSessionService(UserSessionService userSessionService) {
     this.userSessionService = userSessionService;
+  }
+  
+  public void setType(IntegrityCheckType type) {
+    this.type = type;
+  }
+  
+  public IntegrityCheckType getType() {
+    if (type == null) {
+      type = IntegrityCheckType.ERROR;  
+    }
+    
+    return type;
   }
   
   public void setTargetParameter(InstrumentParameter targetParameter) {

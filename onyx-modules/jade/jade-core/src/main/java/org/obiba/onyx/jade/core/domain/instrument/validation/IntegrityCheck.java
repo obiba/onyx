@@ -18,6 +18,13 @@ import org.springframework.context.ApplicationContext;
 public interface IntegrityCheck {
 
   /**
+   * Returns the type of check.
+   * 
+   * @return check type
+   */
+  public IntegrityCheckType getType(); 
+
+  /**
    * Sets the parameter to which this check is applied.
    * 
    * @param targetParameter parameter to which this check is applied
