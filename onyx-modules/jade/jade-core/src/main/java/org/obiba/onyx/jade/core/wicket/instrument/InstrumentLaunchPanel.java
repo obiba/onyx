@@ -8,12 +8,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
@@ -22,6 +20,7 @@ import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.jade.core.service.InstrumentDescriptorService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,9 +57,6 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
   @SpringBean
   private InstrumentDescriptorService instrumentDescriptorService;
-
-  @SpringBean(name = "userSessionService")
-  private UserSessionService userSessionService;
 
   @SuppressWarnings("serial")
   public InstrumentLaunchPanel(String id) {
@@ -106,13 +102,12 @@ public abstract class InstrumentLaunchPanel extends Panel {
     template.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
     template.setInstrument(instrument);
 
-    if (queryService.count(template)>0) {
+    if(queryService.count(template) > 0) {
       add(new Label("instructions", new StringResourceModel("Instructions", InstrumentLaunchPanel.this, null)));
-    }
-    else {
+    } else {
       add(new EmptyPanel("instructions"));
     }
-    
+
     for(final InstrumentInputParameter param : queryService.match(template)) {
       WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
       repeat.add(item);
@@ -120,15 +115,15 @@ public abstract class InstrumentLaunchPanel extends Panel {
       // Inject the Spring application context and the user session service
       // into the instrument parameter. NOTE: These are dependencies of
       // InstrumentParameter.getDescription().
-      param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
-      param.setUserSessionService(userSessionService);
+      // param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
+      // param.setUserSessionService(userSessionService);
 
       item.add(new Label("instruction", new StringResourceModel("TypeTheValueInTheInstrument", InstrumentLaunchPanel.this, new Model() {
         public Object getObject() {
           InstrumentRunValue runValue = activeInstrumentRunService.getInputInstrumentRunValue(param.getName());
-          ValueMap map = new ValueMap("description=" + param.getDescription());
+          ValueMap map = new ValueMap("description=" + new SpringStringResourceModel(param.getDescription()).getString());
           if(runValue.getData() != null && runValue.getData().getValue() != null) {
-            map.put("value", runValue.getData().getValueAsString());
+            map.put("value", new SpringStringResourceModel(runValue.getData().getValueAsString()).getString());
             String unit = param.getMeasurementUnit();
             if(unit == null) {
               unit = "";

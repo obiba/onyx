@@ -158,7 +158,9 @@
     <instrument reference="bone1" />
   </input>
 
-  <operatorSource id="foot_scanned_source" />
+  <operatorSource id="foot_scanned_source">
+    <choices>L,R</choices>
+  </operatorSource>
   <input id="foot_scanned">
     <name>foot_scanned</name>
     <description>Foot_Scanned</description>

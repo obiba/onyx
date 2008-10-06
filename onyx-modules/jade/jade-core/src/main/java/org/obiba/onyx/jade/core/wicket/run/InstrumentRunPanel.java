@@ -9,11 +9,9 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
@@ -22,11 +20,11 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
-import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
@@ -49,9 +47,6 @@ public class InstrumentRunPanel extends Panel {
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
-
-  @SpringBean(name = "userSessionService")
-  private UserSessionService userSessionService;
 
   /**
    * Build the panel with the current instrument run.
@@ -145,13 +140,7 @@ public class InstrumentRunPanel extends Panel {
       // do not show COMPUTED values or misssing values
       if(runValue != null && !runValue.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
 
-        // Inject the Spring application context and the user session service
-        // into the instrument parameter. NOTE: These are dependencies of
-        // InstrumentParameter.getDescription().
-        param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
-        param.setUserSessionService(userSessionService);
-
-        Label label = new Label(KeyValueDataPanel.getRowKeyId(), new PropertyModel(param, "description"));
+        Label label = new Label(KeyValueDataPanel.getRowKeyId(), new SpringStringResourceModel(new PropertyModel(param, "description")));
 
         Data data = runValue.getData();
         Label value;
@@ -163,7 +152,7 @@ public class InstrumentRunPanel extends Panel {
             if(unit == null) {
               unit = "";
             }
-            value = new Label(KeyValueDataPanel.getRowValueId(), data.getValueAsString() + " " + unit);
+            value = new Label(KeyValueDataPanel.getRowValueId(), new SpringStringResourceModel(data.getValueAsString()).getString() + " " + unit);
           }
         } else {
           value = new Label(KeyValueDataPanel.getRowValueId());

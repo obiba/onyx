@@ -10,6 +10,7 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -22,10 +23,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
@@ -37,8 +36,10 @@ import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.instrument.validation.IntegrityCheckValidator;
 import org.obiba.onyx.util.StringUtil;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,9 +70,6 @@ public class InstrumentInputParameterPanel extends Panel {
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
-
-  @SpringBean(name = "userSessionService")
-  private UserSessionService userSessionService;
 
   private List<RadioGroup> interpretativeRadioGroups = new ArrayList<RadioGroup>();
 
@@ -149,10 +147,7 @@ public class InstrumentInputParameterPanel extends Panel {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
-        param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
-        param.setUserSessionService(userSessionService);
-
-        item.add(new Label("label", new PropertyModel(param, "description")));
+        item.add(new Label("label", new SpringStringResourceModel(new PropertyModel(param, "description"))));
 
         Data data = activeInstrumentRunService.getInterpretativeInstrumentRunValue(param.getName()).getData();
         final String defaultDataValue = data != null ? data.getValueAsString() : null;
@@ -160,7 +155,7 @@ public class InstrumentInputParameterPanel extends Panel {
         // radio group without default selection
         final RadioGroup radioGroup = new RadioGroup("radioGroup", new Model());
         interpretativeRadioGroups.add(radioGroup);
-        radioGroup.setLabel(new PropertyModel(param, "description"));
+        radioGroup.setLabel(new SpringStringResourceModel(new PropertyModel(param, "description")));
         item.add(radioGroup);
         ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { YES, NO, DOESNOT_KNOW })) {
 
@@ -242,13 +237,7 @@ public class InstrumentInputParameterPanel extends Panel {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
-        // Inject the Spring application context and the user session service
-        // into the instrument parameter. NOTE: These are dependencies of
-        // InstrumentParameter.getDescription().
-        param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
-        param.setUserSessionService(userSessionService);
-
-        Label label = new Label("label", new PropertyModel(param, "description"));
+        Label label = new Label("label", new SpringStringResourceModel(new PropertyModel(param, "description")));
         item.add(label);
 
         InstrumentRunValue runValue = activeInstrumentRunService.getInputInstrumentRunValue(param.getName());
@@ -257,23 +246,35 @@ public class InstrumentInputParameterPanel extends Panel {
 
         List<Data> choices = null;
         if(param.getInputSource() instanceof OperatorSource) {
-          List<String> strChoices = StringUtil.getCSVString(((OperatorSource) param.getInputSource()).getChoices());
+          List<String> strChoices = StringUtil.parseCSVString(((OperatorSource) param.getInputSource()).getChoices());
           if(strChoices.size() > 0) {
             choices = new ArrayList<Data>();
             for(String str : strChoices) {
-              choices.add(new Data(param.getDataType(), str));
+              choices.add(DataBuilder.build(param.getDataType(), str));
             }
           }
         }
 
         DataField field;
         if(choices != null && choices.size() > 0) {
-          field = new DataField("field", new PropertyModel(runValueModel, "data"), runValue.getDataType(), choices, param.getMeasurementUnit());
+          field = new DataField("field", new PropertyModel(runValueModel, "data"), runValue.getDataType(), choices, new IChoiceRenderer() {
+
+            public Object getDisplayValue(Object object) {
+              Data data = (Data) object;
+              return new SpringStringResourceModel(data.getValueAsString()).getString();
+            }
+
+            public String getIdValue(Object object, int index) {
+              Data data = (Data) object;
+              return data.getValueAsString();
+            }
+
+          }, param.getMeasurementUnit());
         } else {
           field = new DataField("field", new PropertyModel(runValueModel, "data"), runValue.getDataType(), param.getMeasurementUnit());
         }
         field.setRequired(true);
-        field.setLabel(new PropertyModel(param, "description"));
+        field.setLabel(new SpringStringResourceModel(new PropertyModel(param, "description")));
         field.add(new AjaxFormComponentUpdatingBehavior("onblur") {
           protected void onUpdate(AjaxRequestTarget target) {
             activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());

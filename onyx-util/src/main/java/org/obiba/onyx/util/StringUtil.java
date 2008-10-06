@@ -15,10 +15,10 @@ public class StringUtil {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(StringUtil.class);
   
-  public static List<String> getCSVString(String csvString) {
+  public static List<String> parseCSVString(String csvString) {
     List<String> strings = new ArrayList<String>();
     
-    log.info("csvString={}", csvString);
+    log.debug("csvString={}", csvString);
     CSVReader reader = new CSVReader(new StringReader(csvString));
     try {
       String[] array = reader.readNext();
@@ -30,7 +30,7 @@ public class StringUtil {
     } catch(IOException e) {
       log.error("Failed parsing CSV string:" + csvString, e);
     }
-    log.info("strings={}", strings);
+    log.debug("strings={}", strings);
     
     return strings;
   }

@@ -12,16 +12,15 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.instrument.validation.IntegrityCheckValidator;
 import org.obiba.onyx.wicket.data.DataField;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +37,6 @@ public class InstrumentOutputParameterPanel extends Panel {
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
-
-  @SpringBean(name = "userSessionService")
-  private UserSessionService userSessionService;
 
   private List<IModel> outputRunValueModels = new ArrayList<IModel>();
 
@@ -64,13 +60,7 @@ public class InstrumentOutputParameterPanel extends Panel {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
-        // Inject the Spring application context and the user session service
-        // into the instrument parameter. NOTE: These are dependencies of
-        // InstrumentParameter.getDescription().
-        param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
-        param.setUserSessionService(userSessionService);
-
-        Label label = new Label("label", new PropertyModel(param, "description"));
+        Label label = new Label("label", new SpringStringResourceModel(new PropertyModel(param, "description")));
         item.add(label);
 
         InstrumentRunValue runValue = activeInstrumentRunService.getOutputInstrumentRunValue(param.getName());
@@ -79,7 +69,7 @@ public class InstrumentOutputParameterPanel extends Panel {
 
         DataField field = new DataField("field", new PropertyModel(runValueModel, "data"), runValue.getDataType(), param.getMeasurementUnit());
         field.setRequired(true);
-        field.setLabel(new PropertyModel(param, "description"));
+        field.setLabel(new SpringStringResourceModel(new PropertyModel(param, "description")));
         field.add(new AjaxFormComponentUpdatingBehavior("onblur") {
           protected void onUpdate(AjaxRequestTarget target) {
             activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
