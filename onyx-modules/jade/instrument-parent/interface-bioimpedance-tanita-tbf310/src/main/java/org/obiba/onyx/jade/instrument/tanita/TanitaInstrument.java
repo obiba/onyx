@@ -176,7 +176,7 @@ public class TanitaInstrument implements InstrumentRunner, InitializingBean, Ser
     saveDataBtn.setEnabled(false);
 
     // Initialize interface components size
-    appWindowWidth = 460;
+    appWindowWidth = 525;
     appWindowHeight = 260;
     gridCol = 2;
 
@@ -425,6 +425,7 @@ public class TanitaInstrument implements InstrumentRunner, InitializingBean, Ser
 
     appWindow.setAlwaysOnTop(true);
     appWindow.setUndecorated(true);
+    appWindow.setResizable(false);
     appWindow.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
     appWindow.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -655,7 +656,7 @@ public class TanitaInstrument implements InstrumentRunner, InitializingBean, Ser
   public void initialize() {
     log.info("Refresh serial port list");
     refreshSerialPortList();
-   log.info("Setup serial port");
+    log.info("Setup serial port");
     setupSerialPort();
     // If serial port is not available display error message
     if(!portIsAvailable) {
