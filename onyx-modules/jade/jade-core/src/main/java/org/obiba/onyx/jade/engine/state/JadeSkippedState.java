@@ -32,7 +32,7 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
   public void stop(Action action) {
     super.execute(action);
     log.info("Jade Stage {} is cancelling", super.getStage().getName());
-    if (areDependenciesCompleted() != null && areDependenciesCompleted()) {
+    if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
     } else {
       castEvent(TransitionEvent.INVALID);
@@ -42,7 +42,10 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
   @Override
   public void onTransition(IStageExecution execution, TransitionEvent event) {
     // do nothing when skipped
-    if (event.equals(TransitionEvent.CONTRAINDICATED)) super.onTransition(execution, event);
+    if(event.equals(TransitionEvent.CONTRAINDICATED)) super.onTransition(execution, event);
+    // case not applicable transition
+    Boolean var = areDependenciesCompleted();
+    if(var != null && var == false) castEvent(TransitionEvent.NOTAPPLICABLE);
   }
 
   @Override
@@ -54,7 +57,7 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
 
     String message = context.getMessage(state, null, locale);
 
-    if (reason != null) {
+    if(reason != null) {
       message += " (" + context.getMessage(reason, null, locale) + ")";
     }
 
@@ -65,7 +68,7 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
   public boolean isCompleted() {
     return true;
   }
-  
+
   public String getName() {
     return "Jade.Skipped";
   }
@@ -74,5 +77,5 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
   public ActionType getStartingActionType() {
     return ActionType.SKIP;
   }
-  
+
 }
