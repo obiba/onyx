@@ -187,6 +187,9 @@ public class SpringStringResourceModel extends LoadableDetachableModel {
     if(model != null) {
       model.detach();
     }
+    if (resourceKeyModel != null) {
+      resourceKeyModel.detach();
+    }
     // nullification
     context = null;
     locale = null;
