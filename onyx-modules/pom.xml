@@ -20,7 +20,7 @@
   <modules>
     <module>marble</module>
     <module>jade</module>
-    <!--module>quartz</module-->    
+    <module>quartz</module>    
   </modules>
 
 </project>

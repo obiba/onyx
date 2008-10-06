@@ -14,7 +14,7 @@
   <parent>
     <artifactId>quartz</artifactId>
     <groupId>org.obiba.quartz</groupId>
-    <version>1.0-M2-SNAPSHOT</version>
+    <version>1.0-M1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -113,7 +113,7 @@
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-spring-annot</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.jscience</groupId>
       <artifactId>jscience</artifactId>
