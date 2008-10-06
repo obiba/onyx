@@ -210,8 +210,8 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
       resultReader.close();
 
     } catch(FileNotFoundException fnfEx) {
-      JOptionPane.showMessageDialog(null, "Error: spirometry output data file not found", "Could not complete process", JOptionPane.ERROR_MESSAGE);
-      throw new RuntimeException("Error: spirometry output data file not found", fnfEx);
+      log.warn("No device output found");
+      
     } catch(IOException ioEx) {
       throw new RuntimeException("Error: retrieve spirometry data IOException", ioEx);
     } catch(Exception ex) {
@@ -244,9 +244,13 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     }
 
     // Save the FVC image
-    File FVCFile = new File(getMirPath() + getExternalImageName());
-    ouputToSend.put("FVCImage", DataBuilder.buildBinary(FVCFile));
-
+    try{
+      File FVCFile = new File(getMirPath() + getExternalImageName());
+      ouputToSend.put("FVCImage", DataBuilder.buildBinary(FVCFile));
+    }
+    catch (Exception e){
+      log.warn("No device output image found");
+    }
     instrumentExecutionService.addOutputParameterValues(ouputToSend);
   }
 

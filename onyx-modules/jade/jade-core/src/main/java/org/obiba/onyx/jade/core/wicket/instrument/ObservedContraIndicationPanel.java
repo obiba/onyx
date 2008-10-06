@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.SpringWebApplication;
@@ -64,7 +65,7 @@ public class ObservedContraIndicationPanel extends Panel {
     setOutputMarkupId(true);
 
     selectionModel = new ContraIndicationSelection();
-    final RadioGroup radioGroup = new RadioGroup("radioGroup", new PropertyModel(selectionModel, "selection"));
+    final RadioGroup radioGroup = new RadioGroup("radioGroup", new Model());
     radioGroup.setLabel(new StringResourceModel("YesNo", this, null));
     add(radioGroup);
     ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { YES, NO })) {
@@ -80,7 +81,6 @@ public class ObservedContraIndicationPanel extends Panel {
             log.info("onChange={}", key);
             boolean yes = key.equals(YES);
             radioGroup.setModel(item.getModel());
-            selectionModel.setSelection(key);
             selectionModel.setContraIndication(null);
             selectionModel.setOtherContraIndication(null);
             contraIndicationDropDownChoice.setEnabled(yes);
@@ -129,8 +129,12 @@ public class ObservedContraIndicationPanel extends Panel {
 
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
+        // Clear input.
+        radioGroup.clearInput();
+        
         // make sure the right radio is selected
-        selectionModel.setSelection(selectionModel.getContraIndication() != null ? YES : NO);
+        radioGroup.getModel().setObject(selectionModel.getContraIndication() != null ? YES : NO);
+        
         activeInstrumentRunService.setOtherContraIndication(null);
         setOtherVisible(selectionModel.getContraIndication() != null && selectionModel.getContraIndication().getName().equals(OTHER));
         target.addComponent(ObservedContraIndicationPanel.this);
@@ -157,16 +161,6 @@ public class ObservedContraIndicationPanel extends Panel {
 
   @SuppressWarnings("serial")
   private class ContraIndicationSelection implements Serializable {
-
-    private String selection;
-
-    public String getSelection() {
-      return selection;
-    }
-
-    public void setSelection(String selection) {
-      this.selection = selection;
-    }
 
     public String getOtherContraIndication() {
       return activeInstrumentRunService.getOtherContraIndication();

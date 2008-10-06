@@ -176,7 +176,7 @@ public class TanitaInstrument implements InstrumentRunner, InitializingBean, Ser
     saveDataBtn.setEnabled(false);
 
     // Initialize interface components size
-    appWindowWidth = 460;
+    appWindowWidth = 525;
     appWindowHeight = 260;
     gridCol = 2;
 
@@ -425,6 +425,7 @@ public class TanitaInstrument implements InstrumentRunner, InitializingBean, Ser
 
     appWindow.setAlwaysOnTop(true);
     appWindow.setUndecorated(true);
+    appWindow.setResizable(false);
     appWindow.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
     appWindow.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -567,7 +568,7 @@ public class TanitaInstrument implements InstrumentRunner, InitializingBean, Ser
     // Add units label.
     if(pUnits != null) {
       JLabel wFieldUnit = new JLabel(" " + pUnits);
-      wFieldUnit.setPreferredSize(new Dimension(30, 60));
+      wFieldUnit.setPreferredSize(new Dimension(55, 60));
       wFieldPanel.add(wFieldUnit);
     }
 
