@@ -22,13 +22,11 @@
     <dependency>
       <groupId>org.obiba.onyx</groupId>
       <artifactId>onyx-util</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.obiba.onyx</groupId>
       <artifactId>onyx-core</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <dependency>
