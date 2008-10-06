@@ -1,7 +1,5 @@
 package org.obiba.onyx.webapp.stage.page;
 
-import java.util.Locale;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
@@ -27,6 +25,8 @@ public class StagePage extends BasePage {
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
+  private StageMenuBar menuBar;
+
   @SuppressWarnings("serial")
   public StagePage(IModel stageModel) {
     super();
@@ -48,8 +48,7 @@ public class StagePage extends BasePage {
       // Modify menu bar.
       //
       remove("menuBar");
-      StageMenuBar menuBar = new StageMenuBar("menuBar");
-      menuBar.setInfoLabel((Stage) stageModel.getObject(), participant);
+      menuBar = new StageMenuBar("menuBar", stageModel);
       add(menuBar);
 
       IStageExecution exec = activeInterviewService.getStageExecution((Stage) getModelObject());
@@ -81,11 +80,6 @@ public class StagePage extends BasePage {
         add(stageComponent);
       }
     }
-  }
-
-  @Override
-  public void onLanguageUpdate(Locale language, AjaxRequestTarget target) {
-    setResponsePage(new StagePage(StagePage.this.getModel()));
   }
 
 }
