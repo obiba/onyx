@@ -4,12 +4,13 @@ import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
-public class JadeContraIndicatedState extends AbstractJadeStageState implements InitializingBean {
+public class JadeContraIndicatedState extends AbstractStageState implements InitializingBean {
 
   private static final Logger log = LoggerFactory.getLogger(JadeCompletedState.class);
 

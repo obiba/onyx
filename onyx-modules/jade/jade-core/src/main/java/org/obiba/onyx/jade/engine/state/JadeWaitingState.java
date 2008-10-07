@@ -4,6 +4,7 @@ import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.ITransitionListener;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunRefusalReason;
@@ -16,7 +17,7 @@ import org.springframework.beans.factory.InitializingBean;
  * @author Yannick Marcon
  * 
  */
-public class JadeWaitingState extends AbstractJadeStageState implements InitializingBean, ITransitionListener {
+public class JadeWaitingState extends AbstractStageState implements InitializingBean, ITransitionListener {
 
   private static final Logger log = LoggerFactory.getLogger(JadeWaitingState.class);
 

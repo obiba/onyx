@@ -7,6 +7,7 @@ import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunRefusalReason;
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ import org.springframework.beans.factory.InitializingBean;
  * @author Yannick Marcon
  * 
  */
-public class JadeReadyState extends AbstractJadeStageState implements InitializingBean {
+public class JadeReadyState extends AbstractStageState implements InitializingBean {
 
   private static final Logger log = LoggerFactory.getLogger(JadeReadyState.class);
 
