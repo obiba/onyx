@@ -1,8 +1,10 @@
-package org.obiba.onyx.quartz.core.domain.question;
+package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Properties;
 
 import junit.framework.Assert;
 
@@ -11,10 +13,8 @@ import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireStreamer;
 
-public class QuestionnaireSerializationTest {
+public class QuestionnaireUtilitiesTest {
 
   @Test
   public void testQuestionnaire() {
@@ -40,7 +40,15 @@ public class QuestionnaireSerializationTest {
     builder.withSection(parentSection, "S2.1").withPage("P4");
     builder.withQuestion("Q5").withCategories(YES, NO, DONT_KNOW);
 
-    System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
+    // System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
+
+    // try {
+    // File original = new File("target", "original.xml");
+    // original.createNewFile();
+    // QuestionnaireStreamer.toXML(builder.getQuestionnaire(), new FileOutputStream(original));
+    // } catch(Exception e1) {
+    // e1.printStackTrace();
+    // }
 
     File bundleDirectory = new File("target", "bundle-test");
     if(bundleDirectory.exists()) {
@@ -61,10 +69,34 @@ public class QuestionnaireSerializationTest {
       file = new File(bundle, "questionnaire_en.properties");
       Assert.assertTrue("Questionnaire en properties file not created.", file.exists());
 
+      Properties localizationProperties = new Properties();
+      localizationProperties.load(new FileInputStream(file));
+      Assert.assertTrue(localizationProperties.containsKey("Questionnaire.HealthQuestionnaire.description"));
+      Assert.assertTrue(localizationProperties.containsKey("Section.S1.label"));
+      Assert.assertTrue(localizationProperties.containsKey("Section.S1.1.label"));
+      Assert.assertTrue(localizationProperties.containsKey("Page.P1.label"));
+      Assert.assertTrue(localizationProperties.containsKey("Question.Q1.label"));
+      Assert.assertTrue(localizationProperties.containsKey("Category.YES.label"));
+      Assert.assertTrue(localizationProperties.containsKey("QuestionCategory.Q1.YES.label"));
+      Assert.assertEquals("${Category.YES.label}", localizationProperties.getProperty("QuestionCategory.Q1.YES.label"));
+
       Questionnaire fromDead = QuestionnaireStreamer.fromBundle(bundle);
       Assert.assertNotNull("Reloaded questionnaire is null", fromDead);
       Assert.assertTrue("Reloaded questionnaire has no sections", fromDead.getSections().size() > 0);
       Assert.assertTrue("Reloaded questionnaire has no pages", fromDead.getPages().size() > 0);
+
+      // try {
+      // File original = new File("target", "dead.xml");
+      // original.createNewFile();
+      // QuestionnaireStreamer.toXML(fromDead, new FileOutputStream(original));
+      // } catch(Exception e1) {
+      // e1.printStackTrace();
+      // }
+
+      // System.out.println(QuestionnaireStreamer.toXML(fromDead));
+      // Assert.assertEquals("xml not equals", QuestionnaireStreamer.toXML(builder.getQuestionnaire()),
+      // QuestionnaireStreamer.toXML(fromDead));
+
     } catch(IOException e) {
       e.printStackTrace();
       Assert.fail(e.getMessage());
