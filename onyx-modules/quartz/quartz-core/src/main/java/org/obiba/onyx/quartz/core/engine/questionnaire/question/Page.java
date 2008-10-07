@@ -15,6 +15,10 @@ public class Page implements Serializable, ILocalizable {
   private Questionnaire questionnaire;
 
   private List<Question> questions;
+  
+  public Page(String name) {
+    this.name = name;
+  }
 
   public Section getQuestionnaireSection() {
     return questionnaireSection;

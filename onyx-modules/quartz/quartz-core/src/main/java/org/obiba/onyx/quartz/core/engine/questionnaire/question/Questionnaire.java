@@ -54,10 +54,10 @@ public class Questionnaire implements Serializable, ILocalizable {
     return sections != null ? sections : (sections = new ArrayList<Section>());
   }
 
-  public void addSection(Section questionnaireSection) {
-    if(questionnaireSection != null) {
-      getSections().add(questionnaireSection);
-      questionnaireSection.setQuestionnaire(this);
+  public void addSection(Section section) {
+    if(section != null) {
+      getSections().add(section);
+      section.setQuestionnaire(this);
     }
   }
 

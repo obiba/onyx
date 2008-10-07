@@ -18,7 +18,8 @@ public class Section implements Serializable, ILocalizable {
 
   private List<Section> sections;
 
-  public Section() {
+  public Section(String name) {
+    this.name = name;
   }
 
   public Questionnaire getQuestionnaire() {

@@ -16,11 +16,11 @@ public class Question implements Serializable, ILocalizable {
 
   private Page page;
 
-  private Boolean mandatory;
+  private Boolean required;
 
   private Boolean multiple;
 
-  private Integer mincount;
+  private Integer minCount;
 
   private Integer maxCount;
 
@@ -33,6 +33,10 @@ public class Question implements Serializable, ILocalizable {
   private Question parentQuestion;
 
   private List<Question> questions;
+  
+  public Question(String name) {
+    this.name = name;
+  }
 
   public Page getPage() {
     return page;
@@ -58,12 +62,12 @@ public class Question implements Serializable, ILocalizable {
     this.number = number;
   }
 
-  public Boolean getMandatory() {
-    return mandatory;
+  public Boolean getRequired() {
+    return required;
   }
 
-  public void setMandatory(Boolean mandatory) {
-    this.mandatory = mandatory;
+  public void setRequired(Boolean required) {
+    this.required = required;
   }
 
   public Boolean getMultiple() {
@@ -78,7 +82,7 @@ public class Question implements Serializable, ILocalizable {
     return questionCategories != null ? questionCategories : (questionCategories = new ArrayList<QuestionCategory>());
   }
 
-  public void addQuestionCategories(QuestionCategory questionCategory) {
+  public void addQuestionCategory(QuestionCategory questionCategory) {
     if(questionCategory != null) {
       getQuestionCategories().add(questionCategory);
       questionCategory.setQuestion(this);
@@ -134,12 +138,12 @@ public class Question implements Serializable, ILocalizable {
     return PROPERTIES;
   }
 
-  public Integer getMincount() {
-    return mincount;
+  public Integer getMinCount() {
+    return minCount;
   }
 
-  public void setMincount(Integer mincount) {
-    this.mincount = mincount;
+  public void setMinCount(Integer minCount) {
+    this.minCount = minCount;
   }
 
   public Integer getMaxCount() {

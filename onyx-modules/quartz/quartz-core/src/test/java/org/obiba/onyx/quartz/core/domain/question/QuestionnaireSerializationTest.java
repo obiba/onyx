@@ -1,100 +1,53 @@
 package org.obiba.onyx.quartz.core.domain.question;
 
-import org.junit.Before;
+import java.io.File;
+import java.io.IOException;
+
+import junit.framework.Assert;
+
 import org.junit.Test;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
-
-import com.thoughtworks.xstream.XStream;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireStreamer;
 
 public class QuestionnaireSerializationTest {
 
-  private XStream xstream;
-
-  @Before
-  public void initializeXStream() {
-    xstream = new XStream();
-    xstream.setMode(XStream.ID_REFERENCES);
-    xstream.alias("questionnaire", Questionnaire.class);
-    xstream.alias("section", Section.class);
-    xstream.alias("page", Page.class);
-    xstream.alias("question", Question.class);
-    xstream.alias("category", Category.class);
-    xstream.alias("questionCategory", QuestionCategory.class);
-  }
-
   @Test
   public void testQuestionnaire() {
-    Questionnaire questionnaire = new Questionnaire("Health Questionnaire", "1.0");
+    QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("Health Questionnaire", "1.0");
+    
+    Section parentSection = builder.withSection("S1").getSection();
+    
+    Category YES = new Category("YES");
+    Category NO = new Category("NO");
+    Category DONT_KNOW = new Category("DONT_KNOW");
 
-    Section firstSection = new Section();
-    firstSection.setName("S1");
-    questionnaire.addSection(firstSection);
-    Section section = new Section();
-    section.setName("S1.1");
-    firstSection.addSection(section);
-
-    Page page = new Page();
-    questionnaire.addPage(page);
-    page.setName("P1");
-    section.addPage(page);
-
-    Category c1 = new Category();
-    c1.setName("YES");
-
-    Category c2 = new Category();
-    c2.setName("NO");
-
-    Category c3 = new Category();
-    c3.setName("DONT_KNOW");
-
-    Question question = new Question();
-    question.setName("Q1");
-    question.setMandatory(false);
-    question.setMultiple(false);
-    page.addQuestion(question);
-
-    QuestionCategory code = new QuestionCategory();
-    code.setCodeAnswer(c1);
-    code.setSelected(true);
-    question.addQuestionCategories(code);
-
-    code = new QuestionCategory();
-    code.setCodeAnswer(c2);
-    code.setSelected(false);
-    question.addQuestionCategories(code);
-
-    code = new QuestionCategory();
-    code.setCodeAnswer(c3);
-    code.setSelected(false);
-    question.addQuestionCategories(code);
-
-    question = new Question();
-    question.setName("Q2");
-    question.setMandatory(true);
-    question.setMultiple(false);
-    page.addQuestion(question);
-
-    code = new QuestionCategory();
-    code.setCodeAnswer(c1);
-    code.setSelected(true);
-    question.addQuestionCategories(code);
-
-    code = new QuestionCategory();
-    code.setCodeAnswer(c2);
-    code.setSelected(false);
-    question.addQuestionCategories(code);
-
-    code = new QuestionCategory();
-    code.setCodeAnswer(c3);
-    code.setSelected(false);
-    question.addQuestionCategories(code);
-
-    System.out.println(xstream.toXML(questionnaire));
+    builder.withSection(parentSection, "S1.1").withPage("P1");
+    builder.withQuestion("Q1").withCategories(YES, NO, DONT_KNOW);
+    builder.withQuestion("Q2").withCategories("1", "2").withCategory(DONT_KNOW, "888");
+    
+    builder.withPage("P2");
+    builder.withQuestion("Q3").withCategories(YES, NO, DONT_KNOW);
+    
+    builder.withSection(parentSection, "S1.2").withPage("P3");
+    builder.withQuestion("Q4").withCategories(YES, NO, DONT_KNOW);
+    
+    parentSection = builder.withSection("S2").getSection();
+    builder.withSection(parentSection, "S2.1").withPage("P4");
+    builder.withQuestion("Q5").withCategories(YES, NO, DONT_KNOW);
+    
+    System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
+    
+    File bundleDirectory = new File("target", "bundle-test");
+    try {
+      QuestionnaireStreamer.makeBundle(builder.getQuestionnaire(), bundleDirectory);
+      File questionnaireFile = new File(bundleDirectory, "questionnaire.xml");
+      Assert.assertTrue("Questionnaire file not created.", questionnaireFile.exists());
+    } catch(IOException e) {
+      e.printStackTrace();
+      Assert.fail(e.getMessage());
+    }
   }
 
 }

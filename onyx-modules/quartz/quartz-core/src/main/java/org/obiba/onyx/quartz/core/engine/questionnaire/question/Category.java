@@ -1,8 +1,6 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Category implements Serializable, ILocalizable {
 
@@ -10,11 +8,10 @@ public class Category implements Serializable, ILocalizable {
 
   private String name;
 
-  private List<QuestionCategory> questionCodeAnswers;
-
   private OpenAnswerDefinition openAnswerDefinition;
 
-  public Category() {
+  public Category(String name) {
+    this.name = name;
   }
 
   public String getName() {
@@ -23,17 +20,6 @@ public class Category implements Serializable, ILocalizable {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public List<QuestionCategory> getQuestionCodeAnswers() {
-    return questionCodeAnswers != null ? questionCodeAnswers : (questionCodeAnswers = new ArrayList<QuestionCategory>());
-  }
-
-  public void addQuestionCodeAnswer(QuestionCategory questionCodeAnswer) {
-    if(questionCodeAnswer != null) {
-      getQuestionCodeAnswers().add(questionCodeAnswer);
-      questionCodeAnswer.setCodeAnswer(this);
-    }
   }
 
   public OpenAnswerDefinition getOpenAnswerDefinition() {
@@ -54,7 +40,7 @@ public class Category implements Serializable, ILocalizable {
     }
     throw new IllegalArgumentException("Invalid property for class " + getClass().getName() + ": " + property);
   }
-  
+
   public String[] getProperties() {
     return PROPERTIES;
   }

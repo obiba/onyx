@@ -6,20 +6,17 @@ public class QuestionCategory implements Serializable {
 
   private static final long serialVersionUID = 5244745063169629959L;
 
-  private String name;
-
   private Question question;
 
-  private Category codeAnswer;
+  private Category category;
+  
+  private Boolean repeatable;
 
   private Boolean selected;
 
-  public String getName() {
-    return name;
-  }
+  private String exportName;
 
-  public void setName(String name) {
-    this.name = name;
+  public QuestionCategory() {
   }
 
   public Question getQuestion() {
@@ -30,12 +27,20 @@ public class QuestionCategory implements Serializable {
     this.question = question;
   }
 
-  public Category getCodeAnswer() {
-    return codeAnswer;
+  public Category getCategory() {
+    return category;
   }
 
-  public void setCodeAnswer(Category codeAnswer) {
-    this.codeAnswer = codeAnswer;
+  public void setCategory(Category category) {
+    this.category = category;
+  }
+
+  public Boolean getRepeatable() {
+    return repeatable;
+  }
+
+  public void setRepeatable(Boolean repeatable) {
+    this.repeatable = repeatable;
   }
 
   public Boolean getSelected() {
@@ -44,6 +49,14 @@ public class QuestionCategory implements Serializable {
 
   public void setSelected(Boolean selected) {
     this.selected = selected;
+  }
+
+  public String getExportName() {
+    return exportName;
+  }
+
+  public void setExportName(String exportName) {
+    this.exportName = exportName;
   }
 
 }
