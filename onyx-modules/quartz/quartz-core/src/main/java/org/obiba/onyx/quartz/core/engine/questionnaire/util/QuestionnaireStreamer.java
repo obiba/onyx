@@ -1,11 +1,16 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.Locale;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -16,7 +21,7 @@ import com.thoughtworks.xstream.XStream;
 
 public class QuestionnaireStreamer {
 
-  private static final String QUESTIONNAIRE_BASE_NAME = "questionnaire";
+  public static final String QUESTIONNAIRE_BASE_NAME = "questionnaire";
 
   private XStream xstream;
 
@@ -24,7 +29,7 @@ public class QuestionnaireStreamer {
     initializeXStream();
   }
 
-  public void initializeXStream() {
+  private void initializeXStream() {
     xstream = new XStream();
     xstream.setMode(XStream.ID_REFERENCES);
     xstream.alias("questionnaire", Questionnaire.class);
@@ -49,26 +54,64 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(QuestionCategory.class, "exportName");
   }
 
+  /**
+   * Load a {@link Questionnaire} from its bundle directory.
+   * @param bundleDirectory
+   * @return
+   * @throws FileNotFoundException
+   */
+  public static Questionnaire fromBundle(File bundleDirectory) throws FileNotFoundException {
+    File questionnaireFile = new File(bundleDirectory, QUESTIONNAIRE_BASE_NAME + ".xml");
+    
+    QuestionnaireStreamer streamer = new QuestionnaireStreamer();
+    return (Questionnaire)streamer.xstream.fromXML(new FileInputStream(questionnaireFile));
+  }
+  
+  /**
+   * Dump a {@link Questionnaire} to a string.
+   * @param questionnaire
+   * @return
+   */
   public static String toXML(Questionnaire questionnaire) {
     QuestionnaireStreamer streamer = new QuestionnaireStreamer();
     return streamer.xstream.toXML(questionnaire);
   }
 
+  /**
+   * Dump a {@link Questionnaire} to a stream.
+   * @param questionnaire
+   * @param outputStream
+   */
   public static void toXML(Questionnaire questionnaire, OutputStream outputStream) {
     QuestionnaireStreamer streamer = new QuestionnaireStreamer();
     streamer.xstream.toXML(questionnaire, outputStream);
   }
 
-  public static void makeBundle(Questionnaire questionnaire, File bundleDirectory) throws IOException {
-    if(bundleDirectory == null) throw new IllegalArgumentException("Questionnaire bundle directory cannot be null.");
+  /**
+   * Make the {@link Questionnaire} bundle:
+   * <ul>
+   * <li>questionnaire description file</li>
+   * <li>questionnaire properties file for each language to localize</li>
+   * </ul>
+   * @param questionnaire
+   * @param bundleRootDirectory
+   * @param locales
+   * @return
+   * @throws IOException
+   */
+  public static File makeBundle(Questionnaire questionnaire, File bundleRootDirectory, Locale... locales) throws IOException {
+    if(bundleRootDirectory == null) throw new IllegalArgumentException("Questionnaire bundle directory cannot be null.");
 
-    if(!bundleDirectory.exists()) {
-      bundleDirectory.mkdir();
+    if(!bundleRootDirectory.exists()) {
+      bundleRootDirectory.mkdir();
     } else {
-      if(!bundleDirectory.isDirectory()) {
+      if(!bundleRootDirectory.isDirectory()) {
         throw new IllegalArgumentException("Questionnaire bundle directory must be a directory.");
       }
     }
+
+    File bundleDirectory = new File(new File(bundleRootDirectory, questionnaire.getName()), questionnaire.getVersion());
+    bundleDirectory.mkdirs();
 
     QuestionnaireStreamer streamer = new QuestionnaireStreamer();
 
@@ -79,6 +122,58 @@ public class QuestionnaireStreamer {
 
     streamer.xstream.toXML(questionnaire, new FileOutputStream(questionnaireFile));
 
+    for(Locale locale : locales) {
+      File localizedProperties = new File(bundleDirectory, QUESTIONNAIRE_BASE_NAME + "_" + locale + ".properties");
+      if(!localizedProperties.exists()) {
+        localizedProperties.createNewFile();
+      }
+
+      PrintWriter writer = new PrintWriter(localizedProperties);
+      streamer.writeLocalizableProperties(questionnaire, writer);
+      for(Section section : questionnaire.getSections()) {
+        streamer.writeSectionProperties(section, writer);
+      }
+      writer.flush();
+      writer.close();
+    }
+
+    return bundleDirectory;
+  }
+
+  /**
+   * Write localizable properties recursively of {@link Section} content.
+   * @param section
+   * @param writer
+   */
+  private void writeSectionProperties(Section section, PrintWriter writer) {
+    writeLocalizableProperties(section, writer);
+    for(Page page : section.getPages()) {
+      writeLocalizableProperties(page, writer);
+      for(Question question : page.getQuestions()) {
+        writeLocalizableProperties(question, writer);
+        for(Category category : question.getCategories()) {
+          writeLocalizableProperties(category, writer);
+          if(category.getOpenAnswerDefinition() != null) {
+            writeLocalizableProperties(category.getOpenAnswerDefinition(), writer);
+          }
+        }
+      }
+    }
+    for(Section s : section.getSections()) {
+      writeSectionProperties(s, writer);
+    }
+  }
+
+  /**
+   * Write localizable properties.
+   * @param localizable
+   * @param writer
+   */
+  private void writeLocalizableProperties(ILocalizable localizable, PrintWriter writer) {
+    for(String property : localizable.getProperties()) {
+      writer.println(localizable.getPropertyKey(property) + "=");
+    }
+    writer.println();
   }
 
 }

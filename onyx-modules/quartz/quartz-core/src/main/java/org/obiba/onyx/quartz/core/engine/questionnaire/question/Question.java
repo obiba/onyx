@@ -81,6 +81,20 @@ public class Question implements Serializable, ILocalizable {
   public List<QuestionCategory> getQuestionCategories() {
     return questionCategories != null ? questionCategories : (questionCategories = new ArrayList<QuestionCategory>());
   }
+  
+  /**
+   * Get the underlying {@link Category} list.
+   * @return
+   */
+  public List<Category> getCategories() {
+    List<Category> categories = new ArrayList<Category>();
+    
+    for (QuestionCategory questionCategory : getQuestionCategories()) {
+      categories.add(questionCategory.getCategory());
+    }
+    
+    return categories;
+  }
 
   public void addQuestionCategory(QuestionCategory questionCategory) {
     if(questionCategory != null) {
