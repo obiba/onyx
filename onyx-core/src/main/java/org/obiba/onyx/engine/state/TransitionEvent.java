@@ -8,7 +8,7 @@ package org.obiba.onyx.engine.state;
 public class TransitionEvent implements Comparable<TransitionEvent> {
 
   /**
-   * Successfull validation event.
+   * Successful validation event.
    */
   public static final TransitionEvent VALID = new TransitionEvent("valid");
   
