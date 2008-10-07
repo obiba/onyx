@@ -7,4 +7,55 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <tx:annotation-driven transaction-manager="transactionManager" />
 
+  <bean name="consentDependency" class="org.obiba.onyx.engine.ConsentStageDependencyCondition">
+    <property name="stageName" value="CON" />
+  </bean>
+  
+  <bean id="quartzOnyxModule" class="org.obiba.onyx.quartz.engine.QuartzModule">
+    <property name="activeInterviewService" ref="activeInterviewService" />
+    <property name="stages">
+      <list>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="QUE1" />
+          <property name="module" value="quartz" />
+          <property name="description" value="Questionnaire Test 1" />
+          <property name="displayOrder" value="2" />
+          <property name="userSessionService" ref="userSessionService" />
+          <property name="stageDependencyCondition" ref="consentDependency" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="quartzWaitingState" parent="baseStageState" class="org.obiba.onyx.quartz.engine.state.QuartzWaitingState"
+    scope="prototype">
+  </bean>
+
+  <bean id="quartzReadyState" parent="baseStageState" class="org.obiba.onyx.quartz.engine.state.QuartzReadyState"
+    scope="prototype">
+  </bean>
+
+  <bean id="quartzNotApplicableState" parent="baseStageState"
+    class="org.obiba.onyx.quartz.engine.state.QuartzNotApplicableState" scope="prototype">
+  </bean>
+
+  <bean id="quartzInProgressState" parent="baseStageState"
+    class="org.obiba.onyx.quartz.engine.state.QuartzInProgressState" scope="prototype">
+    <property name="questionnaireParticipantService" ref="questionnaireParticipantService" />
+  </bean>
+
+  <bean id="quartzSkippedState" parent="baseStageState" class="org.obiba.onyx.quartz.engine.state.QuartzSkippedState"
+    scope="prototype">
+  </bean>
+
+  <bean id="quartzCompletedState" parent="baseStageState"
+    class="org.obiba.onyx.quartz.engine.state.QuartzCompletedState" scope="prototype">
+    <property name="questionnaireParticipantService" ref="questionnaireParticipantService" />
+  </bean>
+
+  <bean id="quartzInterruptedState" parent="baseStageState"
+    class="org.obiba.onyx.quartz.engine.state.QuartzInterruptedState" scope="prototype">
+    <property name="questionnaireParticipantService" ref="questionnaireParticipantService" />
+  </bean>
+
 </beans>
