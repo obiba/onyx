@@ -7,102 +7,104 @@ import org.obiba.onyx.util.data.DataType;
 
 public class OpenAnswerDefinition implements Serializable, ILocalizable {
 
-	private static final long serialVersionUID = -7756577128502621726L;
+  private static final long serialVersionUID = -7756577128502621726L;
 
-	private String name;
+  private String name;
 
-	private DataType dataType;
+  private DataType dataType;
 
-	private String unit;
+  private String unit;
 
-	private String format;
+  private String format;
 
-	private String absoluteMinValue;
+  private Data absoluteMinValue;
 
-	private String absoluteMaxValue;
+  private Data absoluteMaxValue;
 
-	private String usualMinValue;
+  private Data usualMinValue;
 
-	private String usualMaxValue;
+  private Data usualMaxValue;
 
-	private Data defaultData;
+  private Data defaultData;
 
-	public OpenAnswerDefinition() {
-	}
+  public OpenAnswerDefinition(String name, DataType dataType) {
+    this.name = name;
+    this.dataType = dataType;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public DataType getDataType() {
-		return dataType;
-	}
+  public DataType getDataType() {
+    return dataType;
+  }
 
-	public void setDataType(DataType dataType) {
-		this.dataType = dataType;
-	}
+  public void setDataType(DataType dataType) {
+    this.dataType = dataType;
+  }
 
-	public String getUnit() {
-		return unit;
-	}
+  public String getUnit() {
+    return unit;
+  }
 
-	public void setUnit(String unit) {
-		this.unit = unit;
-	}
+  public void setUnit(String unit) {
+    this.unit = unit;
+  }
 
-	public String getFormat() {
-		return format;
-	}
+  public String getFormat() {
+    return format;
+  }
 
-	public void setFormat(String format) {
-		this.format = format;
-	}
+  public void setFormat(String format) {
+    this.format = format;
+  }
 
-	public String getAbsoluteMinValue() {
-		return absoluteMinValue;
-	}
+  public Data getAbsoluteMinValue() {
+    return absoluteMinValue;
+  }
 
-	public void setAbsoluteMinValue(String absoluteMinValue) {
-		this.absoluteMinValue = absoluteMinValue;
-	}
+  public void setAbsoluteMinValue(Data absoluteMinValue) {
+    this.absoluteMinValue = absoluteMinValue;
+  }
 
-	public String getAbsoluteMaxValue() {
-		return absoluteMaxValue;
-	}
+  public Data getAbsoluteMaxValue() {
+    return absoluteMaxValue;
+  }
 
-	public void setAbsoluteMaxValue(String absoluteMaxValue) {
-		this.absoluteMaxValue = absoluteMaxValue;
-	}
+  public void setAbsoluteMaxValue(Data absoluteMaxValue) {
+    this.absoluteMaxValue = absoluteMaxValue;
+  }
 
-	public String getUsualMinValue() {
-		return usualMinValue;
-	}
+  public Data getUsualMinValue() {
+    return usualMinValue;
+  }
 
-	public void setUsualMinValue(String usualMinValue) {
-		this.usualMinValue = usualMinValue;
-	}
+  public void setUsualMinValue(Data usualMinValue) {
+    this.usualMinValue = usualMinValue;
+  }
 
-	public String getUsualMaxValue() {
-		return usualMaxValue;
-	}
+  public Data getUsualMaxValue() {
+    return usualMaxValue;
+  }
 
-	public void setUsualMaxValue(String usualMaxValue) {
-		this.usualMaxValue = usualMaxValue;
-	}
+  public void setUsualMaxValue(Data usualMaxValue) {
+    this.usualMaxValue = usualMaxValue;
+  }
 
-	public Data getDefaultData() {
-		return defaultData;
-	}
+  public Data getDefaultData() {
+    return defaultData;
+  }
 
-	public void setDefaultData(Data defaultData) {
-		this.defaultData = defaultData;
-	}
+  public void setDefaultData(Data defaultData) {
+    this.defaultData = defaultData;
+  }
 
-	private static final String[] PROPERTIES = { "label", "unitLabel" };
+  private static final String[] PROPERTIES = { "label", "unitLabel" };
 
   public String getPropertyKey(String property) {
     for(String key : PROPERTIES) {
@@ -112,7 +114,7 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
     }
     throw new IllegalArgumentException("Invalid property for class " + getClass().getName() + ": " + property);
   }
-  
+
   public String[] getProperties() {
     return PROPERTIES;
   }
