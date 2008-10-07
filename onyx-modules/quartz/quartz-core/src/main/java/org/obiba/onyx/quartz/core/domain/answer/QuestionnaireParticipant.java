@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -14,6 +17,8 @@ public class QuestionnaireParticipant extends AbstractEntity {
 
   private static final long serialVersionUID = -4091599688342582439L;
 
+  @OneToOne
+  @JoinColumn(name = "participant_id")
   private Participant participant;
 
   private String questionnaireName;
@@ -22,6 +27,7 @@ public class QuestionnaireParticipant extends AbstractEntity {
 
   private Locale locale;
 
+  @OneToMany(mappedBy = "questionnaireParticipant")
   private List<QuestionAnswer> questionAnswers;
 
   public Participant getParticipant() {

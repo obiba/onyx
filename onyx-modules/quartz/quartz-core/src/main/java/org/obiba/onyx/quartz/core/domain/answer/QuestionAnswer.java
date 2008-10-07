@@ -1,6 +1,12 @@
 package org.obiba.onyx.quartz.core.domain.answer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.obiba.core.domain.AbstractEntity;
 
@@ -13,7 +19,12 @@ public class QuestionAnswer extends AbstractEntity {
 
   private String comment;
 
+  @ManyToOne
+  @JoinColumn(name = "questionnaire_participant_id")
   private QuestionnaireParticipant questionnaireParticipant;
+  
+  @OneToMany(mappedBy = "questionAnswer")
+  private List<CategoryAnswer> categoryAnswers;
 
   public String getQuestionName() {
     return questionName;
@@ -37,6 +48,17 @@ public class QuestionAnswer extends AbstractEntity {
 
   public void setQuestionnaireParticipant(QuestionnaireParticipant questionnaireParticipant) {
     this.questionnaireParticipant = questionnaireParticipant;
+  }
+
+  public List<CategoryAnswer> getCategoryAnswers() {
+    return categoryAnswers != null ? categoryAnswers : (categoryAnswers = new ArrayList<CategoryAnswer>());
+  }
+  
+  public void addCategoryAnswer(CategoryAnswer categoryAnswer) {
+    if (categoryAnswer != null) {
+      getCategoryAnswers().add(categoryAnswer);
+      categoryAnswer.setQuestionAnswer(this);
+    }
   }
 
 }

@@ -3,6 +3,8 @@ package org.obiba.onyx.quartz.core.domain.answer;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.util.data.DataType;
@@ -28,8 +30,12 @@ public class CategoryAnswer extends AbstractEntity {
 
   private Date dateValue;
 
+  @ManyToOne
+  @JoinColumn(name = "question_answer_id")
   private QuestionAnswer questionAnswer;
 
+  @ManyToOne
+  @JoinColumn(name = "parent_category_answer_id")
   private CategoryAnswer parentCategoryAnswer;
 
   public QuestionAnswer getQuestionAnswer() {
@@ -112,4 +118,11 @@ public class CategoryAnswer extends AbstractEntity {
     this.parentCategoryAnswer = parentCategoryAnswer;
   }
 
+  public QuestionAnswer getParentQuestionAnswer() {
+    if (getParentCategoryAnswer() == null)
+      return null;
+    
+    return getParentCategoryAnswer().getQuestionAnswer();
+  }
+  
 }
