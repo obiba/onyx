@@ -7,20 +7,20 @@ import org.obiba.onyx.util.data.Data;
 
 public abstract class AnswerSource implements Serializable {
 
-	private QuestionCategory questionCategory;
+  private QuestionCategory questionCategory;
 
-	public QuestionCategory getQuestionCategory() {
-		return questionCategory;
-	}
+  public QuestionCategory getQuestionCategory() {
+    return questionCategory;
+  }
 
-	public void setQuestionCategory(QuestionCategory questionCategory) {
-		this.questionCategory = questionCategory;
-	}
+  public void setQuestionCategory(QuestionCategory questionCategory) {
+    this.questionCategory = questionCategory;
+  }
 
-	/**
-	 * Get the data for answer provisionning.
-	 * @return
-	 */
-	public abstract Data getData();
+  /**
+   * Get the data for answer provisionning.
+   * @return
+   */
+  public abstract Data getData();
 
 }

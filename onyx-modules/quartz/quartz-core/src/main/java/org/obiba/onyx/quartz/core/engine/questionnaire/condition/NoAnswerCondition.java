@@ -2,20 +2,20 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.condition;
 
 public class NoAnswerCondition extends Condition {
 
-	private static final long serialVersionUID = -7934445960755750180L;
-	
-	private AnswerCondition answerCondition;
+  private static final long serialVersionUID = -7934445960755750180L;
 
-	public AnswerCondition getAnswerCondition() {
-		return answerCondition;
-	}
+  private Condition condition;
 
-	public void setAnswerCondition(AnswerCondition answerCondition) {
-		this.answerCondition = answerCondition;
-	}
+  public Condition getCondition() {
+    return condition;
+  }
 
-	public boolean isToBeAnswered() {
-		return !answerCondition.isToBeAnswered();
-	}
+  public void setCondition(Condition condition) {
+    this.condition = condition;
+  }
+
+  public boolean isToBeAnswered() {
+    return !condition.isToBeAnswered();
+  }
 
 }

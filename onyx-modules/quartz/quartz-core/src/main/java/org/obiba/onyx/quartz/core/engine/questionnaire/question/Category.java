@@ -6,48 +6,57 @@ import java.util.List;
 
 public class Category implements Serializable, ILocalizable {
 
-	private static final long serialVersionUID = -1722883141794376906L;
+  private static final long serialVersionUID = -1722883141794376906L;
 
-	private String name;
+  private String name;
 
-	private List<QuestionCategory> questionCodeAnswers;
+  private List<QuestionCategory> questionCodeAnswers;
 
-	private OpenAnswerDefinition openAnswerDefinition;
+  private OpenAnswerDefinition openAnswerDefinition;
 
-	public Category() {
-	}
+  public Category() {
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public List<QuestionCategory> getQuestionCodeAnswers() {
-		return questionCodeAnswers != null ? questionCodeAnswers
-				: (questionCodeAnswers = new ArrayList<QuestionCategory>());
-	}
+  public List<QuestionCategory> getQuestionCodeAnswers() {
+    return questionCodeAnswers != null ? questionCodeAnswers : (questionCodeAnswers = new ArrayList<QuestionCategory>());
+  }
 
-	public void addQuestionCodeAnswer(QuestionCategory questionCodeAnswer) {
-		if (questionCodeAnswer != null) {
-			getQuestionCodeAnswers().add(questionCodeAnswer);
-			questionCodeAnswer.setCodeAnswer(this);
-		}
-	}
+  public void addQuestionCodeAnswer(QuestionCategory questionCodeAnswer) {
+    if(questionCodeAnswer != null) {
+      getQuestionCodeAnswers().add(questionCodeAnswer);
+      questionCodeAnswer.setCodeAnswer(this);
+    }
+  }
 
-	public OpenAnswerDefinition getOpenAnswerDefinition() {
-		return openAnswerDefinition;
-	}
+  public OpenAnswerDefinition getOpenAnswerDefinition() {
+    return openAnswerDefinition;
+  }
 
-	public void setOpenAnswerDefinition(
-			OpenAnswerDefinition openAnswerDefinition) {
-		this.openAnswerDefinition = openAnswerDefinition;
-	}
+  public void setOpenAnswerDefinition(OpenAnswerDefinition openAnswerDefinition) {
+    this.openAnswerDefinition = openAnswerDefinition;
+  }
 
-	public String getPropertyKey(String property) {
-		return getClass().getSimpleName() + "." + getName() + "." + property;
-	}
+  private static final String[] PROPERTIES = { "label", "image" };
+
+  public String getPropertyKey(String property) {
+    for(String key : PROPERTIES) {
+      if(key.equals(property)) {
+        return getClass().getSimpleName() + "." + getName() + "." + property;
+      }
+    }
+    throw new IllegalArgumentException("Invalid property for class " + getClass().getName() + ": " + property);
+  }
+  
+  public String[] getProperties() {
+    return PROPERTIES;
+  }
 
 }

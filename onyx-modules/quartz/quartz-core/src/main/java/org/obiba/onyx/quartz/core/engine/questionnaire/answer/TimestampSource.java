@@ -7,23 +7,23 @@ import org.obiba.onyx.util.data.DataType;
 
 public class TimestampSource extends AnswerSource {
 
-	private static final long serialVersionUID = 5049448952613044101L;
-	
-	private TimestampType timestampType;
+  private static final long serialVersionUID = 5049448952613044101L;
 
-	public TimestampSource() {
-	}
+  private TimestampType timestampType;
 
-	public TimestampType getTimestampType() {
-		return timestampType;
-	}
+  public TimestampSource() {
+  }
 
-	public void setTimestampType(TimestampType timestampType) {
-		this.timestampType = timestampType;
-	}
+  public TimestampType getTimestampType() {
+    return timestampType;
+  }
 
-	public Data getData() {
-		return new Data(DataType.DATE, new Date());
-	}
+  public void setTimestampType(TimestampType timestampType) {
+    this.timestampType = timestampType;
+  }
+
+  public Data getData() {
+    return new Data(DataType.DATE, new Date());
+  }
 
 }

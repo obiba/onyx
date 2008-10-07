@@ -4,24 +4,24 @@ import org.obiba.onyx.util.data.Data;
 
 public class ParticipantPropertySource extends AnswerSource {
 
-	private static final long serialVersionUID = 5625713001098059689L;
-	
-	private String property;
+  private static final long serialVersionUID = 5625713001098059689L;
 
-	public ParticipantPropertySource() {
-	}
+  private String property;
 
-	public String getProperty() {
-		return property;
-	}
+  public ParticipantPropertySource() {
+  }
 
-	public void setProperty(String property) {
-		this.property = property;
-	}
+  public String getProperty() {
+    return property;
+  }
 
-	public Data getData() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  public void setProperty(String property) {
+    this.property = property;
+  }
+
+  public Data getData() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
 }

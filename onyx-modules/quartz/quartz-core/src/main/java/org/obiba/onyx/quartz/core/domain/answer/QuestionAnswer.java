@@ -7,37 +7,36 @@ import org.obiba.core.domain.AbstractEntity;
 @Entity
 public class QuestionAnswer extends AbstractEntity {
 
-	private static final long serialVersionUID = 8513736303565362142L;
+  private static final long serialVersionUID = 8513736303565362142L;
 
-	private String questionName;
+  private String questionName;
 
-	private String comment;
-	
-	private QuestionnaireParticipant questionnaireParticipant;
+  private String comment;
 
-	public String getQuestionName() {
-		return questionName;
-	}
+  private QuestionnaireParticipant questionnaireParticipant;
 
-	public void setQuestionName(String questionName) {
-		this.questionName = questionName;
-	}
+  public String getQuestionName() {
+    return questionName;
+  }
 
-	public String getComment() {
-		return comment;
-	}
+  public void setQuestionName(String questionName) {
+    this.questionName = questionName;
+  }
 
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
+  public String getComment() {
+    return comment;
+  }
 
-	public QuestionnaireParticipant getQuestionnaireParticipant() {
-		return questionnaireParticipant;
-	}
+  public void setComment(String comment) {
+    this.comment = comment;
+  }
 
-	public void setQuestionnaireParticipant(
-			QuestionnaireParticipant questionnaireParticipant) {
-		this.questionnaireParticipant = questionnaireParticipant;
-	}
+  public QuestionnaireParticipant getQuestionnaireParticipant() {
+    return questionnaireParticipant;
+  }
+
+  public void setQuestionnaireParticipant(QuestionnaireParticipant questionnaireParticipant) {
+    this.questionnaireParticipant = questionnaireParticipant;
+  }
 
 }

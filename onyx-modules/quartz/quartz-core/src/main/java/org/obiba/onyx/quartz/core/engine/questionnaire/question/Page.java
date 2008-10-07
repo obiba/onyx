@@ -6,53 +6,64 @@ import java.util.List;
 
 public class Page implements Serializable, ILocalizable {
 
-	private static final long serialVersionUID = -7732601103831162009L;
+  private static final long serialVersionUID = -7732601103831162009L;
 
-	private String name;
+  private String name;
 
-	private Section questionnaireSection;
-	
-	private Questionnaire questionnaire;
-	
-	private List<Question> questions;
+  private Section questionnaireSection;
 
-	public Section getQuestionnaireSection() {
-		return questionnaireSection;
-	}
+  private Questionnaire questionnaire;
 
-	public void setQuestionnaireSection(Section questionnaireSection) {
-		this.questionnaireSection = questionnaireSection;
-	}
-	
-	public Questionnaire getQuestionnaire() {
-		return questionnaire;
-	}
+  private List<Question> questions;
 
-	public void setQuestionnaire(Questionnaire questionnaire) {
-		this.questionnaire = questionnaire;
-	}
+  public Section getQuestionnaireSection() {
+    return questionnaireSection;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public void setQuestionnaireSection(Section questionnaireSection) {
+    this.questionnaireSection = questionnaireSection;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public Questionnaire getQuestionnaire() {
+    return questionnaire;
+  }
 
-	public List<Question> getQuestions() {
-		return questions != null ? questions : (questions = new ArrayList<Question>());
-	}
-	
-	public void addQuestion(Question question) {
-		if (question != null) {
-			getQuestions().add(question);
-			question.setPage(this);
-		}
-	}
-	
-	public String getPropertyKey(String property) {
-		return getClass().getSimpleName() + "." + getName() + "." + property;
-	}
-	
+  public void setQuestionnaire(Questionnaire questionnaire) {
+    this.questionnaire = questionnaire;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public List<Question> getQuestions() {
+    return questions != null ? questions : (questions = new ArrayList<Question>());
+  }
+
+  public void addQuestion(Question question) {
+    if(question != null) {
+      getQuestions().add(question);
+      question.setPage(this);
+    }
+  }
+
+  private static final String[] PROPERTIES = { "label" };
+
+  public String getPropertyKey(String property) {
+    for(String key : PROPERTIES) {
+      if(key.equals(property)) {
+        return getClass().getSimpleName() + "." + getName() + "." + property;
+      }
+    }
+    throw new IllegalArgumentException("Invalid property for class " + getClass().getName() + ": " + property);
+  }
+  
+  public String[] getProperties() {
+    return PROPERTIES;
+  }
+
 }

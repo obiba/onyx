@@ -5,6 +5,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 
 public interface IAnswerListener {
 
-	public void onAnswer(Question source, QuestionAnswer answer);
-	
+  public void onAnswer(Question source, QuestionAnswer answer);
+
 }

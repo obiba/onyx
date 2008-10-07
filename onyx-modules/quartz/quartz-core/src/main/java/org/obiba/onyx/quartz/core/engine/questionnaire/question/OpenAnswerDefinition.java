@@ -102,8 +102,19 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
 		this.defaultData = defaultData;
 	}
 
-	public String getPropertyKey(String property) {
-		return getClass().getSimpleName() + "." + getName() + "." + property;
-	}
+	private static final String[] PROPERTIES = { "label", "unitLabel" };
+
+  public String getPropertyKey(String property) {
+    for(String key : PROPERTIES) {
+      if(key.equals(property)) {
+        return getClass().getSimpleName() + "." + getName() + "." + property;
+      }
+    }
+    throw new IllegalArgumentException("Invalid property for class " + getClass().getName() + ": " + property);
+  }
+  
+  public String[] getProperties() {
+    return PROPERTIES;
+  }
 
 }

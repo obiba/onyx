@@ -8,118 +8,146 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 
 public class Question implements Serializable, ILocalizable {
 
-	private static final long serialVersionUID = -7795909448581432466L;
+  private static final long serialVersionUID = -7795909448581432466L;
 
-	private String name;
+  private String name;
 
-	private String number;
+  private String number;
 
-	private Page page;
+  private Page page;
 
-	private Boolean mandatory;
+  private Boolean mandatory;
 
-	private Boolean multiple;
+  private Boolean multiple;
 
-	private List<QuestionCategory> questionCategories;
+  private Integer mincount;
 
-	private OpenAnswerDefinition openAnswerDefinition;
+  private Integer maxCount;
 
-	private Condition condition;
+  private List<QuestionCategory> questionCategories;
 
-	private Question parentQuestion;
+  private OpenAnswerDefinition openAnswerDefinition;
 
-	private List<Question> questions;
+  private Condition condition;
 
-	public Page getPage() {
-		return page;
-	}
+  private Question parentQuestion;
 
-	public void setPage(Page page) {
-		this.page = page;
-	}
+  private List<Question> questions;
 
-	public String getName() {
-		return name;
-	}
+  public Page getPage() {
+    return page;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void setPage(Page page) {
+    this.page = page;
+  }
 
-	public String getNumber() {
-		return number;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setNumber(String number) {
-		this.number = number;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public Boolean getMandatory() {
-		return mandatory;
-	}
+  public String getNumber() {
+    return number;
+  }
 
-	public void setMandatory(Boolean mandatory) {
-		this.mandatory = mandatory;
-	}
+  public void setNumber(String number) {
+    this.number = number;
+  }
 
-	public Boolean getMultiple() {
-		return multiple;
-	}
+  public Boolean getMandatory() {
+    return mandatory;
+  }
 
-	public void setMultiple(Boolean multiple) {
-		this.multiple = multiple;
-	}
+  public void setMandatory(Boolean mandatory) {
+    this.mandatory = mandatory;
+  }
 
-	public List<QuestionCategory> getQuestionCategories() {
-		return questionCategories != null ? questionCategories
-				: (questionCategories = new ArrayList<QuestionCategory>());
-	}
+  public Boolean getMultiple() {
+    return multiple;
+  }
 
-	public void addQuestionCategories(QuestionCategory questionCategory) {
-		if (questionCategory != null) {
-			getQuestionCategories().add(questionCategory);
-			questionCategory.setQuestion(this);
-		}
-	}
+  public void setMultiple(Boolean multiple) {
+    this.multiple = multiple;
+  }
 
-	public OpenAnswerDefinition getOpenAnswerDefinition() {
-		return openAnswerDefinition;
-	}
+  public List<QuestionCategory> getQuestionCategories() {
+    return questionCategories != null ? questionCategories : (questionCategories = new ArrayList<QuestionCategory>());
+  }
 
-	public void setOpenAnswerDefinition(
-			OpenAnswerDefinition openAnswerDefinition) {
-		this.openAnswerDefinition = openAnswerDefinition;
-	}
+  public void addQuestionCategories(QuestionCategory questionCategory) {
+    if(questionCategory != null) {
+      getQuestionCategories().add(questionCategory);
+      questionCategory.setQuestion(this);
+    }
+  }
 
-	public Condition getCondition() {
-		return condition;
-	}
+  public OpenAnswerDefinition getOpenAnswerDefinition() {
+    return openAnswerDefinition;
+  }
 
-	public void setCondition(Condition condition) {
-		this.condition = condition;
-	}
+  public void setOpenAnswerDefinition(OpenAnswerDefinition openAnswerDefinition) {
+    this.openAnswerDefinition = openAnswerDefinition;
+  }
 
-	public Question getParentQuestion() {
-		return parentQuestion;
-	}
+  public Condition getCondition() {
+    return condition;
+  }
 
-	public void setParentQuestion(Question parentQuestion) {
-		this.parentQuestion = parentQuestion;
-	}
+  public void setCondition(Condition condition) {
+    this.condition = condition;
+  }
 
-	public List<Question> getQuestions() {
-		return questions != null ? questions
-				: (questions = new ArrayList<Question>());
-	}
+  public Question getParentQuestion() {
+    return parentQuestion;
+  }
 
-	public void addQuestion(Question question) {
-		if (question != null) {
-			getQuestions().add(question);
-		}
-	}
+  public void setParentQuestion(Question parentQuestion) {
+    this.parentQuestion = parentQuestion;
+  }
 
-	public String getPropertyKey(String property) {
-		return getClass().getSimpleName() + "." + getName() + "." + property;
-	}
+  public List<Question> getQuestions() {
+    return questions != null ? questions : (questions = new ArrayList<Question>());
+  }
+
+  public void addQuestion(Question question) {
+    if(question != null) {
+      getQuestions().add(question);
+    }
+  }
+
+  private static final String[] PROPERTIES = { "label", "instructions", "caption", "help", "image" };
+
+  public String getPropertyKey(String property) {
+    for(String key : PROPERTIES) {
+      if(key.equals(property)) {
+        return getClass().getSimpleName() + "." + getName() + "." + property;
+      }
+    }
+    throw new IllegalArgumentException("Invalid property for class " + getClass().getName() + ": " + property);
+  }
+  
+  public String[] getProperties() {
+    return PROPERTIES;
+  }
+
+  public Integer getMincount() {
+    return mincount;
+  }
+
+  public void setMincount(Integer mincount) {
+    this.mincount = mincount;
+  }
+
+  public Integer getMaxCount() {
+    return maxCount;
+  }
+
+  public void setMaxCount(Integer maxCount) {
+    this.maxCount = maxCount;
+  }
 
 }

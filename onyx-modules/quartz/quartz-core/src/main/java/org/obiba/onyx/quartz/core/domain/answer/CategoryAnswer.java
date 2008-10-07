@@ -10,106 +10,106 @@ import org.obiba.onyx.util.data.DataType;
 @Entity
 public class CategoryAnswer extends AbstractEntity {
 
-	private static final long serialVersionUID = 8308345423791582240L;
+  private static final long serialVersionUID = 8308345423791582240L;
 
-	private String categoryName;
+  private String categoryName;
 
-	private Integer occurence;
+  private Integer occurence;
 
-	private Boolean active;
+  private Boolean active;
 
-	private DataType dataType;
+  private DataType dataType;
 
-	private String textValue;
+  private String textValue;
 
-	private Long integerValue;
+  private Long integerValue;
 
-	private Double decimalValue;
+  private Double decimalValue;
 
-	private Date dateValue;
+  private Date dateValue;
 
-	private QuestionAnswer questionAnswer;
-	
-	private CategoryAnswer parentCategoryAnswer;
+  private QuestionAnswer questionAnswer;
 
-	public QuestionAnswer getQuestionAnswer() {
-		return questionAnswer;
-	}
+  private CategoryAnswer parentCategoryAnswer;
 
-	public void setQuestionAnswer(QuestionAnswer questionAnswer) {
-		this.questionAnswer = questionAnswer;
-	}
+  public QuestionAnswer getQuestionAnswer() {
+    return questionAnswer;
+  }
 
-	public String getCategoryName() {
-		return categoryName;
-	}
+  public void setQuestionAnswer(QuestionAnswer questionAnswer) {
+    this.questionAnswer = questionAnswer;
+  }
 
-	public void setCategoryName(String categoryName) {
-		this.categoryName = categoryName;
-	}
+  public String getCategoryName() {
+    return categoryName;
+  }
 
-	public Integer getOccurence() {
-		return occurence;
-	}
+  public void setCategoryName(String categoryName) {
+    this.categoryName = categoryName;
+  }
 
-	public void setOccurence(Integer occurence) {
-		this.occurence = occurence;
-	}
+  public Integer getOccurence() {
+    return occurence;
+  }
 
-	public Boolean getActive() {
-		return active;
-	}
+  public void setOccurence(Integer occurence) {
+    this.occurence = occurence;
+  }
 
-	public void setActive(Boolean active) {
-		this.active = active;
-	}
+  public Boolean getActive() {
+    return active;
+  }
 
-	public DataType getDataType() {
-		return dataType;
-	}
+  public void setActive(Boolean active) {
+    this.active = active;
+  }
 
-	public void setDataType(DataType dataType) {
-		this.dataType = dataType;
-	}
+  public DataType getDataType() {
+    return dataType;
+  }
 
-	public String getTextValue() {
-		return textValue;
-	}
+  public void setDataType(DataType dataType) {
+    this.dataType = dataType;
+  }
 
-	public void setTextValue(String textValue) {
-		this.textValue = textValue;
-	}
+  public String getTextValue() {
+    return textValue;
+  }
 
-	public Long getIntegerValue() {
-		return integerValue;
-	}
+  public void setTextValue(String textValue) {
+    this.textValue = textValue;
+  }
 
-	public void setIntegerValue(Long integerValue) {
-		this.integerValue = integerValue;
-	}
+  public Long getIntegerValue() {
+    return integerValue;
+  }
 
-	public Double getDecimalValue() {
-		return decimalValue;
-	}
+  public void setIntegerValue(Long integerValue) {
+    this.integerValue = integerValue;
+  }
 
-	public void setDecimalValue(Double decimalValue) {
-		this.decimalValue = decimalValue;
-	}
+  public Double getDecimalValue() {
+    return decimalValue;
+  }
 
-	public Date getDateValue() {
-		return dateValue;
-	}
+  public void setDecimalValue(Double decimalValue) {
+    this.decimalValue = decimalValue;
+  }
 
-	public void setDateValue(Date dateValue) {
-		this.dateValue = dateValue;
-	}
+  public Date getDateValue() {
+    return dateValue;
+  }
 
-	public CategoryAnswer getParentCategoryAnswer() {
-		return parentCategoryAnswer;
-	}
+  public void setDateValue(Date dateValue) {
+    this.dateValue = dateValue;
+  }
 
-	public void setParentCategoryAnswer(CategoryAnswer parentCategoryAnswer) {
-		this.parentCategoryAnswer = parentCategoryAnswer;
-	}
+  public CategoryAnswer getParentCategoryAnswer() {
+    return parentCategoryAnswer;
+  }
+
+  public void setParentCategoryAnswer(CategoryAnswer parentCategoryAnswer) {
+    this.parentCategoryAnswer = parentCategoryAnswer;
+  }
 
 }
