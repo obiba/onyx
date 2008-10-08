@@ -38,7 +38,7 @@ public class JadeModule implements Module, ApplicationContextAware {
     log.info("shutdown");
   }
 
-  public IStageExecution createStageExecution(Interview interview, Stage stage, IStageExecution... dependsOn) {
+  public IStageExecution createStageExecution(Interview interview, Stage stage) {
     StageExecutionContext exec = (StageExecutionContext) applicationContext.getBean("stageExecutionContext");
     exec.setStage(stage);
     exec.setInterview(interview);
@@ -48,9 +48,9 @@ public class JadeModule implements Module, ApplicationContextAware {
     AbstractStageState skipped = (AbstractStageState) applicationContext.getBean("jadeSkippedState");
     AbstractStageState completed = (AbstractStageState) applicationContext.getBean("jadeCompletedState");
     AbstractStageState notApplicable = (AbstractStageState) applicationContext.getBean("jadeNotApplicableState");
-    AbstractStageState contraIndicated = (AbstractStageState) applicationContext.getBean("jadeContraIndicatedState"); 
+    AbstractStageState contraIndicated = (AbstractStageState) applicationContext.getBean("jadeContraIndicatedState");
     AbstractStageState waiting = (AbstractStageState) applicationContext.getBean("jadeWaitingState");
-    
+
     exec.addEdge(ready, TransitionEvent.NOTAPPLICABLE, notApplicable);
     exec.addEdge(ready, TransitionEvent.START, inProgress);
     exec.addEdge(ready, TransitionEvent.SKIP, skipped);
@@ -64,10 +64,10 @@ public class JadeModule implements Module, ApplicationContextAware {
     exec.addEdge(completed, TransitionEvent.CANCEL, ready);
     exec.addEdge(completed, TransitionEvent.NOTAPPLICABLE, notApplicable);
     exec.addEdge(completed, TransitionEvent.CONTRAINDICATED, notApplicable);
-    
+
     exec.addEdge(contraIndicated, TransitionEvent.CANCEL, ready);
     exec.addEdge(contraIndicated, TransitionEvent.INVALID, waiting);
-    
+
     exec.addEdge(notApplicable, TransitionEvent.VALID, ready);
     exec.addEdge(notApplicable, TransitionEvent.INVALID, waiting);
 

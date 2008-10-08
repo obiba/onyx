@@ -54,7 +54,7 @@ public class QuartzModule implements Module, ApplicationContextAware {
     this.activeInterviewService = activeInterviewService;
   }
 
-  public IStageExecution createStageExecution(Interview interview, Stage stage, IStageExecution[] dependsOn) {
+  public IStageExecution createStageExecution(Interview interview, Stage stage) {
     StageExecutionContext exec = (StageExecutionContext) applicationContext.getBean("stageExecutionContext");
     exec.setStage(stage);
     exec.setInterview(interview);

@@ -24,7 +24,7 @@ public interface Module {
    * @param stage
    * @return
    */
-  public IStageExecution createStageExecution(Interview interview, Stage stage, IStageExecution... dependsOn);
+  public IStageExecution createStageExecution(Interview interview, Stage stage);
 
   /**
    * Called at module registration.
