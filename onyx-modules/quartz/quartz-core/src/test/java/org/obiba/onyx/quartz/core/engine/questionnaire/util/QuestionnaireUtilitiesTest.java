@@ -13,11 +13,14 @@ import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.util.data.DataBuilder;
+import org.obiba.onyx.util.data.DataType;
 
 public class QuestionnaireUtilitiesTest {
 
+
   @Test
-  public void testQuestionnaire() {
+  public void testQuestionnaireBuilder() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
 
     Section parentSection = builder.withSection("S1").getSection();
@@ -38,7 +41,36 @@ public class QuestionnaireUtilitiesTest {
 
     parentSection = builder.withSection("S2").getSection();
     builder.withSection(parentSection, "S2.1").withPage("P4");
-    builder.withQuestion("Q5").withCategories(YES, NO, DONT_KNOW);
+    builder.withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).setOpenAnswerDefinitionAbsoluteValues(DataBuilder.buildInteger(40), DataBuilder.buildInteger(70));
+    builder.withCategory("OTHER_SPECIFY").withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").setOpenAnswerDefinitionFormat("[a-z,A-Z]+");
+
+    System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
+  }
+  
+  @Test
+  public void testQuestionnaireStreamer() {
+    QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
+
+    Section parentSection = builder.withSection("S1").getSection();
+
+    Category YES = new Category("YES");
+    Category NO = new Category("NO");
+    Category DONT_KNOW = new Category("DONT_KNOW");
+
+    builder.withSection(parentSection, "S1.1").withPage("P1");
+    builder.withQuestion("Q1").withCategories(YES, NO, DONT_KNOW);
+    builder.withQuestion("Q2").withCategories("1", "2").withCategory(DONT_KNOW, "888");
+
+    builder.withPage("P2");
+    builder.withQuestion("Q3").withCategories(YES, NO, DONT_KNOW);
+
+    builder.withSection(parentSection, "S1.2").withPage("P3");
+    builder.withQuestion("Q4").withCategories(YES, NO, DONT_KNOW);
+
+    parentSection = builder.withSection("S2").getSection();
+    builder.withSection(parentSection, "S2.1").withPage("P4");
+    builder.withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).setOpenAnswerDefinitionAbsoluteValues(DataBuilder.buildInteger(40), DataBuilder.buildInteger(70));
+    builder.withCategory("OTHER_SPECIFY").withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").setOpenAnswerDefinitionFormat("[a-z,A-Z]+");
 
     // System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
 
@@ -79,6 +111,7 @@ public class QuestionnaireUtilitiesTest {
       Assert.assertTrue(localizationProperties.containsKey("Category.YES.label"));
       Assert.assertTrue(localizationProperties.containsKey("QuestionCategory.Q1.YES.label"));
       Assert.assertEquals("${Category.YES.label}", localizationProperties.getProperty("QuestionCategory.Q1.YES.label"));
+      Assert.assertTrue(localizationProperties.containsKey("OpenAnswerDefinition.SPECIFY.Right"));
 
       Questionnaire fromDead = QuestionnaireStreamer.fromBundle(bundle);
       Assert.assertNotNull("Reloaded questionnaire is null", fromDead);

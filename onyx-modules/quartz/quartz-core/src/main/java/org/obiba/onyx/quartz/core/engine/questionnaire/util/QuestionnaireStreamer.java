@@ -13,11 +13,13 @@ import java.util.Locale;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.util.data.Data;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -62,6 +64,13 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(QuestionCategory.class, "repeatable");
     xstream.useAttributeFor(QuestionCategory.class, "selected");
     xstream.useAttributeFor(QuestionCategory.class, "exportName");
+    xstream.alias("open", OpenAnswerDefinition.class);
+    xstream.useAttributeFor(OpenAnswerDefinition.class, "name");
+    xstream.useAttributeFor(OpenAnswerDefinition.class, "dataType");
+    xstream.useAttributeFor(OpenAnswerDefinition.class, "unit");
+    xstream.useAttributeFor(OpenAnswerDefinition.class, "format");
+    xstream.alias("data", Data.class);
+    xstream.useAttributeFor(Data.class, "type");
   }
 
   /**

@@ -8,6 +8,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
 public class QuestionnaireBuilder {
@@ -79,7 +80,6 @@ public class QuestionnaireBuilder {
    */
   public QuestionnaireBuilder withSection(Section section, String name) {
     Section subSection = new Section(name);
-    subSection.setQuestionnaire(questionnaire);
     section.addSection(subSection);
     this.section = subSection;
 
@@ -289,19 +289,33 @@ public class QuestionnaireBuilder {
    * @return
    */
   public QuestionnaireBuilder setOpenAnswerDefinitionAbsoluteValues(Data minValue, Data maxValue) {
-    if (minValue != null && !minValue.getType().equals(openAnswerDefinition.getDataType())) {
-      throw new IllegalArgumentException("Wrong data type for absolute min value: " + openAnswerDefinition.getDataType() + " expected, " + minValue.getType() + " found.");
-    }
-    if (maxValue != null && !maxValue.getType().equals(openAnswerDefinition.getDataType())) {
-      throw new IllegalArgumentException("Wrong data type for absolute max value: " + openAnswerDefinition.getDataType() + " expected, " + maxValue.getType() + " found.");
-    }
-    
     openAnswerDefinition.setAbsoluteMinValue(minValue);
     openAnswerDefinition.setAbsoluteMaxValue(maxValue);
-    
+
     return this;
   }
-  
+
+  /**
+   * Set the absolute range to the current {@link OpenAnswerDefinition}.
+   * @param minValue no limit if null or no length
+   * @param maxValue no limit if null or no length
+   * @return
+   */
+  public QuestionnaireBuilder setOpenAnswerDefinitionAbsoluteValues(String minValue, String maxValue) {
+    if(minValue != null && minValue.length() > 0) {
+      openAnswerDefinition.setAbsoluteMinValue(DataBuilder.build(openAnswerDefinition.getDataType(), minValue));
+    } else {
+      openAnswerDefinition.setAbsoluteMinValue(null);
+    }
+    if(maxValue != null && maxValue.length() > 0) {
+      openAnswerDefinition.setAbsoluteMaxValue(DataBuilder.build(openAnswerDefinition.getDataType(), maxValue));
+    } else {
+      openAnswerDefinition.setAbsoluteMaxValue(null);
+    }
+
+    return this;
+  }
+
   /**
    * Set the usual range to the current {@link OpenAnswerDefinition}.
    * @param minValue no limit if null
@@ -309,19 +323,33 @@ public class QuestionnaireBuilder {
    * @return
    */
   public QuestionnaireBuilder setOpenAnswerDefinitionUsualValues(Data minValue, Data maxValue) {
-    if (minValue != null && !minValue.getType().equals(openAnswerDefinition.getDataType())) {
-      throw new IllegalArgumentException("Wrong data type for usual min value: " + openAnswerDefinition.getDataType() + " expected, " + minValue.getType() + " found.");
-    }
-    if (maxValue != null && !maxValue.getType().equals(openAnswerDefinition.getDataType())) {
-      throw new IllegalArgumentException("Wrong data type for usual max value: " + openAnswerDefinition.getDataType() + " expected, " + maxValue.getType() + " found.");
-    }
-
     openAnswerDefinition.setUsualMinValue(minValue);
     openAnswerDefinition.setUsualMaxValue(maxValue);
-    
+
     return this;
   }
-  
+
+  /**
+   * Set the usual range to the current {@link OpenAnswerDefinition}.
+   * @param minValue no limit if null or no length
+   * @param maxValue no limit if null or no length
+   * @return
+   */
+  public QuestionnaireBuilder setOpenAnswerDefinitionUsualValues(String minValue, String maxValue) {
+    if(minValue != null && minValue.length() > 0) {
+      openAnswerDefinition.setUsualMinValue(DataBuilder.build(openAnswerDefinition.getDataType(), minValue));
+    } else {
+      openAnswerDefinition.setUsualMinValue(null);
+    }
+    if(maxValue != null && maxValue.length() > 0) {
+      openAnswerDefinition.setUsualMaxValue(DataBuilder.build(openAnswerDefinition.getDataType(), maxValue));
+    } else {
+      openAnswerDefinition.setUsualMaxValue(null);
+    }
+
+    return this;
+  }
+
   /**
    * Set the unit to the current {@link OpenAnswerDefinition}.
    * @param unit
@@ -329,10 +357,10 @@ public class QuestionnaireBuilder {
    */
   public QuestionnaireBuilder setOpenAnswerDefinitionUnit(String unit) {
     openAnswerDefinition.setUnit(unit);
-    
+
     return this;
   }
-  
+
   /**
    * Set the data format to the current {@link OpenAnswerDefinition}.
    * @param format
@@ -340,25 +368,36 @@ public class QuestionnaireBuilder {
    */
   public QuestionnaireBuilder setOpenAnswerDefinitionFormat(String format) {
     openAnswerDefinition.setFormat(format);
-    
+
     return this;
   }
-  
+
   /**
    * Set the default data to the current {@link OpenAnswerDefinition}.
    * @param data
    * @return
    */
-  public QuestionnaireBuilder setOpenAnswerDefinitionDefaultData(Data data) {
-    if (data != null && !data.getType().equals(openAnswerDefinition.getDataType())) {
-      throw new IllegalArgumentException("Wrong data type for default data: " + openAnswerDefinition.getDataType() + " expected, " + data.getType() + " found.");
+  public QuestionnaireBuilder setOpenAnswerDefinitionDefaultData(Data... defaultValues) {
+    for(Data value : defaultValues) {
+      openAnswerDefinition.addDefaultValue(value);
     }
-    
-    openAnswerDefinition.setDefaultData(data);
-    
+
     return this;
   }
-  
+
+  /**
+   * Set the default data to the current {@link OpenAnswerDefinition}.
+   * @param data
+   * @return
+   */
+  public QuestionnaireBuilder setOpenAnswerDefinitionDefaultData(String... defaultValues) {
+    for(String value : defaultValues) {
+      openAnswerDefinition.addDefaultValue(value);
+    }
+
+    return this;
+  }
+
   /**
    * Add a set of global {@link Category} to current {@link Question}.
    * @param categories

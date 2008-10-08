@@ -12,8 +12,6 @@ public class Page implements Serializable, ILocalizable {
 
   private Section questionnaireSection;
 
-  private Questionnaire questionnaire;
-
   private List<Question> questions;
   
   public Page(String name) {
@@ -26,14 +24,6 @@ public class Page implements Serializable, ILocalizable {
 
   public void setQuestionnaireSection(Section questionnaireSection) {
     this.questionnaireSection = questionnaireSection;
-  }
-
-  public Questionnaire getQuestionnaire() {
-    return questionnaire;
-  }
-
-  public void setQuestionnaire(Questionnaire questionnaire) {
-    this.questionnaire = questionnaire;
   }
 
   public String getName() {

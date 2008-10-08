@@ -1,8 +1,11 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
 public class OpenAnswerDefinition implements Serializable, ILocalizable {
@@ -25,7 +28,7 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
 
   private Data usualMaxValue;
 
-  private Data defaultData;
+  private List<Data> defaultValues;
 
   public OpenAnswerDefinition(String name, DataType dataType) {
     this.name = name;
@@ -69,6 +72,9 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
   }
 
   public void setAbsoluteMinValue(Data absoluteMinValue) {
+    if(absoluteMinValue != null && !absoluteMinValue.getType().equals(getDataType())) {
+      throw new IllegalArgumentException("Wrong data type for absolute min value: " + getDataType() + " expected, " + absoluteMinValue.getType() + " found.");
+    }
     this.absoluteMinValue = absoluteMinValue;
   }
 
@@ -77,6 +83,9 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
   }
 
   public void setAbsoluteMaxValue(Data absoluteMaxValue) {
+    if(absoluteMaxValue != null && !absoluteMaxValue.getType().equals(getDataType())) {
+      throw new IllegalArgumentException("Wrong data type for absolute max value: " + getDataType() + " expected, " + absoluteMaxValue.getType() + " found.");
+    }
     this.absoluteMaxValue = absoluteMaxValue;
   }
 
@@ -85,6 +94,9 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
   }
 
   public void setUsualMinValue(Data usualMinValue) {
+    if(usualMinValue != null && !usualMinValue.getType().equals(getDataType())) {
+      throw new IllegalArgumentException("Wrong data type for usual min value: " + getDataType() + " expected, " + usualMinValue.getType() + " found.");
+    }
     this.usualMinValue = usualMinValue;
   }
 
@@ -93,21 +105,35 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
   }
 
   public void setUsualMaxValue(Data usualMaxValue) {
+    if(usualMaxValue != null && !usualMaxValue.getType().equals(getDataType())) {
+      throw new IllegalArgumentException("Wrong data type for usual max value: " + getDataType() + " expected, " + usualMaxValue.getType() + " found.");
+    }
     this.usualMaxValue = usualMaxValue;
   }
 
-  public Data getDefaultData() {
-    return defaultData;
+  public List<Data> getDefaultValues() {
+    return defaultValues != null ? defaultValues : (defaultValues = new ArrayList<Data>());
+  }
+  
+  public void addDefaultValue(String value) {
+    if (value != null && value.length() > 0) {
+      getDefaultValues().add(DataBuilder.build(dataType, value));
+    }
   }
 
-  public void setDefaultData(Data defaultData) {
-    this.defaultData = defaultData;
+  public void addDefaultValue(Data data) {
+    if (data != null && data.getValue() != null) {
+      if(!data.getType().equals(getDataType())) {
+        throw new IllegalArgumentException("Wrong data type for default value: " + getDataType() + " expected, " + data.getType() + " found.");
+      }
+      getDefaultValues().add(data);
+    }
   }
-
+  
   private static final String[] PROPERTIES = { "label", "unitLabel" };
 
   public String getPropertyKey(String property) {
-    for(String key : PROPERTIES) {
+    for(String key : getProperties()) {
       if(key.equals(property)) {
         return getClass().getSimpleName() + "." + getName() + "." + property;
       }
@@ -116,7 +142,14 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
   }
 
   public String[] getProperties() {
-    return PROPERTIES;
+    List<String> properties = new ArrayList<String>();
+    for (String property : PROPERTIES) {
+      properties.add(property);
+    }
+    for (Data value : getDefaultValues()) {
+      properties.add(value.getValueAsString());
+    }
+    return properties.toArray(new String[properties.size()]);
   }
 
 }

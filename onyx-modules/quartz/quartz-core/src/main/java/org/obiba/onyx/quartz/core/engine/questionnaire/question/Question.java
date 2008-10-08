@@ -26,14 +26,12 @@ public class Question implements Serializable, ILocalizable {
 
   private List<QuestionCategory> questionCategories;
 
-  private OpenAnswerDefinition openAnswerDefinition;
-
   private Condition condition;
 
   private Question parentQuestion;
 
   private List<Question> questions;
-  
+
   public Question(String name) {
     this.name = name;
   }
@@ -81,18 +79,18 @@ public class Question implements Serializable, ILocalizable {
   public List<QuestionCategory> getQuestionCategories() {
     return questionCategories != null ? questionCategories : (questionCategories = new ArrayList<QuestionCategory>());
   }
-  
+
   /**
    * Get the underlying {@link Category} list.
    * @return
    */
   public List<Category> getCategories() {
     List<Category> categories = new ArrayList<Category>();
-    
-    for (QuestionCategory questionCategory : getQuestionCategories()) {
+
+    for(QuestionCategory questionCategory : getQuestionCategories()) {
       categories.add(questionCategory.getCategory());
     }
-    
+
     return categories;
   }
 
@@ -101,14 +99,6 @@ public class Question implements Serializable, ILocalizable {
       getQuestionCategories().add(questionCategory);
       questionCategory.setQuestion(this);
     }
-  }
-
-  public OpenAnswerDefinition getOpenAnswerDefinition() {
-    return openAnswerDefinition;
-  }
-
-  public void setOpenAnswerDefinition(OpenAnswerDefinition openAnswerDefinition) {
-    this.openAnswerDefinition = openAnswerDefinition;
   }
 
   public Condition getCondition() {
@@ -147,7 +137,7 @@ public class Question implements Serializable, ILocalizable {
     }
     throw new IllegalArgumentException("Invalid property for class " + getClass().getName() + ": " + property);
   }
-  
+
   public String[] getProperties() {
     return PROPERTIES;
   }

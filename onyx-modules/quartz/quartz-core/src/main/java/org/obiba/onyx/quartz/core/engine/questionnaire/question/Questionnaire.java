@@ -57,7 +57,6 @@ public class Questionnaire implements Serializable, ILocalizable {
   public void addSection(Section section) {
     if(section != null) {
       getSections().add(section);
-      section.setQuestionnaire(this);
     }
   }
 
@@ -68,7 +67,6 @@ public class Questionnaire implements Serializable, ILocalizable {
   public void addPage(Page page) {
     if(page != null) {
       getPages().add(page);
-      page.setQuestionnaire(this);
     }
   }
 
