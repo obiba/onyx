@@ -9,7 +9,9 @@ import org.obiba.core.service.impl.hibernate.AssociationCriteria.Operation;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.service.impl.DefaultQuestionnaireParticipantServiceImpl;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestionnaireParticipantServiceImpl {
 
   private SessionFactory factory;
@@ -23,7 +25,7 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
   }
 
   public QuestionnaireParticipant getLastQuestionnaireParticipant(Participant participant, String questionnaireName) {
-    Criteria criteria = AssociationCriteria.create(QuestionnaireParticipant.class, getSession()).add("questionnaireName", Operation.eq, questionnaireName).add("participantInterview.participant", Operation.eq, participant).addSortingClauses(new SortingClause("questionnaireVersion", false)).getCriteria();
+    Criteria criteria = AssociationCriteria.create(QuestionnaireParticipant.class, getSession()).add("questionnaireName", Operation.eq, questionnaireName).add("participant", Operation.eq, participant).addSortingClauses(new SortingClause("questionnaireVersion", false)).getCriteria();
 
     return (QuestionnaireParticipant) criteria.setMaxResults(1).uniqueResult();
   }

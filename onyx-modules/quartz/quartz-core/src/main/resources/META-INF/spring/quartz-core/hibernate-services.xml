@@ -5,5 +5,11 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
   <tx:annotation-driven transaction-manager="transactionManager" />
+  
+  <bean id="questionnaireParticipantService"
+    class="org.obiba.onyx.quartz.core.service.impl.hibernate.QuestionnaireParticipantServiceHibernateImpl" scope="singleton">
+    <property name="sessionFactory" ref="sessionFactory" />
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
 
 </beans>

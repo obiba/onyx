@@ -1,0 +1,43 @@
+<dataset>
+
+  <participant id="1" 
+    barcode="1" 
+    enrollment_id="100001"
+    first_name="Suzan"
+    last_name="Tremblay"
+    gender="FEMALE"
+    birth_date="1964-10-01 00:00:00" />
+  
+  <questionnaire_participant id="1" questionnaire_name="QUE1" questionnaire_version="1.0.0" participant_id="1"/>
+  <questionnaire_participant id="2" questionnaire_name="QUE1" questionnaire_version="1.0.1" participant_id="1"/>
+  <questionnaire_participant id="3" questionnaire_name="QUE2" questionnaire_version="1.0.0" participant_id="1"/>
+  
+  <question_answer id="1" questionnaire_participant_id="2" question_name="question number 1" comment="comment on question 1"/>
+  <question_answer id="2" questionnaire_participant_id="2" question_name="question number 2" comment="comment on question 2"/>
+  <question_answer id="3" questionnaire_participant_id="1" question_name="question number 3" comment="comment on question 3"/>
+  
+  <category_answer id="1"
+    category_name="category 1"
+    occurence="1"
+    active="true"
+    question_answer_id="1"/>
+  
+  <category_answer id="2"
+    category_name="category 2"
+    occurence="2"
+    active="true"
+    question_answer_id="1"/>
+  
+  <category_answer id="3"
+    category_name="category 1"
+    occurence="2"
+    active="true"
+    question_answer_id="2"/>
+  
+  <category_answer id="4"
+    category_name="category 3"
+    occurence="1"
+    active="true"
+    question_answer_id="3"/>
+  
+</dataset>

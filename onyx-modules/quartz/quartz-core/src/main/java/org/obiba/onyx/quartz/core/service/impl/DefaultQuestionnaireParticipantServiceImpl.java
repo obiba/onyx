@@ -14,7 +14,10 @@ public abstract class DefaultQuestionnaireParticipantServiceImpl extends Persist
   public void deleteQuestionnaireParticipant(Serializable questionnaireParticipantId) {
     QuestionnaireParticipant questionnaireParticipant = loadQuestionnaireParticipant(questionnaireParticipantId);
 
-    for(QuestionAnswer questionAnswer : questionnaireParticipant.getParticipantAnswers()) {
+    QuestionAnswer questionAnswerTemplate = new QuestionAnswer();
+    questionAnswerTemplate.setQuestionnaireParticipant(questionnaireParticipant);
+    
+    for(QuestionAnswer questionAnswer : getPersistenceManager().match(questionAnswerTemplate)) {
       CategoryAnswer template = new CategoryAnswer();
       template.setQuestionAnswer(questionAnswer);
       List<CategoryAnswer> categoryAnswerList = getPersistenceManager().match(template);
