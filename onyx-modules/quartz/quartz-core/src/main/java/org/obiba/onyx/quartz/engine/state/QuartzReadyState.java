@@ -25,10 +25,6 @@ public class QuartzReadyState extends AbstractStageState implements Initializing
   public void afterPropertiesSet() throws Exception {
     addAction(ActionDefinitionBuilder.START_ACTION);
     ActionDefinition def = ActionDefinitionBuilder.create(ActionType.SKIP, "Skip").setDescription("You may explain why this stage is skipped.").getActionDefinition();
-    /*
-     * for(QuestionnaireParticipantRefusalReason reason : QuestionnaireParticipantRefusalReason.values()) {
-     * def.addReason(reason.toString()); if(def.getDefaultReason() == null) def.setDefaultReason(reason.toString()); }
-     */
     addAction(def);
   }
 

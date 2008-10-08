@@ -33,10 +33,6 @@ public class QuartzInterruptedState extends AbstractStageState implements Initia
 
   public void afterPropertiesSet() throws Exception {
     ActionDefinition def = ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").getActionDefinition();
-    /*
-     * for (QuestionnaireParticipantRefusalReason reason : QuestionnaireParticipantRefusalReason.values()) {
-     * def.addReason(reason.toString()); if (def.getDefaultReason() == null) def.setDefaultReason(reason.toString()); }
-     */
     addAction(def);
     def = ActionDefinitionBuilder.create(ActionType.EXECUTE, "Resume").getActionDefinition();
     addAction(def);
