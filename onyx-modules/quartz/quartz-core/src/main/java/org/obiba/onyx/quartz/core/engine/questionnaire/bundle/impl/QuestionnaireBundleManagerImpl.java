@@ -2,187 +2,325 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Locale;
+import java.util.List;
 import java.util.Set;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireStreamer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.runtime.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
+import com.thoughtworks.xstream.XStream;
+
+/**
+ * A file system based implementation of <code>QuestionnaireBundleManager</code>.
+ * 
+ * @author cag-dspathis
+ *
+ */
 public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManager {
   //
   // Constants
   //
-  
-  private static final Logger log = LoggerFactory.getLogger(QuestionnaireBundleManager.class);
-  
+
+  public static final String QUESTIONNAIRE_BASE_NAME = "questionnaire";
+
+  private static final Logger log = LoggerFactory.getLogger(QuestionnaireBundleManagerImpl.class);
+
   //
   // Instance Variables
   //
-  
+
   private File rootDirectory;
-  
-  private Set<QuestionnaireBundle> managedBundles;
-  
+
+  private Set<QuestionnaireBundle> bundleCache;
+
   //
   // Constructors
   //
-  
+
   public QuestionnaireBundleManagerImpl(File rootDirectory) {
-    if (!isValidRootDirectory(rootDirectory)) {
-      throw new IllegalArgumentException("Invalid root directory: "+rootDirectory);
+    if(!isValidRootDirectory(rootDirectory)) {
+      throw new IllegalArgumentException("Invalid root directory: " + rootDirectory);
     }
-    
+
     this.rootDirectory = rootDirectory;
-    
-    managedBundles = new HashSet<QuestionnaireBundle>();
+
+    bundleCache = new HashSet<QuestionnaireBundle>();
   }
-  
+
   //
   // QuestionnaireBundleManager Methods
   //
-  
-  public File getRootDirectory() {
-    return rootDirectory;
-  }
 
-  public void init() {
-    // Clear all managed bundles, in case of repeated calls to this method.
-    clearBundles();
-
-    // Locate the latest version of each bundle under the root directory and register
-    // it with the manager.
-    File[] bundleDirs = rootDirectory.listFiles();
+  public QuestionnaireBundle createBundle(Questionnaire questionnaire) throws IOException {
+    File bundleVersionDir = new File(new File(rootDirectory, questionnaire.getName()), questionnaire.getVersion());
     
-    for (File bundleDir : bundleDirs) {
-      // Skip over any non-directories (i.e., files) that might be in the root directory.
-      if (!bundleDir.isDirectory()) {
-        continue;
-      }
-      
-      // Determine the latest version of the bundle.
-      String latestBundleVersion = getLatestBundleVersion(bundleDir);
-      
-      if (latestBundleVersion != null) {
-        try {
-          // Deserialize the bundle.
-          QuestionnaireBundle bundle = deserializeBundle(new File(bundleDir, latestBundleVersion));
-      
-          // Register the bundle.
-          registerBundle(bundle);
-        }
-        catch(Exception ex) {
-          log.error("Failed to deserialize bundle "+bundleDir.getName()+" version "+latestBundleVersion, ex);
-        }
-      }
-      else {
-        // Log as an error the fact that a bundle exists with no versions.
-        log.error("No version of questionnaire bundle "+bundleDir.getName()+" is available!");
-      }
-    }
+    // Create the bundle object.
+    QuestionnaireBundle bundle = new QuestionnaireBundleImpl(bundleVersionDir, questionnaire);
+
+    // Serialize it.
+    serializeBundle(bundle);
+
+    return bundle;
   }
 
   public QuestionnaireBundle getBundle(String name) {
     QuestionnaireBundle bundle = null;
-    
-    for (QuestionnaireBundle aBundle : managedBundles) {
-      if (aBundle.getName().equals(name)) {
+
+    // Look for the bundle in the cache.
+    for(QuestionnaireBundle aBundle : bundleCache) {
+      if(aBundle.getName().equals(name)) {
         bundle = aBundle;
         break;
       }
     }
-    
+
+    // If not found, load the latest version of the bundle from the file system.
+    if(bundle == null) {
+      try {
+        bundle = loadBundle(name);
+      } catch(IOException ex) {
+        log.error("Failed to load questionnaire bundle " + name);
+      }
+    }
+
     return bundle;
   }
-  
+
   public Set<QuestionnaireBundle> bundles() {
-    return Collections.unmodifiableSet(managedBundles);
+    final Set<QuestionnaireBundle> bundles = new HashSet<QuestionnaireBundle>();
+    
+    // Iterate over all bundle directories.
+    rootDirectory.listFiles(new FileFilter() {
+      public boolean accept(File file) {
+        if(file.isDirectory()) {
+          bundles.add(getBundle(file.getName()));
+          return true;
+        }
+
+        return false;
+      }
+    });
+
+    return bundles;
   }
-  
+
   //
   // Methods
   //
 
+  /**
+   * Indicates whether the specified root directory is valid.
+   * 
+   * @param directory root directory
+   * @return <code>true</code> if the directory is not <code>null</code>, is indeed a directory (i.e., not a file),
+   * and is readable
+   */
   private boolean isValidRootDirectory(File directory) {
     return (directory != null && directory.isDirectory() && directory.canRead());
   }
-  
-  private void clearBundles() {
-    managedBundles.clear();  
-  }
-  
-  private void registerBundle(QuestionnaireBundle bundle) {
-    managedBundles.add(bundle);
-    log.info("Registered bundle "+bundle.getName());
-  }
-  
-  private String getLatestBundleVersion(File bundleDir) {
-    Version latestVersion = null;
-    
-    File[] versionDirs = bundleDir.listFiles();
-    
-    for (File versionDir : versionDirs) {
-      // Skip over any non-directories (i.e., files) that might be in the bundle directory.
-      if (!versionDir.isDirectory()) {
-        continue;
+
+  /**
+   * Loads the latest version of the specified questionnaire bundle from the file system.
+   * 
+   * @param name bundle name
+   * @return bundle (or <code>null</code> if not found
+   * @throws IOException on any I/O error
+   */
+  private QuestionnaireBundle loadBundle(String name) throws IOException {
+    QuestionnaireBundle bundle = null;
+
+    // Determine the latest version of the bundle.
+    File bundleDir = new File(rootDirectory, name);
+    String latestBundleVersion = getLatestBundleVersion(bundleDir);
+
+    if(latestBundleVersion != null) {
+      try {
+        // Load the bundle.
+        bundle = deserializeBundle(new File(bundleDir, latestBundleVersion));
+
+        // Put it in the cache.
+        cacheBundle(bundle);
+      } catch(Exception ex) {
+        log.error("Failed to deserialize bundle " + bundleDir.getName() + " version " + latestBundleVersion, ex);
       }
-      
-      // Keep track of latest version.
-      Version version = new Version(versionDir.getName());
-      
-      if (latestVersion == null || (version.compareTo(latestVersion) > 0)) {
-        latestVersion = version;
-      }
+    } else {
+      // Log as an error the fact that a bundle exists with no versions.
+      log.error("No version exists of questionnaire bundle " + bundleDir.getName() + "!");
     }
-    
+
+    return bundle;
+  }
+
+  /**
+   * Serializes a bundle.
+   * 
+   * This method creates the necessary directory structure for the bundle, then serializes the bundle's questionnaire in
+   * the appropriate directory, as follows:
+   * 
+   * <code>{rootDir}/{bundleDir}/{bundleVersionDir}/questionnaire.xml</code>
+   * 
+   * @param bundle questionnaire bundle
+   * @throws IOException on any I/O error
+   */
+  private void serializeBundle(QuestionnaireBundle bundle) throws IOException {
+    // Create the bundle version directory, which will contain the questionnaire.
+    File bundleVersionDir = new File(new File(rootDirectory, bundle.getQuestionnaire().getName()), bundle.getQuestionnaire().getVersion());
+    bundleVersionDir.mkdirs();
+
+    // Create the questionnaire file.
+    File questionnaireFile = new File(bundleVersionDir, QUESTIONNAIRE_BASE_NAME + ".xml");
+    if(!questionnaireFile.exists()) {
+      questionnaireFile.createNewFile();
+    }
+
+    // Serialize the questionnaire to the file.
+    (new QuestionnaireSerializer()).serialize(bundle.getQuestionnaire(), questionnaireFile);
+  }
+
+  /**
+   * Deserializes a bundle.
+   * 
+   * This method first loads the bundle's questionnaire from the file system then instantiates and returns a
+   * <code>QuestionnaireBundle</code> containing that questionnaire.
+   * 
+   * @param bundleVersionDir bundle version directory
+   * @return questionnaire bundle
+   * @throws IOException on any I/O error
+   */
+  private QuestionnaireBundle deserializeBundle(File bundleVersionDir) throws IOException {
+    // Deserialize the questionnaire.
+    Questionnaire questionnaire = (new QuestionnaireSerializer()).deserialize(bundleVersionDir);
+
+    // Create the bundle.
+    QuestionnaireBundle bundle = new QuestionnaireBundleImpl(bundleVersionDir, questionnaire);
+
+    return bundle;
+  }
+
+  private void cacheBundle(QuestionnaireBundle bundle) {
+    bundleCache.add(bundle);
+    log.debug("Added bundle " + bundle.getName() + " to the cache");
+  }
+
+  private String getLatestBundleVersion(File bundleDir) {
+    VersionFileFilter versionFileFilter = new VersionFileFilter();
+
+    bundleDir.listFiles(versionFileFilter);
+    Version latestVersion = versionFileFilter.getLatestVersion();
+
     return (latestVersion != null) ? latestVersion.toString() : null;
   }
 
-  private QuestionnaireBundle deserializeBundle(File bundleVersionDir) throws FileNotFoundException {
-    Questionnaire questionnaire = QuestionnaireStreamer.fromBundle(bundleVersionDir);
-    ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-    Set<Locale> languages = getBundleLanguages(bundleVersionDir);
-    
-    return new QuestionnaireBundleImpl(questionnaire, messageSource, languages);  
-  }
-  
-  private Set<Locale> getBundleLanguages(File bundleVersionDir) {
-    Set<Locale> languages = new HashSet<Locale>();
-    
-    File[] languageFiles = bundleVersionDir.listFiles(new FileFilter() {
-      public boolean accept(File file) {
-        return (file.isFile() && file.getName().startsWith("questionnaire_") && file.getName().endsWith(".properties"));
-      }
-    });
+  //
+  // Inner Classes
+  //
 
-    for (File languageFile : languageFiles) {
-      languages.add(new Locale(extractLanguageCode(languageFile.getName())));  
+  class QuestionnaireSerializer {
+
+    private XStream xstream;
+
+    private QuestionnaireSerializer() {
+      initializeXStream();
     }
-    
-    return languages;
+
+    private void initializeXStream() {
+      xstream = new XStream();
+      xstream.setMode(XStream.ID_REFERENCES);
+      xstream.alias("questionnaire", Questionnaire.class);
+      xstream.useAttributeFor(Questionnaire.class, "name");
+      xstream.useAttributeFor(Questionnaire.class, "version");
+      xstream.alias("section", Section.class);
+      xstream.useAttributeFor(Section.class, "name");
+      xstream.alias("page", Page.class);
+      xstream.useAttributeFor(Page.class, "name");
+      xstream.alias("question", Question.class);
+      xstream.useAttributeFor(Question.class, "name");
+      xstream.useAttributeFor(Question.class, "number");
+      xstream.useAttributeFor(Question.class, "required");
+      xstream.useAttributeFor(Question.class, "multiple");
+      xstream.useAttributeFor(Question.class, "minCount");
+      xstream.useAttributeFor(Question.class, "maxCount");
+      xstream.alias("category", Category.class);
+      xstream.useAttributeFor(Category.class, "name");
+      xstream.alias("questionCategory", QuestionCategory.class);
+      xstream.useAttributeFor(QuestionCategory.class, "repeatable");
+      xstream.useAttributeFor(QuestionCategory.class, "selected");
+      xstream.useAttributeFor(QuestionCategory.class, "exportName");
+    }
+
+    public void serialize(Questionnaire questionnaire, File questionnaireFile) throws IOException {
+      FileOutputStream fos = null;
+
+      try {
+        fos = new FileOutputStream(questionnaireFile);
+        xstream.toXML(questionnaire, fos);
+      } finally {
+        if(fos != null) {
+          try {
+            fos.close();
+          } catch(IOException ex) {
+            log.error("Failed to close questionnaire file output stream", ex);
+          }
+        }
+      }
+    }
+
+    public Questionnaire deserialize(File bundleVersionDir) throws IOException {
+      Questionnaire questionnaire = null;
+      File questionnaireFile = new File(bundleVersionDir, QUESTIONNAIRE_BASE_NAME + ".xml");
+
+      FileInputStream fis = null;
+
+      try {
+        fis = new FileInputStream(questionnaireFile);
+        questionnaire = (Questionnaire) xstream.fromXML(new FileInputStream(questionnaireFile));
+      } finally {
+        if(fis != null) {
+          try {
+            fis.close();
+          } catch(IOException ex) {
+            log.error("Failed to close questionnaire file input stream", ex);
+          }
+        }
+      }
+
+      return questionnaire;
+    }
   }
-  
-  private String extractLanguageCode(String languageFileName) {
-    String languageCode = null;
-    
-    int separatorIndex = languageFileName.indexOf('_');
-    languageCode = languageFileName.substring(separatorIndex+1, separatorIndex+3);
-    
-    return languageCode;
-  }
-  
-  public static void main(String[] args) throws Exception {
-    File rootDirectory = new File(System.getProperty("java.io.tmpdir"), "questionnaires");
-    QuestionnaireBundleManager bundleManager = new QuestionnaireBundleManagerImpl(rootDirectory);
-    
-    bundleManager.init();
+
+  class VersionFileFilter implements FileFilter {
+    private Version latestVersion;
+
+    public boolean accept(File file) {
+      if(file.isDirectory()) {
+        Version version = new Version(file.getName());
+
+        if(latestVersion == null || (version.compareTo(latestVersion) > 0)) {
+          latestVersion = version;
+        }
+
+        return true;
+      }
+
+      return false;
+    }
+
+    public Version getLatestVersion() {
+      return latestVersion;
+    }
   }
 }

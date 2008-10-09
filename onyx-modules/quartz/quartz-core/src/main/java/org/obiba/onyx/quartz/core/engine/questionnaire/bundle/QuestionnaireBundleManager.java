@@ -1,35 +1,31 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.bundle;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+
 public interface QuestionnaireBundleManager {
-
   /**
-   * Returns the root directory of managed questionnaire bundles.
-   * 
-   * @return questionnaire bundle root directory
+   * Creates a bundle for the given questionnaire.
+   *  
+   * @param questionnaire questionnaire
+   * @return questionnaire bundle created
+   * @throws IOException on any I/O-related error
    */
-  public File getRootDirectory();
+  public QuestionnaireBundle createBundle(Questionnaire questionnaire) throws IOException;
 
-  /**
-   * Initializes the bundle manager.
-   * 
-   * Calling this method loads all questionnaire bundles found under the root directory.
-   */
-  public void init();
-  
   /**
    * Returns the latest version of the specified questionnaire bundle.
-   * 
+   *  
    * @param name questionnaire bundle name
    * @return questionnaire bundle (or <code>null</code> if no bundle with the specified name was found)
    */
   public QuestionnaireBundle getBundle(String name);
 
   /**
-   * Returns the set of managed questionnaire bundles.
-   *  
+   * Returns the latest versions of all questionnaire bundles.
+   * 
    * @return managed questionnaire bundles
    */
   public Set<QuestionnaireBundle> bundles();

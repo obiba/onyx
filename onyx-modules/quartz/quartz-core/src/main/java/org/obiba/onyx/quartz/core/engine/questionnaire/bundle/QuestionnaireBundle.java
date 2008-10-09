@@ -1,13 +1,13 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.bundle;
 
 import java.util.Locale;
+import java.util.Properties;
 import java.util.Set;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.springframework.context.MessageSource;
 
-public interface QuestionnaireBundle {
-  
+public interface QuestionnaireBundle {  
   /**
    * Returns the name of the bundle.
    * 
@@ -16,52 +16,61 @@ public interface QuestionnaireBundle {
    * @return bundle name
    */
   public String getName();
- 
+
   /**
    * Returns the bundle's questionnaire.
    * 
    * Exactly one questionnaire exists per bundle.
-   *  
+   * 
    * @return questionnaire
    */
   public Questionnaire getQuestionnaire();
-  
+
   /**
-   * Returns the path to the specified resource (i.e., the part of the URI <i>after</i> 
-   * the context path).
+   * Specifies the language in which the questionnaire will be administered in the given locale.
    * 
-   * @param name resource name
-   * @return resource path (beginning with '/')
+   * Note: If a language was previously specified for the locale, the new language overwrites the previous one.
+   * 
+   * @param locale locale
+   * @param language language, as a set of key-value entries
    */
-  public String getResourcePath(String name);
-  
+  public void setLanguage(Locale locale, Properties language);
+
+  /**
+   * Returns the language in which the questionnaire will be administered in the specified locale.
+   * 
+   * Note: If no language was previously specified for the locale, the language returned will just the keys required
+   * (values will be empty).
+   * 
+   * @param locale locale
+   * @return language, as a set of key-value entries
+   */
+  public Properties getLanguage(Locale locale);
+
+  /**
+   * Returns all of the languages in which the bundle's questionnaire may be administered, as a set of locales.
+   * 
+   * The languages returned are determined by the presence of corresponding resource bundles in the questionnaire
+   * bundle. For example, if the following resource bundles exist
+   * 
+   * <ul>
+   * <li>questionnaire_en.properties</li>
+   * <li>questionnaire_fr.properties</li>
+   * </ul>
+   * 
+   * a set containing two locales shall be returned -- <code>Locale("en")</code> and <code>Locale("fr")</code>.
+   * 
+   * @return all languages in which the bundle's questionnaire may be administered 
+   */
+  public Set<Locale> getAvailableLanguages();
+
   /**
    * Returns the Spring <code>MessageSource</code> associated with the bundle.
    * 
-   * The <code>MessageSource</code> can be used to localize questionnaire text
-   * to any of the languages returned by <code>getAvailableLanguages()</code>.
+   * The <code>MessageSource</code> can be used to localize questionnaire text to any of the languages returned by
+   * <code>getAvailableLanguages()</code>.
    * 
    * @return bundle message source
    */
   public MessageSource getMessageSource();
-  
-  /**
-   * Returns the languages in which the bundle's questionnaire is available, 
-   * as a set of locales.
-   * 
-   * The languages returned are determined by the presence of corresponding 
-   * resource bundles in the questionnaire bundle. For example, if the following
-   * resource bundles exist
-   * 
-   * <ul>
-   *   <li>questionnaire_en.properties</li>
-   *   <li>questionnaire_fr.properties</li>
-   * </ul>
-   * 
-   * a set containing two locales shall be returned -- <code>Locale("en")</code>
-   * and <code>Locale("fr")</code>.
-   * 
-   * @return
-   */
-  public Set<Locale> getAvailableLanguages();
 }
