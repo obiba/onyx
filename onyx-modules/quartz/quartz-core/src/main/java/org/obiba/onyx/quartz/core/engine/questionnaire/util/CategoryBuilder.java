@@ -147,6 +147,12 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
    * @return
    */
   private QuestionCategory createQuestionCategory(Question question) {
+    // make sure for is not already a category with same name in this question
+    for (Category category : question.getCategories()) {
+      if (category.getName().equals(element.getName())) {
+        throw new IllegalArgumentException("You cannot have categories with the same name in a question: " + element.getName());
+      }
+    }
     QuestionCategory questionCategory = new QuestionCategory();
     questionCategory.setSelected(false);
     questionCategory.setCategory(element);

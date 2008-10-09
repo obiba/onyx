@@ -124,12 +124,11 @@ public class Questionnaire implements Serializable, ILocalizable {
   public Category findCategory(String name) {
     for(Page page : getPages()) {
       for(Question question : page.getQuestions()) {
-        for(QuestionCategory qCategory : question.getQuestionCategories()) {
-          if(qCategory.getCategory().getName().equals(name)) {
-            return qCategory.getCategory();
-          }
-        }
-        Category c = findCategory(question, name);
+        Category c = question.findCategory(name);
+        if (c != null) {
+          return c;
+        } 
+        c = findCategory(question, name);
         if (c != null) {
           return c;
         } 
@@ -140,12 +139,11 @@ public class Questionnaire implements Serializable, ILocalizable {
 
   private Category findCategory(Question parent, String name) {
     for(Question question : parent.getQuestions()) {
-      for(QuestionCategory qCategory : question.getQuestionCategories()) {
-        if(qCategory.getCategory().getName().equals(name)) {
-          return qCategory.getCategory();
-        }
+      Category c = question.findCategory(name);
+      if (c != null) {
+        return c;
       }
-      Category c = findCategory(question, name);
+      c = findCategory(question, name);
       if (c != null) {
         return c;
       }
@@ -213,7 +211,7 @@ public class Questionnaire implements Serializable, ILocalizable {
   //
   // ILocalizable
   //
-  private static final String[] PROPERTIES = { "description", "labelNext", "imageNext", "labelPrevious", "imagePrevious", "labelStart", "labelFinish", "labelInterrupt", "labelResume", "labelCancel" };
+  private static final String[] PROPERTIES = { "label", "description", "labelNext", "imageNext", "labelPrevious", "imagePrevious", "labelStart", "labelFinish", "labelInterrupt", "labelResume", "labelCancel" };
 
   public String getPropertyKey(String property) {
     for(String key : PROPERTIES) {

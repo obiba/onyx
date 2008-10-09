@@ -157,5 +157,27 @@ public class Question implements Serializable, ILocalizable {
   public void setMaxCount(Integer maxCount) {
     this.maxCount = maxCount;
   }
+  
+  //
+  // Find methods
+  //
+  public Category findCategory(String name) {
+    for (Category category : getCategories()) {
+      if (category.getName().equals(name)) {
+        return category;
+      }
+    }
+    return null;
+  }
+  
+  public QuestionCategory findQuestionCategory(String name) {
+    for (QuestionCategory qCategory : getQuestionCategories()) {
+      if (qCategory.getCategory().getName().equals(name)) {
+        return qCategory;
+      }
+    }
+    return null;
+  }
+  
 
 }
