@@ -170,7 +170,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     for(String property : localizable.getProperties()) {
       String key = localizable.getPropertyKey(property);
       if(!properties.contains(key)) {
-        properties.put(key, interpolationLocalizable == null ? "" : "=${" + interpolationLocalizable.getPropertyKey(property) + "}");
+        properties.put(key, interpolationLocalizable == null ? "" : "${" + interpolationLocalizable.getPropertyKey(property) + "}");
       }
     }
   }
