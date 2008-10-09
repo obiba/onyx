@@ -1,7 +1,11 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
+import java.util.Properties;
+
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.runtime.Version;
@@ -30,6 +34,11 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     this.questionnaire = this.element;
   }
 
+  private QuestionnaireBuilder(Questionnaire questionnaire) {
+    super(questionnaire);
+    this.element = questionnaire;
+  }
+
   /**
    * Create a new {@link Questionnaire}.
    * @param name
@@ -41,6 +50,15 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    */
   public static QuestionnaireBuilder createQuestionnaire(String name, String version) {
     return new QuestionnaireBuilder(name, version);
+  }
+
+  /**
+   * Get an instance on the builder given a questionnaire. 
+   * @param questionnaire
+   * @return
+   */
+  public static QuestionnaireBuilder getInstance(Questionnaire questionnaire) {
+    return new QuestionnaireBuilder(questionnaire);
   }
 
   /**
@@ -94,4 +112,66 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     return QuestionBuilder.inQuestion(getQuestionnaire(), question);
   }
 
+  /**
+   * Create the localization properties for the current {@link Questionnaire}.
+   * @return
+   */
+  public Properties getProperties() {
+    Properties properties = new Properties();
+    addLocalizableProperties(questionnaire, null, properties);
+    for(Section section : questionnaire.getSections()) {
+      addSectionProperties(section, properties);
+    }
+    return properties;
+  }
+
+  /**
+   * Add localization properties from {@link Section}.
+   * @param section
+   * @param properties
+   */
+  private void addSectionProperties(Section section, Properties properties) {
+    addLocalizableProperties(section, properties);
+    for(Page page : section.getPages()) {
+      addLocalizableProperties(page, properties);
+      for(Question question : page.getQuestions()) {
+        addLocalizableProperties(question, properties);
+        for(QuestionCategory questionCategory : question.getQuestionCategories()) {
+          addLocalizableProperties(questionCategory.getCategory(), properties);
+          addLocalizableProperties(questionCategory, questionCategory.getCategory(), properties);
+          if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
+            addLocalizableProperties(questionCategory.getCategory().getOpenAnswerDefinition(), properties);
+          }
+        }
+      }
+    }
+    for(Section s : section.getSections()) {
+      addSectionProperties(s, properties);
+    }
+  }
+
+  /**
+   * Shortcut method call.
+   * @param localizable
+   * @param properties
+   */
+  private void addLocalizableProperties(ILocalizable localizable, Properties properties) {
+    addLocalizableProperties(localizable, null, properties);
+  }
+
+  /**
+   * For each of the localization keys declared by the {@link ILocalizable} add it to the properties object.
+   * Set the value to null by default or to the localization interpolation key. 
+   * @param localizable
+   * @param interpolationLocalizable
+   * @param properties
+   */
+  private void addLocalizableProperties(ILocalizable localizable, ILocalizable interpolationLocalizable, Properties properties) {
+    for(String property : localizable.getProperties()) {
+      String key = localizable.getPropertyKey(property);
+      if(!properties.contains(key)) {
+        properties.put(key, interpolationLocalizable == null ? "" : "=${" + interpolationLocalizable.getPropertyKey(property) + "}");
+      }
+    }
+  }
 }
