@@ -86,11 +86,27 @@ public class QuestionnaireBuilderTest {
     Assert.assertEquals(1, builder.getQuestionnaire().findQuestion("Q4").getCategories().size());
     
     builder.withSection("S2").withSection("S2_1").withPage("P4");
-    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).setOpenAnswerDefinitionAbsoluteValues(DataBuilder.buildInteger(40), DataBuilder.buildInteger(70));
+    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).setOpenAnswerDefinitionAbsoluteValues(DataBuilder.buildInteger(40), DataBuilder.buildInteger(70)).setOpenAnswerDefinitionUsualValues("50", "60");
     category = builder.getQuestionnaire().findCategory("NAME");
+    Assert.assertNotNull(category.getOpenAnswerDefinition());
+    Assert.assertEquals(DataType.INTEGER, category.getOpenAnswerDefinition().getDataType());
+    Assert.assertEquals("AGE", category.getOpenAnswerDefinition().getName());
+    Assert.assertEquals("40", category.getOpenAnswerDefinition().getAbsoluteMinValue().getValueAsString());
+    Assert.assertEquals("70", category.getOpenAnswerDefinition().getAbsoluteMaxValue().getValueAsString());
+    Assert.assertEquals("50", category.getOpenAnswerDefinition().getUsualMinValue().getValueAsString());
+    Assert.assertEquals("60", category.getOpenAnswerDefinition().getUsualMaxValue().getValueAsString());
     
     builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").setOpenAnswerDefinitionFormat("[a-z,A-Z]+");
-
+    category = builder.getQuestionnaire().findQuestion("Q5").findCategory(OTHER_SPECIFY);
+    Assert.assertEquals("[a-z,A-Z]+", category.getOpenAnswerDefinition().getFormat());
+    Assert.assertEquals(2, category.getOpenAnswerDefinition().getDefaultValues().size());
+    
+    Assert.assertEquals(2, builder.getQuestionnaire().findCategories("1").keySet().size());
+    Assert.assertEquals(1, builder.getQuestionnaire().findCategories(YES).keySet().size());
+    Assert.assertEquals(1, builder.getQuestionnaire().findCategories(NO).keySet().size());
+    Assert.assertEquals(1, builder.getQuestionnaire().findCategories(DONT_KNOW).keySet().size());
+    Assert.assertEquals(1, builder.getQuestionnaire().findCategories(OTHER_SPECIFY).keySet().size());
+    
     System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
     
     //System.out.println(builder.getProperties());

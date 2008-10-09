@@ -2,8 +2,11 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.obiba.runtime.Version;
 
@@ -121,30 +124,89 @@ public class Questionnaire implements Serializable, ILocalizable {
     return null;
   }
 
+  /**
+   * Find all the {@link Category} and associated {@link Question}.
+   * @param name
+   * @return
+   */
+  public Map<Category, List<Question>> findCategories(String name) {
+    Map<Category, List<Question>> map = new HashMap<Category, List<Question>>();
+
+    for(Page page : getPages()) {
+      for(Question question : page.getQuestions()) {
+        for(Category category : question.getCategories()) {
+          if(category.getName().equals(name)) {
+            if(!map.containsKey(category)) {
+              List<Question> questions = new ArrayList<Question>();
+              questions.add(question);
+              map.put(category, questions);
+            } else {
+              map.get(category).add(question);
+            }
+          }
+        }
+        findCategories(question, name, map);
+      }
+    }
+
+    return map;
+  }
+  
+  /**
+   * Find recursively all the {@link Category} and associated {@link Question}.
+   * @param parent
+   * @param name
+   * @param map
+   */
+  private void findCategories(Question parent, String name, Map<Category, List<Question>> map) {
+    for (Question question : parent.getQuestions()) {
+      for(Category category : question.getCategories()) {
+        if(category.getName().equals(name)) {
+          if(!map.containsKey(category)) {
+            map.put(category, Arrays.asList(question));
+          } else {
+            map.get(category).add(question);
+          }
+        }
+      }
+      findCategories(question, name, map);
+    }
+  }
+
+  /**
+   * Find the first {@link Category} with the given name.
+   * @param name
+   * @return null if not found
+   */
   public Category findCategory(String name) {
     for(Page page : getPages()) {
       for(Question question : page.getQuestions()) {
         Category c = question.findCategory(name);
-        if (c != null) {
+        if(c != null) {
           return c;
-        } 
+        }
         c = findCategory(question, name);
-        if (c != null) {
+        if(c != null) {
           return c;
-        } 
+        }
       }
     }
     return null;
   }
 
+  /**
+   * Find recursively in {@link Question} the first {@link Category} with the given name.
+   * @param name
+   * @return null if not found
+   */
   private Category findCategory(Question parent, String name) {
     for(Question question : parent.getQuestions()) {
       Category c = question.findCategory(name);
-      if (c != null) {
+      if(c != null) {
         return c;
       }
       c = findCategory(question, name);
-      if (c != null) {
+      if(c != null) {
         return c;
       }
     }
