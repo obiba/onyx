@@ -11,7 +11,6 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
@@ -40,27 +39,18 @@ public class QuestionnaireUtilitiesTest {
       builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
     }
 
-    SectionBuilder sectionBuilder = builder.withSection("S1");
-    Section parentSection = sectionBuilder.getElement();
+    builder.withSection("S1").withSection("S1_1").withPage("P1");
+    builder.inPage("P1").withQuestion("Q1").withSharedCategories(YES, NO, DONT_KNOW);
+    builder.inPage("P1").withQuestion("Q2").withCategories("1", "2").withSharedCategory(DONT_KNOW).setExportName("888");
 
-    builder.createSharedCategory("YES");
-    builder.createSharedCategory("NO");
-    builder.createSharedCategory("DONT_KNOW");
-    builder.createSharedCategory("OTHER_SPECIFY");
+    builder.inSection("S1_1").withPage("P2").withQuestion("Q3").withSharedCategory(YES).withSharedCategories(NO, DONT_KNOW);
 
-    PageBuilder pageBuilder = sectionBuilder.withSection(parentSection, "S1.1").withPage("P1");
-    pageBuilder.withQuestion("Q1").withCategories(builder.getSharedCategory(YES), builder.getSharedCategory(NO), builder.getSharedCategory(DONT_KNOW));
-    pageBuilder.withQuestion("Q2").withCategories("1", "2").parent().withCategory(builder.getSharedCategory(DONT_KNOW)).setExportName("888");
+    builder.inSection("S1").withSection("S1_2").withPage("P3");
+    builder.inPage("P3").withQuestion("Q4").withSharedCategories(YES, NO, DONT_KNOW);
 
-    pageBuilder = sectionBuilder.withPage("P2");
-    pageBuilder.withQuestion("Q3").withCategories(builder.getSharedCategory(YES), builder.getSharedCategory(NO), builder.getSharedCategory(DONT_KNOW));
-
-    pageBuilder = sectionBuilder.withSection(parentSection, "S1.2").withPage("P3");
-    pageBuilder.withQuestion("Q4").withCategories(builder.getSharedCategory(YES), builder.getSharedCategory(NO), builder.getSharedCategory(DONT_KNOW));
-
-    parentSection = builder.withSection("S2").getElement();
-    pageBuilder = sectionBuilder.withSection(parentSection, "S2.1").withPage("P4");
-    pageBuilder.withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).setOpenAnswerDefinitionAbsoluteValues(DataBuilder.buildInteger(40), DataBuilder.buildInteger(70)).parent().parent().withCategory(builder.getSharedCategory(OTHER_SPECIFY)).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").setOpenAnswerDefinitionFormat("[a-z,A-Z]+");
+    builder.withSection("S2").withSection("S2_1").withPage("P4");
+    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).setOpenAnswerDefinitionAbsoluteValues(DataBuilder.buildInteger(40), DataBuilder.buildInteger(70));
+    builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").setOpenAnswerDefinitionFormat("[a-z,A-Z]+");
 
     return builder;
   }
@@ -102,7 +92,7 @@ public class QuestionnaireUtilitiesTest {
       localizationProperties.load(new FileInputStream(file));
       Assert.assertTrue(localizationProperties.containsKey("Questionnaire.HealthQuestionnaire.description"));
       Assert.assertTrue(localizationProperties.containsKey("Section.S1.label"));
-      Assert.assertTrue(localizationProperties.containsKey("Section.S1.1.label"));
+      Assert.assertTrue(localizationProperties.containsKey("Section.S1_1.label"));
       Assert.assertTrue(localizationProperties.containsKey("Page.P1.label"));
       Assert.assertTrue(localizationProperties.containsKey("Question.Q1.label"));
       Assert.assertTrue(localizationProperties.containsKey("Category.YES.label"));

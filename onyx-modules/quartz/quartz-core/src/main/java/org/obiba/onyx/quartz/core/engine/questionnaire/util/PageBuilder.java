@@ -2,42 +2,33 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 
 public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
 
-  private SectionBuilder parent;
-  
   private PageBuilder(SectionBuilder sectionBuilder, String name) {
-    this.parent = sectionBuilder;
-    withPage(name);
-  }
-  
-  public SectionBuilder parent() {
-    return parent;
-  }
-  
-  public static PageBuilder createPage(SectionBuilder sectionBuilder, String name) {
-    return new PageBuilder(sectionBuilder, name);
-  }
-  
-  /**
-   * Add a {@link Page} to current {@link Section} and make it the current {@link Page}.
-   * @param name
-   * @return
-   * @see #getPage()
-   */
-  public PageBuilder withPage(String name) {
+    super(sectionBuilder.getQuestionnaire());
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
-    element = new Page(name);
-    parent.parent().getElement().addPage(element);
-    parent.getElement().addPage(element);
-
-    return this;
+    this.element = new Page(name);
+    this.questionnaire.addPage(element);
+    sectionBuilder.getElement().addPage(element);
   }
-  
+
+  private PageBuilder(Questionnaire questionnaire, Page page) {
+    super(questionnaire);
+    this.element = page;
+  }
+
+  public static PageBuilder createPage(SectionBuilder parent, String name) {
+    return new PageBuilder(parent, name);
+  }
+
+  public static PageBuilder inPage(Questionnaire questionnaire, Page page) {
+    return new PageBuilder(questionnaire, page);
+  }
+
   /**
    * Add a required, non multiple, {@link Question} to current {@link Page} and make it current {@link Question}.
    * @param name
@@ -45,9 +36,9 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    * @see #getQuestion()
    */
   public QuestionBuilder withQuestion(String name) {
-   return QuestionBuilder.createQuestion(this, name, false); 
+    return QuestionBuilder.createQuestion(this, name, false);
   }
-  
+
   /**
    * Add a required, {@link Question} to current {@link Page} and make it current {@link Question}.
    * @param name
@@ -55,7 +46,7 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    * @see #getQuestion()
    */
   public QuestionBuilder withQuestion(String name, boolean multiple) {
-   return QuestionBuilder.createQuestion(this, name, multiple); 
+    return QuestionBuilder.createQuestion(this, name, multiple);
   }
-  
+
 }

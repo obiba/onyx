@@ -8,28 +8,12 @@ import org.obiba.onyx.util.data.DataType;
 
 public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Category> {
 
-  private QuestionBuilder parent;
-
   private QuestionCategory questionCategory;
 
-  private CategoryBuilder(QuestionBuilder parent, String name) {
-    this.parent = parent;
-    element = new Category(name);
-    if(parent != null) {
-      questionCategory = new QuestionCategory();
-      questionCategory.setSelected(false);
-      questionCategory.setCategory(element);
-      parent.getElement().addQuestionCategory(questionCategory);
-    }
-  }
-
   private CategoryBuilder(QuestionBuilder parent, Category category) {
-    this.parent = parent;
-    element = category;
-    questionCategory = new QuestionCategory();
-    questionCategory.setSelected(false);
-    questionCategory.setCategory(element);
-    parent.getElement().addQuestionCategory(questionCategory);
+    super(parent.getQuestionnaire());
+    this.element = category;
+    this.questionCategory = createQuestionCategory(parent.getElement());
   }
 
   /**
@@ -38,8 +22,11 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
    * @param selected if is selected by default
    * @return
    */
-  public static CategoryBuilder createCategory(QuestionBuilder parent, String name) {
-    return new CategoryBuilder(parent, name);
+  public static CategoryBuilder createQuestionCategory(QuestionBuilder parent, String name) {
+    if(!checkNamePattern(name)) {
+      throw invalidNamePatternException(name);
+    }
+    return new CategoryBuilder(parent, new Category(name));
   }
 
   /**
@@ -48,23 +35,22 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
    * @param selected if is selected by default
    * @return
    */
-  public static CategoryBuilder createCategory(QuestionBuilder parent, Category category) {
+  public static CategoryBuilder createQuestionCategory(QuestionBuilder parent, Category category) {
     return new CategoryBuilder(parent, category);
-  }
-
-  public QuestionBuilder parent() {
-    return parent;
   }
 
   public CategoryBuilder setExportName(String exportName) {
     questionCategory.setExportName(exportName);
-
     return this;
   }
 
   public CategoryBuilder setSelected(boolean selected) {
     questionCategory.setSelected(selected);
+    return this;
+  }
 
+  public CategoryBuilder setRepeatable(boolean repeatable) {
+    questionCategory.setRepeatable(repeatable);
     return this;
   }
 
@@ -85,6 +71,45 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
    */
   public OpenAnswerDefinitionBuilder withOpenAnswerDefinition(OpenAnswerDefinition openAnswerDefinition) {
     return OpenAnswerDefinitionBuilder.createOpenAnswerDefinition(this, openAnswerDefinition);
+  }
+
+  public CategoryBuilder withCategory(String name) {
+    this.element = new Category(name);
+    questionCategory = createQuestionCategory(questionCategory.getQuestion());
+    return this;
+  }
+
+  public CategoryBuilder withCategories(String... names) {
+    for(String name : names) {
+      withCategory(name);
+    }
+    return this;
+  }
+
+  public CategoryBuilder withSharedCategory(String name) {
+    Category category = questionnaire.findCategory(name);
+    if(category == null) {
+      return withCategory(name);
+    } else {
+      this.element = category;
+      questionCategory = createQuestionCategory(questionCategory.getQuestion());
+      return this;
+    }
+  }
+
+  public CategoryBuilder withSharedCategories(String... names) {
+    for(String name : names) {
+      withSharedCategory(name);
+    }
+    return this;
+  }
+
+  private QuestionCategory createQuestionCategory(Question question) {
+    QuestionCategory questionCategory = new QuestionCategory();
+    questionCategory.setSelected(false);
+    questionCategory.setCategory(element);
+    question.addQuestionCategory(questionCategory);
+    return questionCategory;
   }
 
 }

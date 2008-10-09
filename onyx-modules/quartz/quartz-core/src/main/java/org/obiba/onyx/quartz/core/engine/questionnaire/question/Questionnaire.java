@@ -73,34 +73,33 @@ public class Questionnaire implements Serializable, ILocalizable {
       getPages().add(page);
     }
   }
-  
+
   //
   // Find methods
   //
-  
+
   /**
    * Find {@link Question} with the given name in the questionnaire.
    * @param name
    * @return null if not found
    */
   public Question findQuestion(String name) {
-    for (Page page : getPages()) {
-      for (Question question : page.getQuestions()) {
-        if (question.getName().equals(name)) {
+    for(Page page : getPages()) {
+      for(Question question : page.getQuestions()) {
+        if(question.getName().equals(name)) {
           return question;
-        }
-        else {
+        } else {
           Question q = findQuestion(question, name);
-          if (q != null) {
+          if(q != null) {
             return q;
           }
         }
       }
     }
-    
+
     return null;
   }
-  
+
   /**
    * Find recursively {@link Question} among the children.
    * @param parent
@@ -108,58 +107,88 @@ public class Questionnaire implements Serializable, ILocalizable {
    * @return null if not found
    */
   private Question findQuestion(Question parent, String name) {
-    for (Question question : parent.getQuestions()) {
-      if (question.getName().equals(name)) {
+    for(Question question : parent.getQuestions()) {
+      if(question.getName().equals(name)) {
         return question;
-      }
-      else {
+      } else {
         Question q = findQuestion(question, name);
-        if (q != null) {
+        if(q != null) {
           return q;
         }
       }
     }
-    
+
     return null;
   }
-  
+
+  public Category findCategory(String name) {
+    for(Page page : getPages()) {
+      for(Question question : page.getQuestions()) {
+        for(QuestionCategory qCategory : question.getQuestionCategories()) {
+          if(qCategory.getCategory().getName().equals(name)) {
+            return qCategory.getCategory();
+          }
+        }
+        Category c = findCategory(question, name);
+        if (c != null) {
+          return c;
+        } 
+      }
+    }
+    return null;
+  }
+
+  private Category findCategory(Question parent, String name) {
+    for(Question question : parent.getQuestions()) {
+      for(QuestionCategory qCategory : question.getQuestionCategories()) {
+        if(qCategory.getCategory().getName().equals(name)) {
+          return qCategory.getCategory();
+        }
+      }
+      Category c = findCategory(question, name);
+      if (c != null) {
+        return c;
+      }
+    }
+
+    return null;
+  }
+
   /**
    * Find {@link Page} in the questionnaire.
    * @param name
    * @return null if not found
    */
   public Page findPage(String name) {
-    for (Page page : getPages()) {
-      if (page.getName().equals(name)) {
+    for(Page page : getPages()) {
+      if(page.getName().equals(name)) {
         return page;
       }
     }
-    
+
     return null;
   }
-  
-  
+
   /**
    * Find {@link Section} in the questionnaire.
    * @param name
    * @return null if not found
    */
   public Section findSection(String name) {
-    for (Section section : getSections()) {
-      if (section.getName().equals(name)) {
+    for(Section section : getSections()) {
+      if(section.getName().equals(name)) {
         return section;
-      }
-      else {
+      } else {
         Section s = findSection(section, name);
-        if (s != null) {
+        if(s != null) {
           return s;
         }
       }
     }
-    
+
     return null;
   }
-  
+
   /**
    * Find recursively a {@link Section} among the children.
    * @param parent
@@ -167,21 +196,20 @@ public class Questionnaire implements Serializable, ILocalizable {
    * @return null if not found
    */
   private Section findSection(Section parent, String name) {
-    for (Section section : parent.getSections()) {
-      if (section.getName().equals(name)) {
+    for(Section section : parent.getSections()) {
+      if(section.getName().equals(name)) {
         return section;
-      }
-      else {
+      } else {
         Section s = findSection(section, name);
-        if (s != null) {
+        if(s != null) {
           return s;
         }
       }
     }
-    
+
     return null;
   }
-  
+
   //
   // ILocalizable
   //
@@ -195,8 +223,9 @@ public class Questionnaire implements Serializable, ILocalizable {
     }
     throw new IllegalArgumentException("Invalid property for class " + getClass().getName() + ": " + property);
   }
-  
+
   public String[] getProperties() {
     return PROPERTIES;
   }
+
 }

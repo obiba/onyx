@@ -1,33 +1,13 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 
 public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Question> {
 
-  private PageBuilder parent;
-  
   private QuestionBuilder(PageBuilder parent, String name, boolean multiple) {
-    this.parent = parent;
-    withQuestion(name, multiple);
-  }
-  
-  public PageBuilder parent() {
-    return parent;
-  }
-  
-  public static QuestionBuilder createQuestion(PageBuilder parent, String name, boolean multiple) {
-    return new QuestionBuilder(parent, name, multiple);
-  }
-  
-  /**
-   * Add a required, non multiple, {@link Question} to current {@link Page} and make it current {@link Question}.
-   * @param name
-   * @return
-   * @see #getQuestion()
-   */
-  public QuestionBuilder withQuestion(String name) {
+    super(parent.getQuestionnaire());
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
@@ -35,12 +15,32 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     element.setRequired(true);
     element.setMultiple(false);
     parent.getElement().addQuestion(element);
-
-    return this;
   }
-  
+
+  public QuestionBuilder(Questionnaire questionnaire, Question question) {
+    super(questionnaire);
+    this.element = question;
+  }
+
+  public static QuestionBuilder createQuestion(PageBuilder parent, String name, boolean multiple) {
+    return new QuestionBuilder(parent, name, multiple);
+  }
+
+  public static QuestionBuilder inQuestion(Questionnaire questionnaire, Question question) {
+    return new QuestionBuilder(questionnaire, question);
+  }
+
   /**
-   * Add a required {@link Question} to current {@link Page} and make it current {@link Question}.
+   * Add a required, non multiple, {@link Question} to current {@link Question} and make it current {@link Question}.
+   * @param name
+   * @return
+   */
+  public QuestionBuilder withQuestion(String name) {
+    return withQuestion(name, false);
+  }
+
+  /**
+   * Add a required {@link Question} to current {@link Question} and make it current {@link Question}.
    * @param name
    * @param multiple
    * @return
@@ -50,20 +50,20 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
-    element = new Question(name);
-    element.setRequired(true);
-    element.setMultiple(multiple);
-    parent.getElement().addQuestion(element);
+    Question question = new Question(name);
+    question.setRequired(true);
+    question.setMultiple(false);
+    element.addQuestion(question);
 
     return this;
   }
-  
+
   /**
    * Set if current {@link Question} is required.
    * @param required
    * @return
    */
-  public QuestionBuilder setQuestionRequired(boolean required) {
+  public QuestionBuilder setRequired(boolean required) {
     element.setRequired(required);
 
     return this;
@@ -75,45 +75,20 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @param maxCount no limit if null
    * @return
    */
-  public QuestionBuilder setQuestionAnswerCount(Integer minCount, Integer maxCount) {
+  public QuestionBuilder setAnswerCount(Integer minCount, Integer maxCount) {
     element.setMinCount(minCount);
     element.setMaxCount(maxCount);
 
     return this;
   }
-  
+
   /**
    * Add a {@link Category} to current {@link Question}, make it the current category.
    * @param name
    * @return
    */
   public CategoryBuilder withCategory(String name) {
-    return CategoryBuilder.createCategory(this, name);
-  }
-  
-  /**
-   * Add a {@link Category} to current {@link Question}, make it the current category.
-   * @param name
-   * @return
-   */
-  public CategoryBuilder withCategory(Category category) {
-    return CategoryBuilder.createCategory(this, category);
-  }
-    
-  /**
-   * Add a set of global {@link Category} to current {@link Question}.
-   * @param categories
-   * @return
-   * @see #getQuestion()
-   */
-  public CategoryBuilder withCategories(Category... categories) {
-    CategoryBuilder child = null;
-    
-    for(Category category : categories) {
-      child = withCategory(category);
-    }
-
-    return child;
+    return CategoryBuilder.createQuestionCategory(this, name);
   }
 
   /**
@@ -123,11 +98,41 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    */
   public CategoryBuilder withCategories(String... names) {
     CategoryBuilder child = null;
-    
+
     for(String name : names) {
       child = withCategory(name);
     }
 
     return child;
   }
+
+  /**
+   * Add a shared {@link Category} to current {@link Question}, make it the current category.
+   * @param name
+   * @return
+   */
+  public CategoryBuilder withSharedCategory(String name) {
+    Category category = questionnaire.findCategory(name);
+    if(category == null) {
+      return withCategory(name);
+    } else {
+      return CategoryBuilder.createQuestionCategory(this, category);
+    }
+  }
+
+  /**
+   * Add a set of shared {@link Category} to current {@link Question}.
+   * @param names
+   * @return
+   */
+  public CategoryBuilder withSharedCategories(String... names) {
+    CategoryBuilder child = null;
+
+    for(String name : names) {
+      child = withSharedCategory(name);
+    }
+
+    return child;
+  }
+
 }

@@ -1,17 +1,14 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 
 public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Questionnaire> {
 
-  private Map<String, Category> sharedCategories = new HashMap<String, Category>();
-
   private QuestionnaireBuilder(String name, String version) {
+    super(null);
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
@@ -39,17 +36,28 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     return SectionBuilder.createSection(this, name);
   }
 
-  public CategoryBuilder createSharedCategory(String name) {
-    CategoryBuilder builder = CategoryBuilder.createCategory(null, name);
-    if(sharedCategories.get(name) == null) {
-      sharedCategories.put(name, builder.getElement());
+  public SectionBuilder inSection(String name) {
+    Section section = getElement().findSection(name);
+    if(section == null) {
+      throw invalidElementNameException(Section.class, name);
     }
-
-    return builder;
+    return SectionBuilder.inSection(getQuestionnaire(), section);
   }
-  
-  public Category getSharedCategory(String name) {
-    return sharedCategories.get(name);
+
+  public PageBuilder inPage(String name) {
+    Page page = getElement().findPage(name);
+    if(page == null) {
+      throw invalidElementNameException(Page.class, name);
+    }
+    return PageBuilder.inPage(getQuestionnaire(), page);
+  }
+
+  public QuestionBuilder inQuestion(String name) {
+    Question question = getElement().findQuestion(name);
+    if(question == null) {
+      throw invalidElementNameException(Question.class, name);
+    }
+    return QuestionBuilder.inQuestion(getQuestionnaire(), question);
   }
 
 }

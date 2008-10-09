@@ -7,19 +7,8 @@ import org.obiba.onyx.util.data.DataType;
 
 public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBuilder<OpenAnswerDefinition> {
 
-  private CategoryBuilder parent;
-
-  private OpenAnswerDefinitionBuilder(CategoryBuilder parent, String name, DataType dataType) {
-    this.parent = parent;
-    if(!checkNamePattern(name)) {
-      throw invalidNamePatternException(name);
-    }
-    element = new OpenAnswerDefinition(name, dataType);
-    parent.getElement().setOpenAnswerDefinition(element);
-  }
-
   private OpenAnswerDefinitionBuilder(CategoryBuilder parent, OpenAnswerDefinition openAnswerDefinition) {
-    this.parent = parent;
+    super(parent.getQuestionnaire());
     element = openAnswerDefinition;
     parent.getElement().setOpenAnswerDefinition(element);
   }
@@ -31,7 +20,10 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public static OpenAnswerDefinitionBuilder createOpenAnswerDefinition(CategoryBuilder parent, String name, DataType dataType) {
-    return new OpenAnswerDefinitionBuilder(parent, name, dataType);
+    if(!checkNamePattern(name)) {
+      throw invalidNamePatternException(name);
+    }
+    return new OpenAnswerDefinitionBuilder(parent, new OpenAnswerDefinition(name, dataType));
   }
 
   /**
@@ -41,10 +33,6 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    */
   public static OpenAnswerDefinitionBuilder createOpenAnswerDefinition(CategoryBuilder parent, OpenAnswerDefinition openAnswerDefinition) {
     return new OpenAnswerDefinitionBuilder(parent, openAnswerDefinition);
-  }
-
-  public CategoryBuilder parent() {
-    return parent;
   }
 
   /**
