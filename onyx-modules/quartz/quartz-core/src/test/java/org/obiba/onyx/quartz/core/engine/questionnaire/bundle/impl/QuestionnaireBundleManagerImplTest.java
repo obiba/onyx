@@ -25,7 +25,7 @@ public class QuestionnaireBundleManagerImplTest {
   public void setUp() throws IOException {
     // Create the root directory for the bundle manager tests. If it exists
     // already, delete it to start clean.
-    rootDirectory = new File("target", "bundleManager-test");
+    rootDirectory = new File("target", "bundleManagerImpl-test");
 
     if(rootDirectory.exists()) {
       FileUtil.delete(rootDirectory);

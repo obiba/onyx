@@ -76,7 +76,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     FileOutputStream fos = null;
 
     try {
-      language.store(fos = new FileOutputStream(new File(bundleVersionDir, "questionnaire_" + locale)), null);
+      language.store(fos = new FileOutputStream(new File(bundleVersionDir, "questionnaire_"+locale+LANGUAGE_FILE_EXTENSION)), null);
     } catch(IOException ex) {
       log.error("Failed to store language file", ex);
     } finally {
@@ -96,7 +96,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     FileInputStream fis = null;
 
     try {
-      language.load(fis = new FileInputStream(new File(bundleVersionDir, "questionnaire_" + locale)));
+      language.load(fis = new FileInputStream(new File(bundleVersionDir, "questionnaire_"+locale+LANGUAGE_FILE_EXTENSION)));
     } catch(IOException ex) {
       log.error("Failed to load language file", ex);
     } finally {
@@ -187,7 +187,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     int startIndex = fileName.indexOf('_');
     int endIndex = fileName.lastIndexOf(LANGUAGE_FILE_EXTENSION);
 
-    localeString = fileName.substring(startIndex, endIndex);
+    localeString = fileName.substring(startIndex+1, endIndex);
 
     return localeString;
   }
