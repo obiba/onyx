@@ -25,30 +25,27 @@ import org.obiba.onyx.jade.core.service.InstrumentService;
 public class JadeStageDependencyConditionTest {
 
   private ActiveInterviewService activeInterviewServiceMock;
-  
-  private EntityQueryService queryServiceMock;
-  
+
   private InstrumentService instrumentServiceMock;
-  
+
   private InstrumentRunService instrumentRunServiceMock;
-  
-  private JadeStageDependencyCondition dependencyCondition; 
-  
+
+  private JadeStageDependencyCondition dependencyCondition;
+
   @Before
   public void setup() {
 
     activeInterviewServiceMock = createMock(ActiveInterviewService.class);
-    queryServiceMock = createMock(EntityQueryService.class);
     instrumentServiceMock = createMock(InstrumentService.class);
     instrumentRunServiceMock = createMock(InstrumentRunService.class);
-    
+
     dependencyCondition = new JadeStageDependencyCondition();
     dependencyCondition.setStageName("stageMock");
     dependencyCondition.setInstrumentService(instrumentServiceMock);
     dependencyCondition.setInstrumentRunService(instrumentRunServiceMock);
-    
+
   }
-  
+
   @Test
   public void testUncompletedCondition() {
 
@@ -89,12 +86,12 @@ public class JadeStageDependencyConditionTest {
         return true;
       };
     };
-        
+
     expect(activeInterviewServiceMock.getStageExecution("stageMock")).andReturn(stageExecution);
     expect(activeInterviewServiceMock.getParticipant()).andReturn(newTestParticipant());
     expect(instrumentServiceMock.getInstrumentType("stageMock")).andReturn(newTestInstrumentType());
     expect(instrumentRunServiceMock.getLastCompletedInstrumentRun((Participant) EasyMock.anyObject(), (InstrumentType) EasyMock.anyObject())).andReturn(newTestInstrumentRun(false));
-    
+
     replay(activeInterviewServiceMock);
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
@@ -105,7 +102,7 @@ public class JadeStageDependencyConditionTest {
     verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
 
-    Assert.assertEquals((Boolean)false, conditionResult);
+    Assert.assertEquals((Boolean) false, conditionResult);
   }
 
   @Test
@@ -122,12 +119,12 @@ public class JadeStageDependencyConditionTest {
         return true;
       };
     };
-        
+
     expect(activeInterviewServiceMock.getStageExecution("stageMock")).andReturn(stageExecution);
     expect(activeInterviewServiceMock.getParticipant()).andReturn(newTestParticipant());
     expect(instrumentServiceMock.getInstrumentType("stageMock")).andReturn(newTestInstrumentType());
     expect(instrumentRunServiceMock.getLastCompletedInstrumentRun((Participant) EasyMock.anyObject(), (InstrumentType) EasyMock.anyObject())).andReturn(newTestInstrumentRun(true));
-    
+
     replay(activeInterviewServiceMock);
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
@@ -138,9 +135,9 @@ public class JadeStageDependencyConditionTest {
     verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
 
-    Assert.assertEquals((Boolean)true, conditionResult);
+    Assert.assertEquals((Boolean) true, conditionResult);
   }
-  
+
   private Participant newTestParticipant() {
     Participant p = new Participant();
 
@@ -152,22 +149,22 @@ public class JadeStageDependencyConditionTest {
 
     return (p);
   }
-  
+
   private InstrumentType newTestInstrumentType() {
     InstrumentType iT = new InstrumentType();
-    
+
     iT.setName("stageMock");
-    
+
     return (iT);
   }
-  
-  private InstrumentRun newTestInstrumentRun(boolean wantResults){
+
+  private InstrumentRun newTestInstrumentRun(boolean wantResults) {
     InstrumentRun iR = new InstrumentRun();
-    
-    if (wantResults == true){
+
+    if(wantResults == true) {
       iR.addInstrumentRunValue(new InstrumentRunValue());
     }
-    
+
     return (iR);
   };
 }
