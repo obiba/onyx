@@ -5,7 +5,6 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Properties;
@@ -13,6 +12,7 @@ import java.util.Set;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -76,7 +76,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     FileOutputStream fos = null;
 
     try {
-      language.store(fos = new FileOutputStream(new File(bundleVersionDir, "questionnaire_"+locale+LANGUAGE_FILE_EXTENSION)), null);
+      language.store(fos = new FileOutputStream(new File(bundleVersionDir, "questionnaire_" + locale + LANGUAGE_FILE_EXTENSION)), null);
     } catch(IOException ex) {
       log.error("Failed to store language file", ex);
     } finally {
@@ -91,22 +91,34 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
   }
 
   public Properties getLanguage(Locale locale) {
-    Properties language = new Properties();
+    Properties language = null;
 
-    FileInputStream fis = null;
+    File languageFile = new File(bundleVersionDir, "questionnaire_" + locale + LANGUAGE_FILE_EXTENSION);
 
-    try {
-      language.load(fis = new FileInputStream(new File(bundleVersionDir, "questionnaire_"+locale+LANGUAGE_FILE_EXTENSION)));
-    } catch(IOException ex) {
-      log.error("Failed to load language file", ex);
-    } finally {
-      if(fis != null) {
-        try {
-          fis.close();
-        } catch(IOException ex) {
-          log.error("Failed to close language file input stream", ex);
+    if(languageFile.exists()) {
+      language = new Properties();
+
+      FileInputStream fis = null;
+
+      try {
+        language.load(fis = new FileInputStream(languageFile));
+      } catch(IOException ex) {
+        language = null;
+        log.error("Failed to load language file", ex);
+      } finally {
+        if(fis != null) {
+          try {
+            fis.close();
+          } catch(IOException ex) {
+            log.error("Failed to close language file input stream", ex);
+          }
         }
       }
+    }
+
+    if(language == null) {
+      QuestionnaireBuilder builder = QuestionnaireBuilder.getInstance(getQuestionnaire());
+      language = builder.getProperties();
     }
 
     return language;
@@ -187,7 +199,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     int startIndex = fileName.indexOf('_');
     int endIndex = fileName.lastIndexOf(LANGUAGE_FILE_EXTENSION);
 
-    localeString = fileName.substring(startIndex+1, endIndex);
+    localeString = fileName.substring(startIndex + 1, endIndex);
 
     return localeString;
   }
