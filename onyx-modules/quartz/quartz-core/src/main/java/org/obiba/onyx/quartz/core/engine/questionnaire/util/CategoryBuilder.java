@@ -6,10 +6,20 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.util.data.DataType;
 
+/**
+ * {@link Category} builder, given a {@link Questionnaire} and a current {@link Question}.
+ * @author Yannick Marcon
+ *
+ */
 public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Category> {
 
   private QuestionCategory questionCategory;
 
+  /**
+   * Constructor using {@link QuestionBuilder} to get the {@link Question} it is applied to.
+   * @param parent
+   * @param category
+   */
   private CategoryBuilder(QuestionBuilder parent, Category category) {
     super(parent.getQuestionnaire());
     this.element = category;
@@ -21,6 +31,7 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
    * @param name
    * @param selected if is selected by default
    * @return
+   * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
   public static CategoryBuilder createQuestionCategory(QuestionBuilder parent, String name) {
     if(!checkNamePattern(name)) {
@@ -39,16 +50,31 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
     return new CategoryBuilder(parent, category);
   }
 
+  /**
+   * Set the export name to the current question category ({@link QuestionCategory}).
+   * @param exportName
+   * @return
+   */
   public CategoryBuilder setExportName(String exportName) {
     questionCategory.setExportName(exportName);
     return this;
   }
 
+  /**
+   * Set if the current question category  ({@link QuestionCategory}) should be selected or not.
+   * @param selected
+   * @return
+   */
   public CategoryBuilder setSelected(boolean selected) {
     questionCategory.setSelected(selected);
     return this;
   }
 
+  /**
+   * Set if the current question category  ({@link QuestionCategory}) should be repeatable or not.
+   * @param selected
+   * @return
+   */
   public CategoryBuilder setRepeatable(boolean repeatable) {
     questionCategory.setRepeatable(repeatable);
     return this;
@@ -65,20 +91,21 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
   }
 
   /**
-   * Set the {@link OpenAnswerDefinition} to the current category.
-   * @param openAnswerDefinition
+   * Add a {@link Category} to the current {@link Question}.
+   * @param name
    * @return
    */
-  public OpenAnswerDefinitionBuilder withOpenAnswerDefinition(OpenAnswerDefinition openAnswerDefinition) {
-    return OpenAnswerDefinitionBuilder.createOpenAnswerDefinition(this, openAnswerDefinition);
-  }
-
   public CategoryBuilder withCategory(String name) {
     this.element = new Category(name);
     questionCategory = createQuestionCategory(questionCategory.getQuestion());
     return this;
   }
 
+  /**
+   * Add a set of {@link Category} to the current {@link Question}.
+   * @param names
+   * @return
+   */
   public CategoryBuilder withCategories(String... names) {
     for(String name : names) {
       withCategory(name);
@@ -86,6 +113,11 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
     return this;
   }
 
+  /**
+   * Look for a {@link Category} with the same name in the {@link QuestionnaireBuilder. Create it if nt found.
+   * @param name
+   * @return
+   */
   public CategoryBuilder withSharedCategory(String name) {
     Category category = questionnaire.findCategory(name);
     if(category == null) {
@@ -97,6 +129,11 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
     }
   }
 
+  /**
+   * Add a set of {@link Category} by looking them from the name in the {@link Questionnaire}. Create them if not found.
+   * @param names
+   * @return
+   */
   public CategoryBuilder withSharedCategories(String... names) {
     for(String name : names) {
       withSharedCategory(name);
@@ -104,6 +141,11 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
     return this;
   }
 
+  /**
+   * Create the {@link QuestionCategory} for the current {@link Question} and {@link Category}.
+   * @param question
+   * @return
+   */
   private QuestionCategory createQuestionCategory(Question question) {
     QuestionCategory questionCategory = new QuestionCategory();
     questionCategory.setSelected(false);

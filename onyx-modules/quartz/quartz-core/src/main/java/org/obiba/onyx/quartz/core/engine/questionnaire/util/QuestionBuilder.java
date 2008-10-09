@@ -1,11 +1,24 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 
+/**
+ * {@link Question} builder, given a {@link Questionnaire} and a current {@link Page}.
+ * @author Yannick Marcon
+ * 
+ */
 public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Question> {
 
+  /**
+   * Constructor using {@link PageBuilder} to get the {@link Page} it is applied to.
+   * @param parent
+   * @param name
+   * @param multiple
+   * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
+   */
   private QuestionBuilder(PageBuilder parent, String name, boolean multiple) {
     super(parent.getQuestionnaire());
     if(!checkNamePattern(name)) {
@@ -17,15 +30,34 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     parent.getElement().addQuestion(element);
   }
 
-  public QuestionBuilder(Questionnaire questionnaire, Question question) {
+  /**
+   * Constructor.
+   * @param questionnaire
+   * @param question
+   */
+  private QuestionBuilder(Questionnaire questionnaire, Question question) {
     super(questionnaire);
     this.element = question;
   }
 
+  /**
+   * Create a {@link Question} in the given {@link Page}.
+   * @param parent
+   * @param name
+   * @param multiple
+   * @return
+   * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
+   */
   public static QuestionBuilder createQuestion(PageBuilder parent, String name, boolean multiple) {
     return new QuestionBuilder(parent, name, multiple);
   }
 
+  /**
+   * Set the given {@link Question} as the current one.
+   * @param questionnaire
+   * @param question
+   * @return
+   */
   public static QuestionBuilder inQuestion(Questionnaire questionnaire, Question question) {
     return new QuestionBuilder(questionnaire, question);
   }
@@ -107,7 +139,8 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   }
 
   /**
-   * Add a shared {@link Category} to current {@link Question}, make it the current category.
+   * Look for the {@link Category} with the given name in the current {@link Questionnaire}, add it (create it if
+   * necessary) to the current {@link Question}, make it the current category.
    * @param name
    * @return
    */

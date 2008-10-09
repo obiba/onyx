@@ -4,19 +4,45 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 
+/**
+ * {@link Section} builder, given a {@link Questionnaire}.
+ * @author cag-ymarcon
+ *
+ */
 public class SectionBuilder extends AbstractQuestionnaireElementBuilder<Section> {
 
+  /**
+   * Constructor using the {@link QuestionnaireBuilder} to get the {@link Questionnaire} it is applied to.
+   * @param parent
+   * @param name
+   * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
+   */
   private SectionBuilder(QuestionnaireBuilder parent, String name) {
     super(parent.getQuestionnaire());
+    if(!checkNamePattern(name)) {
+      throw invalidNamePatternException(name);
+    }
     this.element = new Section(name);
     this.questionnaire.addSection(element);
   }
 
+  /**
+   * Constructor.
+   * @param questionnaire
+   * @param section
+   */
   private SectionBuilder(Questionnaire questionnaire, Section section) {
     super(questionnaire);
     this.element = section;
   }
 
+  /**
+   * Create a section in the {@link Questionnaire}.
+   * @param parent
+   * @param name
+   * @return
+   * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
+   */
   public static SectionBuilder createSection(QuestionnaireBuilder parent, String name) {
     return new SectionBuilder(parent, name);
   }
