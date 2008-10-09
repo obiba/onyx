@@ -35,7 +35,7 @@ public class Section implements Serializable, ILocalizable {
   public void addPage(Page page) {
     if(page != null) {
       getPages().add(page);
-      page.setQuestionnaireSection(this);
+      page.setSection(this);
     }
   }
 

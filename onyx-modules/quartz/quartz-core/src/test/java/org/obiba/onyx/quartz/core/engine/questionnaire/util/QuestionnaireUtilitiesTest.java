@@ -10,7 +10,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.obiba.core.util.FileUtil;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.util.data.DataBuilder;
@@ -18,59 +17,57 @@ import org.obiba.onyx.util.data.DataType;
 
 public class QuestionnaireUtilitiesTest {
 
+  private static final String YES = "YES";
+
+  private static final String NO = "NO";
+
+  private static final String DONT_KNOW = "DONT_KNOW";
+
+  private static final String OTHER_SPECIFY = "OTHER_SPECIFY";
 
   @Test
   public void testQuestionnaireBuilder() {
-    QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
-
-    Section parentSection = builder.withSection("S1").getSection();
-
-    Category YES = new Category("YES");
-    Category NO = new Category("NO");
-    Category DONT_KNOW = new Category("DONT_KNOW");
-
-    builder.withSection(parentSection, "S1.1").withPage("P1");
-    builder.withQuestion("Q1").withCategories(YES, NO, DONT_KNOW);
-    builder.withQuestion("Q2").withCategories("1", "2").withCategory(DONT_KNOW, "888");
-
-    builder.withPage("P2");
-    builder.withQuestion("Q3").withCategories(YES, NO, DONT_KNOW);
-
-    builder.withSection(parentSection, "S1.2").withPage("P3");
-    builder.withQuestion("Q4").withCategories(YES, NO, DONT_KNOW);
-
-    parentSection = builder.withSection("S2").getSection();
-    builder.withSection(parentSection, "S2.1").withPage("P4");
-    builder.withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).setOpenAnswerDefinitionAbsoluteValues(DataBuilder.buildInteger(40), DataBuilder.buildInteger(70));
-    builder.withCategory("OTHER_SPECIFY").withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").setOpenAnswerDefinitionFormat("[a-z,A-Z]+");
-
-    System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
+    QuestionnaireBuilder builder = buildQuestionnaire();
+    System.out.println(QuestionnaireStreamer.toXML(builder.getElement()));
   }
-  
+
+  private QuestionnaireBuilder buildQuestionnaire() {
+    QuestionnaireBuilder builder;
+    try {
+      builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "a");
+      Assert.fail("Questionnaire version not checked.");
+    } catch(Exception e) {
+      builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
+    }
+
+    SectionBuilder sectionBuilder = builder.withSection("S1");
+    Section parentSection = sectionBuilder.getElement();
+
+    builder.createSharedCategory("YES");
+    builder.createSharedCategory("NO");
+    builder.createSharedCategory("DONT_KNOW");
+    builder.createSharedCategory("OTHER_SPECIFY");
+
+    PageBuilder pageBuilder = sectionBuilder.withSection(parentSection, "S1.1").withPage("P1");
+    pageBuilder.withQuestion("Q1").withCategories(builder.getSharedCategory(YES), builder.getSharedCategory(NO), builder.getSharedCategory(DONT_KNOW));
+    pageBuilder.withQuestion("Q2").withCategories("1", "2").parent().withCategory(builder.getSharedCategory(DONT_KNOW)).setExportName("888");
+
+    pageBuilder = sectionBuilder.withPage("P2");
+    pageBuilder.withQuestion("Q3").withCategories(builder.getSharedCategory(YES), builder.getSharedCategory(NO), builder.getSharedCategory(DONT_KNOW));
+
+    pageBuilder = sectionBuilder.withSection(parentSection, "S1.2").withPage("P3");
+    pageBuilder.withQuestion("Q4").withCategories(builder.getSharedCategory(YES), builder.getSharedCategory(NO), builder.getSharedCategory(DONT_KNOW));
+
+    parentSection = builder.withSection("S2").getElement();
+    pageBuilder = sectionBuilder.withSection(parentSection, "S2.1").withPage("P4");
+    pageBuilder.withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).setOpenAnswerDefinitionAbsoluteValues(DataBuilder.buildInteger(40), DataBuilder.buildInteger(70)).parent().parent().withCategory(builder.getSharedCategory(OTHER_SPECIFY)).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").setOpenAnswerDefinitionFormat("[a-z,A-Z]+");
+
+    return builder;
+  }
+
   @Test
   public void testQuestionnaireStreamer() {
-    QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
-
-    Section parentSection = builder.withSection("S1").getSection();
-
-    Category YES = new Category("YES");
-    Category NO = new Category("NO");
-    Category DONT_KNOW = new Category("DONT_KNOW");
-
-    builder.withSection(parentSection, "S1.1").withPage("P1");
-    builder.withQuestion("Q1").withCategories(YES, NO, DONT_KNOW);
-    builder.withQuestion("Q2").withCategories("1", "2").withCategory(DONT_KNOW, "888");
-
-    builder.withPage("P2");
-    builder.withQuestion("Q3").withCategories(YES, NO, DONT_KNOW);
-
-    builder.withSection(parentSection, "S1.2").withPage("P3");
-    builder.withQuestion("Q4").withCategories(YES, NO, DONT_KNOW);
-
-    parentSection = builder.withSection("S2").getSection();
-    builder.withSection(parentSection, "S2.1").withPage("P4");
-    builder.withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).setOpenAnswerDefinitionAbsoluteValues(DataBuilder.buildInteger(40), DataBuilder.buildInteger(70));
-    builder.withCategory("OTHER_SPECIFY").withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").setOpenAnswerDefinitionFormat("[a-z,A-Z]+");
+    QuestionnaireBuilder builder = buildQuestionnaire();
 
     // System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
 
@@ -91,9 +88,9 @@ public class QuestionnaireUtilitiesTest {
       }
     }
     try {
-      File bundle = QuestionnaireStreamer.makeBundle(builder.getQuestionnaire(), bundleDirectory, Locale.FRENCH, Locale.ENGLISH);
-      Assert.assertEquals(builder.getQuestionnaire().getVersion(), bundle.getName());
-      Assert.assertEquals(builder.getQuestionnaire().getName(), bundle.getParentFile().getName());
+      File bundle = QuestionnaireStreamer.makeBundle(builder.getElement(), bundleDirectory, Locale.FRENCH, Locale.ENGLISH);
+      Assert.assertEquals(builder.getElement().getVersion(), bundle.getName());
+      Assert.assertEquals(builder.getElement().getName(), bundle.getParentFile().getName());
       File file = new File(bundle, "questionnaire.xml");
       Assert.assertTrue("Questionnaire description file not created.", file.exists());
       file = new File(bundle, "questionnaire_fr.properties");

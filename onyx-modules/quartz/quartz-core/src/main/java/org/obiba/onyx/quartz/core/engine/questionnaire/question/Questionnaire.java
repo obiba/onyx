@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.obiba.runtime.Version;
+
 public class Questionnaire implements Serializable, ILocalizable {
 
   private static final long serialVersionUID = -9079010396321478385L;
@@ -21,7 +23,7 @@ public class Questionnaire implements Serializable, ILocalizable {
 
   public Questionnaire(String name, String version) {
     this.name = name;
-    this.version = version;
+    setVersion(version);
   }
 
   public String getName() {
@@ -37,6 +39,8 @@ public class Questionnaire implements Serializable, ILocalizable {
   }
 
   public void setVersion(String version) {
+    // throws a IllegalArgumentException if not valid format
+    new Version(version);
     this.version = version;
   }
 
@@ -69,7 +73,118 @@ public class Questionnaire implements Serializable, ILocalizable {
       getPages().add(page);
     }
   }
-
+  
+  //
+  // Find methods
+  //
+  
+  /**
+   * Find {@link Question} with the given name in the questionnaire.
+   * @param name
+   * @return null if not found
+   */
+  public Question findQuestion(String name) {
+    for (Page page : getPages()) {
+      for (Question question : page.getQuestions()) {
+        if (question.getName().equals(name)) {
+          return question;
+        }
+        else {
+          Question q = findQuestion(question, name);
+          if (q != null) {
+            return q;
+          }
+        }
+      }
+    }
+    
+    return null;
+  }
+  
+  /**
+   * Find recursively {@link Question} among the children.
+   * @param parent
+   * @param name
+   * @return null if not found
+   */
+  private Question findQuestion(Question parent, String name) {
+    for (Question question : parent.getQuestions()) {
+      if (question.getName().equals(name)) {
+        return question;
+      }
+      else {
+        Question q = findQuestion(question, name);
+        if (q != null) {
+          return q;
+        }
+      }
+    }
+    
+    return null;
+  }
+  
+  /**
+   * Find {@link Page} in the questionnaire.
+   * @param name
+   * @return null if not found
+   */
+  public Page findPage(String name) {
+    for (Page page : getPages()) {
+      if (page.getName().equals(name)) {
+        return page;
+      }
+    }
+    
+    return null;
+  }
+  
+  
+  /**
+   * Find {@link Section} in the questionnaire.
+   * @param name
+   * @return null if not found
+   */
+  public Section findSection(String name) {
+    for (Section section : getSections()) {
+      if (section.getName().equals(name)) {
+        return section;
+      }
+      else {
+        Section s = findSection(section, name);
+        if (s != null) {
+          return s;
+        }
+      }
+    }
+    
+    return null;
+  }
+  
+  /**
+   * Find recursively a {@link Section} among the children.
+   * @param parent
+   * @param name
+   * @return null if not found
+   */
+  private Section findSection(Section parent, String name) {
+    for (Section section : parent.getSections()) {
+      if (section.getName().equals(name)) {
+        return section;
+      }
+      else {
+        Section s = findSection(section, name);
+        if (s != null) {
+          return s;
+        }
+      }
+    }
+    
+    return null;
+  }
+  
+  //
+  // ILocalizable
+  //
   private static final String[] PROPERTIES = { "description", "labelNext", "imageNext", "labelPrevious", "imagePrevious", "labelStart", "labelFinish", "labelInterrupt", "labelResume", "labelCancel" };
 
   public String getPropertyKey(String property) {

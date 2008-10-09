@@ -10,7 +10,7 @@ public class Page implements Serializable, ILocalizable {
 
   private String name;
 
-  private Section questionnaireSection;
+  private Section section;
 
   private List<Question> questions;
   
@@ -18,12 +18,12 @@ public class Page implements Serializable, ILocalizable {
     this.name = name;
   }
 
-  public Section getQuestionnaireSection() {
-    return questionnaireSection;
+  public Section getSection() {
+    return section;
   }
 
-  public void setQuestionnaireSection(Section questionnaireSection) {
-    this.questionnaireSection = questionnaireSection;
+  public void setSection(Section section) {
+    this.section = section;
   }
 
   public String getName() {

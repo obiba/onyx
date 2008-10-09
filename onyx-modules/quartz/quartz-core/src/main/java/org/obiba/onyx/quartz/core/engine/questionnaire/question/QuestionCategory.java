@@ -9,10 +9,10 @@ public class QuestionCategory implements Serializable, ILocalizable {
   private Question question;
 
   private Category category;
-  
-  private Boolean repeatable;
 
-  private Boolean selected;
+  private boolean repeatable;
+
+  private boolean selected;
 
   private String exportName;
 
@@ -35,19 +35,19 @@ public class QuestionCategory implements Serializable, ILocalizable {
     this.category = category;
   }
 
-  public Boolean getRepeatable() {
+  public boolean isRepeatable() {
     return repeatable;
   }
 
-  public void setRepeatable(Boolean repeatable) {
+  public void setRepeatable(boolean repeatable) {
     this.repeatable = repeatable;
   }
 
-  public Boolean getSelected() {
+  public boolean isSelected() {
     return selected;
   }
 
-  public void setSelected(Boolean selected) {
+  public void setSelected(boolean selected) {
     this.selected = selected;
   }
 
@@ -71,5 +71,5 @@ public class QuestionCategory implements Serializable, ILocalizable {
   public String[] getProperties() {
     return category.getProperties();
   }
-  
+
 }
