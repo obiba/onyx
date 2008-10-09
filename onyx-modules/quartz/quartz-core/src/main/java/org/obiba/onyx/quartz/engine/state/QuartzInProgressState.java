@@ -34,10 +34,8 @@ public class QuartzInProgressState extends AbstractStageState implements Initial
   }
 
   public void afterPropertiesSet() throws Exception {
-    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").getActionDefinition();
-    addAction(def);
-    def = ActionDefinitionBuilder.create(ActionType.INTERRUPT, "Interrupt").getActionDefinition();
-    addAction(def);
+    addAction(ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").getActionDefinition());
+    addAction(ActionDefinitionBuilder.create(ActionType.INTERRUPT, "Interrupt").getActionDefinition());
     addSystemAction(ActionDefinitionBuilder.COMPLETE_ACTION);
   }
 
@@ -50,7 +48,7 @@ public class QuartzInProgressState extends AbstractStageState implements Initial
   }
   
   private void cancelQuestionnaireParticipant() {
-    QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getLastQuestionnaireParticipant(activeInterviewService.getParticipant(), getStage().getName());
+    QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getLastQuestionnaireParticipant(activeInterviewService.getParticipant(), super.getStage().getName());
     questionnaireParticipantService.deleteQuestionnaireParticipant(questionnaireParticipant.getId());
   }
 

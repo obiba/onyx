@@ -32,10 +32,8 @@ public class QuartzInterruptedState extends AbstractStageState implements Initia
   }
 
   public void afterPropertiesSet() throws Exception {
-    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").getActionDefinition();
-    addAction(def);
-    def = ActionDefinitionBuilder.create(ActionType.EXECUTE, "Resume").getActionDefinition();
-    addAction(def);
+    addAction(ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").getActionDefinition());
+    addAction(ActionDefinitionBuilder.create(ActionType.EXECUTE, "Resume").getActionDefinition());
   }
 
   public String getName() {
@@ -43,14 +41,14 @@ public class QuartzInterruptedState extends AbstractStageState implements Initia
   }
 
   private void cancelQuestionnaireParticipant() {
-    QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getLastQuestionnaireParticipant(activeInterviewService.getParticipant(), getStage().getName());
+    QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getLastQuestionnaireParticipant(activeInterviewService.getParticipant(), super.getStage().getName());
     questionnaireParticipantService.deleteQuestionnaireParticipant(questionnaireParticipant.getId());
   }
 
   @Override
   public void stop(Action action) {
     super.execute(action);
-    log.info("Quartz Stage {} is cancelling", super.getStage().getName());
+    log.info("Quartz Stage {} is canceling", super.getStage().getName());
     cancelQuestionnaireParticipant();
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) castEvent(TransitionEvent.CANCEL);
     else
