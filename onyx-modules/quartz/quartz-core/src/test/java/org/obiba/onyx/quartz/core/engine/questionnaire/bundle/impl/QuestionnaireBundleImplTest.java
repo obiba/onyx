@@ -45,7 +45,7 @@ public class QuestionnaireBundleImplTest {
     questionnaire = new Questionnaire("q1", "1.0.0");
 
     // Create the bundle manager.
-    bundleManager = new QuestionnaireBundleManagerImpl(bundleRootDirectory);
+    bundleManager = new QuestionnaireBundleManagerImpl(bundleRootDirectory.getPath());
 
     // Create the test bundle.
     bundle = bundleManager.createBundle(questionnaire);

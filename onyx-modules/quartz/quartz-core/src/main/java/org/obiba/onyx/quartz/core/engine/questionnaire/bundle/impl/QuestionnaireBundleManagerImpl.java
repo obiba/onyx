@@ -5,9 +5,7 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
@@ -21,6 +19,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.runtime.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.ResourceLoader;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -28,9 +29,9 @@ import com.thoughtworks.xstream.XStream;
  * A file system based implementation of <code>QuestionnaireBundleManager</code>.
  * 
  * @author cag-dspathis
- *
+ * 
  */
-public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManager {
+public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManager, ResourceLoaderAware, InitializingBean {
   //
   // Constants
   //
@@ -43,22 +44,56 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
   // Instance Variables
   //
 
-  private File rootDirectory;
+  private String rootDirResource;
+
+  private File rootDir;
 
   private Set<QuestionnaireBundle> bundleCache;
+
+  private ResourceLoader resourceLoader;
 
   //
   // Constructors
   //
 
-  public QuestionnaireBundleManagerImpl(File rootDirectory) {
-    if(!isValidRootDirectory(rootDirectory)) {
-      throw new IllegalArgumentException("Invalid root directory: " + rootDirectory);
-    }
+  /**
+   * Creates a <code>QuestionnaireBundleManagerImpl</code>
+   * 
+   * @param rootDirResource root directory, as a spring resource location
+   */
+  public QuestionnaireBundleManagerImpl(String rootDirResource) {
+    this.rootDirResource = rootDirResource;
 
-    this.rootDirectory = rootDirectory;
+    // Initialize the root directory here for tests. When running within Spring,
+    // the root directory will be re-initialized, with the appropriate resource loader,
+    // after properties are set (see afterPropertiesSet() method).
+    rootDir = new File(rootDirResource);
 
     bundleCache = new HashSet<QuestionnaireBundle>();
+  }
+
+  //
+  // ResourceLoaderAware Methods
+  //
+
+  public void setResourceLoader(ResourceLoader resourceLoader) {
+    this.resourceLoader = resourceLoader;
+  }
+
+  //
+  // InitializingBean Methods
+  //
+
+  public void afterPropertiesSet() throws Exception {
+    rootDir = resourceLoader.getResource(rootDirResource).getFile();
+
+    if(!rootDir.exists()) {
+      rootDir.mkdirs();
+    }
+
+    if(!isValidRootDirectory(rootDir)) {
+      throw new IllegalArgumentException("Invalid root directory: " + rootDir);
+    }
   }
 
   //
@@ -66,8 +101,8 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
   //
 
   public QuestionnaireBundle createBundle(Questionnaire questionnaire) throws IOException {
-    File bundleVersionDir = new File(new File(rootDirectory, questionnaire.getName()), questionnaire.getVersion());
-    
+    File bundleVersionDir = new File(new File(rootDir, questionnaire.getName()), questionnaire.getVersion());
+
     // Create the bundle object.
     QuestionnaireBundle bundle = new QuestionnaireBundleImpl(bundleVersionDir, questionnaire);
 
@@ -102,9 +137,9 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
 
   public Set<QuestionnaireBundle> bundles() {
     final Set<QuestionnaireBundle> bundles = new HashSet<QuestionnaireBundle>();
-    
+
     // Iterate over all bundle directories.
-    rootDirectory.listFiles(new FileFilter() {
+    rootDir.listFiles(new FileFilter() {
       public boolean accept(File file) {
         if(file.isDirectory()) {
           bundles.add(getBundle(file.getName()));
@@ -144,7 +179,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     QuestionnaireBundle bundle = null;
 
     // Determine the latest version of the bundle.
-    File bundleDir = new File(rootDirectory, name);
+    File bundleDir = new File(rootDir, name);
     String latestBundleVersion = getLatestBundleVersion(bundleDir);
 
     if(latestBundleVersion != null) {
@@ -178,7 +213,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
    */
   private void serializeBundle(QuestionnaireBundle bundle) throws IOException {
     // Create the bundle version directory, which will contain the questionnaire.
-    File bundleVersionDir = new File(new File(rootDirectory, bundle.getQuestionnaire().getName()), bundle.getQuestionnaire().getVersion());
+    File bundleVersionDir = new File(new File(rootDir, bundle.getQuestionnaire().getName()), bundle.getQuestionnaire().getVersion());
     bundleVersionDir.mkdirs();
 
     // Create the questionnaire file.
