@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -122,6 +123,11 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     List<String> propertyKeys = new ArrayList<String>();
 
     addLocalizableProperties(questionnaire, null, writer, propertyKeys);
+    
+    for (Category category : questionnaire.findSharedCategories()) {
+      addLocalizableProperties(category, null, writer, propertyKeys);
+    }
+    
     for(Section section : questionnaire.getSections()) {
       addSectionProperties(section, writer, propertyKeys);
     }
@@ -208,6 +214,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
         } else {
           writer.write(key, interpolationLocalizable == null ? "" : "${" + interpolationLocalizable.getPropertyKey(property) + "}");
         }
+        propertyKeys.add(key);
         written = true;
       }
     }

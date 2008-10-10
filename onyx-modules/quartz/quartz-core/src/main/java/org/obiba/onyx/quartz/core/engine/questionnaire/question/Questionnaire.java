@@ -273,7 +273,7 @@ public class Questionnaire implements Serializable, ILocalizable {
   }
 
   /**
-   * Look for shared {@link Category}. 
+   * Look for shared {@link Category}: categories refered by more than one question.
    * @return
    */
   public List<Category> findSharedCategories() {
@@ -293,14 +293,19 @@ public class Questionnaire implements Serializable, ILocalizable {
         findCategories(question, map);
       }
     }
-    for (Entry<Category, List<Question>> entry : map.entrySet()) {
-      if (entry.getValue().size()>1) {
+    for(Entry<Category, List<Question>> entry : map.entrySet()) {
+      if(entry.getValue().size() > 1) {
         shared.add(entry.getKey());
       }
     }
     return shared;
   }
 
+  /**
+   * Register recursively the {@link Question} {@link Category} associations.
+   * @param parent
+   * @param map
+   */
   private void findCategories(Question parent, Map<Category, List<Question>> map) {
     for(Question question : parent.getQuestions()) {
       for(Category category : question.getCategories()) {
@@ -314,6 +319,49 @@ public class Questionnaire implements Serializable, ILocalizable {
       }
       findCategories(question, map);
     }
+  }
+
+  /**
+   * Find the first {@link OpenAnswerDefinition} with the given name.
+   * @param name
+   * @return
+   */
+  public OpenAnswerDefinition findOpenAnswerDefinition(String name) {
+    for(Page page : getPages()) {
+      for(Question question : page.getQuestions()) {
+        for(Category category : question.getCategories()) {
+          if(category.getOpenAnswerDefinition() != null && category.getOpenAnswerDefinition().getName().equals(name)) {
+            return category.getOpenAnswerDefinition();
+          }
+        }
+        OpenAnswerDefinition definition = findOpenAnswerDefinition(question, name);
+        if(definition != null) {
+          return definition;
+        } 
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Find the first {@link OpenAnswerDefinition} with the given name from a {@link Question}.
+   * @param parent
+   * @param name
+   * @return
+   */
+  private OpenAnswerDefinition findOpenAnswerDefinition(Question parent, String name) {
+    for(Question question : parent.getQuestions()) {
+      for(Category category : question.getCategories()) {
+        if(category.getOpenAnswerDefinition() != null && category.getOpenAnswerDefinition().getName().equals(name)) {
+          return category.getOpenAnswerDefinition();
+        }
+      }
+      OpenAnswerDefinition definition = findOpenAnswerDefinition(question, name);
+      if(definition != null) {
+        return definition;
+      }
+    }
+    return null;
   }
 
   //

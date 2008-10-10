@@ -10,18 +10,22 @@ import org.obiba.onyx.util.data.DataType;
 /**
  * {@link OpenAnswerDefinition} builder, given a {@link Questionnaire} and a current {@link Category}.
  * @author Yannick Marcon
- *
+ * 
  */
 public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBuilder<OpenAnswerDefinition> {
 
   /**
    * Constructor using {@link CategoryBuilder} to get the {@link Category} it is applied to.
    * @param parent
-   * @param openAnswerDefinition
+   * @param name
+   * @param dataType
    */
-  private OpenAnswerDefinitionBuilder(CategoryBuilder parent, OpenAnswerDefinition openAnswerDefinition) {
+  private OpenAnswerDefinitionBuilder(CategoryBuilder parent, String name, DataType dataType) {
     super(parent.getQuestionnaire());
-    element = openAnswerDefinition;
+    if(!checkUniqueOpenAnswerDefinitionName(name)) {
+      throw invalidNameUnicityException(OpenAnswerDefinition.class, name);
+    }
+    element = new OpenAnswerDefinition(name, dataType);
     parent.getElement().setOpenAnswerDefinition(element);
   }
 
@@ -36,7 +40,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
-    return new OpenAnswerDefinitionBuilder(parent, new OpenAnswerDefinition(name, dataType));
+    return new OpenAnswerDefinitionBuilder(parent, name, dataType);
   }
 
   /**
@@ -153,6 +157,15 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
     }
 
     return this;
+  }
+
+  /**
+   * Check open answer definition name unicity.
+   * @param name
+   * @return
+   */
+  private boolean checkUniqueOpenAnswerDefinitionName(String name) {
+    return (questionnaire.findOpenAnswerDefinition(name) == null);
   }
 
 }
