@@ -127,21 +127,6 @@ public class Question implements Serializable, ILocalizable {
     }
   }
 
-  private static final String[] PROPERTIES = { "label", "instructions", "caption", "help", "image" };
-
-  public String getPropertyKey(String property) {
-    for(String key : PROPERTIES) {
-      if(key.equals(property)) {
-        return getClass().getSimpleName() + "." + getName() + "." + property;
-      }
-    }
-    throw new IllegalArgumentException("Invalid property for class " + getClass().getName() + ": " + property);
-  }
-
-  public String[] getProperties() {
-    return PROPERTIES;
-  }
-
   public Integer getMinCount() {
     return minCount;
   }
@@ -180,4 +165,7 @@ public class Question implements Serializable, ILocalizable {
   }
   
 
+  public void accept(IQuestionnaireVisitor visitor) {
+    visitor.visit(this);
+  }
 }

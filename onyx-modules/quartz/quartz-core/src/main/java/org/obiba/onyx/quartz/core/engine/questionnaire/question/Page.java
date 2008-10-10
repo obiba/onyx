@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Page implements Serializable, ILocalizable {
 
   private static final long serialVersionUID = -7732601103831162009L;
@@ -45,19 +46,7 @@ public class Page implements Serializable, ILocalizable {
     }
   }
 
-  private static final String[] PROPERTIES = { "label" };
-
-  public String getPropertyKey(String property) {
-    for(String key : PROPERTIES) {
-      if(key.equals(property)) {
-        return getClass().getSimpleName() + "." + getName() + "." + property;
-      }
-    }
-    throw new IllegalArgumentException("Invalid property for class " + getClass().getName() + ": " + property);
+  public void accept(IQuestionnaireVisitor visitor) {
+    visitor.visit(this);
   }
-  
-  public String[] getProperties() {
-    return PROPERTIES;
-  }
-
 }

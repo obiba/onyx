@@ -1,8 +1,9 @@
-package org.obiba.onyx.quartz.core.engine.questionnaire.util;
+package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 
 /**
  * {@link Section} builder, given a {@link Questionnaire}.

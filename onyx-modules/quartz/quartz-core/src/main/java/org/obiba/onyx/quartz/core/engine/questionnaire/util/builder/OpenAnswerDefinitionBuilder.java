@@ -1,4 +1,4 @@
-package org.obiba.onyx.quartz.core.engine.questionnaire.util;
+package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;

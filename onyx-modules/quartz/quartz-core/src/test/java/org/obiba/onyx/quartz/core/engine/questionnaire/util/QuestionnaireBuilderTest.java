@@ -155,7 +155,7 @@ public class QuestionnaireBuilderTest {
     builder.inSection("S1_1").withPage("P2").withQuestion("Q3").withSharedCategory(YES).withSharedCategories(NO, DONT_KNOW);
 
     builder.inSection("S1").withSection("S1_2").withPage("P3");
-    builder.inPage("P3").withQuestion("Q4").withSharedCategories(YES, NO, DONT_KNOW);
+    builder.inPage("P3").withQuestion("Q4").withCategories("1", "2").withSharedCategories(YES, NO, DONT_KNOW);
 
     builder.withSection("S2").withSection("S2_1").withPage("P4");
     builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).setOpenAnswerDefinitionAbsoluteValues(DataBuilder.buildInteger(40), DataBuilder.buildInteger(70));

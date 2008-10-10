@@ -2,6 +2,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.io.Serializable;
 
+
 public class Category implements Serializable, ILocalizable {
 
   private static final long serialVersionUID = -1722883141794376906L;
@@ -30,19 +31,8 @@ public class Category implements Serializable, ILocalizable {
     this.openAnswerDefinition = openAnswerDefinition;
   }
 
-  private static final String[] PROPERTIES = { "label", "image" };
-
-  public String getPropertyKey(String property) {
-    for(String key : PROPERTIES) {
-      if(key.equals(property)) {
-        return getClass().getSimpleName() + "." + getName() + "." + property;
-      }
-    }
-    throw new IllegalArgumentException("Invalid property for class " + getClass().getName() + ": " + property);
-  }
-
-  public String[] getProperties() {
-    return PROPERTIES;
+  public void accept(IQuestionnaireVisitor visitor) {
+    visitor.visit(this);
   }
 
 }

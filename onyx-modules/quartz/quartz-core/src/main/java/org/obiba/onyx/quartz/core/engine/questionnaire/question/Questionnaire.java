@@ -3,6 +3,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -322,6 +323,23 @@ public class Questionnaire implements Serializable, ILocalizable {
   }
 
   /**
+   * Find among the shared {@link Categories} the set of the ones that are unique by their name.
+   * @return
+   */
+  public List<Category> findGlobalCategories() {
+    Map<String, Category> map = new HashMap<String, Category>();
+    for(Category category : findSharedCategories()) {
+      if(!map.containsKey(category)) {
+        map.put(category.getName(), category);
+      } else {
+        map.remove(category.getName());
+      }
+    }
+
+    return new LinkedList<Category>(map.values());
+  }
+
+  /**
    * Find the first {@link OpenAnswerDefinition} with the given name.
    * @param name
    * @return
@@ -337,7 +355,7 @@ public class Questionnaire implements Serializable, ILocalizable {
         OpenAnswerDefinition definition = findOpenAnswerDefinition(question, name);
         if(definition != null) {
           return definition;
-        } 
+        }
       }
     }
     return null;
@@ -367,19 +385,9 @@ public class Questionnaire implements Serializable, ILocalizable {
   //
   // ILocalizable
   //
-  private static final String[] PROPERTIES = { "label", "description", "labelNext", "imageNext", "labelPrevious", "imagePrevious", "labelStart", "labelFinish", "labelInterrupt", "labelResume", "labelCancel" };
-
-  public String getPropertyKey(String property) {
-    for(String key : PROPERTIES) {
-      if(key.equals(property)) {
-        return getClass().getSimpleName() + "." + getName() + "." + property;
-      }
-    }
-    throw new IllegalArgumentException("Invalid property for class " + getClass().getName() + ": " + property);
-  }
-
-  public String[] getProperties() {
-    return PROPERTIES;
+  
+  public void accept(IQuestionnaireVisitor visitor) {
+    visitor.visit(this);
   }
 
 }

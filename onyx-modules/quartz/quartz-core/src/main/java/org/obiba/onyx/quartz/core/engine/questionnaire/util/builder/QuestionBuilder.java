@@ -1,4 +1,4 @@
-package org.obiba.onyx.quartz.core.engine.questionnaire.util;
+package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
 import java.util.List;
 import java.util.Map;

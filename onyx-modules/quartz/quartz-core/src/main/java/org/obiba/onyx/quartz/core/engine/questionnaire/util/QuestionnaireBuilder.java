@@ -11,6 +11,14 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.AbstractQuestionnaireElementBuilder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IQuestionnairePropertiesWriter;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.PageBuilder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuilder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.SectionBuilder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.DefaultQuestionnaireLocalizationVisitor;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IQuestionnaireLocalizer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.QuestionnaireLocalizer;
 import org.obiba.runtime.Version;
 
 /**
@@ -19,6 +27,8 @@ import org.obiba.runtime.Version;
  * 
  */
 public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Questionnaire> {
+
+  private IQuestionnaireLocalizer questionnaireLocalizer;
 
   /**
    * Constructor.
@@ -40,6 +50,10 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
   private QuestionnaireBuilder(Questionnaire questionnaire) {
     super(questionnaire);
     this.element = questionnaire;
+  }
+  
+  public void setQuestionnaireLocalizer(IQuestionnaireLocalizer questionnaireLocalizer) {
+    this.questionnaireLocalizer = questionnaireLocalizer;
   }
 
   /**
@@ -122,12 +136,17 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
   public void writeProperties(IQuestionnairePropertiesWriter writer) {
     List<String> propertyKeys = new ArrayList<String>();
 
+    // TODO Spring
+    QuestionnaireLocalizer localizer = new QuestionnaireLocalizer();
+    localizer.setQuestionnaireVisitor(new DefaultQuestionnaireLocalizationVisitor());
+    setQuestionnaireLocalizer(localizer);
+
     addLocalizableProperties(questionnaire, null, writer, propertyKeys);
-    
-    for (Category category : questionnaire.findSharedCategories()) {
+
+    for(Category category : questionnaire.findSharedCategories()) {
       addLocalizableProperties(category, null, writer, propertyKeys);
     }
-    
+
     for(Section section : questionnaire.getSections()) {
       addSectionProperties(section, writer, propertyKeys);
     }
@@ -205,14 +224,14 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    */
   private void addLocalizableProperties(ILocalizable localizable, ILocalizable interpolationLocalizable, IQuestionnairePropertiesWriter writer, List<String> propertyKeys) {
     boolean written = false;
-    for(String property : localizable.getProperties()) {
-      String key = localizable.getPropertyKey(property);
+    for(String property : questionnaireLocalizer.getProperties(localizable)) {
+      String key = questionnaireLocalizer.getPropertyKey(localizable, property);
       if(!propertyKeys.contains(key)) {
         Properties ref = writer.getReference();
         if(ref != null && ref.containsKey(key)) {
           writer.write(key, ref.getProperty(key));
         } else {
-          writer.write(key, interpolationLocalizable == null ? "" : "${" + interpolationLocalizable.getPropertyKey(property) + "}");
+          writer.write(key, interpolationLocalizable == null ? "" : "${" + questionnaireLocalizer.getPropertyKey(interpolationLocalizable, property) + "}");
         }
         propertyKeys.add(key);
         written = true;
