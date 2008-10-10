@@ -58,7 +58,6 @@ public class QuestionnaireBundleImplTest {
     //}
   }
   
-  /*
   @Test
   public void testSetLanguage() {
     File bundleVersionDir = new File(new File(bundleRootDirectory, bundle.getName()), bundle.getQuestionnaire().getVersion());
@@ -72,9 +71,7 @@ public class QuestionnaireBundleImplTest {
     File enLanguageFile = new File(bundleVersionDir, "questionnaire_" + enLocale + ".properties");
     Assert.assertTrue(enLanguageFile.isFile());
   }
-  */
 
-  /*
   @Test
   public void testGetLanguage() {
     //
@@ -95,9 +92,8 @@ public class QuestionnaireBundleImplTest {
 
     // Verify that the correct language (French) was returned.
     Assert.assertNotNull(testLanguage);
-    Assert.assertEquals("valeur", testLanguage.getProperty("key"));
+    Assert.assertEquals("valeur", testLanguage.getProperty("Questionnaire.q1.label"));
   }
-  */
 
   @Test
   public void testGetAvailableLanguages() {
