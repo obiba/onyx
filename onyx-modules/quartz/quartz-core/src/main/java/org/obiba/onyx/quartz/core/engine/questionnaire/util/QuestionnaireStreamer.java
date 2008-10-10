@@ -7,11 +7,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -140,23 +141,82 @@ public class QuestionnaireStreamer {
 
     streamer.xstream.toXML(questionnaire, new FileOutputStream(questionnaireFile));
 
-    Properties localizationProperties = QuestionnaireBuilder.getInstance(questionnaire).getProperties();
-    System.out.println(localizationProperties);
-    
     for(Locale locale : locales) {
-      File localizedPropertiesFile = new File(bundleDirectory, QUESTIONNAIRE_BASE_NAME + "_" + locale + ".properties");
-      if(!localizedPropertiesFile.exists()) {
-        localizedPropertiesFile.createNewFile();
+      File localizedProperties = new File(bundleDirectory, QUESTIONNAIRE_BASE_NAME + "_" + locale + ".properties");
+      if(!localizedProperties.exists()) {
+        localizedProperties.createNewFile();
       }
 
-      // create an localization property file.
-      PrintWriter out = new PrintWriter(localizedPropertiesFile);
-      localizationProperties.list(out);
-      out.flush();
-      out.close();
+      // create an empty property file.
+      streamer.propertyKeys = new ArrayList<String>();
+      PrintWriter writer = new PrintWriter(localizedProperties);
+      streamer.writeLocalizableProperties(questionnaire, writer);
+      for(Section section : questionnaire.getSections()) {
+        streamer.writeSectionProperties(section, writer);
+      }
+      writer.flush();
+      writer.close();
     }
 
     return bundleDirectory;
+  }
+
+  /**
+   * Write localizable properties recursively of {@link Section} content.
+   * @param section
+   * @param writer
+   */
+  private void writeSectionProperties(Section section, PrintWriter writer) {
+    writeLocalizableProperties(section, writer);
+    for(Page page : section.getPages()) {
+      writeLocalizableProperties(page, writer);
+      for(Question question : page.getQuestions()) {
+        writeLocalizableProperties(question, writer);
+        for(QuestionCategory questionCategory : question.getQuestionCategories()) {
+          writeLocalizableProperties(questionCategory.getCategory(), writer);
+          writeLocalizableProperties(questionCategory, questionCategory.getCategory(), writer);
+          if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
+            writeLocalizableProperties(questionCategory.getCategory().getOpenAnswerDefinition(), writer);
+          }
+        }
+      }
+    }
+    for(Section s : section.getSections()) {
+      writeSectionProperties(s, writer);
+    }
+  }
+
+  /**
+   * Write localizable properties.
+   * @param localizable
+   * @param writer
+   */
+  private void writeLocalizableProperties(ILocalizable localizable, PrintWriter writer) {
+    writeLocalizableProperties(localizable, null, writer);
+  }
+
+  /**
+   * Write localizable properties. If interpolation localizable is provided, set the value to the key reference of
+   * interpolation localizable same property key, such as <code>${interpolation.propertyKey}</code>.
+   * @param localizable
+   * @param interpolationLocalizable
+   * @param writer
+   */
+  private void writeLocalizableProperties(ILocalizable localizable, ILocalizable interpolationLocalizable, PrintWriter writer) {
+    boolean written = false;
+    for(String property : localizable.getProperties()) {
+      String key = localizable.getPropertyKey(property);
+      if(!propertyKeys.contains(key)) {
+        propertyKeys.add(key);
+        if(interpolationLocalizable == null) {
+          writer.println(key + "=");
+        } else {
+          writer.println(key + "=${" + interpolationLocalizable.getPropertyKey(property) + "}");
+        }
+        written = true;
+      }
+    }
+    if(written) writer.println();
   }
 
 }
