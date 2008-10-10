@@ -2,11 +2,11 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.obiba.runtime.Version;
 
@@ -151,7 +151,7 @@ public class Questionnaire implements Serializable, ILocalizable {
 
     return map;
   }
-  
+
   /**
    * Find recursively all the {@link Category} and associated {@link Question}.
    * @param parent
@@ -159,11 +159,13 @@ public class Questionnaire implements Serializable, ILocalizable {
    * @param map
    */
   private void findCategories(Question parent, String name, Map<Category, List<Question>> map) {
-    for (Question question : parent.getQuestions()) {
+    for(Question question : parent.getQuestions()) {
       for(Category category : question.getCategories()) {
         if(category.getName().equals(name)) {
           if(!map.containsKey(category)) {
-            map.put(category, Arrays.asList(question));
+            List<Question> questions = new ArrayList<Question>();
+            questions.add(question);
+            map.put(category, questions);
           } else {
             map.get(category).add(question);
           }
@@ -268,6 +270,50 @@ public class Questionnaire implements Serializable, ILocalizable {
     }
 
     return null;
+  }
+
+  /**
+   * Look for shared {@link Category}. 
+   * @return
+   */
+  public List<Category> findSharedCategories() {
+    List<Category> shared = new ArrayList<Category>();
+    Map<Category, List<Question>> map = new HashMap<Category, List<Question>>();
+    for(Page page : getPages()) {
+      for(Question question : page.getQuestions()) {
+        for(Category category : question.getCategories()) {
+          if(!map.containsKey(category)) {
+            List<Question> questions = new ArrayList<Question>();
+            questions.add(question);
+            map.put(category, questions);
+          } else {
+            map.get(category).add(question);
+          }
+        }
+        findCategories(question, map);
+      }
+    }
+    for (Entry<Category, List<Question>> entry : map.entrySet()) {
+      if (entry.getValue().size()>1) {
+        shared.add(entry.getKey());
+      }
+    }
+    return shared;
+  }
+
+  private void findCategories(Question parent, Map<Category, List<Question>> map) {
+    for(Question question : parent.getQuestions()) {
+      for(Category category : question.getCategories()) {
+        if(!map.containsKey(category)) {
+          List<Question> questions = new ArrayList<Question>();
+          questions.add(question);
+          map.put(category, questions);
+        } else {
+          map.get(category).add(question);
+        }
+      }
+      findCategories(question, map);
+    }
   }
 
   //
