@@ -36,7 +36,7 @@ public class QuestionnaireBundleManagerImplTest {
     bundleRootDirectory.mkdirs();
 
     // Create the bundle manager.
-    bundleManager = new QuestionnaireBundleManagerImpl(bundleRootDirectory.getPath());
+    bundleManager = new QuestionnaireBundleManagerImpl(bundleRootDirectory);
   }
 
   @After

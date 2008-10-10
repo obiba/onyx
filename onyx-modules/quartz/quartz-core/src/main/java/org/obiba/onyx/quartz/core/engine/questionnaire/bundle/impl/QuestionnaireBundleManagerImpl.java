@@ -44,8 +44,6 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
   // Instance Variables
   //
 
-  private String rootDirResource;
-
   private File rootDir;
 
   private Set<QuestionnaireBundle> bundleCache;
@@ -59,15 +57,13 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
   /**
    * Creates a <code>QuestionnaireBundleManagerImpl</code>
    * 
-   * @param rootDirResource root directory, as a spring resource location
+   * @param rootDir root directory
    */
-  public QuestionnaireBundleManagerImpl(String rootDirResource) {
-    this.rootDirResource = rootDirResource;
-
+  public QuestionnaireBundleManagerImpl(File rootDir) {
     // Initialize the root directory here for tests. When running within Spring,
     // the root directory will be re-initialized, with the appropriate resource loader,
     // after properties are set (see afterPropertiesSet() method).
-    rootDir = new File(rootDirResource);
+    this.rootDir = rootDir;
 
     bundleCache = new HashSet<QuestionnaireBundle>();
   }
@@ -85,7 +81,9 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
   //
 
   public void afterPropertiesSet() throws Exception {
-    rootDir = resourceLoader.getResource(rootDirResource).getFile();
+    String resourcePath = rootDir.isAbsolute() ? "file:"+rootDir.getPath() : rootDir.getPath();
+    
+    rootDir = resourceLoader.getResource(resourcePath).getFile();
 
     if(!rootDir.exists()) {
       rootDir.mkdirs();
@@ -255,9 +253,9 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     VersionFileFilter versionFileFilter = new VersionFileFilter();
 
     bundleDir.listFiles(versionFileFilter);
-    Version latestVersion = versionFileFilter.getLatestVersion();
+    String latestVersion = versionFileFilter.getLatestVersion();
 
-    return (latestVersion != null) ? latestVersion.toString() : null;
+    return latestVersion;
   }
 
   //
@@ -339,6 +337,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
 
   class VersionFileFilter implements FileFilter {
     private Version latestVersion;
+    private String latestVersionFilename;
 
     public boolean accept(File file) {
       if(file.isDirectory()) {
@@ -346,6 +345,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
 
         if(latestVersion == null || (version.compareTo(latestVersion) > 0)) {
           latestVersion = version;
+          latestVersionFilename = file.getName();
         }
 
         return true;
@@ -354,8 +354,8 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
       return false;
     }
 
-    public Version getLatestVersion() {
-      return latestVersion;
+    public String getLatestVersion() {
+      return latestVersionFilename;
     }
   }
 }
