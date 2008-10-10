@@ -5,11 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.ILocalizable;
@@ -87,6 +89,16 @@ public class QuestionnaireStreamer {
   }
 
   /**
+   * Load a {@link Questionnaire} from its bundle directory.
+   * @param inputStream questionnaire input stream
+   * @return questionnaire
+   */
+  public static Questionnaire fromBundle(InputStream inputStream) {
+    QuestionnaireStreamer streamer = new QuestionnaireStreamer();
+    return (Questionnaire) streamer.xstream.fromXML(inputStream);
+  }
+
+  /**
    * Dump a {@link Questionnaire} to a string.
    * @param questionnaire
    * @return
@@ -104,6 +116,29 @@ public class QuestionnaireStreamer {
   public static void toXML(Questionnaire questionnaire, OutputStream outputStream) {
     QuestionnaireStreamer streamer = new QuestionnaireStreamer();
     streamer.xstream.toXML(questionnaire, outputStream);
+  }
+
+  /**
+   * Stores the a language for a questionnaire, for the given locale, to the specified <code>OutputStream</code>.
+   * 
+   * @param questionnaire questionnaire
+   * @param locale locale
+   * @param language language
+   * @param outputStream output stream
+   */
+  public static void storeLanguage(Questionnaire questionnaire, Locale locale, Properties language, OutputStream outputStream) {
+    QuestionnaireStreamer streamer = new QuestionnaireStreamer();
+    streamer.propertyKeys = new ArrayList<String>();
+
+    PrintWriter writer = new PrintWriter(outputStream);
+    streamer.writeLocalizableProperties(questionnaire, writer);
+
+    for(Section section : questionnaire.getSections()) {
+      streamer.writeSectionProperties(section, writer);
+    }
+
+    writer.flush();
+    writer.close();
   }
 
   /**

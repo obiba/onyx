@@ -16,6 +16,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireStreamer;
 import org.obiba.runtime.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -221,7 +222,22 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     }
 
     // Serialize the questionnaire to the file.
-    (new QuestionnaireSerializer()).serialize(bundle.getQuestionnaire(), questionnaireFile);
+    FileOutputStream fos = null;
+    
+    try {
+      fos = new FileOutputStream(questionnaireFile);
+      QuestionnaireStreamer.toXML(bundle.getQuestionnaire(), new FileOutputStream(questionnaireFile));
+    }
+    finally {
+      if (fos != null) {
+        try {
+          fos.close();
+        }
+        catch(IOException ex) {
+          log.error("Failed to close questionnaire file output stream", ex);
+        }
+      }
+    }
   }
 
   /**
@@ -236,7 +252,23 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
    */
   private QuestionnaireBundle deserializeBundle(File bundleVersionDir) throws IOException {
     // Deserialize the questionnaire.
-    Questionnaire questionnaire = (new QuestionnaireSerializer()).deserialize(bundleVersionDir);
+    Questionnaire questionnaire = null;
+    FileInputStream fis = null;
+    
+    try {
+      fis = new FileInputStream(new File(bundleVersionDir, QUESTIONNAIRE_BASE_NAME + ".xml"));
+      questionnaire = QuestionnaireStreamer.fromBundle(fis);
+    }
+    finally {
+      if (fis != null) {
+        try {
+          fis.close();
+        }
+        catch(IOException ex) {
+          log.error("Failed to close questionnaire file input stream", ex);
+        }
+      }
+    }
 
     // Create the bundle.
     QuestionnaireBundle bundle = new QuestionnaireBundleImpl(bundleVersionDir, questionnaire);
@@ -261,79 +293,6 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
   //
   // Inner Classes
   //
-
-  class QuestionnaireSerializer {
-
-    private XStream xstream;
-
-    private QuestionnaireSerializer() {
-      initializeXStream();
-    }
-
-    private void initializeXStream() {
-      xstream = new XStream();
-      xstream.setMode(XStream.ID_REFERENCES);
-      xstream.alias("questionnaire", Questionnaire.class);
-      xstream.useAttributeFor(Questionnaire.class, "name");
-      xstream.useAttributeFor(Questionnaire.class, "version");
-      xstream.alias("section", Section.class);
-      xstream.useAttributeFor(Section.class, "name");
-      xstream.alias("page", Page.class);
-      xstream.useAttributeFor(Page.class, "name");
-      xstream.alias("question", Question.class);
-      xstream.useAttributeFor(Question.class, "name");
-      xstream.useAttributeFor(Question.class, "number");
-      xstream.useAttributeFor(Question.class, "required");
-      xstream.useAttributeFor(Question.class, "multiple");
-      xstream.useAttributeFor(Question.class, "minCount");
-      xstream.useAttributeFor(Question.class, "maxCount");
-      xstream.alias("category", Category.class);
-      xstream.useAttributeFor(Category.class, "name");
-      xstream.alias("questionCategory", QuestionCategory.class);
-      xstream.useAttributeFor(QuestionCategory.class, "repeatable");
-      xstream.useAttributeFor(QuestionCategory.class, "selected");
-      xstream.useAttributeFor(QuestionCategory.class, "exportName");
-    }
-
-    public void serialize(Questionnaire questionnaire, File questionnaireFile) throws IOException {
-      FileOutputStream fos = null;
-
-      try {
-        fos = new FileOutputStream(questionnaireFile);
-        xstream.toXML(questionnaire, fos);
-      } finally {
-        if(fos != null) {
-          try {
-            fos.close();
-          } catch(IOException ex) {
-            log.error("Failed to close questionnaire file output stream", ex);
-          }
-        }
-      }
-    }
-
-    public Questionnaire deserialize(File bundleVersionDir) throws IOException {
-      Questionnaire questionnaire = null;
-      File questionnaireFile = new File(bundleVersionDir, QUESTIONNAIRE_BASE_NAME + ".xml");
-
-      FileInputStream fis = null;
-
-      try {
-        fis = new FileInputStream(questionnaireFile);
-        questionnaire = (Questionnaire) xstream.fromXML(new FileInputStream(questionnaireFile));
-      } finally {
-        if(fis != null) {
-          try {
-            fis.close();
-          } catch(IOException ex) {
-            log.error("Failed to close questionnaire file input stream", ex);
-          }
-        }
-      }
-
-      return questionnaire;
-    }
-  }
 
   class VersionFileFilter implements FileFilter {
     private Version latestVersion;

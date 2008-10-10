@@ -13,6 +13,7 @@ import java.util.Set;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireStreamer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -76,7 +77,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     FileOutputStream fos = null;
 
     try {
-      language.store(fos = new FileOutputStream(new File(bundleVersionDir, "questionnaire_" + locale + LANGUAGE_FILE_EXTENSION)), null);
+      QuestionnaireStreamer.storeLanguage(getQuestionnaire(), locale, language, fos = new FileOutputStream(new File(bundleVersionDir, "questionnaire_" + locale + LANGUAGE_FILE_EXTENSION)));
     } catch(IOException ex) {
       log.error("Failed to store language file", ex);
     } finally {
