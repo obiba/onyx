@@ -92,6 +92,18 @@ public class QuestionnaireStreamer {
   }
 
   /**
+   * Stores the a language for a questionnaire, for the given locale, to the specified <code>IQuestionnairePropertiesWriter</code>.
+   * 
+   * @param questionnaire
+   * @param locale
+   * @param language
+   * @param writer
+   */
+  public static void storeLanguage(Questionnaire questionnaire, Locale locale, Properties language, IQuestionnairePropertiesWriter writer) {
+    QuestionnaireBuilder.getInstance(questionnaire).writeProperties(writer);
+  }
+  
+  /**
    * Stores the a language for a questionnaire, for the given locale, to the specified <code>OutputStream</code>.
    * 
    * @param questionnaire questionnaire
@@ -101,7 +113,7 @@ public class QuestionnaireStreamer {
    */
   public static void storeLanguage(Questionnaire questionnaire, Locale locale, final Properties language, final OutputStream outputStream) {
 
-    QuestionnaireBuilder.getInstance(questionnaire).writeProperties(new IQuestionnairePropertiesWriter() {
+    storeLanguage(questionnaire, locale, language, new IQuestionnairePropertiesWriter() {
 
       PrintWriter printWriter = new PrintWriter(outputStream);
 
