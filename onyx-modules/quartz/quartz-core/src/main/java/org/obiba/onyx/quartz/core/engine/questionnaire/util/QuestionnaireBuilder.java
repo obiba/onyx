@@ -113,15 +113,40 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
   }
 
   /**
+   * Write the questionnaire properties.
+   * @param writer
+   */
+  public void writeProperties(IQuestionnairePropertiesWriter writer) {
+    addLocalizableProperties(questionnaire, null, writer);
+    for(Section section : questionnaire.getSections()) {
+      addSectionProperties(section, writer);
+    }
+  }
+  
+  /**
    * Create the localization properties for the current {@link Questionnaire}.
    * @return
    */
   public Properties getProperties() {
-    Properties properties = new Properties();
-    addLocalizableProperties(questionnaire, null, properties);
-    for(Section section : questionnaire.getSections()) {
-      addSectionProperties(section, properties);
-    }
+    final Properties properties = new Properties();
+    
+    IQuestionnairePropertiesWriter writer = new IQuestionnairePropertiesWriter() {
+
+      public boolean contains(String key) {
+        return properties.containsKey(key);
+      }
+
+      public void endBloc() {
+      }
+
+      public void write(String key, String value) {
+        properties.put(key, value);
+      }
+      
+    };
+    
+    writeProperties(writer);
+
     return properties;
   }
 
@@ -130,23 +155,23 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * @param section
    * @param properties
    */
-  private void addSectionProperties(Section section, Properties properties) {
-    addLocalizableProperties(section, properties);
+  private void addSectionProperties(Section section, IQuestionnairePropertiesWriter writer) {
+    addLocalizableProperties(section, writer);
     for(Page page : section.getPages()) {
-      addLocalizableProperties(page, properties);
+      addLocalizableProperties(page, writer);
       for(Question question : page.getQuestions()) {
-        addLocalizableProperties(question, properties);
+        addLocalizableProperties(question, writer);
         for(QuestionCategory questionCategory : question.getQuestionCategories()) {
-          addLocalizableProperties(questionCategory.getCategory(), properties);
-          addLocalizableProperties(questionCategory, questionCategory.getCategory(), properties);
+          addLocalizableProperties(questionCategory.getCategory(), writer);
+          addLocalizableProperties(questionCategory, questionCategory.getCategory(), writer);
           if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
-            addLocalizableProperties(questionCategory.getCategory().getOpenAnswerDefinition(), properties);
+            addLocalizableProperties(questionCategory.getCategory().getOpenAnswerDefinition(), writer);
           }
         }
       }
     }
     for(Section s : section.getSections()) {
-      addSectionProperties(s, properties);
+      addSectionProperties(s, writer);
     }
   }
 
@@ -155,8 +180,8 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * @param localizable
    * @param properties
    */
-  private void addLocalizableProperties(ILocalizable localizable, Properties properties) {
-    addLocalizableProperties(localizable, null, properties);
+  private void addLocalizableProperties(ILocalizable localizable, IQuestionnairePropertiesWriter writer) {
+    addLocalizableProperties(localizable, null, writer);
   }
 
   /**
@@ -164,14 +189,17 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * Set the value to null by default or to the localization interpolation key. 
    * @param localizable
    * @param interpolationLocalizable
-   * @param properties
+   * @param writer
    */
-  private void addLocalizableProperties(ILocalizable localizable, ILocalizable interpolationLocalizable, Properties properties) {
+  private void addLocalizableProperties(ILocalizable localizable, ILocalizable interpolationLocalizable, IQuestionnairePropertiesWriter writer) {
+    boolean written = false;
     for(String property : localizable.getProperties()) {
       String key = localizable.getPropertyKey(property);
-      if(!properties.contains(key)) {
-        properties.put(key, interpolationLocalizable == null ? "" : "${" + interpolationLocalizable.getPropertyKey(property) + "}");
+      if(!writer.contains(key)) {
+        writer.write(key, interpolationLocalizable == null ? "" : "${" + interpolationLocalizable.getPropertyKey(property) + "}");
+        written = true;
       }
     }
+    if(written) writer.endBloc();
   }
 }
