@@ -7,7 +7,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 /**
  * {@link Section} builder, given a {@link Questionnaire}.
  * @author cag-ymarcon
- *
+ * 
  */
 public class SectionBuilder extends AbstractQuestionnaireElementBuilder<Section> {
 
@@ -21,6 +21,9 @@ public class SectionBuilder extends AbstractQuestionnaireElementBuilder<Section>
     super(parent.getQuestionnaire());
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
+    }
+    if(!checkUniqueSectionName(name)) {
+      throw invalidNameUnicityException(Section.class, name);
     }
     this.element = new Section(name);
     this.questionnaire.addSection(element);
@@ -60,6 +63,9 @@ public class SectionBuilder extends AbstractQuestionnaireElementBuilder<Section>
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
+    if(!checkUniqueSectionName(name)) {
+      throw invalidNameUnicityException(Section.class, name);
+    }
     Section section = new Section(name);
     element.addSection(section);
     element = section;
@@ -75,6 +81,15 @@ public class SectionBuilder extends AbstractQuestionnaireElementBuilder<Section>
    */
   public PageBuilder withPage(String name) {
     return PageBuilder.createPage(this, name);
+  }
+
+  /**
+   * Check section name is unique.
+   * @param name
+   * @return
+   */
+  private boolean checkUniqueSectionName(String name) {
+    return (questionnaire.findSection(name) == null);
   }
 
 }

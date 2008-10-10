@@ -1,5 +1,8 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
+import java.util.List;
+import java.util.Map;
+
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -119,11 +122,15 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
    * @return
    */
   public CategoryBuilder withSharedCategory(String name) {
-    Category category = questionnaire.findCategory(name);
-    if(category == null) {
+    Map<Category, List<Question>> map = questionnaire.findCategories(name);
+    if (map.keySet().size() > 1) {
+      throw invalidSharedCategoryNameUnicityException(name);
+    }
+    else if (map.keySet().isEmpty()) {
       return withCategory(name);
-    } else {
-      this.element = category;
+    }
+    else {
+      this.element = map.keySet().iterator().next();
       questionCategory = createQuestionCategory(questionCategory.getQuestion());
       return this;
     }
@@ -158,6 +165,10 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
     questionCategory.setCategory(element);
     question.addQuestionCategory(questionCategory);
     return questionCategory;
+  }
+  
+  private IllegalArgumentException invalidSharedCategoryNameUnicityException(String name) {
+    return new IllegalArgumentException("There are several categories with name: " + name);
   }
 
 }

@@ -55,6 +55,17 @@ public abstract class AbstractQuestionnaireElementBuilder<T> {
   protected static IllegalArgumentException invalidNamePatternException(String name) {
     return new IllegalArgumentException("Not a valid questionnaire element name: " + name + ". Expected pattern is " + NAME_PATTERN);
   }
+
+  /**
+   * Build an exception about the name unicity.
+   * @param elementClass
+   * @param name
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  protected static IllegalArgumentException invalidNameUnicityException(Class elementClass, String name) {
+    return new IllegalArgumentException(elementClass.getSimpleName() + " name must be unique: " + name + ".");
+  }
   
   /**
    * Build an exception if an element cannot be found in the questionnaire from its name. 

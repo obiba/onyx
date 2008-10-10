@@ -1,5 +1,8 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
+import java.util.List;
+import java.util.Map;
+
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -23,6 +26,9 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     super(parent.getQuestionnaire());
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
+    }
+    if(!checkUniqueQuestionName(name)) {
+      throw invalidNameUnicityException(Question.class, name);
     }
     element = new Question(name);
     element.setRequired(true);
@@ -81,6 +87,9 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   public QuestionBuilder withQuestion(String name, boolean multiple) {
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
+    }
+    if(!checkUniqueQuestionName(name)) {
+      throw invalidNameUnicityException(Question.class, name);
     }
     Question question = new Question(name);
     question.setRequired(true);
@@ -145,11 +154,15 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @return
    */
   public CategoryBuilder withSharedCategory(String name) {
-    Category category = questionnaire.findCategory(name);
-    if(category == null) {
+    Map<Category, List<Question>> map = questionnaire.findCategories(name);
+    if (map.keySet().size() > 1) {
+      throw invalidSharedCategoryNameUnicityException(name);
+    }
+    else if (map.keySet().isEmpty()) {
       return withCategory(name);
-    } else {
-      return CategoryBuilder.createQuestionCategory(this, category);
+    }
+    else {
+      return CategoryBuilder.createQuestionCategory(this, map.keySet().iterator().next());
     }
   }
 
@@ -168,4 +181,16 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     return child;
   }
 
+  /**
+   * Check question name unicity.
+   * @param name
+   * @return
+   */
+  private boolean checkUniqueQuestionName(String name) {
+    return (questionnaire.findQuestion(name) == null);
+  }
+
+  private IllegalArgumentException invalidSharedCategoryNameUnicityException(String name) {
+    return new IllegalArgumentException("There are several categories with name: " + name);
+  }
 }

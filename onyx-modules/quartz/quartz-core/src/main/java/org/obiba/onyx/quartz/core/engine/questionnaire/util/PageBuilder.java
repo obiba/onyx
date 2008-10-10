@@ -8,7 +8,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 /**
  * {@link Page} builder, given a {@link Questionnaire} and a current {@link Section}.
  * @author Yannick Marcon
- *
+ * 
  */
 public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
 
@@ -22,6 +22,9 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
     super(sectionBuilder.getQuestionnaire());
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
+    }
+    if(!checkUniquePageName(name)) {
+      throw invalidNameUnicityException(Page.class, name);
     }
     this.element = new Page(name);
     this.questionnaire.addPage(element);
@@ -79,4 +82,12 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
     return QuestionBuilder.createQuestion(this, name, multiple);
   }
 
+  /**
+   * Check page name unicity.
+   * @param name
+   * @return
+   */
+  private boolean checkUniquePageName(String name) {
+    return (questionnaire.findPage(name) == null);
+  }
 }

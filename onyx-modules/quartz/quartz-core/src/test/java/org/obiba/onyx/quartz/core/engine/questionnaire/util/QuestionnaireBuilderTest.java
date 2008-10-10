@@ -41,6 +41,13 @@ public class QuestionnaireBuilderTest {
 
     builder.withSection("S1").withSection("S1_1");
 
+    try {
+      builder.withSection("S1");
+      Assert.fail("Section unique name check failed.");
+    } catch (IllegalArgumentException e) {
+    }
+    
+    
     Section section = builder.getQuestionnaire().findSection("S1");
     Assert.assertNotNull("Section not found", section);
     section = builder.getQuestionnaire().findSection("S1_1");
@@ -55,6 +62,12 @@ public class QuestionnaireBuilderTest {
 
     builder.inSection("S1_1").withPage("P1").withQuestion("Q1").withSharedCategories(YES, NO, DONT_KNOW);
 
+    try {
+      builder.inSection("S1").withPage("P1");
+      Assert.fail("Page unique name check failed.");
+    } catch (IllegalArgumentException e) {
+    }
+    
     Page page = builder.getQuestionnaire().findPage("P1");
     Assert.assertNotNull(page);
     Assert.assertEquals(1, page.getQuestions().size());
@@ -87,6 +100,12 @@ public class QuestionnaireBuilderTest {
     }
     Assert.assertEquals(1, builder.getQuestionnaire().findQuestion("Q4").getCategories().size());
 
+    try {
+      builder.inPage("P1").withQuestion("Q1");
+      Assert.fail("Question unique name check failed.");
+    } catch (IllegalArgumentException e) {
+    }
+    
     builder.withSection("S2").withSection("S2_1").withPage("P4");
     builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).setOpenAnswerDefinitionAbsoluteValues(DataBuilder.buildInteger(40), DataBuilder.buildInteger(70)).setOpenAnswerDefinitionUsualValues("50", "60");
     category = builder.getQuestionnaire().findCategory("NAME");
@@ -102,6 +121,12 @@ public class QuestionnaireBuilderTest {
     category = builder.getQuestionnaire().findQuestion("Q5").findCategory(OTHER_SPECIFY);
     Assert.assertEquals("[a-z,A-Z]+", category.getOpenAnswerDefinition().getFormat());
     Assert.assertEquals(2, category.getOpenAnswerDefinition().getDefaultValues().size());
+    
+    try {
+      builder.inQuestion("Q5").withSharedCategory("1");
+      Assert.fail("Category name for shared categories must be unique.");
+    } catch (IllegalArgumentException e) {
+    }
 
     Assert.assertEquals(2, builder.getQuestionnaire().findCategories("1").keySet().size());
     Assert.assertEquals(1, builder.getQuestionnaire().findCategories(YES).keySet().size());
