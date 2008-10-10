@@ -1,5 +1,7 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.ILocalizable;
@@ -53,7 +55,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
   }
 
   /**
-   * Get an instance on the builder given a questionnaire. 
+   * Get an instance on the builder given a questionnaire.
    * @param questionnaire
    * @return
    */
@@ -117,24 +119,23 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * @param writer
    */
   public void writeProperties(IQuestionnairePropertiesWriter writer) {
-    addLocalizableProperties(questionnaire, null, writer);
+    List<String> propertyKeys = new ArrayList<String>();
+
+    addLocalizableProperties(questionnaire, null, writer, propertyKeys);
     for(Section section : questionnaire.getSections()) {
-      addSectionProperties(section, writer);
+      addSectionProperties(section, writer, propertyKeys);
     }
+    writer.end();
   }
-  
+
   /**
    * Create the localization properties for the current {@link Questionnaire}.
    * @return
    */
   public Properties getProperties() {
     final Properties properties = new Properties();
-    
-    IQuestionnairePropertiesWriter writer = new IQuestionnairePropertiesWriter() {
 
-      public boolean contains(String key) {
-        return properties.containsKey(key);
-      }
+    writeProperties(new IQuestionnairePropertiesWriter() {
 
       public void endBloc() {
       }
@@ -142,10 +143,15 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
       public void write(String key, String value) {
         properties.put(key, value);
       }
-      
-    };
-    
-    writeProperties(writer);
+
+      public void end() {
+      }
+
+      public Properties getReference() {
+        return null;
+      }
+
+    });
 
     return properties;
   }
@@ -155,23 +161,23 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * @param section
    * @param properties
    */
-  private void addSectionProperties(Section section, IQuestionnairePropertiesWriter writer) {
-    addLocalizableProperties(section, writer);
+  private void addSectionProperties(Section section, IQuestionnairePropertiesWriter writer, List<String> propertyKeys) {
+    addLocalizableProperties(section, writer, propertyKeys);
     for(Page page : section.getPages()) {
-      addLocalizableProperties(page, writer);
+      addLocalizableProperties(page, writer, propertyKeys);
       for(Question question : page.getQuestions()) {
-        addLocalizableProperties(question, writer);
+        addLocalizableProperties(question, writer, propertyKeys);
         for(QuestionCategory questionCategory : question.getQuestionCategories()) {
-          addLocalizableProperties(questionCategory.getCategory(), writer);
-          addLocalizableProperties(questionCategory, questionCategory.getCategory(), writer);
+          addLocalizableProperties(questionCategory.getCategory(), writer, propertyKeys);
+          addLocalizableProperties(questionCategory, questionCategory.getCategory(), writer, propertyKeys);
           if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
-            addLocalizableProperties(questionCategory.getCategory().getOpenAnswerDefinition(), writer);
+            addLocalizableProperties(questionCategory.getCategory().getOpenAnswerDefinition(), writer, propertyKeys);
           }
         }
       }
     }
     for(Section s : section.getSections()) {
-      addSectionProperties(s, writer);
+      addSectionProperties(s, writer, propertyKeys);
     }
   }
 
@@ -180,23 +186,28 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * @param localizable
    * @param properties
    */
-  private void addLocalizableProperties(ILocalizable localizable, IQuestionnairePropertiesWriter writer) {
-    addLocalizableProperties(localizable, null, writer);
+  private void addLocalizableProperties(ILocalizable localizable, IQuestionnairePropertiesWriter writer, List<String> propertyKeys) {
+    addLocalizableProperties(localizable, null, writer, propertyKeys);
   }
 
   /**
-   * For each of the localization keys declared by the {@link ILocalizable} add it to the properties object.
-   * Set the value to null by default or to the localization interpolation key. 
+   * For each of the localization keys declared by the {@link ILocalizable} add it to the properties object. Set the
+   * value to null by default or to the localization interpolation key.
    * @param localizable
    * @param interpolationLocalizable
    * @param writer
    */
-  private void addLocalizableProperties(ILocalizable localizable, ILocalizable interpolationLocalizable, IQuestionnairePropertiesWriter writer) {
+  private void addLocalizableProperties(ILocalizable localizable, ILocalizable interpolationLocalizable, IQuestionnairePropertiesWriter writer, List<String> propertyKeys) {
     boolean written = false;
     for(String property : localizable.getProperties()) {
       String key = localizable.getPropertyKey(property);
-      if(!writer.contains(key)) {
-        writer.write(key, interpolationLocalizable == null ? "" : "${" + interpolationLocalizable.getPropertyKey(property) + "}");
+      if(!propertyKeys.contains(key)) {
+        Properties ref = writer.getReference();
+        if(ref != null && ref.containsKey(key)) {
+          writer.write(key, ref.getProperty(key));
+        } else {
+          writer.write(key, interpolationLocalizable == null ? "" : "${" + interpolationLocalizable.getPropertyKey(property) + "}");
+        }
         written = true;
       }
     }

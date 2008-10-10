@@ -2,6 +2,8 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
@@ -15,6 +17,8 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
 public class QuestionnaireStreamerTest {
+  
+  public static final String QUESTIONNAIRE_BASE_NAME = "questionnaire";
 
   private static final String YES = "YES";
 
@@ -60,7 +64,7 @@ public class QuestionnaireStreamerTest {
       }
     }
     try {
-      File bundle = QuestionnaireStreamer.makeBundle(builder.getElement(), bundleDirectory, Locale.FRENCH, Locale.ENGLISH);
+      File bundle = makeBundle(builder.getElement(), bundleDirectory, Locale.FRENCH, Locale.ENGLISH);
       Assert.assertEquals(builder.getElement().getVersion(), bundle.getName());
       Assert.assertEquals(builder.getElement().getName(), bundle.getParentFile().getName());
       File file = new File(bundle, "questionnaire.xml");
@@ -82,7 +86,7 @@ public class QuestionnaireStreamerTest {
       Assert.assertEquals("${Category.YES.label}", localizationProperties.getProperty("QuestionCategory.Q1.YES.label"));
       Assert.assertTrue(localizationProperties.containsKey("OpenAnswerDefinition.SPECIFY.Right"));
 
-      Questionnaire fromDead = QuestionnaireStreamer.fromBundle(bundle);
+      Questionnaire fromDead = fromBundle(bundle);
       Assert.assertNotNull("Reloaded questionnaire is null", fromDead);
       Assert.assertTrue("Reloaded questionnaire has no sections", fromDead.getSections().size() > 0);
       Assert.assertTrue("Reloaded questionnaire has no pages", fromDead.getPages().size() > 0);
@@ -103,6 +107,64 @@ public class QuestionnaireStreamerTest {
       e.printStackTrace();
       Assert.fail(e.getMessage());
     }
+  }
+  
+  /**
+   * Load a {@link Questionnaire} from its bundle directory.
+   * @param bundleDirectory
+   * @return
+   * @throws FileNotFoundException
+   */
+  public Questionnaire fromBundle(File bundleDirectory) throws FileNotFoundException {
+    File questionnaireFile = new File(bundleDirectory, QUESTIONNAIRE_BASE_NAME + ".xml");
+
+    return QuestionnaireStreamer.fromBundle(new FileInputStream(questionnaireFile));
+  }
+  
+  /**
+   * Make the {@link Questionnaire} bundle:
+   * <ul>
+   * <li>questionnaire description file</li>
+   * <li>questionnaire properties file for each language to localize</li>
+   * </ul>
+   * @param questionnaire
+   * @param bundleRootDirectory
+   * @param locales
+   * @return
+   * @throws IOException
+   */
+  public File makeBundle(Questionnaire questionnaire, File bundleRootDirectory, Locale... locales) throws IOException {
+    if(bundleRootDirectory == null) throw new IllegalArgumentException("Questionnaire bundle directory cannot be null.");
+
+    if(!bundleRootDirectory.exists()) {
+      bundleRootDirectory.mkdir();
+    } else {
+      if(!bundleRootDirectory.isDirectory()) {
+        throw new IllegalArgumentException("Questionnaire bundle root directory must be a directory.");
+      }
+    }
+
+    File bundleDirectory = new File(new File(bundleRootDirectory, questionnaire.getName()), questionnaire.getVersion());
+    bundleDirectory.mkdirs();
+
+    File questionnaireFile = new File(bundleDirectory, QUESTIONNAIRE_BASE_NAME + ".xml");
+    if(!questionnaireFile.exists()) {
+      questionnaireFile.createNewFile();
+    }
+
+    QuestionnaireStreamer.toXML(questionnaire, new FileOutputStream(questionnaireFile));
+
+    for(Locale locale : locales) {
+      File localizedPropertiesFile = new File(bundleDirectory, QUESTIONNAIRE_BASE_NAME + "_" + locale + ".properties");
+      if(!localizedPropertiesFile.exists()) {
+        localizedPropertiesFile.createNewFile();
+      }
+
+      // create an empty property file.
+      QuestionnaireStreamer.storeLanguage(questionnaire, locale, null, new FileOutputStream(localizedPropertiesFile));
+    }
+
+    return bundleDirectory;
   }
 
 }

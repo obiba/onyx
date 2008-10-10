@@ -1,20 +1,12 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -27,17 +19,10 @@ import com.thoughtworks.xstream.XStream;
 
 public class QuestionnaireStreamer {
 
-  public static final String QUESTIONNAIRE_BASE_NAME = "questionnaire";
-
   /**
    * The de-serializer.
    */
   private XStream xstream;
-
-  /**
-   * A list to store property keys, to make sure there are not repeated multiple times.
-   */
-  private List<String> propertyKeys;
 
   private QuestionnaireStreamer() {
     initializeXStream();
@@ -73,19 +58,6 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(OpenAnswerDefinition.class, "format");
     xstream.alias("data", Data.class);
     xstream.useAttributeFor(Data.class, "type");
-  }
-
-  /**
-   * Load a {@link Questionnaire} from its bundle directory.
-   * @param bundleDirectory
-   * @return
-   * @throws FileNotFoundException
-   */
-  public static Questionnaire fromBundle(File bundleDirectory) throws FileNotFoundException {
-    File questionnaireFile = new File(bundleDirectory, QUESTIONNAIRE_BASE_NAME + ".xml");
-
-    QuestionnaireStreamer streamer = new QuestionnaireStreamer();
-    return (Questionnaire) streamer.xstream.fromXML(new FileInputStream(questionnaireFile));
   }
 
   /**
@@ -126,132 +98,30 @@ public class QuestionnaireStreamer {
    * @param language language
    * @param outputStream output stream
    */
-  public static void storeLanguage(Questionnaire questionnaire, Locale locale, Properties language, OutputStream outputStream) {
-    QuestionnaireStreamer streamer = new QuestionnaireStreamer();
-    streamer.propertyKeys = new ArrayList<String>();
+  public static void storeLanguage(Questionnaire questionnaire, Locale locale, final Properties language, final OutputStream outputStream) {
 
-    PrintWriter writer = new PrintWriter(outputStream);
-    streamer.writeLocalizableProperties(questionnaire, writer);
+    QuestionnaireBuilder.getInstance(questionnaire).writeProperties(new IQuestionnairePropertiesWriter() {
 
-    for(Section section : questionnaire.getSections()) {
-      streamer.writeSectionProperties(section, writer);
-    }
+      PrintWriter printWriter = new PrintWriter(outputStream);
 
-    writer.flush();
-    writer.close();
-  }
-
-  /**
-   * Make the {@link Questionnaire} bundle:
-   * <ul>
-   * <li>questionnaire description file</li>
-   * <li>questionnaire properties file for each language to localize</li>
-   * </ul>
-   * @param questionnaire
-   * @param bundleRootDirectory
-   * @param locales
-   * @return
-   * @throws IOException
-   */
-  public static File makeBundle(Questionnaire questionnaire, File bundleRootDirectory, Locale... locales) throws IOException {
-    if(bundleRootDirectory == null) throw new IllegalArgumentException("Questionnaire bundle directory cannot be null.");
-
-    if(!bundleRootDirectory.exists()) {
-      bundleRootDirectory.mkdir();
-    } else {
-      if(!bundleRootDirectory.isDirectory()) {
-        throw new IllegalArgumentException("Questionnaire bundle root directory must be a directory.");
-      }
-    }
-
-    File bundleDirectory = new File(new File(bundleRootDirectory, questionnaire.getName()), questionnaire.getVersion());
-    bundleDirectory.mkdirs();
-
-    QuestionnaireStreamer streamer = new QuestionnaireStreamer();
-
-    File questionnaireFile = new File(bundleDirectory, QUESTIONNAIRE_BASE_NAME + ".xml");
-    if(!questionnaireFile.exists()) {
-      questionnaireFile.createNewFile();
-    }
-
-    streamer.xstream.toXML(questionnaire, new FileOutputStream(questionnaireFile));
-
-    for(Locale locale : locales) {
-      File localizedProperties = new File(bundleDirectory, QUESTIONNAIRE_BASE_NAME + "_" + locale + ".properties");
-      if(!localizedProperties.exists()) {
-        localizedProperties.createNewFile();
+      public void endBloc() {
+        printWriter.println();
       }
 
-      // create an empty property file.
-      streamer.propertyKeys = new ArrayList<String>();
-      PrintWriter writer = new PrintWriter(localizedProperties);
-      streamer.writeLocalizableProperties(questionnaire, writer);
-      for(Section section : questionnaire.getSections()) {
-        streamer.writeSectionProperties(section, writer);
+      public void write(String key, String value) {
+        printWriter.println(key + "=" + value);
       }
-      writer.flush();
-      writer.close();
-    }
 
-    return bundleDirectory;
-  }
-
-  /**
-   * Write localizable properties recursively of {@link Section} content.
-   * @param section
-   * @param writer
-   */
-  private void writeSectionProperties(Section section, PrintWriter writer) {
-    writeLocalizableProperties(section, writer);
-    for(Page page : section.getPages()) {
-      writeLocalizableProperties(page, writer);
-      for(Question question : page.getQuestions()) {
-        writeLocalizableProperties(question, writer);
-        for(QuestionCategory questionCategory : question.getQuestionCategories()) {
-          writeLocalizableProperties(questionCategory.getCategory(), writer);
-          writeLocalizableProperties(questionCategory, questionCategory.getCategory(), writer);
-          if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
-            writeLocalizableProperties(questionCategory.getCategory().getOpenAnswerDefinition(), writer);
-          }
-        }
+      public void end() {
+        printWriter.flush();
+        printWriter.close();
       }
-    }
-    for(Section s : section.getSections()) {
-      writeSectionProperties(s, writer);
-    }
-  }
 
-  /**
-   * Write localizable properties.
-   * @param localizable
-   * @param writer
-   */
-  private void writeLocalizableProperties(ILocalizable localizable, PrintWriter writer) {
-    writeLocalizableProperties(localizable, null, writer);
-  }
-
-  /**
-   * Write localizable properties. If interpolation localizable is provided, set the value to the key reference of
-   * interpolation localizable same property key, such as <code>${interpolation.propertyKey}</code>.
-   * @param localizable
-   * @param interpolationLocalizable
-   * @param writer
-   */
-  private void writeLocalizableProperties(ILocalizable localizable, ILocalizable interpolationLocalizable, PrintWriter writer) {
-    boolean written = false;
-    for(String property : localizable.getProperties()) {
-      String key = localizable.getPropertyKey(property);
-      if(!propertyKeys.contains(key)) {
-        propertyKeys.add(key);
-        if(interpolationLocalizable == null) {
-          writer.println(key + "=");
-        } else {
-          writer.println(key + "=${" + interpolationLocalizable.getPropertyKey(property) + "}");
-        }
-        written = true;
+      public Properties getReference() {
+        return language;
       }
-    }
-    if(written) writer.println();
+
+    });
   }
 
 }
