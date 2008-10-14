@@ -3,15 +3,13 @@
  * 
  * @author acarey
  * 
- * Coming from states: ready
- * Possible forward states/actions/transitions: cancel, notApplicable
+ * Coming from states: ready Possible forward states/actions/transitions: cancel, notApplicable
  */
 package org.obiba.onyx.quartz.engine.state;
 
 import java.util.Locale;
 
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.AbstractStageState;
@@ -35,7 +33,6 @@ public class QuartzSkippedState extends AbstractStageState implements Initializi
 
   @Override
   public void stop(Action action) {
-    super.execute(action);
     log.info("Quartz Stage {} is cancelling", super.getStage().getName());
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);

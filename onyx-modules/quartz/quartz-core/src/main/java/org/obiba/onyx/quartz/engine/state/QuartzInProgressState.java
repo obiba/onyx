@@ -3,15 +3,13 @@
  * 
  * @author acarey
  * 
- * Coming from states: ready
- * Possible forward states/actions/transitions: cancel, complete, interrupt
- * On cancel transition, current questionnaireParticipant is deleted from database (with its dependencies)
+ * Coming from states: ready Possible forward states/actions/transitions: cancel, complete, interrupt On cancel
+ * transition, current questionnaireParticipant is deleted from database (with its dependencies)
  */
 package org.obiba.onyx.quartz.engine.state;
 
 import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.AbstractStageState;
@@ -46,7 +44,7 @@ public class QuartzInProgressState extends AbstractStageState implements Initial
   public Component getWidget(String id) {
     return new QuartzPanel(id, getStage());
   }
-  
+
   private void cancelQuestionnaireParticipant() {
     QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getLastQuestionnaireParticipant(activeInterviewService.getParticipant(), super.getStage().getName());
     questionnaireParticipantService.deleteQuestionnaireParticipant(questionnaireParticipant.getId());
@@ -72,6 +70,12 @@ public class QuartzInProgressState extends AbstractStageState implements Initial
   @Override
   public boolean isInteractive() {
     return true;
+  }
+
+  @Override
+  public void interrupt(Action action) {
+    log.info("Quartz Stage {} is interrupting", super.getStage().getName());
+    castEvent(TransitionEvent.INTERRUPT);
   }
 
 }

@@ -3,14 +3,12 @@
  * 
  * @author acarey
  * 
- * Coming from states: inProgress
- * Possible forward states/actions/transitions: notApplicable, cancel, resume
- * On cancel and notApplicable transitions, current questionnaireParticipant is deleted from database (with its dependencies)
+ * Coming from states: inProgress Possible forward states/actions/transitions: notApplicable, cancel, resume On cancel
+ * and notApplicable transitions, current questionnaireParticipant is deleted from database (with its dependencies)
  */
 package org.obiba.onyx.quartz.engine.state;
 
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.AbstractStageState;
@@ -47,7 +45,6 @@ public class QuartzCompletedState extends AbstractStageState implements Initiali
 
   @Override
   public void stop(Action action) {
-    super.execute(action);
     log.info("Quartz Stage {} is cancelling", super.getStage().getName());
     cancelQuestionnaireParticipant();
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) castEvent(TransitionEvent.CANCEL);
@@ -69,5 +66,11 @@ public class QuartzCompletedState extends AbstractStageState implements Initiali
   @Override
   public ActionType getStartingActionType() {
     return ActionType.EXECUTE;
+  }
+
+  @Override
+  public void execute(Action action) {
+    log.info("Quartz Stage {} is resuming", super.getStage().getName());
+    castEvent(TransitionEvent.RESUME);
   }
 }
