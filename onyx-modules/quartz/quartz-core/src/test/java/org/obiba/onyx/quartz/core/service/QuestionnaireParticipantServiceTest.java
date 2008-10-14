@@ -25,7 +25,7 @@ public class QuestionnaireParticipantServiceTest extends BaseDefaultSpringContex
   public void testGetLastQuestionnaireParticipant() {
     Participant participant = persistenceManager.get(Participant.class, Long.valueOf("1"));
     QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getLastQuestionnaireParticipant(participant, "QUE1");
-    Assert.assertEquals((long) 2, questionnaireParticipant.getId());
+    Assert.assertEquals((long) 1, questionnaireParticipant.getId());
   }
   
   @Test
