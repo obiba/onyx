@@ -18,7 +18,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IProper
 /**
  * Questionnaire visitor for building localization properties at each questionnaire element visit.
  * @author Yannick Marcon
- *
+ * 
  */
 public class PropertyKeyWriterVisitor implements IVisitor {
 
@@ -91,10 +91,21 @@ public class PropertyKeyWriterVisitor implements IVisitor {
       String key = propertyKeyProvider.getPropertyKey(localizable, property);
       if(!propertyKeys.contains(key)) {
         Properties ref = writer.getReference();
-        if(ref != null && ref.containsKey(key)) {
+        if(ref != null && ref.containsKey(key) && !ref.get(key).equals("")) {
+          // property key value already defined
           writer.write(key, ref.getProperty(key));
+        } else if(interpolationLocalizable != null) {
+          String interpolationKey = propertyKeyProvider.getPropertyKey(interpolationLocalizable, property);
+          if(propertyKeys.contains(interpolationKey)) {
+            // interpolation already written, just refer to it
+            writer.write(key, "${" + interpolationKey + "}");
+          } else {
+            // interpolation not written, then ignored
+            writer.write(key, "");
+            propertyKeys.add(interpolationKey);
+          }
         } else {
-          writer.write(key, interpolationLocalizable == null ? "" : "${" + propertyKeyProvider.getPropertyKey(interpolationLocalizable, property) + "}");
+          writer.write(key, "");
         }
         propertyKeys.add(key);
         written = true;
