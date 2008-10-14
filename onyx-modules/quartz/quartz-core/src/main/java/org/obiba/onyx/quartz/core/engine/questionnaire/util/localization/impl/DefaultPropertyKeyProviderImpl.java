@@ -1,4 +1,4 @@
-package org.obiba.onyx.quartz.core.engine.questionnaire.util.localization;
+package org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,27 +6,32 @@ import java.util.List;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.IQuestionnaireVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.util.data.Data;
 
-/**
- * Default property set for each of the questionnaire element that will be visited for localization.
- * @author Yannick Marcon
- *
- */
-public class DefaultQuestionnaireLocalizationVisitor implements IQuestionnaireLocalizationVisitor {
+public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IQuestionnaireVisitor {
 
   private String property;
 
   private List<String> properties;
+  
+  public List<String> getProperties(ILocalizable localizable) {
+    this.property = null;
+    localizable.accept(this);
+    return properties;
+  }
 
-  public void setProperty(String property) {
+  public String getPropertyKey(ILocalizable localizable, String property) {
     this.property = property;
+    localizable.accept(this);
+    return localizable.getClass().getSimpleName() + "." + localizable.getName() + "." + property;
   }
 
   public void visit(Questionnaire questionnaire) {
@@ -88,8 +93,5 @@ public class DefaultQuestionnaireLocalizationVisitor implements IQuestionnaireLo
     return new IllegalArgumentException("Invalid property for class " + localizable.getClass().getName() + ": " + property);
   }
 
-  public List<String> getProperties() {
-    return properties;
-  }
-
+  
 }

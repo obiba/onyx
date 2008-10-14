@@ -12,6 +12,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireStreamer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.runtime.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,8 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
 
   private ResourceLoader resourceLoader;
 
+  private IPropertyKeyProvider propertyKeyProvider;
+
   //
   // Constructors
   //
@@ -75,8 +78,8 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
   //
 
   public void afterPropertiesSet() throws Exception {
-    String resourcePath = rootDir.isAbsolute() ? "file:"+rootDir.getPath() : rootDir.getPath();
-    
+    String resourcePath = rootDir.isAbsolute() ? "file:" + rootDir.getPath() : rootDir.getPath();
+
     rootDir = resourceLoader.getResource(resourcePath).getFile();
 
     if(!rootDir.exists()) {
@@ -88,6 +91,10 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     }
   }
 
+  public void setPropertyKeyProvider(IPropertyKeyProvider propertyKeyProvider) {
+    this.propertyKeyProvider = propertyKeyProvider;
+  }
+
   //
   // QuestionnaireBundleManager Methods
   //
@@ -96,7 +103,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     File bundleVersionDir = new File(new File(rootDir, questionnaire.getName()), questionnaire.getVersion());
 
     // Create the bundle object.
-    QuestionnaireBundle bundle = new QuestionnaireBundleImpl(bundleVersionDir, questionnaire);
+    QuestionnaireBundle bundle = new QuestionnaireBundleImpl(bundleVersionDir, questionnaire, propertyKeyProvider);
 
     // Serialize it.
     serializeBundle(bundle);
@@ -216,17 +223,15 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
 
     // Serialize the questionnaire to the file.
     FileOutputStream fos = null;
-    
+
     try {
       fos = new FileOutputStream(questionnaireFile);
       QuestionnaireStreamer.toXML(bundle.getQuestionnaire(), new FileOutputStream(questionnaireFile));
-    }
-    finally {
-      if (fos != null) {
+    } finally {
+      if(fos != null) {
         try {
           fos.close();
-        }
-        catch(IOException ex) {
+        } catch(IOException ex) {
           log.error("Failed to close questionnaire file output stream", ex);
         }
       }
@@ -247,24 +252,22 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     // Deserialize the questionnaire.
     Questionnaire questionnaire = null;
     FileInputStream fis = null;
-    
+
     try {
       fis = new FileInputStream(new File(bundleVersionDir, QUESTIONNAIRE_BASE_NAME + ".xml"));
       questionnaire = QuestionnaireStreamer.fromBundle(fis);
-    }
-    finally {
-      if (fis != null) {
+    } finally {
+      if(fis != null) {
         try {
           fis.close();
-        }
-        catch(IOException ex) {
+        } catch(IOException ex) {
           log.error("Failed to close questionnaire file input stream", ex);
         }
       }
     }
 
     // Create the bundle.
-    QuestionnaireBundle bundle = new QuestionnaireBundleImpl(bundleVersionDir, questionnaire);
+    QuestionnaireBundle bundle = new QuestionnaireBundleImpl(bundleVersionDir, questionnaire, propertyKeyProvider);
 
     return bundle;
   }
@@ -289,6 +292,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
 
   class VersionFileFilter implements FileFilter {
     private Version latestVersion;
+
     private String latestVersionFilename;
 
     public boolean accept(File file) {

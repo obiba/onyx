@@ -11,12 +11,18 @@ import java.util.Properties;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public class QuestionnaireStreamerTest {
+public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase {
+
+  @Autowired(required=true)
+  private IPropertyKeyProvider propertyKeyProvider;
   
   public static final String QUESTIONNAIRE_BASE_NAME = "questionnaire";
 
@@ -161,7 +167,7 @@ public class QuestionnaireStreamerTest {
       }
 
       // create an empty property file.
-      QuestionnaireStreamer.storeLanguage(questionnaire, locale, null, new FileOutputStream(localizedPropertiesFile));
+      QuestionnaireStreamer.storeLanguage(questionnaire, locale, null, propertyKeyProvider, new FileOutputStream(localizedPropertiesFile));
     }
 
     return bundleDirectory;

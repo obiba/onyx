@@ -5,15 +5,21 @@ import java.util.Properties;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public class QuestionnaireBuilderTest {
+public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
+
+  @Autowired(required=true)
+  private IPropertyKeyProvider propertyKeyProvider;
 
   private static final String YES = "YES";
 
@@ -161,7 +167,7 @@ public class QuestionnaireBuilderTest {
     builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).setOpenAnswerDefinitionAbsoluteValues(DataBuilder.buildInteger(40), DataBuilder.buildInteger(70));
     builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").setOpenAnswerDefinitionFormat("[a-z,A-Z]+");
 
-    Properties localizationProperties = builder.getProperties();
+    Properties localizationProperties = builder.getProperties(propertyKeyProvider);
     Assert.assertTrue(localizationProperties.containsKey("Questionnaire.HealthQuestionnaire.description"));
     Assert.assertTrue(localizationProperties.containsKey("Section.S1.label"));
     Assert.assertTrue(localizationProperties.containsKey("Section.S1_1.label"));

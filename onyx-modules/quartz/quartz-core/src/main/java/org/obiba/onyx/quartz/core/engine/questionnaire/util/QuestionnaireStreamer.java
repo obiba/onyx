@@ -2,7 +2,6 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -14,6 +13,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IQuestionnairePropertiesWriter;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.QuestionnairePropertiesOutputStreamWriter;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.util.data.Data;
 
 import com.thoughtworks.xstream.XStream;
@@ -92,17 +93,18 @@ public class QuestionnaireStreamer {
   }
 
   /**
-   * Stores the a language for a questionnaire, for the given locale, to the specified <code>IQuestionnairePropertiesWriter</code>.
+   * Stores the a language for a questionnaire, for the given locale, to the specified
+   * <code>IQuestionnairePropertiesWriter</code>.
    * 
    * @param questionnaire
    * @param locale
    * @param language
    * @param writer
    */
-  public static void storeLanguage(Questionnaire questionnaire, Locale locale, Properties language, IQuestionnairePropertiesWriter writer) {
-    QuestionnaireBuilder.getInstance(questionnaire).writeProperties(writer);
+  public static void storeLanguage(Questionnaire questionnaire, Locale locale, Properties language, IPropertyKeyProvider propertyKeyProvider, IQuestionnairePropertiesWriter writer) {
+    QuestionnaireBuilder.getInstance(questionnaire).writeProperties(propertyKeyProvider, writer);
   }
-  
+
   /**
    * Stores the a language for a questionnaire, for the given locale, to the specified <code>OutputStream</code>.
    * 
@@ -111,30 +113,8 @@ public class QuestionnaireStreamer {
    * @param language language
    * @param outputStream output stream
    */
-  public static void storeLanguage(Questionnaire questionnaire, Locale locale, final Properties language, final OutputStream outputStream) {
-
-    storeLanguage(questionnaire, locale, language, new IQuestionnairePropertiesWriter() {
-
-      PrintWriter printWriter = new PrintWriter(outputStream);
-
-      public void endBloc() {
-        printWriter.println();
-      }
-
-      public void write(String key, String value) {
-        printWriter.println(key + "=" + value);
-      }
-
-      public void end() {
-        printWriter.flush();
-        printWriter.close();
-      }
-
-      public Properties getReference() {
-        return language;
-      }
-
-    });
+  public static void storeLanguage(Questionnaire questionnaire, Locale locale, Properties language, IPropertyKeyProvider propertyKeyProvider, OutputStream outputStream) {
+    storeLanguage(questionnaire, locale, language, propertyKeyProvider, new QuestionnairePropertiesOutputStreamWriter(language, outputStream));
   }
 
 }

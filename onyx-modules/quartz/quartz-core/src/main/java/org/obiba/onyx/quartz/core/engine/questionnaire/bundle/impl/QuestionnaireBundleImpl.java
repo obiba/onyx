@@ -14,12 +14,14 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireStreamer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 public class QuestionnaireBundleImpl implements QuestionnaireBundle {
+  
   //
   // Constants
   //
@@ -39,12 +41,14 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
   private Questionnaire questionnaire;
 
   private MessageSource messageSource;
+  
+  private IPropertyKeyProvider propertyKeyProvider;
 
   //
   // Constructors
   //
 
-  public QuestionnaireBundleImpl(File bundleVersionDir, Questionnaire questionnaire) {
+  public QuestionnaireBundleImpl(File bundleVersionDir, Questionnaire questionnaire, IPropertyKeyProvider propertyKeyProvider) {
     if(bundleVersionDir == null) {
       throw new IllegalArgumentException("Null bundle version directory");
     }
@@ -53,8 +57,13 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
       throw new IllegalArgumentException("Null questionnaire");
     }
 
+    if (propertyKeyProvider == null) {
+      throw new IllegalArgumentException("Null property key provider");
+    }
+    
     this.bundleVersionDir = bundleVersionDir;
     this.questionnaire = questionnaire;
+    this.propertyKeyProvider = propertyKeyProvider;
 
     // Initialize the message source.
     messageSource = new ReloadableResourceBundleMessageSource();
@@ -77,7 +86,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     FileOutputStream fos = null;
 
     try {
-      QuestionnaireStreamer.storeLanguage(getQuestionnaire(), locale, language, fos = new FileOutputStream(new File(bundleVersionDir, "questionnaire_" + locale + LANGUAGE_FILE_EXTENSION)));
+      QuestionnaireStreamer.storeLanguage(getQuestionnaire(), locale, language, propertyKeyProvider, fos = new FileOutputStream(new File(bundleVersionDir, "questionnaire_" + locale + LANGUAGE_FILE_EXTENSION)));
     } catch(IOException ex) {
       log.error("Failed to store language file", ex);
     } finally {
@@ -119,7 +128,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
 
     if(language == null) {
       QuestionnaireBuilder builder = QuestionnaireBuilder.getInstance(getQuestionnaire());
-      language = builder.getProperties();
+      language = builder.getProperties(propertyKeyProvider);
     }
 
     return language;

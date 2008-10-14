@@ -14,6 +14,7 @@ import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 
 public class QuestionnaireBundleImplTest {
 
@@ -46,6 +47,7 @@ public class QuestionnaireBundleImplTest {
 
     // Create the bundle manager.
     bundleManager = new QuestionnaireBundleManagerImpl(bundleRootDirectory);
+    ((QuestionnaireBundleManagerImpl)bundleManager).setPropertyKeyProvider(new DefaultPropertyKeyProviderImpl());
 
     // Create the test bundle.
     bundle = bundleManager.createBundle(questionnaire);
@@ -57,7 +59,7 @@ public class QuestionnaireBundleImplTest {
       FileUtil.delete(rootDirectory);
     }
   }
-  
+
   @Test
   public void testSetLanguage() {
     File bundleVersionDir = new File(new File(bundleRootDirectory, bundle.getName()), bundle.getQuestionnaire().getVersion());

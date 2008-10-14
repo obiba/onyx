@@ -16,9 +16,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IQuestionnai
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.PageBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.SectionBuilder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.DefaultQuestionnaireLocalizationVisitor;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IQuestionnaireLocalizer;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.QuestionnaireLocalizer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.QuestionnairePropertiesWriter;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.runtime.Version;
 
 /**
@@ -28,7 +27,7 @@ import org.obiba.runtime.Version;
  */
 public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Questionnaire> {
 
-  private IQuestionnaireLocalizer questionnaireLocalizer;
+  private IPropertyKeyProvider propertyKeyProvider;
 
   /**
    * Constructor.
@@ -51,9 +50,9 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     super(questionnaire);
     this.element = questionnaire;
   }
-  
-  public void setQuestionnaireLocalizer(IQuestionnaireLocalizer questionnaireLocalizer) {
-    this.questionnaireLocalizer = questionnaireLocalizer;
+
+  public void setPropertyKeyProvider(IPropertyKeyProvider questionnaireLocalizer) {
+    this.propertyKeyProvider = questionnaireLocalizer;
   }
 
   /**
@@ -133,13 +132,9 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * Write the questionnaire properties.
    * @param writer
    */
-  public void writeProperties(IQuestionnairePropertiesWriter writer) {
+  public void writeProperties(IPropertyKeyProvider propertyKeyProvider, IQuestionnairePropertiesWriter writer) {
+    this.propertyKeyProvider = propertyKeyProvider;
     List<String> propertyKeys = new ArrayList<String>();
-
-    // TODO Spring
-    QuestionnaireLocalizer localizer = new QuestionnaireLocalizer();
-    localizer.setQuestionnaireVisitor(new DefaultQuestionnaireLocalizationVisitor());
-    setQuestionnaireLocalizer(localizer);
 
     addLocalizableProperties(questionnaire, null, writer, propertyKeys);
 
@@ -157,28 +152,12 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * Create the localization properties for the current {@link Questionnaire}.
    * @return
    */
-  public Properties getProperties() {
-    final Properties properties = new Properties();
+  public Properties getProperties(IPropertyKeyProvider propertyKeyProvider) {
+    QuestionnairePropertiesWriter pWriter = new QuestionnairePropertiesWriter();
 
-    writeProperties(new IQuestionnairePropertiesWriter() {
+    writeProperties(propertyKeyProvider, pWriter);
 
-      public void endBloc() {
-      }
-
-      public void write(String key, String value) {
-        properties.put(key, value);
-      }
-
-      public void end() {
-      }
-
-      public Properties getReference() {
-        return null;
-      }
-
-    });
-
-    return properties;
+    return pWriter.getProperties();
   }
 
   /**
@@ -224,14 +203,14 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    */
   private void addLocalizableProperties(ILocalizable localizable, ILocalizable interpolationLocalizable, IQuestionnairePropertiesWriter writer, List<String> propertyKeys) {
     boolean written = false;
-    for(String property : questionnaireLocalizer.getProperties(localizable)) {
-      String key = questionnaireLocalizer.getPropertyKey(localizable, property);
+    for(String property : propertyKeyProvider.getProperties(localizable)) {
+      String key = propertyKeyProvider.getPropertyKey(localizable, property);
       if(!propertyKeys.contains(key)) {
         Properties ref = writer.getReference();
         if(ref != null && ref.containsKey(key)) {
           writer.write(key, ref.getProperty(key));
         } else {
-          writer.write(key, interpolationLocalizable == null ? "" : "${" + questionnaireLocalizer.getPropertyKey(interpolationLocalizable, property) + "}");
+          writer.write(key, interpolationLocalizable == null ? "" : "${" + propertyKeyProvider.getPropertyKey(interpolationLocalizable, property) + "}");
         }
         propertyKeys.add(key);
         written = true;
