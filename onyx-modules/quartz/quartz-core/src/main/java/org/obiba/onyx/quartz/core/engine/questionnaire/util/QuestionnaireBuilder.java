@@ -124,7 +124,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    */
   public void writeProperties(IPropertyKeyProvider propertyKeyProvider, IPropertyKeyWriter writer) {
     QuestionnaireWalker walker = new QuestionnaireWalker(new PropertyKeyWriterVisitor(propertyKeyProvider, writer));
-    walker.walk(questionnaire, false);
+    walker.walk(questionnaire);
     writer.end();
   }
 
