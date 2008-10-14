@@ -10,7 +10,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.ILocalizable;
  * @see ILocalizable
  *
  */
-public interface IQuestionnairePropertiesWriter {
+public interface IPropertyKeyWriter {
 
   /**
    * Properties from which values can be fetched. 

@@ -2,14 +2,14 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl;
 
 import java.util.Properties;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IQuestionnairePropertiesWriter;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IPropertyKeyWriter;
 
 /**
  * Write the questionnaire properties into a properties object.
  * @author Yannick Marcon
  * 
  */
-public class QuestionnairePropertiesWriter implements IQuestionnairePropertiesWriter {
+public class PropertiesPropertyKeyWriterImpl implements IPropertyKeyWriter {
 
   private Properties language;
 
@@ -18,14 +18,14 @@ public class QuestionnairePropertiesWriter implements IQuestionnairePropertiesWr
   /**
    * Constructor without properties reference.
    */
-  public QuestionnairePropertiesWriter() {
+  public PropertiesPropertyKeyWriterImpl() {
   }
 
   /**
    * Constructor with a property reference.
    * @param language
    */
-  public QuestionnairePropertiesWriter(Properties language) {
+  public PropertiesPropertyKeyWriterImpl(Properties language) {
     this.language = language;
   }
 

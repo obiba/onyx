@@ -4,20 +4,20 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Properties;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IQuestionnairePropertiesWriter;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IPropertyKeyWriter;
 
 /**
  * Write the questionnaire properties into a output stream.
  * @author Yannick Marcon
  * 
  */
-public class QuestionnairePropertiesOutputStreamWriter implements IQuestionnairePropertiesWriter {
+public class OutputStreamPropertyKeyWriterImpl implements IPropertyKeyWriter {
 
   private Properties language;
 
   private PrintWriter printWriter;
 
-  public QuestionnairePropertiesOutputStreamWriter(Properties language, OutputStream outputStream) {
+  public OutputStreamPropertyKeyWriterImpl(Properties language, OutputStream outputStream) {
     this.language = language;
     this.printWriter = new PrintWriter(outputStream);
   }

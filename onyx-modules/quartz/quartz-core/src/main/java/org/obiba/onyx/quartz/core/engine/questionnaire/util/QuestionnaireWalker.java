@@ -1,0 +1,106 @@
+package org.obiba.onyx.quartz.core.engine.questionnaire.util;
+
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.IQuestionnaireVisitor;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+
+public class QuestionnaireWalker implements IQuestionnaireVisitor {
+
+  /**
+   * A walk in which each parent node is traversed before its children is called a pre-order walk.
+   */
+  boolean preOrder;
+
+  /**
+   * Final visitor that performs real job at each node visit.
+   */
+  private IQuestionnaireVisitor visitor;
+
+  /**
+   * Constructor, given a questionnaire visitor that will perform real operation at each node visit.
+   * @param visitor
+   */
+  public QuestionnaireWalker(IQuestionnaireVisitor visitor) {
+    this.visitor = visitor;
+  }
+
+  /**
+   * Go through the questionnaire.
+   * @param questionnaire
+   * @param preOrder a walk in which each parent node is traversed before its children is called a pre-order walk.
+   */
+  public void walk(Questionnaire questionnaire, boolean preOrder) {
+    this.preOrder = preOrder;
+    questionnaire.accept(this);
+  }
+  
+  /**
+   * Go through the questionnaire, in a pre-order walk.
+   * @param questionnaire
+   */
+  public void walk(Questionnaire questionnaire) {
+    walk(questionnaire, true);
+  }
+
+  public final void visit(Questionnaire questionnaire) {
+    if(preOrder) questionnaire.accept(visitor);
+    for(Section section : questionnaire.getSections()) {
+      section.accept(this);
+    }
+    if(!preOrder) questionnaire.accept(visitor);
+  }
+
+  public final void visit(Section section) {
+    if(preOrder) section.accept(visitor);
+    for(Page page : section.getPages()) {
+      page.accept(this);
+    }
+    for(Section sectionChild : section.getSections()) {
+      sectionChild.accept(this);
+    }
+    if(!preOrder) section.accept(visitor);
+  }
+
+  public final void visit(Page page) {
+    if(preOrder) page.accept(visitor);
+    for(Question question : page.getQuestions()) {
+      question.accept(this);
+    }
+    if(!preOrder) page.accept(visitor);
+  }
+
+  public final void visit(Question question) {
+    if(preOrder) question.accept(visitor);
+    for(QuestionCategory questionCategory : question.getQuestionCategories()) {
+      questionCategory.accept(this);
+    }
+    for(Question questionChild : question.getQuestions()) {
+      questionChild.accept(this);
+    }
+    if(!preOrder) question.accept(visitor);
+  }
+
+  public final void visit(QuestionCategory questionCategory) {
+    if(preOrder) questionCategory.accept(visitor);
+    questionCategory.getCategory().accept(this);
+    if(!preOrder) questionCategory.accept(visitor);
+  }
+
+  public final void visit(Category category) {
+    if(preOrder) category.accept(visitor);
+    if(category.getOpenAnswerDefinition() != null) {
+      category.getOpenAnswerDefinition().accept(this);
+    }
+    if(!preOrder) category.accept(visitor);
+  }
+
+  public final void visit(OpenAnswerDefinition openAnswerDefinition) {
+    openAnswerDefinition.accept(visitor);
+  }
+
+}

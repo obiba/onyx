@@ -12,8 +12,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IQuestionnairePropertiesWriter;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.QuestionnairePropertiesOutputStreamWriter;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IPropertyKeyWriter;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.OutputStreamPropertyKeyWriterImpl;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.util.data.Data;
 
@@ -101,7 +101,7 @@ public class QuestionnaireStreamer {
    * @param language
    * @param writer
    */
-  public static void storeLanguage(Questionnaire questionnaire, Locale locale, Properties language, IPropertyKeyProvider propertyKeyProvider, IQuestionnairePropertiesWriter writer) {
+  public static void storeLanguage(Questionnaire questionnaire, Locale locale, Properties language, IPropertyKeyProvider propertyKeyProvider, IPropertyKeyWriter writer) {
     QuestionnaireBuilder.getInstance(questionnaire).writeProperties(propertyKeyProvider, writer);
   }
 
@@ -114,7 +114,7 @@ public class QuestionnaireStreamer {
    * @param outputStream output stream
    */
   public static void storeLanguage(Questionnaire questionnaire, Locale locale, Properties language, IPropertyKeyProvider propertyKeyProvider, OutputStream outputStream) {
-    storeLanguage(questionnaire, locale, language, propertyKeyProvider, new QuestionnairePropertiesOutputStreamWriter(language, outputStream));
+    storeLanguage(questionnaire, locale, language, propertyKeyProvider, new OutputStreamPropertyKeyWriterImpl(language, outputStream));
   }
 
 }

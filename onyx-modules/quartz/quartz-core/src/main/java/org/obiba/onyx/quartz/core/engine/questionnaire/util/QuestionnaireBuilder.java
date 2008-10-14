@@ -1,22 +1,18 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.AbstractQuestionnaireElementBuilder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IQuestionnairePropertiesWriter;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IPropertyKeyWriter;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.PageBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuilder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.PropertyKeyWriterVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.SectionBuilder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.QuestionnairePropertiesWriter;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.PropertiesPropertyKeyWriterImpl;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.runtime.Version;
 
@@ -26,8 +22,6 @@ import org.obiba.runtime.Version;
  * 
  */
 public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Questionnaire> {
-
-  private IPropertyKeyProvider propertyKeyProvider;
 
   /**
    * Constructor.
@@ -49,10 +43,6 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
   private QuestionnaireBuilder(Questionnaire questionnaire) {
     super(questionnaire);
     this.element = questionnaire;
-  }
-
-  public void setPropertyKeyProvider(IPropertyKeyProvider questionnaireLocalizer) {
-    this.propertyKeyProvider = questionnaireLocalizer;
   }
 
   /**
@@ -132,19 +122,9 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * Write the questionnaire properties.
    * @param writer
    */
-  public void writeProperties(IPropertyKeyProvider propertyKeyProvider, IQuestionnairePropertiesWriter writer) {
-    this.propertyKeyProvider = propertyKeyProvider;
-    List<String> propertyKeys = new ArrayList<String>();
-
-    addLocalizableProperties(questionnaire, null, writer, propertyKeys);
-
-    for(Category category : questionnaire.findSharedCategories()) {
-      addLocalizableProperties(category, null, writer, propertyKeys);
-    }
-
-    for(Section section : questionnaire.getSections()) {
-      addSectionProperties(section, writer, propertyKeys);
-    }
+  public void writeProperties(IPropertyKeyProvider propertyKeyProvider, IPropertyKeyWriter writer) {
+    QuestionnaireWalker walker = new QuestionnaireWalker(new PropertyKeyWriterVisitor(propertyKeyProvider, writer));
+    walker.walk(questionnaire, false);
     writer.end();
   }
 
@@ -153,69 +133,11 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * @return
    */
   public Properties getProperties(IPropertyKeyProvider propertyKeyProvider) {
-    QuestionnairePropertiesWriter pWriter = new QuestionnairePropertiesWriter();
+    PropertiesPropertyKeyWriterImpl pWriter = new PropertiesPropertyKeyWriterImpl();
 
     writeProperties(propertyKeyProvider, pWriter);
 
     return pWriter.getProperties();
   }
 
-  /**
-   * Add localization properties from {@link Section}.
-   * @param section
-   * @param properties
-   */
-  private void addSectionProperties(Section section, IQuestionnairePropertiesWriter writer, List<String> propertyKeys) {
-    addLocalizableProperties(section, writer, propertyKeys);
-    for(Page page : section.getPages()) {
-      addLocalizableProperties(page, writer, propertyKeys);
-      for(Question question : page.getQuestions()) {
-        addLocalizableProperties(question, writer, propertyKeys);
-        for(QuestionCategory questionCategory : question.getQuestionCategories()) {
-          addLocalizableProperties(questionCategory.getCategory(), writer, propertyKeys);
-          addLocalizableProperties(questionCategory, questionCategory.getCategory(), writer, propertyKeys);
-          if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
-            addLocalizableProperties(questionCategory.getCategory().getOpenAnswerDefinition(), writer, propertyKeys);
-          }
-        }
-      }
-    }
-    for(Section s : section.getSections()) {
-      addSectionProperties(s, writer, propertyKeys);
-    }
-  }
-
-  /**
-   * Shortcut method call.
-   * @param localizable
-   * @param properties
-   */
-  private void addLocalizableProperties(ILocalizable localizable, IQuestionnairePropertiesWriter writer, List<String> propertyKeys) {
-    addLocalizableProperties(localizable, null, writer, propertyKeys);
-  }
-
-  /**
-   * For each of the localization keys declared by the {@link ILocalizable} add it to the properties object. Set the
-   * value to null by default or to the localization interpolation key.
-   * @param localizable
-   * @param interpolationLocalizable
-   * @param writer
-   */
-  private void addLocalizableProperties(ILocalizable localizable, ILocalizable interpolationLocalizable, IQuestionnairePropertiesWriter writer, List<String> propertyKeys) {
-    boolean written = false;
-    for(String property : propertyKeyProvider.getProperties(localizable)) {
-      String key = propertyKeyProvider.getPropertyKey(localizable, property);
-      if(!propertyKeys.contains(key)) {
-        Properties ref = writer.getReference();
-        if(ref != null && ref.containsKey(key)) {
-          writer.write(key, ref.getProperty(key));
-        } else {
-          writer.write(key, interpolationLocalizable == null ? "" : "${" + propertyKeyProvider.getPropertyKey(interpolationLocalizable, property) + "}");
-        }
-        propertyKeys.add(key);
-        written = true;
-      }
-    }
-    if(written) writer.endBloc();
-  }
 }
