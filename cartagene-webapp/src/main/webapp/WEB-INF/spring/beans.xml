@@ -83,4 +83,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <!-- NOTE: Uncomment declaration below if this service is injected into a singleton bean. -->
     <!-- <aop:scoped-proxy /> -->
   </bean>
+  
+  <bean id="questionnaireBundleManager"
+    class="org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl">
+    <constructor-arg value="questionnaires" />
+  </bean>
 </beans>
