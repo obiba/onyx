@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.ILocalizable;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.IQuestionnaireVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -20,7 +20,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IProper
  * @author Yannick Marcon
  *
  */
-public class PropertyKeyWriterVisitor implements IQuestionnaireVisitor {
+public class PropertyKeyWriterVisitor implements IVisitor {
 
   private IPropertyKeyProvider propertyKeyProvider;
 

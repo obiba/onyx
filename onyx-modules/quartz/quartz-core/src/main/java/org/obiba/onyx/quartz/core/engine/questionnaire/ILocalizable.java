@@ -1,4 +1,5 @@
-package org.obiba.onyx.quartz.core.engine.questionnaire.question;
+package org.obiba.onyx.quartz.core.engine.questionnaire;
+
 
 /**
  * A localizable element is visitable for providing the localization key for each of its properties.

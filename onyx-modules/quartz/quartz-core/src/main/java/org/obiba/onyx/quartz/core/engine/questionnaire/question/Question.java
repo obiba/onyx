@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 
 public class Question implements Serializable, ILocalizable {
@@ -165,7 +167,7 @@ public class Question implements Serializable, ILocalizable {
   }
   
 
-  public void accept(IQuestionnaireVisitor visitor) {
+  public void accept(IVisitor visitor) {
     visitor.visit(this);
   }
 }

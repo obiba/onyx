@@ -2,7 +2,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.localization;
 
 import java.util.List;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 
 /**
  * Provides/ckecks the property localization key for a {@link ILocalizable} questionnaire element.

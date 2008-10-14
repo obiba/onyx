@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
+
 
 public class Page implements Serializable, ILocalizable {
 
@@ -46,7 +49,7 @@ public class Page implements Serializable, ILocalizable {
     }
   }
 
-  public void accept(IQuestionnaireVisitor visitor) {
+  public void accept(IVisitor visitor) {
     visitor.visit(this);
   }
 }

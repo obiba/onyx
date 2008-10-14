@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -130,7 +132,7 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
     }
   }
 
-  public void accept(IQuestionnaireVisitor visitor) {
+  public void accept(IVisitor visitor) {
     visitor.visit(this);
   }
 }

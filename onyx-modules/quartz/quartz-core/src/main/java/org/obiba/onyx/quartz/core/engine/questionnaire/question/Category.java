@@ -2,6 +2,9 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.io.Serializable;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
+
 
 public class Category implements Serializable, ILocalizable {
 
@@ -31,7 +34,7 @@ public class Category implements Serializable, ILocalizable {
     this.openAnswerDefinition = openAnswerDefinition;
   }
 
-  public void accept(IQuestionnaireVisitor visitor) {
+  public void accept(IVisitor visitor) {
     visitor.visit(this);
   }
 

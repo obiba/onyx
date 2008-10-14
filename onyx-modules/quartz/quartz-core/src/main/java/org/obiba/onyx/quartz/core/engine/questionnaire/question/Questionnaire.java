@@ -9,6 +9,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.runtime.Version;
 
 public class Questionnaire implements Serializable, ILocalizable {
@@ -386,7 +388,7 @@ public class Questionnaire implements Serializable, ILocalizable {
   // ILocalizable
   //
   
-  public void accept(IQuestionnaireVisitor visitor) {
+  public void accept(IVisitor visitor) {
     visitor.visit(this);
   }
 

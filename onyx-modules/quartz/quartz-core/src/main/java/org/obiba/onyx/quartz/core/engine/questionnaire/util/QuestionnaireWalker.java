@@ -1,7 +1,7 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.IQuestionnaireVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -9,7 +9,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 
-public class QuestionnaireWalker implements IQuestionnaireVisitor {
+public class QuestionnaireWalker implements IVisitor {
 
   /**
    * A walk in which each parent node is traversed before its children is called a pre-order walk.
@@ -19,13 +19,13 @@ public class QuestionnaireWalker implements IQuestionnaireVisitor {
   /**
    * Final visitor that performs real job at each node visit.
    */
-  private IQuestionnaireVisitor visitor;
+  private IVisitor visitor;
 
   /**
    * Constructor, given a questionnaire visitor that will perform real operation at each node visit.
    * @param visitor
    */
-  public QuestionnaireWalker(IQuestionnaireVisitor visitor) {
+  public QuestionnaireWalker(IVisitor visitor) {
     this.visitor = visitor;
   }
 

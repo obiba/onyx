@@ -1,4 +1,6 @@
-package org.obiba.onyx.quartz.core.engine.questionnaire.question;
+package org.obiba.onyx.quartz.core.engine.questionnaire;
+
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 
 /**
  * Visitable {@link Questionnaire} element.
@@ -11,6 +13,6 @@ public interface IVisitable {
    * Accept the visit.
    * @param visitor
    */
-  public void accept(IQuestionnaireVisitor visitor);
+  public void accept(IVisitor visitor);
   
 }
