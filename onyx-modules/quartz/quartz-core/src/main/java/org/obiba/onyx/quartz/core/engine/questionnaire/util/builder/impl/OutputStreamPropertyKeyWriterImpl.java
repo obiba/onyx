@@ -39,4 +39,10 @@ public class OutputStreamPropertyKeyWriterImpl implements IPropertyKeyWriter {
     return language;
   }
 
+  public void writeComment(String... comments) {
+    for (String comment : comments) {
+      printWriter.println("## " + comment);
+    }
+  }
+
 }

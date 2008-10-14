@@ -51,4 +51,7 @@ public class PropertiesPropertyKeyWriterImpl implements IPropertyKeyWriter {
     return language;
   }
 
+  public void writeComment(String... comments) {
+  }
+
 }

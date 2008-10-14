@@ -39,7 +39,9 @@ public class PropertyKeyWriterVisitor implements IVisitor {
   }
 
   public void visit(Questionnaire questionnaire) {
+    writer.writeComment("", "Questionnaire: " + questionnaire.getName() + ", version " + questionnaire.getVersion(), "");
     writePropertyKey(questionnaire);
+    writer.writeComment("", "Shared categories", "");
     for(Category category : questionnaire.findSharedCategories()) {
       writePropertyKey(category);
     }
@@ -54,6 +56,7 @@ public class PropertyKeyWriterVisitor implements IVisitor {
   }
 
   public void visit(Question question) {
+    writer.writeComment("", "Question " + question.getName(), "");
     writePropertyKey(question);
   }
 

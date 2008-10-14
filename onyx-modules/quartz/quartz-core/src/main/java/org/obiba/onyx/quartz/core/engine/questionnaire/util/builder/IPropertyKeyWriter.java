@@ -26,6 +26,12 @@ public interface IPropertyKeyWriter {
   public void write(String key, String value);
   
   /**
+   * Write property comments.
+   * @param comments
+   */
+  public void writeComment(String... comments);
+  
+  /**
    * Questionnaire properties can be divided in several blocs, for fancy user reading.
    */
   public void endBloc();
