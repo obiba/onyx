@@ -53,9 +53,9 @@ public class QuestionnaireBundleImplTest {
 
   @After
   public void tearDown() throws IOException {
-    //if(rootDirectory != null && rootDirectory.exists()) {
-    //  FileUtil.delete(rootDirectory);
-    //}
+    if(rootDirectory != null && rootDirectory.exists()) {
+      FileUtil.delete(rootDirectory);
+    }
   }
   
   @Test
