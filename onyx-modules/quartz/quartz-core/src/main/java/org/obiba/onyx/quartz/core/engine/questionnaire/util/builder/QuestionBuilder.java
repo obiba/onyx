@@ -96,6 +96,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     question.setRequired(true);
     question.setMultiple(false);
     element.addQuestion(question);
+    element = question;
 
     return this;
   }
