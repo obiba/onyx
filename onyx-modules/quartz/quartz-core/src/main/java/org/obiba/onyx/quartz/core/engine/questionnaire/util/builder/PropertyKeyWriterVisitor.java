@@ -15,6 +15,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.IWalkerVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Questionnaire visitor for building localization properties at each questionnaire element visit.
@@ -22,6 +24,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IProper
  * 
  */
 public class PropertyKeyWriterVisitor implements IWalkerVisitor {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(PropertyKeyWriterVisitor.class);
 
   private IPropertyKeyProvider propertyKeyProvider;
 
@@ -66,7 +71,8 @@ public class PropertyKeyWriterVisitor implements IWalkerVisitor {
   }
 
   public void visit(Category category) {
-    writePropertyKey(category);
+    // write category property keys only if it is a shared one
+    // this is done when visiting questionnaire
   }
 
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
@@ -104,9 +110,8 @@ public class PropertyKeyWriterVisitor implements IWalkerVisitor {
             // interpolation already written, just refer to it
             writer.write(key, "${" + interpolationKey + "}");
           } else {
-            // interpolation not written, then ignored
+            // interpolation not already written, then ignored
             writer.write(key, "");
-            propertyKeys.add(interpolationKey);
           }
         } else {
           writer.write(key, "");

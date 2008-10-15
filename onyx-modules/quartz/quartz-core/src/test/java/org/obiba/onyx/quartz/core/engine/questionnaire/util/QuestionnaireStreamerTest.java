@@ -42,7 +42,7 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
     builder.inPage("P1").withQuestion("Q1").withSharedCategories(YES, NO, DONT_KNOW);
     builder.inPage("P1").withQuestion("Q2").withCategories("1", "2").withSharedCategory(DONT_KNOW).setExportName("888");
 
-    builder.inSection("S1_1").withPage("P2").withQuestion("Q3").withSharedCategory(YES).withSharedCategories(NO, DONT_KNOW);
+    builder.inSection("S1_1").withPage("P2").withQuestion("Q3").withCategory("1").withSharedCategory(YES).withSharedCategories(NO, DONT_KNOW);
 
     builder.inSection("S1").withSection("S1_2").withPage("P3");
     builder.inPage("P3").withQuestion("Q4").withSharedCategories(YES, NO, DONT_KNOW);
@@ -91,6 +91,11 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
       Assert.assertTrue(localizationProperties.containsKey("QuestionCategory.Q1.YES.label"));
       Assert.assertEquals("${Category.YES.label}", localizationProperties.getProperty("QuestionCategory.Q1.YES.label"));
       Assert.assertTrue(localizationProperties.containsKey("OpenAnswerDefinition.SPECIFY.Right"));
+      
+      Assert.assertTrue(localizationProperties.containsKey("QuestionCategory.Q2.1.label"));
+      Assert.assertEquals("", localizationProperties.getProperty("QuestionCategory.Q2.1.label"));
+      Assert.assertTrue(localizationProperties.containsKey("QuestionCategory.Q3.1.label"));
+      Assert.assertEquals("", localizationProperties.getProperty("QuestionCategory.Q3.1.label"));
 
       Questionnaire fromDead = fromBundle(bundle);
       Assert.assertNotNull("Reloaded questionnaire is null", fromDead);
