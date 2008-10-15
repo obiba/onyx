@@ -18,10 +18,31 @@ import org.obiba.onyx.util.data.Data;
 
 public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVisitor {
 
+  //
+  // Questionnaire element properties, with their default values.
+  //
+  private List<String> questionnaireProperties = Arrays.asList("label", "description", "labelNext", "imageNext", "labelPrevious", "imagePrevious", "labelStart", "labelFinish", "labelInterrupt", "labelResume", "labelCancel");
+
+  private List<String> sectionProperties = Arrays.asList("label");
+
+  private List<String> pageProperties = Arrays.asList("label");
+
+  private List<String> questionProperties = Arrays.asList("label", "instructions", "caption", "help", "image");
+
+  private List<String> categoryProperties = Arrays.asList("label", "image");
+
+  private List<String> openAnswerDefinitionProperties = new ArrayList<String>(Arrays.asList("label", "unitLabel"));
+
+  /**
+   * The property requested for.
+   */
   private String property;
 
+  /**
+   * The properties for the visited localizable.
+   */
   private List<String> properties;
-  
+
   public List<String> getProperties(ILocalizable localizable) {
     this.property = null;
     localizable.accept(this);
@@ -34,30 +55,57 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
     return localizable.getClass().getSimpleName() + "." + localizable.getName() + "." + property;
   }
 
+  //
+  // Questionnaire element properties setters and getters.
+  // 
+  public void setQuestionnaireProperties(List<String> questionnaireProperties) {
+    this.questionnaireProperties = questionnaireProperties;
+  }
+
+  public void setSectionProperties(List<String> sectionProperties) {
+    this.sectionProperties = sectionProperties;
+  }
+
+  public void setPageProperties(List<String> pageProperties) {
+    this.pageProperties = pageProperties;
+  }
+
+  public void setQuestionProperties(List<String> questionProperties) {
+    this.questionProperties = questionProperties;
+  }
+
+  public void setCategoryProperties(List<String> categoryProperties) {
+    this.categoryProperties = categoryProperties;
+  }
+
+  public void setOpenAnswerDefinitionProperties(List<String> openAnswerDefinitionProperties) {
+    this.openAnswerDefinitionProperties = openAnswerDefinitionProperties;
+  }
+
   protected List<String> getQuestionnaireProperties() {
-    return Arrays.asList("label", "description", "labelNext", "imageNext", "labelPrevious", "imagePrevious", "labelStart", "labelFinish", "labelInterrupt", "labelResume", "labelCancel");
+    return questionnaireProperties;
   }
-  
+
   protected List<String> getSectionProperties() {
-    return Arrays.asList("label");
+    return sectionProperties;
   }
-  
+
   protected List<String> getPageProperties() {
-    return Arrays.asList("label");
+    return pageProperties;
   }
-  
+
   protected List<String> getQuestionProperties() {
-    return Arrays.asList("label", "instructions", "caption", "help", "image" );
+    return questionProperties;
   }
-  
+
   protected List<String> getCategoryProperties() {
-    return Arrays.asList("label", "image" );
+    return categoryProperties;
   }
-  
+
   protected List<String> getOpenAnswerDefinitionProperties() {
-    return new ArrayList<String>(Arrays.asList("label", "unitLabel" ));
+    return openAnswerDefinitionProperties;
   }
-  
+
   //
   // visitor methods
   //
@@ -107,22 +155,22 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
 
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
     properties = getOpenAnswerDefinitionProperties();
-    for (Data value : openAnswerDefinition.getDefaultValues()) {
+    for(Data value : openAnswerDefinition.getDefaultValues()) {
       properties.add(value.getValueAsString());
     }
-    
+
     if(property != null && !properties.contains(property)) {
       throw invalidPropertyException(openAnswerDefinition);
     }
   }
 
   /**
-   * Exception if a requested property is not part of questionnaire element allowed properties. 
+   * Exception if a requested property is not part of questionnaire element allowed properties.
    * @param localizable
    * @return
    */
   private IllegalArgumentException invalidPropertyException(ILocalizable localizable) {
     return new IllegalArgumentException("Invalid property for class " + localizable.getClass().getName() + ": " + property);
   }
-  
+
 }
