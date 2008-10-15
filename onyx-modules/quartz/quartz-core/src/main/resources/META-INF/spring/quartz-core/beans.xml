@@ -16,10 +16,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="stages">
       <list>
         <bean class="org.obiba.onyx.engine.Stage">
-          <property name="name" value="QUE1" />
+          <property name="name" value="HEALTHQUESTIONNAIRE" />
           <property name="module" value="quartz" />
-          <property name="description" value="Questionnaire Test 1" />
-          <property name="displayOrder" value="2" />
+          <property name="description" value="Health_Questionnaire" />
+          <property name="displayOrder" value="12" />
           <property name="userSessionService" ref="userSessionService" />
           <property name="stageDependencyCondition" ref="consentDependency" />
         </bean>
@@ -56,6 +56,11 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="quartzInterruptedState" parent="baseStageState"
     class="org.obiba.onyx.quartz.engine.state.QuartzInterruptedState" scope="prototype">
     <property name="questionnaireParticipantService" ref="questionnaireParticipantService" />
+  </bean>
+  
+  <bean id="activeQuestionnaireAdministrationService"
+    class="org.obiba.onyx.quartz.core.service.impl.DefaultActiveQuestionnaireAdministrationServiceImpl" scope="session">
+    <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 
 </beans>

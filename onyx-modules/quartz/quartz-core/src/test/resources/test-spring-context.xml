@@ -15,6 +15,19 @@
     <property name="userSessionService" ref="userSessionService" />
   </bean>
   
+  <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+    <property name="scopes">
+      <map>
+        <entry key="session"><bean class="org.obiba.onyx.util.testconfig.CustomScope"/></entry>
+      </map>
+    </property>
+  </bean>
+  
+  <bean id="activeQuestionnaireAdministrationService"
+    class="org.obiba.onyx.quartz.core.service.impl.DefaultActiveQuestionnaireAdministrationServiceImpl" scope="session">
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+  
   <import resource="classpath:/test-hibernate-config.xml" />
   <import resource="classpath:/test-db-config.xml" />
   <import resource="classpath:META-INF/spring/quartz-core/context.xml" />
