@@ -154,7 +154,7 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
   }
 
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
-    properties = getOpenAnswerDefinitionProperties();
+    properties = new ArrayList<String>(getOpenAnswerDefinitionProperties());
     for(Data value : openAnswerDefinition.getDefaultValues()) {
       properties.add(value.getValueAsString());
     }
