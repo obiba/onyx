@@ -92,4 +92,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <constructor-arg value="questionnaires" />
     <property name="propertyKeyProvider" ref="propertyKeyProvider" />
   </bean>
+  
+  <bean id="pageLayoutFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultPageLayoutFactory" />
+  
+  <bean id="questionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultQuestionPanelFactory" />
+  
 </beans>
