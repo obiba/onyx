@@ -4,6 +4,7 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.springframework.context.MessageSource;
 
@@ -73,4 +74,15 @@ public interface QuestionnaireBundle {
    * @return bundle message source
    */
   public MessageSource getMessageSource();
+  
+  /**
+   * Given a localizable (a questionnaire, or a questionnaire element) and a property,
+   * returns the property's key.
+   *  
+   * @param localizable a questionnaire, or any element of a questionnaire that implements
+   *        the <code>ILocalizable</code> interface
+   * @param property property name
+   * @return property key
+   */
+  public String getPropertyKey(ILocalizable localizable, String property);
 }

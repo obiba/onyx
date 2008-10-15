@@ -5,16 +5,19 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireStreamer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
+import org.obiba.onyx.util.StringReferenceCompatibleMessageFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -66,7 +69,12 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     this.propertyKeyProvider = propertyKeyProvider;
 
     // Initialize the message source.
-    messageSource = new ReloadableResourceBundleMessageSource();
+    messageSource = new ReloadableResourceBundleMessageSource() {
+      @Override
+      protected MessageFormat createMessageFormat(String msg, Locale locale) {
+        return new StringReferenceCompatibleMessageFormat((msg != null ? msg : ""), locale);
+      }      
+    };
     ((ReloadableResourceBundleMessageSource) messageSource).setBasename(getMessageSourceBasename(bundleVersionDir));
   }
 
@@ -158,6 +166,10 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     return messageSource;
   }
 
+  public String getPropertyKey(ILocalizable localizable, String property) {
+    return propertyKeyProvider.getPropertyKey(localizable, property);  
+  }
+  
   //
   // Methods
   //
