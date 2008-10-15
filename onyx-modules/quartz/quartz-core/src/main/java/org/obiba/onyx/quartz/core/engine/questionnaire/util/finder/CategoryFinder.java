@@ -14,22 +14,48 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 
+/**
+ * Class for finding {@link Category}.
+ * @author Yannick Marcon
+ *
+ */
 public class CategoryFinder extends AbstractFinderVisitor<Category> {
 
+  /**
+   * A map for storing the {@link Category} / {@link Question} association.
+   */
   Map<Category, List<Question>> questionCategories = new HashMap<Category, List<Question>>();
 
+  /**
+   * Constructor, for searching all categories with their question association.
+   * @see #getQuestionCategories()
+   * @see #getQuestionSharedCategories()
+   */
   public CategoryFinder() {
     super(null, false);
   }
   
+  /**
+   * Constructor, for searching first {@link Category} with given name.
+   * @param name
+   */
   public CategoryFinder(String name) {
     super(name);
   }
 
+  /**
+   * Constructor, for searching {@link Category} with given name.
+   * @param name
+   * @param stopAtFirst
+   */
   public CategoryFinder(String name, boolean stopAtFirst) {
     super(name, stopAtFirst);
   }
 
+  /**
+   * Get the {@link Category} / {@link Question} association.
+   * @return
+   */
   public Map<Category, List<Question>> getQuestionCategories() {
     return questionCategories;
   }

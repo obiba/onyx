@@ -34,8 +34,35 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
     return localizable.getClass().getSimpleName() + "." + localizable.getName() + "." + property;
   }
 
+  protected List<String> getQuestionnaireProperties() {
+    return Arrays.asList("label", "description", "labelNext", "imageNext", "labelPrevious", "imagePrevious", "labelStart", "labelFinish", "labelInterrupt", "labelResume", "labelCancel");
+  }
+  
+  protected List<String> getSectionProperties() {
+    return Arrays.asList("label");
+  }
+  
+  protected List<String> getPageProperties() {
+    return Arrays.asList("label");
+  }
+  
+  protected List<String> getQuestionProperties() {
+    return Arrays.asList("label", "instructions", "caption", "help", "image" );
+  }
+  
+  protected List<String> getCategoryProperties() {
+    return Arrays.asList("label", "image" );
+  }
+  
+  protected List<String> getOpenAnswerDefinitionProperties() {
+    return new ArrayList<String>(Arrays.asList("label", "unitLabel" ));
+  }
+  
+  //
+  // visitor methods
+  //
   public void visit(Questionnaire questionnaire) {
-    properties = Arrays.asList("label", "description", "labelNext", "imageNext", "labelPrevious", "imagePrevious", "labelStart", "labelFinish", "labelInterrupt", "labelResume", "labelCancel");
+    properties = getQuestionnaireProperties();
 
     if(property != null && !properties.contains(property)) {
       throw invalidPropertyException(questionnaire);
@@ -43,7 +70,7 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
   }
 
   public void visit(Section section) {
-    properties = Arrays.asList("label");
+    properties = getSectionProperties();
 
     if(property != null && !properties.contains(property)) {
       throw invalidPropertyException(section);
@@ -51,7 +78,7 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
   }
 
   public void visit(Page page) {
-    properties = Arrays.asList("label");
+    properties = getPageProperties();
 
     if(property != null && !properties.contains(property)) {
       throw invalidPropertyException(page);
@@ -59,7 +86,7 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
   }
 
   public void visit(Question question) {
-    properties = Arrays.asList("label", "instructions", "caption", "help", "image" );
+    properties = getQuestionProperties();
 
     if(property != null && !properties.contains(property)) {
       throw invalidPropertyException(question);
@@ -71,7 +98,7 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
   }
 
   public void visit(Category category) {
-    properties = Arrays.asList("label", "image" );
+    properties = getCategoryProperties();
 
     if(property != null && !properties.contains(property)) {
       throw invalidPropertyException(category);
@@ -79,7 +106,7 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
   }
 
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
-    properties = new ArrayList<String>(Arrays.asList("label", "unitLabel" ));
+    properties = getOpenAnswerDefinitionProperties();
     for (Data value : openAnswerDefinition.getDefaultValues()) {
       properties.add(value.getValueAsString());
     }
@@ -89,9 +116,13 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
     }
   }
 
+  /**
+   * Exception if a requested property is not part of questionnaire element allowed properties. 
+   * @param localizable
+   * @return
+   */
   private IllegalArgumentException invalidPropertyException(ILocalizable localizable) {
     return new IllegalArgumentException("Invalid property for class " + localizable.getClass().getName() + ": " + property);
   }
-
   
 }

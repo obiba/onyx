@@ -8,12 +8,26 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 
+/**
+ * Class for finding {@link Section}
+ * @author cag-ymarcon
+ * 
+ */
 public class SectionFinder extends AbstractFinderVisitor<Section> {
 
+  /**
+   * Constructor, for searching first {@link Section} with given name.
+   * @param name
+   */
   public SectionFinder(String name) {
     super(name);
   }
 
+  /**
+   * Constructor, for searching {@link Section} with given name.
+   * @param name
+   * @param stopAtFirst
+   */
   public SectionFinder(String name, boolean stopAtFirst) {
     super(name, stopAtFirst);
   }

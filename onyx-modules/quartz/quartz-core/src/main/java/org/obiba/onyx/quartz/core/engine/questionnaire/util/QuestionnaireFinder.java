@@ -17,6 +17,11 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.PageFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.QuestionFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.SectionFinder;
 
+/**
+ * Find elements in a {@link Questionnaire}.
+ * @author Yannick Marcon
+ *
+ */
 public class QuestionnaireFinder {
 
   private Questionnaire questionnaire;

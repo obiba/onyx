@@ -9,6 +9,11 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 
+/**
+ * Walks through the tree of {@link Questionnaire} elements, and call for a {@link IWalkerVisitor} at each node.
+ * @author Yannick Marcon
+ *
+ */
 public class QuestionnaireWalker implements IVisitor {
 
   /**
@@ -47,6 +52,9 @@ public class QuestionnaireWalker implements IVisitor {
     walk(questionnaire, true);
   }
 
+  /**
+   * Shall we continue walking through the questionnaire ?
+   */
   private boolean visiteMore() {
     return visitor.visiteMore();
   }

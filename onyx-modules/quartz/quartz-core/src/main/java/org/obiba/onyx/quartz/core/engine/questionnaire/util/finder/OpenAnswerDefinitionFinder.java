@@ -8,12 +8,26 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 
+/**
+ * Class for finding {@link OpenAnswerDefinition}.
+ * @author Yannick Marcon
+ *
+ */
 public class OpenAnswerDefinitionFinder extends AbstractFinderVisitor<OpenAnswerDefinition> {
 
+  /**
+   * Constructor, for searching first {@link OpenAnswerDefinition} with given name.
+   * @param name
+   */
   public OpenAnswerDefinitionFinder(String name) {
     super(name);
   }
 
+  /**
+   * Constructor, for searching {@link OpenAnswerDefinition} with given name.
+   * @param name
+   * @param stopAtFirst
+   */
   public OpenAnswerDefinitionFinder(String name, boolean stopAtFirst) {
     super(name, stopAtFirst);
   }
