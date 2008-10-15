@@ -53,9 +53,9 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     } catch(IllegalArgumentException e) {
     }
 
-    Section section = builder.getQuestionnaire().findSection("S1");
+    Section section = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findSection("S1");
     Assert.assertNotNull("Section not found", section);
-    section = builder.getQuestionnaire().findSection("S1_1");
+    section = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findSection("S1_1");
     Assert.assertNotNull("Section not found", section);
     Assert.assertEquals("S1", section.getParentSection().getName());
 
@@ -73,18 +73,18 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     } catch(IllegalArgumentException e) {
     }
 
-    Page page = builder.getQuestionnaire().findPage("P1");
+    Page page = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findPage("P1");
     Assert.assertNotNull(page);
     Assert.assertEquals(1, page.getQuestions().size());
-    Question question = builder.getQuestionnaire().findQuestion("Q1");
+    Question question = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q1");
     Assert.assertNotNull(question);
     Assert.assertEquals(3, question.getQuestionCategories().size());
     Assert.assertEquals(3, question.getCategories().size());
-    Category category = builder.getQuestionnaire().findCategory(DONT_KNOW);
+    Category category = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCategory(DONT_KNOW);
     Assert.assertNotNull(category);
 
     builder.inPage("P1").withQuestion("Q2").withCategories("1", "2", "3").withSharedCategory(DONT_KNOW).setExportName("888").setRepeatable(false).setSelected(true);
-    question = builder.getQuestionnaire().findQuestion("Q2");
+    question = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q2");
     Assert.assertEquals(4, question.getCategories().size());
     Assert.assertEquals(category, question.findCategory(DONT_KNOW));
     QuestionCategory qCategory = question.findQuestionCategory(DONT_KNOW);
@@ -93,8 +93,8 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     Assert.assertEquals(true, qCategory.isSelected());
 
     builder.inSection("S1_1").withPage("P2").withQuestion("Q3").withSharedCategory(YES).withSharedCategories(NO, DONT_KNOW);
-    Assert.assertEquals(2, builder.getQuestionnaire().findSection("S1_1").getPages().size());
-    Assert.assertEquals(3, builder.getQuestionnaire().findQuestion("Q3").getCategories().size());
+    Assert.assertEquals(2, QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findSection("S1_1").getPages().size());
+    Assert.assertEquals(3, QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q3").getCategories().size());
 
     builder.inSection("S1").withSection("S1_2").withPage("P3");
     builder.inPage("P3").withQuestion("Q4");
@@ -103,7 +103,7 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
       Assert.fail("Exception must be thrown if attempting to add categories with the same name in a question.");
     } catch(IllegalArgumentException e) {
     }
-    Assert.assertEquals(1, builder.getQuestionnaire().findQuestion("Q4").getCategories().size());
+    Assert.assertEquals(1, QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q4").getCategories().size());
 
     try {
       builder.inPage("P1").withQuestion("Q1");
@@ -113,7 +113,7 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
 
     builder.withSection("S2").withSection("S2_1").withPage("P4");
     builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).setOpenAnswerDefinitionAbsoluteValues(DataBuilder.buildInteger(40), DataBuilder.buildInteger(70)).setOpenAnswerDefinitionUsualValues("50", "60");
-    category = builder.getQuestionnaire().findCategory("NAME");
+    category = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCategory("NAME");
     Assert.assertNotNull(category.getOpenAnswerDefinition());
     Assert.assertEquals(DataType.INTEGER, category.getOpenAnswerDefinition().getDataType());
     Assert.assertEquals("AGE", category.getOpenAnswerDefinition().getName());
@@ -123,7 +123,7 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     Assert.assertEquals("60", category.getOpenAnswerDefinition().getUsualMaxValue().getValueAsString());
 
     builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").setOpenAnswerDefinitionFormat("[a-z,A-Z]+");
-    category = builder.getQuestionnaire().findQuestion("Q5").findCategory(OTHER_SPECIFY);
+    category = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q5").findCategory(OTHER_SPECIFY);
     Assert.assertEquals("[a-z,A-Z]+", category.getOpenAnswerDefinition().getFormat());
     Assert.assertEquals(2, category.getOpenAnswerDefinition().getDefaultValues().size());
 
@@ -141,11 +141,11 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     } catch(IllegalArgumentException e) {
     }
 
-    Assert.assertEquals(2, builder.getQuestionnaire().findCategories("1").keySet().size());
-    Assert.assertEquals(1, builder.getQuestionnaire().findCategories(YES).keySet().size());
-    Assert.assertEquals(1, builder.getQuestionnaire().findCategories(NO).keySet().size());
-    Assert.assertEquals(1, builder.getQuestionnaire().findCategories(DONT_KNOW).keySet().size());
-    Assert.assertEquals(1, builder.getQuestionnaire().findCategories(OTHER_SPECIFY).keySet().size());
+    Assert.assertEquals(2, QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCategories("1").keySet().size());
+    Assert.assertEquals(1, QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCategories(YES).keySet().size());
+    Assert.assertEquals(1, QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCategories(NO).keySet().size());
+    Assert.assertEquals(1, QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCategories(DONT_KNOW).keySet().size());
+    Assert.assertEquals(1, QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCategories(OTHER_SPECIFY).keySet().size());
 
     // System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
   }

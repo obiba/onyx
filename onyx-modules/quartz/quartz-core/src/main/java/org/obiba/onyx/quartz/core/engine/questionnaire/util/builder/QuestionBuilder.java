@@ -7,6 +7,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 
 /**
  * {@link Question} builder, given a {@link Questionnaire} and a current {@link Page}.
@@ -154,7 +155,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @return
    */
   public CategoryBuilder withSharedCategory(String name) {
-    Map<Category, List<Question>> map = questionnaire.findCategories(name);
+    Map<Category, List<Question>> map = QuestionnaireFinder.getInstance(questionnaire).findCategories(name);
     if (map.keySet().size() > 1) {
       throw invalidSharedCategoryNameUnicityException(name);
     }
@@ -164,6 +165,19 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     else {
       return CategoryBuilder.createQuestionCategory(this, map.keySet().iterator().next());
     }
+  }
+  
+  /**
+   * Look for the {@link Category} with the given name in the current {@link Questionnaire}, add it (create it if
+   * necessary) to the current {@link Question}, make it the current category.
+   * @param name
+   * @param exportName
+   * @return
+   */
+  public CategoryBuilder withSharedCategory(String name, String exportName) {
+    CategoryBuilder builder = withSharedCategory(name);
+    builder.setExportName(exportName);
+    return builder;
   }
 
   /**
@@ -187,7 +201,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @return
    */
   private boolean checkUniqueQuestionName(String name) {
-    return (questionnaire.findQuestion(name) == null);
+    return (QuestionnaireFinder.getInstance(questionnaire).findQuestion(name) == null);
   }
 
   private IllegalArgumentException invalidSharedCategoryNameUnicityException(String name) {

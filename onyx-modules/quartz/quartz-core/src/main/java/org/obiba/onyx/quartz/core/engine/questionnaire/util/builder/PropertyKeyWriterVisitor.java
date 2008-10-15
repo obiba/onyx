@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
-import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -13,6 +12,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.IWalkerVisitor;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 
 /**
@@ -20,7 +21,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IProper
  * @author Yannick Marcon
  * 
  */
-public class PropertyKeyWriterVisitor implements IVisitor {
+public class PropertyKeyWriterVisitor implements IWalkerVisitor {
 
   private IPropertyKeyProvider propertyKeyProvider;
 
@@ -42,7 +43,7 @@ public class PropertyKeyWriterVisitor implements IVisitor {
     writer.writeComment("", "Questionnaire: " + questionnaire.getName() + ", version " + questionnaire.getVersion(), "");
     writePropertyKey(questionnaire);
     writer.writeComment("", "Shared categories", "");
-    for(Category category : questionnaire.findSharedCategories()) {
+    for(Category category : QuestionnaireFinder.getInstance(questionnaire).findSharedCategories()) {
       writePropertyKey(category);
     }
   }
@@ -115,6 +116,11 @@ public class PropertyKeyWriterVisitor implements IVisitor {
       }
     }
     if(written) writer.endBloc();
+  }
+
+  public boolean visiteMore() {
+    // no stop
+    return true;
   }
 
 }

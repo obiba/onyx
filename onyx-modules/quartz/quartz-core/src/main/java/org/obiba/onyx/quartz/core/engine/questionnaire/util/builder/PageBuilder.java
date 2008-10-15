@@ -4,6 +4,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 
 /**
  * {@link Page} builder, given a {@link Questionnaire} and a current {@link Section}.
@@ -88,6 +89,6 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    * @return
    */
   private boolean checkUniquePageName(String name) {
-    return (questionnaire.findPage(name) == null);
+    return (QuestionnaireFinder.getInstance(questionnaire).findPage(name) == null);
   }
 }

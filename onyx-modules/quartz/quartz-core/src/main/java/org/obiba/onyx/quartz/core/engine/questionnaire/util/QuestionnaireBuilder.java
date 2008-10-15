@@ -9,8 +9,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.AbstractQuestionnaireElementBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IPropertyKeyWriter;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.PageBuilder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.PropertyKeyWriterVisitor;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.SectionBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.PropertiesPropertyKeyWriterImpl;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
@@ -83,7 +83,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * @throws IllegalStateException if no section can be found with this name
    */
   public SectionBuilder inSection(String name) {
-    Section section = getElement().findSection(name);
+    Section section = QuestionnaireFinder.getInstance(questionnaire).findSection(name);
     if(section == null) {
       throw invalidElementNameException(Section.class, name);
     }
@@ -97,7 +97,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * @throws IllegalStateException if no page can be found with this name
    */
   public PageBuilder inPage(String name) {
-    Page page = getElement().findPage(name);
+    Page page = QuestionnaireFinder.getInstance(questionnaire).findPage(name);
     if(page == null) {
       throw invalidElementNameException(Page.class, name);
     }
@@ -111,7 +111,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * @throws IllegalStateException if no question can be found with this name
    */
   public QuestionBuilder inQuestion(String name) {
-    Question question = getElement().findQuestion(name);
+    Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion(name);
     if(question == null) {
       throw invalidElementNameException(Question.class, name);
     }

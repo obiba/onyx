@@ -7,6 +7,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.util.data.DataType;
 
 /**
@@ -115,14 +116,24 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
     }
     return this;
   }
+  
+  /**
+   * Look for a {@link Category} with the same name and given export name in the {@link QuestionnaireBuilder. Create it if not found.
+   * @param name
+   * @return
+   */
+  public CategoryBuilder withSharedCategory(String name, String exportName) {
+    withSharedCategory(name).setExportName(exportName);
+    return this;
+  }
 
   /**
-   * Look for a {@link Category} with the same name in the {@link QuestionnaireBuilder. Create it if nt found.
+   * Look for a {@link Category} with the same name in the {@link QuestionnaireBuilder. Create it if not found.
    * @param name
    * @return
    */
   public CategoryBuilder withSharedCategory(String name) {
-    Map<Category, List<Question>> map = questionnaire.findCategories(name);
+    Map<Category, List<Question>> map = QuestionnaireFinder.getInstance(questionnaire).findCategories(name);
     if (map.keySet().size() > 1) {
       throw invalidSharedCategoryNameUnicityException(name);
     }

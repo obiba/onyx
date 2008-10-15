@@ -19,13 +19,13 @@ public class QuestionnaireWalker implements IVisitor {
   /**
    * Final visitor that performs real job at each node visit.
    */
-  private IVisitor visitor;
+  private IWalkerVisitor visitor;
 
   /**
    * Constructor, given a questionnaire visitor that will perform real operation at each node visit.
    * @param visitor
    */
-  public QuestionnaireWalker(IVisitor visitor) {
+  public QuestionnaireWalker(IWalkerVisitor visitor) {
     this.visitor = visitor;
   }
 
@@ -38,7 +38,7 @@ public class QuestionnaireWalker implements IVisitor {
     this.preOrder = preOrder;
     questionnaire.accept(this);
   }
-  
+
   /**
    * Go through the questionnaire, in a pre-order walk.
    * @param questionnaire
@@ -47,40 +47,59 @@ public class QuestionnaireWalker implements IVisitor {
     walk(questionnaire, true);
   }
 
+  private boolean visiteMore() {
+    return visitor.visiteMore();
+  }
+
   public final void visit(Questionnaire questionnaire) {
     if(preOrder) questionnaire.accept(visitor);
     for(Section section : questionnaire.getSections()) {
       section.accept(this);
+      if(!visiteMore()) break;
     }
     if(!preOrder) questionnaire.accept(visitor);
   }
 
   public final void visit(Section section) {
     if(preOrder) section.accept(visitor);
-    for(Page page : section.getPages()) {
-      page.accept(this);
+    if(visiteMore()) {
+      for(Page page : section.getPages()) {
+        page.accept(this);
+        if(!visiteMore()) break;
+      }
     }
-    for(Section sectionChild : section.getSections()) {
-      sectionChild.accept(this);
+    if(visiteMore()) {
+      for(Section sectionChild : section.getSections()) {
+        sectionChild.accept(this);
+      }
     }
     if(!preOrder) section.accept(visitor);
   }
 
   public final void visit(Page page) {
     if(preOrder) page.accept(visitor);
-    for(Question question : page.getQuestions()) {
-      question.accept(this);
+    if(visiteMore()) {
+      for(Question question : page.getQuestions()) {
+        question.accept(this);
+        if(!visiteMore()) break;
+      }
     }
     if(!preOrder) page.accept(visitor);
   }
 
   public final void visit(Question question) {
     if(preOrder) question.accept(visitor);
-    for(QuestionCategory questionCategory : question.getQuestionCategories()) {
-      questionCategory.accept(this);
+    if(visiteMore()) {
+      for(QuestionCategory questionCategory : question.getQuestionCategories()) {
+        questionCategory.accept(this);
+        if(!visiteMore()) break;
+      }
     }
-    for(Question questionChild : question.getQuestions()) {
-      questionChild.accept(this);
+    if(visiteMore()) {
+      for(Question questionChild : question.getQuestions()) {
+        questionChild.accept(this);
+        if(!visiteMore()) break;
+      }
     }
     if(!preOrder) question.accept(visitor);
   }
@@ -93,7 +112,7 @@ public class QuestionnaireWalker implements IVisitor {
 
   public final void visit(Category category) {
     if(preOrder) category.accept(visitor);
-    if(category.getOpenAnswerDefinition() != null) {
+    if(visiteMore() && category.getOpenAnswerDefinition() != null) {
       category.getOpenAnswerDefinition().accept(this);
     }
     if(!preOrder) category.accept(visitor);

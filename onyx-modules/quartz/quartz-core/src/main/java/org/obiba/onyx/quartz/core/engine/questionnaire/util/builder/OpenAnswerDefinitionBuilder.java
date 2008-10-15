@@ -3,6 +3,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -165,7 +166,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   private boolean checkUniqueOpenAnswerDefinitionName(String name) {
-    return (questionnaire.findOpenAnswerDefinition(name) == null);
+    return (QuestionnaireFinder.getInstance(questionnaire).findOpenAnswerDefinition(name) == null);
   }
 
 }
