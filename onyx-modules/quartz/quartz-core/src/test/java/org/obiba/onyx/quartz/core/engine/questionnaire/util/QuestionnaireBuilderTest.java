@@ -147,6 +147,9 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     Assert.assertEquals(1, QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCategories(DONT_KNOW).keySet().size());
     Assert.assertEquals(1, QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCategories(OTHER_SPECIFY).keySet().size());
 
+    builder.withSection("S3").withPage("P5").withQuestion("MASTER").withQuestion("SLAVE1").withSharedCategory(NO);
+    builder.inQuestion("MASTER").withQuestion("SLAVE2").withSharedCategory(NO);
+    
     // System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
   }
 
