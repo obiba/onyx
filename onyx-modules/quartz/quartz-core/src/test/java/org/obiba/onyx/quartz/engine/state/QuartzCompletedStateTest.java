@@ -10,7 +10,6 @@ import java.io.Serializable;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
-import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
