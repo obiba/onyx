@@ -18,9 +18,9 @@ public class Question implements Serializable, ILocalizable {
 
   private Page page;
 
-  private Boolean required;
+  private boolean required;
 
-  private Boolean multiple;
+  private boolean multiple;
 
   private Integer minCount;
 
@@ -62,19 +62,19 @@ public class Question implements Serializable, ILocalizable {
     this.number = number;
   }
 
-  public Boolean getRequired() {
+  public boolean isRequired() {
     return required;
   }
 
-  public void setRequired(Boolean required) {
+  public void setRequired(boolean required) {
     this.required = required;
   }
 
-  public Boolean getMultiple() {
+  public boolean isMultiple() {
     return multiple;
   }
 
-  public void setMultiple(Boolean multiple) {
+  public void setMultiple(boolean multiple) {
     this.multiple = multiple;
   }
 
@@ -144,28 +144,27 @@ public class Question implements Serializable, ILocalizable {
   public void setMaxCount(Integer maxCount) {
     this.maxCount = maxCount;
   }
-  
+
   //
   // Find methods
   //
   public Category findCategory(String name) {
-    for (Category category : getCategories()) {
-      if (category.getName().equals(name)) {
+    for(Category category : getCategories()) {
+      if(category.getName().equals(name)) {
         return category;
       }
     }
     return null;
   }
-  
+
   public QuestionCategory findQuestionCategory(String name) {
-    for (QuestionCategory qCategory : getQuestionCategories()) {
-      if (qCategory.getCategory().getName().equals(name)) {
+    for(QuestionCategory qCategory : getQuestionCategories()) {
+      if(qCategory.getCategory().getName().equals(name)) {
         return qCategory;
       }
     }
     return null;
   }
-  
 
   public void accept(IVisitor visitor) {
     visitor.visit(this);

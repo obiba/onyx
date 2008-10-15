@@ -1,33 +1,41 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
   default-autowire="no">
-  
+
   <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl">
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
-  
-  <bean id="userSessionService" class="org.obiba.onyx.core.service.impl.UserSessionServiceBeanImpl"/>
-  
-  <bean id="propertyKeyProvider" class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl" scope="prototype"/>
 
-  <bean id="baseStageState" class="org.obiba.onyx.engine.state.AbstractStageState"
-    abstract="true">
+  <bean id="userSessionService" class="org.obiba.onyx.core.service.impl.UserSessionServiceBeanImpl" />
+
+  <bean id="propertyKeyProvider"
+    class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl"
+    scope="prototype" />
+
+  <bean id="baseStageState" class="org.obiba.onyx.engine.state.AbstractStageState" abstract="true">
     <property name="userSessionService" ref="userSessionService" />
   </bean>
-  
+
   <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
     <property name="scopes">
       <map>
-        <entry key="session"><bean class="org.obiba.onyx.util.testconfig.CustomScope"/></entry>
+        <entry key="session">
+          <bean class="org.obiba.onyx.util.testconfig.CustomScope" />
+        </entry>
       </map>
     </property>
   </bean>
-  
+
   <bean id="activeQuestionnaireAdministrationService"
-    class="org.obiba.onyx.quartz.core.service.impl.DefaultActiveQuestionnaireAdministrationServiceImpl" scope="session">
+    class="org.obiba.onyx.quartz.core.service.impl.DefaultActiveQuestionnaireAdministrationServiceImpl"
+    scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
-  
+
+  <bean id="pageLayoutFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultPageLayoutFactory" />
+
+  <bean id="questionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultQuestionPanelFactory" />
+
   <import resource="classpath:/test-hibernate-config.xml" />
   <import resource="classpath:/test-db-config.xml" />
   <import resource="classpath:META-INF/spring/quartz-core/context.xml" />
