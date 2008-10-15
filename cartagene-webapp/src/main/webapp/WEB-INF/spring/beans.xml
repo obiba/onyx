@@ -85,7 +85,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <!-- <aop:scoped-proxy /> -->
   </bean>
   
-  <bean id="propertyKeyProvider" class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl" />
+  <bean id="propertyKeyProvider" class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl" scope="prototype" />
   
   <bean id="questionnaireBundleManager"
     class="org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl">
