@@ -28,8 +28,6 @@ public class MarbleInProgressState extends AbstractMarbleStageState implements I
   @Override
   public void complete(Action action) {
     log.info("Marble Stage {} is completing", super.getStage().getName());
-    // Finish current consent
-    getActiveConsentService().validate();
     castEvent(TransitionEvent.COMPLETE);
   }
 

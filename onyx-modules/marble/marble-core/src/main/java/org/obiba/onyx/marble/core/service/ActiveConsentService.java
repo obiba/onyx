@@ -1,11 +1,14 @@
 package org.obiba.onyx.marble.core.service;
 
-public interface ActiveConsentService {
+import org.obiba.onyx.marble.domain.consent.Consent;
+import org.obiba.onyx.marble.domain.consent.ConsentMode;
 
-  public Boolean getConsent();
+public interface ActiveConsentService {
   
-  public void setConsent(Boolean consent);
+  public Consent getConsent();
+
+  public void setConsent(Consent consent);
   
-  public void validate();
+  public ConsentMode getMode();
   
 }
