@@ -6,4 +6,6 @@ public interface IQuestionPanelFactory {
 
   public QuestionPanel createPanel(String id, Question question);
   
+  public String getName();
+  
 }

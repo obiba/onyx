@@ -62,5 +62,19 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     class="org.obiba.onyx.quartz.core.service.impl.DefaultActiveQuestionnaireAdministrationServiceImpl" scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
+  
+  <!-- Questionnaire UI factories -->
+  <bean id="quartz.DefaultPageLayoutFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultPageLayoutFactory" />
+  
+  <bean id="quartz.DefaultQuestionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultQuestionPanelFactory" />
+  
+  <bean id="pageLayoutFactoryRegistry" class="org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry" />
+  
+  <bean id="questionPanelFactoryRegistry" class="org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry" />
+  
+  <bean id="questionnaireUIFactoryRegistrationListener" class="org.obiba.onyx.quartz.core.wicket.layout.QuestionnaireUIFactoryRegistrationListener">
+    <property name="pageLayoutFactoryRegistry" ref="pageLayoutFactoryRegistry" />
+    <property name="questionPanelFactoryRegistry" ref="questionPanelFactoryRegistry" />
+  </bean>
 
 </beans>

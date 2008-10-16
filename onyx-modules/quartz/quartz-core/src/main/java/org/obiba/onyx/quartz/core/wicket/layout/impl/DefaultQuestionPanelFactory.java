@@ -14,7 +14,10 @@ public class DefaultQuestionPanelFactory implements IQuestionPanelFactory {
     else {
       return new SingleChoiceQuestionPanel(id, new Model(question));
     }
-    // TODO question with children
+  }
+
+  public String getName() {
+    return "quartz." + getClass().getSimpleName();
   }
 
 }

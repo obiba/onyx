@@ -10,5 +10,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 public interface IPageLayoutFactory {
 
    public PageLayout createLayout(String id, Page page);
+   
+   public String getName();
   
 }
