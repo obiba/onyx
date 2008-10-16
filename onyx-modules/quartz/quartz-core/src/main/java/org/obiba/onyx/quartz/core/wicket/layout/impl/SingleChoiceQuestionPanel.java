@@ -1,5 +1,6 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -17,12 +18,12 @@ public class SingleChoiceQuestionPanel extends QuestionPanel {
     add(new Label("label", new QuestionnaireStringResourceModel(question, "label", null)));
   }
   
-  public void onNext() {
+  public void onNext(AjaxRequestTarget target) {
     // TODO Auto-generated method stub
 
   }
 
-  public void onPrevious() {
+  public void onPrevious(AjaxRequestTarget target) {
     // TODO Auto-generated method stub
 
   }

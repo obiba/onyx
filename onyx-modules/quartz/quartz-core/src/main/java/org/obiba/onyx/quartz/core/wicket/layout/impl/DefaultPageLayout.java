@@ -3,6 +3,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -45,15 +46,15 @@ public class DefaultPageLayout extends PageLayout {
     });
   }
 
-  public void onNext() {
+  public void onNext(AjaxRequestTarget target) {
     for(QuestionPanel panel : questionPanels) {
-      panel.onNext();
+      panel.onNext(target);
     }
   }
 
-  public void onPrevious() {
+  public void onPrevious(AjaxRequestTarget target) {
     for(QuestionPanel panel : questionPanels) {
-      panel.onPrevious();
+      panel.onPrevious(target);
     }
   }
 

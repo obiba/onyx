@@ -1,5 +1,6 @@
 package org.obiba.onyx.quartz.core.wicket.layout;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
@@ -17,11 +18,11 @@ public abstract class PageLayout extends Panel {
   /**
    * Called when page is left to go to next page.
    */
-  public abstract void onNext();
+  public abstract void onNext(AjaxRequestTarget target);
   
   /**
    * Called when page is left to go to previous page.
    */
-  public abstract void onPrevious();
+  public abstract void onPrevious(AjaxRequestTarget target);
   
 }
