@@ -50,7 +50,7 @@ public class QuartzPanel extends Panel implements IEngineComponentAware {
   public QuartzPanel(String id, Stage stage) {
     super(id);
 
-    Questionnaire questionnaire = questionnaireBundleManager.getBundle(stage.getName()).getQuestionnaire();
+    final Questionnaire questionnaire = questionnaireBundleManager.getBundle(stage.getName()).getQuestionnaire();
     
     activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
     if (activeQuestionnaireAdministrationService.getLanguage() == null) setDefaultLanguage();
@@ -60,7 +60,7 @@ public class QuartzPanel extends Panel implements IEngineComponentAware {
     add(new WizardPanel("content", new Model(questionnaire)) {
       @Override
       public WizardForm createForm(String componentId) {
-        return new QuestionnaireWizardForm(componentId) {
+        return new QuestionnaireWizardForm(componentId, new Model(questionnaire)) {
 
           @Override
           public void onCancel(AjaxRequestTarget target) {

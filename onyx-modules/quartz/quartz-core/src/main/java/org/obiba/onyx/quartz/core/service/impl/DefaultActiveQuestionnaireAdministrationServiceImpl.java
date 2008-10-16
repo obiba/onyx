@@ -11,6 +11,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.service.INavigationStrategy;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -21,6 +22,8 @@ public class DefaultActiveQuestionnaireAdministrationServiceImpl extends Persist
   private QuestionnaireParticipant currentQuestionnaireParticipant;
 
   private Locale defaultLanguage;
+
+  private INavigationStrategy navigationStrategy;
   
   public Questionnaire getQuestionnaire() {
     return currentQuestionnaire;
@@ -40,6 +43,10 @@ public class DefaultActiveQuestionnaireAdministrationServiceImpl extends Persist
     return currentQuestionnaireParticipant.getLocale();
   }
 
+  public void setNavigationStrategy(INavigationStrategy navigationStrategy) {
+    this.navigationStrategy = navigationStrategy;  
+  }
+  
   public QuestionnaireParticipant start(Participant participant, Locale language) {
 
     if(currentQuestionnaireParticipant != null) throw new IllegalArgumentException("Invalid questionnaireParticipant for specified questionnaire");
@@ -70,9 +77,16 @@ public class DefaultActiveQuestionnaireAdministrationServiceImpl extends Persist
     return null;
   }
 
+  public Page getStartPage() {
+    return navigationStrategy.getPageOnStart(this);
+  }
+  
+  public Page getPreviousPage() {
+    return navigationStrategy.getPageOnPrevious(this, getCurrentPage());    
+  }
+  
   public Page getNextPage() {
-    // TODO Auto-generated method stub
-    return null;
+    return navigationStrategy.getPageOnNext(this, getCurrentPage());
   }
   
   public void setDefaultLanguage(Locale language) {

@@ -14,6 +14,10 @@ public interface ActiveQuestionnaireAdministrationService {
 
   public Page getCurrentPage();
   
+  public Page getStartPage();
+  
+  public Page getPreviousPage();
+  
   public Page getNextPage();
 
   public Locale getLanguage();

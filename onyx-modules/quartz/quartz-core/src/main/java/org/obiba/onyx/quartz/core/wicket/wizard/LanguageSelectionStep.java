@@ -41,7 +41,7 @@ public class LanguageSelectionStep extends WizardStepPanel {
 
     if(language != null) {
       activeQuestionnaireAdministrationService.start(activeInterviewService.getParticipant(), language);
-      setNextStep(questionnaireForm.setUpWizardFlow());
+      setNextStep(questionnaireForm.getFirstPageStep());
     } else {
       setNextStep(null);
     }
@@ -58,5 +58,4 @@ public class LanguageSelectionStep extends WizardStepPanel {
       target.addComponent(form.getNextLink());
     }
   }
-  
 }

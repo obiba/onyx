@@ -7,6 +7,7 @@ import java.util.List;
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 
 public class Question implements Serializable, ILocalizable {
 
@@ -80,6 +81,12 @@ public class Question implements Serializable, ILocalizable {
     this.multiple = multiple;
   }
 
+  public boolean isToBeAnswered(ActiveQuestionnaireAdministrationService service) {
+    // TODO: If the question has a condition, the question is to be answered only if the condition is
+    // satisfied.
+    return true;
+  }
+  
   public String getUIFactoryName() {
     return uIFactoryName;
   }
