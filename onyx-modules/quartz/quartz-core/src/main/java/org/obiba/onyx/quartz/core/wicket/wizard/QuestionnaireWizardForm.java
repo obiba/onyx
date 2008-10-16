@@ -18,10 +18,8 @@ public abstract class QuestionnaireWizardForm extends WizardForm {
   
   private WizardStepPanel conclusionStep;
 
-  public QuestionnaireWizardForm(String id, IModel questionnaireModel) {
+  public QuestionnaireWizardForm(String id) {
     super(id);
-
-    activeQuestionnaireAdministrationService.setQuestionnaire((Questionnaire) questionnaireModel.getObject());
 
     WizardStepPanel startStep = null;
 

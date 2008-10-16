@@ -1,5 +1,7 @@
 package org.obiba.onyx.quartz.core.wicket;
 
+import java.util.Locale;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -14,6 +16,7 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.wizard.QuestionnaireWizardForm;
 import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.StageModel;
@@ -32,6 +35,9 @@ public class QuartzPanel extends Panel implements IEngineComponentAware {
   private ActiveInterviewService activeInterviewService;
 
   @SpringBean
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+  
+  @SpringBean
   private ModuleRegistry moduleRegistry;
 
   private StageModel model;
@@ -45,13 +51,16 @@ public class QuartzPanel extends Panel implements IEngineComponentAware {
     super(id);
 
     Questionnaire questionnaire = questionnaireBundleManager.getBundle(stage.getName()).getQuestionnaire();
-    //Questionnaire questionnaire = new Questionnaire("HEALTHQUESTIONNAIRE", "1.0");
+    
+    activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
+    if (activeQuestionnaireAdministrationService.getLanguage() == null) setDefaultLanguage();
+    
     model = new StageModel(moduleRegistry, stage.getName());
 
     add(new WizardPanel("content", new Model(questionnaire)) {
       @Override
       public WizardForm createForm(String componentId) {
-        return new QuestionnaireWizardForm(componentId, getModel()) {
+        return new QuestionnaireWizardForm(componentId) {
 
           @Override
           public void onCancel(AjaxRequestTarget target) {
@@ -99,4 +108,12 @@ public class QuartzPanel extends Panel implements IEngineComponentAware {
     return feedbackPanel;
   }
 
+  private void setDefaultLanguage() {
+    Locale sessionLocale = getSession().getLocale();
+    
+    if (activeQuestionnaireAdministrationService.getQuestionnaire().getLocales().contains(sessionLocale))
+      activeQuestionnaireAdministrationService.setDefaultLanguage(sessionLocale);
+    else activeQuestionnaireAdministrationService.setDefaultLanguage(activeQuestionnaireAdministrationService.getQuestionnaire().getLocales().get(0));
+  }
+  
 }

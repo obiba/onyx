@@ -1,6 +1,5 @@
 package org.obiba.onyx.quartz.core.wicket.questionnaire;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -12,8 +11,9 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 
 public class LanguageSelectorPanel extends Panel {
 
@@ -39,13 +39,14 @@ public class LanguageSelectorPanel extends Panel {
   public LanguageSelectorPanel(String id) {
     super(id);
 
+    Questionnaire questionnaire = activeQuestionnaireAdministrationService.getQuestionnaire();
+    this.setLanguage(activeQuestionnaireAdministrationService.getLanguage());
+    
     add(new Label("participant", activeInterviewService.getParticipant().getFullName()));
     add(new Label("user", activeInterviewService.getInterview().getUser().getFullName()));
-    add(new Label("description", activeQuestionnaireAdministrationService.getQuestionnaire().getName()));
-
-    List<Locale> languages = Arrays.asList(Locale.FRENCH, Locale.ENGLISH, Locale.GERMAN);
-
-    DropDownChoice ddcLocale = new DropDownChoice("localeSelect", new PropertyModel(LanguageSelectorPanel.this, "language"), languages, new IChoiceRenderer() {
+    add(new Label("description", new QuestionnaireStringResourceModel(questionnaire, "description", null)));
+    
+    DropDownChoice ddcLocale = new DropDownChoice("localeSelect", new PropertyModel(LanguageSelectorPanel.this, "language"), questionnaire.getLocales(), new IChoiceRenderer() {
 
       private static final long serialVersionUID = -1858115721444491116L;
 
@@ -58,7 +59,7 @@ public class LanguageSelectorPanel extends Panel {
         Locale lang = (Locale) object;
         return lang.toString();
       }
-
+      
     });
     
     ddcLocale.setLabel(new StringResourceModel("Language", LanguageSelectorPanel.this, null));

@@ -7,6 +7,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.quartz.core.wicket.questionnaire.LanguageSelectorPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
@@ -28,7 +29,7 @@ public class LanguageSelectionStep extends WizardStepPanel {
     super(id);
     setOutputMarkupId(true);
 
-    add(new Label(getTitleId(), activeQuestionnaireAdministrationService.getQuestionnaire().getName()));
+    add(new Label(getTitleId(), new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "label", null)));
 
     add(selectorPanel = new LanguageSelectorPanel(getContentId()));
   }

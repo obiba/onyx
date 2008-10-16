@@ -67,7 +67,11 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     this.bundleVersionDir = bundleVersionDir;
     this.questionnaire = questionnaire;
     this.propertyKeyProvider = propertyKeyProvider;
-
+    
+    for (Locale locale : getAvailableLanguages()){
+      this.questionnaire.addLocale(locale);
+    }
+    
     // Initialize the message source.
     messageSource = new ReloadableResourceBundleMessageSource() {
       @Override

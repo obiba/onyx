@@ -20,6 +20,8 @@ public class DefaultActiveQuestionnaireAdministrationServiceImpl extends Persist
 
   private QuestionnaireParticipant currentQuestionnaireParticipant;
 
+  private Locale defaultLanguage;
+  
   public Questionnaire getQuestionnaire() {
     return currentQuestionnaire;
   }
@@ -34,7 +36,7 @@ public class DefaultActiveQuestionnaireAdministrationServiceImpl extends Persist
   }
 
   public Locale getLanguage() {
-    if(currentQuestionnaireParticipant == null) return null;
+    if(currentQuestionnaireParticipant == null) return defaultLanguage;
     return currentQuestionnaireParticipant.getLocale();
   }
 
@@ -71,6 +73,10 @@ public class DefaultActiveQuestionnaireAdministrationServiceImpl extends Persist
   public Page getNextPage() {
     // TODO Auto-generated method stub
     return null;
+  }
+  
+  public void setDefaultLanguage(Locale language) {
+    this.defaultLanguage = language;
   }
 
 }

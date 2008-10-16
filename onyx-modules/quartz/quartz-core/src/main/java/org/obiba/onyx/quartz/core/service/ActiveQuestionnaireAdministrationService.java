@@ -30,4 +30,6 @@ public interface ActiveQuestionnaireAdministrationService {
   
   public QuestionnaireParticipant start(Participant participant, Locale language);
   
+  public void setDefaultLanguage(Locale language);
+  
 }
