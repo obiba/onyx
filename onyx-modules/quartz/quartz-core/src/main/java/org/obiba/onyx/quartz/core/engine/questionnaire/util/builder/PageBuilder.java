@@ -5,6 +5,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.wicket.layout.IPageLayoutFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultPageLayoutFactory;
 
 /**
@@ -20,7 +22,7 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    * @param name
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
-  private PageBuilder(SectionBuilder sectionBuilder, String name, String uiFactoryName) {
+  private PageBuilder(SectionBuilder sectionBuilder, String name, Class<? extends IPageLayoutFactory> uiFactoryClass) {
     super(sectionBuilder.getQuestionnaire());
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
@@ -29,7 +31,11 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
       throw invalidNameUnicityException(Page.class, name);
     }
     this.element = new Page(name);
-    this.element.setUIFactoryName(uiFactoryName);
+    try {
+      this.element.setUIFactoryName(uiFactoryClass.newInstance().getName());
+    } catch(Exception e) {
+      throw invalidPageLayoutFactoryException(uiFactoryClass, e);
+    }
     this.questionnaire.addPage(element);
     sectionBuilder.getElement().addPage(element);
   }
@@ -52,9 +58,20 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
   public static PageBuilder createPage(SectionBuilder parent, String name) {
-    return new PageBuilder(parent, name, new DefaultPageLayoutFactory().getName());
+    return new PageBuilder(parent, name, DefaultPageLayoutFactory.class);
   }
 
+  /**
+   * Create a page in a {@link Section} given its name.
+   * @param parent
+   * @param name
+   * @param uiFactoryClass
+   * @return
+   */
+  public static PageBuilder createPage(SectionBuilder parent, String name, Class<? extends IPageLayoutFactory> uiFactoryClass) {
+    return new PageBuilder(parent, name, uiFactoryClass);
+  }
+  
   /**
    * Set the given {@link Page} as the current one.
    * @param questionnaire
@@ -78,12 +95,12 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
   /**
    * Add a required, non multiple, {@link Question} to current {@link Page} and make it current {@link Question}.
    * @param name
-   * @param uiFactoryName
+   * @param uiFactoryClass
    * @return
    * @see #getQuestion()
    */
-  public QuestionBuilder withQuestion(String name, String uiFactoryName) {
-    return QuestionBuilder.createQuestion(this, name, false, uiFactoryName);
+  public QuestionBuilder withQuestion(String name, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
+    return QuestionBuilder.createQuestion(this, name, false, uiFactoryClass);
   }
 
   /**
@@ -103,8 +120,8 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    * @return
    * @see #getQuestion()
    */
-  public QuestionBuilder withQuestion(String name, boolean multiple, String uiFactoryName) {
-    return QuestionBuilder.createQuestion(this, name, multiple, uiFactoryName);
+  public QuestionBuilder withQuestion(String name, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
+    return QuestionBuilder.createQuestion(this, name, multiple, uiFactoryClass);
   }
   
   /**
@@ -114,5 +131,9 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    */
   private boolean checkUniquePageName(String name) {
     return (QuestionnaireFinder.getInstance(questionnaire).findPage(name) == null);
+  }
+  
+  private IllegalArgumentException invalidPageLayoutFactoryException(Class<? extends IPageLayoutFactory> uiFactoryClass, Exception e) {
+    return new IllegalArgumentException("Unable to get page layout factory name from " + uiFactoryClass.getName(), e);
   }
 }

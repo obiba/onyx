@@ -5,6 +5,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.wicket.layout.IPageLayoutFactory;
 
 /**
  * {@link Section} builder, given a {@link Questionnaire}.
@@ -83,6 +84,16 @@ public class SectionBuilder extends AbstractQuestionnaireElementBuilder<Section>
    */
   public PageBuilder withPage(String name) {
     return PageBuilder.createPage(this, name);
+  }
+  
+  /**
+   * Add a {@link Page} to current {@link Section} and make it the current {@link Page}.
+   * @param name
+   * @return
+   * @see #getPage()
+   */
+  public PageBuilder withPage(String name, Class<? extends IPageLayoutFactory> uiFactoryClass) {
+    return PageBuilder.createPage(this, name, uiFactoryClass);
   }
 
   /**

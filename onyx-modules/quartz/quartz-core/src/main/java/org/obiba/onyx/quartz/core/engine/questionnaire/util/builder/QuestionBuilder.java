@@ -8,6 +8,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultQuestionPanelFactory;
 
 /**
@@ -24,7 +25,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @param multiple
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
-  private QuestionBuilder(PageBuilder parent, String name, boolean multiple, String uiFactoryName) {
+  private QuestionBuilder(PageBuilder parent, String name, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
     super(parent.getQuestionnaire());
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
@@ -35,7 +36,11 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     element = new Question(name);
     element.setRequired(true);
     element.setMultiple(false);
-    element.setUIFactoryName(uiFactoryName);
+    try {
+      element.setUIFactoryName(uiFactoryClass.newInstance().getName());
+    } catch(Exception e) {
+      throw invalidQuestionPanelFactoryException(uiFactoryClass, e);
+    }
     parent.getElement().addQuestion(element);
   }
 
@@ -58,7 +63,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
   public static QuestionBuilder createQuestion(PageBuilder parent, String name, boolean multiple) {
-    return createQuestion(parent, name, multiple, new DefaultQuestionPanelFactory().getName());
+    return createQuestion(parent, name, multiple, DefaultQuestionPanelFactory.class);
   }
   
   /**
@@ -69,8 +74,8 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @return
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
-  public static QuestionBuilder createQuestion(PageBuilder parent, String name, boolean multiple, String uiFactoryName) {
-    return new QuestionBuilder(parent, name, multiple, uiFactoryName);
+  public static QuestionBuilder createQuestion(PageBuilder parent, String name, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
+    return new QuestionBuilder(parent, name, multiple, uiFactoryClass);
   }
 
   /**
@@ -95,11 +100,11 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   /**
    * Add a required, non multiple, {@link Question} to current {@link Question} and make it current {@link Question}.
    * @param name
-   * @param uiFactoryName
+   * @param uiFactoryClass
    * @return
    */
-  public QuestionBuilder withQuestion(String name, String uiFactoryName) {
-    return withQuestion(name, false, uiFactoryName);
+  public QuestionBuilder withQuestion(String name, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
+    return withQuestion(name, false, uiFactoryClass);
   }
 
   /**
@@ -110,23 +115,29 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @see #getQuestion()
    */
   public QuestionBuilder withQuestion(String name, boolean multiple) {
-    return withQuestion(name, multiple, new DefaultQuestionPanelFactory().getName());
+    return withQuestion(name, multiple, DefaultQuestionPanelFactory.class);
   }
   
   /**
    * Add a required {@link Question} to current {@link Question} and make it current {@link Question}.
    * @param name
    * @param multiple
-   * @param uiFactoryName
+   * @param uiFactoryClass
    * @return
    * @see #getQuestion()
    */
-  public QuestionBuilder withQuestion(String name, boolean multiple, String uiFactoryName) {  
+  public QuestionBuilder withQuestion(String name, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {  
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
     if(!checkUniqueQuestionName(name)) {
       throw invalidNameUnicityException(Question.class, name);
+    }
+    String uiFactoryName;
+    try {
+      uiFactoryName = uiFactoryClass.newInstance().getName();
+    } catch(Exception e) {
+      throw invalidQuestionPanelFactoryException(uiFactoryClass, e);
     }
     Question question = new Question(name);
     question.setRequired(true);
@@ -244,5 +255,9 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   private IllegalArgumentException invalidSharedCategoryNameUnicityException(String name) {
     return new IllegalArgumentException("There are several categories with name: " + name);
+  }
+  
+  private IllegalArgumentException invalidQuestionPanelFactoryException(Class<? extends IQuestionPanelFactory> uiFactoryClass, Exception e) {
+    return new IllegalArgumentException("Unable to get question panel factory name from " + uiFactoryClass.getName(), e);
   }
 }
