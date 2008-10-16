@@ -6,10 +6,10 @@
         <section id="6" name="GENDER">
           <parentSection reference="3"/>
           <pages id="7">
-            <page id="8" name="P1">
+            <page id="8" name="P1" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="6"/>
               <questions id="9">
-                <question id="10" name="Q1" required="true" multiple="false">
+                <question id="10" name="Q1" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="8"/>
                   <questionCategories id="11">
                     <questionCategory id="12" repeatable="false" selected="false">
@@ -43,10 +43,10 @@
         <section id="24" name="BIRTHDATE">
           <parentSection reference="3"/>
           <pages id="25">
-            <page id="26" name="P2">
+            <page id="26" name="P2" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="24"/>
               <questions id="27">
-                <question id="28" name="Q2" required="true" multiple="false">
+                <question id="28" name="Q2" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="26"/>
                   <questionCategories id="29">
                     <questionCategory id="30" repeatable="false" selected="false">
@@ -68,10 +68,10 @@
                 </question>
               </questions>
             </page>
-            <page id="36" name="P3">
+            <page id="36" name="P3" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="24"/>
               <questions id="37">
-                <question id="38" name="Q3" required="true" multiple="false">
+                <question id="38" name="Q3" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="36"/>
                   <questionCategories id="39">
                     <questionCategory id="40" repeatable="false" selected="false">
@@ -93,10 +93,10 @@
                 </question>
               </questions>
             </page>
-            <page id="46" name="P4">
+            <page id="46" name="P4" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="24"/>
               <questions id="47">
-                <question id="48" name="Q4" required="true" multiple="false">
+                <question id="48" name="Q4" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="46"/>
                   <questionCategories id="49">
                     <questionCategory id="50" repeatable="false" selected="false">
@@ -131,10 +131,10 @@
         <section id="59" name="MARITALSTATUS">
           <parentSection reference="3"/>
           <pages id="60">
-            <page id="61" name="P5">
+            <page id="61" name="P5" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="59"/>
               <questions id="62">
-                <question id="63" name="Q5" required="true" multiple="false">
+                <question id="63" name="Q5" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="61"/>
                   <questionCategories id="64">
                     <questionCategory id="65" repeatable="false" selected="false">
@@ -176,10 +176,10 @@
         <section id="79" name="HOUSEHOLDSTATUS">
           <parentSection reference="3"/>
           <pages id="80">
-            <page id="81" name="P6">
+            <page id="81" name="P6" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="79"/>
               <questions id="82">
-                <question id="83" name="Q6" required="true" multiple="false">
+                <question id="83" name="Q6" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="81"/>
                   <questionCategories id="84">
                     <questionCategory id="85" repeatable="false" selected="false">
@@ -208,10 +208,10 @@
                 </question>
               </questions>
             </page>
-            <page id="93" name="P7">
+            <page id="93" name="P7" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="79"/>
               <questions id="94">
-                <question id="95" name="Q7" required="true" multiple="false">
+                <question id="95" name="Q7" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="93"/>
                   <questionCategories id="96">
                     <questionCategory id="97" repeatable="false" selected="false">
@@ -246,10 +246,10 @@
         <section id="106" name="SIBLING">
           <parentSection reference="3"/>
           <pages id="107">
-            <page id="108" name="P8">
+            <page id="108" name="P8" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="106"/>
               <questions id="109">
-                <question id="110" name="Q8" required="true" multiple="false">
+                <question id="110" name="Q8" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="108"/>
                   <questionCategories id="111">
                     <questionCategory id="112" repeatable="false" selected="false">
@@ -278,10 +278,10 @@
                 </question>
               </questions>
             </page>
-            <page id="120" name="P9">
+            <page id="120" name="P9" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="106"/>
               <questions id="121">
-                <question id="122" name="Q9" required="true" multiple="false">
+                <question id="122" name="Q9" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="120"/>
                   <questionCategories id="123">
                     <questionCategory id="124" repeatable="false" selected="false">
@@ -310,10 +310,10 @@
                 </question>
               </questions>
             </page>
-            <page id="132" name="P10">
+            <page id="132" name="P10" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="106"/>
               <questions id="133">
-                <question id="134" name="Q10" required="true" multiple="false">
+                <question id="134" name="Q10" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="132"/>
                   <questionCategories id="135">
                     <questionCategory id="136" repeatable="false" selected="false" exportName="0">
@@ -337,10 +337,10 @@
                 </question>
               </questions>
             </page>
-            <page id="143" name="P11">
+            <page id="143" name="P11" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="106"/>
               <questions id="144">
-                <question id="145" name="Q11" required="true" multiple="false">
+                <question id="145" name="Q11" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="143"/>
                   <questionCategories id="146">
                     <questionCategory id="147" repeatable="false" selected="false" exportName="0">
@@ -370,20 +370,20 @@
         <section id="153" name="EDUCATIONLEVEL">
           <parentSection reference="3"/>
           <pages id="154">
-            <page id="155" name="P12">
+            <page id="155" name="P12" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="153"/>
               <questions id="156">
-                <question id="157" name="Q12" required="true" multiple="false">
+                <question id="157" name="Q12" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="155"/>
                   <questionCategories id="158"/>
                   <questions id="159"/>
                 </question>
               </questions>
             </page>
-            <page id="160" name="P13">
+            <page id="160" name="P13" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="153"/>
               <questions id="161">
-                <question id="162" name="Q13" required="true" multiple="false">
+                <question id="162" name="Q13" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="160"/>
                   <questionCategories id="163">
                     <questionCategory id="164" repeatable="false" selected="false">
@@ -412,10 +412,10 @@
                 </question>
               </questions>
             </page>
-            <page id="172" name="P14">
+            <page id="172" name="P14" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="153"/>
               <questions id="173">
-                <question id="174" name="Q14" required="true" multiple="false">
+                <question id="174" name="Q14" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="172"/>
                   <questionCategories id="175">
                     <questionCategory id="176" repeatable="false" selected="false">
@@ -463,10 +463,10 @@
                 </question>
               </questions>
             </page>
-            <page id="195" name="P15">
+            <page id="195" name="P15" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="153"/>
               <questions id="196">
-                <question id="197" name="Q15" required="true" multiple="false">
+                <question id="197" name="Q15" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="195"/>
                   <questionCategories id="198">
                     <questionCategory id="199" repeatable="false" selected="false" exportName="0">
@@ -496,24 +496,24 @@
         <section id="205" name="WORKINGSTATUS">
           <parentSection reference="3"/>
           <pages id="206">
-            <page id="207" name="P16">
+            <page id="207" name="P16" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="205"/>
               <questions id="208">
-                <question id="209" name="Q16" required="true" multiple="false">
+                <question id="209" name="Q16" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="207"/>
                   <questionCategories id="210"/>
                   <questions id="211"/>
                 </question>
               </questions>
             </page>
-            <page id="212" name="P17">
+            <page id="212" name="P17" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="205"/>
               <questions id="213">
-                <question id="214" name="GLOBAL" required="true" multiple="false">
+                <question id="214" name="GLOBAL" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="212"/>
                   <questionCategories id="215"/>
                   <questions id="216">
-                    <question id="217" name="Q17" required="true" multiple="false">
+                    <question id="217" name="Q17" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="218">
                         <questionCategory id="219" repeatable="false" selected="false" exportName="0">
                           <question reference="217"/>
@@ -538,7 +538,7 @@
                       </questionCategories>
                       <questions id="226"/>
                     </question>
-                    <question id="227" name="Q18" required="true" multiple="false">
+                    <question id="227" name="Q18" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="228">
                         <questionCategory id="229" repeatable="false" selected="false" exportName="0">
                           <question reference="227"/>
@@ -563,7 +563,7 @@
                       </questionCategories>
                       <questions id="234"/>
                     </question>
-                    <question id="235" name="Q19" required="true" multiple="false">
+                    <question id="235" name="Q19" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="236">
                         <questionCategory id="237" repeatable="false" selected="false" exportName="0">
                           <question reference="235"/>
@@ -584,7 +584,7 @@
                       </questionCategories>
                       <questions id="241"/>
                     </question>
-                    <question id="242" name="Q20" required="true" multiple="false">
+                    <question id="242" name="Q20" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="243">
                         <questionCategory id="244" repeatable="false" selected="false" exportName="0">
                           <question reference="242"/>
@@ -605,7 +605,7 @@
                       </questionCategories>
                       <questions id="248"/>
                     </question>
-                    <question id="249" name="Q21" required="true" multiple="false">
+                    <question id="249" name="Q21" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="250">
                         <questionCategory id="251" repeatable="false" selected="false" exportName="0">
                           <question reference="249"/>
@@ -626,7 +626,7 @@
                       </questionCategories>
                       <questions id="255"/>
                     </question>
-                    <question id="256" name="Q22" required="true" multiple="false">
+                    <question id="256" name="Q22" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="257">
                         <questionCategory id="258" repeatable="false" selected="false" exportName="0">
                           <question reference="256"/>
@@ -647,7 +647,7 @@
                       </questionCategories>
                       <questions id="262"/>
                     </question>
-                    <question id="263" name="Q23" required="true" multiple="false">
+                    <question id="263" name="Q23" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="264">
                         <questionCategory id="265" repeatable="false" selected="false" exportName="0">
                           <question reference="263"/>
@@ -668,7 +668,7 @@
                       </questionCategories>
                       <questions id="269"/>
                     </question>
-                    <question id="270" name="Q24" required="true" multiple="false">
+                    <question id="270" name="Q24" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="271">
                         <questionCategory id="272" repeatable="false" selected="false" exportName="0">
                           <question reference="270"/>
@@ -693,10 +693,10 @@
                 </question>
               </questions>
             </page>
-            <page id="277" name="P18">
+            <page id="277" name="P18" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="205"/>
               <questions id="278">
-                <question id="279" name="Q25" required="true" multiple="false">
+                <question id="279" name="Q25" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="277"/>
                   <questionCategories id="280">
                     <questionCategory id="281" repeatable="false" selected="false">
@@ -718,10 +718,10 @@
                 </question>
               </questions>
             </page>
-            <page id="287" name="P19">
+            <page id="287" name="P19" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="205"/>
               <questions id="288">
-                <question id="289" name="Q26" required="true" multiple="false">
+                <question id="289" name="Q26" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="287"/>
                   <questionCategories id="290">
                     <questionCategory id="291" repeatable="false" selected="false">
@@ -773,10 +773,10 @@
                 </question>
               </questions>
             </page>
-            <page id="311" name="P20">
+            <page id="311" name="P20" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="205"/>
               <questions id="312">
-                <question id="313" name="Q27" required="true" multiple="false">
+                <question id="313" name="Q27" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="311"/>
                   <questionCategories id="314">
                     <questionCategory id="315" repeatable="false" selected="false">
@@ -798,10 +798,10 @@
                 </question>
               </questions>
             </page>
-            <page id="321" name="P21">
+            <page id="321" name="P21" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="205"/>
               <questions id="322">
-                <question id="323" name="Q28" required="true" multiple="false">
+                <question id="323" name="Q28" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="321"/>
                   <questionCategories id="324">
                     <questionCategory id="325" repeatable="false" selected="false" exportName="0">
@@ -825,10 +825,10 @@
                 </question>
               </questions>
             </page>
-            <page id="330" name="P22">
+            <page id="330" name="P22" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="205"/>
               <questions id="331">
-                <question id="332" name="Q29" required="true" multiple="false">
+                <question id="332" name="Q29" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="330"/>
                   <questionCategories id="333">
                     <questionCategory id="334" repeatable="false" selected="false" exportName="0">

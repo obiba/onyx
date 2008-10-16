@@ -16,6 +16,8 @@ public class Page implements Serializable, ILocalizable {
 
   private Section section;
 
+  private String uIFactoryName;
+
   private List<Question> questions;
   
   public Page(String name) {
@@ -36,6 +38,14 @@ public class Page implements Serializable, ILocalizable {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getUIFactoryName() {
+    return uIFactoryName;
+  }
+
+  public void setUIFactoryName(String factoryName) {
+    uIFactoryName = factoryName;
   }
 
   public List<Question> getQuestions() {

@@ -40,6 +40,7 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(Section.class, "name");
     xstream.alias("page", Page.class);
     xstream.useAttributeFor(Page.class, "name");
+    xstream.useAttributeFor(Page.class, "uIFactoryName");
     xstream.alias("question", Question.class);
     xstream.useAttributeFor(Question.class, "name");
     xstream.useAttributeFor(Question.class, "number");
@@ -47,6 +48,7 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(Question.class, "multiple");
     xstream.useAttributeFor(Question.class, "minCount");
     xstream.useAttributeFor(Question.class, "maxCount");
+    xstream.useAttributeFor(Question.class, "uIFactoryName");
     xstream.alias("category", Category.class);
     xstream.useAttributeFor(Category.class, "name");
     xstream.alias("questionCategory", QuestionCategory.class);

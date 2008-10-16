@@ -25,6 +25,8 @@ public class Question implements Serializable, ILocalizable {
   private Integer minCount;
 
   private Integer maxCount;
+  
+  private String uIFactoryName;
 
   private List<QuestionCategory> questionCategories;
 
@@ -76,6 +78,14 @@ public class Question implements Serializable, ILocalizable {
 
   public void setMultiple(boolean multiple) {
     this.multiple = multiple;
+  }
+
+  public String getUIFactoryName() {
+    return uIFactoryName;
+  }
+
+  public void setUIFactoryName(String factoryName) {
+    uIFactoryName = factoryName;
   }
 
   public List<QuestionCategory> getQuestionCategories() {

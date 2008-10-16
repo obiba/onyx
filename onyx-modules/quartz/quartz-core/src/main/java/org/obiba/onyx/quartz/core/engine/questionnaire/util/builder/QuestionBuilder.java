@@ -8,6 +8,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultQuestionPanelFactory;
 
 /**
  * {@link Question} builder, given a {@link Questionnaire} and a current {@link Page}.
@@ -23,7 +24,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @param multiple
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
-  private QuestionBuilder(PageBuilder parent, String name, boolean multiple) {
+  private QuestionBuilder(PageBuilder parent, String name, boolean multiple, String uiFactoryName) {
     super(parent.getQuestionnaire());
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
@@ -34,6 +35,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     element = new Question(name);
     element.setRequired(true);
     element.setMultiple(false);
+    element.setUIFactoryName(uiFactoryName);
     parent.getElement().addQuestion(element);
   }
 
@@ -56,7 +58,19 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
   public static QuestionBuilder createQuestion(PageBuilder parent, String name, boolean multiple) {
-    return new QuestionBuilder(parent, name, multiple);
+    return createQuestion(parent, name, multiple, new DefaultQuestionPanelFactory().getName());
+  }
+  
+  /**
+   * Create a {@link Question} in the given {@link Page}.
+   * @param parent
+   * @param name
+   * @param multiple
+   * @return
+   * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
+   */
+  public static QuestionBuilder createQuestion(PageBuilder parent, String name, boolean multiple, String uiFactoryName) {
+    return new QuestionBuilder(parent, name, multiple, uiFactoryName);
   }
 
   /**
@@ -77,6 +91,16 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   public QuestionBuilder withQuestion(String name) {
     return withQuestion(name, false);
   }
+  
+  /**
+   * Add a required, non multiple, {@link Question} to current {@link Question} and make it current {@link Question}.
+   * @param name
+   * @param uiFactoryName
+   * @return
+   */
+  public QuestionBuilder withQuestion(String name, String uiFactoryName) {
+    return withQuestion(name, false, uiFactoryName);
+  }
 
   /**
    * Add a required {@link Question} to current {@link Question} and make it current {@link Question}.
@@ -86,6 +110,18 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @see #getQuestion()
    */
   public QuestionBuilder withQuestion(String name, boolean multiple) {
+    return withQuestion(name, multiple, new DefaultQuestionPanelFactory().getName());
+  }
+  
+  /**
+   * Add a required {@link Question} to current {@link Question} and make it current {@link Question}.
+   * @param name
+   * @param multiple
+   * @param uiFactoryName
+   * @return
+   * @see #getQuestion()
+   */
+  public QuestionBuilder withQuestion(String name, boolean multiple, String uiFactoryName) {  
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
@@ -95,6 +131,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     Question question = new Question(name);
     question.setRequired(true);
     question.setMultiple(false);
+    question.setUIFactoryName(uiFactoryName);
     element.addQuestion(question);
     element = question;
 

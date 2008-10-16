@@ -5,6 +5,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultPageLayoutFactory;
 
 /**
  * {@link Page} builder, given a {@link Questionnaire} and a current {@link Section}.
@@ -19,7 +20,7 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    * @param name
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
-  private PageBuilder(SectionBuilder sectionBuilder, String name) {
+  private PageBuilder(SectionBuilder sectionBuilder, String name, String uiFactoryName) {
     super(sectionBuilder.getQuestionnaire());
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
@@ -28,6 +29,7 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
       throw invalidNameUnicityException(Page.class, name);
     }
     this.element = new Page(name);
+    this.element.setUIFactoryName(uiFactoryName);
     this.questionnaire.addPage(element);
     sectionBuilder.getElement().addPage(element);
   }
@@ -50,7 +52,7 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
   public static PageBuilder createPage(SectionBuilder parent, String name) {
-    return new PageBuilder(parent, name);
+    return new PageBuilder(parent, name, new DefaultPageLayoutFactory().getName());
   }
 
   /**
@@ -72,6 +74,17 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
   public QuestionBuilder withQuestion(String name) {
     return QuestionBuilder.createQuestion(this, name, false);
   }
+  
+  /**
+   * Add a required, non multiple, {@link Question} to current {@link Page} and make it current {@link Question}.
+   * @param name
+   * @param uiFactoryName
+   * @return
+   * @see #getQuestion()
+   */
+  public QuestionBuilder withQuestion(String name, String uiFactoryName) {
+    return QuestionBuilder.createQuestion(this, name, false, uiFactoryName);
+  }
 
   /**
    * Add a required, {@link Question} to current {@link Page} and make it current {@link Question}.
@@ -83,6 +96,17 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
     return QuestionBuilder.createQuestion(this, name, multiple);
   }
 
+  /**
+   * Add a required, {@link Question} to current {@link Page} and make it current {@link Question}.
+   * @param name
+   * @param uiFactoryName
+   * @return
+   * @see #getQuestion()
+   */
+  public QuestionBuilder withQuestion(String name, boolean multiple, String uiFactoryName) {
+    return QuestionBuilder.createQuestion(this, name, multiple, uiFactoryName);
+  }
+  
   /**
    * Check page name unicity.
    * @param name

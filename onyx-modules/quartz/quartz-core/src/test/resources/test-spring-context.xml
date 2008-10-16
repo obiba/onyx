@@ -32,10 +32,6 @@
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 
-  <bean id="pageLayoutFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultPageLayoutFactory" />
-
-  <bean id="questionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultQuestionPanelFactory" />
-
   <import resource="classpath:/test-hibernate-config.xml" />
   <import resource="classpath:/test-db-config.xml" />
   <import resource="classpath:META-INF/spring/quartz-core/context.xml" />
