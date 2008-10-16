@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v3.0.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package org.obiba.onyx.webapp.participant.panel;
 
 import static org.easymock.EasyMock.createMock;
@@ -84,7 +93,7 @@ public class EditParticipantPanelTest {
     p.setLastName("Tremblay");
     p.setBarcode("1234");
     p.setBirthDate(new Date());
-    p.setCity("Montréal");
+    p.setCity("Montrï¿½al");
     p.setProvince(Province.QC);
     p.setGender(Gender.MALE);
     return p;
