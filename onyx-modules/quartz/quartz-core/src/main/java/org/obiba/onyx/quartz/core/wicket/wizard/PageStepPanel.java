@@ -4,6 +4,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.wicket.layout.IPageLayoutFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
+import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
@@ -19,8 +21,8 @@ public class PageStepPanel extends WizardStepPanel {
   //
 
   @SpringBean
-  private IPageLayoutFactory pageLayoutFactory;
-  
+  private PageLayoutFactoryRegistry pageLayoutFactoryRegistry;
+    
   private Page questionnairePage;
   
   //
@@ -33,6 +35,9 @@ public class PageStepPanel extends WizardStepPanel {
     setOutputMarkupId(true);
 
     this.questionnairePage = questionnairePage;
+    
+    // Get the configured page layout factory.
+    IPageLayoutFactory pageLayoutFactory = pageLayoutFactoryRegistry.getFactory(questionnairePage.getUIFactoryName());
     
     // Create the page layout component, using the configured factory.
     add(pageLayoutFactory.createLayout("pageLayout", questionnairePage));
