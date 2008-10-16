@@ -1,12 +1,11 @@
-/*******************************************************************************
+/***********************************************************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
  * 
- * This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0.
+ * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
+ **********************************************************************************************************************/
 package org.obiba.onyx.wicket.data;
 
 import java.util.List;
@@ -76,7 +75,7 @@ public class DataField extends Panel {
   public DataField(String id, IModel model, final DataType dataType, IModel choices, String unit) {
     this(id, model, dataType, choices, null, unit);
   }
-  
+
   /**
    * Select field from given choices.
    * @param id
@@ -107,7 +106,7 @@ public class DataField extends Panel {
   public DataField(String id, IModel model, final DataType dataType, List choices, String unit) {
     this(id, model, dataType, choices, null, unit);
   }
-  
+
   /**
    * Select field from given choices.
    * @param id
@@ -126,11 +125,11 @@ public class DataField extends Panel {
 
     addUnitLabel(unit);
   }
-  
+
   private void addUnitLabel(String unit) {
     add(new Label("unit", (unit == null ? "" : unit)));
   }
-  
+
   /**
    * Set the model that identifies the underlying field in error messages.
    * @param labelModel
@@ -138,11 +137,22 @@ public class DataField extends Panel {
   public void setLabel(IModel labelModel) {
     input.getField().setLabel(labelModel);
   }
-  
+
+  /**
+   * Modify underlying field enability.
+   * @param enabled
+   */
   public void setFieldEnabled(boolean enabled) {
     input.getField().setEnabled(enabled);
   }
-  
+
+  /**
+   * Get for munderlying filed if it is enabled.
+   * @return
+   */
+  public boolean isFieldEnabled() {
+    return input.getField().isEnabled();
+  }
 
   /**
    * Add a behavior to underlying field.
@@ -164,7 +174,7 @@ public class DataField extends Panel {
     input.getField().add(validator);
     return this;
   }
-  
+
   /**
    * Set the underlying input field as required.
    * @param required
@@ -266,20 +276,18 @@ public class DataField extends Panel {
     @SuppressWarnings("unchecked")
     public SelectFragment(String id, IModel model, final DataType dataType, List choices, IChoiceRenderer renderer) {
       super(id, "selectFragment", DataField.this);
-      
-      if (renderer == null)
-        field = new DropDownChoice("select", model, choices);
+
+      if(renderer == null) field = new DropDownChoice("select", model, choices);
       else
         field = new DropDownChoice("select", model, choices, renderer);
-      
+
       add(field);
     }
-    
+
     public SelectFragment(String id, IModel model, final DataType dataType, IModel choices, IChoiceRenderer renderer) {
       super(id, "selectFragment", DataField.this);
-      
-      if (renderer == null)
-        field = new DropDownChoice("select", model, choices);
+
+      if(renderer == null) field = new DropDownChoice("select", model, choices);
       else
         field = new DropDownChoice("select", model, choices, renderer);
       add(field);
