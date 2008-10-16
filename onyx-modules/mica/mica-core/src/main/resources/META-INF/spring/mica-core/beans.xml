@@ -1,0 +1,68 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+  <tx:annotation-driven transaction-manager="transactionManager" />
+  
+  <!--
+  <bean name="consentDependency" class="org.obiba.onyx.mica.engine.state.MicaStageDependencyCondition">
+    <property name="moduleRegistry" ref="moduleRegistry" />
+	<property name="moduleName" value="marble" />
+  </bean>
+  -->
+  
+  <bean name="consentDependency" class="org.obiba.onyx.engine.ConsentStageDependencyCondition">
+    <property name="stageName" value="CON" />
+  </bean>
+  
+  <bean name="jadeDependency" class="org.obiba.onyx.mica.engine.state.MicaStageDependencyCondition">
+	<property name="moduleRegistry" ref="moduleRegistry" />
+	<property name="moduleName" value="jade" />
+  </bean>
+ 
+  <bean id="micaOnyxModule" class="org.obiba.onyx.mica.engine.MicaModule">
+    <property name="activeInterviewService" ref="activeInterviewService" />
+     <property name="stages">
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="SUM" />
+          <property name="module" value="mica"/>
+          <property name="description" value="Conclusion" />
+          <property name="displayOrder" value="12" />
+          <property name="userSessionService" ref="userSessionService" />
+          <property name="stageDependencyCondition">
+	        <bean class="org.obiba.onyx.engine.MultipleModuleDependencyCondition">
+              <property name="leftModuleDependencyCondition" ref="consentDependency" />
+              <property name="operator" value="AND" />
+              <property name="rightModuleDependencyCondition" ref="jadeDependency" />
+         	</bean>
+	      </property>
+        </bean>
+    </property>
+  </bean>
+  
+  <bean id="micaWaitingState" parent="baseStageState" class="org.obiba.onyx.mica.engine.state.MicaWaitingState"
+    scope="prototype">
+  </bean>
+
+  <bean id="micaReadyState" parent="baseStageState" class="org.obiba.onyx.mica.engine.state.MicaReadyState"
+    scope="prototype">
+  </bean>
+
+  <bean id="micaInProgressState" parent="baseStageState" class="org.obiba.onyx.mica.engine.state.MicaInProgressState"
+    scope="prototype">
+    <property name="activeConclusionService" ref="activeConclusionService" />
+  </bean>
+
+  <bean id="micaCompletedState" parent="baseStageState" class="org.obiba.onyx.mica.engine.state.MicaCompletedState"
+    scope="prototype">
+   <property name="activeConclusionService" ref="activeConclusionService" />
+  </bean>
+
+  <bean id="activeConclusionService" class="org.obiba.onyx.mica.core.service.impl.DefaultActiveConclusionServiceImpl"
+    scope="session">
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+</beans>
