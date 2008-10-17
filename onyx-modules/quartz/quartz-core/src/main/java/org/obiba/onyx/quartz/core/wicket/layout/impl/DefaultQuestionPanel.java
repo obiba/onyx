@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.CheckGroup;
@@ -82,7 +83,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
         radioLabel.add(radioInput);
         radioLabel.add(new Label("label", radioInput.radio.getLabel()).setRenderBodyOnly(true));
 
-        final OpenAnswerDefinitionPanel openField = createOpenAnswerDefinitionPanel(radioLabel, questionCategory);
+        final OpenAnswerDefinitionPanel openField = createOpenAnswerDefinitionPanel(item, questionCategory);
 
         radioInput.radio.add(new AjaxEventBehavior("onchange") {
 
@@ -133,7 +134,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
         checkBoxLabel.add(checkBoxInput);
         checkBoxLabel.add(new Label("label", checkBoxInput.checkbox.getLabel()).setRenderBodyOnly(true));
 
-        final OpenAnswerDefinitionPanel openField = createOpenAnswerDefinitionPanel(checkBoxLabel, questionCategory);
+        final OpenAnswerDefinitionPanel openField = createOpenAnswerDefinitionPanel(item, questionCategory);
 
         checkBoxInput.checkbox.add(new AjaxEventBehavior("onchange") {
 
@@ -166,7 +167,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
     checkGroup.add(checkList);
   }
 
-  private OpenAnswerDefinitionPanel createOpenAnswerDefinitionPanel(FormComponentLabel parent, QuestionCategory questionCategory) {
+  private OpenAnswerDefinitionPanel createOpenAnswerDefinitionPanel(WebMarkupContainer parent, QuestionCategory questionCategory) {
     OpenAnswerDefinitionPanel openField;
 
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {

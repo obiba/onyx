@@ -8,6 +8,9 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
+import org.apache.wicket.ajax.AjaxEventBehavior;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -17,10 +20,14 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.data.DataField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OpenAnswerDefinitionPanel extends Panel {
 
   private static final long serialVersionUID = 8950481253772691811L;
+  
+  private static final Logger log = LoggerFactory.getLogger(OpenAnswerDefinitionPanel.class);
   
   private DataField openField;
   
@@ -33,8 +40,13 @@ public class OpenAnswerDefinitionPanel extends Panel {
   public OpenAnswerDefinitionPanel(String id, IModel questionCategoryModel) {
     super(id, questionCategoryModel);
     
+    setOutputMarkupId(true);
+    
     QuestionCategory questionCategory = (QuestionCategory)questionCategoryModel.getObject();
     final OpenAnswerDefinition openAnswerDefinition = questionCategory.getCategory().getOpenAnswerDefinition();
+    
+    add(new Label("label", new QuestionnaireStringResourceModel(openAnswerDefinition, "label", null)));
+    
     if(openAnswerDefinition.getDefaultValues().size() > 1) {
       openField = new DataField("open", new Model(), openAnswerDefinition.getDataType(), openAnswerDefinition.getDefaultValues(), new IChoiceRenderer() {
 
@@ -57,6 +69,14 @@ public class OpenAnswerDefinitionPanel extends Panel {
     
     add(openField);
     
+    openField.add(new AjaxEventBehavior("onblur") {
+
+      @Override
+      protected void onEvent(AjaxRequestTarget target) {
+        log.info("openField.onblur=");
+      }
+      
+    });
   }
   
   public void setFieldEnabled(boolean enabled) {
