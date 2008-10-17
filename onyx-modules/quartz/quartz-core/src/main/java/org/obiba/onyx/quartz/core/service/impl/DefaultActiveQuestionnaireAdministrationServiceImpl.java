@@ -70,24 +70,23 @@ public class DefaultActiveQuestionnaireAdministrationServiceImpl extends Persist
     return currentQuestionnaireParticipant;
   }
 
-  public void setCurrentPage(Page page) {
-    currentPage = page;
-  }
-
   public Page getCurrentPage() {
     return currentPage;
   }
 
-  public Page getStartPage() {
-    return navigationStrategy.getPageOnStart(this);
+  public Page startPage() {
+    currentPage = navigationStrategy.getPageOnStart(this);
+    return currentPage;
   }
 
-  public Page getPreviousPage() {
-    return navigationStrategy.getPageOnPrevious(this, getCurrentPage());
+  public Page previousPage() {
+    currentPage = navigationStrategy.getPageOnPrevious(this, getCurrentPage());
+    return currentPage;
   }
 
-  public Page getNextPage() {
-    return navigationStrategy.getPageOnNext(this, getCurrentPage());
+  public Page nextPage() {
+    currentPage = navigationStrategy.getPageOnNext(this, getCurrentPage());
+    return currentPage;
   }
 
   public void setDefaultLanguage(Locale language) {

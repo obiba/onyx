@@ -15,7 +15,6 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -24,31 +23,33 @@ import org.obiba.onyx.util.data.Data;
 
 public interface ActiveQuestionnaireAdministrationService {
 
-  public void setCurrentPage(Page page);
-
   /**
-   * Get the current {@link Page}.
-   * @return
+   * Returns the current questionnaire page.
+   * 
+   * @return current page
    */
   public Page getCurrentPage();
 
   /**
-   * Get the start {@link Page}.
-   * @return
+   * Positions the questionnaire at the start page.
+   * 
+   * @return new current page (start page)
    */
-  public Page getStartPage();
+  public Page startPage();
 
   /**
-   * Get the {@link Page} previous to current {@link Page}.
-   * @return
+   * Moves back to the previous page of the questionnaire.
+   * 
+   * @return new current page (previous page)
    */
-  public Page getPreviousPage();
+  public Page previousPage();
 
   /**
-   * Get the {@link Page} next current {@link Page} (resolving {@link Condition}).
-   * @return
+   * Advances to the next page of the questionnaire.
+   * 
+   * @return new current page (next page)
    */
-  public Page getNextPage();
+  public Page nextPage();
 
   /**
    * Get the language chosen for the {@link Questionnaire}.
