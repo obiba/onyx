@@ -79,7 +79,7 @@ public class QuestionnaireBundleImplTest {
     bundle.setLanguage(enLocale, enLanguage);
 
     // Verify that the language file was created.
-    File enLanguageFile = new File(bundleVersionDir, "questionnaire_" + enLocale + ".properties");
+    File enLanguageFile = new File(bundleVersionDir, "language_" + enLocale + ".properties");
     Assert.assertTrue(enLanguageFile.isFile());
   }
 

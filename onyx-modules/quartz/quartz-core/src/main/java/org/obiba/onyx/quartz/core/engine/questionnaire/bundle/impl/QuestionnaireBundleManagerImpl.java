@@ -112,7 +112,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     File bundleVersionDir = new File(new File(rootDir, questionnaire.getName()), questionnaire.getVersion());
 
     // Create the bundle object.
-    QuestionnaireBundle bundle = new QuestionnaireBundleImpl(bundleVersionDir, questionnaire, propertyKeyProvider);
+    QuestionnaireBundle bundle = new QuestionnaireBundleImpl(resourceLoader, bundleVersionDir, questionnaire, propertyKeyProvider);
 
     // Serialize it.
     serializeBundle(bundle);
@@ -276,7 +276,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     }
 
     // Create the bundle.
-    QuestionnaireBundle bundle = new QuestionnaireBundleImpl(bundleVersionDir, questionnaire, propertyKeyProvider);
+    QuestionnaireBundle bundle = new QuestionnaireBundleImpl(resourceLoader, bundleVersionDir, questionnaire, propertyKeyProvider);
 
     return bundle;
   }

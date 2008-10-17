@@ -13,12 +13,12 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.wicket.layout.IPageLayoutFactory;
-import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
+import org.springframework.beans.factory.InitializingBean;
 
-public class PageStepPanel extends WizardStepPanel {
+public class PageStepPanel extends WizardStepPanel implements InitializingBean {
   //
   // Constants
   //
@@ -31,23 +31,29 @@ public class PageStepPanel extends WizardStepPanel {
 
   @SpringBean
   private PageLayoutFactoryRegistry pageLayoutFactoryRegistry;
-    
+
   private Page questionnairePage;
-  
+
   //
   // Constructors
   //
 
   public PageStepPanel(String id, Page questionnairePage) {
     super(id);
-    
+
     setOutputMarkupId(true);
 
     this.questionnairePage = questionnairePage;
-    
+  }
+
+  //
+  // InitializingBean Methods
+  //
+
+  public void afterPropertiesSet() {
     // Get the configured page layout factory.
     IPageLayoutFactory pageLayoutFactory = pageLayoutFactoryRegistry.getFactory(questionnairePage.getUIFactoryName());
-    
+
     // Create the page layout component, using the configured factory.
     add(pageLayoutFactory.createLayout("pageLayout", questionnairePage));
   }
@@ -70,21 +76,21 @@ public class PageStepPanel extends WizardStepPanel {
 
   @Override
   public void onStepOutPrevious(WizardForm form, AjaxRequestTarget target) {
-    QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm)form;
+    QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
     setPreviousStep(questionnaireWizardForm.getPreviousStep(this));
   }
-  
+
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
-    QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm)form;
+    QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
     setNextStep(questionnaireWizardForm.getNextStep(this));
   }
-  
+
   //
   // Methods
   //
-  
+
   public Page getQuestionnairePage() {
-    return questionnairePage; 
+    return questionnairePage;
   }
 }

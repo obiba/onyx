@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.io.ResourceLoader;
 
 public class QuestionnaireBundleImpl implements QuestionnaireBundle {
   
@@ -38,7 +39,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
   // Constants
   //
 
-  public static final String LANGUAGE_FILE_BASENAME = "questionnaire";
+  public static final String LANGUAGE_FILE_BASENAME = "language";
 
   public static final String LANGUAGE_FILE_EXTENSION = ".properties";
 
@@ -60,7 +61,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
   // Constructors
   //
 
-  public QuestionnaireBundleImpl(File bundleVersionDir, Questionnaire questionnaire, IPropertyKeyProvider propertyKeyProvider) {
+  public QuestionnaireBundleImpl(ResourceLoader resourceLoader, File bundleVersionDir, Questionnaire questionnaire, IPropertyKeyProvider propertyKeyProvider) {
     if(bundleVersionDir == null) {
       throw new IllegalArgumentException("Null bundle version directory");
     }
@@ -77,10 +78,6 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     this.questionnaire = questionnaire;
     this.propertyKeyProvider = propertyKeyProvider;
     
-    for (Locale locale : getAvailableLanguages()){
-      this.questionnaire.addLocale(locale);
-    }
-    
     // Initialize the message source.
     messageSource = new ReloadableResourceBundleMessageSource() {
       @Override
@@ -88,7 +85,15 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
         return new StringReferenceCompatibleMessageFormat((msg != null ? msg : ""), locale);
       }      
     };
-    ((ReloadableResourceBundleMessageSource) messageSource).setBasename(getMessageSourceBasename(bundleVersionDir));
+    ((ReloadableResourceBundleMessageSource)messageSource).setBasename(getMessageSourceBasename(bundleVersionDir));
+    
+    if (resourceLoader != null) {
+      ((ReloadableResourceBundleMessageSource)messageSource).setResourceLoader(resourceLoader);
+    }
+    
+    for (Locale locale : getAvailableLanguages()){
+      this.questionnaire.addLocale(locale);
+    }
   }
 
   //
@@ -107,7 +112,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     FileOutputStream fos = null;
 
     try {
-      QuestionnaireStreamer.storeLanguage(getQuestionnaire(), locale, language, propertyKeyProvider, fos = new FileOutputStream(new File(bundleVersionDir, "questionnaire_" + locale + LANGUAGE_FILE_EXTENSION)));
+      QuestionnaireStreamer.storeLanguage(getQuestionnaire(), locale, language, propertyKeyProvider, fos = new FileOutputStream(new File(bundleVersionDir, LANGUAGE_FILE_BASENAME + '_' + locale + LANGUAGE_FILE_EXTENSION)));
     } catch(IOException ex) {
       log.error("Failed to store language file", ex);
     } finally {
@@ -124,7 +129,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
   public Properties getLanguage(Locale locale) {
     Properties language = null;
 
-    File languageFile = new File(bundleVersionDir, "questionnaire_" + locale + LANGUAGE_FILE_EXTENSION);
+    File languageFile = new File(bundleVersionDir, LANGUAGE_FILE_BASENAME + '_' + locale + LANGUAGE_FILE_EXTENSION);
 
     if(languageFile.exists()) {
       language = new Properties();
