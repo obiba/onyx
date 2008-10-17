@@ -51,8 +51,8 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
   }
 
   /**
-   * Returns the earliest page, after the current page, containing at least one (answerable) question that has not been
-   * answered.
+   * Returns the earliest page, after the current page, containing either no questions (i.e., an informational page) or
+   * at least one (answerable) question that has not been answered.
    * 
    * In effect, this method skips over pages with no questions to be answered.
    * 
@@ -72,8 +72,9 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
     for(int i = currentPageIndex + 1; i < pages.size(); i++) {
       Page page = pages.get(i);
 
-      // TODO: Uncomment true if-condition when required NavigationStrategySupport method has been implemented.
-      if(true) {// NavigationStrategySupport.hasUnansweredQuestion(service, page)) {
+      // TODO: Replace or-condition with commented condition when required NavigationStrategySupport method has been
+      // implemented (as well as underlying service methods).
+      if(page.getQuestions().isEmpty() || true) {// NavigationStrategySupport.hasUnansweredQuestion(service, page)) {
         nextPage = page;
         break;
       }
