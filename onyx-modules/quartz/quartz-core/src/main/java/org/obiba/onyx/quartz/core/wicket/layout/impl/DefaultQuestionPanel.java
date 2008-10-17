@@ -58,7 +58,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
     add(new Label("instructions", new QuestionnaireStringResourceModel(question, "instructions", null)));
     add(new Label("caption", new QuestionnaireStringResourceModel(question, "caption", null)));
 
-    if(question.isMultiple()) {
+    if(!question.isMultiple()) {
       addRadioGroup(question);
     } else {
       addCheckBoxGroup(question);

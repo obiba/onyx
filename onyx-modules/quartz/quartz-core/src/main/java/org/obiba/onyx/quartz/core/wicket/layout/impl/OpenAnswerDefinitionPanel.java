@@ -55,6 +55,8 @@ public class OpenAnswerDefinitionPanel extends Panel {
       openField = new DataField("open", new Model(), openAnswerDefinition.getDataType(), (String) new QuestionnaireStringResourceModel(openAnswerDefinition, "unitLabel", null).getObject());
     }
     
+    add(openField);
+    
   }
   
   public void setFieldEnabled(boolean enabled) {
