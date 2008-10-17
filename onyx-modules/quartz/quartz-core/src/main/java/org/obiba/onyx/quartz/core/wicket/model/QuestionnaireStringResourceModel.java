@@ -12,7 +12,8 @@ package org.obiba.onyx.quartz.core.wicket.model;
 import java.util.Locale;
 
 import org.apache.wicket.Application;
-import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.WicketRuntimeException;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.SpringWebApplication;
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
@@ -22,7 +23,7 @@ import org.obiba.onyx.util.StringReferenceCompatibleMessageFormat;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 
-public class QuestionnaireStringResourceModel extends AbstractReadOnlyModel {
+public class QuestionnaireStringResourceModel extends LoadableDetachableModel {
 
   //
   // Constants
@@ -35,6 +36,8 @@ public class QuestionnaireStringResourceModel extends AbstractReadOnlyModel {
   //
   // Instance Variables
   //
+
+  private ApplicationContext context;
 
   private ILocalizable localizable;
 
@@ -58,13 +61,19 @@ public class QuestionnaireStringResourceModel extends AbstractReadOnlyModel {
   }
 
   //
-  // AbstractReadOnlyModel Methods
+  // LoadableDetachableModel Methods
   //
 
   @Override
-  public Object getObject() {
+  protected Object load() {
     // Get the Spring application context.
-    ApplicationContext context = ((SpringWebApplication) Application.get()).getSpringContextLocator().getSpringContext();
+    if(context == null) {
+      if(Application.get() instanceof SpringWebApplication) {
+        context = ((SpringWebApplication) Application.get()).getSpringContextLocator().getSpringContext();
+      } else {
+        throw new WicketRuntimeException("Cannot load QuestionnaireStringResourceModel's object (not running within a SpringWebApplication)");
+      }
+    }
 
     // From the context, get the services required to resolve the string resource.
     ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService = (ActiveQuestionnaireAdministrationService) context.getBean("activeQuestionnaireAdministrationService");
