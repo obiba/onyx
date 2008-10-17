@@ -126,4 +126,9 @@ public interface ActiveQuestionnaireAdministrationService {
    */
   public void deleteAnswer(QuestionCategory questionCategory);
 
+  /**
+   * Clean active service when questionnaire is interrupted or canceled
+   */
+  public void stopCurrentQuestionnaire();
+  
 }

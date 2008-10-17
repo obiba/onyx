@@ -22,7 +22,7 @@ public interface QuestionnaireParticipantService {
    * @param questionnaireName
    * @return
    */
-  public QuestionnaireParticipant getLastQuestionnaireParticipant(Participant participant, String questionnaireName);
+  public QuestionnaireParticipant getQuestionnaireParticipant(Participant participant, String questionnaireName);
   
   /**
    * Delete specified questionnaireParticipany

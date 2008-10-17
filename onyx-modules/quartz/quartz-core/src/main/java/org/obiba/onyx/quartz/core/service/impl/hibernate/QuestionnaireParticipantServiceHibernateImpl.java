@@ -1,18 +1,16 @@
-/*******************************************************************************
+/***********************************************************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
  * 
- * This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0.
+ * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
+ **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.service.impl.hibernate;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.hibernate.AssociationCriteria;
 import org.obiba.core.service.impl.hibernate.AssociationCriteria.Operation;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -33,7 +31,7 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
     return factory.getCurrentSession();
   }
 
-  public QuestionnaireParticipant getLastQuestionnaireParticipant(Participant participant, String questionnaireName) {
+  public QuestionnaireParticipant getQuestionnaireParticipant(Participant participant, String questionnaireName) {
     Criteria criteria = AssociationCriteria.create(QuestionnaireParticipant.class, getSession()).add("questionnaireName", Operation.eq, questionnaireName).add("participant", Operation.eq, participant).getCriteria();
 
     return (QuestionnaireParticipant) criteria.setMaxResults(1).uniqueResult();

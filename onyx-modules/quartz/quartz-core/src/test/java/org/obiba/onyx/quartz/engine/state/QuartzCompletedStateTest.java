@@ -1,12 +1,11 @@
-/*******************************************************************************
+/***********************************************************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
  * 
- * This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0.
+ * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
+ **********************************************************************************************************************/
 package org.obiba.onyx.quartz.engine.state;
 
 import static org.easymock.EasyMock.createMock;
@@ -26,15 +25,18 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.ITransitionEventSink;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
 
 public class QuartzCompletedStateTest {
-  
+
   private ITransitionEventSink eventSinkMock;
 
   private QuestionnaireParticipantService questionnaireParticipantServiceMock;
 
   private ActiveInterviewService activeInterviewServiceMock;
+
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationServiceMock;
 
   private QuartzCompletedState completedState;
 
@@ -47,6 +49,7 @@ public class QuartzCompletedStateTest {
     eventSinkMock = createMock(ITransitionEventSink.class);
     questionnaireParticipantServiceMock = createMock(QuestionnaireParticipantService.class);
     activeInterviewServiceMock = createMock(ActiveInterviewService.class);
+    activeQuestionnaireAdministrationServiceMock = createMock(ActiveQuestionnaireAdministrationService.class);
   }
 
   @Test
@@ -62,7 +65,8 @@ public class QuartzCompletedStateTest {
     setCompletedState();
 
     expect(activeInterviewServiceMock.getParticipant()).andReturn(new Participant());
-    expect(questionnaireParticipantServiceMock.getLastQuestionnaireParticipant((Participant) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new QuestionnaireParticipant());
+    activeQuestionnaireAdministrationServiceMock.stopCurrentQuestionnaire();
+    expect(questionnaireParticipantServiceMock.getQuestionnaireParticipant((Participant) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new QuestionnaireParticipant());
     questionnaireParticipantServiceMock.deleteQuestionnaireParticipant((Serializable) EasyMock.anyObject());
     eventSinkMock.castEvent(TransitionEvent.CANCEL);
 
@@ -71,12 +75,14 @@ public class QuartzCompletedStateTest {
     replay(eventSinkMock);
     replay(activeInterviewServiceMock);
     replay(questionnaireParticipantServiceMock);
+    replay(activeQuestionnaireAdministrationServiceMock);
 
     completedState.stop(completeAction);
 
     verify(eventSinkMock);
     verify(activeInterviewServiceMock);
     verify(questionnaireParticipantServiceMock);
+    verify(activeQuestionnaireAdministrationServiceMock);
   }
 
   @Test
@@ -92,7 +98,8 @@ public class QuartzCompletedStateTest {
     setCompletedState();
 
     expect(activeInterviewServiceMock.getParticipant()).andReturn(new Participant());
-    expect(questionnaireParticipantServiceMock.getLastQuestionnaireParticipant((Participant) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new QuestionnaireParticipant());
+    activeQuestionnaireAdministrationServiceMock.stopCurrentQuestionnaire();
+    expect(questionnaireParticipantServiceMock.getQuestionnaireParticipant((Participant) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new QuestionnaireParticipant());
     questionnaireParticipantServiceMock.deleteQuestionnaireParticipant((Serializable) EasyMock.anyObject());
     eventSinkMock.castEvent(TransitionEvent.INVALID);
 
@@ -101,42 +108,48 @@ public class QuartzCompletedStateTest {
     replay(eventSinkMock);
     replay(activeInterviewServiceMock);
     replay(questionnaireParticipantServiceMock);
+    replay(activeQuestionnaireAdministrationServiceMock);
 
     completedState.stop(completeAction);
 
     verify(eventSinkMock);
     verify(activeInterviewServiceMock);
     verify(questionnaireParticipantServiceMock);
+    verify(activeQuestionnaireAdministrationServiceMock);
   }
 
   @Test
   public void testQuestionnaireParticipantDeleteWhenNotApplicable() {
-    
+
     completedState = new QuartzCompletedState();
     setCompletedState();
-    
+
     expect(activeInterviewServiceMock.getParticipant()).andReturn(new Participant());
-    expect(questionnaireParticipantServiceMock.getLastQuestionnaireParticipant((Participant) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new QuestionnaireParticipant());
+    activeQuestionnaireAdministrationServiceMock.stopCurrentQuestionnaire();
+    expect(questionnaireParticipantServiceMock.getQuestionnaireParticipant((Participant) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new QuestionnaireParticipant());
     questionnaireParticipantServiceMock.deleteQuestionnaireParticipant((Serializable) EasyMock.anyObject());
-    
+
     replay(activeInterviewServiceMock);
     replay(questionnaireParticipantServiceMock);
+    replay(activeQuestionnaireAdministrationServiceMock);
 
     // testing when notApplicable Transition event is passed: deletion should happen
     completedState.wantTransitionEvent(TransitionEvent.NOTAPPLICABLE);
-    
+
     // testing when another Transition event is passed: NO deletion should happen
     completedState.wantTransitionEvent(TransitionEvent.INVALID);
-    
+
     verify(activeInterviewServiceMock);
     verify(questionnaireParticipantServiceMock);
+    verify(activeQuestionnaireAdministrationServiceMock);
   }
-  
+
   private void setCompletedState() {
     completedState.setStage(newTestStage());
     completedState.setEventSink(eventSinkMock);
     completedState.setQuestionnaireParticipantService(questionnaireParticipantServiceMock);
     completedState.setActiveInterviewService(activeInterviewServiceMock);
+    completedState.setActiveQuestionnaireAdministrationService(activeQuestionnaireAdministrationServiceMock);
   }
 
   private Stage newTestStage() {

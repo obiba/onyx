@@ -33,7 +33,7 @@ public class QuestionnaireParticipantServiceTest extends BaseDefaultSpringContex
   @Dataset
   public void testGetLastQuestionnaireParticipant() {
     Participant participant = persistenceManager.get(Participant.class, Long.valueOf("1"));
-    QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getLastQuestionnaireParticipant(participant, "QUE1");
+    QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getQuestionnaireParticipant(participant, "QUE1");
     Assert.assertEquals((long) 1, questionnaireParticipant.getId());
   }
   

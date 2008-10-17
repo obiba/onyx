@@ -1,12 +1,11 @@
-/*******************************************************************************
+/***********************************************************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
  * 
- * This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0.
+ * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
+ **********************************************************************************************************************/
 package org.obiba.onyx.quartz.engine;
 
 import java.util.List;
@@ -65,6 +64,9 @@ public class QuartzModule implements Module, ApplicationContextAware {
 
   public IStageExecution createStageExecution(Interview interview, Stage stage) {
     StageExecutionContext exec = (StageExecutionContext) applicationContext.getBean("stageExecutionContext");
+    Boolean condition = stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService);
+    AbstractStageState initialStage;
+
     exec.setStage(stage);
     exec.setInterview(interview);
 
@@ -103,16 +105,17 @@ public class QuartzModule implements Module, ApplicationContextAware {
     exec.addEdge(notApplicable, TransitionEvent.INVALID, waiting);
 
     if(stage.getStageDependencyCondition() == null) {
-      exec.setInitialState(ready);
+      initialStage = ready;
     } else {
-      if(stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService) == null) {
-        exec.setInitialState(waiting);
-      } else if(stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService) == true) {
-        exec.setInitialState(ready);
+      if(condition == null) {
+        initialStage = waiting;
+      } else if(condition == true) {
+        initialStage = ready;
       } else {
-        exec.setInitialState(notApplicable);
+        initialStage = notApplicable;
       }
     }
+    exec.setInitialState(initialStage);
 
     return exec;
   }
