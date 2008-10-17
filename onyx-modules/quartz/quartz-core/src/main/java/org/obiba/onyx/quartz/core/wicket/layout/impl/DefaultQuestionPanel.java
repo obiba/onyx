@@ -83,7 +83,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
         radioLabel.add(radioInput);
         radioLabel.add(new Label("label", radioInput.radio.getLabel()).setRenderBodyOnly(true));
 
-        final OpenAnswerDefinitionPanel openField = createOpenAnswerDefinitionPanel(item, questionCategory);
+        final DefaultOpenAnswerDefinitionPanel openField = createOpenAnswerDefinitionPanel(item, questionCategory);
 
         radioInput.radio.add(new AjaxEventBehavior("onchange") {
 
@@ -135,7 +135,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
         checkBoxLabel.add(checkBoxInput);
         checkBoxLabel.add(new Label("label", checkBoxInput.checkbox.getLabel()).setRenderBodyOnly(true));
 
-        final OpenAnswerDefinitionPanel openField = createOpenAnswerDefinitionPanel(item, questionCategory);
+        final DefaultOpenAnswerDefinitionPanel openField = createOpenAnswerDefinitionPanel(item, questionCategory);
 
         checkBoxInput.checkbox.add(new AjaxEventBehavior("onchange") {
 
@@ -170,11 +170,11 @@ public class DefaultQuestionPanel extends QuestionPanel {
     checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label", null));
   }
 
-  private OpenAnswerDefinitionPanel createOpenAnswerDefinitionPanel(WebMarkupContainer parent, QuestionCategory questionCategory) {
-    OpenAnswerDefinitionPanel openField;
+  private DefaultOpenAnswerDefinitionPanel createOpenAnswerDefinitionPanel(WebMarkupContainer parent, QuestionCategory questionCategory) {
+    DefaultOpenAnswerDefinitionPanel openField;
 
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
-      openField = new OpenAnswerDefinitionPanel("open", new Model(questionCategory));
+      openField = new DefaultOpenAnswerDefinitionPanel("open", new Model(questionCategory));
       parent.add(openField);
       openField.setFieldEnabled(questionCategory.isSelected());
     } else {

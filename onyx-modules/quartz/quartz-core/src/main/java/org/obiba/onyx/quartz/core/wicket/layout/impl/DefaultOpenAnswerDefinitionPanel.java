@@ -23,11 +23,11 @@ import org.obiba.onyx.wicket.data.DataField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OpenAnswerDefinitionPanel extends Panel {
+public class DefaultOpenAnswerDefinitionPanel extends Panel {
 
   private static final long serialVersionUID = 8950481253772691811L;
   
-  private static final Logger log = LoggerFactory.getLogger(OpenAnswerDefinitionPanel.class);
+  private static final Logger log = LoggerFactory.getLogger(DefaultOpenAnswerDefinitionPanel.class);
   
   private DataField openField;
   
@@ -37,7 +37,7 @@ public class OpenAnswerDefinitionPanel extends Panel {
    * @param questionCategoryModel
    */
   @SuppressWarnings("serial")
-  public OpenAnswerDefinitionPanel(String id, IModel questionCategoryModel) {
+  public DefaultOpenAnswerDefinitionPanel(String id, IModel questionCategoryModel) {
     super(id, questionCategoryModel);
     
     setOutputMarkupId(true);
