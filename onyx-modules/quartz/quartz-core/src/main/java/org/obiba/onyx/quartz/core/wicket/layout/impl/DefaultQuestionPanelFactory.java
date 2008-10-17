@@ -15,11 +15,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 public class DefaultQuestionPanelFactory implements IQuestionPanelFactory {
 
   public QuestionPanel createPanel(String id, Question question) {
-    if(question.isMultiple()) {
-      return new MultipleChoiceQuestionPanel(id, question);
-    } else {
-      return new SingleChoiceQuestionPanel(id, question);
-    }
+    return new DefaultQuestionPanel(id, question);
   }
 
   public String getName() {

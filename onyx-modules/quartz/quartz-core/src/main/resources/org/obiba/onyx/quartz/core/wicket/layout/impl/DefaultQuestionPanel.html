@@ -13,7 +13,7 @@
 			<span wicket:id="categories">
 				<div wicket:id="category" class="category">
         			<label wicket:id="categoryLabel">
-        				<input type="radio" wicket:id="radio"/>
+        				<span wicket:id="input"/>
            				<span wicket:id="label"/>&nbsp;
            				<span wicket:id="open"/>
            			</label>
@@ -22,3 +22,9 @@
 		</div>
 	</div>
 </wicket:panel>
+<wicket:fragment wicket:id="radioInput">
+	<input type="radio" wicket:id="radio"/>
+</wicket:fragment>
+<wicket:fragment wicket:id="checkboxInput">
+	<input type="checkbox" wicket:id="checkbox"/>
+</wicket:fragment>
