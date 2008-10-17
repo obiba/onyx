@@ -1,12 +1,11 @@
-/*******************************************************************************
+/***********************************************************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
  * 
- * This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0.
+ * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
+ **********************************************************************************************************************/
 package org.obiba.onyx.cartagene.questionnaire.util;
 
 import java.io.File;
@@ -26,7 +25,7 @@ public class CreateQuestionnaire {
   private File bundleRootDirectory = new File("target", "questionnaires");
 
   private QuestionnaireBundle bundle;
-  
+
   private static final String NO = "NO";
 
   private static final String YES = "YES";
@@ -105,38 +104,37 @@ public class CreateQuestionnaire {
     builder.inQuestion("Q15").withSharedCategory(NO_ANSWER).setExportName("8");
     builder.inQuestion("Q15").withSharedCategory(DONT_KNOW).setExportName("9");
     builder.inSection("SB").withSection("WORKINGSTATUS").withPage("P16").withQuestion("Q16");
-    builder.inSection("WORKINGSTATUS").withPage("P17").withQuestion("GLOBAL");
-    builder.inQuestion("GLOBAL").withQuestion("Q17").withSharedCategory(NO).setExportName("0");
+    builder.inSection("WORKINGSTATUS").withPage("P17").withQuestion("Q17").withSharedCategory(NO).setExportName("0");
     builder.inQuestion("Q17").withSharedCategory(FULL_TIME).setExportName("1");
     builder.inQuestion("Q17").withSharedCategory(PART_TIME).setExportName("2");
     builder.inQuestion("Q17").withSharedCategory(NO_ANSWER).setExportName("8");
     builder.inQuestion("Q17").withSharedCategory(DONT_KNOW).setExportName("9");
-    builder.inQuestion("GLOBAL").withQuestion("Q18").withSharedCategory(NO).setExportName("0");
+    builder.inPage("P17").withQuestion("Q18").withSharedCategory(NO).setExportName("0");
     builder.inQuestion("Q18").withSharedCategory(FULL_TIME).setExportName("1");
     builder.inQuestion("Q18").withSharedCategory(PART_TIME).setExportName("2");
     builder.inQuestion("Q18").withSharedCategory(NO_ANSWER).setExportName("8");
     builder.inQuestion("Q18").withSharedCategory(DONT_KNOW).setExportName("9");
-    builder.inQuestion("GLOBAL").withQuestion("Q19").withSharedCategory(NO).setExportName("0");
+    builder.inPage("P17").withQuestion("Q19").withSharedCategory(NO).setExportName("0");
     builder.inQuestion("Q19").withSharedCategory(YES).setExportName("1");
     builder.inQuestion("Q19").withSharedCategory(NO_ANSWER).setExportName("8");
     builder.inQuestion("Q19").withSharedCategory(DONT_KNOW).setExportName("9");
-    builder.inQuestion("GLOBAL").withQuestion("Q20").withSharedCategory(NO).setExportName("0");
+    builder.inPage("P17").withQuestion("Q20").withSharedCategory(NO).setExportName("0");
     builder.inQuestion("Q20").withSharedCategory(YES).setExportName("1");
     builder.inQuestion("Q20").withSharedCategory(NO_ANSWER).setExportName("8");
     builder.inQuestion("Q20").withSharedCategory(DONT_KNOW).setExportName("9");
-    builder.inQuestion("GLOBAL").withQuestion("Q21").withSharedCategory(NO).setExportName("0");
+    builder.inPage("P17").withQuestion("Q21").withSharedCategory(NO).setExportName("0");
     builder.inQuestion("Q21").withSharedCategory(YES).setExportName("1");
     builder.inQuestion("Q21").withSharedCategory(NO_ANSWER).setExportName("8");
     builder.inQuestion("Q21").withSharedCategory(DONT_KNOW).setExportName("9");
-    builder.inQuestion("GLOBAL").withQuestion("Q22").withSharedCategory(NO).setExportName("0");
+    builder.inPage("P17").withQuestion("Q22").withSharedCategory(NO).setExportName("0");
     builder.inQuestion("Q22").withSharedCategory(YES).setExportName("1");
     builder.inQuestion("Q22").withSharedCategory(NO_ANSWER).setExportName("8");
     builder.inQuestion("Q22").withSharedCategory(DONT_KNOW).setExportName("9");
-    builder.inQuestion("GLOBAL").withQuestion("Q23").withSharedCategory(NO).setExportName("0");
+    builder.inPage("P17").withQuestion("Q23").withSharedCategory(NO).setExportName("0");
     builder.inQuestion("Q23").withSharedCategory(YES).setExportName("1");
     builder.inQuestion("Q23").withSharedCategory(NO_ANSWER).setExportName("8");
     builder.inQuestion("Q23").withSharedCategory(DONT_KNOW).setExportName("9");
-    builder.inQuestion("GLOBAL").withQuestion("Q24").withSharedCategory(NO).setExportName("0");
+    builder.inPage("P17").withQuestion("Q24").withSharedCategory(NO).setExportName("0");
     builder.inQuestion("Q24").withSharedCategory(YES).setExportName("1");
     builder.inQuestion("Q24").withSharedCategory(NO_ANSWER).setExportName("8");
     builder.inQuestion("Q24").withSharedCategory(DONT_KNOW).setExportName("9");
@@ -162,16 +160,16 @@ public class CreateQuestionnaire {
     // Create the bundle manager.
     QuestionnaireBundleManager bundleManager = new QuestionnaireBundleManagerImpl(bundleRootDirectory);
     ((QuestionnaireBundleManagerImpl) bundleManager).setPropertyKeyProvider(new DefaultPropertyKeyProviderImpl());
-    
+
     // Create the bundle questionnaire.
     try {
       bundle = bundleManager.createBundle(builder.getQuestionnaire());
     } catch(IOException e) {
       e.printStackTrace();
     }
-    
+
     bundle.setLanguage(Locale.ENGLISH, new Properties());
     bundle.setLanguage(Locale.FRENCH, new Properties());
-    
+
   }
 }
