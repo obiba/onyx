@@ -16,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.obiba.core.domain.AbstractEntity;
+import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
 @Entity
@@ -132,6 +134,31 @@ public class CategoryAnswer extends AbstractEntity {
       return null;
     
     return getParentCategoryAnswer().getQuestionAnswer();
+  }
+  
+  public Data getData() {
+    Data data = null;
+
+    switch(getDataType()) {
+
+    case DATE:
+      data = DataBuilder.buildDate(dateValue);
+      break;
+
+    case DECIMAL:
+      data = DataBuilder.buildDecimal(decimalValue);
+      break;
+
+    case INTEGER:
+      data = DataBuilder.buildInteger(integerValue);
+      break;
+
+    case TEXT:
+      data = DataBuilder.buildText(textValue);
+      break;
+    }
+
+    return data;
   }
   
 }
