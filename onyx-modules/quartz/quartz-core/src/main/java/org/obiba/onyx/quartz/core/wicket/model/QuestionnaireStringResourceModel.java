@@ -37,7 +37,7 @@ public class QuestionnaireStringResourceModel extends LoadableDetachableModel {
   // Instance Variables
   //
 
-  private ApplicationContext context;
+  private transient ApplicationContext context;
 
   private ILocalizable localizable;
 
