@@ -36,7 +36,7 @@ public class PageStepPanel extends WizardStepPanel {
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
-  
+
   private Page questionnairePage;
 
   //
@@ -49,9 +49,9 @@ public class PageStepPanel extends WizardStepPanel {
     setOutputMarkupId(true);
 
     this.questionnairePage = questionnairePage;
-    
+
     add(new Label(getTitleId(), new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "label", null)));
-    
+
     // Get the configured page layout factory.
     IPageLayoutFactory pageLayoutFactory = pageLayoutFactoryRegistry.getFactory(questionnairePage.getUIFactoryName());
 
@@ -78,13 +78,13 @@ public class PageStepPanel extends WizardStepPanel {
   @Override
   public void onStepOutPrevious(WizardForm form, AjaxRequestTarget target) {
     QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
-    setPreviousStep(questionnaireWizardForm.getPreviousStep(this));
+    setPreviousStep(questionnaireWizardForm.getPreviousStep());
   }
 
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
-    setNextStep(questionnaireWizardForm.getNextStep(this));
+    setNextStep(questionnaireWizardForm.getNextStep());
   }
 
   //
