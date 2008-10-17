@@ -89,10 +89,6 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
     return true;
   }
 
-  public boolean removeAfterTransition() {
-    return false;
-  }
-
   protected void castEvent(TransitionEvent event) {
     eventSink.castEvent(event);
   }
@@ -182,7 +178,7 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
     return true;
   }
-  
+
   public ActionType getStartingActionType() {
     return null;
   }

@@ -102,19 +102,8 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
         throw new IllegalStateException("No destination state");
       }
       currentState = newState;
-      // reinit the reason why transition event occured (there may be no action at all).
+      // Re-initialise the reason why transition event occurred (there may be no action at all).
       currentState.setReason(null);
-      List<ITransitionListener> transitionListenersToRemove = new ArrayList<ITransitionListener>();
-      log.debug("transitionListeners.size=" + transitionListeners.size());
-      for(ITransitionListener listener : transitionListeners) {
-        listener.onTransition(this, event);
-        if(listener.removeAfterTransition()) {
-          transitionListenersToRemove.add(listener);
-        }
-      }
-      for(ITransitionListener listener : transitionListenersToRemove) {
-        transitionListeners.remove(listener);
-      }
     }
     log.info("castEvent({}) from stage {} now in state {}", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
 
@@ -218,13 +207,6 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
     }
   }
 
-  public boolean removeAfterTransition() {
-    if(currentState instanceof ITransitionListener) {
-      return ((ITransitionListener) currentState).removeAfterTransition();
-    }
-    return false;
-  }
-
   public String getName() {
     // do not expose current state name
     return stage.getModule() + ":" + stage.getName();
@@ -269,7 +251,7 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
 
     return myMemento;
   }
-  
+
   public ActionType getStartingActionType() {
     return currentState.getStartingActionType();
   }
