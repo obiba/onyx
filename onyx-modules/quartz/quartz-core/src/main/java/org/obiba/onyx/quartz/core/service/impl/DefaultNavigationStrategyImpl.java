@@ -73,7 +73,7 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
       Page page = pages.get(i);
 
       // TODO: Uncomment true if-condition when required NavigationStrategySupport method has been implemented.
-      if(true) {//NavigationStrategySupport.hasUnansweredQuestion(service, page)) {
+      if(true) {// NavigationStrategySupport.hasUnansweredQuestion(service, page)) {
         nextPage = page;
         break;
       }
@@ -94,22 +94,22 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
    */
   public Page getPageOnPrevious(ActiveQuestionnaireAdministrationService service, Page currentPage) {
     Page previousPage = null;
-    
+
     Questionnaire questionnaire = service.getQuestionnaire();
 
     List<Page> pages = questionnaire.getPages();
-    
+
     int startPageIndex = pages.indexOf(getPageOnStart(service));
     int currentPageIndex = pages.indexOf(currentPage);
-    
-    for (int i=startPageIndex; i<currentPageIndex; i++) {
+
+    for(int i = startPageIndex; i < currentPageIndex; i++) {
       Page page = pages.get(i);
-      
-      if (!page.getName().equals(currentPage.getName())) {
+
+      if(!page.getName().equals(currentPage.getName())) {
         previousPage = getPageOnNext(service, previousPage);
       }
     }
-    
+
     return previousPage;
   }
 
@@ -132,39 +132,39 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
     List<Page> pages = questionnaire.getPages();
 
     int startPageIndex = pages.indexOf(getPageOnStart(service));
-        
+
     // Look for first page containing questions with inactive answers.
-    for (int i=startPageIndex; i<pages.size(); i++) {
+    for(int i = startPageIndex; i < pages.size(); i++) {
       Page page = pages.get(i);
-      
+
       // TODO: Uncomment true if-condition when required NavigationStrategySupport method has been implemented.
-      if (true) {//NavigationStrategySupport.hasInactiveAnswer(service, page)) {
+      if(true) {// NavigationStrategySupport.hasInactiveAnswer(service, page)) {
         resumePage = page;
         break;
       }
     }
 
-    // If no such page exists, then look for the latest page of the questionnaire with active
+    // If no such page exists, then look for the latest page of the questionnaire with (active)
     // answers.
-    if (resumePage == null) {
+    if(resumePage == null) {
       int lastPageIndex = pages.size() - 1;
-      
-      for (int i=lastPageIndex; i>=startPageIndex; i--) {
+
+      for(int i = lastPageIndex; i >= startPageIndex; i--) {
         Page page = pages.get(i);
-        
-        if (NavigationStrategySupport.hasActiveAnswer(service, page)) {
+
+        if(NavigationStrategySupport.hasAnsweredQuestion(service, page, true)) {
           resumePage = page;
           break;
         }
       }
-      
-      if (resumePage != null) {
-        if (!NavigationStrategySupport.hasUnansweredQuestion(service, resumePage)) {
+
+      if(resumePage != null) {
+        if(!NavigationStrategySupport.hasUnansweredQuestion(service, resumePage)) {
           resumePage = getPageOnNext(service, resumePage);
         }
       }
     }
-    
+
     return resumePage;
   }
 }

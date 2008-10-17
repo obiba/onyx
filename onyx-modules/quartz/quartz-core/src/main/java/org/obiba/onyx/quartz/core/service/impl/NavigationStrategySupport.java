@@ -9,7 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.service.impl;
 
+import java.util.List;
+
+import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 
 /**
@@ -28,31 +32,47 @@ public class NavigationStrategySupport {
    * @return
    */
   public static boolean hasUnansweredQuestion(ActiveQuestionnaireAdministrationService service, Page page) {
-    // TODO: Implement!
+    List<Question> questions = page.getQuestions();
+
+    for(Question question : questions) {
+      if(question.isToBeAnswered(service)) {
+        List<CategoryAnswer> answers = service.findAnswers(question);
+
+        for(CategoryAnswer answer : answers) {
+          if(answer.getData() == null || answer.getData().getValue() == null) {
+            return true;
+          }
+        }
+      }
+    }
+
     return false;
   }
 
   /**
-   * Indicates whether the specified page contains at least one question with an active answer.
+   * Indicates whether a page contains at least one (answerable) question that has an answer with the specified "active"
+   * status.
    * 
-   * @param service
-   * @param page
+   * @param service service
+   * @param page page
+   * @param active active status
    * @return
    */
-  public static boolean hasActiveAnswer(ActiveQuestionnaireAdministrationService service, Page page) {
-    // TODO: Implement!    
-    return false;
-  }
+  public static boolean hasAnsweredQuestion(ActiveQuestionnaireAdministrationService service, Page page, boolean active) {
+    List<Question> questions = page.getQuestions();
 
-  /**
-   * Indicates whether the specified page contains at least one question with a inactive answer.
-   * 
-   * @param service
-   * @param page
-   * @return
-   */
-  public static boolean hasInactiveAnswer(ActiveQuestionnaireAdministrationService service, Page page) {
-    // TODO: Implement!
+    for(Question question : questions) {
+      if(question.isToBeAnswered(service)) {
+        List<CategoryAnswer> answers = service.findAnswers(question);
+
+        for(CategoryAnswer answer : answers) {
+          if(answer.getActive().booleanValue() == active) {
+            return true;
+          }
+        }
+      }
+    }
+
     return false;
   }
 }
