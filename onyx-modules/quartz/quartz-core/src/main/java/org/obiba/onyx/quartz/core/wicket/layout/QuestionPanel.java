@@ -11,7 +11,8 @@ package org.obiba.onyx.quartz.core.wicket.layout;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 
 /**
  * Base class for question display.
@@ -20,8 +21,8 @@ import org.apache.wicket.model.IModel;
  */
 public abstract class QuestionPanel extends Panel {
   
-  public QuestionPanel(String id, IModel model) {
-    super(id, model);
+  public QuestionPanel(String id, Question question) {
+    super(id, new Model(question));
   }
   
   /**

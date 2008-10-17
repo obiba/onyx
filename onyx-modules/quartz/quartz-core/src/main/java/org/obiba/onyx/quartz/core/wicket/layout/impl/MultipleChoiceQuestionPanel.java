@@ -34,10 +34,9 @@ public class MultipleChoiceQuestionPanel extends QuestionPanel {
 
   private static final long serialVersionUID = 2951128797454847260L;
 
-  public MultipleChoiceQuestionPanel(String id, IModel model) {
-    super(id, model);
+  public MultipleChoiceQuestionPanel(String id, Question question) {
+    super(id, question);
 
-    final Question question = (Question) model.getObject();
     add(new Label("label", new QuestionnaireStringResourceModel(question, "label", null)));
     add(new Label("instructions", new QuestionnaireStringResourceModel(question, "instructions", null)));
     add(new Label("caption", new QuestionnaireStringResourceModel(question, "caption", null)));

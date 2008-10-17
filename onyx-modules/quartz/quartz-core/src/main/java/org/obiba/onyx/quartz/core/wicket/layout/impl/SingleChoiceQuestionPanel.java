@@ -17,7 +17,6 @@ import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -29,10 +28,9 @@ public class SingleChoiceQuestionPanel extends QuestionPanel {
   private static final long serialVersionUID = 2951128797454847260L;
 
   @SuppressWarnings("serial")
-  public SingleChoiceQuestionPanel(String id, IModel model) {
-    super(id, model);
+  public SingleChoiceQuestionPanel(String id, Question question) {
+    super(id, question);
 
-    Question question = (Question) model.getObject();
     add(new Label("label", new QuestionnaireStringResourceModel(question, "label", null)));
     add(new Label("instructions", new QuestionnaireStringResourceModel(question, "instructions", null)));
     add(new Label("caption", new QuestionnaireStringResourceModel(question, "caption", null)));
