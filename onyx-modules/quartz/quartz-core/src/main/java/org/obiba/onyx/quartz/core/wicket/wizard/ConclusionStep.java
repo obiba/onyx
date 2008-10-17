@@ -10,6 +10,9 @@
 package org.obiba.onyx.quartz.core.wicket.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
@@ -27,7 +30,11 @@ public class ConclusionStep extends WizardStepPanel {
   public ConclusionStep(String id) {
     super(id);
 
-    // TODO: Initialize components.
+    setOutputMarkupId(true);
+
+    add(new Label(getTitleId(), new StringResourceModel("Conclusion", ConclusionStep.this, null)));
+
+    add(new EmptyPanel(getContentId()));
   }
 
   //
@@ -41,7 +48,6 @@ public class ConclusionStep extends WizardStepPanel {
     form.getFinishLink().setEnabled(true);
 
     if(target != null) {
-      target.addComponent(form.getNextLink());
       target.addComponent(form.getPreviousLink());
       target.addComponent(form.getFinishLink());
     }

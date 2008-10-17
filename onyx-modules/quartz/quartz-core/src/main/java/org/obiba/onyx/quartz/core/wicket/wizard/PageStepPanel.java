@@ -50,7 +50,7 @@ public class PageStepPanel extends WizardStepPanel {
 
     this.questionnairePage = questionnairePage;
 
-    add(new Label(getTitleId(), new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "label", null)));
+    add(new Label(getTitleId(), new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "label")));
 
     // Get the configured page layout factory.
     IPageLayoutFactory pageLayoutFactory = pageLayoutFactoryRegistry.getFactory(questionnairePage.getUIFactoryName());
