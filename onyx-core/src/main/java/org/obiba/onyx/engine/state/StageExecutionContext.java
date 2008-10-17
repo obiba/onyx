@@ -104,6 +104,10 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
       currentState = newState;
       // Re-initialise the reason why transition event occurred (there may be no action at all).
       currentState.setReason(null);
+      log.debug("transitionListeners.size=" + transitionListeners.size());
+      for(ITransitionListener listener : transitionListeners) {
+        listener.onTransition(this, event);
+      }
     }
     log.info("castEvent({}) from stage {} now in state {}", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
 
