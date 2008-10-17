@@ -112,6 +112,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
     }.setReuseItems(true);
     radioGroup.add(radioList);
     radioGroup.setRequired(question.getQuestionCategories().size() > 0 && question.isRequired());
+    radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label", null));
   }
 
   private void addCheckBoxGroup(Question question) {
@@ -166,6 +167,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
     add(checkGroup);
     checkGroup.add(checkList);
     checkGroup.setRequired(question.getQuestionCategories().size() > 0 && question.isRequired());
+    checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label", null));
   }
 
   private OpenAnswerDefinitionPanel createOpenAnswerDefinitionPanel(WebMarkupContainer parent, QuestionCategory questionCategory) {
