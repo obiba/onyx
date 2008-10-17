@@ -35,7 +35,9 @@ public class DefaultActiveQuestionnaireAdministrationServiceImpl extends Persist
   private Locale defaultLanguage;
 
   private INavigationStrategy navigationStrategy;
-  
+
+  private Page currentPage;
+
   public Questionnaire getQuestionnaire() {
     return currentQuestionnaire;
   }
@@ -51,9 +53,9 @@ public class DefaultActiveQuestionnaireAdministrationServiceImpl extends Persist
   }
 
   public void setNavigationStrategy(INavigationStrategy navigationStrategy) {
-    this.navigationStrategy = navigationStrategy;  
+    this.navigationStrategy = navigationStrategy;
   }
-  
+
   public QuestionnaireParticipant start(Participant participant, Locale language) {
 
     if(currentQuestionnaireParticipant != null) throw new IllegalArgumentException("Invalid questionnaireParticipant for specified questionnaire");
@@ -69,23 +71,26 @@ public class DefaultActiveQuestionnaireAdministrationServiceImpl extends Persist
     return currentQuestionnaireParticipant;
   }
 
+  public void setCurrentPage(Page page) {
+    currentPage = page;
+  }
+
   public Page getCurrentPage() {
-    // TODO Auto-generated method stub
-    return null;
+    return currentPage;
   }
 
   public Page getStartPage() {
     return navigationStrategy.getPageOnStart(this);
   }
-  
+
   public Page getPreviousPage() {
-    return navigationStrategy.getPageOnPrevious(this, getCurrentPage());    
+    return navigationStrategy.getPageOnPrevious(this, getCurrentPage());
   }
-  
+
   public Page getNextPage() {
     return navigationStrategy.getPageOnNext(this, getCurrentPage());
   }
-  
+
   public void setDefaultLanguage(Locale language) {
     this.defaultLanguage = language;
   }
@@ -97,12 +102,12 @@ public class DefaultActiveQuestionnaireAdministrationServiceImpl extends Persist
 
   public void deleteAnswer(QuestionCategory questionCategory) {
     // TODO Auto-generated method stub
-    
+
   }
 
   public void deleteAnswers(Question question) {
     // TODO Auto-generated method stub
-    
+
   }
 
   public CategoryAnswer findAnswer(QuestionCategory questionCategory) {
@@ -117,9 +122,7 @@ public class DefaultActiveQuestionnaireAdministrationServiceImpl extends Persist
 
   public void setActiveAnswers(Question question, boolean active) {
     // TODO Auto-generated method stub
-    
-  }
 
-  
+  }
 
 }

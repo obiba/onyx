@@ -24,6 +24,8 @@ import org.obiba.onyx.util.data.Data;
 
 public interface ActiveQuestionnaireAdministrationService {
 
+  public void setCurrentPage(Page page);
+
   /**
    * Get the current {@link Page}.
    * @return

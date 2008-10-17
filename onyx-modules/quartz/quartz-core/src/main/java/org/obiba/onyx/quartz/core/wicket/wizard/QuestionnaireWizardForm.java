@@ -78,6 +78,8 @@ public abstract class QuestionnaireWizardForm extends WizardForm {
   public WizardStepPanel getPreviousStep() {
     Page previousPage = activeQuestionnaireAdministrationService.getPreviousPage();
 
+    activeQuestionnaireAdministrationService.setCurrentPage(previousPage);
+
     if(previousPage != null) {
       return new PageStepPanel(getStepId(), previousPage);
     } else {
@@ -95,6 +97,8 @@ public abstract class QuestionnaireWizardForm extends WizardForm {
    */
   public WizardStepPanel getNextStep() {
     Page nextPage = activeQuestionnaireAdministrationService.getNextPage();
+
+    activeQuestionnaireAdministrationService.setCurrentPage(nextPage);
 
     if(nextPage != null) {
       return new PageStepPanel(getStepId(), nextPage);
