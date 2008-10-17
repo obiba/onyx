@@ -37,7 +37,7 @@ public class DefaultPageLayout extends PageLayout {
   public DefaultPageLayout(String id, Page page) {
     super(id, page);
 
-    add(new Label(id, new QuestionnaireStringResourceModel(page, "label", null)));
+    add(new Label("label", new QuestionnaireStringResourceModel(page, "label", null)));
 
     add(new DataView("questions", new PageQuestionsProvider(page)) {
 

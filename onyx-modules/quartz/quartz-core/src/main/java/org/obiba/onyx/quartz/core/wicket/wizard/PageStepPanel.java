@@ -10,15 +10,17 @@
 package org.obiba.onyx.quartz.core.wicket.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.IPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
-import org.springframework.beans.factory.InitializingBean;
 
-public class PageStepPanel extends WizardStepPanel implements InitializingBean {
+public class PageStepPanel extends WizardStepPanel {
   //
   // Constants
   //
@@ -32,6 +34,9 @@ public class PageStepPanel extends WizardStepPanel implements InitializingBean {
   @SpringBean
   private PageLayoutFactoryRegistry pageLayoutFactoryRegistry;
 
+  @SpringBean
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+  
   private Page questionnairePage;
 
   //
@@ -44,18 +49,14 @@ public class PageStepPanel extends WizardStepPanel implements InitializingBean {
     setOutputMarkupId(true);
 
     this.questionnairePage = questionnairePage;
-  }
-
-  //
-  // InitializingBean Methods
-  //
-
-  public void afterPropertiesSet() {
+    
+    add(new Label(getTitleId(), new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "label", null)));
+    
     // Get the configured page layout factory.
     IPageLayoutFactory pageLayoutFactory = pageLayoutFactoryRegistry.getFactory(questionnairePage.getUIFactoryName());
 
     // Create the page layout component, using the configured factory.
-    add(pageLayoutFactory.createLayout("pageLayout", questionnairePage));
+    add(pageLayoutFactory.createLayout(getContentId(), questionnairePage));
   }
 
   //
@@ -65,7 +66,7 @@ public class PageStepPanel extends WizardStepPanel implements InitializingBean {
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
     form.getPreviousLink().setEnabled(true);
-    form.getNextLink().setEnabled(false);
+    form.getNextLink().setEnabled(true);
     form.getFinishLink().setEnabled(false);
 
     if(target != null) {

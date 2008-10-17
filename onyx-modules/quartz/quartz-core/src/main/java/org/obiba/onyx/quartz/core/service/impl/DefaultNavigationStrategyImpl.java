@@ -1,12 +1,11 @@
-/*******************************************************************************
+/***********************************************************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
  * 
- * This program and the accompanying materials
- * are made available under the terms of the GNU Public License v3.0.
+ * This program and the accompanying materials are made available under the terms of the GNU Public License v3.0.
  * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+ * You should have received a copy of the GNU General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
+ **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.service.impl;
 
 import java.util.List;
@@ -41,7 +40,8 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
     List<Page> pages = questionnaire.getPages();
 
     for(Page page : pages) {
-      if(NavigationStrategySupport.hasUnansweredQuestion(service, page)) {
+      // TODO: Uncomment true if-condition when required NavigationStrategySupport method has been implemented.
+      if(true) {// NavigationStrategySupport.hasUnansweredQuestion(service, page)) {
         startPage = page;
         break;
       }
@@ -72,7 +72,8 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
     for(int i = currentPageIndex + 1; i < pages.size(); i++) {
       Page page = pages.get(i);
 
-      if(NavigationStrategySupport.hasUnansweredQuestion(service, page)) {
+      // TODO: Uncomment true if-condition when required NavigationStrategySupport method has been implemented.
+      if(true) {//NavigationStrategySupport.hasUnansweredQuestion(service, page)) {
         nextPage = page;
         break;
       }
@@ -117,8 +118,8 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
    * if it contains additional unanswered questions, or the following page (see <code>getPageOnNext</code>) if it
    * does not.
    * 
-   * If there are pages containing questions with inactive answers, then the earliest of those pages is returned
-   * instead (the idea, being, that those questions need to be revisited first when resuming).
+   * If there are pages containing questions with inactive answers, then the earliest of those pages is returned instead
+   * (the idea, being, that those questions need to be revisited first when resuming).
    * 
    * @param service service
    * @return
@@ -136,7 +137,8 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
     for (int i=startPageIndex; i<pages.size(); i++) {
       Page page = pages.get(i);
       
-      if (NavigationStrategySupport.hasInactiveAnswer(service, page)) {
+      // TODO: Uncomment true if-condition when required NavigationStrategySupport method has been implemented.
+      if (true) {//NavigationStrategySupport.hasInactiveAnswer(service, page)) {
         resumePage = page;
         break;
       }
