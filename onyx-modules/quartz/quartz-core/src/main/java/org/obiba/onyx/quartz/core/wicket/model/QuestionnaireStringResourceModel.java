@@ -31,7 +31,7 @@ public class QuestionnaireStringResourceModel extends AbstractReadOnlyModel {
   private static final long serialVersionUID = 1L;
 
   private static final int MAX_RESOLVE_STRING_REFERENCE_ATTEMPTS = 10;
-  
+
   //
   // Instance Variables
   //
@@ -46,7 +46,7 @@ public class QuestionnaireStringResourceModel extends AbstractReadOnlyModel {
   // Constructors
   //
 
-  public QuestionnaireStringResourceModel(ILocalizable localizable, String property, Object[] stringArgs) {
+  public QuestionnaireStringResourceModel(ILocalizable localizable, String property, Object... stringArgs) {
     this.localizable = localizable;
     this.property = property;
 
@@ -87,11 +87,11 @@ public class QuestionnaireStringResourceModel extends AbstractReadOnlyModel {
     while(true) {
       stringResource = messageSource.getMessage(propertyKey, stringArgs, locale);
 
-      if(isStringReference(stringResource)) {
+      if(StringReferenceCompatibleMessageFormat.isStringReference(stringResource)) {
         if(resolveAttempts == MAX_RESOLVE_STRING_REFERENCE_ATTEMPTS) {
           throw new RuntimeException("Exceeded maximum number of attempts to resolve string reference");
         }
-        
+
         resolveAttempts++;
         propertyKey = extractKeyFromReference(stringResource);
       } else {
@@ -107,16 +107,12 @@ public class QuestionnaireStringResourceModel extends AbstractReadOnlyModel {
   //
 
   /**
-   * Indicates whether the specified string resource is in fact a string reference (i.e., a reference to another string
-   * resource).
+   * Convenience method. Equivalent to <code>(String)getObject()</code>.
    * 
-   * References have the format: <code>${string}</code>
-   * 
-   * @param stringResource string resource
-   * @return <code>true</code> if the resource is a reference
+   * @return model object as string
    */
-  private boolean isStringReference(String stringResource) {
-    return (stringResource != null && stringResource.startsWith(StringReferenceCompatibleMessageFormat.STRING_REFERENCE_PREFIX) && stringResource.endsWith(StringReferenceCompatibleMessageFormat.STRING_REFERENCE_SUFFIX));
+  public String getString() {
+    return (String) getObject();
   }
 
   private String extractKeyFromReference(String stringReference) {

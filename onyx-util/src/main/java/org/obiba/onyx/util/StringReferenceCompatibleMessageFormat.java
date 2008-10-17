@@ -40,6 +40,18 @@ public class StringReferenceCompatibleMessageFormat extends MessageFormat {
   //
 
   /**
+   * Indicates whether the specified pattern is in fact a string reference (i.e., a reference to another string).
+   * 
+   * References have the format: <code>${string}</code>
+   * 
+   * @param pattern pattern
+   * @return <code>true</code> if the pattern is a string reference
+   */
+  public static boolean isStringReference(String pattern) {
+    return (pattern != null && pattern.startsWith(STRING_REFERENCE_PREFIX) && pattern.endsWith(STRING_REFERENCE_SUFFIX));
+  }
+
+  /**
    * This methods checks whether the specified pattern is a string reference. If so, it adds single quotes around the
    * pattern.
    * 
@@ -50,7 +62,7 @@ public class StringReferenceCompatibleMessageFormat extends MessageFormat {
     // Quote patterns that are string references (i.e., beginning with "${" and ending with "}")
     // to prevent the contents from being parsed as a number. Note that, as usual, the quotes will
     // not be included in the formatted string.
-    if(pattern != null && pattern.startsWith(STRING_REFERENCE_PREFIX) && pattern.endsWith(STRING_REFERENCE_SUFFIX)) {
+    if(pattern != null && isStringReference(pattern)) {
       pattern = "'" + pattern + "'";
     }
 
