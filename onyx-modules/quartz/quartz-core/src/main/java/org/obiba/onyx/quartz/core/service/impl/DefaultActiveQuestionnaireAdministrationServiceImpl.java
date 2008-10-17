@@ -9,18 +9,20 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.service.impl;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
-import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.service.INavigationStrategy;
+import org.obiba.onyx.util.data.Data;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -41,10 +43,6 @@ public class DefaultActiveQuestionnaireAdministrationServiceImpl extends Persist
   public void setQuestionnaire(Questionnaire questionnaire) {
     this.currentQuestionnaire = questionnaire;
     this.currentQuestionnaireParticipant = null;
-  }
-
-  private QuestionnaireParticipant getQuestionnaireParticipant() {
-    return (getPersistenceManager().refresh(currentQuestionnaireParticipant));
   }
 
   public Locale getLanguage() {
@@ -71,16 +69,6 @@ public class DefaultActiveQuestionnaireAdministrationServiceImpl extends Persist
     return currentQuestionnaireParticipant;
   }
 
-  public QuestionAnswer answerQuestion(Question question, CategoryAnswer categoryAnswer) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  public QuestionAnswer findQuestionAnswer(Question question) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
   public Page getCurrentPage() {
     // TODO Auto-generated method stub
     return null;
@@ -101,5 +89,37 @@ public class DefaultActiveQuestionnaireAdministrationServiceImpl extends Persist
   public void setDefaultLanguage(Locale language) {
     this.defaultLanguage = language;
   }
+
+  public CategoryAnswer answer(QuestionCategory questionCategory, Data value) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public void deleteAnswer(QuestionCategory questionCategory) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public void deleteAnswers(Question question) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  public CategoryAnswer findAnswer(QuestionCategory questionCategory) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public List<CategoryAnswer> findAnswers(Question question) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public void setActiveAnswers(Question question, boolean active) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  
 
 }
