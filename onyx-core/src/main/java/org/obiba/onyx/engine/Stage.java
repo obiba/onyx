@@ -9,12 +9,19 @@
  ******************************************************************************/
 package org.obiba.onyx.engine;
 
+import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
- * Stage is associated to a module, through its name.
+ * A <code>Stage</code> is a step of an {@link Interview}. They are contributed by {@link Module}s. A
+ * <code>Stage</code>'s name must be unique throughout all contributed stages.
+ * <p>
+ * Some <code>Stage</code>s have dependencies on other <code>Stage</code>s. The actual dependency logic is
+ * encapsulated in its {@link StageDependencyCondition} instance.
+ * 
+ * @see Module
  */
 public class Stage implements ApplicationContextAware {
 

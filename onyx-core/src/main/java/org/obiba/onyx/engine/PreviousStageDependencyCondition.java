@@ -10,14 +10,18 @@
 package org.obiba.onyx.engine;
 
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.engine.state.IStageExecution;
 
 /**
- * Most simple case of Previous Stage Dependency Condition
- * @author acarey
+ * Simple {@link StageDependencyCondition} for making a {@link Stage} a prerequisite of another.
+ * <p>
+ * Instances of this class are configured by setting the {@link #stageName} attribute to the pre-requisite stage.
+ * <p>
+ * The {@link #isDependencySatisfied(ActiveInterviewService)} method returns true when the pre-requisite stage is
+ * complete. Otherwise null is returned. Note that this implementation never returns false.
+ * @see IStageExecution#isCompleted()
  */
-public class PreviousStageDependencyCondition extends StageDependencyCondition {
-
-  private static final long serialVersionUID = 1L;
+public class PreviousStageDependencyCondition implements StageDependencyCondition {
 
   private String stageName;
 
@@ -28,19 +32,12 @@ public class PreviousStageDependencyCondition extends StageDependencyCondition {
     this.stageName = name;
   }
 
-  /**
-   * returns true if stage execution is completed
-   * returns null if it's not completed
-   */
-  @Override
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
-    if (!activeInterviewService.getStageExecution(stageName).isCompleted())
-      return null;
+    if(!activeInterviewService.getStageExecution(stageName).isCompleted()) return null;
     else
       return true;
   }
 
-  @Override
   public boolean isDependentOn(String stageName) {
     return this.stageName.equals(stageName);
   }

@@ -12,31 +12,36 @@ package org.obiba.onyx.engine;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 
 /**
- * Case of Inverse Stage Dependency Condition
- * @author acarey
+ * Given an instance of {@link StageDependencyCondition} this class will return the opposite of its delegate. By
+ * default, this class will return false when the delegate returns null. This can be overriden by setting the
+ * {@link #valueWhenNull} attribute.
  */
-public class InverseStageDependencyCondition extends StageDependencyCondition {
-
-  private static final long serialVersionUID = 1L;
+public class InverseStageDependencyCondition implements StageDependencyCondition {
 
   private StageDependencyCondition stageDependencyCondition;
 
-  /**
-   * Returns the inverse of the specified condition
-   */
-  @Override
+  private Boolean valueWhenNull = false;
+
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
-    if (stageDependencyCondition.isDependencySatisfied(activeInterviewService) == null)
-      return false;
-    return (!(stageDependencyCondition.isDependencySatisfied(activeInterviewService)));
+    Boolean value = stageDependencyCondition.isDependencySatisfied(activeInterviewService);
+
+    if(value == null) return valueWhenNull;
+    return !value;
   }
 
-  @Override
   public boolean isDependentOn(String stageName) {
     return stageDependencyCondition.isDependentOn(stageName);
   }
 
   public void setStageDependencyCondition(StageDependencyCondition stageDependencyCondition) {
     this.stageDependencyCondition = stageDependencyCondition;
+  }
+
+  public void setValueWhenNull(Boolean valueWhenNull) {
+    this.valueWhenNull = valueWhenNull;
+  }
+
+  public Boolean getValueWhenNull() {
+    return valueWhenNull;
   }
 }

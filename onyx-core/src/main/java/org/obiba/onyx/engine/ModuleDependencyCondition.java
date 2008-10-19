@@ -12,17 +12,15 @@ package org.obiba.onyx.engine;
 import java.util.List;
 
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.engine.Module;
-import org.obiba.onyx.engine.ModuleRegistry;
-import org.obiba.onyx.engine.Stage;
-import org.obiba.onyx.engine.StageDependencyCondition;
 import org.obiba.onyx.engine.state.IStageExecution;
 
 /**
- * Mica specific dependency condition depending on the presence of runValues for the stage
- * @author acarey
+ * An implementation of {@link StageDependencyCondition} that requires that all {@link Stage}s of a {@link Module} be
+ * complete. This class requires the {@link ModuleRegistry} instance.
+ * <p>
+ * This allows a stage to be executed only after all the stages of a particular module have been completed.
  */
-public class ModuleDependencyCondition extends StageDependencyCondition {
+public class ModuleDependencyCondition implements StageDependencyCondition {
 
   private static final long serialVersionUID = 1L;
 
@@ -33,14 +31,6 @@ public class ModuleDependencyCondition extends StageDependencyCondition {
   public ModuleDependencyCondition() {
   }
 
-  /**
-   * Returns true if dependency is satisfied, false if it is not,
-   * null if it's impossible to know whether it's right or wrong (step not done yet)
-   * @param activeInterviewService
-   * @return
-   */
-  @SuppressWarnings("static-access")
-  @Override
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
 
     Module module = moduleRegistry.getModule(moduleName);
@@ -51,16 +41,16 @@ public class ModuleDependencyCondition extends StageDependencyCondition {
       IStageExecution stageExecution = activeInterviewService.getStageExecution(oneStage.getName());
 
       if(!stageExecution.isCompleted()) {
+        // At least one stage is not complete, return null since
         return null;
-      } 
+      }
     }
-    
+
     return true;
   }
 
-  @Override
   public boolean isDependentOn(String stageName) {
-    
+
     Module module = moduleRegistry.getModule(moduleName);
 
     List<Stage> moduleStage = module.getStages();
@@ -69,12 +59,12 @@ public class ModuleDependencyCondition extends StageDependencyCondition {
 
       if(oneStage.getName().equals(stageName)) {
         return true;
-      } 
+      }
     }
-    
+
     return false;
   }
-  
+
   public ModuleRegistry getModuleRegistry() {
     return moduleRegistry;
   }

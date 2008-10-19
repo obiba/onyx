@@ -9,29 +9,38 @@
  ******************************************************************************/
 package org.obiba.onyx.engine;
 
+import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.engine.state.IStageExecution;
 
 /**
- * Base class for Stage Dependency Conditions.
- * @author acarey
- * 
+ * Defines the contract for dependencies between {@link Stage}s in an {@link Interview}. When a {@link Stage} depends
+ * on another (for whatever reason), it should have an instance of {@code StageDependencyCondition} that describes this
+ * dependency.
+ * <p>
+ * The condition can be anything from a {@link Stage} being a pre-requisite of another to actually requiring data
+ * capture by a previous {@link Stage}.
  */
-
-public abstract class StageDependencyCondition {
-
-  /**
-   * Returns true if dependency is satisfied, false if it is not,
-   * null if it's impossible to know whether it's right or wrong (step not done yet)
-   * @param activeInterviewService
-   * @return
-   */
-  public abstract Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService);
+public interface StageDependencyCondition {
 
   /**
-   * returns true if this stageDependencyCondition depends on the specified stage 
-   * @param stageName
-   * @return
+   * Returns true if dependency is satisfied, false if it is not, null if it's undetermined.
+   * <p>
+   * True is returned when the associated {@link Stage} may be executed. False is returned when the associated
+   * {@link Stage} cannot ever be executed (another {@link Stage} has invalidated this one). Otherwise, null is returned
+   * when the {@link Stage} still cannot be executed, but may at one point become executable.
+   * 
+   * @param activeInterviewService used to obtain {@link IStageExecution} instances of dependent {@link Stage}s
+   * @return true, false or null as described above.
    */
-  public abstract boolean isDependentOn(String stageName);
+  public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService);
+
+  /**
+   * Returns true if this instance has a dependency on the specified {@link Stage}.
+   * 
+   * @param stageName the name of the stage to test.
+   * @return true if this instance depends on the specified stage, false otherwise.
+   */
+  public boolean isDependentOn(String stageName);
 
 }

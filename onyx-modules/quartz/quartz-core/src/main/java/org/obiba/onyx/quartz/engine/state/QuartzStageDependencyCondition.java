@@ -10,10 +10,15 @@
 package org.obiba.onyx.quartz.engine.state;
 
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.StageDependencyCondition;
 import org.obiba.onyx.engine.state.IStageExecution;
 
-public class QuartzStageDependencyCondition extends StageDependencyCondition {
+/**
+ * Specific {@link StageDependencyCondition} for {@link Stage}s contributed by {@link Quartz}. For a completed stage,
+ * this class returns true otherwise it returns null.
+ */
+public class QuartzStageDependencyCondition implements StageDependencyCondition {
 
   private String stageName;
 
@@ -24,7 +29,6 @@ public class QuartzStageDependencyCondition extends StageDependencyCondition {
     this.stageName = name;
   }
 
-  @Override
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
     IStageExecution stageExecution = activeInterviewService.getStageExecution(stageName);
 
@@ -33,7 +37,6 @@ public class QuartzStageDependencyCondition extends StageDependencyCondition {
       return true;
   }
 
-  @Override
   public boolean isDependentOn(String stageName) {
     return this.stageName.equals(stageName);
   }

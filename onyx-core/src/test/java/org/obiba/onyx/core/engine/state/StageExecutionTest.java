@@ -23,10 +23,10 @@ import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.InverseStageDependencyCondition;
 import org.obiba.onyx.engine.MultipleStageDependencyCondition;
-import org.obiba.onyx.engine.Operator;
 import org.obiba.onyx.engine.PreviousStageDependencyCondition;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.StageDependencyCondition;
+import org.obiba.onyx.engine.MultipleStageDependencyCondition.Operator;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
@@ -52,9 +52,9 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
   @Autowired(required = true)
   StageExecutionContext context3;
-  
+
   ActiveInterviewService activeInterviewService;
-  
+
   @Before
   public void setUp() {
 
@@ -115,19 +115,19 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     context2.addEdge(completed, TransitionEvent.INVALID, waiting);
     context1.addTransitionListener(context2);
     context2.setInitialState(waiting);
-    
+
     Stage stage3 = new Stage();
     stage3.setName("dummy3");
     InverseStageDependencyCondition inverseCondition = new InverseStageDependencyCondition();
     inverseCondition.setStageDependencyCondition(new SpecificStageDependencyCondition("dummy2"));
-    
+
     MultipleStageDependencyCondition multipleCondition = new MultipleStageDependencyCondition();
     multipleCondition.setLeftStageDependencyCondition(inverseCondition);
     multipleCondition.setOperator(Operator.AND);
     multipleCondition.setRightStageDependencyCondition(new PreviousStageDependencyCondition("dummy1"));
-    
+
     stage3.setStageDependencyCondition(multipleCondition);
-    
+
     context3.setStage(stage3);
     context3.setInterview(interview);
     NotApplicableState notApplicable = new NotApplicableState();
@@ -135,7 +135,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     ready = new ReadyState();
     progress = new InProgressState();
     completed = new CompletedState();
-    
+
     context3.addEdge(waiting, TransitionEvent.VALID, ready);
     context3.addEdge(waiting, TransitionEvent.INVALID, waiting);
     context3.addEdge(ready, TransitionEvent.INVALID, waiting);
@@ -180,12 +180,12 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     StageExecutionMemento memento = getMemento(context1);
     Assert.assertNotNull("Memento is null", memento);
     Assert.assertEquals("InProgressState", memento.getState());
-    
+
     Assert.assertEquals("Waiting", context2.getMessage());
     memento = getMemento(context2);
     Assert.assertNotNull("Memento is null", memento);
     Assert.assertEquals("WaitingState", memento.getState());
-    
+
     Assert.assertEquals("Waiting", context3.getMessage());
     memento = getMemento(context3);
     Assert.assertNotNull("Memento is null", memento);
@@ -231,12 +231,12 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     Assert.assertEquals(true, context1.isCompleted());
     Assert.assertEquals("Completed", context1.getMessage());
     Assert.assertEquals(false, context1.isInteractive());
-    
+
     Assert.assertEquals("Ready", context2.getMessage());
     StageExecutionMemento memento = getMemento(context2);
     Assert.assertNotNull("Memento is null", memento);
     Assert.assertEquals("ReadyState", memento.getState());
-    
+
     Assert.assertEquals("Ready", context3.getMessage());
     memento = getMemento(context3);
     Assert.assertNotNull("Memento is null", memento);
@@ -253,7 +253,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     StageExecutionMemento memento = getMemento(context1);
     Assert.assertNotNull("Memento is null", memento);
     Assert.assertEquals("ReadyState", memento.getState());
-    
+
     Assert.assertEquals("Waiting", context2.getMessage());
     memento = getMemento(context2);
     Assert.assertNotNull("Memento is null", memento);
@@ -285,7 +285,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     memento = getMemento(context2);
     Assert.assertNotNull("Memento is null", memento);
     Assert.assertEquals("WaitingState", memento.getState());
-    
+
     Assert.assertEquals("Waiting", context3.getMessage());
     memento = getMemento(context3);
     Assert.assertNotNull("Memento is null", memento);
@@ -306,27 +306,27 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
   public void testMultipleAndInverseCondition() {
     doAction(ActionDefinitionBuilder.START_ACTION);
     doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
-    
+
     Assert.assertEquals("Completed", context1.getMessage());
     Assert.assertEquals("Ready", context2.getMessage());
     Assert.assertEquals("Ready", context3.getMessage());
     StageExecutionMemento memento = getMemento(context3);
     Assert.assertNotNull("Memento is null", memento);
     Assert.assertEquals("ReadyState", memento.getState());
-    
+
     doAction(context3, ActionDefinitionBuilder.START_ACTION);
     doAction(context3, ActionDefinitionBuilder.COMPLETE_ACTION);
-    
+
     Assert.assertEquals("Completed", context3.getMessage());
     memento = getMemento(context3);
     Assert.assertNotNull("Memento is null", memento);
     Assert.assertEquals("CompletedState", memento.getState());
-    
+
     doAction(context2, ActionDefinitionBuilder.START_ACTION);
     doAction(context2, ActionDefinitionBuilder.COMPLETE_ACTION);
     Assert.assertEquals("Not Applicable", context3.getMessage());
   }
-  
+
   private void doAction(ActionDefinition definition) {
     doAction(context1, definition);
   }
@@ -387,7 +387,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     public String getName() {
       return "Ready";
     }
-    
+
     @Override
     protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
       if(transitionEvent.equals(TransitionEvent.VALID)) return false;
@@ -463,7 +463,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     public String getName() {
       return "Completed";
     }
-    
+
     @Override
     protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
       if(transitionEvent.equals(TransitionEvent.VALID)) return false;
@@ -471,7 +471,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
         return true;
     }
   }
-  
+
   public class NotApplicableState extends AbstractStageState {
 
     public NotApplicableState() {
@@ -486,7 +486,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     public String getName() {
       return "NotApplicableState";
     }
-    
+
     @Override
     protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
       if(transitionEvent.equals(TransitionEvent.NOTAPPLICABLE)) return false;
@@ -494,8 +494,8 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
         return true;
     }
   }
-  
-  public class SpecificStageDependencyCondition extends StageDependencyCondition {
+
+  public class SpecificStageDependencyCondition implements StageDependencyCondition {
 
     private static final long serialVersionUID = 1L;
 
@@ -508,12 +508,10 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
       this.stageName = name;
     }
 
-    @Override
     public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
       return activeInterviewService.getStageExecution(stageName).isCompleted();
     }
 
-    @Override
     public boolean isDependentOn(String stageName) {
       return this.stageName.equals(stageName);
     }
@@ -526,5 +524,5 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
       this.stageName = stageName;
     }
   }
-  
+
 }

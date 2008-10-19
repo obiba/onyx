@@ -15,37 +15,49 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.engine.state.IStageExecution;
 
 /**
- * Module interface.
- * @author Yannick Marcon
+ * Definition of an Onyx module.
+ * <p>
+ * Modules contribute {@link Stage}s to the Onyx runtime engine. An {@link Interview} is an ordered sequence of
+ * {@link Stage}s. When a {@link Stage} needs to be executed for an {@link Interview} the <code>Module</code> that
+ * contributes the {@link Stage} is responsible for creating a {@link IStageExecution}.
  * 
  */
 public interface Module {
 
   /**
    * Unique name that identifies the module.
-   * @return
+   * @return the module name
    */
   public String getName();
 
   /**
-   * Create the corresponding stage execution.
-   * @param interview
-   * @param stage
-   * @return
+   * Creates a {@link IStageExecution} for the specified {@link Stage} for the specified {@link Interview}. The module
+   * implementation is responsible for creating an instance of {@link IStageExecution} that is in the proper state for
+   * the specified {@link Interview}.
+   * 
+   * @param interview the {@link Interview} instance in which the {@link Stage} is executed.
+   * @param stage the {@link Stage} instance to be executed.
+   * @return an instance of {@link IStageExecution}
    */
   public IStageExecution createStageExecution(Interview interview, Stage stage);
 
   /**
    * Called at module registration.
+   * 
    * @see ModuleRegistry
    */
   public void initialize();
 
   /**
-   * Called at module deregistration.
+   * Called at module unregistration.
+   * 
    * @see ModuleRegistry
    */
   public void shutdown();
 
+  /**
+   * Returns the list of {@link Stage}s that are contributed by this <code>Module</code>.
+   * @return an unmodifiable list of {@link Stage} instances.
+   */
   public List<Stage> getStages();
 }

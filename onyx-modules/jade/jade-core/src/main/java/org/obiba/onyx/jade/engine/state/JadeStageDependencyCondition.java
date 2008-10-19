@@ -9,20 +9,22 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.engine.state;
 
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.StageDependencyCondition;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
-import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.jade.engine.JadeModule;
 
 /**
- * jade specific stage dependency condition depending on the presence of runValues for the stage
- * @author acarey
+ * Specific {@link StageDependencyCondition} for {@code Stage}s contributed by the {@link JadeModule}. For a completed
+ * stage, this class will return true if there is a valid {@link InstrumentRun} with at least one
+ * {@link InstrumentRunValue} otherwise it returns false. It returns null if the stage is not complete.
+ * 
  */
-public class JadeStageDependencyCondition extends StageDependencyCondition {
+public class JadeStageDependencyCondition implements StageDependencyCondition {
 
   private static final long serialVersionUID = 1L;
 
@@ -47,27 +49,22 @@ public class JadeStageDependencyCondition extends StageDependencyCondition {
     this.instrumentService = instrumentService;
   }
 
-  /**
-   * Returns a Boolean depending on the fact that the step is completed and also on its result
-   * Null if not completed
-   * True if completed and has InstrumentRunValues
-   * False if completed and does not have InstrumentRunValues
-   */
-  @Override
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
     IStageExecution stageExecution = activeInterviewService.getStageExecution(stageName);
 
-    if(!stageExecution.isCompleted()) return null;
-    else {
+    if(!stageExecution.isCompleted()) {
+      return null;
+    } else {
       InstrumentRun instrumentRun = instrumentRunService.getLastCompletedInstrumentRun(activeInterviewService.getParticipant(), instrumentService.getInstrumentType(stageName));
 
-      if(instrumentRun != null && instrumentRun.getInstrumentRunValues().size() > 0) return true;
-      else
+      if(instrumentRun != null && instrumentRun.getInstrumentRunValues().size() > 0) {
+        return true;
+      } else {
         return false;
+      }
     }
   }
 
-  @Override
   public boolean isDependentOn(String stageName) {
     return this.stageName.equals(stageName);
   }

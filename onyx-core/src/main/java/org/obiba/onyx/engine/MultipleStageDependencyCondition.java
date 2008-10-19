@@ -12,13 +12,47 @@ package org.obiba.onyx.engine;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 
 /**
- * Case of Multiple Stage Dependency Condition
- * Compares two dependency conditions with AND or OR relation
- * @author acarey
+ * Allows composing two instances of {@link StageDependencyCondition} using a boolean operator.
+ * <p>
+ * The normal boolean logic applies for determining the return value. The notable cases are shown in the following
+ * table. <table>
+ * <tr>
+ * <td>Operator</td>
+ * <td>Left</td>
+ * <td>Right</td>
+ * <td>Return Value</td>
+ * </tr>
+ * <tr>
+ * <td rowspan="2">AND</td>
+ * <td>null</td>
+ * <td>false</td>
+ * <td>false</td>
+ * </tr>
+ * <tr>
+ * <td>false</td>
+ * <td>null</td>
+ * <td>false</td>
+ * </tr>
+ * 
+ * <tr>
+ * <td rowspan="2">OR</td>
+ * <td>null</td>
+ * <td>false</td>
+ * <td>null</td>
+ * </tr>
+ * <tr>
+ * <td>null</td>
+ * <td>false</td>
+ * <td>null</td>
+ * </tr>
+ * </table> For the OR operator, null is returned whenever one of the two conditions is returns null and the other is
+ * false. The reason being that one returning null may return true on subsequent calls.
  */
-public class MultipleStageDependencyCondition extends StageDependencyCondition {
+public class MultipleStageDependencyCondition implements StageDependencyCondition {
 
-  private static final long serialVersionUID = 1L;
+  public enum Operator {
+    AND, OR;
+  }
 
   private Operator operator;
 
@@ -26,35 +60,31 @@ public class MultipleStageDependencyCondition extends StageDependencyCondition {
 
   private StageDependencyCondition rightStageDependencyCondition;
 
-  /**
-   * Returns a Boolean depending on the AND/OR relation between the conditions
-   * If one condition is null and the relation is AND => returns null
-   * if one condition is null and the relation is OR => returns null if the not null condition is false
-   * (otherwise returns true)  
-   */
-  @Override
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
     Boolean leftResult = leftStageDependencyCondition.isDependencySatisfied(activeInterviewService);
     Boolean rightResult = rightStageDependencyCondition.isDependencySatisfied(activeInterviewService);
 
     if(leftResult != null && rightResult != null) {
-      if(operator.equals(Operator.AND)) return (leftResult && rightResult);
-      else
+      if(operator == Operator.AND) {
+        return (leftResult && rightResult);
+      } else {
         return (leftResult || rightResult);
+      }
     } else {
-      if(operator.equals(Operator.AND)) {
-        if(leftResult != null && leftResult == false) return false;
-        if(rightResult != null && rightResult == false) return false;
+      if(operator == Operator.AND) {
+        if(isFalse(leftResult) || isFalse(rightResult)) {
+          return false;
+        }
         return null;
       } else {
-        if(leftResult != null) return (leftResult == true) ? leftResult : null;
-        if(rightResult != null) return (rightResult == true) ? rightResult : null;
+        if(isTrue(leftResult) || isTrue(rightResult)) {
+          return true;
+        }
         return null;
       }
     }
   }
 
-  @Override
   public boolean isDependentOn(String stageName) {
     return (leftStageDependencyCondition.isDependentOn(stageName) || rightStageDependencyCondition.isDependentOn(stageName));
   }
@@ -70,4 +100,25 @@ public class MultipleStageDependencyCondition extends StageDependencyCondition {
   public void setOperator(Operator operator) {
     this.operator = operator;
   }
+
+  /**
+   * Returns true if {@code value} is not null and is false.
+   * 
+   * @param value the value to test
+   * @return true when {@code value} is not null and is false.
+   */
+  private boolean isFalse(Boolean value) {
+    return value != null && value == false;
+  }
+
+  /**
+   * Returns true if {@code value} is not null and is true.
+   * 
+   * @param value the value to test
+   * @return true when {@code value} is not null and is true.
+   */
+  private boolean isTrue(Boolean value) {
+    return value != null && value == true;
+  }
+
 }
