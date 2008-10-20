@@ -131,5 +131,5 @@ public interface ActiveQuestionnaireAdministrationService {
    * Clean active service when questionnaire is interrupted or canceled
    */
   public void stopCurrentQuestionnaire();
-  
+
 }

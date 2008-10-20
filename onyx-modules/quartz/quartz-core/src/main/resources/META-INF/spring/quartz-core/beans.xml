@@ -55,12 +55,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   
   <bean id="navigationStrategy"
     class="org.obiba.onyx.quartz.core.service.impl.DefaultNavigationStrategyImpl" />
-      
-  <bean id="activeQuestionnaireAdministrationService"
-    class="org.obiba.onyx.quartz.core.service.impl.DefaultActiveQuestionnaireAdministrationServiceImpl" scope="session">
-    <property name="persistenceManager" ref="persistenceManager" />
-    <property name="navigationStrategy" ref="navigationStrategy" />
-  </bean>
   
   <!-- Questionnaire UI factories -->
   <bean id="quartz.DefaultPageLayoutFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultPageLayoutFactory" />

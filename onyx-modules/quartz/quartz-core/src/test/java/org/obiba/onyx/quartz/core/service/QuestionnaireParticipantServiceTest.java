@@ -22,21 +22,21 @@ import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class QuestionnaireParticipantServiceTest extends BaseDefaultSpringContextTestCase {
-  
-  @Autowired(required=true)
+
+  @Autowired(required = true)
   PersistenceManager persistenceManager;
-  
+
   @Autowired(required = true)
   QuestionnaireParticipantService questionnaireParticipantService;
-  
+
   @Test
   @Dataset
-  public void testGetLastQuestionnaireParticipant() {
+  public void testGetQuestionnaireParticipant() {
     Participant participant = persistenceManager.get(Participant.class, Long.valueOf("1"));
     QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getQuestionnaireParticipant(participant, "QUE1");
     Assert.assertEquals((long) 1, questionnaireParticipant.getId());
   }
-  
+
   @Test
   @Dataset
   public void testDeleteQuestionnaireParticipant() {

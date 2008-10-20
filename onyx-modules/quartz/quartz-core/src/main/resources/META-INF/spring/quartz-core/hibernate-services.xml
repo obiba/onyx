@@ -11,5 +11,11 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="sessionFactory" ref="sessionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
+  
+  <bean id="activeQuestionnaireAdministrationService"
+    class="org.obiba.onyx.quartz.core.service.impl.hibernate.ActiveQuestionnaireAdministrationServiceHibernateImpl" scope="session">
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="navigationStrategy" ref="navigationStrategy" />
+  </bean>
 
 </beans>

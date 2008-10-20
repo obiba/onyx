@@ -2,6 +2,12 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
   default-autowire="no">
 
+  <bean id="questionnaireParticipantService"
+    class="org.obiba.onyx.quartz.core.service.impl.hibernate.QuestionnaireParticipantServiceHibernateImpl" scope="singleton">
+    <property name="sessionFactory" ref="sessionFactory" />
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+
   <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl">
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
@@ -27,13 +33,14 @@
   </bean>
 
   <bean id="activeQuestionnaireAdministrationService"
-    class="org.obiba.onyx.quartz.core.service.impl.DefaultActiveQuestionnaireAdministrationServiceImpl"
+    class="org.obiba.onyx.quartz.core.service.impl.hibernate.ActiveQuestionnaireAdministrationServiceHibernateImpl"
     scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
+    <property name="sessionFactory" ref="sessionFactory" />
   </bean>
 
   <import resource="classpath:/test-hibernate-config.xml" />
   <import resource="classpath:/test-db-config.xml" />
-  <import resource="classpath:META-INF/spring/quartz-core/context.xml" />
+  <!-- <import resource="classpath:META-INF/spring/quartz-core/context.xml" /> -->
 
 </beans>

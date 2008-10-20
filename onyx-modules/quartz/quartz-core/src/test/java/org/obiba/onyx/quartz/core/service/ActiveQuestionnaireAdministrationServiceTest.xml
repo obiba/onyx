@@ -9,5 +9,7 @@
     birth_date="1964-10-01 00:00:00" />
 
   <questionnaire_participant/>
-
+  <question_answer/>
+  <category_answer/>
+  
 </dataset>

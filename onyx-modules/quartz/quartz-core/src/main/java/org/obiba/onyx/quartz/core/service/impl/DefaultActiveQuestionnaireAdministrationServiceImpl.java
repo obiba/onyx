@@ -8,12 +8,14 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -25,7 +27,7 @@ import org.obiba.onyx.util.data.Data;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class DefaultActiveQuestionnaireAdministrationServiceImpl extends PersistenceManagerAwareService implements ActiveQuestionnaireAdministrationService {
+public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extends PersistenceManagerAwareService implements ActiveQuestionnaireAdministrationService {
 
   private Questionnaire currentQuestionnaire;
 
@@ -94,39 +96,96 @@ public class DefaultActiveQuestionnaireAdministrationServiceImpl extends Persist
   }
 
   public CategoryAnswer answer(QuestionCategory questionCategory, Data value) {
-    // TODO Auto-generated method stub
-    return null;
+    QuestionAnswer template = new QuestionAnswer();
+    template.setQuestionnaireParticipant(currentQuestionnaireParticipant);
+    template.setQuestionName(questionCategory.getQuestion().getName());
+
+    QuestionAnswer questionAnswer = getPersistenceManager().matchOne(template);
+    CategoryAnswer categoryTemplate = new CategoryAnswer();
+    categoryTemplate.setCategoryName(questionCategory.getCategory().getName());
+    CategoryAnswer categoryAnswer;
+
+    if(questionAnswer == null) {
+      questionAnswer = getPersistenceManager().save(template);
+      categoryAnswer = categoryTemplate;
+      categoryAnswer.setQuestionAnswer(questionAnswer);
+    } else {
+      categoryTemplate.setQuestionAnswer(questionAnswer);
+      categoryAnswer = getPersistenceManager().matchOne(categoryTemplate);
+      if(categoryAnswer == null) categoryAnswer = categoryTemplate;
+    }
+
+    if(value != null) {
+      categoryAnswer.setDataType(value.getType());
+      categoryAnswer.setData(value);
+    }
+
+    return getPersistenceManager().save(categoryAnswer);
   }
 
   public void deleteAnswer(QuestionCategory questionCategory) {
-    // TODO Auto-generated method stub
+    List<QuestionAnswer> questionAnswers = new ArrayList<QuestionAnswer>();
 
+    CategoryAnswer categoryAnswer = findAnswer(questionCategory);
+    questionAnswers.add(categoryAnswer.getQuestionAnswer());
+
+    // Pas pour ce scrum
+    /*
+     * for(CategoryAnswer childAnswer : categoryAnswer.getChildrenCategoryAnswers()) {
+     * if(!questionAnswers.contains(childAnswer.getQuestionAnswer()))
+     * questionAnswers.add(childAnswer.getQuestionAnswer()); getPersistenceManager().delete(childAnswer); }
+     */
+    getPersistenceManager().delete(categoryAnswer);
+
+    for(QuestionAnswer questionAnswer : questionAnswers) {
+      if(questionAnswer.getCategoryAnswers() == null) getPersistenceManager().delete(questionAnswer);
+    }
   }
 
   public void deleteAnswers(Question question) {
-    // TODO Auto-generated method stub
+    QuestionAnswer questionAnswer = new QuestionAnswer();
 
-  }
+    for(CategoryAnswer categoryAnswer : findAnswers(question)) {
+      if(questionAnswer == null) questionAnswer = categoryAnswer.getQuestionAnswer();
+      getPersistenceManager().delete(categoryAnswer);
 
-  public CategoryAnswer findAnswer(QuestionCategory questionCategory) {
-    // TODO Auto-generated method stub
-    return null;
-  }
+      // Pas pour ce scrum
+      /*
+       * for(CategoryAnswer childAnswer : categoryAnswer.getChildrenCategoryAnswers()) {
+       * if(!questionAnswers.contains(childAnswer.getQuestionAnswer()))
+       * questionAnswers.add(childAnswer.getQuestionAnswer()); getPersistenceManager().delete(childAnswer); }
+       */
+    }
 
-  public List<CategoryAnswer> findAnswers(Question question) {
-    // TODO Auto-generated method stub
-    return null;
+    if(questionAnswer.getCategoryAnswers() == null) getPersistenceManager().delete(questionAnswer);
+
+    // Pas pour ce scrum
+    /*
+     * for(Question questionChild : question.getQuestions()) { deleteAnswers(questionChild); }
+     */
   }
 
   public void setActiveAnswers(Question question, boolean active) {
-    // TODO Auto-generated method stub
+    for(CategoryAnswer template : findAnswers(question)) {
+      CategoryAnswer categoryAnswer = getPersistenceManager().matchOne(template);
+      categoryAnswer.setActive(active);
+      getPersistenceManager().save(categoryAnswer);
+    }
 
+    for(Question questionChild : question.getQuestions()) {
+      setActiveAnswers(questionChild, active);
+    }
   }
 
   public void stopCurrentQuestionnaire() {
-    if (currentQuestionnaireParticipant != null) {
+    if(currentQuestionnaireParticipant != null) {
       currentQuestionnaireParticipant = null;
       currentQuestionnaire = null;
     }
   }
+
+  protected QuestionnaireParticipant getQuestionnaireParticipant() {
+    return (getPersistenceManager().refresh(currentQuestionnaireParticipant));
+  }
+
 }
