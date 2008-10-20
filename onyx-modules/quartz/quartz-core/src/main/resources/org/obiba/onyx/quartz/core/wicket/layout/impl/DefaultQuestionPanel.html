@@ -2,6 +2,7 @@
 	<div class="label">
 		<span wicket:id="number"/><span wicket:id="label"/>
 	</div>
+	<div wicket:id="help"/>
 	<div class="instructions" wicket:id="instructions"/>
 	<div class="caption" wicket:id="caption"/>
 	<div class="categories">
@@ -21,4 +22,8 @@
 </wicket:fragment>
 <wicket:fragment wicket:id="checkboxInput">
 	<input type="checkbox" wicket:id="checkbox"/>
+</wicket:fragment>
+<wicket:fragment wicket:id="helpFragment">
+	<a class="help-link" wicket:id="helpLink"><span wicket:id="helpLabel" /></a>
+	<div class="help-content" wicket:id="helpContent"/>
 </wicket:fragment>

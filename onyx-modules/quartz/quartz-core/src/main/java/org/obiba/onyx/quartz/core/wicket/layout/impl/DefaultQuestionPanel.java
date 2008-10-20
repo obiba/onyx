@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -29,6 +30,7 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -62,6 +64,12 @@ public class DefaultQuestionPanel extends QuestionPanel {
       add(new Label("number"));
     }
     add(new Label("label", new QuestionnaireStringResourceModel(question, "label")));
+    QuestionnaireStringResourceModel helpModel = new QuestionnaireStringResourceModel(question, "help");
+    if(helpModel.getString() != null && !helpModel.getString().trim().equals("")) {
+      add(new HelpPanel("help", helpModel));
+    } else {
+      add(new EmptyPanel("help"));
+    }
     add(new Label("instructions", new QuestionnaireStringResourceModel(question, "instructions")));
     add(new Label("caption", new QuestionnaireStringResourceModel(question, "caption")));
 
@@ -267,6 +275,40 @@ public class DefaultQuestionPanel extends QuestionPanel {
 
     public boolean isSelected() {
       return selection;
+    }
+
+  }
+
+  private class HelpPanel extends Fragment {
+
+    private Label helpContent;
+
+    private Label helpLabel;
+
+    public HelpPanel(String id, IModel helpModel) {
+      super(id, "helpFragment", DefaultQuestionPanel.this);
+      setOutputMarkupId(true);
+
+      AjaxLink link = new AjaxLink("helpLink") {
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          helpContent.setVisible(!helpContent.isVisible());
+          if(helpContent.isVisible()) {
+            helpLabel.setModel(new StringResourceModel("HideHelp", DefaultQuestionPanel.this, null));
+          } else {
+            helpLabel.setModel(new StringResourceModel("Help", DefaultQuestionPanel.this, null));
+          }
+          target.addComponent(HelpPanel.this);
+        }
+
+      };
+      add(link);
+
+      link.add(helpLabel = new Label("helpLabel", new StringResourceModel("Help", DefaultQuestionPanel.this, null)));
+
+      add(helpContent = new Label("helpContent", helpModel));
+      helpContent.setVisible(false);
     }
 
   }
