@@ -27,10 +27,6 @@ A:hover {
 	COLOR: #375FB7; text-decoration: underline;
 }
 
-label {
-  font-weight:bold;
-}
-
 .required {
 	/*background: #FFB6C1;*/
 	/*background-image:url(../images/icons/16X16/warning.gif);

@@ -1,0 +1,52 @@
+/*
+* Default Questionnaire elements stylesheet.
+*/
+div.page {
+	
+}
+
+div.page div.section {
+	text-align: center;
+	padding-bottom:10px;
+	padding-top:10px;
+}
+
+div.page div.label {
+
+}
+
+div.page div.questions {
+	padding-bottom:10px;
+}
+
+div.page div.questions div.boilerplate {
+}
+
+div.page div.questions div.question {
+}
+
+div.page div.questions div.question div.label {
+	font-weight: bold;
+	padding-bottom:5px;
+	padding-top:5px;
+}
+
+div.page div.questions div.question div.instructions {
+	font-style: italic;
+	font-size: smaller;
+	padding-bottom:5px;
+}
+
+div.page div.questions div.question div.caption {
+	padding-left:15px;
+	padding-bottom:5px;
+}
+
+div.page div.questions div.question div.categories {
+	
+}
+
+div.page div.question div.categories div.category {
+	padding-left:15px;
+	padding-bottom:5px;
+}

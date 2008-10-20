@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -37,9 +38,9 @@ public class DefaultPageLayout extends PageLayout {
   public DefaultPageLayout(String id, Page page) {
     super(id, page);
 
-    add(new Label("section", new QuestionnaireStringResourceModel(page.getSection(), "label", null)));
-    
-    add(new Label("label", new QuestionnaireStringResourceModel(page, "label", null)));
+    add(new Label("section", new QuestionnaireStringResourceModel(page.getSection(), "label")));
+
+    add(new Label("label", new QuestionnaireStringResourceModel(page, "label")));
 
     add(new DataView("questions", new PageQuestionsProvider(page)) {
 
@@ -52,6 +53,9 @@ public class DefaultPageLayout extends PageLayout {
       }
 
     });
+
+    // TODO get it from questionnaire bundle ?
+    add(HeaderContributor.forCss("css/questionnaire.css"));
   }
 
   public void onNext(AjaxRequestTarget target) {

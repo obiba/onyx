@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -38,11 +39,16 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Support for question multiple or not, but without child questions.
+ */
 public class DefaultQuestionPanel extends QuestionPanel {
 
   private static final long serialVersionUID = 2951128797454847260L;
 
   private static final Logger log = LoggerFactory.getLogger(DefaultQuestionPanel.class);
+
+  private DefaultOpenAnswerDefinitionPanel currentOpenField;
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
@@ -55,14 +61,18 @@ public class DefaultQuestionPanel extends QuestionPanel {
     } else {
       add(new Label("number"));
     }
-    add(new Label("label", new QuestionnaireStringResourceModel(question, "label", null)));
-    add(new Label("instructions", new QuestionnaireStringResourceModel(question, "instructions", null)));
-    add(new Label("caption", new QuestionnaireStringResourceModel(question, "caption", null)));
+    add(new Label("label", new QuestionnaireStringResourceModel(question, "label")));
+    add(new Label("instructions", new QuestionnaireStringResourceModel(question, "instructions")));
+    add(new Label("caption", new QuestionnaireStringResourceModel(question, "caption")));
 
     if(!question.isMultiple()) {
       addRadioGroup(question);
     } else {
       addCheckBoxGroup(question);
+    }
+
+    if(question.isBoilerPlate()) {
+      add(new AttributeModifier("class", new Model("boilerplate")));
     }
   }
 
@@ -76,7 +86,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
       protected void populateItem(ListItem item) {
         final QuestionCategory questionCategory = (QuestionCategory) item.getModelObject();
         RadioInput radioInput = new RadioInput("input", item.getModel());// new Radio("radio", item.getModel());
-        radioInput.radio.setLabel(new QuestionnaireStringResourceModel(questionCategory, "label", null));
+        radioInput.radio.setLabel(new QuestionnaireStringResourceModel(questionCategory, "label"));
 
         FormComponentLabel radioLabel = new FormComponentLabel("categoryLabel", radioInput.radio);
         item.add(radioLabel);
@@ -90,10 +100,17 @@ public class DefaultQuestionPanel extends QuestionPanel {
           @Override
           protected void onEvent(AjaxRequestTarget target) {
             log.info("radio.onchange.{}.{}", questionCategory.getQuestion().getName(), questionCategory.getCategory().getName());
+            if(currentOpenField != null) {
+              currentOpenField.setFieldEnabled(false);
+              target.addComponent(currentOpenField);
+            }
+            currentOpenField = null;
             if(openField != null) {
-              openField.setFieldEnabled(!openField.isFieldEnabled());
+              openField.setFieldEnabled(true);
+              currentOpenField = openField;
               target.addComponent(openField);
             }
+
             // exclusive choice, only one answer per question
             activeQuestionnaireAdministrationService.deleteAnswers(questionCategory.getQuestion());
             // TODO get the open answer
@@ -112,7 +129,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
     }.setReuseItems(true);
     radioGroup.add(radioList);
     radioGroup.setRequired(question.getQuestionCategories().size() > 0 && question.isRequired());
-    radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label", null));
+    radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
   }
 
   private void addCheckBoxGroup(Question question) {
@@ -128,7 +145,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
         final QuestionCategory questionCategory = (QuestionCategory) item.getModelObject();
         final QuestionCategorySelection categorySelection = new QuestionCategorySelection(questionCategory, questionCategory.isSelected());
         CheckBoxInput checkBoxInput = new CheckBoxInput("input", new PropertyModel(categorySelection, "selection"));
-        checkBoxInput.checkbox.setLabel(new QuestionnaireStringResourceModel(questionCategory, "label", null));
+        checkBoxInput.checkbox.setLabel(new QuestionnaireStringResourceModel(questionCategory, "label"));
 
         FormComponentLabel checkBoxLabel = new FormComponentLabel("categoryLabel", checkBoxInput.checkbox);
         item.add(checkBoxLabel);
@@ -167,10 +184,11 @@ public class DefaultQuestionPanel extends QuestionPanel {
     add(checkGroup);
     checkGroup.add(checkList);
     checkGroup.setRequired(question.getQuestionCategories().size() > 0 && question.isRequired());
-    checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label", null));
+    checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
   }
 
-  private DefaultOpenAnswerDefinitionPanel createOpenAnswerDefinitionPanel(WebMarkupContainer parent, QuestionCategory questionCategory) {
+  @SuppressWarnings("serial")
+  private DefaultOpenAnswerDefinitionPanel createOpenAnswerDefinitionPanel(WebMarkupContainer parent, final QuestionCategory questionCategory) {
     DefaultOpenAnswerDefinitionPanel openField;
 
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
@@ -246,7 +264,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
     public void setSelection(Boolean selection) {
       this.selection = selection;
     }
-    
+
     public boolean isSelected() {
       return selection;
     }

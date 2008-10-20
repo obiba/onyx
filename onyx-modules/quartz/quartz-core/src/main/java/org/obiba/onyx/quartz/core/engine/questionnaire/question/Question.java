@@ -35,7 +35,7 @@ public class Question implements Serializable, ILocalizable {
   private Integer minCount;
 
   private Integer maxCount;
-  
+
   private String uIFactoryName;
 
   private List<QuestionCategory> questionCategories;
@@ -90,12 +90,16 @@ public class Question implements Serializable, ILocalizable {
     this.multiple = multiple;
   }
 
+  public boolean isBoilerPlate() {
+    return (getQuestionCategories().size() == 0 && getQuestions().size() == 0);
+  }
+
   public boolean isToBeAnswered(ActiveQuestionnaireAdministrationService service) {
     // TODO: If the question has a condition, the question is to be answered only if the condition is
     // satisfied.
     return true;
   }
-  
+
   public String getUIFactoryName() {
     return uIFactoryName;
   }

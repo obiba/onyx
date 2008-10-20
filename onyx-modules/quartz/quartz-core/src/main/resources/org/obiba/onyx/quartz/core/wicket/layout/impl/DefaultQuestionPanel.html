@@ -1,25 +1,19 @@
 <wicket:panel>
-	<div class="question">
-		<div class="label">
-			<span wicket:id="number"/><span wicket:id="label"/>
-		</div>
-		<div class="instructions">
-			<span wicket:id="instructions"/>
-		</div>
-		<div class="caption">
-			<span wicket:id="caption"/>
-		</div>
-		<div class="categories">
-			<span wicket:id="categories">
-				<div wicket:id="category" class="category">
-        			<label wicket:id="categoryLabel">
-        				<span wicket:id="input"/>
-           				<span wicket:id="label"/>
-           			</label>
-           			<span wicket:id="open"/>
-        		</div>
-        	</span>
-		</div>
+	<div class="label">
+		<span wicket:id="number"/><span wicket:id="label"/>
+	</div>
+	<div class="instructions" wicket:id="instructions"/>
+	<div class="caption" wicket:id="caption"/>
+	<div class="categories">
+		<span wicket:id="categories">
+			<div wicket:id="category" class="category">
+       			<label wicket:id="categoryLabel">
+    				<span wicket:id="input"/>
+       				<span wicket:id="label"/>
+       			</label>
+       			<span wicket:id="open"/>
+       		</div>
+       	</span>
 	</div>
 </wicket:panel>
 <wicket:fragment wicket:id="radioInput">
