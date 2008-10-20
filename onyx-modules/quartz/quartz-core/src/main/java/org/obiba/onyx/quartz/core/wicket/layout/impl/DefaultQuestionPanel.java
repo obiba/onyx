@@ -279,6 +279,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
 
   }
 
+  @SuppressWarnings("serial")
   private class HelpPanel extends Fragment {
 
     private Label helpContent;
