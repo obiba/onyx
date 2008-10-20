@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
@@ -52,6 +53,11 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
     final QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
     final OpenAnswerDefinition openAnswerDefinition = questionCategory.getCategory().getOpenAnswerDefinition();
 
+    CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(questionCategory);
+    if(previousAnswer != null) {
+      data = previousAnswer.getData();
+    }
+
     QuestionnaireStringResourceModel openLabel = new QuestionnaireStringResourceModel(openAnswerDefinition, "label");
     QuestionnaireStringResourceModel unitLabel = new QuestionnaireStringResourceModel(openAnswerDefinition, "unitLabel");
 
@@ -77,7 +83,8 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
     } else {
       openField = new DataField("open", new PropertyModel(this, "data"), openAnswerDefinition.getDataType(), unitLabel.getString());
     }
-
+    // TODO check if open answer is always required when defined ?
+    openField.setRequired(true);
     add(openField);
 
     openField.add(new AjaxFormComponentUpdatingBehavior("onblur") {
