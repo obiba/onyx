@@ -10,6 +10,7 @@ package org.obiba.onyx.quartz.core.service.impl;
 
 import java.util.List;
 
+import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
@@ -108,53 +109,25 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
   }
 
   /**
-   * Finds the latest page of the questionnaire containing at least one answered question and either returns that page
-   * if it contains additional unanswered questions, or the following page (see <code>getPageOnNext</code>) if it
-   * does not.
-   * 
-   * If there are pages containing questions with inactive answers, then the earliest of those pages is returned instead
-   * (the idea, being, that those questions need to be revisited first when resuming).
+   * Returns the current questionnaire participant's "resume page", which is the page that was displayed the last time
+   * the participant pressed <code>Next</code>.
    * 
    * @param service service
-   * @return
+   * @param participant current questionnaire participant
+   * @return page on which to resume (page displayed the last time <code>Next</code> was pressed)
    */
-  public Page getPageOnResume(ActiveQuestionnaireAdministrationService service) {
+  public Page getPageOnResume(ActiveQuestionnaireAdministrationService service, QuestionnaireParticipant participant) {
     Page resumePage = null;
 
-    Questionnaire questionnaire = service.getQuestionnaire();
+    String resumePageName = participant.getResumePage();
 
-    List<Page> pages = questionnaire.getPages();
+    if(resumePageName != null) {
+      Questionnaire questionnaire = service.getQuestionnaire();
 
-    int startPageIndex = pages.indexOf(getPageOnStart(service));
-
-    // Look for first page containing questions with inactive answers.
-    for(int i = startPageIndex; i < pages.size(); i++) {
-      Page page = pages.get(i);
-
-      // TODO: Replace "true" with actual condition when required NavigationStrategySupport method has been implemented.
-      if(true) {// NavigationStrategySupport.hasAnsweredQuestion(service, page, false)) {
-        resumePage = page;
-        break;
-      }
-    }
-
-    // If no such page exists, then look for the latest page of the questionnaire with (active)
-    // answers.
-    if(resumePage == null) {
-      int lastPageIndex = pages.size() - 1;
-
-      for(int i = lastPageIndex; i >= startPageIndex; i--) {
-        Page page = pages.get(i);
-
-        if(NavigationStrategySupport.hasAnsweredQuestion(service, page, true)) {
+      for(Page page : questionnaire.getPages()) {
+        if(page.getName().equals(resumePageName)) {
           resumePage = page;
           break;
-        }
-      }
-
-      if(resumePage != null) {
-        if(!NavigationStrategySupport.hasUnansweredQuestion(service, resumePage)) {
-          resumePage = getPageOnNext(service, resumePage);
         }
       }
     }

@@ -88,6 +88,17 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
 
   public Page nextPage() {
     currentPage = navigationStrategy.getPageOnNext(this, getCurrentPage());
+
+    if(currentQuestionnaireParticipant != null) {
+      currentQuestionnaireParticipant.setResumePage(currentPage != null ? currentPage.getName() : null);
+      getPersistenceManager().save(currentQuestionnaireParticipant);
+    }
+
+    return currentPage;
+  }
+
+  public Page resumePage() {
+    currentPage = navigationStrategy.getPageOnResume(this, currentQuestionnaireParticipant);
     return currentPage;
   }
 

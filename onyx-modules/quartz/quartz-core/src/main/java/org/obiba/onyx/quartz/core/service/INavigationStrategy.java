@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.service;
 
+import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 
 /**
@@ -56,7 +57,8 @@ public interface INavigationStrategy {
    * been interrupted).
    * 
    * @param service service that may be used by implementors to determine the page on which to resume
+   * @param participant current questionnaire participant, attributes of which may affect the resume page
    * @return page on which to resume
    */
-  public Page getPageOnResume(ActiveQuestionnaireAdministrationService service);
+  public Page getPageOnResume(ActiveQuestionnaireAdministrationService service, QuestionnaireParticipant participant);
 }

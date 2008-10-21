@@ -36,6 +36,8 @@ public class QuestionnaireParticipant extends AbstractEntity {
 
   private Locale locale;
 
+  private String resumePage;
+
   @OneToMany(mappedBy = "questionnaireParticipant")
   private List<QuestionAnswer> questionAnswers;
 
@@ -69,6 +71,14 @@ public class QuestionnaireParticipant extends AbstractEntity {
 
   public void setQuestionnaireVersion(String questionnaireVersion) {
     this.questionnaireVersion = questionnaireVersion;
+  }
+
+  public void setResumePage(String resumePage) {
+    this.resumePage = resumePage;
+  }
+
+  public String getResumePage() {
+    return resumePage;
   }
 
   public List<QuestionAnswer> getParticipantAnswers() {

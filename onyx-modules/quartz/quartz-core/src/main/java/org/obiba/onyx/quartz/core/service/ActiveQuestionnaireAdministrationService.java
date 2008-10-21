@@ -52,6 +52,13 @@ public interface ActiveQuestionnaireAdministrationService {
   public Page nextPage();
 
   /**
+   * Positions the questionnaire at the resume page.
+   * 
+   * @return new current page (resume page)
+   */
+  public Page resumePage();
+
+  /**
    * Get the language chosen for the {@link Questionnaire}.
    * @return
    * @see #setDefaultLanguage(Locale)
