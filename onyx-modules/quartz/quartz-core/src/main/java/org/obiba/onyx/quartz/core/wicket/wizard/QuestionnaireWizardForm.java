@@ -10,9 +10,11 @@
 package org.obiba.onyx.quartz.core.wicket.wizard;
 
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
@@ -101,5 +103,11 @@ public abstract class QuestionnaireWizardForm extends WizardForm {
     } else {
       return conclusionStep;
     }
+  }
+
+  @Override
+  public LoadableDetachableModel getLabelModel(String label) {
+    label = "label" + label;
+    return new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), label, null);
   }
 }

@@ -115,12 +115,12 @@ public class QuartzPanelTest {
     expect(activeQuestionnaireAdministrationServiceMock.startPage()).andReturn(questionnaire.getPages().get(0));
 
     // calls for Panel creation on next link click
-    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).times(11);
-    expect((questionnaireBundleManagerMock.getBundle("HealthQuestionnaire"))).andReturn(questionnaireBundleMock).times(10);
-    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(Locale.FRENCH).times(10);
-    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSourceMock).times(9);
-    expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).times(9);
-    expect(messageSourceMock.getMessage("", null, Locale.FRENCH)).andReturn("").times(9);
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).times(23);
+    expect((questionnaireBundleManagerMock.getBundle("HealthQuestionnaire"))).andReturn(questionnaireBundleMock).times(18);
+    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(Locale.FRENCH).times(18);
+    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSourceMock).times(17);
+    expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).times(17);
+    expect(messageSourceMock.getMessage("", null, Locale.FRENCH)).andReturn("").times(17);
 
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer((QuestionCategory) EasyMock.anyObject())).andReturn(new CategoryAnswer()).times(3);
 

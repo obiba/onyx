@@ -17,7 +17,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.UserSessionService;
-import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.page.BasePage;
 
 /**
@@ -29,9 +28,9 @@ public class MenuBar extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  @SpringBean(name="userSessionService")
+  @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;
-  
+
   public MenuBar(String id) {
     super(id);
 
@@ -42,7 +41,7 @@ public class MenuBar extends Panel {
   protected void buildMenus() {
     MenuBuilder.build(this);
   }
-  
+
   protected void buildAddOns() {
     // language selection
     AjaxLanguageChoicePanel languageSelect = new AjaxLanguageChoicePanel("languageSelect", new StringResourceModel("language", this, null), Arrays.asList(new Locale[] { Locale.FRENCH, Locale.ENGLISH })) {
@@ -61,7 +60,8 @@ public class MenuBar extends Panel {
 
     };
     if(getSession().getLocale() != null && getSession().getLocale().getLanguage().equals("fr")) getSession().setLocale(Locale.FRENCH);
-    else getSession().setLocale(Locale.ENGLISH);
+    else
+      getSession().setLocale(Locale.ENGLISH);
 
     languageSelect.setSelectedLanguage(getSession().getLocale());
     add(languageSelect);

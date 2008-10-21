@@ -18,6 +18,7 @@ import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.slf4j.Logger;
@@ -62,7 +63,7 @@ public abstract class WizardForm extends Form {
       }
 
     };
-    finish.add(new AttributeModifier("value", true, new StringResourceModel("Finish", WizardForm.this, null)));
+    finish.add(new AttributeModifier("value", true, getLabelModel("Finish")));
     finish.add(buttonBehavior);
     finish.setEnabled(false);
     finish.setOutputMarkupId(true);
@@ -79,7 +80,7 @@ public abstract class WizardForm extends Form {
       }
 
     };
-    link.add(new AttributeModifier("value", true, new StringResourceModel("Previous", WizardForm.this, null)));
+    link.add(new AttributeModifier("value", true, getLabelModel("Previous")));
     link.setEnabled(false);
     link.setOutputMarkupId(true);
     link.add(buttonBehavior);
@@ -104,7 +105,7 @@ public abstract class WizardForm extends Form {
       }
 
     };
-    button.add(new AttributeModifier("value", true, new StringResourceModel("Next", WizardForm.this, null)));
+    button.add(new AttributeModifier("value", true, getLabelModel("Next")));
     button.setOutputMarkupId(true);
     button.add(buttonBehavior);
     add(button);
@@ -120,7 +121,7 @@ public abstract class WizardForm extends Form {
       }
 
     };
-    link.add(new AttributeModifier("value", true, new StringResourceModel("Cancel", WizardForm.this, null)));
+    link.add(new AttributeModifier("value", true, getLabelModel("Cancel")));
     add(link);
   }
 
@@ -155,7 +156,7 @@ public abstract class WizardForm extends Form {
   public Component getFinishLink() {
     return get("finish");
   }
-  
+
   public Component getCancelLink() {
     return get("cancelLink");
   }
@@ -203,7 +204,7 @@ public abstract class WizardForm extends Form {
   public static String getStepId() {
     return "step";
   }
-  
+
   private class WizardButtonBehavior extends AttributeAppender {
 
     private static final long serialVersionUID = -2793180600410649652L;
@@ -220,5 +221,9 @@ public abstract class WizardForm extends Form {
     public boolean isEnabled(Component component) {
       return component.isEnabled() == false;
     }
+  }
+
+  public LoadableDetachableModel getLabelModel(String label) {
+    return new StringResourceModel(label, WizardForm.this, null);
   }
 }
