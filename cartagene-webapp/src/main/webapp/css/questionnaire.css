@@ -34,6 +34,7 @@ div.page div.questions div.question div.label {
 div.page div.questions div.question span.help-toggle {
 	background: url(../images/icons/16X16/help2.gif) no-repeat;
 	margin-left: 10px;
+	text-decoration: none;
 }
 
 div.page div.questions div.question div.help {
