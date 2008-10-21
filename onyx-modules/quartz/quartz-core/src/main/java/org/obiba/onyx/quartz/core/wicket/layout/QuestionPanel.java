@@ -11,10 +11,12 @@ package org.obiba.onyx.quartz.core.wicket.layout;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for question display.
@@ -23,25 +25,31 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
  */
 public abstract class QuestionPanel extends Panel {
 
+  private static final Logger log = LoggerFactory.getLogger(QuestionPanel.class);
+
   @SpringBean
   protected ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   public QuestionPanel(String id, Question question) {
-    super(id, new Model(question));
+    super(id, new QuestionnaireModel(question));
   }
 
   /**
    * Called when page is left to go to next page.
    */
   public void onNext(AjaxRequestTarget target) {
-    activeQuestionnaireAdministrationService.setActiveAnswers((Question) getModelObject(), true);
+    Question question = (Question) getModelObject();
+    log.info("onNext.{}.active=true", question.getName());
+    activeQuestionnaireAdministrationService.setActiveAnswers(question, true);
   }
 
   /**
    * Called when page is left to go to previous page.
    */
   public void onPrevious(AjaxRequestTarget target) {
-    activeQuestionnaireAdministrationService.setActiveAnswers((Question) getModelObject(), false);
+    Question question = (Question) getModelObject();
+    log.info("onPrevious.{}.active=false", question.getName());
+    activeQuestionnaireAdministrationService.setActiveAnswers(question, false);
   }
 
 }

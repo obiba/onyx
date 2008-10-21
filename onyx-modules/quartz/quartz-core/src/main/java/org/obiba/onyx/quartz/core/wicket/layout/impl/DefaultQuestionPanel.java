@@ -22,10 +22,9 @@ import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -34,6 +33,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.toggle.ToggleLink;
 import org.slf4j.Logger;
@@ -103,64 +103,66 @@ public class DefaultQuestionPanel extends QuestionPanel {
     final RadioGroup radioGroup = new RadioGroup("categories", new Model());
     add(radioGroup);
 
-    ListView radioList = new ListView("category", question.getQuestionCategories()) {
+    RepeatingView repeater = new RepeatingView("category");
+    radioGroup.add(repeater);
 
-      @Override
-      protected void populateItem(ListItem item) {
-        final QuestionCategory questionCategory = (QuestionCategory) item.getModelObject();
-        RadioInput radioInput = new RadioInput("input", item.getModel());// new Radio("radio", item.getModel());
-        radioInput.radio.setLabel(new QuestionnaireStringResourceModel(questionCategory, "label"));
+    for(final QuestionCategory questionCategory : ((Question) getModelObject()).getQuestionCategories()) {
+      WebMarkupContainer item = new WebMarkupContainer(repeater.newChildId());
+      repeater.add(item);
+      item.setModel(new Model(questionCategory));
 
-        FormComponentLabel radioLabel = new FormComponentLabel("categoryLabel", radioInput.radio);
-        item.add(radioLabel);
-        radioLabel.add(radioInput);
-        radioLabel.add(new Label("label", radioInput.radio.getLabel()).setRenderBodyOnly(true));
+      RadioInput radioInput = new RadioInput("input", item.getModel());
+      radioInput.radio.setLabel(new QuestionnaireStringResourceModel(questionCategory, "label"));
 
-        final DefaultOpenAnswerDefinitionPanel openField = createOpenAnswerDefinitionPanel(item, questionCategory);
+      FormComponentLabel radioLabel = new FormComponentLabel("categoryLabel", radioInput.radio);
+      item.add(radioLabel);
+      radioLabel.add(radioInput);
+      radioLabel.add(new Label("label", radioInput.radio.getLabel()).setRenderBodyOnly(true));
 
-        radioInput.radio.add(new AjaxEventBehavior("onchange") {
+      final DefaultOpenAnswerDefinitionPanel openField = createOpenAnswerDefinitionPanel(item, questionCategory);
 
-          @Override
-          protected void onEvent(AjaxRequestTarget target) {
-            log.info("radio.onchange.{}.{}", questionCategory.getQuestion().getName(), questionCategory.getCategory().getName());
-            if(currentOpenField != null) {
-              currentOpenField.setFieldEnabled(false);
-              target.addComponent(currentOpenField);
-            }
-            currentOpenField = null;
-            if(openField != null) {
-              openField.setFieldEnabled(true);
-              currentOpenField = openField;
-              target.addComponent(openField);
-            }
+      radioInput.radio.add(new AjaxEventBehavior("onchange") {
 
-            // exclusive choice, only one answer per question
-            activeQuestionnaireAdministrationService.deleteAnswers(questionCategory.getQuestion());
-            // TODO get the open answer
-            activeQuestionnaireAdministrationService.answer(questionCategory, null);
+        @Override
+        protected void onEvent(AjaxRequestTarget target) {
+          log.info("radio.onchange.{}.{}", questionCategory.getQuestion().getName(), questionCategory.getCategory().getName());
+          if(currentOpenField != null) {
+            currentOpenField.setFieldEnabled(false);
+            target.addComponent(currentOpenField);
           }
-
-        });
-
-        // previous answer or default selection
-        CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(questionCategory);
-        if(previousAnswer != null) {
-          radioGroup.setModel(item.getModel());
+          currentOpenField = null;
           if(openField != null) {
             openField.setFieldEnabled(true);
+            currentOpenField = openField;
+            target.addComponent(openField);
           }
-        } else if(questionCategory.isSelected()) {
-          radioGroup.setModel(item.getModel());
-          if(openField != null) {
-            openField.setFieldEnabled(true);
-          }
+
+          // exclusive choice, only one answer per question
+          activeQuestionnaireAdministrationService.deleteAnswers(questionCategory.getQuestion());
+          // TODO get the open answer
           activeQuestionnaireAdministrationService.answer(questionCategory, null);
         }
+
+      });
+
+      // previous answer or default selection
+      CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(questionCategory);
+      if(previousAnswer != null) {
+        radioGroup.setModel(item.getModel());
+        if(openField != null) {
+          openField.setFieldEnabled(true);
+        }
+      } else if(questionCategory.isSelected()) {
+        radioGroup.setModel(item.getModel());
+        if(openField != null) {
+          openField.setFieldEnabled(true);
+        }
+        activeQuestionnaireAdministrationService.answer(questionCategory, null);
       }
 
-    }.setReuseItems(true);
-    radioGroup.add(radioList);
-    radioGroup.setRequired(question.getQuestionCategories().size() > 0 && question.isRequired());
+    }
+
+    radioGroup.setRequired(!question.isBoilerPlate() && question.isRequired());
     radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
   }
 
@@ -168,68 +170,69 @@ public class DefaultQuestionPanel extends QuestionPanel {
    * Add a check box group, used by multiple choice question.
    * @param question
    */
+  @SuppressWarnings("serial")
   private void addCheckBoxGroup(Question question) {
     final List<IModel> checkedItems = new ArrayList<IModel>();
 
-    ListView checkList = new ListView("category", question.getQuestionCategories()) {
+    RepeatingView repeater = new RepeatingView("category");
 
-      private static final long serialVersionUID = 1L;
+    for(final QuestionCategory questionCategory : ((Question) getModelObject()).getQuestionCategories()) {
+      WebMarkupContainer item = new WebMarkupContainer(repeater.newChildId());
+      repeater.add(item);
 
-      @SuppressWarnings("serial")
-      @Override
-      protected void populateItem(ListItem item) {
-        final QuestionCategory questionCategory = (QuestionCategory) item.getModelObject();
-        final QuestionCategorySelection categorySelection = new QuestionCategorySelection(questionCategory, questionCategory.isSelected());
-        CheckBoxInput checkBoxInput = new CheckBoxInput("input", new PropertyModel(categorySelection, "selection"));
-        checkBoxInput.checkbox.setLabel(new QuestionnaireStringResourceModel(questionCategory, "label"));
+      final QuestionCategorySelection categorySelection = new QuestionCategorySelection(questionCategory, questionCategory.isSelected());
+      item.setModel(new PropertyModel(categorySelection, "selection"));
 
-        FormComponentLabel checkBoxLabel = new FormComponentLabel("categoryLabel", checkBoxInput.checkbox);
-        item.add(checkBoxLabel);
-        checkBoxLabel.add(checkBoxInput);
-        checkBoxLabel.add(new Label("label", checkBoxInput.checkbox.getLabel()).setRenderBodyOnly(true));
+      CheckBoxInput checkBoxInput = new CheckBoxInput("input", item.getModel());
+      checkBoxInput.checkbox.setLabel(new QuestionnaireStringResourceModel(questionCategory, "label"));
 
-        final DefaultOpenAnswerDefinitionPanel openField = createOpenAnswerDefinitionPanel(item, questionCategory);
+      FormComponentLabel checkBoxLabel = new FormComponentLabel("categoryLabel", checkBoxInput.checkbox);
+      item.add(checkBoxLabel);
+      checkBoxLabel.add(checkBoxInput);
+      checkBoxLabel.add(new Label("label", checkBoxInput.checkbox.getLabel()).setRenderBodyOnly(true));
 
-        checkBoxInput.checkbox.add(new AjaxEventBehavior("onchange") {
+      final DefaultOpenAnswerDefinitionPanel openField = createOpenAnswerDefinitionPanel(item, questionCategory);
 
-          @Override
-          protected void onEvent(AjaxRequestTarget target) {
-            log.info("checkbox.onchange.{}.{}", questionCategory.getQuestion().getName(), questionCategory.getCategory().getName());
-            if(openField != null) {
-              openField.setFieldEnabled(!openField.isFieldEnabled());
-              target.addComponent(openField);
-            }
-            // multiple choice
-            if(!categorySelection.isSelected()) {
-              activeQuestionnaireAdministrationService.deleteAnswer(questionCategory);
-            } else {
-              // TODO get the open answer
-              activeQuestionnaireAdministrationService.answer(questionCategory, null);
-            }
-          }
+      checkBoxInput.checkbox.add(new AjaxEventBehavior("onchange") {
 
-        });
-
-        // previous answer or default selection
-        CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(questionCategory);
-        if(previousAnswer != null) {
-          checkedItems.add(checkBoxInput.checkbox.getModel());
+        @Override
+        protected void onEvent(AjaxRequestTarget target) {
+          log.info("checkbox.onchange.{}.{}", questionCategory.getQuestion().getName(), questionCategory.getCategory().getName());
           if(openField != null) {
-            openField.setFieldEnabled(true);
+            openField.setFieldEnabled(!openField.isFieldEnabled());
+            target.addComponent(openField);
           }
-        } else if(questionCategory.isSelected()) {
-          checkedItems.add(checkBoxInput.checkbox.getModel());
-          if(openField != null) {
-            openField.setFieldEnabled(true);
+          // multiple choice
+          if(!categorySelection.isSelected()) {
+            activeQuestionnaireAdministrationService.deleteAnswer(questionCategory);
+          } else {
+            // TODO get the open answer
+            activeQuestionnaireAdministrationService.answer(questionCategory, null);
           }
-          activeQuestionnaireAdministrationService.answer(questionCategory, null);
         }
+
+      });
+
+      // previous answer or default selection
+      CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(questionCategory);
+      if(previousAnswer != null) {
+        checkedItems.add(item.getModel());
+        if(openField != null) {
+          openField.setFieldEnabled(true);
+        }
+      } else if(questionCategory.isSelected()) {
+        checkedItems.add(item.getModel());
+        if(openField != null) {
+          openField.setFieldEnabled(true);
+        }
+        activeQuestionnaireAdministrationService.answer(questionCategory, null);
       }
-    };
+    }
+    ;
 
     CheckGroup checkGroup = new CheckGroup("categories", checkedItems);
     add(checkGroup);
-    checkGroup.add(checkList);
+    checkGroup.add(repeater);
     checkGroup.setRequired(question.getQuestionCategories().size() > 0 && question.isRequired());
     checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
   }
@@ -246,7 +249,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
     DefaultOpenAnswerDefinitionPanel openField;
 
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
-      openField = new DefaultOpenAnswerDefinitionPanel("open", new Model(questionCategory));
+      openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(questionCategory));
       openField.setFieldEnabled(false);
       parent.add(openField);
     } else {

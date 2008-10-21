@@ -11,28 +11,28 @@ package org.obiba.onyx.quartz.core.wicket.layout;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 
 /**
  * Page layout definition.
  * @author Yannick Marcon
- *
+ * 
  */
 public abstract class PageLayout extends Panel {
 
   public PageLayout(String id, Page page) {
-    super(id, new Model(page));
+    super(id, new QuestionnaireModel(page));
   }
-  
+
   /**
    * Called when page is left to go to next page.
    */
   public abstract void onNext(AjaxRequestTarget target);
-  
+
   /**
    * Called when page is left to go to previous page.
    */
   public abstract void onPrevious(AjaxRequestTarget target);
-  
+
 }
