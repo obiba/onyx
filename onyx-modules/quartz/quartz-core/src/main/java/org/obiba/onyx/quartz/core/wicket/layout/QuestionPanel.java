@@ -21,12 +21,12 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
  * @author Yannick Marcon
  * 
  */
-public abstract class AbstractQuestionPanel extends Panel {
+public abstract class QuestionPanel extends Panel {
 
   @SpringBean
   protected ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  public AbstractQuestionPanel(String id, Question question) {
+  public QuestionPanel(String id, Question question) {
     super(id, new Model(question));
   }
 

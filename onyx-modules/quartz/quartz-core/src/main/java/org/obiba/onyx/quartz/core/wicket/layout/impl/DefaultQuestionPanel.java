@@ -33,7 +33,7 @@ import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
-import org.obiba.onyx.quartz.core.wicket.layout.AbstractQuestionPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.toggle.ToggleLink;
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Support for question multiple or not, but without child questions.
  */
-public class DefaultQuestionPanel extends AbstractQuestionPanel {
+public class DefaultQuestionPanel extends QuestionPanel {
 
   private static final long serialVersionUID = 2951128797454847260L;
 
