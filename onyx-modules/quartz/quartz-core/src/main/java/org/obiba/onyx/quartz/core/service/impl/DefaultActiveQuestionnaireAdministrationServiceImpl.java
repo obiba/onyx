@@ -8,8 +8,6 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
@@ -137,50 +135,34 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public void deleteAnswer(QuestionCategory questionCategory) {
-    List<QuestionAnswer> questionAnswers = new ArrayList<QuestionAnswer>();
-
     CategoryAnswer categoryAnswer = findAnswer(questionCategory);
-    questionAnswers.add(categoryAnswer.getQuestionAnswer());
-
-    // Pas pour ce scrum
-    /*
-     * for(CategoryAnswer childAnswer : categoryAnswer.getChildrenCategoryAnswers()) {
-     * if(!questionAnswers.contains(childAnswer.getQuestionAnswer()))
-     * questionAnswers.add(childAnswer.getQuestionAnswer()); getPersistenceManager().delete(childAnswer); }
-     */
-    getPersistenceManager().delete(categoryAnswer);
-
-    for(QuestionAnswer questionAnswer : questionAnswers) {
-      if(questionAnswer.getCategoryAnswers() == null) getPersistenceManager().delete(questionAnswer);
+    if(categoryAnswer != null) {
+      QuestionAnswer questionAnswer = categoryAnswer.getQuestionAnswer();
+      getPersistenceManager().delete(categoryAnswer);
+      getPersistenceManager().refresh(questionAnswer);
+      if(questionAnswer.getCategoryAnswers().size() == 0) {
+        getPersistenceManager().delete(questionAnswer);
+      }
     }
+
+    // TODO deal with category answer parent
   }
 
   public void deleteAnswers(Question question) {
-    QuestionAnswer questionAnswer = new QuestionAnswer();
+    QuestionAnswer questionAnswer = null;
 
     for(CategoryAnswer categoryAnswer : findAnswers(question)) {
       if(questionAnswer == null) questionAnswer = categoryAnswer.getQuestionAnswer();
       getPersistenceManager().delete(categoryAnswer);
-
-      // Pas pour ce scrum
-      /*
-       * for(CategoryAnswer childAnswer : categoryAnswer.getChildrenCategoryAnswers()) {
-       * if(!questionAnswers.contains(childAnswer.getQuestionAnswer()))
-       * questionAnswers.add(childAnswer.getQuestionAnswer()); getPersistenceManager().delete(childAnswer); }
-       */
     }
 
-    if(questionAnswer.getCategoryAnswers() == null) getPersistenceManager().delete(questionAnswer);
+    if(questionAnswer != null) getPersistenceManager().delete(questionAnswer);
 
-    // Pas pour ce scrum
-    /*
-     * for(Question questionChild : question.getQuestions()) { deleteAnswers(questionChild); }
-     */
+    // TODO deal with category answer parent
   }
 
   public void setActiveAnswers(Question question, boolean active) {
-    for(CategoryAnswer template : findAnswers(question)) {
-      CategoryAnswer categoryAnswer = getPersistenceManager().matchOne(template);
+    for(CategoryAnswer categoryAnswer : findAnswers(question)) {
       categoryAnswer.setActive(active);
       getPersistenceManager().save(categoryAnswer);
     }
