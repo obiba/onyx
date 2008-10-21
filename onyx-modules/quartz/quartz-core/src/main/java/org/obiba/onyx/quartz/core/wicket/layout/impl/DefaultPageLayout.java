@@ -21,7 +21,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
 import org.obiba.onyx.quartz.core.wicket.layout.PageQuestionsProvider;
-import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.AbstractQuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 
@@ -32,7 +32,7 @@ public class DefaultPageLayout extends PageLayout {
   @SpringBean
   private QuestionPanelFactoryRegistry questionPanelFactoryRegistry;
 
-  private List<QuestionPanel> questionPanels = new ArrayList<QuestionPanel>();
+  private List<AbstractQuestionPanel> questionPanels = new ArrayList<AbstractQuestionPanel>();
 
   @SuppressWarnings("serial")
   public DefaultPageLayout(String id, Page page) {
@@ -47,7 +47,7 @@ public class DefaultPageLayout extends PageLayout {
       @Override
       protected void populateItem(Item item) {
         Question question = (Question) item.getModelObject();
-        QuestionPanel panel = questionPanelFactoryRegistry.getFactory(question.getUIFactoryName()).createPanel("question", question);
+        AbstractQuestionPanel panel = questionPanelFactoryRegistry.getFactory(question.getUIFactoryName()).createPanel("question", question);
         questionPanels.add(panel);
         item.add(panel);
       }
@@ -59,13 +59,13 @@ public class DefaultPageLayout extends PageLayout {
   }
 
   public void onNext(AjaxRequestTarget target) {
-    for(QuestionPanel panel : questionPanels) {
+    for(AbstractQuestionPanel panel : questionPanels) {
       panel.onNext(target);
     }
   }
 
   public void onPrevious(AjaxRequestTarget target) {
-    for(QuestionPanel panel : questionPanels) {
+    for(AbstractQuestionPanel panel : questionPanels) {
       panel.onPrevious(target);
     }
   }

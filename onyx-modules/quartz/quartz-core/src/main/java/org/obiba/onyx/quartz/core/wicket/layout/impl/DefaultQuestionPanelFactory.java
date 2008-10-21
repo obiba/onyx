@@ -10,11 +10,11 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
-import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.AbstractQuestionPanel;
 
 public class DefaultQuestionPanelFactory implements IQuestionPanelFactory {
 
-  public QuestionPanel createPanel(String id, Question question) {
+  public AbstractQuestionPanel createPanel(String id, Question question) {
     return new DefaultQuestionPanel(id, question);
   }
 

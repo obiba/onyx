@@ -29,12 +29,11 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
-import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
-import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.AbstractQuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.toggle.ToggleLink;
 import org.slf4j.Logger;
@@ -43,16 +42,13 @@ import org.slf4j.LoggerFactory;
 /**
  * Support for question multiple or not, but without child questions.
  */
-public class DefaultQuestionPanel extends QuestionPanel {
+public class DefaultQuestionPanel extends AbstractQuestionPanel {
 
   private static final long serialVersionUID = 2951128797454847260L;
 
   private static final Logger log = LoggerFactory.getLogger(DefaultQuestionPanel.class);
 
   private DefaultOpenAnswerDefinitionPanel currentOpenField;
-
-  @SpringBean
-  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   public DefaultQuestionPanel(String id, Question question) {
     super(id, question);
@@ -64,18 +60,25 @@ public class DefaultQuestionPanel extends QuestionPanel {
       add(new Label("number"));
     }
     add(new Label("label", new QuestionnaireStringResourceModel(question, "label")));
+
+    // help toggle
     QuestionnaireStringResourceModel helpModel = new QuestionnaireStringResourceModel(question, "help");
     if(helpModel.getString() != null && !helpModel.getString().trim().equals("")) {
       Label helpContent = new Label("help", helpModel);
+      // help resource can contain html formatting
       helpContent.setEscapeModelStrings(false);
       add(helpContent);
+
+      // toggle has background image defined by css
       ToggleLink toggleLink = new ToggleLink("helpToggle", new Model("&nbsp;&nbsp;&nbsp;&nbsp;"), new Model("&nbsp;&nbsp;&nbsp;&nbsp;"), helpContent);
       toggleLink.setLabelEscapeModelStrings(false);
       add(toggleLink);
     } else {
+      // dummy content
       add(new EmptyPanel("helpToggle").setVisible(false));
       add(new EmptyPanel("help").setVisible(false));
     }
+
     add(new Label("instructions", new QuestionnaireStringResourceModel(question, "instructions")));
     add(new Label("caption", new QuestionnaireStringResourceModel(question, "caption")));
 
@@ -85,11 +88,16 @@ public class DefaultQuestionPanel extends QuestionPanel {
       addCheckBoxGroup(question);
     }
 
+    // change the css rendering in case of a boiler plate
     if(question.isBoilerPlate()) {
       add(new AttributeModifier("class", new Model("boilerplate")));
     }
   }
 
+  /**
+   * Add a radio group, used by single choice question.
+   * @param question
+   */
   @SuppressWarnings("serial")
   private void addRadioGroup(Question question) {
     final RadioGroup radioGroup = new RadioGroup("categories", new Model());
@@ -156,6 +164,10 @@ public class DefaultQuestionPanel extends QuestionPanel {
     radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
   }
 
+  /**
+   * Add a check box group, used by multiple choice question.
+   * @param question
+   */
   private void addCheckBoxGroup(Question question) {
     final List<IModel> checkedItems = new ArrayList<IModel>();
 
@@ -222,6 +234,13 @@ public class DefaultQuestionPanel extends QuestionPanel {
     checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
   }
 
+  /**
+   * Create an open answer definition panel if given {@link QuestionCategory} has a {@link OpenAnswerDefinition}
+   * associated to.
+   * @param parent
+   * @param questionCategory
+   * @return null if no open answer definition
+   */
   @SuppressWarnings("serial")
   private DefaultOpenAnswerDefinitionPanel createOpenAnswerDefinitionPanel(WebMarkupContainer parent, final QuestionCategory questionCategory) {
     DefaultOpenAnswerDefinitionPanel openField;
@@ -238,16 +257,9 @@ public class DefaultQuestionPanel extends QuestionPanel {
     return openField;
   }
 
-  public void onNext(AjaxRequestTarget target) {
-    // TODO Auto-generated method stub
-
-  }
-
-  public void onPrevious(AjaxRequestTarget target) {
-    // TODO Auto-generated method stub
-
-  }
-
+  /**
+   * The radio input chunk.
+   */
   @SuppressWarnings("serial")
   private class RadioInput extends Fragment {
 
@@ -260,6 +272,9 @@ public class DefaultQuestionPanel extends QuestionPanel {
 
   }
 
+  /**
+   * The checkbox input chunk.
+   */
   @SuppressWarnings("serial")
   private class CheckBoxInput extends Fragment {
 
@@ -272,6 +287,9 @@ public class DefaultQuestionPanel extends QuestionPanel {
 
   }
 
+  /**
+   * Private class for storing category selections in case of a multiple choice question.
+   */
   @SuppressWarnings("serial")
   private class QuestionCategorySelection implements Serializable {
 

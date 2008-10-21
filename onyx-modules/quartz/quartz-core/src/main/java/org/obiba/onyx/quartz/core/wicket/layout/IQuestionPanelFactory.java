@@ -13,7 +13,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 
 public interface IQuestionPanelFactory {
 
-  public QuestionPanel createPanel(String id, Question question);
+  public AbstractQuestionPanel createPanel(String id, Question question);
   
   public String getName();
   

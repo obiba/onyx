@@ -12,27 +12,36 @@ package org.obiba.onyx.quartz.core.wicket.layout;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 
 /**
  * Base class for question display.
  * @author Yannick Marcon
- *
+ * 
  */
-public abstract class QuestionPanel extends Panel {
-  
-  public QuestionPanel(String id, Question question) {
+public abstract class AbstractQuestionPanel extends Panel {
+
+  @SpringBean
+  protected ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+
+  public AbstractQuestionPanel(String id, Question question) {
     super(id, new Model(question));
   }
-  
+
   /**
    * Called when page is left to go to next page.
    */
-  public abstract void onNext(AjaxRequestTarget target);
-  
+  public void onNext(AjaxRequestTarget target) {
+    activeQuestionnaireAdministrationService.setActiveAnswers((Question) getModelObject(), true);
+  }
+
   /**
    * Called when page is left to go to previous page.
    */
-  public abstract void onPrevious(AjaxRequestTarget target);
+  public void onPrevious(AjaxRequestTarget target) {
+    activeQuestionnaireAdministrationService.setActiveAnswers((Question) getModelObject(), false);
+  }
 
 }
