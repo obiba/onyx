@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.AnswerSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 
@@ -27,6 +28,8 @@ public class Question implements Serializable, ILocalizable {
   private String number;
 
   private Page page;
+
+  private AnswerSource answerSource;
 
   private boolean required;
 
@@ -72,6 +75,14 @@ public class Question implements Serializable, ILocalizable {
 
   public void setNumber(String number) {
     this.number = number;
+  }
+
+  public void setAnswerSource(AnswerSource answerSource) {
+    this.answerSource = answerSource;
+  }
+
+  public AnswerSource getAnswerSource() {
+    return answerSource;
   }
 
   public boolean isRequired() {

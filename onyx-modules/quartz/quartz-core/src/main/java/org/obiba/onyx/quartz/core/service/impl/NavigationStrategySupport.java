@@ -25,11 +25,32 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 public class NavigationStrategySupport {
 
   /**
-   * Indicates whether the specified page contains at least one unanswered (and answerable) question.
+   * Indicates whether the specified page contains at least one question that is to be answered (whether or not an
+   * answer currently exists).
    * 
-   * @param service
-   * @param page
-   * @return
+   * @param service service
+   * @param page page
+   * @return <code>true</code> if the page contains at least one question that is to be answered.
+   */
+  public static boolean hasQuestionToBeAnswered(ActiveQuestionnaireAdministrationService service, Page page) {
+    List<Question> questions = page.getQuestions();
+
+    for(Question question : questions) {
+      if(question.isToBeAnswered(service)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Indicates whether the specified page contains at least one question that is to be answered but currently
+   * unanswered.
+   * 
+   * @param service service
+   * @param page page
+   * @return <code>true</code> if the page contains at least one question to be answered but as yet unanswered
    */
   public static boolean hasUnansweredQuestion(ActiveQuestionnaireAdministrationService service, Page page) {
     List<Question> questions = page.getQuestions();
@@ -38,10 +59,14 @@ public class NavigationStrategySupport {
       if(question.isToBeAnswered(service)) {
         List<CategoryAnswer> answers = service.findAnswers(question);
 
-        for(CategoryAnswer answer : answers) {
-          if(answer.getData() == null || answer.getData().getValue() == null) {
-            return true;
+        if(!answers.isEmpty()) {
+          for(CategoryAnswer answer : answers) {
+            if(answer.getData() == null || answer.getData().getValue() == null) {
+              return true;
+            }
           }
+        } else {
+          return true;
         }
       }
     }
@@ -50,13 +75,14 @@ public class NavigationStrategySupport {
   }
 
   /**
-   * Indicates whether a page contains at least one (answerable) question that has an answer with the specified "active"
-   * status.
+   * Indicates whether a page contains at least one question that is to be answered and that currently has an answer
+   * with the specified "active" status.
    * 
    * @param service service
    * @param page page
    * @param active active status
-   * @return
+   * @return <code>true</code> if the page contains at least one question to be answered, that has an answer with the
+   * specified "active" status
    */
   public static boolean hasAnsweredQuestion(ActiveQuestionnaireAdministrationService service, Page page, boolean active) {
     List<Question> questions = page.getQuestions();
@@ -70,6 +96,25 @@ public class NavigationStrategySupport {
             return true;
           }
         }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Indicates whether a page contains at least one question that does not have an answer source.
+   * 
+   * @param service service
+   * @param page page
+   * @return <code>true</code> if the page contains a question without an answer source
+   */
+  public static boolean hasNonAnswerSourceQuestion(ActiveQuestionnaireAdministrationService service, Page page) {
+    List<Question> questions = page.getQuestions();
+
+    for(Question question : questions) {
+      if(question.getAnswerSource() == null) {
+        return true;
       }
     }
 

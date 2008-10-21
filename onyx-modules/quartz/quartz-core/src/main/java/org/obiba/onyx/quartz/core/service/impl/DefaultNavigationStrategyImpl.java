@@ -24,13 +24,13 @@ import org.obiba.onyx.quartz.core.service.INavigationStrategy;
 public class DefaultNavigationStrategyImpl implements INavigationStrategy {
 
   /**
-   * Returns the earliest page of the questionnaire containing at least one (answerable) question that has not been
-   * answered.
+   * Returns the earliest page of the questionnaire containing either no questions (i.e., an informational page) or at
+   * least one question without an answer source.
    * 
-   * In effect, this method skips over pages with no questions to be answered.
+   * In effect, this method skips over pages containing only questions with an answer source.
    * 
    * @param service service
-   * @return start page (first page with unanswered questions)
+   * @return start page (first page that is either informational or contains unanswered questions)
    */
   public Page getPageOnStart(ActiveQuestionnaireAdministrationService service) {
     Page startPage = null;
@@ -40,8 +40,9 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
     List<Page> pages = questionnaire.getPages();
 
     for(Page page : pages) {
-      // TODO: Uncomment true if-condition when required NavigationStrategySupport method has been implemented.
-      if(true) {// NavigationStrategySupport.hasUnansweredQuestion(service, page)) {
+      // TODO: Replace "true" with actual condition when required NavigationStrategySupport method has been implemented.
+      if(page.getQuestions().isEmpty() || true) {// NavigationStrategySupport.hasNonAnswerSourceQuestion(service,
+        // page)) {
         startPage = page;
         break;
       }
@@ -52,9 +53,9 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
 
   /**
    * Returns the earliest page, after the current page, containing either no questions (i.e., an informational page) or
-   * at least one (answerable) question that has not been answered.
+   * at least one question that is to be answered (whether or not an answer currently exists).
    * 
-   * In effect, this method skips over pages with no questions to be answered.
+   * In effect, this method skips over pages containing only questions that are not to be answered.
    * 
    * @param service service
    * @param currentPage currently displayed page
@@ -72,9 +73,9 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
     for(int i = currentPageIndex + 1; i < pages.size(); i++) {
       Page page = pages.get(i);
 
-      // TODO: Replace or-condition with commented condition when required NavigationStrategySupport method has been
+      // TODO: Replace "true" with actual condition when required NavigationStrategySupport method has been
       // implemented (as well as underlying service methods).
-      if(page.getQuestions().isEmpty() || true) {// NavigationStrategySupport.hasUnansweredQuestion(service, page)) {
+      if(page.getQuestions().isEmpty() || true) {// NavigationStrategySupport.hasQuestionToBeAnswered(service, page)) {
         nextPage = page;
         break;
       }
@@ -96,19 +97,11 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
   public Page getPageOnPrevious(ActiveQuestionnaireAdministrationService service, Page currentPage) {
     Page previousPage = null;
 
-    Questionnaire questionnaire = service.getQuestionnaire();
+    Page page = getPageOnStart(service);
 
-    List<Page> pages = questionnaire.getPages();
-
-    int startPageIndex = pages.indexOf(getPageOnStart(service));
-    int currentPageIndex = pages.indexOf(currentPage);
-
-    for(int i = startPageIndex; i < currentPageIndex; i++) {
-      Page page = pages.get(i);
-
-      if(!page.getName().equals(currentPage.getName())) {
-        previousPage = getPageOnNext(service, previousPage);
-      }
+    while(!page.getName().equals(currentPage.getName())) {
+      previousPage = page;
+      page = getPageOnNext(service, page);
     }
 
     return previousPage;
@@ -138,8 +131,8 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
     for(int i = startPageIndex; i < pages.size(); i++) {
       Page page = pages.get(i);
 
-      // TODO: Uncomment true if-condition when required NavigationStrategySupport method has been implemented.
-      if(true) {// NavigationStrategySupport.hasInactiveAnswer(service, page)) {
+      // TODO: Replace "true" with actual condition when required NavigationStrategySupport method has been implemented.
+      if(true) {// NavigationStrategySupport.hasAnsweredQuestion(service, page, false)) {
         resumePage = page;
         break;
       }
