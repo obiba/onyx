@@ -88,6 +88,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
   private void addRadioGroup(Question question) {
     final RadioGroup radioGroup = new RadioGroup("categories", new Model());
     add(radioGroup);
+
     ListView radioList = new ListView("category", question.getQuestionCategories()) {
 
       @Override
@@ -127,10 +128,19 @@ public class DefaultQuestionPanel extends QuestionPanel {
 
         });
 
-        if(questionCategory.isSelected()) {
+        // previous answer or default selection
+        CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(questionCategory);
+        if(previousAnswer != null) {
           radioGroup.setModel(item.getModel());
-          CategoryAnswer categoryAnswer = activeQuestionnaireAdministrationService.findAnswer(questionCategory);
-          activeQuestionnaireAdministrationService.answer(questionCategory, categoryAnswer != null ? categoryAnswer.getData() : null);
+          if(openField != null) {
+            openField.setFieldEnabled(true);
+          }
+        } else if(questionCategory.isSelected()) {
+          radioGroup.setModel(item.getModel());
+          if(openField != null) {
+            openField.setFieldEnabled(true);
+          }
+          activeQuestionnaireAdministrationService.answer(questionCategory, null);
         }
       }
 
@@ -182,8 +192,19 @@ public class DefaultQuestionPanel extends QuestionPanel {
 
         });
 
-        if(questionCategory.isSelected()) {
+        // previous answer or default selection
+        CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(questionCategory);
+        if(previousAnswer != null) {
           checkedItems.add(checkBoxInput.checkbox.getModel());
+          if(openField != null) {
+            openField.setFieldEnabled(true);
+          }
+        } else if(questionCategory.isSelected()) {
+          checkedItems.add(checkBoxInput.checkbox.getModel());
+          if(openField != null) {
+            openField.setFieldEnabled(true);
+          }
+          activeQuestionnaireAdministrationService.answer(questionCategory, null);
         }
       }
     };
@@ -201,8 +222,8 @@ public class DefaultQuestionPanel extends QuestionPanel {
 
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
       openField = new DefaultOpenAnswerDefinitionPanel("open", new Model(questionCategory));
+      openField.setFieldEnabled(false);
       parent.add(openField);
-      openField.setFieldEnabled(questionCategory.isSelected());
     } else {
       openField = null;
       parent.add(new EmptyPanel("open"));
