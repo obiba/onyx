@@ -29,7 +29,6 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -37,7 +36,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
-import org.obiba.onyx.quartz.core.wicket.toggle.ToggleLink;
+import org.obiba.onyx.wicket.toggle.ToggleLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +69,9 @@ public class DefaultQuestionPanel extends QuestionPanel {
       Label helpContent = new Label("help", helpModel);
       helpContent.setEscapeModelStrings(false);
       add(helpContent);
-      add(new ToggleLink("helpToggle", new StringResourceModel("Help", this, null), new StringResourceModel("HideHelp", this, null), helpContent));
+      ToggleLink toggleLink = new ToggleLink("helpToggle", new Model("&nbsp;&nbsp;&nbsp;&nbsp;"), new Model("&nbsp;&nbsp;&nbsp;&nbsp;"), helpContent);
+      toggleLink.setLabelEscapeModelStrings(false);
+      add(toggleLink);
     } else {
       add(new EmptyPanel("helpToggle").setVisible(false));
       add(new EmptyPanel("help").setVisible(false));

@@ -1,4 +1,4 @@
-package org.obiba.onyx.quartz.core.wicket.toggle;
+package org.obiba.onyx.wicket.toggle;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -46,8 +46,11 @@ public class ToggleLink extends Panel {
     add(link);
 
     link.add(toggleLabel = new Label("label", showModel));
-
     toggle.setVisible(false);
+  }
+
+  public void setLabelEscapeModelStrings(boolean escapeMarkup) {
+    toggleLabel.setEscapeModelStrings(escapeMarkup);
   }
 
 }

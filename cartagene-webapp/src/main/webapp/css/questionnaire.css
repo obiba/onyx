@@ -31,6 +31,18 @@ div.page div.questions div.question div.label {
 	padding-top:5px;
 }
 
+div.page div.questions div.question span.help-toggle {
+	background: url(../images/icons/16X16/help2.gif) no-repeat;
+	margin-left: 10px;
+}
+
+div.page div.questions div.question div.help {
+	padding:5px;
+	margin-top:5px;
+	background-color:#F0F0F0;
+	border:1px solid #BBBBBB;
+}
+
 div.page div.questions div.question div.instructions {
 	font-style: italic;
 	font-size: smaller;
