@@ -15,7 +15,6 @@ import java.util.List;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -38,6 +37,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
+import org.obiba.onyx.quartz.core.wicket.toggle.ToggleLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +57,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
 
   public DefaultQuestionPanel(String id, Question question) {
     super(id, question);
+    setOutputMarkupId(true);
 
     if(question.getNumber() != null) {
       add(new Label("number", question.getNumber()));
@@ -66,9 +67,13 @@ public class DefaultQuestionPanel extends QuestionPanel {
     add(new Label("label", new QuestionnaireStringResourceModel(question, "label")));
     QuestionnaireStringResourceModel helpModel = new QuestionnaireStringResourceModel(question, "help");
     if(helpModel.getString() != null && !helpModel.getString().trim().equals("")) {
-      add(new HelpPanel("help", helpModel));
+      Label helpContent = new Label("help", helpModel);
+      helpContent.setEscapeModelStrings(false);
+      add(helpContent);
+      add(new ToggleLink("helpToggle", new StringResourceModel("Help", this, null), new StringResourceModel("HideHelp", this, null), helpContent));
     } else {
-      add(new EmptyPanel("help"));
+      add(new EmptyPanel("helpToggle").setVisible(false));
+      add(new EmptyPanel("help").setVisible(false));
     }
     add(new Label("instructions", new QuestionnaireStringResourceModel(question, "instructions")));
     add(new Label("caption", new QuestionnaireStringResourceModel(question, "caption")));
@@ -296,41 +301,6 @@ public class DefaultQuestionPanel extends QuestionPanel {
 
     public boolean isSelected() {
       return selection;
-    }
-
-  }
-
-  @SuppressWarnings("serial")
-  private class HelpPanel extends Fragment {
-
-    private Label helpContent;
-
-    private Label helpLabel;
-
-    public HelpPanel(String id, IModel helpModel) {
-      super(id, "helpFragment", DefaultQuestionPanel.this);
-      setOutputMarkupId(true);
-
-      AjaxLink link = new AjaxLink("helpLink") {
-
-        @Override
-        public void onClick(AjaxRequestTarget target) {
-          helpContent.setVisible(!helpContent.isVisible());
-          if(helpContent.isVisible()) {
-            helpLabel.setModel(new StringResourceModel("HideHelp", DefaultQuestionPanel.this, null));
-          } else {
-            helpLabel.setModel(new StringResourceModel("Help", DefaultQuestionPanel.this, null));
-          }
-          target.addComponent(HelpPanel.this);
-        }
-
-      };
-      add(link);
-
-      link.add(helpLabel = new Label("helpLabel", new StringResourceModel("Help", DefaultQuestionPanel.this, null)));
-
-      add(helpContent = new Label("helpContent", helpModel));
-      helpContent.setVisible(false);
     }
 
   }
