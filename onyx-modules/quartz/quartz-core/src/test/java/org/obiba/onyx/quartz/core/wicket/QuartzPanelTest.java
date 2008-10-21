@@ -16,6 +16,7 @@ import static org.easymock.EasyMock.verify;
 
 import java.util.Locale;
 
+import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.test.ApplicationContextMock;
@@ -32,13 +33,20 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
+import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultPageLayoutFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultQuestionPanelFactory;
 import org.obiba.wicket.test.MockSpringApplication;
 import org.springframework.context.MessageSource;
-
 
 public class QuartzPanelTest {
 
@@ -51,11 +59,11 @@ public class QuartzPanelTest {
   private QuestionnaireBundleManager questionnaireBundleManagerMock;
 
   private EntityQueryService queryServiceMock;
-  
+
   private QuestionnaireBundle questionnaireBundleMock;
-  
+
   private MessageSource messageSourceMock;
-  
+
   @Before
   public void setUp() {
     ApplicationContextMock mockCtx = new ApplicationContextMock();
@@ -65,35 +73,56 @@ public class QuartzPanelTest {
     queryServiceMock = createMock(EntityQueryService.class);
     questionnaireBundleMock = createMock(QuestionnaireBundle.class);
     messageSourceMock = createMock(MessageSource.class);
-    
+
     mockCtx.putBean("activeInterviewService", activeInterviewServiceMock);
     mockCtx.putBean("activeQuestionnaireAdministrationService", activeQuestionnaireAdministrationServiceMock);
     mockCtx.putBean("questionnaireBundleManager", questionnaireBundleManagerMock);
     mockCtx.putBean("queryService", queryServiceMock);
     mockCtx.putBean("moduleRegistry", new ModuleRegistry());
 
+    PageLayoutFactoryRegistry pageLayoutFactoryRegistryMock = new PageLayoutFactoryRegistry();
+    pageLayoutFactoryRegistryMock.registerFactory(new DefaultPageLayoutFactory());
+    mockCtx.putBean("pageLayoutFactoryRegistry", pageLayoutFactoryRegistryMock);
+
+    QuestionPanelFactoryRegistry questionPanelFactoryRegistryMock = new QuestionPanelFactoryRegistry();
+    questionPanelFactoryRegistryMock.registerFactory(new DefaultQuestionPanelFactory());
+    mockCtx.putBean("questionPanelFactoryRegistry", questionPanelFactoryRegistryMock);
+
     MockSpringApplication application = new MockSpringApplication();
+    application.setHomePage(Page.class);
     application.setApplicationContext(mockCtx);
     tester = new WicketTester(application);
   }
 
   @Test
   public void testOnStepOutNext() {
-    
-    expect(activeInterviewServiceMock.getParticipant()).andReturn(newTestParticipant());
+
+    final Questionnaire questionnaire = createQuestionnaire();
+    expect(activeInterviewServiceMock.getParticipant()).andReturn(newTestParticipant()).times(2);
     expect(activeInterviewServiceMock.getInterview()).andReturn(newTestInterview());
-    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(newTestQuestionnaire()).times(4);
-    expect((questionnaireBundleManagerMock.getBundle("QUE1"))).andReturn(questionnaireBundleMock).times(3);
-    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(newTestQuestionnaire());
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).times(4);
+    expect((questionnaireBundleManagerMock.getBundle("HealthQuestionnaire"))).andReturn(questionnaireBundleMock).times(3);
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire);
     activeQuestionnaireAdministrationServiceMock.setQuestionnaire((Questionnaire) EasyMock.anyObject());
-    
-    //calls for the label and description properties in LanguageSelectorPanel
+
+    // calls for the label and description properties in LanguageSelectorPanel
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(Locale.FRENCH).times(4);
-    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSourceMock).times(2);
-    expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).times(2);
-    expect(messageSourceMock.getMessage("", null, Locale.FRENCH)).andReturn("").times(2);
-    
-    //expect(activeQuestionnaireAdministrationServiceMock.start((Participant) (EasyMock.anyObject()), (Locale) (EasyMock.anyObject()))).andReturn(new QuestionnaireParticipant());
+    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSourceMock).times(3);
+    expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).times(3);
+    expect(messageSourceMock.getMessage("", null, Locale.FRENCH)).andReturn("").times(3);
+
+    expect(activeQuestionnaireAdministrationServiceMock.start((Participant) (EasyMock.anyObject()), (Locale) (EasyMock.anyObject()))).andReturn(new QuestionnaireParticipant());
+    expect(activeQuestionnaireAdministrationServiceMock.startPage()).andReturn(questionnaire.getPages().get(0));
+
+    // calls for Panel creation on next link click
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).times(11);
+    expect((questionnaireBundleManagerMock.getBundle("HealthQuestionnaire"))).andReturn(questionnaireBundleMock).times(10);
+    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(Locale.FRENCH).times(10);
+    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSourceMock).times(9);
+    expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).times(9);
+    expect(messageSourceMock.getMessage("", null, Locale.FRENCH)).andReturn("").times(9);
+
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer((QuestionCategory) EasyMock.anyObject())).andReturn(new CategoryAnswer()).times(3);
 
     replay(activeInterviewServiceMock);
     replay(activeQuestionnaireAdministrationServiceMock);
@@ -101,7 +130,7 @@ public class QuartzPanelTest {
     replay(questionnaireBundleMock);
     replay(queryServiceMock);
     replay(messageSourceMock);
-    
+
     tester.startPanel(new TestPanelSource() {
 
       private static final long serialVersionUID = 1L;
@@ -109,7 +138,7 @@ public class QuartzPanelTest {
       public Panel getTestPanel(String panelId) {
 
         QuartzPanel quartzPanel = new QuartzPanel(panelId, newTestStage());
-        quartzPanel.setModel(new Model(newTestQuestionnaire()));
+        quartzPanel.setModel(new Model(questionnaire));
         return (quartzPanel);
 
       }
@@ -118,7 +147,7 @@ public class QuartzPanelTest {
     FormTester formTester = tester.newFormTester("panel:content:form");
     formTester.select("step:panel:localeSelect", 1);
 
-    //tester.executeAjaxEvent("panel:content:form:nextLink", "onclick");
+    tester.executeAjaxEvent("panel:content:form:nextLink", "onclick");
 
     verify(activeInterviewServiceMock);
     verify(activeQuestionnaireAdministrationServiceMock);
@@ -154,18 +183,21 @@ public class QuartzPanelTest {
   private Stage newTestStage() {
     Stage s = new Stage();
 
-    s.setName("QUE1");
+    s.setName("HealthQuestionnaire");
 
     return (s);
   }
-  
-  private Questionnaire newTestQuestionnaire() {
-    Questionnaire q = new Questionnaire("QUE1", "1.0");
-    
+
+  public Questionnaire createQuestionnaire() {
+    QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
+
+    builder.withSection("SB").withSection("GENDER").withPage("P1").withQuestion("Q1").withCategories("1", "2", "3");
+
+    Questionnaire q = builder.getQuestionnaire();
     q.addLocale(Locale.FRENCH);
     q.addLocale(Locale.ENGLISH);
-    
+
     return q;
   }
-  
+
 }
