@@ -143,6 +143,8 @@ public class CategoryAnswer extends AbstractEntity {
   public Data getData() {
     Data data = null;
 
+    if(getDataType() == null) return null;
+
     switch(getDataType()) {
 
     case DATE:
