@@ -41,9 +41,7 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
     List<Page> pages = questionnaire.getPages();
 
     for(Page page : pages) {
-      // TODO: Replace "true" with actual condition when required NavigationStrategySupport method has been implemented.
-      if(page.getQuestions().isEmpty() || true) {// NavigationStrategySupport.hasNonAnswerSourceQuestion(service,
-        // page)) {
+      if(page.getQuestions().isEmpty() || NavigationStrategySupport.hasNonAnswerSourceQuestion(service, page)) {
         startPage = page;
         break;
       }
@@ -74,9 +72,7 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
     for(int i = currentPageIndex + 1; i < pages.size(); i++) {
       Page page = pages.get(i);
 
-      // TODO: Replace "true" with actual condition when required NavigationStrategySupport method has been
-      // implemented (as well as underlying service methods).
-      if(page.getQuestions().isEmpty() || true) {// NavigationStrategySupport.hasQuestionToBeAnswered(service, page)) {
+      if(page.getQuestions().isEmpty() || NavigationStrategySupport.hasQuestionToBeAnswered(service, page)) {
         nextPage = page;
         break;
       }
