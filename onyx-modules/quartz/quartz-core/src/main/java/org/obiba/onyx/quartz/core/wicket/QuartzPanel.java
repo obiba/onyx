@@ -45,11 +45,9 @@ public class QuartzPanel extends Panel implements IEngineComponentAware {
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
-  
+
   @SpringBean
   private ModuleRegistry moduleRegistry;
-
-  private StageModel model;
 
   private ActionWindow actionWindow;
 
@@ -58,13 +56,11 @@ public class QuartzPanel extends Panel implements IEngineComponentAware {
   @SuppressWarnings("serial")
   public QuartzPanel(String id, Stage stage) {
     super(id);
-
+    setModel(new StageModel(moduleRegistry, stage.getName()));
     final Questionnaire questionnaire = questionnaireBundleManager.getBundle(stage.getName()).getQuestionnaire();
-    
+
     activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
-    if (activeQuestionnaireAdministrationService.getLanguage() == null) setDefaultLanguage();
-    
-    model = new StageModel(moduleRegistry, stage.getName());
+    if(activeQuestionnaireAdministrationService.getLanguage() == null) setDefaultLanguage();
 
     add(new WizardPanel("content", new Model(questionnaire)) {
       @Override
@@ -73,19 +69,19 @@ public class QuartzPanel extends Panel implements IEngineComponentAware {
 
           @Override
           public void onCancel(AjaxRequestTarget target) {
-            IStageExecution exec = activeInterviewService.getStageExecution((Stage) model.getObject());
+            IStageExecution exec = activeInterviewService.getStageExecution(getStage());
             ActionDefinition actionDef = exec.getActionDefinition(ActionType.STOP);
             if(actionDef != null) {
-              actionWindow.show(target, model, actionDef);
+              actionWindow.show(target, getModel(), actionDef);
             }
           }
 
           @Override
           public void onFinish(AjaxRequestTarget target, Form form) {
-            IStageExecution exec = activeInterviewService.getStageExecution((Stage) model.getObject());
+            IStageExecution exec = activeInterviewService.getStageExecution(getStage());
             ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
             if(actionDef != null) {
-              actionWindow.show(target, model, actionDef);
+              actionWindow.show(target, getModel(), actionDef);
             }
           }
 
@@ -117,12 +113,16 @@ public class QuartzPanel extends Panel implements IEngineComponentAware {
     return feedbackPanel;
   }
 
+  protected Stage getStage() {
+    return (Stage) getModelObject();
+  }
+
   private void setDefaultLanguage() {
     Locale sessionLocale = getSession().getLocale();
-    
-    if (activeQuestionnaireAdministrationService.getQuestionnaire().getLocales().contains(sessionLocale))
-      activeQuestionnaireAdministrationService.setDefaultLanguage(sessionLocale);
-    else activeQuestionnaireAdministrationService.setDefaultLanguage(activeQuestionnaireAdministrationService.getQuestionnaire().getLocales().get(0));
+
+    if(activeQuestionnaireAdministrationService.getQuestionnaire().getLocales().contains(sessionLocale)) activeQuestionnaireAdministrationService.setDefaultLanguage(sessionLocale);
+    else
+      activeQuestionnaireAdministrationService.setDefaultLanguage(activeQuestionnaireAdministrationService.getQuestionnaire().getLocales().get(0));
   }
-  
+
 }
