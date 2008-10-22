@@ -15,6 +15,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.IPageLayoutFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -39,6 +40,8 @@ public class PageStepPanel extends WizardStepPanel {
 
   private Page questionnairePage;
 
+  private PageLayout pageLayout;
+
   //
   // Constructors
   //
@@ -56,7 +59,8 @@ public class PageStepPanel extends WizardStepPanel {
     IPageLayoutFactory pageLayoutFactory = pageLayoutFactoryRegistry.getFactory(questionnairePage.getUIFactoryName());
 
     // Create the page layout component, using the configured factory.
-    add(pageLayoutFactory.createLayout(getContentId(), questionnairePage));
+    pageLayout = pageLayoutFactory.createLayout(getContentId(), questionnairePage);
+    add(pageLayout);
   }
 
   //
@@ -78,12 +82,14 @@ public class PageStepPanel extends WizardStepPanel {
   @Override
   public void onStepOutPrevious(WizardForm form, AjaxRequestTarget target) {
     QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
+    pageLayout.onPrevious(target);
     setPreviousStep(questionnaireWizardForm.getPreviousStep());
   }
 
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
+    pageLayout.onNext(target);
     setNextStep(questionnaireWizardForm.getNextStep());
   }
 
