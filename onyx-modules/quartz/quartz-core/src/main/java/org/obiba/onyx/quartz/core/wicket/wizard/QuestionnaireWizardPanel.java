@@ -24,7 +24,7 @@ public class QuestionnaireWizardPanel extends WizardPanel {
   //
 
   @SpringBean
-  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+  private transient ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   private QuestionnaireWizardForm wizardForm;
 

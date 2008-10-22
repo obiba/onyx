@@ -88,6 +88,17 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
 
   public Page startPage() {
     currentPage = navigationStrategy.getPageOnStart(this);
+
+    currentQuestionnaireParticipant = getQuestionnaireParticipant();
+
+    if(currentQuestionnaireParticipant != null) {
+      // Only update the participant's resume page if it is currently null.
+      if(currentQuestionnaireParticipant.getResumePage() == null) {
+        currentQuestionnaireParticipant.setResumePage(currentPage != null ? currentPage.getName() : null);
+        getPersistenceManager().save(currentQuestionnaireParticipant);
+      }
+    }
+
     return currentPage;
   }
 

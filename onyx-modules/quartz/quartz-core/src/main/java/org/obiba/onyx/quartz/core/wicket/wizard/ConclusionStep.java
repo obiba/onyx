@@ -45,11 +45,17 @@ public class ConclusionStep extends WizardStepPanel {
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
     form.getNextLink().setEnabled(false);
     form.getPreviousLink().setEnabled(true);
+    ((QuestionnaireWizardForm) form).getInterruptLink().setEnabled(false);
     form.getFinishLink().setEnabled(true);
 
     if(target != null) {
-      target.addComponent(form.getPreviousLink());
-      target.addComponent(form.getFinishLink());
+      target.addComponent(form);
     }
+  }
+
+  @Override
+  public void onStepOutPrevious(WizardForm form, AjaxRequestTarget target) {
+    QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
+    setPreviousStep(questionnaireWizardForm.getPreviousStep());
   }
 }

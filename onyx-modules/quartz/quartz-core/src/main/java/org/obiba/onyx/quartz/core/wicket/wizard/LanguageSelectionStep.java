@@ -26,23 +26,23 @@ public class LanguageSelectionStep extends WizardStepPanel {
   private static final long serialVersionUID = 5343357448108404508L;
 
   private LanguageSelectorPanel selectorPanel;
-  
+
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
-  
+
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
-  
+
   @SuppressWarnings("serial")
   public LanguageSelectionStep(String id) {
     super(id);
     setOutputMarkupId(true);
 
-    add(new Label(getTitleId(), new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "label", null)));
+    add(new Label(getTitleId(), new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "label")));
 
     add(selectorPanel = new LanguageSelectorPanel(getContentId()));
   }
-  
+
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     QuestionnaireWizardForm questionnaireForm = (QuestionnaireWizardForm) form;
@@ -58,13 +58,13 @@ public class LanguageSelectionStep extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    // No previous step
     form.getPreviousLink().setEnabled(false);
     form.getNextLink().setEnabled(true);
+    ((QuestionnaireWizardForm) form).getInterruptLink().setEnabled(false);
     form.getFinishLink().setEnabled(false);
+
     if(target != null) {
-      target.addComponent(form.getPreviousLink());
-      target.addComponent(form.getNextLink());
+      target.addComponent(form);
     }
   }
 }

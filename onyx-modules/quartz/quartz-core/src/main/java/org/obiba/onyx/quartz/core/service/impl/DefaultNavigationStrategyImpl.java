@@ -96,9 +96,16 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
 
     Page page = getPageOnStart(service);
 
-    while(!page.getName().equals(currentPage.getName())) {
-      previousPage = page;
-      page = getPageOnNext(service, page);
+    if(currentPage != null) {
+      while(!page.getName().equals(currentPage.getName())) {
+        previousPage = page;
+        page = getPageOnNext(service, page);
+      }
+    } else { // currentPage == null (i.e., we are at the conclusion)
+      while(page != null) {
+        previousPage = page;
+        page = getPageOnNext(service, page);
+      }
     }
 
     return previousPage;

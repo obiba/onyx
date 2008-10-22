@@ -10,6 +10,7 @@
 package org.obiba.onyx.quartz.core.wicket.wizard;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.form.Form;
@@ -42,10 +43,10 @@ public class QuestionnaireWizardForm extends WizardForm {
   //
 
   @SpringBean(name = "activeInterviewService")
-  private ActiveInterviewService activeInterviewService;
+  private transient ActiveInterviewService activeInterviewService;
 
   @SpringBean
-  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+  private transient ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   private WizardStepPanel languageSelectionStep;
 
@@ -67,7 +68,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     setModel(questionnaireModel);
 
     // Add Interrupt button.
-    addInterruptButton();
+    addInterruptLink();
 
     // Language selection step.
     languageSelectionStep = new LanguageSelectionStep(getStepId());
@@ -138,7 +139,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     this.feedbackPanel = feedbackPanel;
   }
 
-  private void addInterruptButton() {
+  private void addInterruptLink() {
     AjaxLink link = new AjaxLink("interrupt") {
       private static final long serialVersionUID = 0L;
 
@@ -150,6 +151,10 @@ public class QuestionnaireWizardForm extends WizardForm {
     };
     link.add(new AttributeModifier("value", true, new StringResourceModel("Interrupt", QuestionnaireWizardForm.this, null)));
     add(link);
+  }
+
+  public Component getInterruptLink() {
+    return get("interrupt");
   }
 
   /**
