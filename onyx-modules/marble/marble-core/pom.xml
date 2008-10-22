@@ -123,6 +123,12 @@
       <artifactId>jscience</artifactId>
       <version>${jscience.version}</version>
     </dependency>
+    
+    <dependency>
+        <groupId>com.lowagie</groupId>
+        <artifactId>itext</artifactId>
+        <version>${lowagie.version}</version>
+    </dependency>     
 
   </dependencies>
 
