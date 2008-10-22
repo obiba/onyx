@@ -40,6 +40,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="activeConsentService" class="org.obiba.onyx.marble.core.service.impl.DefaultActiveConsentServiceImpl"
     scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
+    <property name="activeInterviewService" ref="activeInterviewService" />    
   </bean>
 
 </beans>

@@ -9,7 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.core.service.impl;
 
+import java.util.List;
+
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
@@ -20,6 +23,8 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
 
   private static final Logger log = LoggerFactory.getLogger(DefaultActiveConsentServiceImpl.class);
 
+  private ActiveInterviewService activeInterviewService;
+
   private Consent consent;
 
   public void setConsent(Consent consent) {
@@ -27,10 +32,21 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
   }
 
   public Consent getConsent() {
+    Consent template = null;
+    if(consent == null) {
+      template = new Consent();
+      template.setInterview(activeInterviewService.getInterview());
+      List<Consent> consents = getPersistenceManager().match(template);
+      for(Consent oneConsent : consents) {
+        this.consent = oneConsent;
+      }
+      return consent;
+    }
     return consent;
   }
 
   public ConsentMode getMode() {
+
     return consent.getMode();
   }
 
@@ -46,6 +62,14 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
     } else {
       return false;
     }
+  }
+
+  public ActiveInterviewService getActiveInterviewService() {
+    return activeInterviewService;
+  }
+
+  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
+    this.activeInterviewService = activeInterviewService;
   }
 
 }
