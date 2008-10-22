@@ -93,6 +93,12 @@
     </dependency>
 
     <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>${servlet-api.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket</artifactId>
     </dependency>

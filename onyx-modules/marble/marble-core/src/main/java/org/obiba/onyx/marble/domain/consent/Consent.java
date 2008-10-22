@@ -9,8 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.domain.consent;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 
 import org.obiba.core.domain.AbstractEntity;
@@ -24,12 +26,16 @@ public class Consent extends AbstractEntity {
   @OneToOne
   @JoinColumn(name = "interview_id")
   private Interview interview;
-  
+
   private ConsentMode mode;
-  
+
   private String language;
-  
+
   private Boolean accepted;
+
+  @Lob
+  @Column(length = Integer.MAX_VALUE)
+  private byte[] pdfForm;
 
   public ConsentMode getMode() {
     return mode;
@@ -62,5 +68,13 @@ public class Consent extends AbstractEntity {
   public void setInterview(Interview interview) {
     this.interview = interview;
   }
-  
+
+  public byte[] getPdfForm() {
+    return pdfForm;
+  }
+
+  public void setPdfForm(byte[] pdfForm) {
+    this.pdfForm = pdfForm;
+  }
+
 }

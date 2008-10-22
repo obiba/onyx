@@ -40,12 +40,12 @@ public abstract class ConsentWizardForm extends WizardForm {
 
     activeConsentService.setConsent((Consent) interviewConsentModel.getObject());
 
-    electronicConsentStep = new ElectronicConsentStep(getStepId());
     consentConfirmationStep = new ConsentConfirmationStep(getStepId());
+    electronicConsentStep = new ElectronicConsentStep(getStepId(), consentConfirmationStep);
     consentModeSelectionStep = new ConsentModeSelectionStep(getStepId(), electronicConsentStep, consentConfirmationStep);
-    
+
     WizardStepPanel startStep = setupStaticWizardFlow();
-   
+
     startStep.onStepInNext(this, null);
     startStep.handleWizardState(this, null);
     add(startStep);
@@ -54,9 +54,8 @@ public abstract class ConsentWizardForm extends WizardForm {
 
   private WizardStepPanel setupStaticWizardFlow() {
     WizardStepPanel startStep = consentModeSelectionStep;
-    startStep.setPreviousStep(startStep);  
+    startStep.setPreviousStep(startStep);
     electronicConsentStep.setPreviousStep(startStep);
-    electronicConsentStep.setNextStep(consentConfirmationStep);
     return startStep;
   }
 

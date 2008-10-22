@@ -13,11 +13,14 @@ import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
 
 public interface ActiveConsentService {
-  
+
   public Consent getConsent();
 
   public void setConsent(Consent consent);
-  
+
   public ConsentMode getMode();
-  
+
+  public void update();
+
+  public boolean validateConsent();
 }

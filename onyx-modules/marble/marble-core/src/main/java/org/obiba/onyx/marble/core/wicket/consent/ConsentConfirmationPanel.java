@@ -61,7 +61,4 @@ public class ConsentConfirmationPanel extends Panel {
     return consentConfirmation;
   }
 
-  public void save() {
-  }
-
 }

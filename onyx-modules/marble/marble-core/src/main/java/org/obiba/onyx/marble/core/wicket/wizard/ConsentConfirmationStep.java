@@ -41,8 +41,4 @@ public class ConsentConfirmationStep extends WizardStepPanel {
     setContent(target, consentConfirmationPanel = new ConsentConfirmationPanel(getContentId()));
   }
 
-  @Override
-  public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
-    consentConfirmationPanel.save();
-  }
 }

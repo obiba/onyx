@@ -24,6 +24,7 @@ import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
+import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.core.wicket.wizard.ConsentWizardForm;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.wicket.IEngineComponentAware;
@@ -45,23 +46,26 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
   private ActiveInterviewService activeInterviewService;
 
   @SpringBean
+  private ActiveConsentService activeConsentService;
+
+  @SpringBean
   private ModuleRegistry moduleRegistry;
 
   private ActionWindow actionWindow;
 
   private FeedbackPanel feedbackPanel;
-  
+
   private MarbleModel model;
-  
+
   Consent interviewConsent;
 
   @SuppressWarnings("serial")
   public MarblePanel(String id, Stage stage) {
     super(id);
-    
+
     Consent interviewConsent = new Consent();
     interviewConsent.setInterview(activeInterviewService.getInterview());
-    
+
     model = new MarbleModel(new StageModel(moduleRegistry, stage.getName()), new Model(interviewConsent));
 
     add(new WizardPanel("content", model.getConsentModel()) {
@@ -83,6 +87,7 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
           public void onFinish(AjaxRequestTarget target, Form form) {
             IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
             ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
+            activeConsentService.update();
             if(actionDef != null) {
               actionWindow.show(target, model.getStageModel(), actionDef);
             }
@@ -103,7 +108,7 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
 
     });
   }
-  
+
   @SuppressWarnings("serial")
   private class MarbleModel implements Serializable {
     private IModel consentModel;
@@ -116,13 +121,13 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
     }
 
     public Consent getConsent() {
-      return (Consent)consentModel.getObject();
+      return (Consent) consentModel.getObject();
     }
-    
+
     public IModel getConsentModel() {
       return consentModel;
     }
-    
+
     public Stage getStage() {
       return (Stage) stageModel.getObject();
     }
@@ -132,7 +137,7 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
     }
 
   }
-  
+
   public void setActionWindwon(ActionWindow window) {
     this.actionWindow = window;
   }
