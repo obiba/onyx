@@ -52,10 +52,6 @@ public class ConsentModeSelectionPanel extends Panel {
 
     consentModeRadio.setRequired(true);
 
-    // temporary code to force manual consent
-    activeConsentService.getConsent().setMode(ConsentMode.MANUAL);
-    consentModeRadio.setEnabled(false);
-
     return consentModeRadio;
   }
 
