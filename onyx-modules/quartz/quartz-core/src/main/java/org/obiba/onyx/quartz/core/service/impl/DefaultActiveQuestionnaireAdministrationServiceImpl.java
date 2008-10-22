@@ -56,13 +56,16 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public QuestionnaireParticipant start(Participant participant, Locale language) {
-
-    if(currentQuestionnaireParticipant != null) throw new IllegalArgumentException("Invalid questionnaireParticipant for specified questionnaire");
-
     QuestionnaireParticipant questionnaireParticipantTemplate = new QuestionnaireParticipant();
-    questionnaireParticipantTemplate.setParticipant(participant);
-    questionnaireParticipantTemplate.setQuestionnaireName(currentQuestionnaire.getName());
-    questionnaireParticipantTemplate.setQuestionnaireVersion(currentQuestionnaire.getVersion());
+
+    if(currentQuestionnaireParticipant != null) {
+      questionnaireParticipantTemplate = getQuestionnaireParticipant();
+    } else {
+      questionnaireParticipantTemplate.setParticipant(participant);
+      questionnaireParticipantTemplate.setQuestionnaireName(currentQuestionnaire.getName());
+      questionnaireParticipantTemplate.setQuestionnaireVersion(currentQuestionnaire.getVersion());
+    }
+
     questionnaireParticipantTemplate.setLocale(language);
 
     currentQuestionnaireParticipant = getPersistenceManager().save(questionnaireParticipantTemplate);
