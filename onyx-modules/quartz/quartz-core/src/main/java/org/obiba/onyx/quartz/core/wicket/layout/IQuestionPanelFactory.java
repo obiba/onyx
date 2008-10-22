@@ -9,12 +9,12 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.apache.wicket.model.IModel;
 
 public interface IQuestionPanelFactory {
 
-  public QuestionPanel createPanel(String id, Question question);
-  
+  public QuestionPanel createPanel(String id, IModel questionModel);
+
   public String getName();
-  
+
 }

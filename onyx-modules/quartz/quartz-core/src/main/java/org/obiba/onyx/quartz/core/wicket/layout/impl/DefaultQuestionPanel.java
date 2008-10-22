@@ -50,10 +50,11 @@ public class DefaultQuestionPanel extends QuestionPanel {
 
   private DefaultOpenAnswerDefinitionPanel currentOpenField;
 
-  public DefaultQuestionPanel(String id, Question question) {
-    super(id, question);
+  public DefaultQuestionPanel(String id, IModel questionModel) {
+    super(id, questionModel);
     setOutputMarkupId(true);
 
+    Question question = (Question) getModelObject();
     if(question.getNumber() != null) {
       add(new Label("number", question.getNumber()));
     } else {

@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.wicket.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
@@ -38,28 +39,25 @@ public class PageStepPanel extends WizardStepPanel {
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  private Page questionnairePage;
-
   private PageLayout pageLayout;
 
   //
   // Constructors
   //
 
-  public PageStepPanel(String id, Page questionnairePage) {
-    super(id);
+  public PageStepPanel(String id, IModel pageModel) {
+    super(id, pageModel);
 
     setOutputMarkupId(true);
-
-    this.questionnairePage = questionnairePage;
 
     add(new Label(getTitleId(), new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "label")));
 
     // Get the configured page layout factory.
-    IPageLayoutFactory pageLayoutFactory = pageLayoutFactoryRegistry.getFactory(questionnairePage.getUIFactoryName());
+    Page page = (Page) getModelObject();
+    IPageLayoutFactory pageLayoutFactory = pageLayoutFactoryRegistry.getFactory(page.getUIFactoryName());
 
     // Create the page layout component, using the configured factory.
-    pageLayout = pageLayoutFactory.createLayout(getContentId(), questionnairePage);
+    pageLayout = pageLayoutFactory.createLayout(getContentId(), pageModel);
     add(pageLayout);
   }
 
@@ -93,11 +91,4 @@ public class PageStepPanel extends WizardStepPanel {
     setNextStep(questionnaireWizardForm.getNextStep());
   }
 
-  //
-  // Methods
-  //
-
-  public Page getQuestionnairePage() {
-    return questionnairePage;
-  }
 }

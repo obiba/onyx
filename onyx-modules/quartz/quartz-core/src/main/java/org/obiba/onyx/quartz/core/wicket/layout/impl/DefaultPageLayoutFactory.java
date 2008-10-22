@@ -8,14 +8,14 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.wicket.layout.IPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
 
 public class DefaultPageLayoutFactory implements IPageLayoutFactory {
 
-  public PageLayout createLayout(String id, Page page) {
-    return new DefaultPageLayout(id, page);
+  public PageLayout createLayout(String id, IModel pageModel) {
+    return new DefaultPageLayout(id, pageModel);
   }
 
   public String getName() {

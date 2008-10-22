@@ -25,6 +25,7 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -164,7 +165,7 @@ public class QuestionnaireWizardForm extends WizardForm {
    */
   public WizardStepPanel getFirstPageStep() {
     Page startPage = activeQuestionnaireAdministrationService.startPage();
-    return new PageStepPanel(getStepId(), startPage);
+    return new PageStepPanel(getStepId(), new QuestionnaireModel(startPage));
   }
 
   /**
@@ -179,7 +180,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     Page previousPage = activeQuestionnaireAdministrationService.previousPage();
 
     if(previousPage != null) {
-      return new PageStepPanel(getStepId(), previousPage);
+      return new PageStepPanel(getStepId(), new QuestionnaireModel(previousPage));
     } else {
       return languageSelectionStep;
     }
@@ -197,7 +198,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     Page nextPage = activeQuestionnaireAdministrationService.nextPage();
 
     if(nextPage != null) {
-      return new PageStepPanel(getStepId(), nextPage);
+      return new PageStepPanel(getStepId(), new QuestionnaireModel(nextPage));
     } else {
       return conclusionStep;
     }
@@ -207,7 +208,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     Page resumePage = activeQuestionnaireAdministrationService.resumePage();
 
     if(resumePage != null) {
-      return new PageStepPanel(getStepId(), resumePage);
+      return new PageStepPanel(getStepId(), new QuestionnaireModel(resumePage));
     } else {
       return conclusionStep;
     }

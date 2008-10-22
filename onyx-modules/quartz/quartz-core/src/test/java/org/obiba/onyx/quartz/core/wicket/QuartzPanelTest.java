@@ -100,15 +100,13 @@ public class QuartzPanelTest {
     final Questionnaire questionnaire = createQuestionnaire();
     expect(activeInterviewServiceMock.getParticipant()).andReturn(newTestParticipant()).times(2);
     expect(activeInterviewServiceMock.getInterview()).andReturn(newTestInterview());
-    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).times(4);
     expect((questionnaireBundleManagerMock.getBundle("HealthQuestionnaire"))).andReturn(questionnaireBundleMock).times(3);
-    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire);
-    // activeQuestionnaireAdministrationServiceMock.setQuestionnaire((Questionnaire) EasyMock.anyObject());
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
 
     // calls for the label and description properties in LanguageSelectorPanel
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(Locale.FRENCH).times(4);
-    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSourceMock).times(3);
-    expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).times(3);
+    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSourceMock).anyTimes();
+    expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).atLeastOnce();
     expect(messageSourceMock.getMessage("", null, Locale.FRENCH)).andReturn("").times(3);
 
     expect(activeQuestionnaireAdministrationServiceMock.start((Participant) (EasyMock.anyObject()), (Locale) (EasyMock.anyObject()))).andReturn(new QuestionnaireParticipant());
@@ -116,11 +114,8 @@ public class QuartzPanelTest {
 
     // calls for Panel creation on next link click
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
-    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire);
     expect((questionnaireBundleManagerMock.getBundle("HealthQuestionnaire"))).andReturn(questionnaireBundleMock).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(Locale.FRENCH).anyTimes();
-    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSourceMock).anyTimes();
-    expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).anyTimes();
     expect(messageSourceMock.getMessage("", null, Locale.FRENCH)).andReturn("").anyTimes();
 
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer((QuestionCategory) EasyMock.anyObject())).andReturn(new CategoryAnswer()).times(3);

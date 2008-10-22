@@ -13,9 +13,9 @@ import java.util.Iterator;
 
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 
 public class PageQuestionsProvider implements IDataProvider {
 
@@ -33,7 +33,7 @@ public class PageQuestionsProvider implements IDataProvider {
   }
 
   public IModel model(Object object) {
-    return new Model((Question) object);
+    return new QuestionnaireModel((Question) object);
   }
 
   public int size() {

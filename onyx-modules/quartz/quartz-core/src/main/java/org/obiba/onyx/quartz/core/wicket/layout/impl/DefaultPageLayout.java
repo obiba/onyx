@@ -16,6 +16,7 @@ import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -35,9 +36,10 @@ public class DefaultPageLayout extends PageLayout {
   private List<QuestionPanel> questionPanels = new ArrayList<QuestionPanel>();
 
   @SuppressWarnings("serial")
-  public DefaultPageLayout(String id, Page page) {
-    super(id, page);
+  public DefaultPageLayout(String id, IModel pageModel) {
+    super(id, pageModel);
 
+    Page page = (Page) getModelObject();
     add(new Label("section", new QuestionnaireStringResourceModel(page.getSection(), "label")));
 
     add(new Label("label", new QuestionnaireStringResourceModel(page, "label")));
@@ -47,7 +49,7 @@ public class DefaultPageLayout extends PageLayout {
       @Override
       protected void populateItem(Item item) {
         Question question = (Question) item.getModelObject();
-        QuestionPanel panel = questionPanelFactoryRegistry.getFactory(question.getUIFactoryName()).createPanel("question", question);
+        QuestionPanel panel = questionPanelFactoryRegistry.getFactory(question.getUIFactoryName()).createPanel("question", item.getModel());
         questionPanels.add(panel);
         item.add(panel);
       }

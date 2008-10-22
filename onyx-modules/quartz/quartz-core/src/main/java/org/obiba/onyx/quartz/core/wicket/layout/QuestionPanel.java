@@ -11,10 +11,10 @@ package org.obiba.onyx.quartz.core.wicket.layout;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,8 +30,8 @@ public abstract class QuestionPanel extends Panel {
   @SpringBean
   protected ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  public QuestionPanel(String id, Question question) {
-    super(id, new QuestionnaireModel(question));
+  public QuestionPanel(String id, IModel questionModel) {
+    super(id, questionModel);
   }
 
   /**

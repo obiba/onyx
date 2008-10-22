@@ -8,14 +8,14 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 
 public class DefaultQuestionPanelFactory implements IQuestionPanelFactory {
 
-  public QuestionPanel createPanel(String id, Question question) {
-    return new DefaultQuestionPanel(id, question);
+  public QuestionPanel createPanel(String id, IModel questionModel) {
+    return new DefaultQuestionPanel(id, questionModel);
   }
 
   public String getName() {

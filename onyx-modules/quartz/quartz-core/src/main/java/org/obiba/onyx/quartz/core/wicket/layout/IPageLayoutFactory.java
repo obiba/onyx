@@ -9,17 +9,17 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.apache.wicket.model.IModel;
 
 /**
  * Page layout factory.
  * @author Yannick Marcon
- *
+ * 
  */
 public interface IPageLayoutFactory {
 
-   public PageLayout createLayout(String id, Page page);
-   
-   public String getName();
-  
+  public PageLayout createLayout(String id, IModel pageModel);
+
+  public String getName();
+
 }

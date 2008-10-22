@@ -11,8 +11,7 @@ package org.obiba.onyx.quartz.core.wicket.layout;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
+import org.apache.wicket.model.IModel;
 
 /**
  * Page layout definition.
@@ -21,8 +20,8 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
  */
 public abstract class PageLayout extends Panel {
 
-  public PageLayout(String id, Page page) {
-    super(id, new QuestionnaireModel(page));
+  public PageLayout(String id, IModel pageModel) {
+    super(id, pageModel);
   }
 
   /**
