@@ -38,7 +38,6 @@ public class MicaInProgressState extends AbstractMicaStageState implements Initi
   public void complete(Action action) {
     log.info("Mica Stage {} is completing", super.getStage().getName());
     // Finish current conclusion
-    getActiveConclusionService().validate();
     castEvent(TransitionEvent.COMPLETE);
   }
 

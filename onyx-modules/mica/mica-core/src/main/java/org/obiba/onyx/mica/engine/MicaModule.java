@@ -7,6 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package org.obiba.onyx.mica.engine;
 
 import java.util.List;
@@ -56,13 +57,23 @@ public class MicaModule implements Module, ApplicationContextAware {
     AbstractStageState ready = (AbstractStageState) applicationContext.getBean("micaReadyState");
     AbstractStageState inProgress = (AbstractStageState) applicationContext.getBean("micaInProgressState");
     AbstractStageState completed = (AbstractStageState) applicationContext.getBean("micaCompletedState");
-   
+    AbstractStageState notApplicable = (AbstractStageState) applicationContext.getBean("micaNotApplicableState");
+    
+    exec.addEdge(ready, TransitionEvent.NOTAPPLICABLE, notApplicable);
     exec.addEdge(ready, TransitionEvent.START, inProgress);
+    exec.addEdge(ready, TransitionEvent.CONTRAINDICATED, notApplicable);
     exec.addEdge(inProgress, TransitionEvent.CANCEL, ready);
     exec.addEdge(inProgress, TransitionEvent.COMPLETE, completed);
+    exec.addEdge(inProgress, TransitionEvent.NOTAPPLICABLE, notApplicable);
     exec.addEdge(completed, TransitionEvent.CANCEL, ready);
-    
-    // if (dependsOn != null && dependsOn.length>0) {
+    exec.addEdge(completed, TransitionEvent.NOTAPPLICABLE, notApplicable);
+    exec.addEdge(completed, TransitionEvent.CONTRAINDICATED, notApplicable);
+
+    exec.addEdge(notApplicable, TransitionEvent.VALID, ready);
+    exec.addEdge(notApplicable, TransitionEvent.INVALID, waiting);
+
+    exec.addEdge(waiting, TransitionEvent.NOTAPPLICABLE, notApplicable);
+    exec.addEdge(waiting, TransitionEvent.CONTRAINDICATED, notApplicable);
     exec.addEdge(waiting, TransitionEvent.VALID, ready);
     exec.addEdge(ready, TransitionEvent.INVALID, waiting);
     exec.addEdge(completed, TransitionEvent.INVALID, waiting);

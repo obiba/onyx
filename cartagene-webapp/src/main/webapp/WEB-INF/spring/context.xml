@@ -12,11 +12,13 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
   <import resource="hsql-datasource.xml" />
   <!--import resource="mysql-datasource.xml" /-->
 
+
   <!-- Import Onyx and modules core context -->
   <import resource="classpath:META-INF/spring/onyx-core/context.xml" />
   <import resource="classpath:META-INF/spring/jade-core/context.xml" />
   <import resource="classpath:META-INF/spring/marble-core/context.xml" />
   <import resource="classpath:META-INF/spring/quartz-core/context.xml" />
+  <import resource="classpath:META-INF/spring/mica-core/context.xml" />
   
   <import resource="beans.xml" />
 

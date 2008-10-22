@@ -22,7 +22,7 @@
     <module>marble</module>
     <module>jade</module>
     <module>quartz</module>
-    <!-- <module>mica</module> -->
+    <module>mica</module>
   </modules>
 
   <dependencyManagement>

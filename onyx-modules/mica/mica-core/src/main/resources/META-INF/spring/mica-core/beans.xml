@@ -7,18 +7,11 @@
 
   <tx:annotation-driven transaction-manager="transactionManager" />
   
-  <!--
-  <bean name="consentDependency" class="org.obiba.onyx.mica.engine.state.MicaStageDependencyCondition">
-    <property name="moduleRegistry" ref="moduleRegistry" />
-	<property name="moduleName" value="marble" />
-  </bean>
-  -->
-  
   <bean name="consentDependency" class="org.obiba.onyx.engine.ConsentStageDependencyCondition">
     <property name="stageName" value="CON" />
   </bean>
   
-  <bean name="jadeDependency" class="org.obiba.onyx.mica.engine.state.MicaStageDependencyCondition">
+  <bean name="jadeDependency" class="org.obiba.onyx.engine.ModuleDependencyCondition">
 	<property name="moduleRegistry" ref="moduleRegistry" />
 	<property name="moduleName" value="jade" />
   </bean>
@@ -30,13 +23,13 @@
           <property name="name" value="SUM" />
           <property name="module" value="mica"/>
           <property name="description" value="Conclusion" />
-          <property name="displayOrder" value="12" />
+          <property name="displayOrder" value="13" />
           <property name="userSessionService" ref="userSessionService" />
           <property name="stageDependencyCondition">
-	        <bean class="org.obiba.onyx.engine.MultipleModuleDependencyCondition">
-              <property name="leftModuleDependencyCondition" ref="consentDependency" />
+	        <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+              <property name="leftStageDependencyCondition" ref="consentDependency" />
               <property name="operator" value="AND" />
-              <property name="rightModuleDependencyCondition" ref="jadeDependency" />
+              <property name="rightStageDependencyCondition" ref="jadeDependency" />
          	</bean>
 	      </property>
         </bean>
@@ -50,6 +43,10 @@
   <bean id="micaReadyState" parent="baseStageState" class="org.obiba.onyx.mica.engine.state.MicaReadyState"
     scope="prototype">
   </bean>
+  
+  <bean id="micaNotApplicableState" parent="baseStageState" class="org.obiba.onyx.mica.engine.state.MicaNotApplicableState"
+    scope="prototype">
+  </bean>
 
   <bean id="micaInProgressState" parent="baseStageState" class="org.obiba.onyx.mica.engine.state.MicaInProgressState"
     scope="prototype">
@@ -60,7 +57,7 @@
     scope="prototype">
    <property name="activeConclusionService" ref="activeConclusionService" />
   </bean>
-
+  
   <bean id="activeConclusionService" class="org.obiba.onyx.mica.core.service.impl.DefaultActiveConclusionServiceImpl"
     scope="session">
     <property name="persistenceManager" ref="persistenceManager" />

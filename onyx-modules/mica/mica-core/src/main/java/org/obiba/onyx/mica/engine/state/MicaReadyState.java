@@ -30,6 +30,7 @@ public class MicaReadyState extends AbstractMicaStageState implements Initializi
 
   private static final Logger log = LoggerFactory.getLogger(MicaReadyState.class);
 
+  @SuppressWarnings("unused")
   private ActiveConclusionService activeConclusionService;
 
   public void setActiveConsentService(ActiveConclusionService activeConsentService) {
@@ -44,7 +45,6 @@ public class MicaReadyState extends AbstractMicaStageState implements Initializi
   public void execute(Action action) {
     super.execute(action);
     log.info("Mica Stage {} is starting", super.getStage().getName());
-    activeConclusionService.setConclusion(false);
     castEvent(TransitionEvent.START);
   }
 

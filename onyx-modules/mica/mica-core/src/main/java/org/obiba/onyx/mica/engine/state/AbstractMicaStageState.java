@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractMicaStageState extends AbstractStageState {
 
+  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AbstractMicaStageState.class);
   
   private ActiveConclusionService activeConclusionService;
@@ -32,9 +33,8 @@ public abstract class AbstractMicaStageState extends AbstractStageState {
 
   @Override
   public Data getData(String key) {
-    if(key.equals("Consent")) {
-      log.info("getData(" + key +")=" + activeConclusionService.getConclusion());
-      return DataBuilder.buildBoolean(activeConclusionService.getConclusion());
+    if(key.equals("Conclusion")) {
+      return DataBuilder.buildBoolean(activeConclusionService.getConclusion().isAccepted());
     }
     return null;
   }
@@ -43,5 +43,4 @@ public abstract class AbstractMicaStageState extends AbstractStageState {
   protected Boolean areDependenciesCompleted() {
     return super.areDependenciesCompleted();
   }
-
 }
