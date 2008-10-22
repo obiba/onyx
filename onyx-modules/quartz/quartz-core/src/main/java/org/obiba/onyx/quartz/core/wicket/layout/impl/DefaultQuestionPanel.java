@@ -99,15 +99,16 @@ public class DefaultQuestionPanel extends QuestionPanel {
    * @param question
    */
   @SuppressWarnings("serial")
-  private void addRadioGroup(Question question) {
+  private void addRadioGroup(final Question question) {
     final RadioGroup radioGroup = new RadioGroup("categories", new Model());
+    radioGroup.setRequired(!question.isBoilerPlate() && question.isRequired());
     add(radioGroup);
 
     RepeatingView repeater = new RepeatingView("category");
     radioGroup.add(repeater);
 
     for(final QuestionCategory questionCategory : ((Question) getModelObject()).getQuestionCategories()) {
-      WebMarkupContainer item = new WebMarkupContainer(repeater.newChildId());
+      final WebMarkupContainer item = new WebMarkupContainer(repeater.newChildId());
       repeater.add(item);
       item.setModel(new Model(questionCategory));
 
@@ -119,50 +120,93 @@ public class DefaultQuestionPanel extends QuestionPanel {
       radioLabel.add(radioInput);
       radioLabel.add(new Label("label", radioInput.radio.getLabel()).setRenderBodyOnly(true));
 
-      final DefaultOpenAnswerDefinitionPanel openField = createOpenAnswerDefinitionPanel(item, questionCategory);
-
-      radioInput.radio.add(new AjaxEventBehavior("onchange") {
-
-        @Override
-        protected void onEvent(AjaxRequestTarget target) {
-          log.info("radio.onchange.{}.{}", questionCategory.getQuestion().getName(), questionCategory.getCategory().getName());
-          if(currentOpenField != null) {
-            currentOpenField.setFieldEnabled(false);
-            target.addComponent(currentOpenField);
-          }
-          currentOpenField = null;
-          if(openField != null) {
-            openField.setFieldEnabled(true);
-            currentOpenField = openField;
-            target.addComponent(openField);
-          }
-
-          // exclusive choice, only one answer per question
-          activeQuestionnaireAdministrationService.deleteAnswers(questionCategory.getQuestion());
-          // TODO get the open answer
-          activeQuestionnaireAdministrationService.answer(questionCategory, null);
-        }
-
-      });
-
       // previous answer or default selection
       CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(questionCategory);
-      if(previousAnswer != null) {
-        radioGroup.setModel(item.getModel());
-        if(openField != null) {
-          openField.setFieldEnabled(true);
+
+      if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
+        // there is an open field
+        // hide the associated radio and fake selection on click event of open field
+        DefaultOpenAnswerDefinitionPanel openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(questionCategory)) {
+
+          @Override
+          public void onClick(AjaxRequestTarget target) {
+            log.info("open.onclick.{}", questionCategory.getName());
+            // ignore if multiple click in the same open field
+            if(this.equals(currentOpenField)) return;
+
+            // make sure a previously selected open field is not asked for
+            if(currentOpenField != null) {
+              currentOpenField.setRequired(false);
+            }
+            // make the open field active
+            currentOpenField = this;
+            currentOpenField.setRequired(question.isRequired() ? true : false);
+            // make sure radio selection does not conflict with open field selection
+            radioGroup.setModel(new Model());
+            radioGroup.setRequired(false);
+            // update all
+            target.addComponent(DefaultQuestionPanel.this);
+            // exclusive choice, only one answer per question
+            activeQuestionnaireAdministrationService.deleteAnswers(questionCategory.getQuestion());
+            // TODO get the open answer
+            activeQuestionnaireAdministrationService.answer(questionCategory, null);
+          }
+
+        };
+        item.add(openField);
+        radioInput.radio.setVisible(false);
+
+        // previous answer or default selection ?
+        if(previousAnswer != null) {
+          openField.setRequired(question.isRequired() ? true : false);
+          radioGroup.setRequired(false);
+          currentOpenField = openField;
+        } else if(questionCategory.isSelected()) {
+          openField.setRequired(question.isRequired() ? true : false);
+          activeQuestionnaireAdministrationService.answer(questionCategory, null);
+        } else {
+          // make sure it is not asked for as it is not selected at creation time
+          openField.setRequired(false);
         }
-      } else if(questionCategory.isSelected()) {
-        radioGroup.setModel(item.getModel());
-        if(openField != null) {
-          openField.setFieldEnabled(true);
+
+      } else {
+        // no open answer
+        item.add(new EmptyPanel("open").setVisible(false));
+        // persist selection on change event
+        // and make sure there is no active open field previously selected
+        radioInput.radio.add(new AjaxEventBehavior("onchange") {
+
+          @Override
+          protected void onEvent(AjaxRequestTarget target) {
+            log.info("radio.onchange.{}", questionCategory.getName());
+            // make the radio group active for the selection
+            radioGroup.setModel(item.getModel());
+            radioGroup.setRequired(question.isRequired() ? true : false);
+            // make inactive the previously selected open field
+            if(currentOpenField != null) {
+              currentOpenField.setData(null);
+              currentOpenField.setRequired(false);
+              target.addComponent(currentOpenField);
+              currentOpenField = null;
+            }
+            // exclusive choice, only one answer per question
+            activeQuestionnaireAdministrationService.deleteAnswers(questionCategory.getQuestion());
+            // TODO get the open answer
+            activeQuestionnaireAdministrationService.answer(questionCategory, null);
+          }
+
+        });
+
+        // previous answer or default selection ?
+        if(previousAnswer != null) {
+          radioGroup.setModel(item.getModel());
+        } else if(questionCategory.isSelected()) {
+          radioGroup.setModel(item.getModel());
+          activeQuestionnaireAdministrationService.answer(questionCategory, null);
         }
-        activeQuestionnaireAdministrationService.answer(questionCategory, null);
       }
 
     }
-
-    radioGroup.setRequired(!question.isBoilerPlate() && question.isRequired());
     radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
   }
 
@@ -249,8 +293,15 @@ public class DefaultQuestionPanel extends QuestionPanel {
     DefaultOpenAnswerDefinitionPanel openField;
 
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
-      openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(questionCategory));
-      openField.setFieldEnabled(false);
+      openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(questionCategory)) {
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+
+        }
+
+      };
+      // openField.setFieldEnabled(false);
       parent.add(openField);
     } else {
       openField = null;
@@ -270,6 +321,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
 
     public RadioInput(String id, IModel model) {
       super(id, "radioInput", DefaultQuestionPanel.this);
+      setOutputMarkupId(true);
       add(radio = new Radio("radio", model));
     }
 
@@ -285,6 +337,7 @@ public class DefaultQuestionPanel extends QuestionPanel {
 
     public CheckBoxInput(String id, IModel model) {
       super(id, "checkboxInput", DefaultQuestionPanel.this);
+      setOutputMarkupId(true);
       add(checkbox = new CheckBox("checkbox", model));
     }
 

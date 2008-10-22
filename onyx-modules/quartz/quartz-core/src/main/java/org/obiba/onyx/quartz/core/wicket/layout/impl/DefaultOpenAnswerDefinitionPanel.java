@@ -8,6 +8,7 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.basic.Label;
@@ -26,7 +27,7 @@ import org.obiba.onyx.wicket.data.DataField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultOpenAnswerDefinitionPanel extends Panel {
+public abstract class DefaultOpenAnswerDefinitionPanel extends Panel {
 
   private static final long serialVersionUID = 8950481253772691811L;
 
@@ -97,18 +98,43 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
 
     });
 
+    openField.add(new AjaxEventBehavior("onclick") {
+
+      @Override
+      protected void onEvent(AjaxRequestTarget target) {
+        log.info("openField.onClick");
+        DefaultOpenAnswerDefinitionPanel.this.onClick(target);
+      }
+
+    });
+
     // set the label of the field
-    if(openLabel.getString() != null && !openLabel.getString().equals("")) {
+    if(!isEmptyString(openLabel.getString())) {
       openField.setLabel(openLabel);
     } else {
       QuestionnaireStringResourceModel questionCategoryLabel = new QuestionnaireStringResourceModel(questionCategory, "label");
-      if(questionCategoryLabel.getString() != null && !questionCategoryLabel.getString().equals("")) {
+      if(!isEmptyString(questionCategoryLabel.getString())) {
         openField.setLabel(questionCategoryLabel);
       } else {
-        openField.setLabel(unitLabel);
+        if(!isEmptyString(unitLabel.getString())) {
+          openField.setLabel(unitLabel);
+        } else {
+          // last chance : the question label !
+          openField.setLabel(new QuestionnaireStringResourceModel(questionCategory.getQuestion(), "label"));
+        }
       }
     }
   }
+
+  private boolean isEmptyString(String str) {
+    return str == null || str.trim().length() == 0;
+  }
+
+  public void setRequired(boolean required) {
+    openField.setRequired(required);
+  }
+
+  public abstract void onClick(AjaxRequestTarget target);
 
   public Data getData() {
     return data;
