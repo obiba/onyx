@@ -118,8 +118,8 @@ public class ApplicationConfigurationPage extends BasePage {
 
       studyLogo = new FileUploadField("studyLogo");
 
-      // Make sure that the file uploaded is either a "jpg" or a "gif".
-      add(studyLogo.add(new PatternValidator(".*((\\.jpg)|(\\.gif))")).setRequired(true));
+      // Make sure that the file uploaded is either a "jpg", a "gif", a "jpeg" or a "bmp".
+      add(studyLogo.add(new PatternValidator(".*((\\.jpg)|(\\.gif)|(\\.jpeg)|(\\.bmp))")).setRequired(true));
 
       // Set max size of upload to two megabytes. A logo should not be bigger than that!!
       setMaxSize(Bytes.megabytes(2));
