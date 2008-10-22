@@ -11,19 +11,16 @@ package org.obiba.onyx.quartz.core.wicket.model;
 
 import java.util.Locale;
 
-import org.apache.wicket.Application;
-import org.apache.wicket.WicketRuntimeException;
-import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.spring.SpringWebApplication;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.StringReferenceCompatibleMessageFormat;
-import org.springframework.context.ApplicationContext;
+import org.obiba.onyx.wicket.model.SpringDetachableModel;
 import org.springframework.context.MessageSource;
 
-public class QuestionnaireStringResourceModel extends LoadableDetachableModel {
+public class QuestionnaireStringResourceModel extends SpringDetachableModel {
 
   //
   // Constants
@@ -37,7 +34,11 @@ public class QuestionnaireStringResourceModel extends LoadableDetachableModel {
   // Instance Variables
   //
 
-  private transient ApplicationContext context;
+  @SpringBean
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+
+  @SpringBean
+  private QuestionnaireBundleManager bundleManager;
 
   private ILocalizable localizable;
 
@@ -50,6 +51,7 @@ public class QuestionnaireStringResourceModel extends LoadableDetachableModel {
   //
 
   public QuestionnaireStringResourceModel(ILocalizable localizable, String property, Object... stringArgs) {
+    super();
     this.localizable = localizable;
     this.property = property;
 
@@ -66,18 +68,6 @@ public class QuestionnaireStringResourceModel extends LoadableDetachableModel {
 
   @Override
   protected Object load() {
-    // Get the Spring application context.
-    if(context == null) {
-      if(Application.get() instanceof SpringWebApplication) {
-        context = ((SpringWebApplication) Application.get()).getSpringContextLocator().getSpringContext();
-      } else {
-        throw new WicketRuntimeException("Cannot load QuestionnaireStringResourceModel's object (not running within a SpringWebApplication)");
-      }
-    }
-
-    // From the context, get the services required to resolve the string resource.
-    ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService = (ActiveQuestionnaireAdministrationService) context.getBean("activeQuestionnaireAdministrationService");
-    QuestionnaireBundleManager bundleManager = (QuestionnaireBundleManager) context.getBean("questionnaireBundleManager");
 
     // Now use these services to get current questionnaire bundle.
     Locale locale = activeQuestionnaireAdministrationService.getLanguage();

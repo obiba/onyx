@@ -29,7 +29,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.SectionFinder
 /**
  * Find elements in a {@link Questionnaire}.
  * @author Yannick Marcon
- *
+ * 
  */
 public class QuestionnaireFinder {
 
@@ -41,6 +41,14 @@ public class QuestionnaireFinder {
 
   public static QuestionnaireFinder getInstance(Questionnaire questionnaire) {
     return new QuestionnaireFinder(questionnaire);
+  }
+
+  /**
+   * Get the {@link Questionnaire} currently explored.
+   * @return
+   */
+  public Questionnaire getQuestionnaire() {
+    return questionnaire;
   }
 
   /**
@@ -120,7 +128,7 @@ public class QuestionnaireFinder {
 
     return finder.getQuestionCategories();
   }
-  
+
   /**
    * Look for shared {@link Category}: categories refered by more than one question.
    * @return
@@ -132,7 +140,7 @@ public class QuestionnaireFinder {
 
     return finder.getQuestionSharedCategories();
   }
-  
+
   /**
    * Find among the shared {@link Categories} the set of the ones that are unique by their name.
    * @return
