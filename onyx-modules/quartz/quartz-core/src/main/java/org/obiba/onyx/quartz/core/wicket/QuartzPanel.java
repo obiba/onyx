@@ -41,17 +41,16 @@ public class QuartzPanel extends Panel implements IEngineComponentAware {
   private QuestionnaireWizardPanel wizardPanel;
 
   @SuppressWarnings("serial")
-  public QuartzPanel(String id, Stage stage) {
+  public QuartzPanel(String id, Stage stage, boolean resuming) {
     super(id);
 
     final Questionnaire questionnaire = questionnaireBundleManager.getBundle(stage.getName()).getQuestionnaire();
 
-    activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
     if(activeQuestionnaireAdministrationService.getLanguage() == null) setDefaultLanguage();
 
     StageModel model = new StageModel(moduleRegistry, stage.getName());
 
-    add(wizardPanel = new QuestionnaireWizardPanel("content", new Model(questionnaire), model));
+    add(wizardPanel = new QuestionnaireWizardPanel("content", new Model(questionnaire), model, resuming));
   }
 
   public void setActionWindwon(ActionWindow window) {

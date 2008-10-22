@@ -7,14 +7,15 @@ import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
 
 public abstract class AbstractQuartzStageState extends AbstractStageState {
 
-  private QuestionnaireParticipantService questionnaireParticipantService;
-  
+  // TODO: Are there any issues related to making this protected?
+  protected QuestionnaireParticipantService questionnaireParticipantService;
+
   protected ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   public void setQuestionnaireParticipantService(QuestionnaireParticipantService questionnaireParticipantService) {
     this.questionnaireParticipantService = questionnaireParticipantService;
   }
-  
+
   public void setActiveQuestionnaireAdministrationService(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService) {
     this.activeQuestionnaireAdministrationService = activeQuestionnaireAdministrationService;
   }
@@ -22,7 +23,7 @@ public abstract class AbstractQuartzStageState extends AbstractStageState {
   public ActiveQuestionnaireAdministrationService getActiveQuestionnaireAdministrationService() {
     return activeQuestionnaireAdministrationService;
   }
-  
+
   protected void cancelQuestionnaireParticipant() {
     activeQuestionnaireAdministrationService.stopCurrentQuestionnaire();
     QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getQuestionnaireParticipant(activeInterviewService.getParticipant(), super.getStage().getName());

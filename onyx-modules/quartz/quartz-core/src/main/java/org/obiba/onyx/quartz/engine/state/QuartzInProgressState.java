@@ -17,11 +17,14 @@
 package org.obiba.onyx.quartz.engine.state;
 
 import org.apache.wicket.Component;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.QuartzPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +34,16 @@ public class QuartzInProgressState extends AbstractQuartzStageState implements I
 
   private static final Logger log = LoggerFactory.getLogger(QuartzInProgressState.class);
 
+  private QuestionnaireBundleManager questionnaireBundleManager;
+
   public void afterPropertiesSet() throws Exception {
     addAction(ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").getActionDefinition());
     addAction(ActionDefinitionBuilder.create(ActionType.INTERRUPT, "Interrupt").getActionDefinition());
     addSystemAction(ActionDefinitionBuilder.COMPLETE_ACTION);
+  }
+
+  public void setQuestionnaireBundleManager(QuestionnaireBundleManager questionnaireBundleManager) {
+    this.questionnaireBundleManager = questionnaireBundleManager;
   }
 
   public String getName() {
@@ -42,7 +51,7 @@ public class QuartzInProgressState extends AbstractQuartzStageState implements I
   }
 
   public Component getWidget(String id) {
-    return new QuartzPanel(id, getStage());
+    return new QuartzPanel(id, getStage(), isResumingQuestionnaire());
   }
 
   @Override
@@ -55,7 +64,7 @@ public class QuartzInProgressState extends AbstractQuartzStageState implements I
       castEvent(TransitionEvent.INVALID);
     }
   }
-  
+
   @Override
   public void complete(Action action) {
     log.info("Quartz Stage {} is completing", super.getStage().getName());
@@ -74,4 +83,31 @@ public class QuartzInProgressState extends AbstractQuartzStageState implements I
     castEvent(TransitionEvent.INTERRUPT);
   }
 
+  @Override
+  public void onEntry(TransitionEvent event) {
+    Questionnaire questionnaire = questionnaireBundleManager.getBundle(getStage().getName()).getQuestionnaire();
+    activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
+
+    Participant participant = activeInterviewService.getParticipant();
+    activeQuestionnaireAdministrationService.resume(participant);
+  }
+
+  private boolean isResumingQuestionnaire() {
+    boolean resumingQuestionnaire = false;
+
+    Participant participant = activeInterviewService.getParticipant();
+    Questionnaire questionnaire = getActiveQuestionnaireAdministrationService().getQuestionnaire();
+
+    if(participant != null && questionnaire != null) {
+      QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getQuestionnaireParticipant(participant, questionnaire.getName());
+
+      if(questionnaireParticipant != null) {
+        if(questionnaireParticipant.getResumePage() != null) {
+          resumingQuestionnaire = true;
+        }
+      }
+    }
+
+    return resumingQuestionnaire;
+  }
 }

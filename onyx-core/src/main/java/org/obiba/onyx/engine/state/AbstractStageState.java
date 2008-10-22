@@ -127,6 +127,12 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
     return systemActionDefinitions;
   }
 
+  public void onEntry(TransitionEvent event) {
+  }
+
+  public void onExit(TransitionEvent event) {
+  }
+
   public void execute(Action action) {
   }
 

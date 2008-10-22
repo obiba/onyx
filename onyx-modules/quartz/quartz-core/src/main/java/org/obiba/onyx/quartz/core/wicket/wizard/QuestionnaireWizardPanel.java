@@ -32,9 +32,11 @@ public class QuestionnaireWizardPanel extends WizardPanel {
   // Constructors
   //
 
-  public QuestionnaireWizardPanel(String id, IModel model, StageModel stageModel) {
+  public QuestionnaireWizardPanel(String id, IModel model, StageModel stageModel, boolean resuming) {
     super(id, model);
+
     wizardForm.setStageModel(stageModel);
+    wizardForm.initStartStep(resuming);
   }
 
   //

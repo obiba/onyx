@@ -37,7 +37,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     class="org.obiba.onyx.quartz.engine.state.QuartzNotApplicableState" scope="prototype"/>
 
   <bean id="quartzInProgressState" parent="baseQuartzStageState"
-    class="org.obiba.onyx.quartz.engine.state.QuartzInProgressState" scope="prototype"/>
+    class="org.obiba.onyx.quartz.engine.state.QuartzInProgressState" scope="prototype">
+    <property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
+  </bean>
 
   <bean id="quartzSkippedState" parent="baseQuartzStageState" class="org.obiba.onyx.quartz.engine.state.QuartzSkippedState"
     scope="prototype"/>
@@ -49,6 +51,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     class="org.obiba.onyx.quartz.engine.state.QuartzInterruptedState" scope="prototype"/>
   
   <bean id="baseQuartzStageState" parent="baseStageState" class="org.obiba.onyx.quartz.engine.state.AbstractQuartzStageState" abstract="true">
+    <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="questionnaireParticipantService" ref="questionnaireParticipantService" />
     <property name="activeQuestionnaireAdministrationService" ref="activeQuestionnaireAdministrationService" />
   </bean>

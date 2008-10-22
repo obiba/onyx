@@ -85,6 +85,8 @@ public interface ActiveQuestionnaireAdministrationService {
    */
   public QuestionnaireParticipant start(Participant participant, Locale language);
 
+  public void resume(Participant participant);
+
   /**
    * Set the default language if participant has not chosen a questionnaire language yet.
    * @param language

@@ -103,7 +103,7 @@ public class QuartzPanelTest {
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).times(4);
     expect((questionnaireBundleManagerMock.getBundle("HealthQuestionnaire"))).andReturn(questionnaireBundleMock).times(3);
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire);
-    activeQuestionnaireAdministrationServiceMock.setQuestionnaire((Questionnaire) EasyMock.anyObject());
+    // activeQuestionnaireAdministrationServiceMock.setQuestionnaire((Questionnaire) EasyMock.anyObject());
 
     // calls for the label and description properties in LanguageSelectorPanel
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(Locale.FRENCH).times(4);
@@ -138,7 +138,7 @@ public class QuartzPanelTest {
 
       public Panel getTestPanel(String panelId) {
 
-        QuartzPanel quartzPanel = new QuartzPanel(panelId, newTestStage());
+        QuartzPanel quartzPanel = new QuartzPanel(panelId, newTestStage(), false);
         quartzPanel.setModel(new Model(questionnaire));
         return (quartzPanel);
 

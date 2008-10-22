@@ -101,9 +101,15 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
         log.error("Stage {} in state {} received event {} that has no edge to any other state. Either the state machine is missing edges (to determine what the new state should be) or the event should have never been received by the current state.", new Object[] { stage.getName(), currentState.getClass().getSimpleName(), event });
         throw new IllegalStateException("No destination state");
       }
+
+      onExit(event);
+
       currentState = newState;
       // Re-initialise the reason why transition event occurred (there may be no action at all).
       currentState.setReason(null);
+
+      onEntry(event);
+
       log.debug("transitionListeners.size=" + transitionListeners.size());
       for(ITransitionListener listener : transitionListeners) {
         listener.onTransition(this, event);
@@ -136,6 +142,14 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
 
   public ActionDefinition getSystemActionDefinition(ActionType type) {
     return currentState.getSystemActionDefinition(type);
+  }
+
+  public void onEntry(TransitionEvent event) {
+    currentState.onEntry(event);
+  }
+
+  public void onExit(TransitionEvent event) {
+    currentState.onExit(event);
   }
 
   public void execute(Action action) {

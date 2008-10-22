@@ -69,17 +69,11 @@ public class QuestionnaireWizardForm extends WizardForm {
     // Add Interrupt button.
     addInterruptButton();
 
-    // First step: Language selection.
+    // Language selection step.
     languageSelectionStep = new LanguageSelectionStep(getStepId());
 
-    // Last step: Conclusion.
+    // Conclusion step.
     conclusionStep = new ConclusionStep(getStepId());
-
-    WizardStepPanel startStep = languageSelectionStep;
-
-    add(startStep);
-    startStep.onStepInNext(this, null);
-    startStep.handleWizardState(this, null);
   }
 
   //
@@ -114,6 +108,14 @@ public class QuestionnaireWizardForm extends WizardForm {
   //
   // Methods
   //
+
+  public void initStartStep(boolean resuming) {
+    WizardStepPanel startStep = resuming ? getResumeStep() : languageSelectionStep;
+
+    add(startStep);
+    startStep.onStepInNext(this, null);
+    startStep.handleWizardState(this, null);
+  }
 
   public void onInterrupt(AjaxRequestTarget target) {
     IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
@@ -191,6 +193,16 @@ public class QuestionnaireWizardForm extends WizardForm {
 
     if(nextPage != null) {
       return new PageStepPanel(getStepId(), nextPage);
+    } else {
+      return conclusionStep;
+    }
+  }
+
+  public WizardStepPanel getResumeStep() {
+    Page resumePage = activeQuestionnaireAdministrationService.resumePage();
+
+    if(resumePage != null) {
+      return new PageStepPanel(getStepId(), resumePage);
     } else {
       return conclusionStep;
     }

@@ -73,6 +73,15 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return currentQuestionnaireParticipant;
   }
 
+  public void resume(Participant participant) {
+    QuestionnaireParticipant questionnaireParticipantTemplate = new QuestionnaireParticipant();
+    questionnaireParticipantTemplate.setParticipant(participant);
+    questionnaireParticipantTemplate.setQuestionnaireName(currentQuestionnaire.getName());
+    questionnaireParticipantTemplate.setQuestionnaireVersion(currentQuestionnaire.getVersion());
+
+    currentQuestionnaireParticipant = getPersistenceManager().matchOne(questionnaireParticipantTemplate);
+  }
+
   public Page getCurrentPage() {
     return currentPage;
   }

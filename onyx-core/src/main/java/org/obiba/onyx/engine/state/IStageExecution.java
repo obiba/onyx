@@ -59,6 +59,20 @@ public interface IStageExecution {
   public ActionDefinition getSystemActionDefinition(ActionType type);
 
   /**
+   * Callback method invoked upon entering this state.
+   * 
+   * @param transition event
+   */
+  public void onEntry(TransitionEvent event);
+
+  /**
+   * Callback method invoked upon leaving this state.
+   * 
+   * @param transition event
+   */
+  public void onExit(TransitionEvent event);
+
+  /**
    * Do execute.
    * @see ActionType
    * @param action
