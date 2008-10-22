@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
 
+import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl;
@@ -22,7 +23,9 @@ import org.obiba.onyx.util.data.DataType;
 
 public class CreateQuestionnaire {
 
-  private File bundleRootDirectory = new File("target", "questionnaires");
+  private static File bundleRootDirectory = new File("target", "questionnaires");
+
+  private static File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp", "questionnaires");
 
   private QuestionnaireBundle bundle;
 
@@ -42,6 +45,15 @@ public class CreateQuestionnaire {
 
   public static void main(String args[]) {
     CreateQuestionnaire c = new CreateQuestionnaire();
+
+    if(bundleSourceDirectory.exists()) {
+      try {
+        FileUtil.copyDirectory(bundleSourceDirectory, bundleRootDirectory);
+      } catch(IOException e) {
+        e.printStackTrace();
+      }
+
+    }
     c.createQuestionnaire();
   }
 
@@ -168,8 +180,17 @@ public class CreateQuestionnaire {
       e.printStackTrace();
     }
 
-    bundle.setLanguage(Locale.ENGLISH, new Properties());
-    bundle.setLanguage(Locale.FRENCH, new Properties());
+    setBundleProperties(Locale.FRENCH);
+    setBundleProperties(Locale.ENGLISH);
+  }
 
+  private void setBundleProperties(Locale language) {
+    Properties properties = bundle.getLanguage(language);
+
+    if(properties != null) {
+      bundle.setLanguage(language, properties);
+    } else {
+      bundle.setLanguage(language, new Properties());
+    }
   }
 }
