@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.questionnaire;
 
-import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.markup.html.basic.Label;
@@ -35,11 +34,11 @@ public class LanguageSelectorPanel extends Panel {
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
-    
+
   public Locale getLanguage() {
     return this.language;
   }
-  
+
   public void setLanguage(Locale language) {
     this.language = language;
   }
@@ -50,11 +49,11 @@ public class LanguageSelectorPanel extends Panel {
 
     Questionnaire questionnaire = activeQuestionnaireAdministrationService.getQuestionnaire();
     this.setLanguage(activeQuestionnaireAdministrationService.getLanguage());
-    
+
     add(new Label("participant", activeInterviewService.getParticipant().getFullName()));
     add(new Label("user", activeInterviewService.getInterview().getUser().getFullName()));
-    add(new Label("description", new QuestionnaireStringResourceModel(questionnaire, "description", null)));
-    
+    add(new Label("description", new QuestionnaireStringResourceModel(questionnaire, "description")));
+
     DropDownChoice ddcLocale = new DropDownChoice("localeSelect", new PropertyModel(LanguageSelectorPanel.this, "language"), questionnaire.getLocales(), new IChoiceRenderer() {
 
       private static final long serialVersionUID = -1858115721444491116L;
@@ -68,9 +67,9 @@ public class LanguageSelectorPanel extends Panel {
         Locale lang = (Locale) object;
         return lang.toString();
       }
-      
+
     });
-    
+
     ddcLocale.setLabel(new StringResourceModel("Language", LanguageSelectorPanel.this, null));
     ddcLocale.setOutputMarkupId(true);
     add(ddcLocale);

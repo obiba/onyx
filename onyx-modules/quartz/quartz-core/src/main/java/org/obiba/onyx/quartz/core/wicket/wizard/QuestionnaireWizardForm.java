@@ -64,9 +64,7 @@ public class QuestionnaireWizardForm extends WizardForm {
   //
 
   public QuestionnaireWizardForm(String id, IModel questionnaireModel) {
-    super(id);
-
-    setModel(questionnaireModel);
+    super(id, questionnaireModel);
 
     // Add Interrupt button.
     addInterruptLink();

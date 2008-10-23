@@ -18,6 +18,7 @@ import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
@@ -37,7 +38,11 @@ public abstract class WizardForm extends Form {
   private boolean canceled = false;
 
   public WizardForm(String id) {
-    super(id);
+    this(id, null);
+  }
+
+  public WizardForm(String id, IModel model) {
+    super(id, model);
 
     setOutputMarkupId(true);
     setMultiPart(true);
