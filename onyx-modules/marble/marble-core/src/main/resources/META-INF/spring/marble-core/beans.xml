@@ -22,15 +22,15 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   </bean>
 
   <bean id="marbleReadyState" parent="baseMarbleStageState" class="org.obiba.onyx.marble.engine.state.MarbleReadyState"
-    scope="prototype">
+    scope="prototype">   
   </bean>
 
   <bean id="marbleInProgressState" parent="baseMarbleStageState"
-    class="org.obiba.onyx.marble.engine.state.MarbleInProgressState" scope="prototype">
+    class="org.obiba.onyx.marble.engine.state.MarbleInProgressState" scope="prototype"> 
   </bean>
 
   <bean id="marbleCompletedState" parent="baseMarbleStageState"
-    class="org.obiba.onyx.marble.engine.state.MarbleCompletedState" scope="prototype">
+    class="org.obiba.onyx.marble.engine.state.MarbleCompletedState" scope="prototype">  
   </bean>
 
   <bean id="baseMarbleStageState" parent="baseStageState" class="org.obiba.onyx.marble.engine.state.AbstractMarbleStageState" abstract="true">

@@ -33,6 +33,8 @@ public class Consent extends AbstractEntity {
 
   private Boolean accepted;
 
+  private Boolean deleted;
+
   @Lob
   @Column(length = Integer.MAX_VALUE)
   private byte[] pdfForm;
@@ -75,6 +77,14 @@ public class Consent extends AbstractEntity {
 
   public void setPdfForm(byte[] pdfForm) {
     this.pdfForm = pdfForm;
+  }
+
+  public Boolean isDeleted() {
+    return deleted;
+  }
+
+  public void setDeleted(Boolean deleted) {
+    this.deleted = deleted;
   }
 
 }

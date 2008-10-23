@@ -47,7 +47,7 @@ public class ConsentConfirmationPanel extends Panel {
       }
     };
 
-    RadioChoice consentConfirmation = new RadioChoice("consentConfirmation", new PropertyModel(activeConsentService.getConsent(), "accepted"), Arrays.asList(new Boolean[] { true, false }), choiceRenderer) {
+    RadioChoice consentConfirmation = new RadioChoice("consentConfirmation", new PropertyModel(activeConsentService, "consent.accepted"), Arrays.asList(new Boolean[] { true, false }), choiceRenderer) {
 
       @Override
       protected boolean localizeDisplayValues() {

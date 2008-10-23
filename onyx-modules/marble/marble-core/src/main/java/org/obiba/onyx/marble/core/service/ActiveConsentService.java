@@ -22,5 +22,7 @@ public interface ActiveConsentService {
 
   public void update();
 
+  public void deletePreviousConsent();
+
   public boolean validateConsent();
 }

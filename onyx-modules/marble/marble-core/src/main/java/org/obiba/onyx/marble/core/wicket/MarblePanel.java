@@ -65,6 +65,7 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
 
     Consent interviewConsent = new Consent();
     interviewConsent.setInterview(activeInterviewService.getInterview());
+    interviewConsent.setDeleted(false);
 
     model = new MarbleModel(new StageModel(moduleRegistry, stage.getName()), new Model(interviewConsent));
 

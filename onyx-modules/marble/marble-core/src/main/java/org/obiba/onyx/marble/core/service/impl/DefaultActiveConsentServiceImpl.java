@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.core.service.impl;
 
-import java.util.List;
-
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
@@ -33,20 +31,19 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
 
   public Consent getConsent() {
     Consent template = null;
+
+    // Attempt to retrieve from database.
     if(consent == null) {
       template = new Consent();
       template.setInterview(activeInterviewService.getInterview());
-      List<Consent> consents = getPersistenceManager().match(template);
-      for(Consent oneConsent : consents) {
-        this.consent = oneConsent;
-      }
-      return consent;
+      template.setDeleted(false);
+      consent = getPersistenceManager().matchOne(template);
     }
+
     return consent;
   }
 
   public ConsentMode getMode() {
-
     return consent.getMode();
   }
 
@@ -61,6 +58,19 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
       return true;
     } else {
       return false;
+    }
+  }
+
+  @Override
+  public void deletePreviousConsent() {
+    System.out.println(activeInterviewService.getInterview().getId());
+    Consent template = new Consent();
+    template.setInterview(activeInterviewService.getInterview());
+    template.setDeleted(false);
+    Consent previousConsent = getPersistenceManager().matchOne(template);
+    if(previousConsent != null) {
+      previousConsent.setDeleted(true);
+      getPersistenceManager().save(previousConsent);
     }
   }
 
