@@ -21,6 +21,12 @@ import org.obiba.onyx.quartz.core.wicket.questionnaire.LanguageSelectorPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
+/**
+ * First step for questionnaire workflow. WizardStepPanel that calls LanguageSelectionPanel and implements actions to be
+ * done.
+ * 
+ * @author acarey
+ */
 public class LanguageSelectionStep extends WizardStepPanel {
 
   private static final long serialVersionUID = 5343357448108404508L;

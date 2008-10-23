@@ -31,6 +31,10 @@ import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
+/**
+ * WizardForm for the questionnaire Contains Language Selection Step, Conclusion Step and Interrupt link
+ */
+
 public class QuestionnaireWizardForm extends WizardForm {
 
   //

@@ -23,6 +23,11 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 
+/**
+ * Panel for language selection when starting a questionnaire.
+ * 
+ * @author acarey
+ */
 public class LanguageSelectorPanel extends Panel {
 
   private static final long serialVersionUID = 5589767297291614169L;
