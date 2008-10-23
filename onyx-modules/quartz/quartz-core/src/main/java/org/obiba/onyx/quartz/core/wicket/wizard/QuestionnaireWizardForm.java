@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.wizard;
 
+import java.util.List;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -24,6 +26,7 @@ import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.wicket.StageModel;
@@ -34,7 +37,6 @@ import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 /**
  * WizardForm for the questionnaire Contains Language Selection Step, Conclusion Step and Interrupt link
  */
-
 public class QuestionnaireWizardForm extends WizardForm {
 
   //
@@ -57,11 +59,15 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   private WizardStepPanel conclusionStep;
 
+  private WizardStepPanel confirmResumeStep;
+
   private StageModel stageModel;
 
   private ActionWindow actionWindow;
 
   private FeedbackPanel feedbackPanel;
+
+  private boolean resuming;
 
   //
   // Constructors
@@ -114,7 +120,16 @@ public class QuestionnaireWizardForm extends WizardForm {
   //
 
   public void initStartStep(boolean resuming) {
-    WizardStepPanel startStep = resuming ? getResumeStep() : languageSelectionStep;
+    this.resuming = resuming;
+
+    WizardStepPanel startStep = null;
+
+    if(resuming) {
+      confirmResumeStep = new ConfirmResumeStep(getStepId(), getQuestionNumberToResumeAt(activeQuestionnaireAdministrationService.getResumePage()));
+      startStep = confirmResumeStep;
+    } else {
+      startStep = languageSelectionStep;
+    }
 
     add(startStep);
     startStep.onStepInNext(this, null);
@@ -181,10 +196,19 @@ public class QuestionnaireWizardForm extends WizardForm {
   public WizardStepPanel getPreviousStep() {
     Page previousPage = activeQuestionnaireAdministrationService.previousPage();
 
-    if(previousPage != null) {
-      return new PageStepPanel(getStepId(), new QuestionnaireModel(previousPage));
+    if(!previousPage.equals(ActiveQuestionnaireAdministrationService.PAGE_BEFORE_FIRST)) {
+      PageStepPanel pageStepPanel = new PageStepPanel(getStepId(), new QuestionnaireModel(previousPage));
+
+      if(resuming && activeQuestionnaireAdministrationService.isOnStartPage()) {
+        pageStepPanel.setPreviousEnabled(false);
+      }
+
+      return pageStepPanel;
     } else {
-      return languageSelectionStep;
+      // When a questionnaire is first started, the participant may return to the language
+      // selection step. However, when resuming a questionnaire, the participant may only go
+      // as far back as the first page of the questionnaire.
+      return (resuming ? null : languageSelectionStep);
     }
   }
 
@@ -199,7 +223,7 @@ public class QuestionnaireWizardForm extends WizardForm {
   public WizardStepPanel getNextStep() {
     Page nextPage = activeQuestionnaireAdministrationService.nextPage();
 
-    if(nextPage != null) {
+    if(!nextPage.equals(ActiveQuestionnaireAdministrationService.PAGE_AFTER_LAST)) {
       return new PageStepPanel(getStepId(), new QuestionnaireModel(nextPage));
     } else {
       return conclusionStep;
@@ -210,9 +234,30 @@ public class QuestionnaireWizardForm extends WizardForm {
     Page resumePage = activeQuestionnaireAdministrationService.resumePage();
 
     if(resumePage != null) {
-      return new PageStepPanel(getStepId(), new QuestionnaireModel(resumePage));
+      PageStepPanel pageStepPanel = new PageStepPanel(getStepId(), new QuestionnaireModel(resumePage));
+
+      if(resuming && activeQuestionnaireAdministrationService.isOnStartPage()) {
+        pageStepPanel.setPreviousEnabled(false);
+      }
+
+      return pageStepPanel;
     } else {
       return conclusionStep;
     }
+  }
+
+  private String getQuestionNumberToResumeAt(Page page) {
+    String questionNumber = null;
+
+    List<Question> questions = page.getQuestions();
+
+    for(Question question : questions) {
+      if(question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
+        questionNumber = question.getNumber();
+        break;
+      }
+    }
+
+    return questionNumber;
   }
 }

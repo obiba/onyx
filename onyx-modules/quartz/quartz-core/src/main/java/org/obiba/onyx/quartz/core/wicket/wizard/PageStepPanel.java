@@ -41,6 +41,8 @@ public class PageStepPanel extends WizardStepPanel {
 
   private PageLayout pageLayout;
 
+  private boolean previousEnabled;
+
   //
   // Constructors
   //
@@ -59,6 +61,8 @@ public class PageStepPanel extends WizardStepPanel {
     // Create the page layout component, using the configured factory.
     pageLayout = pageLayoutFactory.createLayout(getContentId(), pageModel);
     add(pageLayout);
+
+    previousEnabled = true; // default to true
   }
 
   //
@@ -67,7 +71,7 @@ public class PageStepPanel extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    form.getPreviousLink().setEnabled(true);
+    form.getPreviousLink().setEnabled(previousEnabled);
     form.getNextLink().setEnabled(true);
     ((QuestionnaireWizardForm) form).getInterruptLink().setEnabled(true);
     form.getFinishLink().setEnabled(false);
@@ -91,4 +95,11 @@ public class PageStepPanel extends WizardStepPanel {
     setNextStep(questionnaireWizardForm.getNextStep());
   }
 
+  //
+  // Methods
+  //
+
+  public void setPreviousEnabled(boolean previousEnabled) {
+    this.previousEnabled = previousEnabled;
+  }
 }

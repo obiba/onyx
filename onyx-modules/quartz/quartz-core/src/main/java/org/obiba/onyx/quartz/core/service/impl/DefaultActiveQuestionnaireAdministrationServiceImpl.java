@@ -86,35 +86,33 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return currentPage;
   }
 
+  public Page getResumePage() {
+    return navigationStrategy.getPageOnResume(this, currentQuestionnaireParticipant);
+  }
+
   public Page startPage() {
     currentPage = navigationStrategy.getPageOnStart(this);
 
-    currentQuestionnaireParticipant = getQuestionnaireParticipant();
-
-    if(currentQuestionnaireParticipant != null) {
-      // Only update the participant's resume page if it is currently null.
-      if(currentQuestionnaireParticipant.getResumePage() == null) {
-        currentQuestionnaireParticipant.setResumePage(currentPage != null ? currentPage.getName() : null);
-        getPersistenceManager().save(currentQuestionnaireParticipant);
-      }
-    }
+    updateResumePage();
 
     return currentPage;
   }
 
   public Page previousPage() {
     currentPage = navigationStrategy.getPageOnPrevious(this, getCurrentPage());
+
+    if(!currentPage.equals(PAGE_BEFORE_FIRST)) {
+      updateResumePage();
+    }
+
     return currentPage;
   }
 
   public Page nextPage() {
     currentPage = navigationStrategy.getPageOnNext(this, getCurrentPage());
 
-    currentQuestionnaireParticipant = getQuestionnaireParticipant();
-
-    if(currentQuestionnaireParticipant != null) {
-      currentQuestionnaireParticipant.setResumePage(currentPage != null ? currentPage.getName() : null);
-      getPersistenceManager().save(currentQuestionnaireParticipant);
+    if(!currentPage.equals(PAGE_AFTER_LAST)) {
+      updateResumePage();
     }
 
     return currentPage;
@@ -123,6 +121,10 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   public Page resumePage() {
     currentPage = navigationStrategy.getPageOnResume(this, currentQuestionnaireParticipant);
     return currentPage;
+  }
+
+  public boolean isOnStartPage() {
+    return (currentPage != null && currentPage.equals(navigationStrategy.getPageOnStart(this)));
   }
 
   public void setDefaultLanguage(Locale language) {
@@ -206,4 +208,12 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return (getPersistenceManager().refresh(currentQuestionnaireParticipant));
   }
 
+  private void updateResumePage() {
+    currentQuestionnaireParticipant = getQuestionnaireParticipant();
+
+    if(currentQuestionnaireParticipant != null) {
+      currentQuestionnaireParticipant.setResumePage(currentPage.getName());
+      getPersistenceManager().save(currentQuestionnaireParticipant);
+    }
+  }
 }

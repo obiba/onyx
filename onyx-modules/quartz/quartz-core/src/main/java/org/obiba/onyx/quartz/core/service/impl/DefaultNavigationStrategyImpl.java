@@ -63,18 +63,25 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
   public Page getPageOnNext(ActiveQuestionnaireAdministrationService service, Page currentPage) {
     Page nextPage = null;
 
-    Questionnaire questionnaire = service.getQuestionnaire();
+    if(!currentPage.equals(ActiveQuestionnaireAdministrationService.PAGE_AFTER_LAST)) {
+      Questionnaire questionnaire = service.getQuestionnaire();
 
-    List<Page> pages = questionnaire.getPages();
+      List<Page> pages = questionnaire.getPages();
 
-    int currentPageIndex = pages.indexOf(currentPage);
+      int currentPageIndex = pages.indexOf(currentPage);
 
-    for(int i = currentPageIndex + 1; i < pages.size(); i++) {
-      Page page = pages.get(i);
+      for(int i = currentPageIndex + 1; i < pages.size(); i++) {
+        Page page = pages.get(i);
 
-      if(page.getQuestions().isEmpty() || NavigationStrategySupport.hasQuestionToBeAnswered(service, page)) {
-        nextPage = page;
-        break;
+        if(page.getQuestions().isEmpty() || NavigationStrategySupport.hasQuestionToBeAnswered(service, page)) {
+          nextPage = page;
+          break;
+        }
+      }
+
+      // If there is no next page WITHIN the questionnaire, return PAGE_AFTER_LAST as the next page.
+      if(nextPage == null) {
+        nextPage = ActiveQuestionnaireAdministrationService.PAGE_AFTER_LAST;
       }
     }
 
@@ -94,17 +101,16 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
   public Page getPageOnPrevious(ActiveQuestionnaireAdministrationService service, Page currentPage) {
     Page previousPage = null;
 
-    Page page = getPageOnStart(service);
+    if(!currentPage.equals(ActiveQuestionnaireAdministrationService.PAGE_BEFORE_FIRST)) {
+      Page page = getPageOnStart(service);
 
-    if(currentPage != null) {
       while(!page.getName().equals(currentPage.getName())) {
         previousPage = page;
         page = getPageOnNext(service, page);
       }
-    } else { // currentPage == null (i.e., we are at the conclusion)
-      while(page != null) {
-        previousPage = page;
-        page = getPageOnNext(service, page);
+
+      if(previousPage == null) {
+        previousPage = ActiveQuestionnaireAdministrationService.PAGE_BEFORE_FIRST;
       }
     }
 
@@ -122,15 +128,17 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
   public Page getPageOnResume(ActiveQuestionnaireAdministrationService service, QuestionnaireParticipant participant) {
     Page resumePage = null;
 
-    String resumePageName = participant.getResumePage();
+    if(participant != null) {
+      String resumePageName = participant.getResumePage();
 
-    if(resumePageName != null) {
-      Questionnaire questionnaire = service.getQuestionnaire();
+      if(resumePageName != null) {
+        Questionnaire questionnaire = service.getQuestionnaire();
 
-      for(Page page : questionnaire.getPages()) {
-        if(page.getName().equals(resumePageName)) {
-          resumePage = page;
-          break;
+        for(Page page : questionnaire.getPages()) {
+          if(page.getName().equals(resumePageName)) {
+            resumePage = page;
+            break;
+          }
         }
       }
     }

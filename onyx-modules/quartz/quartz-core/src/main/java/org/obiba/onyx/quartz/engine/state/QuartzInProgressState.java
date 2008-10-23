@@ -88,8 +88,10 @@ public class QuartzInProgressState extends AbstractQuartzStageState implements I
     Questionnaire questionnaire = questionnaireBundleManager.getBundle(getStage().getName()).getQuestionnaire();
     activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
 
-    Participant participant = activeInterviewService.getParticipant();
-    activeQuestionnaireAdministrationService.resume(participant);
+    if(isResumingQuestionnaire()) {
+      Participant participant = activeInterviewService.getParticipant();
+      activeQuestionnaireAdministrationService.resume(participant);
+    }
   }
 
   private boolean isResumingQuestionnaire() {
