@@ -12,6 +12,7 @@ package org.obiba.onyx.wicket.wizard;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 
 public abstract class WizardStepPanel extends Panel {
 
@@ -23,6 +24,10 @@ public abstract class WizardStepPanel extends Panel {
 
   public WizardStepPanel(String id) {
     super(id);
+  }
+
+  public WizardStepPanel(String id, IModel model) {
+    super(id, model);
   }
 
   public void setNextStep(WizardStepPanel next) {
@@ -62,18 +67,18 @@ public abstract class WizardStepPanel extends Panel {
    * @param target
    */
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
-    
+
   }
-  
+
   /**
    * Called when "previous" button was pressed to leave this step by going to previous step.
    * @param form
    * @param target
    */
   public void onStepOutPrevious(WizardForm form, AjaxRequestTarget target) {
-    
+
   }
-  
+
   /**
    * Called when "next" button was pressed to go to this step coming from previous step.
    * @param form
@@ -82,7 +87,7 @@ public abstract class WizardStepPanel extends Panel {
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
 
   }
-  
+
   /**
    * Called when "previous" button was pressed to go to this step coming from next step.
    * @param form
