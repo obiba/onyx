@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.service.impl;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
@@ -20,12 +19,13 @@ import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
 
 public abstract class DefaultQuestionnaireParticipantServiceImpl extends PersistenceManagerAwareService implements QuestionnaireParticipantService {
 
-  public void deleteQuestionnaireParticipant(Serializable questionnaireParticipantId) {
-    QuestionnaireParticipant questionnaireParticipant = loadQuestionnaireParticipant(questionnaireParticipantId);
+  public void deleteQuestionnaireParticipant(QuestionnaireParticipant questionnaireParticipant) {
+    if(questionnaireParticipant == null) return;
+    if(questionnaireParticipant.getId() == null) return;
 
     QuestionAnswer questionAnswerTemplate = new QuestionAnswer();
     questionAnswerTemplate.setQuestionnaireParticipant(questionnaireParticipant);
-    
+
     for(QuestionAnswer questionAnswer : getPersistenceManager().match(questionAnswerTemplate)) {
       CategoryAnswer template = new CategoryAnswer();
       template.setQuestionAnswer(questionAnswer);
@@ -39,12 +39,6 @@ public abstract class DefaultQuestionnaireParticipantServiceImpl extends Persist
     }
 
     getPersistenceManager().delete(questionnaireParticipant);
-  }
-
-  public QuestionnaireParticipant loadQuestionnaireParticipant(Serializable questionnaireParticipantId) {
-    QuestionnaireParticipant questionnaireParticipant = getPersistenceManager().get(QuestionnaireParticipant.class, questionnaireParticipantId);
-    if(questionnaireParticipant == null) throw new IllegalArgumentException("Invalid quetsionnaire participant id");
-    return questionnaireParticipant;
   }
 
 }

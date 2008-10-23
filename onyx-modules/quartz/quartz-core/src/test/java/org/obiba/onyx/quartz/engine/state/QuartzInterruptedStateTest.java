@@ -13,8 +13,6 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import java.io.Serializable;
-
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +65,7 @@ public class QuartzInterruptedStateTest {
     expect(activeInterviewServiceMock.getParticipant()).andReturn(new Participant());
     activeQuestionnaireAdministrationServiceMock.stopCurrentQuestionnaire();
     expect(questionnaireParticipantServiceMock.getQuestionnaireParticipant((Participant) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new QuestionnaireParticipant());
-    questionnaireParticipantServiceMock.deleteQuestionnaireParticipant((Serializable) EasyMock.anyObject());
+    questionnaireParticipantServiceMock.deleteQuestionnaireParticipant((QuestionnaireParticipant) EasyMock.anyObject());
     eventSinkMock.castEvent(TransitionEvent.CANCEL);
 
     Action completeAction = new Action();
@@ -100,7 +98,7 @@ public class QuartzInterruptedStateTest {
     expect(activeInterviewServiceMock.getParticipant()).andReturn(new Participant());
     activeQuestionnaireAdministrationServiceMock.stopCurrentQuestionnaire();
     expect(questionnaireParticipantServiceMock.getQuestionnaireParticipant((Participant) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new QuestionnaireParticipant());
-    questionnaireParticipantServiceMock.deleteQuestionnaireParticipant((Serializable) EasyMock.anyObject());
+    questionnaireParticipantServiceMock.deleteQuestionnaireParticipant((QuestionnaireParticipant) EasyMock.anyObject());
     eventSinkMock.castEvent(TransitionEvent.INVALID);
 
     Action completeAction = new Action();
@@ -127,7 +125,7 @@ public class QuartzInterruptedStateTest {
     expect(activeInterviewServiceMock.getParticipant()).andReturn(new Participant());
     activeQuestionnaireAdministrationServiceMock.stopCurrentQuestionnaire();
     expect(questionnaireParticipantServiceMock.getQuestionnaireParticipant((Participant) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new QuestionnaireParticipant());
-    questionnaireParticipantServiceMock.deleteQuestionnaireParticipant((Serializable) EasyMock.anyObject());
+    questionnaireParticipantServiceMock.deleteQuestionnaireParticipant((QuestionnaireParticipant) EasyMock.anyObject());
 
     replay(activeInterviewServiceMock);
     replay(questionnaireParticipantServiceMock);

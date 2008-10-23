@@ -40,7 +40,7 @@ public class QuestionnaireParticipantServiceTest extends BaseDefaultSpringContex
   @Test
   @Dataset
   public void testDeleteQuestionnaireParticipant() {
-    questionnaireParticipantService.deleteQuestionnaireParticipant(Long.valueOf("2"));
+    questionnaireParticipantService.deleteQuestionnaireParticipant(persistenceManager.get(QuestionnaireParticipant.class, Long.valueOf("2")));
     Assert.assertNull(persistenceManager.get(QuestionnaireParticipant.class, Long.valueOf("2")));
     Assert.assertNotNull(persistenceManager.get(QuestionnaireParticipant.class, Long.valueOf("1")));
     Assert.assertNull(persistenceManager.get(QuestionAnswer.class, Long.valueOf("1")));
