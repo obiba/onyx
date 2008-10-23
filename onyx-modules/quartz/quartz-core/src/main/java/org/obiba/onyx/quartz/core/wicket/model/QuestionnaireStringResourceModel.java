@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.wicket.model;
 
 import java.util.Locale;
 
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
@@ -42,6 +43,8 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel {
 
   private ILocalizable localizable;
 
+  private IModel localizableModel;
+
   private String property;
 
   private Object[] stringArgs;
@@ -50,9 +53,32 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel {
   // Constructors
   //
 
+  /**
+   * Constructor using a model for providing the {@link ILocalizable}.
+   * @param localizableModel
+   * @param property
+   * @param stringArgs
+   */
+  public QuestionnaireStringResourceModel(IModel localizableModel, String property, Object... stringArgs) {
+    super();
+    this.localizableModel = localizableModel;
+    initialize(property, stringArgs);
+  }
+
+  /**
+   * Constructor using directly the {@link ILocalizable}.
+   * @param localizable
+   * @param property
+   * @param stringArgs
+   */
   public QuestionnaireStringResourceModel(ILocalizable localizable, String property, Object... stringArgs) {
     super();
+    if(localizable == null) throw new IllegalArgumentException("Localizable element cannot be null.");
     this.localizable = localizable;
+    initialize(property, stringArgs);
+  }
+
+  private void initialize(String property, Object... stringArgs) {
     this.property = property;
 
     // Make a copy of the string arguments.
@@ -77,7 +103,7 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel {
     // Finally, resolve the string resource using the bundle's message source and the
     // property key.
     MessageSource messageSource = bundle.getMessageSource();
-    String propertyKey = bundle.getPropertyKey(localizable, property);
+    String propertyKey = bundle.getPropertyKey(getLocalizable(), property);
 
     String stringResource = null;
 
@@ -104,6 +130,20 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel {
   //
   // Methods
   //
+
+  /**
+   * Get the localizable element directly or from a model.
+   */
+  private ILocalizable getLocalizable() {
+    if(localizable != null) return localizable;
+    ILocalizable loc = null;
+    if(localizableModel != null) {
+      loc = (ILocalizable) localizableModel.getObject();
+    }
+    if(loc == null) throw new IllegalArgumentException("Localizable element cannot be null.");
+
+    return loc;
+  }
 
   /**
    * Convenience method. Equivalent to <code>(String)getObject()</code>.

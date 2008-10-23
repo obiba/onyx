@@ -51,8 +51,8 @@ public abstract class DefaultOpenAnswerDefinitionPanel extends Panel {
 
     setOutputMarkupId(true);
 
-    final QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
-    final OpenAnswerDefinition openAnswerDefinition = questionCategory.getCategory().getOpenAnswerDefinition();
+    QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
+    OpenAnswerDefinition openAnswerDefinition = questionCategory.getCategory().getOpenAnswerDefinition();
 
     CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(questionCategory);
     if(previousAnswer != null) {
@@ -69,7 +69,7 @@ public abstract class DefaultOpenAnswerDefinitionPanel extends Panel {
 
         public Object getDisplayValue(Object object) {
           Data data = (Data) object;
-          return (String) new QuestionnaireStringResourceModel(openAnswerDefinition, data.getValueAsString()).getObject();
+          return (String) new QuestionnaireStringResourceModel(new PropertyModel(DefaultOpenAnswerDefinitionPanel.this.getModel(), "category.openAnswerDefinition"), data.getValueAsString()).getObject();
         }
 
         public String getIdValue(Object object, int index) {
@@ -92,7 +92,8 @@ public abstract class DefaultOpenAnswerDefinitionPanel extends Panel {
 
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        log.info("openField.onUpdate.data={}", data);
+        QuestionCategory questionCategory = (QuestionCategory) DefaultOpenAnswerDefinitionPanel.this.getModelObject();
+        log.info("openField.onUpdate.{}.data={}", questionCategory.getName(), data);
         activeQuestionnaireAdministrationService.answer(questionCategory, data);
       }
 

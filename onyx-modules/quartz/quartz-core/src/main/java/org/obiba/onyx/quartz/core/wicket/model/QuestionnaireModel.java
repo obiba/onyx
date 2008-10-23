@@ -115,20 +115,15 @@ public class QuestionnaireModel extends SpringDetachableModel implements IVisito
   }
 
   public void visit(QuestionCategory questionCategory) {
-    Question question = finder.findQuestion(questionCategory.getQuestion().getName());
-    for(QuestionCategory qcat : question.getQuestionCategories()) {
-      if(qcat.getName().equals(questionCategory.getName())) {
-        this.element = qcat;
-        break;
-      }
-    }
+    this.element = finder.findQuestionCategory(questionCategory.getQuestion().getName(), questionCategory.getName());
   }
 
   public void visit(Category category) {
+    // category name is not unique
     this.element = category;
   }
 
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
-    this.element = openAnswerDefinition;
+    this.element = finder.findOpenAnswerDefinition(openAnswerDefinition.getName());
   }
 }

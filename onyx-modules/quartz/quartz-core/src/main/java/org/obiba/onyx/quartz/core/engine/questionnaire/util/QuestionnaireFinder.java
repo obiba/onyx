@@ -18,6 +18,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.CategoryFinder;
@@ -88,6 +89,25 @@ public class QuestionnaireFinder {
     walker.walk(questionnaire);
 
     return finder.getFirstElement();
+  }
+
+  /**
+   * Find a {@link QuestionCategory} given the {@link Question} parent.
+   * @param questionName
+   * @param name
+   * @return
+   */
+  public QuestionCategory findQuestionCategory(String questionName, String name) {
+    Question question = findQuestion(questionName);
+    if(question == null) return null;
+
+    for(QuestionCategory questionCategory : question.getQuestionCategories()) {
+      if(questionCategory.getName().equals(name)) {
+        return questionCategory;
+      }
+    }
+
+    return null;
   }
 
   /**

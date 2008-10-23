@@ -2,10 +2,6 @@ package org.obiba.onyx.quartz.core.wicket.wizard;
 
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -23,17 +19,14 @@ public class QuestionnaireWizardPanel extends WizardPanel {
   // Instance Variables
   //
 
-  @SpringBean
-  private transient ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
-
   private QuestionnaireWizardForm wizardForm;
 
   //
   // Constructors
   //
 
-  public QuestionnaireWizardPanel(String id, IModel model, StageModel stageModel, boolean resuming) {
-    super(id, model);
+  public QuestionnaireWizardPanel(String id, IModel questionnaireModel, StageModel stageModel, boolean resuming) {
+    super(id, questionnaireModel);
 
     wizardForm.setStageModel(stageModel);
     wizardForm.initStartStep(resuming);
@@ -45,8 +38,7 @@ public class QuestionnaireWizardPanel extends WizardPanel {
 
   @Override
   public WizardForm createForm(String componentId) {
-    Questionnaire questionnaire = activeQuestionnaireAdministrationService.getQuestionnaire();
-    wizardForm = new QuestionnaireWizardForm(componentId, new Model(questionnaire));
+    wizardForm = new QuestionnaireWizardForm(componentId, getModel());
 
     return wizardForm;
   }
