@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * @author acarey
  */
 
-public final class UnitParameterValueConverter implements InstrumentParameterValueConverter {
+public class UnitParameterValueConverter implements InstrumentParameterValueConverter {
 
   private static final Logger log = LoggerFactory.getLogger(UnitParameterValueConverter.class);
 
@@ -61,6 +61,30 @@ public final class UnitParameterValueConverter implements InstrumentParameterVal
 
     case INTEGER:
       if(targetUnit.toString().equalsIgnoreCase("year")) newValue = Math.floor(newValue);
+      targetInstrumentRunValue.setData(DataBuilder.buildInteger(Math.round(newValue)));
+      break;
+    }
+
+  }
+
+  /**
+   * Convert the value from a source DataType to a target DataType (DECIMAL vs INTEGER)
+   * @param targetInstrumentRunValue
+   * @param sourceData
+   */
+  @SuppressWarnings("unchecked")
+  public void convert(InstrumentRunValue targetInstrumentRunValue, Data sourceData) {
+
+    log.debug("Converting parameters from source {} to target {}", sourceData.getType(), targetInstrumentRunValue.getInstrumentParameter().getDataType());
+
+    double newValue = Double.parseDouble(sourceData.getValueAsString());
+
+    switch(targetInstrumentRunValue.getInstrumentParameter().getDataType()) {
+    case DECIMAL:
+      targetInstrumentRunValue.setData(DataBuilder.buildDecimal(newValue));
+      break;
+
+    case INTEGER:
       targetInstrumentRunValue.setData(DataBuilder.buildInteger(Math.round(newValue)));
       break;
     }

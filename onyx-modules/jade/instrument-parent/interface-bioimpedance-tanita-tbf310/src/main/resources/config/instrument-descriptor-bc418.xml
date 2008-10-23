@@ -118,7 +118,7 @@
 		<name>Height</name>
 		<description>Measured_height</description>
 		<measurementUnit>cm</measurementUnit>
-		<dataType>DECIMAL</dataType>
+		<dataType>INTEGER</dataType>
 		<captureMethod>AUTOMATIC</captureMethod>
 		<instrument reference="bioimp2" />
 		<inputSource reference="measured_height" />

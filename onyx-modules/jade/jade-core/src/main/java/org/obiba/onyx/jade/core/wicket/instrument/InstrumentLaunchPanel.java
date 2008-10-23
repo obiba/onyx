@@ -24,11 +24,13 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
+import org.obiba.onyx.jade.core.domain.instrument.UnitParameterValueConverter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.jade.core.service.InstrumentDescriptorService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,7 +101,15 @@ public abstract class InstrumentLaunchPanel extends Panel {
     // get the data from not read-only input parameters sources
     for(InstrumentInputParameter param : instrumentService.getInstrumentInputParameter(instrument, true)) {
       final InstrumentRunValue runValue = activeInstrumentRunService.getInputInstrumentRunValue(param.getName());
-      runValue.setData(inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param));
+      Data data = inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param);
+
+      if(!data.getType().equals(runValue.getDataType())) {
+        UnitParameterValueConverter converter = new UnitParameterValueConverter();
+        converter.convert(runValue, data);
+      } else {
+        runValue.setData(data);
+      }
+
       activeInstrumentRunService.update(runValue);
     }
 
@@ -124,7 +134,8 @@ public abstract class InstrumentLaunchPanel extends Panel {
       // Inject the Spring application context and the user session service
       // into the instrument parameter. NOTE: These are dependencies of
       // InstrumentParameter.getDescription().
-      // param.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
+      // param.setApplicationContext(((SpringWebApplication)
+      // getApplication()).getSpringContextLocator().getSpringContext());
       // param.setUserSessionService(userSessionService);
 
       item.add(new Label("instruction", new StringResourceModel("TypeTheValueInTheInstrument", InstrumentLaunchPanel.this, new Model() {
