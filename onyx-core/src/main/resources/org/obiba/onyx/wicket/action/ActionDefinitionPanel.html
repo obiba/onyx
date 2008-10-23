@@ -30,10 +30,7 @@
   	  <tr>
   	    <td colspan="2">&nbsp;</td>
   	  </tr>
-  	  <tr>
-  	    <td valign="top" class="keyValueTableKey"><wicket:message key="ParticipantCode" /></td>
-  		<td class="keyValueTableValueOdd"><input type="text" wicket:id="confirmBarcode" /></td>
-  	  </tr>
+  	  <tr wicket:id="confirmBarcode"></tr>
   	  <tr>
   	    <td valign="top" class="keyValueTableKey"><wicket:message key="Comment" /></td>
   		<td class="keyValueTableValueEven">
@@ -48,6 +45,12 @@
     </div>
   </form>
 </wicket:panel>
+<wicket:fragment wicket:id="barcodeFragment">
+  	  <tr>
+  	    <td valign="top" class="keyValueTableKey"><wicket:message key="ParticipantCode" /></td>
+    	<td class="keyValueTableValueOdd"><input type="text" wicket:id="confirmBarcode" /></td>
+  	  </tr>
+</wicket:fragment>
 <wicket:fragment wicket:id="passwordFragment">
   	  <tr>
   	    <td valign="top" class="keyValueTableKey"><wicket:message key="Password" /></td>

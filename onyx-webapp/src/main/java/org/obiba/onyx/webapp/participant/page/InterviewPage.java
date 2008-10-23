@@ -46,9 +46,9 @@ import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class InterviewPage extends BasePage {
 
-  @SpringBean(name="activeInterviewService")
+  @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
-  
+
   @SpringBean
   private EntityQueryService queryService;
 
@@ -136,7 +136,7 @@ public class InterviewPage extends BasePage {
 
       // Interview cancellation
 
-      final ActionDefinition cancelInterviewDef = ActionDefinitionBuilder.create(ActionType.STOP, new StringResourceModel("CancelInterview", this, null).getString()).setDescription(new StringResourceModel("ExplainCancelInterview", this, null).getString()).setAskPassword(true).getActionDefinition();
+      final ActionDefinition cancelInterviewDef = ActionDefinitionBuilder.create(ActionType.STOP, new StringResourceModel("CancelInterview", this, null).getString()).setDescription(new StringResourceModel("ExplainCancelInterview", this, null).getString()).setAskParticipantId(true).setAskPassword(true).getActionDefinition();
       cancelInterviewDef.addReasons(new String[] { "Reason1", "Reason2", "Reason3", "Other" });
       cancelInterviewDef.setDefaultReason("Reason1");
 

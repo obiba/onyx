@@ -39,7 +39,7 @@ public class JadeInProgressState extends AbstractStageState implements Initializ
   }
 
   public void afterPropertiesSet() throws Exception {
-    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").setAskPassword(true).getActionDefinition();
+    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").getActionDefinition();
     for(InstrumentRunRefusalReason reason : InstrumentRunRefusalReason.values()) {
       def.addReason(reason.toString());
       if(def.getDefaultReason() == null) def.setDefaultReason(reason.toString());

@@ -29,8 +29,8 @@ public class QuartzCompletedState extends AbstractQuartzStageState implements In
   private static final Logger log = LoggerFactory.getLogger(QuartzCompletedState.class);
 
   public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").getActionDefinition());
-    addAction(ActionDefinitionBuilder.create(ActionType.EXECUTE, "Resume").getActionDefinition());
+    addAction(ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").setAskParticipantId(true).setAskPassword(true).getActionDefinition());
+    addAction(ActionDefinitionBuilder.create(ActionType.EXECUTE, "Resume").setAskParticipantId(true).setAskPassword(true).getActionDefinition());
   }
 
   public String getName() {

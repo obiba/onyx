@@ -42,6 +42,11 @@ public class ActionDefinition implements Serializable {
   private boolean askPassword = false;
 
   /**
+   * Says if it requires participant authentication (using its id).
+   */
+  private boolean askParticipantId = false;
+
+  /**
    * Says if a comment is mandatory.
    */
   private boolean commentMandatory = true;
@@ -101,6 +106,14 @@ public class ActionDefinition implements Serializable {
 
   public void setAskPassword(boolean askPassword) {
     this.askPassword = askPassword;
+  }
+
+  public boolean isAskParticipantId() {
+    return askParticipantId;
+  }
+
+  public void setAskParticipantId(boolean askParticipantId) {
+    this.askParticipantId = askParticipantId;
   }
 
   public boolean isCommentMandatory() {

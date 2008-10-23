@@ -53,7 +53,7 @@ public abstract class ActionDefinitionPanel extends Panel {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ActionDefinitionPanel.class);
 
-  @SpringBean(name="activeInterviewService")
+  @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   @SpringBean(name = "userSessionService")
@@ -79,7 +79,7 @@ public abstract class ActionDefinitionPanel extends Panel {
     feedback.setOutputMarkupId(true);
 
     form.add(new Label("operator", activeInterviewService.getInterview().getUser().getFullName()));
-    
+
     Participant participant = activeInterviewService.getParticipant();
     form.add(new Label("participantName", participant.getFullName()));
     form.add(new Label("participantGender", new StringResourceModel("Gender." + participant.getGender(), this, null)));
@@ -91,19 +91,11 @@ public abstract class ActionDefinitionPanel extends Panel {
       form.add(new Fragment("password", "trFragment", this));
     }
 
-    Participant participantTemplate = new Participant();
-    TextField participantBarcode = new TextField("confirmBarcode", new PropertyModel(participantTemplate, "barcode"));
-    participantBarcode.setLabel(new StringResourceModel("ConfirmParticipantCode", this, null));
-    participantBarcode.add(new IValidator() {
-
-      public void validate(IValidatable validatable) {
-        if(!activeInterviewService.getParticipant().getBarcode().equals(validatable.getValue())) {
-          validatable.error(new ParticipantValidationError());
-        }
-      }
-
-    });
-    form.add(participantBarcode.add(new RequiredFormFieldBehavior()));
+    if(definition.isAskParticipantId()) {
+      form.add(new BarcodeFragment("confirmBarcode"));
+    } else {
+      form.add(new Fragment("confirmBarcode", "trFragment", this));
+    }
 
     form.add(new TextArea("comment", new PropertyModel(this, "action.comment")));
 
@@ -182,10 +174,10 @@ public abstract class ActionDefinitionPanel extends Panel {
       super(id, "reasonsFragment", ActionDefinitionPanel.this);
       add(new DropDownChoice("reasonsSelect", new PropertyModel(ActionDefinitionPanel.this, "action.eventReason"), reasons, new IChoiceRenderer() {
         public Object getDisplayValue(Object object) {
-          ApplicationContext context = ((SpringWebApplication)(ActionDefinitionPanel.this.getApplication())).getSpringContextLocator().getSpringContext();
+          ApplicationContext context = ((SpringWebApplication) (ActionDefinitionPanel.this.getApplication())).getSpringContextLocator().getSpringContext();
           return context.getMessage(object.toString(), null, userSessionService.getLocale());
         }
-        
+
         public String getIdValue(Object object, int index) {
           return object.toString();
         }
@@ -205,10 +197,32 @@ public abstract class ActionDefinitionPanel extends Panel {
       pwdTextField.add(new IValidator() {
 
         public void validate(IValidatable validatable) {
-          if (!User.digest((String)validatable.getValue()).equals(activeInterviewService.getInterview().getUser().getPassword())) {
-            validatable.error(new UserValidationError());  
+          if(!User.digest((String) validatable.getValue()).equals(activeInterviewService.getInterview().getUser().getPassword())) {
+            validatable.error(new UserValidationError());
           }
         }
+      });
+    }
+  }
+
+  @SuppressWarnings("serial")
+  private class BarcodeFragment extends Fragment {
+
+    public BarcodeFragment(String id) {
+      super(id, "barcodeFragment", ActionDefinitionPanel.this);
+      final Participant participantTemplate = new Participant();
+      TextField barcodeTextField = new TextField("confirmBarcode", new PropertyModel(participantTemplate, "barcode"));
+      add(barcodeTextField.add(new RequiredFormFieldBehavior()));
+
+      // participantBarcode.setLabel(new StringResourceModel("ConfirmParticipantCode", this, null));
+      barcodeTextField.add(new IValidator() {
+
+        public void validate(IValidatable validatable) {
+          if(!activeInterviewService.getParticipant().getBarcode().equals(validatable.getValue())) {
+            validatable.error(new ParticipantValidationError());
+          }
+        }
+
       });
     }
   }

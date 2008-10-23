@@ -31,7 +31,7 @@ public class QuartzReadyState extends AbstractQuartzStageState implements Initia
 
   public void afterPropertiesSet() throws Exception {
     addAction(ActionDefinitionBuilder.START_ACTION);
-    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.SKIP, "Skip").setDescription("You may explain why this stage is skipped.").getActionDefinition();
+    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.SKIP, "Skip").setDescription("You may explain why this stage is skipped.").setAskParticipantId(true).setAskPassword(true).getActionDefinition();
     addAction(def);
   }
 

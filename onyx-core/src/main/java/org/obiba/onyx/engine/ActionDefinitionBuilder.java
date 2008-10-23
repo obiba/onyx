@@ -25,7 +25,7 @@ public class ActionDefinitionBuilder implements Serializable {
   /**
    * Default start action.
    */
-  public static final ActionDefinition START_ACTION = ActionDefinitionBuilder.create(ActionType.EXECUTE, "Start").setDescription("You may enter a comment before starting this stage.").setAskPassword(true).getActionDefinition();
+  public static final ActionDefinition START_ACTION = ActionDefinitionBuilder.create(ActionType.EXECUTE, "Start").setDescription("You may enter a comment before starting this stage.").setAskParticipantId(true).setAskPassword(true).getActionDefinition();
 
   /**
    * Default cancel action.
@@ -35,12 +35,12 @@ public class ActionDefinitionBuilder implements Serializable {
   /**
    * Cancel action for a skipped stage (requires a different description).
    */
-  public static final ActionDefinition CANCEL_SKIPPED_ACTION = ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("Please explain why you are reinstating this stage.").getActionDefinition();
-  
+  public static final ActionDefinition CANCEL_SKIPPED_ACTION = ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("Please explain why you are reinstating this stage.").setAskParticipantId(true).getActionDefinition();
+
   /**
    * Default comment action.
    */
-  public static final ActionDefinition COMMENT_ACTION = ActionDefinitionBuilder.create(ActionType.COMMENT, "Comment").setDescription("You may enter a free comment.").getActionDefinition();
+  public static final ActionDefinition COMMENT_ACTION = ActionDefinitionBuilder.create(ActionType.COMMENT, "Comment").setDescription("You may enter a free comment.").setAskParticipantId(true).getActionDefinition();
 
   /**
    * Default complete action.
@@ -69,6 +69,11 @@ public class ActionDefinitionBuilder implements Serializable {
 
   public ActionDefinitionBuilder setAskPassword(boolean askPassword) {
     actionDefinition.setAskPassword(askPassword);
+    return this;
+  }
+
+  public ActionDefinitionBuilder setAskParticipantId(boolean askParticipantId) {
+    actionDefinition.setAskParticipantId(askParticipantId);
     return this;
   }
 
