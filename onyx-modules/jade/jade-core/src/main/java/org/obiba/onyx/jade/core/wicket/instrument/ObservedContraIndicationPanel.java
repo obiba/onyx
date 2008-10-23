@@ -75,7 +75,7 @@ public class ObservedContraIndicationPanel extends Panel {
 
     selectionModel = new ContraIndicationSelection();
     final RadioGroup radioGroup = new RadioGroup("radioGroup", new Model());
-    radioGroup.setLabel(new StringResourceModel("YesNo", this, null));
+    radioGroup.setLabel(new StringResourceModel("ContraIndication", this, null));
     add(radioGroup);
     ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { YES, NO })) {
 
@@ -140,10 +140,10 @@ public class ObservedContraIndicationPanel extends Panel {
       protected void onUpdate(AjaxRequestTarget target) {
         // Clear input.
         radioGroup.clearInput();
-        
+
         // make sure the right radio is selected
         radioGroup.getModel().setObject(selectionModel.getContraIndication() != null ? YES : NO);
-        
+
         activeInstrumentRunService.setOtherContraIndication(null);
         setOtherVisible(selectionModel.getContraIndication() != null && selectionModel.getContraIndication().getName().equals(OTHER));
         target.addComponent(ObservedContraIndicationPanel.this);
