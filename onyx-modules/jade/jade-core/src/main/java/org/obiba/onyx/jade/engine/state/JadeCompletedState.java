@@ -33,9 +33,9 @@ public class JadeCompletedState extends AbstractStageState implements Initializi
   private static final Logger log = LoggerFactory.getLogger(JadeCompletedState.class);
 
   private InstrumentRunService instrumentRunService;
-  
+
   private InstrumentService instrumentService;
-  
+
   public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
     this.instrumentRunService = instrumentRunService;
   }
@@ -45,11 +45,10 @@ public class JadeCompletedState extends AbstractStageState implements Initializi
   }
 
   public void afterPropertiesSet() throws Exception {
-    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").getActionDefinition();
-    for (InstrumentRunRefusalReason reason : InstrumentRunRefusalReason.values()) {
+    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").setAskPassword(true).getActionDefinition();
+    for(InstrumentRunRefusalReason reason : InstrumentRunRefusalReason.values()) {
       def.addReason(reason.toString());
-      if (def.getDefaultReason() == null)
-        def.setDefaultReason(reason.toString());
+      if(def.getDefaultReason() == null) def.setDefaultReason(reason.toString());
     }
     addAction(def);
   }
@@ -59,13 +58,13 @@ public class JadeCompletedState extends AbstractStageState implements Initializi
     super.execute(action);
     log.info("Jade Stage {} is cancelling", super.getStage().getName());
     cancelInstrumentRun();
-    if (areDependenciesCompleted() != null && areDependenciesCompleted()) {
+    if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
     } else {
       castEvent(TransitionEvent.INVALID);
     }
   }
-  
+
   @Override
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
     if(transitionEvent.equals(TransitionEvent.NOTAPPLICABLE)) {
@@ -79,7 +78,7 @@ public class JadeCompletedState extends AbstractStageState implements Initializi
     Participant participant = activeInterviewService.getParticipant();
     instrumentRunService.setInstrumentRunStatus(instrumentRunService.getLastCompletedInstrumentRun(participant, instrumentType), InstrumentRunStatus.CANCELED);
   }
-  
+
   @Override
   public boolean isCompleted() {
     return true;

@@ -34,7 +34,7 @@ public class JadeReadyState extends AbstractStageState implements InitializingBe
 
   public void afterPropertiesSet() throws Exception {
     addAction(ActionDefinitionBuilder.START_ACTION);
-    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.SKIP, "Skip").setDescription("You may explain why this stage is skipped.").getActionDefinition();
+    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.SKIP, "Skip").setDescription("You may explain why this stage is skipped.").setAskPassword(true).getActionDefinition();
     for(InstrumentRunRefusalReason reason : InstrumentRunRefusalReason.values()) {
       def.addReason(reason.toString());
       if(def.getDefaultReason() == null) def.setDefaultReason(reason.toString());
@@ -59,7 +59,7 @@ public class JadeReadyState extends AbstractStageState implements InitializingBe
   public String getName() {
     return "Jade.Ready";
   }
-  
+
   @Override
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
     if(transitionEvent.equals(TransitionEvent.VALID)) return false;

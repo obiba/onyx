@@ -24,7 +24,7 @@ public class JadeContraIndicatedState extends AbstractStageState implements Init
   private static final Logger log = LoggerFactory.getLogger(JadeCompletedState.class);
 
   public void afterPropertiesSet() throws Exception {
-    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").getActionDefinition();
+    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").setAskPassword(true).getActionDefinition();
     addAction(def);
   }
 

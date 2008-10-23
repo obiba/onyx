@@ -31,7 +31,7 @@ public class JadeWaitingState extends AbstractStageState implements Initializing
   private static final Logger log = LoggerFactory.getLogger(JadeWaitingState.class);
 
   public void afterPropertiesSet() throws Exception {
-    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.SKIP, "Skip").setDescription("You may explain why this stage is skipped.").getActionDefinition();
+    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.SKIP, "Skip").setDescription("You may explain why this stage is skipped.").setAskPassword(true).getActionDefinition();
     for(InstrumentRunRefusalReason reason : InstrumentRunRefusalReason.values()) {
       def.addReason(reason.toString());
       if(def.getDefaultReason() == null) def.setDefaultReason(reason.toString());
