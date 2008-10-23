@@ -46,9 +46,7 @@ public class PageStepPanel extends WizardStepPanel {
   //
 
   public PageStepPanel(String id, IModel pageModel) {
-    super(id);
-
-    setModel(pageModel);
+    super(id, pageModel);
 
     setOutputMarkupId(true);
 
