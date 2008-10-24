@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 import org.apache.wicket.IResourceListener;
 import org.apache.wicket.RequestCycle;
@@ -39,11 +38,14 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
 
   private static final long serialVersionUID = 1L;
 
+  @SpringBean(name = "activeInterviewService")
+  private ActiveInterviewService activeInterviewService;
+
   @SpringBean
   private ActiveConsentService activeConsentService;
 
-  @SpringBean(name = "activeInterviewService")
-  private ActiveInterviewService activeInterviewService;
+  @SpringBean
+  private ConsentTemplateLoader consentTemplateLoader;
 
   @SuppressWarnings("serial")
   public ElectronicConsentPage() {
@@ -117,19 +119,21 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
 
   protected InputStream getConsentForm() {
 
-    String language = activeConsentService.getConsent().getLanguage();
-    URL resource = getClass().getResource("/consent/ConsentForm_" + language + ".pdf");
-    if(resource == null) {
-      resource = getClass().getResource("/ConsentForm_en.pdf");
-    }
+    org.springframework.core.io.Resource pdfTemplate = consentTemplateLoader.getConsentTemplate(activeConsentService.getLocale());
 
     PdfReader pdfReader;
     try {
-      pdfReader = new PdfReader(resource.openStream());
+      pdfReader = new PdfReader(pdfTemplate.getInputStream());
     } catch(Exception ex) {
       throw new RuntimeException("Consent Form template cannot be read", ex);
     }
 
+    ByteArrayOutputStream output = setConsentFormFields(pdfReader);
+    return new ByteArrayInputStream(output.toByteArray());
+
+  }
+
+  private ByteArrayOutputStream setConsentFormFields(PdfReader pdfReader) {
     ByteArrayOutputStream output = new ByteArrayOutputStream();
     PdfStamper stamper = null;
 
@@ -147,12 +151,11 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
       output.close();
       pdfReader.close();
 
-      return new ByteArrayInputStream(output.toByteArray());
+      return output;
 
     } catch(Exception ex) {
       throw new RuntimeException("An error occured while preparing the consent form", ex);
     }
-
   }
 
   private void setFields(Object object, AcroFields form) {

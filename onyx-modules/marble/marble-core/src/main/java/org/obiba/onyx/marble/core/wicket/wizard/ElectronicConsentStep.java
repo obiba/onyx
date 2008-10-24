@@ -38,6 +38,7 @@ public class ElectronicConsentStep extends WizardStepPanel {
     form.getPreviousLink().setEnabled(true);
     form.getNextLink().setEnabled(true);
     form.getFinishLink().setEnabled(false);
+    form.getCancelLink().setVisible(false);
   }
 
   @Override

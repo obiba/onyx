@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.core.service;
 
+import java.util.Locale;
+
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
 
@@ -19,6 +21,8 @@ public interface ActiveConsentService {
   public void setConsent(Consent consent);
 
   public ConsentMode getMode();
+
+  public Locale getLocale();
 
   public void update();
 

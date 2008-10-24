@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.core.service.impl;
 
+import java.util.Locale;
+
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
@@ -80,6 +82,11 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
 
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
     this.activeInterviewService = activeInterviewService;
+  }
+
+  @Override
+  public Locale getLocale() {
+    return new Locale(consent.getLanguage());
   }
 
 }
