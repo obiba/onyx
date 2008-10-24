@@ -89,7 +89,7 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
   }
 
   public List<Participant> getParticipantsByName(String likeName, PagingClause paging, SortingClause... clauses) {
-    return getCriteriaByName(likeName, null, (SortingClause[]) null).list();
+    return getCriteriaByName(likeName, paging, clauses).list();
   }
 
   public int countParticipantsByName(String likeName) {
@@ -151,7 +151,7 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
 
     return participantQuery;
   }
-  
+
   protected List<Participant> getNotReceivedParticipants() {
     return getSession().createCriteria(Participant.class).add(Restrictions.isNull("barcode")).list();
   }
