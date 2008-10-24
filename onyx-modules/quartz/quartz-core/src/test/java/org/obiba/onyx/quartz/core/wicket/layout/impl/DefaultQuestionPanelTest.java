@@ -20,6 +20,7 @@ import java.util.Locale;
 import junit.framework.Assert;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -36,6 +37,7 @@ import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -112,6 +114,15 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("QuestionCategory.Q1.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q1.2.label", locale, "Choice two");
     messageSource.addMessage("QuestionCategory.Q1.3.label", locale, "Choice three");
+    messageSource.addMessage("Question.Q2.label", locale, "question2 label");
+    messageSource.addMessage("Question.Q2.help", locale, "question2 help");
+    messageSource.addMessage("Question.Q2.instructions", locale, "question2 instructions");
+    messageSource.addMessage("Question.Q2.caption", locale, "question2 caption");
+    messageSource.addMessage("QuestionCategory.Q2.1.label", locale, "Choice one");
+    messageSource.addMessage("QuestionCategory.Q2.DONT_KNOW.label", locale, "Dont know");
+    messageSource.addMessage("QuestionCategory.Q2.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
+    messageSource.addMessage("OpenAnswerDefinition.OPEN_INT.label", locale, "open label");
+    messageSource.addMessage("OpenAnswerDefinition.OPEN_INT.unitLabel", locale, "open unit label");
 
     propertyKeyProvider = new DefaultPropertyKeyProviderImpl();
 
@@ -201,14 +212,91 @@ public class DefaultQuestionPanelTest {
     verify(questionnaireBundleMock);
   }
 
+  @Test
+  public void testExclusiveChoiceQuestionWithOpenAnswer() {
+
+    final Questionnaire questionnaire = createQuestionnaire();
+    CategoryAnswer previousCategoryAnswer = new CategoryAnswer();
+    previousCategoryAnswer.setCategoryName("DONT_KNOW");
+    QuestionAnswer previousQuestionAnswer = new QuestionAnswer();
+    previousQuestionAnswer.setQuestionName("Q2");
+    previousQuestionAnswer.addCategoryAnswer(previousCategoryAnswer);
+
+    final Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("Q2");
+    OpenAnswerDefinition open = QuestionnaireFinder.getInstance(questionnaire).findOpenAnswerDefinition("OPEN_INT");
+
+    expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q2", "Q2.1"))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q2", "Q2.DONT_KNOW"))).andReturn(previousCategoryAnswer).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q2", "Q2.PREFER_NOT_ANSWER"))).andReturn(null).atLeastOnce();
+    activeQuestionnaireAdministrationServiceMock.deleteAnswers(question);
+    expect(activeQuestionnaireAdministrationServiceMock.answer(QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q2", "Q2.1"), null)).andReturn(new CategoryAnswer());
+    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
+    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).anyTimes();
+    expect(questionnaireBundleMock.getPropertyKey(question, "label")).andReturn(propertyKeyProvider.getPropertyKey(question, "label")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "help")).andReturn(propertyKeyProvider.getPropertyKey(question, "help")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
+    for(QuestionCategory qCategory : question.getQuestionCategories()) {
+      expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
+    }
+    expect(questionnaireBundleMock.getPropertyKey(open, "label")).andReturn(propertyKeyProvider.getPropertyKey(open, "label")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(open, "unitLabel")).andReturn(propertyKeyProvider.getPropertyKey(open, "unitLabel")).atLeastOnce();
+
+    replay(activeInterviewServiceMock);
+    replay(activeQuestionnaireAdministrationServiceMock);
+    replay(questionnaireBundleManagerMock);
+    replay(questionnaireBundleMock);
+
+    tester.startPanel(new TestPanelSource() {
+
+      private static final long serialVersionUID = 1L;
+
+      @SuppressWarnings("serial")
+      public Panel getTestPanel(String panelId) {
+
+        return new DefaultQuestionPanelMock(panelId, new Model(question));
+      }
+    });
+
+    // tester.dumpPage();
+
+    // check all expected radios are here
+    tester.assertComponent("panel:form:content:categories", RadioGroup.class);
+    tester.isInvisible("panel:form:content:categories:category:1:categoryLabel:input:radio");
+    tester.assertComponent("panel:form:content:categories:category:2:categoryLabel:input:radio", Radio.class);
+    tester.assertComponent("panel:form:content:categories:category:3:categoryLabel:input:radio", Radio.class);
+
+    // check previous answer is here (radio 2)
+    RadioGroup radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:categories");
+    Radio radio2 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:categories:category:2:categoryLabel:input:radio");
+    Assert.assertEquals(radioGroup.getModelObject(), radio2.getModelObject());
+    Assert.assertTrue(radioGroup.isRequired());
+    FormComponent field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:categories:category:1:open:open:input:field");
+    Assert.assertFalse(field.isRequired());
+
+    // select open field
+    tester.executeAjaxEvent("panel:form:content:categories:category:1:open:open:input:field", "onclick");
+    radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:categories");
+    Assert.assertNull(radioGroup.getModelObject());
+    Assert.assertFalse(radioGroup.isRequired());
+    field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:categories:category:1:open:open:input:field");
+    Assert.assertTrue(field.isRequired());
+
+    verify(activeInterviewServiceMock);
+    verify(activeQuestionnaireAdministrationServiceMock);
+    verify(questionnaireBundleManagerMock);
+    verify(questionnaireBundleMock);
+  }
+
   public Questionnaire createQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
 
     builder.withSection("S1").withPage("P1").withQuestion("Q1").withCategories("1", "2", "3");
     builder.withSection("S2").withPage("P2").withQuestion("Q2").withCategory("1").withOpenAnswerDefinition("OPEN_INT", DataType.INTEGER);
-    builder.inQuestion("Q2").withCategory("2").withOpenAnswerDefinition("OPEN_TEXT", DataType.TEXT);
-    builder.inQuestion("Q2").withCategory("3").withOpenAnswerDefinition("OPEN_DATE", DataType.DATE);
-    builder.inQuestion("Q2").withCategory("4").withOpenAnswerDefinition("OPEN_TEXT_DEFAULT_VALUES", DataType.TEXT).setOpenAnswerDefinitionDefaultData("a", "b", "c");
+    builder.inQuestion("Q2").withCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
 
     Questionnaire q = builder.getQuestionnaire();
     q.addLocale(locale);

@@ -118,7 +118,7 @@ public class QuartzPanelTest {
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(Locale.FRENCH).anyTimes();
     expect(messageSourceMock.getMessage("", null, Locale.FRENCH)).andReturn("").anyTimes();
 
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer((QuestionCategory) EasyMock.anyObject())).andReturn(new CategoryAnswer()).times(3);
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer((QuestionCategory) EasyMock.anyObject())).andReturn(new CategoryAnswer()).anyTimes();
 
     replay(activeInterviewServiceMock);
     replay(activeQuestionnaireAdministrationServiceMock);
