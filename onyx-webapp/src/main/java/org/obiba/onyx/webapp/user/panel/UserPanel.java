@@ -13,8 +13,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
@@ -36,13 +35,11 @@ import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.Status;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserService;
-import org.obiba.onyx.webapp.base.panel.AjaxLanguageChoicePanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
+import org.obiba.wicket.markup.html.form.LocaleDropDownChoice;
 
 /**
  * Defines User Form for adding/editing user
- * @author acarey
- * 
  */
 public class UserPanel extends Panel {
 
@@ -56,8 +53,6 @@ public class UserPanel extends Panel {
   private FeedbackPanel feedbackPanel;
 
   private PasswordTextField password;
-  
-  private AjaxLanguageChoicePanel language;
 
   public UserPanel(String id, IModel model, final ModalWindow modalWindow) {
     super(id, model);
@@ -110,7 +105,7 @@ public class UserPanel extends Panel {
         private static final long serialVersionUID = 1L;
 
         public Object getDisplayValue(Object object) {
-          return (new StringResourceModel("Role." + ((Role) object).getName(), UserPanel.this, null).getString());
+          return getString("Role." + ((Role) object).getName());
         }
 
         public String getIdValue(Object object, int index) {
@@ -119,22 +114,12 @@ public class UserPanel extends Panel {
       });
       add(roles);
 
-      language = new AjaxLanguageChoicePanel("languageSelect", null, Arrays.asList(new Locale[] { Locale.FRENCH, Locale.ENGLISH })) {
+      LocaleDropDownChoice ddc = new LocaleDropDownChoice("language", new PropertyModel(getModel(), "language"), Arrays.asList(new Locale[] { Locale.FRENCH, Locale.ENGLISH }));
+      ddc.setUseSessionLocale(true);
+      ddc.add(new RequiredFormFieldBehavior());
+      add(ddc);
 
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        protected void onLanguageUpdate(Locale language, AjaxRequestTarget target) {
-          if(language == null) language = Locale.ENGLISH;
-          //getUser().setLanguage(language);
-        }
-
-      };
-      
-      if(getUser().getLanguage() != null) language.setSelectedLanguage(getUser().getLanguage());
-      add(language);
-
-      add(new AjaxSubmitLink("submit") {
+      add(new AjaxButton("save", this) {
 
         private static final long serialVersionUID = 1L;
 
@@ -143,11 +128,10 @@ public class UserPanel extends Panel {
           super.onSubmit();
           User user = (User) UserPanelForm.this.getModelObject();
           String newPassword = UserPanel.this.password.getModelObjectAsString();
-          Locale newLanguage = UserPanel.this.language.getSelectedLanguage();
-          
-          if(newPassword != "") user.setPassword(User.digest(newPassword));
+
+          user.setPassword(User.digest(newPassword));
+
           if(user.getLogin() == null) generateLogin(user);
-          user.setLanguage((newLanguage == null) ?  Locale.ENGLISH : newLanguage);
           if(user.getStatus() == null) user.setStatus(Status.ACTIVE);
           user.setDeleted(false);
 
@@ -161,15 +145,17 @@ public class UserPanel extends Panel {
         }
       });
 
-      add(new AjaxLink("cancel") {
+      // A cancel button: use an AjaxButton and disable the "defaultFormProcessing". Seems that this is the best
+      // practice for this type of behaviour
+      add(new AjaxButton("cancel", this) {
 
         private static final long serialVersionUID = 1L;
 
         @Override
-        public void onClick(AjaxRequestTarget target) {
+        public void onSubmit(AjaxRequestTarget target, Form form) {
           userModalWindow.close(target);
         }
-      });
+      }.setDefaultFormProcessing(false));
     }
 
     private class PasswordValidator extends AbstractValidator {
@@ -179,6 +165,8 @@ public class UserPanel extends Panel {
       @Override
       protected void onValidate(IValidatable validatable) {
         String newPassword = validatable.getValue().toString();
+
+        // TODO validate the password's length and strenght
 
         if(getUser().getPassword().equals(User.digest(newPassword))) {
           feedbackPanel.error(new StringResourceModel("PasswordPreviouslyUsed", UserPanel.this, null).getString());

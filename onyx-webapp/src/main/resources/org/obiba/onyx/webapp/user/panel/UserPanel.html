@@ -27,12 +27,12 @@
 	    		<td><select wicket:id="roles"/></td>
 	    	</tr>
 	    	<tr>
-	    		<td><label for="languageSelect"><wicket:message key="Language" /></label></td>
-	    		<td><span wicket:id="languageSelect" /></td>
-	    	</tr>		        				        				        	        		
+	    		<td><label for="language"><wicket:message key="Language" /></label></td>
+	    		<td><select wicket:id="language" /></td>
+	    	</tr>
 		</table>
-		<br>
-	    <input type="submit" wicket:id="submit" wicket:message="value:Save"> 		
-	    <input type="button" wicket:id="cancel" wicket:message="value:Cancel"> 
+		<br/>
+	    <button wicket:id="save"><wicket:message key="Save"/></button> 		
+        <button wicket:id="cancel"><wicket:message key="Cancel"/></button>    
 	</form>
 </wicket:panel>

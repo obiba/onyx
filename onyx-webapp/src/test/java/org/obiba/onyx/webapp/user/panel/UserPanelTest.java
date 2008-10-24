@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.wicket.Page;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
@@ -55,6 +56,7 @@ public class UserPanelTest {
     mockCtx.putBean("userService", userServiceMock);
 
     MockSpringApplication application = new MockSpringApplication();
+    application.setHomePage(Page.class);
     application.setApplicationContext(mockCtx);
     tester = new WicketTester(application);
   }
@@ -84,7 +86,7 @@ public class UserPanelTest {
     Assert.assertEquals("Dupont", formTester.getTextComponentValue("lastName"));
     Assert.assertEquals("Nathalie", formTester.getTextComponentValue("firstName"));
     Assert.assertEquals("ndupont@obiba.org", formTester.getTextComponentValue("email"));
-    Assert.assertEquals(Locale.ENGLISH, formTester.getForm().get("languageSelect:localeSelect").getModelObject());
+    Assert.assertEquals(Locale.ENGLISH, formTester.getForm().get("language").getModelObject());
     assertSetsEquals(getUserRoles(), (Set<Role>) formTester.getForm().get("roles").getModelObject());
   }
 
@@ -92,7 +94,8 @@ public class UserPanelTest {
   public void testEditUser() {
     final User u = newUserTest();
 
-    expect(userServiceMock.getRoles((SortingClause) EasyMock.anyObject())).andReturn(newRoleListTest());
+    expect(userServiceMock.getRoles(SortingClause.create("name"))).andReturn(newRoleListTest());
+    userServiceMock.createOrUpdateUser(u);
 
     replay(userServiceMock);
 
@@ -105,23 +108,28 @@ public class UserPanelTest {
       }
     });
 
+    tester.dumpPage();
+
     FormTester formTester = tester.newFormTester("panel:userPanelForm");
 
+    formTester.setValue("firstName", "newFirstName");
+    formTester.setValue("lastName", "newLastName");
     formTester.setValue("email", "ndupont@obiba.com");
+    formTester.select("language", 1);
 
-    // formTester.select n'a pas l'air de fonctionner
-    // formTester.select("languageSelect:localeSelect", 0);
-
-    formTester.submit();
+    submitForm();
     tester.assertNoErrorMessage();
 
     verify(userServiceMock);
 
+    Assert.assertEquals("newFirstName", u.getFirstName());
+    Assert.assertEquals("newLastName", u.getLastName());
     Assert.assertEquals("ndupont@obiba.com", u.getEmail());
+    Assert.assertEquals(Locale.ENGLISH, u.getLanguage());
   }
 
   @Test
-  public void testAddUserError() {
+  public void testAddUserMissingRequiredFields() {
     final User u = new User();
     expect(userServiceMock.getRoles((SortingClause) EasyMock.anyObject())).andReturn(newRoleListTest());
 
@@ -140,11 +148,13 @@ public class UserPanelTest {
     formTester.setValue("lastName", "Tremblay");
     formTester.setValue("firstName", "Patrick");
     formTester.setValue("email", "ptremblay@obiba.org");
-    formTester.submit();
+
+    submitForm();
 
     StringResourceModel strModel = new StringResourceModel("Required", userPanel, new Model(new ValueMap("label=password")));
     StringResourceModel strModel1 = new StringResourceModel("Required", userPanel, new Model(new ValueMap("label=roles")));
-    tester.assertErrorMessages(new String[] { strModel.getString(), strModel1.getString() });
+    StringResourceModel strModel2 = new StringResourceModel("Required", userPanel, new Model(new ValueMap("label=language")));
+    tester.assertErrorMessages(new String[] { strModel.getString(), strModel1.getString(), strModel2.getString() });
 
     verify(userServiceMock);
   }
@@ -152,7 +162,9 @@ public class UserPanelTest {
   @Test
   public void testAddUser() {
     final User u = new User();
-    expect(userServiceMock.getRoles((SortingClause) EasyMock.anyObject())).andReturn(newRoleListTest());
+    expect(userServiceMock.getRoles(SortingClause.create("name"))).andReturn(newRoleListTest());
+    expect(userServiceMock.getUserWithLogin("ptremblay")).andReturn(null);
+    userServiceMock.createOrUpdateUser(u);
 
     replay(userServiceMock);
 
@@ -170,14 +182,21 @@ public class UserPanelTest {
     formTester.setValue("firstName", "Patrick");
     formTester.setValue("email", "ptremblay@obiba.org");
     formTester.setValue("password", "password01");
+    formTester.select("language", 1);
     formTester.selectMultiple("roles", new int[] { 0, 1 });
-    formTester.submit();
+
+    submitForm();
 
     tester.assertNoErrorMessage();
     verify(userServiceMock);
     Assert.assertEquals("Tremblay", u.getLastName());
+    Assert.assertEquals(Locale.ENGLISH, u.getLanguage());
     // Assert that two Sets are identical
     assertSetsEquals(getUserRoles(), u.getRoles());
+  }
+
+  private void submitForm() {
+    tester.executeAjaxEvent("panel:userPanelForm:save", "onclick");
   }
 
   private User newUserTest() {
