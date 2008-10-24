@@ -47,6 +47,10 @@ public class QuestionnaireWizardPanel extends WizardPanel {
   // Methods
   //
 
+  public WizardForm getWizardForm() {
+    return wizardForm;
+  }
+
   public void setActionWindow(ActionWindow window) {
     wizardForm.setActionWindow(window);
   }

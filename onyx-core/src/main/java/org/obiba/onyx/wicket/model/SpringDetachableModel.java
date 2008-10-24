@@ -20,7 +20,12 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 public abstract class SpringDetachableModel extends LoadableDetachableModel {
 
   public SpringDetachableModel() {
+    super();
     InjectorHolder.getInjector().inject(this);
   }
 
+  public SpringDetachableModel(Object object) {
+    super(object);
+    InjectorHolder.getInjector().inject(this);
+  }
 }

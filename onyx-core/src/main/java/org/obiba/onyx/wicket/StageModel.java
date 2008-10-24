@@ -12,27 +12,29 @@
  */
 package org.obiba.onyx.wicket;
 
-import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.wicket.model.SpringDetachableModel;
 
-final public class StageModel extends LoadableDetachableModel {
+final public class StageModel extends SpringDetachableModel {
 
   private static final long serialVersionUID = 1L;
 
+  @SpringBean
   private ModuleRegistry moduleRegistry;
 
   private String stageName;
 
   public StageModel(ModuleRegistry registry, Stage stage) {
     super(stage);
-    this.moduleRegistry = registry;
+    // this.moduleRegistry = registry;
     this.stageName = stage.getName();
   }
 
   public StageModel(ModuleRegistry registry, String stageName) {
     super(registry.getStage(stageName));
-    this.moduleRegistry = registry;
+    // this.moduleRegistry = registry;
     this.stageName = stageName;
   }
 
