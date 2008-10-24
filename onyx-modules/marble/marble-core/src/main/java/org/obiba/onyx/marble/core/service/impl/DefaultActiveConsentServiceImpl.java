@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.core.service.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
@@ -19,6 +21,9 @@ import org.obiba.onyx.marble.domain.consent.ConsentMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.lowagie.text.pdf.AcroFields;
+import com.lowagie.text.pdf.PdfReader;
+
 public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareService implements ActiveConsentService {
 
   private static final Logger log = LoggerFactory.getLogger(DefaultActiveConsentServiceImpl.class);
@@ -26,6 +31,14 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
   private ActiveInterviewService activeInterviewService;
 
   private Consent consent;
+
+  public ActiveInterviewService getActiveInterviewService() {
+    return activeInterviewService;
+  }
+
+  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
+    this.activeInterviewService = activeInterviewService;
+  }
 
   public void setConsent(Consent consent) {
     this.consent = consent;
@@ -54,10 +67,23 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
     getPersistenceManager().save(consent);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public boolean validateConsent() {
-    if(consent.getPdfForm() != null) {
-      return true;
+    if(isPdfFormSubmited()) {
+      PdfReader reader;
+      try {
+        reader = new PdfReader(consent.getPdfForm());
+      } catch(IOException ex) {
+        throw new RuntimeException("Could not read PDF document", ex);
+      }
+      AcroFields form = reader.getAcroFields();
+      ArrayList list = form.getBlankSignatureNames();
+      if(list.isEmpty()) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
@@ -65,7 +91,6 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
 
   @Override
   public void deletePreviousConsent() {
-    System.out.println(activeInterviewService.getInterview().getId());
     Consent template = new Consent();
     template.setInterview(activeInterviewService.getInterview());
     template.setDeleted(false);
@@ -76,17 +101,17 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
     }
   }
 
-  public ActiveInterviewService getActiveInterviewService() {
-    return activeInterviewService;
-  }
-
-  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
-    this.activeInterviewService = activeInterviewService;
-  }
-
   @Override
   public Locale getLocale() {
     return new Locale(consent.getLanguage());
+  }
+
+  @Override
+  public boolean isPdfFormSubmited() {
+    if(consent.getPdfForm() != null) {
+      return true;
+    }
+    return false;
   }
 
 }

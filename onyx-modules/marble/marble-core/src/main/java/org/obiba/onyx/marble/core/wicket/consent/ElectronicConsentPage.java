@@ -88,21 +88,27 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
 
           @Override
           public byte[] getData() {
-            InputStream pdfStream = ElectronicConsentPage.this.getConsentForm();
-            ByteArrayOutputStream convertedStream = new ByteArrayOutputStream();
-            byte[] readBuffer = new byte[1024];
-            int bytesRead;
+            ByteArrayOutputStream convertedStream = null;
+            if(activeConsentService.isPdfFormSubmited()) {
+              return activeConsentService.getConsent().getPdfForm();
+            } else {
 
-            try {
-              while((bytesRead = pdfStream.read(readBuffer)) > 0) {
-                convertedStream.write(readBuffer, 0, bytesRead);
-              }
-            } catch(IOException couldNotReadStream) {
-              throw new RuntimeException(couldNotReadStream);
-            } finally {
+              InputStream pdfStream = ElectronicConsentPage.this.getConsentForm();
+              convertedStream = new ByteArrayOutputStream();
+              byte[] readBuffer = new byte[1024];
+              int bytesRead;
+
               try {
-                pdfStream.close();
-              } catch(IOException e) {
+                while((bytesRead = pdfStream.read(readBuffer)) > 0) {
+                  convertedStream.write(readBuffer, 0, bytesRead);
+                }
+              } catch(IOException couldNotReadStream) {
+                throw new RuntimeException(couldNotReadStream);
+              } finally {
+                try {
+                  pdfStream.close();
+                } catch(IOException e) {
+                }
               }
             }
 

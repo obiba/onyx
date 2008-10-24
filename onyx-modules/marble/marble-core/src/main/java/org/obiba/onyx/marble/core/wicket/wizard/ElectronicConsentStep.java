@@ -38,7 +38,7 @@ public class ElectronicConsentStep extends WizardStepPanel {
     form.getPreviousLink().setEnabled(true);
     form.getNextLink().setEnabled(true);
     form.getFinishLink().setEnabled(false);
-    form.getCancelLink().setVisible(false);
+    form.getCancelLink().setEnabled(false);
   }
 
   @Override
@@ -48,9 +48,11 @@ public class ElectronicConsentStep extends WizardStepPanel {
 
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
-    if(!electronicConsentPanel.validate()) {
+    setNextStep(null);
+    if(!electronicConsentPanel.isPdfFormSubmited()) {
+      error(getString("MissingConsentForm"));
+    } else if(!electronicConsentPanel.validate()) {
       error(getString("InvalidConsentForm"));
-      setNextStep(null);
     } else {
       setNextStep(consentConfirmationStep);
     }

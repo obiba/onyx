@@ -43,7 +43,6 @@ public class ConsentModeSelectionStep extends WizardStepPanel {
     form.getPreviousLink().setEnabled(false);
     form.getNextLink().setEnabled(true);
     form.getFinishLink().setEnabled(false);
-    form.getCancelLink().setVisible(true);
   }
 
   @Override
@@ -63,6 +62,7 @@ public class ConsentModeSelectionStep extends WizardStepPanel {
     } else {
       consentConfirmationStep.setPreviousStep(electronicConsentStep);
       setNextStep(electronicConsentStep);
+      activeConsentService.getConsent().setPdfForm(null);
     }
 
   }

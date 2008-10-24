@@ -29,4 +29,6 @@ public interface ActiveConsentService {
   public void deletePreviousConsent();
 
   public boolean validateConsent();
+
+  public boolean isPdfFormSubmited();
 }

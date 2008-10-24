@@ -42,4 +42,8 @@ public class ElectronicConsentPanel extends Panel {
     return activeConsentService.validateConsent();
   }
 
+  public boolean isPdfFormSubmited() {
+    return activeConsentService.isPdfFormSubmited();
+  }
+
 }
