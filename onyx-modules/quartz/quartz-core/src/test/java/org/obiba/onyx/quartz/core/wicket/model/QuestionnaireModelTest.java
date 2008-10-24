@@ -14,8 +14,6 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import java.util.Locale;
-
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Assert;
@@ -38,8 +36,6 @@ public class QuestionnaireModelTest {
 
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationServiceMock;
 
-  private Locale locale;
-
   private Questionnaire questionnaire;
 
   private QuestionnaireBundle questionnaireBundleMock;
@@ -53,8 +49,6 @@ public class QuestionnaireModelTest {
 
     activeQuestionnaireAdministrationServiceMock = createMock(ActiveQuestionnaireAdministrationService.class);
     applicationContextMock.putBean("activeQuestionnaireAdministrationService", activeQuestionnaireAdministrationServiceMock);
-
-    locale = new Locale("en");
 
     questionnaire = createQuestionnaire();
 
