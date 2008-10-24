@@ -11,7 +11,8 @@ public abstract class FormMock extends Panel {
     super(id, model);
     Form form = new Form("form");
     add(form);
-    form.add(populateContent("content", getModel()));
+    if(model.getObject() == null) throw new IllegalArgumentException("Null object in FormMock not accepted.");
+    form.add(populateContent("content", model));
   }
 
   public abstract Component populateContent(String id, IModel model);
