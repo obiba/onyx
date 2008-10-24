@@ -29,7 +29,7 @@ public class PageQuestionsProvider implements IDataProvider {
 
   @SuppressWarnings("unchecked")
   public Iterator iterator(int first, int count) {
-    return page.getQuestions().iterator();
+    return page.getQuestions().subList(first, first + count - 1).iterator();
   }
 
   public IModel model(Object object) {

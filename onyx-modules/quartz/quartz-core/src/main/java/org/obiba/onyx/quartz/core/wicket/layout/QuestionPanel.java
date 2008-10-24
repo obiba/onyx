@@ -23,7 +23,9 @@ import org.slf4j.LoggerFactory;
  * @author Yannick Marcon
  * 
  */
-public abstract class QuestionPanel extends Panel {
+public class QuestionPanel extends Panel {
+
+  private static final long serialVersionUID = -3204686612721034839L;
 
   private static final Logger log = LoggerFactory.getLogger(QuestionPanel.class);
 
