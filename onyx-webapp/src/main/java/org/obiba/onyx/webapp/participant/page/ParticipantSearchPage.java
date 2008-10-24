@@ -49,6 +49,7 @@ import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
 import org.obiba.onyx.webapp.participant.panel.ParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
+import org.obiba.onyx.wicket.behavior.EnterOnKeyPressBehaviour;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.JavascriptEventConfirmation;
 import org.obiba.wicket.markup.html.link.AjaxLinkList;
@@ -71,7 +72,7 @@ public class ParticipantSearchPage extends BasePage {
   @SpringBean
   private ParticipantService participantService;
 
-  @SpringBean(name="activeInterviewService")
+  @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   private OnyxEntityList<Participant> participantList;
@@ -116,9 +117,8 @@ public class ParticipantSearchPage extends BasePage {
 
     });
 
-    form.add(new TextField("lastName", new PropertyModel(template, "lastName")));
-
-    form.add(new AjaxButton("searchByLastName", form) {
+    AjaxButton lastNameButton;
+    form.add(lastNameButton = new AjaxButton("searchByLastName", form) {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
@@ -138,6 +138,10 @@ public class ParticipantSearchPage extends BasePage {
       }
 
     });
+
+    TextField lastNameTextField = new TextField("lastName", new PropertyModel(template, "lastName"));
+    lastNameTextField.add(new EnterOnKeyPressBehaviour(lastNameButton));
+    form.add(lastNameTextField);
 
     form.add(new AjaxButton("submit", form) {
 
@@ -307,8 +311,8 @@ public class ParticipantSearchPage extends BasePage {
 
     public ParticipantByNameProvider(Participant template) {
       super(queryService, Participant.class);
-      this.template = template;
       setSort(new SortParam("lastName", true));
+      this.template = template;
     }
 
     @Override
