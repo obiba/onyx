@@ -42,6 +42,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
+import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.wicket.test.MockSpringApplication;
 import org.slf4j.Logger;
@@ -99,12 +101,16 @@ public class DefaultOpenAnswerDefinitionPanelTest {
   }
 
   @Test
-  public void testOpenInt() {
+  public void testOpenInteger() {
 
     final Questionnaire questionnaire = createQuestionnaire();
-    expect((questionnaireBundleManagerMock.getBundle("HealthQuestionnaire"))).andReturn(questionnaireBundleMock).atLeastOnce();
+    CategoryAnswer previousAnswer = new CategoryAnswer();
+    previousAnswer.setDataType(DataType.INTEGER);
+    previousAnswer.setData(DataBuilder.buildInteger(321l));
+    expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer((QuestionCategory) EasyMock.anyObject())).andReturn(new CategoryAnswer()).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer((QuestionCategory) EasyMock.anyObject())).andReturn(previousAnswer).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.answer((QuestionCategory) EasyMock.anyObject(), (Data) EasyMock.anyObject())).andReturn(new CategoryAnswer()).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(Locale.FRENCH).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSourceMock).anyTimes();
@@ -116,7 +122,7 @@ public class DefaultOpenAnswerDefinitionPanelTest {
     replay(questionnaireBundleMock);
     replay(messageSourceMock);
 
-    final IModel assertModel = new Model(Boolean.FALSE);
+    final IModel assertClickModel = new Model(Boolean.FALSE);
 
     tester.startPanel(new TestPanelSource() {
 
@@ -125,21 +131,99 @@ public class DefaultOpenAnswerDefinitionPanelTest {
       @SuppressWarnings("serial")
       public Panel getTestPanel(String panelId) {
         QuestionCategory element = QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q2", "Q2.1");
-        return openMock = new DefaultOpenAnswerDefinitionPanelMock(panelId, new Model(element), assertModel);
+        return openMock = new DefaultOpenAnswerDefinitionPanelMock(panelId, new Model(element), assertClickModel);
       }
     });
 
     // tester.dumpPage();
 
-    tester.executeAjaxEvent("panel:form:content:open:input:field", "onclick");
-    Assert.assertEquals("No click event on open field", Boolean.TRUE, assertModel.getObject());
-
-    FormTester formTester = tester.newFormTester("panel:form");
-    formTester.setValue("field3", "123");
-
-    tester.executeAjaxEvent("panel:form:content:open:input:field", "onblur");
+    // check previous answer is here
     Assert.assertNotNull(openMock);
-    // Assert.assertNotNull(openMock.getData());
+    Assert.assertNotNull(openMock.getData());
+    Long value = openMock.getData().getValue();
+    Assert.assertEquals(321, value.intValue());
+
+    // check onclick callback
+    tester.executeAjaxEvent("panel:form:content:open:input:field", "onclick");
+    Assert.assertEquals("No click event on open field", Boolean.TRUE, assertClickModel.getObject());
+
+    // check and set field value
+    FormTester formTester = tester.newFormTester("panel:form");
+    Assert.assertEquals("321", formTester.getTextComponentValue("content:open:input:field"));
+    formTester.setValue("content:open:input:field", "123");
+
+    // check submit of value
+    tester.executeAjaxEvent("panel:form:content:open:input:field", "onblur");
+    Assert.assertNotNull(openMock.getData());
+    value = openMock.getData().getValue();
+    Assert.assertEquals(123, value.intValue());
+
+    verify(activeInterviewServiceMock);
+    verify(activeQuestionnaireAdministrationServiceMock);
+    verify(questionnaireBundleManagerMock);
+    verify(questionnaireBundleMock);
+    verify(messageSourceMock);
+  }
+
+  @Test
+  public void testOpenTextWithDefaultValues() {
+
+    final Questionnaire questionnaire = createQuestionnaire();
+    CategoryAnswer previousAnswer = new CategoryAnswer();
+    previousAnswer.setDataType(DataType.TEXT);
+    previousAnswer.setData(DataBuilder.buildText("c"));
+    expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer((QuestionCategory) EasyMock.anyObject())).andReturn(previousAnswer).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.answer((QuestionCategory) EasyMock.anyObject(), (Data) EasyMock.anyObject())).andReturn(new CategoryAnswer()).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(Locale.FRENCH).anyTimes();
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
+    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSourceMock).anyTimes();
+    expect(messageSourceMock.getMessage("", null, Locale.FRENCH)).andReturn("").atLeastOnce();
+
+    replay(activeInterviewServiceMock);
+    replay(activeQuestionnaireAdministrationServiceMock);
+    replay(questionnaireBundleManagerMock);
+    replay(questionnaireBundleMock);
+    replay(messageSourceMock);
+
+    final IModel assertClickModel = new Model(Boolean.FALSE);
+
+    tester.startPanel(new TestPanelSource() {
+
+      private static final long serialVersionUID = 1L;
+
+      @SuppressWarnings("serial")
+      public Panel getTestPanel(String panelId) {
+        QuestionCategory element = QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q2", "Q2.4");
+        return openMock = new DefaultOpenAnswerDefinitionPanelMock(panelId, new Model(element), assertClickModel);
+      }
+    });
+
+    // tester.dumpPage();
+
+    // check the right select option is selected
+    tester.assertContains("(option selected=\"selected\" value=\"c\")");
+
+    // check previous answer is here
+    Assert.assertNotNull(openMock);
+    Assert.assertNotNull(openMock.getData());
+    String value = openMock.getData().getValue();
+    Assert.assertEquals("c", value);
+
+    // check onclick callback
+    tester.executeAjaxEvent("panel:form:content:open:input:select", "onclick");
+    Assert.assertEquals("No click event on open field", Boolean.TRUE, assertClickModel.getObject());
+
+    // check and set field value
+    FormTester formTester = tester.newFormTester("panel:form");
+    formTester.select("content:open:input:select", 1);
+
+    // check submit of value
+    tester.executeAjaxEvent("panel:form:content:open:input:select", "onblur");
+    Assert.assertNotNull(openMock.getData());
+    value = openMock.getData().getValue();
+    Assert.assertEquals("b", value);
 
     verify(activeInterviewServiceMock);
     verify(activeQuestionnaireAdministrationServiceMock);
