@@ -22,6 +22,7 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -88,13 +89,13 @@ public abstract class ActionDefinitionPanel extends Panel {
     if(definition.isAskPassword()) {
       form.add(new PasswordFragment("password"));
     } else {
-      form.add(new Fragment("password", "trFragment", this));
+      form.add(new EmptyPanel("password").setVisible(false));
     }
 
     if(definition.isAskParticipantId()) {
       form.add(new BarcodeFragment("confirmBarcode"));
     } else {
-      form.add(new Fragment("confirmBarcode", "trFragment", this));
+      form.add(new EmptyPanel("confirmBarcode").setVisible(false));
     }
 
     form.add(new TextArea("comment", new PropertyModel(this, "action.comment")));
@@ -103,7 +104,7 @@ public abstract class ActionDefinitionPanel extends Panel {
     if(definition.getReasons().size() > 0) {
       form.add(new ReasonsFragment("reasons", definition.getReasons()));
     } else {
-      form.add(new Fragment("reasons", "trFragment", this));
+      form.add(new EmptyPanel("reasons").setVisible(false));
     }
 
     form.add(new AjaxButton("submit", form) {
