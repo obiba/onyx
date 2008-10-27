@@ -25,13 +25,14 @@ import org.obiba.onyx.quartz.core.service.INavigationStrategy;
 public class DefaultNavigationStrategyImpl implements INavigationStrategy {
 
   /**
-   * Returns the earliest page of the questionnaire containing either no questions (i.e., an informational page) or at
-   * least one question without an answer source.
+   * Returns the earliest page of the questionnaire containing either no questions or at least one question without an
+   * answer source.
    * 
    * In effect, this method skips over pages containing only questions with an answer source.
    * 
    * @param service service
-   * @return start page (first page that is either informational or contains unanswered questions)
+   * @return start page (first page that either has no questions or contains at least one question without an answer
+   * source)
    */
   public Page getPageOnStart(ActiveQuestionnaireAdministrationService service) {
     Page startPage = null;
@@ -50,20 +51,34 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
     return startPage;
   }
 
+  public Page getPageOnLast(ActiveQuestionnaireAdministrationService service) {
+    Page lastPage = null;
+
+    Page page = getPageOnStart(service);
+
+    while(page != null) {
+      lastPage = page;
+      page = getPageOnNext(service, page);
+    }
+
+    return lastPage;
+  }
+
   /**
-   * Returns the earliest page, after the current page, containing either no questions (i.e., an informational page) or
-   * at least one question that is to be answered (whether or not an answer currently exists).
+   * Returns the earliest page, after the current page, containing either no questions or at least one question that is
+   * to be answered (whether or not an answer currently exists).
    * 
    * In effect, this method skips over pages containing only questions that are not to be answered.
    * 
    * @param service service
    * @param currentPage currently displayed page
-   * @return next page (first page, after current page, with unanswered questions)
+   * @return next page (first page, after current page, with either no questions or at least one question to be
+   * answered), or <code>null</code> if the current page is <code>null</code>
    */
   public Page getPageOnNext(ActiveQuestionnaireAdministrationService service, Page currentPage) {
     Page nextPage = null;
 
-    if(!currentPage.equals(ActiveQuestionnaireAdministrationService.PAGE_AFTER_LAST)) {
+    if(currentPage != null) {
       Questionnaire questionnaire = service.getQuestionnaire();
 
       List<Page> pages = questionnaire.getPages();
@@ -78,11 +93,6 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
           break;
         }
       }
-
-      // If there is no next page WITHIN the questionnaire, return PAGE_AFTER_LAST as the next page.
-      if(nextPage == null) {
-        nextPage = ActiveQuestionnaireAdministrationService.PAGE_AFTER_LAST;
-      }
     }
 
     return nextPage;
@@ -96,21 +106,18 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
    * 
    * @param service service
    * @param currentPage currently displayed page
-   * @return previous page (page displayed before the current page)
+   * @return previous page (page displayed before the current page), or <code>null</code> if the current page is
+   * <code>null</code>
    */
   public Page getPageOnPrevious(ActiveQuestionnaireAdministrationService service, Page currentPage) {
     Page previousPage = null;
 
-    if(!currentPage.equals(ActiveQuestionnaireAdministrationService.PAGE_BEFORE_FIRST)) {
+    if(currentPage != null) {
       Page page = getPageOnStart(service);
 
       while(!page.getName().equals(currentPage.getName())) {
         previousPage = page;
         page = getPageOnNext(service, page);
-      }
-
-      if(previousPage == null) {
-        previousPage = ActiveQuestionnaireAdministrationService.PAGE_BEFORE_FIRST;
       }
     }
 

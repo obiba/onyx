@@ -98,10 +98,18 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return currentPage;
   }
 
+  public Page lastPage() {
+    currentPage = navigationStrategy.getPageOnLast(this);
+
+    updateResumePage();
+
+    return currentPage;
+  }
+
   public Page previousPage() {
     currentPage = navigationStrategy.getPageOnPrevious(this, getCurrentPage());
 
-    if(!currentPage.equals(PAGE_BEFORE_FIRST)) {
+    if(currentPage != null) {
       updateResumePage();
     }
 
@@ -111,7 +119,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   public Page nextPage() {
     currentPage = navigationStrategy.getPageOnNext(this, getCurrentPage());
 
-    if(!currentPage.equals(PAGE_AFTER_LAST)) {
+    if(currentPage != null) {
       updateResumePage();
     }
 
@@ -125,6 +133,10 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
 
   public boolean isOnStartPage() {
     return (currentPage != null && currentPage.equals(navigationStrategy.getPageOnStart(this)));
+  }
+
+  public boolean isOnLastPage() {
+    return (currentPage != null && navigationStrategy.getPageOnNext(this, currentPage) == null);
   }
 
   public void setDefaultLanguage(Locale language) {

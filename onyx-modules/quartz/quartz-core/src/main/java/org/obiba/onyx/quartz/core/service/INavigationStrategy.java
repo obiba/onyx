@@ -29,6 +29,15 @@ public interface INavigationStrategy {
   public Page getPageOnStart(ActiveQuestionnaireAdministrationService service);
 
   /**
+   * Returns the questionnaire's last page.
+   * 
+   * @param service service that may be used by implementors to determine the last page (e.g., if the last page depends
+   * on whether certain questions have already been answered, this service may be used to check those questions)
+   * @return last page
+   */
+  public Page getPageOnLast(ActiveQuestionnaireAdministrationService service);
+
+  /**
    * Returns the questionnaire page that should be displayed when the "next" event occurs (i.e., when the user navigates
    * forwards).
    * 

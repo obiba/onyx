@@ -186,6 +186,23 @@ public class QuestionnaireWizardForm extends WizardForm {
   }
 
   /**
+   * Returns the last page step.
+   * 
+   * @return last page step (or <code>null</code> if the questionnaire has no pages)
+   */
+  public WizardStepPanel getLastPageStep() {
+    Page lastPage = activeQuestionnaireAdministrationService.lastPage();
+
+    PageStepPanel pageStepPanel = new PageStepPanel(getStepId(), new QuestionnaireModel(lastPage));
+
+    if(resuming && activeQuestionnaireAdministrationService.isOnStartPage()) {
+      pageStepPanel.setPreviousEnabled(false);
+    }
+
+    return pageStepPanel;
+  }
+
+  /**
    * Returns the previous step.
    * 
    * If the current page step is the first page step, returns the language selection step. Otherwise, the previous page
@@ -196,7 +213,7 @@ public class QuestionnaireWizardForm extends WizardForm {
   public WizardStepPanel getPreviousStep() {
     Page previousPage = activeQuestionnaireAdministrationService.previousPage();
 
-    if(!previousPage.equals(ActiveQuestionnaireAdministrationService.PAGE_BEFORE_FIRST)) {
+    if(previousPage != null) {
       PageStepPanel pageStepPanel = new PageStepPanel(getStepId(), new QuestionnaireModel(previousPage));
 
       if(resuming && activeQuestionnaireAdministrationService.isOnStartPage()) {
@@ -205,9 +222,6 @@ public class QuestionnaireWizardForm extends WizardForm {
 
       return pageStepPanel;
     } else {
-      // When a questionnaire is first started, the participant may return to the language
-      // selection step. However, when resuming a questionnaire, the participant may only go
-      // as far back as the first page of the questionnaire.
       return (resuming ? null : languageSelectionStep);
     }
   }
@@ -223,7 +237,7 @@ public class QuestionnaireWizardForm extends WizardForm {
   public WizardStepPanel getNextStep() {
     Page nextPage = activeQuestionnaireAdministrationService.nextPage();
 
-    if(!nextPage.equals(ActiveQuestionnaireAdministrationService.PAGE_AFTER_LAST)) {
+    if(nextPage != null) {
       return new PageStepPanel(getStepId(), new QuestionnaireModel(nextPage));
     } else {
       return conclusionStep;

@@ -23,10 +23,6 @@ import org.obiba.onyx.util.data.Data;
 
 public interface ActiveQuestionnaireAdministrationService {
 
-  public static final Page PAGE_BEFORE_FIRST = new Page("beforeFirst");
-
-  public static final Page PAGE_AFTER_LAST = new Page("afterLast");
-
   /**
    * Returns the current questionnaire page.
    * 
@@ -47,6 +43,13 @@ public interface ActiveQuestionnaireAdministrationService {
    * @return new current page (start page)
    */
   public Page startPage();
+
+  /**
+   * Positions the questionnaire at the last page.
+   * 
+   * @return new current page (last page)
+   */
+  public Page lastPage();
 
   /**
    * Moves back to the previous page of the questionnaire.
@@ -75,6 +78,13 @@ public interface ActiveQuestionnaireAdministrationService {
    * @return <code>true</code> if currently at the start page
    */
   public boolean isOnStartPage();
+
+  /**
+   * Indicates whether the questionnaire is currently positioned at the last page.
+   * 
+   * @return <code>true</code> if currently at the last page
+   */
+  public boolean isOnLastPage();
 
   /**
    * Get the language chosen for the {@link Questionnaire}.
