@@ -32,15 +32,10 @@ import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardPanel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MarblePanel extends Panel implements IEngineComponentAware {
 
   private static final long serialVersionUID = 1L;
-
-  @SuppressWarnings("unused")
-  private static final Logger log = LoggerFactory.getLogger(MarblePanel.class);
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
@@ -57,12 +52,11 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
 
   private MarbleModel model;
 
-  Consent interviewConsent;
-
   @SuppressWarnings("serial")
   public MarblePanel(String id, Stage stage) {
     super(id);
 
+    // Instantiate new consent object.
     Consent interviewConsent = new Consent();
     interviewConsent.setInterview(activeInterviewService.getInterview());
     interviewConsent.setDeleted(false);

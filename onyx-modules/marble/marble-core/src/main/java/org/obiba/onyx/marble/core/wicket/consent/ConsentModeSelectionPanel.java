@@ -71,7 +71,7 @@ public class ConsentModeSelectionPanel extends Panel {
 
     };
 
-    DropDownChoice consentLanguageDropDown = new DropDownChoice("consentLanguage", new PropertyModel(activeConsentService, "consent.language"), consentLanguages, choiceRenderer) {
+    DropDownChoice consentLanguageDropDown = new DropDownChoice("consentLanguage", new PropertyModel(activeConsentService, "consent.locale"), consentLanguages, choiceRenderer) {
 
       @Override
       protected boolean localizeDisplayValues() {

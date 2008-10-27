@@ -89,7 +89,7 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
           @Override
           public byte[] getData() {
             ByteArrayOutputStream convertedStream = null;
-            if(activeConsentService.isPdfFormSubmited()) {
+            if(activeConsentService.isPdfFormSubmitted()) {
               return activeConsentService.getConsent().getPdfForm();
             } else {
 
@@ -125,7 +125,7 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
 
   protected InputStream getConsentForm() {
 
-    org.springframework.core.io.Resource pdfTemplate = consentTemplateLoader.getConsentTemplate(activeConsentService.getLocale());
+    org.springframework.core.io.Resource pdfTemplate = consentTemplateLoader.getConsentTemplate(activeConsentService.getConsent().getLocale());
 
     PdfReader pdfReader;
     try {
@@ -164,12 +164,20 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
     }
   }
 
-  private void setFields(Object object, AcroFields form) {
-    Class bean = object.getClass();
+  /**
+   * Attempts to match the form fields content with the attribute values of the entity. In the case of a match, the
+   * value of the form field is set to the corresponding entity attribute value. The pattern used for form field
+   * matching is "EntityName_attributeName", (ex: "Participant_firstName").
+   * 
+   * @param object
+   * @param form
+   */
+  private void setFields(Object entity, AcroFields form) {
+    Class bean = entity.getClass();
 
     try {
       for(PropertyDescriptor pd : Introspector.getBeanInfo(bean).getPropertyDescriptors()) {
-        Object value = pd.getReadMethod().invoke(object);
+        Object value = pd.getReadMethod().invoke(entity);
         String fieldName = bean.getSimpleName() + "_" + pd.getName();
         if(value != null) {
           form.setField(fieldName, value.toString());

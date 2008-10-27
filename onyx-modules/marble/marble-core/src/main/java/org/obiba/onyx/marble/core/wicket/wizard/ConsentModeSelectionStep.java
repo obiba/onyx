@@ -43,6 +43,7 @@ public class ConsentModeSelectionStep extends WizardStepPanel {
     form.getPreviousLink().setEnabled(false);
     form.getNextLink().setEnabled(true);
     form.getFinishLink().setEnabled(false);
+    form.getCancelLink().setEnabled(true);
   }
 
   @Override
@@ -54,7 +55,7 @@ public class ConsentModeSelectionStep extends WizardStepPanel {
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
 
     // Skip electronic consent step, when the manual consent option is selected.
-    if(activeConsentService.getMode().equals(ConsentMode.MANUAL)) {
+    if(activeConsentService.getConsent().getMode().equals(ConsentMode.MANUAL)) {
       consentConfirmationStep.setPreviousStep(this);
       setNextStep(consentConfirmationStep);
 

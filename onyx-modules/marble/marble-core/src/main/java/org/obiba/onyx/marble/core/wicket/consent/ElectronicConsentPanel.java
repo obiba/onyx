@@ -39,11 +39,11 @@ public class ElectronicConsentPanel extends Panel {
   }
 
   public boolean validate() {
-    return activeConsentService.validateConsent();
+    return activeConsentService.validateElectronicConsent();
   }
 
   public boolean isPdfFormSubmited() {
-    return activeConsentService.isPdfFormSubmited();
+    return activeConsentService.isPdfFormSubmitted();
   }
 
 }

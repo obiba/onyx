@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.domain.consent;
 
+import java.util.Locale;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -29,7 +31,7 @@ public class Consent extends AbstractEntity {
 
   private ConsentMode mode;
 
-  private String language;
+  private Locale locale;
 
   private Boolean accepted;
 
@@ -47,12 +49,12 @@ public class Consent extends AbstractEntity {
     this.mode = mode;
   }
 
-  public String getLanguage() {
-    return language;
+  public Locale getLocale() {
+    return locale;
   }
 
-  public void setLanguage(String language) {
-    this.language = language;
+  public void setLocale(Locale locale) {
+    this.locale = locale;
   }
 
   public Boolean isAccepted() {

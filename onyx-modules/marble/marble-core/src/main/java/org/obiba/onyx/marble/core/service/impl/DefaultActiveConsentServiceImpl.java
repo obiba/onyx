@@ -11,22 +11,16 @@ package org.obiba.onyx.marble.core.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.domain.consent.Consent;
-import org.obiba.onyx.marble.domain.consent.ConsentMode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
 
 public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareService implements ActiveConsentService {
-
-  private static final Logger log = LoggerFactory.getLogger(DefaultActiveConsentServiceImpl.class);
 
   private ActiveInterviewService activeInterviewService;
 
@@ -58,32 +52,39 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
     return consent;
   }
 
-  public ConsentMode getMode() {
-    return consent.getMode();
-  }
-
   @Override
   public void update() {
-    getPersistenceManager().save(consent);
+    if(consent != null) {
+      getPersistenceManager().save(consent);
+    }
   }
 
   @SuppressWarnings("unchecked")
   @Override
-  public boolean validateConsent() {
-    if(isPdfFormSubmited()) {
+  public boolean validateElectronicConsent() {
+
+    if(isPdfFormSubmitted()) {
+
+      // Access PDF content with IText library.
       PdfReader reader;
       try {
         reader = new PdfReader(consent.getPdfForm());
       } catch(IOException ex) {
         throw new RuntimeException("Could not read PDF document", ex);
       }
+
+      // Get the PDF form fields.
       AcroFields form = reader.getAcroFields();
+
+      // Make sure all signature fields have been signed.
       ArrayList list = form.getBlankSignatureNames();
       if(list.isEmpty()) {
         return true;
       } else {
         return false;
       }
+
+      // Invalid if form not submitted.
     } else {
       return false;
     }
@@ -102,12 +103,7 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
   }
 
   @Override
-  public Locale getLocale() {
-    return new Locale(consent.getLanguage());
-  }
-
-  @Override
-  public boolean isPdfFormSubmited() {
+  public boolean isPdfFormSubmitted() {
     if(consent.getPdfForm() != null) {
       return true;
     }

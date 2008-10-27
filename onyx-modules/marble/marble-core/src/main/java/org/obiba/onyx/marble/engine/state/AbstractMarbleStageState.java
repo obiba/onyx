@@ -11,15 +11,10 @@ package org.obiba.onyx.marble.engine.state;
 
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
-import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractMarbleStageState extends AbstractStageState {
-
-  private static final Logger log = LoggerFactory.getLogger(AbstractMarbleStageState.class);
 
   private ActiveConsentService activeConsentService;
 
@@ -34,8 +29,7 @@ public abstract class AbstractMarbleStageState extends AbstractStageState {
   @Override
   public Data getData(String key) {
     if(key.equals("Consent")) {
-      Consent consent = activeConsentService.getConsent();
-      return DataBuilder.buildBoolean(consent.isAccepted());
+      return DataBuilder.buildBoolean(activeConsentService.getConsent().isAccepted());
     }
     return null;
   }

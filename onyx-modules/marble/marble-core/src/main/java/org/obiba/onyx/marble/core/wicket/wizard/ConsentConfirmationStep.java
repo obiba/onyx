@@ -34,6 +34,7 @@ public class ConsentConfirmationStep extends WizardStepPanel {
     form.getPreviousLink().setEnabled(true);
     form.getNextLink().setEnabled(false);
     form.getFinishLink().setEnabled(true);
+    form.getCancelLink().setEnabled(true);
   }
 
   @Override

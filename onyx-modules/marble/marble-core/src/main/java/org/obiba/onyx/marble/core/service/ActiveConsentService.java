@@ -9,26 +9,44 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.core.service;
 
-import java.util.Locale;
-
 import org.obiba.onyx.marble.domain.consent.Consent;
-import org.obiba.onyx.marble.domain.consent.ConsentMode;
 
+/**
+ * Session active participant's consent service.
+ */
 public interface ActiveConsentService {
 
-  public Consent getConsent();
-
+  /**
+   * Sets the {@link Consent} for the current interview.
+   * @param consent The consent
+   */
   public void setConsent(Consent consent);
 
-  public ConsentMode getMode();
+  /**
+   * Returns the {@link Consent} for the current interview.
+   * @return The consent
+   */
+  public Consent getConsent();
 
-  public Locale getLocale();
-
+  /**
+   * Persists the {@link Consent} for the current interview.
+   */
   public void update();
 
+  /**
+   * Marks the previous {@link Consent} (if exist) as deleted.
+   */
   public void deletePreviousConsent();
 
-  public boolean validateConsent();
+  /**
+   * Validates the content of the electronic consent form.
+   * @return True if valid, false if not.
+   */
+  public boolean validateElectronicConsent();
 
-  public boolean isPdfFormSubmited();
+  /**
+   * Checks if the PDF consent form has been submitted.
+   * @return True if submitted, false if not.
+   */
+  public boolean isPdfFormSubmitted();
 }
