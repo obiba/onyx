@@ -2,6 +2,7 @@ package org.obiba.onyx.quartz.core.wicket.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
@@ -23,20 +24,18 @@ public class ConfirmResumeStep extends WizardStepPanel {
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  private ConfirmResumePanel confirmResumePanel;
-
   //
   // Constructors
   //
 
-  public ConfirmResumeStep(String id, String questionNumberToResumeAt) {
-    super(id);
+  public ConfirmResumeStep(String id, IModel questionnaireModel) {
+    super(id, questionnaireModel);
 
     setOutputMarkupId(true);
 
     add(new Label(getTitleId(), new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "label")));
 
-    add(confirmResumePanel = new ConfirmResumePanel(getContentId(), questionNumberToResumeAt));
+    add(new ConfirmResumePanel(getContentId(), questionnaireModel));
   }
 
   //
@@ -60,4 +59,5 @@ public class ConfirmResumeStep extends WizardStepPanel {
     QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
     setNextStep(questionnaireWizardForm.getResumeStep());
   }
+
 }

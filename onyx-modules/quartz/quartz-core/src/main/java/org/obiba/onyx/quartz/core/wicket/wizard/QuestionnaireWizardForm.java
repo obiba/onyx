@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.wizard;
 
-import java.util.List;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -26,7 +24,6 @@ import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.wicket.StageModel;
@@ -125,7 +122,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     WizardStepPanel startStep = null;
 
     if(resuming) {
-      confirmResumeStep = new ConfirmResumeStep(getStepId(), getQuestionNumberToResumeAt(activeQuestionnaireAdministrationService.getResumePage()));
+      confirmResumeStep = new ConfirmResumeStep(getStepId(), getModel());
       startStep = confirmResumeStep;
     } else {
       startStep = languageSelectionStep;
@@ -258,20 +255,5 @@ public class QuestionnaireWizardForm extends WizardForm {
     } else {
       return conclusionStep;
     }
-  }
-
-  private String getQuestionNumberToResumeAt(Page page) {
-    String questionNumber = null;
-
-    List<Question> questions = page.getQuestions();
-
-    for(Question question : questions) {
-      if(question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
-        questionNumber = question.getNumber();
-        break;
-      }
-    }
-
-    return questionNumber;
   }
 }
