@@ -10,11 +10,10 @@
 package org.obiba.onyx.quartz.core.wicket.layout;
 
 import org.apache.wicket.model.IModel;
+import org.springframework.beans.factory.NamedBean;
 
-public interface IQuestionPanelFactory {
+public interface IQuestionPanelFactory extends NamedBean {
 
   public QuestionPanel createPanel(String id, IModel questionModel);
-
-  public String getName();
 
 }

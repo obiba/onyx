@@ -18,7 +18,7 @@ public class DefaultPageLayoutFactory implements IPageLayoutFactory {
     return new DefaultPageLayout(id, pageModel);
   }
 
-  public String getName() {
+  public String getBeanName() {
     return "quartz." + getClass().getSimpleName();
   }
 

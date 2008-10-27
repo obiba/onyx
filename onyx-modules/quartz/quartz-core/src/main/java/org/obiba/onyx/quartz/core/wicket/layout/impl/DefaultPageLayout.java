@@ -49,7 +49,7 @@ public class DefaultPageLayout extends PageLayout {
       @Override
       protected void populateItem(Item item) {
         Question question = (Question) item.getModelObject();
-        QuestionPanel panel = questionPanelFactoryRegistry.getFactory(question.getUIFactoryName()).createPanel("question", item.getModel());
+        QuestionPanel panel = questionPanelFactoryRegistry.get(question.getUIFactoryName()).createPanel("question", item.getModel());
         questionPanels.add(panel);
         item.add(panel);
       }

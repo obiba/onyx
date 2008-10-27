@@ -56,7 +56,7 @@ public class PageStepPanel extends WizardStepPanel {
 
     // Get the configured page layout factory.
     Page page = (Page) getModelObject();
-    IPageLayoutFactory pageLayoutFactory = pageLayoutFactoryRegistry.getFactory(page.getUIFactoryName());
+    IPageLayoutFactory pageLayoutFactory = pageLayoutFactoryRegistry.get(page.getUIFactoryName());
 
     // Create the page layout component, using the configured factory.
     pageLayout = pageLayoutFactory.createLayout(getContentId(), pageModel);

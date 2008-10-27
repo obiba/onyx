@@ -81,11 +81,11 @@ public class QuartzPanelTest {
     mockCtx.putBean("moduleRegistry", new ModuleRegistry());
 
     PageLayoutFactoryRegistry pageLayoutFactoryRegistryMock = new PageLayoutFactoryRegistry();
-    pageLayoutFactoryRegistryMock.registerFactory(new DefaultPageLayoutFactory());
+    pageLayoutFactoryRegistryMock.register(new DefaultPageLayoutFactory());
     mockCtx.putBean("pageLayoutFactoryRegistry", pageLayoutFactoryRegistryMock);
 
     QuestionPanelFactoryRegistry questionPanelFactoryRegistryMock = new QuestionPanelFactoryRegistry();
-    questionPanelFactoryRegistryMock.registerFactory(new DefaultQuestionPanelFactory());
+    questionPanelFactoryRegistryMock.register(new DefaultQuestionPanelFactory());
     mockCtx.putBean("questionPanelFactoryRegistry", questionPanelFactoryRegistryMock);
 
     MockSpringApplication application = new MockSpringApplication();

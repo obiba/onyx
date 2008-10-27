@@ -34,16 +34,16 @@ public class QuestionnaireUIFactoryRegistrationListener implements WebApplicatio
     Map<String, IPageLayoutFactory> pageLayoutFactories = applicationContext.getBeansOfType(IPageLayoutFactory.class);
     if(pageLayoutFactories != null) {
       for(IPageLayoutFactory factory : pageLayoutFactories.values()) {
-        log.info("Unregistering IPageLayoutFactory '{}' of type {}", factory.getName(), factory.getClass().getSimpleName());
-        pageLayoutFactoryRegistry.unregisterFactory(factory.getName());
+        log.info("Unregistering IPageLayoutFactory '{}' of type {}", factory.getBeanName(), factory.getClass().getSimpleName());
+        pageLayoutFactoryRegistry.unregister(factory.getBeanName());
       }
     }
 
     Map<String, IQuestionPanelFactory> questionPanelFactories = applicationContext.getBeansOfType(IQuestionPanelFactory.class);
     if(questionPanelFactories != null) {
       for(IQuestionPanelFactory factory : questionPanelFactories.values()) {
-        log.info("Unregistering IQuestionPanelFactory '{}' of type {}", factory.getName(), factory.getClass().getSimpleName());
-        questionPanelFactoryRegistry.unregisterFactory(factory.getName());
+        log.info("Unregistering IQuestionPanelFactory '{}' of type {}", factory.getBeanName(), factory.getClass().getSimpleName());
+        questionPanelFactoryRegistry.unregister(factory.getBeanName());
       }
     }
   }
@@ -53,16 +53,16 @@ public class QuestionnaireUIFactoryRegistrationListener implements WebApplicatio
     Map<String, IPageLayoutFactory> pageLayoutFactories = applicationContext.getBeansOfType(IPageLayoutFactory.class);
     if(pageLayoutFactories != null) {
       for(IPageLayoutFactory factory : pageLayoutFactories.values()) {
-        log.info("Registering IPageLayoutFactory '{}' of type {}", factory.getName(), factory.getClass().getSimpleName());
-        pageLayoutFactoryRegistry.registerFactory(factory);
+        log.info("Registering IPageLayoutFactory '{}' of type {}", factory.getBeanName(), factory.getClass().getSimpleName());
+        pageLayoutFactoryRegistry.register(factory);
       }
     }
 
     Map<String, IQuestionPanelFactory> questionPanelFactories = applicationContext.getBeansOfType(IQuestionPanelFactory.class);
     if(questionPanelFactories != null) {
       for(IQuestionPanelFactory factory : questionPanelFactories.values()) {
-        log.info("Registering IQuestionPanelFactory '{}' of type {}", factory.getName(), factory.getClass().getSimpleName());
-        questionPanelFactoryRegistry.registerFactory(factory);
+        log.info("Registering IQuestionPanelFactory '{}' of type {}", factory.getBeanName(), factory.getClass().getSimpleName());
+        questionPanelFactoryRegistry.register(factory);
       }
     }
 

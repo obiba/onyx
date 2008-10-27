@@ -10,16 +10,15 @@
 package org.obiba.onyx.quartz.core.wicket.layout;
 
 import org.apache.wicket.model.IModel;
+import org.springframework.beans.factory.NamedBean;
 
 /**
  * Page layout factory.
  * @author Yannick Marcon
  * 
  */
-public interface IPageLayoutFactory {
+public interface IPageLayoutFactory extends NamedBean {
 
   public PageLayout createLayout(String id, IModel pageModel);
-
-  public String getName();
 
 }

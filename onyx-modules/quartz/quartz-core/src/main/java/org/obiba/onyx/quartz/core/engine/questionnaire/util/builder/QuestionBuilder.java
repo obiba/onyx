@@ -46,7 +46,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     element.setRequired(true);
     element.setMultiple(false);
     try {
-      element.setUIFactoryName(uiFactoryClass.newInstance().getName());
+      element.setUIFactoryName(uiFactoryClass.newInstance().getBeanName());
     } catch(Exception e) {
       throw invalidQuestionPanelFactoryException(uiFactoryClass, e);
     }
@@ -74,7 +74,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   public static QuestionBuilder createQuestion(PageBuilder parent, String name, boolean multiple) {
     return createQuestion(parent, name, multiple, DefaultQuestionPanelFactory.class);
   }
-  
+
   /**
    * Create a {@link Question} in the given {@link Page}.
    * @param parent
@@ -105,7 +105,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   public QuestionBuilder withQuestion(String name) {
     return withQuestion(name, false);
   }
-  
+
   /**
    * Add a required, non multiple, {@link Question} to current {@link Question} and make it current {@link Question}.
    * @param name
@@ -126,7 +126,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   public QuestionBuilder withQuestion(String name, boolean multiple) {
     return withQuestion(name, multiple, DefaultQuestionPanelFactory.class);
   }
-  
+
   /**
    * Add a required {@link Question} to current {@link Question} and make it current {@link Question}.
    * @param name
@@ -135,7 +135,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @return
    * @see #getQuestion()
    */
-  public QuestionBuilder withQuestion(String name, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {  
+  public QuestionBuilder withQuestion(String name, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
@@ -144,7 +144,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     }
     String uiFactoryName;
     try {
-      uiFactoryName = uiFactoryClass.newInstance().getName();
+      uiFactoryName = uiFactoryClass.newInstance().getBeanName();
     } catch(Exception e) {
       throw invalidQuestionPanelFactoryException(uiFactoryClass, e);
     }
@@ -214,17 +214,15 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    */
   public CategoryBuilder withSharedCategory(String name) {
     Map<Category, List<Question>> map = QuestionnaireFinder.getInstance(questionnaire).findCategories(name);
-    if (map.keySet().size() > 1) {
+    if(map.keySet().size() > 1) {
       throw invalidSharedCategoryNameUnicityException(name);
-    }
-    else if (map.keySet().isEmpty()) {
+    } else if(map.keySet().isEmpty()) {
       return withCategory(name);
-    }
-    else {
+    } else {
       return CategoryBuilder.createQuestionCategory(this, map.keySet().iterator().next());
     }
   }
-  
+
   /**
    * Look for the {@link Category} with the given name in the current {@link Questionnaire}, add it (create it if
    * necessary) to the current {@link Question}, make it the current category.
@@ -265,7 +263,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   private IllegalArgumentException invalidSharedCategoryNameUnicityException(String name) {
     return new IllegalArgumentException("There are several categories with name: " + name);
   }
-  
+
   private IllegalArgumentException invalidQuestionPanelFactoryException(Class<? extends IQuestionPanelFactory> uiFactoryClass, Exception e) {
     return new IllegalArgumentException("Unable to get question panel factory name from " + uiFactoryClass.getName(), e);
   }

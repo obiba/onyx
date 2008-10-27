@@ -18,7 +18,7 @@ public class DefaultQuestionPanelFactory implements IQuestionPanelFactory {
     return new DefaultQuestionPanel(id, questionModel);
   }
 
-  public String getName() {
+  public String getBeanName() {
     return "quartz." + getClass().getSimpleName();
   }
 

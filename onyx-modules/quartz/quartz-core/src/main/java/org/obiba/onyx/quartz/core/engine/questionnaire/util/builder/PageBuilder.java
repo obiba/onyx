@@ -41,7 +41,7 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
     }
     this.element = new Page(name);
     try {
-      this.element.setUIFactoryName(uiFactoryClass.newInstance().getName());
+      this.element.setUIFactoryName(uiFactoryClass.newInstance().getBeanName());
     } catch(Exception e) {
       throw invalidPageLayoutFactoryException(uiFactoryClass, e);
     }
@@ -80,7 +80,7 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
   public static PageBuilder createPage(SectionBuilder parent, String name, Class<? extends IPageLayoutFactory> uiFactoryClass) {
     return new PageBuilder(parent, name, uiFactoryClass);
   }
-  
+
   /**
    * Set the given {@link Page} as the current one.
    * @param questionnaire
@@ -100,7 +100,7 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
   public QuestionBuilder withQuestion(String name) {
     return QuestionBuilder.createQuestion(this, name, false);
   }
-  
+
   /**
    * Add a required, non multiple, {@link Question} to current {@link Page} and make it current {@link Question}.
    * @param name
@@ -132,7 +132,7 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
   public QuestionBuilder withQuestion(String name, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
     return QuestionBuilder.createQuestion(this, name, multiple, uiFactoryClass);
   }
-  
+
   /**
    * Check page name unicity.
    * @param name
@@ -141,7 +141,7 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
   private boolean checkUniquePageName(String name) {
     return (QuestionnaireFinder.getInstance(questionnaire).findPage(name) == null);
   }
-  
+
   private IllegalArgumentException invalidPageLayoutFactoryException(Class<? extends IPageLayoutFactory> uiFactoryClass, Exception e) {
     return new IllegalArgumentException("Unable to get page layout factory name from " + uiFactoryClass.getName(), e);
   }
