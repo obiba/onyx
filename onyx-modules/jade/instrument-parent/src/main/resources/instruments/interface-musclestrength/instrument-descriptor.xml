@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <linked-list>
 
-  <!-- Instruments -->
-  <!-- MUS1 -->
   <instrument id="mus1">
     <name>Dynamometer 1</name>
     <vendor>Baseline</vendor>
@@ -12,49 +10,40 @@
     <instrumentType>
       <name>MUS</name>
     </instrumentType>
-  </instrument>
-  
-  <contraIndication>
-    <name>UnableToStandUnassistedHandicap</name>
-    <description>UnableToStandUnassistedHandicap</description>
-    <type>OBSERVED</type>
-    <instrument reference="mus1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>UnableToStandUnassistedWheelchair</name>
-    <description>UnableToStandUnassistedWheelchair</description>
-    <type>OBSERVED</type>
-    <instrument reference="mus1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>UnableToStandUnassistedCast</name>
-    <description>UnableToStandUnassistedCast</description>
-    <type>OBSERVED</type>
-    <instrument reference="mus1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>Other</name>
-    <description>Other_CI</description>
-    <type>OBSERVED</type>
-    <instrument reference="mus1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>HandOrWristArthritisAndOtherProblem</name>
-    <description>HandOrWristArthritisAndOtherProblem</description>
-    <type>ASKED</type>
-    <instrument reference="mus1" />
-  </contraIndication>
+    <contraindications>
+      <contraIndication>
+        <code>UnableToStandUnassistedHandicap</code>
+        <type>OBSERVED</type>
+      </contraIndication>
 
-  <contraIndication>
-    <name>HandOrWristSurgery</name>
-    <description>HandOrWristSurgery</description>
-    <type>ASKED</type>
-    <instrument reference="mus1" />
-  </contraIndication>
+      <contraIndication>
+        <code>UnableToStandUnassistedWheelchair</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>UnableToStandUnassistedCast</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>Other</code>
+        <requiresDescription>true</requiresDescription>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>HandOrWristArthritisAndOtherProblem</code>
+        <type>ASKED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>HandOrWristSurgery</code>
+        <type>ASKED</type>
+      </contraIndication>
+    </contraindications>
+  </instrument>
+
 
   <output id="mus1_right_strength1">
     <name>Right Strength 1</name>
@@ -108,7 +97,7 @@
       <output reference="mus1_right_strength2" />
     </outputs>
   </computedOutput>
-  
+
   <output id="mus1_left_strength1">
     <name>Left Strength 1</name>
     <description>First_Left_Hand_Muscle_Strength_Measurement</description>

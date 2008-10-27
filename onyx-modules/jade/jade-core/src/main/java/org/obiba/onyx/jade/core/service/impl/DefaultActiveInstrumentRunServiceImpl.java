@@ -13,9 +13,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
+import org.obiba.onyx.core.domain.contraindication.Contraindication;
+import org.obiba.onyx.core.domain.contraindication.Contraindication.Type;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.UserSessionService;
-import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
@@ -31,22 +32,28 @@ import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwareService implements ActiveInstrumentRunService {
 
+  private static final Logger log = LoggerFactory.getLogger(DefaultActiveInstrumentRunServiceImpl.class);
+
   private UserSessionService userSessionService;
-  
+
   private Serializable currentRunId = null;
 
   private Serializable instrumentTypeId = null;
 
   public InstrumentRun start(Participant participant, Instrument instrument) {
+    if(participant == null) throw new IllegalArgumentException("participant cannot be null");
+    if(instrument == null) throw new IllegalArgumentException("instrument cannot be null");
 
     if(currentRunId != null) {
       InstrumentRun currentRun = getInstrumentRun();
-      if(currentRun.getStatus().equals(InstrumentRunStatus.IN_PROGRESS)) {
+      if(currentRun.getStatus() == InstrumentRunStatus.IN_PROGRESS) {
         cancel();
       }
       currentRun = null;
@@ -89,16 +96,19 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     InstrumentRun currentRun = getInstrumentRun();
     currentRun.setTimeEnd(new Date());
 
+    log.debug("InstrumentRun id={} is ending with status {}", getInstrumentRun().getId(), currentRun.getStatus());
     getPersistenceManager().save(currentRun);
   }
-  
+
   private void end(InstrumentRunStatus status) {
+    if(status == null) throw new IllegalArgumentException("status cannot be null");
     if(currentRunId == null) return;
 
     InstrumentRun currentRun = getInstrumentRun();
     currentRun.setTimeEnd(new Date());
     currentRun.setStatus(status);
-    
+
+    log.debug("InstrumentRun id={} is ending with status {}", getInstrumentRun().getId(), status);
     getPersistenceManager().save(currentRun);
   }
 
@@ -119,12 +129,9 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     instrumentTypeId = null;
   }
 
-  public void update(InstrumentRun currentRun) {
-    if(currentRunId == null) return;
-    if(currentRun == null) throw new IllegalArgumentException("Current instrument run cannot be null");
-    if(!currentRunId.equals(currentRun.getId())) throw new IllegalArgumentException("Unexpected given current instrument run");
-
-    getPersistenceManager().save(currentRun);
+  public void persistRun() {
+    log.info("ActiveInstrumentRunService is persisting InstrumentRun");
+    getPersistenceManager().save(getInstrumentRun());
   }
 
   public void update(InstrumentRunValue currentRunValue) {
@@ -271,6 +278,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public void setInstrumentType(InstrumentType instrumentType) {
+    if(instrumentType == null) throw new IllegalArgumentException("InstrumentType cannot be null");
     this.instrumentTypeId = instrumentType.getId();
   }
 
@@ -278,26 +286,12 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return getInstrumentRun().getInstrument();
   }
 
-  public ContraIndication getContraIndication() {
-    return getInstrumentRun().getContraIndication();
+  public Contraindication getContraindication() {
+    return getInstrumentRun().getContraindication();
   }
 
-  public void setContraIndication(ContraIndication contraIndication) {
-    InstrumentRun currentRun = getInstrumentRun();
-
-    currentRun.setContraIndication(contraIndication);
-    getPersistenceManager().save(currentRun);
-  }
-
-  public String getOtherContraIndication() {
-    return getInstrumentRun().getOtherContraIndication();
-  }
-
-  public void setOtherContraIndication(String otherContraIndication) {
-    InstrumentRun currentRun = getInstrumentRun();
-
-    currentRun.setOtherContraIndication(otherContraIndication);
-    getPersistenceManager().save(currentRun);
+  public boolean hasContraindications(Type type) {
+    return getInstrumentRun().hasContraindications(type);
   }
 
   public InstrumentRunStatus getInstrumentRunStatus() {
@@ -309,10 +303,6 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     currentRun.setStatus(status);
     getPersistenceManager().save(currentRun);
-  }
-
-  public UserSessionService getUserSessionService() {
-    return userSessionService;
   }
 
   public void setUserSessionService(UserSessionService userSessionService) {

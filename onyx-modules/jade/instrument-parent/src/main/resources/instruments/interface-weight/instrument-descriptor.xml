@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <linked-list>
 
-  <!-- Instruments -->
-  <!-- WEI1 -->
   <instrument id="wei1">
     <name>Tanita TBF 310</name>
     <vendor>Tanita</vendor>
@@ -13,36 +11,31 @@
     <instrumentType>
       <name>WEI</name>
     </instrumentType>
+    <contraindications>
+      <contraIndication>
+        <code>UnableToStandUnassistedHandicap</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>UnableToStandUnassistedWheelchair</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>UnableToStandUnassistedCast</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>Other</code>
+        <requiresDescription>true</requiresDescription>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+    </contraindications>
   </instrument>
-  
-  <contraIndication>
-    <name>UnableToStandUnassistedHandicap</name>
-    <description>UnableToStandUnassistedHandicap</description>
-    <type>OBSERVED</type>
-    <instrument reference="wei1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>UnableToStandUnassistedWheelchair</name>
-    <description>UnableToStandUnassistedWheelchair</description>
-    <type>OBSERVED</type>
-    <instrument reference="wei1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>UnableToStandUnassistedCast</name>
-    <description>UnableToStandUnassistedCast</description>
-    <type>OBSERVED</type>
-    <instrument reference="wei1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>Other</name>
-    <description>Other_CI</description>
-    <type>OBSERVED</type>
-    <instrument reference="wei1" />
-  </contraIndication>
-  
+
   <output id="wei1_weight">
     <name>Weight</name>
     <description>Weight_Measurement</description>

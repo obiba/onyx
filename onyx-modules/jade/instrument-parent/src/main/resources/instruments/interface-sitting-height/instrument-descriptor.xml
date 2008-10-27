@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <linked-list>
 
-  <!-- Instruments -->
-  <!-- SIT1 -->
   <instrument id="sit1">
     <name>Tape 1</name>
     <vendor>Seca</vendor>
@@ -13,21 +11,21 @@
     <instrumentType>
       <name>SIT</name>
     </instrumentType>
+    <contraindications>
+      <contraIndication>
+        <code>UnableToSitUnassistedCast</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>Other</code>
+        <requiresDescription>true</requiresDescription>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+    </contraindications>
   </instrument>
-  
-  <contraIndication>
-    <name>UnableToSitUnassistedCast</name>
-    <description>UnableToSitUnassistedCast</description>
-    <type>OBSERVED</type>
-    <instrument reference="sit1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>Other</name>
-    <description>Other_CI</description>
-    <type>OBSERVED</type>
-    <instrument reference="sit1" />
-  </contraIndication>
+
 
   <interpretative>
     <name>Kyphosis</name>
@@ -91,6 +89,6 @@
     </outputs>
   </computedOutput>
 
-  
+
 
 </linked-list>

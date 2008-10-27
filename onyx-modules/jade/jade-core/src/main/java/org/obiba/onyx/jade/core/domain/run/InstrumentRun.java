@@ -22,15 +22,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.obiba.core.domain.AbstractEntity;
+import org.obiba.onyx.core.domain.contraindication.Contraindication;
+import org.obiba.onyx.core.domain.contraindication.IContraindicatable;
+import org.obiba.onyx.core.domain.contraindication.Contraindication.Type;
 import org.obiba.onyx.core.domain.user.User;
-import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 
 @Entity
-public class InstrumentRun extends AbstractEntity {
+public class InstrumentRun extends AbstractEntity implements IContraindicatable {
 
   private static final long serialVersionUID = -2756620040202577411L;
 
@@ -64,11 +67,10 @@ public class InstrumentRun extends AbstractEntity {
   @Column(length = 2000)
   private String refusalReasonComment;
 
-  @ManyToOne
-  @JoinColumn(name = "contra_indication_id")
-  private ContraIndication contraIndication;
+  private String contraindicationCode;
 
-  private String otherContraIndication;
+  @Column(length = 2000)
+  private String otherContraindication;
 
   public InstrumentRun() {
     super();
@@ -160,20 +162,44 @@ public class InstrumentRun extends AbstractEntity {
     this.user = user;
   }
 
-  public ContraIndication getContraIndication() {
-    return contraIndication;
+  public Contraindication getContraindication() {
+    for(Contraindication ci : instrument.getContraindications()) {
+      if(ci.getCode().equals(contraindicationCode)) return ci;
+    }
+    return null;
   }
 
-  public void setContraIndication(ContraIndication contraIndication) {
-    this.contraIndication = contraIndication;
+  public void setContraindication(Contraindication contraindication) {
+    if(contraindication != null) {
+      this.contraindicationCode = contraindication.getCode();
+    } else {
+      this.contraindicationCode = null;
+    }
   }
 
-  public String getOtherContraIndication() {
-    return otherContraIndication;
+  public String getOtherContraindication() {
+    return otherContraindication;
   }
 
-  public void setOtherContraIndication(String otherContraIndication) {
-    this.otherContraIndication = otherContraIndication;
+  public void setOtherContraindication(String reason) {
+    otherContraindication = reason;
   }
 
+  @Transient
+  public List<Contraindication> getContraindications(Contraindication.Type type) {
+    List<Contraindication> ciList = new ArrayList<Contraindication>(5);
+    for(Contraindication ci : this.instrument.getContraindications()) {
+      if(ci.getType() == type) ciList.add(ci);
+    }
+    return ciList.size() > 0 ? ciList : null;
+  }
+
+  @Transient
+  public boolean isContraindicated() {
+    return this.contraindicationCode != null;
+  }
+
+  public boolean hasContraindications(Type type) {
+    return getContraindications(type) != null;
+  }
 }

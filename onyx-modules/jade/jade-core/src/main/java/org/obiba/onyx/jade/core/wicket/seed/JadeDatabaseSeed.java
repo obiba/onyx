@@ -16,7 +16,7 @@ import java.util.Set;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.core.service.PersistenceManager;
-import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
+import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.jade.core.domain.instrument.FixedSource;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
@@ -79,7 +79,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
       Set<String> inputParameterNames = new HashSet<String>(10);
       Set<String> outputParameterNames = new HashSet<String>(10);
       for(Object entity : objects) {
-        
+
         if(entity instanceof Instrument) {
           Instrument instrument = (Instrument) entity;
           InstrumentType type = instrumentService.getInstrumentType(instrument.getInstrumentType().getName());
@@ -123,7 +123,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
           // unique name for within its instrument.");
           // }
         }
-        
+
         if(toPersist) {
           log.info("Seeding database from [" + resource + "] with entity {} of type {}", entity, entity.getClass().getSimpleName());
           persistenceManager.save(entity);
@@ -145,7 +145,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
     super.initializeXstream(xstream);
     xstream.alias("instrumentType", InstrumentType.class);
     xstream.alias("instrument", Instrument.class);
-    xstream.alias("contraIndication", ContraIndication.class);
+    xstream.alias("contraIndication", Contraindication.class);
     xstream.alias("interpretative", InterpretativeParameter.class);
     xstream.alias("input", InstrumentInputParameter.class);
     xstream.alias("output", InstrumentOutputParameter.class);

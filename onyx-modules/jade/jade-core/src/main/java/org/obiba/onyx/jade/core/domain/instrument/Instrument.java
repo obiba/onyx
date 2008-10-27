@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.core.domain.instrument;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -24,6 +25,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
+import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 
 @Entity
@@ -61,8 +63,8 @@ public class Instrument extends AbstractEntity {
   @OneToMany(mappedBy = "instrument")
   private List<InstrumentRun> instrumentRuns;
 
-  @OneToMany(mappedBy = "instrument")
-  private List<ContraIndication> contraIndications;
+  @OneToMany(cascade = CascadeType.ALL)
+  private List<Contraindication> contraindications;
 
   public Instrument() {
   }
@@ -145,14 +147,8 @@ public class Instrument extends AbstractEntity {
     }
   }
 
-  public List<ContraIndication> getContraIndications() {
-    return contraIndications != null ? contraIndications : (contraIndications = new ArrayList<ContraIndication>());
+  public List<Contraindication> getContraindications() {
+    return contraindications;
   }
 
-  public void addContraIndication(ContraIndication contraIndication) {
-    if(contraIndication != null) {
-      getContraIndications().add(contraIndication);
-      contraIndication.setInstrument(this);
-    }
-  }
 }

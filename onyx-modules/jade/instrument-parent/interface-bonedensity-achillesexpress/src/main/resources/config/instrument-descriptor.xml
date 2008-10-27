@@ -22,10 +22,10 @@
       <input reference="foot_scanned" />
 
       <output reference="Chart_Num" />
-      <output reference="LName"/>      
+      <output reference="LName" />
       <output reference="FName" />
-      <output reference="DOB"/>
-      <output reference="Sex"/> 
+      <output reference="DOB" />
+      <output reference="Sex" />
       <output reference="sidescanned" />
       <output reference="assessment" />
       <output reference="fxrisk" />
@@ -39,6 +39,25 @@
       <output reference="BUA" />
       <output reference="achillesbitmap" />
     </instrumentParameters>
+
+    <contraindications>
+      <contraIndication>
+        <code>OpenWoundsBreaksSoresOnFeet</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>Other</code>
+        <requiresDescription>true</requiresDescription>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>OpenWoundsBreaksSoresOnFeet</code>
+        <type>ASKED</type>
+      </contraIndication>
+
+    </contraindications>
   </instrument>
 
   <interpretative>
@@ -76,27 +95,6 @@
     <type>ASKED</type>
     <instrument reference="sta1" />
   </interpretative>
-
-  <contraIndication>
-    <name>OpenWoundsBreaksSoresOnFeet</name>
-    <description>OpenWoundsBreaksSoresOnFeet</description>
-    <type>OBSERVED</type>
-    <instrument reference="bone1" />
-  </contraIndication>
-
-  <contraIndication>
-    <name>Other</name>
-    <description>Other_CI</description>
-    <type>OBSERVED</type>
-    <instrument reference="bone1" />
-  </contraIndication>
-
-  <contraIndication>
-    <name>OpenWoundsBreaksSoresOnFeet</name>
-    <description>OpenWoundsBreaksSoresOnFeet</description>
-    <type>ASKED</type>
-    <instrument reference="bone1" />
-  </contraIndication>
 
   <participantPropertySource id="id_source">
     <property>barcode</property>
@@ -183,7 +181,7 @@
         <parameter reference="id" />
         <customizedDescription>EqualsParameterCheck_Bone_Density</customizedDescription>
       </equalsParameterCheck>
-    </integrityChecks>      
+    </integrityChecks>
   </output>
   <output id="LName">
     <name>Participant Last Name</name>
@@ -196,10 +194,10 @@
       <equalsParameterCheck>
         <targetParameter reference="LName" />
         <parameter reference="last_name" />
-        <customizedDescription>EqualsParameterCheck_Bone_Density</customizedDescription>        
+        <customizedDescription>EqualsParameterCheck_Bone_Density</customizedDescription>
       </equalsParameterCheck>
-    </integrityChecks>        
-  </output>  
+    </integrityChecks>
+  </output>
   <output id="FName">
     <name>Participant First Name</name>
     <description>Participant_First_Name</description>
@@ -211,9 +209,9 @@
       <equalsParameterCheck>
         <targetParameter reference="FName" />
         <parameter reference="first_name" />
-        <customizedDescription>EqualsParameterCheck_Bone_Density</customizedDescription>        
+        <customizedDescription>EqualsParameterCheck_Bone_Density</customizedDescription>
       </equalsParameterCheck>
-    </integrityChecks>    
+    </integrityChecks>
   </output>
   <output id="DOB">
     <name>Participant Date of Birth</name>
@@ -222,12 +220,12 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit></measurementUnit>
     <instrument reference="bone1" />
-   <!-- <integrityChecks>
+    <!-- <integrityChecks>
       <equalsParameterCheck>
-        <targetParameter reference="DOB" />
-        <parameter reference="birth_date" />
+      <targetParameter reference="DOB" />
+      <parameter reference="birth_date" />
       </equalsParameterCheck>
-    </integrityChecks>  -->    
+      </integrityChecks>  -->
   </output>
   <output id="Sex">
     <name>Participant Gender</name>
@@ -240,9 +238,9 @@
       <equalsParameterCheck>
         <targetParameter reference="Sex" />
         <parameter reference="gender" />
-        <customizedDescription>EqualsParameterCheck_Bone_Density</customizedDescription>        
+        <customizedDescription>EqualsParameterCheck_Bone_Density</customizedDescription>
       </equalsParameterCheck>
-    </integrityChecks>      
+    </integrityChecks>
   </output>
   <output id="sidescanned">
     <name>Foot Scanned</name>
@@ -255,10 +253,10 @@
       <equalsParameterCheck>
         <targetParameter reference="sidescanned" />
         <parameter reference="foot_scanned" />
-        <customizedDescription>EqualsParameterCheck_Bone_Density</customizedDescription>        
+        <customizedDescription>EqualsParameterCheck_Bone_Density</customizedDescription>
       </equalsParameterCheck>
-    </integrityChecks>       
-  </output>  
+    </integrityChecks>
+  </output>
   <output id="assessment">
     <name>Assessment</name>
     <description>Assessment</description>

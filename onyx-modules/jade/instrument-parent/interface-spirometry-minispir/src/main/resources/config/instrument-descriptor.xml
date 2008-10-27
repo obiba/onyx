@@ -8,69 +8,56 @@
     <vendor>MIR</vendor>
     <model>MiniSpir</model>
     <serialNumber>1234567890</serialNumber>
-    <barcode>CAG0189</barcode>    
+    <barcode>CAG0189</barcode>
     <status>ACTIVE</status>
     <instrumentType>
       <name>SPI</name>
     </instrumentType>
+    <contraindications>
+      <contraIndication>
+        <code>Other</code>
+        <requiresDescription>true</requiresDescription>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>HeartAttack</code>
+        <type>ASKED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>AbdominalThoracicEyeSurgery</code>
+        <type>ASKED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>ChestInfection</code>
+        <type>ASKED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>Tuberculosis</code>
+        <type>ASKED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>DetachedRetina</code>
+        <type>ASKED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>Pneumothorax</code>
+        <type>ASKED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>Stoma</code>
+        <type>ASKED</type>
+      </contraIndication>
+
+    </contraindications>
   </instrument>
-  
-  <contraIndication>
-    <name>Other</name>
-    <description>Other_CI</description>
-    <type>OBSERVED</type>
-    <instrument reference="spi1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>HeartAttack</name>
-    <description>HeartAttack</description>
-    <type>ASKED</type>
-    <instrument reference="spi1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>AbdominalThoracicEyeSurgery</name>
-    <description>AbdominalThoracicEyeSurgery</description>
-    <type>ASKED</type>
-    <instrument reference="spi1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>ChestInfection</name>
-    <description>ChestInfection</description>
-    <type>ASKED</type>
-    <instrument reference="spi1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>Tuberculosis</name>
-    <description>Tuberculosis</description>
-    <type>ASKED</type>
-    <instrument reference="spi1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>DetachedRetina</name>
-    <description>DetachedRetina</description>
-    <type>ASKED</type>
-    <instrument reference="spi1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>Pneumothorax</name>
-    <description>Pneumothorax</description>
-    <type>ASKED</type>
-    <instrument reference="spi1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>Stoma</name>
-    <description>Stoma</description>
-    <type>ASKED</type>
-    <instrument reference="spi1" />
-  </contraIndication>
-  
+
   <interpretative>
     <name>Bronchodilator</name>
     <description>Bronchodilator</description>
@@ -79,7 +66,7 @@
     <type>OBSERVED</type>
     <instrument reference="bioimp1" />
   </interpretative>
-  
+
   <interpretative>
     <name>Smoked</name>
     <description>Smoked</description>
@@ -88,7 +75,7 @@
     <type>OBSERVED</type>
     <instrument reference="bioimp1" />
   </interpretative>
-  
+
   <interpretative>
     <name>Alcohol</name>
     <description>Alcohol</description>
@@ -97,7 +84,7 @@
     <type>OBSERVED</type>
     <instrument reference="bioimp1" />
   </interpretative>
-  
+
   <interpretative>
     <name>HeartyMeal</name>
     <description>HeartyMeal</description>
@@ -106,7 +93,7 @@
     <type>OBSERVED</type>
     <instrument reference="bioimp1" />
   </interpretative>
-  
+
   <interpretative>
     <name>Coffee</name>
     <description>Coffee</description>
@@ -115,7 +102,7 @@
     <type>OBSERVED</type>
     <instrument reference="bioimp1" />
   </interpretative>
-  
+
   <participantPropertySource id="id_source">
     <property>barcode</property>
   </participantPropertySource>
@@ -126,10 +113,10 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="id_source" />
     <instrument reference="spi1" />
-  </input>  
-  
+  </input>
+
   <participantPropertySource id="last_name_source">
-      <property>lastName</property>
+    <property>lastName</property>
   </participantPropertySource>
   <input id="last_name_in">
     <name>LastName</name>
@@ -139,10 +126,10 @@
     <inputSource reference="last_name_source" />
     <instrument reference="spi1" />
   </input>
-  
+
   <participantPropertySource id="first_name_source">
-      <property>firstName</property>
-  </participantPropertySource> 
+    <property>firstName</property>
+  </participantPropertySource>
   <input id="first_name_in">
     <name>FirstName</name>
     <description>Participant_First_Name</description>
@@ -150,10 +137,10 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="first_name_source" />
     <instrument reference="spi1" />
-  </input>  
-  
+  </input>
+
   <participantPropertySource id="birth_date_source">
-      <property>birthDate</property>
+    <property>birthDate</property>
   </participantPropertySource>
   <input id="birth_date_in">
     <name>BirthDate</name>
@@ -163,10 +150,10 @@
     <inputSource reference="birth_date_source" />
     <instrument reference="spi1" />
   </input>
-  
+
   <participantPropertySource id="gender_source">
-      <property>gender</property>
-  </participantPropertySource>  
+    <property>gender</property>
+  </participantPropertySource>
   <input id="gender_in">
     <name>Gender</name>
     <description>Participant_Gender</description>
@@ -175,7 +162,7 @@
     <inputSource reference="gender_source" />
     <instrument reference="spi1" />
   </input>
-    
+
   <fixedSource id="ethnic_group_source">
     <value>1</value>
   </fixedSource>
@@ -186,8 +173,8 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="ethnic_group_source" />
     <instrument reference="spi1" />
-  </input>  
-  
+  </input>
+
   <outputParameterSource id="height_source">
     <instrumentType>
       <name>STA</name>
@@ -202,8 +189,8 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="height_source" />
     <instrument reference="spi1" />
-  </input>  
-  
+  </input>
+
   <outputParameterSource id="bim_weight_source">
     <instrumentType>
       <name>BIM</name>
@@ -216,11 +203,11 @@
     </instrumentType>
     <parameterName>Weight</parameterName>
   </outputParameterSource>
-  
+
   <multipleOutputParameterSource id="weight_source">
     <outputParameterSourceList>
-      <outputParameterSource reference="bim_weight_source"/>
-      <outputParameterSource reference="wei_weight_source"/>
+      <outputParameterSource reference="bim_weight_source" />
+      <outputParameterSource reference="wei_weight_source" />
     </outputParameterSourceList>
   </multipleOutputParameterSource>
   <input id="weight">
@@ -232,7 +219,7 @@
     <inputSource reference="weight_source" />
     <instrument reference="spi1" />
   </input>
-  
+
   <output id="fvc">
     <name>FVC</name>
     <description>Measured_FVC</description>
@@ -240,7 +227,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fev1">
     <name>FEV1</name>
     <description>Measured_FEV1</description>
@@ -248,7 +235,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fev1_fvc">
     <name>FEV1_FVC</name>
     <description>Measured_FEV1/FVC</description>
@@ -256,7 +243,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fev6">
     <name>FEV6</name>
     <description>Measured_FEV6</description>
@@ -264,7 +251,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fev1_fev6">
     <name>FEV1_FEV6</name>
     <description>Measured_FEV1/FEV6</description>
@@ -272,7 +259,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="pef">
     <name>PEF</name>
     <description>Measured_PEF</description>
@@ -280,7 +267,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fef2575">
     <name>FEF2575</name>
     <description>Measured_FEF2575</description>
@@ -288,7 +275,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fev3">
     <name>FEV3</name>
     <description>Measured_FEV3</description>
@@ -296,7 +283,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fev3_fvc">
     <name>FEV3_FVC</name>
     <description>Measured_FEV3/FVC</description>
@@ -304,7 +291,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="ela">
     <name>ELA</name>
     <description>Measured_ELA</description>
@@ -312,7 +299,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>year</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fet">
     <name>FET</name>
     <description>Measured_FET</description>
@@ -320,7 +307,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>s</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fef25">
     <name>FEF25</name>
     <description>Measured_FEF25</description>
@@ -328,7 +315,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fef50">
     <name>FEF50</name>
     <description>Measured_FEF50</description>
@@ -336,7 +323,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fef75">
     <name>FEF75</name>
     <description>Measured_FEF75</description>
@@ -344,7 +331,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="evol">
     <name>EVol</name>
     <description>Measured_EVol</description>
@@ -352,7 +339,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>mL</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fivc">
     <name>FIVC</name>
     <description>Measured_FIVC</description>
@@ -360,7 +347,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
     <instrument reference="spi1" />
-  </output>    
+  </output>
   <output id="fiv1">
     <name>FIV1</name>
     <description>Measured_FIV1</description>
@@ -368,7 +355,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fiv1_fivc">
     <name>FIV1_FIVC</name>
     <description>Measured_FIV1/FIVC</description>
@@ -376,7 +363,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="pif">
     <name>PIF</name>
     <description>Measured_PIF</description>
@@ -385,7 +372,7 @@
     <measurementUnit>L/s</measurementUnit>
     <instrument reference="spi1" />
   </output>
-    
+
   <output id="fvc_pred">
     <name>FVC_pred</name>
     <description>Predicted_FVC</description>
@@ -393,7 +380,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fev1_pred">
     <name>FEV1_pred</name>
     <description>Predicted_FEV1</description>
@@ -401,7 +388,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fev1_fvc_pred">
     <name>FEV1_FVC_pred</name>
     <description>Predicted_FEV1/FVC</description>
@@ -409,7 +396,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fev6_pred">
     <name>FEV6_pred</name>
     <description>Predicted_FEV6</description>
@@ -417,7 +404,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fev1_fev6_pred">
     <name>FEV1_FEV6_pred</name>
     <description>Predicted_FEV1/FEV6</description>
@@ -425,7 +412,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>%</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="pef_pred">
     <name>PEF_pred</name>
     <description>Predicted_PEF</description>
@@ -433,7 +420,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fef2575_pred">
     <name>FEF2575_pred</name>
     <description>Predicted_FEF2575</description>
@@ -441,7 +428,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fev3_pred">
     <name>FEV3_pred</name>
     <description>Predicted_FEV3</description>
@@ -449,7 +436,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fev3_fvc_pred">
     <name>FEV3_FVC_pred</name>
     <description>Predicted_FEV3/FVC</description>
@@ -473,7 +460,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>s</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fef25_pred">
     <name>FEF25_pred</name>
     <description>Predicted_FEF25</description>
@@ -481,7 +468,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <measurementUnit>L/s</measurementUnit>
     <instrument reference="spi1" />
-  </output>  
+  </output>
   <output id="fef50_pred">
     <name>FEF50_pred</name>
     <description>Predicted_FEF50</description>
@@ -538,7 +525,7 @@
     <measurementUnit>L/s</measurementUnit>
     <instrument reference="spi1" />
   </output>
-  
+
   <output id="fvc_image">
     <name>FVCImage</name>
     <description>FVC_Image</description>

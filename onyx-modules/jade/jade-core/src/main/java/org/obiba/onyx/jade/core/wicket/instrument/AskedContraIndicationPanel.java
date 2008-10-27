@@ -19,20 +19,17 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
+import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.SpringWebApplication;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.core.service.UserSessionService;
-import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
-import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
-import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.core.domain.contraindication.Contraindication;
+import org.obiba.onyx.core.domain.contraindication.IContraindicatable;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,23 +41,16 @@ public class AskedContraIndicationPanel extends Panel {
   private static final Logger log = LoggerFactory.getLogger(AskedContraIndicationPanel.class);
 
   private static final String YES = "Yes";
-  private static final String NO = "No";
-  private static final String DOESNOT_KNOW = "DoesNotKnow";
-  
-  @SpringBean
-  private EntityQueryService queryService;
 
-  @SpringBean
-  private ActiveInstrumentRunService activeInstrumentRunService;
-  
-  @SpringBean(name = "userSessionService")
-  private UserSessionService userSessionService;
+  private static final String NO = "No";
+
+  private static final String DOESNOT_KNOW = "DoesNotKnow";
 
   private List<RadioGroup> radioGroups;
 
   @SuppressWarnings("serial")
-  public AskedContraIndicationPanel(String id) {
-    super(id);
+  public AskedContraIndicationPanel(String id, IModel contraindicatable) {
+    super(id, contraindicatable);
     setOutputMarkupId(true);
 
     radioGroups = new ArrayList<RadioGroup>();
@@ -68,49 +58,44 @@ public class AskedContraIndicationPanel extends Panel {
     RepeatingView repeat = new RepeatingView("repeat");
     add(repeat);
 
-    final ContraIndication defaultCi = activeInstrumentRunService.getContraIndication();
-    ContraIndication template = new ContraIndication();
-    template.setType(ParticipantInteractionType.ASKED);
-    template.setInstrument(activeInstrumentRunService.getInstrument());
-    for(final ContraIndication ci : queryService.match(template)) {
+    for(final Contraindication ci : getContraindicatable().getContraindications(Contraindication.Type.ASKED)) {
       WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
       repeat.add(item);
-      
-      ci.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
-      ci.setUserSessionService(userSessionService);
 
-      item.add(new Label("ciLabel", new PropertyModel(ci, "description")));
-      
+      IModel ciLabelModel = new MessageSourceResolvableStringModel(ci);
+
+      item.add(new Label("ciLabel", ciLabelModel));
+
       // radio group without default selection
       final RadioGroup radioGroup = new RadioGroup("radioGroup", new Model());
       radioGroups.add(radioGroup);
-      radioGroup.setLabel(new PropertyModel(ci, "description"));
+      radioGroup.setLabel(ciLabelModel);
       item.add(radioGroup);
+
       ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { YES, NO, DOESNOT_KNOW })) {
 
         @Override
         protected void populateItem(ListItem listItem) {
-          final String key = listItem.getModelObjectAsString();
+          final String key = (String) listItem.getModelObject();
           final ContraIndicationSelection selection = new ContraIndicationSelection();
           selection.setContraIndication(ci);
           selection.setSelectionKey(key);
-          
+
           Model selectModel = new Model(selection);
-          
+
           Radio radio = new Radio("radio", selectModel);
           radio.setLabel(new StringResourceModel(key, AskedContraIndicationPanel.this, null));
-          
+
           // set default selection
           // cannot decide if yes/no/dontknow was selected, so only deal with case the default ci is not null
           // and it was because yes was selected
-          if (key.equals(YES) && defaultCi != null && (defaultCi.getType().equals(ci.getType()) & defaultCi.getName().equals(ci.getName()))) {
+          if(key == YES && getContraindicatable().isContraindicated() && getContraindicatable().getContraindication().equals(ci)) {
             radioGroup.setModel(selectModel);
           }
-          
-          FormComponentLabel radioLabel = new FormComponentLabel("radioLabel", radio);
+          listItem.add(radio);
+
+          FormComponentLabel radioLabel = new SimpleFormComponentLabel("radioLabel", radio);
           listItem.add(radioLabel);
-          radioLabel.add(radio);
-          radioLabel.add(new Label("label", radio.getLabel()).setRenderBodyOnly(true));
         }
 
       }.setReuseItems(true);
@@ -119,13 +104,17 @@ public class AskedContraIndicationPanel extends Panel {
     }
 
   }
-  
+
+  private IContraindicatable getContraindicatable() {
+    return (IContraindicatable) getModelObject();
+  }
+
   public void saveContraIndicationSelection() {
-    activeInstrumentRunService.setContraIndication(null);
-    for (RadioGroup rg : radioGroups) {
-      ContraIndicationSelection ciSelection = (ContraIndicationSelection)rg.getModelObject();
-      if (ciSelection.isSelected()) {
-        activeInstrumentRunService.setContraIndication(ciSelection.getContraIndication());
+    getContraindicatable().setContraindication(null);
+    for(RadioGroup rg : radioGroups) {
+      ContraIndicationSelection ciSelection = (ContraIndicationSelection) rg.getModelObject();
+      if(ciSelection.isSelected()) {
+        getContraindicatable().setContraindication(ciSelection.getContraIndication());
         // just interested in the first one
         break;
       }
@@ -137,7 +126,7 @@ public class AskedContraIndicationPanel extends Panel {
 
     private String selectionKey;
 
-    private ContraIndication contraIndication;
+    private Contraindication contraIndication;
 
     public String getSelectionKey() {
       return selectionKey;
@@ -151,11 +140,11 @@ public class AskedContraIndicationPanel extends Panel {
       return selectionKey.equals(YES) || selectionKey.equals(DOESNOT_KNOW);
     }
 
-    public ContraIndication getContraIndication() {
+    public Contraindication getContraIndication() {
       return contraIndication;
     }
 
-    public void setContraIndication(ContraIndication contraIndication) {
+    public void setContraIndication(Contraindication contraIndication) {
       this.contraIndication = contraIndication;
     }
 

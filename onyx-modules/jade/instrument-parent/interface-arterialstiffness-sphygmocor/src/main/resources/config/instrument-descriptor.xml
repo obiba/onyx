@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <linked-list>
 
-  <!-- Instruments -->
-  <!-- sphygmoCor1 -->
   <instrument id="sphygmoCor1">
     <name>SphygmoCor 1</name>
     <vendor>AtCor Medical</vendor>
@@ -13,18 +11,19 @@
     <instrumentType>
       <name>ART</name>
     </instrumentType>
+    <contraindications>
+      <contraIndication>
+        <code>Other</code>
+        <requiresDescription>true</requiresDescription>
+        <type>OBSERVED</type>
+      </contraIndication>
+    </contraindications>
   </instrument>
-  
-  <contraIndication>
-    <name>Other</name>
-    <description>Other_CI</description>
-    <type>OBSERVED</type>
-    <instrument reference="sphygmoCor1" />
-  </contraIndication>
 
   <participantPropertySource id="id_source">
     <property>barcode</property>
   </participantPropertySource>
+
   <input id="id">
     <name>ID</name>
     <description>Participant_Barcode</description>
@@ -93,7 +92,7 @@
     <inputSource reference="systolic_pressure_source" />
     <instrument reference="sphygmoCor1" />
   </input>
-  
+
   <fixedSource id="diastolic_pressure_source">
     <value>65</value>
   </fixedSource>
@@ -104,7 +103,7 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <inputSource reference="diastolic_pressure_source" />
     <instrument reference="sphygmoCor1" />
-  </input>  
+  </input>
 
   <!-- 
     <outputParameterSource id="systolic_pressure_source">
@@ -153,7 +152,7 @@
         <parameter reference="id" />
         <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
       </equalsParameterCheck>
-    </integrityChecks>      
+    </integrityChecks>
   </output>
   <output id="FAM_NAME">
     <name>Participant Last Name</name>
@@ -166,10 +165,10 @@
       <equalsParameterCheck>
         <targetParameter reference="FAM_NAME" />
         <parameter reference="last_name" />
-        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>        
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
       </equalsParameterCheck>
-    </integrityChecks>        
-  </output>  
+    </integrityChecks>
+  </output>
   <output id="FIRST_NAME">
     <name>Participant First Name</name>
     <description>Participant_First_Name</description>
@@ -181,9 +180,9 @@
       <equalsParameterCheck>
         <targetParameter reference="FIRST_NAME" />
         <parameter reference="first_name_in" />
-        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>        
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
       </equalsParameterCheck>
-    </integrityChecks>    
+    </integrityChecks>
   </output>
   <output id="DOB">
     <name>Participant Date of Birth</name>
@@ -196,10 +195,10 @@
       <equalsParameterCheck>
         <targetParameter reference="DOB" />
         <parameter reference="birth_date" />
-        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>        
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
       </equalsParameterCheck>
-    </integrityChecks>  
-  </output> 
+    </integrityChecks>
+  </output>
   <output id="SEX">
     <name>Participant Gender</name>
     <description>Participant_Gender</description>
@@ -211,9 +210,9 @@
       <equalsParameterCheck>
         <targetParameter reference="SEX" />
         <parameter reference="gender" />
-        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>        
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
       </equalsParameterCheck>
-    </integrityChecks>      
+    </integrityChecks>
   </output>
   <output id="SP">
     <name>Systolic Pressure</name>
@@ -226,9 +225,9 @@
       <equalsParameterCheck>
         <targetParameter reference="SP" />
         <parameter reference="systolic_pressure" />
-        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>        
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
       </equalsParameterCheck>
-    </integrityChecks>      
+    </integrityChecks>
   </output>
   <output id="DP">
     <name>Diastolic Pressure</name>
@@ -241,9 +240,9 @@
       <equalsParameterCheck>
         <targetParameter reference="DP" />
         <parameter reference="diastolic_pressure" />
-        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>        
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
       </equalsParameterCheck>
-    </integrityChecks>      
+    </integrityChecks>
   </output>
 
   <output id="Peripheral_Pulse_Quality_Control_Pulse_Height">
@@ -596,13 +595,13 @@
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="sphygmoCor1" />
   </output>
-  
+
   <output id="Operator_Index">
     <name>Operator_Index</name>
     <description>Operator_Index</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="sphygmoCor1" />
-  </output> 
+  </output>
 
 </linked-list>

@@ -10,10 +10,8 @@
 package org.obiba.onyx.jade.core.wicket.instrument;
 
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.core.service.UserSessionService;
-import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
+import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 
 public class ContraIndicatedPanel extends Panel {
@@ -23,16 +21,10 @@ public class ContraIndicatedPanel extends Panel {
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
-  @SpringBean(name = "userSessionService")
-  private UserSessionService userSessionService;
-
   public ContraIndicatedPanel(String id) {
     super(id);
 
-    ContraIndication ci = activeInstrumentRunService.getContraIndication();
-
-    ci.setApplicationContext(((SpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
-    ci.setUserSessionService(userSessionService);
+    Contraindication ci = activeInstrumentRunService.getContraindication();
 
     /*
      * String reason = ci.getDescription(); if(ci.getName().equals("Other")) { reason += " (" +

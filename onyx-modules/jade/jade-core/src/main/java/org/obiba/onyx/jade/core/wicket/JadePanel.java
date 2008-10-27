@@ -9,12 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket;
 
-import java.io.Serializable;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
@@ -56,7 +55,7 @@ public class JadePanel extends Panel implements IEngineComponentAware {
   public JadePanel(String id, Stage stage) {
     super(id);
     InstrumentType type = getInstrumentType(stage);
-    model = new JadeModel(new StageModel(moduleRegistry, stage.getName()), new DetachableEntityModel(queryService, type));
+    setModel(model = new JadeModel(new StageModel(moduleRegistry, stage.getName()), new DetachableEntityModel(queryService, type)));
 
     add(new WizardPanel("content", model.getIntrumentTypeModel()) {
 
@@ -116,7 +115,8 @@ public class JadePanel extends Panel implements IEngineComponentAware {
   }
 
   @SuppressWarnings("serial")
-  private class JadeModel implements Serializable {
+  private class JadeModel extends AbstractReadOnlyModel {
+
     private IModel intrumentTypeModel;
 
     private IModel stageModel;
@@ -142,6 +142,17 @@ public class JadePanel extends Panel implements IEngineComponentAware {
       return stageModel;
     }
 
+    @Override
+    public void detach() {
+      this.stageModel.detach();
+      this.intrumentTypeModel.detach();
+      super.detach();
+    }
+
+    @Override
+    public Object getObject() {
+      return null;
+    }
   }
 
 }

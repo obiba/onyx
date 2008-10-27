@@ -12,9 +12,8 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
-import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
@@ -57,7 +56,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
   private WizardStepPanel outputParametersStep;
 
   private WizardStepPanel conclusionStep;
-  
+
   private WizardStepPanel warningStep;
 
   public InstrumentWizardForm(String id, IModel instrumentTypeModel) {
@@ -75,10 +74,10 @@ public abstract class InstrumentWizardForm extends WizardForm {
     conclusionStep = new ConclusionStep(getStepId());
     warningStep = new WarningsStep(getStepId());
     outputParametersStep = new OutputParametersStep(getStepId(), conclusionStep, warningStep);
-    
+
     warningStep.setNextStep(conclusionStep);
     warningStep.setPreviousStep(outputParametersStep);
-    
+
     // do we need to select the instrument ?
     Instrument template = new Instrument();
     template.setInstrumentType((InstrumentType) instrumentTypeModel.getObject());
@@ -101,16 +100,8 @@ public abstract class InstrumentWizardForm extends WizardForm {
     WizardStepPanel startStep = null;
     WizardStepPanel lastStep = null;
 
-    // instrument is not null at this point
-    Instrument instrument = activeInstrumentRunService.getInstrument();
-    if (instrument == null) throw new IllegalStateException("Instrument is not supposed to be null in current active instrument run.");
-    
     // are there observed contra-indications to display ?
-    ContraIndication ciTemplate = new ContraIndication();
-    ciTemplate.setType(ParticipantInteractionType.OBSERVED);
-    ciTemplate.setInstrument(instrument);
-    log.info("observed.ci.count={}", queryService.count(ciTemplate));
-    if(queryService.count(ciTemplate) > 0) {
+    if(activeInstrumentRunService.hasContraindications(Contraindication.Type.OBSERVED)) {
       if(startStep == null) {
         startStep = observedContraIndicationStep;
         lastStep = startStep;
@@ -119,12 +110,12 @@ public abstract class InstrumentWizardForm extends WizardForm {
         observedContraIndicationStep.setPreviousStep(lastStep);
         lastStep = observedContraIndicationStep;
       }
+    } else {
+      log.debug("No contraindications of type OBSERVED. Skipping step.");
     }
 
     // are there asked contra-indications to display ?
-    ciTemplate.setType(ParticipantInteractionType.ASKED);
-    log.info("asked.ci.count={}", queryService.count(ciTemplate));
-    if(queryService.count(ciTemplate) > 0) {
+    if(activeInstrumentRunService.hasContraindications(Contraindication.Type.ASKED)) {
       if(startStep == null) {
         startStep = askedContraIndicationStep;
         lastStep = startStep;
@@ -133,10 +124,13 @@ public abstract class InstrumentWizardForm extends WizardForm {
         askedContraIndicationStep.setPreviousStep(lastStep);
         lastStep = askedContraIndicationStep;
       }
+    } else {
+      log.debug("No contraindications of type ASKED. Skipping step.");
     }
 
     // are there input parameters with input source that requires user provisionning ?
     // or interpretative questions
+    Instrument instrument = activeInstrumentRunService.getInstrument();
     InterpretativeParameter template = new InterpretativeParameter();
     template.setInstrument(instrument);
     log.info("instrumentInterpretativeParameters.count={}", queryService.count(template));

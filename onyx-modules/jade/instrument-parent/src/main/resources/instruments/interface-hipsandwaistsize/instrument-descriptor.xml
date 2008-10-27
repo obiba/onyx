@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <linked-list>
 
-  <!-- Instruments -->
-  <!-- HWC1 -->
   <instrument id="hwc1">
     <name>Hips Waist Tape 1</name>
     <vendor>Seca</vendor>
@@ -12,35 +10,30 @@
     <instrumentType>
       <name>HWC</name>
     </instrumentType>
+    <contraindications>
+      <contraIndication>
+        <code>UnableToStandUnassistedHandicap</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>UnableToStandUnassistedWheelchair</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>UnableToStandUnassistedCast</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>Other</code>
+        <requiresDescription>true</requiresDescription>
+        <type>OBSERVED</type>
+      </contraIndication>
+    </contraindications>
   </instrument>
-  
-  <contraIndication>
-    <name>UnableToStandUnassistedHandicap</name>
-    <description>UnableToStandUnassistedHandicap</description>
-    <type>OBSERVED</type>
-    <instrument reference="hwc1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>UnableToStandUnassistedWheelchair</name>
-    <description>UnableToStandUnassistedWheelchair</description>
-    <type>OBSERVED</type>
-    <instrument reference="hwc1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>UnableToStandUnassistedCast</name>
-    <description>UnableToStandUnassistedCast</description>
-    <type>OBSERVED</type>
-    <instrument reference="hwc1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>Other</name>
-    <description>Other_CI</description>
-    <type>OBSERVED</type>
-    <instrument reference="hwc1" />
-  </contraIndication>
+
 
   <output id="waist_size1">
     <name>Waist Size 1</name>
@@ -57,7 +50,7 @@
         <integerMinValueFemale>20</integerMinValueFemale>
         <integerMaxValueFemale>199</integerMaxValueFemale>
       </rangeCheck>
-    </integrityChecks>    
+    </integrityChecks>
   </output>
   <output id="waist_size2">
     <name>Waist Size 2</name>
@@ -79,8 +72,8 @@
         <parameter reference="waist_size2" />
         <percent>5</percent>
         <offset>1</offset>
-      </parameterSpreadCheck>      
-    </integrityChecks>    
+      </parameterSpreadCheck>
+    </integrityChecks>
   </output>
   <computedOutput>
     <name>Waist Size</name>
@@ -111,7 +104,7 @@
         <integerMinValueFemale>20</integerMinValueFemale>
         <integerMaxValueFemale>199</integerMaxValueFemale>
       </rangeCheck>
-    </integrityChecks>    
+    </integrityChecks>
   </output>
   <output id="hips_size2">
     <name>Hips Size 2</name>
@@ -133,8 +126,8 @@
         <parameter reference="hips_size1" />
         <percent>5</percent>
         <offset>1</offset>
-      </parameterSpreadCheck>        
-    </integrityChecks>      
+      </parameterSpreadCheck>
+    </integrityChecks>
   </output>
   <computedOutput>
     <name>Hips Size</name>
@@ -149,5 +142,5 @@
       <output reference="hips_size2" />
     </outputs>
   </computedOutput>
-  
+
 </linked-list>

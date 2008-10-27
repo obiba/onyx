@@ -9,10 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.service;
 
+import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
@@ -22,40 +23,30 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 public interface ActiveInstrumentRunService {
 
   /**
-   * Set the {@link ContraIndication} associated the current {@link InstrumentRun}.
-   * @param contraIndication
-   */
-  public void setContraIndication(ContraIndication contraIndication);
-
-  /**
-   * Get the {@link ContraIndication} associated the current {@link InstrumentRun}.
-   */
-  public ContraIndication getContraIndication();
-
-  /**
-   * Set the other contra-indication text to the current {@link InstrumentRun}.
-   * @param otherContraIndication
-   */
-  public void setOtherContraIndication(String otherContraIndication);
-
-  /**
-   * Get the other contra-indication text for the current {@link InstrumentRun}.
+   * Returns true if the the underlying instrument has at least one contraindication of the specified type.
+   * @param type
    * @return
    */
-  public String getOtherContraIndication();
+  public boolean hasContraindications(Contraindication.Type type);
+
+  /**
+   * Returns the selected contraindication or null if none is set.
+   * @return
+   */
+  public Contraindication getContraindication();
 
   /**
    * Set the {@link InstrumentRunStatus} to the current {@link InstrumentRun}.
    * @param status
    */
   public void setInstrumentRunStatus(InstrumentRunStatus status);
-  
+
   /**
    * Get the {@link InstrumentRunStatus} for the current {@link InstrumentRun}.
    * @return
    */
   public InstrumentRunStatus getInstrumentRunStatus();
-  
+
   /**
    * Set the current {@link InstrumentType}.
    * @return
@@ -98,7 +89,7 @@ public interface ActiveInstrumentRunService {
    * Set the end date to the current {@link InstrumentRun} with its current status.
    */
   public void end();
-  
+
   /**
    * Make sure there is no current {@link InstrumentRun}.
    */
@@ -108,14 +99,14 @@ public interface ActiveInstrumentRunService {
    * Persist current {@link InstrumentRun}.
    * @param currentRun
    */
-  public void update(InstrumentRun currentRun);
+  public void persistRun();
 
   /**
    * Persist {@link InstrumentRunValue} current {@link InstrumentRun}.
    * @param currentRunValue
    */
   public void update(InstrumentRunValue currentRunValue);
-  
+
   /**
    * Compute the output parameters values of {@link InstrumentComputedOutputParameter} for the current
    * {@link InstrumentRun}.
@@ -139,7 +130,7 @@ public interface ActiveInstrumentRunService {
    * @throws IllegalArgumentException if parameter name is not applicable to the {@link Instrument}
    */
   public InstrumentRunValue getInputInstrumentRunValue(String parameterName);
-  
+
   public InstrumentRunValue getInterpretativeInstrumentRunValue(String parameterName);
 
 }

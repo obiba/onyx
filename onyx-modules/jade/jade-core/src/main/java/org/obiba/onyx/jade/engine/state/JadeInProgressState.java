@@ -58,8 +58,7 @@ public class JadeInProgressState extends AbstractStageState implements Initializ
     // Invalidate current instrument run
     InstrumentRun run = activeInstrumentRunService.getInstrumentRun();
     if(run != null) {
-      run.setStatus(InstrumentRunStatus.CANCELED);
-      activeInstrumentRunService.update(run);
+      activeInstrumentRunService.setInstrumentRunStatus(InstrumentRunStatus.CANCELED);
       activeInstrumentRunService.end();
       activeInstrumentRunService.reset();
     }

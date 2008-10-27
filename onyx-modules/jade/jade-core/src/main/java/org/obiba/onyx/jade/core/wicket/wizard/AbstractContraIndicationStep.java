@@ -11,8 +11,7 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.jade.core.domain.instrument.ContraIndication;
-import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
+import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
@@ -33,26 +32,26 @@ public abstract class AbstractContraIndicationStep extends WizardStepPanel {
 
   public AbstractContraIndicationStep(String id) {
     super(id);
-    // TODO Auto-generated constructor stub
   }
-  
-  protected abstract ParticipantInteractionType getParticipantInteractionType();
+
+  protected abstract Contraindication.Type getParticipantInteractionType();
 
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
+    // Persist InstrumentRun
+    activeInstrumentRunService.persistRun();
+
     // exit if a ci is selected
-    ContraIndication ci = activeInstrumentRunService.getContraIndication();
-    if(ci != null && ci.getType().equals(getParticipantInteractionType())) {
+    Contraindication ci = activeInstrumentRunService.getContraindication();
+    if(ci != null && ci.getType() == getParticipantInteractionType()) {
       WizardStepPanel nextStep = new ContraIndicatedStep(WizardForm.getStepId());
       // no possibility to come back
       // nextStep.setPreviousStep(this);
       setNextStep(nextStep);
       nextStep.setPreviousStep(this);
-      log.debug("Contra-indicated by {} ({})", ci, activeInstrumentRunService.getOtherContraIndication());
-    }
-    else {
+    } else {
       // do it in case of back and forth
-      ((InstrumentWizardForm)form).setUpWizardFlow();
+      ((InstrumentWizardForm) form).setUpWizardFlow();
     }
   }
 

@@ -8,20 +8,21 @@
     <vendor>GE</vendor>
     <model>CardioSoft</model>
     <serialNumber>1234567890</serialNumber>
-    <barcode>ecg1</barcode>    
+    <barcode>ecg1</barcode>
     <status>ACTIVE</status>
     <instrumentType>
       <name>ECG</name>
     </instrumentType>
+
+    <contraindications>
+      <contraIndication>
+        <code>Other</code>
+        <requiresDescription>true</requiresDescription>
+        <type>OBSERVED</type>
+      </contraIndication>
+    </contraindications>
   </instrument>
-  
-  <contraIndication>
-    <name>Other</name>
-    <description>Other_CI</description>
-    <type>OBSERVED</type>
-    <instrument reference="ecg1" />
-  </contraIndication>
-  
+
   <output id="time">
     <name>time</name>
     <description>Time_of_measurement</description>
@@ -35,29 +36,29 @@
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="ecg1" />
-  </output>  
+  </output>
   <output id="diagnosis">
     <name>diagnosis</name>
     <description>Diagnosis_of_measurement</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="ecg1" />
-  </output>    
+  </output>
   <output id="filterSetting">
     <name>filterSetting</name>
     <description>Filter_Settings_of_measurement</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="ecg1" />
-  </output>  
+  </output>
   <output id="diagnosisVersion">
     <name>diagnosisVersion</name>
     <description>Diagnosis_Version_of_measurement</description>
     <dataType>TEXT</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="ecg1" />
-  </output>  
-  
+  </output>
+
   <output id="ventricularRate">
     <name>ventricularRate</name>
     <description>Ventricular_Rate</description>

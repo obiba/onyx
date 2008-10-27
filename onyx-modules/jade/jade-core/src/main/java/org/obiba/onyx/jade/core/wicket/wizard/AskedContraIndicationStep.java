@@ -11,14 +11,14 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
+import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.jade.core.wicket.instrument.AskedContraIndicationPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 
 /**
- * Instrument selection Step.
- * 
+ * Step for contraindications that should be asked to the participant.
  */
 public class AskedContraIndicationStep extends AbstractContraIndicationStep {
 
@@ -36,7 +36,7 @@ public class AskedContraIndicationStep extends AbstractContraIndicationStep {
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
-    setContent(target, askedContraIndicationPanel = new AskedContraIndicationPanel(getContentId()));
+    setContent(target, askedContraIndicationPanel = new AskedContraIndicationPanel(getContentId(), new PropertyModel(activeInstrumentRunService, "instrumentRun")));
   }
 
   @Override
@@ -45,8 +45,8 @@ public class AskedContraIndicationStep extends AbstractContraIndicationStep {
     super.onStepOutNext(form, target);
   }
 
-  protected ParticipantInteractionType getParticipantInteractionType() {
-    return ParticipantInteractionType.ASKED;
+  protected Contraindication.Type getParticipantInteractionType() {
+    return Contraindication.Type.ASKED;
   }
 
 }

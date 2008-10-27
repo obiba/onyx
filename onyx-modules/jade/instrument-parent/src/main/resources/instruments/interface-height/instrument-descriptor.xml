@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <linked-list>
 
-  <!-- Instruments -->
-  <!-- STA1 -->
   <instrument id="sta1">
     <name>Tape 1</name>
     <vendor>Seca</vendor>
@@ -13,35 +11,30 @@
     <instrumentType>
       <name>STA</name>
     </instrumentType>
-  </instrument>
+    <contraindications>
+      <contraIndication>
+        <code>UnableToStandUnassistedHandicap</code>
+        <type>OBSERVED</type>
+      </contraIndication>
 
-  <contraIndication>
-    <name>UnableToStandUnassistedHandicap</name>
-    <description>UnableToStandUnassistedHandicap</description>
-    <type>OBSERVED</type>
-    <instrument reference="sta1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>UnableToStandUnassistedWheelchair</name>
-    <description>UnableToStandUnassistedWheelchair</description>
-    <type>OBSERVED</type>
-    <instrument reference="sta1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>UnableToStandUnassistedCast</name>
-    <description>UnableToStandUnassistedCast</description>
-    <type>OBSERVED</type>
-    <instrument reference="sta1" />
-  </contraIndication>
-  
-  <contraIndication>
-    <name>Other</name>
-    <description>Other_CI</description>
-    <type>OBSERVED</type>
-    <instrument reference="sta1" />
-  </contraIndication>
+      <contraIndication>
+        <code>UnableToStandUnassistedWheelchair</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>UnableToStandUnassistedCast</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>Other</code>
+        <requiresDescription>true</requiresDescription>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+    </contraindications>
+  </instrument>
 
   <interpretative>
     <name>Kyphosis</name>
