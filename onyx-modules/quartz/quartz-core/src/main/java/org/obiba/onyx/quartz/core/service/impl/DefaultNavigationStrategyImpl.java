@@ -51,6 +51,13 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
     return startPage;
   }
 
+  /**
+   * Returns the last page arrived at, when beginning from the start page (<code>getPageOnStart</code>) and
+   * navigating forwards (<code>getPageOnNext</code>).
+   * 
+   * @service service
+   * @return last page (last page arrived at when navigating forwards from the start page)
+   */
   public Page getPageOnLast(ActiveQuestionnaireAdministrationService service) {
     Page lastPage = null;
 
