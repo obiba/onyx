@@ -16,10 +16,15 @@ import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PageQuestionsProvider implements IDataProvider {
 
   private static final long serialVersionUID = 227294946626164090L;
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(PageQuestionsProvider.class);
 
   private Page page;
 
@@ -29,7 +34,7 @@ public class PageQuestionsProvider implements IDataProvider {
 
   @SuppressWarnings("unchecked")
   public Iterator iterator(int first, int count) {
-    return page.getQuestions().iterator();// .subList(first, first + count - 1).iterator();
+    return page.getQuestions().subList(first, first + count).iterator();
   }
 
   public IModel model(Object object) {
