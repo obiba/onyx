@@ -126,7 +126,7 @@ public class ObservedContraIndicationPanel extends Panel {
 
     add(new Label("otherLabel", new StringResourceModel("IfOtherPleaseSpecify", this, null)));
 
-    otherContraIndication = new TextArea("otherCi", new PropertyModel(getModel(), "contraindicationReason")) {
+    otherContraIndication = new TextArea("otherCi", new PropertyModel(getModel(), "otherContraindication")) {
 
       @Override
       public boolean isVisible() {
