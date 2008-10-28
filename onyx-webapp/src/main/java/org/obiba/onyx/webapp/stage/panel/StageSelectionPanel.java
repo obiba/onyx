@@ -20,6 +20,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -30,11 +31,13 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
+import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
+import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.action.panel.ActionsPanel;
 import org.obiba.onyx.webapp.panel.OnyxEntityList;
 import org.obiba.onyx.webapp.stage.page.StagePage;
@@ -63,6 +66,8 @@ public abstract class StageSelectionPanel extends Panel {
 
   private FeedbackPanel feedbackPanel;
 
+  private InteractiveStage interactiveStage = null;
+
   @SuppressWarnings("serial")
   public StageSelectionPanel(String id, FeedbackPanel feedbackPanel) {
     super(id);
@@ -70,7 +75,7 @@ public abstract class StageSelectionPanel extends Panel {
 
     this.feedbackPanel = feedbackPanel;
 
-    checkStageStatus();
+    interactiveStage = checkStageStatus();
 
     add(modal = new ActionWindow("modal") {
 
@@ -78,7 +83,7 @@ public abstract class StageSelectionPanel extends Panel {
       public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action) {
         IStageExecution exec = activeInterviewService.getStageExecution(stage);
         if(!exec.isInteractive()) {
-          checkStageStatus();
+          interactiveStage = checkStageStatus();
           target.addComponent(StageSelectionPanel.this.feedbackPanel);
           target.addComponent(list);
           StageSelectionPanel.this.onActionPerformed(target, stage, action);
@@ -92,14 +97,16 @@ public abstract class StageSelectionPanel extends Panel {
     add(list = new OnyxEntityList<Stage>("list", new StageProvider(), new StageListColumnProvider(), new StringResourceModel("StageList", StageSelectionPanel.this, null)));
   }
 
-  private void checkStageStatus() {
+  private InteractiveStage checkStageStatus() {
     for(Stage stage : moduleRegistry.listStages()) {
       IStageExecution exec = activeInterviewService.getStageExecution(stage);
       if(exec.isInteractive()) {
         log.warn("Wrong status for " + stage.getName());
         feedbackPanel.warn(getString("WrongStatusForStage", new Model(new ValueMap("name=" + stage.getDescription()))));
+        return (new InteractiveStage(stage.getName(), activeInterviewService.getStatusAction().getUser()));
       }
     }
+    return null;
   }
 
   abstract public void onViewComments(AjaxRequestTarget target);
@@ -177,7 +184,12 @@ public abstract class StageSelectionPanel extends Panel {
           public void populateItem(Item cellItem, String componentId, IModel rowModel) {
             Stage stage = (Stage) rowModel.getObject();
             IStageExecution exec = activeInterviewService.getStageExecution(stage);
-            cellItem.add(new ActionsPanel(componentId, rowModel, exec, modal));
+
+            if(interactiveStage != null && !(interactiveStage.isValidForAction(stage))) {
+              cellItem.add(new EmptyPanel(componentId));
+            } else {
+              cellItem.add(new ActionsPanel(componentId, rowModel, exec, modal));
+            }
           }
 
         });
@@ -235,5 +247,26 @@ public abstract class StageSelectionPanel extends Panel {
       return columns;
     }
 
+  }
+
+  private class InteractiveStage implements Serializable {
+
+    private static final long serialVersionUID = -442910624514791105L;
+
+    private String stageName;
+
+    private User stageUser;
+
+    public InteractiveStage(String stageName, User stageUser) {
+      this.stageName = stageName;
+      this.stageUser = stageUser;
+    }
+
+    public boolean isValidForAction(Stage currentStage) {
+      if(!stageName.equals(currentStage.getName())) return false;
+      if(!stageUser.getLogin().equals(OnyxAuthenticatedSession.get().getUser().getLogin())) return false;
+
+      return true;
+    }
   }
 }
