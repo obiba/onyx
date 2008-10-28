@@ -30,7 +30,7 @@ public class ParticipantExcelReader extends AbstractParticipantExcelReader {
     participant.setSiteNo(getTextValue(row, evaluator, row.getCell(2)));
     participant.setFirstName(getTextValue(row, evaluator, row.getCell(5)));
     participant.setLastName(getTextValue(row, evaluator, row.getCell(4)));
-    Long id = getNumericValue(row, evaluator, row.getCell(3)).longValue();
+    Long id = (getNumericValue(row, evaluator, row.getCell(3)) != null) ? getNumericValue(row, evaluator, row.getCell(3)).longValue() : null;
     participant.setEnrollmentId(id == null ? null : id.toString());
     participant.setBirthDate(getDateValue(row, evaluator, row.getCell(7)));
     String gender = getTextValue(row, evaluator, row.getCell(6));
@@ -41,7 +41,8 @@ public class ParticipantExcelReader extends AbstractParticipantExcelReader {
     }
     participant.setStreet(getTextValue(row, evaluator, row.getCell(8)));
     participant.setCity(getTextValue(row, evaluator, row.getCell(9)));
-    participant.setProvince(Province.valueOf(getTextValue(row, evaluator, row.getCell(10))));
+    String provinceCode = getTextValue(row, evaluator, row.getCell(10));
+    participant.setProvince((provinceCode.trim().length() > 0) ? Province.valueOf(provinceCode) : null);
     participant.setCountry(getTextValue(row, evaluator, row.getCell(11)));
     participant.setPostalCode(getTextValue(row, evaluator, row.getCell(12)));
     participant.setPhone(getTextValue(row, evaluator, row.getCell(13)));
