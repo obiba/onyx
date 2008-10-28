@@ -38,6 +38,9 @@ public class ConsentModeSelectionPanel extends Panel {
     add(createConsentModeRadio());
     add(createConsentLanguageDropDown());
 
+    // Set default consent mode to electronic.
+    activeConsentService.getConsent().setMode(ConsentMode.ELECTRONIC);
+
   }
 
   @SuppressWarnings("serial")
