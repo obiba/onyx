@@ -20,15 +20,9 @@ public class ElectronicConsentStep extends WizardStepPanel {
 
   private static final long serialVersionUID = 1L;
 
-  private ElectronicConsentPanel electronicConsentPanel;
-
-  private WizardStepPanel consentConfirmationStep;
-
   public ElectronicConsentStep(String id, WizardStepPanel consentConfirmationStep) {
     super(id);
     setOutputMarkupId(true);
-
-    this.consentConfirmationStep = consentConfirmationStep;
     add(new Label("title", new StringResourceModel("ElectronicConsentTitle", this, null)));
 
   }
@@ -36,25 +30,14 @@ public class ElectronicConsentStep extends WizardStepPanel {
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
     form.getPreviousLink().setEnabled(true);
-    form.getNextLink().setEnabled(true);
-    form.getFinishLink().setEnabled(false);
+    form.getNextLink().setEnabled(false);
+    form.getFinishLink().setEnabled(true);
     form.getCancelLink().setEnabled(false);
   }
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
-    setContent(target, electronicConsentPanel = new ElectronicConsentPanel(getContentId()));
+    setContent(target, new ElectronicConsentPanel(getContentId()));
   }
 
-  @Override
-  public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
-    setNextStep(null);
-    if(!electronicConsentPanel.isPdfFormSubmited()) {
-      error(getString("MissingConsentForm"));
-    } else if(!electronicConsentPanel.validate()) {
-      error(getString("InvalidConsentForm"));
-    } else {
-      setNextStep(consentConfirmationStep);
-    }
-  }
 }

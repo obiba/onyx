@@ -45,8 +45,8 @@ public interface ActiveConsentService {
   public boolean validateElectronicConsent();
 
   /**
-   * Checks if the PDF consent form has been submitted.
+   * Checks if the consent form has been submitted.
    * @return True if submitted, false if not.
    */
-  public boolean isPdfFormSubmitted();
+  public boolean isConsentFormSubmitted();
 }

@@ -64,6 +64,7 @@ public class ConsentModeSelectionStep extends WizardStepPanel {
       consentConfirmationStep.setPreviousStep(electronicConsentStep);
       setNextStep(electronicConsentStep);
       activeConsentService.getConsent().setPdfForm(null);
+      activeConsentService.getConsent().setAccepted(null);
     }
 
   }

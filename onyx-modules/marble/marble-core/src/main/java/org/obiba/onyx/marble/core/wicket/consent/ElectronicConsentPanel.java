@@ -10,15 +10,10 @@ package org.obiba.onyx.marble.core.wicket.consent;
 
 import org.apache.wicket.markup.html.link.InlineFrame;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.marble.core.service.ActiveConsentService;
 
 public class ElectronicConsentPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
-
-  @SpringBean
-  private ActiveConsentService activeConsentService;
 
   @SuppressWarnings("serial")
   public ElectronicConsentPanel(String id) {
@@ -28,22 +23,8 @@ public class ElectronicConsentPanel extends Panel {
 
   @Override
   protected void onBeforeRender() {
-
-    if(validate()) {
-      addOrReplace(new InlineFrame("pdfSubmitFrame", new ElectronicConsentConfirmedPage()));
-    } else {
-      addOrReplace(new InlineFrame("pdfSubmitFrame", new ElectronicConsentPage()));
-    }
-
+    addOrReplace(new InlineFrame("pdfSubmitFrame", new ElectronicConsentPage()));
     super.onBeforeRender();
-  }
-
-  public boolean validate() {
-    return activeConsentService.validateElectronicConsent();
-  }
-
-  public boolean isPdfFormSubmited() {
-    return activeConsentService.isPdfFormSubmitted();
   }
 
 }

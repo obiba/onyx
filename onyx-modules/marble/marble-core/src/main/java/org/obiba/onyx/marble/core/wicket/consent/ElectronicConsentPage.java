@@ -55,7 +55,7 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
       protected void onComponentTag(ComponentTag tag) {
         CharSequence url = ElectronicConsentPage.this.urlFor(IResourceListener.INTERFACE);
         String srcTagValue = url.toString();
-        tag.put("data", srcTagValue);
+        tag.put("src", srcTagValue);
         super.onComponentTag(tag);
       }
     });
@@ -89,7 +89,7 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
           @Override
           public byte[] getData() {
             ByteArrayOutputStream convertedStream = null;
-            if(activeConsentService.isPdfFormSubmitted()) {
+            if(activeConsentService.isConsentFormSubmitted()) {
               return activeConsentService.getConsent().getPdfForm();
             } else {
 

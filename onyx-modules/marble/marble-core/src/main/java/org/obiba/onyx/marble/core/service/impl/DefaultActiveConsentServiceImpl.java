@@ -52,7 +52,6 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
     return consent;
   }
 
-  @Override
   public void update() {
     if(consent != null) {
       getPersistenceManager().save(consent);
@@ -60,10 +59,9 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
   }
 
   @SuppressWarnings("unchecked")
-  @Override
   public boolean validateElectronicConsent() {
 
-    if(isPdfFormSubmitted()) {
+    if(isConsentFormSubmitted()) {
 
       // Access PDF content with IText library.
       PdfReader reader;
@@ -90,7 +88,6 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
     }
   }
 
-  @Override
   public void deletePreviousConsent() {
     Consent template = new Consent();
     template.setInterview(activeInterviewService.getInterview());
@@ -102,9 +99,8 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
     }
   }
 
-  @Override
-  public boolean isPdfFormSubmitted() {
-    if(consent.getPdfForm() != null) {
+  public boolean isConsentFormSubmitted() {
+    if(consent.isAccepted() != null) {
       return true;
     }
     return false;

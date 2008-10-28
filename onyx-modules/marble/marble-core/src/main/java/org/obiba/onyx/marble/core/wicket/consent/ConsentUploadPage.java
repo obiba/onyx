@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 
 import javax.servlet.ServletInputStream;
 
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
@@ -16,10 +17,27 @@ public class ConsentUploadPage extends WebPage {
   @SpringBean
   private ActiveConsentService activeConsentService;
 
-  public ConsentUploadPage() {
-    super();
-    uploadElectronicForm();
+  private PageParameters pageParams;
+
+  private Boolean consentIsAccepted;
+
+  public ConsentUploadPage(PageParameters pageParams) {
+    super(pageParams);
+    this.pageParams = pageParams;
+    confirmConsent();
+    if(consentIsAccepted) {
+      uploadElectronicForm();
+    }
     setResponsePage(ElectronicConsentConfirmedPage.class);
+  }
+
+  private void confirmConsent() {
+    consentIsAccepted = pageParams.getBoolean("accepted");
+    if(consentIsAccepted == null) {
+      throw new RuntimeException("Missing \"accepted\" parameter in the PDF form submit button URL, this parameter must be set to true or false (true for the accept consent button, false for the refuse consent button)");
+    } else {
+      activeConsentService.getConsent().setAccepted(consentIsAccepted);
+    }
   }
 
   private void uploadElectronicForm() {

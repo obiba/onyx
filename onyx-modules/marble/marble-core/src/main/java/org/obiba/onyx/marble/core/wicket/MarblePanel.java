@@ -27,6 +27,7 @@ import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.core.wicket.wizard.ConsentWizardForm;
 import org.obiba.onyx.marble.domain.consent.Consent;
+import org.obiba.onyx.marble.domain.consent.ConsentMode;
 import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
@@ -80,11 +81,22 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
 
           @Override
           public void onFinish(AjaxRequestTarget target, Form form) {
-            IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
-            ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
-            activeConsentService.update();
-            if(actionDef != null) {
-              actionWindow.show(target, model.getStageModel(), actionDef);
+            Boolean consentIsSubmitted = activeConsentService.isConsentFormSubmitted();
+            Boolean consentIsAccepted = activeConsentService.getConsent().isAccepted();
+            Boolean consentIsElectronic = activeConsentService.getConsent().getMode() == ConsentMode.ELECTRONIC ? true : false;
+            if(!consentIsSubmitted) {
+              error(getString("MissingConsentForm"));
+            } else if(consentIsAccepted && consentIsElectronic && !activeConsentService.validateElectronicConsent()) {
+              error(getString("InvalidConsentForm"));
+              getElectronicConsentStep().setNextStep(null);
+              gotoNext(target);
+            } else {
+              IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
+              ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
+              activeConsentService.update();
+              if(actionDef != null) {
+                actionWindow.show(target, model.getStageModel(), actionDef);
+              }
             }
           }
 

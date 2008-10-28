@@ -10,7 +10,6 @@ public class ConsentTemplateLoader implements ResourceLoaderAware {
 
   private ResourceLoader resourceLoader;
 
-  @Override
   public void setResourceLoader(ResourceLoader resourceLoader) {
     this.resourceLoader = resourceLoader;
   }
