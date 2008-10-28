@@ -228,9 +228,16 @@
         <artifactId>wicket-spring</artifactId>
         <version>${wicket.version}</version>
         <exclusions>
+          <!-- We include spring on a per module basis -->
           <exclusion>
             <groupId>org.springframework</groupId>
             <artifactId>spring</artifactId>
+          </exclusion>
+
+          <!-- Hibernate pulls in cglib with its dependencies, this is a duplication -->
+          <exclusion>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -257,6 +264,13 @@
         <groupId>org.apache.wicket</groupId>
         <artifactId>wicket-datetime</artifactId>
         <version>${wicket.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>${servlet-api.version}</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -389,7 +403,7 @@
       <dependency>
         <groupId>com.lowagie</groupId>
         <artifactId>itext</artifactId>
-        <version>${lowagie.version}</version>
+        <version>${itext.version}</version>
         <exclusions>
           <exclusion>
             <groupId>commons-logging</groupId>
@@ -587,13 +601,14 @@
     <hibernate-annotations.version>3.3.1.GA</hibernate-annotations.version>
     <hibernate.version>3.2.6.ga</hibernate.version>
     <hibernate-commons-annotations.version>3.3.0.ga</hibernate-commons-annotations.version>
-    <servlet-api.version>2.3</servlet-api.version>
+    <!--  Deploy in Tomcat 6 -->
+    <servlet-api.version>2.5</servlet-api.version>
     <jscience.version>4.3.1</jscience.version>
     <jsr250-api.version>1.0</jsr250-api.version>
     <commons-httpclient.version>3.1</commons-httpclient.version>
     <jetty.version>6.1.4</jetty.version>
-    <poi.version>3.1-FINAL</poi.version>
-    <lowagie.version>2.1.3</lowagie.version>
+    <poi.version>3.2-FINAL</poi.version>
+    <itext.version>2.1.3</itext.version>
   </properties>
 
 </project>

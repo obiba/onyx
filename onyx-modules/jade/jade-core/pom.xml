@@ -79,7 +79,10 @@
       <artifactId>xstream</artifactId>
     </dependency>
 
-    <!-- Even though we don't use it, the JTA jar is required due because the Spring class hierarchy and hibernate references javax.transaction.TransactionManager -->
+    <!--
+      Even though we don't use it, the JTA jar is required due because the Spring class hierarchy and hibernate
+      references javax.transaction.TransactionManager
+    -->
     <dependency>
       <groupId>javax.transaction</groupId>
       <artifactId>jta</artifactId>
@@ -115,13 +118,11 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>${servlet-api.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.jscience</groupId>
       <artifactId>jscience</artifactId>
-      <version>${jscience.version}</version>
     </dependency>
 
   </dependencies>
