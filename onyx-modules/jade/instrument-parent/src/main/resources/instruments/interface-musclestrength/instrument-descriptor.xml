@@ -62,6 +62,25 @@
       </rangeCheck>
     </integrityChecks>
   </output>
+  
+  <output id="mus1_left_strength1">
+    <name>Left Strength 1</name>
+    <description>First_Left_Hand_Muscle_Strength_Measurement</description>
+    <measurementUnit>kg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="mus1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="mus1_left_strength1" />
+        <integerMinValueMale>0</integerMinValueMale>
+        <integerMaxValueMale>120</integerMaxValueMale>
+        <integerMinValueFemale>0</integerMinValueFemale>
+        <integerMaxValueFemale>120</integerMaxValueFemale>
+      </rangeCheck>
+    </integrityChecks>
+  </output>
+  
   <output id="mus1_right_strength2">
     <name>Right Strength 2</name>
     <description>Second_Right_Hand_Muscle_Strength_Measurement</description>
@@ -84,37 +103,7 @@
       </parameterSpreadCheck>
     </integrityChecks>
   </output>
-  <computedOutput>
-    <name>Right Hand Muscle Strength</name>
-    <description>Average_Right_Hand_Muscle_Strength_Measurement</description>
-    <measurementUnit>kg</measurementUnit>
-    <dataType>INTEGER</dataType>
-    <instrument reference="mus1" />
-    <algorithm>AVERAGE</algorithm>
-    <captureMethod>COMPUTED</captureMethod>
-    <outputs>
-      <output reference="mus1_right_strength1" />
-      <output reference="mus1_right_strength2" />
-    </outputs>
-  </computedOutput>
-
-  <output id="mus1_left_strength1">
-    <name>Left Strength 1</name>
-    <description>First_Left_Hand_Muscle_Strength_Measurement</description>
-    <measurementUnit>kg</measurementUnit>
-    <dataType>INTEGER</dataType>
-    <captureMethod>MANUAL</captureMethod>
-    <instrument reference="mus1" />
-    <integrityChecks>
-      <rangeCheck>
-        <targetParameter reference="mus1_left_strength1" />
-        <integerMinValueMale>0</integerMinValueMale>
-        <integerMaxValueMale>120</integerMaxValueMale>
-        <integerMinValueFemale>0</integerMinValueFemale>
-        <integerMaxValueFemale>120</integerMaxValueFemale>
-      </rangeCheck>
-    </integrityChecks>
-  </output>
+  
   <output id="mus1_left_strength2">
     <name>Left Strength 2</name>
     <description>Second_Left_Hand_Muscle_Strength_Measurement</description>
@@ -137,6 +126,21 @@
       </parameterSpreadCheck>
     </integrityChecks>
   </output>
+  
+  <computedOutput>
+    <name>Right Hand Muscle Strength</name>
+    <description>Average_Right_Hand_Muscle_Strength_Measurement</description>
+    <measurementUnit>kg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <instrument reference="mus1" />
+    <algorithm>AVERAGE</algorithm>
+    <captureMethod>COMPUTED</captureMethod>
+    <outputs>
+      <output reference="mus1_right_strength1" />
+      <output reference="mus1_right_strength2" />
+    </outputs>
+  </computedOutput>
+
   <computedOutput>
     <name>Left Hand Muscle Strength</name>
     <description>Average_Left_Hand_Muscle_Strength_Measurement</description>
