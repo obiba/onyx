@@ -43,7 +43,7 @@ public class OnyxApplication extends SpringWebApplication implements IUnauthoriz
   private final Logger log = LoggerFactory.getLogger(OnyxApplication.class);
 
   private UserService userService;
-  
+
   private Version version;
 
   public UserService getUserService() {
@@ -100,7 +100,7 @@ public class OnyxApplication extends SpringWebApplication implements IUnauthoriz
         return false;
       }
     });
-    log.info("Onyx Web Application has been stoped");
+    log.info("Onyx Web Application has been stopped");
     super.onDestroy();
   }
 

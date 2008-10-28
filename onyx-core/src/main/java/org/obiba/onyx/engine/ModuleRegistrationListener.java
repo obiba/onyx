@@ -20,9 +20,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
- * Get the {@link Module} from the Spring application context and (un)registrate them. 
+ * Get the {@link Module} from the Spring application context and (un)registrate them.
  * @author Yannick Marcon
- *
+ * 
  */
 public class ModuleRegistrationListener implements WebApplicationStartupListener, ApplicationContextAware {
 
@@ -37,7 +37,7 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
     Map<String, Module> modules = applicationContext.getBeansOfType(Module.class);
     if(modules != null) {
       for(Module module : modules.values()) {
-        log.info("Unresgitering module '{}' of type {}", module.getName(), module.getClass().getSimpleName());
+        log.info("Unregistering module '{}' of type {}", module.getName(), module.getClass().getSimpleName());
         module.shutdown();
         registry.unregisterModule(module.getName());
       }
@@ -49,7 +49,7 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
     Map<String, Module> modules = applicationContext.getBeansOfType(Module.class);
     if(modules != null) {
       for(Module module : modules.values()) {
-        log.info("Resgitering module '{}' of type {}", module.getName(), module.getClass().getSimpleName());
+        log.info("Registering module '{}' of type {}", module.getName(), module.getClass().getSimpleName());
         module.initialize();
         registry.registerModule(module);
       }
