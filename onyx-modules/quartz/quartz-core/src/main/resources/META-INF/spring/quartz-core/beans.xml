@@ -19,7 +19,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
           <property name="name" value="HealthQuestionnaire" />
           <property name="module" value="quartz" />
           <property name="description" value="Health_Questionnaire" />
-          <property name="displayOrder" value="12" />
+          <property name="displayOrder" value="13" />
           <property name="userSessionService" ref="userSessionService" />
           <property name="stageDependencyCondition" ref="consentDependency" />
         </bean>

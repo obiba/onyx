@@ -23,6 +23,11 @@
     <description>Hips and Waist Size measurement</description>
   </instrumentType>
   
+  <instrumentType id="blp">
+    <name>BLP</name>
+    <description>Blood Pressure measurement</description>
+  </instrumentType>
+  
   <instrumentType id="mus">
     <name>MUS</name>
     <description>Muscle Strength measurement</description>

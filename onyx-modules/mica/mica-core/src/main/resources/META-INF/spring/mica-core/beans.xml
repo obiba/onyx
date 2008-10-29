@@ -23,7 +23,7 @@
           <property name="name" value="SUM" />
           <property name="module" value="mica"/>
           <property name="description" value="Conclusion" />
-          <property name="displayOrder" value="13" />
+          <property name="displayOrder" value="14" />
           <property name="userSessionService" ref="userSessionService" />
           <property name="stageDependencyCondition">
 	        <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">

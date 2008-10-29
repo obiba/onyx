@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<linked-list>
+
+  <instrument id="blp1">
+    <name>Blood Pressure Monitor 1</name>
+    <vendor>Omron</vendor>
+    <model>Model 907</model>
+    <serialNumber>20080200041AF</serialNumber>
+    <barcode>blp01</barcode>
+    <status>ACTIVE</status>
+    <instrumentType>
+      <name>BLP</name>
+    </instrumentType>
+    <contraindications>
+      <contraIndication>
+        <code>Other</code>
+        <requiresDescription>true</requiresDescription>
+        <type>OBSERVED</type>
+      </contraIndication>
+    </contraindications>
+  </instrument>
+
+  <output id="blp1_systolic1">
+    <name>Systolic Blood Pressure 1</name>
+    <description>First_Systolic_Blood_Pressure_Measurement</description>
+    <measurementUnit>mmHg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="blp1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="blp1_systolic1" />
+        <integerMinValueMale>30</integerMinValueMale>
+        <integerMaxValueMale>280</integerMaxValueMale>
+        <integerMinValueFemale>30</integerMinValueFemale>
+        <integerMaxValueFemale>280</integerMaxValueFemale>
+      </rangeCheck>
+    </integrityChecks>
+  </output>
+  <output id="blp1_diastolic1">
+    <name>Diastolic Blood Pressure 1</name>
+    <description>First_Diastolic_Blood_Pressure_Measurement</description>
+    <measurementUnit>mmHg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="blp1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="blp1_diastolic1" />
+        <integerMinValueMale>10</integerMinValueMale>
+        <integerMaxValueMale>260</integerMaxValueMale>
+        <integerMinValueFemale>10</integerMinValueFemale>
+        <integerMaxValueFemale>260</integerMaxValueFemale>
+      </rangeCheck>
+    </integrityChecks>
+  </output>
+  <output id="blp1_pulse1">
+    <name>Pulse Rate 1</name>
+    <description>First_Pulse_Rate_Measurement</description>
+    <measurementUnit>BPM</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="blp1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="blp1_pulse1" />
+        <integerMinValueMale>5</integerMinValueMale>
+        <integerMaxValueMale>300</integerMaxValueMale>
+        <integerMinValueFemale>5</integerMinValueFemale>
+        <integerMaxValueFemale>300</integerMaxValueFemale>
+      </rangeCheck>
+    </integrityChecks>
+  </output>
+
+  <output id="blp1_systolic2">
+    <name>Systolic Blood Pressure 2</name>
+    <description>Second_Systolic_Blood_Pressure_Measurement</description>
+    <measurementUnit>mmHg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="blp1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="blp1_systolic2" />
+        <integerMinValueMale>30</integerMinValueMale>
+        <integerMaxValueMale>280</integerMaxValueMale>
+        <integerMinValueFemale>30</integerMinValueFemale>
+        <integerMaxValueFemale>280</integerMaxValueFemale>
+      </rangeCheck>
+    </integrityChecks>
+  </output>
+  <output id="blp1_diastolic2">
+    <name>Diastolic Blood Pressure 2</name>
+    <description>Second_Diastolic_Blood_Pressure_Measurement</description>
+    <measurementUnit>mmHg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="blp1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="blp1_diastolic2" />
+        <integerMinValueMale>10</integerMinValueMale>
+        <integerMaxValueMale>260</integerMaxValueMale>
+        <integerMinValueFemale>10</integerMinValueFemale>
+        <integerMaxValueFemale>260</integerMaxValueFemale>
+      </rangeCheck>
+    </integrityChecks>
+  </output>
+  <output id="blp1_pulse2">
+    <name>Pulse Rate 2</name>
+    <description>Second_Pulse_Rate_Measurement</description>
+    <measurementUnit>BPM</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="blp1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="blp1_pulse2" />
+        <integerMinValueMale>5</integerMinValueMale>
+        <integerMaxValueMale>300</integerMaxValueMale>
+        <integerMinValueFemale>5</integerMinValueFemale>
+        <integerMaxValueFemale>300</integerMaxValueFemale>
+      </rangeCheck>
+    </integrityChecks>
+  </output>
+  <computedOutput>
+    <name>Systolic Blood Pressure</name>
+    <description>Average_Systolic_Blood_Pressure_Measurement</description>
+    <measurementUnit>mmHg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <instrument reference="blp1" />
+    <algorithm>AVERAGE</algorithm>
+    <captureMethod>COMPUTED</captureMethod>
+    <outputs>
+      <output reference="blp1_systolic1" />
+      <output reference="blp1_systolic2" />
+    </outputs>
+  </computedOutput>
+  <computedOutput>
+    <name>Diastolic Blood Pressure</name>
+    <description>Average_Diastolic_Blood_Pressure_Measurement</description>
+    <measurementUnit>mmHg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <instrument reference="blp1" />
+    <algorithm>AVERAGE</algorithm>
+    <captureMethod>COMPUTED</captureMethod>
+    <outputs>
+      <output reference="blp1_diastolic1" />
+      <output reference="blp1_diastolic2" />
+    </outputs>
+  </computedOutput>
+  <computedOutput>
+    <name>Pulse Rate</name>
+    <description>Average_Pulse_Rate_Measurement</description>
+    <measurementUnit>BPM</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <instrument reference="blp1" />
+    <algorithm>AVERAGE</algorithm>
+    <captureMethod>COMPUTED</captureMethod>
+    <outputs>
+      <output reference="blp1_pulse1" />
+      <output reference="blp1_pulse2" />
+    </outputs>
+  </computedOutput>
+  
+</linked-list>

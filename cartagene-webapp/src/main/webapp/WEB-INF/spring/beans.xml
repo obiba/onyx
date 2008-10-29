@@ -64,6 +64,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <value>instruments/interface-height/InstrumentParameter</value>
         <value>instruments/interface-sitting-height/InstrumentParameter</value>
         <value>instruments/interface-hipsandwaistsize/InstrumentParameter</value>
+        <value>instruments/interface-blood-pressure/InstrumentParameter</value>
         <value>instruments/interface-musclestrength/InstrumentParameter</value>
         <value>instruments/interface-musclestrength/ContraIndication</value>
         <value>instruments/interface-weight/InstrumentParameter</value>
