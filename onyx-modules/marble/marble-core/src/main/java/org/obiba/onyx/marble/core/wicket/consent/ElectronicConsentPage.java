@@ -54,7 +54,7 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
       @Override
       protected void onComponentTag(ComponentTag tag) {
         CharSequence url = ElectronicConsentPage.this.urlFor(IResourceListener.INTERFACE);
-        String srcTagValue = url.toString();
+        String srcTagValue = url.toString() + "#toolbar=0&navpanes=0&scrollbar=1";
         tag.put("src", srcTagValue);
         super.onComponentTag(tag);
       }

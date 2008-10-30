@@ -28,7 +28,7 @@ public class ConsentUploadPage extends WebPage {
     if(consentIsAccepted) {
       uploadElectronicForm();
     }
-    setResponsePage(ElectronicConsentConfirmedPage.class);
+    setResponsePage(ElectronicConsentSubmittedPage.class);
   }
 
   private void confirmConsent() {

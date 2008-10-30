@@ -37,7 +37,7 @@ public class ElectronicConsentStep extends WizardStepPanel {
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
-    setContent(target, new ElectronicConsentPanel(getContentId()));
+    setContent(target, new ElectronicConsentPanel(getContentId(), form));
   }
 
 }

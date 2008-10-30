@@ -11,6 +11,7 @@ package org.obiba.onyx.marble.core.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -61,12 +62,13 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
   @SuppressWarnings("unchecked")
   public boolean validateElectronicConsent() {
 
-    if(isConsentFormSubmitted()) {
+    byte[] pdfForm = consent.getPdfForm();
+    if(pdfForm != null) {
 
       // Access PDF content with IText library.
       PdfReader reader;
       try {
-        reader = new PdfReader(consent.getPdfForm());
+        reader = new PdfReader(pdfForm);
       } catch(IOException ex) {
         throw new RuntimeException("Could not read PDF document", ex);
       }
@@ -82,7 +84,7 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
         return false;
       }
 
-      // Invalid if form not submitted.
+      // Invalid if PDF form does not exist.
     } else {
       return false;
     }
@@ -92,10 +94,10 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
     Consent template = new Consent();
     template.setInterview(activeInterviewService.getInterview());
     template.setDeleted(false);
-    Consent previousConsent = getPersistenceManager().matchOne(template);
-    if(previousConsent != null) {
-      previousConsent.setDeleted(true);
-      getPersistenceManager().save(previousConsent);
+    List<Consent> previousConsents = getPersistenceManager().match(template);
+    for(Consent consent : previousConsents) {
+      consent.setDeleted(true);
+      getPersistenceManager().save(consent);
     }
   }
 
