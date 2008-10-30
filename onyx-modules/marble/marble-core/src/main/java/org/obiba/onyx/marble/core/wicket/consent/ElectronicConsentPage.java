@@ -166,7 +166,7 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
 
   private void setSystemFields(AcroFields form) throws IOException, DocumentException {
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-    form.setField("System_date", formatter.format(new Date()));
+    form.setField("System\\.date", formatter.format(new Date()));
   }
 
   private void setEntityFields(AcroFields form) {
@@ -184,7 +184,7 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
   /**
    * Attempts to match the form fields content with the attribute values of the entity. In the case of a match, the
    * value of the form field is set to the corresponding entity attribute value. The pattern used for form field
-   * matching is "EntityName_attributeName", (ex: "Participant_firstName").
+   * matching is "EntityName.attributeName", (ex: "Participant.firstName").
    * 
    * @param object
    * @param form
@@ -195,10 +195,10 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
     try {
       for(PropertyDescriptor pd : Introspector.getBeanInfo(bean).getPropertyDescriptors()) {
         Object value = pd.getReadMethod().invoke(entity);
-        String fieldName = bean.getSimpleName() + "_" + pd.getName();
+        String fieldName = bean.getSimpleName() + "\\." + pd.getName();
         if(value != null) {
           form.setField(fieldName, value.toString());
-          form.setField(fieldName + "_mandatoryField", value.toString());
+          form.setField(fieldName + "\\.mandatoryField", value.toString());
         }
       }
     } catch(Exception ex) {
