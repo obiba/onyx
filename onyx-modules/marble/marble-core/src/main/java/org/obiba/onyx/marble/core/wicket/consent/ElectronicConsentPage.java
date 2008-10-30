@@ -14,6 +14,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.wicket.IResourceListener;
 import org.apache.wicket.RequestCycle;
@@ -30,6 +32,7 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
 
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
@@ -147,11 +150,8 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
       stamper = new PdfStamper(pdfReader, output);
       AcroFields form = stamper.getAcroFields();
 
-      Participant participant = activeInterviewService.getParticipant();
-      User user = activeInterviewService.getInterview().getUser();
-
-      setFields(participant, form);
-      setFields(user, form);
+      setEntityFields(form);
+      setSystemFields(form);
 
       stamper.close();
       output.close();
@@ -162,6 +162,23 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
     } catch(Exception ex) {
       throw new RuntimeException("An error occured while preparing the consent form", ex);
     }
+  }
+
+  private void setSystemFields(AcroFields form) throws IOException, DocumentException {
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    form.setField("System_date", formatter.format(new Date()));
+  }
+
+  private void setEntityFields(AcroFields form) {
+
+    // Set Participant
+    Participant participant = activeInterviewService.getParticipant();
+    setFields(participant, form);
+
+    // Set User
+    User user = activeInterviewService.getInterview().getUser();
+    setFields(user, form);
+
   }
 
   /**
@@ -181,6 +198,7 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
         String fieldName = bean.getSimpleName() + "_" + pd.getName();
         if(value != null) {
           form.setField(fieldName, value.toString());
+          form.setField(fieldName + "_mandatoryField", value.toString());
         }
       }
     } catch(Exception ex) {

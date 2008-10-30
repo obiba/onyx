@@ -11,6 +11,7 @@ package org.obiba.onyx.marble.core.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
@@ -76,18 +77,33 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
       // Get the PDF form fields.
       AcroFields form = reader.getAcroFields();
 
+      // Make sure that all mandatory fields have been filled.
+      Collection<String> fieldNameList = form.getFields().keySet();
+      for(String fieldName : fieldNameList) {
+        if(isMandatoryField(form, fieldName)) {
+          if(form.getField(fieldName).trim().isEmpty()) {
+            return false;
+          }
+        }
+      }
+
       // Make sure all signature fields have been signed.
       ArrayList list = form.getBlankSignatureNames();
-      if(list.isEmpty()) {
-        return true;
-      } else {
+      if(!list.isEmpty()) {
         return false;
       }
+
+      return true;
 
       // Invalid if PDF form does not exist.
     } else {
       return false;
     }
+  }
+
+  private boolean isMandatoryField(AcroFields form, String fieldName) {
+    int fieldType = form.getFieldType(fieldName);
+    return fieldName.contains("_mandatoryField") && fieldType != AcroFields.FIELD_TYPE_SIGNATURE && fieldType != AcroFields.FIELD_TYPE_PUSHBUTTON;
   }
 
   public void deletePreviousConsent() {
