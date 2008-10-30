@@ -3,7 +3,8 @@
   default-autowire="no">
 
   <bean id="questionnaireParticipantService"
-    class="org.obiba.onyx.quartz.core.service.impl.hibernate.QuestionnaireParticipantServiceHibernateImpl" scope="singleton">
+    class="org.obiba.onyx.quartz.core.service.impl.hibernate.QuestionnaireParticipantServiceHibernateImpl"
+    scope="singleton">
     <property name="sessionFactory" ref="sessionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
@@ -32,15 +33,36 @@
     </property>
   </bean>
 
+  <bean id="navigationStrategy"
+    class="org.obiba.onyx.quartz.core.service.impl.DefaultNavigationStrategyImpl" />
+
+  <!-- Questionnaire UI factories -->
+  <bean id="quartz.DefaultPageLayoutFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultPageLayoutFactory" />
+  
+  <bean id="quartz.DefaultQuestionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultQuestionPanelFactory" />
+  
+  <bean id="pageLayoutFactoryRegistry" class="org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry" />
+  
+  <bean id="questionPanelFactoryRegistry" class="org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry" />
+    
   <bean id="activeQuestionnaireAdministrationService"
     class="org.obiba.onyx.quartz.core.service.impl.hibernate.ActiveQuestionnaireAdministrationServiceHibernateImpl"
     scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="sessionFactory" ref="sessionFactory" />
+    <property name="navigationStrategy" ref="navigationStrategy" />
   </bean>
+
+  <bean id="questionnaireBundleManager"
+    class="org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl">
+    <constructor-arg
+      value="classpath:/questionnaires" />
+    <property name="propertyKeyProvider" ref="propertyKeyProvider" />
+  </bean>
+
+  <bean id="moduleRegistry" class="org.obiba.onyx.engine.ModuleRegistry" />
 
   <import resource="classpath:/test-hibernate-config.xml" />
   <import resource="classpath:/test-db-config.xml" />
-  <!-- <import resource="classpath:META-INF/spring/quartz-core/context.xml" /> -->
 
 </beans>
