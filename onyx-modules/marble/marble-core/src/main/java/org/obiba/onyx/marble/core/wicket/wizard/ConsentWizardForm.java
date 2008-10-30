@@ -40,7 +40,7 @@ public abstract class ConsentWizardForm extends WizardForm {
 
     activeConsentService.setConsent((Consent) interviewConsentModel.getObject());
 
-    consentConfirmationStep = new ConsentConfirmationStep(getStepId());
+    consentConfirmationStep = new ManualConsentStep(getStepId());
     electronicConsentStep = new ElectronicConsentStep(getStepId(), consentConfirmationStep);
     consentModeSelectionStep = new ConsentModeSelectionStep(getStepId(), electronicConsentStep, consentConfirmationStep);
 

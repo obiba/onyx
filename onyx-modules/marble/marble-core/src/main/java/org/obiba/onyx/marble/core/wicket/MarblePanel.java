@@ -81,15 +81,22 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
 
           @Override
           public void onFinish(AjaxRequestTarget target, Form form) {
+
             Boolean consentIsSubmitted = activeConsentService.isConsentFormSubmitted();
             Boolean consentIsAccepted = activeConsentService.getConsent().isAccepted();
             Boolean consentIsElectronic = activeConsentService.getConsent().getMode() == ConsentMode.ELECTRONIC ? true : false;
+
+            // Consent not submitted, inform the user that the submit button (PDF form) has to be clicked.
             if(!consentIsSubmitted) {
               error(getString("MissingConsentForm"));
+
+              // Invalid electronic consent.
             } else if(consentIsAccepted && consentIsElectronic && !activeConsentService.validateElectronicConsent()) {
               error(getString("InvalidConsentForm"));
               getElectronicConsentStep().setNextStep(null);
               gotoNext(target);
+
+              // Valid electronic consent, refused electronic consent, or manual consent.
             } else {
               IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
               ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);

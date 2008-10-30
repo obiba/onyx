@@ -19,14 +19,14 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
 
-public class ConsentConfirmationPanel extends Panel {
+public class ManualConsentPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
   @SpringBean
   private ActiveConsentService activeConsentService;
 
-  public ConsentConfirmationPanel(String id) {
+  public ManualConsentPanel(String id) {
     super(id);
     setOutputMarkupId(true);
 
@@ -39,7 +39,7 @@ public class ConsentConfirmationPanel extends Panel {
     IChoiceRenderer choiceRenderer = new IChoiceRenderer() {
 
       public Object getDisplayValue(Object object) {
-        return (new StringResourceModel("ConsentConfirmation." + object.toString(), ConsentConfirmationPanel.this, null).getString());
+        return (new StringResourceModel("ConsentConfirmation." + object.toString(), ManualConsentPanel.this, null).getString());
       }
 
       public String getIdValue(Object object, int index) {

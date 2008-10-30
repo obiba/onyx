@@ -103,6 +103,8 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
 
   private boolean isMandatoryField(AcroFields form, String fieldName) {
     int fieldType = form.getFieldType(fieldName);
+
+    // Fields name ending with ".mandatoryFields" are required.
     return fieldName.contains("\\.mandatoryField") && fieldType != AcroFields.FIELD_TYPE_SIGNATURE && fieldType != AcroFields.FIELD_TYPE_PUSHBUTTON;
   }
 

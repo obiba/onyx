@@ -25,9 +25,12 @@ public class ConsentUploadPage extends WebPage {
     super(pageParams);
     this.pageParams = pageParams;
     confirmConsent();
+
+    // Don't save consent form if the participant has refused to sign it.
     if(consentIsAccepted) {
       uploadElectronicForm();
     }
+
     setResponsePage(ElectronicConsentSubmittedPage.class);
   }
 

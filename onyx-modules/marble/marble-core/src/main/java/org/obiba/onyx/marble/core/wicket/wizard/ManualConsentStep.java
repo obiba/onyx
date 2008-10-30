@@ -12,17 +12,17 @@ package org.obiba.onyx.marble.core.wicket.wizard;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.StringResourceModel;
-import org.obiba.onyx.marble.core.wicket.consent.ConsentConfirmationPanel;
+import org.obiba.onyx.marble.core.wicket.consent.ManualConsentPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
-public class ConsentConfirmationStep extends WizardStepPanel {
+public class ManualConsentStep extends WizardStepPanel {
 
   private static final long serialVersionUID = 1L;
 
-  private ConsentConfirmationPanel consentConfirmationPanel;
+  private ManualConsentPanel consentConfirmationPanel;
 
-  public ConsentConfirmationStep(String id) {
+  public ManualConsentStep(String id) {
     super(id);
     setOutputMarkupId(true);
 
@@ -39,7 +39,7 @@ public class ConsentConfirmationStep extends WizardStepPanel {
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
-    setContent(target, consentConfirmationPanel = new ConsentConfirmationPanel(getContentId()));
+    setContent(target, consentConfirmationPanel = new ManualConsentPanel(getContentId()));
   }
 
 }
