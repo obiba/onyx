@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 
@@ -119,7 +120,7 @@ public class ApplicationConfigurationPage extends BasePage {
       studyLogo = new FileUploadField("studyLogo");
 
       // Make sure that the file uploaded is either a "jpg", a "gif", a "jpeg" or a "bmp".
-      add(studyLogo.add(new PatternValidator(".*((\\.jpg)|(\\.gif)|(\\.jpeg)|(\\.bmp))")).setRequired(true));
+      add(studyLogo.add(new PatternValidator(".*((\\.jpg)|(\\.gif)|(\\.jpeg)|(\\.bmp))", Pattern.CASE_INSENSITIVE)).setRequired(true));
 
       // Set max size of upload to two megabytes. A logo should not be bigger than that!!
       setMaxSize(Bytes.megabytes(2));
