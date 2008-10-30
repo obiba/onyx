@@ -128,7 +128,7 @@
   </output>
   
   <computedOutput>
-    <name>Right Hand Muscle Strength</name>
+    <name>Right_Hand_Muscle_Strength</name>
     <description>Average_Right_Hand_Muscle_Strength_Measurement</description>
     <measurementUnit>kg</measurementUnit>
     <dataType>INTEGER</dataType>
@@ -142,7 +142,7 @@
   </computedOutput>
 
   <computedOutput>
-    <name>Left Hand Muscle Strength</name>
+    <name>Left_Hand_Muscle_Strength</name>
     <description>Average_Left_Hand_Muscle_Strength_Measurement</description>
     <measurementUnit>kg</measurementUnit>
     <dataType>INTEGER</dataType>

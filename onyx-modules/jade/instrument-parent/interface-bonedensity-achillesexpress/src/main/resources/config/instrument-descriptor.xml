@@ -322,7 +322,7 @@
     <instrument reference="bone1" />
   </output>
   <output id="stiffnessindex">
-    <name>Stiffness Index</name>
+    <name>Stiffness_Index</name>
     <description>Stiffness_Index</description>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>

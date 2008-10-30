@@ -15,27 +15,38 @@
 	<property name="moduleRegistry" ref="moduleRegistry" />
 	<property name="moduleName" value="jade" />
   </bean>
- 
-  <bean id="micaOnyxModule" class="org.obiba.onyx.mica.engine.MicaModule">
-    <property name="activeInterviewService" ref="activeInterviewService" />
-     <property name="stages">
-        <bean class="org.obiba.onyx.engine.Stage">
-          <property name="name" value="SUM" />
-          <property name="module" value="mica"/>
-          <property name="description" value="Conclusion" />
-          <property name="displayOrder" value="14" />
-          <property name="userSessionService" ref="userSessionService" />
-          <property name="stageDependencyCondition">
-	        <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
-              <property name="leftStageDependencyCondition" ref="consentDependency" />
-              <property name="operator" value="AND" />
-              <property name="rightStageDependencyCondition" ref="jadeDependency" />
-         	</bean>
-	      </property>
-        </bean>
-    </property>
-  </bean>
   
+  <bean name="quartzDependency" class="org.obiba.onyx.quartz.engine.state.QuartzStageDependencyCondition">
+    <property name="stageName" value="HealthQuestionnaire" />
+  </bean>
+ 
+ <bean id="micaOnyxModule" class="org.obiba.onyx.mica.engine.MicaModule">
+   <property name="activeInterviewService" ref="activeInterviewService" />
+   <property name="stages">
+      <bean class="org.obiba.onyx.engine.Stage">
+        <property name="name" value="SUM" />
+        <property name="module" value="mica"/>
+        <property name="description" value="Conclusion" />
+        <property name="displayOrder" value="14" />
+        <property name="userSessionService" ref="userSessionService" />
+         
+        <property name="stageDependencyCondition">
+	        <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+	             	<property name="leftStageDependencyCondition">
+	              	<bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+	              	  	<property name="leftStageDependencyCondition" ref="consentDependency" />
+	              	  	<property name="operator" value="AND" />
+	              	  	<property name="rightStageDependencyCondition" ref="jadeDependency" />
+	              	</bean>
+	          		</property>
+	           	<property name="operator" value="AND" />
+			    <property name="rightStageDependencyCondition" ref="quartzDependency" />
+	      	</bean>
+    	</property>
+    </bean>
+   </property>
+  </bean>
+        
   <bean id="micaWaitingState" parent="baseStageState" class="org.obiba.onyx.mica.engine.state.MicaWaitingState"
     scope="prototype">
   </bean>
@@ -62,4 +73,12 @@
     scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
+  
+   <bean id="jadeReportContributor" class="org.obiba.onyx.mica.core.service.impl.JadeReportContributor"
+    scope="session">
+    <property name="activeInterviewService" ref="activeInterviewService" />
+    <property name="instrumentRunService" ref="instrumentRunService" />
+    <property name="instrumentService" ref="instrumentService" />
+  </bean>
+  
 </beans>

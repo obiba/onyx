@@ -98,7 +98,6 @@ public class BalsacConfirmationPanel extends Panel {
     radioGroup.setRequired(true);
 
     add(new Label("balsacLabel", new StringResourceModel("BalsacBarcode", this, null)));
-    ;
 
     balsacBarcode = new TextField("BalsacBarcode", new PropertyModel(activeConclusionService.getConclusion(), "barcode"), RequiredTextField.class);
     balsacBarcode.setOutputMarkupId(true);
@@ -131,7 +130,7 @@ public class BalsacConfirmationPanel extends Panel {
   @SuppressWarnings("serial")
   private class BalsacSelection implements Serializable {
 
-    public Boolean isAccapted() {
+    public Boolean isAccepted() {
       return activeConclusionService.getConclusion().isAccepted();
     }
 

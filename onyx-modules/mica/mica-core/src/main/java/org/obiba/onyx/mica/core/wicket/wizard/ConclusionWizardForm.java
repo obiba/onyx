@@ -31,15 +31,15 @@ public abstract class ConclusionWizardForm extends WizardForm {
 
   private WizardStepPanel balsacConfirmationStep;
 
-  private WizardStepPanel ParticipantReportStep;
+  private WizardStepPanel participantReportStep;
 
   public ConclusionWizardForm(String id, IModel interviewConclusionModel) {
     super(id);
 
     activeConclusionService.setConclusion((Conclusion) interviewConclusionModel.getObject());
 
-    ParticipantReportStep = new ParticipantReportStep(getStepId());
-    balsacConfirmationStep = new BalsacConfirmationStep(getStepId(), ParticipantReportStep);
+    participantReportStep = new ParticipantReportStep(getStepId());
+    balsacConfirmationStep = new BalsacConfirmationStep(getStepId(), participantReportStep);
 
     WizardStepPanel startStep = setupStaticWizardFlow();
 
@@ -51,7 +51,7 @@ public abstract class ConclusionWizardForm extends WizardForm {
   private WizardStepPanel setupStaticWizardFlow() {
     WizardStepPanel startStep = balsacConfirmationStep;
     startStep.setPreviousStep(startStep);
-    ParticipantReportStep.setPreviousStep(startStep);
+    participantReportStep.setPreviousStep(startStep);
     return startStep;
   }
 
@@ -80,10 +80,11 @@ public abstract class ConclusionWizardForm extends WizardForm {
   }
 
   public WizardStepPanel getParticipantReportStep() {
-    return ParticipantReportStep;
+    return participantReportStep;
   }
 
   public void setParticipantReportStep(WizardStepPanel participantReportStep) {
-    ParticipantReportStep = participantReportStep;
+    this.participantReportStep = participantReportStep;
   }
+
 }

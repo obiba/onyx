@@ -76,7 +76,7 @@
     </integrityChecks>
   </output>
   <computedOutput>
-    <name>Sitting Height</name>
+    <name>Sitting_Height</name>
     <description>Average_Sitting_Height_Measurement</description>
     <measurementUnit>cm</measurementUnit>
     <dataType>DECIMAL</dataType>

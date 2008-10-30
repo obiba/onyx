@@ -151,7 +151,7 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
         boneDensityData.put("% Age Matched", DataBuilder.buildDecimal(rs.getDouble("agematched")));
         boneDensityData.put("% Young Adult", DataBuilder.buildDecimal(rs.getDouble("percentnormal")));
         boneDensityData.put("Foot Scanned", DataBuilder.buildText(rs.getString("sidescanned")));
-        boneDensityData.put("Stiffness Index", DataBuilder.buildDecimal(rs.getDouble("stiffnessindex")));
+        boneDensityData.put("Stiffness_Index", DataBuilder.buildDecimal(rs.getDouble("stiffnessindex")));
         boneDensityData.put("Speed of Ultrasound", DataBuilder.buildDecimal( rs.getDouble("SOS")));
         boneDensityData.put("Broadband Ultrasound Attenuation",DataBuilder.buildDecimal( rs.getDouble("BUA")));
         boneDensityData.put("Achilles Software Version", DataBuilder.buildText( rs.getString("appversion")));

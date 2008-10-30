@@ -44,4 +44,12 @@ public class ParticipantReportStep extends WizardStepPanel {
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     participantReportPanel.finish();
   }
+
+  public ParticipantReportPanel getParticipantReportPanel() {
+    return participantReportPanel;
+  }
+
+  public void setParticipantReportPanel(ParticipantReportPanel participantReportPanel) {
+    this.participantReportPanel = participantReportPanel;
+  }
 }
