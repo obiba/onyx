@@ -590,6 +590,19 @@ public abstract class AbstractQuestionnaireTest {
     return radioButtonIndex;
   }
 
+  /**
+   * Returns the base path for an answer provider resource (i.e., classpath resource).
+   * 
+   * The base path is <code>questionnaires/[questionnaireName]/[questionnaireVersion]</code>, where
+   * "[questionnaireName]" is the value returned by <code>getQuestionnaireName</code> and "[questionnaireVersion]" is
+   * the value returned by <code>getQuestionnaireVersion</code>.
+   * 
+   * @return answer provider resource path
+   */
+  protected String getAnswerProviderResourcePath() {
+    return "questionnaires" + "/" + getQuestionnaireName() + "/" + getQuestionnaireVersion();
+  }
+
   //
   // Abstract Methods
   //
@@ -600,4 +613,11 @@ public abstract class AbstractQuestionnaireTest {
    * @return name of questionnaire
    */
   protected abstract String getQuestionnaireName();
+
+  /**
+   * Returns the version of the questionnaire under test.
+   * 
+   * @return version of questionnaire
+   */
+  protected abstract String getQuestionnaireVersion();
 }

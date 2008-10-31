@@ -1,0 +1,23 @@
+<configurableAnswerProvider>
+  <defaultAnswer>
+    <categoryName>NO_ANSWER</categoryName>
+  </defaultAnswer>
+  <answers>
+	  <entry>
+	    <string>Q2</string> <!-- Set Q2 (BIRTHDATE) answer to 1980. -->
+		<categoryAnswer>
+		  <categoryName>1</categoryName>
+		  <dataType>INTEGER</dataType>
+		  <integerValue>1980</integerValue>
+		</categoryAnswer>
+	  </entry>
+	  <entry>
+	    <string>Q3</string> <!-- Set Q3 (BIRTHMONTH) answer to 12. -->
+		<categoryAnswer>
+		  <categoryName>1</categoryName>
+		  <dataType>INTEGER</dataType>
+		  <integerValue>12</integerValue>
+		</categoryAnswer>
+	  </entry>
+  </answers>
+</configurableAnswerProvider>

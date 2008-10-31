@@ -9,12 +9,18 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.test.provider.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.test.provider.AnswerProvider;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  * 
@@ -74,5 +80,34 @@ public class ConfigurableAnswerProvider implements AnswerProvider {
    */
   public void setAnswer(Question question, CategoryAnswer answer) {
     answers.put(question.getName(), answer);
+  }
+
+  public static ConfigurableAnswerProvider fromXmlFile(File file) throws IOException {
+    ConfigurableAnswerProvider answerProvider = null;
+
+    FileInputStream is = null;
+
+    try {
+      is = new FileInputStream(file);
+      answerProvider = fromXml(is);
+    } finally {
+      if(is != null) {
+        is.close();
+      }
+    }
+
+    return answerProvider;
+  }
+
+  public static ConfigurableAnswerProvider fromXmlResource(String resource) {
+    return fromXml(ConfigurableAnswerProvider.class.getClassLoader().getResourceAsStream(resource));
+  }
+
+  public static ConfigurableAnswerProvider fromXml(InputStream is) {
+    XStream xstream = new XStream();
+    xstream.alias("configurableAnswerProvider", ConfigurableAnswerProvider.class);
+    xstream.alias("categoryAnswer", CategoryAnswer.class);
+
+    return (ConfigurableAnswerProvider) xstream.fromXML(is);
   }
 }
