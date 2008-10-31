@@ -13,6 +13,7 @@ package org.obiba.onyx.mica.engine.state;
 
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinitionBuilder;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,11 @@ public class MicaCompletedState extends AbstractMicaStageState implements Initia
 
   public String getName() {
     return "Mica.Completed";
+  }
+
+  @Override
+  public ActionType getStartingActionType() {
+    return ActionType.EXECUTE;
   }
 
 }

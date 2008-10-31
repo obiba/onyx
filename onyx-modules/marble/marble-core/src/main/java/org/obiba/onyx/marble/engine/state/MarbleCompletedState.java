@@ -11,6 +11,7 @@ package org.obiba.onyx.marble.engine.state;
 
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinitionBuilder;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,11 @@ public class MarbleCompletedState extends AbstractMarbleStageState implements In
 
   public String getName() {
     return "Marble.Completed";
+  }
+
+  @Override
+  public ActionType getStartingActionType() {
+    return ActionType.EXECUTE;
   }
 
 }

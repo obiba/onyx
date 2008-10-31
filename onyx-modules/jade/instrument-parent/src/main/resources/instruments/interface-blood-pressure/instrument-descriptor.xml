@@ -124,7 +124,7 @@
     </integrityChecks>
   </output>
   <computedOutput>
-    <name>Systolic Blood Pressure</name>
+    <name>Systolic_Blood_Pressure</name>
     <description>Average_Systolic_Blood_Pressure_Measurement</description>
     <measurementUnit>mmHg</measurementUnit>
     <dataType>INTEGER</dataType>
@@ -137,7 +137,7 @@
     </outputs>
   </computedOutput>
   <computedOutput>
-    <name>Diastolic Blood Pressure</name>
+    <name>Diastolic_Blood_Pressure</name>
     <description>Average_Diastolic_Blood_Pressure_Measurement</description>
     <measurementUnit>mmHg</measurementUnit>
     <dataType>INTEGER</dataType>
