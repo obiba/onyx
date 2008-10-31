@@ -12,7 +12,7 @@ import org.obiba.onyx.marble.core.service.ActiveConsentService;
 /**
  * This page is called by the PDF form submit button. It reads the submitted PDF through the servlet request.
  */
-public class ConsentUploadPage extends WebPage {
+public class ElectronicConsentUploadPage extends WebPage {
 
   @SpringBean
   private ActiveConsentService activeConsentService;
@@ -21,7 +21,7 @@ public class ConsentUploadPage extends WebPage {
 
   private Boolean consentIsAccepted;
 
-  public ConsentUploadPage(PageParameters pageParams) {
+  public ElectronicConsentUploadPage(PageParameters pageParams) {
     super(pageParams);
     this.pageParams = pageParams;
     confirmConsent();

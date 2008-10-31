@@ -48,7 +48,7 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
   private ActiveConsentService activeConsentService;
 
   @SpringBean
-  private ConsentTemplateLoader consentTemplateLoader;
+  private ElectronicConsentTemplateLoader consentTemplateLoader;
 
   @SuppressWarnings("serial")
   public ElectronicConsentPage() {
@@ -64,7 +64,7 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
     });
 
     try {
-      ((WebApplication) getApplication()).mountBookmarkablePage("/uploadConsent", ConsentUploadPage.class);
+      ((WebApplication) getApplication()).mountBookmarkablePage("/uploadConsent", ElectronicConsentUploadPage.class);
     } catch(Exception ex) {
     }
 

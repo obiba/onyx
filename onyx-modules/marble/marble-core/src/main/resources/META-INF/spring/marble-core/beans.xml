@@ -43,7 +43,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="activeInterviewService" ref="activeInterviewService" />    
   </bean>
   
-  <bean id="consentTemplateLoader" class="org.obiba.onyx.marble.core.wicket.consent.ConsentTemplateLoader" >
+  <bean id="consentTemplateLoader" class="org.obiba.onyx.marble.core.wicket.consent.ElectronicConsentTemplateLoader" >
   </bean>  
 
 </beans>
