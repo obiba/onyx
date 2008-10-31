@@ -128,7 +128,11 @@ public class JadeReportContributor implements Serializable, ModuleReportContribu
 
                 // Set data in pdf form
                 try {
-                  form.setField(oneField.getKey(), runValue.getData().getValueAsString().toString() + " " + parameterUnit);
+                  if(parameterUnit != null) {
+                    form.setField(oneField.getKey(), runValue.getData().getValueAsString().toString() + " " + parameterUnit);
+                  } else {
+                    form.setField(oneField.getKey(), runValue.getData().getValueAsString().toString());
+                  }
                 } catch(IOException e) {
                   throw new RuntimeException("Input/Output Exception", e);
                 } catch(DocumentException e) {
