@@ -41,8 +41,10 @@ public class QuestionPanel extends Panel {
    */
   public void onNext(AjaxRequestTarget target) {
     Question question = (Question) getModelObject();
-    log.info("onNext.{}.active=true", question.getName());
-    activeQuestionnaireAdministrationService.setActiveAnswers(question, true);
+    if(!question.isBoilerPlate()) {
+      log.info("onNext.{}.active=true", question.getName());
+      activeQuestionnaireAdministrationService.setActiveAnswers(question, true);
+    }
   }
 
   /**
@@ -50,8 +52,10 @@ public class QuestionPanel extends Panel {
    */
   public void onPrevious(AjaxRequestTarget target) {
     Question question = (Question) getModelObject();
-    log.info("onPrevious.{}.active=false", question.getName());
-    activeQuestionnaireAdministrationService.setActiveAnswers(question, false);
+    if(!question.isBoilerPlate()) {
+      log.info("onPrevious.{}.active=false", question.getName());
+      activeQuestionnaireAdministrationService.setActiveAnswers(question, false);
+    }
   }
 
 }
