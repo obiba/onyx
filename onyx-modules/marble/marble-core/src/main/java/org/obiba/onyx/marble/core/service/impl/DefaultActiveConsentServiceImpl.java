@@ -18,11 +18,15 @@ import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.domain.consent.Consent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
 
 public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareService implements ActiveConsentService {
+
+  private static final Logger log = LoggerFactory.getLogger(DefaultActiveConsentServiceImpl.class);
 
   private ActiveInterviewService activeInterviewService;
 
@@ -71,7 +75,8 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
       try {
         reader = new PdfReader(pdfForm);
       } catch(IOException ex) {
-        throw new RuntimeException("Could not read PDF document", ex);
+        log.error("Could not read PDF consent form", ex);
+        throw new RuntimeException(ex);
       }
 
       // Get the PDF form fields.

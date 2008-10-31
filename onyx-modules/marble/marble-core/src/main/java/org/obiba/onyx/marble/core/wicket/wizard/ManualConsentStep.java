@@ -20,8 +20,6 @@ public class ManualConsentStep extends WizardStepPanel {
 
   private static final long serialVersionUID = 1L;
 
-  private ManualConsentPanel consentConfirmationPanel;
-
   public ManualConsentStep(String id) {
     super(id);
     setOutputMarkupId(true);
@@ -39,7 +37,7 @@ public class ManualConsentStep extends WizardStepPanel {
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
-    setContent(target, consentConfirmationPanel = new ManualConsentPanel(getContentId()));
+    setContent(target, new ManualConsentPanel(getContentId()));
   }
 
 }

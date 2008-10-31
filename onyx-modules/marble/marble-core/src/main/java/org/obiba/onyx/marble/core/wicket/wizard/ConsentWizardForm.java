@@ -16,12 +16,8 @@ import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class ConsentWizardForm extends WizardForm {
-
-  private static final Logger log = LoggerFactory.getLogger(ConsentWizardForm.class);
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;

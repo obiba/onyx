@@ -31,6 +31,8 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.AcroFields;
@@ -40,6 +42,8 @@ import com.lowagie.text.pdf.PdfStamper;
 public class ElectronicConsentPage extends WebPage implements IResourceListener {
 
   private static final long serialVersionUID = 1L;
+
+  private static final Logger log = LoggerFactory.getLogger(ElectronicConsentPage.class);
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
@@ -53,9 +57,12 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
   @SuppressWarnings("serial")
   public ElectronicConsentPage() {
 
+    // Add the <embed> tag to html to load the embedded PDF form.
     add(new WebMarkupContainer("embedPdf") {
       @Override
       protected void onComponentTag(ComponentTag tag) {
+
+        // Add link to template in <embed> tag
         CharSequence url = ElectronicConsentPage.this.urlFor(IResourceListener.INTERFACE);
         String srcTagValue = url.toString() + "#toolbar=0&navpanes=0&scrollbar=1";
         tag.put("src", srcTagValue);
@@ -63,9 +70,12 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
       }
     });
 
+    // Mount page to specific URL so it can be called from <embed> tag (submit form button).
     try {
       ((WebApplication) getApplication()).mountBookmarkablePage("/uploadConsent", ElectronicConsentUploadPage.class);
     } catch(Exception ex) {
+      log.error("Could not mount ElectronicConsentUploadPage to specific URL", ex);
+      throw new RuntimeException(ex);
     }
 
   }
@@ -76,6 +86,7 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
     RequestCycle.get().setRequestTarget(new ResourceStreamRequestTarget(r.getResourceStream()));
   }
 
+  @SuppressWarnings("serial")
   private Resource createConsentFormResource() {
 
     Resource r = new DynamicWebResource() {
@@ -126,6 +137,11 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
     return r;
   }
 
+  /**
+   * Get the consent form with pre-filled information.
+   * 
+   * @return The initialized consent form.
+   */
   protected InputStream getConsentForm() {
 
     org.springframework.core.io.Resource pdfTemplate = consentTemplateLoader.getConsentTemplate(activeConsentService.getConsent().getLocale());
@@ -134,7 +150,8 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
     try {
       pdfReader = new PdfReader(pdfTemplate.getInputStream());
     } catch(Exception ex) {
-      throw new RuntimeException("Consent Form template cannot be read", ex);
+      log.error("Consent Form template cannot be read", ex);
+      throw new RuntimeException(ex);
     }
 
     ByteArrayOutputStream output = setConsentFormFields(pdfReader);
@@ -160,15 +177,26 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
       return output;
 
     } catch(Exception ex) {
-      throw new RuntimeException("An error occured while preparing the consent form", ex);
+      log.error("An error occured while preparing the consent form", ex);
+      throw new RuntimeException(ex);
     }
   }
 
+  /**
+   * Initialize the consent form fields with data calculated by the application.
+   * 
+   * @param form The consent form.
+   */
   private void setSystemFields(AcroFields form) throws IOException, DocumentException {
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     form.setField("System\\.date", formatter.format(new Date()));
   }
 
+  /**
+   * Initialize the consent form fields with data coming from data entities.
+   * 
+   * @param form The consent form.
+   */
   private void setEntityFields(AcroFields form) {
 
     // Set Participant
@@ -186,8 +214,8 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
    * value of the form field is set to the corresponding entity attribute value. The pattern used for form field
    * matching is "EntityName.attributeName", (ex: "Participant.firstName").
    * 
-   * @param object
-   * @param form
+   * @param entity Source entity where the values are coming from.
+   * @param form The PDF form where the values will be set.
    */
   private void setFields(Object entity, AcroFields form) {
     Class bean = entity.getClass();
@@ -198,10 +226,13 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
         String fieldName = bean.getSimpleName() + "\\." + pd.getName();
         if(value != null) {
           form.setField(fieldName, value.toString());
+
+          // Set mandatory fields.
           form.setField(fieldName + "\\.mandatoryField", value.toString());
         }
       }
     } catch(Exception ex) {
+      log.error("Could not initialize the consent form fields", ex);
       throw new RuntimeException(ex);
     }
   }
