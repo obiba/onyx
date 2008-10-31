@@ -505,18 +505,18 @@ public abstract class AbstractQuestionnaireTest {
   private String getInputFieldComponentId(Question question) {
     // TODO: Generate id based on question. Currently assuming one question per page.
     // Also assuming here that the input field is always the 1st category.
-    return "step:panel:questions:1:question:categories:category:1:open:open:input:field";
+    return "step:panel:questions:1:question:content:categories:category:1:open:open:input:field";
   }
 
   private String getRadioGroupComponentId(Question question) {
     // TODO: Generate id based on question. Currently assuming one question per page.
-    return "step:panel:questions:1:question:categories";
+    return "step:panel:questions:1:question:content:categories";
   }
 
   private String getRadioButtonComponentId(Question question, CategoryAnswer answer) {
     // TODO: Generate id based on question. Currently assuming one question per page.
-    // return "step:panel:questions:1:question:categories:category:2:categoryLabel:input:radio";
-    String partBeforeIndex = "step:panel:questions:1:question:categories:category";
+    // return "step:panel:questions:1:question:content:categories:category:2:categoryLabel:input:radio";
+    String partBeforeIndex = "step:panel:questions:1:question:content:categories:category";
     String partAfterIndex = "categoryLabel:input:radio";
     int radioButtonIndex = getRadioButtonIndex(question, answer);
 

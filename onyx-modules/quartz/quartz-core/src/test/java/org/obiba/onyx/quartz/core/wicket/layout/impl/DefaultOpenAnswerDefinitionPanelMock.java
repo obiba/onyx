@@ -32,7 +32,7 @@ public class DefaultOpenAnswerDefinitionPanelMock extends FormMock {
     return panel = new DefaultOpenAnswerDefinitionPanel(id, model) {
 
       @Override
-      public void onClick(AjaxRequestTarget target) {
+      public void onSelect(AjaxRequestTarget target) {
         assertModel.setObject(Boolean.TRUE);
         DefaultOpenAnswerDefinitionPanelTest.log.info("onClick.{}", ((QuestionCategory) getModelObject()).getName());
       }

@@ -104,7 +104,7 @@ public abstract class DefaultOpenAnswerDefinitionPanel extends Panel {
       @Override
       protected void onEvent(AjaxRequestTarget target) {
         log.info("openField.onClick");
-        DefaultOpenAnswerDefinitionPanel.this.onClick(target);
+        DefaultOpenAnswerDefinitionPanel.this.onSelect(target);
       }
 
     });
@@ -135,7 +135,7 @@ public abstract class DefaultOpenAnswerDefinitionPanel extends Panel {
     openField.setRequired(required);
   }
 
-  public abstract void onClick(AjaxRequestTarget target);
+  public abstract void onSelect(AjaxRequestTarget target);
 
   public Data getData() {
     return data;
