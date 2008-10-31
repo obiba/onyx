@@ -31,7 +31,7 @@ public class Tbf310InstrumentRunner extends TanitaInstrument {
 
     super();
     log = LoggerFactory.getLogger(Tbf310InstrumentRunner.class);
- }
+  }
 
   /**
    * Establish the connection with the device connected to the serial port.
@@ -87,7 +87,7 @@ public class Tbf310InstrumentRunner extends TanitaInstrument {
   public void serialEvent(SerialPortEvent pEvent) {
 
     switch(pEvent.getEventType()) {
-    
+
     // Clear to send
     case SerialPortEvent.CTS:
 
@@ -105,17 +105,16 @@ public class Tbf310InstrumentRunner extends TanitaInstrument {
     case SerialPortEvent.DATA_AVAILABLE:
 
       try {
-        if(bufferedReader.ready()){
+        if(bufferedReader.ready()) {
 
-        // Parse and sets the data in the GUI.
-        String wResponse = bufferedReader.readLine().trim();
-        setTanitaData(parseTanitaData(wResponse));
+          // Parse and sets the data in the GUI.
+          String wResponse = bufferedReader.readLine().trim();
+          setTanitaData(parseTanitaData(wResponse));
 
-        // Enable save button, so data can be saved.
-        saveDataBtn.setEnabled(true);
+          // Enable save button, so data can be saved.
+          saveDataBtn.setEnabled(true);
         }
-      } 
-      catch(IOException wErrorReadingDataOnSerialPort) {
+      } catch(IOException wErrorReadingDataOnSerialPort) {
         JOptionPane.showMessageDialog(appWindow, tanitaResourceBundle.getString("Err.Result_communication"), tanitaResourceBundle.getString("Title.Communication_error"), JOptionPane.ERROR_MESSAGE);
       }
       break;
@@ -195,7 +194,7 @@ public class Tbf310InstrumentRunner extends TanitaInstrument {
     output.put("TotalBodyWater", getDecimalValue(tbwTxt));
     output.put("FatPercentage", getDecimalValue(fatPctTxt));
     output.put("Gender", new Data(DataType.TEXT, genderTxt.getText()));
-    output.put("Height", getDecimalValue(heightTxt));
+    output.put("Height", getIntegerValue(heightTxt));
     output.put("Age", getIntegerValue(ageTxt));
 
     instrumentExecutionService.addOutputParameterValues(output);
