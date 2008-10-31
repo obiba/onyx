@@ -30,9 +30,17 @@ public class HealthQuestionnaireTest extends AbstractQuestionnaireTest {
   @Dataset
   public void testQ1() {
     startQuestionnaire();
+    assertCurrentPage(getPage("P1"));
 
-    Question q11 = getQuestion("Q11");
-    answerQuestionsUpTo(getAnswerProvider(), q11, true);
+    Question q29 = getQuestion("Q29");
+    answerQuestionsUpTo(getAnswerProvider(), q29, true);
+    assertCurrentPage(getPage("P22"));
+
+    returnToEarlierQuestion(getQuestion("Q1"));
+    assertCurrentPage(getPage("P1"));
+
+    returnToLaterQuestion(q29);
+    assertCurrentPage(getPage("P22"));
   }
 
   private AnswerProvider getAnswerProvider() {

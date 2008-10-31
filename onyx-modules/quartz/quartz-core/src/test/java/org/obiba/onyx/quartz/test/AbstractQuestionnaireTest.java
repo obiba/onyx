@@ -200,6 +200,15 @@ public abstract class AbstractQuestionnaireTest {
   //
 
   /**
+   * Returns the specified page.
+   * 
+   * @param name page name
+   */
+  public Page getPage(String name) {
+    return questionnaireFinder.findPage(name);
+  }
+
+  /**
    * Returns the specified question.
    * 
    * @param name question name
@@ -250,9 +259,18 @@ public abstract class AbstractQuestionnaireTest {
    * <code>false</code>, the last question answered is the one before that question
    */
   public void answerQuestionsUpTo(AnswerProvider answerProvider, Question toQuestion, boolean inclusive) {
-    while(activeQuestionnaireAdministrationService.getCurrentPage() != null) {
-      log.info("Current page is " + activeQuestionnaireAdministrationService.getCurrentPage().getName());
-      answerQuestionsOnCurrentPage(answerProvider, toQuestion, inclusive);
+    Page currentPage = null;
+
+    while((currentPage = activeQuestionnaireAdministrationService.getCurrentPage()) != null) {
+      log.info("Current page is " + currentPage.getName());
+
+      if(containsNonBoilerplateQuestion(currentPage)) {
+        answerQuestionsOnCurrentPage(answerProvider, toQuestion, inclusive);
+      } else {
+        // Need to create a new FormTester, otherwise WicketTester will attempt
+        // to submit form data from the previous page...
+        wicketTester.newFormTester(this.getFormPath());
+      }
 
       if(isOnCurrentPage(toQuestion)) {
         break;
@@ -284,7 +302,7 @@ public abstract class AbstractQuestionnaireTest {
         return;
       }
 
-      if(question.isToBeAnswered(activeQuestionnaireAdministrationService) && !question.getCategories().isEmpty()) {
+      if(!question.isBoilerPlate() && question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
         answerQuestion(question, answerProvider.getAnswer(question));
         log.info("Answered question " + question.getName());
 
@@ -297,7 +315,7 @@ public abstract class AbstractQuestionnaireTest {
             return;
           }
 
-          if(question.isToBeAnswered(activeQuestionnaireAdministrationService) && !question.getCategories().isEmpty()) {
+          if(!question.isBoilerPlate() && question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
             answerQuestion(subQuestion, answerProvider.getAnswer(subQuestion));
             log.info("Answered question " + subQuestion.getName());
           } else {
@@ -316,6 +334,7 @@ public abstract class AbstractQuestionnaireTest {
         return;
       }
     }
+
   }
 
   /**
@@ -344,6 +363,11 @@ public abstract class AbstractQuestionnaireTest {
     while(!isOnCurrentPage(question)) {
       nextPage();
     }
+  }
+
+  public void assertCurrentPage(Page page) {
+    Page currentPage = activeQuestionnaireAdministrationService.getCurrentPage();
+    Assert.assertTrue((currentPage == null && page == null) || (currentPage != null && page != null && currentPage.getName().equals(page.getName())));
   }
 
   /**
@@ -401,6 +425,9 @@ public abstract class AbstractQuestionnaireTest {
    * Positions the questionnaire at the next page.
    */
   public void nextPage() {
+    // Need to create a new FormTester, otherwise WicketTester will attempt
+    // to submit form data from the previous page...
+    wicketTester.newFormTester(this.getFormPath());
     wicketTester.executeAjaxEvent("panel:content:form:nextLink", "onclick");
   }
 
@@ -453,6 +480,24 @@ public abstract class AbstractQuestionnaireTest {
   }
 
   /**
+   * Indicates whether a page contains at least one non-boilerplate question.
+   * 
+   * @param page page
+   * @return <code>true</code> if at least one question on the page is not a boilerplate question
+   */
+  private boolean containsNonBoilerplateQuestion(Page page) {
+    List<Question> questions = page.getQuestions();
+
+    for(Question question : questions) {
+      if(!question.isBoilerPlate()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Answers the specified question with the specified answer.
    * 
    * Delegates to <code>openAnswer</code> in the case of an "open" answer, and to <code>radioButtonAnswer</code> in
@@ -495,6 +540,7 @@ public abstract class AbstractQuestionnaireTest {
     FormTester formTester = wicketTester.newFormTester(getFormPath());
 
     formTester.select(getRadioGroupComponentId(question), getRadioButtonIndex(question, answer));
+    String path = getFormPath() + COMPONENT_ID_SEPARATOR + getRadioButtonComponentId(question, answer);
     wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getRadioButtonComponentId(question, answer), ONCHANGE_EVENT);
   }
 
