@@ -74,8 +74,7 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
     try {
       ((WebApplication) getApplication()).mountBookmarkablePage("/uploadConsent", ElectronicConsentUploadPage.class);
     } catch(Exception ex) {
-      log.error("Could not mount ElectronicConsentUploadPage to specific URL", ex);
-      throw new RuntimeException(ex);
+      // Page already mounted.
     }
 
   }
