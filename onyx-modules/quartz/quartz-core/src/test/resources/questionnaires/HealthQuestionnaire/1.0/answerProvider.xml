@@ -4,13 +4,13 @@
   </defaultAnswer>
   <groups>
     <group>
-      <name>NO_ANSWER_GROUP</name><!-- Set answer to questions in this group to NO_ANSWER. -->
+      <name>DONT_KNOW_GROUP</name><!-- Set answer to questions in this group to DONT_KNOW. -->
       <questions>
         <string>Q1</string>
         <string>Q4</string>
       </questions>
       <answer>
-        <categoryName>NO_ANSWER</categoryName>
+        <categoryName>DONT_KNOW</categoryName>
       </answer>
     </group>
   </groups>

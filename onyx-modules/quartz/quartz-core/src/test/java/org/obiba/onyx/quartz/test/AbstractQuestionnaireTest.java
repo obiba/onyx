@@ -550,7 +550,6 @@ public abstract class AbstractQuestionnaireTest {
     FormTester formTester = wicketTester.newFormTester(getFormPath());
 
     formTester.select(getRadioGroupComponentId(question), getRadioButtonIndex(question, answer));
-    String path = getFormPath() + COMPONENT_ID_SEPARATOR + getRadioButtonComponentId(question, answer);
     wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getRadioButtonComponentId(question, answer), ONCHANGE_EVENT);
   }
 
@@ -574,7 +573,7 @@ public abstract class AbstractQuestionnaireTest {
     // return "step:panel:questions:1:question:content:categories:category:2:categoryLabel:input:radio";
     String partBeforeIndex = "step:panel:questions:1:question:content:categories:category";
     String partAfterIndex = "input:categoryLabel:radio";
-    int radioButtonIndex = getRadioButtonIndex(question, answer);
+    int radioButtonIndex = getRadioButtonIndex(question, answer) + 1; // 1-based.
 
     if(radioButtonIndex == -1) {
       Assert.fail("Invalid answer [" + answer.getCategoryName() + "] for question [" + question.getName() + "] (could not locate corresponding radio button)");
@@ -592,7 +591,7 @@ public abstract class AbstractQuestionnaireTest {
       Category category = categories.get(i);
 
       if(category.getName().equals(answer.getCategoryName())) {
-        radioButtonIndex = i + 1; // add 1 because index is 1-based
+        radioButtonIndex = i; // 0-based.
         break;
       }
     }
