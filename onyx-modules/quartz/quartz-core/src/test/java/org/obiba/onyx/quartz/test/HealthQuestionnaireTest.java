@@ -37,7 +37,7 @@ public class HealthQuestionnaireTest extends AbstractQuestionnaireTest {
     AnswerProvider answerProvider = ConfigurableAnswerProvider.fromXmlResource(getAnswerProviderResourcePath() + "/answerProvider.xml");
 
     Question q29 = getQuestion("Q29");
-    answerQuestionsUpTo(answerProvider, q29, true);
+    answerQuestionsUpTo(answerProvider, q29);
     assertCurrentPage(getPage("P22"));
 
     returnToEarlierQuestion(getQuestion("Q1"));

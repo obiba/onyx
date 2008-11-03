@@ -281,6 +281,16 @@ public abstract class AbstractQuestionnaireTest {
   }
 
   /**
+   * Equivalent to <code>answerQuestionsUpTo(answerProvider, toQuestion, true)</code>.
+   * 
+   * @param answerProvider answer provider
+   * @param toQuestion question to stop at (inclusive)
+   */
+  public void answerQuestionsUpTo(AnswerProvider answerProvider, Question toQuestion) {
+    answerQuestionsUpTo(answerProvider, toQuestion, true);
+  }
+
+  /**
    * Responds to all questions (to be answered) on the current page, up to the specified question.
    * 
    * Answers are obtained form the specified answer provider.
