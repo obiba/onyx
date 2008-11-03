@@ -191,19 +191,19 @@ public class DefaultQuestionPanelTest {
 
     // check all expected radios are here
     tester.assertComponent("panel:form:content:content:categories", RadioGroup.class);
-    tester.assertComponent("panel:form:content:content:categories:category:1:categoryLabel:input:radio", Radio.class);
-    tester.assertComponent("panel:form:content:content:categories:category:2:categoryLabel:input:radio", Radio.class);
-    tester.assertComponent("panel:form:content:content:categories:category:3:categoryLabel:input:radio", Radio.class);
+    tester.assertComponent("panel:form:content:content:categories:category:1:input:categoryLabel:radio", Radio.class);
+    tester.assertComponent("panel:form:content:content:categories:category:2:input:categoryLabel:radio", Radio.class);
+    tester.assertComponent("panel:form:content:content:categories:category:3:input:categoryLabel:radio", Radio.class);
 
     // check previous answer is here (radio 1)
     RadioGroup radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    Radio radio1 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:categoryLabel:input:radio");
+    Radio radio1 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:categoryLabel:radio");
     Assert.assertEquals(radioGroup.getModelObject(), radio1.getModelObject());
 
     // select radio 2
-    tester.executeAjaxEvent("panel:form:content:content:categories:category:2:categoryLabel:input:radio", "onchange");
+    tester.executeAjaxEvent("panel:form:content:content:categories:category:2:input:categoryLabel:radio", "onchange");
     radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    Radio radio2 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:categoryLabel:input:radio");
+    Radio radio2 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:radio");
     Assert.assertEquals(radioGroup.getModelObject(), radio2.getModelObject());
 
     verify(activeInterviewServiceMock);
@@ -265,24 +265,24 @@ public class DefaultQuestionPanelTest {
 
     // check all expected radios are here
     tester.assertComponent("panel:form:content:content:categories", RadioGroup.class);
-    tester.isInvisible("panel:form:content:content:categories:category:1:categoryLabel:input:radio");
-    tester.assertComponent("panel:form:content:content:categories:category:2:categoryLabel:input:radio", Radio.class);
-    tester.assertComponent("panel:form:content:content:categories:category:3:categoryLabel:input:radio", Radio.class);
+    tester.isInvisible("panel:form:content:content:categories:category:1:input:categoryLabel:radio");
+    tester.assertComponent("panel:form:content:content:categories:category:2:input:categoryLabel:radio", Radio.class);
+    tester.assertComponent("panel:form:content:content:categories:category:3:input:categoryLabel:radio", Radio.class);
 
     // check previous answer is here (radio 2)
     RadioGroup radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    Radio radio2 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:categoryLabel:input:radio");
+    Radio radio2 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:radio");
     Assert.assertEquals(radioGroup.getModelObject(), radio2.getModelObject());
     Assert.assertTrue(radioGroup.isRequired());
-    FormComponent field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:open:open:input:field");
+    FormComponent field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:open:input:field");
     Assert.assertFalse(field.isRequired());
 
     // select open field
-    tester.executeAjaxEvent("panel:form:content:content:categories:category:1:open:open:input:field", "onclick");
+    tester.executeAjaxEvent("panel:form:content:content:categories:category:1:input:open:open:input:field", "onclick");
     radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
     Assert.assertNull(radioGroup.getModelObject());
     Assert.assertFalse(radioGroup.isRequired());
-    field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:open:open:input:field");
+    field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:open:input:field");
     Assert.assertTrue(field.isRequired());
 
     verify(activeInterviewServiceMock);

@@ -11,7 +11,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
-import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
@@ -72,92 +71,69 @@ public class DefaultQuestionCategoriesPanel extends Panel {
       repeater.add(item);
       item.setModel(new Model(questionCategory));
 
-      RadioInput radioInput = new RadioInput("input", item.getModel());
-      radioInput.radio.setLabel(new QuestionnaireStringResourceModel(questionCategory, "label"));
+      RadioQuestionCategoryPanel radio;
+      item.add(radio = new RadioQuestionCategoryPanel("input", item.getModel()) {
 
-      FormComponentLabel radioLabel = new FormComponentLabel("categoryLabel", radioInput.radio);
-      item.add(radioLabel);
-      radioLabel.add(radioInput);
-      radioLabel.add(new Label("label", radioInput.radio.getLabel()).setRenderBodyOnly(true));
+        @Override
+        public void onOpenFieldSelection(AjaxRequestTarget target) {
+          log.info("open.onclick.{}", questionCategory.getName());
+          // ignore if multiple click in the same open field
+          if(this.equals(currentOpenField)) return;
+
+          // make sure a previously selected open field is not asked for
+          if(currentOpenField != null) {
+            currentOpenField.setRequired(false);
+          }
+          // make the open field active
+          currentOpenField = this.getOpenField();
+          currentOpenField.setRequired(question.isRequired() ? true : false);
+          // make sure radio selection does not conflict with open field selection
+          radioGroup.setModel(new Model());
+          radioGroup.setRequired(false);
+          // update all
+          target.addComponent(DefaultQuestionCategoriesPanel.this);
+          // exclusive choice, only one answer per question
+          activeQuestionnaireAdministrationService.deleteAnswers(questionCategory.getQuestion());
+          // TODO get the open answer
+          activeQuestionnaireAdministrationService.answer(questionCategory, null);
+        }
+
+        @Override
+        public void onRadioSelection(AjaxRequestTarget target) {
+          log.info("radio.onchange.{}", questionCategory.getName());
+          // make the radio group active for the selection
+          radioGroup.setModel(item.getModel());
+          radioGroup.setRequired(question.isRequired() ? true : false);
+          // make inactive the previously selected open field
+          if(currentOpenField != null) {
+            currentOpenField.setData(null);
+            currentOpenField.setRequired(false);
+            target.addComponent(currentOpenField);
+            currentOpenField = null;
+          }
+          // exclusive choice, only one answer per question
+          activeQuestionnaireAdministrationService.deleteAnswers(questionCategory.getQuestion());
+          // TODO get the open answer
+          activeQuestionnaireAdministrationService.answer(questionCategory, null);
+        }
+
+      });
 
       // previous answer or default selection
       CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(questionCategory);
-
-      if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
-        // there is an open field
-        // hide the associated radio and fake selection on click event of open field
-        DefaultOpenAnswerDefinitionPanel openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(questionCategory)) {
-
-          @Override
-          public void onSelect(AjaxRequestTarget target) {
-            log.info("open.onclick.{}", questionCategory.getName());
-            // ignore if multiple click in the same open field
-            if(this.equals(currentOpenField)) return;
-
-            // make sure a previously selected open field is not asked for
-            if(currentOpenField != null) {
-              currentOpenField.setRequired(false);
-            }
-            // make the open field active
-            currentOpenField = this;
-            currentOpenField.setRequired(question.isRequired() ? true : false);
-            // make sure radio selection does not conflict with open field selection
-            radioGroup.setModel(new Model());
-            radioGroup.setRequired(false);
-            // update all
-            target.addComponent(DefaultQuestionCategoriesPanel.this);
-            // exclusive choice, only one answer per question
-            activeQuestionnaireAdministrationService.deleteAnswers(questionCategory.getQuestion());
-            // TODO get the open answer
-            activeQuestionnaireAdministrationService.answer(questionCategory, null);
-          }
-
-        };
-        item.add(openField);
-        radioInput.radio.setVisible(false);
-
-        // previous answer or default selection ?
+      if(radio.getOpenField() != null) {
         if(previousAnswer != null) {
-          openField.setRequired(question.isRequired() ? true : false);
+          radio.getOpenField().setRequired(question.isRequired() ? true : false);
           radioGroup.setRequired(false);
-          currentOpenField = openField;
+          currentOpenField = radio.getOpenField();
         } else if(questionCategory.isSelected()) {
-          openField.setRequired(question.isRequired() ? true : false);
+          radio.getOpenField().setRequired(question.isRequired() ? true : false);
           activeQuestionnaireAdministrationService.answer(questionCategory, null);
         } else {
           // make sure it is not asked for as it is not selected at creation time
-          openField.setRequired(false);
+          radio.getOpenField().setRequired(false);
         }
-
       } else {
-        // no open answer
-        item.add(new EmptyPanel("open").setVisible(false));
-        // persist selection on change event
-        // and make sure there is no active open field previously selected
-        radioInput.radio.add(new AjaxEventBehavior("onchange") {
-
-          @Override
-          protected void onEvent(AjaxRequestTarget target) {
-            log.info("radio.onchange.{}", questionCategory.getName());
-            // make the radio group active for the selection
-            radioGroup.setModel(item.getModel());
-            radioGroup.setRequired(question.isRequired() ? true : false);
-            // make inactive the previously selected open field
-            if(currentOpenField != null) {
-              currentOpenField.setData(null);
-              currentOpenField.setRequired(false);
-              target.addComponent(currentOpenField);
-              currentOpenField = null;
-            }
-            // exclusive choice, only one answer per question
-            activeQuestionnaireAdministrationService.deleteAnswers(questionCategory.getQuestion());
-            // TODO get the open answer
-            activeQuestionnaireAdministrationService.answer(questionCategory, null);
-          }
-
-        });
-
-        // previous answer or default selection ?
         if(previousAnswer != null) {
           radioGroup.setModel(item.getModel());
         } else if(questionCategory.isSelected()) {
@@ -165,7 +141,6 @@ public class DefaultQuestionCategoriesPanel extends Panel {
           activeQuestionnaireAdministrationService.answer(questionCategory, null);
         }
       }
-
     }
     radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
   }
@@ -269,22 +244,6 @@ public class DefaultQuestionCategoriesPanel extends Panel {
     }
 
     return openField;
-  }
-
-  /**
-   * The radio input chunk.
-   */
-  @SuppressWarnings("serial")
-  private class RadioInput extends Fragment {
-
-    Radio radio;
-
-    public RadioInput(String id, IModel model) {
-      super(id, "radioInput", DefaultQuestionCategoriesPanel.this);
-      setOutputMarkupId(true);
-      add(radio = new Radio("radio", model));
-    }
-
   }
 
   /**
