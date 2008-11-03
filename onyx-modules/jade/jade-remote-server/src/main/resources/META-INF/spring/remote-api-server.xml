@@ -8,5 +8,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="activeInstrumentRunService" ref="activeInstrumentRunService" />
   </bean>
-
+  <bean id="clientLoggingService" class="org.obiba.onyx.jade.instrument.service.ClientLoggingServiceImpl" scope="session">
+  </bean>
 </beans>

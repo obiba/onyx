@@ -10,7 +10,14 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="httpInvokerRequestExecutor" ref="commonsHttpInvokerRequestExecutor"/>
     <property name="serviceInterface" value="org.obiba.onyx.jade.instrument.service.InstrumentExecutionService" />
   </bean>
-
+  
+  <bean name="clientLoggingService"
+    class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+    <property name="serviceUrl" value="${org.obiba.onyx.remoting.url}/ClientLoggingService;jsessionid=${jSessionId}" />
+    <property name="httpInvokerRequestExecutor" ref="commonsHttpInvokerRequestExecutor"/>
+    <property name="serviceInterface" value="org.obiba.onyx.jade.instrument.service.ClientLoggingService" />
+  </bean>
+  
   <bean id="commonsHttpInvokerRequestExecutor"
     class="org.springframework.remoting.httpinvoker.CommonsHttpInvokerRequestExecutor" />
 

@@ -15,6 +15,7 @@ import java.util.logging.LogManager;
 
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
+import org.obiba.onyx.jade.logging.RemoteHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
@@ -23,17 +24,19 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 public class JnlpClient {
-  
+
   private static InstrumentExecutionService instrumentExecutionService;
-  
+
   private static final Logger log = LoggerFactory.getLogger(JnlpClient.class);
 
-  public static void main(String[] args) throws Exception  {
-    
+  public static void main(String[] args) throws Exception {
+
     LogManager.getLogManager().readConfiguration(JnlpClient.class.getResourceAsStream("/logging.properties"));
-      
+
     // Create application context.
     GenericApplicationContext appContext = loadAppContext(args);
+
+    addRemoteLoggingHandler(appContext);
 
     // Launch measurement process.
     InstrumentRunner instrumentRunner = (InstrumentRunner) appContext.getBean("instrumentRunner");
@@ -49,7 +52,7 @@ public class JnlpClient {
       try {
         log.info("Executing runner");
         instrumentRunner.run();
-      } catch ( Exception e) {
+      } catch(Exception e) {
         log.error("Unexpected error while executing runner {}", e);
         instrumentExecutionService.instrumentRunnerError(e);
       } finally {
@@ -78,6 +81,13 @@ public class JnlpClient {
     log.info("Exiting VM");
     System.exit(0);
 
+  }
+
+  private static void addRemoteLoggingHandler(GenericApplicationContext appContext) {
+    // Add remoteHandler into logger manually
+    RemoteHandler remoteHandler = (RemoteHandler) appContext.getBean("remoteHandler");
+    log.debug("Remote Handler is {}", remoteHandler.getClass().getName());
+    LogManager.getLogManager().getLogger("").addHandler(remoteHandler);
   }
 
   protected static GenericApplicationContext loadAppContext(String[] requestParams) {
