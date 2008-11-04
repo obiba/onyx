@@ -9,6 +9,7 @@
 package org.obiba.onyx.mica.core.service.impl;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.mica.core.service.ActiveConclusionService;
 import org.obiba.onyx.mica.domain.conclusion.Conclusion;
 import org.slf4j.Logger;
@@ -19,9 +20,20 @@ public class DefaultActiveConclusionServiceImpl extends PersistenceManagerAwareS
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultActiveConclusionServiceImpl.class);
 
+  private ActiveInterviewService activeInterviewService;
+
   private Conclusion conclusion;
 
   public Conclusion getConclusion() {
+    Conclusion wConclusion = null;
+
+    // Attempt to retrieve from database.
+    if(conclusion == null) {
+      wConclusion = new Conclusion();
+      wConclusion.setInterview(activeInterviewService.getInterview());
+      conclusion = getPersistenceManager().matchOne(wConclusion);
+    }
+
     return conclusion;
   }
 
@@ -31,6 +43,14 @@ public class DefaultActiveConclusionServiceImpl extends PersistenceManagerAwareS
 
   public void save() {
     getPersistenceManager().save(this.conclusion);
+  }
+
+  public ActiveInterviewService getActiveInterviewService() {
+    return activeInterviewService;
+  }
+
+  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
+    this.activeInterviewService = activeInterviewService;
   }
 
 }

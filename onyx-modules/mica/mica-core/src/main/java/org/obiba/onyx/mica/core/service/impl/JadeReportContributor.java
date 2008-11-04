@@ -11,6 +11,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map.Entry;
 
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -21,6 +22,8 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.mica.core.service.ModuleReportContributor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.AcroFields;
@@ -30,6 +33,8 @@ import com.lowagie.text.pdf.PdfStamper;
 public class JadeReportContributor implements Serializable, ModuleReportContributor {
 
   private static final long serialVersionUID = 1L;
+
+  private static final Logger log = LoggerFactory.getLogger(JadeReportContributor.class);
 
   private ActiveInterviewService activeInterviewService;
 
@@ -49,13 +54,21 @@ public class JadeReportContributor implements Serializable, ModuleReportContribu
     return true;
   }
 
-  public InputStream getReport(String language) {
+  /**
+   * Returns the constructed report as an InputStream This method loads the report template and fills it with
+   * participant information, physical measurement results and interview date
+   * @param locale: report's locale
+   * @return InputStream
+   */
+  public InputStream getReport(Locale locale) {
 
-    URL resource = getClass().getResource("/report/ParticipantReport_" + language + ".pdf");
+    // Get report template
+    URL resource = getClass().getResource("/report/ParticipantReport_" + locale.getLanguage() + ".pdf");
     if(resource == null) {
       resource = getClass().getResource("/report/ParticipantReport_en.pdf");
     }
 
+    // Read report template
     PdfReader pdfReader;
     try {
       pdfReader = new PdfReader(resource.openStream());
@@ -71,7 +84,7 @@ public class JadeReportContributor implements Serializable, ModuleReportContribu
       stamper = new PdfStamper(pdfReader, output);
       AcroFields form = stamper.getAcroFields();
 
-      // Fill participant information
+      // Fill with participant information
       Participant participant = activeInterviewService.getParticipant();
       setPartcipantFields(participant, form);
 
@@ -94,15 +107,25 @@ public class JadeReportContributor implements Serializable, ModuleReportContribu
     }
   }
 
+  /**
+   * Fills participant report with physical measurement results
+   * @param participant : current participant
+   * @param form : form extracted form participant report template
+   */
   @SuppressWarnings("unchecked")
   private void setMeasurementFields(Participant participant, AcroFields form) {
 
+    log.info("Reading PDF template form");
+
+    // Get PDF template fields list
     HashMap<String, String> fieldsList = form.getFields();
 
     try {
 
+      // Loop over fields list
       for(Entry<String, String> oneField : fieldsList.entrySet()) {
 
+        // Get field name
         String fieldName = oneField.getKey();
 
         HashMap<String, String> instrumentList = splitData(fieldName);
@@ -111,18 +134,27 @@ public class JadeReportContributor implements Serializable, ModuleReportContribu
 
           if(oneInstrument != null) {
 
+            // Extact instrument type name
             String wInstrumentType = oneInstrument.getKey();
+
+            // Extract parameter name
             String wParameterName = oneInstrument.getValue();
 
             InstrumentType instrumentType = instrumentService.getInstrumentType(wInstrumentType);
 
             if(instrumentType != null) {
 
+              log.info("Getting instrument type {}", instrumentType.getName());
+
+              // If instrument type is not null, try to get runValue
               InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, instrumentType, wParameterName);
 
               if(runValue != null) {
 
+                // If runValue is not null, get parameter value and measurement unit
                 InstrumentParameter instrumentParameter = runValue.getInstrumentParameter();
+
+                log.info("Getting instrument parameter {}", instrumentParameter.getName());
 
                 String parameterUnit = instrumentParameter.getMeasurementUnit();
 
@@ -139,6 +171,8 @@ public class JadeReportContributor implements Serializable, ModuleReportContribu
                   throw new RuntimeException("Document Exception", e);
                 }
               }
+            } else {
+              log.info("The field being processed is not a physical measurement result");
             }
           }
         }
@@ -166,38 +200,59 @@ public class JadeReportContributor implements Serializable, ModuleReportContribu
     }
   }
 
+  /**
+   * Returns an HashMap where keys are instrument types name and values are parameters name.
+   * @param string : field name in the PDF report template<
+   * @returns HashMap<String, String>
+   */
   private HashMap<String, String> splitData(String string) {
 
     HashMap<String, String> result = new HashMap<String, String>();
     String type;
     String parameter;
 
+    // By default, a field name in a PDF form starts with "form[0].page[0].", concatenated with the custom name taht we
+    // gave to this field
     String pattern = "([a-zA-Z0-9]+\\[+[0-9]+\\]+\\.){2}";
+
+    // Delete "form[0].page[0]." string to keep only the custom name given to the field
     String field = string.replaceFirst(pattern, "");
+
+    // When a dot (".") is used in a field name, it's automatically replaced by "\.". In our case, the dot is used to
+    // link an instrument type to its parameter
 
     int fstIndex = field.indexOf("\\.");
 
     if(fstIndex != -1) {
 
+      // If multiple instrument types are used for the same field, they are separated by "-"
       String[] list = field.split("-");
       for(int i = 0; i < list.length; i++) {
+
+        // Find the dot index that separates the instrument type and its parameter
         int scdIndex = list[i].indexOf("\\.");
 
         type = new String();
+        // Get instrument type name
         type = list[i].substring(0, scdIndex);
 
         if(scdIndex != list[i].length()) {
+
+          // By default, a PDF form field ends with "[0]", so we delete it
           int quoteIndex = list[i].indexOf("[");
           parameter = new String();
 
           if(quoteIndex != -1) {
+            // Get instrument parameter
             parameter = list[i].substring(scdIndex + 2, quoteIndex);
 
           } else {
+            // Get instrument parameter
             parameter = list[i].substring(scdIndex + 2);
 
           }
           if(parameter != null) {
+            // Add to hashMap
             result.put(type, parameter);
           }
         }

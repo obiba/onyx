@@ -1,9 +1,9 @@
 package org.obiba.onyx.mica.core.wicket.conclusion;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.wicket.Resource;
 import org.apache.wicket.markup.html.DynamicWebResource;
 import org.apache.wicket.markup.html.DynamicWebResource.ResourceState;
@@ -92,25 +92,14 @@ public class ParticipantReportPanel extends Panel {
 
       protected ResourceState getResourceState() {
 
-        InputStream in = jadeReportContributor.getReport(activeConsentService.getConsent().getLocale().getLanguage());
-
-        ByteArrayOutputStream convertedStream = new ByteArrayOutputStream();
-        byte[] readBuffer = new byte[1024];
-        int bytesRead;
+        InputStream in = jadeReportContributor.getReport(activeConsentService.getConsent().getLocale());
 
         try {
-          while((bytesRead = in.read(readBuffer)) > 0) {
-            convertedStream.write(readBuffer, 0, bytesRead);
-          }
-        } catch(IOException couldNotReadStream) {
-          throw new RuntimeException(couldNotReadStream);
-        } finally {
-          try {
-            in.close();
-          } catch(IOException e) {
-          }
+          return new PdfResourceState(IOUtils.toByteArray(in));
+        } catch(IOException e) {
+          throw new RuntimeException(e);
         }
-        return new PdfResourceState(convertedStream.toByteArray());
+
       }
     };
     return r;

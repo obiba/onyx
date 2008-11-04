@@ -3,18 +3,16 @@ package org.obiba.onyx.mica.core.wicket.conclusion;
 import java.io.Serializable;
 import java.util.Arrays;
 
-import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
-import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -33,6 +31,10 @@ public class BalsacConfirmationPanel extends Panel {
   private static final String YES = "yes";
 
   private static final String NO = "no";
+
+  private String selectedRadio;
+
+  private String barcode;
 
   @SpringBean
   private ActiveConclusionService activeConclusionService;
@@ -54,7 +56,24 @@ public class BalsacConfirmationPanel extends Panel {
 
     selectionModel = new BalsacSelection();
 
-    radioGroup = new RadioGroup("radioGroup", new Model());
+    radioGroup = new RadioGroup("radioGroup", new PropertyModel(this, "selectedRadio"));
+    radioGroup.add(new AjaxFormChoiceComponentUpdatingBehavior() {
+      @Override
+      protected void onUpdate(AjaxRequestTarget target) {
+        log.info("radioGroup.onUpdate={}", selectedRadio);
+        if(selectedRadio == NO) {
+          log.info("");
+          selectionModel.setAccepted(false);
+        } else {
+          if(selectedRadio == YES) {
+            log.info("");
+            selectionModel.setAccepted(true);
+          }
+        }
+        target.addComponent(BalsacConfirmationPanel.this);
+      }
+    });
+
     add(radioGroup);
 
     ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { YES, NO })) {
@@ -63,27 +82,6 @@ public class BalsacConfirmationPanel extends Panel {
       protected void populateItem(final ListItem item) {
         final String key = item.getModelObjectAsString();
         Radio radio = new Radio("radio", item.getModel());
-        radio.add(new AjaxEventBehavior("onchange") {
-
-          @Override
-          protected void onEvent(AjaxRequestTarget target) {
-            log.info("onChange={}", key);
-
-            if(key.equals(YES)) {
-              radioGroup.setModel(item.getModel());
-              selectionModel.setAccepted(true);
-              enableBarcodeField(true);
-              target.addComponent(BalsacConfirmationPanel.this);
-            } else {
-              if(key.equals(NO)) {
-                radioGroup.setModel(item.getModel());
-                selectionModel.setAccepted(false);
-                enableBarcodeField(false);
-                target.addComponent(BalsacConfirmationPanel.this);
-              }
-            }
-          }
-        });
 
         radio.setLabel(new StringResourceModel(key, BalsacConfirmationPanel.this, null));
 
@@ -99,11 +97,25 @@ public class BalsacConfirmationPanel extends Panel {
 
     add(new Label("balsacLabel", new StringResourceModel("BalsacBarcode", this, null)));
 
-    balsacBarcode = new TextField("BalsacBarcode", new PropertyModel(activeConclusionService.getConclusion(), "barcode"), RequiredTextField.class);
+    balsacBarcode = new TextField("BalsacBarcode", new PropertyModel(BalsacConfirmationPanel.this, "barcode"), String.class) {
+      @Override
+      public boolean isEnabled() {
+
+        // The text area is displayed only when "YES" radiobutton is chosen
+        if(selectedRadio == YES) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      @Override
+      public boolean isRequired() {
+        return isVisible();
+      }
+    };
     balsacBarcode.setOutputMarkupId(true);
     add(balsacBarcode);
-
-    enableBarcodeField(false);
   }
 
   public void save() {
@@ -120,11 +132,6 @@ public class BalsacConfirmationPanel extends Panel {
 
     }
     activeConclusionService.save();
-  }
-
-  private void enableBarcodeField(boolean visible) {
-    balsacBarcode.setEnabled(visible);
-    balsacBarcode.setRequired(visible);
   }
 
   @SuppressWarnings("serial")
@@ -145,5 +152,13 @@ public class BalsacConfirmationPanel extends Panel {
     public void setBarcode(String barcode) {
       activeConclusionService.getConclusion().setBarcode(barcode);
     }
+  }
+
+  public String getBarcode() {
+    return barcode;
+  }
+
+  public void setBarcode(String barcode) {
+    this.barcode = barcode;
   }
 }

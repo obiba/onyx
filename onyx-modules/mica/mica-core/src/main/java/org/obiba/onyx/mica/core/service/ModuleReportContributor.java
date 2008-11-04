@@ -9,13 +9,27 @@
 package org.obiba.onyx.mica.core.service;
 
 import java.io.InputStream;
+import java.util.Locale;
 
 public interface ModuleReportContributor {
 
+  /**
+   * Returns the module's name that contributes to the conclusion report
+   * @return module's name
+   */
   public String getName();
 
+  /**
+   * Returns true if the given module contributes to the conclusion report
+   * @return true or false
+   */
   public boolean isExists();
 
-  public InputStream getReport(String language);
+  /**
+   * Returns the constructed report as an InputStream
+   * @param locale: report's locale
+   * @return InputStream
+   */
+  public InputStream getReport(Locale locale);
 
 }
