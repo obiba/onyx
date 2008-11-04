@@ -12,6 +12,13 @@
   <packaging>pom</packaging>
   <version>1.0-M3-SNAPSHOT</version>
 
+  <licenses>
+    <license>
+      <name>GNU Public License version 3</name>
+      <url>LICENSE</url>
+    </license>
+  </licenses>
+
   <modules>
     <module>onyx-util</module>
     <module>onyx-core</module>
@@ -487,6 +494,14 @@
         <artifactId>maven-resources-plugin</artifactId>
         <configuration>
           <encoding>ISO-8859-1</encoding>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <templateFile>${basedir}/src/site/maven-site.vm</templateFile>
         </configuration>
       </plugin>
 

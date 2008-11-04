@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+  <properties>
+    <title>Mica Overview</title>
+    <author>Vincent Ferretti</author>
+    <author>Nancy Lambert</author>
+    <author>Philippe Laflamme</author>
+  </properties>
+  <body>
+    <section name="Overview">
+      <p>At the end of the interview, participants are given a personalized signed copy of the consent form as well as
+        a copy of a report containing the results of some of the physical measurements taken such as blood pressure,
+        height, etc. Eventually, this report may include interpretations based on comparisons between the observed
+        results and normal values.</p>
+
+      <p>The conclusion stage managed by the Mica module cannot be executed until all the other stages are in a
+        terminal state (completed, not applicable, contra-indicated or skipped). This insures that every stage of the
+        interview has been taken into account.</p>
+    </section>
+  </body>
+</document>
