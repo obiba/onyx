@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.TimestampSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -17,6 +18,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.wicket.layout.IPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultPageLayoutFactory;
+import org.obiba.onyx.util.data.DataType;
 
 /**
  * {@link Page} builder, given a {@link Questionnaire} and a current {@link Section}.
@@ -145,4 +147,14 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
   private IllegalArgumentException invalidPageLayoutFactoryException(Class<? extends IPageLayoutFactory> uiFactoryClass, Exception e) {
     return new IllegalArgumentException("Unable to get page layout factory name from " + uiFactoryClass.getName(), e);
   }
+
+  /**
+   * Add Timestamp question to page.
+   */
+  public PageBuilder addTimestamp() {
+    String timestampName = "TIMESTAMP_" + element.getName();
+    withQuestion(timestampName).withSharedCategory("TIMESTAMP").withOpenAnswerDefinition(timestampName, DataType.DATE).setOpenAnswerDefinitionAnswerSource(new TimestampSource());
+    return this;
+  }
+
 }
