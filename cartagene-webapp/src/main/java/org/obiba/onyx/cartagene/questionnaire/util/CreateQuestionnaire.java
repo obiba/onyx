@@ -10,6 +10,7 @@ package org.obiba.onyx.cartagene.questionnaire.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -17,6 +18,7 @@ import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.util.data.DataType;
@@ -172,6 +174,12 @@ public class CreateQuestionnaire {
     builder.inQuestion("Q29").withSharedCategory(YES).setExportName("1");
     builder.inQuestion("Q29").withSharedCategory(NO_ANSWER).setExportName("8");
     builder.inQuestion("Q29").withSharedCategory(DONT_KNOW).setExportName("9");
+
+    // Add Timestamps to pages
+    List<Page> pages = builder.getElement().getPages();
+    for(Page page : pages) {
+      builder.inPage(page.getName()).addTimestamp();
+    }
 
     // Create the bundle manager.
     QuestionnaireBundleManager bundleManager = new QuestionnaireBundleManagerImpl(bundleRootDirectory);
