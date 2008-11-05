@@ -4,17 +4,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Locale;
 
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 
 public class ArrayExampleTest {
 
@@ -27,9 +22,6 @@ public class ArrayExampleTest {
 
   @Test
   public void testDataGridView() {
-    Questionnaire questionnaire = createQuestionnaire();
-    final Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("SHARED_CATEGORIES_ARRAY_QUESTION");
-
     tester.startPanel(new TestPanelSource() {
 
       private static final long serialVersionUID = 1L;
@@ -58,19 +50,4 @@ public class ArrayExampleTest {
       e.printStackTrace();
     }
   }
-
-  public Questionnaire createQuestionnaire() {
-    QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
-
-    builder.withSection("S1").withPage("P1").withQuestion("SHARED_CATEGORIES_ARRAY_QUESTION").withCategories("1", "2", "3");
-    builder.inQuestion("SHARED_CATEGORIES_ARRAY_QUESTION").withQuestion("Q1");
-    builder.inQuestion("SHARED_CATEGORIES_ARRAY_QUESTION").withQuestion("Q2");
-    builder.inQuestion("SHARED_CATEGORIES_ARRAY_QUESTION").withQuestion("Q3");
-
-    Questionnaire q = builder.getQuestionnaire();
-    q.addLocale(Locale.ENGLISH);
-
-    return q;
-  }
-
 }

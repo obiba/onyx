@@ -27,7 +27,11 @@ public class ActiveQuestionnaireAdministrationServiceHibernateImpl extends Defau
   }
 
   public CategoryAnswer findAnswer(QuestionCategory questionCategory) {
-    Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant", Operation.eq, getQuestionnaireParticipant()).add("categoryName", Operation.eq, questionCategory.getCategory().getName()).add("questionAnswer.questionName", Operation.eq, questionCategory.getQuestion().getName()).getCriteria();
+    return findAnswer(questionCategory.getQuestion(), questionCategory);
+  }
+
+  public CategoryAnswer findAnswer(Question question, QuestionCategory questionCategory) {
+    Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant", Operation.eq, getQuestionnaireParticipant()).add("categoryName", Operation.eq, questionCategory.getCategory().getName()).add("questionAnswer.questionName", Operation.eq, question.getName()).getCriteria();
     return (CategoryAnswer) criteria.uniqueResult();
   }
 

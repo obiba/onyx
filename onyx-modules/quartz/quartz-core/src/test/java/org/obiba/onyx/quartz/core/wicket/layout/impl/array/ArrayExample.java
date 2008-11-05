@@ -61,7 +61,7 @@ public class ArrayExample extends Panel {
 
     add(new AbstractQuestionArray("array", new Model(), columns, new RowProvider(3)) {
 
-      public Component getRows(String id, List<IColumn> columns, IDataProvider rows) {
+      public Component getRowsContent(String id, List<IColumn> columns, IDataProvider rows) {
         return new RadioRows(id, columns, rows);
       }
 

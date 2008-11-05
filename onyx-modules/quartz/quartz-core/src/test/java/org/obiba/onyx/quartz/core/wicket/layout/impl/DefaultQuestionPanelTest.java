@@ -14,6 +14,10 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.Locale;
 
@@ -123,6 +127,16 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("QuestionCategory.Q2.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
     messageSource.addMessage("OpenAnswerDefinition.OPEN_INT.label", locale, "open label");
     messageSource.addMessage("OpenAnswerDefinition.OPEN_INT.unitLabel", locale, "open unit label");
+
+    messageSource.addMessage("Question.Q3.label", locale, "question3 label");
+    messageSource.addMessage("Question.Q3.help", locale, "question3 help");
+    messageSource.addMessage("Question.Q3.instructions", locale, "question3 instructions");
+    messageSource.addMessage("Question.Q3.caption", locale, "question3 caption");
+    messageSource.addMessage("QuestionCategory.Q3.1.label", locale, "Choice one");
+    messageSource.addMessage("QuestionCategory.Q3.2.label", locale, "Choice two");
+    messageSource.addMessage("QuestionCategory.Q3.3.label", locale, "Choice three");
+    messageSource.addMessage("Question.Q3_1.label", locale, "question3-1 label");
+    messageSource.addMessage("Question.Q3_2.label", locale, "question3-2 label");
 
     propertyKeyProvider = new DefaultPropertyKeyProviderImpl();
 
@@ -291,12 +305,95 @@ public class DefaultQuestionPanelTest {
     verify(questionnaireBundleMock);
   }
 
+  @Test
+  public void testSharedCategoriesArrayQuestion() {
+
+    final Questionnaire questionnaire = createQuestionnaire();
+    CategoryAnswer previousCategoryAnswer = new CategoryAnswer();
+    previousCategoryAnswer.setCategoryName("1");
+    QuestionAnswer previousQuestionAnswer = new QuestionAnswer();
+    previousQuestionAnswer.setQuestionName("Q3_1");
+    previousQuestionAnswer.addCategoryAnswer(previousCategoryAnswer);
+
+    final Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("Q3");
+    Question question1 = QuestionnaireFinder.getInstance(questionnaire).findQuestion("Q3_1");
+    Question question2 = QuestionnaireFinder.getInstance(questionnaire).findQuestion("Q3_2");
+
+    expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question1, question.getQuestionCategories().get(0))).andReturn(previousCategoryAnswer).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question1, question.getQuestionCategories().get(1))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question1, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question2, question.getQuestionCategories().get(0))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question2, question.getQuestionCategories().get(1))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question2, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
+
+    // activeQuestionnaireAdministrationServiceMock.deleteAnswers(question);
+    // expect(activeQuestionnaireAdministrationServiceMock.answer(QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q3",
+    // "Q3.2"), null)).andReturn(new CategoryAnswer());
+    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
+    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).anyTimes();
+    expect(questionnaireBundleMock.getPropertyKey(question, "label")).andReturn(propertyKeyProvider.getPropertyKey(question, "label")).anyTimes();
+    expect(questionnaireBundleMock.getPropertyKey(question, "help")).andReturn(propertyKeyProvider.getPropertyKey(question, "help")).anyTimes();
+    expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).anyTimes();
+    expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).anyTimes();
+    for(QuestionCategory qCategory : question.getQuestionCategories()) {
+      expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).anyTimes();
+    }
+    for(Question q : question.getQuestions()) {
+      expect(questionnaireBundleMock.getPropertyKey(q, "label")).andReturn(propertyKeyProvider.getPropertyKey(q, "label")).anyTimes();
+    }
+
+    replay(activeInterviewServiceMock);
+    replay(activeQuestionnaireAdministrationServiceMock);
+    replay(questionnaireBundleManagerMock);
+    replay(questionnaireBundleMock);
+
+    tester.startPanel(new TestPanelSource() {
+
+      private static final long serialVersionUID = 1L;
+
+      @SuppressWarnings("serial")
+      public Panel getTestPanel(String panelId) {
+
+        return new DefaultQuestionPanelMock(panelId, new Model(question));
+      }
+    });
+
+    dumpPage();
+
+    verify(activeInterviewServiceMock);
+    verify(activeQuestionnaireAdministrationServiceMock);
+    verify(questionnaireBundleManagerMock);
+    verify(questionnaireBundleMock);
+  }
+
+  private void dumpPage() {
+    tester.dumpPage();
+    File dump = new File("target/" + getClass().getSimpleName() + ".html");
+    try {
+      if(!dump.exists()) dump.createNewFile();
+      OutputStream out = new FileOutputStream(dump);
+      out.write(tester.getServletResponse().getDocument().getBytes());
+      out.flush();
+      out.close();
+    } catch(IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
   public Questionnaire createQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
 
     builder.withSection("S1").withPage("P1").withQuestion("Q1").withCategories("1", "2", "3");
     builder.withSection("S2").withPage("P2").withQuestion("Q2").withCategory("1").withOpenAnswerDefinition("OPEN_INT", DataType.INTEGER);
     builder.inQuestion("Q2").withCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
+
+    builder.withSection("S3").withPage("P3").withQuestion("Q3").withCategories("1", "2", "3");
+    builder.inQuestion("Q3").withQuestion("Q3_1");
+    builder.inQuestion("Q3").withQuestion("Q3_2");
 
     Questionnaire q = builder.getQuestionnaire();
     q.addLocale(locale);

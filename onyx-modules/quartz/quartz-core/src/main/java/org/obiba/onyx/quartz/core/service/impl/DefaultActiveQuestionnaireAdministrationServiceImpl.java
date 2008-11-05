@@ -144,9 +144,13 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public CategoryAnswer answer(QuestionCategory questionCategory, Data value) {
+    return answer(questionCategory.getQuestion(), questionCategory, value);
+  }
+
+  public CategoryAnswer answer(Question question, QuestionCategory questionCategory, Data value) {
     QuestionAnswer template = new QuestionAnswer();
     template.setQuestionnaireParticipant(currentQuestionnaireParticipant);
-    template.setQuestionName(questionCategory.getQuestion().getName());
+    template.setQuestionName(question.getName());
 
     QuestionAnswer questionAnswer = getPersistenceManager().matchOne(template);
     CategoryAnswer categoryTemplate = new CategoryAnswer();

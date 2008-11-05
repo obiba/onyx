@@ -50,9 +50,9 @@ public abstract class AbstractQuestionArray extends Panel {
       header.add(column.getHeader("label"));
     }
     add(headers);
-    add(getRows("rows", columns, rows));
+    add(getRowsContent("rows", columns, rows));
   }
 
-  public abstract Component getRows(String id, List<IColumn> columns, IDataProvider rows);
+  public abstract Component getRowsContent(String id, List<IColumn> columns, IDataProvider rows);
 
 }

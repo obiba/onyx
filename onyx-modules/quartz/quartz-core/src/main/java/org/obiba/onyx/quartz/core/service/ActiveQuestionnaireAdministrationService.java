@@ -136,12 +136,29 @@ public interface ActiveQuestionnaireAdministrationService {
   public CategoryAnswer findAnswer(QuestionCategory questionCategory);
 
   /**
+   * Get the answer for the {@link QuestionCategory}.
+   * @param question
+   * @param questionCategory
+   * @return null if not found
+   */
+  public CategoryAnswer findAnswer(Question question, QuestionCategory questionCategory);
+
+  /**
    * Save or update the question and category answers.
    * @param questionCategory
    * @param value
    * @return
    */
   public CategoryAnswer answer(QuestionCategory questionCategory, Data value);
+
+  /**
+   * Save or update the question and category answers.
+   * @param question
+   * @param questionCategory
+   * @param value
+   * @return
+   */
+  public CategoryAnswer answer(Question question, QuestionCategory questionCategory, Data value);
 
   /**
    * Set all question category answers being active (or not), including {@link Question} children answers.

@@ -20,8 +20,12 @@ public abstract class RadioQuestionCategoryPanel extends Panel {
 
   private DefaultOpenAnswerDefinitionPanel openField;
 
-  @SuppressWarnings("serial")
   public RadioQuestionCategoryPanel(String id, IModel questionCategoryModel) {
+    this(id, questionCategoryModel, true);
+  }
+
+  @SuppressWarnings("serial")
+  public RadioQuestionCategoryPanel(String id, IModel questionCategoryModel, boolean radioLabelVisible) {
     super(id, questionCategoryModel);
 
     Radio radio = new Radio("radio", questionCategoryModel);
@@ -30,7 +34,7 @@ public abstract class RadioQuestionCategoryPanel extends Panel {
     FormComponentLabel radioLabel = new FormComponentLabel("categoryLabel", radio);
     add(radioLabel);
     radioLabel.add(radio);
-    radioLabel.add(new Label("label", radio.getLabel()).setRenderBodyOnly(true));
+    radioLabel.add(new Label("label", radio.getLabel()).setRenderBodyOnly(true).setVisible(radioLabelVisible));
 
     // previous answer or default selection
     final QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();

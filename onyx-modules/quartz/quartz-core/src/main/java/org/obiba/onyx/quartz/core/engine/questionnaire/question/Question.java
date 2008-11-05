@@ -156,6 +156,7 @@ public class Question implements Serializable, ILocalizable {
   public void addQuestion(Question question) {
     if(question != null) {
       getQuestions().add(question);
+      question.setParentQuestion(this);
     }
   }
 

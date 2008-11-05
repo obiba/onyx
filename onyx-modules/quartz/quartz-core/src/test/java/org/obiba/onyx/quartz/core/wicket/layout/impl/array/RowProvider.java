@@ -9,12 +9,22 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
 
-class RowProvider extends DataListProvider<Row> {
+import java.util.ArrayList;
+import java.util.List;
+
+class RowProvider extends AbstractDataListProvider<Row> {
+
+  private List<Row> rows = new ArrayList<Row>();
 
   public RowProvider(int count) {
     for(int i = 0; i < count; i++) {
       String index = new Integer(i + 1).toString();
       getDataList().add(new Row(index, "label" + index, "description" + index));
     }
+  }
+
+  @Override
+  public List<Row> getDataList() {
+    return rows;
   }
 }
