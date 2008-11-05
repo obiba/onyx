@@ -95,6 +95,7 @@ public class Question implements Serializable, ILocalizable {
   }
 
   public boolean isToBeAnswered(ActiveQuestionnaireAdministrationService service) {
+    if(condition == null) return true;
     condition.setActiveQuestionnaireAdministrationService(service);
     return condition.isToBeAnswered();
   }
