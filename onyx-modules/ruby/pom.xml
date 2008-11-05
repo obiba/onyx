@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>Ruby</name>
+  <description>Samples Parent POM</description>
+
+  <groupId>org.obiba.ruby</groupId>
+  <artifactId>ruby</artifactId>
+  <packaging>pom</packaging>
+
+  <version>1.0-M1-SNAPSHOT</version>
+
+  <parent>
+    <artifactId>onyx-modules</artifactId>
+    <groupId>org.obiba.onyx</groupId>
+    <version>1.0-M3-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <modules>
+    <module>ruby-core</module>
+  </modules>
+
+</project>

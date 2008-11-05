@@ -23,6 +23,7 @@
     <module>jade</module>
     <module>quartz</module>
     <module>mica</module>
+    <module>ruby</module>
   </modules>
 
   <dependencyManagement>
