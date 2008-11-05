@@ -15,19 +15,26 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.AnswerCondition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOperator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.MultipleCondition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.NoAnswerCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
 
-  @Autowired(required=true)
+  @Autowired(required = true)
   private IPropertyKeyProvider propertyKeyProvider;
 
   private static final String YES = "YES";
@@ -158,8 +165,49 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
 
     builder.withSection("S3").withPage("P5").withQuestion("MASTER").withQuestion("SLAVE1").withSharedCategory(NO);
     builder.inQuestion("MASTER").withQuestion("SLAVE2").withSharedCategory(NO);
-    
+
     // System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
+
+    // Condition Test
+    try {
+      builder.inQuestion("Q5").setAnswerCondition("AC1", "Q1", "1");
+      Assert.fail("Question category Q1.1 not found");
+    } catch(IllegalStateException e) {
+    }
+
+    builder.inQuestion("Q5").setAnswerCondition("AC1", "Q1", YES);
+    Assert.assertEquals("AC1", QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q5").getCondition().getName());
+
+    try {
+      builder.inQuestion("Q5").setAnswerCondition("AC1", "Q2", "1");
+      Assert.fail("Condition AC1 already exists");
+    } catch(IllegalArgumentException e) {
+    }
+
+    try {
+      builder.inQuestion("Q5").setAnswerCondition("AC2", "Q2", "1", new Data(DataType.BOOLEAN, true), ComparisionOperator.eq, null);
+      Assert.fail("no OpenAnswerCategory for this questionCategory");
+    } catch(IllegalArgumentException e) {
+    }
+    builder.inQuestion("Q5").setAnswerCondition("AC2", "Q2", "1");
+    Assert.assertEquals("AC2", QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q5").getCondition().getName());
+
+    builder.inQuestion("Q6").setNoAnswerCondition("NAC1").withAnswerCondition("AC3", "Q2", "2", null, null, null);
+    builder.inQuestion("Q7").setMultipleCondition("MC1", ConditionOperator.AND).withAnswerCondition("AC4", "Q2", "2", null, null, null);
+    builder.inCondition("MC1").withNoAnswerCondition("NAC2").withMultipleCondition("MC2", ConditionOperator.OR).withAnswerCondition("AC5", "Q2", DONT_KNOW, null, null, null);
+    builder.inCondition("MC2").withAnswerCondition("AC6", "Q5", OTHER_SPECIFY, new Data(DataType.TEXT, "toto"), ComparisionOperator.ne, null);
+
+    Condition condition_1 = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCondition("AC6");
+    Condition condition_2 = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCondition("NAC1");
+    Condition condition_3 = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCondition("MC2");
+    Assert.assertEquals(AnswerCondition.class, condition_1.getClass());
+    Assert.assertEquals(NoAnswerCondition.class, condition_2.getClass());
+    Assert.assertEquals(MultipleCondition.class, condition_3.getClass());
+    Assert.assertNotNull(((AnswerCondition) condition_1).getDataComparator());
+    Assert.assertNotNull(((NoAnswerCondition) condition_2).getCondition());
+    Assert.assertEquals(AnswerCondition.class, ((NoAnswerCondition) condition_2).getCondition().getClass());
+    Assert.assertEquals(2, ((MultipleCondition) condition_3).getConditions().size());
+
   }
 
   @Test

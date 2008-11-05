@@ -13,11 +13,26 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 
-public abstract class Condition implements Serializable {
+public abstract class Condition implements Serializable, ILocalizable {
+
+  private String name;
 
   private List<Question> questions;
+
+  protected ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
 
   public List<Question> getQuestions() {
     return questions != null ? questions : (questions = new ArrayList<Question>());
@@ -32,4 +47,11 @@ public abstract class Condition implements Serializable {
 
   public abstract boolean isToBeAnswered();
 
+  public void setActiveQuestionnaireAdministrationService(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService) {
+    this.activeQuestionnaireAdministrationService = activeQuestionnaireAdministrationService;
+  }
+
+  public void accept(IVisitor visitor) {
+    visitor.visit(this);
+  }
 }

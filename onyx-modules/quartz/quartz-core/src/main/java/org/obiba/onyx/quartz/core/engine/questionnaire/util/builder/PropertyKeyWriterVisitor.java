@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -135,6 +136,10 @@ public class PropertyKeyWriterVisitor implements IWalkerVisitor {
   public boolean visiteMore() {
     // no stop
     return true;
+  }
+
+  public void visit(Condition condition) {
+    writePropertyKey(condition);
   }
 
 }

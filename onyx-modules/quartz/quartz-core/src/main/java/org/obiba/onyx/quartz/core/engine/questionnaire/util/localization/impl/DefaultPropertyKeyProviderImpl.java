@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -171,6 +172,10 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
     if(property != null && !properties.contains(property)) {
       throw invalidPropertyException(openAnswerDefinition);
     }
+  }
+
+  // TODO implement the following for condition
+  public void visit(Condition condition) {
   }
 
   /**

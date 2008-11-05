@@ -22,9 +22,12 @@ import org.junit.Test;
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOperator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.wicket.test.MockSpringApplication;
 
@@ -249,6 +252,35 @@ public class QuestionnaireModelTest {
     Assert.assertEquals(localizable, result);
   }
 
+  @Test
+  public void testCondition() {
+    // Expect that methods are called on activeQuestionnaireAdministrationServiceMock to retrieve the current locale and
+    // questionnaire.
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).times(2);
+    // Expect that questionnaireBundleManagerMock is used to retrieve the current questionnaire bundle.
+    expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).times(2);
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).times(2);
+
+    replay(activeQuestionnaireAdministrationServiceMock);
+    replay(questionnaireBundleManagerMock);
+    replay(questionnaireBundleMock);
+
+    ILocalizable localizable = questionnaire.getPages().get(1).getQuestions().get(0).getCondition();
+    QuestionnaireModel model = new QuestionnaireModel(localizable);
+    Object result = model.getObject();
+
+    ILocalizable multipleLocalizable = questionnaire.getPages().get(1).getQuestions().get(0).getCondition();
+    QuestionnaireModel multipleModel = new QuestionnaireModel(multipleLocalizable);
+    Object multipleResult = multipleModel.getObject();
+
+    verify(activeQuestionnaireAdministrationServiceMock);
+    verify(questionnaireBundleManagerMock);
+    verify(questionnaireBundleMock);
+
+    Assert.assertEquals(localizable, result);
+    Assert.assertEquals(localizable, multipleResult);
+  }
+
   public Questionnaire createQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
 
@@ -257,6 +289,12 @@ public class QuestionnaireModelTest {
     builder.inQuestion("Q2").withCategory("2").withOpenAnswerDefinition("OPEN_TEXT", DataType.TEXT);
     builder.inQuestion("Q2").withCategory("3").withOpenAnswerDefinition("OPEN_DATE", DataType.DATE);
     builder.inQuestion("Q2").withCategory("4").withOpenAnswerDefinition("OPEN_TEXT_DEFAULT_VALUES", DataType.TEXT).setOpenAnswerDefinitionDefaultData("a", "b", "c");
+
+    // condition test
+    builder.inSection("S1").withPage("P3").withQuestion("Q3").withCategories("1", "2", "3");
+    builder.inQuestion("Q2").setAnswerCondition("AC1", "Q1", "1");
+    builder.inQuestion("Q3").setMultipleCondition("MC1", ConditionOperator.AND).withAnswerCondition("AC2", "Q1", "1", null, null, null);
+    builder.inCondition("MC1").withNoAnswerCondition("NAC1").withAnswerCondition("AC3", "Q2", "2", new Data(DataType.TEXT, "valeur test"), ComparisionOperator.eq, null);
 
     Questionnaire q = builder.getQuestionnaire();
 

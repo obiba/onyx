@@ -37,4 +37,23 @@ public class DataComparator implements Serializable {
     this.comparisionOperator = comparisionOperator;
   }
 
+  public boolean isComparisonValid(int result) {
+
+    switch(comparisionOperator) {
+    case eq:
+      return result == 0;
+    case ne:
+      return result != 0;
+    case lt:
+      return result < 0;
+    case le:
+      return result <= 0;
+    case gt:
+      return result > 0;
+    case ge:
+      return result >= 0;
+    default:
+      return false;
+    }
+  }
 }

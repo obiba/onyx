@@ -12,7 +12,7 @@ package org.obiba.onyx.util.data;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Data implements Serializable {
+public class Data implements Serializable, Comparable {
 
   private static final long serialVersionUID = -2470483891384378865L;
 
@@ -90,32 +90,31 @@ public class Data implements Serializable {
   @Override
   public int hashCode() {
     int hashCode = 0;
-    
-    if (value != null) {
-      if (type != DataType.DATA) {
+
+    if(value != null) {
+      if(type != DataType.DATA) {
         hashCode = value.hashCode();
-      }
-      else {
-        byte[] bytes = (byte[])value;
+      } else {
+        byte[] bytes = (byte[]) value;
         int byteCount = bytes.length;
-        hashCode = byteCount != 0 ? (byteCount + bytes[0] + bytes[byteCount - 1]) % 17 : Integer.MAX_VALUE; 
+        hashCode = byteCount != 0 ? (byteCount + bytes[0] + bytes[byteCount - 1]) % 17 : Integer.MAX_VALUE;
       }
     }
-    
+
     return hashCode;
   }
-  
+
   @Override
   public boolean equals(Object otherObj) {
     boolean isEqual = false;
- 
-    if (otherObj instanceof Data) {
-      Data otherData = (Data)otherObj;
-      
-      if (otherData.getType().equals(type)) {
-        if (value != null) {
+
+    if(otherObj instanceof Data) {
+      Data otherData = (Data) otherObj;
+
+      if(otherData.getType().equals(type)) {
+        if(value != null) {
           switch(type) {
-          case BOOLEAN: 
+          case BOOLEAN:
           case INTEGER:
           case DECIMAL:
           case DATE:
@@ -123,40 +122,71 @@ public class Data implements Serializable {
             isEqual = value.equals(otherData.getValue());
             break;
           case DATA:
-            isEqual = byteArraysEqual((byte[])value, (byte[])otherData.getValue());
+            isEqual = byteArraysEqual((byte[]) value, (byte[]) otherData.getValue());
             break;
           }
-        }
-        else {
+        } else {
           isEqual = (otherData.getValue() == null);
         }
       }
     }
-    
+
     return isEqual;
   }
-  
+
   private boolean byteArraysEqual(byte[] firstArray, byte[] secondArray) {
     boolean arraysEqual = false;
-   
-    if (firstArray != null && secondArray != null) {
-      if (firstArray.length == secondArray.length) {
+
+    if(firstArray != null && secondArray != null) {
+      if(firstArray.length == secondArray.length) {
         boolean mismatch = false;
-        
-        for (int i=0; i<firstArray.length; i++) {
-          if (firstArray[i] != secondArray[i]) {
+
+        for(int i = 0; i < firstArray.length; i++) {
+          if(firstArray[i] != secondArray[i]) {
             mismatch = true;
             break;
           }
         }
-        
+
         arraysEqual = !mismatch;
       }
+    } else {
+      arraysEqual = (firstArray == null && secondArray == null);
     }
-    else {
-      arraysEqual = (firstArray == null && secondArray == null); 
-    }
-    
+
     return arraysEqual;
+  }
+
+  public int compareTo(Object object) {
+    int result = 0;
+
+    if(object instanceof Data) {
+      Data data = (Data) object;
+
+      if(data.getType().equals(type)) {
+        if(value != null) {
+          switch(type) {
+          case BOOLEAN:
+          case INTEGER:
+          case DECIMAL:
+          case DATE:
+          case TEXT:
+            result = ((Comparable) value).compareTo(data.getValue());
+            break;
+          case DATA:
+            if(byteArraysEqual((byte[]) value, (byte[]) data.getValue())) {
+              result = 0;
+            } else {
+              result = 1;
+            }
+            break;
+          }
+        } else {
+          result = (data.getValue() == null) ? 0 : 1;
+        }
+      }
+    }
+
+    return result;
   }
 }

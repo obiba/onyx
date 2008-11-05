@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -22,6 +23,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.CategoryFinder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.ConditionFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.OpenAnswerDefinitionFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.PageFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.QuestionFinder;
@@ -177,4 +179,18 @@ public class QuestionnaireFinder {
 
     return new LinkedList<Category>(map.values());
   }
+
+  /**
+   * Find the first {@link Category} with the given name.
+   * @param name
+   * @return null if not found
+   */
+  public Condition findCondition(String name) {
+    ConditionFinder finder = new ConditionFinder(name);
+    QuestionnaireWalker walker = new QuestionnaireWalker(finder);
+    walker.walk(questionnaire);
+
+    return finder.getFirstElement();
+  }
+
 }

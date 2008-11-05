@@ -19,17 +19,15 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 
 /**
- * Class for finding {@link Question}.
- * @author Yannick Marcon
  * 
  */
-public class QuestionFinder extends AbstractFinderVisitor<Question> {
+public class ConditionFinder extends AbstractFinderVisitor<Condition> {
 
   /**
    * Constructor, for searching first {@link Question} with given name.
    * @param name
    */
-  public QuestionFinder(String name) {
+  public ConditionFinder(String name) {
     super(name);
   }
 
@@ -38,7 +36,7 @@ public class QuestionFinder extends AbstractFinderVisitor<Question> {
    * @param name
    * @param stopAtFirst
    */
-  public QuestionFinder(String name, boolean stopAtFirst) {
+  public ConditionFinder(String name, boolean stopAtFirst) {
     super(name, stopAtFirst);
   }
 
@@ -52,7 +50,6 @@ public class QuestionFinder extends AbstractFinderVisitor<Question> {
   }
 
   public void visit(Question question) {
-    visitElement(question);
   }
 
   public void visit(QuestionCategory questionCategory) {
@@ -65,5 +62,7 @@ public class QuestionFinder extends AbstractFinderVisitor<Question> {
   }
 
   public void visit(Condition condition) {
+    visitElement(condition);
   }
+
 }

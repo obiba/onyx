@@ -106,9 +106,8 @@ public class Question implements Serializable, ILocalizable {
   }
 
   public boolean isToBeAnswered(ActiveQuestionnaireAdministrationService service) {
-    // TODO: If the question has a condition, the question is to be answered only if the condition is
-    // satisfied.
-    return true;
+    condition.setActiveQuestionnaireAdministrationService(service);
+    return condition.isToBeAnswered();
   }
 
   public String getUIFactoryName() {

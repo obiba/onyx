@@ -12,6 +12,8 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 import java.util.List;
 import java.util.Map;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOperator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -19,6 +21,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultQuestionPanelFactory;
+import org.obiba.onyx.util.data.Data;
 
 /**
  * {@link Question} builder, given a {@link Questionnaire} and a current {@link Page}.
@@ -267,4 +270,21 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   private IllegalArgumentException invalidQuestionPanelFactoryException(Class<? extends IQuestionPanelFactory> uiFactoryClass, Exception e) {
     return new IllegalArgumentException("Unable to get question panel factory name from " + uiFactoryClass.getName(), e);
   }
+
+  public ConditionBuilder setAnswerCondition(String name, String question, String category) {
+    return setAnswerCondition(name, question, category, null, null, null);
+  }
+
+  public ConditionBuilder setAnswerCondition(String name, String question, String category, Data data, ComparisionOperator comparisionOperator, Integer occurence) {
+    return ConditionBuilder.createQuestionCondition(this, name, question, category, data, comparisionOperator, occurence);
+  }
+
+  public ConditionBuilder setMultipleCondition(String name, ConditionOperator operator) {
+    return ConditionBuilder.createQuestionMultipleCondition(this, name, operator);
+  }
+
+  public ConditionBuilder setNoAnswerCondition(String name) {
+    return ConditionBuilder.createQuestionNoAnswerCondition(this, name);
+  }
+
 }

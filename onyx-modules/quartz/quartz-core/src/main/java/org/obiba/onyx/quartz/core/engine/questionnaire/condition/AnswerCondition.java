@@ -8,6 +8,7 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.condition;
 
+import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -21,6 +22,8 @@ public class AnswerCondition extends Condition {
   private Integer occurence;
 
   private AnswerCondition parentAnswerCondition;
+
+  private DataComparator dataComparator;
 
   public QuestionCategory getQuestionCategory() {
     return questionCategory;
@@ -42,6 +45,14 @@ public class AnswerCondition extends Condition {
     this.occurence = occurence;
   }
 
+  public DataComparator getDataComparator() {
+    return dataComparator;
+  }
+
+  public void setDataComparator(DataComparator dataComparator) {
+    this.dataComparator = dataComparator;
+  }
+
   public Category getCategory() {
     return questionCategory.getCategory();
   }
@@ -55,7 +66,17 @@ public class AnswerCondition extends Condition {
   }
 
   public boolean isToBeAnswered() {
-    // TODO Auto-generated method stub
+    CategoryAnswer categoryAnswer = activeQuestionnaireAdministrationService.findAnswer(questionCategory);
+
+    if(categoryAnswer == null) return false;
+
+    if(dataComparator != null) {
+      int compareResult = categoryAnswer.getData().compareTo(dataComparator.getData());
+      return dataComparator.isComparisonValid(compareResult);
+    }
+
+    if(parentAnswerCondition != null) return parentAnswerCondition.isToBeAnswered();
+
     return true;
   }
 

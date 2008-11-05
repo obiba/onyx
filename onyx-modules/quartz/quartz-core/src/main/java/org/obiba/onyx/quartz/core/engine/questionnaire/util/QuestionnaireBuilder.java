@@ -11,11 +11,14 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
 import java.util.Properties;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.MultipleCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.AbstractQuestionnaireElementBuilder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.ConditionBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IPropertyKeyWriter;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.PageBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.PropertyKeyWriterVisitor;
@@ -125,6 +128,20 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
       throw invalidElementNameException(Question.class, name);
     }
     return QuestionBuilder.inQuestion(getQuestionnaire(), question);
+  }
+
+  /**
+   * Position the builder to the {@link MultipleCondition} with the given name.
+   * @param name
+   * @return
+   * @throws IllegalStateException if no multipleCondition can be found with this name
+   */
+  public ConditionBuilder inCondition(String name) {
+    Condition condition = QuestionnaireFinder.getInstance(questionnaire).findCondition(name);
+    if(condition == null) {
+      throw invalidElementNameException(Condition.class, name);
+    }
+    return ConditionBuilder.inCondition(getQuestionnaire(), condition);
   }
 
   /**

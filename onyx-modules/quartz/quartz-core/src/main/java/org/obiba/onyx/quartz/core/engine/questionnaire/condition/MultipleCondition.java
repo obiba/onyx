@@ -9,33 +9,27 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.condition;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MultipleCondition extends Condition {
 
   private static final long serialVersionUID = 2969604617578085834L;
 
-  private Condition condition1;
-
-  private Condition condition2;
+  private List<Condition> conditions;
 
   private ConditionOperator conditionOperator;
 
   public MultipleCondition() {
+    this.conditions = new ArrayList<Condition>();
   }
 
-  public Condition getCondition1() {
-    return condition1;
+  public List<Condition> getConditions() {
+    return conditions;
   }
 
-  public void setCondition1(Condition condition1) {
-    this.condition1 = condition1;
-  }
-
-  public Condition getCondition2() {
-    return condition2;
-  }
-
-  public void setCondition2(Condition condition2) {
-    this.condition2 = condition2;
+  public void setConditions(List<Condition> conditions) {
+    this.conditions = conditions;
   }
 
   public ConditionOperator getConditionOperator() {
@@ -47,9 +41,22 @@ public class MultipleCondition extends Condition {
   }
 
   public boolean isToBeAnswered() {
-    if(conditionOperator.equals(ConditionOperator.AND)) return condition1.isToBeAnswered() & condition2.isToBeAnswered();
-    else
-      return condition1.isToBeAnswered() | condition2.isToBeAnswered();
+    boolean previousConditionIsToBeAnswer = conditions.get(0).isToBeAnswered();
+
+    if(conditionOperator.equals(ConditionOperator.AND)) {
+      // Starting with second element of the list
+      for(int i = 1; i < conditions.size(); i++) {
+        previousConditionIsToBeAnswer = (previousConditionIsToBeAnswer && conditions.get(i).isToBeAnswered());
+        if(previousConditionIsToBeAnswer == false) break;
+      }
+    } else {
+      // Starting with second element of the list
+      for(int i = 1; i < conditions.size(); i++) {
+        previousConditionIsToBeAnswer = (previousConditionIsToBeAnswer || conditions.get(i).isToBeAnswered());
+        if(previousConditionIsToBeAnswer == true) break;
+      }
+    }
+    return previousConditionIsToBeAnswer;
   }
 
 }

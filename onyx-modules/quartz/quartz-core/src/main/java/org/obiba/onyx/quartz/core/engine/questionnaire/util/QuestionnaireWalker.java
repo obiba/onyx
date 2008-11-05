@@ -10,6 +10,9 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.MultipleCondition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.NoAnswerCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -21,7 +24,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 /**
  * Walks through the tree of {@link Questionnaire} elements, and call for a {@link IWalkerVisitor} at each node.
  * @author Yannick Marcon
- *
+ * 
  */
 public class QuestionnaireWalker implements IVisitor {
 
@@ -118,6 +121,9 @@ public class QuestionnaireWalker implements IVisitor {
         if(!visiteMore()) break;
       }
     }
+    if(visiteMore() && question.getCondition() != null) {
+      question.getCondition().accept(this);
+    }
     if(!preOrder) question.accept(visitor);
   }
 
@@ -137,6 +143,20 @@ public class QuestionnaireWalker implements IVisitor {
 
   public final void visit(OpenAnswerDefinition openAnswerDefinition) {
     openAnswerDefinition.accept(visitor);
+  }
+
+  public final void visit(Condition condition) {
+    if(preOrder) condition.accept(visitor);
+    if(visiteMore() && (condition instanceof MultipleCondition) && ((MultipleCondition) condition).getConditions() != null) {
+      for(Condition childCondition : ((MultipleCondition) condition).getConditions()) {
+        childCondition.accept(this);
+        if(!visiteMore()) break;
+      }
+    }
+    if(visiteMore() && (condition instanceof NoAnswerCondition) && ((NoAnswerCondition) condition).getCondition() != null) {
+      ((NoAnswerCondition) condition).getCondition().accept(this);
+    }
+    if(!preOrder) condition.accept(visitor);
   }
 
 }

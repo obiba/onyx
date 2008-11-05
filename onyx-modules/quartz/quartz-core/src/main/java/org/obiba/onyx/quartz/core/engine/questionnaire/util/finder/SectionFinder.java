@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.finder;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -61,6 +62,9 @@ public class SectionFinder extends AbstractFinderVisitor<Section> {
   }
 
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
+  }
+
+  public void visit(Condition condition) {
   }
 
 }

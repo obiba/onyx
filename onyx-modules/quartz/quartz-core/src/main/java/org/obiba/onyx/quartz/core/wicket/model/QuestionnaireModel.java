@@ -14,6 +14,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -125,5 +126,9 @@ public class QuestionnaireModel extends SpringDetachableModel implements IVisito
 
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
     this.element = finder.findOpenAnswerDefinition(openAnswerDefinition.getName());
+  }
+
+  public void visit(Condition condition) {
+    this.element = finder.findCondition(condition.getName());
   }
 }

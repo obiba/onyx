@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -26,7 +27,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 /**
  * Class for finding {@link Category}.
  * @author Yannick Marcon
- *
+ * 
  */
 public class CategoryFinder extends AbstractFinderVisitor<Category> {
 
@@ -43,7 +44,7 @@ public class CategoryFinder extends AbstractFinderVisitor<Category> {
   public CategoryFinder() {
     super(null, false);
   }
-  
+
   /**
    * Constructor, for searching first {@link Category} with given name.
    * @param name
@@ -75,14 +76,14 @@ public class CategoryFinder extends AbstractFinderVisitor<Category> {
    */
   public List<Category> getQuestionSharedCategories() {
     List<Category> shared = new ArrayList<Category>();
-    for (Entry<Category, List<Question>> entry : questionCategories.entrySet()) {
-      if (entry.getValue().size() > 1) {
+    for(Entry<Category, List<Question>> entry : questionCategories.entrySet()) {
+      if(entry.getValue().size() > 1) {
         shared.add(entry.getKey());
       }
     }
     return shared;
   }
-  
+
   public void visit(Questionnaire questionnaire) {
   }
 
@@ -111,6 +112,9 @@ public class CategoryFinder extends AbstractFinderVisitor<Category> {
   }
 
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
+  }
+
+  public void visit(Condition condition) {
   }
 
 }
