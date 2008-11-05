@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.AnswerSource;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -40,6 +41,8 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
   private Data usualMaxValue;
 
   private List<Data> defaultValues;
+
+  private AnswerSource answerSource;
 
   public OpenAnswerDefinition(String name, DataType dataType) {
     this.name = name;
@@ -125,15 +128,15 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
   public List<Data> getDefaultValues() {
     return defaultValues != null ? defaultValues : (defaultValues = new ArrayList<Data>());
   }
-  
+
   public void addDefaultValue(String value) {
-    if (value != null && value.length() > 0) {
+    if(value != null && value.length() > 0) {
       getDefaultValues().add(DataBuilder.build(dataType, value));
     }
   }
 
   public void addDefaultValue(Data data) {
-    if (data != null && data.getValue() != null) {
+    if(data != null && data.getValue() != null) {
       if(!data.getType().equals(getDataType())) {
         throw new IllegalArgumentException("Wrong data type for default value: " + getDataType() + " expected, " + data.getType() + " found.");
       }
@@ -143,5 +146,13 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
 
   public void accept(IVisitor visitor) {
     visitor.visit(this);
+  }
+
+  public AnswerSource getAnswerSource() {
+    return answerSource;
+  }
+
+  public void setAnswerSource(AnswerSource answerSource) {
+    this.answerSource = answerSource;
   }
 }

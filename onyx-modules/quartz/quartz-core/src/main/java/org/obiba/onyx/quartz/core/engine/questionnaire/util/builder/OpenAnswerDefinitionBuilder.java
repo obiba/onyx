@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.AnswerSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -166,6 +167,16 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
       element.addDefaultValue(value);
     }
 
+    return this;
+  }
+
+  /**
+   * Set the {@link AnswerSource} associated with the current {@link OpenAnswerDefinition}.
+   * @param answerSource
+   * @return
+   */
+  public OpenAnswerDefinitionBuilder setOpenAnswerDefinitionAnswerSource(AnswerSource answerSource) {
+    element.setAnswerSource(answerSource);
     return this;
   }
 

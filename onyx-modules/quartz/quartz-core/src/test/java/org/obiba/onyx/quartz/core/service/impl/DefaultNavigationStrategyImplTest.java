@@ -14,9 +14,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.FixedSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.TimestampSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.service.INavigationStrategy;
@@ -269,7 +272,16 @@ public class DefaultNavigationStrategyImplTest {
     questionnaire.addPage(page1);
 
     q1 = new ConfigurableQuestion("q1");
-    q1.setAnswerSource(new FixedSource());
+
+    // Add Timestamp answer source to q1
+    Category cat = new Category("1");
+    OpenAnswerDefinition def = new OpenAnswerDefinition("timestamp", DataType.DATE);
+    def.setAnswerSource(new TimestampSource());
+    cat.setOpenAnswerDefinition(def);
+    QuestionCategory qcat = new QuestionCategory();
+    qcat.setCategory(cat);
+    q1.addQuestionCategory(qcat);
+
     page1.addQuestion(q1);
 
     //

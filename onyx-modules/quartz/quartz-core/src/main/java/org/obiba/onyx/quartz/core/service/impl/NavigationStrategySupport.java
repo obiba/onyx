@@ -113,7 +113,7 @@ public class NavigationStrategySupport {
     List<Question> questions = page.getQuestions();
 
     for(Question question : questions) {
-      if(question.getAnswerSource() == null) {
+      if(!question.hasAnswerSource()) {
         return true;
       }
     }

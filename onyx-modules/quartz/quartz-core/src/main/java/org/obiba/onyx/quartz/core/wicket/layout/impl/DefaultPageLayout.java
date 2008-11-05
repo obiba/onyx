@@ -14,12 +14,18 @@ import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.AnswerSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
 import org.obiba.onyx.quartz.core.wicket.layout.PageQuestionsProvider;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
@@ -32,6 +38,9 @@ public class DefaultPageLayout extends PageLayout {
 
   @SpringBean
   private QuestionPanelFactoryRegistry questionPanelFactoryRegistry;
+
+  @SpringBean
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   private List<QuestionPanel> questionPanels = new ArrayList<QuestionPanel>();
 
@@ -49,9 +58,51 @@ public class DefaultPageLayout extends PageLayout {
       @Override
       protected void populateItem(Item item) {
         Question question = (Question) item.getModelObject();
-        QuestionPanel panel = questionPanelFactoryRegistry.get(question.getUIFactoryName()).createPanel("question", item.getModel());
-        questionPanels.add(panel);
-        item.add(panel);
+
+        // A question that can be answered through an AnswerSource (ex: TimestampSource) is not displayed.
+        if(answerQuestionIfAnswerSourceAvailable(question)) {
+          item.add(new EmptyPanel("question"));
+
+        } else {
+          QuestionPanel panel = questionPanelFactoryRegistry.get(question.getUIFactoryName()).createPanel("question", item.getModel());
+          questionPanels.add(panel);
+          item.add(panel);
+        }
+
+      }
+
+      /**
+       * Answers the question using the data provided by any AnswerSource associated to its categories.
+       * 
+       * @param question Question to answer.
+       * @return True, if question could be answered through AnswerSource.
+       */
+      private boolean answerQuestionIfAnswerSourceAvailable(Question question) {
+
+        OpenAnswerDefinition openAnswer;
+        AnswerSource answerSource;
+        CategoryAnswer answer;
+        boolean questionHasAnswers = false;
+
+        // Search for AnswerSource by looping through question categories.
+        List<QuestionCategory> categories = question.getQuestionCategories();
+        for(QuestionCategory category : categories) {
+          if((openAnswer = category.getCategory().getOpenAnswerDefinition()) != null) {
+
+            // AnswerSource found.
+            if((answerSource = openAnswer.getAnswerSource()) != null) {
+
+              // Get data from AnswerSource and answer current question (if not already answered).
+              answer = activeQuestionnaireAdministrationService.findAnswer(category);
+              if(answer == null) {
+                activeQuestionnaireAdministrationService.answer(category, answerSource.getData());
+              }
+              questionHasAnswers = true;
+            }
+          }
+        }
+
+        return questionHasAnswers;
       }
 
     });
