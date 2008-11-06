@@ -11,6 +11,7 @@ package org.obiba.onyx.ruby.core.domain.parser.impl;
 
 import java.util.List;
 
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.ruby.core.domain.BarcodePart;
 import org.springframework.context.MessageSourceResolvable;
 
@@ -21,7 +22,7 @@ public class FixedValueBarcodePartParser extends FixedSizeBarcodePartParser {
 
   private String fixedValue;
 
-  public BarcodePart eatAndValidatePart(StringBuilder barcodeFragment, List<MessageSourceResolvable> errors) {
+  public BarcodePart eatAndValidatePart(StringBuilder barcodeFragment, ActiveInterviewService activeInterviewService, List<MessageSourceResolvable> errors) {
     try {
       String part = barcodeFragment.substring(0, size);
       List<MessageSourceResolvable> error = validatePart(part);
