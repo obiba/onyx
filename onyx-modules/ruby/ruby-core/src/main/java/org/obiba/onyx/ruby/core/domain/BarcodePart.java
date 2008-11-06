@@ -38,7 +38,15 @@ public class BarcodePart {
   public void setTitle(String title) {
     this.title = title;
   }
-
+  
+  public String getTitle() {
+    return title;
+  }
+  
+  public String getPart() {
+    return part;
+  }
+  
   public MessageSourceResolvable getPartTitle() {
     // TODO
     return null;
