@@ -155,4 +155,9 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
   public void setAnswerSource(AnswerSource answerSource) {
     this.answerSource = answerSource;
   }
+
+  @Override
+  public String toString() {
+    return getName();
+  }
 }

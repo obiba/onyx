@@ -93,4 +93,8 @@ public class Questionnaire implements Serializable, ILocalizable {
     visitor.visit(this);
   }
 
+  @Override
+  public String toString() {
+    return getName();
+  }
 }

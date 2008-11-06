@@ -16,7 +16,6 @@ import java.util.List;
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 
-
 public class Section implements Serializable, ILocalizable {
 
   private static final long serialVersionUID = -1624223156473292196L;
@@ -70,8 +69,13 @@ public class Section implements Serializable, ILocalizable {
       section.setParentSection(this);
     }
   }
-  
+
   public void accept(IVisitor visitor) {
     visitor.visit(this);
+  }
+
+  @Override
+  public String toString() {
+    return getName();
   }
 }

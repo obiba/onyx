@@ -215,4 +215,9 @@ public class Question implements Serializable, ILocalizable {
     return false;
   }
 
+  @Override
+  public String toString() {
+    return getName();
+  }
+
 }
