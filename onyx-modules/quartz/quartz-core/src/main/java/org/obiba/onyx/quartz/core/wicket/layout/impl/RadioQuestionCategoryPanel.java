@@ -8,7 +8,11 @@ import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
@@ -18,15 +22,27 @@ public abstract class RadioQuestionCategoryPanel extends Panel {
 
   private static final Logger log = LoggerFactory.getLogger(RadioQuestionCategoryPanel.class);
 
+  @SpringBean
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+
   private DefaultOpenAnswerDefinitionPanel openField;
 
+  private IModel questionModel;
+
+  /**
+   * Constructor.
+   * 
+   * @param id
+   * @param questionCategoryModel
+   */
   public RadioQuestionCategoryPanel(String id, IModel questionCategoryModel) {
-    this(id, questionCategoryModel, true);
+    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, true);
   }
 
   @SuppressWarnings("serial")
-  public RadioQuestionCategoryPanel(String id, IModel questionCategoryModel, boolean radioLabelVisible) {
+  public RadioQuestionCategoryPanel(String id, IModel questionModel, IModel questionCategoryModel, boolean radioLabelVisible) {
     super(id, questionCategoryModel);
+    this.questionModel = questionModel;
 
     Radio radio = new Radio("radio", questionCategoryModel);
     radio.setLabel(new QuestionnaireStringResourceModel(questionCategoryModel, "label"));
@@ -47,7 +63,7 @@ public abstract class RadioQuestionCategoryPanel extends Panel {
         @Override
         public void onSelect(AjaxRequestTarget target) {
           log.info("open.onclick.{}", questionCategory.getName());
-          onOpenFieldSelection(target);
+          onOpenFieldSelection(target, RadioQuestionCategoryPanel.this.questionModel, RadioQuestionCategoryPanel.this.getModel());
         }
 
       };
@@ -64,17 +80,37 @@ public abstract class RadioQuestionCategoryPanel extends Panel {
         @Override
         protected void onEvent(AjaxRequestTarget target) {
           log.info("radio.onchange.{}", questionCategory.getName());
-          onRadioSelection(target);
+          onRadioSelection(target, RadioQuestionCategoryPanel.this.questionModel, RadioQuestionCategoryPanel.this.getModel());
         }
 
       });
     }
   }
 
-  public abstract void onOpenFieldSelection(AjaxRequestTarget target);
+  /**
+   * Called when open field is selected: persist the category answer with no data yet.
+   * @param target
+   */
+  public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+    // exclusive choice, only one answer per question
+    activeQuestionnaireAdministrationService.deleteAnswers((Question) questionModel.getObject());
+    activeQuestionnaireAdministrationService.answer((Question) questionModel.getObject(), (QuestionCategory) getModelObject(), null);
+  }
 
-  public abstract void onRadioSelection(AjaxRequestTarget target);
+  /**
+   * Call when radio is selected: persist the category answer.
+   * @param target
+   */
+  public void onRadioSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+    // exclusive choice, only one answer per question
+    activeQuestionnaireAdministrationService.deleteAnswers((Question) questionModel.getObject());
+    activeQuestionnaireAdministrationService.answer((Question) questionModel.getObject(), (QuestionCategory) getModelObject(), null);
+  }
 
+  /**
+   * Get the associated open field.
+   * @return null if there is no associated {@link OpenAnswerDefinition}
+   */
   public DefaultOpenAnswerDefinitionPanel getOpenField() {
     return openField;
   }

@@ -58,7 +58,7 @@ public class DefaultQuestionCategoriesPanel extends Panel {
    * @param question
    */
   @SuppressWarnings("serial")
-  private void addRadioGroup(final Question question) {
+  private void addRadioGroup(Question question) {
     final RadioGroup radioGroup = new RadioGroup("categories", new Model());
     radioGroup.setRequired(!question.isBoilerPlate() && question.isRequired());
     add(radioGroup);
@@ -66,17 +66,17 @@ public class DefaultQuestionCategoriesPanel extends Panel {
     RepeatingView repeater = new RepeatingView("category");
     radioGroup.add(repeater);
 
-    for(final QuestionCategory questionCategory : ((Question) getModelObject()).getQuestionCategories()) {
-      final WebMarkupContainer item = new WebMarkupContainer(repeater.newChildId());
+    for(QuestionCategory questionCategory : ((Question) getModelObject()).getQuestionCategories()) {
+      WebMarkupContainer item = new WebMarkupContainer(repeater.newChildId());
       repeater.add(item);
-      item.setModel(new Model(questionCategory));
+      item.setModel(new QuestionnaireModel(questionCategory));
 
       RadioQuestionCategoryPanel radio;
       item.add(radio = new RadioQuestionCategoryPanel("input", item.getModel()) {
 
         @Override
-        public void onOpenFieldSelection(AjaxRequestTarget target) {
-          log.info("open.onclick.{}", questionCategory.getName());
+        public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+          Question question = (Question) questionModel.getObject();
           // ignore if multiple click in the same open field
           if(this.equals(currentOpenField)) return;
 
@@ -92,17 +92,15 @@ public class DefaultQuestionCategoriesPanel extends Panel {
           radioGroup.setRequired(false);
           // update all
           target.addComponent(DefaultQuestionCategoriesPanel.this);
-          // exclusive choice, only one answer per question
-          activeQuestionnaireAdministrationService.deleteAnswers(questionCategory.getQuestion());
-          // TODO get the open answer
-          activeQuestionnaireAdministrationService.answer(questionCategory, null);
+          // persist selection
+          super.onOpenFieldSelection(target, questionModel, questionCategoryModel);
         }
 
         @Override
-        public void onRadioSelection(AjaxRequestTarget target) {
-          log.info("radio.onchange.{}", questionCategory.getName());
+        public void onRadioSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+          Question question = (Question) questionModel.getObject();
           // make the radio group active for the selection
-          radioGroup.setModel(item.getModel());
+          radioGroup.setModel(questionCategoryModel);
           radioGroup.setRequired(question.isRequired() ? true : false);
           // make inactive the previously selected open field
           if(currentOpenField != null) {
@@ -111,10 +109,8 @@ public class DefaultQuestionCategoriesPanel extends Panel {
             target.addComponent(currentOpenField);
             currentOpenField = null;
           }
-          // exclusive choice, only one answer per question
-          activeQuestionnaireAdministrationService.deleteAnswers(questionCategory.getQuestion());
-          // TODO get the open answer
-          activeQuestionnaireAdministrationService.answer(questionCategory, null);
+          // persist selection
+          super.onRadioSelection(target, questionModel, questionCategoryModel);
         }
 
       });

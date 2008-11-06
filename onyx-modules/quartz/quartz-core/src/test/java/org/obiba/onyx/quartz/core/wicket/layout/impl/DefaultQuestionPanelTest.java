@@ -159,14 +159,15 @@ public class DefaultQuestionPanelTest {
     final Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("Q1");
 
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q1", "Q1.1"))).andReturn(previousCategoryAnswer).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q1", "Q1.2"))).andReturn(null).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q1", "Q1.3"))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question.getQuestionCategories().get(0))).andReturn(previousCategoryAnswer).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question.getQuestionCategories().get(1))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
     activeQuestionnaireAdministrationServiceMock.deleteAnswers(question);
-    expect(activeQuestionnaireAdministrationServiceMock.answer(QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q1", "Q1.2"), null)).andReturn(new CategoryAnswer());
+    expect(activeQuestionnaireAdministrationServiceMock.answer(question, question.getQuestionCategories().get(1), null)).andReturn(new CategoryAnswer());
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
-    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).anyTimes();
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
+    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "label")).andReturn(propertyKeyProvider.getPropertyKey(question, "label")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "help")).andReturn(propertyKeyProvider.getPropertyKey(question, "help")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
@@ -241,11 +242,11 @@ public class DefaultQuestionPanelTest {
 
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q2", "Q2.1"))).andReturn(null).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q2", "Q2.DONT_KNOW"))).andReturn(previousCategoryAnswer).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q2", "Q2.PREFER_NOT_ANSWER"))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question.getQuestionCategories().get(0))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question.getQuestionCategories().get(1))).andReturn(previousCategoryAnswer).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
     activeQuestionnaireAdministrationServiceMock.deleteAnswers(question);
-    expect(activeQuestionnaireAdministrationServiceMock.answer(QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q2", "Q2.1"), null)).andReturn(new CategoryAnswer());
+    expect(activeQuestionnaireAdministrationServiceMock.answer(question, question.getQuestionCategories().get(0), null)).andReturn(new CategoryAnswer());
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).anyTimes();

@@ -51,6 +51,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
     Question question = (Question) getModelObject();
 
     List<IColumn> columns = new ArrayList<IColumn>();
+    // first column: labels of question's children
     columns.add(new HeaderlessColumn() {
 
       public void populateItem(Item cellItem, String componentId, IModel rowModel) {
@@ -60,12 +61,13 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
       }
 
     });
+    // following column: the question's categories
     for(final QuestionCategory questionCategory : question.getQuestionCategories()) {
       columns.add(new AbstractColumn(new QuestionnaireStringResourceModel(questionCategory, "label")) {
 
         public void populateItem(final Item cellItem, String componentId, IModel rowModel) {
           cellItem.setModel(new QuestionnaireModel(questionCategory));
-          final Question question = (Question) rowModel.getObject();
+          Question question = (Question) rowModel.getObject();
           int index = question.getParentQuestion().getQuestions().indexOf(question);
           log.debug("question.index={}", index);
           log.debug("radioGroupView.radioGroups.length={}", radioGroupView.getRadioGroups().length);
@@ -75,23 +77,25 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
           radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
 
           // TODO check if parent question is multiple
-          cellItem.add(new RadioQuestionCategoryPanel(componentId, cellItem.getModel(), false) {
+          cellItem.add(new RadioQuestionCategoryPanel(componentId, rowModel, cellItem.getModel(), false) {
 
             @Override
-            public void onOpenFieldSelection(AjaxRequestTarget target) {
+            public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+              Question question = (Question) questionModel.getObject();
               log.info("question={} questionCategory={} onOpenFieldSelection", question.getName(), questionCategory.getName());
+              // persist selection
+              super.onOpenFieldSelection(target, questionModel, questionCategoryModel);
             }
 
             @Override
-            public void onRadioSelection(AjaxRequestTarget target) {
-              log.info("question={} questionCategory={} onRadioSelection", question.getName(), questionCategory.getName());
+            public void onRadioSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+              Question question = (Question) questionModel.getObject();
               // make the radio group active for the selection
-              radioGroup.setModel(cellItem.getModel());
+              radioGroup.setModel(questionCategoryModel);
               radioGroup.setRequired(question.isRequired() ? true : false);
               target.addComponent(DefaultQuestionSharedCategoriesPanel.this.get("array"));
-              // exclusive choice, only one answer per question
-              activeQuestionnaireAdministrationService.deleteAnswers(question);
-              activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
+              // persist selection
+              super.onRadioSelection(target, questionModel, questionCategoryModel);
             }
 
           });
@@ -114,12 +118,20 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
       });
     }
 
+    // provider of question's children
     IDataProvider questionsProvider = new AbstractDataListProvider<Question>() {
       @Override
       public List<Question> getDataList() {
         return ((Question) DefaultQuestionSharedCategoriesPanel.this.getModelObject()).getQuestions();
       }
+
+      @Override
+      public IModel model(Object object) {
+        return new QuestionnaireModel((Question) object);
+      }
     };
+
+    // the question array
     add(new AbstractQuestionArray("array", getModel(), columns, questionsProvider) {
 
       @Override
