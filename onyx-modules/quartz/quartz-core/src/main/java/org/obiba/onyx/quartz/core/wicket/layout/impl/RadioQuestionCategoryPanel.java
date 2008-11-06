@@ -18,7 +18,12 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class RadioQuestionCategoryPanel extends Panel {
+/**
+ * UI for rendering a question category as a radio and an optionally associated open answer field.
+ */
+public class RadioQuestionCategoryPanel extends Panel {
+
+  private static final long serialVersionUID = 1L;
 
   private static final Logger log = LoggerFactory.getLogger(RadioQuestionCategoryPanel.class);
 
@@ -27,10 +32,13 @@ public abstract class RadioQuestionCategoryPanel extends Panel {
 
   private DefaultOpenAnswerDefinitionPanel openField;
 
+  /**
+   * The question model (not necessarily the question of the category in the case of shared categories question).
+   */
   private IModel questionModel;
 
   /**
-   * Constructor.
+   * Constructor, using the question of the category and making the category label visible.
    * 
    * @param id
    * @param questionCategoryModel
@@ -39,6 +47,14 @@ public abstract class RadioQuestionCategoryPanel extends Panel {
     this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, true);
   }
 
+  /**
+   * Constructor.
+   * 
+   * @param id
+   * @param questionModel
+   * @param questionCategoryModel
+   * @param radioLabelVisible
+   */
   @SuppressWarnings("serial")
   public RadioQuestionCategoryPanel(String id, IModel questionModel, IModel questionCategoryModel, boolean radioLabelVisible) {
     super(id, questionCategoryModel);
