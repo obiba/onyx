@@ -83,8 +83,8 @@ public class ArrayExample extends Panel {
       add(new RadioGroupView(id, (List) columns, rows) {
 
         @Override
-        protected RadioGroup newRadioGroup(String id, int index) {
-          RadioGroup group = super.newRadioGroup(id, index);
+        protected RadioGroup newGroup(String id, int index) {
+          RadioGroup group = super.newGroup(id, index);
           // add ajax call back on group
           group.add(new AjaxFormChoiceComponentUpdatingBehavior() {
 

@@ -10,10 +10,12 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColu
 import org.apache.wicket.extensions.markup.html.repeater.data.table.HeaderlessColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -24,6 +26,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.AbstractDataListProvider;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.AbstractQuestionArray;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.array.CheckGroupView;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.RadioGroupView;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
@@ -43,12 +46,14 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
 
   private RadioGroupView radioGroupView;
 
+  private CheckGroupView checkGroupView;
+
   @SuppressWarnings("serial")
   public DefaultQuestionSharedCategoriesPanel(String id, IModel questionModel) {
     super(id, questionModel);
     setOutputMarkupId(true);
 
-    Question question = (Question) getModelObject();
+    final Question parentQuestion = (Question) getModelObject();
 
     List<IColumn> columns = new ArrayList<IColumn>();
     // first column: labels of question's children
@@ -62,7 +67,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
 
     });
     // following columns: the question's categories
-    for(final QuestionCategory questionCategory : question.getQuestionCategories()) {
+    for(final QuestionCategory questionCategory : parentQuestion.getQuestionCategories()) {
       columns.add(new AbstractColumn(new QuestionnaireStringResourceModel(questionCategory, "label")) {
 
         public void populateItem(final Item cellItem, String componentId, IModel rowModel) {
@@ -70,74 +75,92 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
           Question question = (Question) rowModel.getObject();
           final int index = question.getParentQuestion().getQuestions().indexOf(question);
           log.debug("question.index={}", index);
-          log.debug("radioGroupView.radioGroups.length={}", radioGroupView.getRadioGroups().length);
 
-          final RadioGroup radioGroup = radioGroupView.getRadioGroup(index);
-          radioGroup.setRequired(question.isRequired() ? true : false);
-          radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
+          // build cell ui
+          if(!parentQuestion.isMultiple()) {
+            final RadioGroup radioGroup = radioGroupView.getGroup(index);
+            radioGroup.setRequired(question.isRequired() ? true : false);
+            radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
 
-          // TODO check if parent question is multiple
-          RadioQuestionCategoryPanel radio;
-          cellItem.add(radio = new RadioQuestionCategoryPanel(componentId, rowModel, cellItem.getModel(), false) {
+            RadioQuestionCategoryPanel radio;
+            cellItem.add(radio = new RadioQuestionCategoryPanel(componentId, rowModel, cellItem.getModel(), false) {
 
-            @Override
-            public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              // ignore if multiple click in the same open field
-              if(this.getOpenField().equals(currentOpenFields[index])) return;
+              @Override
+              public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+                // ignore if multiple click in the same open field
+                if(this.getOpenField().equals(currentOpenFields[index])) return;
 
-              Question question = (Question) questionModel.getObject();
-              log.info("question={} questionCategory={} onOpenFieldSelection", question.getName(), questionCategory.getName());
+                Question question = (Question) questionModel.getObject();
+                log.info("question={} questionCategory={} onOpenFieldSelection", question.getName(), questionCategory.getName());
 
-              // make sure a previously selected open field in the same row is not asked for
-              if(currentOpenFields[index] != null) {
-                currentOpenFields[index].setRequired(false);
+                // make sure a previously selected open field in the same row is not asked for
+                if(currentOpenFields[index] != null) {
+                  currentOpenFields[index].setRequired(false);
+                }
+                // make the open field active
+                currentOpenFields[index] = this.getOpenField();
+                currentOpenFields[index].setRequired(question.isRequired() ? true : false);
+                // make sure radio selection does not conflict with open field selection
+                radioGroup.setModel(new Model());
+                radioGroup.setRequired(false);
+                // update all
+                target.addComponent(DefaultQuestionSharedCategoriesPanel.this.get("array"));
+                // persist selection
+                super.onOpenFieldSelection(target, questionModel, questionCategoryModel);
               }
-              // make the open field active
-              currentOpenFields[index] = this.getOpenField();
-              currentOpenFields[index].setRequired(question.isRequired() ? true : false);
-              // make sure radio selection does not conflict with open field selection
-              radioGroup.setModel(new Model());
-              radioGroup.setRequired(false);
-              // update all
-              target.addComponent(DefaultQuestionSharedCategoriesPanel.this.get("array"));
-              // persist selection
-              super.onOpenFieldSelection(target, questionModel, questionCategoryModel);
-            }
 
-            @Override
-            public void onRadioSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              Question question = (Question) questionModel.getObject();
-              // make the radio group active for the selection
-              radioGroup.setModel(questionCategoryModel);
-              radioGroup.setRequired(question.isRequired() ? true : false);
-              target.addComponent(DefaultQuestionSharedCategoriesPanel.this.get("array"));
-              // persist selection
-              super.onRadioSelection(target, questionModel, questionCategoryModel);
-            }
+              @Override
+              public void onRadioSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+                Question question = (Question) questionModel.getObject();
+                // make the radio group active for the selection
+                radioGroup.setModel(questionCategoryModel);
+                radioGroup.setRequired(question.isRequired() ? true : false);
+                target.addComponent(DefaultQuestionSharedCategoriesPanel.this.get("array"));
+                // persist selection
+                super.onRadioSelection(target, questionModel, questionCategoryModel);
+              }
 
-          });
+            });
 
-          // previous answer or default selection
-          CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(question, questionCategory);
-          if(radio.getOpenField() != null) {
-            if(previousAnswer != null) {
-              radio.getOpenField().setRequired(question.isRequired() ? true : false);
-              radioGroup.setRequired(false);
-              currentOpenFields[index] = radio.getOpenField();
-            } else if(questionCategory.isSelected()) {
-              radio.getOpenField().setRequired(question.isRequired() ? true : false);
-              activeQuestionnaireAdministrationService.answer(questionCategory, null);
+            // previous answer or default selection
+            CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(question, questionCategory);
+            if(radio.getOpenField() != null) {
+              if(previousAnswer != null) {
+                radioGroup.setRequired(false);
+                currentOpenFields[index] = radio.getOpenField();
+              } else if(questionCategory.isSelected()) {
+                radio.getOpenField().setRequired(question.isRequired());
+                activeQuestionnaireAdministrationService.answer(questionCategory, null);
+              }
             } else {
-              // make sure it is not asked for as it is not selected at creation time
-              radio.getOpenField().setRequired(false);
+              if(previousAnswer != null) {
+                radioGroup.setModel(cellItem.getModel());
+              } else if(questionCategory.isSelected()) {
+                radioGroup.setModel(cellItem.getModel());
+                activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
+              }
             }
           } else {
-            if(previousAnswer != null) {
-              radioGroup.setModel(cellItem.getModel());
-            } else if(questionCategory.isSelected()) {
-              radioGroup.setModel(cellItem.getModel());
-              activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
-            }
+            final CheckGroup checkGroup = checkGroupView.getGroup(index);
+            // checkGroup.setRequired(question.isRequired() ? true : false);
+            checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
+
+            cellItem.add(new CheckBoxQuestionCategoryPanel(componentId, rowModel, cellItem.getModel(), checkGroup, false) {
+              @Override
+              public void onCheckBoxSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+                target.addComponent(DefaultQuestionSharedCategoriesPanel.this.get("array"));
+              }
+
+              @Override
+              public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+                target.addComponent(DefaultQuestionSharedCategoriesPanel.this.get("array"));
+              }
+            });
+
+            // previous answer or default selection
+            // if(previousAnswer == null && questionCategory.isSelected()) {
+            // activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
+            // }
           }
         }
 
@@ -164,15 +187,26 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
 
     currentOpenFields = new DefaultOpenAnswerDefinitionPanel[questionsProvider.size()];
 
-    // the question array
-    add(new AbstractQuestionArray("array", getModel(), columns, questionsProvider) {
+    // the question array: radio or check groups
+    if(!parentQuestion.isMultiple()) {
+      add(new AbstractQuestionArray("array", getModel(), columns, questionsProvider) {
 
-      @Override
-      public Component getRowsContent(String id, List<IColumn> columns, IDataProvider rows) {
-        return new RadioGroupRows(id, columns, rows);
-      }
+        @Override
+        public Component getRowsContent(String id, List<IColumn> columns, IDataProvider rows) {
+          return new RadioGroupRows(id, columns, rows);
+        }
 
-    }.setOutputMarkupId(true));
+      }.setOutputMarkupId(true));
+    } else {
+      add(new AbstractQuestionArray("array", getModel(), columns, questionsProvider) {
+
+        @Override
+        public Component getRowsContent(String id, List<IColumn> columns, IDataProvider rows) {
+          return new CheckGroupRows(id, columns, rows);
+        }
+
+      }.setOutputMarkupId(true));
+    }
 
   }
 
@@ -182,8 +216,22 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
 
     @SuppressWarnings( { "serial", "unchecked" })
     public RadioGroupRows(String id, List<IColumn> columns, IDataProvider rows) {
-      super(id, "radioRows", DefaultQuestionSharedCategoriesPanel.this);
+      super(id, "groupRows", DefaultQuestionSharedCategoriesPanel.this);
       add(radioGroupView = new RadioGroupView(id, (List) columns, rows));
+      radioGroupView.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
+    }
+
+  }
+
+  private class CheckGroupRows extends Fragment {
+
+    private static final long serialVersionUID = 1L;
+
+    @SuppressWarnings( { "serial", "unchecked" })
+    public CheckGroupRows(String id, List<IColumn> columns, IDataProvider rows) {
+      super(id, "groupRows", DefaultQuestionSharedCategoriesPanel.this);
+      add(checkGroupView = new CheckGroupView(id, (List) columns, rows));
+      checkGroupView.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
     }
 
   }

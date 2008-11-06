@@ -9,16 +9,17 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.DataGridView;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
-import org.apache.wicket.markup.html.form.RadioGroup;
+import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.model.IModel;
 
 /**
- * Each row is wrapped in a radio group. The columns are populated by an array of provided ICellPopulator objects.
+ * Each row is wrapped in a check box group. The columns are populated by an array of provided ICellPopulator objects.
  * 
  * <pre>
  *  &lt;tr wicket:id=&quot;rows&quot;&gt;
@@ -33,7 +34,7 @@ import org.apache.wicket.model.Model;
  * @see DataGridView
  * 
  */
-public class RadioGroupView extends GroupView<RadioGroup> {
+public class CheckGroupView extends GroupView<CheckGroup> {
 
   private static final long serialVersionUID = 1L;
 
@@ -44,7 +45,7 @@ public class RadioGroupView extends GroupView<RadioGroup> {
    * @param populators list of ICellPopulator objects that will be used to populate cell items
    * @param dataProvider data provider
    */
-  public RadioGroupView(String id, List<ICellPopulator> populators, IDataProvider dataProvider) {
+  public CheckGroupView(String id, List<ICellPopulator> populators, IDataProvider dataProvider) {
     this(id, (ICellPopulator[]) populators.toArray(new ICellPopulator[populators.size()]), dataProvider);
   }
 
@@ -55,18 +56,18 @@ public class RadioGroupView extends GroupView<RadioGroup> {
    * @param populators array of ICellPopulator objects that will be used to populate cell items
    * @param dataProvider data provider
    */
-  public RadioGroupView(String id, ICellPopulator[] populators, IDataProvider dataProvider) {
+  public CheckGroupView(String id, ICellPopulator[] populators, IDataProvider dataProvider) {
     super(id, populators, dataProvider);
   }
 
   @Override
-  protected RadioGroup newGroup(String id, int index) {
-    return new RadioGroup(id, new Model());
+  protected CheckGroup newGroup(String id, int index) {
+    return new CheckGroup(id, new ArrayList<IModel>());
   }
 
   @Override
-  protected RadioGroup[] newGroups(int size) {
-    return new RadioGroup[size];
+  protected CheckGroup[] newGroups(int size) {
+    return new CheckGroup[size];
   }
 
 }

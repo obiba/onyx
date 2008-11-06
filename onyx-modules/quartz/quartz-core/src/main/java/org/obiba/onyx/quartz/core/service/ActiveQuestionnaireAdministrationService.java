@@ -182,6 +182,13 @@ public interface ActiveQuestionnaireAdministrationService {
   public void deleteAnswer(QuestionCategory questionCategory);
 
   /**
+   * Delete (if any) the {@link CategoryAnswer} of the given {@link Question}, parent {@link QuestionAnswer} and any
+   * related answers of {@link Question} children.
+   * @param questionCategory
+   */
+  public void deleteAnswer(Question question, QuestionCategory questionCategory);
+
+  /**
    * Clean active service when questionnaire is interrupted or canceled
    */
   public void stopCurrentQuestionnaire();

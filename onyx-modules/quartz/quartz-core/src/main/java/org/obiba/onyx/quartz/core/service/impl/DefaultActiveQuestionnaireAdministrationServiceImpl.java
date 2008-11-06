@@ -176,7 +176,11 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public void deleteAnswer(QuestionCategory questionCategory) {
-    CategoryAnswer categoryAnswer = findAnswer(questionCategory);
+    deleteAnswer(questionCategory.getQuestion(), questionCategory);
+  }
+
+  public void deleteAnswer(Question question, QuestionCategory questionCategory) {
+    CategoryAnswer categoryAnswer = findAnswer(question, questionCategory);
     if(categoryAnswer != null) {
       QuestionAnswer questionAnswer = categoryAnswer.getQuestionAnswer();
       getPersistenceManager().delete(categoryAnswer);
