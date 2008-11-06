@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.HeaderlessColumn;
@@ -42,7 +41,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
 
   private DefaultOpenAnswerDefinitionPanel currentOpenField;
 
-  private List<RadioGroup> radioGroups = new ArrayList<RadioGroup>();
+  private RadioGroupView radioGroupView;
 
   @SuppressWarnings("serial")
   public DefaultQuestionSharedCategoriesPanel(String id, IModel questionModel) {
@@ -68,9 +67,12 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
           cellItem.setModel(new QuestionnaireModel(questionCategory));
           final Question question = (Question) rowModel.getObject();
           int index = question.getParentQuestion().getQuestions().indexOf(question);
-          log.info("question.index={}", index);
-          log.info("radioGroups.size={}", radioGroups.size());
-          final RadioGroup radioGroup = radioGroups.get(index);
+          log.debug("question.index={}", index);
+          log.debug("radioGroupView.radioGroups.length={}", radioGroupView.getRadioGroups().length);
+
+          final RadioGroup radioGroup = radioGroupView.getRadioGroup(index);
+          radioGroup.setRequired(question.isRequired() ? true : false);
+          radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
 
           // TODO check if parent question is multiple
           cellItem.add(new RadioQuestionCategoryPanel(componentId, cellItem.getModel(), false) {
@@ -86,6 +88,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
               // make the radio group active for the selection
               radioGroup.setModel(cellItem.getModel());
               radioGroup.setRequired(question.isRequired() ? true : false);
+              target.addComponent(DefaultQuestionSharedCategoriesPanel.this.get("array"));
               // exclusive choice, only one answer per question
               activeQuestionnaireAdministrationService.deleteAnswers(question);
               activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
@@ -124,7 +127,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
         return new RadioGroupRows(id, columns, rows);
       }
 
-    });
+    }.setOutputMarkupId(true));
 
   }
 
@@ -135,24 +138,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
     @SuppressWarnings( { "serial", "unchecked" })
     public RadioGroupRows(String id, List<IColumn> columns, IDataProvider rows) {
       super(id, "radioRows", DefaultQuestionSharedCategoriesPanel.this);
-      add(new RadioGroupView(id, (List) columns, rows) {
-
-        @Override
-        protected RadioGroup newRadioGroup(String id, final int index) {
-          RadioGroup group = super.newRadioGroup(id, index);
-          radioGroups.add(group);
-          // add ajax call back on group
-          group.add(new AjaxFormChoiceComponentUpdatingBehavior() {
-
-            @Override
-            protected void onUpdate(AjaxRequestTarget target) {
-              log.info("radioGroup[{}] onUpdate", index);
-            }
-
-          });
-          return group;
-        }
-      });
+      add(radioGroupView = new RadioGroupView(id, (List) columns, rows));
     }
 
   }
