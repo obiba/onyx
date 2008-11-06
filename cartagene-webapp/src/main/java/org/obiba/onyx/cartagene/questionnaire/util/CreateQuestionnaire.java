@@ -21,6 +21,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.Questionnaire
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.DropDownQuestionPanelFactory;
 import org.obiba.onyx.util.data.DataType;
 
 public class CreateQuestionnaire {
@@ -74,7 +75,7 @@ public class CreateQuestionnaire {
     builder.inQuestion("Q1").withSharedCategory(NO_ANSWER).setExportName("8");
     builder.inQuestion("Q1").withSharedCategory(DONT_KNOW).setExportName("9");
 
-    builder.inSection("SB").withSection("BIRTHDATE").withPage("P2").withQuestion("Q2").withCategory("1").withOpenAnswerDefinition("year", DataType.INTEGER).setOpenAnswerDefinitionFormat("YYYY");
+    builder.inSection("SB").withSection("BIRTHDATE").withPage("P2").withQuestion("Q2", DropDownQuestionPanelFactory.class).withCategory("1").withOpenAnswerDefinition("year", DataType.INTEGER).setOpenAnswerDefinitionFormat("YYYY");
     builder.inQuestion("Q2").withSharedCategory(NO_ANSWER).setExportName("8888");
     builder.inQuestion("Q2").withSharedCategory(DONT_KNOW).setExportName("9999");
     builder.inSection("BIRTHDATE").withPage("P3").withQuestion("Q3").withCategory("1").withOpenAnswerDefinition("month", DataType.INTEGER).setOpenAnswerDefinitionFormat("MM");

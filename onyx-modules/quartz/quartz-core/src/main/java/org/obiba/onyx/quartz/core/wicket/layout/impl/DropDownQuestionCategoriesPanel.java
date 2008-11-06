@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Build a drop down choice panel, used by single choice question.
  */
-public class DropDownChoiceQuestionCategoriesPanel extends Panel {
+public class DropDownQuestionCategoriesPanel extends Panel {
 
   private static final long serialVersionUID = 5144933183339704600L;
 
@@ -45,7 +45,7 @@ public class DropDownChoiceQuestionCategoriesPanel extends Panel {
 
   private DefaultOpenAnswerDefinitionPanel openField;
 
-  public DropDownChoiceQuestionCategoriesPanel(String id, IModel questionModel) {
+  public DropDownQuestionCategoriesPanel(String id, IModel questionModel) {
 
     super(id, questionModel);
     setOutputMarkupId(true);
@@ -93,6 +93,8 @@ public class DropDownChoiceQuestionCategoriesPanel extends Panel {
 
     final DropDownChoice questionCategoriesDropDownChoice = new DropDownChoice("questionCategories", new PropertyModel(this, "selectedQuestionCategory"), new PropertyModel(question, "questionCategories"), new QuestionCategoryChoiceRenderer());
     questionCategoriesDropDownChoice.setOutputMarkupId(true);
+
+    questionCategoriesDropDownChoice.setLabel(new QuestionnaireStringResourceModel(question, "label"));
     questionCategoriesDropDownChoice.setRequired(question.isRequired() ? true : false);
     questionCategoriesDropDownChoice.setNullValid(true);
 
@@ -113,7 +115,7 @@ public class DropDownChoiceQuestionCategoriesPanel extends Panel {
         }
 
         // Update component
-        target.addComponent(DropDownChoiceQuestionCategoriesPanel.this);
+        target.addComponent(DropDownQuestionCategoriesPanel.this);
       }
     });
 
