@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
+import java.util.List;
 import java.util.Properties;
 
 import junit.framework.Assert;
@@ -207,6 +208,18 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     Assert.assertNotNull(((NoAnswerCondition) condition_2).getCondition());
     Assert.assertEquals(AnswerCondition.class, ((NoAnswerCondition) condition_2).getCondition().getClass());
     Assert.assertEquals(2, ((MultipleCondition) condition_3).getConditions().size());
+
+    // Add Timestamps to all pages
+    List<Page> pages = builder.getElement().getPages();
+    for(Page onePage : pages) {
+      builder.inPage(onePage.getName()).addTimestamp();
+    }
+
+    try {
+      builder.inPage("P1").addTimestamp();
+      Assert.fail("A page cannot contain more than one timestamp.");
+    } catch(IllegalArgumentException e) {
+    }
 
   }
 
