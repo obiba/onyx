@@ -47,7 +47,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     }
     element = new Question(name);
     element.setRequired(true);
-    element.setMultiple(false);
+    element.setMultiple(multiple);
     try {
       element.setUIFactoryName(uiFactoryClass.newInstance().getBeanName());
     } catch(Exception e) {

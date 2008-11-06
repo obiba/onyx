@@ -48,7 +48,7 @@
                 </question>
               </questions>
             </question>
-            <question id="30" name="SHARED_MULTIPLE_CATEGORIES_QUESTION_ARRAY" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="30" name="SHARED_MULTIPLE_CATEGORIES_QUESTION_ARRAY" required="true" multiple="true" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="8"/>
               <questionCategories id="31">
                 <questionCategory id="32" repeatable="false" selected="false">
