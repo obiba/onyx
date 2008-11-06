@@ -81,11 +81,7 @@ public class DropDownQuestionCategoriesPanel extends Panel {
       // Previous question contains an open answer
       if(activeQuestionnaireAdministrationService.findAnswer(selectedQuestionCategory).getData() != null) {
 
-        openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(selectedQuestionCategory)) {
-          @Override
-          public void onSelect(AjaxRequestTarget target) {
-          }
-        };
+        openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(selectedQuestionCategory));
 
         get("open").replaceWith(openField);
       }
@@ -155,11 +151,7 @@ public class DropDownQuestionCategoriesPanel extends Panel {
 
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
 
-      openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(questionCategory)) {
-        @Override
-        public void onSelect(AjaxRequestTarget target) {
-        }
-      };
+      openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(questionCategory));
 
       get("open").replaceWith(openField);
     } else {

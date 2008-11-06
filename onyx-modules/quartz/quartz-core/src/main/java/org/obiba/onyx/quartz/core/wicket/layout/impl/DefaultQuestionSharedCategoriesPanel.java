@@ -39,7 +39,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  private DefaultOpenAnswerDefinitionPanel currentOpenField;
+  private DefaultOpenAnswerDefinitionPanel[] currentOpenFields;
 
   private RadioGroupView radioGroupView;
 
@@ -61,14 +61,14 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
       }
 
     });
-    // following column: the question's categories
+    // following columns: the question's categories
     for(final QuestionCategory questionCategory : question.getQuestionCategories()) {
       columns.add(new AbstractColumn(new QuestionnaireStringResourceModel(questionCategory, "label")) {
 
         public void populateItem(final Item cellItem, String componentId, IModel rowModel) {
           cellItem.setModel(new QuestionnaireModel(questionCategory));
           Question question = (Question) rowModel.getObject();
-          int index = question.getParentQuestion().getQuestions().indexOf(question);
+          final int index = question.getParentQuestion().getQuestions().indexOf(question);
           log.debug("question.index={}", index);
           log.debug("radioGroupView.radioGroups.length={}", radioGroupView.getRadioGroups().length);
 
@@ -77,12 +77,29 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
           radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
 
           // TODO check if parent question is multiple
-          cellItem.add(new RadioQuestionCategoryPanel(componentId, rowModel, cellItem.getModel(), false) {
+          RadioQuestionCategoryPanel radio;
+          cellItem.add(radio = new RadioQuestionCategoryPanel(componentId, rowModel, cellItem.getModel(), false) {
 
             @Override
             public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+              // ignore if multiple click in the same open field
+              if(this.getOpenField().equals(currentOpenFields[index])) return;
+
               Question question = (Question) questionModel.getObject();
               log.info("question={} questionCategory={} onOpenFieldSelection", question.getName(), questionCategory.getName());
+
+              // make sure a previously selected open field in the same row is not asked for
+              if(currentOpenFields[index] != null) {
+                currentOpenFields[index].setRequired(false);
+              }
+              // make the open field active
+              currentOpenFields[index] = this.getOpenField();
+              currentOpenFields[index].setRequired(question.isRequired() ? true : false);
+              // make sure radio selection does not conflict with open field selection
+              radioGroup.setModel(new Model());
+              radioGroup.setRequired(false);
+              // update all
+              target.addComponent(DefaultQuestionSharedCategoriesPanel.this.get("array"));
               // persist selection
               super.onOpenFieldSelection(target, questionModel, questionCategoryModel);
             }
@@ -102,11 +119,25 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
 
           // previous answer or default selection
           CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(question, questionCategory);
-          if(previousAnswer != null) {
-            radioGroup.setModel(cellItem.getModel());
-          } else if(questionCategory.isSelected()) {
-            radioGroup.setModel(cellItem.getModel());
-            activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
+          if(radio.getOpenField() != null) {
+            if(previousAnswer != null) {
+              radio.getOpenField().setRequired(question.isRequired() ? true : false);
+              radioGroup.setRequired(false);
+              currentOpenFields[index] = radio.getOpenField();
+            } else if(questionCategory.isSelected()) {
+              radio.getOpenField().setRequired(question.isRequired() ? true : false);
+              activeQuestionnaireAdministrationService.answer(questionCategory, null);
+            } else {
+              // make sure it is not asked for as it is not selected at creation time
+              radio.getOpenField().setRequired(false);
+            }
+          } else {
+            if(previousAnswer != null) {
+              radioGroup.setModel(cellItem.getModel());
+            } else if(questionCategory.isSelected()) {
+              radioGroup.setModel(cellItem.getModel());
+              activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
+            }
           }
         }
 
@@ -130,6 +161,8 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
         return new QuestionnaireModel((Question) object);
       }
     };
+
+    currentOpenFields = new DefaultOpenAnswerDefinitionPanel[questionsProvider.size()];
 
     // the question array
     add(new AbstractQuestionArray("array", getModel(), columns, questionsProvider) {

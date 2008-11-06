@@ -74,12 +74,12 @@ public class RadioQuestionCategoryPanel extends Panel {
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
       // there is an open field
       // hide the associated radio and fake selection on click event of open field
-      openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(questionCategory)) {
+      openField = new DefaultOpenAnswerDefinitionPanel("open", questionModel, questionCategoryModel) {
 
         @Override
-        public void onSelect(AjaxRequestTarget target) {
+        public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
           log.info("open.onclick.{}", questionCategory.getName());
-          onOpenFieldSelection(target, RadioQuestionCategoryPanel.this.questionModel, RadioQuestionCategoryPanel.this.getModel());
+          onOpenFieldSelection(target, questionModel, questionCategoryModel);
         }
 
       };

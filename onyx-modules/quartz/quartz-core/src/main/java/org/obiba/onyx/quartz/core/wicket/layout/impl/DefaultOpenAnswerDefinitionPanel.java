@@ -15,19 +15,22 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.data.DataField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class DefaultOpenAnswerDefinitionPanel extends Panel {
+public class DefaultOpenAnswerDefinitionPanel extends Panel {
 
   private static final long serialVersionUID = 8950481253772691811L;
 
@@ -41,20 +44,37 @@ public abstract class DefaultOpenAnswerDefinitionPanel extends Panel {
   private Data data;
 
   /**
+   * The question model (not necessarily the question of the category in the case of shared categories question).
+   */
+  private IModel questionModel;
+
+  /**
    * Constructor given the question category (needed for persistency).
    * @param id
    * @param questionCategoryModel
    */
-  @SuppressWarnings("serial")
   public DefaultOpenAnswerDefinitionPanel(String id, IModel questionCategoryModel) {
+    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel);
+  }
+
+  /**
+   * Constructor.
+   * 
+   * @param id
+   * @param questionModel
+   * @param questionCategoryModel
+   */
+  @SuppressWarnings("serial")
+  public DefaultOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
     super(id, questionCategoryModel);
+    this.questionModel = questionModel;
 
     setOutputMarkupId(true);
 
     QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
     OpenAnswerDefinition openAnswerDefinition = questionCategory.getCategory().getOpenAnswerDefinition();
 
-    CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(questionCategory);
+    CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer((Question) questionModel.getObject(), questionCategory);
     if(previousAnswer != null) {
       data = previousAnswer.getData();
     }
@@ -93,8 +113,10 @@ public abstract class DefaultOpenAnswerDefinitionPanel extends Panel {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
         QuestionCategory questionCategory = (QuestionCategory) DefaultOpenAnswerDefinitionPanel.this.getModelObject();
-        log.info("openField.onUpdate.{}.data={}", questionCategory.getName(), data);
-        activeQuestionnaireAdministrationService.answer(questionCategory, data);
+        Question question = (Question) DefaultOpenAnswerDefinitionPanel.this.questionModel.getObject();
+        log.info("openField.onUpdate.{}.data={}", question.getName() + "." + questionCategory.getName(), data);
+        // persist data
+        activeQuestionnaireAdministrationService.answer(question, questionCategory, data);
       }
 
     });
@@ -104,26 +126,25 @@ public abstract class DefaultOpenAnswerDefinitionPanel extends Panel {
       @Override
       protected void onEvent(AjaxRequestTarget target) {
         log.info("openField.onClick");
-        DefaultOpenAnswerDefinitionPanel.this.onSelect(target);
+        DefaultOpenAnswerDefinitionPanel.this.onSelect(target, DefaultOpenAnswerDefinitionPanel.this.questionModel, DefaultOpenAnswerDefinitionPanel.this.getModel());
       }
 
     });
 
     // set the label of the field
-    if(!isEmptyString(openLabel.getString())) {
+    QuestionnaireStringResourceModel questionCategoryLabel = new QuestionnaireStringResourceModel(questionCategory, "label");
+    QuestionnaireStringResourceModel questionLabel = new QuestionnaireStringResourceModel(questionModel, "label");
+    if(!questionCategory.getQuestion().getName().equals(((Question) questionModel.getObject()).getName())) {
+      openField.setLabel(new Model(questionLabel.getString() + " / " + questionCategoryLabel.getString()));
+    } else if(!isEmptyString(openLabel.getString())) {
       openField.setLabel(openLabel);
+    } else if(!isEmptyString(questionCategoryLabel.getString())) {
+      openField.setLabel(questionCategoryLabel);
+    } else if(!isEmptyString(unitLabel.getString())) {
+      openField.setLabel(unitLabel);
     } else {
-      QuestionnaireStringResourceModel questionCategoryLabel = new QuestionnaireStringResourceModel(questionCategory, "label");
-      if(!isEmptyString(questionCategoryLabel.getString())) {
-        openField.setLabel(questionCategoryLabel);
-      } else {
-        if(!isEmptyString(unitLabel.getString())) {
-          openField.setLabel(unitLabel);
-        } else {
-          // last chance : the question label !
-          openField.setLabel(new QuestionnaireStringResourceModel(questionCategory.getQuestion(), "label"));
-        }
-      }
+      // last chance : the question label !
+      openField.setLabel(questionLabel);
     }
   }
 
@@ -135,7 +156,14 @@ public abstract class DefaultOpenAnswerDefinitionPanel extends Panel {
     openField.setRequired(required);
   }
 
-  public abstract void onSelect(AjaxRequestTarget target);
+  /**
+   * Called when open field is selected.
+   * @param target
+   * @param questionModel
+   * @param questionCategoryModel
+   */
+  public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+  }
 
   public Data getData() {
     return data;

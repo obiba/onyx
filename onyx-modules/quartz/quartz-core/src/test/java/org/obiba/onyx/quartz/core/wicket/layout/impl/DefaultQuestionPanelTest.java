@@ -242,6 +242,7 @@ public class DefaultQuestionPanelTest {
 
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(0))).andReturn(null).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question.getQuestionCategories().get(0))).andReturn(null).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question.getQuestionCategories().get(1))).andReturn(previousCategoryAnswer).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();

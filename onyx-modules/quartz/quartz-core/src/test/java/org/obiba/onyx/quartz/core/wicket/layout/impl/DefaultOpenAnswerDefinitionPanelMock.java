@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.util.data.Data;
 
@@ -32,9 +33,9 @@ public class DefaultOpenAnswerDefinitionPanelMock extends FormMock {
     return panel = new DefaultOpenAnswerDefinitionPanel(id, model) {
 
       @Override
-      public void onSelect(AjaxRequestTarget target) {
+      public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
         assertModel.setObject(Boolean.TRUE);
-        DefaultOpenAnswerDefinitionPanelTest.log.info("onClick.{}", ((QuestionCategory) getModelObject()).getName());
+        DefaultOpenAnswerDefinitionPanelTest.log.info("onClick.{}.{}", ((Question) questionModel.getObject()).getName(), ((QuestionCategory) questionCategoryModel.getObject()).getName());
       }
 
     };

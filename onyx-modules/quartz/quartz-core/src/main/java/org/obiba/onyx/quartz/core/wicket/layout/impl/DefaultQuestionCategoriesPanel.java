@@ -76,9 +76,10 @@ public class DefaultQuestionCategoriesPanel extends Panel {
 
         @Override
         public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          Question question = (Question) questionModel.getObject();
           // ignore if multiple click in the same open field
-          if(this.equals(currentOpenField)) return;
+          if(this.getOpenField().equals(currentOpenField)) return;
+
+          Question question = (Question) questionModel.getObject();
 
           // make sure a previously selected open field is not asked for
           if(currentOpenField != null) {
@@ -224,10 +225,10 @@ public class DefaultQuestionCategoriesPanel extends Panel {
     DefaultOpenAnswerDefinitionPanel openField;
 
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
-      openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(questionCategory)) {
+      openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(questionCategory.getQuestion()), new QuestionnaireModel(questionCategory)) {
 
         @Override
-        public void onSelect(AjaxRequestTarget target) {
+        public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
 
         }
 
