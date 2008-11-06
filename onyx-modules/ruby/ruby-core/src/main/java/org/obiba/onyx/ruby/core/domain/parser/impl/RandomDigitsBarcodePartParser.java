@@ -27,7 +27,7 @@ public class RandomDigitsBarcodePartParser extends FixedSizeBarcodePartParser {
   static private final String NUMERIC_ONLY = "^\\d+$";
 
   /**
-   * Regular expression that matches all characters except for whitespace.
+   * Regular expression that matches alpha numeric characters.
    */
   static private final String ALPHANUMERIC = "^[A-Za-z0-9]+$";
 
