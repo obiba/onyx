@@ -1,0 +1,54 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+  <tx:annotation-driven transaction-manager="transactionManager" />
+
+  <bean name="consentDependency" class="org.obiba.onyx.engine.ConsentStageDependencyCondition">
+    <property name="stageName" value="CON" />
+  </bean>
+
+  <bean id="rubyOnyxModule" class="org.obiba.onyx.ruby.engine.RubyModule">
+    <property name="activeInterviewService" ref="activeInterviewService" />
+    <property name="stages">
+      <list>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="SamplesCollection" />
+          <property name="module" value="ruby" />
+          <property name="description" value="Samples_Collection" />
+          <property name="displayOrder" value="14" />
+          <property name="userSessionService" ref="userSessionService" />
+          <property name="stageDependencyCondition" ref="consentDependency" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="baseRubyStageState" parent="baseStageState"
+    class="org.obiba.onyx.quartz.engine.state.AbstractRubyStageState" abstract="true">
+    <property name="activeInterviewService" ref="activeInterviewService" />
+  </bean>
+
+  <bean id="rubyWaitingState" parent="baseRubyStageState" class="org.obiba.onyx.ruby.engine.state.RubyWaitingState"
+    scope="prototype" />
+
+  <bean id="rubyReadyState" parent="baseRubyStageState" class="org.obiba.onyx.ruby.engine.state.RubyReadyState"
+    scope="prototype" />
+
+  <bean id="rubyContraIndicatedState" parent="baseRubyStageState"
+    class="org.obiba.onyx.ruby.engine.state.RubyContraIndicatedState" scope="prototype" />
+
+  <bean id="rubyInProgressState" parent="baseRubyStageState"
+    class="org.obiba.onyx.ruby.engine.state.RubyInProgressState" scope="prototype">
+  </bean>
+
+  <bean id="rubyInterruptedState" parent="baseRubyStageState"
+    class="org.obiba.onyx.ruby.engine.state.RubyInterruptedState" scope="prototype" />
+
+  <bean id="rubyCompletedState" parent="baseRubyStageState" class="org.obiba.onyx.ruby.engine.state.RubyCompletedState"
+    scope="prototype" />
+
+</beans>
