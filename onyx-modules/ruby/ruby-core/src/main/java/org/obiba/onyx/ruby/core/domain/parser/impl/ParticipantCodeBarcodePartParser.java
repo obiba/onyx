@@ -9,28 +9,38 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.domain.parser.impl;
 
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.springframework.context.MessageSourceResolvable;
 
 /**
- * Implement random barcode part validation
+ *
  */
-public class RandomDigitsBarcodePartParser extends FixedSizeBarcodePartParser {
+public class ParticipantCodeBarcodePartParser extends FixedSizeBarcodePartParser {
+
   /**
    * it's a regular expression that part need to match.
    */
   private String format;
 
-  public void setFormat(String format) {
-    this.format = format;
-  }
-
   @Override
   protected MessageSourceResolvable validatePart(String part, ActiveInterviewService activeInterviewService) {
     MessageSourceResolvable error = null;
     if(!part.matches(format)) {
-      error = createBarcodeError("BarcodePartFormatError", "Invalid barcode part format.");
+      error = createBarcodeError("ParticipantCodeFormatError", "Invalid participant barcode format.");
+    } else {
+      Participant participant = activeInterviewService.getParticipant();
+      if(participant == null) {
+        error = createBarcodeError("ParticipantNotFoundError", "Current participant could not be found.");
+      } else if(!part.equals(participant.getBarcode())) {
+        error = createBarcodeError("ParticipantCodeValueError", "Participant code does not match the current one.");
+      }
     }
     return error;
   }
+
+  public void setFormat(String format) {
+    this.format = format;
+  }
+
 }

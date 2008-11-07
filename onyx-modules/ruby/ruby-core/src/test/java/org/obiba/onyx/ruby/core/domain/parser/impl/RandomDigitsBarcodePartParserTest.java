@@ -42,7 +42,7 @@ public class RandomDigitsBarcodePartParserTest {
    */
   @Test
   public void testShouldPassWithNumericFormat() {
-    parser.setIsNumericFormat(true);
+    parser.setFormat("^\\d+$");
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
     BarcodePart result = parser.eatAndValidatePart(new StringBuilder("1234567890"), null, errors);
     Assert.assertEquals(0, errors.size());
@@ -56,12 +56,12 @@ public class RandomDigitsBarcodePartParserTest {
    */
   @Test
   public void testShouldFailWithNumericFormat() {
-    parser.setIsNumericFormat(true);
+    parser.setFormat("^\\d+$");
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
     BarcodePart result = parser.eatAndValidatePart(new StringBuilder("e1234567890"), null, errors);
     Assert.assertEquals(1, errors.size());
     Assert.assertNull(result);
-    Assert.assertEquals("barcodePartValueError", errors.get(0).getCodes()[0]);
+    Assert.assertEquals("BarcodePartFormatError", errors.get(0).getCodes()[0]);
   }
 
   /**
@@ -71,7 +71,7 @@ public class RandomDigitsBarcodePartParserTest {
    */
   @Test
   public void testShouldPassWithAlphaNumericFormat() {
-    parser.setIsNumericFormat(false);
+    parser.setFormat("^[A-Za-z0-9]+$");
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
     BarcodePart result = parser.eatAndValidatePart(new StringBuilder("Ae1234567890"), null, errors);
     Assert.assertEquals(0, errors.size());
@@ -85,12 +85,12 @@ public class RandomDigitsBarcodePartParserTest {
    */
   @Test
   public void testShouldFailWithAlphaNumericFormat() {
-    parser.setIsNumericFormat(false);
+    parser.setFormat("^[A-Za-z0-9]+$");
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
     BarcodePart result = parser.eatAndValidatePart(new StringBuilder("e1 234567890"), null, errors);
     Assert.assertEquals(1, errors.size());
     Assert.assertNull(result);
-    Assert.assertEquals("barcodePartValueError", errors.get(0).getCodes()[0]);
+    Assert.assertEquals("BarcodePartFormatError", errors.get(0).getCodes()[0]);
   }
 
 }

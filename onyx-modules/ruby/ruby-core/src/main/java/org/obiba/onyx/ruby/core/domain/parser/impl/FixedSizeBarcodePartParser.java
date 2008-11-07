@@ -9,9 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.domain.parser.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.ruby.core.domain.BarcodePart;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.validation.ObjectError;
@@ -28,24 +29,36 @@ public abstract class FixedSizeBarcodePartParser implements IBarcodePartParser {
     return null;
   }
 
-  protected List<MessageSourceResolvable> validatePart(String part) {
-    if(part == null || part.length() != size) {
-      List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
-      setBarcodeError(errors, "barcodePartLengthError", "Invalid Barcode Part Length.");
-      return errors;
-    } else {
-      return null;
+  public BarcodePart eatAndValidatePart(StringBuilder barcodeFragment, ActiveInterviewService activeInterviewService, List<MessageSourceResolvable> errors) {
+    BarcodePart barcodePart = null;
+
+    try {
+
+      String part = barcodeFragment.substring(0, size);
+      barcodeFragment.delete(0, size);
+      MessageSourceResolvable error = validatePart(part, activeInterviewService);
+
+      if(error != null) {
+        errors.add(error);
+      } else {
+        barcodePart = new BarcodePart(part);
+      }
+
+    } catch(Exception e) {
+      errors.add(createBarcodeError("BarcodePartLengthError", "Invalid barcode part length."));
     }
+    return barcodePart;
   }
 
+  protected abstract MessageSourceResolvable validatePart(String part, ActiveInterviewService activeInterviewService);
+
   /**
-   * @param errors
    * @param code
    * @param defaultMsg
    */
-  protected void setBarcodeError(List<MessageSourceResolvable> errors, String code, String defaultMsg) {
-    MessageSourceResolvable valueError = new ObjectError("Barcode", new String[] { code }, null, defaultMsg);
-    errors.add(valueError);
+  protected MessageSourceResolvable createBarcodeError(String code, String defaultMsg) {
+    MessageSourceResolvable error = new ObjectError("Barcode", new String[] { code }, null, defaultMsg);
+    return error;
   }
 
   public void setSize(int size) {

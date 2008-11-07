@@ -41,18 +41,22 @@ public class FixedValueBarcodePartParserTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedValueBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)} .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedValueBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)}
+   * .
    */
   @Test
   public void testShouldPassEatAndValidatePart() {
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
-    BarcodePart result = parser.eatAndValidatePart(new StringBuilder("5432108978"), null, errors);
+    StringBuilder barcode = new StringBuilder("5432108978");
+    BarcodePart result = parser.eatAndValidatePart(barcode, null, errors);
     Assert.assertEquals(fixedValue, result.getPart());
+    Assert.assertEquals("08978", barcode.toString());
   }
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedValueBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)} .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedValueBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)}
+   * .
    */
   @Test
   public void testShouldGetPartLengthError() {
@@ -61,12 +65,13 @@ public class FixedValueBarcodePartParserTest {
     Assert.assertNull(result);
     Assert.assertEquals(1, errors.size());
     MessageSourceResolvable error = errors.get(0);
-    Assert.assertEquals("barcodePartLengthError", error.getCodes()[0]);
+    Assert.assertEquals("BarcodePartLengthError", error.getCodes()[0]);
   }
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedValueBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)} .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedValueBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)}
+   * .
    */
   @Test
   public void testShouldGetPartValueError() {
@@ -75,7 +80,7 @@ public class FixedValueBarcodePartParserTest {
     Assert.assertNull(result);
     Assert.assertEquals(1, errors.size());
     MessageSourceResolvable error = errors.get(0);
-    Assert.assertEquals("barcodePartValueError", error.getCodes()[0]);
+    Assert.assertEquals("BarcodePartValueError", error.getCodes()[0]);
   }
 
 }
