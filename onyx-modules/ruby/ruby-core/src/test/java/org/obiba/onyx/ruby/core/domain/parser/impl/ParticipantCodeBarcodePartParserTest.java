@@ -86,4 +86,67 @@ public class ParticipantCodeBarcodePartParserTest {
     Assert.assertEquals(part, barcodePart.getPart());
     Assert.assertEquals("08981", barcodeFragment.toString());
   }
+
+  /**
+   * Test method for
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedSizeBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)}
+   * .
+   */
+  @Test
+  public void testShouldFailValidationWithFormatError() {
+    StringBuilder barcodeFragment = new StringBuilder("!5432108981");
+
+    List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
+    BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, activeInterviewServiceMock, errors);
+
+    Assert.assertEquals(1, errors.size());
+    Assert.assertNull(barcodePart);
+    Assert.assertEquals("ParticipantCodeFormatError", errors.get(0).getCodes()[0]);
+  }
+
+  /**
+   * Test method for
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedSizeBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)}
+   * .
+   */
+  @Test
+  public void testShouldFailValidationWithParticipantNotFoundError() {
+    StringBuilder barcodeFragment = new StringBuilder("5432108981");
+
+    expect(activeInterviewServiceMock.getParticipant()).andReturn(null);
+    replay(activeInterviewServiceMock);
+
+    List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
+    BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, activeInterviewServiceMock, errors);
+
+    verify(activeInterviewServiceMock);
+    Assert.assertEquals(1, errors.size());
+    Assert.assertNull(barcodePart);
+    Assert.assertEquals("ParticipantNotFoundError", errors.get(0).getCodes()[0]);
+  }
+
+  /**
+   * Test method for
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedSizeBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)}
+   * .
+   */
+  @Test
+  public void testShouldFailValidationWithParticipantNotMatchError() {
+    StringBuilder barcodeFragment = new StringBuilder("5432108981");
+
+    Participant participant = new Participant();
+    participant.setBarcode("3210");
+
+    expect(activeInterviewServiceMock.getParticipant()).andReturn(participant);
+    replay(activeInterviewServiceMock);
+
+    List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
+    BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, activeInterviewServiceMock, errors);
+
+    verify(activeInterviewServiceMock);
+    Assert.assertEquals(1, errors.size());
+    Assert.assertNull(barcodePart);
+    Assert.assertEquals("ParticipantCodeMatchError", errors.get(0).getCodes()[0]);
+  }
+
 }

@@ -33,7 +33,7 @@ public class ParticipantCodeBarcodePartParser extends FixedSizeBarcodePartParser
       if(participant == null) {
         error = createBarcodeError("ParticipantNotFoundError", "Current participant could not be found.");
       } else if(!part.equals(participant.getBarcode())) {
-        error = createBarcodeError("ParticipantCodeValueError", "Participant code does not match the current one.");
+        error = createBarcodeError("ParticipantCodeMatchError", "Participant code does not match the current one.");
       }
     }
     return error;
