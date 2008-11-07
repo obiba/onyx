@@ -32,6 +32,10 @@ public abstract class DefaultQuestionnaireParticipantServiceImpl extends Persist
       List<CategoryAnswer> categoryAnswerList = getPersistenceManager().match(template);
 
       for(CategoryAnswer categoryAnswer : categoryAnswerList) {
+        if(categoryAnswer.getOpenAnswer() != null) {
+          getPersistenceManager().delete(categoryAnswer.getOpenAnswer());
+        }
+
         getPersistenceManager().delete(categoryAnswer);
       }
 
