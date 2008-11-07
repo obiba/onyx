@@ -160,11 +160,8 @@ public class DefaultQuestionPanelTest {
 
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(0))).andReturn(previousCategoryAnswer).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(1))).andReturn(previousCategoryAnswer).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(2))).andReturn(previousCategoryAnswer).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question.getQuestionCategories().get(0))).andReturn(previousCategoryAnswer).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question.getQuestionCategories().get(1))).andReturn(null).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(1))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
     activeQuestionnaireAdministrationServiceMock.deleteAnswers(question);
     expect(activeQuestionnaireAdministrationServiceMock.answer(question, question.getQuestionCategories().get(1), null)).andReturn(new CategoryAnswer());
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
@@ -246,11 +243,8 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(0))).andReturn(null).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(1))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(1))).andReturn(previousCategoryAnswer).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question.getQuestionCategories().get(0))).andReturn(null).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question.getQuestionCategories().get(1))).andReturn(previousCategoryAnswer).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
     activeQuestionnaireAdministrationServiceMock.deleteAnswers(question);
     expect(activeQuestionnaireAdministrationServiceMock.answer(question, question.getQuestionCategories().get(0), null)).andReturn(new CategoryAnswer());
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();

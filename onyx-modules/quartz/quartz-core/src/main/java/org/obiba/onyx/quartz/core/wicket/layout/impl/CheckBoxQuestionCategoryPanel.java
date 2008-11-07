@@ -90,7 +90,7 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
         } else {
           activeQuestionnaireAdministrationService.deleteAnswer(question, questionCategory);
         }
-        target.addComponent(CheckBoxQuestionCategoryPanel.this);
+        // target.addComponent(CheckBoxQuestionCategoryPanel.this);
         onCheckBoxSelection(target, CheckBoxQuestionCategoryPanel.this.questionModel, CheckBoxQuestionCategoryPanel.this.getModel());
       }
 
@@ -111,7 +111,7 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
           log.info("open.onclick.{}", questionCategory.getName());
           getSelectionModel().setObject(true);
           activeQuestionnaireAdministrationService.answer((Question) questionModel.getObject(), (QuestionCategory) getModelObject(), null);
-          target.addComponent(CheckBoxQuestionCategoryPanel.this);
+          // target.addComponent(CheckBoxQuestionCategoryPanel.this);
           onOpenFieldSelection(target, questionModel, questionCategoryModel);
         }
 

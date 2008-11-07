@@ -31,7 +31,7 @@ public class QuestionAnswer extends AbstractEntity {
   @ManyToOne
   @JoinColumn(name = "questionnaire_participant_id")
   private QuestionnaireParticipant questionnaireParticipant;
-  
+
   @OneToMany(mappedBy = "questionAnswer")
   private List<CategoryAnswer> categoryAnswers;
 
@@ -62,12 +62,17 @@ public class QuestionAnswer extends AbstractEntity {
   public List<CategoryAnswer> getCategoryAnswers() {
     return categoryAnswers != null ? categoryAnswers : (categoryAnswers = new ArrayList<CategoryAnswer>());
   }
-  
+
   public void addCategoryAnswer(CategoryAnswer categoryAnswer) {
-    if (categoryAnswer != null) {
+    if(categoryAnswer != null) {
       getCategoryAnswers().add(categoryAnswer);
       categoryAnswer.setQuestionAnswer(this);
     }
+  }
+
+  @Override
+  public String toString() {
+    return "QuestionAnswer=[" + questionName + ", CategoryAnswers.size=" + getCategoryAnswers().size() + "]";
   }
 
 }

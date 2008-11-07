@@ -36,6 +36,7 @@ public class QuestionCategoryCheckBoxModel extends AbstractCheckBoxModel {
     return (QuestionCategory) questionCategoryModel.getObject();
   }
 
+  @SuppressWarnings("unchecked")
   public Collection<IModel> getSelections() {
     return (Collection<IModel>) selectionsModel.getObject();
   }

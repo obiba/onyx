@@ -125,6 +125,7 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
         log.info("openField.onUpdate.{}.data={}", question.getName() + "." + questionCategory.getName(), data);
         // persist data
         activeQuestionnaireAdministrationService.answer(question, questionCategory, data);
+        DefaultOpenAnswerDefinitionPanel.this.onSubmit(target, DefaultOpenAnswerDefinitionPanel.this.questionModel, DefaultOpenAnswerDefinitionPanel.this.getModel());
       }
 
     });
@@ -171,6 +172,15 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
    * @param questionCategoryModel
    */
   public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+  }
+
+  /**
+   * Called when open field is submitted.
+   * @param target
+   * @param questionModel
+   * @param questionCategoryModel
+   */
+  public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
   }
 
   public Data getData() {

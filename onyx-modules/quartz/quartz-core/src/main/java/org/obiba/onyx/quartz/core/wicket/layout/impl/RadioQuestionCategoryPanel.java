@@ -5,9 +5,11 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.Radio;
+import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -44,8 +46,8 @@ public class RadioQuestionCategoryPanel extends Panel {
    * @param id
    * @param questionCategoryModel
    */
-  public RadioQuestionCategoryPanel(String id, IModel questionCategoryModel) {
-    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, true);
+  public RadioQuestionCategoryPanel(String id, IModel questionCategoryModel, RadioGroup radioGroup) {
+    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, radioGroup, true);
   }
 
   /**
@@ -57,13 +59,16 @@ public class RadioQuestionCategoryPanel extends Panel {
    * @param radioLabelVisible
    */
   @SuppressWarnings("serial")
-  public RadioQuestionCategoryPanel(String id, IModel questionModel, IModel questionCategoryModel, boolean radioLabelVisible) {
+  public RadioQuestionCategoryPanel(String id, IModel questionModel, IModel questionCategoryModel, final RadioGroup radioGroup, boolean radioLabelVisible) {
     super(id, questionCategoryModel);
     this.questionModel = questionModel;
 
     // previous answer or default selection
-    final QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
-    CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer((Question) questionModel.getObject(), questionCategory);
+    QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
+    Question question = (Question) questionModel.getObject();
+    CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(question, questionCategory);
+    // log.info("categoryAnswer.{}={}", question + "." + questionCategory, previousAnswer);
+    // log.info("questionAnswer={}", previousAnswer != null ? previousAnswer.getQuestionAnswer() : null);
 
     Radio radio = new Radio("radio", questionCategoryModel);
     radio.setLabel(new QuestionnaireStringResourceModel(questionCategoryModel, "label"));
@@ -80,14 +85,45 @@ public class RadioQuestionCategoryPanel extends Panel {
 
         @Override
         public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          log.info("open.onclick.{}", questionCategory.getName());
+          Question question = (Question) questionModel.getObject();
+          QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
+          log.info("openField.onSelect={}.{}", question, questionCategory);
+
+          // make sure radio selection does not conflict with open field selection
+          radioGroup.setModel(new Model());
+          radioGroup.setRequired(false);
+          getOpenField().setRequired(question.isRequired());
+
+          // exclusive choice, only one answer per question
+          activeQuestionnaireAdministrationService.deleteAnswers(question);
+          activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
+
           onOpenFieldSelection(target, questionModel, questionCategoryModel);
+        }
+
+        @Override
+        public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+          // make sure radio selection does not conflict with open field selection
+          radioGroup.setModel(new Model());
+          radioGroup.setRequired(false);
+
+          onOpenFieldSubmit(target, questionModel, questionCategoryModel);
         }
 
       };
       add(openField);
       openField.setRequired(previousAnswer != null && questionCategory.getQuestion().isRequired());
       radio.setVisible(false);
+
+      // previous answer or default selection
+      if(previousAnswer != null) {
+        radioGroup.setRequired(false);
+        openField.setRequired(questionCategory.getQuestion().isRequired());
+      } else if(questionCategory.isSelected()) {
+        radioGroup.setRequired(false);
+        openField.setRequired(questionCategory.getQuestion().isRequired());
+        activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
+      }
 
     } else {
       // no open answer
@@ -98,12 +134,39 @@ public class RadioQuestionCategoryPanel extends Panel {
 
         @Override
         protected void onEvent(AjaxRequestTarget target) {
-          log.info("radio.onchange.{}", questionCategory.getName());
+          Question question = (Question) RadioQuestionCategoryPanel.this.questionModel.getObject();
+
+          // make the radio group active for the selection
+          radioGroup.setModel(RadioQuestionCategoryPanel.this.getModel());
+          radioGroup.setRequired(question.isRequired());
+
+          // exclusive choice, only one answer per question
+          activeQuestionnaireAdministrationService.deleteAnswers(question);
+          activeQuestionnaireAdministrationService.answer(question, (QuestionCategory) RadioQuestionCategoryPanel.this.getModelObject(), null);
+
           onRadioSelection(target, RadioQuestionCategoryPanel.this.questionModel, RadioQuestionCategoryPanel.this.getModel());
         }
 
       });
+
+      // previous answer or default selection
+      if(previousAnswer != null) {
+        radioGroup.setModel(questionCategoryModel);
+      } else if(questionCategory.isSelected()) {
+        radioGroup.setModel(questionCategoryModel);
+        activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
+      }
     }
+  }
+
+  /**
+   * Called when open field is submitted.
+   * @param target
+   * @param questionModel
+   * @param questionCategoryModel
+   */
+  public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+
   }
 
   /**
@@ -111,9 +174,7 @@ public class RadioQuestionCategoryPanel extends Panel {
    * @param target
    */
   public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    // exclusive choice, only one answer per question
-    activeQuestionnaireAdministrationService.deleteAnswers((Question) questionModel.getObject());
-    activeQuestionnaireAdministrationService.answer((Question) questionModel.getObject(), (QuestionCategory) getModelObject(), null);
+
   }
 
   /**
@@ -121,9 +182,6 @@ public class RadioQuestionCategoryPanel extends Panel {
    * @param target
    */
   public void onRadioSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    // exclusive choice, only one answer per question
-    activeQuestionnaireAdministrationService.deleteAnswers((Question) questionModel.getObject());
-    activeQuestionnaireAdministrationService.answer((Question) questionModel.getObject(), (QuestionCategory) getModelObject(), null);
   }
 
   /**

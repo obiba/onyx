@@ -102,4 +102,9 @@ public class CategoryAnswer extends AbstractEntity {
     this.openAnswer = openAnswer;
     this.openAnswer.setCategoryAnswer(this);
   }
+
+  @Override
+  public String toString() {
+    return "CategoryAnswer=[" + categoryName + ", " + occurence + "]";
+  }
 }
