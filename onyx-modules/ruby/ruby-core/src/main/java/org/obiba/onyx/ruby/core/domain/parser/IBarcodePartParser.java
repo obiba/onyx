@@ -11,7 +11,6 @@ package org.obiba.onyx.ruby.core.domain.parser;
 
 import java.util.List;
 
-import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.ruby.core.domain.BarcodePart;
 import org.springframework.context.MessageSourceResolvable;
 
@@ -42,5 +41,11 @@ public interface IBarcodePartParser {
    * @param errors error list
    * @return consumed barcode part (<code>null</code> in case of errors)
    */
-  public BarcodePart eatAndValidatePart(StringBuilder barcodeFragment, ActiveInterviewService activeInterviewService, List<MessageSourceResolvable> errors);
+  public BarcodePart eatAndValidatePart(StringBuilder barcodeFragment, List<MessageSourceResolvable> errors);
+
+  /**
+   * @return consumed barcode part size
+   */
+  public int getSize();
+
 }
