@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
-import java.util.Map;
-
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
@@ -18,7 +16,6 @@ import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
-import org.obiba.onyx.jade.core.wicket.instrument.InstrumentInputParameterPanel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
@@ -38,9 +35,9 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
   private Long integerMaxValueMale;
 
   private Long integerMinValueFemale;
-  
+
   private Long integerMaxValueFemale;
-  
+
   private Double decimalMinValueMale;
 
   private Double decimalMaxValueMale;
@@ -48,7 +45,7 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
   private Double decimalMinValueFemale;
 
   private Double decimalMaxValueFemale;
-  
+
   public RangeCheck() {
     super();
   }
@@ -72,7 +69,7 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
   public void setIntegerMaxValueFemale(Long value) {
     integerMaxValueFemale = value;
   }
-  
+
   public void setDecimalMinValueMale(Double value) {
     decimalMinValueMale = value;
   }
@@ -88,7 +85,7 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
   public void setDecimalMaxValueFemale(Double value) {
     decimalMaxValueFemale = value;
   }
-  
+
   //
   // IntegrityCheck Methods
   //
@@ -96,8 +93,8 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
   @Override
   public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
     // Get the participant's gender (range is gender-dependent).
-    Gender gender = activeRunService.getParticipant().getGender(); 
-    
+    Gender gender = activeRunService.getParticipant().getGender();
+
     if(getValueType().equals(DataType.INTEGER)) {
       return checkIntegerParameterValue(paramData, gender);
     } else if(getValueType().equals(DataType.DECIMAL)) {
@@ -106,40 +103,37 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
 
     return false;
   }
-  
+
   protected Object[] getDescriptionArgs(ActiveInstrumentRunService activeRunService) {
     Object[] args = null;
-   
+
     // For male participants, return the min/max values for males; for female participants,
     // return the min/max values for females.
     Participant participant = activeRunService.getParticipant();
-    
-    if (getValueType().equals(DataType.INTEGER)) {
-      if (participant.getGender().equals(Gender.MALE)) {
+
+    if(getValueType().equals(DataType.INTEGER)) {
+      if(participant.getGender().equals(Gender.MALE)) {
         args = new Object[] { getTargetParameter().getDescription(), integerMinValueMale, integerMaxValueMale };
-      }
-      else if (participant.getGender().equals(Gender.FEMALE)) {
+      } else if(participant.getGender().equals(Gender.FEMALE)) {
         args = new Object[] { getTargetParameter().getDescription(), integerMinValueFemale, integerMaxValueFemale };
       }
-    }
-    else if (getValueType().equals(DataType.DECIMAL)) {
-      if (participant.getGender().equals(Gender.MALE)) {
+    } else if(getValueType().equals(DataType.DECIMAL)) {
+      if(participant.getGender().equals(Gender.MALE)) {
         args = new Object[] { getTargetParameter().getDescription(), decimalMinValueMale, decimalMaxValueMale };
-      }
-      else if (participant.getGender().equals(Gender.FEMALE)) {
+      } else if(participant.getGender().equals(Gender.FEMALE)) {
         args = new Object[] { getTargetParameter().getDescription(), decimalMinValueFemale, decimalMaxValueFemale };
       }
     }
-    
+
     return args;
   }
-  
+
   private boolean checkIntegerParameterValue(Data paramData, Gender gender) {
     boolean withinRange = true;
 
     Long minValue = gender.equals(Gender.MALE) ? integerMinValueMale : integerMinValueFemale;
     Long maxValue = gender.equals(Gender.MALE) ? integerMaxValueMale : integerMaxValueFemale;
-    
+
     if(minValue != null) {
       if(minValue.compareTo((Long) paramData.getValue()) > 0) {
         withinRange = false;
