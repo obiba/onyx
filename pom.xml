@@ -501,6 +501,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <configuration>
+          <inputEncoding>ISO-8859-1</inputEncoding>
           <templateFile>${basedir}/src/site/maven-site.vm</templateFile>
         </configuration>
       </plugin>
