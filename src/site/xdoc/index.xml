@@ -25,18 +25,18 @@
         <ol>
           <li>
             <strong>Onyx: The assessment center application</strong>
-            <br />
+            <br /><p>
             Participants are invited by the enrolment unit to show up at a designated assessment center for signing
             consent form, answering questionnaires on health and life style, submitting to physical measurements and
             giving bio-samples. The Onyx software, inspired by that of the UK biobank, consists of independent web-based
             data collection modules (basically one for each stage) integrated together in a configurable manner to track
             participant interviews and collect data. To know more, see the
-            <a href="onyx.html">Onyx section</a>.
+            <a href="onyx.html">Onyx section</a>.</p>
           </li>
 
           <li>
             <strong>DCC: The Data Coordinating Center application</strong>
-            <br />
+            <br /><p>
             Once collected in assessment centers, data are transferred, processed and stored into the main study
             database. The DCC application is a web-based application linked to this database which provides a metadata
             catalogue of the variables of a study as well as querying and reporting tools for administrative and
@@ -45,7 +45,7 @@
             <a href="http://www.p3gobservatory.org">P3G Observatory</a>
             and leader of the
             <a href="http://www.p3gobservatory.org/datashaper/explorer.htm">DataSHaPER</a>
-            project. There is no source code available yet. Coding should start during winter 2009.
+            project. There is no source code available yet. Coding should start during winter 2009.</p>
           </li>
         </ol>
 
