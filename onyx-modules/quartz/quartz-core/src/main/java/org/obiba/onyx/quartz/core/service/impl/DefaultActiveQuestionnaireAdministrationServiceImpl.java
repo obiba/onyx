@@ -195,10 +195,8 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     if(categoryAnswer != null) {
       QuestionAnswer questionAnswer = categoryAnswer.getQuestionAnswer();
 
-      OpenAnswer openAnswer = categoryAnswer.getOpenAnswer();
-      if(openAnswer != null) getPersistenceManager().delete(openAnswer);
+      deleteAnswers(categoryAnswer);
 
-      getPersistenceManager().delete(categoryAnswer);
       getPersistenceManager().refresh(questionAnswer);
       if(questionAnswer.getCategoryAnswers().size() == 0) {
         getPersistenceManager().delete(questionAnswer);
@@ -213,12 +211,23 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
 
     for(CategoryAnswer categoryAnswer : findAnswers(question)) {
       if(questionAnswer == null) questionAnswer = categoryAnswer.getQuestionAnswer();
-      getPersistenceManager().delete(categoryAnswer);
+      deleteAnswers(categoryAnswer);
     }
 
     if(questionAnswer != null) getPersistenceManager().delete(questionAnswer);
 
     // TODO deal with category answer parent
+  }
+
+  /**
+   * Delete the category answer and its open answers.
+   * @param categoryAnswer
+   */
+  private void deleteAnswers(CategoryAnswer categoryAnswer) {
+    if(categoryAnswer.getOpenAnswer() != null) {
+      getPersistenceManager().delete(categoryAnswer.getOpenAnswer());
+    }
+    getPersistenceManager().delete(categoryAnswer);
   }
 
   public void setActiveAnswers(Question question, boolean active) {
