@@ -12,6 +12,8 @@ package org.obiba.onyx.quartz.core.domain.answer;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
@@ -25,6 +27,7 @@ public class OpenAnswer extends AbstractEntity {
 
   private static final long serialVersionUID = 8772952316177874064L;
 
+  @Enumerated(EnumType.STRING)
   private DataType dataType;
 
   private String textValue;
