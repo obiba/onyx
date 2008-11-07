@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <document>
   <properties>
-    <title>BIMS Overview</title>
+    <title>OBIMS Overview</title>
     <author>Vincent Ferretti</author>
     <author>Nancy Lambert</author>
     <author>Philippe Laflamme</author>
   </properties>
   <body>
     <section name="BIMS Overview">
-      <subsection name="The Obiba Biobank Information Management System">
+      <subsection name="The OBiBa Biobank Information Management System">
 
         <p>
           The Canadian Partnership Against Cancer (CPAC) network of biobanks was launched in 2008 and comprises
           <strong>five
-            major Canadian cohorts</strong>
-          who aim to recruit a total of 300 000 participants over the next 3 years.
+            major Canadian cohorts</strong> who aim to recruit a total of 300 000 participants over the next 3 years. They are: British Columbia, <a href="http://www.cancerboard.ab.ca/tomorrow/">The Tomorrow Project</a> in Alberta, <a href="http://www.p3gobservatory.org/catalogue.htm?studyId=103">Ontario Cohort Consortium</a>, <a href="http://www.cartagene.qc.ca">CARTaGENE</a> in Quebec and finally Atlantic. 
         </p>
 
-        <p>The Obiba Consortium mission is to build a configurable biobank information management system, generic
+        <p>The OBiBa Consortium mission is to build a configurable biobank information management system, generic
           enough to meet the specific requirements of the 5 partners and, by the same token, any other biobanks that
           would
           be interested in using it.</p>
 
-        <p>The Obiba system currently includes two main components, each of one which corresponds to a distinct
+        <p>The OBiBa system currently includes two main components, each of one which corresponds to a distinct
           sub-project (see figure bellow): </p>
 
         <ol>
