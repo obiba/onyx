@@ -70,8 +70,7 @@ table.array tr.headers th.category {
 	background-color:#E1E3E5;
 	border-bottom:1px solid #FFFFFF;
 	color:#666666;
-	padding-left:5px;
-	padding-right:5px;
+	padding:10px;
 	font-weight: normal;
 	text-align:center;
 }
