@@ -11,5 +11,6 @@
   <questionnaire_participant/>
   <question_answer/>
   <category_answer/>
+  <open_answer/>
   
 </dataset>

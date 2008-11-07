@@ -17,19 +17,27 @@
   <answers>
     <entry>
       <string>Q2</string><!-- Set Q2 (BIRTHDATE) answer to 1980. -->
-      <categoryAnswer>
-        <categoryName>1</categoryName>
-        <dataType>INTEGER</dataType>
-        <integerValue>1980</integerValue>
-      </categoryAnswer>
+      <categoryAnswer reference="cat_1"/>
     </entry>
     <entry>
       <string>Q3</string><!-- Set Q3 (BIRTHMONTH) answer to 12. -->
-      <categoryAnswer>
-        <categoryName>1</categoryName>
-        <dataType>INTEGER</dataType>
-        <integerValue>12</integerValue>
-      </categoryAnswer>
+      <categoryAnswer reference="cat_2"/>
     </entry>
   </answers>
 </configurableAnswerProvider>
+
+<categoryAnswer id="cat_1">
+  <categoryName>1</categoryName>
+  <openAnswer>
+    <dataType>INTEGER</dataType>
+    <integerValue>1980</integerValue>
+  </openAnswer>
+</categoryAnswer>
+
+<categoryAnswer id="cat_2">
+  <categoryName>1</categoryName>
+  <openAnswer>
+    <dataType>INTEGER</dataType>
+          <integerValue>12</integerValue>
+  </openAnswer>
+</categoryAnswer> 

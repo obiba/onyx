@@ -71,7 +71,7 @@ public class AnswerCondition extends Condition {
     if(categoryAnswer == null) return false;
 
     if(dataComparator != null) {
-      int compareResult = categoryAnswer.getData().compareTo(dataComparator.getData());
+      int compareResult = categoryAnswer.getOpenAnswer().getData().compareTo(dataComparator.getData());
       return dataComparator.isComparisonValid(compareResult);
     }
 

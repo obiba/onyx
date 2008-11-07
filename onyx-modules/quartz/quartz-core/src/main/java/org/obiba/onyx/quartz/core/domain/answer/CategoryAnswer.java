@@ -9,18 +9,15 @@
 package org.obiba.onyx.quartz.core.domain.answer;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataBuilder;
-import org.obiba.onyx.util.data.DataType;
 
 @Entity
 public class CategoryAnswer extends AbstractEntity {
@@ -33,16 +30,6 @@ public class CategoryAnswer extends AbstractEntity {
 
   private Boolean active;
 
-  private DataType dataType;
-
-  private String textValue;
-
-  private Long integerValue;
-
-  private Double decimalValue;
-
-  private Date dateValue;
-
   @ManyToOne
   @JoinColumn(name = "question_answer_id")
   private QuestionAnswer questionAnswer;
@@ -53,6 +40,9 @@ public class CategoryAnswer extends AbstractEntity {
 
   @OneToMany(mappedBy = "parentCategoryAnswer")
   private List<CategoryAnswer> childrenCategoryAnswers;
+
+  @OneToOne(mappedBy = "categoryAnswer")
+  private OpenAnswer openAnswer;
 
   public QuestionAnswer getQuestionAnswer() {
     return questionAnswer;
@@ -86,46 +76,6 @@ public class CategoryAnswer extends AbstractEntity {
     this.active = active;
   }
 
-  public DataType getDataType() {
-    return dataType;
-  }
-
-  public void setDataType(DataType dataType) {
-    this.dataType = dataType;
-  }
-
-  public String getTextValue() {
-    return textValue;
-  }
-
-  public void setTextValue(String textValue) {
-    this.textValue = textValue;
-  }
-
-  public Long getIntegerValue() {
-    return integerValue;
-  }
-
-  public void setIntegerValue(Long integerValue) {
-    this.integerValue = integerValue;
-  }
-
-  public Double getDecimalValue() {
-    return decimalValue;
-  }
-
-  public void setDecimalValue(Double decimalValue) {
-    this.decimalValue = decimalValue;
-  }
-
-  public Date getDateValue() {
-    return dateValue;
-  }
-
-  public void setDateValue(Date dateValue) {
-    this.dateValue = dateValue;
-  }
-
   public CategoryAnswer getParentCategoryAnswer() {
     return parentCategoryAnswer;
   }
@@ -140,62 +90,16 @@ public class CategoryAnswer extends AbstractEntity {
     return getParentCategoryAnswer().getQuestionAnswer();
   }
 
-  public Data getData() {
-    Data data = null;
-
-    if(getDataType() == null) return null;
-
-    switch(getDataType()) {
-
-    case DATE:
-      data = DataBuilder.buildDate(dateValue);
-      break;
-
-    case DECIMAL:
-      data = DataBuilder.buildDecimal(decimalValue);
-      break;
-
-    case INTEGER:
-      data = DataBuilder.buildInteger(integerValue);
-      break;
-
-    case TEXT:
-      data = DataBuilder.buildText(textValue);
-      break;
-    }
-
-    return data;
-  }
-
-  public void setData(Data data) {
-
-    if(data != null) {
-      if(data.getType() == getDataType()) {
-
-        switch(getDataType()) {
-        case DATE:
-          dateValue = data.getValue();
-          break;
-
-        case DECIMAL:
-          decimalValue = data.getValue();
-          break;
-
-        case INTEGER:
-          integerValue = data.getValue();
-          break;
-
-        case TEXT:
-          textValue = data.getValue();
-          break;
-        }
-      } else {
-        throw new IllegalArgumentException("DataType " + getDataType() + " expected, " + data.getType() + " received.");
-      }
-    }
-  }
-
   public List<CategoryAnswer> getChildrenCategoryAnswers() {
     return childrenCategoryAnswers != null ? childrenCategoryAnswers : (childrenCategoryAnswers = new ArrayList<CategoryAnswer>());
+  }
+
+  public OpenAnswer getOpenAnswer() {
+    return openAnswer;
+  }
+
+  public void setOpenAnswer(OpenAnswer openAnswer) {
+    this.openAnswer = openAnswer;
+    this.openAnswer.setCategoryAnswer(this);
   }
 }

@@ -79,7 +79,7 @@ public class DropDownQuestionCategoriesPanel extends Panel {
       }
 
       // Previous question contains an open answer
-      if(activeQuestionnaireAdministrationService.findAnswer(selectedQuestionCategory).getData() != null) {
+      if(activeQuestionnaireAdministrationService.findAnswer(selectedQuestionCategory).getOpenAnswer() != null) {
 
         openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(selectedQuestionCategory));
 

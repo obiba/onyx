@@ -76,8 +76,8 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
     OpenAnswerDefinition openAnswerDefinition = questionCategory.getCategory().getOpenAnswerDefinition();
 
     CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer((Question) questionModel.getObject(), questionCategory);
-    if(previousAnswer != null) {
-      data = previousAnswer.getData();
+    if(previousAnswer != null && previousAnswer.getOpenAnswer() != null) {
+      data = previousAnswer.getOpenAnswer().getData();
     }
 
     QuestionnaireStringResourceModel openLabel = new QuestionnaireStringResourceModel(openAnswerDefinition, "label");

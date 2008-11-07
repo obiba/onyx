@@ -85,7 +85,7 @@ public class CreateQuestionnaire {
     builder.inSection("SB").withSection("BIRTHDATE").withPage("P2").withQuestion("Q2", DropDownQuestionPanelFactory.class).withCategory("1").withOpenAnswerDefinition("year", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new PatternValidator("\\d{4}"), DataType.TEXT));
     builder.inQuestion("Q2").withSharedCategory(NO_ANSWER).setExportName("8888");
     builder.inQuestion("Q2").withSharedCategory(DONT_KNOW).setExportName("9999");
-    builder.inSection("BIRTHDATE").withPage("P3").withQuestion("Q3").withCategory("1").withOpenAnswerDefinition("month", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new PatternValidator("\\d{2}"), DataType.TEXT));
+    builder.inSection("BIRTHDATE").withPage("P3").withQuestion("Q3").withCategory("1").withOpenAnswerDefinition("month", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new PatternValidator("\\d\\d?"), DataType.TEXT));
     builder.inQuestion("Q3").withSharedCategory(NO_ANSWER).setExportName("88");
     builder.inQuestion("Q3").withSharedCategory(DONT_KNOW).setExportName("99");
     builder.inSection("BIRTHDATE").withPage("P4").withQuestion("Q4").withCategory("1").withOpenAnswerDefinition("age", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));

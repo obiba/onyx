@@ -21,6 +21,7 @@ import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.test.spring.Dataset;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -85,6 +86,7 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     testSetActiveAnswers();
     testSetDeleteAnswer(q1);
     testSetDeleteAnswers(q1);
+    testSetDeleteOpenAnswer(q2);
 
   }
 
@@ -97,7 +99,8 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     Assert.assertEquals("1", catAnswer_1.getCategoryName());
     Assert.assertEquals(questionnaireParticipant, catAnswer_1.getQuestionAnswer().getQuestionnaireParticipant());
     Assert.assertEquals("Q1", catAnswer_1.getQuestionAnswer().getQuestionName());
-    Assert.assertEquals("1979", year.getData().getValueAsString());
+    Assert.assertNotNull(year.getOpenAnswer());
+    Assert.assertEquals("1979", year.getOpenAnswer().getData().getValueAsString());
     Assert.assertNotNull(catAnswer_1.getId());
   }
 
@@ -110,7 +113,7 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
 
   private void testFindAnswer(Question q2) {
     CategoryAnswer yearFound = activeQuestionnaireAdministrationService.findAnswer(q2.getQuestionCategories().get(0));
-    Assert.assertEquals("1979", yearFound.getData().getValueAsString());
+    Assert.assertEquals("1979", yearFound.getOpenAnswer().getData().getValueAsString());
   }
 
   private void testSetActiveAnswers() {
@@ -141,6 +144,13 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     activeQuestionnaireAdministrationService.deleteAnswers(q1);
     Assert.assertNull(activeQuestionnaireAdministrationService.findAnswer(q1.getQuestionCategories().get(2)));
     Assert.assertNull(activeQuestionnaireAdministrationService.findAnswer(q1.getQuestionCategories().get(1)));
+  }
+
+  public void testSetDeleteOpenAnswer(Question q2) {
+    Assert.assertNotNull(persistenceManager.get(OpenAnswer.class, Long.valueOf("1")));
+    activeQuestionnaireAdministrationService.deleteAnswer(q2.getQuestionCategories().get(0));
+    Assert.assertNull(activeQuestionnaireAdministrationService.findAnswer(q2.getQuestionCategories().get(0)));
+    Assert.assertNull(persistenceManager.get(OpenAnswer.class, Long.valueOf("1")));
   }
 
   public Questionnaire createQuestionnaire() {

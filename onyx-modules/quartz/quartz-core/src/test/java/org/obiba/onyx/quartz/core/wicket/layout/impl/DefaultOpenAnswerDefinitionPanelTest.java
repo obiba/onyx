@@ -33,6 +33,7 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -106,8 +107,11 @@ public class DefaultOpenAnswerDefinitionPanelTest {
 
     final Questionnaire questionnaire = createQuestionnaire();
     CategoryAnswer previousAnswer = new CategoryAnswer();
-    previousAnswer.setDataType(DataType.INTEGER);
-    previousAnswer.setData(DataBuilder.buildInteger(321l));
+    OpenAnswer openAnswer = new OpenAnswer();
+    openAnswer.setDataType(DataType.INTEGER);
+    openAnswer.setData(DataBuilder.buildInteger(321l));
+    previousAnswer.setOpenAnswer(openAnswer);
+
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer((Question) EasyMock.anyObject(), (QuestionCategory) EasyMock.anyObject())).andReturn(previousAnswer).atLeastOnce();
@@ -172,8 +176,11 @@ public class DefaultOpenAnswerDefinitionPanelTest {
 
     final Questionnaire questionnaire = createQuestionnaire();
     CategoryAnswer previousAnswer = new CategoryAnswer();
-    previousAnswer.setDataType(DataType.TEXT);
-    previousAnswer.setData(DataBuilder.buildText("c"));
+    OpenAnswer openAnswer = new OpenAnswer();
+    openAnswer.setDataType(DataType.TEXT);
+    openAnswer.setData(DataBuilder.buildText("c"));
+    previousAnswer.setOpenAnswer(openAnswer);
+
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer((Question) EasyMock.anyObject(), (QuestionCategory) EasyMock.anyObject())).andReturn(previousAnswer).atLeastOnce();

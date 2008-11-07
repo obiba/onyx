@@ -61,7 +61,7 @@ public class NavigationStrategySupport {
 
         if(!answers.isEmpty()) {
           for(CategoryAnswer answer : answers) {
-            if(answer.getData() == null || answer.getData().getValue() == null) {
+            if(answer.getOpenAnswer() == null || answer.getOpenAnswer().getData() == null || answer.getOpenAnswer().getData().getValue() == null) {
               return true;
             }
           }

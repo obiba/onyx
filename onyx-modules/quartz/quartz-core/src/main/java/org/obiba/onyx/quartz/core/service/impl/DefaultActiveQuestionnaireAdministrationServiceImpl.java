@@ -13,6 +13,7 @@ import java.util.Locale;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -156,6 +157,8 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     CategoryAnswer categoryTemplate = new CategoryAnswer();
     categoryTemplate.setCategoryName(questionCategory.getCategory().getName());
     CategoryAnswer categoryAnswer;
+    OpenAnswer openAnswerTemplate = new OpenAnswer();
+    OpenAnswer openAnswer = null;
 
     if(questionAnswer == null) {
       questionAnswer = getPersistenceManager().save(template);
@@ -164,12 +167,20 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     } else {
       categoryTemplate.setQuestionAnswer(questionAnswer);
       categoryAnswer = getPersistenceManager().matchOne(categoryTemplate);
-      if(categoryAnswer == null) categoryAnswer = categoryTemplate;
+      if(categoryAnswer == null) {
+        categoryAnswer = categoryTemplate;
+      } else {
+        openAnswerTemplate.setCategoryAnswer(categoryAnswer);
+        openAnswer = getPersistenceManager().matchOne(openAnswerTemplate);
+      }
     }
 
     if(value != null) {
-      categoryAnswer.setDataType(value.getType());
-      categoryAnswer.setData(value);
+      if(openAnswer == null) openAnswer = openAnswerTemplate;
+      openAnswer.setDataType(value.getType());
+      openAnswer.setData(value);
+      getPersistenceManager().save(openAnswer);
+      categoryAnswer.setOpenAnswer(openAnswer);
     }
 
     return getPersistenceManager().save(categoryAnswer);
@@ -183,6 +194,10 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     CategoryAnswer categoryAnswer = findAnswer(question, questionCategory);
     if(categoryAnswer != null) {
       QuestionAnswer questionAnswer = categoryAnswer.getQuestionAnswer();
+
+      OpenAnswer openAnswer = categoryAnswer.getOpenAnswer();
+      if(openAnswer != null) getPersistenceManager().delete(openAnswer);
+
       getPersistenceManager().delete(categoryAnswer);
       getPersistenceManager().refresh(questionAnswer);
       if(questionAnswer.getCategoryAnswers().size() == 0) {

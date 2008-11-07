@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.TimestampSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -95,8 +96,10 @@ public class DefaultNavigationStrategyImplTest {
     //
     q1Answers = new ArrayList<CategoryAnswer>();
     CategoryAnswer q1Answer = new CategoryAnswer();
-    q1Answer.setDataType(DataType.INTEGER);
-    q1Answer.setIntegerValue(1l);
+    OpenAnswer q1OAnswer = new OpenAnswer();
+    q1OAnswer.setDataType(DataType.INTEGER);
+    q1OAnswer.setIntegerValue(1l);
+    q1Answer.setOpenAnswer(q1OAnswer);
     q1Answers.add(q1Answer);
 
     q2Answers = new ArrayList<CategoryAnswer>();
@@ -127,8 +130,10 @@ public class DefaultNavigationStrategyImplTest {
     //
     q1Answers = new ArrayList<CategoryAnswer>();
     CategoryAnswer q1Answer = new CategoryAnswer();
-    q1Answer.setDataType(DataType.INTEGER);
-    q1Answer.setIntegerValue(1l);
+    OpenAnswer q1OAnswer = new OpenAnswer();
+    q1OAnswer.setDataType(DataType.INTEGER);
+    q1OAnswer.setIntegerValue(1l);
+    q1Answer.setOpenAnswer(q1OAnswer);
     q1Answers.add(q1Answer);
 
     q2Answers = new ArrayList<CategoryAnswer>();
@@ -171,8 +176,10 @@ public class DefaultNavigationStrategyImplTest {
     //
     q1Answers = new ArrayList<CategoryAnswer>();
     CategoryAnswer q1Answer = new CategoryAnswer();
-    q1Answer.setDataType(DataType.INTEGER);
-    q1Answer.setIntegerValue(1l);
+    OpenAnswer q1OAnswer = new OpenAnswer();
+    q1OAnswer.setDataType(DataType.INTEGER);
+    q1OAnswer.setIntegerValue(1l);
+    q1Answer.setOpenAnswer(q1OAnswer);
     q1Answers.add(q1Answer);
 
     q2Answers = new ArrayList<CategoryAnswer>();

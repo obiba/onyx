@@ -517,7 +517,7 @@ public abstract class AbstractQuestionnaireTest {
    * @param answer answer
    */
   private void answerQuestionImpl(Question question, CategoryAnswer answer) {
-    if(answer.getData() != null) {
+    if(answer.getOpenAnswer() != null) {
       openAnswer(question, answer);
     } else {
       radioButtonAnswer(question, answer);
@@ -535,7 +535,7 @@ public abstract class AbstractQuestionnaireTest {
     FormTester formTester = wicketTester.newFormTester(getFormPath());
 
     wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getInputFieldComponentId(question), "onclick");
-    formTester.setValue(getInputFieldComponentId(question), answer.getData().getValueAsString());
+    formTester.setValue(getInputFieldComponentId(question), answer.getOpenAnswer().getData().getValueAsString());
     wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getInputFieldComponentId(question), ONBLUR_EVENT);
   }
 

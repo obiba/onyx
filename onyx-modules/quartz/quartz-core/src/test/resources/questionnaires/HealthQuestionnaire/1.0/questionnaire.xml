@@ -99,7 +99,7 @@
                               <dataType>TEXT</dataType>
                               <validator class="org.apache.wicket.validation.validator.PatternValidator" id="52">
                                 <pattern id="53">
-                                  <pattern>\d{2}</pattern>
+                                  <pattern>\d\d?</pattern>
                                   <flags>0</flags>
                                 </pattern>
                               </validator>
