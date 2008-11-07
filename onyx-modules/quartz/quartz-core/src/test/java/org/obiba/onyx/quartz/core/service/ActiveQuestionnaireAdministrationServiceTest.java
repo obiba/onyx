@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import junit.framework.Assert;
 
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
@@ -21,6 +22,7 @@ import org.obiba.core.test.spring.Dataset;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
@@ -145,7 +147,7 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
 
     builder.withSection("SB").withSection("GENDER").withPage("P1").withQuestion("Q1").withCategories("1", "2", "3");
-    builder.inPage("P1").withQuestion("Q2").withCategory("1").withOpenAnswerDefinition("year", DataType.INTEGER).setOpenAnswerDefinitionFormat("YYYY");
+    builder.inPage("P1").withQuestion("Q2").withCategory("1").withOpenAnswerDefinition("year", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new PatternValidator("\\d{4}"), DataType.TEXT));
     builder.inSection("SB").withSection("MOCK").withPage("P2").withQuestion("Q3").withCategories("1", "2");
     builder.inQuestion("Q3").withQuestion("Q4").withCategories("subcat1", "subcat2", "subcat3");
 

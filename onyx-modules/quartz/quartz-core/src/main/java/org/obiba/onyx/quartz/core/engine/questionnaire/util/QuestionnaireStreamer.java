@@ -68,7 +68,6 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(OpenAnswerDefinition.class, "name");
     xstream.useAttributeFor(OpenAnswerDefinition.class, "dataType");
     xstream.useAttributeFor(OpenAnswerDefinition.class, "unit");
-    xstream.useAttributeFor(OpenAnswerDefinition.class, "format");
     xstream.alias("data", Data.class);
     xstream.useAttributeFor(Data.class, "type");
   }

@@ -19,6 +19,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -104,6 +105,13 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
     } else {
       openField = new DataField("open", new PropertyModel(this, "data"), openAnswerDefinition.getDataType(), unitLabel.getString());
     }
+
+    if(openAnswerDefinition.getValidators() != null) {
+      for(DataValidator validator : openAnswerDefinition.getValidators()) {
+        openField.add(validator);
+      }
+    }
+
     // TODO check if open answer is always required when defined ?
     openField.setRequired(true);
     add(openField);

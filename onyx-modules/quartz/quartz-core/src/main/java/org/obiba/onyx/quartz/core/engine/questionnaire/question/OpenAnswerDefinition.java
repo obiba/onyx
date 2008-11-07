@@ -30,15 +30,7 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
 
   private String unit;
 
-  private String format;
-
-  private Data absoluteMinValue;
-
-  private Data absoluteMaxValue;
-
-  private Data usualMinValue;
-
-  private Data usualMaxValue;
+  private List<DataValidator> validators;
 
   private List<Data> defaultValues;
 
@@ -73,56 +65,12 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
     this.unit = unit;
   }
 
-  public String getFormat() {
-    return format;
+  public List<DataValidator> getValidators() {
+    return validators != null ? validators : (validators = new ArrayList<DataValidator>());
   }
 
-  public void setFormat(String format) {
-    this.format = format;
-  }
-
-  public Data getAbsoluteMinValue() {
-    return absoluteMinValue;
-  }
-
-  public void setAbsoluteMinValue(Data absoluteMinValue) {
-    if(absoluteMinValue != null && !absoluteMinValue.getType().equals(getDataType())) {
-      throw new IllegalArgumentException("Wrong data type for absolute min value: " + getDataType() + " expected, " + absoluteMinValue.getType() + " found.");
-    }
-    this.absoluteMinValue = absoluteMinValue;
-  }
-
-  public Data getAbsoluteMaxValue() {
-    return absoluteMaxValue;
-  }
-
-  public void setAbsoluteMaxValue(Data absoluteMaxValue) {
-    if(absoluteMaxValue != null && !absoluteMaxValue.getType().equals(getDataType())) {
-      throw new IllegalArgumentException("Wrong data type for absolute max value: " + getDataType() + " expected, " + absoluteMaxValue.getType() + " found.");
-    }
-    this.absoluteMaxValue = absoluteMaxValue;
-  }
-
-  public Data getUsualMinValue() {
-    return usualMinValue;
-  }
-
-  public void setUsualMinValue(Data usualMinValue) {
-    if(usualMinValue != null && !usualMinValue.getType().equals(getDataType())) {
-      throw new IllegalArgumentException("Wrong data type for usual min value: " + getDataType() + " expected, " + usualMinValue.getType() + " found.");
-    }
-    this.usualMinValue = usualMinValue;
-  }
-
-  public Data getUsualMaxValue() {
-    return usualMaxValue;
-  }
-
-  public void setUsualMaxValue(Data usualMaxValue) {
-    if(usualMaxValue != null && !usualMaxValue.getType().equals(getDataType())) {
-      throw new IllegalArgumentException("Wrong data type for usual max value: " + getDataType() + " expected, " + usualMaxValue.getType() + " found.");
-    }
-    this.usualMaxValue = usualMaxValue;
+  public void addValidator(DataValidator validator) {
+    getValidators().add(validator);
   }
 
   public List<Data> getDefaultValues() {

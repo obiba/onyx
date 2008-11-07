@@ -11,16 +11,18 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.localization;
 
 import junit.framework.Assert;
 
+import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.junit.Test;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class QuestionnaireLocalizationTest extends BaseDefaultSpringContextTestCase {
 
-  @Autowired(required=true)
+  @Autowired(required = true)
   private IPropertyKeyProvider propertyKeyProvider;
 
   private static final String YES = "YES";
@@ -45,8 +47,8 @@ public class QuestionnaireLocalizationTest extends BaseDefaultSpringContextTestC
     builder.inPage("P3").withQuestion("Q4").withSharedCategories(YES, NO, DONT_KNOW);
 
     builder.withSection("S2").withSection("S2_1").withPage("P4");
-    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).setOpenAnswerDefinitionAbsoluteValues(DataBuilder.buildInteger(40), DataBuilder.buildInteger(70));
-    builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").setOpenAnswerDefinitionFormat("[a-z,A-Z]+");
+    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));
+    builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").addOpenAnswerDefintionValidator(new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
 
     try {
       propertyKeyProvider.getPropertyKey(builder.getQuestionnaire(), "tata");

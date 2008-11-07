@@ -19,20 +19,22 @@ import java.util.Properties;
 
 import junit.framework.Assert;
 
+import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.junit.Test;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.util.FileUtil;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
-import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase {
 
-  @Autowired(required=true)
+  @Autowired(required = true)
   private IPropertyKeyProvider propertyKeyProvider;
-  
+
   public static final String QUESTIONNAIRE_BASE_NAME = "questionnaire";
 
   private static final String YES = "YES";
@@ -57,8 +59,8 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
     builder.inPage("P3").withQuestion("Q4").withSharedCategories(YES, NO, DONT_KNOW);
 
     builder.withSection("S2").withSection("S2_1").withPage("P4");
-    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).setOpenAnswerDefinitionAbsoluteValues(DataBuilder.buildInteger(40), DataBuilder.buildInteger(70));
-    builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").setOpenAnswerDefinitionFormat("[a-z,A-Z]+");
+    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));
+    builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").addOpenAnswerDefintionValidator(new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
 
     // System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
 
@@ -100,7 +102,7 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
       Assert.assertTrue(localizationProperties.containsKey("QuestionCategory.Q1.YES.label"));
       Assert.assertEquals("${Category.YES.label}", localizationProperties.getProperty("QuestionCategory.Q1.YES.label"));
       Assert.assertTrue(localizationProperties.containsKey("OpenAnswerDefinition.SPECIFY.Right"));
-      
+
       Assert.assertTrue(localizationProperties.containsKey("QuestionCategory.Q2.1.label"));
       Assert.assertEquals("", localizationProperties.getProperty("QuestionCategory.Q2.1.label"));
       Assert.assertTrue(localizationProperties.containsKey("QuestionCategory.Q3.1.label"));
@@ -128,7 +130,7 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
       Assert.fail(e.getMessage());
     }
   }
-  
+
   /**
    * Load a {@link Questionnaire} from its bundle directory.
    * @param bundleDirectory
@@ -140,7 +142,7 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
 
     return QuestionnaireStreamer.fromBundle(new FileInputStream(questionnaireFile));
   }
-  
+
   /**
    * Make the {@link Questionnaire} bundle:
    * <ul>
@@ -173,7 +175,7 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
     }
 
     QuestionnaireStreamer.toXML(questionnaire, new FileOutputStream(questionnaireFile));
-
+    System.out.println("file: " + questionnaireFile.toString());
     for(Locale locale : locales) {
       File localizedPropertiesFile = new File(bundleDirectory, QUESTIONNAIRE_BASE_NAME + "_" + locale + ".properties");
       if(!localizedPropertiesFile.exists()) {
