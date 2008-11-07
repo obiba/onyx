@@ -57,6 +57,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <value>classpath:config/ParticipantInterview</value>
         <value>classpath:config/JadeStageState</value>
         <value>classpath:config/MarbleStageState</value>
+        <value>classpath:config/RubyStageState</value>
         <value>classpath:config/MicaStageState</value>
         <value>classpath:config/QuartzStageState</value>
         <value>classpath:config/InstrumentParameter</value>
@@ -93,6 +94,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     class="org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl">
     <constructor-arg value="questionnaires" />
     <property name="propertyKeyProvider" ref="propertyKeyProvider" />
+  </bean>
+  
+  <bean id="tubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">    
   </bean>
   
 </beans>
