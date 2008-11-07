@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.markup.repeater.Item;
@@ -59,6 +60,14 @@ public abstract class AbstractQuestionCategoryColumn extends AbstractColumn {
   @Override
   public String getCssClass() {
     return "category";
+  }
+
+  /**
+   * Called when a ajax refresh is required.
+   * @param target
+   */
+  public void onEvent(AjaxRequestTarget target) {
+
   }
 
 }

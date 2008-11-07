@@ -66,7 +66,7 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
     setOutputMarkupId(true);
 
     // previous answer or default selection
-    final QuestionCategory questionCategory = (QuestionCategory) getModelObject();
+    QuestionCategory questionCategory = (QuestionCategory) getModelObject();
     CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer((Question) questionModel.getObject(), questionCategory);
 
     QuestionCategoryCheckBoxModel selectionModel = new QuestionCategoryCheckBoxModel(checkGroup.getModel(), questionCategoryModel);
@@ -82,7 +82,7 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
       protected void onEvent(AjaxRequestTarget target) {
         // toggle selection
         getSelectionModel().setObject(!getSelectionModel().isSelected());
-        log.info("checkbox.onchange.{}={}", questionCategory.getName(), getSelectionModel().isSelected());
+
         Question question = (Question) CheckBoxQuestionCategoryPanel.this.questionModel.getObject();
         QuestionCategory questionCategory = (QuestionCategory) CheckBoxQuestionCategoryPanel.this.getModelObject();
         if(getSelectionModel().isSelected()) {
@@ -90,7 +90,7 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
         } else {
           activeQuestionnaireAdministrationService.deleteAnswer(question, questionCategory);
         }
-        // target.addComponent(CheckBoxQuestionCategoryPanel.this);
+
         onCheckBoxSelection(target, CheckBoxQuestionCategoryPanel.this.questionModel, CheckBoxQuestionCategoryPanel.this.getModel());
       }
 
@@ -108,8 +108,12 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
 
         @Override
         public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          log.info("open.onclick.{}", questionCategory.getName());
+          // ignore if already selected
+          if(getSelectionModel().isSelected()) return;
+
+          // set checkbox as selected
           getSelectionModel().setObject(true);
+
           activeQuestionnaireAdministrationService.answer((Question) questionModel.getObject(), (QuestionCategory) getModelObject(), null);
           // target.addComponent(CheckBoxQuestionCategoryPanel.this);
           onOpenFieldSelection(target, questionModel, questionCategoryModel);

@@ -98,12 +98,4 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
     currentOpenFields[index] = currentOpenField;
   }
 
-  /**
-   * Called when a ajax refresh is required.
-   * @param target
-   */
-  public void onEvent(AjaxRequestTarget target) {
-
-  }
-
 }

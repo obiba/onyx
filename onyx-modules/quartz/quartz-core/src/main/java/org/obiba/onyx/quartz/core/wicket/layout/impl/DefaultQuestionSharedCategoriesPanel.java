@@ -87,7 +87,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
         columns.add(new QuestionCategoryRadioColumn(new QuestionnaireModel(questionCategory), new PropertyModel(this, "radioGroupView.groups"), new PropertyModel(this, "currentOpenFields")) {
           @Override
           public void onEvent(AjaxRequestTarget target) {
-            log.info("onEvent()");
+            log.info("radioColumn.onEvent()");
             target.addComponent(array);
           }
         });
@@ -103,7 +103,13 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
       });
     } else {
       for(QuestionCategory questionCategory : parentQuestion.getQuestionCategories()) {
-        columns.add(new QuestionCategoryCheckBoxColumn(new QuestionnaireModel(questionCategory), new PropertyModel(this, "checkGroupView.groups")));
+        columns.add(new QuestionCategoryCheckBoxColumn(new QuestionnaireModel(questionCategory), new PropertyModel(this, "checkGroupView.groups")) {
+          @Override
+          public void onEvent(AjaxRequestTarget target) {
+            log.info("checkboxColumn.onEvent()");
+            target.addComponent(array);
+          }
+        });
       }
 
       add(array = new AbstractQuestionArray("array", getModel(), columns, questionsProvider) {

@@ -43,19 +43,14 @@ public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColu
     cellItem.add(new CheckBoxQuestionCategoryPanel(componentId, rowModel, cellItem.getModel(), checkGroup, false) {
       @Override
       public void onCheckBoxSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-        // target.addComponent(DefaultQuestionSharedCategoriesPanel.this.get("array"));
+        onEvent(target);
       }
 
       @Override
       public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-        // target.addComponent(DefaultQuestionSharedCategoriesPanel.this.get("array"));
+        onEvent(target);
       }
     });
-
-    // previous answer or default selection
-    // if(previousAnswer == null && questionCategory.isSelected()) {
-    // activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
-    // }
   }
 
 }
