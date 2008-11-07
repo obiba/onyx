@@ -1,6 +1,6 @@
 <project>
   <body>
-    <menu name="BIMS">
+    <menu name="OBiBa BIMS">
       <item name="Overview" href="index.html"/>
       <item name="Onyx" href="onyx.html"/>
       <item name="License" href="license.html"/>

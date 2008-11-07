@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <document>
   <properties>
-    <title>OBIMS Overview</title>
+    <title>OBiBa BIMS Overview</title>
     <author>Vincent Ferretti</author>
     <author>Nancy Lambert</author>
     <author>Philippe Laflamme</author>
   </properties>
   <body>
-    <section name="BIMS Overview">
-      <subsection name="The OBiBa Biobank Information Management System">
-
+    <section name="OBiBa Biobank Information Management System">
         <p>
           The Canadian Partnership Against Cancer (CPAC) network of biobanks was launched in 2008 and comprises
           <strong>five
@@ -61,7 +59,6 @@
           <img src="images/bims-overview.png" width="600px" />
           Figure 1: Components and actors of the OBiBa biobank information management system.
         </p>
-      </subsection>
     </section>
   </body>
 </document>

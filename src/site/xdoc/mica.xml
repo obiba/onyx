@@ -14,8 +14,15 @@
         results and normal values.</p>
 
       <p>The conclusion stage managed by the Mica module cannot be executed until all the other stages are in a
-        terminal state (completed, not applicable, contra-indicated or skipped). This insures that every stage of the
+        terminal state (completed, not applicable, contraindicated or skipped). This insures that every stage of the
         interview has been taken into account.</p>
+      <subsection name="Screenshots">
+        <p>
+          <ul>
+            <li><a href="images/screens/mica/report.png">Physical Measurements Report</a></li>
+          </ul>
+        </p>
+      </subsection>
     </section>
   </body>
 </document>

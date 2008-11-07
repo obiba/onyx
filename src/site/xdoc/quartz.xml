@@ -24,8 +24,14 @@
           <li>Answers are persisted as answered and displayed when the questions are revisited. Answers to
             revisited questions may be changed and the dependent skip patterns modified accordingly.</li>
         </ul>
-        Currently in development, no screenshot available
       </p>
+			<subsection name="Screenshots">
+        <p>
+          <ul>
+            <li><a href="images/screens/quartz/shared.png">Example Question Page</a></li>
+          </ul>
+        </p>
+      </subsection>
     </section>
   </body>
 </document>
