@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.domain.parser.impl;
 
-import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.springframework.context.MessageSourceResolvable;
 
 /**
@@ -24,7 +23,7 @@ public class FixedValueBarcodePartParser extends FixedSizeBarcodePartParser {
   }
 
   @Override
-  protected MessageSourceResolvable validatePart(String part, ActiveInterviewService activeInterviewService) {
+  protected MessageSourceResolvable validatePart(String part) {
     MessageSourceResolvable error = null;
     if(!part.equals(fixedValue)) {
       error = createBarcodeError("BarcodePartValueError", "Invalid barcode part value.");

@@ -10,6 +10,7 @@
 package org.obiba.onyx.ruby.core.domain.parser.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import org.obiba.onyx.ruby.core.domain.BarcodePart;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
@@ -17,24 +18,20 @@ import org.springframework.context.MessageSourceResolvable;
 import org.springframework.validation.ObjectError;
 
 /**
- *
+ * Implements barcode part parser with acceptable values
  */
-public abstract class FixedSizeBarcodePartParser implements IBarcodePartParser {
+public class AcceptableValuesBarcodePartParser implements IBarcodePartParser {
 
-  private int size;
-
-  public MessageSourceResolvable getPartTitle() {
-
-    return null;
-  }
+  private Set<String> acceptableValues;
 
   public BarcodePart eatAndValidatePart(StringBuilder barcodeFragment, List<MessageSourceResolvable> errors) {
     BarcodePart barcodePart = null;
 
     try {
 
-      String part = barcodeFragment.substring(0, size);
-      barcodeFragment.delete(0, size);
+      String part = barcodeFragment.substring(0, getSize());
+      barcodeFragment.delete(0, getSize());
+
       MessageSourceResolvable error = validatePart(part);
 
       if(error != null) {
@@ -49,23 +46,44 @@ public abstract class FixedSizeBarcodePartParser implements IBarcodePartParser {
     return barcodePart;
   }
 
-  protected abstract MessageSourceResolvable validatePart(String part);
+  public MessageSourceResolvable getPartTitle() {
+    return null;
+  }
+
+  public void setAcceptableValues(Set<String> acceptableValues) {
+    this.acceptableValues = acceptableValues;
+  }
+
+  public Set<String> getAcceptableValues() {
+    return acceptableValues;
+  }
+
+  public int getSize() {
+
+    if(acceptableValues == null || acceptableValues.size() == 0) {
+      return 0;
+    } else {
+      return acceptableValues.iterator().next().length();
+    }
+  }
 
   /**
    * @param code
    * @param defaultMsg
    */
-  protected MessageSourceResolvable createBarcodeError(String code, String defaultMsg) {
+  private MessageSourceResolvable createBarcodeError(String code, String defaultMsg) {
     MessageSourceResolvable error = new ObjectError("Barcode", new String[] { code }, null, defaultMsg);
     return error;
   }
 
-  public void setSize(int size) {
-    this.size = size;
-  }
-
-  public int getSize() {
-    return size;
+  private MessageSourceResolvable validatePart(String part) {
+    MessageSourceResolvable error = null;
+    if(acceptableValues == null) {
+      error = createBarcodeError("NoAcceptableValueError", "No acceptable barcode part values found.");
+    } else if(!acceptableValues.contains(part)) {
+      error = createBarcodeError("BarcodePartValueError", "Invalid barcode part value.");
+    }
+    return error;
   }
 
 }

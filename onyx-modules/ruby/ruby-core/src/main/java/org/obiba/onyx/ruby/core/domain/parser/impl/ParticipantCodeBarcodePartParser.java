@@ -23,8 +23,10 @@ public class ParticipantCodeBarcodePartParser extends FixedSizeBarcodePartParser
    */
   private String format;
 
+  private ActiveInterviewService activeInterviewService;
+
   @Override
-  protected MessageSourceResolvable validatePart(String part, ActiveInterviewService activeInterviewService) {
+  protected MessageSourceResolvable validatePart(String part) {
     MessageSourceResolvable error = null;
     if(!part.matches(format)) {
       error = createBarcodeError("ParticipantCodeFormatError", "Invalid participant barcode format.");
@@ -43,4 +45,11 @@ public class ParticipantCodeBarcodePartParser extends FixedSizeBarcodePartParser
     this.format = format;
   }
 
+  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
+    this.activeInterviewService = activeInterviewService;
+  }
+
+  public ActiveInterviewService getActiveInterviewService() {
+    return this.activeInterviewService;
+  }
 }

@@ -10,7 +10,9 @@
 package org.obiba.onyx.ruby.core.domain.parser.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -20,28 +22,28 @@ import org.obiba.onyx.ruby.core.domain.BarcodePart;
 import org.springframework.context.MessageSourceResolvable;
 
 /**
- * 
+ *
  */
-public class FixedValueBarcodePartParserTest {
+public class AcceptableValuesBarcodePartParserTest {
 
-  private FixedValueBarcodePartParser parser;
-
-  private String fixedValue;
+  private AcceptableValuesBarcodePartParser parser;
 
   /**
    * @throws java.lang.Exception
    */
   @Before
   public void setUp() throws Exception {
-    parser = new FixedValueBarcodePartParser();
-    parser.setSize(5);
-    fixedValue = "54321";
-    parser.setFixedValue(fixedValue);
+    parser = new AcceptableValuesBarcodePartParser();
+    Set<String> acceptableValues = new HashSet<String>();
+    acceptableValues.add("123");
+    acceptableValues.add("234");
+    acceptableValues.add("543");
+    parser.setAcceptableValues(acceptableValues);
   }
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedValueBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)}
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)}
    * .
    */
   @Test
@@ -49,38 +51,33 @@ public class FixedValueBarcodePartParserTest {
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
     StringBuilder barcode = new StringBuilder("5432108978");
     BarcodePart result = parser.eatAndValidatePart(barcode, errors);
-    Assert.assertEquals(fixedValue, result.getPart());
-    Assert.assertEquals("08978", barcode.toString());
+    Assert.assertEquals("543", result.getPart());
+    Assert.assertEquals("2108978", barcode.toString());
   }
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedValueBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)}
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)}
    * .
    */
   @Test
-  public void testShouldGetPartLengthError() {
+  public void testShouldFailEatAndValidatePartWithInvalidValue() {
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
-    BarcodePart result = parser.eatAndValidatePart(new StringBuilder("5432"), errors);
-    Assert.assertNull(result);
-    Assert.assertEquals(1, errors.size());
-    MessageSourceResolvable error = errors.get(0);
-    Assert.assertEquals("BarcodePartSizeError", error.getCodes()[0]);
-  }
-
-  /**
-   * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedValueBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)}
-   * .
-   */
-  @Test
-  public void testShouldGetPartValueError() {
-    List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
-    BarcodePart result = parser.eatAndValidatePart(new StringBuilder("1234567890"), errors);
+    StringBuilder barcode = new StringBuilder("p5432108978");
+    BarcodePart result = parser.eatAndValidatePart(barcode, errors);
     Assert.assertNull(result);
     Assert.assertEquals(1, errors.size());
     MessageSourceResolvable error = errors.get(0);
     Assert.assertEquals("BarcodePartValueError", error.getCodes()[0]);
+  }
+
+  /**
+   * Test method for {@link org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser#getSize()}.
+   */
+  @Test
+  public void testGetSize() {
+    int size = parser.getSize();
+    Assert.assertEquals(3, size);
   }
 
 }

@@ -44,7 +44,7 @@ public class RandomDigitsBarcodePartParserTest {
   public void testShouldPassWithNumericFormat() {
     parser.setFormat("^\\d+$");
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
-    BarcodePart result = parser.eatAndValidatePart(new StringBuilder("1234567890"), null, errors);
+    BarcodePart result = parser.eatAndValidatePart(new StringBuilder("1234567890"), errors);
     Assert.assertEquals(0, errors.size());
     Assert.assertEquals("12345", result.getPart());
   }
@@ -58,7 +58,7 @@ public class RandomDigitsBarcodePartParserTest {
   public void testShouldFailWithNumericFormat() {
     parser.setFormat("^\\d+$");
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
-    BarcodePart result = parser.eatAndValidatePart(new StringBuilder("e1234567890"), null, errors);
+    BarcodePart result = parser.eatAndValidatePart(new StringBuilder("e1234567890"), errors);
     Assert.assertEquals(1, errors.size());
     Assert.assertNull(result);
     Assert.assertEquals("BarcodePartFormatError", errors.get(0).getCodes()[0]);
@@ -73,7 +73,7 @@ public class RandomDigitsBarcodePartParserTest {
   public void testShouldPassWithAlphaNumericFormat() {
     parser.setFormat("^[A-Za-z0-9]+$");
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
-    BarcodePart result = parser.eatAndValidatePart(new StringBuilder("Ae1234567890"), null, errors);
+    BarcodePart result = parser.eatAndValidatePart(new StringBuilder("Ae1234567890"), errors);
     Assert.assertEquals(0, errors.size());
     Assert.assertEquals("Ae123", result.getPart());
   }
@@ -87,7 +87,7 @@ public class RandomDigitsBarcodePartParserTest {
   public void testShouldFailWithAlphaNumericFormat() {
     parser.setFormat("^[A-Za-z0-9]+$");
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
-    BarcodePart result = parser.eatAndValidatePart(new StringBuilder("e1 234567890"), null, errors);
+    BarcodePart result = parser.eatAndValidatePart(new StringBuilder("e1 234567890"), errors);
     Assert.assertEquals(1, errors.size());
     Assert.assertNull(result);
     Assert.assertEquals("BarcodePartFormatError", errors.get(0).getCodes()[0]);

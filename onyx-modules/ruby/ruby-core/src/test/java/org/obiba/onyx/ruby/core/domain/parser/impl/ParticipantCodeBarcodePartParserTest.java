@@ -44,6 +44,7 @@ public class ParticipantCodeBarcodePartParserTest {
     parser = new ParticipantCodeBarcodePartParser();
     parser.setSize(5);
     parser.setFormat("^[A-Za-z0-9]+$");
+    parser.setActiveInterviewService(activeInterviewServiceMock);
   }
 
   /**
@@ -58,7 +59,7 @@ public class ParticipantCodeBarcodePartParserTest {
     participant.setBarcode(part);
     expect(activeInterviewServiceMock.getParticipant()).andReturn(participant);
     replay(activeInterviewServiceMock);
-    MessageSourceResolvable error = parser.validatePart(part, activeInterviewServiceMock);
+    MessageSourceResolvable error = parser.validatePart(part);
 
     verify(activeInterviewServiceMock);
     Assert.assertNull(error);
@@ -79,7 +80,7 @@ public class ParticipantCodeBarcodePartParserTest {
     replay(activeInterviewServiceMock);
 
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
-    BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, activeInterviewServiceMock, errors);
+    BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, errors);
 
     verify(activeInterviewServiceMock);
     Assert.assertEquals(0, errors.size());
@@ -97,7 +98,7 @@ public class ParticipantCodeBarcodePartParserTest {
     StringBuilder barcodeFragment = new StringBuilder("!5432108981");
 
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
-    BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, activeInterviewServiceMock, errors);
+    BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, errors);
 
     Assert.assertEquals(1, errors.size());
     Assert.assertNull(barcodePart);
@@ -117,7 +118,7 @@ public class ParticipantCodeBarcodePartParserTest {
     replay(activeInterviewServiceMock);
 
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
-    BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, activeInterviewServiceMock, errors);
+    BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, errors);
 
     verify(activeInterviewServiceMock);
     Assert.assertEquals(1, errors.size());
@@ -141,7 +142,7 @@ public class ParticipantCodeBarcodePartParserTest {
     replay(activeInterviewServiceMock);
 
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
-    BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, activeInterviewServiceMock, errors);
+    BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, errors);
 
     verify(activeInterviewServiceMock);
     Assert.assertEquals(1, errors.size());
