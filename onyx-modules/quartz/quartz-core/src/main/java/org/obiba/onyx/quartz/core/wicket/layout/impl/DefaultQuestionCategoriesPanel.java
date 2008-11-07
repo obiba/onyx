@@ -63,14 +63,14 @@ public class DefaultQuestionCategoriesPanel extends Panel {
         @Override
         public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
           // ignore if multiple click in the same open field
-          if(this.getOpenField().equals(currentOpenField)) return;
+          if(getOpenField().equals(currentOpenField)) return;
 
           // make sure a previously selected open field is not asked for
           if(currentOpenField != null) {
             currentOpenField.setRequired(false);
           }
           // make the open field active
-          currentOpenField = this.getOpenField();
+          currentOpenField = getOpenField();
 
           // update all
           target.addComponent(DefaultQuestionCategoriesPanel.this);

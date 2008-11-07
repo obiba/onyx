@@ -55,9 +55,10 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
       @Override
       public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
         DefaultOpenAnswerDefinitionPanel currentOpenField = getCurrentOpenField(index);
-
+        log.info("onOpenFieldSelection().currentOpenField={}", currentOpenField != null ? currentOpenField.getModelObject() : null);
         // ignore if multiple click in the same open field
         if(getOpenField().equals(currentOpenField)) return;
+        log.info("onOpenFieldSelection().getOpenField={}", getOpenField().getModelObject());
 
         // make sure a previously selected open field in the same row is not asked for
         if(currentOpenField != null) {

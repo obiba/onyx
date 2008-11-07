@@ -136,6 +136,7 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
       protected void onEvent(AjaxRequestTarget target) {
         log.info("openField.onClick");
         DefaultOpenAnswerDefinitionPanel.this.onSelect(target, DefaultOpenAnswerDefinitionPanel.this.questionModel, DefaultOpenAnswerDefinitionPanel.this.getModel());
+        openField.focusField(target);
       }
 
     });
@@ -155,6 +156,17 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
       // last chance : the question label !
       openField.setLabel(questionLabel);
     }
+  }
+
+  /**
+   * Equals if they refer to the an equal model object.
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if(obj instanceof DefaultOpenAnswerDefinitionPanel) {
+      return this.getModelObject() != null && this.getModelObject().equals(((DefaultOpenAnswerDefinitionPanel) obj).getModelObject());
+    }
+    return super.equals(obj);
   }
 
   private boolean isEmptyString(String str) {

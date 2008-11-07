@@ -95,18 +95,17 @@ public class RadioQuestionCategoryPanel extends Panel {
           getOpenField().setRequired(question.isRequired());
 
           // exclusive choice, only one answer per question
-          activeQuestionnaireAdministrationService.deleteAnswers(question);
-          activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
+          CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(question, questionCategory);
+          if(previousAnswer == null) {
+            activeQuestionnaireAdministrationService.deleteAnswers(question);
+            activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
+          }
 
           onOpenFieldSelection(target, questionModel, questionCategoryModel);
         }
 
         @Override
         public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          // make sure radio selection does not conflict with open field selection
-          radioGroup.setModel(new Model());
-          radioGroup.setRequired(false);
-
           onOpenFieldSubmit(target, questionModel, questionCategoryModel);
         }
 
