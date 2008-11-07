@@ -33,7 +33,6 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
-import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
 public class AssignCodeToParticipantPanel extends Panel {
@@ -43,7 +42,7 @@ public class AssignCodeToParticipantPanel extends Panel {
 
   @SpringBean
   private EntityQueryService queryService;
-  
+
   private Page sourcePage;
 
   private static final long serialVersionUID = 1L;
@@ -51,7 +50,7 @@ public class AssignCodeToParticipantPanel extends Panel {
   public AssignCodeToParticipantPanel(String id, IModel participantModel, Page sourcePage) {
 
     super(id);
-    
+
     this.sourcePage = sourcePage;
 
     add(new AssignCodeToParticipantForm("assignCodeToParticipantForm", participantModel));
