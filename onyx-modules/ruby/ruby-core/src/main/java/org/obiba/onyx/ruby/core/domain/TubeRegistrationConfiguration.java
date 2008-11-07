@@ -9,11 +9,21 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.domain;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.ResourceLoader;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  * <p>
@@ -30,10 +40,21 @@ import org.obiba.onyx.core.domain.contraindication.Contraindication;
  * </ul>
  * </p>
  */
-public class TubeRegistrationConfiguration {
+public class TubeRegistrationConfiguration implements ResourceLoaderAware, InitializingBean {
+  //
+  // Constants
+  //
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(TubeRegistrationConfiguration.class);
+
   //
   // Instance Variables
   //
+
+  private ResourceLoader resourceLoader;
+
+  private File configDir;
 
   private BarcodeStructure barcodeStructure;
 
@@ -49,15 +70,84 @@ public class TubeRegistrationConfiguration {
   // Constructors
   //
 
-  public TubeRegistrationConfiguration() {
+  /**
+   * <p>
+   * Creates a <code>TubeRegistrationConfiguration</code> with the specified configuration directory.
+   * </p>
+   * 
+   * <p>
+   * Any files used for configuration must be present in the configuration directory.
+   * </p>
+   * 
+   * <p>
+   * <em> Note: Configuration files are not loaded by the constructor. To (re-)load them, the
+   * <code>initConfig()</code> method must be called. </blockquote>
+   * </em>
+   * </p>
+   */
+  public TubeRegistrationConfiguration(File configDir) {
+    this.configDir = configDir;
+
     observedContraindications = new ArrayList<Contraindication>();
     askedContraindications = new ArrayList<Contraindication>();
     availableRemarks = new ArrayList<Remark>();
   }
 
+  public TubeRegistrationConfiguration() {
+    this(null);
+  }
+
+  //
+  // ResourceLoaderAware Methods
+  //
+
+  public void setResourceLoader(ResourceLoader resourceLoader) {
+    this.resourceLoader = resourceLoader;
+  }
+
+  //
+  // InitializingBean Methods
+  //
+
+  public void afterPropertiesSet() throws Exception {
+    if(configDir != null) {
+      String resourcePath = configDir.isAbsolute() ? "file:" + configDir.getPath() : configDir.getPath();
+
+      configDir = resourceLoader.getResource(resourcePath).getFile();
+
+      if(configDir.exists()) {
+        initConfig();
+      } else {
+        throw new IllegalArgumentException("Invalid config directory: " + configDir);
+      }
+    }
+  }
+
   //
   // Methods
   //
+
+  /**
+   * Loads (or re-loads) configuration information stored in the configuration directory.
+   * 
+   * If a <code>TubeRegistrationConfiguration</code> was created without specifying a configuration directory, calling
+   * this method does nothing.
+   * 
+   * @throws IOException on an I/O error
+   */
+  public void initConfig() throws IOException {
+    if(configDir != null) {
+      File contraIndicationsFile = new File(configDir, "contra-indications.xml");
+      if(contraIndicationsFile.exists()) {
+        initContraindications(contraIndicationsFile);
+      }
+
+      File remarksFile = new File(configDir, "remarks.xml");
+      if(remarksFile.exists()) {
+        initRemarks(remarksFile);
+      }
+    }
+  }
 
   public void setBarcodeStructure(BarcodeStructure barcodeStructure) {
     this.barcodeStructure = barcodeStructure;
@@ -108,5 +198,57 @@ public class TubeRegistrationConfiguration {
 
   public List<Remark> getAvailableRemarks() {
     return Collections.unmodifiableList(availableRemarks);
+  }
+
+  /**
+   * Sets the list of contra-indications to the contents of the specified file.
+   * 
+   * @param contraIndicationsFile contra-indications file
+   * @throws IOException on any I/O error
+   */
+  private void initContraindications(File contraIndicationsFile) throws IOException {
+    FileInputStream fis = null;
+
+    try {
+      fis = new FileInputStream(contraIndicationsFile);
+
+      XStream xstream = new XStream();
+      xstream.alias("contraindication", Contraindication.class);
+
+      List<Contraindication> contraIndications = (List<Contraindication>) xstream.fromXML(fis);
+      setContraindications(contraIndications);
+
+      log.info("Configured tube registration contra-indications ({} OBSERVED, {} ASKED)", new Object[] { getObservedContraindications().size(), getAskedContraindications().size() });
+    } finally {
+      if(fis != null) {
+        fis.close();
+      }
+    }
+  }
+
+  /**
+   * Sets the list of tube registration remarks to the contents of the specified file.
+   * 
+   * @param remarksFile remarks file
+   * @throws IOException on any I/O error
+   */
+  private void initRemarks(File remarksFile) throws IOException {
+    FileInputStream fis = null;
+
+    try {
+      fis = new FileInputStream(remarksFile);
+
+      XStream xstream = new XStream();
+      xstream.alias("remark", Remark.class);
+
+      List<Remark> remarks = (List<Remark>) xstream.fromXML(fis);
+      setAvailableRemarks(remarks);
+
+      log.info("Configured tube registration remarks ({})", new Object[] { getAvailableRemarks().size() });
+    } finally {
+      if(fis != null) {
+        fis.close();
+      }
+    }
   }
 }

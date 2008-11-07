@@ -408,7 +408,7 @@ public class RubyModuleTest {
   // Inner Classes
   //
 
-  private class StageDependencyConditionMock implements StageDependencyCondition {
+  private static class StageDependencyConditionMock implements StageDependencyCondition {
     private Boolean dependencySatisfied;
 
     private Set<String> stageDependencies;

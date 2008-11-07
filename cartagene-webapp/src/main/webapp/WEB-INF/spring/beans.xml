@@ -96,7 +96,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="propertyKeyProvider" ref="propertyKeyProvider" />
   </bean>
   
-  <bean id="tubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">    
+  <bean id="tubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
+    <constructor-arg value="WEB-INF/config/ruby" />
   </bean>
   
 </beans>
