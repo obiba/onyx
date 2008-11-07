@@ -34,7 +34,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.core.io.ResourceLoader;
 
 public class QuestionnaireBundleImpl implements QuestionnaireBundle {
-  
+
   //
   // Constants
   //
@@ -54,7 +54,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
   private Questionnaire questionnaire;
 
   private MessageSource messageSource;
-  
+
   private IPropertyKeyProvider propertyKeyProvider;
 
   //
@@ -70,29 +70,29 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
       throw new IllegalArgumentException("Null questionnaire");
     }
 
-    if (propertyKeyProvider == null) {
+    if(propertyKeyProvider == null) {
       throw new IllegalArgumentException("Null property key provider");
     }
-    
+
     this.bundleVersionDir = bundleVersionDir;
     this.questionnaire = questionnaire;
     this.propertyKeyProvider = propertyKeyProvider;
-    
+
     // Initialize the message source.
     messageSource = new ReloadableResourceBundleMessageSource() {
       @Override
       protected MessageFormat createMessageFormat(String msg, Locale locale) {
         return new StringReferenceCompatibleMessageFormat((msg != null ? msg : ""), locale);
-      }      
+      }
     };
-    ((ReloadableResourceBundleMessageSource)messageSource).setBasename(getMessageSourceBasename(bundleVersionDir));
-    
-    if (resourceLoader != null) {
-      ((ReloadableResourceBundleMessageSource)messageSource).setResourceLoader(resourceLoader);
+    ((ReloadableResourceBundleMessageSource) messageSource).setBasename(getMessageSourceBasename(bundleVersionDir));
+
+    if(resourceLoader != null) {
+      ((ReloadableResourceBundleMessageSource) messageSource).setResourceLoader(resourceLoader);
     }
-    
-    for (Locale locale : getAvailableLanguages()){
-      this.questionnaire.addLocale(locale);
+
+    for(Locale locale : getAvailableLanguages()) {
+      if(!this.questionnaire.getLocales().contains(locale)) this.questionnaire.addLocale(locale);
     }
   }
 
@@ -167,7 +167,6 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     bundleVersionDir.listFiles(new FileFilter() {
       public boolean accept(File file) {
         String fileName = file.getName();
-
         if(file.isFile() && fileName.startsWith(LANGUAGE_FILE_BASENAME + '_') && fileName.endsWith(LANGUAGE_FILE_EXTENSION)) {
           languages.add(new Locale(extractLocaleString(fileName)));
           return true;
@@ -185,9 +184,9 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
   }
 
   public String getPropertyKey(ILocalizable localizable, String property) {
-    return propertyKeyProvider.getPropertyKey(localizable, property);  
+    return propertyKeyProvider.getPropertyKey(localizable, property);
   }
-  
+
   //
   // Methods
   //
