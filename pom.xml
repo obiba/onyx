@@ -595,6 +595,29 @@
 
   </repositories>
 
+  <distributionManagement>
+    <!-- Site deployment location -->
+    <site>
+      <id>deploy.obiba.org</id>
+      <url>${obiba.site.url}/${obiba.site.context}/onyx</url>
+    </site>
+
+    <!-- URL used to deploy the release artifacts -->
+    <repository>
+      <id>deploy.obiba.org</id>
+      <url>${obiba.deploy.url}/maven2</url>
+      <uniqueVersion>false</uniqueVersion>
+    </repository>
+
+    <!-- URL used to deploy the SNAPSHOTS artifacts -->
+    <snapshotRepository>
+      <id>deploy.obiba.org</id>
+      <url>${obiba.deploy.url}/maven2-snapshots</url>
+      <uniqueVersion>true</uniqueVersion>
+    </snapshotRepository>
+
+  </distributionManagement>
+
   <scm>
     <connection>scm:svn:http://svn.obiba.org/onyx/trunk</connection>
     <developerConnection>scm:svn:https://svn.obiba.org/onyx/trunk</developerConnection>
