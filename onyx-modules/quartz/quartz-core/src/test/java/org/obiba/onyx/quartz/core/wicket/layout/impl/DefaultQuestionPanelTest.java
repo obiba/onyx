@@ -19,15 +19,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.MessageFormat;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Locale;
 
 import junit.framework.Assert;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.TestPanelSource;
@@ -118,6 +123,13 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("QuestionCategory.Q1.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q1.2.label", locale, "Choice two");
     messageSource.addMessage("QuestionCategory.Q1.3.label", locale, "Choice three");
+    messageSource.addMessage("Question.Q1_MULTIPLE.label", locale, "question label");
+    messageSource.addMessage("Question.Q1_MULTIPLE.help", locale, "question help");
+    messageSource.addMessage("Question.Q1_MULTIPLE.instructions", locale, "question instructions");
+    messageSource.addMessage("Question.Q1_MULTIPLE.caption", locale, "question caption");
+    messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.1.label", locale, "Choice one");
+    messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.2.label", locale, "Choice two");
+    messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.3.label", locale, "Choice three");
     messageSource.addMessage("Question.Q2.label", locale, "question2 label");
     messageSource.addMessage("Question.Q2.help", locale, "question2 help");
     messageSource.addMessage("Question.Q2.instructions", locale, "question2 instructions");
@@ -306,6 +318,105 @@ public class DefaultQuestionPanelTest {
     verify(questionnaireBundleMock);
   }
 
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testMultipleChoiceQuestion() {
+
+    final Questionnaire questionnaire = createQuestionnaire();
+    CategoryAnswer previousCategoryAnswer = new CategoryAnswer();
+    previousCategoryAnswer.setCategoryName("1");
+    QuestionAnswer previousQuestionAnswer = new QuestionAnswer();
+    previousQuestionAnswer.setQuestionName("Q1_MULTIPLE");
+    previousQuestionAnswer.addCategoryAnswer(previousCategoryAnswer);
+
+    final Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("Q1_MULTIPLE");
+
+    expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(0))).andReturn(previousCategoryAnswer).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(1))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
+    activeQuestionnaireAdministrationServiceMock.deleteAnswer(question, question.getQuestionCategories().get(1));
+    expect(activeQuestionnaireAdministrationServiceMock.answer(question, question.getQuestionCategories().get(1), null)).andReturn(new CategoryAnswer());
+    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
+    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "label")).andReturn(propertyKeyProvider.getPropertyKey(question, "label")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "help")).andReturn(propertyKeyProvider.getPropertyKey(question, "help")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
+    for(QuestionCategory qCategory : question.getQuestionCategories()) {
+      expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
+    }
+
+    replay(activeInterviewServiceMock);
+    replay(activeQuestionnaireAdministrationServiceMock);
+    replay(questionnaireBundleManagerMock);
+    replay(questionnaireBundleMock);
+
+    tester.startPanel(new TestPanelSource() {
+
+      private static final long serialVersionUID = 1L;
+
+      @SuppressWarnings("serial")
+      public Panel getTestPanel(String panelId) {
+
+        return new DefaultQuestionPanelMock(panelId, new Model(question));
+      }
+    });
+
+    dumpPage("testMultipleChoiceQuestion");
+
+    // check question message resources
+    tester.assertLabel("panel:form:content:label", "question label");
+    tester.assertLabel("panel:form:content:instructions", "question instructions");
+    tester.assertLabel("panel:form:content:caption", "question caption");
+
+    // check help toggle
+    tester.isInvisible("panel:form:content:help");
+    tester.executeAjaxEvent("panel:form:content:helpToggle:link", "onclick");
+    tester.assertVisible("panel:form:content:help");
+
+    // check all expected radios are here
+    tester.assertComponent("panel:form:content:content:categories", CheckGroup.class);
+    tester.assertComponent("panel:form:content:content:categories:category:1:input:categoryLabel:checkbox", CheckBox.class);
+    tester.assertComponent("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox", CheckBox.class);
+    tester.assertComponent("panel:form:content:content:categories:category:3:input:categoryLabel:checkbox", CheckBox.class);
+
+    // check previous answer is here (checkbox 1)
+    CheckGroup checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
+    CheckBox checkbox1 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:categoryLabel:checkbox");
+    Collection<IModel> selections = (Collection<IModel>) checkGroup.getModelObject();
+    Assert.assertEquals(1, selections.size());
+    Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox1.getModel()).getQuestionCategory(), selections.iterator().next().getObject());
+
+    // select checkbox 2
+    tester.executeAjaxEvent("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox", "onchange");
+    checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
+    checkbox1 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:categoryLabel:checkbox");
+    CheckBox checkbox2 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox");
+    selections = (Collection<IModel>) checkGroup.getModelObject();
+    Assert.assertEquals(2, selections.size());
+    Iterator<IModel> iterator = selections.iterator();
+    Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox1.getModel()).getQuestionCategory(), iterator.next().getObject());
+    Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox2.getModel()).getQuestionCategory(), iterator.next().getObject());
+
+    // unselect checkbox 2
+    tester.executeAjaxEvent("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox", "onchange");
+    checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
+    checkbox1 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:categoryLabel:checkbox");
+    checkbox2 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox");
+    selections = (Collection<IModel>) checkGroup.getModelObject();
+    Assert.assertEquals(1, selections.size());
+    iterator = selections.iterator();
+    Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox1.getModel()).getQuestionCategory(), iterator.next().getObject());
+
+    verify(activeInterviewServiceMock);
+    verify(activeQuestionnaireAdministrationServiceMock);
+    verify(questionnaireBundleManagerMock);
+    verify(questionnaireBundleMock);
+  }
+
   @Test
   public void testSharedCategoriesArrayQuestion() {
 
@@ -362,7 +473,7 @@ public class DefaultQuestionPanelTest {
       }
     });
 
-    dumpPage();
+    dumpPage("testSharedCategoriesArrayQuestion");
 
     verify(activeInterviewServiceMock);
     verify(activeQuestionnaireAdministrationServiceMock);
@@ -370,9 +481,9 @@ public class DefaultQuestionPanelTest {
     verify(questionnaireBundleMock);
   }
 
-  private void dumpPage() {
+  private void dumpPage(String testName) {
     tester.dumpPage();
-    File dump = new File("target/" + getClass().getSimpleName() + ".html");
+    File dump = new File("target/" + getClass().getSimpleName() + "-" + testName + ".html");
     try {
       if(!dump.exists()) dump.createNewFile();
       OutputStream out = new FileOutputStream(dump);
@@ -389,6 +500,7 @@ public class DefaultQuestionPanelTest {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
 
     builder.withSection("S1").withPage("P1").withQuestion("Q1").withCategories("1", "2", "3");
+    builder.inPage("P1").withQuestion("Q1_MULTIPLE", true).withCategories("1", "2", "3");
     builder.withSection("S2").withPage("P2").withQuestion("Q2").withCategory("1").withOpenAnswerDefinition("OPEN_INT", DataType.INTEGER);
     builder.inQuestion("Q2").withCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
 

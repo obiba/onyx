@@ -1,16 +1,15 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
+import java.util.ArrayList;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.html.form.RadioGroup;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
@@ -35,7 +34,7 @@ public class DefaultQuestionCategoriesPanel extends Panel {
     if(!question.isMultiple()) {
       addRadioGroup(question);
     } else {
-      // addCheckBoxGroup(question);
+      addCheckBoxGroup(question);
     }
   }
 
@@ -95,116 +94,34 @@ public class DefaultQuestionCategoriesPanel extends Panel {
    * Add a check box group, used by multiple choice question.
    * @param question
    */
-  // @SuppressWarnings("serial")
-  // private void addCheckBoxGroup(Question question) {
-  // final List<IModel> checkedItems = new ArrayList<IModel>();
-  //
-  // RepeatingView repeater = new RepeatingView("category");
-  //
-  // for(final QuestionCategory questionCategory : ((Question) getModelObject()).getQuestionCategories()) {
-  // WebMarkupContainer item = new WebMarkupContainer(repeater.newChildId());
-  // repeater.add(item);
-  //
-  // final QuestionCategorySelection categorySelection = new QuestionCategorySelection(questionCategory);
-  // item.setModel(new PropertyModel(categorySelection, "selection"));
-  //
-  // CheckBoxInput checkBoxInput = new CheckBoxInput("input", item.getModel());
-  // checkBoxInput.checkbox.setLabel(new QuestionnaireStringResourceModel(questionCategory, "label"));
-  //
-  // FormComponentLabel checkBoxLabel = new FormComponentLabel("categoryLabel", checkBoxInput.checkbox);
-  // item.add(checkBoxLabel);
-  // checkBoxLabel.add(checkBoxInput);
-  // checkBoxLabel.add(new Label("label", checkBoxInput.checkbox.getLabel()).setRenderBodyOnly(true));
-  //
-  // final DefaultOpenAnswerDefinitionPanel openField = createOpenAnswerDefinitionPanel(item, questionCategory);
-  //
-  // checkBoxInput.checkbox.add(new AjaxEventBehavior("onchange") {
-  //
-  // @Override
-  // protected void onEvent(AjaxRequestTarget target) {
-  // log.info("checkbox.onchange.{}.{}", questionCategory.getQuestion().getName(),
-  // questionCategory.getCategory().getName());
-  // if(openField != null) {
-  // openField.setFieldEnabled(!openField.isFieldEnabled());
-  // target.addComponent(openField);
-  // }
-  // // multiple choice
-  // if(!categorySelection.isSelected()) {
-  // activeQuestionnaireAdministrationService.deleteAnswer(questionCategory);
-  // } else {
-  // // TODO get the open answer
-  // activeQuestionnaireAdministrationService.answer(questionCategory, null);
-  // }
-  // }
-  //
-  // });
-  //
-  // // previous answer or default selection
-  // CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(questionCategory);
-  // if(previousAnswer != null) {
-  // checkedItems.add(item.getModel());
-  // if(openField != null) {
-  // openField.setFieldEnabled(true);
-  // }
-  // } else if(questionCategory.isSelected()) {
-  // checkedItems.add(item.getModel());
-  // if(openField != null) {
-  // openField.setFieldEnabled(true);
-  // }
-  // activeQuestionnaireAdministrationService.answer(questionCategory, null);
-  // }
-  // }
-  // ;
-  //
-  // CheckGroup checkGroup = new CheckGroup("categories", checkedItems);
-  // add(checkGroup);
-  // checkGroup.add(repeater);
-  // checkGroup.setRequired(question.getQuestionCategories().size() > 0 && question.isRequired());
-  // checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
-  // }
-  /**
-   * Create an open answer definition panel if given {@link QuestionCategory} has a {@link OpenAnswerDefinition}
-   * associated to.
-   * @param parent
-   * @param questionCategory
-   * @return null if no open answer definition
-   */
   @SuppressWarnings("serial")
-  private DefaultOpenAnswerDefinitionPanel createOpenAnswerDefinitionPanel(WebMarkupContainer parent, final QuestionCategory questionCategory) {
-    DefaultOpenAnswerDefinitionPanel openField;
+  private void addCheckBoxGroup(Question question) {
+    CheckGroup checkGroup = new CheckGroup("categories", new ArrayList<IModel>());
+    checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
+    checkGroup.setRequired(!question.isBoilerPlate() && question.isRequired());
+    add(checkGroup);
 
-    if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
-      openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(questionCategory.getQuestion()), new QuestionnaireModel(questionCategory)) {
+    RepeatingView repeater = new RepeatingView("category");
+    checkGroup.add(repeater);
 
+    for(final QuestionCategory questionCategory : ((Question) getModelObject()).getQuestionCategories()) {
+      WebMarkupContainer item = new WebMarkupContainer(repeater.newChildId());
+      repeater.add(item);
+      item.setModel(new QuestionnaireModel(questionCategory));
+
+      item.add(new CheckBoxQuestionCategoryPanel("input", item.getModel(), checkGroup) {
         @Override
-        public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-
+        public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+          // update all
+          target.addComponent(DefaultQuestionCategoriesPanel.this);
         }
 
-      };
-      // openField.setFieldEnabled(false);
-      parent.add(openField);
-    } else {
-      openField = null;
-      parent.add(new EmptyPanel("open"));
+        @Override
+        public void onCheckBoxSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+          // update all
+          target.addComponent(DefaultQuestionCategoriesPanel.this);
+        }
+      });
     }
-
-    return openField;
-  }
-
-  /**
-   * The checkbox input chunk.
-   */
-  @SuppressWarnings("serial")
-  private class CheckBoxInput extends Fragment {
-
-    CheckBox checkbox;
-
-    public CheckBoxInput(String id, IModel model) {
-      super(id, "checkboxInput", DefaultQuestionCategoriesPanel.this);
-      setOutputMarkupId(true);
-      add(checkbox = new CheckBox("checkbox", model));
-    }
-
   }
 }
