@@ -96,10 +96,11 @@ public class DefaultQuestionCategoriesPanel extends Panel {
    */
   @SuppressWarnings("serial")
   private void addCheckBoxGroup(Question question) {
-    CheckGroup checkGroup = new CheckGroup("categories", new ArrayList<IModel>());
+    final CheckGroup checkGroup = new CheckGroup("categories", new ArrayList<IModel>());
     checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
-    checkGroup.setRequired(!question.isBoilerPlate() && question.isRequired());
+    // checkGroup.setRequired(!question.isBoilerPlate() && question.isRequired());
     add(checkGroup);
+    checkGroup.add(new MultipleChoiceQuestionValidator(getModel()));
 
     RepeatingView repeater = new RepeatingView("category");
     checkGroup.add(repeater);
@@ -113,13 +114,13 @@ public class DefaultQuestionCategoriesPanel extends Panel {
         @Override
         public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
           // update all
-          target.addComponent(DefaultQuestionCategoriesPanel.this);
+          target.addComponent(this);
         }
 
         @Override
         public void onCheckBoxSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
           // update all
-          target.addComponent(DefaultQuestionCategoriesPanel.this);
+          target.addComponent(this);
         }
       });
     }

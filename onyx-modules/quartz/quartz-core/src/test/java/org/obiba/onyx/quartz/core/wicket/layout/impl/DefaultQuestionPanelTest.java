@@ -487,7 +487,7 @@ public class DefaultQuestionPanelTest {
       }
     });
 
-    dumpPage("testMultipleChoiceQuestionWithOpenAnswer");
+    // dumpPage("testMultipleChoiceQuestionWithOpenAnswer");
 
     // check all expected radios are here
     tester.assertComponent("panel:form:content:content:categories", CheckGroup.class);
