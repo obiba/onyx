@@ -13,6 +13,7 @@ import java.util.List;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
@@ -152,6 +153,14 @@ public class DataField extends Panel {
    */
   public boolean isFieldEnabled() {
     return input.getField().isEnabled();
+  }
+
+  /**
+   * Focus request on the inner input field.
+   * @param target
+   */
+  public void focusField(AjaxRequestTarget target) {
+    target.focusComponent(input.getField());
   }
 
   /**
