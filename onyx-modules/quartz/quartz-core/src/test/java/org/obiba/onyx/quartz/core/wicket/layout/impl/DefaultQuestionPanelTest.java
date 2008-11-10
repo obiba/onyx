@@ -123,6 +123,7 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("QuestionCategory.Q1.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q1.2.label", locale, "Choice two");
     messageSource.addMessage("QuestionCategory.Q1.3.label", locale, "Choice three");
+
     messageSource.addMessage("Question.Q1_MULTIPLE.label", locale, "question label");
     messageSource.addMessage("Question.Q1_MULTIPLE.help", locale, "question help");
     messageSource.addMessage("Question.Q1_MULTIPLE.instructions", locale, "question instructions");
@@ -130,6 +131,7 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.2.label", locale, "Choice two");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.3.label", locale, "Choice three");
+
     messageSource.addMessage("Question.Q2.label", locale, "question2 label");
     messageSource.addMessage("Question.Q2.help", locale, "question2 help");
     messageSource.addMessage("Question.Q2.instructions", locale, "question2 instructions");
@@ -139,6 +141,16 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("QuestionCategory.Q2.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
     messageSource.addMessage("OpenAnswerDefinition.OPEN_INT.label", locale, "open label");
     messageSource.addMessage("OpenAnswerDefinition.OPEN_INT.unitLabel", locale, "open unit label");
+
+    messageSource.addMessage("Question.Q2_MULTIPLE.label", locale, "question2 label");
+    messageSource.addMessage("Question.Q2_MULTIPLE.help", locale, "question2 help");
+    messageSource.addMessage("Question.Q2_MULTIPLE.instructions", locale, "question2 instructions");
+    messageSource.addMessage("Question.Q2_MULTIPLE.caption", locale, "question2 caption");
+    messageSource.addMessage("QuestionCategory.Q2_MULTIPLE.1.label", locale, "Choice one");
+    messageSource.addMessage("QuestionCategory.Q2_MULTIPLE.DONT_KNOW.label", locale, "Dont know");
+    messageSource.addMessage("QuestionCategory.Q2_MULTIPLE.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
+    messageSource.addMessage("OpenAnswerDefinition.OPEN_TEXT.label", locale, "open label");
+    messageSource.addMessage("OpenAnswerDefinition.OPEN_TEXT.unitLabel", locale, "open unit label");
 
     messageSource.addMessage("Question.Q3.label", locale, "question3 label");
     messageSource.addMessage("Question.Q3.help", locale, "question3 help");
@@ -365,7 +377,7 @@ public class DefaultQuestionPanelTest {
       }
     });
 
-    dumpPage("testMultipleChoiceQuestion");
+    // dumpPage("testMultipleChoiceQuestion");
 
     // check question message resources
     tester.assertLabel("panel:form:content:label", "question label");
@@ -409,6 +421,95 @@ public class DefaultQuestionPanelTest {
     selections = (Collection<IModel>) checkGroup.getModelObject();
     Assert.assertEquals(1, selections.size());
     iterator = selections.iterator();
+    Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox1.getModel()).getQuestionCategory(), iterator.next().getObject());
+
+    verify(activeInterviewServiceMock);
+    verify(activeQuestionnaireAdministrationServiceMock);
+    verify(questionnaireBundleManagerMock);
+    verify(questionnaireBundleMock);
+  }
+
+  @Test
+  public void testMultipleChoiceQuestionWithOpenAnswer() {
+
+    final Questionnaire questionnaire = createQuestionnaire();
+    CategoryAnswer previousCategoryAnswer = new CategoryAnswer();
+    previousCategoryAnswer.setCategoryName("DONT_KNOW");
+    QuestionAnswer previousQuestionAnswer = new QuestionAnswer();
+    previousQuestionAnswer.setQuestionName("Q2_MULTIPLE");
+    previousQuestionAnswer.addCategoryAnswer(previousCategoryAnswer);
+
+    final Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("Q2_MULTIPLE");
+    OpenAnswerDefinition open = QuestionnaireFinder.getInstance(questionnaire).findOpenAnswerDefinition("OPEN_TEXT");
+
+    expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(0))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(1))).andReturn(previousCategoryAnswer).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
+    // activeQuestionnaireAdministrationServiceMock.deleteAnswers(question);
+    expect(activeQuestionnaireAdministrationServiceMock.answer(question, question.getQuestionCategories().get(0), null)).andReturn(new CategoryAnswer());
+    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
+    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).anyTimes();
+    expect(questionnaireBundleMock.getPropertyKey(question, "label")).andReturn(propertyKeyProvider.getPropertyKey(question, "label")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "help")).andReturn(propertyKeyProvider.getPropertyKey(question, "help")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
+    for(QuestionCategory qCategory : question.getQuestionCategories()) {
+      expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
+    }
+    expect(questionnaireBundleMock.getPropertyKey(open, "label")).andReturn(propertyKeyProvider.getPropertyKey(open, "label")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(open, "unitLabel")).andReturn(propertyKeyProvider.getPropertyKey(open, "unitLabel")).atLeastOnce();
+
+    replay(activeInterviewServiceMock);
+    replay(activeQuestionnaireAdministrationServiceMock);
+    replay(questionnaireBundleManagerMock);
+    replay(questionnaireBundleMock);
+
+    tester.startPanel(new TestPanelSource() {
+
+      private static final long serialVersionUID = 1L;
+
+      @SuppressWarnings("serial")
+      public Panel getTestPanel(String panelId) {
+
+        return new DefaultQuestionPanelMock(panelId, new Model(question));
+      }
+    });
+
+    dumpPage("testMultipleChoiceQuestionWithOpenAnswer");
+
+    // check all expected radios are here
+    tester.assertComponent("panel:form:content:content:categories", CheckGroup.class);
+    tester.assertComponent("panel:form:content:content:categories:category:1:input:categoryLabel:checkbox", CheckBox.class);
+    tester.assertComponent("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox", CheckBox.class);
+    tester.assertComponent("panel:form:content:content:categories:category:3:input:categoryLabel:checkbox", CheckBox.class);
+
+    // check previous answer is here (checkbox 2)
+    CheckGroup checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
+    CheckBox checkbox2 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox");
+    Collection<IModel> selections = (Collection<IModel>) checkGroup.getModelObject();
+    Assert.assertEquals(1, selections.size());
+    Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox2.getModel()).getQuestionCategory(), selections.iterator().next().getObject());
+    FormComponent field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:open:input:field");
+    Assert.assertFalse(field.isRequired());
+
+    // select open field
+    tester.executeAjaxEvent("panel:form:content:content:categories:category:1:input:open:open:input:field", "onclick");
+    checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
+    // Assert.assertNull(checkGroup.getModelObject());
+    // Assert.assertFalse(checkGroup.isRequired());
+    field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:open:input:field");
+    Assert.assertTrue(field.isRequired());
+
+    checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
+    CheckBox checkbox1 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:categoryLabel:checkbox");
+    checkbox2 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox");
+    selections = (Collection<IModel>) checkGroup.getModelObject();
+    Assert.assertEquals(2, selections.size());
+    Iterator<IModel> iterator = selections.iterator();
+    Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox2.getModel()).getQuestionCategory(), iterator.next().getObject());
     Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox1.getModel()).getQuestionCategory(), iterator.next().getObject());
 
     verify(activeInterviewServiceMock);
@@ -473,7 +574,7 @@ public class DefaultQuestionPanelTest {
       }
     });
 
-    dumpPage("testSharedCategoriesArrayQuestion");
+    // dumpPage("testSharedCategoriesArrayQuestion");
 
     verify(activeInterviewServiceMock);
     verify(activeQuestionnaireAdministrationServiceMock);
@@ -502,7 +603,9 @@ public class DefaultQuestionPanelTest {
     builder.withSection("S1").withPage("P1").withQuestion("Q1").withCategories("1", "2", "3");
     builder.inPage("P1").withQuestion("Q1_MULTIPLE", true).withCategories("1", "2", "3");
     builder.withSection("S2").withPage("P2").withQuestion("Q2").withCategory("1").withOpenAnswerDefinition("OPEN_INT", DataType.INTEGER);
-    builder.inQuestion("Q2").withCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
+    builder.inQuestion("Q2").withSharedCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
+    builder.inPage("P2").withQuestion("Q2_MULTIPLE", true).withCategory("1").withOpenAnswerDefinition("OPEN_TEXT", DataType.TEXT);
+    builder.inQuestion("Q2_MULTIPLE").withSharedCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
 
     builder.withSection("S3").withPage("P3").withQuestion("Q3").withCategories("1", "2", "3");
     builder.inQuestion("Q3").withQuestion("Q3_1");

@@ -90,6 +90,9 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
         } else {
           activeQuestionnaireAdministrationService.deleteAnswer(question, questionCategory);
         }
+        if(getOpenField() != null) {
+          getOpenField().setRequired(getSelectionModel().isSelected());
+        }
 
         onCheckBoxSelection(target, CheckBoxQuestionCategoryPanel.this.questionModel, CheckBoxQuestionCategoryPanel.this.getModel());
       }
@@ -113,6 +116,8 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
 
           // set checkbox as selected
           getSelectionModel().setObject(true);
+
+          setRequired(true);
 
           activeQuestionnaireAdministrationService.answer((Question) questionModel.getObject(), (QuestionCategory) getModelObject(), null);
           // target.addComponent(CheckBoxQuestionCategoryPanel.this);
