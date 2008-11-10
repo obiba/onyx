@@ -45,6 +45,10 @@ public class ParticipantCodeBarcodePartParser extends FixedSizeBarcodePartParser
     this.format = format;
   }
 
+  public String getFormat() {
+    return format;
+  }
+
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
     this.activeInterviewService = activeInterviewService;
   }

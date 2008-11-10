@@ -24,6 +24,10 @@ public class RandomDigitsBarcodePartParser extends FixedSizeBarcodePartParser {
     this.format = format;
   }
 
+  public String getFormat() {
+    return format;
+  }
+
   @Override
   protected MessageSourceResolvable validatePart(String part) {
     MessageSourceResolvable error = null;
