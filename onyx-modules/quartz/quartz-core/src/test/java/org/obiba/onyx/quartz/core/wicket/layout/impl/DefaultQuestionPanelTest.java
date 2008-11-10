@@ -118,6 +118,7 @@ public class DefaultQuestionPanelTest {
     };
     messageSource.addMessage("Question.Q1.label", locale, "question label");
     messageSource.addMessage("Question.Q1.help", locale, "question help");
+    messageSource.addMessage("Question.Q1.specifications", locale, "question specifications");
     messageSource.addMessage("Question.Q1.instructions", locale, "question instructions");
     messageSource.addMessage("Question.Q1.caption", locale, "question caption");
     messageSource.addMessage("QuestionCategory.Q1.1.label", locale, "Choice one");
@@ -134,6 +135,7 @@ public class DefaultQuestionPanelTest {
 
     messageSource.addMessage("Question.Q2.label", locale, "question2 label");
     messageSource.addMessage("Question.Q2.help", locale, "question2 help");
+    messageSource.addMessage("Question.Q2.specifications", locale, "question2 specifications");
     messageSource.addMessage("Question.Q2.instructions", locale, "question2 instructions");
     messageSource.addMessage("Question.Q2.caption", locale, "question2 caption");
     messageSource.addMessage("QuestionCategory.Q2.1.label", locale, "Choice one");
@@ -154,6 +156,7 @@ public class DefaultQuestionPanelTest {
 
     messageSource.addMessage("Question.Q3.label", locale, "question3 label");
     messageSource.addMessage("Question.Q3.help", locale, "question3 help");
+    messageSource.addMessage("Question.Q3.specifications", locale, "question3 specifications");
     messageSource.addMessage("Question.Q3.instructions", locale, "question3 instructions");
     messageSource.addMessage("Question.Q3.caption", locale, "question3 caption");
     messageSource.addMessage("QuestionCategory.Q3.1.label", locale, "Choice one");
@@ -277,6 +280,7 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "label")).andReturn(propertyKeyProvider.getPropertyKey(question, "label")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "help")).andReturn(propertyKeyProvider.getPropertyKey(question, "help")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();

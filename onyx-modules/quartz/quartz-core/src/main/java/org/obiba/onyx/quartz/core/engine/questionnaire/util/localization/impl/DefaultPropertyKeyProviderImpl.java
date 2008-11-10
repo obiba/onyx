@@ -37,7 +37,7 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
 
   private List<String> pageProperties = Arrays.asList("label");
 
-  private List<String> questionProperties = Arrays.asList("label", "instructions", "caption", "help", "image");
+  private List<String> questionProperties = Arrays.asList("label", "instructions", "caption", "help", "image", "specifications");
 
   private List<String> categoryProperties = Arrays.asList("label", "image");
 

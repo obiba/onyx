@@ -45,6 +45,16 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
       add(new EmptyPanel("help").setVisible(false));
     }
 
+    // specifications
+    QuestionnaireStringResourceModel specificationsModel = new QuestionnaireStringResourceModel(question, "specifications");
+    if(specificationsModel.getString() != null && !specificationsModel.getString().trim().equals("")) {
+      Label specifications = new Label("specifications", specificationsModel);
+      specifications.setEscapeModelStrings(false);
+      add(specifications);
+    } else {
+      add(new EmptyPanel("specifications").setVisible(false));
+    }
+
     add(new Label("instructions", new QuestionnaireStringResourceModel(question, "instructions")));
     add(new Label("caption", new QuestionnaireStringResourceModel(question, "caption")));
 
