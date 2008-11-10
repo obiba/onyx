@@ -25,10 +25,14 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.wicket.model.SpringDetachableModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class QuestionnaireModel extends SpringDetachableModel implements IVisitor {
 
   private static final long serialVersionUID = -6997906325842949254L;
+
+  private static final Logger log = LoggerFactory.getLogger(QuestionnaireModel.class);
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
@@ -130,5 +134,29 @@ public class QuestionnaireModel extends SpringDetachableModel implements IVisito
 
   public void visit(Condition condition) {
     this.element = finder.findCondition(condition.getName());
+  }
+
+  @Override
+  public int hashCode() {
+    return questionnaireName.hashCode() + element.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    log.debug("equals ? {} == {}", this, obj);
+    if(obj == this) {
+      return true;
+    } else if(obj instanceof QuestionnaireModel) {
+      QuestionnaireModel model = (QuestionnaireModel) obj;
+      return (this.questionnaireName.equals(model.questionnaireName) && this.element.getClass().equals(model.element.getClass()) && this.element.getName().equals(model.element.getName()));
+    }
+    return super.equals(obj);
+  }
+
+  @Override
+  public String toString() {
+    StringBuffer sb = new StringBuffer(super.toString());
+    sb.append(":questionnaireName=").append(questionnaireName).append(":element=[").append(element).append("]");
+    return sb.toString();
   }
 }

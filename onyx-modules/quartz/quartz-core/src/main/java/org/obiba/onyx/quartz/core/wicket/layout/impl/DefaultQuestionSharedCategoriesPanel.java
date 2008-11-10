@@ -14,7 +14,6 @@ import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -133,7 +132,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
     public RadioGroupRows(String id, List<IColumn> columns, IDataProvider rows) {
       super(id, "groupRows", DefaultQuestionSharedCategoriesPanel.this);
       add(radioGroupView = new RadioGroupView(id, (List) columns, rows));
-      radioGroupView.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
+      // radioGroupView.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
     }
 
   }
@@ -146,7 +145,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
     public CheckGroupRows(String id, List<IColumn> columns, IDataProvider rows) {
       super(id, "groupRows", DefaultQuestionSharedCategoriesPanel.this);
       add(checkGroupView = new CheckGroupView(id, (List) columns, rows));
-      checkGroupView.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
+      // checkGroupView.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
     }
 
   }
