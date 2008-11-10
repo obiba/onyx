@@ -131,7 +131,7 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
     trunkFatMassTxt = new ResultTextField();
     trunkFfmTxt = new ResultTextField();
     trunkPredictedMuscleMassTxt = new ResultTextField();
-   
+
   }
 
   /**
@@ -172,25 +172,24 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
 
     switch(pEvent.getEventType()) {
 
-      // Data is available at the serial port, so read it...
-      case SerialPortEvent.DATA_AVAILABLE:
-      
+    // Data is available at the serial port, so read it...
+    case SerialPortEvent.DATA_AVAILABLE:
+
       try {
-          if(bufferedReader.ready()){
-            // Parse and sets the data in the GUI.
-            String wResponse = bufferedReader.readLine().trim();
-            setTanitaData(parseTanitaData(wResponse));
-    
-            // Enable save button, so data can be saved.
-            saveDataBtn.setEnabled(true);
-          }
-        } 
-        catch(IOException wErrorReadingDataOnSerialPort) {
-          JOptionPane.showMessageDialog(appWindow, tanitaResourceBundle.getString("Err.Result_communication"), tanitaResourceBundle.getString("Title.Communication_error"), JOptionPane.ERROR_MESSAGE);
+        if(bufferedReader.ready()) {
+          // Parse and sets the data in the GUI.
+          String wResponse = bufferedReader.readLine().trim();
+          setTanitaData(parseTanitaData(wResponse));
+
+          // Enable save button, so data can be saved.
+          saveDataBtn.setEnabled(true);
         }
-        break;
+      } catch(IOException wErrorReadingDataOnSerialPort) {
+        JOptionPane.showMessageDialog(appWindow, tanitaResourceBundle.getString("Err.Result_communication"), tanitaResourceBundle.getString("Title.Communication_error"), JOptionPane.ERROR_MESSAGE);
       }
+      break;
     }
+  }
 
   /**
    * Retrieve participant data from the database and transfer them to the bioimpedance device
@@ -307,8 +306,7 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
 
       try {
         serialPort.addEventListener(this);
-      } 
-      catch(TooManyListenersException e) {
+      } catch(TooManyListenersException e) {
         throw new RuntimeException(e);
       }
       serialPort.notifyOnDataAvailable(true);
@@ -325,8 +323,7 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
         }
       }
       log.info("Lock obtained. Exiting software.");
-    } 
-    else {
+    } else {
       JOptionPane.showMessageDialog(null, tanitaResourceBundle.getString("Err.Application_lock"), tanitaResourceBundle.getString("Title.Cannot_start_application"), JOptionPane.ERROR_MESSAGE);
     }
   }
@@ -444,7 +441,7 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
     output.put("TotalBodyWater", getDecimalValue(tbwTxt));
     output.put("FatPercentage", getDecimalValue(fatPctTxt));
     output.put("Gender", new Data(DataType.TEXT, genderTxt.getText()));
-    output.put("Height", getDecimalValue(heightTxt));
+    output.put("Height", getIntegerValue(heightTxt));
     output.put("Age", getIntegerValue(ageTxt));
 
     output.put("Date", new Data(DataType.TEXT, dateTxt.getText()));

@@ -5,8 +5,8 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
   <!-- Uncomment the file for the model to use -->
-  <import resource="instrument-context-tbf310.xml" />
+  <import resource="instrument-context-bc418.xml" />
 
-  <!-- import resource="instrument-context-bc418.xml" /-->
+  <!-- import resource="instrument-context-tbf310.xml" /-->
 
 </beans>
