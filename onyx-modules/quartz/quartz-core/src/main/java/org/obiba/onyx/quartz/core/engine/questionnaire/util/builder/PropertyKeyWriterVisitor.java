@@ -72,8 +72,11 @@ public class PropertyKeyWriterVisitor implements IWalkerVisitor {
   }
 
   public void visit(Question question) {
-    writer.writeComment("", "Question " + question.getName(), "");
-    writePropertyKey(question);
+    // Questions with answer source should not be included in localization file, since they are not displayed on the UI.
+    if(!question.hasAnswerSource()) {
+      writer.writeComment("", "Question " + question.getName(), "");
+      writePropertyKey(question);
+    }
   }
 
   public void visit(QuestionCategory questionCategory) {
