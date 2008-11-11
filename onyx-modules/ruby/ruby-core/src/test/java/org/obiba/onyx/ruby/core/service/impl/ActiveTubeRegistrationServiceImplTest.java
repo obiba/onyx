@@ -19,7 +19,6 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
-import org.obiba.onyx.core.domain.contraindication.IContraindicatable;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
@@ -35,7 +34,7 @@ public class ActiveTubeRegistrationServiceImplTest {
 
   private ActiveInterviewService activeInterviewServiceMock;
 
-  private IContraindicatable contraindicatableMock;
+  // private IContraindicatable contraindicatableMock;
 
   private PersistenceManager persistenceManagerMock;
 
@@ -47,14 +46,14 @@ public class ActiveTubeRegistrationServiceImplTest {
   @Before
   public void setUp() throws Exception {
     activeInterviewServiceMock = createMock(ActiveInterviewService.class);
-    contraindicatableMock = createMock(IContraindicatable.class);
+    // contraindicatableMock = createMock(IContraindicatable.class);
     persistenceManagerMock = createMock(PersistenceManager.class);
     tubeRegistrationConfig = new TubeRegistrationConfiguration();
 
     service = new ActiveTubeRegistrationServiceImpl();
 
     service.setActiveInterviewService(activeInterviewServiceMock);
-    service.setIContraindicatable(contraindicatableMock);
+    // service.setIContraindicatable(contraindicatableMock);
     service.setPersistenceManager(persistenceManagerMock);
     service.setTubeRegistrationConfig(tubeRegistrationConfig);
   }
@@ -78,7 +77,7 @@ public class ActiveTubeRegistrationServiceImplTest {
   @Test
   public void testGetRegisteredTubeCount() {
     Interview interview = new Interview();
-    ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
+    ParticipantTubeRegistration registration = new ParticipantTubeRegistration(tubeRegistrationConfig);
     registration.addRegisteredParticipantTube(new RegisteredParticipantTube());
 
     expect(activeInterviewServiceMock.getInterview()).andReturn(interview);

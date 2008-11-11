@@ -14,8 +14,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
-import org.obiba.onyx.core.domain.contraindication.Contraindication;
-import org.obiba.onyx.core.domain.contraindication.IContraindicatable;
 import org.obiba.onyx.core.domain.contraindication.Contraindication.Type;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
@@ -38,7 +36,7 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
 
   // private BarcodeStructure barcodeStructure;
 
-  private IContraindicatable iContraindicatable;
+  // private IContraindicatable iContraindicatable;
 
   public int getExpectedTubeCount() {
     return tubeRegistrationConfig.getExpectedTubeCount();
@@ -55,7 +53,7 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
    * @return
    */
   private ParticipantTubeRegistration getCurrentParticipantTubeRegistration() {
-    ParticipantTubeRegistration template = new ParticipantTubeRegistration();
+    ParticipantTubeRegistration template = new ParticipantTubeRegistration(tubeRegistrationConfig);
     template.setInterview(activeInterviewService.getInterview());
 
     ParticipantTubeRegistration registration = getPersistenceManager().matchOne(template);
@@ -66,11 +64,11 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
   }
 
   private ParticipantTubeRegistration createParticipantTubeRegistration() {
-    ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
+    ParticipantTubeRegistration registration = new ParticipantTubeRegistration(tubeRegistrationConfig);
     registration.setInterview(activeInterviewService.getInterview());
-    Contraindication contraindication = iContraindicatable.getContraindication();
-    registration.setContraindicationCode(contraindication == null ? null : contraindication.getCode());
-    registration.setOtherContraindication(iContraindicatable.getOtherContraindication());
+    // Contraindication contraindication = iContraindicatable.getContraindication();
+    // registration.setContraindicationCode(contraindication == null ? null : contraindication.getCode());
+    // registration.setOtherContraindication(iContraindicatable.getOtherContraindication());
     registration.setStartTime(new Date());
     getPersistenceManager().save(registration);
     return registration;
@@ -149,17 +147,8 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
    * public BarcodeStructure getBarcodeStructure() { return barcodeStructure; }
    */
 
-  public void setIContraindicatable(IContraindicatable iContraindicatable) {
-    this.iContraindicatable = iContraindicatable;
-  }
-
-  public IContraindicatable getIContraindicatable() {
-    return iContraindicatable;
-  }
-
   public boolean hasContraindications(Type type) {
-    // TODO Auto-generated method stub
-    return false;
+    return getCurrentParticipantTubeRegistration().hasContraindications(type);
   }
 
 }
