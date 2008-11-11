@@ -107,6 +107,8 @@ public abstract class WizardForm extends Form {
         log.debug("next.onError");
         if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
         WizardForm.this.onError(target, form);
+        WizardStepPanel currentStep = (WizardStepPanel) WizardForm.this.get("step");
+        currentStep.onStepOutNextError(WizardForm.this, target);
       }
 
     };

@@ -97,6 +97,15 @@ public abstract class WizardStepPanel extends Panel {
 
   }
 
+  /**
+   * Called when "next" button submit the current step form to go to next step, and it fails.
+   * @param form
+   * @param target
+   */
+  public void onStepOutNextError(WizardForm form, AjaxRequestTarget target) {
+
+  }
+
   public abstract void handleWizardState(WizardForm form, AjaxRequestTarget target);
 
   public static String getContentId() {
