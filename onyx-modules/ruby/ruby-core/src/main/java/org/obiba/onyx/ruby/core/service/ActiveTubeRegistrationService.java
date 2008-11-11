@@ -11,6 +11,7 @@ package org.obiba.onyx.ruby.core.service;
 
 import java.util.List;
 
+import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.ruby.core.domain.Remark;
 import org.springframework.context.MessageSourceResolvable;
 
@@ -66,4 +67,11 @@ public interface ActiveTubeRegistrationService {
    * @throws IllegalArgumentException if no tube with the specified barcode is registered
    */
   public void setTubeComment(String barcode, String comment);
+
+  /**
+   * Returns true when at least one contraindication exists for the specified type.
+   * @param type the type to check
+   * @return true when at least one contraindication exists.
+   */
+  public boolean hasContraindications(Contraindication.Type type);
 }

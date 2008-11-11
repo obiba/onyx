@@ -16,6 +16,7 @@ import java.util.List;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.contraindication.IContraindicatable;
+import org.obiba.onyx.core.domain.contraindication.Contraindication.Type;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
@@ -93,19 +94,19 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
   }
 
   public void setTubeComment(String barcode, String comment) {
-    RegisteredParticipantTube tube = findTubebyBarcode(barcode);
+    RegisteredParticipantTube tube = findTubeByBarcode(barcode);
     tube.setComment(comment);
     getPersistenceManager().save(tube);
   }
 
   public void setTubeRemark(String barcode, Remark remark) {
-    RegisteredParticipantTube tube = findTubebyBarcode(barcode);
+    RegisteredParticipantTube tube = findTubeByBarcode(barcode);
     tube.setRemarkCode(remark.getCode());
     getPersistenceManager().save(tube);
   }
 
   public void unregisterTube(String barcode) {
-    RegisteredParticipantTube tube = findTubebyBarcode(barcode);
+    RegisteredParticipantTube tube = findTubeByBarcode(barcode);
     ParticipantTubeRegistration registration = getCurrentParticipantTubeRegistration();
     registration.removeRegisteredParticipantTube(tube);
     getPersistenceManager().save(registration);
@@ -116,7 +117,7 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
    * @param barcode
    * @return
    */
-  private RegisteredParticipantTube findTubebyBarcode(String barcode) {
+  private RegisteredParticipantTube findTubeByBarcode(String barcode) {
     RegisteredParticipantTube tube = new RegisteredParticipantTube();
     tube.setBarcode(barcode);
     tube = getPersistenceManager().matchOne(tube);
@@ -154,6 +155,11 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
 
   public IContraindicatable getIContraindicatable() {
     return iContraindicatable;
+  }
+
+  public boolean hasContraindications(Type type) {
+    // TODO Auto-generated method stub
+    return false;
   }
 
 }
