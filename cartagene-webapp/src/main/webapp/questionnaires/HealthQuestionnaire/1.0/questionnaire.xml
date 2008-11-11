@@ -90,7 +90,7 @@
                 </question>
               </questions>
             </question>
-            <question id="51" name="SHARED_MULTIPLE_CATEGORIES_QUESTION_ARRAY" required="true" multiple="true" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="51" name="SHARED_MULTIPLE_CATEGORIES_QUESTION_ARRAY" required="true" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="29"/>
               <questionCategories id="52">
                 <questionCategory id="53" repeatable="false" selected="false">
@@ -113,12 +113,12 @@
                 </questionCategory>
               </questionCategories>
               <questions id="62">
-                <question id="63" name="SHARED_MULTIPLE_CATEGORIES_QUESTION_1" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="63" name="SHARED_MULTIPLE_CATEGORIES_QUESTION_1" required="true" multiple="true" minCount="2" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <questionCategories id="64"/>
                   <parentQuestion reference="51"/>
                   <questions id="65"/>
                 </question>
-                <question id="66" name="SHARED_MULTIPLE_CATEGORIES_QUESTION_2" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="66" name="SHARED_MULTIPLE_CATEGORIES_QUESTION_2" required="true" multiple="true" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <questionCategories id="67"/>
                   <parentQuestion reference="51"/>
                   <questions id="68"/>

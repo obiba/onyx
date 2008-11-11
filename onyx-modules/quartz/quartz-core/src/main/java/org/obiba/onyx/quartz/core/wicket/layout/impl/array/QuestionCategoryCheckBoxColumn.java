@@ -13,8 +13,10 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.CheckBoxQuestionCategoryPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.MultipleChoiceQuestionValidator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 
 public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColumn {
@@ -36,9 +38,10 @@ public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColu
   @Override
   public void populateItem(Item cellItem, String componentId, IModel rowModel, int index) {
     CheckGroup checkGroup = ((CheckGroup[]) checkGroupsModel.getObject())[index];
-    // checkGroup.setRequired(question.isRequired() ? true : false);
+    checkGroup.add(new MultipleChoiceQuestionValidator(rowModel));
     Question question = (Question) rowModel.getObject();
-    checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
+    String label = new QuestionnaireStringResourceModel(question.getParentQuestion(), "label").getString() + " / " + new QuestionnaireStringResourceModel(question, "label").getString();
+    checkGroup.setLabel(new Model(label));
 
     cellItem.add(new CheckBoxQuestionCategoryPanel(componentId, rowModel, cellItem.getModel(), checkGroup, false) {
       @Override

@@ -47,6 +47,7 @@ public class DefaultPageLayout extends PageLayout {
   @SuppressWarnings("serial")
   public DefaultPageLayout(String id, IModel pageModel) {
     super(id, pageModel);
+    setOutputMarkupId(true);
 
     Page page = (Page) getModelObject();
     add(new Label("section", new QuestionnaireStringResourceModel(page.getSection(), "label")));

@@ -58,6 +58,12 @@ div.page div.questions div.question div.caption {
 	padding-bottom:5px;
 }
 
+div.page div.questions div.question div.specifications {
+	font-size: smaller;
+	padding-bottom:5px;
+	padding-top:5px;
+}
+
 div.page div.questions div.question div.categories {
 	padding-left:15px;
 }

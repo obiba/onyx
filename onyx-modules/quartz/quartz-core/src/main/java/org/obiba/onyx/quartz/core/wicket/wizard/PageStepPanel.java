@@ -95,6 +95,11 @@ public class PageStepPanel extends WizardStepPanel {
     setNextStep(questionnaireWizardForm.getNextStep());
   }
 
+  @Override
+  public void onStepOutNextError(WizardForm form, AjaxRequestTarget target) {
+    target.addComponent(pageLayout);
+  }
+
   //
   // Methods
   //

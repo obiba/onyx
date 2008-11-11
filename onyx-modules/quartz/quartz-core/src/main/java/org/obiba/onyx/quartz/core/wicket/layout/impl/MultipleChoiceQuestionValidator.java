@@ -23,7 +23,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 
 /**
- * 
+ * Validates the question choices minimum/maximum count of answers. It uses the settings of the question by default, and
+ * if none is found and question parent exists, question parent settings are used.
  */
 public class MultipleChoiceQuestionValidator implements IValidator {
 
@@ -44,21 +45,37 @@ public class MultipleChoiceQuestionValidator implements IValidator {
     Question question = (Question) questionModel.getObject();
     int count = activeQuestionnaireAdministrationService.findAnswers(question).size();
 
-    if(question.isMultiple()) {
-      if(question.getMinCount() != null && question.getMinCount() > count) {
-        validatable.error(new MultipleQuestionValidationError(count));
-      } else if(question.getMaxCount() != null && question.getMaxCount() < count) {
-        validatable.error(new MultipleQuestionValidationError(count));
-      }
+    // get the min/max settings : for questions having a parent question, if no settings is found parent settings is
+    // used.
+    Integer minCount = question.getMinCount();
+    if(minCount == null && question.getParentQuestion() != null) {
+      minCount = question.getParentQuestion().getMinCount();
+    }
+    Integer maxCount = question.getMaxCount();
+    if(maxCount == null && question.getParentQuestion() != null) {
+      maxCount = question.getParentQuestion().getMaxCount();
+    }
+
+    // find if there is an error
+    if(minCount != null && minCount > count) {
+      validatable.error(new MultipleQuestionValidationError(minCount, maxCount, count));
+    } else if(maxCount != null && maxCount < count) {
+      validatable.error(new MultipleQuestionValidationError(minCount, maxCount, count));
     }
   }
 
   @SuppressWarnings("serial")
   private class MultipleQuestionValidationError implements IValidationError, Serializable {
 
+    private Integer minCount;
+
+    private Integer maxCount;
+
     private int count;
 
-    public MultipleQuestionValidationError(int count) {
+    public MultipleQuestionValidationError(Integer minCount, Integer maxCount, int count) {
+      this.minCount = minCount;
+      this.maxCount = maxCount;
       this.count = count;
     }
 
@@ -67,15 +84,14 @@ public class MultipleChoiceQuestionValidator implements IValidator {
      * @see BaseQuestionPanel for message keys.
      */
     public String getErrorMessage(IErrorMessageSource messageSource) {
-      Question question = (Question) questionModel.getObject();
       String key = "";
       ValueMap map = new ValueMap("count=" + count);
-      if(question.getMinCount() != null) {
-        map.put("min", question.getMinCount());
+      if(minCount != null) {
+        map.put("min", minCount);
         key = "MultipleChoiceQuestion.Min";
       }
-      if(question.getMaxCount() != null) {
-        map.put("max", question.getMaxCount());
+      if(maxCount != null) {
+        map.put("max", maxCount);
         if(key.length() == 0) {
           key = "MultipleChoiceQuestion.Max";
         } else {
@@ -84,7 +100,5 @@ public class MultipleChoiceQuestionValidator implements IValidator {
       }
       return messageSource.substitute(messageSource.getMessage(key), map);
     }
-
   }
-
 }
