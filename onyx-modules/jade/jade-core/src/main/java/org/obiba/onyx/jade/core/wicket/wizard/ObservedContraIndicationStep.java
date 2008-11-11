@@ -14,7 +14,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
-import org.obiba.onyx.jade.core.wicket.instrument.ObservedContraIndicationPanel;
+import org.obiba.onyx.wicket.contraindication.ObservedContraIndicationPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 
 /**

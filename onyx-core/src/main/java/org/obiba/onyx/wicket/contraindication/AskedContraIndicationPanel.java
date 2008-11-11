@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.jade.core.wicket.instrument;
+package org.obiba.onyx.wicket.contraindication;
 
 import java.io.Serializable;
 import java.util.ArrayList;
