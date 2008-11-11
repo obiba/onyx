@@ -81,9 +81,11 @@ public class DefaultQuestionCategoriesPanel extends Panel {
           if(currentOpenField != null) {
             currentOpenField.setData(null);
             currentOpenField.setRequired(false);
-            target.addComponent(currentOpenField);
-            currentOpenField = null;
           }
+          currentOpenField = getOpenField();
+
+          // update all
+          target.addComponent(DefaultQuestionCategoriesPanel.this);
         }
 
       });

@@ -307,7 +307,7 @@ public class DefaultQuestionPanelTest {
       }
     });
 
-    // tester.dumpPage();
+    tester.dumpPage();
 
     // check all expected radios are here
     tester.assertComponent("panel:form:content:content:categories", RadioGroup.class);
@@ -326,8 +326,9 @@ public class DefaultQuestionPanelTest {
     // select open field
     tester.executeAjaxEvent("panel:form:content:content:categories:category:1:input:open:open:input:field", "onclick");
     radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    Assert.assertNull(radioGroup.getModelObject());
-    Assert.assertFalse(radioGroup.isRequired());
+    Radio radio1 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:categoryLabel:radio");
+    Assert.assertEquals(radioGroup.getModelObject(), radio1.getModelObject());
+    Assert.assertTrue(radioGroup.isRequired());
     field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:open:input:field");
     Assert.assertTrue(field.isRequired());
 

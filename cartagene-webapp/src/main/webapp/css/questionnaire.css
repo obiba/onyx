@@ -110,3 +110,7 @@ table.array td.label {
 div.page div.question div.categories div.category {
 	padding-bottom:5px;
 }
+
+.radio-open {
+	display: none;
+}

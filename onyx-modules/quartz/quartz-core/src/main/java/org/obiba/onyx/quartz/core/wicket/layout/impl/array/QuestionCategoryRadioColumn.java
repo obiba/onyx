@@ -78,8 +78,8 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
         if(currentOpenField != null) {
           currentOpenField.setData(null);
           currentOpenField.setRequired(false);
-          setCurrentOpenField(index, null);
         }
+        setCurrentOpenField(index, getOpenField());
 
         // call for refresh
         onEvent(target);

@@ -2,6 +2,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.Radio;
@@ -72,6 +73,28 @@ public class RadioQuestionCategoryPanel extends Panel {
 
     Radio radio = new Radio("radio", questionCategoryModel);
     radio.setLabel(new QuestionnaireStringResourceModel(questionCategoryModel, "label"));
+    // persist selection on change event
+    // and make sure there is no active open field previously selected
+    radio.add(new AjaxEventBehavior("onchange") {
+
+      @Override
+      protected void onEvent(AjaxRequestTarget target) {
+        Question question = (Question) RadioQuestionCategoryPanel.this.questionModel.getObject();
+
+        // make the radio group active for the selection
+        radioGroup.setModel(RadioQuestionCategoryPanel.this.getModel());
+        if(getOpenField() != null) {
+          getOpenField().setRequired(question.isRequired());
+        }
+
+        // exclusive choice, only one answer per question
+        activeQuestionnaireAdministrationService.deleteAnswers(question);
+        activeQuestionnaireAdministrationService.answer(question, (QuestionCategory) RadioQuestionCategoryPanel.this.getModelObject(), null);
+
+        onRadioSelection(target, RadioQuestionCategoryPanel.this.questionModel, RadioQuestionCategoryPanel.this.getModel());
+      }
+
+    });
 
     FormComponentLabel radioLabel = new FormComponentLabel("categoryLabel", radio);
     add(radioLabel);
@@ -90,8 +113,7 @@ public class RadioQuestionCategoryPanel extends Panel {
           log.info("openField.onSelect={}.{}", question, questionCategory);
 
           // make sure radio selection does not conflict with open field selection
-          radioGroup.setModel(new Model());
-          radioGroup.setRequired(false);
+          radioGroup.setModel(RadioQuestionCategoryPanel.this.getModel());
           getOpenField().setRequired(question.isRequired());
 
           // exclusive choice, only one answer per question
@@ -110,51 +132,28 @@ public class RadioQuestionCategoryPanel extends Panel {
         }
 
       };
+      openField.setRequired(false);
       add(openField);
-      openField.setRequired(previousAnswer != null && questionCategory.getQuestion().isRequired());
-      radio.setVisible(false);
-
-      // previous answer or default selection
-      if(previousAnswer != null) {
-        radioGroup.setRequired(false);
-        openField.setRequired(questionCategory.getQuestion().isRequired());
-      } else if(questionCategory.isSelected()) {
-        radioGroup.setRequired(false);
-        openField.setRequired(questionCategory.getQuestion().isRequired());
-        activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
-      }
+      // make radio associated to open answer optionally visible using css styling
+      radio.add(new AttributeAppender("class", new Model("radio-open"), " "));
 
     } else {
       // no open answer
       add(new EmptyPanel("open").setVisible(false));
-      // persist selection on change event
-      // and make sure there is no active open field previously selected
-      radio.add(new AjaxEventBehavior("onchange") {
+    }
 
-        @Override
-        protected void onEvent(AjaxRequestTarget target) {
-          Question question = (Question) RadioQuestionCategoryPanel.this.questionModel.getObject();
-
-          // make the radio group active for the selection
-          radioGroup.setModel(RadioQuestionCategoryPanel.this.getModel());
-          radioGroup.setRequired(question.isRequired());
-
-          // exclusive choice, only one answer per question
-          activeQuestionnaireAdministrationService.deleteAnswers(question);
-          activeQuestionnaireAdministrationService.answer(question, (QuestionCategory) RadioQuestionCategoryPanel.this.getModelObject(), null);
-
-          onRadioSelection(target, RadioQuestionCategoryPanel.this.questionModel, RadioQuestionCategoryPanel.this.getModel());
-        }
-
-      });
-
-      // previous answer or default selection
-      if(previousAnswer != null) {
-        radioGroup.setModel(questionCategoryModel);
-      } else if(questionCategory.isSelected()) {
-        radioGroup.setModel(questionCategoryModel);
-        activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
+    // previous answer or default selection
+    if(previousAnswer != null) {
+      radioGroup.setModel(questionCategoryModel);
+      if(openField != null) {
+        openField.setRequired(questionCategory.getQuestion().isRequired());
       }
+    } else if(questionCategory.isSelected()) {
+      radioGroup.setModel(questionCategoryModel);
+      if(openField != null) {
+        openField.setRequired(questionCategory.getQuestion().isRequired());
+      }
+      activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
     }
   }
 
