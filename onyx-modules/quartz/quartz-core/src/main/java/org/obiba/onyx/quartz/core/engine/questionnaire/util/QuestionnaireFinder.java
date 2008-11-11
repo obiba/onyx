@@ -181,7 +181,7 @@ public class QuestionnaireFinder {
   }
 
   /**
-   * Find the first {@link Category} with the given name.
+   * Find the first {@link Condition} with the given name.
    * @param name
    * @return null if not found
    */
