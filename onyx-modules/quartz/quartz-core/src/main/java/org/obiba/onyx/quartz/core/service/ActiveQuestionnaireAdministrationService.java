@@ -229,4 +229,21 @@ public interface ActiveQuestionnaireAdministrationService {
    */
   public void stopCurrentQuestionnaire();
 
+  /**
+   * Add a comment to a question answer.
+   * 
+   * @param question The question for which the comment will be added.
+   * @param comment The comment.
+   * @return The question answer.
+   */
+  public QuestionAnswer addComment(Question question, String comment);
+
+  /**
+   * Get the comment attached to the question answer.
+   * 
+   * @param question The question.
+   * @return The comment for the question.
+   */
+  public String getComment(Question question);
+
 }

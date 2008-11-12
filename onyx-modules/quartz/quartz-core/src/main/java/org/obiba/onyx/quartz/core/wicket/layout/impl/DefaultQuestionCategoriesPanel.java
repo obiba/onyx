@@ -126,12 +126,6 @@ public class DefaultQuestionCategoriesPanel extends Panel {
           // update all
           target.addComponent(this);
         }
-
-        @Override
-        public void onCheckBoxSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          // update all
-          target.addComponent(this);
-        }
       });
     }
   }

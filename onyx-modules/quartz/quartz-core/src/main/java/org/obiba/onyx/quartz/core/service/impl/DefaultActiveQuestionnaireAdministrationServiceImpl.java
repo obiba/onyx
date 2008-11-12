@@ -153,6 +153,35 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return answer(questionCategory.getQuestion(), questionCategory, openAnswerDefinition, value);
   }
 
+  public String getComment(Question question) {
+    QuestionAnswer template = new QuestionAnswer();
+    template.setQuestionnaireParticipant(currentQuestionnaireParticipant);
+    template.setQuestionName(question.getName());
+    QuestionAnswer questionAnswer = getPersistenceManager().matchOne(template);
+    if(questionAnswer != null) {
+      return questionAnswer.getComment();
+    } else {
+      return null;
+    }
+  }
+
+  public QuestionAnswer addComment(Question question, String comment) {
+    QuestionAnswer template = new QuestionAnswer();
+    template.setQuestionnaireParticipant(currentQuestionnaireParticipant);
+    template.setQuestionName(question.getName());
+    QuestionAnswer questionAnswer = getPersistenceManager().matchOne(template);
+
+    if(questionAnswer == null) {
+      template.setComment(comment);
+      getPersistenceManager().save(template);
+    } else {
+      questionAnswer.setComment(comment);
+      getPersistenceManager().save(questionAnswer);
+    }
+
+    return questionAnswer;
+  }
+
   public CategoryAnswer answer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value) {
     QuestionAnswer template = new QuestionAnswer();
     template.setQuestionnaireParticipant(currentQuestionnaireParticipant);
@@ -200,14 +229,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   public void deleteAnswer(Question question, QuestionCategory questionCategory) {
     CategoryAnswer categoryAnswer = findAnswer(question, questionCategory);
     if(categoryAnswer != null) {
-      QuestionAnswer questionAnswer = categoryAnswer.getQuestionAnswer();
-
       deleteAnswers(categoryAnswer);
-
-      getPersistenceManager().refresh(questionAnswer);
-      if(questionAnswer.getCategoryAnswers().size() == 0) {
-        getPersistenceManager().delete(questionAnswer);
-      }
     }
 
     // TODO deal with category answer parent
@@ -220,8 +242,6 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
       if(questionAnswer == null) questionAnswer = categoryAnswer.getQuestionAnswer();
       deleteAnswers(categoryAnswer);
     }
-
-    if(questionAnswer != null) getPersistenceManager().delete(questionAnswer);
 
     // TODO deal with category answer parent
   }

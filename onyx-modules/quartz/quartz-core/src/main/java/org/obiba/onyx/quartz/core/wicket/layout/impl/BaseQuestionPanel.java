@@ -8,11 +8,19 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
+import java.util.List;
+
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
@@ -22,6 +30,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
 
   private static final long serialVersionUID = -391676180175754335L;
 
+  @SuppressWarnings("serial")
   public BaseQuestionPanel(String id, IModel questionModel) {
     super(id, questionModel);
 
@@ -34,6 +43,8 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
       add(new Label("number"));
     }
     add(new Label("label", new QuestionnaireStringResourceModel(question, "label")));
+
+    addCommentModalWindow(question);
 
     // help toggle
     QuestionnaireStringResourceModel helpModel = new QuestionnaireStringResourceModel(question, "help");
@@ -73,6 +84,47 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
     } else {
       setContent("content");
     }
+  }
+
+  @SuppressWarnings("serial")
+  private void addCommentModalWindow(Question question) {
+
+    // Create modal comments window
+    final ModalWindow commentWindow;
+    add(commentWindow = new ModalWindow("addCommentModal"));
+
+    String commentWindowTitle = (new StringResourceModel("CommentsWindow", this, null)).getString() + " - " + new QuestionnaireStringResourceModel(question, "label").getString();
+    if(commentWindowTitle.length() > 60) {
+      commentWindow.setTitle(commentWindowTitle.substring(0, 60) + "...");
+    } else {
+      commentWindow.setTitle(commentWindowTitle);
+    }
+
+    commentWindow.setInitialHeight(220);
+    commentWindow.setInitialWidth(550);
+    commentWindow.setResizable(false);
+
+    commentWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+      public void onClose(AjaxRequestTarget target) {
+      }
+    });
+
+    // Question with no categories should not have comments.
+    List<Category> categories = question.getCategories();
+    if(categories != null && categories.size() > 0) {
+
+      // Add comment action link.
+      add(new AjaxLink("addComment") {
+        public void onClick(AjaxRequestTarget target) {
+          commentWindow.setContent(new QuestionCommentModalPanel("content", commentWindow, BaseQuestionPanel.this.getModel()));
+          commentWindow.show(target);
+        }
+      });
+
+    } else {
+      add(new WebMarkupContainer("addComment").setVisible(false));
+    }
+
   }
 
   protected abstract void setContent(String string);
