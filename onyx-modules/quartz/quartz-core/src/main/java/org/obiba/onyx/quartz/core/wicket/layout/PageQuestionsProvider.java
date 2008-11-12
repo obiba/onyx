@@ -9,12 +9,17 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
+import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,15 +31,23 @@ public class PageQuestionsProvider implements IDataProvider {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(PageQuestionsProvider.class);
 
+  @SpringBean
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+
   private Page page;
 
   public PageQuestionsProvider(Page page) {
+    InjectorHolder.getInjector().inject(this);
     this.page = page;
   }
 
   @SuppressWarnings("unchecked")
   public Iterator iterator(int first, int count) {
-    return page.getQuestions().subList(first, first + count).iterator();
+    List<Question> questionToAnswer = new ArrayList<Question>();
+    for(Question question : page.getQuestions().subList(first, first + count)) {
+      if(question.isToBeAnswered(activeQuestionnaireAdministrationService)) questionToAnswer.add(question);
+    }
+    return questionToAnswer.iterator();
   }
 
   public IModel model(Object object) {

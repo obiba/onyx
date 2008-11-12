@@ -20,6 +20,7 @@ import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
@@ -93,6 +94,8 @@ public class CreateQuestionnaire {
     builder.inSection("BIRTHDATE").withPage("P4").withQuestion("Q4").withCategory("1").withOpenAnswerDefinition("age", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));
     builder.inQuestion("Q4").withSharedCategory(NO_ANSWER).setExportName("88");
     builder.inQuestion("Q4").withSharedCategory(DONT_KNOW).setExportName("99");
+    builder.inQuestion("Q4").setNoAnswerCondition("NO1").withMultipleCondition("MC1", ConditionOperator.AND).withAnswerCondition("AC1", "Q2", "1");
+    builder.inCondition("MC1").withAnswerCondition("AC2", "Q3", "1");
 
     builder.inSection("SB").withSection("MARITALSTATUS").withPage("P5").withQuestion("Q5").withCategories("1", "2", "3", "4", "5");
     builder.inQuestion("Q5").withSharedCategory(NO_ANSWER).setExportName("88");
@@ -184,6 +187,10 @@ public class CreateQuestionnaire {
     builder.inQuestion("Q29").withSharedCategory(YES).setExportName("1");
     builder.inQuestion("Q29").withSharedCategory(NO_ANSWER).setExportName("8");
     builder.inQuestion("Q29").withSharedCategory(DONT_KNOW).setExportName("9");
+
+    builder.inSection("WORKINGSTATUS").withPage("P23").withQuestion("Q30").withCategories("1", "2", "3");
+    builder.inPage("P23").withQuestion("Q31").withCategories("1", "2");
+    builder.inQuestion("Q31").setAnswerCondition("AC3", "Q29", "NO", null);
 
     // Add Timestamps to pages
     List<Page> pages = builder.getElement().getPages();

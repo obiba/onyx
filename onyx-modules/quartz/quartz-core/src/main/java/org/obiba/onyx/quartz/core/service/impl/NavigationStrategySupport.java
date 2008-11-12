@@ -37,6 +37,7 @@ public class NavigationStrategySupport {
     List<Question> questions = page.getQuestions();
 
     for(Question question : questions) {
+      if(question.hasAnswerSource()) continue;
       if(question.isToBeAnswered(service)) {
         return true;
       }

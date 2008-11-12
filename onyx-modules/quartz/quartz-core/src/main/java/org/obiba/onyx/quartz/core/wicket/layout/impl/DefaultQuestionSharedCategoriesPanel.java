@@ -27,8 +27,10 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.AbstractDataListProvider;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.AbstractQuestionArray;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.CheckGroupView;
@@ -55,6 +57,9 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
 
   private AbstractQuestionArray array;
 
+  @SpringBean
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+
   @SuppressWarnings("serial")
   public DefaultQuestionSharedCategoriesPanel(String id, IModel questionModel) {
     super(id, questionModel);
@@ -64,7 +69,11 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
     IDataProvider questionsProvider = new AbstractDataListProvider<Question>() {
       @Override
       public List<Question> getDataList() {
-        return ((Question) DefaultQuestionSharedCategoriesPanel.this.getModelObject()).getQuestions();
+        List<Question> questionToAnswer = new ArrayList<Question>();
+        for(Question question : ((Question) DefaultQuestionSharedCategoriesPanel.this.getModelObject()).getQuestions()) {
+          if(question.isToBeAnswered(activeQuestionnaireAdministrationService)) questionToAnswer.add(question);
+        }
+        return questionToAnswer;
       }
 
       @Override
