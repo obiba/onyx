@@ -14,16 +14,23 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.onyx.core.domain.participant.Interview;
-import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
+import org.obiba.onyx.ruby.core.domain.Remark;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
+import org.springframework.context.MessageSourceResolvable;
 
 /**
  *
@@ -32,28 +39,29 @@ public class ActiveTubeRegistrationServiceImplTest {
 
   private ActiveTubeRegistrationServiceImpl service;
 
-  private ActiveInterviewService activeInterviewServiceMock;
-
-  // private IContraindicatable contraindicatableMock;
-
   private PersistenceManager persistenceManagerMock;
 
   private TubeRegistrationConfiguration tubeRegistrationConfig;
+
+  private Participant participant;
+
+  private Interview interview;
 
   /**
    * @throws java.lang.Exception
    */
   @Before
   public void setUp() throws Exception {
-    activeInterviewServiceMock = createMock(ActiveInterviewService.class);
-    // contraindicatableMock = createMock(IContraindicatable.class);
+    participant = new Participant();
+    interview = new Interview();
+    participant.setBarcode("10234");
+    participant.setInterview(interview);
+
     persistenceManagerMock = createMock(PersistenceManager.class);
     tubeRegistrationConfig = new TubeRegistrationConfiguration();
 
     service = new ActiveTubeRegistrationServiceImpl();
 
-    service.setActiveInterviewService(activeInterviewServiceMock);
-    // service.setIContraindicatable(contraindicatableMock);
     service.setPersistenceManager(persistenceManagerMock);
     service.setTubeRegistrationConfig(tubeRegistrationConfig);
   }
@@ -76,17 +84,22 @@ public class ActiveTubeRegistrationServiceImplTest {
    */
   @Test
   public void testGetRegisteredTubeCount() {
-    Interview interview = new Interview();
-    ParticipantTubeRegistration registration = new ParticipantTubeRegistration(tubeRegistrationConfig);
+    Serializable registrationId = "123";
+
+    ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
+    registration.setTubeRegistrationConfig(tubeRegistrationConfig);
     registration.addRegisteredParticipantTube(new RegisteredParticipantTube());
+    registration.setId(registrationId);
 
-    expect(activeInterviewServiceMock.getInterview()).andReturn(interview);
-    expect(persistenceManagerMock.matchOne(isA(ParticipantTubeRegistration.class))).andReturn(registration);
-    replay(activeInterviewServiceMock, persistenceManagerMock);
+    expect(persistenceManagerMock.save(isA(ParticipantTubeRegistration.class))).andReturn(registration);
+    expect(persistenceManagerMock.get(ParticipantTubeRegistration.class, registrationId)).andReturn(registration);
 
+    replay(persistenceManagerMock);
+
+    service.start(participant);
     int count = service.getRegisteredTubeCount();
 
-    verify(activeInterviewServiceMock, persistenceManagerMock);
+    verify(persistenceManagerMock);
     Assert.assertEquals(1, count);
 
   }
@@ -96,18 +109,34 @@ public class ActiveTubeRegistrationServiceImplTest {
    * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#registerTube(java.lang.String)}.
    */
   @Test
-  public void testSucceedToRegisterTube() {
-    /*
-     * String barcode = "101234560108"; Interview interview = new Interview();
-     * 
-     * expect(activeInterviewServiceMock.getInterview()).andReturn(interview).times(2);
-     * expect(contraindicatableMock.getContraindication()).andReturn(null);
-     * expect(contraindicatableMock.getOtherContraindication()).andReturn(null);
-     * 
-     * replay(activeInterviewServiceMock, contraindicatableMock);
-     * 
-     * service.registerTube(barcode);
-     */
+  public void testRegisterTubeWithRegistrationCreated() {
+
+    String barcode = "101234560108";
+    Serializable registrationId = "123";
+    Interview interview = new Interview();
+
+    ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
+    registration.setTubeRegistrationConfig(tubeRegistrationConfig);
+    registration.setInterview(interview);
+    registration.setStartTime(new Date());
+    registration.setId(registrationId);
+
+    RegisteredParticipantTube tube = new RegisteredParticipantTube();
+    tube.setRegistrationTime(new Date());
+    tube.setBarcode(barcode);
+
+    expect(persistenceManagerMock.save(isA(ParticipantTubeRegistration.class))).andReturn(registration).times(2);
+    expect(persistenceManagerMock.get(ParticipantTubeRegistration.class, registrationId)).andReturn(registration);
+    expect(persistenceManagerMock.save(isA(RegisteredParticipantTube.class))).andReturn(tube);
+
+    replay(persistenceManagerMock);
+
+    service.start(participant);
+    List<MessageSourceResolvable> errors = service.registerTube(barcode);
+
+    verify(persistenceManagerMock);
+    Assert.assertTrue(errors.isEmpty());
+
   }
 
   /**
@@ -117,6 +146,44 @@ public class ActiveTubeRegistrationServiceImplTest {
    */
   @Test
   public void testSetTubeComment() {
+    String barcode = "101234560108";
+    RegisteredParticipantTube tube = new RegisteredParticipantTube();
+    tube.setRegistrationTime(new Date());
+    tube.setBarcode(barcode);
+
+    expect(persistenceManagerMock.matchOne(isA(RegisteredParticipantTube.class))).andReturn(tube).once();
+    expect(persistenceManagerMock.save(isA(RegisteredParticipantTube.class))).andReturn(tube).once();
+
+    replay(persistenceManagerMock);
+
+    service.setTubeComment(barcode, "test comment");
+
+    verify(persistenceManagerMock);
+    Assert.assertEquals("test comment", tube.getComment());
+
+  }
+
+  /**
+   * Test method for
+   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#setTubeComment(java.lang.String, java.lang.String)}
+   * .
+   */
+  @Test
+  public void testFailToSetTubeComment() {
+    String barcode = "101234560108";
+
+    expect(persistenceManagerMock.matchOne(isA(RegisteredParticipantTube.class))).andReturn(null).once();
+
+    replay(persistenceManagerMock);
+
+    try {
+      service.setTubeComment(barcode, "test comment");
+
+    } catch(IllegalArgumentException e) {
+      Assert.assertEquals("Couldn't find the the tube with code '101234560108'.", e.getMessage());
+    }
+
+    verify(persistenceManagerMock);
 
   }
 
@@ -127,7 +194,22 @@ public class ActiveTubeRegistrationServiceImplTest {
    */
   @Test
   public void testSetTubeRemark() {
+    String barcode = "101234560108";
+    RegisteredParticipantTube tube = new RegisteredParticipantTube();
+    tube.setRegistrationTime(new Date());
+    tube.setBarcode(barcode);
 
+    Remark remark = new Remark("123");
+
+    expect(persistenceManagerMock.matchOne(isA(RegisteredParticipantTube.class))).andReturn(tube).once();
+    expect(persistenceManagerMock.save(isA(RegisteredParticipantTube.class))).andReturn(tube).once();
+
+    replay(persistenceManagerMock);
+
+    service.setTubeRemark(barcode, remark);
+
+    verify(persistenceManagerMock);
+    Assert.assertEquals("123", tube.getRemarkCode());
   }
 
   /**
@@ -136,7 +218,35 @@ public class ActiveTubeRegistrationServiceImplTest {
    */
   @Test
   public void testUnregisterTube() {
+    String barcode = "101234560108";
+    Serializable registrationId = "123";
+
+    RegisteredParticipantTube tube = new RegisteredParticipantTube();
+    tube.setRegistrationTime(new Date());
+    tube.setBarcode(barcode);
+
+    ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
+    registration.setTubeRegistrationConfig(tubeRegistrationConfig);
+    registration.addRegisteredParticipantTube(tube);
+    registration.setInterview(interview);
+    registration.setStartTime(new Date());
+    registration.setId(registrationId);
+
+    expect(persistenceManagerMock.matchOne(isA(RegisteredParticipantTube.class))).andReturn(tube);
+    expect(persistenceManagerMock.save(isA(ParticipantTubeRegistration.class))).andReturn(registration).times(2);
+    expect(persistenceManagerMock.get(ParticipantTubeRegistration.class, registrationId)).andReturn(registration);
+
+    persistenceManagerMock.delete(isA(RegisteredParticipantTube.class));
+
+    replay(persistenceManagerMock);
+
+    Assert.assertTrue(registration.getRegisteredParticipantTubes().contains(tube));
+
+    service.start(participant);
+    service.unregisterTube(barcode);
+
+    verify(persistenceManagerMock);
+    Assert.assertTrue(registration.getRegisteredParticipantTubes().isEmpty());
 
   }
-
 }

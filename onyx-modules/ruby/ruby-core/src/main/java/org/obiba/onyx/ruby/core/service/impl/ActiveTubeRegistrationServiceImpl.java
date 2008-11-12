@@ -9,41 +9,80 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.service.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
+import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.contraindication.Contraindication.Type;
-import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.Remark;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
+ *Implementation for a tube registration service, used to register tubes for the current participant.
  */
 @Transactional
 public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareService implements ActiveTubeRegistrationService {
 
+  private static final Logger log = LoggerFactory.getLogger(ActiveTubeRegistrationServiceImpl.class);
+
   private TubeRegistrationConfiguration tubeRegistrationConfig;
 
-  private ActiveInterviewService activeInterviewService;
+  private Serializable currentTubeRegistrationId = null;
 
   // private BarcodeStructure barcodeStructure;
 
   // private IContraindicatable iContraindicatable;
+
+  public ParticipantTubeRegistration start(Participant participant) {
+    if(participant == null) {
+      throw new IllegalArgumentException("participant cannot be null.");
+    }
+
+    Interview interview = participant.getInterview();
+    if(interview == null) {
+      throw new IllegalArgumentException("no interview found.");
+    }
+
+    // stop existing Registration if there is one
+    end();
+
+    // create and persist a new TubeRegistration
+    ParticipantTubeRegistration currentRegistration = createParticipantTubeRegistration(interview);
+    log.info("New ParticipantTubeRegistration id={} is created.", currentRegistration.getId());
+
+    return currentRegistration;
+  }
+
+  public void end() {
+    if(currentTubeRegistrationId == null) return;
+
+    ParticipantTubeRegistration currentRegistration = getParticipantTubeRegistration();
+    currentRegistration.setEndTime(new Date());
+
+    log.debug("ParticipantTubeRegistration id={} is ending.", currentRegistration.getId());
+    getPersistenceManager().save(currentRegistration);
+
+    currentTubeRegistrationId = null;
+  }
 
   public int getExpectedTubeCount() {
     return tubeRegistrationConfig.getExpectedTubeCount();
   }
 
   public int getRegisteredTubeCount() {
-    return getCurrentParticipantTubeRegistration().getRegisteredParticipantTubes().size();
+    return getParticipantTubeRegistration().getRegisteredParticipantTubes().size();
   }
 
   /**
@@ -52,25 +91,26 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
    * 
    * @return
    */
-  private ParticipantTubeRegistration getCurrentParticipantTubeRegistration() {
-    ParticipantTubeRegistration template = new ParticipantTubeRegistration(tubeRegistrationConfig);
-    template.setInterview(activeInterviewService.getInterview());
-
-    ParticipantTubeRegistration registration = getPersistenceManager().matchOne(template);
-    if(registration == null) {
-      registration = createParticipantTubeRegistration();
+  public ParticipantTubeRegistration getParticipantTubeRegistration() {
+    if(currentTubeRegistrationId == null) {
+      return null;
     }
-    return registration;
+    return getPersistenceManager().get(ParticipantTubeRegistration.class, currentTubeRegistrationId);
   }
 
-  private ParticipantTubeRegistration createParticipantTubeRegistration() {
-    ParticipantTubeRegistration registration = new ParticipantTubeRegistration(tubeRegistrationConfig);
-    registration.setInterview(activeInterviewService.getInterview());
-    // Contraindication contraindication = iContraindicatable.getContraindication();
-    // registration.setContraindicationCode(contraindication == null ? null : contraindication.getCode());
-    // registration.setOtherContraindication(iContraindicatable.getOtherContraindication());
+  /**
+   * Creates a tube registration for the current interview and setup the flag
+   * @param interview
+   * @return
+   * 
+   */
+  private ParticipantTubeRegistration createParticipantTubeRegistration(Interview interview) {
+    ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
+    registration.setTubeRegistrationConfig(tubeRegistrationConfig);
+    registration.setInterview(interview);
     registration.setStartTime(new Date());
-    getPersistenceManager().save(registration);
+    registration = getPersistenceManager().save(registration);
+    currentTubeRegistrationId = registration.getId();
     return registration;
   }
 
@@ -82,11 +122,12 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
       RegisteredParticipantTube tube = new RegisteredParticipantTube();
       tube.setRegistrationTime(new Date());
       tube.setBarcode(barcode);
-      ParticipantTubeRegistration registration = getCurrentParticipantTubeRegistration();
+      ParticipantTubeRegistration registration = getParticipantTubeRegistration();
       registration.addRegisteredParticipantTube(tube);
       registration.setEndTime(new Date());
       getPersistenceManager().save(tube);
       getPersistenceManager().save(registration);
+      log.info("A tube with code '{}' is registered.", barcode);
     }
     return errors;
   }
@@ -105,13 +146,18 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
 
   public void unregisterTube(String barcode) {
     RegisteredParticipantTube tube = findTubeByBarcode(barcode);
-    ParticipantTubeRegistration registration = getCurrentParticipantTubeRegistration();
+    ParticipantTubeRegistration registration = getParticipantTubeRegistration();
+    if(registration == null) {
+      throw new IllegalArgumentException("The current ParticipantTubeRegistration does not exist.");
+    }
     registration.removeRegisteredParticipantTube(tube);
     getPersistenceManager().save(registration);
     getPersistenceManager().delete(tube);
   }
 
   /**
+   * Finds a tube by its barcode
+   * 
    * @param barcode
    * @return
    */
@@ -125,6 +171,21 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     return tube;
   }
 
+  public boolean hasContraindications(Type type) {
+    return getParticipantTubeRegistration().hasContraindications(type);
+  }
+
+  public Contraindication getContraindication() {
+    return getParticipantTubeRegistration().getContraindication();
+  }
+
+  public void persistParticipantTubeRegistration() {
+    getPersistenceManager().save(getParticipantTubeRegistration());
+  }
+
+  /*
+   * setter and getter methods
+   */
   public void setTubeRegistrationConfig(TubeRegistrationConfiguration config) {
     this.tubeRegistrationConfig = config;
   }
@@ -133,22 +194,10 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     return tubeRegistrationConfig;
   }
 
-  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
-    this.activeInterviewService = activeInterviewService;
-  }
-
-  public ActiveInterviewService getActiveInterviewService() {
-    return activeInterviewService;
-  }
-
   /*
    * public void setBarcodeStructure(BarcodeStructure barcodeStructure) { this.barcodeStructure = barcodeStructure; }
    * 
    * public BarcodeStructure getBarcodeStructure() { return barcodeStructure; }
    */
-
-  public boolean hasContraindications(Type type) {
-    return getCurrentParticipantTubeRegistration().hasContraindications(type);
-  }
 
 }

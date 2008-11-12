@@ -65,14 +65,6 @@ public class ParticipantTubeRegistration extends AbstractEntity implements ICont
     return interview;
   }
 
-  /**
-   * Constructor with configuration
-   */
-  public ParticipantTubeRegistration(TubeRegistrationConfiguration config) {
-    super();
-    this.registrationConfig = config;
-  }
-
   public void addRegisteredParticipantTube(RegisteredParticipantTube registeredParticipantTube) {
     if(registeredParticipantTube != null) {
       getRegisteredParticipantTubes().add(registeredParticipantTube);
@@ -115,6 +107,14 @@ public class ParticipantTubeRegistration extends AbstractEntity implements ICont
     return otherContraindication;
   }
 
+  public void setTubeRegistrationConfig(TubeRegistrationConfiguration registrationConfig) {
+    this.registrationConfig = registrationConfig;
+  }
+
+  public TubeRegistrationConfiguration getTubeRegistrationConfig() {
+    return registrationConfig;
+  }
+
   public void setContraindication(Contraindication contraindication) {
     if(contraindication != null) {
       this.contraindicationCode = contraindication.getCode();
@@ -138,11 +138,11 @@ public class ParticipantTubeRegistration extends AbstractEntity implements ICont
     List<Contraindication> ciList = new ArrayList<Contraindication>(5);
 
     if(type == Type.ASKED) {
-      for(Contraindication ci : registrationConfig.getAskedContraindications()) {
+      for(Contraindication ci : getTubeRegistrationConfig().getAskedContraindications()) {
         ciList.add(ci);
       }
     } else if(type == Type.OBSERVED) {
-      for(Contraindication ci : registrationConfig.getObservedContraindications()) {
+      for(Contraindication ci : getTubeRegistrationConfig().getObservedContraindications()) {
         ciList.add(ci);
       }
     }
@@ -157,5 +157,4 @@ public class ParticipantTubeRegistration extends AbstractEntity implements ICont
   public boolean isContraindicated() {
     return this.contraindicationCode != null;
   }
-
 }

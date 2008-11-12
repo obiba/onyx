@@ -12,6 +12,8 @@ package org.obiba.onyx.ruby.core.service;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
+import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.Remark;
 import org.springframework.context.MessageSourceResolvable;
 
@@ -74,4 +76,36 @@ public interface ActiveTubeRegistrationService {
    * @return true when at least one contraindication exists.
    */
   public boolean hasContraindications(Contraindication.Type type);
+
+  /**
+   * Finds the current ParticipantTubeRegistration and return it, it will create a new one if there is no
+   * TubeRegistration for current Interview.
+   * 
+   * @return
+   */
+  public ParticipantTubeRegistration getParticipantTubeRegistration();
+
+  /**
+   * Persists current {@link ParticipantTubeRegistration}.
+   */
+  public void persistParticipantTubeRegistration();
+
+  /**
+   * Returns the selected contraindication or null if none is set.
+   * @return
+   */
+  public Contraindication getContraindication();
+
+  /**
+   * Create the current {@link ParticipantTubeRegistration} and persist it.
+   * @param participant
+   * @return
+   */
+  public ParticipantTubeRegistration start(Participant participant);
+
+  /**
+   * Set the end date to the current {@link ParticipantTubeRegistration}.
+   */
+  public void end();
+
 }
