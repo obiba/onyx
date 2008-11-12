@@ -102,13 +102,13 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     Category category = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCategory(DONT_KNOW);
     Assert.assertNotNull(category);
 
-    builder.inPage("P1").withQuestion("Q2").withCategories("1", "2", "3").withSharedCategory(DONT_KNOW).setExportName("888").setRepeatable(false).setSelected(true);
+    builder.inPage("P1").withQuestion("Q2").withCategories("1", "2", "3").withSharedCategory(DONT_KNOW).setExportName("888").setReselectable(false).setSelected(true);
     question = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q2");
     Assert.assertEquals(4, question.getCategories().size());
     Assert.assertEquals(category, question.findCategory(DONT_KNOW));
     QuestionCategory qCategory = question.findQuestionCategory(DONT_KNOW);
     Assert.assertEquals("888", qCategory.getExportName());
-    Assert.assertEquals(false, qCategory.isRepeatable());
+    Assert.assertEquals(false, qCategory.isReselectable());
     Assert.assertEquals(true, qCategory.isSelected());
 
     builder.inSection("S1_1").withPage("P2").withQuestion("Q3").withSharedCategory(YES).withSharedCategories(NO, DONT_KNOW);

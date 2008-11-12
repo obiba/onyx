@@ -16,13 +16,15 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.util.data.DataType;
 
 /**
  * {@link Category} builder, given a {@link Questionnaire} and a current {@link Question}.
  * @author Yannick Marcon
- *
+ * 
  */
 public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Category> {
 
@@ -74,7 +76,7 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
   }
 
   /**
-   * Set if the current question category  ({@link QuestionCategory}) should be selected or not.
+   * Set if the current question category ({@link QuestionCategory}) should be selected or not.
    * @param selected
    * @return
    */
@@ -84,12 +86,12 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
   }
 
   /**
-   * Set if the current question category  ({@link QuestionCategory}) should be repeatable or not.
+   * Set if the current question category ({@link QuestionCategory}) should be repeatable or not.
    * @param selected
    * @return
    */
-  public CategoryBuilder setRepeatable(boolean repeatable) {
-    questionCategory.setRepeatable(repeatable);
+  public CategoryBuilder setReselectable(boolean reselectable) {
+    questionCategory.setReselectable(reselectable);
     return this;
   }
 
@@ -125,9 +127,10 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
     }
     return this;
   }
-  
+
   /**
-   * Look for a {@link Category} with the same name and given export name in the {@link QuestionnaireBuilder. Create it if not found.
+   * Look for a {@link Category} with the same name and given export name in the
+   * {@link QuestionnaireBuilder. Create it if not found.
    * @param name
    * @return
    */
@@ -143,13 +146,11 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
    */
   public CategoryBuilder withSharedCategory(String name) {
     Map<Category, List<Question>> map = QuestionnaireFinder.getInstance(questionnaire).findCategories(name);
-    if (map.keySet().size() > 1) {
+    if(map.keySet().size() > 1) {
       throw invalidSharedCategoryNameUnicityException(name);
-    }
-    else if (map.keySet().isEmpty()) {
+    } else if(map.keySet().isEmpty()) {
       return withCategory(name);
-    }
-    else {
+    } else {
       this.element = map.keySet().iterator().next();
       questionCategory = createQuestionCategory(questionCategory.getQuestion());
       return this;
@@ -157,7 +158,8 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
   }
 
   /**
-   * Add a set of {@link Category} by looking them from the name in the {@link Questionnaire}. Create them if not found.
+   * Add a set of {@link Category} by looking them from the name in the {@link Questionnaire}. Create them if not
+   * found.
    * @param names
    * @return
    */
@@ -175,8 +177,8 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
    */
   private QuestionCategory createQuestionCategory(Question question) {
     // make sure for is not already a category with same name in this question
-    for (Category category : question.getCategories()) {
-      if (category.getName().equals(element.getName())) {
+    for(Category category : question.getCategories()) {
+      if(category.getName().equals(element.getName())) {
         throw new IllegalArgumentException("You cannot have categories with the same name in a question: " + element.getName());
       }
     }
@@ -186,7 +188,7 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
     question.addQuestionCategory(questionCategory);
     return questionCategory;
   }
-  
+
   private IllegalArgumentException invalidSharedCategoryNameUnicityException(String name) {
     return new IllegalArgumentException("There are several categories with name: " + name);
   }

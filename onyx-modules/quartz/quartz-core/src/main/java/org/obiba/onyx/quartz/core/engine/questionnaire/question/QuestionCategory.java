@@ -22,7 +22,7 @@ public class QuestionCategory implements Serializable, ILocalizable {
 
   private Category category;
 
-  private boolean repeatable;
+  private boolean reselectable;
 
   private boolean selected;
 
@@ -47,12 +47,12 @@ public class QuestionCategory implements Serializable, ILocalizable {
     this.category = category;
   }
 
-  public boolean isRepeatable() {
-    return repeatable;
+  public boolean isReselectable() {
+    return reselectable;
   }
 
-  public void setRepeatable(boolean repeatable) {
-    this.repeatable = repeatable;
+  public void setReselectable(boolean reselectable) {
+    this.reselectable = reselectable;
   }
 
   public boolean isSelected() {
