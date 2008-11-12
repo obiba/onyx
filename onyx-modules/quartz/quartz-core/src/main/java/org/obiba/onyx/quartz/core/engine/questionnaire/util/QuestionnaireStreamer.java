@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -70,6 +71,8 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(OpenAnswerDefinition.class, "unit");
     xstream.alias("data", Data.class);
     xstream.useAttributeFor(Data.class, "type");
+    xstream.alias("dataValidator", DataValidator.class);
+    xstream.useAttributeFor(DataValidator.class, "dataType");
   }
 
   /**

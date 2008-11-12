@@ -72,7 +72,7 @@
                       <category id="41" name="1">
                         <openAnswerDefinition id="42" name="year" dataType="INTEGER">
                           <validators id="43">
-                            <org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator id="44">
+                            <dataValidator id="44">
                               <dataType>TEXT</dataType>
                               <validator class="org.apache.wicket.validation.validator.PatternValidator" id="45">
                                 <pattern id="46">
@@ -80,7 +80,7 @@
                                   <flags>0</flags>
                                 </pattern>
                               </validator>
-                            </org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator>
+                            </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="47"/>
                         </openAnswerDefinition>
@@ -120,7 +120,7 @@
                       <category id="60" name="1">
                         <openAnswerDefinition id="61" name="month" dataType="INTEGER">
                           <validators id="62">
-                            <org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator id="63">
+                            <dataValidator id="63">
                               <dataType>TEXT</dataType>
                               <validator class="org.apache.wicket.validation.validator.PatternValidator" id="64">
                                 <pattern id="65">
@@ -128,7 +128,7 @@
                                   <flags>0</flags>
                                 </pattern>
                               </validator>
-                            </org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator>
+                            </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="66"/>
                         </openAnswerDefinition>
@@ -168,13 +168,13 @@
                       <category id="79" name="1">
                         <openAnswerDefinition id="80" name="age" dataType="INTEGER">
                           <validators id="81">
-                            <org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator id="82">
+                            <dataValidator id="82">
                               <dataType>INTEGER</dataType>
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="83">
                                 <minimum>40</minimum>
                                 <maximum>70</maximum>
                               </validator>
-                            </org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator>
+                            </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="84"/>
                         </openAnswerDefinition>
@@ -275,13 +275,13 @@
                       <category id="124" name="1">
                         <openAnswerDefinition id="125" name="adults" dataType="INTEGER">
                           <validators id="126">
-                            <org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator id="127">
+                            <dataValidator id="127">
                               <dataType>INTEGER</dataType>
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="128">
                                 <minimum>1</minimum>
                                 <maximum>100</maximum>
                               </validator>
-                            </org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator>
+                            </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="129"/>
                         </openAnswerDefinition>
@@ -321,13 +321,13 @@
                       <category id="142" name="1">
                         <openAnswerDefinition id="143" name="children" dataType="INTEGER">
                           <validators id="144">
-                            <org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator id="145">
+                            <dataValidator id="145">
                               <dataType>INTEGER</dataType>
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="146">
                                 <minimum>0</minimum>
                                 <maximum>100</maximum>
                               </validator>
-                            </org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator>
+                            </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="147"/>
                         </openAnswerDefinition>
@@ -373,13 +373,13 @@
                       <category id="163" name="1">
                         <openAnswerDefinition id="164" name="siblings" dataType="INTEGER">
                           <validators id="165">
-                            <org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator id="166">
+                            <dataValidator id="166">
                               <dataType>INTEGER</dataType>
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="167">
                                 <minimum>0</minimum>
                                 <maximum>20</maximum>
                               </validator>
-                            </org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator>
+                            </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="168"/>
                         </openAnswerDefinition>
@@ -419,13 +419,13 @@
                       <category id="181" name="1">
                         <openAnswerDefinition id="182" name="olderSiblings" dataType="INTEGER">
                           <validators id="183">
-                            <org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator id="184">
+                            <dataValidator id="184">
                               <dataType>INTEGER</dataType>
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="185">
                                 <minimum>0</minimum>
                                 <maximum>20</maximum>
                               </validator>
-                            </org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator>
+                            </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="186"/>
                         </openAnswerDefinition>
@@ -565,13 +565,13 @@
                       <category id="239" name="1">
                         <openAnswerDefinition id="240" name="years" dataType="INTEGER">
                           <validators id="241">
-                            <org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator id="242">
+                            <dataValidator id="242">
                               <dataType>INTEGER</dataType>
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="243">
                                 <minimum>0</minimum>
                                 <maximum>20</maximum>
                               </validator>
-                            </org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator>
+                            </dataValidator>
                           </validators>
                           <openAnswerDefinitions id="244"/>
                         </openAnswerDefinition>
