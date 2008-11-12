@@ -29,7 +29,7 @@ import org.obiba.onyx.core.domain.contraindication.Contraindication.Type;
 import org.obiba.onyx.core.domain.participant.Interview;
 
 /**
- *
+ * 
  */
 @Entity
 public class ParticipantTubeRegistration extends AbstractEntity implements IContraindicatable {
@@ -54,6 +54,7 @@ public class ParticipantTubeRegistration extends AbstractEntity implements ICont
   @Column(length = 2000)
   private String otherContraindication;
 
+  @Transient
   private TubeRegistrationConfiguration registrationConfig;
 
   public void setInterview(Interview interview) {
