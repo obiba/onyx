@@ -36,6 +36,7 @@ import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -110,12 +111,13 @@ public class DefaultOpenAnswerDefinitionPanelTest {
     OpenAnswer openAnswer = new OpenAnswer();
     openAnswer.setDataType(DataType.INTEGER);
     openAnswer.setData(DataBuilder.buildInteger(321l));
-    previousAnswer.setOpenAnswer(openAnswer);
+    previousAnswer.addOpenAnswer(openAnswer);
 
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer((Question) EasyMock.anyObject(), (QuestionCategory) EasyMock.anyObject())).andReturn(previousAnswer).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.answer((Question) EasyMock.anyObject(), (QuestionCategory) EasyMock.anyObject(), (Data) EasyMock.anyObject())).andReturn(new CategoryAnswer()).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer((QuestionCategory) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(openAnswer);
+    expect(activeQuestionnaireAdministrationServiceMock.answer((Question) EasyMock.anyObject(), (QuestionCategory) EasyMock.anyObject(), (OpenAnswerDefinition) EasyMock.anyObject(), (Data) EasyMock.anyObject())).andReturn(new CategoryAnswer()).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(Locale.FRENCH).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
@@ -137,7 +139,7 @@ public class DefaultOpenAnswerDefinitionPanelTest {
       @SuppressWarnings("serial")
       public Panel getTestPanel(String panelId) {
         QuestionCategory element = QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q2", "Q2.1");
-        return openMock = new DefaultOpenAnswerDefinitionPanelMock(panelId, new Model(element), assertClickModel);
+        return openMock = new DefaultOpenAnswerDefinitionPanelMock(panelId, new Model(element), assertClickModel, new Model(element.getCategory().getOpenAnswerDefinition()));
       }
     });
 
@@ -179,12 +181,13 @@ public class DefaultOpenAnswerDefinitionPanelTest {
     OpenAnswer openAnswer = new OpenAnswer();
     openAnswer.setDataType(DataType.TEXT);
     openAnswer.setData(DataBuilder.buildText("c"));
-    previousAnswer.setOpenAnswer(openAnswer);
+    previousAnswer.addOpenAnswer(openAnswer);
 
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer((Question) EasyMock.anyObject(), (QuestionCategory) EasyMock.anyObject())).andReturn(previousAnswer).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.answer((Question) EasyMock.anyObject(), (QuestionCategory) EasyMock.anyObject(), (Data) EasyMock.anyObject())).andReturn(new CategoryAnswer()).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer((QuestionCategory) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(openAnswer);
+    expect(activeQuestionnaireAdministrationServiceMock.answer((Question) EasyMock.anyObject(), (QuestionCategory) EasyMock.anyObject(), (OpenAnswerDefinition) EasyMock.anyObject(), (Data) EasyMock.anyObject())).andReturn(new CategoryAnswer()).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(Locale.FRENCH).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
@@ -206,7 +209,7 @@ public class DefaultOpenAnswerDefinitionPanelTest {
       @SuppressWarnings("serial")
       public Panel getTestPanel(String panelId) {
         QuestionCategory element = QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q2", "Q2.4");
-        return openMock = new DefaultOpenAnswerDefinitionPanelMock(panelId, new Model(element), assertClickModel);
+        return openMock = new DefaultOpenAnswerDefinitionPanelMock(panelId, new Model(element), assertClickModel, new Model(element.getCategory().getOpenAnswerDefinition()));
       }
     });
 

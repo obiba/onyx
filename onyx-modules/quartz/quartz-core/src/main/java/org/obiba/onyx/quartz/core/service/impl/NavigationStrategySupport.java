@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.core.service.impl;
 import java.util.List;
 
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
@@ -61,8 +62,12 @@ public class NavigationStrategySupport {
 
         if(!answers.isEmpty()) {
           for(CategoryAnswer answer : answers) {
-            if(answer.getOpenAnswer() == null || answer.getOpenAnswer().getData() == null || answer.getOpenAnswer().getData().getValue() == null) {
+            if(answer.getOpenAnswers() == null) {
               return true;
+            } else {
+              for(OpenAnswer openAnswer : answer.getOpenAnswers()) {
+                if(openAnswer.getData() == null || openAnswer.getData().getValue() == null) return true;
+              }
             }
           }
         } else {

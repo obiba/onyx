@@ -9,6 +9,7 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.condition;
 
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -71,7 +72,8 @@ public class AnswerCondition extends Condition {
     if(categoryAnswer == null) return false;
 
     if(dataComparator != null) {
-      int compareResult = categoryAnswer.getOpenAnswer().getData().compareTo(dataComparator.getData());
+      OpenAnswer openAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(questionCategory, dataComparator.getOpenAnswerDefinitionName());
+      int compareResult = openAnswer.getData().compareTo(dataComparator.getData());
       return dataComparator.isComparisonValid(compareResult);
     }
 

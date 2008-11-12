@@ -21,6 +21,23 @@ public class DataComparator implements Serializable {
 
   private Data data;
 
+  private String OpenAnswerDefinitionName;
+
+  public DataComparator(ComparisionOperator comparisionOperator, Data data, String openAnswerDefinitionName) {
+    super();
+    this.comparisionOperator = comparisionOperator;
+    this.data = data;
+    this.OpenAnswerDefinitionName = openAnswerDefinitionName;
+  }
+
+  public String getOpenAnswerDefinitionName() {
+    return OpenAnswerDefinitionName;
+  }
+
+  public void setOpenAnswerDefinitionName(String openAnswerDefinitionName) {
+    OpenAnswerDefinitionName = openAnswerDefinitionName;
+  }
+
   public Data getData() {
     return data;
   }

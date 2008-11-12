@@ -15,7 +15,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import org.obiba.core.domain.AbstractEntity;
 
@@ -41,8 +40,8 @@ public class CategoryAnswer extends AbstractEntity {
   @OneToMany(mappedBy = "parentCategoryAnswer")
   private List<CategoryAnswer> childrenCategoryAnswers;
 
-  @OneToOne(mappedBy = "categoryAnswer")
-  private OpenAnswer openAnswer;
+  @OneToMany(mappedBy = "categoryAnswer")
+  private List<OpenAnswer> openAnswers;
 
   public QuestionAnswer getQuestionAnswer() {
     return questionAnswer;
@@ -94,13 +93,15 @@ public class CategoryAnswer extends AbstractEntity {
     return childrenCategoryAnswers != null ? childrenCategoryAnswers : (childrenCategoryAnswers = new ArrayList<CategoryAnswer>());
   }
 
-  public OpenAnswer getOpenAnswer() {
-    return openAnswer;
+  public List<OpenAnswer> getOpenAnswers() {
+    return openAnswers != null ? openAnswers : (openAnswers = new ArrayList<OpenAnswer>());
   }
 
-  public void setOpenAnswer(OpenAnswer openAnswer) {
-    this.openAnswer = openAnswer;
-    this.openAnswer.setCategoryAnswer(this);
+  public void addOpenAnswer(OpenAnswer openAnswer) {
+    if(openAnswer != null) {
+      getOpenAnswers().add(openAnswer);
+      openAnswer.setCategoryAnswer(this);
+    }
   }
 
   @Override

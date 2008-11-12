@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import junit.framework.Assert;
 
+import org.apache.wicket.validation.validator.NumberValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,9 +26,10 @@ import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -79,10 +81,12 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
 
     Question q1 = questionnaire.getPages().get(0).getQuestions().get(0);
     Question q2 = questionnaire.getPages().get(0).getQuestions().get(1);
+    Question q3 = questionnaire.getPages().get(2).getQuestions().get(0);
 
-    testAnswer(questionnaireParticipant, q1, q2);
+    testAnswer(questionnaireParticipant, q1, q2, q3);
     testFindAnswers(q1);
     testFindAnswer(q2);
+    testFindOpenAnswer(q3);
     testSetActiveAnswers();
     testSetDeleteAnswer(q1);
     testSetDeleteAnswers(q1);
@@ -90,18 +94,26 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
 
   }
 
-  private void testAnswer(QuestionnaireParticipant questionnaireParticipant, Question q1, Question q2) {
-    CategoryAnswer catAnswer_1 = activeQuestionnaireAdministrationService.answer(q1.getQuestionCategories().get(0), null);
-    activeQuestionnaireAdministrationService.answer(q1.getQuestionCategories().get(1), null);
-    activeQuestionnaireAdministrationService.answer(q1.getQuestionCategories().get(2), null);
-    CategoryAnswer year = activeQuestionnaireAdministrationService.answer(q2.getQuestionCategories().get(0), new Data(DataType.TEXT, "1979"));
+  private void testAnswer(QuestionnaireParticipant questionnaireParticipant, Question q1, Question q2, Question q3) {
+    CategoryAnswer catAnswer_1 = activeQuestionnaireAdministrationService.answer(q1.getQuestionCategories().get(0), null, null);
+    activeQuestionnaireAdministrationService.answer(q1.getQuestionCategories().get(1), null, null);
+    activeQuestionnaireAdministrationService.answer(q1.getQuestionCategories().get(2), null, null);
+    QuestionCategory questionCategory = q2.getQuestionCategories().get(0);
+    CategoryAnswer year = activeQuestionnaireAdministrationService.answer(questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), DataBuilder.buildText("1979"));
 
     Assert.assertEquals("1", catAnswer_1.getCategoryName());
     Assert.assertEquals(questionnaireParticipant, catAnswer_1.getQuestionAnswer().getQuestionnaireParticipant());
     Assert.assertEquals("Q1", catAnswer_1.getQuestionAnswer().getQuestionName());
-    Assert.assertNotNull(year.getOpenAnswer());
-    Assert.assertEquals("1979", year.getOpenAnswer().getData().getValueAsString());
+    Assert.assertNotNull(year.getOpenAnswers().get(0));
+    Assert.assertEquals("1979", year.getOpenAnswers().get(0).getData().getValueAsString());
     Assert.assertNotNull(catAnswer_1.getId());
+
+    questionCategory = q3.getQuestionCategories().get(0);
+    CategoryAnswer secondYear = activeQuestionnaireAdministrationService.answer(questionCategory, questionCategory.getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().get(0), DataBuilder.buildInteger("1966"));
+    activeQuestionnaireAdministrationService.answer(questionCategory, questionCategory.getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().get(1), DataBuilder.buildInteger("6"));
+    activeQuestionnaireAdministrationService.answer(questionCategory, questionCategory.getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().get(2), DataBuilder.buildInteger("5"));
+
+    Assert.assertEquals("1966", secondYear.getOpenAnswers().get(0).getData().getValueAsString());
   }
 
   private void testFindAnswers(Question q1) {
@@ -113,17 +125,25 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
 
   private void testFindAnswer(Question q2) {
     CategoryAnswer yearFound = activeQuestionnaireAdministrationService.findAnswer(q2.getQuestionCategories().get(0));
-    Assert.assertEquals("1979", yearFound.getOpenAnswer().getData().getValueAsString());
+    OpenAnswer template = new OpenAnswer();
+    template.setCategoryAnswer(yearFound);
+    List<OpenAnswer> openAnswers = persistenceManager.match(template);
+    Assert.assertEquals("1979", openAnswers.get(0).getData().getValueAsString());
+  }
+
+  private void testFindOpenAnswer(Question q3) {
+    OpenAnswer openAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(q3.getQuestionCategories().get(0), "MONTH");
+    Assert.assertEquals("6", openAnswer.getData().getValueAsString());
   }
 
   private void testSetActiveAnswers() {
     Question q3 = questionnaire.getPages().get(1).getQuestions().get(0);
     Question q4 = q3.getQuestions().get(0);
 
-    CategoryAnswer catAnswer_3 = activeQuestionnaireAdministrationService.answer(q3.getQuestionCategories().get(0), null);
-    activeQuestionnaireAdministrationService.answer(q3.getQuestionCategories().get(1), null);
-    CategoryAnswer catAnswer_4 = activeQuestionnaireAdministrationService.answer(q4.getQuestionCategories().get(1), null);
-    activeQuestionnaireAdministrationService.answer(q4.getQuestionCategories().get(2), null);
+    CategoryAnswer catAnswer_3 = activeQuestionnaireAdministrationService.answer(q3.getQuestionCategories().get(0), null, null);
+    activeQuestionnaireAdministrationService.answer(q3.getQuestionCategories().get(1), null, null);
+    CategoryAnswer catAnswer_4 = activeQuestionnaireAdministrationService.answer(q4.getQuestionCategories().get(1), null, null);
+    activeQuestionnaireAdministrationService.answer(q4.getQuestionCategories().get(2), null, null);
 
     Assert.assertNull(catAnswer_3.getActive());
     Assert.assertNull(catAnswer_4.getActive());
@@ -147,10 +167,12 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
   }
 
   public void testSetDeleteOpenAnswer(Question q2) {
-    Assert.assertNotNull(persistenceManager.get(OpenAnswer.class, Long.valueOf("1")));
+    OpenAnswer template = new OpenAnswer();
+    template.setCategoryAnswer(activeQuestionnaireAdministrationService.findAnswer(q2.getQuestionCategories().get(0)));
+    Assert.assertNotNull(persistenceManager.matchOne(template));
     activeQuestionnaireAdministrationService.deleteAnswer(q2.getQuestionCategories().get(0));
     Assert.assertNull(activeQuestionnaireAdministrationService.findAnswer(q2.getQuestionCategories().get(0)));
-    Assert.assertNull(persistenceManager.get(OpenAnswer.class, Long.valueOf("1")));
+    Assert.assertNull(persistenceManager.matchOne(template));
   }
 
   public Questionnaire createQuestionnaire() {
@@ -160,6 +182,10 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     builder.inPage("P1").withQuestion("Q2").withCategory("1").withOpenAnswerDefinition("year", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new PatternValidator("\\d{4}"), DataType.TEXT));
     builder.inSection("SB").withSection("MOCK").withPage("P2").withQuestion("Q3").withCategories("1", "2");
     builder.inQuestion("Q3").withQuestion("Q4").withCategories("subcat1", "subcat2", "subcat3");
+
+    builder.inSection("SB").withPage("P3").withQuestion("Q5").withCategory("DATE").withOpenAnswerDefinition("DATE", DataType.DATE).withOpenAnswerDefinition("YEAR", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new PatternValidator("\\d{4}"), DataType.TEXT));
+    builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("MONTH", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new NumberValidator.RangeValidator(1, 12), DataType.INTEGER));
+    builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("DAY", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new NumberValidator.RangeValidator(1, 31), DataType.INTEGER));
 
     return builder.getQuestionnaire();
   }

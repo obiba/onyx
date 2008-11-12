@@ -142,7 +142,14 @@ public class QuestionnaireWalker implements IVisitor {
   }
 
   public final void visit(OpenAnswerDefinition openAnswerDefinition) {
-    openAnswerDefinition.accept(visitor);
+    if(preOrder) openAnswerDefinition.accept(visitor);
+    if(visiteMore()) {
+      for(OpenAnswerDefinition openAnswerDefinitionChild : openAnswerDefinition.getOpenAnswerDefinitions()) {
+        openAnswerDefinitionChild.accept(this);
+        if(!visiteMore()) break;
+      }
+    }
+    if(!preOrder) openAnswerDefinition.accept(visitor);
   }
 
   public final void visit(Condition condition) {

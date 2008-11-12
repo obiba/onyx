@@ -80,6 +80,7 @@ public class RadioQuestionCategoryPanel extends Panel {
       @Override
       protected void onEvent(AjaxRequestTarget target) {
         Question question = (Question) RadioQuestionCategoryPanel.this.questionModel.getObject();
+        QuestionCategory questionCategory = (QuestionCategory) RadioQuestionCategoryPanel.this.getModelObject();
 
         // make the radio group active for the selection
         radioGroup.setModel(RadioQuestionCategoryPanel.this.getModel());
@@ -89,7 +90,7 @@ public class RadioQuestionCategoryPanel extends Panel {
 
         // exclusive choice, only one answer per question
         activeQuestionnaireAdministrationService.deleteAnswers(question);
-        activeQuestionnaireAdministrationService.answer(question, (QuestionCategory) RadioQuestionCategoryPanel.this.getModelObject(), null);
+        activeQuestionnaireAdministrationService.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), null);
 
         onRadioSelection(target, RadioQuestionCategoryPanel.this.questionModel, RadioQuestionCategoryPanel.this.getModel());
       }
@@ -104,7 +105,7 @@ public class RadioQuestionCategoryPanel extends Panel {
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
       // there is an open field
       // hide the associated radio and fake selection on click event of open field
-      openField = new DefaultOpenAnswerDefinitionPanel("open", questionModel, questionCategoryModel) {
+      openField = new DefaultOpenAnswerDefinitionPanel("open", questionModel, questionCategoryModel, new QuestionnaireModel(questionCategory.getCategory().getOpenAnswerDefinition())) {
 
         @Override
         public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
@@ -120,7 +121,7 @@ public class RadioQuestionCategoryPanel extends Panel {
           CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(question, questionCategory);
           if(previousAnswer == null) {
             activeQuestionnaireAdministrationService.deleteAnswers(question);
-            activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
+            activeQuestionnaireAdministrationService.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), null);
           }
 
           onOpenFieldSelection(target, questionModel, questionCategoryModel);
@@ -153,7 +154,7 @@ public class RadioQuestionCategoryPanel extends Panel {
       if(openField != null) {
         openField.setRequired(questionCategory.getQuestion().isRequired());
       }
-      activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
+      activeQuestionnaireAdministrationService.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), null);
     }
   }
 

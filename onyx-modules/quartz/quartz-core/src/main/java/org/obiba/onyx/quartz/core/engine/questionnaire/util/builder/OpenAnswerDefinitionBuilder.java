@@ -14,6 +14,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.answer.AnswerSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.util.data.Data;
@@ -25,6 +26,16 @@ import org.obiba.onyx.util.data.DataType;
  * 
  */
 public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBuilder<OpenAnswerDefinition> {
+
+  /**
+   * Constructor using {@link QuestionBuilder} to get the {@link Question} it is applied to.
+   * @param parent
+   * @param condition
+   */
+  private OpenAnswerDefinitionBuilder(Questionnaire questionnaire, OpenAnswerDefinition openAnswerDefinition) {
+    super(questionnaire);
+    this.element = openAnswerDefinition;
+  }
 
   /**
    * Constructor using {@link CategoryBuilder} to get the {@link Category} it is applied to.
@@ -121,4 +132,34 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
     return (QuestionnaireFinder.getInstance(questionnaire).findOpenAnswerDefinition(name) == null);
   }
 
+  /**
+   * Set the {@link OpenAnswerDefinition} to the current openAnswerDefinition.
+   * @param name
+   * @param dataType
+   * @return
+   */
+  public OpenAnswerDefinitionBuilder withOpenAnswerDefinition(String name, DataType dataType) {
+    if(!checkNamePattern(name)) {
+      throw invalidNamePatternException(name);
+    }
+
+    if(!checkUniqueOpenAnswerDefinitionName(name)) {
+      throw invalidNameUnicityException(OpenAnswerDefinition.class, name);
+    }
+
+    OpenAnswerDefinition openAnswerDefinition = new OpenAnswerDefinition(name, dataType);
+    element.addOpenAnswerDefinition(openAnswerDefinition);
+    element = openAnswerDefinition;
+    return this;
+  }
+
+  /**
+   * Set the given {@link OpenAnswerDefinition} as the current one.
+   * @param questionnaire
+   * @param condition
+   * @return
+   */
+  public static OpenAnswerDefinitionBuilder inOpenAnswerDefinition(Questionnaire questionnaire, OpenAnswerDefinition openAnswerDefinition) {
+    return new OpenAnswerDefinitionBuilder(questionnaire, openAnswerDefinition);
+  }
 }

@@ -36,6 +36,10 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
 
   private AnswerSource answerSource;
 
+  private OpenAnswerDefinition parentOpenAnswerDefinition;
+
+  private List<OpenAnswerDefinition> openAnswerDefinitions;
+
   public OpenAnswerDefinition(String name, DataType dataType) {
     this.name = name;
     this.dataType = dataType;
@@ -107,5 +111,24 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
   @Override
   public String toString() {
     return getName();
+  }
+
+  public OpenAnswerDefinition getParentOpenAnswerDefinition() {
+    return parentOpenAnswerDefinition;
+  }
+
+  public void setParentOpenAnswerDefinition(OpenAnswerDefinition parentOpenAnswerDefinition) {
+    this.parentOpenAnswerDefinition = parentOpenAnswerDefinition;
+  }
+
+  public List<OpenAnswerDefinition> getOpenAnswerDefinitions() {
+    return openAnswerDefinitions != null ? openAnswerDefinitions : (openAnswerDefinitions = new ArrayList<OpenAnswerDefinition>());
+  }
+
+  public void addOpenAnswerDefinition(OpenAnswerDefinition openAnswerDefinition) {
+    if(openAnswerDefinition != null) {
+      getOpenAnswerDefinitions().add(openAnswerDefinition);
+      openAnswerDefinition.setParentOpenAnswerDefinition(this);
+    }
   }
 }

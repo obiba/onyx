@@ -31,7 +31,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
-import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -171,32 +171,32 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
 
     // Condition Test
     try {
-      builder.inQuestion("Q5").setAnswerCondition("AC1", "Q1", "1");
+      builder.inQuestion("Q5").setAnswerCondition("AC1", "Q1", "1", null);
       Assert.fail("Question category Q1.1 not found");
     } catch(IllegalStateException e) {
     }
 
-    builder.inQuestion("Q5").setAnswerCondition("AC1", "Q1", YES);
+    builder.inQuestion("Q5").setAnswerCondition("AC1", "Q1", YES, null);
     Assert.assertEquals("AC1", QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q5").getCondition().getName());
 
     try {
-      builder.inQuestion("Q5").setAnswerCondition("AC1", "Q2", "1");
+      builder.inQuestion("Q5").setAnswerCondition("AC1", "Q2", "1", null);
       Assert.fail("Condition AC1 already exists");
     } catch(IllegalArgumentException e) {
     }
 
     try {
-      builder.inQuestion("Q5").setAnswerCondition("AC2", "Q2", "1", new Data(DataType.BOOLEAN, true), ComparisionOperator.eq, null);
+      builder.inQuestion("Q5").setAnswerCondition("AC2", "Q2", "1", "OA1", DataBuilder.buildBoolean(true), ComparisionOperator.eq, null);
       Assert.fail("no OpenAnswerCategory for this questionCategory");
     } catch(IllegalArgumentException e) {
     }
-    builder.inQuestion("Q5").setAnswerCondition("AC2", "Q2", "1");
+    builder.inQuestion("Q5").setAnswerCondition("AC2", "Q2", "1", null);
     Assert.assertEquals("AC2", QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q5").getCondition().getName());
 
-    builder.inQuestion("Q6").setNoAnswerCondition("NAC1").withAnswerCondition("AC3", "Q2", "2", null, null, null);
-    builder.inQuestion("Q7").setMultipleCondition("MC1", ConditionOperator.AND).withAnswerCondition("AC4", "Q2", "2", null, null, null);
-    builder.inCondition("MC1").withNoAnswerCondition("NAC2").withMultipleCondition("MC2", ConditionOperator.OR).withAnswerCondition("AC5", "Q2", DONT_KNOW, null, null, null);
-    builder.inCondition("MC2").withAnswerCondition("AC6", "Q5", OTHER_SPECIFY, new Data(DataType.TEXT, "toto"), ComparisionOperator.ne, null);
+    builder.inQuestion("Q6").setNoAnswerCondition("NAC1").withAnswerCondition("AC3", "Q2", "2");
+    builder.inQuestion("Q7").setMultipleCondition("MC1", ConditionOperator.AND).withAnswerCondition("AC4", "Q2", "2");
+    builder.inCondition("MC1").withNoAnswerCondition("NAC2").withMultipleCondition("MC2", ConditionOperator.OR).withAnswerCondition("AC5", "Q2", DONT_KNOW);
+    builder.inCondition("MC2").withAnswerCondition("AC6", "Q5", OTHER_SPECIFY, "SPECIFY", DataBuilder.buildText("toto"), ComparisionOperator.ne, null);
 
     Condition condition_1 = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCondition("AC6");
     Condition condition_2 = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCondition("NAC1");

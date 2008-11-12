@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
+import java.util.List;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -18,7 +20,9 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -40,6 +44,9 @@ public class DropDownQuestionCategoriesPanel extends Panel {
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+
+  @SpringBean
+  private EntityQueryService queryService;
 
   private QuestionCategory selectedQuestionCategory;
 
@@ -79,10 +86,12 @@ public class DropDownQuestionCategoriesPanel extends Panel {
       }
 
       // Previous question contains an open answer
-      if(previousAnswer.getOpenAnswer() != null) {
+      OpenAnswer template = new OpenAnswer();
+      template.setCategoryAnswer(activeQuestionnaireAdministrationService.findAnswer(selectedQuestionCategory));
+      List<OpenAnswer> previousOpenAnswers = queryService.match(template);
 
-        openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(selectedQuestionCategory));
-
+      if(previousOpenAnswers != null && previousOpenAnswers.size() > 0) {
+        openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(selectedQuestionCategory), new QuestionnaireModel(selectedQuestionCategory.getCategory().getOpenAnswerDefinition()));
         get("open").replaceWith(openField);
       }
     }
@@ -107,7 +116,7 @@ public class DropDownQuestionCategoriesPanel extends Panel {
         // Exclusive choice, only one answer per question
         activeQuestionnaireAdministrationService.deleteAnswers(selectedQuestionCategory.getQuestion());
         if(selectedQuestionCategory.getCategory().getOpenAnswerDefinition() == null) {
-          activeQuestionnaireAdministrationService.answer(selectedQuestionCategory, null);
+          activeQuestionnaireAdministrationService.answer(selectedQuestionCategory);
         }
 
         // Update component
@@ -151,7 +160,7 @@ public class DropDownQuestionCategoriesPanel extends Panel {
 
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
 
-      openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(questionCategory));
+      openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(questionCategory), new QuestionnaireModel(questionCategory.getCategory().getOpenAnswerDefinition()));
 
       get("open").replaceWith(openField);
     } else {

@@ -35,10 +35,10 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
   }
 
   // AnswerCondition
-  private ConditionBuilder(QuestionBuilder parent, String name, String questionName, String categoryName, Data data, ComparisionOperator comparisionOperator, Integer occurence) {
+  private ConditionBuilder(QuestionBuilder parent, String name, String questionName, String categoryName, String openAnswerDefinitionName, Data data, ComparisionOperator comparisionOperator, Integer occurence) {
     super(parent.getQuestionnaire());
 
-    element = getValidAnswerCondition(name, questionName, categoryName, data, comparisionOperator, occurence);
+    element = getValidAnswerCondition(name, questionName, categoryName, openAnswerDefinitionName, data, comparisionOperator, occurence);
     element.addQuestion(parent.getElement());
 
   }
@@ -73,8 +73,8 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @param comparisonOperator
    * @return
    */
-  public static ConditionBuilder createQuestionCondition(QuestionBuilder questionBuilder, String name, String questionName, String categoryName, Data data, ComparisionOperator comparisionOperator, Integer occurence) {
-    return (new ConditionBuilder(questionBuilder, name, questionName, categoryName, data, comparisionOperator, occurence));
+  public static ConditionBuilder createQuestionCondition(QuestionBuilder questionBuilder, String name, String questionName, String categoryName, String openAnswerDefinitionName, Data data, ComparisionOperator comparisionOperator, Integer occurence) {
+    return (new ConditionBuilder(questionBuilder, name, questionName, categoryName, openAnswerDefinitionName, data, comparisionOperator, occurence));
   }
 
   /**
@@ -104,13 +104,25 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @param name
    * @param questionName
    * @param categoryName
+   * @return
+   */
+  public ConditionBuilder withAnswerCondition(String name, String questionName, String categoryName) {
+    return withAnswerCondition(name, questionName, categoryName, null, null, null, null);
+  }
+
+  /**
+   * Add a {@link AnswerCondition} on the current ConditionBuilder.
+   * @param name
+   * @param questionName
+   * @param categoryName
+   * @param openAnswerDefinitionName
    * @param data
    * @param comparisionOperator
    * @param occurence
    * @return
    */
-  public ConditionBuilder withAnswerCondition(String name, String questionName, String categoryName, Data data, ComparisionOperator comparisionOperator, Integer occurence) {
-    AnswerCondition answerCondition = getValidAnswerCondition(name, questionName, categoryName, data, comparisionOperator, occurence);
+  public ConditionBuilder withAnswerCondition(String name, String questionName, String categoryName, String openAnswerDefinitionName, Data data, ComparisionOperator comparisionOperator, Integer occurence) {
+    AnswerCondition answerCondition = getValidAnswerCondition(name, questionName, categoryName, openAnswerDefinitionName, data, comparisionOperator, occurence);
 
     if(element instanceof MultipleCondition) {
       ((MultipleCondition) element).getConditions().add(answerCondition);
@@ -170,8 +182,8 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @param occurence
    * @return
    */
-  public ConditionBuilder withParentAnswerCondition(String name, String questionName, String categoryName, Data data, ComparisionOperator comparisionOperator, Integer occurence) {
-    AnswerCondition parentAnswerCondition = getValidAnswerCondition(name, questionName, categoryName, data, comparisionOperator, occurence);
+  public ConditionBuilder withParentAnswerCondition(String name, String questionName, String categoryName, String openAnswerDefinitionName, Data data, ComparisionOperator comparisionOperator, Integer occurence) {
+    AnswerCondition parentAnswerCondition = getValidAnswerCondition(name, questionName, categoryName, openAnswerDefinitionName, data, comparisionOperator, occurence);
 
     if(!(element instanceof AnswerCondition)) throw new IllegalArgumentException("You cannot have a parent answer condition on a condition of type: " + element.getClass().getName());
 
@@ -190,7 +202,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @param occurence
    * @return
    */
-  private AnswerCondition getValidAnswerCondition(String name, String questionName, String categoryName, Data data, ComparisionOperator comparisionOperator, Integer occurence) {
+  private AnswerCondition getValidAnswerCondition(String name, String questionName, String categoryName, String openAnswerDefinitionName, Data data, ComparisionOperator comparisionOperator, Integer occurence) {
     AnswerCondition answerCondition = new AnswerCondition();
     String questionCategoryName = questionName + "." + categoryName;
     QuestionCategory questionCategory = QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory(questionName, questionCategoryName);
@@ -201,9 +213,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
     if(data != null && comparisionOperator != null) {
       if(questionCategory.getCategory().getOpenAnswerDefinition() == null) throw new IllegalArgumentException("You cannot apply a data validation on a non-OpenAnswerDefinition category");
 
-      dataComparator = new DataComparator();
-      dataComparator.setComparisionOperator(comparisionOperator);
-      dataComparator.setData(data);
+      dataComparator = new DataComparator(comparisionOperator, data, openAnswerDefinitionName);
     }
 
     if(QuestionnaireFinder.getInstance(questionnaire).findCondition(name) != null) throw invalidNameUnicityException(Condition.class, name);
@@ -217,7 +227,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
   }
 
   /**
-   * Set the given {@link MultipleCondition} as the current one.
+   * Set the given {@link Condition} as the current one.
    * @param questionnaire
    * @param condition
    * @return

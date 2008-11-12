@@ -15,7 +15,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.util.data.Data;
@@ -38,7 +38,9 @@ public class OpenAnswer extends AbstractEntity {
 
   private Date dateValue;
 
-  @OneToOne
+  private String openAnswerDefinitionName;
+
+  @ManyToOne
   @JoinColumn(name = "category_answer_id")
   private CategoryAnswer categoryAnswer;
 
@@ -143,5 +145,13 @@ public class OpenAnswer extends AbstractEntity {
         throw new IllegalArgumentException("DataType " + getDataType() + " expected, " + data.getType() + " received.");
       }
     }
+  }
+
+  public String getOpenAnswerDefinitionName() {
+    return openAnswerDefinitionName;
+  }
+
+  public void setOpenAnswerDefinitionName(String openAnswerDefinitionName) {
+    this.openAnswerDefinitionName = openAnswerDefinitionName;
   }
 }

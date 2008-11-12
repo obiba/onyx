@@ -41,6 +41,8 @@
   
   <bean id="quartz.DefaultQuestionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultQuestionPanelFactory" />
   
+  <bean id="quartz.DropDownQuestionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DropDownQuestionPanelFactory" />
+  
   <bean id="pageLayoutFactoryRegistry" class="org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry" />
   
   <bean id="questionPanelFactoryRegistry" class="org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry" />

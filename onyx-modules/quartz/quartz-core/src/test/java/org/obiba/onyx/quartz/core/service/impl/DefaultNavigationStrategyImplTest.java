@@ -99,7 +99,7 @@ public class DefaultNavigationStrategyImplTest {
     OpenAnswer q1OAnswer = new OpenAnswer();
     q1OAnswer.setDataType(DataType.INTEGER);
     q1OAnswer.setIntegerValue(1l);
-    q1Answer.setOpenAnswer(q1OAnswer);
+    q1Answer.addOpenAnswer(q1OAnswer);
     q1Answers.add(q1Answer);
 
     q2Answers = new ArrayList<CategoryAnswer>();
@@ -133,7 +133,7 @@ public class DefaultNavigationStrategyImplTest {
     OpenAnswer q1OAnswer = new OpenAnswer();
     q1OAnswer.setDataType(DataType.INTEGER);
     q1OAnswer.setIntegerValue(1l);
-    q1Answer.setOpenAnswer(q1OAnswer);
+    q1Answer.addOpenAnswer(q1OAnswer);
     q1Answers.add(q1Answer);
 
     q2Answers = new ArrayList<CategoryAnswer>();
@@ -179,7 +179,7 @@ public class DefaultNavigationStrategyImplTest {
     OpenAnswer q1OAnswer = new OpenAnswer();
     q1OAnswer.setDataType(DataType.INTEGER);
     q1OAnswer.setIntegerValue(1l);
-    q1Answer.setOpenAnswer(q1OAnswer);
+    q1Answer.addOpenAnswer(q1OAnswer);
     q1Answers.add(q1Answer);
 
     q2Answers = new ArrayList<CategoryAnswer>();

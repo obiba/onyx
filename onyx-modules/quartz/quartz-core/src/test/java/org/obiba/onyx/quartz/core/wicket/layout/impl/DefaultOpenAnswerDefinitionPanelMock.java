@@ -23,14 +23,17 @@ public class DefaultOpenAnswerDefinitionPanelMock extends FormMock {
 
   private IModel assertModel;
 
-  public DefaultOpenAnswerDefinitionPanelMock(String id, IModel questionCategoryModel, IModel assertModel) {
+  private IModel openAnswerDefinitionModel;
+
+  public DefaultOpenAnswerDefinitionPanelMock(String id, IModel questionCategoryModel, IModel assertModel, IModel openAnswerDefinitionModel) {
     super(id, questionCategoryModel);
     this.assertModel = assertModel;
+    this.openAnswerDefinitionModel = openAnswerDefinitionModel;
   }
 
   @Override
   public Component populateContent(String id, IModel model) {
-    return panel = new DefaultOpenAnswerDefinitionPanel(id, model) {
+    return panel = new DefaultOpenAnswerDefinitionPanel(id, model, openAnswerDefinitionModel) {
 
       @Override
       public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {

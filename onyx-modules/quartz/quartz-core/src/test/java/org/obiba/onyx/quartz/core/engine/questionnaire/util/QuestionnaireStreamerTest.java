@@ -62,6 +62,10 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
     builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));
     builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").addOpenAnswerDefinitionValidator(new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
 
+    builder.inPage("P4").withQuestion("Q6").withCategory("DATE").withOpenAnswerDefinition("DATE", DataType.DATE).withOpenAnswerDefinition("YEAR", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new PatternValidator("\\d{4}"), DataType.TEXT));
+    builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("MONTH", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new NumberValidator.RangeValidator(1, 12), DataType.INTEGER));
+    builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("DAY", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new NumberValidator.RangeValidator(1, 31), DataType.INTEGER));
+
     // System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
 
     // try {
@@ -107,6 +111,11 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
       Assert.assertEquals("", localizationProperties.getProperty("QuestionCategory.Q2.1.label"));
       Assert.assertTrue(localizationProperties.containsKey("QuestionCategory.Q3.1.label"));
       Assert.assertEquals("", localizationProperties.getProperty("QuestionCategory.Q3.1.label"));
+
+      Assert.assertTrue(localizationProperties.containsKey("OpenAnswerDefinition.DATE.label"));
+      Assert.assertEquals("", localizationProperties.getProperty("OpenAnswerDefinition.DATE.label"));
+      Assert.assertTrue(localizationProperties.containsKey("OpenAnswerDefinition.YEAR.label"));
+      Assert.assertEquals("", localizationProperties.getProperty("OpenAnswerDefinition.YEAR.label"));
 
       Questionnaire fromDead = fromBundle(bundle);
       Assert.assertNotNull("Reloaded questionnaire is null", fromDead);

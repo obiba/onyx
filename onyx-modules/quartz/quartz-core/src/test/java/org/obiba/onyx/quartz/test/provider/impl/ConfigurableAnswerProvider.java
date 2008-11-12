@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.test.provider.AnswerProvider;
 
@@ -199,6 +200,7 @@ public class ConfigurableAnswerProvider implements AnswerProvider {
     xstream.alias("configurableAnswerProvider", ConfigurableAnswerProvider.class);
     xstream.alias("categoryAnswer", CategoryAnswer.class);
     xstream.alias("group", ConfigurableAnswerProvider.Group.class);
+    xstream.alias("openAnswer", OpenAnswer.class);
 
     return (ConfigurableAnswerProvider) xstream.fromXML(is);
   }

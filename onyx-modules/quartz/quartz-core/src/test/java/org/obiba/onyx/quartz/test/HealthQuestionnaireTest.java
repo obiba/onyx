@@ -36,6 +36,8 @@ public class HealthQuestionnaireTest extends AbstractQuestionnaireTest {
 
     AnswerProvider answerProvider = ConfigurableAnswerProvider.fromXmlResource(getAnswerProviderResourcePath() + "/answerProvider.xml");
 
+    // answerQuestionsUpTo(answerProvider, getQuestion("Q3"));
+
     Question q29 = getQuestion("Q29");
     answerQuestionsUpTo(answerProvider, q29);
     assertCurrentPage(getPage("P22"));
@@ -45,5 +47,6 @@ public class HealthQuestionnaireTest extends AbstractQuestionnaireTest {
 
     returnToLaterQuestion(q29);
     assertCurrentPage(getPage("P22"));
+
   }
 }

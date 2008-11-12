@@ -9,6 +9,7 @@ import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -86,14 +87,13 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
         Question question = (Question) CheckBoxQuestionCategoryPanel.this.questionModel.getObject();
         QuestionCategory questionCategory = (QuestionCategory) CheckBoxQuestionCategoryPanel.this.getModelObject();
         if(getSelectionModel().isSelected()) {
-          activeQuestionnaireAdministrationService.answer(question, questionCategory, null);
+          activeQuestionnaireAdministrationService.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), null);
         } else {
           activeQuestionnaireAdministrationService.deleteAnswer(question, questionCategory);
         }
-        if(getOpenField() != null) {
+		if(getOpenField() != null) {
           getOpenField().setRequired(getSelectionModel().isSelected());
         }
-
         onCheckBoxSelection(target, CheckBoxQuestionCategoryPanel.this.questionModel, CheckBoxQuestionCategoryPanel.this.getModel());
       }
 
@@ -107,7 +107,7 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
       // there is an open field
       // hide the associated radio and fake selection on click event of open field
-      openField = new DefaultOpenAnswerDefinitionPanel("open", questionModel, getModel()) {
+      openField = new DefaultOpenAnswerDefinitionPanel("open", questionModel, getModel(), new Model(questionCategory.getCategory().getOpenAnswerDefinition())) {
 
         @Override
         public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
@@ -118,8 +118,8 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
           getSelectionModel().setObject(true);
 
           setRequired(true);
-
-          activeQuestionnaireAdministrationService.answer((Question) questionModel.getObject(), (QuestionCategory) getModelObject(), null);
+          
+          activeQuestionnaireAdministrationService.answer((Question) questionModel.getObject(), (QuestionCategory) getModelObject(), ((QuestionCategory) getModelObject()).getCategory().getOpenAnswerDefinition(), null);
           // target.addComponent(CheckBoxQuestionCategoryPanel.this);
           onOpenFieldSelection(target, questionModel, questionCategoryModel);
         }

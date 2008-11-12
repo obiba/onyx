@@ -13,8 +13,10 @@ import java.util.Locale;
 
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -144,12 +146,28 @@ public interface ActiveQuestionnaireAdministrationService {
   public CategoryAnswer findAnswer(Question question, QuestionCategory questionCategory);
 
   /**
+   * Get the openAnswer for the {@link QuestionCategory} and the {@link OpenAnswerDefinition}.
+   * @param questionCategory
+   * @param openAnswerDefinitionName
+   * @return null if not found
+   */
+  public OpenAnswer findOpenAnswer(QuestionCategory questionCategory, String openAnswerDefinitionName);
+
+  /**
    * Save or update the question and category answers.
    * @param questionCategory
+   * @return
+   */
+  public CategoryAnswer answer(QuestionCategory questionCategory);
+
+  /**
+   * Save or update the question and category answers.
+   * @param questionCategory
+   * @param openAnswerDefinition
    * @param value
    * @return
    */
-  public CategoryAnswer answer(QuestionCategory questionCategory, Data value);
+  public CategoryAnswer answer(QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value);
 
   /**
    * Save or update the question and category answers.
@@ -158,7 +176,7 @@ public interface ActiveQuestionnaireAdministrationService {
    * @param value
    * @return
    */
-  public CategoryAnswer answer(Question question, QuestionCategory questionCategory, Data value);
+  public CategoryAnswer answer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value);
 
   /**
    * Set all question category answers being active (or not), including {@link Question} children answers.

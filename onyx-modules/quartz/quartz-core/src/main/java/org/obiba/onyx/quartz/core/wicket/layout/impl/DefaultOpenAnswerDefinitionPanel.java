@@ -19,6 +19,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -49,13 +50,16 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
    */
   private IModel questionModel;
 
+  private IModel openAnswerDefinitionModel;
+
   /**
    * Constructor given the question category (needed for persistency).
    * @param id
    * @param questionCategoryModel
+   * @param openAnswerDefinitionModel
    */
-  public DefaultOpenAnswerDefinitionPanel(String id, IModel questionCategoryModel) {
-    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel);
+  public DefaultOpenAnswerDefinitionPanel(String id, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
+    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, openAnswerDefinitionModel);
   }
 
   /**
@@ -66,9 +70,10 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
    * @param questionCategoryModel
    */
   @SuppressWarnings("serial")
-  public DefaultOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
+  public DefaultOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
     super(id, questionCategoryModel);
     this.questionModel = questionModel;
+    this.openAnswerDefinitionModel = openAnswerDefinitionModel;
 
     setOutputMarkupId(true);
 
@@ -76,8 +81,10 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
     OpenAnswerDefinition openAnswerDefinition = questionCategory.getCategory().getOpenAnswerDefinition();
 
     CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer((Question) questionModel.getObject(), questionCategory);
-    if(previousAnswer != null && previousAnswer.getOpenAnswer() != null) {
-      data = previousAnswer.getOpenAnswer().getData();
+    if(previousAnswer != null && previousAnswer.getOpenAnswers() != null) {
+
+      OpenAnswer openAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(questionCategory, openAnswerDefinition.getName());
+      if(openAnswer != null) data = openAnswer.getData();
     }
 
     QuestionnaireStringResourceModel openLabel = new QuestionnaireStringResourceModel(openAnswerDefinition, "label");
@@ -124,7 +131,7 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
         Question question = (Question) DefaultOpenAnswerDefinitionPanel.this.questionModel.getObject();
         log.info("openField.onUpdate.{}.data={}", question.getName() + "." + questionCategory.getName(), data);
         // persist data
-        activeQuestionnaireAdministrationService.answer(question, questionCategory, data);
+        activeQuestionnaireAdministrationService.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), data);
         DefaultOpenAnswerDefinitionPanel.this.onSubmit(target, DefaultOpenAnswerDefinitionPanel.this.questionModel, DefaultOpenAnswerDefinitionPanel.this.getModel());
       }
 

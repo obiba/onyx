@@ -271,12 +271,12 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     return new IllegalArgumentException("Unable to get question panel factory name from " + uiFactoryClass.getName(), e);
   }
 
-  public ConditionBuilder setAnswerCondition(String name, String question, String category) {
-    return setAnswerCondition(name, question, category, null, null, null);
+  public ConditionBuilder setAnswerCondition(String name, String question, String category, String openAnswerDefinition) {
+    return setAnswerCondition(name, question, category, openAnswerDefinition, null, null, null);
   }
 
-  public ConditionBuilder setAnswerCondition(String name, String question, String category, Data data, ComparisionOperator comparisionOperator, Integer occurence) {
-    return ConditionBuilder.createQuestionCondition(this, name, question, category, data, comparisionOperator, occurence);
+  public ConditionBuilder setAnswerCondition(String name, String question, String category, String openAnswerDefinition, Data data, ComparisionOperator comparisionOperator, Integer occurence) {
+    return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, data, comparisionOperator, occurence);
   }
 
   public ConditionBuilder setMultipleCondition(String name, ConditionOperator operator) {

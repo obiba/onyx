@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
@@ -32,8 +33,12 @@ public abstract class DefaultQuestionnaireParticipantServiceImpl extends Persist
       List<CategoryAnswer> categoryAnswerList = getPersistenceManager().match(template);
 
       for(CategoryAnswer categoryAnswer : categoryAnswerList) {
-        if(categoryAnswer.getOpenAnswer() != null) {
-          getPersistenceManager().delete(categoryAnswer.getOpenAnswer());
+
+        OpenAnswer openAnswerTemplate = new OpenAnswer();
+        openAnswerTemplate.setCategoryAnswer(categoryAnswer);
+
+        for(OpenAnswer openAnswer : getPersistenceManager().match(openAnswerTemplate)) {
+          getPersistenceManager().delete(openAnswer);
         }
 
         getPersistenceManager().delete(categoryAnswer);

@@ -12,7 +12,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 import java.util.Properties;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.MultipleCondition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -20,6 +20,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.AbstractQuestionnaireElementBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.ConditionBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IPropertyKeyWriter;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.OpenAnswerDefinitionBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.PageBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.PropertyKeyWriterVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuilder;
@@ -131,10 +132,10 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
   }
 
   /**
-   * Position the builder to the {@link MultipleCondition} with the given name.
+   * Position the builder to the {@link Condition} with the given name.
    * @param name
    * @return
-   * @throws IllegalStateException if no multipleCondition can be found with this name
+   * @throws IllegalStateException if no Condition can be found with this name
    */
   public ConditionBuilder inCondition(String name) {
     Condition condition = QuestionnaireFinder.getInstance(questionnaire).findCondition(name);
@@ -142,6 +143,20 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
       throw invalidElementNameException(Condition.class, name);
     }
     return ConditionBuilder.inCondition(getQuestionnaire(), condition);
+  }
+
+  /**
+   * Position the builder to the {@link OpenAnswerDefinition} with the given name.
+   * @param name
+   * @return
+   * @throws IllegalStateException if no OpenAnswerDefinition can be found with this name
+   */
+  public OpenAnswerDefinitionBuilder inOpenAnswerDefinition(String name) {
+    OpenAnswerDefinition openAnswerDefinition = QuestionnaireFinder.getInstance(questionnaire).findOpenAnswerDefinition(name);
+    if(openAnswerDefinition == null) {
+      throw invalidElementNameException(OpenAnswerDefinition.class, name);
+    }
+    return OpenAnswerDefinitionBuilder.inOpenAnswerDefinition(getQuestionnaire(), openAnswerDefinition);
   }
 
   /**

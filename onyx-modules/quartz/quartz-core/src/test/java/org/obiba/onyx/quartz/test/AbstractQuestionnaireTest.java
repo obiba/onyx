@@ -312,7 +312,7 @@ public abstract class AbstractQuestionnaireTest {
         return;
       }
 
-      if(!question.isBoilerPlate() && question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
+      if(!question.isBoilerPlate() && question.isToBeAnswered(activeQuestionnaireAdministrationService) && !question.hasAnswerSource()) {
         answerQuestion(question, answerProvider.getAnswer(question));
         log.info("Answered question " + question.getName());
 
@@ -517,8 +517,10 @@ public abstract class AbstractQuestionnaireTest {
    * @param answer answer
    */
   private void answerQuestionImpl(Question question, CategoryAnswer answer) {
-    if(answer.getOpenAnswer() != null) {
+    if(answer.getOpenAnswers() != null && answer.getOpenAnswers().size() > 0) {
       openAnswer(question, answer);
+    } else if(question.getUIFactoryName().equals("quartz.DropDownQuestionPanelFactory")) {
+      dropDownAnswer(question, answer);
     } else {
       radioButtonAnswer(question, answer);
     }
@@ -535,7 +537,7 @@ public abstract class AbstractQuestionnaireTest {
     FormTester formTester = wicketTester.newFormTester(getFormPath());
 
     wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getInputFieldComponentId(question), "onclick");
-    formTester.setValue(getInputFieldComponentId(question), answer.getOpenAnswer().getData().getValueAsString());
+    formTester.setValue(getInputFieldComponentId(question), answer.getOpenAnswers().get(0).getData().getValueAsString());
     wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getInputFieldComponentId(question), ONBLUR_EVENT);
   }
 
@@ -549,8 +551,15 @@ public abstract class AbstractQuestionnaireTest {
   private void radioButtonAnswer(Question question, CategoryAnswer answer) {
     FormTester formTester = wicketTester.newFormTester(getFormPath());
 
-    formTester.select(getRadioGroupComponentId(question), getRadioButtonIndex(question, answer));
+    formTester.select(getRadioGroupComponentId(question), getSelectIndex(question, answer));
     wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getRadioButtonComponentId(question, answer), ONCHANGE_EVENT);
+  }
+
+  private void dropDownAnswer(Question question, CategoryAnswer answer) {
+    FormTester formTester = wicketTester.newFormTester(getFormPath());
+
+    formTester.select(getDropDownComponentId(question), getSelectIndex(question, answer));
+    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getDropDownComponentId(question), ONCHANGE_EVENT);
   }
 
   private String getFormPath() {
@@ -568,12 +577,17 @@ public abstract class AbstractQuestionnaireTest {
     return "step:panel:questions:1:question:content:categories";
   }
 
+  private String getDropDownComponentId(Question question) {
+    // TODO: Generate id based on question. Currently assuming one question per page.
+    return "step:panel:questions:1:question:content:questionCategories";
+  }
+
   private String getRadioButtonComponentId(Question question, CategoryAnswer answer) {
     // TODO: Generate id based on question. Currently assuming one question per page.
     // return "step:panel:questions:1:question:content:categories:category:2:categoryLabel:input:radio";
     String partBeforeIndex = "step:panel:questions:1:question:content:categories:category";
     String partAfterIndex = "input:categoryLabel:radio";
-    int radioButtonIndex = getRadioButtonIndex(question, answer) + 1; // 1-based.
+    int radioButtonIndex = getSelectIndex(question, answer) + 1; // 1-based.
 
     if(radioButtonIndex == -1) {
       Assert.fail("Invalid answer [" + answer.getCategoryName() + "] for question [" + question.getName() + "] (could not locate corresponding radio button)");
@@ -582,7 +596,7 @@ public abstract class AbstractQuestionnaireTest {
     return partBeforeIndex + COMPONENT_ID_SEPARATOR + radioButtonIndex + COMPONENT_ID_SEPARATOR + partAfterIndex;
   }
 
-  private int getRadioButtonIndex(Question question, CategoryAnswer answer) {
+  private int getSelectIndex(Question question, CategoryAnswer answer) {
     int radioButtonIndex = -1;
 
     List<Category> categories = question.getCategories();

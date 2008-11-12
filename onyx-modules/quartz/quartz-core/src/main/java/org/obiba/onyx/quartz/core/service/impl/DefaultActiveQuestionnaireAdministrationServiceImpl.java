@@ -16,6 +16,7 @@ import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -144,11 +145,15 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     this.defaultLanguage = language;
   }
 
-  public CategoryAnswer answer(QuestionCategory questionCategory, Data value) {
-    return answer(questionCategory.getQuestion(), questionCategory, value);
+  public CategoryAnswer answer(QuestionCategory questionCategory) {
+    return answer(questionCategory.getQuestion(), questionCategory, null, null);
   }
 
-  public CategoryAnswer answer(Question question, QuestionCategory questionCategory, Data value) {
+  public CategoryAnswer answer(QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value) {
+    return answer(questionCategory.getQuestion(), questionCategory, openAnswerDefinition, value);
+  }
+
+  public CategoryAnswer answer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value) {
     QuestionAnswer template = new QuestionAnswer();
     template.setQuestionnaireParticipant(currentQuestionnaireParticipant);
     template.setQuestionName(question.getName());
@@ -157,7 +162,9 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     CategoryAnswer categoryTemplate = new CategoryAnswer();
     categoryTemplate.setCategoryName(questionCategory.getCategory().getName());
     CategoryAnswer categoryAnswer;
+
     OpenAnswer openAnswerTemplate = new OpenAnswer();
+    if(openAnswerDefinition != null) openAnswerTemplate.setOpenAnswerDefinitionName(openAnswerDefinition.getName());
     OpenAnswer openAnswer = null;
 
     if(questionAnswer == null) {
@@ -180,7 +187,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
       openAnswer.setDataType(value.getType());
       openAnswer.setData(value);
       getPersistenceManager().save(openAnswer);
-      categoryAnswer.setOpenAnswer(openAnswer);
+      categoryAnswer.addOpenAnswer(openAnswer);
     }
 
     return getPersistenceManager().save(categoryAnswer);
@@ -224,8 +231,10 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
    * @param categoryAnswer
    */
   private void deleteAnswers(CategoryAnswer categoryAnswer) {
-    if(categoryAnswer.getOpenAnswer() != null) {
-      getPersistenceManager().delete(categoryAnswer.getOpenAnswer());
+    if(categoryAnswer.getOpenAnswers() != null) {
+      for(OpenAnswer openAnswer : categoryAnswer.getOpenAnswers()) {
+        getPersistenceManager().delete(openAnswer);
+      }
     }
     getPersistenceManager().delete(categoryAnswer);
   }
