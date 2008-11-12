@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.condition;
 
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+
 public class NoAnswerCondition extends Condition {
 
   private static final long serialVersionUID = -7934445960755750180L;
@@ -23,8 +25,8 @@ public class NoAnswerCondition extends Condition {
     this.condition = condition;
   }
 
-  public boolean isToBeAnswered() {
-    return !condition.isToBeAnswered();
+  public boolean isToBeAnswered(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService) {
+    return !condition.isToBeAnswered(activeQuestionnaireAdministrationService);
   }
 
 }

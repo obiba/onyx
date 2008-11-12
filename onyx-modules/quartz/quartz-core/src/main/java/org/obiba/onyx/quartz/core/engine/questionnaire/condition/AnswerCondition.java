@@ -12,6 +12,7 @@ import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 
 public class AnswerCondition extends Condition {
 
@@ -67,7 +68,7 @@ public class AnswerCondition extends Condition {
     this.parentAnswerCondition = parentAnswerCondition;
   }
 
-  public boolean isToBeAnswered() {
+  public boolean isToBeAnswered(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService) {
     CategoryAnswer categoryAnswer = activeQuestionnaireAdministrationService.findAnswer(question, category);
 
     if(categoryAnswer == null) return false;

@@ -24,8 +24,6 @@ public abstract class Condition implements Serializable, ILocalizable {
 
   private List<Question> questions;
 
-  protected ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
-
   public String getName() {
     return name;
   }
@@ -45,11 +43,7 @@ public abstract class Condition implements Serializable, ILocalizable {
     }
   }
 
-  public abstract boolean isToBeAnswered();
-
-  public void setActiveQuestionnaireAdministrationService(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService) {
-    this.activeQuestionnaireAdministrationService = activeQuestionnaireAdministrationService;
-  }
+  public abstract boolean isToBeAnswered(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService);
 
   public void accept(IVisitor visitor) {
     visitor.visit(this);

@@ -12,6 +12,8 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.condition;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+
 public class MultipleCondition extends Condition {
 
   private static final long serialVersionUID = 2969604617578085834L;
@@ -40,23 +42,22 @@ public class MultipleCondition extends Condition {
     this.conditionOperator = conditionOperator;
   }
 
-  public boolean isToBeAnswered() {
-    boolean previousConditionIsToBeAnswer = conditions.get(0).isToBeAnswered();
+  public boolean isToBeAnswered(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService) {
+    boolean previousConditionIsToBeAnswer = conditions.get(0).isToBeAnswered(activeQuestionnaireAdministrationService);
 
     if(conditionOperator.equals(ConditionOperator.AND)) {
       // Starting with second element of the list
       for(int i = 1; i < conditions.size(); i++) {
-        previousConditionIsToBeAnswer = (previousConditionIsToBeAnswer && conditions.get(i).isToBeAnswered());
+        previousConditionIsToBeAnswer = (previousConditionIsToBeAnswer && conditions.get(i).isToBeAnswered(activeQuestionnaireAdministrationService));
         if(previousConditionIsToBeAnswer == false) break;
       }
     } else {
       // Starting with second element of the list
       for(int i = 1; i < conditions.size(); i++) {
-        previousConditionIsToBeAnswer = (previousConditionIsToBeAnswer || conditions.get(i).isToBeAnswered());
+        previousConditionIsToBeAnswer = (previousConditionIsToBeAnswer || conditions.get(i).isToBeAnswered(activeQuestionnaireAdministrationService));
         if(previousConditionIsToBeAnswer == true) break;
       }
     }
     return previousConditionIsToBeAnswer;
   }
-
 }
