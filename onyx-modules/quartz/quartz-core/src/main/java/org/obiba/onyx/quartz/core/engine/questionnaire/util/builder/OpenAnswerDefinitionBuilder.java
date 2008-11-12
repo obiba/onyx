@@ -60,7 +60,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @param validator
    * @return
    */
-  public OpenAnswerDefinitionBuilder addOpenAnswerDefintionValidator(DataValidator validator) {
+  public OpenAnswerDefinitionBuilder addOpenAnswerDefinitionValidator(DataValidator validator) {
     element.addValidator(validator);
     return this;
   }

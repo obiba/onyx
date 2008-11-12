@@ -36,6 +36,10 @@ public class DataValidator implements IValidator {
     this.dataType = dataType;
   }
 
+  public DataType getDataType() {
+    return dataType;
+  }
+
   public void validate(IValidatable validatable) {
     Validatable tempValidatable = getValidatorCast(validatable);
     validator.validate(tempValidatable);

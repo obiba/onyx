@@ -131,7 +131,7 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     }
 
     builder.withSection("S2").withSection("S2_1").withPage("P4");
-    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));
+    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));
     category = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCategory("NAME");
     Assert.assertNotNull(category.getOpenAnswerDefinition());
     Assert.assertEquals(DataType.INTEGER, category.getOpenAnswerDefinition().getDataType());
@@ -139,7 +139,7 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     Assert.assertEquals(40, ((NumberValidator.RangeValidator) category.getOpenAnswerDefinition().getValidators().get(0).getValidator()).getMinimum());
     Assert.assertEquals(70, ((NumberValidator.RangeValidator) category.getOpenAnswerDefinition().getValidators().get(0).getValidator()).getMaximum());
 
-    builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").addOpenAnswerDefintionValidator(new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
+    builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").addOpenAnswerDefinitionValidator(new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
     category = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q5").findCategory(OTHER_SPECIFY);
     Assert.assertEquals("[a-z,A-Z]+", ((PatternValidator) category.getOpenAnswerDefinition().getValidators().get(0).getValidator()).getPattern().toString());
     Assert.assertEquals(2, category.getOpenAnswerDefinition().getDefaultValues().size());
@@ -237,8 +237,8 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     builder.inPage("P3").withQuestion("Q4").withCategories("1", "2").withSharedCategories(YES, NO, DONT_KNOW);
 
     builder.withSection("S2").withSection("S2_1").withPage("P4");
-    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));
-    builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").addOpenAnswerDefintionValidator(new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
+    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));
+    builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").addOpenAnswerDefinitionValidator(new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
 
     Properties localizationProperties = builder.getProperties(propertyKeyProvider);
     Assert.assertTrue(localizationProperties.containsKey("Questionnaire.HealthQuestionnaire.description"));

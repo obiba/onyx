@@ -59,8 +59,8 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
     builder.inPage("P3").withQuestion("Q4").withSharedCategories(YES, NO, DONT_KNOW);
 
     builder.withSection("S2").withSection("S2_1").withPage("P4");
-    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));
-    builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").addOpenAnswerDefintionValidator(new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
+    builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));
+    builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setOpenAnswerDefinitionDefaultData("Left", "Right").setOpenAnswerDefinitionUnit("kg").addOpenAnswerDefinitionValidator(new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
 
     // System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
 

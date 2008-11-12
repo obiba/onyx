@@ -157,7 +157,7 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
 
     builder.withSection("SB").withSection("GENDER").withPage("P1").withQuestion("Q1").withCategories("1", "2", "3");
-    builder.inPage("P1").withQuestion("Q2").withCategory("1").withOpenAnswerDefinition("year", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new PatternValidator("\\d{4}"), DataType.TEXT));
+    builder.inPage("P1").withQuestion("Q2").withCategory("1").withOpenAnswerDefinition("year", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new PatternValidator("\\d{4}"), DataType.TEXT));
     builder.inSection("SB").withSection("MOCK").withPage("P2").withQuestion("Q3").withCategories("1", "2");
     builder.inQuestion("Q3").withQuestion("Q4").withCategories("subcat1", "subcat2", "subcat3");
 
