@@ -84,13 +84,13 @@ public class CreateQuestionnaire {
     builder.inQuestion("Q1").withSharedCategory(NO_ANSWER).setExportName("8");
     builder.inQuestion("Q1").withSharedCategory(DONT_KNOW).setExportName("9");
 
-    builder.inSection("SB").withSection("BIRTHDATE").withPage("P2").withQuestion("Q2", DropDownQuestionPanelFactory.class).withCategory("1").withOpenAnswerDefinition("year", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new PatternValidator("\\d{4}"), DataType.TEXT));
+    builder.inSection("SB").withSection("BIRTHDATE").withPage("P2").withQuestion("Q2", DropDownQuestionPanelFactory.class).withCategory("1").withOpenAnswerDefinition("year", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new PatternValidator("\\d{4}"), DataType.TEXT));
     builder.inQuestion("Q2").withSharedCategory(NO_ANSWER).setExportName("8888");
     builder.inQuestion("Q2").withSharedCategory(DONT_KNOW).setExportName("9999");
-    builder.inSection("BIRTHDATE").withPage("P3").withQuestion("Q3").withCategory("1").withOpenAnswerDefinition("month", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new PatternValidator("\\d\\d?"), DataType.TEXT));
+    builder.inSection("BIRTHDATE").withPage("P3").withQuestion("Q3").withCategory("1").withOpenAnswerDefinition("month", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new PatternValidator("\\d\\d?"), DataType.TEXT));
     builder.inQuestion("Q3").withSharedCategory(NO_ANSWER).setExportName("88");
     builder.inQuestion("Q3").withSharedCategory(DONT_KNOW).setExportName("99");
-    builder.inSection("BIRTHDATE").withPage("P4").withQuestion("Q4").withCategory("1").withOpenAnswerDefinition("age", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));
+    builder.inSection("BIRTHDATE").withPage("P4").withQuestion("Q4").withCategory("1").withOpenAnswerDefinition("age", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));
     builder.inQuestion("Q4").withSharedCategory(NO_ANSWER).setExportName("88");
     builder.inQuestion("Q4").withSharedCategory(DONT_KNOW).setExportName("99");
 
@@ -98,17 +98,17 @@ public class CreateQuestionnaire {
     builder.inQuestion("Q5").withSharedCategory(NO_ANSWER).setExportName("88");
     builder.inQuestion("Q5").withSharedCategory(DONT_KNOW).setExportName("99");
 
-    builder.inSection("SB").withSection("HOUSEHOLDSTATUS").withPage("P6").withQuestion("Q6").withCategory("1").withOpenAnswerDefinition("adults", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new NumberValidator.RangeValidator(1, 100), DataType.INTEGER));
+    builder.inSection("SB").withSection("HOUSEHOLDSTATUS").withPage("P6").withQuestion("Q6").withCategory("1").withOpenAnswerDefinition("adults", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new NumberValidator.RangeValidator(1, 100), DataType.INTEGER));
     builder.inQuestion("Q6").withSharedCategory(NO_ANSWER).setExportName("88");
     builder.inQuestion("Q6").withSharedCategory(DONT_KNOW).setExportName("99");
-    builder.inSection("HOUSEHOLDSTATUS").withPage("P7").withQuestion("Q7").withCategory("1").withOpenAnswerDefinition("children", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new NumberValidator.RangeValidator(0, 100), DataType.INTEGER));
+    builder.inSection("HOUSEHOLDSTATUS").withPage("P7").withQuestion("Q7").withCategory("1").withOpenAnswerDefinition("children", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new NumberValidator.RangeValidator(0, 100), DataType.INTEGER));
     builder.inQuestion("Q7").withSharedCategory(NO_ANSWER).setExportName("88");
     builder.inQuestion("Q7").withSharedCategory(DONT_KNOW).setExportName("99");
 
-    builder.inSection("SB").withSection("SIBLING").withPage("P8").withQuestion("Q8").withCategory("1").withOpenAnswerDefinition("siblings", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new NumberValidator.RangeValidator(0, 20), DataType.INTEGER));
+    builder.inSection("SB").withSection("SIBLING").withPage("P8").withQuestion("Q8").withCategory("1").withOpenAnswerDefinition("siblings", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new NumberValidator.RangeValidator(0, 20), DataType.INTEGER));
     builder.inQuestion("Q8").withSharedCategory(NO_ANSWER).setExportName("88");
     builder.inQuestion("Q8").withSharedCategory(DONT_KNOW).setExportName("99");
-    builder.inSection("SIBLING").withPage("P9").withQuestion("Q9").withCategory("1").withOpenAnswerDefinition("olderSiblings", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new NumberValidator.RangeValidator(0, 20), DataType.INTEGER));
+    builder.inSection("SIBLING").withPage("P9").withQuestion("Q9").withCategory("1").withOpenAnswerDefinition("olderSiblings", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new NumberValidator.RangeValidator(0, 20), DataType.INTEGER));
     builder.inQuestion("Q9").withSharedCategory(NO_ANSWER).setExportName("88");
     builder.inQuestion("Q9").withSharedCategory(DONT_KNOW).setExportName("99");
     builder.inSection("SIBLING").withPage("P10").withQuestion("Q10").withSharedCategory(NO).setExportName("0");
@@ -121,7 +121,7 @@ public class CreateQuestionnaire {
     builder.inQuestion("Q11").withSharedCategory(DONT_KNOW).setExportName("9");
 
     builder.inSection("SB").withSection("EDUCATIONLEVEL").withPage("P12").withQuestion("Q12");
-    builder.inSection("EDUCATIONLEVEL").withPage("P13").withQuestion("Q13").withCategory("1").withOpenAnswerDefinition("years", DataType.INTEGER).addOpenAnswerDefintionValidator(new DataValidator(new NumberValidator.RangeValidator(0, 20), DataType.INTEGER));
+    builder.inSection("EDUCATIONLEVEL").withPage("P13").withQuestion("Q13").withCategory("1").withOpenAnswerDefinition("years", DataType.INTEGER).addOpenAnswerDefinitionValidator(new DataValidator(new NumberValidator.RangeValidator(0, 20), DataType.INTEGER));
     builder.inQuestion("Q13").withSharedCategory(NO_ANSWER).setExportName("88");
     builder.inQuestion("Q13").withSharedCategory(DONT_KNOW).setExportName("99");
     builder.inSection("EDUCATIONLEVEL").withPage("P14").withQuestion("Q14").withCategories("1", "2", "3", "4", "5", "6", "7", "8");
