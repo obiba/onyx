@@ -309,7 +309,7 @@ public class DefaultQuestionPanelTest {
       }
     });
 
-    tester.dumpPage();
+    // tester.dumpPage();
 
     // check all expected radios are here
     tester.assertComponent("panel:form:content:content:categories", RadioGroup.class);
@@ -587,7 +587,7 @@ public class DefaultQuestionPanelTest {
       }
     });
 
-    // dumpPage("testSharedCategoriesArrayQuestion");
+    dumpPage("testSharedCategoriesArrayQuestion");
 
     verify(activeInterviewServiceMock);
     verify(activeQuestionnaireAdministrationServiceMock);

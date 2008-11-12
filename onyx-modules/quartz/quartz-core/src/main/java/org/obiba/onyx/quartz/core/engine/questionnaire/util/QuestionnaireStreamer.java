@@ -61,7 +61,7 @@ public class QuestionnaireStreamer {
     xstream.alias("category", Category.class);
     xstream.useAttributeFor(Category.class, "name");
     xstream.alias("questionCategory", QuestionCategory.class);
-    xstream.useAttributeFor(QuestionCategory.class, "repeatable");
+    xstream.useAttributeFor(QuestionCategory.class, "reselectable");
     xstream.useAttributeFor(QuestionCategory.class, "selected");
     xstream.useAttributeFor(QuestionCategory.class, "exportName");
     xstream.alias("open", OpenAnswerDefinition.class);
