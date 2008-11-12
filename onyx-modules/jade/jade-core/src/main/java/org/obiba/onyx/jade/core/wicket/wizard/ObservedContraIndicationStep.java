@@ -21,7 +21,7 @@ import org.obiba.onyx.wicket.wizard.WizardForm;
  * Instrument selection Step.
  * 
  */
-public class ObservedContraIndicationStep extends AbstractContraIndicationStep {
+public class ObservedContraIndicationStep extends AbstractJadeContraIndicationStep {
 
   private static final long serialVersionUID = 4489598868219932761L;
 
@@ -38,8 +38,11 @@ public class ObservedContraIndicationStep extends AbstractContraIndicationStep {
     setContent(target, new ObservedContraIndicationPanel(getContentId(), new PropertyModel(activeInstrumentRunService, "instrumentRun")));
   }
 
+  //
+  // AbstractJadeContraIndicationStep Methods
+  //
+
   protected Contraindication.Type getParticipantInteractionType() {
     return Contraindication.Type.OBSERVED;
   }
-
 }

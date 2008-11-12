@@ -20,7 +20,7 @@ import org.obiba.onyx.wicket.wizard.WizardForm;
 /**
  * Step for contraindications that should be asked to the participant.
  */
-public class AskedContraIndicationStep extends AbstractContraIndicationStep {
+public class AskedContraIndicationStep extends AbstractJadeContraIndicationStep {
 
   private static final long serialVersionUID = 4489598868219932761L;
 
@@ -45,8 +45,11 @@ public class AskedContraIndicationStep extends AbstractContraIndicationStep {
     super.onStepOutNext(form, target);
   }
 
-  protected Contraindication.Type getParticipantInteractionType() {
+  //
+  // AbstractJadeContraIndicationStep Methods
+  //
+
+  protected final Contraindication.Type getParticipantInteractionType() {
     return Contraindication.Type.ASKED;
   }
-
 }
