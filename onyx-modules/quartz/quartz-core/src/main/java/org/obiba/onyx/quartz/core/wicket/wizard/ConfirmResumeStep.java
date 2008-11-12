@@ -1,5 +1,7 @@
 package org.obiba.onyx.quartz.core.wicket.wizard;
 
+import java.util.Locale;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
@@ -58,6 +60,14 @@ public class ConfirmResumeStep extends WizardStepPanel {
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
     setNextStep(questionnaireWizardForm.getResumeStep());
+  }
+
+  /**
+   * Get the locale of the questionnaire.
+   */
+  @Override
+  public Locale getLocale() {
+    return activeQuestionnaireAdministrationService.getLanguage();
   }
 
 }

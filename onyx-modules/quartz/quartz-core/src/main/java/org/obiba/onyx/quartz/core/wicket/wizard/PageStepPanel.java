@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.wizard;
 
+import java.util.Locale;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
@@ -106,5 +108,13 @@ public class PageStepPanel extends WizardStepPanel {
 
   public void setPreviousEnabled(boolean previousEnabled) {
     this.previousEnabled = previousEnabled;
+  }
+
+  /**
+   * Get the locale of the questionnaire.
+   */
+  @Override
+  public Locale getLocale() {
+    return activeQuestionnaireAdministrationService.getLanguage();
   }
 }
