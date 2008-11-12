@@ -16,6 +16,7 @@ import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -146,12 +147,29 @@ public interface ActiveQuestionnaireAdministrationService {
   public CategoryAnswer findAnswer(Question question, QuestionCategory questionCategory);
 
   /**
-   * Get the openAnswer for the {@link QuestionCategory} and the {@link OpenAnswerDefinition}.
-   * @param questionCategory
-   * @param openAnswerDefinitionName
+   * Get the answer for the {@link Category}.
+   * @param question
+   * @param category
    * @return null if not found
    */
-  public OpenAnswer findOpenAnswer(QuestionCategory questionCategory, String openAnswerDefinitionName);
+  public CategoryAnswer findAnswer(Question question, Category category);
+
+  /**
+   * Get the openAnswer for the {@link QuestionCategory} and the {@link OpenAnswerDefinition}.
+   * @param questionCategory
+   * @param openAnswerDefinition
+   * @return null if not found
+   */
+  public OpenAnswer findOpenAnswer(QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition);
+
+  /**
+   * Get the openAnswer for the {@link Question}, {@link Category} and the {@link OpenAnswerDefinition}.
+   * @param question
+   * @param category
+   * @param openAnswerDefinition
+   * @return null if not found
+   */
+  public OpenAnswer findOpenAnswer(Question question, Category category, OpenAnswerDefinition openAnswerDefinition);
 
   /**
    * Save or update the question and category answers.

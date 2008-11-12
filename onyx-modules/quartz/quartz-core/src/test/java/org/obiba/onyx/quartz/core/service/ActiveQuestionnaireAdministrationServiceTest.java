@@ -132,7 +132,7 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
   }
 
   private void testFindOpenAnswer(Question q3) {
-    OpenAnswer openAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(q3.getQuestionCategories().get(0), "MONTH");
+    OpenAnswer openAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(q3.getQuestionCategories().get(0), q3.getQuestionCategories().get(0).getCategory().findOpenAnswerDefinition("MONTH"));
     Assert.assertEquals("6", openAnswer.getData().getValueAsString());
   }
 

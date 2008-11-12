@@ -83,7 +83,7 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
     CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer((Question) questionModel.getObject(), questionCategory);
     if(previousAnswer != null && previousAnswer.getOpenAnswers() != null) {
 
-      OpenAnswer openAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(questionCategory, openAnswerDefinition.getName());
+      OpenAnswer openAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(questionCategory, openAnswerDefinition);
       if(openAnswer != null) data = openAnswer.getData();
     }
 

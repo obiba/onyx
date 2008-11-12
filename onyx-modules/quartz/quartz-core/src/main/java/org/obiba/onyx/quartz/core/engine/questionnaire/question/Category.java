@@ -51,4 +51,10 @@ public class Category implements Serializable, ILocalizable {
     return getName();
   }
 
+  public OpenAnswerDefinition findOpenAnswerDefinition(String name) {
+    if(getOpenAnswerDefinition() == null) return null;
+    if(getOpenAnswerDefinition().getName().equals(name)) return getOpenAnswerDefinition();
+
+    return getOpenAnswerDefinition().findOpenAnswerDefinition(name);
+  }
 }

@@ -9,6 +9,8 @@ import org.obiba.core.service.impl.hibernate.AssociationCriteria;
 import org.obiba.core.service.impl.hibernate.AssociationCriteria.Operation;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.impl.DefaultActiveQuestionnaireAdministrationServiceImpl;
@@ -32,8 +34,13 @@ public class ActiveQuestionnaireAdministrationServiceHibernateImpl extends Defau
   }
 
   public CategoryAnswer findAnswer(Question question, QuestionCategory questionCategory) {
-    Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant", Operation.eq, getQuestionnaireParticipant()).add("categoryName", Operation.eq, questionCategory.getCategory().getName()).add("questionAnswer.questionName", Operation.eq, question.getName()).getCriteria();
+    return findAnswer(question, questionCategory.getCategory());
+  }
+
+  public CategoryAnswer findAnswer(Question question, Category category) {
+    Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant", Operation.eq, getQuestionnaireParticipant()).add("categoryName", Operation.eq, category.getName()).add("questionAnswer.questionName", Operation.eq, question.getName()).getCriteria();
     return (CategoryAnswer) criteria.uniqueResult();
+
   }
 
   @SuppressWarnings("unchecked")
@@ -42,8 +49,12 @@ public class ActiveQuestionnaireAdministrationServiceHibernateImpl extends Defau
     return criteria.list();
   }
 
-  public OpenAnswer findOpenAnswer(QuestionCategory questionCategory, String openAnswerDefinitionName) {
-    Criteria criteria = AssociationCriteria.create(OpenAnswer.class, getSession()).add("categoryAnswer.categoryName", Operation.eq, questionCategory.getCategory().getName()).add("openAnswerDefinitionName", Operation.eq, openAnswerDefinitionName).getCriteria();
+  public OpenAnswer findOpenAnswer(QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition) {
+    return findOpenAnswer(questionCategory.getQuestion(), questionCategory.getCategory(), openAnswerDefinition);
+  }
+
+  public OpenAnswer findOpenAnswer(Question question, Category category, OpenAnswerDefinition openAnswerDefinition) {
+    Criteria criteria = AssociationCriteria.create(OpenAnswer.class, getSession()).add("categoryAnswer.questionAnswer.questionName", Operation.eq, question.getName()).add("categoryAnswer.categoryName", Operation.eq, category.getName()).add("openAnswerDefinitionName", Operation.eq, openAnswerDefinition.getName()).getCriteria();
     return (OpenAnswer) criteria.uniqueResult();
   }
 

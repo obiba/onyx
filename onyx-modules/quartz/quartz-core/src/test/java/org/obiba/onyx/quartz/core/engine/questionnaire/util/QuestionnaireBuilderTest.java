@@ -187,7 +187,7 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
 
     try {
       builder.inQuestion("Q5").setAnswerCondition("AC2", "Q2", "1", "OA1", DataBuilder.buildBoolean(true), ComparisionOperator.eq, null);
-      Assert.fail("no OpenAnswerCategory for this questionCategory");
+      Assert.fail("no OpenAnswerDefinition for this questionCategory");
     } catch(IllegalArgumentException e) {
     }
     builder.inQuestion("Q5").setAnswerCondition("AC2", "Q2", "1", null);

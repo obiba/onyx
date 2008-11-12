@@ -12,13 +12,14 @@ import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 
 public class AnswerCondition extends Condition {
 
   private static final long serialVersionUID = -7608048954030186313L;
 
-  private QuestionCategory questionCategory;
+  private Question question;
+
+  private Category category;
 
   private Integer occurence;
 
@@ -26,16 +27,12 @@ public class AnswerCondition extends Condition {
 
   private DataComparator dataComparator;
 
-  public QuestionCategory getQuestionCategory() {
-    return questionCategory;
-  }
-
-  public void setQuestionCategory(QuestionCategory questionCategory) {
-    this.questionCategory = questionCategory;
-  }
-
   public Question getQuestion() {
-    return questionCategory.getQuestion();
+    return question;
+  }
+
+  public void setQuestion(Question question) {
+    this.question = question;
   }
 
   public Integer getOccurence() {
@@ -55,7 +52,11 @@ public class AnswerCondition extends Condition {
   }
 
   public Category getCategory() {
-    return questionCategory.getCategory();
+    return category;
+  }
+
+  public void setCategory(Category category) {
+    this.category = category;
   }
 
   public AnswerCondition getParentAnswerCondition() {
@@ -67,17 +68,15 @@ public class AnswerCondition extends Condition {
   }
 
   public boolean isToBeAnswered() {
-    CategoryAnswer categoryAnswer = activeQuestionnaireAdministrationService.findAnswer(questionCategory);
+    CategoryAnswer categoryAnswer = activeQuestionnaireAdministrationService.findAnswer(question, category);
 
     if(categoryAnswer == null) return false;
 
     if(dataComparator != null) {
-      OpenAnswer openAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(questionCategory, dataComparator.getOpenAnswerDefinitionName());
+      OpenAnswer openAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(question, category, dataComparator.getOpenAnswerDefinition());
       int compareResult = openAnswer.getData().compareTo(dataComparator.getData());
       return dataComparator.isComparisonValid(compareResult);
     }
-
-    if(parentAnswerCondition != null) return parentAnswerCondition.isToBeAnswered();
 
     return true;
   }

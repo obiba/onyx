@@ -131,4 +131,15 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
       openAnswerDefinition.setParentOpenAnswerDefinition(this);
     }
   }
+
+  public OpenAnswerDefinition findOpenAnswerDefinition(String name) {
+    for(OpenAnswerDefinition openAnswerDefinition : getOpenAnswerDefinitions()) {
+      if(openAnswerDefinition.getName().equals(name)) {
+        return openAnswerDefinition;
+      }
+      if(openAnswerDefinition.getOpenAnswerDefinitions().size() > 0) return findOpenAnswerDefinition(name);
+    }
+    return null;
+  }
+
 }

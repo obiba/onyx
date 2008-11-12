@@ -16,8 +16,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperat
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.DataComparator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.MultipleCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.NoAnswerCondition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.util.data.Data;
@@ -173,26 +174,6 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
   }
 
   /**
-   * Add a {@link AnswerCondition} on the current ConditionBuilder {@link AnswerCondition} as a parentAnswerCondition.
-   * @param name
-   * @param questionName
-   * @param categoryName
-   * @param data
-   * @param comparisionOperator
-   * @param occurence
-   * @return
-   */
-  public ConditionBuilder withParentAnswerCondition(String name, String questionName, String categoryName, String openAnswerDefinitionName, Data data, ComparisionOperator comparisionOperator, Integer occurence) {
-    AnswerCondition parentAnswerCondition = getValidAnswerCondition(name, questionName, categoryName, openAnswerDefinitionName, data, comparisionOperator, occurence);
-
-    if(!(element instanceof AnswerCondition)) throw new IllegalArgumentException("You cannot have a parent answer condition on a condition of type: " + element.getClass().getName());
-
-    ((AnswerCondition) element).setParentAnswerCondition(parentAnswerCondition);
-    element = parentAnswerCondition;
-    return this;
-  }
-
-  /**
    * Returns a valid {@link AnswerCondition}.
    * @param name
    * @param questionName
@@ -203,23 +184,34 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @return
    */
   private AnswerCondition getValidAnswerCondition(String name, String questionName, String categoryName, String openAnswerDefinitionName, Data data, ComparisionOperator comparisionOperator, Integer occurence) {
+    if(QuestionnaireFinder.getInstance(questionnaire).findCondition(name) != null) throw invalidNameUnicityException(Condition.class, name);
+
+    Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion(questionName);
+    Category category;
+    if(question == null) throw invalidElementNameException(Question.class, questionName);
+
+    if(question.getCategories().size() > 0) {
+      category = question.findCategory(categoryName);
+      if(category == null) throw invalidElementNameException(Category.class, categoryName);
+    } else {
+      Question parentQuestion = question.getParentQuestion();
+      category = parentQuestion.findCategory(categoryName);
+      if(category == null) throw invalidElementNameException(Category.class, categoryName);
+    }
+
     AnswerCondition answerCondition = new AnswerCondition();
-    String questionCategoryName = questionName + "." + categoryName;
-    QuestionCategory questionCategory = QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory(questionName, questionCategoryName);
-    if(questionCategory == null) throw invalidElementNameException(QuestionCategory.class, questionCategoryName);
 
     // dataComparator
     DataComparator dataComparator = null;
-    if(data != null && comparisionOperator != null) {
-      if(questionCategory.getCategory().getOpenAnswerDefinition() == null) throw new IllegalArgumentException("You cannot apply a data validation on a non-OpenAnswerDefinition category");
-
-      dataComparator = new DataComparator(comparisionOperator, data, openAnswerDefinitionName);
+    if(data != null && comparisionOperator != null && openAnswerDefinitionName != null) {
+      OpenAnswerDefinition openAnswerDefinition = category.findOpenAnswerDefinition(openAnswerDefinitionName);
+      if(openAnswerDefinition == null) throw new IllegalArgumentException("You cannot apply the data validation " + openAnswerDefinitionName + " on the selected category");
+      dataComparator = new DataComparator(comparisionOperator, data, openAnswerDefinition);
     }
 
-    if(QuestionnaireFinder.getInstance(questionnaire).findCondition(name) != null) throw invalidNameUnicityException(Condition.class, name);
-
     answerCondition.setName(name);
-    answerCondition.setQuestionCategory(questionCategory);
+    answerCondition.setQuestion(question);
+    answerCondition.setCategory(category);
     if(dataComparator != null) answerCondition.setDataComparator(dataComparator);
     if(occurence != null) answerCondition.setOccurence(occurence);
 
