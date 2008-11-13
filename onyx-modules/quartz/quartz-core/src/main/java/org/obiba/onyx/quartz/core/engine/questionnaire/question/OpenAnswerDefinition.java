@@ -30,7 +30,7 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
 
   private String unit;
 
-  private List<DataValidator> validators;
+  private List<IDataValidator> validators;
 
   private List<Data> defaultValues;
 
@@ -69,11 +69,11 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
     this.unit = unit;
   }
 
-  public List<DataValidator> getValidators() {
-    return validators != null ? validators : (validators = new ArrayList<DataValidator>());
+  public List<IDataValidator> getValidators() {
+    return validators != null ? validators : (validators = new ArrayList<IDataValidator>());
   }
 
-  public void addValidator(DataValidator validator) {
+  public void addValidator(IDataValidator validator) {
     getValidators().add(validator);
   }
 

@@ -17,8 +17,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.IValidator;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.util.data.Data;
@@ -100,7 +100,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     }
 
     if(getOpenAnswerDefinition().getValidators() != null) {
-      for(DataValidator validator : getOpenAnswerDefinition().getValidators()) {
+      for(IValidator validator : getOpenAnswerDefinition().getValidators()) {
         openField.add(validator);
       }
     }

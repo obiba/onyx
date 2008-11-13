@@ -19,7 +19,7 @@ import org.obiba.onyx.util.data.DataType;
 /**
  * 
  */
-public class DataValidator implements IValidator {
+public class DataValidator implements IDataValidator {
 
   private static final long serialVersionUID = 1L;
 

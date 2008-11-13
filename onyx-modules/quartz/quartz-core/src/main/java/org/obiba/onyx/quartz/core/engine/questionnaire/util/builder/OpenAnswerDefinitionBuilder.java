@@ -13,6 +13,7 @@ import org.apache.wicket.validation.IValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.AnswerSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.IDataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -69,16 +70,6 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
   /**
    * Add a {@link IValidator} to the current {@link OpenAnswerDefinition}.
    * @param validator
-   * @return
-   */
-  public OpenAnswerDefinitionBuilder addOpenAnswerDefinitionValidator(DataValidator validator) {
-    element.addValidator(validator);
-    return this;
-  }
-
-  /**
-   * Add a {@link IValidator} to the current {@link OpenAnswerDefinition}.
-   * @param validator
    * @param dataType
    * @return
    */
@@ -93,8 +84,12 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addOpenAnswerDefinitionValidator(IValidator validator) {
-    element.addValidator(new DataValidator(validator, element.getDataType()));
-    return this;
+    if(validator instanceof IDataValidator) {
+      element.addValidator((IDataValidator) validator);
+      return this;
+    } else {
+      return addOpenAnswerDefinitionValidator(validator, element.getDataType());
+    }
   }
 
   /**
