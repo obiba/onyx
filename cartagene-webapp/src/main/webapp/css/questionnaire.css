@@ -33,6 +33,11 @@ div.page div.questions div.question div.label {
 
 div.page div.questions div.question span.help-toggle {
 	background: url(../images/icons/16X16/help2.gif) no-repeat;
+	margin-left: 5px;
+}
+
+div.page div.questions div.question span.comment-edit {
+	background: url(../images/icons/16X16/message_edit.gif) no-repeat;
 	margin-left: 10px;
 }
 
