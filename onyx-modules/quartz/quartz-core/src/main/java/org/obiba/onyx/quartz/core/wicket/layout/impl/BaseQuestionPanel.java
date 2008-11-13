@@ -8,8 +8,6 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
-import java.util.List;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -20,7 +18,6 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
@@ -94,6 +91,8 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
     add(commentWindow = new ModalWindow("addCommentModal"));
 
     String commentWindowTitle = (new StringResourceModel("CommentsWindow", this, null)).getString() + " - " + new QuestionnaireStringResourceModel(question, "label").getString();
+
+    // Question label is truncated if too long for Modal Window title bar.
     if(commentWindowTitle.length() > 60) {
       commentWindow.setTitle(commentWindowTitle.substring(0, 60) + "...");
     } else {
@@ -109,9 +108,8 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
       }
     });
 
-    // Question with no categories should not have comments.
-    List<Category> categories = question.getCategories();
-    if(categories != null && categories.size() > 0) {
+    // Boiler Plate questions should not have comments.
+    if(!question.isBoilerPlate()) {
 
       // Add comment action link.
       add(new AjaxLink("addComment") {

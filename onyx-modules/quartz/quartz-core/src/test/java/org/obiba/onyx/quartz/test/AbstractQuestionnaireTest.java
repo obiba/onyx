@@ -233,19 +233,52 @@ public abstract class AbstractQuestionnaireTest {
   public void answerQuestion(Question question, CategoryAnswer answer) {
     if(isOnCurrentPage(question)) {
       // Answer the question.
+      addComment(question);
       answerQuestionImpl(question, answer);
+
     } else {
       // The question might be on the next page. So advance to the next page and try again.
       nextPage();
 
       if(isOnCurrentPage(question)) {
         // Answer the question.
+        addComment(question);
         answerQuestionImpl(question, answer);
       } else {
         // Not on this page either. Stop looking and treat this as a failure.
         Assert.fail("Failed to answer question " + question.getName() + " (not found)");
       }
     }
+  }
+
+  protected void addComment(final Question question) {
+
+    // TODO The source of the comment should be the answerProvider, instead of an hard coded comment.
+    addComment(question, "test comment");
+  }
+
+  /**
+   * Add a comment to a question.
+   * 
+   * @param question
+   * @param string
+   */
+  @SuppressWarnings("serial")
+  protected void addComment(final Question question, String comment) {
+
+    // Display comment modal panel.
+    wicketTester.executeAjaxEvent("panel:content:form:step:panel:questions:1:question:addComment", "onclick");
+
+    // Set comment in form.
+    FormTester commentForm = wicketTester.newFormTester("panel:content:form:step:panel:questions:1:question:addCommentModal:content:commentForm");
+    commentForm.setValue("newComment", comment);
+
+    // Submit comment.
+    wicketTester.executeAjaxEvent("panel:content:form:step:panel:questions:1:question:addCommentModal:content:commentForm:saveComment", "onclick");
+
+    // Make sure that comment is saved.
+    Assert.assertEquals(comment, activeQuestionnaireAdministrationService.getComment(question));
+
   }
 
   /**
@@ -422,6 +455,7 @@ public abstract class AbstractQuestionnaireTest {
 
     // Now advance to the next page, which is the first page of the questionnaire.
     nextPage();
+
   }
 
   /**

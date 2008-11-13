@@ -91,6 +91,7 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     testSetDeleteAnswer(q1);
     testSetDeleteAnswers(q1);
     testSetDeleteOpenAnswer(q2);
+    testRetrieveQuestionComment(q1, q2, q3);
 
   }
 
@@ -98,8 +99,11 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     CategoryAnswer catAnswer_1 = activeQuestionnaireAdministrationService.answer(q1.getQuestionCategories().get(0), null, null);
     activeQuestionnaireAdministrationService.answer(q1.getQuestionCategories().get(1), null, null);
     activeQuestionnaireAdministrationService.answer(q1.getQuestionCategories().get(2), null, null);
+    activeQuestionnaireAdministrationService.addComment(q1, "comment question 1");
+
     QuestionCategory questionCategory = q2.getQuestionCategories().get(0);
     CategoryAnswer year = activeQuestionnaireAdministrationService.answer(questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), DataBuilder.buildText("1979"));
+    activeQuestionnaireAdministrationService.addComment(q2, "comment question 2");
 
     Assert.assertEquals("1", catAnswer_1.getCategoryName());
     Assert.assertEquals(questionnaireParticipant, catAnswer_1.getQuestionAnswer().getQuestionnaireParticipant());
@@ -112,6 +116,7 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     CategoryAnswer secondYear = activeQuestionnaireAdministrationService.answer(questionCategory, questionCategory.getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().get(0), DataBuilder.buildInteger("1966"));
     activeQuestionnaireAdministrationService.answer(questionCategory, questionCategory.getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().get(1), DataBuilder.buildInteger("6"));
     activeQuestionnaireAdministrationService.answer(questionCategory, questionCategory.getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().get(2), DataBuilder.buildInteger("5"));
+    activeQuestionnaireAdministrationService.addComment(q3, "comment question 3");
 
     Assert.assertEquals("1966", secondYear.getOpenAnswers().get(0).getData().getValueAsString());
   }
@@ -189,4 +194,19 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
 
     return builder.getQuestionnaire();
   }
+
+  private void testRetrieveQuestionComment(Question q1, Question q2, Question q3) {
+    activeQuestionnaireAdministrationService.deleteAnswers(q1);
+    String comment = activeQuestionnaireAdministrationService.getComment(q1);
+    Assert.assertEquals("comment question 1", comment);
+
+    activeQuestionnaireAdministrationService.deleteAnswers(q2);
+    comment = activeQuestionnaireAdministrationService.getComment(q2);
+    Assert.assertEquals("comment question 2", comment);
+
+    activeQuestionnaireAdministrationService.deleteAnswers(q3);
+    comment = activeQuestionnaireAdministrationService.getComment(q3);
+    Assert.assertEquals("comment question 3", comment);
+  }
+
 }
