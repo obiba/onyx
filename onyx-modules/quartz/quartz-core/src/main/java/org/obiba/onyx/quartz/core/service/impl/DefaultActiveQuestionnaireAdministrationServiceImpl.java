@@ -153,6 +153,10 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return answer(questionCategory.getQuestion(), questionCategory, openAnswerDefinition, value);
   }
 
+  public CategoryAnswer answer(Question question, QuestionCategory questionCategory) {
+    return answer(question, questionCategory, null, null);
+  }
+
   public String getComment(Question question) {
     QuestionAnswer template = new QuestionAnswer();
     template.setQuestionnaireParticipant(currentQuestionnaireParticipant);

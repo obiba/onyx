@@ -12,6 +12,8 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.util.data.Data;
@@ -68,8 +70,24 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
     return questionModel;
   }
 
+  protected Question getQuestion() {
+    return (Question) getQuestionModel().getObject();
+  }
+
+  protected IModel getQuestionCategoryModel() {
+    return getModel();
+  }
+
+  protected QuestionCategory getQuestionCategory() {
+    return (QuestionCategory) getModel().getObject();
+  }
+
   protected IModel getOpenAnswerDefinitionModel() {
     return openAnswerDefinitionModel;
+  }
+
+  protected OpenAnswerDefinition getOpenAnswerDefinition() {
+    return (OpenAnswerDefinition) getOpenAnswerDefinitionModel().getObject();
   }
 
   public Data getData() {

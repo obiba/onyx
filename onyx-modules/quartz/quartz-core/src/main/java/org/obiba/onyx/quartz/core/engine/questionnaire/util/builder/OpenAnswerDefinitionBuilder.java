@@ -77,6 +77,27 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
   }
 
   /**
+   * Add a {@link IValidator} to the current {@link OpenAnswerDefinition}.
+   * @param validator
+   * @param dataType
+   * @return
+   */
+  public OpenAnswerDefinitionBuilder addOpenAnswerDefinitionValidator(IValidator validator, DataType dataType) {
+    element.addValidator(new DataValidator(validator, dataType));
+    return this;
+  }
+
+  /**
+   * Add a {@link IValidator} to the current {@link OpenAnswerDefinition}.
+   * @param validator
+   * @return
+   */
+  public OpenAnswerDefinitionBuilder addOpenAnswerDefinitionValidator(IValidator validator) {
+    element.addValidator(new DataValidator(validator, element.getDataType()));
+    return this;
+  }
+
+  /**
    * Set the unit to the current {@link OpenAnswerDefinition}.
    * @param unit
    * @return
@@ -133,7 +154,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
   }
 
   /**
-   * Set the {@link OpenAnswerDefinition} to the current openAnswerDefinition.
+   * Add the {@link OpenAnswerDefinition} to the current openAnswerDefinition and set it as the current one.
    * @param name
    * @param dataType
    * @return

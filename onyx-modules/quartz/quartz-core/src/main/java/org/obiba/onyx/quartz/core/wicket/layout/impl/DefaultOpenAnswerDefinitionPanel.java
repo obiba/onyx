@@ -19,9 +19,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.util.data.Data;
@@ -48,6 +45,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
    */
   public DefaultOpenAnswerDefinitionPanel(String id, IModel questionCategoryModel) {
     super(id, questionCategoryModel);
+    initialize();
   }
 
   /**
@@ -57,27 +55,31 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
    * @param questionModel
    * @param questionCategoryModel
    */
-  @SuppressWarnings("serial")
   public DefaultOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
     super(id, questionModel, questionCategoryModel);
+    initialize();
+  }
 
+  public DefaultOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
+    super(id, questionModel, questionCategoryModel, openAnswerDefinitionModel);
+    initialize();
+  }
+
+  private void initialize() {
     setOutputMarkupId(true);
 
-    QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
-    OpenAnswerDefinition openAnswerDefinition = questionCategory.getCategory().getOpenAnswerDefinition();
-
-    OpenAnswer previousAnswer = activeQuestionnaireAdministrationService.findOpenAnswer((Question) questionModel.getObject(), questionCategory.getCategory(), openAnswerDefinition);
+    OpenAnswer previousAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(getQuestion(), getQuestionCategory().getCategory(), getOpenAnswerDefinition());
     if(previousAnswer != null) {
       setData(previousAnswer.getData());
     }
 
-    QuestionnaireStringResourceModel openLabel = new QuestionnaireStringResourceModel(openAnswerDefinition, "label");
-    QuestionnaireStringResourceModel unitLabel = new QuestionnaireStringResourceModel(openAnswerDefinition, "unitLabel");
+    QuestionnaireStringResourceModel openLabel = new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), "label");
+    QuestionnaireStringResourceModel unitLabel = new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), "unitLabel");
 
     add(new Label("label", openLabel));
 
-    if(openAnswerDefinition.getDefaultValues().size() > 1) {
-      openField = new DataField("open", new PropertyModel(this, "data"), openAnswerDefinition.getDataType(), openAnswerDefinition.getDefaultValues(), new IChoiceRenderer() {
+    if(getOpenAnswerDefinition().getDefaultValues().size() > 1) {
+      openField = new DataField("open", new PropertyModel(this, "data"), getOpenAnswerDefinition().getDataType(), getOpenAnswerDefinition().getDefaultValues(), new IChoiceRenderer() {
 
         public Object getDisplayValue(Object object) {
           Data data = (Data) object;
@@ -90,15 +92,15 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
         }
 
       }, unitLabel.getString());
-    } else if(openAnswerDefinition.getDefaultValues().size() > 0) {
-      setData(openAnswerDefinition.getDefaultValues().get(0));
-      openField = new DataField("open", new PropertyModel(this, "data"), openAnswerDefinition.getDataType(), unitLabel.getString());
+    } else if(getOpenAnswerDefinition().getDefaultValues().size() > 0) {
+      setData(getOpenAnswerDefinition().getDefaultValues().get(0));
+      openField = new DataField("open", new PropertyModel(this, "data"), getOpenAnswerDefinition().getDataType(), unitLabel.getString());
     } else {
-      openField = new DataField("open", new PropertyModel(this, "data"), openAnswerDefinition.getDataType(), unitLabel.getString());
+      openField = new DataField("open", new PropertyModel(this, "data"), getOpenAnswerDefinition().getDataType(), unitLabel.getString());
     }
 
-    if(openAnswerDefinition.getValidators() != null) {
-      for(DataValidator validator : openAnswerDefinition.getValidators()) {
+    if(getOpenAnswerDefinition().getValidators() != null) {
+      for(DataValidator validator : getOpenAnswerDefinition().getValidators()) {
         openField.add(validator);
       }
     }
@@ -111,12 +113,9 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        QuestionCategory questionCategory = (QuestionCategory) DefaultOpenAnswerDefinitionPanel.this.getModelObject();
-        Question question = (Question) getQuestionModel().getObject();
-        OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) getOpenAnswerDefinitionModel().getObject();
-        log.info("openField.onUpdate.{}.data={}", question + ":" + questionCategory + ":" + openAnswerDefinition.getName(), getData());
+        log.info("openField.onUpdate.{}.data={}", getQuestion() + ":" + getQuestionCategory() + ":" + getOpenAnswerDefinition().getName(), getData());
         // persist data
-        activeQuestionnaireAdministrationService.answer(question, questionCategory, openAnswerDefinition, getData());
+        activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
         DefaultOpenAnswerDefinitionPanel.this.onSubmit(target, getQuestionModel(), DefaultOpenAnswerDefinitionPanel.this.getModel());
       }
 
@@ -127,23 +126,23 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
       @Override
       protected void onEvent(AjaxRequestTarget target) {
         log.info("openField.onClick");
-        DefaultOpenAnswerDefinitionPanel.this.onSelect(target, getQuestionModel(), DefaultOpenAnswerDefinitionPanel.this.getModel(), getOpenAnswerDefinitionModel());
-        // openField.focusField(target);
+        DefaultOpenAnswerDefinitionPanel.this.onSelect(target, getQuestionModel(), getQuestionCategoryModel(), getOpenAnswerDefinitionModel());
+        openField.focusField(target);
       }
 
     });
 
     // set the label of the field
-    QuestionnaireStringResourceModel questionCategoryLabel = new QuestionnaireStringResourceModel(questionCategory, "label");
-    QuestionnaireStringResourceModel questionLabel = new QuestionnaireStringResourceModel(questionModel, "label");
-    if(!questionCategory.getQuestion().getName().equals(((Question) questionModel.getObject()).getName())) {
+    QuestionnaireStringResourceModel questionCategoryLabel = new QuestionnaireStringResourceModel(getQuestionCategory(), "label");
+    QuestionnaireStringResourceModel questionLabel = new QuestionnaireStringResourceModel(getQuestionModel(), "label");
+    if(!getQuestionCategory().getQuestion().getName().equals(getQuestion().getName())) {
       openField.setLabel(new Model(questionLabel.getString() + " / " + questionCategoryLabel.getString()));
     } else if(!isEmptyString(openLabel.getString())) {
       openField.setLabel(openLabel);
-    } else if(!isEmptyString(questionCategoryLabel.getString())) {
-      openField.setLabel(questionCategoryLabel);
     } else if(!isEmptyString(unitLabel.getString())) {
       openField.setLabel(unitLabel);
+    } else if(!isEmptyString(questionCategoryLabel.getString())) {
+      openField.setLabel(questionCategoryLabel);
     } else {
       // last chance : the question label !
       openField.setLabel(questionLabel);
@@ -171,6 +170,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
   }
 
   public void setRequired(boolean required) {
+    log.info("required={}", required);
     openField.setRequired(required);
   }
 

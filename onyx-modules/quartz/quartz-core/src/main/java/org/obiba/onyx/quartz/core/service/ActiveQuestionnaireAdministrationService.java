@@ -194,6 +194,15 @@ public interface ActiveQuestionnaireAdministrationService {
    * @param value
    * @return
    */
+  public CategoryAnswer answer(Question question, QuestionCategory questionCategory);
+
+  /**
+   * Save or update the question and category answers.
+   * @param question
+   * @param questionCategory
+   * @param value
+   * @return
+   */
   public CategoryAnswer answer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value);
 
   /**

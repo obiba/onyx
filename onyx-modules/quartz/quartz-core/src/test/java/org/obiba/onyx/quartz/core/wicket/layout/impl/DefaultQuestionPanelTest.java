@@ -37,6 +37,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
+import org.apache.wicket.validation.validator.NumberValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
@@ -145,6 +146,19 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("OpenAnswerDefinition.OPEN_INT.label", locale, "open label");
     messageSource.addMessage("OpenAnswerDefinition.OPEN_INT.unitLabel", locale, "open unit label");
 
+    messageSource.addMessage("Question.MULTIPLE_OPEN.label", locale, "question2 label");
+    messageSource.addMessage("Question.MULTIPLE_OPEN.help", locale, "question2 help");
+    messageSource.addMessage("Question.MULTIPLE_OPEN.specifications", locale, "question2 specifications");
+    messageSource.addMessage("Question.MULTIPLE_OPEN.instructions", locale, "question2 instructions");
+    messageSource.addMessage("Question.MULTIPLE_OPEN.caption", locale, "question2 caption");
+    messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.DURATION.label", locale, "Choice one");
+    messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.DONT_KNOW.label", locale, "Dont know");
+    messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
+    messageSource.addMessage("OpenAnswerDefinition.DURATION_OPEN_HOURS.label", locale, "open hours label");
+    messageSource.addMessage("OpenAnswerDefinition.DURATION_OPEN_HOURS.unitLabel", locale, "open hours unit label");
+    messageSource.addMessage("OpenAnswerDefinition.DURATION_OPEN_MINUTES.label", locale, "open minutes label");
+    messageSource.addMessage("OpenAnswerDefinition.DURATION_OPEN_MINUTES.unitLabel", locale, "open minutes unit label");
+
     messageSource.addMessage("Question.Q2_MULTIPLE.label", locale, "question2 label");
     messageSource.addMessage("Question.Q2_MULTIPLE.help", locale, "question2 help");
     messageSource.addMessage("Question.Q2_MULTIPLE.specifications", locale, "question2 specifications");
@@ -193,7 +207,7 @@ public class DefaultQuestionPanelTest {
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
     activeQuestionnaireAdministrationServiceMock.deleteAnswers(question);
     QuestionCategory questionCategory = question.getQuestionCategories().get(1);
-    expect(activeQuestionnaireAdministrationServiceMock.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), null)).andReturn(new CategoryAnswer());
+    expect(activeQuestionnaireAdministrationServiceMock.answer(question, questionCategory)).andReturn(new CategoryAnswer());
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
@@ -334,6 +348,97 @@ public class DefaultQuestionPanelTest {
     Assert.assertTrue(radioGroup.isRequired());
     field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:open:input:field");
     Assert.assertTrue(field.isRequired());
+
+    verify(activeInterviewServiceMock);
+    verify(activeQuestionnaireAdministrationServiceMock);
+    verify(questionnaireBundleManagerMock);
+    verify(questionnaireBundleMock);
+  }
+
+  @Test
+  public void testExclusiveChoiceQuestionWithMultipleOpenAnswer() {
+
+    final Questionnaire questionnaire = createQuestionnaire();
+    CategoryAnswer previousCategoryAnswer = new CategoryAnswer();
+    previousCategoryAnswer.setCategoryName("DONT_KNOW");
+    QuestionAnswer previousQuestionAnswer = new QuestionAnswer();
+    previousQuestionAnswer.setQuestionName("MULTIPLE_OPEN");
+    previousQuestionAnswer.addCategoryAnswer(previousCategoryAnswer);
+
+    final Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("MULTIPLE_OPEN");
+    OpenAnswerDefinition openHours = QuestionnaireFinder.getInstance(questionnaire).findOpenAnswerDefinition("DURATION_OPEN_HOURS");
+    OpenAnswerDefinition openMinutes = QuestionnaireFinder.getInstance(questionnaire).findOpenAnswerDefinition("DURATION_OPEN_MINUTES");
+
+    expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
+    expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer(question, question.getCategories().get(0), openHours)).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer(question, question.getCategories().get(0), openMinutes)).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(0))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(1))).andReturn(previousCategoryAnswer).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
+    activeQuestionnaireAdministrationServiceMock.deleteAnswers(question);
+    QuestionCategory questionCategory = question.getQuestionCategories().get(0);
+    expect(activeQuestionnaireAdministrationServiceMock.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), null)).andReturn(new CategoryAnswer());
+    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
+    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).anyTimes();
+    expect(questionnaireBundleMock.getPropertyKey(question, "label")).andReturn(propertyKeyProvider.getPropertyKey(question, "label")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "help")).andReturn(propertyKeyProvider.getPropertyKey(question, "help")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
+    for(QuestionCategory qCategory : question.getQuestionCategories()) {
+      expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
+    }
+    expect(questionnaireBundleMock.getPropertyKey(openHours, "label")).andReturn(propertyKeyProvider.getPropertyKey(openHours, "label")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(openHours, "unitLabel")).andReturn(propertyKeyProvider.getPropertyKey(openHours, "unitLabel")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(openMinutes, "label")).andReturn(propertyKeyProvider.getPropertyKey(openMinutes, "label")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(openMinutes, "unitLabel")).andReturn(propertyKeyProvider.getPropertyKey(openMinutes, "unitLabel")).atLeastOnce();
+
+    replay(activeInterviewServiceMock);
+    replay(activeQuestionnaireAdministrationServiceMock);
+    replay(questionnaireBundleManagerMock);
+    replay(questionnaireBundleMock);
+
+    tester.startPanel(new TestPanelSource() {
+
+      private static final long serialVersionUID = 1L;
+
+      @SuppressWarnings("serial")
+      public Panel getTestPanel(String panelId) {
+
+        return new DefaultQuestionPanelMock(panelId, new Model(question));
+      }
+    });
+
+    dumpPage("testExclusiveChoiceQuestionWithMultipleOpenAnswer");
+
+    // check all expected radios are here
+    tester.assertComponent("panel:form:content:content:categories", RadioGroup.class);
+    tester.isInvisible("panel:form:content:content:categories:category:1:input:categoryLabel:radio");
+    tester.assertComponent("panel:form:content:content:categories:category:2:input:categoryLabel:radio", Radio.class);
+    tester.assertComponent("panel:form:content:content:categories:category:3:input:categoryLabel:radio", Radio.class);
+
+    // check previous answer is here (radio 2)
+    RadioGroup radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
+    Radio radio2 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:radio");
+    Assert.assertEquals(radioGroup.getModelObject(), radio2.getModelObject());
+    Assert.assertTrue(radioGroup.isRequired());
+    FormComponent field1 = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:repeating:1:open:open:input:field");
+    Assert.assertFalse(field1.isRequired());
+    FormComponent field2 = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:repeating:2:open:open:input:field");
+    Assert.assertFalse(field2.isRequired());
+
+    // select open field
+    tester.executeAjaxEvent("panel:form:content:content:categories:category:1:input:open:repeating:1:open:open:input:field", "onclick");
+    radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
+    Radio radio1 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:categoryLabel:radio");
+    Assert.assertEquals(radioGroup.getModelObject(), radio1.getModelObject());
+    Assert.assertTrue(radioGroup.isRequired());
+    field1 = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:repeating:1:open:open:input:field");
+    Assert.assertTrue(field1.isRequired());
+    field2 = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:repeating:2:open:open:input:field");
+    Assert.assertTrue(field2.isRequired());
 
     verify(activeInterviewServiceMock);
     verify(activeQuestionnaireAdministrationServiceMock);
@@ -589,7 +694,7 @@ public class DefaultQuestionPanelTest {
       }
     });
 
-    dumpPage("testSharedCategoriesArrayQuestion");
+    // dumpPage("testSharedCategoriesArrayQuestion");
 
     verify(activeInterviewServiceMock);
     verify(activeQuestionnaireAdministrationServiceMock);
@@ -625,6 +730,11 @@ public class DefaultQuestionPanelTest {
     builder.withSection("S3").withPage("P3").withQuestion("Q3").withCategories("1", "2", "3");
     builder.inQuestion("Q3").withQuestion("Q3_1");
     builder.inQuestion("Q3").withQuestion("Q3_2");
+
+    builder.withSection("S_MULTIPLE_OPEN").withPage("P_MULTIPLE_OPEN").withQuestion("MULTIPLE_OPEN").withSharedCategory("DURATION").withOpenAnswerDefinition("DURATION_OPEN", DataType.INTEGER);
+    builder.inOpenAnswerDefinition("DURATION_OPEN").withOpenAnswerDefinition("DURATION_OPEN_HOURS", DataType.INTEGER).addOpenAnswerDefinitionValidator(new NumberValidator.RangeValidator(0, 16));
+    builder.inOpenAnswerDefinition("DURATION_OPEN").withOpenAnswerDefinition("DURATION_OPEN_MINUTES", DataType.INTEGER).addOpenAnswerDefinitionValidator(new NumberValidator.RangeValidator(0, 960));
+    builder.inQuestion("MULTIPLE_OPEN").withSharedCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
 
     Questionnaire q = builder.getQuestionnaire();
     q.addLocale(locale);

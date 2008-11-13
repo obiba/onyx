@@ -102,8 +102,7 @@ public class DropDownQuestionCategoriesPanel extends Panel {
     questionCategoriesDropDownChoice.setOutputMarkupId(true);
 
     questionCategoriesDropDownChoice.setLabel(new QuestionnaireStringResourceModel(question, "label"));
-    questionCategoriesDropDownChoice.setRequired(question.isRequired() ? true : false);
-    questionCategoriesDropDownChoice.setNullValid(true);
+    questionCategoriesDropDownChoice.setRequired(question.isRequired());
 
     // Set model on submission
     questionCategoriesDropDownChoice.add(new OnChangeAjaxBehavior() {
@@ -140,9 +139,6 @@ public class DropDownQuestionCategoriesPanel extends Panel {
     public Object getDisplayValue(Object object) {
       QuestionCategory questionCat = (QuestionCategory) object;
 
-      if(questionCat.getCategory().getOpenAnswerDefinition() != null) {
-        return (new QuestionnaireStringResourceModel(questionCat.getCategory().getOpenAnswerDefinition(), "label").getString());
-      }
       return (new QuestionnaireStringResourceModel(questionCat, "label").getString());
     }
 
