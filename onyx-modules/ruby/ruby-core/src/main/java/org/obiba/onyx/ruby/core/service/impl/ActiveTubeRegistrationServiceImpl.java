@@ -30,7 +30,7 @@ import org.springframework.context.MessageSourceResolvable;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *Implementation for a tube registration service, used to register tubes for the current participant.
+ * Implementation for a tube registration service, used to register tubes for the current participant.
  */
 @Transactional
 public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareService implements ActiveTubeRegistrationService {
@@ -82,7 +82,15 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
   }
 
   public int getRegisteredTubeCount() {
-    return getParticipantTubeRegistration().getRegisteredParticipantTubes().size();
+    int registeredTubeCount = 0;
+
+    ParticipantTubeRegistration participantTubeRegistration = getParticipantTubeRegistration();
+
+    if(participantTubeRegistration != null) {
+      registeredTubeCount = participantTubeRegistration.getRegisteredParticipantTubes().size();
+    }
+
+    return registeredTubeCount;
   }
 
   /**
@@ -92,10 +100,14 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
    * @return
    */
   public ParticipantTubeRegistration getParticipantTubeRegistration() {
-    if(currentTubeRegistrationId == null) {
-      return null;
+    ParticipantTubeRegistration participantTubeRegistration = null;
+
+    if(currentTubeRegistrationId != null) {
+      participantTubeRegistration = getPersistenceManager().get(ParticipantTubeRegistration.class, currentTubeRegistrationId);
+      participantTubeRegistration.setTubeRegistrationConfig(tubeRegistrationConfig);
     }
-    return getPersistenceManager().get(ParticipantTubeRegistration.class, currentTubeRegistrationId);
+
+    return participantTubeRegistration;
   }
 
   /**

@@ -29,7 +29,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="baseRubyStageState" parent="baseStageState"
     class="org.obiba.onyx.quartz.engine.state.AbstractRubyStageState" abstract="true">
-    <property name="activeInterviewService" ref="activeInterviewService" />
   </bean>
 
   <bean id="rubyWaitingState" parent="baseRubyStageState" class="org.obiba.onyx.ruby.engine.state.RubyWaitingState"
@@ -43,6 +42,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="rubyInProgressState" parent="baseRubyStageState"
     class="org.obiba.onyx.ruby.engine.state.RubyInProgressState" scope="prototype">
+    <property name="activeTubeRegistrationService" ref="activeTubeRegistrationService" />
   </bean>
 
   <bean id="rubyInterruptedState" parent="baseRubyStageState"

@@ -35,6 +35,8 @@ import org.obiba.onyx.engine.StageDependencyCondition;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
+import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
+import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.ruby.engine.state.RubyCompletedState;
 import org.obiba.onyx.ruby.engine.state.RubyContraIndicatedState;
 import org.obiba.onyx.ruby.engine.state.RubyInProgressState;
@@ -48,6 +50,8 @@ public class RubyModuleTest {
 
   private ActiveInterviewService activeInterviewServiceMock;
 
+  private ActiveTubeRegistrationService activeTubeRegistrationServiceMock;
+
   private PersistenceManager persistenceManagerMock;
 
   private StageExecutionContext stageExecutionContext;
@@ -59,6 +63,8 @@ public class RubyModuleTest {
   private Interview interview;
 
   private Stage stage;
+
+  private ParticipantTubeRegistration participantTubeRegistration;
 
   //
   // Fixture Methods
@@ -82,6 +88,8 @@ public class RubyModuleTest {
     StageDependencyConditionMock stageDependencyConditionMock = new StageDependencyConditionMock();
     stage.setStageDependencyCondition(stageDependencyConditionMock);
 
+    participantTubeRegistration = new ParticipantTubeRegistration();
+
     //
     // Create test application context and add to it the necessary mocks.
     //
@@ -89,6 +97,9 @@ public class RubyModuleTest {
 
     activeInterviewServiceMock = createMock(ActiveInterviewService.class);
     applicationContextMock.putBean("activeInterviewService", activeInterviewServiceMock);
+
+    activeTubeRegistrationServiceMock = createMock(ActiveTubeRegistrationService.class);
+    applicationContextMock.putBean("activeTubeRegistrationService", activeTubeRegistrationServiceMock);
 
     persistenceManagerMock = createMock(PersistenceManager.class);
 
@@ -102,7 +113,9 @@ public class RubyModuleTest {
     applicationContextMock.putBean("rubyReadyState", rubyReadyState);
     AbstractStageState rubyContraIndicatedState = new RubyContraIndicatedState();
     applicationContextMock.putBean("rubyContraIndicatedState", rubyContraIndicatedState);
-    AbstractStageState rubyInProgressState = new RubyInProgressState();
+    RubyInProgressState rubyInProgressState = new RubyInProgressState();
+    rubyInProgressState.setActiveInterviewService(activeInterviewServiceMock);
+    rubyInProgressState.setActiveTubeRegistrationService(activeTubeRegistrationServiceMock);
     applicationContextMock.putBean("rubyInProgressState", rubyInProgressState);
     AbstractStageState rubyInterruptedState = new RubyInterruptedState();
     applicationContextMock.putBean("rubyInterruptedState", rubyInterruptedState);
@@ -142,9 +155,11 @@ public class RubyModuleTest {
     template.setStage(stage.getName());
     expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(template).anyTimes();
     expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(template).anyTimes();
+    expect(activeInterviewServiceMock.getParticipant()).andReturn(participant).anyTimes();
 
     // Stop recording expectations.
     replay(persistenceManagerMock);
+    replay(activeInterviewServiceMock);
 
     // Create the StageExecutionContext. Initial state should be READY, since the dependency condition
     // is satisfied.
@@ -155,6 +170,7 @@ public class RubyModuleTest {
 
     // Verify mocks.
     verify(persistenceManagerMock);
+    verify(activeInterviewServiceMock);
 
     // Verify that we have now transitioned to the IN PROGRESS state.
     StageExecutionMemento memento = (StageExecutionMemento) exec.saveToMemento(null);
@@ -296,23 +312,30 @@ public class RubyModuleTest {
     template.setStage(stage.getName());
     expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(template).anyTimes();
     expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(template).anyTimes();
+    expect(activeInterviewServiceMock.getParticipant()).andReturn(participant).anyTimes();
+
+    // TODO: Should expect call to resume method, not start. Update this when interrupt/resume feature is implemented.
+    expect(activeTubeRegistrationServiceMock.start(participant)).andReturn(participantTubeRegistration).anyTimes();
 
     // Stop recording expectations.
     replay(persistenceManagerMock);
+    replay(activeInterviewServiceMock);
+    replay(activeTubeRegistrationServiceMock);
 
     // Create the StageExecutionContext. Initial state should be READY, since the dependency condition
     // is satisfied.
     StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
 
     // Fire the START event, the INTERRUPT event, then the RESUME event. This should transition us to IN PROGRESS (by
-    // way
-    // of IN PROGRESS and INTERRUPTED).
+    // way of IN PROGRESS and INTERRUPTED).
     exec.castEvent(TransitionEvent.START);
     exec.castEvent(TransitionEvent.INTERRUPT);
     exec.castEvent(TransitionEvent.RESUME);
 
     // Verify mocks.
     verify(persistenceManagerMock);
+    verify(activeInterviewServiceMock);
+    verify(activeTubeRegistrationServiceMock);
 
     // Verify that we have now transitioned to the IN PROGRESS state.
     StageExecutionMemento memento = (StageExecutionMemento) exec.saveToMemento(null);

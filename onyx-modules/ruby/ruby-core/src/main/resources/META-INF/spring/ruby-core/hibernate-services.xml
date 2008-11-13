@@ -6,4 +6,10 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 
   <tx:annotation-driven transaction-manager="transactionManager" />
 
+  <bean id="activeTubeRegistrationService"
+    class="org.obiba.onyx.ruby.core.service.impl.hibernate.ActiveTubeRegistrationServiceHibernateImpl">
+    <property name="sessionFactory" ref="sessionFactory" />
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="tubeRegistrationConfig" ref="tubeRegistrationConfiguration" />
+  </bean>
 </beans>

@@ -39,6 +39,11 @@
     <type>OBSERVED</type>
     <code>TubeRegistration.Contraindication.Burnt_or_scarred_tissue_on_both_arms</code>
   </contraindication>
+  <contraindication>
+    <type>OBSERVED</type>
+    <code>TubeRegistration.Contraindication.Other</code>
+    <requiresDescription>true</requiresDescription>
+  </contraindication>
 
   <contraindication>
     <type>ASKED</type>
@@ -58,8 +63,6 @@
   </contraindication>
   <contraindication>
     <type>ASKED</type>
-    <code>
-      TubeRegistration.Contraindication.Have_you_donated_blood_or_had_a_blood_transfusion_in_the_last_24_hours
-    </code>
+    <code>TubeRegistration.Contraindication.Have_you_donated_blood_or_had_a_blood_transfusion_in_the_last_24_hours</code>
   </contraindication>
 </list>
