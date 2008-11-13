@@ -136,7 +136,6 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
       tube.setBarcode(barcode);
       ParticipantTubeRegistration registration = getParticipantTubeRegistration();
       registration.addRegisteredParticipantTube(tube);
-      registration.setEndTime(new Date());
       getPersistenceManager().save(tube);
       getPersistenceManager().save(registration);
       log.info("A tube with code '{}' is registered.", barcode);
@@ -198,11 +197,11 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
   /*
    * setter and getter methods
    */
-  public void setTubeRegistrationConfig(TubeRegistrationConfiguration config) {
+  public void setTubeRegistrationConfiguration(TubeRegistrationConfiguration config) {
     this.tubeRegistrationConfig = config;
   }
 
-  public TubeRegistrationConfiguration getTubeRegistrationConfig() {
+  public TubeRegistrationConfiguration getTubeRegistrationConfiguration() {
     return tubeRegistrationConfig;
   }
 

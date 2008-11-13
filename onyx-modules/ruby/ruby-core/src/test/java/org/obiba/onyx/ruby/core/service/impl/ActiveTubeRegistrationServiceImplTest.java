@@ -14,6 +14,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.fail;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -63,7 +64,7 @@ public class ActiveTubeRegistrationServiceImplTest {
     service = new ActiveTubeRegistrationServiceImpl();
 
     service.setPersistenceManager(persistenceManagerMock);
-    service.setTubeRegistrationConfig(tubeRegistrationConfig);
+    service.setTubeRegistrationConfiguration(tubeRegistrationConfig);
   }
 
   /**
@@ -100,6 +101,8 @@ public class ActiveTubeRegistrationServiceImplTest {
     int count = service.getRegisteredTubeCount();
 
     verify(persistenceManagerMock);
+
+    // Should get exactly one Registered Tube
     Assert.assertEquals(1, count);
 
   }
@@ -115,6 +118,7 @@ public class ActiveTubeRegistrationServiceImplTest {
     Serializable registrationId = "123";
     Interview interview = new Interview();
 
+    // Set up the Tube Registration object need to be created
     ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
     registration.setTubeRegistrationConfig(tubeRegistrationConfig);
     registration.setInterview(interview);
@@ -125,6 +129,7 @@ public class ActiveTubeRegistrationServiceImplTest {
     tube.setRegistrationTime(new Date());
     tube.setBarcode(barcode);
 
+    // Set expectations
     expect(persistenceManagerMock.save(isA(ParticipantTubeRegistration.class))).andReturn(registration).times(2);
     expect(persistenceManagerMock.get(ParticipantTubeRegistration.class, registrationId)).andReturn(registration);
     expect(persistenceManagerMock.save(isA(RegisteredParticipantTube.class))).andReturn(tube);
@@ -135,6 +140,8 @@ public class ActiveTubeRegistrationServiceImplTest {
     List<MessageSourceResolvable> errors = service.registerTube(barcode);
 
     verify(persistenceManagerMock);
+
+    // Should get no errors
     Assert.assertTrue(errors.isEmpty());
 
   }
@@ -159,6 +166,8 @@ public class ActiveTubeRegistrationServiceImplTest {
     service.setTubeComment(barcode, "test comment");
 
     verify(persistenceManagerMock);
+
+    // The comment should be set
     Assert.assertEquals("test comment", tube.getComment());
 
   }
@@ -178,8 +187,9 @@ public class ActiveTubeRegistrationServiceImplTest {
 
     try {
       service.setTubeComment(barcode, "test comment");
-
+      fail("Should get IllegalArgumentException.");
     } catch(IllegalArgumentException e) {
+      // Hope to get IllegalArgumentException
       Assert.assertEquals("Couldn't find the the tube with code '101234560108'.", e.getMessage());
     }
 
@@ -209,6 +219,8 @@ public class ActiveTubeRegistrationServiceImplTest {
     service.setTubeRemark(barcode, remark);
 
     verify(persistenceManagerMock);
+
+    // The remark code should be set
     Assert.assertEquals("123", tube.getRemarkCode());
   }
 
@@ -221,13 +233,19 @@ public class ActiveTubeRegistrationServiceImplTest {
     String barcode = "101234560108";
     Serializable registrationId = "123";
 
+    // create the tube need to be unregistered
     RegisteredParticipantTube tube = new RegisteredParticipantTube();
     tube.setRegistrationTime(new Date());
     tube.setBarcode(barcode);
 
+    // create another tube which is not to be removed from registration
+    RegisteredParticipantTube tube1 = new RegisteredParticipantTube();
+    tube1.setBarcode("111");
+
     ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
     registration.setTubeRegistrationConfig(tubeRegistrationConfig);
     registration.addRegisteredParticipantTube(tube);
+    registration.addRegisteredParticipantTube(tube1);
     registration.setInterview(interview);
     registration.setStartTime(new Date());
     registration.setId(registrationId);
@@ -240,13 +258,19 @@ public class ActiveTubeRegistrationServiceImplTest {
 
     replay(persistenceManagerMock);
 
+    // The tube need to be unregistered should be in the registration
+    // before executing the unregisterTube()
     Assert.assertTrue(registration.getRegisteredParticipantTubes().contains(tube));
 
     service.start(participant);
     service.unregisterTube(barcode);
 
     verify(persistenceManagerMock);
-    Assert.assertTrue(registration.getRegisteredParticipantTubes().isEmpty());
 
+    // The tube is gone after executing the unregisterTube()
+    Assert.assertFalse(registration.getRegisteredParticipantTubes().contains(tube));
+
+    // But another tube is still there
+    Assert.assertTrue(registration.getRegisteredParticipantTubes().contains(tube1));
   }
 }

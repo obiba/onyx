@@ -1,0 +1,18 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+  default-autowire="no">
+  
+  <bean id="activeTubeRegistrationService" class="org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl">
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="tubeRegistrationConfiguration" ref="tubeRegistrationConfiguration" />
+  </bean>
+  
+  <bean id="tubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
+    <constructor-arg value="classpath:/config" />
+  </bean>
+
+  <import resource="classpath:/test-hibernate-config.xml" />
+  <import resource="classpath:/test-db-config.xml" />
+  <import resource="classpath:META-INF/spring/ruby-core/hibernate-services.xml" />
+
+</beans>
