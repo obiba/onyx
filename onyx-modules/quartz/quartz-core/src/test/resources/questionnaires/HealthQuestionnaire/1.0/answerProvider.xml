@@ -16,6 +16,17 @@
     </group>
     
     <group>
+      <name>ONE_GROUP</name><!-- Set answer to questions in this group to 1. -->
+      <questions>
+        <string>Q30</string>
+        <string>Q31</string>
+      </questions>
+      <answer>
+        <categoryName>1</categoryName>
+      </answer>
+    </group>
+    
+    <group>
       <name>TIMESTAMP</name><!--  Set answer to all Timestamp questions -->
       <questions>
         <string>TIMESTAMP_P1</string>
