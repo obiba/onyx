@@ -201,7 +201,7 @@ public class CreateQuestionnaire {
     builder.inQuestion("Q31").setAnswerCondition("AC3", "Q29", "NO", null);
 
     // Add Timestamps to pages
-    List<Page> pages = builder.getElement().getPages();
+    List<Page> pages = builder.getQuestionnaire().getPages();
     for(Page page : pages) {
       builder.inPage(page.getName()).addTimestamp();
     }
