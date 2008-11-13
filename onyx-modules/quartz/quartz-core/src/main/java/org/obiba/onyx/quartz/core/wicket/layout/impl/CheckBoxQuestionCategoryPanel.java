@@ -17,7 +17,6 @@ import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -115,10 +114,10 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
       // there is an open field
       // hide the associated radio and fake selection on click event of open field
-      openField = new DefaultOpenAnswerDefinitionPanel("open", questionModel, getModel(), new Model(questionCategory.getCategory().getOpenAnswerDefinition())) {
+      openField = new DefaultOpenAnswerDefinitionPanel("open", questionModel, getModel()) {
 
         @Override
-        public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+        public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
           // ignore if already selected
           if(getSelectionModel().isSelected()) return;
 

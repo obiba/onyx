@@ -75,8 +75,7 @@ public class AnswerCondition extends Condition {
 
     if(dataComparator != null) {
       OpenAnswer openAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(question, category, dataComparator.getOpenAnswerDefinition());
-      int compareResult = openAnswer.getData().compareTo(dataComparator.getData());
-      return dataComparator.isComparisonValid(compareResult);
+      return dataComparator.compare(openAnswer.getData());
     }
 
     return true;

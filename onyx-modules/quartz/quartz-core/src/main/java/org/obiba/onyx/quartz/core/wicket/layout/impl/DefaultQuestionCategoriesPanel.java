@@ -32,7 +32,7 @@ public class DefaultQuestionCategoriesPanel extends Panel {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultQuestionCategoriesPanel.class);
 
-  private DefaultOpenAnswerDefinitionPanel currentOpenField;
+  private AbstractOpenAnswerDefinitionPanel currentOpenField;
 
   public DefaultQuestionCategoriesPanel(String id, IModel questionModel) {
     super(id, questionModel);

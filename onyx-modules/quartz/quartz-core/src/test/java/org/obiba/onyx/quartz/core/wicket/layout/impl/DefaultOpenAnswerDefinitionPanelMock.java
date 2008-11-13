@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.util.data.Data;
@@ -23,20 +24,17 @@ public class DefaultOpenAnswerDefinitionPanelMock extends FormMock {
 
   private IModel assertModel;
 
-  private IModel openAnswerDefinitionModel;
-
-  public DefaultOpenAnswerDefinitionPanelMock(String id, IModel questionCategoryModel, IModel assertModel, IModel openAnswerDefinitionModel) {
+  public DefaultOpenAnswerDefinitionPanelMock(String id, IModel questionCategoryModel, IModel assertModel) {
     super(id, questionCategoryModel);
     this.assertModel = assertModel;
-    this.openAnswerDefinitionModel = openAnswerDefinitionModel;
   }
 
   @Override
   public Component populateContent(String id, IModel model) {
-    return panel = new DefaultOpenAnswerDefinitionPanel(id, model, openAnswerDefinitionModel) {
+    return panel = new DefaultOpenAnswerDefinitionPanel(id, new PropertyModel(model, "question"), model) {
 
       @Override
-      public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+      public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
         assertModel.setObject(Boolean.TRUE);
         DefaultOpenAnswerDefinitionPanelTest.log.info("onClick.{}.{}", ((Question) questionModel.getObject()).getName(), ((QuestionCategory) questionCategoryModel.getObject()).getName());
       }

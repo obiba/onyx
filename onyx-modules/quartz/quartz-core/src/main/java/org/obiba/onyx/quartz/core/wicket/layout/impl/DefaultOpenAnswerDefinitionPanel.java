@@ -13,26 +13,23 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.data.DataField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultOpenAnswerDefinitionPanel extends Panel {
+public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinitionPanel {
 
   private static final long serialVersionUID = 8950481253772691811L;
 
@@ -43,23 +40,14 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
 
   private DataField openField;
 
-  private Data data;
-
-  /**
-   * The question model (not necessarily the question of the category in the case of shared categories question).
-   */
-  private IModel questionModel;
-
-  private IModel openAnswerDefinitionModel;
-
   /**
    * Constructor given the question category (needed for persistency).
    * @param id
    * @param questionCategoryModel
    * @param openAnswerDefinitionModel
    */
-  public DefaultOpenAnswerDefinitionPanel(String id, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
-    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, openAnswerDefinitionModel);
+  public DefaultOpenAnswerDefinitionPanel(String id, IModel questionCategoryModel) {
+    super(id, questionCategoryModel);
   }
 
   /**
@@ -70,21 +58,17 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
    * @param questionCategoryModel
    */
   @SuppressWarnings("serial")
-  public DefaultOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
-    super(id, questionCategoryModel);
-    this.questionModel = questionModel;
-    this.openAnswerDefinitionModel = openAnswerDefinitionModel;
+  public DefaultOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
+    super(id, questionModel, questionCategoryModel);
 
     setOutputMarkupId(true);
 
     QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
     OpenAnswerDefinition openAnswerDefinition = questionCategory.getCategory().getOpenAnswerDefinition();
 
-    CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer((Question) questionModel.getObject(), questionCategory);
-    if(previousAnswer != null && previousAnswer.getOpenAnswers() != null) {
-
-      OpenAnswer openAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(questionCategory, openAnswerDefinition);
-      if(openAnswer != null) data = openAnswer.getData();
+    OpenAnswer previousAnswer = activeQuestionnaireAdministrationService.findOpenAnswer((Question) questionModel.getObject(), questionCategory.getCategory(), openAnswerDefinition);
+    if(previousAnswer != null) {
+      setData(previousAnswer.getData());
     }
 
     QuestionnaireStringResourceModel openLabel = new QuestionnaireStringResourceModel(openAnswerDefinition, "label");
@@ -107,7 +91,7 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
 
       }, unitLabel.getString());
     } else if(openAnswerDefinition.getDefaultValues().size() > 0) {
-      data = openAnswerDefinition.getDefaultValues().get(0);
+      setData(openAnswerDefinition.getDefaultValues().get(0));
       openField = new DataField("open", new PropertyModel(this, "data"), openAnswerDefinition.getDataType(), unitLabel.getString());
     } else {
       openField = new DataField("open", new PropertyModel(this, "data"), openAnswerDefinition.getDataType(), unitLabel.getString());
@@ -128,11 +112,12 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
         QuestionCategory questionCategory = (QuestionCategory) DefaultOpenAnswerDefinitionPanel.this.getModelObject();
-        Question question = (Question) DefaultOpenAnswerDefinitionPanel.this.questionModel.getObject();
-        log.info("openField.onUpdate.{}.data={}", question.getName() + "." + questionCategory.getName(), data);
+        Question question = (Question) getQuestionModel().getObject();
+        OpenAnswerDefinition openAnswerDefinition = (OpenAnswerDefinition) getOpenAnswerDefinitionModel().getObject();
+        log.info("openField.onUpdate.{}.data={}", question + ":" + questionCategory + ":" + openAnswerDefinition.getName(), getData());
         // persist data
-        activeQuestionnaireAdministrationService.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), data);
-        DefaultOpenAnswerDefinitionPanel.this.onSubmit(target, DefaultOpenAnswerDefinitionPanel.this.questionModel, DefaultOpenAnswerDefinitionPanel.this.getModel());
+        activeQuestionnaireAdministrationService.answer(question, questionCategory, openAnswerDefinition, getData());
+        DefaultOpenAnswerDefinitionPanel.this.onSubmit(target, getQuestionModel(), DefaultOpenAnswerDefinitionPanel.this.getModel());
       }
 
     });
@@ -142,8 +127,8 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
       @Override
       protected void onEvent(AjaxRequestTarget target) {
         log.info("openField.onClick");
-        DefaultOpenAnswerDefinitionPanel.this.onSelect(target, DefaultOpenAnswerDefinitionPanel.this.questionModel, DefaultOpenAnswerDefinitionPanel.this.getModel());
-        openField.focusField(target);
+        DefaultOpenAnswerDefinitionPanel.this.onSelect(target, getQuestionModel(), DefaultOpenAnswerDefinitionPanel.this.getModel(), getOpenAnswerDefinitionModel());
+        // openField.focusField(target);
       }
 
     });
@@ -165,13 +150,18 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
     }
   }
 
+  @Override
+  public int hashCode() {
+    return super.hashCode() + getModel().hashCode();
+  }
+
   /**
-   * Equals if they refer to the an equal model object.
+   * Equals if they refer to the an equal model.
    */
   @Override
   public boolean equals(Object obj) {
     if(obj instanceof DefaultOpenAnswerDefinitionPanel) {
-      return this.getModelObject() != null && this.getModelObject().equals(((DefaultOpenAnswerDefinitionPanel) obj).getModelObject());
+      return this.getModel() != null && this.getModel().equals(((DefaultOpenAnswerDefinitionPanel) obj).getModel());
     }
     return super.equals(obj);
   }
@@ -182,32 +172,6 @@ public class DefaultOpenAnswerDefinitionPanel extends Panel {
 
   public void setRequired(boolean required) {
     openField.setRequired(required);
-  }
-
-  /**
-   * Called when open field is selected.
-   * @param target
-   * @param questionModel
-   * @param questionCategoryModel
-   */
-  public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-  }
-
-  /**
-   * Called when open field is submitted.
-   * @param target
-   * @param questionModel
-   * @param questionCategoryModel
-   */
-  public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-  }
-
-  public Data getData() {
-    return data;
-  }
-
-  public void setData(Data data) {
-    this.data = data;
   }
 
   public void setFieldEnabled(boolean enabled) {

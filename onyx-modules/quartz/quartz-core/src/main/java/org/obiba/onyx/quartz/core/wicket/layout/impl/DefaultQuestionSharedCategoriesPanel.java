@@ -49,7 +49,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultQuestionSharedCategoriesPanel.class);
 
-  private DefaultOpenAnswerDefinitionPanel[] currentOpenFields;
+  private AbstractOpenAnswerDefinitionPanel[] currentOpenFields;
 
   private RadioGroupView radioGroupView;
 
@@ -82,7 +82,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
       }
     };
 
-    this.currentOpenFields = new DefaultOpenAnswerDefinitionPanel[questionsProvider.size()];
+    this.currentOpenFields = new AbstractOpenAnswerDefinitionPanel[questionsProvider.size()];
 
     List<IColumn> columns = new ArrayList<IColumn>();
 
@@ -172,7 +172,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
    * Get the array for storing the currently selected open field for each row.
    * @return
    */
-  public DefaultOpenAnswerDefinitionPanel[] getCurrentOpenFields() {
+  public AbstractOpenAnswerDefinitionPanel[] getCurrentOpenFields() {
     return currentOpenFields;
   }
 

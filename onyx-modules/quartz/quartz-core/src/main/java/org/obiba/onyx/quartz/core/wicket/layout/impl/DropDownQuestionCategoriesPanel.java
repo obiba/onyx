@@ -23,7 +23,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -80,9 +79,12 @@ public class DropDownQuestionCategoriesPanel extends Panel {
       CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswers(question).get(0);
 
       if(selectedQuestionCategory == null) {
-        selectedQuestionCategory = new QuestionCategory();
-        selectedQuestionCategory.setCategory(new Category(previousAnswer.getCategoryName()));
-        selectedQuestionCategory.setQuestion(question);
+        for(QuestionCategory questionCategory : question.getQuestionCategories()) {
+          if(questionCategory.getCategory().getName().equals(previousAnswer.getCategoryName())) {
+            selectedQuestionCategory = questionCategory;
+            break;
+          }
+        }
       }
 
       // Previous question contains an open answer
@@ -91,7 +93,7 @@ public class DropDownQuestionCategoriesPanel extends Panel {
       List<OpenAnswer> previousOpenAnswers = queryService.match(template);
 
       if(previousOpenAnswers != null && previousOpenAnswers.size() > 0) {
-        openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(selectedQuestionCategory), new QuestionnaireModel(selectedQuestionCategory.getCategory().getOpenAnswerDefinition()));
+        openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(question), new QuestionnaireModel(selectedQuestionCategory));
         get("open").replaceWith(openField);
       }
     }
@@ -160,7 +162,7 @@ public class DropDownQuestionCategoriesPanel extends Panel {
 
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
 
-      openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(questionCategory), new QuestionnaireModel(questionCategory.getCategory().getOpenAnswerDefinition()));
+      openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(questionCategory.getQuestion()), new QuestionnaireModel(questionCategory));
 
       get("open").replaceWith(openField);
     } else {

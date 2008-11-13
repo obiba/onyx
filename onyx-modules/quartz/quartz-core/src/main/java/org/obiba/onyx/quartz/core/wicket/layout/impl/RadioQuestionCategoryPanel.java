@@ -42,7 +42,7 @@ public class RadioQuestionCategoryPanel extends Panel {
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  private DefaultOpenAnswerDefinitionPanel openField;
+  private AbstractOpenAnswerDefinitionPanel openField;
 
   /**
    * The question model (not necessarily the question of the category in the case of shared categories question).
@@ -113,10 +113,10 @@ public class RadioQuestionCategoryPanel extends Panel {
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
       // there is an open field
       // hide the associated radio and fake selection on click event of open field
-      openField = new DefaultOpenAnswerDefinitionPanel("open", questionModel, questionCategoryModel, new QuestionnaireModel(questionCategory.getCategory().getOpenAnswerDefinition())) {
+      openField = new DefaultOpenAnswerDefinitionPanel("open", questionModel, questionCategoryModel) {
 
         @Override
-        public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+        public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
           Question question = (Question) questionModel.getObject();
           QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
           log.info("openField.onSelect={}.{}", question, questionCategory);
@@ -195,7 +195,7 @@ public class RadioQuestionCategoryPanel extends Panel {
    * Get the associated open field.
    * @return null if there is no associated {@link OpenAnswerDefinition}
    */
-  public DefaultOpenAnswerDefinitionPanel getOpenField() {
+  public AbstractOpenAnswerDefinitionPanel getOpenField() {
     return openField;
   }
 

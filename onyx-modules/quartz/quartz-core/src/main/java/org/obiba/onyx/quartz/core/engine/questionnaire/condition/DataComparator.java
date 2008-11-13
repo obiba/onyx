@@ -14,19 +14,16 @@ import java.io.Serializable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.util.data.Data;
 
-public class DataComparator implements Serializable {
+public class DataComparator extends AbstractDataComparator implements Serializable {
 
   private static final long serialVersionUID = 6128481252934955909L;
-
-  private ComparisionOperator comparisionOperator;
 
   private Data data;
 
   private OpenAnswerDefinition openAnswerDefinition;
 
   public DataComparator(ComparisionOperator comparisionOperator, Data data, OpenAnswerDefinition openAnswerDefinition) {
-    super();
-    this.comparisionOperator = comparisionOperator;
+    super(comparisionOperator);
     this.data = data;
     this.openAnswerDefinition = openAnswerDefinition;
   }
@@ -47,31 +44,11 @@ public class DataComparator implements Serializable {
     this.data = data;
   }
 
-  public ComparisionOperator getComparisionOperator() {
-    return comparisionOperator;
-  }
-
-  public void setComparisionOperator(ComparisionOperator comparisionOperator) {
-    this.comparisionOperator = comparisionOperator;
-  }
-
-  public boolean isComparisonValid(int result) {
-
-    switch(comparisionOperator) {
-    case eq:
-      return result == 0;
-    case ne:
-      return result != 0;
-    case lt:
-      return result < 0;
-    case le:
-      return result <= 0;
-    case gt:
-      return result > 0;
-    case ge:
-      return result >= 0;
-    default:
-      return false;
+  public boolean compare(Data dataToCompare) {
+    if(dataToCompare == null) {
+      return (data == null);
     }
+
+    return isComparisonValid(dataToCompare.compareTo(data));
   }
 }
