@@ -132,6 +132,13 @@ public interface ActiveQuestionnaireAdministrationService {
   public List<CategoryAnswer> findAnswers(Question question);
 
   /**
+   * Get the active answers for a {@link Question}.
+   * @param question
+   * @return empty list if not found
+   */
+  public List<CategoryAnswer> findActiveAnswers(Question question);
+
+  /**
    * Get the answer for the {@link QuestionCategory}.
    * @param questionCategory
    * @return null if not found

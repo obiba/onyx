@@ -150,13 +150,13 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     CategoryAnswer catAnswer_4 = activeQuestionnaireAdministrationService.answer(q4.getQuestionCategories().get(1), null, null);
     activeQuestionnaireAdministrationService.answer(q4.getQuestionCategories().get(2), null, null);
 
-    Assert.assertNull(catAnswer_3.getActive());
-    Assert.assertNull(catAnswer_4.getActive());
-    activeQuestionnaireAdministrationService.setActiveAnswers(q3, true);
-    catAnswer_3 = activeQuestionnaireAdministrationService.findAnswer(q3.getQuestionCategories().get(0));
-    catAnswer_4 = activeQuestionnaireAdministrationService.findAnswer(q4.getQuestionCategories().get(1));
     Assert.assertTrue(catAnswer_3.getActive());
     Assert.assertTrue(catAnswer_4.getActive());
+    activeQuestionnaireAdministrationService.setActiveAnswers(q3, false);
+    catAnswer_3 = activeQuestionnaireAdministrationService.findAnswer(q3.getQuestionCategories().get(0));
+    catAnswer_4 = activeQuestionnaireAdministrationService.findAnswer(q4.getQuestionCategories().get(1));
+    Assert.assertFalse(catAnswer_3.getActive());
+    Assert.assertFalse(catAnswer_4.getActive());
   }
 
   public void testSetDeleteAnswer(Question q1) {

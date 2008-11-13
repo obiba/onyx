@@ -8,6 +8,8 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.condition;
 
+import java.util.List;
+
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -69,6 +71,15 @@ public class AnswerCondition extends Condition {
   }
 
   public boolean isToBeAnswered(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService) {
+    if(category == null) {
+      List<CategoryAnswer> answerList = activeQuestionnaireAdministrationService.findActiveAnswers(question);
+      if(answerList.size() > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     CategoryAnswer categoryAnswer = activeQuestionnaireAdministrationService.findAnswer(question, category);
 
     if(categoryAnswer == null) return false;

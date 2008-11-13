@@ -45,6 +45,34 @@ public class HealthQuestionnaireTest extends AbstractQuestionnaireTest {
 
     returnToLaterQuestion(q31);
     assertCurrentPage(getPage("P23"));
+  }
+
+  @Test
+  @Dataset
+  public void testCondition() {
+    startQuestionnaire();
+    assertCurrentPage(getPage("P1"));
+
+    AnswerProvider answerProvider = ConfigurableAnswerProvider.fromXmlResource(getAnswerProviderResourcePath() + "/answerProviderForConditionTest.xml");
+
+    // if Q4 > 45 => question Q5 available
+    Question q4 = getQuestion("Q4");
+    answerQuestionsUpTo(answerProvider, q4);
+    assertCurrentPage(getPage("P4"));
+    assertNextPage(getPage("P5"));
+
+    // if Q5 answered => Q6 available but not Q7
+    returnToEarlierQuestion(getQuestion("Q1"));
+    answerQuestionsUpTo(answerProvider, getQuestion("Q5"));
+    assertNextPage(getPage("P6"));
+    assertNextPage(getPage("P8"));
+
+    // if Q4 < 45 => question Q7 available only
+    returnToEarlierQuestion(getQuestion("Q1"));
+    answerQuestionsUpTo(answerProvider, getQuestion("Q3"));
+    answerQuestion(q4, answerProvider.getAnswer(new Question("Q4Changed")));
+    assertCurrentPage(getPage("P4"));
+    assertNextPage(getPage("P7"));
 
   }
 }

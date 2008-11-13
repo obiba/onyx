@@ -1,0 +1,87 @@
+<configurableAnswerProvider>
+  <defaultAnswer>
+    <categoryName>NO_ANSWER</categoryName><!-- Set default answer to NO_ANSWER. -->
+  </defaultAnswer>
+  <groups>
+    <group>
+      <name>DONT_KNOW_GROUP</name><!-- Set answer to questions in this group to DONT_KNOW. -->
+      <questions>
+        <string>Q1</string>
+        <string>Q2</string>
+        <string>Q5</string>
+      </questions>
+      <answer>
+        <categoryName>DONT_KNOW</categoryName>
+      </answer>
+    </group>
+    
+    <group>
+      <name>ONE_GROUP</name><!-- Set answer to questions in this group to 1. -->
+      <questions>
+        <string>Q30</string>
+        <string>Q31</string>
+      </questions>
+      <answer>
+        <categoryName>1</categoryName>
+      </answer>
+    </group>
+    
+    <group>
+      <name>TIMESTAMP</name><!--  Set answer to all Timestamp questions -->
+      <questions>
+        <string>TIMESTAMP_P1</string>
+        <string>TIMESTAMP_P2</string>
+        <string>TIMESTAMP_P3</string>
+        <string>TIMESTAMP_P4</string>
+      </questions>
+        <answer>
+          <categoryName>TIMESTAMP</categoryName>
+          <openAnswers>
+            <openAnswer>
+              <dataType>INTEGER</dataType>
+              <integerValue>2008</integerValue>
+            </openAnswer>
+          </openAnswers>
+        </answer>
+    </group>
+    
+  </groups>
+  <answers>
+    <entry>
+      <string>Q3</string><!-- Set Q3 (BIRTHMONTH) answer to 12. -->
+      <categoryAnswer>
+        <categoryName>1</categoryName>
+        <openAnswers>
+          <openAnswer>
+            <dataType>INTEGER</dataType>
+            <integerValue>12</integerValue>
+          </openAnswer>
+        </openAnswers>
+      </categoryAnswer>
+    </entry>
+    <entry>
+      <string>Q4</string><!-- Set Q4 (AGE) answer to 48. -->
+      <categoryAnswer>
+        <categoryName>1</categoryName>
+        <openAnswers>
+          <openAnswer>
+            <dataType>INTEGER</dataType>
+            <integerValue>48</integerValue>
+          </openAnswer>
+        </openAnswers>
+      </categoryAnswer>
+    </entry>
+    <entry>
+      <string>Q4Changed</string><!-- Set Q4 (AGE) answer to 42. -->
+      <categoryAnswer>
+        <categoryName>1</categoryName>
+        <openAnswers>
+          <openAnswer>
+            <dataType>INTEGER</dataType>
+            <integerValue>42</integerValue>
+          </openAnswer>
+        </openAnswers>
+      </categoryAnswer>
+    </entry>
+  </answers>
+</configurableAnswerProvider>

@@ -265,7 +265,6 @@ public abstract class AbstractQuestionnaireTest {
    */
   @SuppressWarnings("serial")
   protected void addComment(final Question question, String comment) {
-
     // Display comment modal panel.
     wicketTester.executeAjaxEvent("panel:content:form:step:panel:questions:1:question:addComment", "onclick");
 
@@ -411,6 +410,11 @@ public abstract class AbstractQuestionnaireTest {
   public void assertCurrentPage(Page page) {
     Page currentPage = activeQuestionnaireAdministrationService.getCurrentPage();
     Assert.assertTrue((currentPage == null && page == null) || (currentPage != null && page != null && currentPage.getName().equals(page.getName())));
+  }
+
+  public void assertNextPage(Page page) {
+    Page nextPage = activeQuestionnaireAdministrationService.nextPage();
+    Assert.assertTrue((nextPage == null && page == null) || (nextPage != null && page != null && nextPage.getName().equals(page.getName())));
   }
 
   /**

@@ -271,6 +271,10 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     return new IllegalArgumentException("Unable to get question panel factory name from " + uiFactoryClass.getName(), e);
   }
 
+  public ConditionBuilder setAnswerCondition(String name, String question) {
+    return setAnswerCondition(name, question, null, null, null, null, null);
+  }
+
   public ConditionBuilder setAnswerCondition(String name, String question, String category, String openAnswerDefinition) {
     return setAnswerCondition(name, question, category, openAnswerDefinition, null, null, null);
   }

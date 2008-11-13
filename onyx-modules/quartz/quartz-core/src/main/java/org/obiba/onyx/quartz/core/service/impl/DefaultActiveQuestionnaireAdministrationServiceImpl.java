@@ -223,6 +223,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
       categoryAnswer.addOpenAnswer(openAnswer);
     }
 
+    categoryAnswer.setActive(true);
     return getPersistenceManager().save(categoryAnswer);
   }
 

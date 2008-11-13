@@ -104,6 +104,16 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * Add a {@link AnswerCondition} on the current ConditionBuilder.
    * @param name
    * @param questionName
+   * @return
+   */
+  public ConditionBuilder withAnswerCondition(String name, String questionName) {
+    return withAnswerCondition(name, questionName, null, null, null, null, null);
+  }
+
+  /**
+   * Add a {@link AnswerCondition} on the current ConditionBuilder.
+   * @param name
+   * @param questionName
    * @param categoryName
    * @return
    */
@@ -187,32 +197,34 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
     if(QuestionnaireFinder.getInstance(questionnaire).findCondition(name) != null) throw invalidNameUnicityException(Condition.class, name);
 
     Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion(questionName);
-    Category category;
+    Category category = null;
     if(question == null) throw invalidElementNameException(Question.class, questionName);
 
-    if(question.getCategories().size() > 0) {
-      category = question.findCategory(categoryName);
-      if(category == null) throw invalidElementNameException(Category.class, categoryName);
-    } else {
-      Question parentQuestion = question.getParentQuestion();
-      category = parentQuestion.findCategory(categoryName);
-      if(category == null) throw invalidElementNameException(Category.class, categoryName);
-    }
-
     AnswerCondition answerCondition = new AnswerCondition();
-
-    // dataComparator
-    DataComparator dataComparator = null;
-    if(data != null && comparisionOperator != null && openAnswerDefinitionName != null) {
-      OpenAnswerDefinition openAnswerDefinition = category.findOpenAnswerDefinition(openAnswerDefinitionName);
-      if(openAnswerDefinition == null) throw new IllegalArgumentException("You cannot apply the data validation " + openAnswerDefinitionName + " on the selected category");
-      dataComparator = new DataComparator(comparisionOperator, data, openAnswerDefinition);
-    }
-
     answerCondition.setName(name);
     answerCondition.setQuestion(question);
-    answerCondition.setCategory(category);
-    if(dataComparator != null) answerCondition.setDataComparator(dataComparator);
+
+    if(categoryName != null) {
+      if(question.getCategories().size() > 0) {
+        category = question.findCategory(categoryName);
+        if(category == null) throw invalidElementNameException(Category.class, categoryName);
+      } else {
+        Question parentQuestion = question.getParentQuestion();
+        category = parentQuestion.findCategory(categoryName);
+        if(category == null) throw invalidElementNameException(Category.class, categoryName);
+      }
+      answerCondition.setCategory(category);
+
+      // dataComparator
+      DataComparator dataComparator = null;
+      if(data != null && comparisionOperator != null && openAnswerDefinitionName != null) {
+        OpenAnswerDefinition openAnswerDefinition = category.findOpenAnswerDefinition(openAnswerDefinitionName);
+        if(openAnswerDefinition == null) throw new IllegalArgumentException("You cannot apply the data validation " + openAnswerDefinitionName + " on the selected category");
+        dataComparator = new DataComparator(comparisionOperator, data, openAnswerDefinition);
+        answerCondition.setDataComparator(dataComparator);
+      }
+    }
+
     if(occurence != null) answerCondition.setOccurence(occurence);
 
     return (answerCondition);
