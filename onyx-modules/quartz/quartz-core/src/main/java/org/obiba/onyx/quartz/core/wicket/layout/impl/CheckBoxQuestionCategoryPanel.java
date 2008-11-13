@@ -40,7 +40,7 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  private DefaultOpenAnswerDefinitionPanel openField;
+  private AbstractOpenAnswerDefinitionPanel openField;
 
   private CheckBox checkbox;
 
@@ -113,27 +113,27 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
 
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
       // there is an open field
-      // hide the associated radio and fake selection on click event of open field
-      openField = new DefaultOpenAnswerDefinitionPanel("open", questionModel, getModel()) {
+      if(questionCategory.getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().size() == 0) {
+        openField = new DefaultOpenAnswerDefinitionPanel("open", questionModel, getModel()) {
 
-        @Override
-        public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
-          // ignore if already selected
-          if(getSelectionModel().isSelected()) return;
+          @Override
+          public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
+            onInternalOpenFieldSelection(target, questionModel, questionCategoryModel);
+          }
 
-          // set checkbox as selected
-          getSelectionModel().setObject(true);
+        };
+      } else {
+        openField = new MultipleOpenAnswerDefinitionPanel("open", questionModel, questionCategoryModel) {
 
-          setRequired(true);
+          @Override
+          public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
+            onInternalOpenFieldSelection(target, questionModel, questionCategoryModel);
+          }
 
-          activeQuestionnaireAdministrationService.answer((Question) questionModel.getObject(), (QuestionCategory) getModelObject(), ((QuestionCategory) getModelObject()).getCategory().getOpenAnswerDefinition(), null);
-          // target.addComponent(CheckBoxQuestionCategoryPanel.this);
-          onOpenFieldSelection(target, questionModel, questionCategoryModel);
-        }
-
-      };
+        };
+      }
       add(openField);
-      openField.setRequired(previousAnswer != null && questionCategory.getQuestion().isRequired());
+      openField.setRequired(selectionModel.isSelected() && questionCategory.getQuestion().isRequired());
     } else {
       // no open answer
       add(new EmptyPanel("open").setVisible(false));
@@ -142,6 +142,20 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
 
   public QuestionCategoryCheckBoxModel getSelectionModel() {
     return (QuestionCategoryCheckBoxModel) checkbox.getModel();
+  }
+
+  public void onInternalOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+    // ignore if already selected
+    if(getSelectionModel().isSelected()) return;
+
+    // set checkbox as selected
+    getSelectionModel().select();
+
+    openField.setRequired(true);
+
+    activeQuestionnaireAdministrationService.answer((Question) questionModel.getObject(), (QuestionCategory) getModelObject(), ((QuestionCategory) getModelObject()).getCategory().getOpenAnswerDefinition(), null);
+    // target.addComponent(CheckBoxQuestionCategoryPanel.this);
+    onOpenFieldSelection(target, questionModel, questionCategoryModel);
   }
 
   /**
@@ -162,7 +176,7 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
    * Get the associated open field.
    * @return null if there is no associated {@link OpenAnswerDefinition}
    */
-  public DefaultOpenAnswerDefinitionPanel getOpenField() {
+  public AbstractOpenAnswerDefinitionPanel getOpenField() {
     return openField;
   }
 

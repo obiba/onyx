@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
-import java.util.List;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -22,7 +20,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
-import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -49,10 +46,9 @@ public class DropDownQuestionCategoriesPanel extends Panel {
 
   private QuestionCategory selectedQuestionCategory;
 
-  private DefaultOpenAnswerDefinitionPanel openField;
+  private AbstractOpenAnswerDefinitionPanel openField;
 
   public DropDownQuestionCategoriesPanel(String id, IModel questionModel) {
-
     super(id, questionModel);
     setOutputMarkupId(true);
 
@@ -61,6 +57,10 @@ public class DropDownQuestionCategoriesPanel extends Panel {
     if(!question.isMultiple()) {
       addDropdownChoice(question);
     }
+  }
+
+  private IModel getQuestionModel() {
+    return getModel();
   }
 
   /**
@@ -78,27 +78,17 @@ public class DropDownQuestionCategoriesPanel extends Panel {
 
       CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswers(question).get(0);
 
-      if(selectedQuestionCategory == null) {
-        for(QuestionCategory questionCategory : question.getQuestionCategories()) {
-          if(questionCategory.getCategory().getName().equals(previousAnswer.getCategoryName())) {
-            selectedQuestionCategory = questionCategory;
-            break;
-          }
+      for(QuestionCategory questionCategory : question.getQuestionCategories()) {
+        if(questionCategory.getCategory().getName().equals(previousAnswer.getCategoryName())) {
+          selectedQuestionCategory = questionCategory;
+          break;
         }
       }
 
-      // Previous question contains an open answer
-      OpenAnswer template = new OpenAnswer();
-      template.setCategoryAnswer(activeQuestionnaireAdministrationService.findAnswer(selectedQuestionCategory));
-      List<OpenAnswer> previousOpenAnswers = queryService.match(template);
-
-      if(previousOpenAnswers != null && previousOpenAnswers.size() > 0) {
-        openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(question), new QuestionnaireModel(selectedQuestionCategory));
-        get("open").replaceWith(openField);
-      }
+      updateOpenAnswerDefinitionPanel(selectedQuestionCategory);
     }
 
-    final DropDownChoice questionCategoriesDropDownChoice = new DropDownChoice("questionCategories", new PropertyModel(this, "selectedQuestionCategory"), new PropertyModel(question, "questionCategories"), new QuestionCategoryChoiceRenderer());
+    DropDownChoice questionCategoriesDropDownChoice = new DropDownChoice("questionCategories", new PropertyModel(this, "selectedQuestionCategory"), new PropertyModel(question, "questionCategories"), new QuestionCategoryChoiceRenderer());
     questionCategoriesDropDownChoice.setOutputMarkupId(true);
 
     questionCategoriesDropDownChoice.setLabel(new QuestionnaireStringResourceModel(question, "label"));
@@ -112,7 +102,7 @@ public class DropDownQuestionCategoriesPanel extends Panel {
 
         log.info("onUpdate()={}", selectedQuestionCategory);
 
-        createOpenAnswerDefinitionPanel(selectedQuestionCategory);
+        updateOpenAnswerDefinitionPanel(selectedQuestionCategory);
 
         // Exclusive choice, only one answer per question
         activeQuestionnaireAdministrationService.deleteAnswers(selectedQuestionCategory.getQuestion());
@@ -149,17 +139,20 @@ public class DropDownQuestionCategoriesPanel extends Panel {
   }
 
   /**
-   * Create an open answer definition panel if given {@link QuestionCategory} has a {@link OpenAnswerDefinition}
+   * Update the open answer definition panel if given {@link QuestionCategory} has a {@link OpenAnswerDefinition}
    * associated to.
    * @param questionCategory
    */
   @SuppressWarnings("serial")
-  private void createOpenAnswerDefinitionPanel(final QuestionCategory questionCategory) {
+  private void updateOpenAnswerDefinitionPanel(QuestionCategory questionCategory) {
+    OpenAnswerDefinition openAnswerDefinition = questionCategory.getCategory().getOpenAnswerDefinition();
 
-    if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
-
-      openField = new DefaultOpenAnswerDefinitionPanel("open", new QuestionnaireModel(questionCategory.getQuestion()), new QuestionnaireModel(questionCategory));
-
+    if(openAnswerDefinition != null) {
+      if(openAnswerDefinition.getOpenAnswerDefinitions().size() == 0) {
+        openField = new DefaultOpenAnswerDefinitionPanel("open", getQuestionModel(), new QuestionnaireModel(questionCategory));
+      } else {
+        openField = new MultipleOpenAnswerDefinitionPanel("open", getQuestionModel(), new QuestionnaireModel(questionCategory));
+      }
       get("open").replaceWith(openField);
     } else {
       openField = null;

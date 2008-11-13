@@ -112,7 +112,6 @@ public class RadioQuestionCategoryPanel extends Panel {
 
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
       // there is an open field
-      // hide the associated radio and fake selection on click event of open field
       if(questionCategory.getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().size() == 0) {
         openField = new DefaultOpenAnswerDefinitionPanel("open", questionModel, questionCategoryModel) {
 

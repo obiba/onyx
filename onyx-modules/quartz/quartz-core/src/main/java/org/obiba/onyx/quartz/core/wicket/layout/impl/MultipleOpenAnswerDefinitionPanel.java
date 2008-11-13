@@ -91,7 +91,6 @@ public class MultipleOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinit
 
   @Override
   public void setRequired(boolean required) {
-    log.info("required={}", required);
     for(AbstractOpenAnswerDefinitionPanel panel : abstractOpenAnswerDefinitionPanels) {
       panel.setRequired(required);
     }

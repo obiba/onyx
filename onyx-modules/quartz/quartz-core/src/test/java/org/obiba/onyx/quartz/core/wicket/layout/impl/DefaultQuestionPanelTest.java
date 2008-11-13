@@ -159,6 +159,19 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("OpenAnswerDefinition.DURATION_OPEN_MINUTES.label", locale, "open minutes label");
     messageSource.addMessage("OpenAnswerDefinition.DURATION_OPEN_MINUTES.unitLabel", locale, "open minutes unit label");
 
+    messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.label", locale, "question2 label");
+    messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.help", locale, "question2 help");
+    messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.specifications", locale, "question2 specifications");
+    messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.instructions", locale, "question2 instructions");
+    messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.caption", locale, "question2 caption");
+    messageSource.addMessage("QuestionCategory.MULTIPLE_MULTIPLE_OPEN.MULTIPLE_DURATION.label", locale, "Choice one");
+    messageSource.addMessage("QuestionCategory.MULTIPLE_MULTIPLE_OPEN.DONT_KNOW.label", locale, "Dont know");
+    messageSource.addMessage("QuestionCategory.MULTIPLE_MULTIPLE_OPEN.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
+    messageSource.addMessage("OpenAnswerDefinition.MULTIPLE_DURATION_OPEN_HOURS.label", locale, "open hours label");
+    messageSource.addMessage("OpenAnswerDefinition.MULTIPLE_DURATION_OPEN_HOURS.unitLabel", locale, "open hours unit label");
+    messageSource.addMessage("OpenAnswerDefinition.MULTIPLE_DURATION_OPEN_MINUTES.label", locale, "open minutes label");
+    messageSource.addMessage("OpenAnswerDefinition.MULTIPLE_DURATION_OPEN_MINUTES.unitLabel", locale, "open minutes unit label");
+
     messageSource.addMessage("Question.Q2_MULTIPLE.label", locale, "question2 label");
     messageSource.addMessage("Question.Q2_MULTIPLE.help", locale, "question2 help");
     messageSource.addMessage("Question.Q2_MULTIPLE.specifications", locale, "question2 specifications");
@@ -411,7 +424,7 @@ public class DefaultQuestionPanelTest {
       }
     });
 
-    dumpPage("testExclusiveChoiceQuestionWithMultipleOpenAnswer");
+    // dumpPage("testExclusiveChoiceQuestionWithMultipleOpenAnswer");
 
     // check all expected radios are here
     tester.assertComponent("panel:form:content:content:categories", RadioGroup.class);
@@ -617,8 +630,6 @@ public class DefaultQuestionPanelTest {
     // select open field
     tester.executeAjaxEvent("panel:form:content:content:categories:category:1:input:open:open:input:field", "onclick");
     checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    // Assert.assertNull(checkGroup.getModelObject());
-    // Assert.assertFalse(checkGroup.isRequired());
     field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:open:input:field");
     Assert.assertTrue(field.isRequired());
 
@@ -630,6 +641,101 @@ public class DefaultQuestionPanelTest {
     Iterator<IModel> iterator = selections.iterator();
     Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox2.getModel()).getQuestionCategory(), iterator.next().getObject());
     Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox1.getModel()).getQuestionCategory(), iterator.next().getObject());
+
+    verify(activeInterviewServiceMock);
+    verify(activeQuestionnaireAdministrationServiceMock);
+    verify(questionnaireBundleManagerMock);
+    verify(questionnaireBundleMock);
+  }
+
+  @Test
+  public void testMultipleChoiceQuestionWithMultipleOpenAnswer() {
+
+    final Questionnaire questionnaire = createQuestionnaire();
+    CategoryAnswer previousCategoryAnswer = new CategoryAnswer();
+    previousCategoryAnswer.setCategoryName("DONT_KNOW");
+    QuestionAnswer previousQuestionAnswer = new QuestionAnswer();
+    previousQuestionAnswer.setQuestionName("MULTIPLE_MULTIPLE_OPEN");
+    previousQuestionAnswer.addCategoryAnswer(previousCategoryAnswer);
+
+    final Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("MULTIPLE_MULTIPLE_OPEN");
+    OpenAnswerDefinition openHours = QuestionnaireFinder.getInstance(questionnaire).findOpenAnswerDefinition("MULTIPLE_DURATION_OPEN_HOURS");
+    OpenAnswerDefinition openMinutes = QuestionnaireFinder.getInstance(questionnaire).findOpenAnswerDefinition("MULTIPLE_DURATION_OPEN_MINUTES");
+
+    expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
+    expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer(question, question.getCategories().get(0), openHours)).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer(question, question.getCategories().get(0), openMinutes)).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(0))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(1))).andReturn(previousCategoryAnswer).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
+    QuestionCategory questionCategory = question.getQuestionCategories().get(0);
+    expect(activeQuestionnaireAdministrationServiceMock.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), null)).andReturn(new CategoryAnswer());
+    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
+    expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).anyTimes();
+    expect(questionnaireBundleMock.getPropertyKey(question, "label")).andReturn(propertyKeyProvider.getPropertyKey(question, "label")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "help")).andReturn(propertyKeyProvider.getPropertyKey(question, "help")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
+    for(QuestionCategory qCategory : question.getQuestionCategories()) {
+      expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
+    }
+    expect(questionnaireBundleMock.getPropertyKey(openHours, "label")).andReturn(propertyKeyProvider.getPropertyKey(openHours, "label")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(openHours, "unitLabel")).andReturn(propertyKeyProvider.getPropertyKey(openHours, "unitLabel")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(openMinutes, "label")).andReturn(propertyKeyProvider.getPropertyKey(openMinutes, "label")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(openMinutes, "unitLabel")).andReturn(propertyKeyProvider.getPropertyKey(openMinutes, "unitLabel")).atLeastOnce();
+
+    replay(activeInterviewServiceMock);
+    replay(activeQuestionnaireAdministrationServiceMock);
+    replay(questionnaireBundleManagerMock);
+    replay(questionnaireBundleMock);
+
+    tester.startPanel(new TestPanelSource() {
+
+      private static final long serialVersionUID = 1L;
+
+      @SuppressWarnings("serial")
+      public Panel getTestPanel(String panelId) {
+
+        return new DefaultQuestionPanelMock(panelId, new Model(question));
+      }
+    });
+
+    dumpPage("testMultipleChoiceQuestionWithMultipleOpenAnswer");
+
+    // check all expected radios are here
+    tester.assertComponent("panel:form:content:content:categories", CheckGroup.class);
+    tester.isInvisible("panel:form:content:content:categories:category:1:input:categoryLabel:checkbox");
+    tester.assertComponent("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox", CheckBox.class);
+    tester.assertComponent("panel:form:content:content:categories:category:3:input:categoryLabel:checkbox", CheckBox.class);
+
+    // check previous answer is here (radio 2)
+    CheckGroup checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
+    CheckBox checkbox2 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox");
+    Collection<IModel> selections = (Collection<IModel>) checkGroup.getModelObject();
+    Assert.assertEquals(1, selections.size());
+    Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox2.getModel()).getQuestionCategory(), selections.iterator().next().getObject());
+    FormComponent field1 = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:repeating:1:open:open:input:field");
+    Assert.assertFalse(field1.isRequired());
+    FormComponent field2 = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:repeating:2:open:open:input:field");
+    Assert.assertFalse(field2.isRequired());
+
+    // select open field
+    tester.executeAjaxEvent("panel:form:content:content:categories:category:1:input:open:repeating:1:open:open:input:field", "onclick");
+    checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
+    CheckBox checkbox1 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:categoryLabel:checkbox");
+    selections = (Collection<IModel>) checkGroup.getModelObject();
+    Assert.assertEquals(2, selections.size());
+    Iterator<IModel> iterator = selections.iterator();
+    Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox2.getModel()).getQuestionCategory(), iterator.next().getObject());
+    Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox1.getModel()).getQuestionCategory(), iterator.next().getObject());
+
+    field1 = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:repeating:1:open:open:input:field");
+    Assert.assertTrue(field1.isRequired());
+    field2 = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:repeating:2:open:open:input:field");
+    Assert.assertTrue(field2.isRequired());
 
     verify(activeInterviewServiceMock);
     verify(activeQuestionnaireAdministrationServiceMock);
@@ -735,6 +841,11 @@ public class DefaultQuestionPanelTest {
     builder.inOpenAnswerDefinition("DURATION_OPEN").withOpenAnswerDefinition("DURATION_OPEN_HOURS", DataType.INTEGER).addOpenAnswerDefinitionValidator(new NumberValidator.RangeValidator(0, 16));
     builder.inOpenAnswerDefinition("DURATION_OPEN").withOpenAnswerDefinition("DURATION_OPEN_MINUTES", DataType.INTEGER).addOpenAnswerDefinitionValidator(new NumberValidator.RangeValidator(0, 960));
     builder.inQuestion("MULTIPLE_OPEN").withSharedCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
+
+    builder.inPage("P_MULTIPLE_OPEN").withQuestion("MULTIPLE_MULTIPLE_OPEN", true).withSharedCategory("MULTIPLE_DURATION").withOpenAnswerDefinition("MULTIPLE_DURATION_OPEN", DataType.INTEGER);
+    builder.inOpenAnswerDefinition("MULTIPLE_DURATION_OPEN").withOpenAnswerDefinition("MULTIPLE_DURATION_OPEN_HOURS", DataType.INTEGER).addOpenAnswerDefinitionValidator(new NumberValidator.RangeValidator(0, 16));
+    builder.inOpenAnswerDefinition("MULTIPLE_DURATION_OPEN").withOpenAnswerDefinition("MULTIPLE_DURATION_OPEN_MINUTES", DataType.INTEGER).addOpenAnswerDefinitionValidator(new NumberValidator.RangeValidator(0, 960));
+    builder.inQuestion("MULTIPLE_MULTIPLE_OPEN").withSharedCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
 
     Questionnaire q = builder.getQuestionnaire();
     q.addLocale(locale);
