@@ -59,7 +59,7 @@ public class PropertyKeyWriterVisitor implements IWalkerVisitor {
     writePropertyKey(questionnaire);
     writer.writeComment("", "Shared categories", "");
     for(Category category : QuestionnaireFinder.getInstance(questionnaire).findSharedCategories()) {
-      writePropertyKey(category);
+      if(!category.hasAnswerSource()) writePropertyKey(category);
     }
   }
 
@@ -80,7 +80,9 @@ public class PropertyKeyWriterVisitor implements IWalkerVisitor {
   }
 
   public void visit(QuestionCategory questionCategory) {
-    writePropertyKey(questionCategory, questionCategory.getCategory());
+    if(!questionCategory.getCategory().hasAnswerSource()) {
+      writePropertyKey(questionCategory, questionCategory.getCategory());
+    }
   }
 
   public void visit(Category category) {
@@ -89,7 +91,9 @@ public class PropertyKeyWriterVisitor implements IWalkerVisitor {
   }
 
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
-    writePropertyKey(openAnswerDefinition);
+    if(openAnswerDefinition.getAnswerSource() == null) {
+      writePropertyKey(openAnswerDefinition);
+    }
   }
 
   /**

@@ -46,6 +46,15 @@ public class Category implements Serializable, ILocalizable {
     visitor.visit(this);
   }
 
+  public boolean hasAnswerSource() {
+    if(getOpenAnswerDefinition() != null) {
+      if(getOpenAnswerDefinition().getAnswerSource() != null) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @Override
   public String toString() {
     return getName();
