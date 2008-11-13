@@ -49,7 +49,7 @@ public abstract class AbstractRubyContraIndicationStep extends AbstractContraInd
   //
 
   protected void persistContraindicatable() {
-    // TODO: activeTubeRegistrationService.persistParticipantTubeRegistration();
+    activeTubeRegistrationService.persistParticipantTubeRegistration();
   }
 
   @Override
@@ -59,8 +59,7 @@ public abstract class AbstractRubyContraIndicationStep extends AbstractContraInd
 
   @Override
   protected Contraindication getContraindication() {
-    // TODO: activeTubeRegistrationService.getContraIndication();
-    return null;
+    return activeTubeRegistrationService.getContraindication();
   }
 
   @Override

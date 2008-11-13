@@ -11,6 +11,7 @@ package org.obiba.onyx.ruby.core.wicket.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
@@ -31,6 +32,7 @@ public class ContraIndicatedStep extends WizardStepPanel {
     setOutputMarkupId(true);
 
     add(new Label(getTitleId(), new StringResourceModel("SamplesCollectionContraIndicated", this, null)));
+    add(new EmptyPanel(getContentId()));
   }
 
   //
