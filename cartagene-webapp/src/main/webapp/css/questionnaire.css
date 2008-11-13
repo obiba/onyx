@@ -36,12 +36,16 @@ div.page div.questions div.question span.help-toggle {
 	margin-left: 5px;
 }
 
+div.page div.questions div.question span.help-toggle a:hover {
+	text-decoration: none;
+}
+
 div.page div.questions div.question span.comment-edit {
 	background: url(../images/icons/16X16/message_edit.gif) no-repeat;
 	margin-left: 10px;
 }
 
-div.page div.questions div.question span.help-toggle a:hover {
+div.page div.questions div.question span.comment-edit a:hover {
 	text-decoration: none;
 }
 
