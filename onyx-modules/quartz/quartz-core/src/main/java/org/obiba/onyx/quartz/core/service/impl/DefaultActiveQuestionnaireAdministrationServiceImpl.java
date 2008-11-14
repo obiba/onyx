@@ -176,12 +176,11 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     QuestionAnswer questionAnswer = getPersistenceManager().matchOne(template);
 
     if(questionAnswer == null) {
-      template.setComment(comment);
-      getPersistenceManager().save(template);
-    } else {
-      questionAnswer.setComment(comment);
-      getPersistenceManager().save(questionAnswer);
+      questionAnswer = template;
     }
+
+    questionAnswer.setComment(comment);
+    getPersistenceManager().save(questionAnswer);
 
     return questionAnswer;
   }
