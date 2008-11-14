@@ -159,7 +159,7 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
       portIsAvailable = true;
     } catch(Exception wCouldNotAccessSerialPort) {
       portIsAvailable = false;
-      log.warn("Could not access the specified serial port.", wCouldNotAccessSerialPort);
+      log.warn("Could not access the specified serial port.");
     }
   }
 
@@ -294,7 +294,17 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
   }
 
   public void initialize() {
-    super.initialize();
+    // super.initialize();
+    log.info("Refresh serial port list");
+    refreshSerialPortList();
+    log.info("Setup serial port");
+    setupSerialPort();
+    // If serial port is not available display error message
+    if(!portIsAvailable) {
+
+      System.out.println("***********************************allo");
+      reestablishConnection();
+    }
     initParticipantData();
   }
 
