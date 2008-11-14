@@ -8,6 +8,7 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -23,6 +24,7 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.data.DataField;
+import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +67,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     initialize();
   }
 
+  @SuppressWarnings("serial")
   private void initialize() {
     setOutputMarkupId(true);
 
@@ -112,11 +115,46 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     openField.add(new AjaxFormComponentUpdatingBehavior("onblur") {
 
       @Override
-      protected void onUpdate(AjaxRequestTarget target) {
+      protected void onUpdate(final AjaxRequestTarget target) {
         log.info("openField.onUpdate.{}.data={}", getQuestion() + ":" + getQuestionCategory() + ":" + getOpenAnswerDefinition().getName(), getData());
         // persist data
         activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
+
+        // refresh feeback to clean a previous error message
+        visitParents(WizardForm.class, new Component.IVisitor() {
+
+          public Object component(Component component) {
+            log.info("found a wizard form");
+            WizardForm form = (WizardForm) component;
+            if(form.getFeedbackPanel() != null) {
+              target.addComponent(form.getFeedbackPanel());
+            }
+            return component;
+          }
+
+        });
         DefaultOpenAnswerDefinitionPanel.this.onSubmit(target, getQuestionModel(), DefaultOpenAnswerDefinitionPanel.this.getModel());
+      }
+
+      @Override
+      protected void onError(final AjaxRequestTarget target, RuntimeException e) {
+        log.info("openField.onError.{}.data={}", getQuestion() + ":" + getQuestionCategory() + ":" + getOpenAnswerDefinition().getName(), getData());
+        DefaultOpenAnswerDefinitionPanel.this.onError(target, getQuestionModel(), DefaultOpenAnswerDefinitionPanel.this.getModel());
+
+        // refesh feedback panel to display error messages
+        visitParents(WizardForm.class, new Component.IVisitor() {
+
+          public Object component(Component component) {
+            log.info("found a wizard form");
+            WizardForm form = (WizardForm) component;
+            if(form.getFeedbackPanel() != null) {
+              target.addComponent(form.getFeedbackPanel());
+            }
+            return component;
+          }
+
+        });
+        super.onError(target, e);
       }
 
     });
@@ -154,7 +192,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
   }
 
   public void setRequired(boolean required) {
-    log.info("required={}", required);
+    log.debug("required={}", required);
     openField.setRequired(required);
   }
 

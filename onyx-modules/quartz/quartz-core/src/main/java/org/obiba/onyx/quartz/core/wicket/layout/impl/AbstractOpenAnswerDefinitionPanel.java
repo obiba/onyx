@@ -117,6 +117,15 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
   public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
   }
 
+  /**
+   * Called when open field is submitted and error occures.
+   * @param target
+   * @param questionModel
+   * @param questionCategoryModel
+   */
+  public void onError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+  }
+
   public abstract void setRequired(boolean required);
 
 }

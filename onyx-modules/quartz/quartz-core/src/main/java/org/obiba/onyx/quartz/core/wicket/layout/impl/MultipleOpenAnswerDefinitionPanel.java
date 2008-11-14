@@ -83,6 +83,11 @@ public class MultipleOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinit
           MultipleOpenAnswerDefinitionPanel.this.onSubmit(target, questionModel, questionCategoryModel);
         }
 
+        @Override
+        public void onError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+          MultipleOpenAnswerDefinitionPanel.this.onError(target, questionModel, questionCategoryModel);
+        }
+
       });
       abstractOpenAnswerDefinitionPanels.add(open);
     }

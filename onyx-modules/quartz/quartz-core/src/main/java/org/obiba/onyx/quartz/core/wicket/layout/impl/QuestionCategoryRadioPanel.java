@@ -94,7 +94,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
         // make sure a previously selected open field is not asked for
         resetOpenAnswerDefinitionPanels(QuestionCategoryRadioPanel.this.radioGroup);
 
-        onRadioSelection(target, getQuestionModel(), getQuestionCategoryModel());
+        onSelection(target, getQuestionModel(), getQuestionCategoryModel());
       }
 
     });
@@ -106,35 +106,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
 
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
       // there is an open field
-      if(questionCategory.getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().size() == 0) {
-        openField = new DefaultOpenAnswerDefinitionPanel("open", questionModel, questionCategoryModel) {
-
-          @Override
-          public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
-            onInternalOpenFieldSelection(target, questionModel, questionCategoryModel);
-          }
-
-          @Override
-          public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-            onOpenFieldSubmit(target, questionModel, questionCategoryModel);
-          }
-
-        };
-      } else {
-        openField = new MultipleOpenAnswerDefinitionPanel("open", questionModel, questionCategoryModel) {
-
-          @Override
-          public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
-            onInternalOpenFieldSelection(target, questionModel, questionCategoryModel);
-          }
-
-          @Override
-          public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-            onOpenFieldSubmit(target, questionModel, questionCategoryModel);
-          }
-
-        };
-      }
+      openField = newOpenAnswerDefinitionPanel("open");
       openField.setRequired(false);
       add(openField);
 
@@ -163,7 +135,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
     }
   }
 
-  private void onInternalOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+  protected void onInternalOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
     if(radioGroup.getModel().equals(getQuestionCategoryModel())) return;
 
     log.info("openField.onSelect={}.{}", getQuestion(), getQuestionCategory());
@@ -183,31 +155,6 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
     resetOpenAnswerDefinitionPanels(radioGroup);
 
     onOpenFieldSelection(target, questionModel, questionCategoryModel);
-  }
-
-  /**
-   * Called when open field is submitted.
-   * @param target
-   * @param questionModel
-   * @param questionCategoryModel
-   */
-  public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-
-  }
-
-  /**
-   * Called when open field is selected: persist the category answer with no data yet.
-   * @param target
-   */
-  public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-
-  }
-
-  /**
-   * Call when radio is selected: persist the category answer.
-   * @param target
-   */
-  public void onRadioSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
   }
 
   /**

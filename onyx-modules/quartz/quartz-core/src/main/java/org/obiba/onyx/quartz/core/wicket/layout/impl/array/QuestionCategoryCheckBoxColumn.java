@@ -15,8 +15,8 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCategoryCheckBoxPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.MultipleChoiceQuestionValidator;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCategoryCheckBoxPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 
 public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColumn {
@@ -45,8 +45,18 @@ public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColu
 
     cellItem.add(new QuestionCategoryCheckBoxPanel(componentId, rowModel, cellItem.getModel(), checkGroup, false) {
       @Override
-      public void onCheckBoxSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+      public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
         onEvent(target);
+      }
+
+      @Override
+      public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+        onEvent(target);
+      }
+
+      @Override
+      public void onOpenFieldError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+        onErrorEvent(target);
       }
 
       @Override

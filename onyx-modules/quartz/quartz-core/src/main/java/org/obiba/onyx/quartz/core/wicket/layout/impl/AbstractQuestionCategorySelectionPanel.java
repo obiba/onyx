@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -88,4 +89,101 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
     return (QuestionCategory) getModel().getObject();
   }
 
+  /**
+   * Called when open field is submitted.
+   * @param target
+   * @param questionModel
+   * @param questionCategoryModel
+   */
+  public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+
+  }
+
+  /**
+   * Called when open field is submitted and error occures.
+   * @param target
+   * @param questionModel
+   * @param questionCategoryModel
+   */
+  public void onOpenFieldError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+
+  }
+
+  /**
+   * Called when open field is selected: persist the category answer with no data yet.
+   * @param target
+   */
+  public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+
+  }
+
+  /**
+   * Called for internal use after open field is selected.
+   * @param target
+   * @param questionModel
+   * @param questionCategoryModel
+   * @see #onOpenFieldSelection(AjaxRequestTarget, IModel, IModel)
+   */
+  protected void onInternalOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+
+  }
+
+  /**
+   * Called when selector is clicked.
+   * @param target
+   */
+  public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+  }
+
+  /**
+   * Factory method to get the appropriate {@link AbstractOpenAnswerDefinitionPanel} for this question category.
+   * @param id
+   * @return
+   */
+  @SuppressWarnings("serial")
+  protected AbstractOpenAnswerDefinitionPanel newOpenAnswerDefinitionPanel(String id) {
+    AbstractOpenAnswerDefinitionPanel openField;
+
+    if(getQuestionCategory().getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().size() == 0) {
+      openField = new DefaultOpenAnswerDefinitionPanel(id, getQuestionModel(), getQuestionCategoryModel()) {
+
+        @Override
+        public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
+          onInternalOpenFieldSelection(target, questionModel, questionCategoryModel);
+        }
+
+        @Override
+        public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+          onOpenFieldSubmit(target, questionModel, questionCategoryModel);
+        }
+
+        @Override
+        public void onError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+          onOpenFieldError(target, questionModel, questionCategoryModel);
+        }
+
+      };
+    } else {
+      openField = new MultipleOpenAnswerDefinitionPanel(id, getQuestionModel(), getQuestionCategoryModel()) {
+
+        @Override
+        public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
+          onInternalOpenFieldSelection(target, questionModel, questionCategoryModel);
+        }
+
+        @Override
+        public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+          onOpenFieldSubmit(target, questionModel, questionCategoryModel);
+        }
+
+        @Override
+        public void onError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+          onOpenFieldError(target, questionModel, questionCategoryModel);
+        }
+
+      };
+    }
+
+    return openField;
+  }
 }

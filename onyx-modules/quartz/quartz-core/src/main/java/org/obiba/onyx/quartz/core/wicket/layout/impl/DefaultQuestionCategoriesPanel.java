@@ -72,7 +72,19 @@ public class DefaultQuestionCategoriesPanel extends Panel {
         }
 
         @Override
-        public void onRadioSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+        public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+          // update all
+          target.addComponent(DefaultQuestionCategoriesPanel.this);
+        }
+
+        @Override
+        public void onOpenFieldError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+          // update all
+          // target.addComponent(DefaultQuestionCategoriesPanel.this);
+        }
+
+        @Override
+        public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
           // update all
           target.addComponent(DefaultQuestionCategoriesPanel.this);
         }
@@ -110,29 +122,5 @@ public class DefaultQuestionCategoriesPanel extends Panel {
       });
     }
   }
-
-  // /**
-  // * Reset (set non required and null data) the open fields not associated to the given question category.
-  // * @param questionCategoryModel
-  // */
-  // private void resetOpenAnswerDefinitionPanels(final IModel questionCategoryModel) {
-  // MarkupContainer categories = (MarkupContainer) get("categories");
-  //
-  // categories.visitChildren(new Component.IVisitor() {
-  //
-  // public Object component(Component component) {
-  // if(component instanceof AbstractOpenAnswerDefinitionPanel) {
-  // if(!questionCategoryModel.equals(component.getModel())) {
-  // log.info("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getModelObject());
-  // AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
-  // openField.setData(null);
-  // openField.setRequired(false);
-  // }
-  // }
-  // return CONTINUE_TRAVERSAL;
-  // }
-  //
-  // });
-  // }
 
 }

@@ -122,6 +122,13 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
             log.info("checkboxColumn.onEvent()");
             target.addComponent(array);
           }
+
+          @Override
+          public void onErrorEvent(AjaxRequestTarget target) {
+            log.info("checkboxColumn.onErrorEvent()");
+            // target.addComponent(array);
+          }
+
         });
       }
 
