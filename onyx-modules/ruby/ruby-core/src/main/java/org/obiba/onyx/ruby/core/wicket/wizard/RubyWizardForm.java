@@ -138,7 +138,7 @@ public class RubyWizardForm extends WizardForm {
     if(resuming) {
       startStep = tubeRegistrationStep;
     } else {
-      startStep = observedContraIndicationStep;
+      startStep = setUpWizardFlow();
     }
 
     add(startStep);
