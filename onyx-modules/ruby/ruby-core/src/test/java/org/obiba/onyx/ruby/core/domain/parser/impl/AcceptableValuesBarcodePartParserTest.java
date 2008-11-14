@@ -65,6 +65,25 @@ public class AcceptableValuesBarcodePartParserTest {
    * .
    */
   @Test
+  public void testShouldFailEatAndValidatePartWithInvalidSize() {
+    List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
+    StringBuilder barcode = new StringBuilder("54");
+
+    BarcodePart result = parser.eatAndValidatePart(barcode, errors);
+
+    Assert.assertNull(result);
+    Assert.assertEquals(1, errors.size());
+
+    MessageSourceResolvable error = errors.get(0);
+    Assert.assertEquals("BarcodePartSizeError", error.getCodes()[0]);
+  }
+
+  /**
+   * Test method for
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)}
+   * .
+   */
+  @Test
   public void testShouldFailEatAndValidatePartWithInvalidValue() {
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
     StringBuilder barcode = new StringBuilder("p5432108978");

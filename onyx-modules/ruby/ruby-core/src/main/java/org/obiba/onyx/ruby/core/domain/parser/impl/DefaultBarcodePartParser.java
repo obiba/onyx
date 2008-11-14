@@ -26,7 +26,7 @@ public abstract class DefaultBarcodePartParser implements IBarcodePartParser {
   public BarcodePart eatAndValidatePart(StringBuilder barcodeFragment, List<MessageSourceResolvable> errors) {
     BarcodePart barcodePart = null;
 
-    if(barcodeFragment == null || barcodeFragment.length() >= getSize()) {
+    if(barcodeFragment != null && barcodeFragment.length() >= getSize()) {
 
       String part = barcodeFragment.substring(0, getSize());
       barcodeFragment.delete(0, getSize());
