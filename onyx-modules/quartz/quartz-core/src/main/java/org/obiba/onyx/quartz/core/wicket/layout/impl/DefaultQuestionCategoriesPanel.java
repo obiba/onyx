@@ -63,7 +63,7 @@ public class DefaultQuestionCategoriesPanel extends Panel {
       repeater.add(item);
       item.setModel(new QuestionnaireModel(questionCategory));
 
-      item.add(new RadioQuestionCategoryPanel("input", item.getModel(), radioGroup) {
+      item.add(new QuestionCategoryRadioPanel("input", item.getModel(), radioGroup) {
 
         @Override
         public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
@@ -101,7 +101,7 @@ public class DefaultQuestionCategoriesPanel extends Panel {
       repeater.add(item);
       item.setModel(new QuestionnaireModel(questionCategory));
 
-      item.add(new CheckBoxQuestionCategoryPanel("input", item.getModel(), checkGroup) {
+      item.add(new QuestionCategoryCheckBoxPanel("input", item.getModel(), checkGroup) {
         @Override
         public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
           // update all

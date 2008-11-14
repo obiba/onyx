@@ -14,7 +14,7 @@ import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.RadioQuestionCategoryPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCategoryRadioPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
     radioGroup.setRequired(((Question) rowModel.getObject()).isRequired());
     radioGroup.setLabel(new QuestionnaireStringResourceModel(rowModel, "label"));
 
-    cellItem.add(new RadioQuestionCategoryPanel(componentId, rowModel, cellItem.getModel(), radioGroup, false) {
+    cellItem.add(new QuestionCategoryRadioPanel(componentId, rowModel, cellItem.getModel(), radioGroup, false) {
 
       @Override
       public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {

@@ -149,22 +149,6 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     }
   }
 
-  @Override
-  public int hashCode() {
-    return super.hashCode() + getModel().hashCode();
-  }
-
-  /**
-   * Equals if they refer to the an equal model.
-   */
-  @Override
-  public boolean equals(Object obj) {
-    if(obj instanceof DefaultOpenAnswerDefinitionPanel) {
-      return this.getModel() != null && this.getModel().equals(((DefaultOpenAnswerDefinitionPanel) obj).getModel());
-    }
-    return super.equals(obj);
-  }
-
   private boolean isEmptyString(String str) {
     return str == null || str.trim().length() == 0;
   }

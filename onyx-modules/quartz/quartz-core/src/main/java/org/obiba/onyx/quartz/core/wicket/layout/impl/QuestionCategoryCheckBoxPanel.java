@@ -15,7 +15,6 @@ import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
@@ -31,11 +30,12 @@ import org.slf4j.LoggerFactory;
 /**
  * UI for rendering a question category as a radio and an optionally associated open answer field.
  */
-public class CheckBoxQuestionCategoryPanel extends Panel {
+public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelectionPanel {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LoggerFactory.getLogger(CheckBoxQuestionCategoryPanel.class);
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(QuestionCategoryCheckBoxPanel.class);
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
@@ -45,17 +45,12 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
   private CheckBox checkbox;
 
   /**
-   * The question model (not necessarily the question of the category in the case of shared categories question).
-   */
-  private IModel questionModel;
-
-  /**
    * Constructor, using the question of the category and making the category label visible.
    * 
    * @param id
    * @param questionCategoryModel
    */
-  public CheckBoxQuestionCategoryPanel(String id, IModel questionCategoryModel, CheckGroup checkGroup) {
+  public QuestionCategoryCheckBoxPanel(String id, IModel questionCategoryModel, CheckGroup checkGroup) {
     this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, checkGroup, true);
   }
 
@@ -68,9 +63,8 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
    * @param radioLabelVisible
    */
   @SuppressWarnings("serial")
-  public CheckBoxQuestionCategoryPanel(String id, IModel questionModel, IModel questionCategoryModel, CheckGroup checkGroup, boolean radioLabelVisible) {
-    super(id, questionCategoryModel);
-    this.questionModel = questionModel;
+  public QuestionCategoryCheckBoxPanel(String id, IModel questionModel, IModel questionCategoryModel, final CheckGroup checkGroup, boolean radioLabelVisible) {
+    super(id, questionModel, questionCategoryModel);
     setOutputMarkupId(true);
 
     // previous answer or default selection
@@ -91,20 +85,18 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
         // toggle selection
         getSelectionModel().setObject(!getSelectionModel().isSelected());
 
-        Question question = (Question) CheckBoxQuestionCategoryPanel.this.questionModel.getObject();
-        QuestionCategory questionCategory = (QuestionCategory) CheckBoxQuestionCategoryPanel.this.getModelObject();
         if(getSelectionModel().isSelected()) {
-          activeQuestionnaireAdministrationService.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), null);
+          activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getQuestionCategory().getCategory().getOpenAnswerDefinition(), null);
         } else {
-          activeQuestionnaireAdministrationService.deleteAnswer(question, questionCategory);
+          activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestionCategory());
         }
         if(getOpenField() != null) {
-          getOpenField().setRequired(getSelectionModel().isSelected());
+          getOpenField().setRequired(getQuestion().isRequired() && getSelectionModel().isSelected());
           if(!getSelectionModel().isSelected()) {
-            getOpenField().setData(null);
+            resetOpenAnswerDefinitionPanels(QuestionCategoryCheckBoxPanel.this);
           }
         }
-        onCheckBoxSelection(target, CheckBoxQuestionCategoryPanel.this.questionModel, CheckBoxQuestionCategoryPanel.this.getModel());
+        onCheckBoxSelection(target, getQuestionModel(), QuestionCategoryCheckBoxPanel.this.getModel());
       }
 
     });
@@ -148,13 +140,12 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
   }
 
   public void onInternalOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    // ignore if already selected
     if(getSelectionModel().isSelected()) return;
 
     // set checkbox as selected
     getSelectionModel().select();
 
-    openField.setRequired(true);
+    openField.setRequired(getQuestion().isRequired());
 
     activeQuestionnaireAdministrationService.answer((Question) questionModel.getObject(), (QuestionCategory) getModelObject(), ((QuestionCategory) getModelObject()).getCategory().getOpenAnswerDefinition(), null);
     // target.addComponent(CheckBoxQuestionCategoryPanel.this);
@@ -183,4 +174,8 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
     return openField;
   }
 
+  @Override
+  protected boolean isToBeReseted(AbstractOpenAnswerDefinitionPanel openField) {
+    return getQuestionCategoryModel().equals(openField.getModel());
+  }
 }

@@ -8,7 +8,6 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -17,7 +16,6 @@ import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -34,21 +32,16 @@ import org.slf4j.LoggerFactory;
 /**
  * UI for rendering a question category as a radio and an optionally associated open answer field.
  */
-public class RadioQuestionCategoryPanel extends Panel {
+public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectionPanel {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LoggerFactory.getLogger(RadioQuestionCategoryPanel.class);
+  private static final Logger log = LoggerFactory.getLogger(QuestionCategoryRadioPanel.class);
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   private AbstractOpenAnswerDefinitionPanel openField;
-
-  /**
-   * The question model (not necessarily the question of the category in the case of shared categories question).
-   */
-  private IModel questionModel;
 
   private RadioGroup radioGroup;
 
@@ -58,7 +51,7 @@ public class RadioQuestionCategoryPanel extends Panel {
    * @param id
    * @param questionCategoryModel
    */
-  public RadioQuestionCategoryPanel(String id, IModel questionCategoryModel, RadioGroup radioGroup) {
+  public QuestionCategoryRadioPanel(String id, IModel questionCategoryModel, RadioGroup radioGroup) {
     this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, radioGroup, true);
   }
 
@@ -71,9 +64,8 @@ public class RadioQuestionCategoryPanel extends Panel {
    * @param radioLabelVisible
    */
   @SuppressWarnings("serial")
-  public RadioQuestionCategoryPanel(String id, IModel questionModel, IModel questionCategoryModel, RadioGroup radioGroup, boolean radioLabelVisible) {
-    super(id, questionCategoryModel);
-    this.questionModel = questionModel;
+  public QuestionCategoryRadioPanel(String id, IModel questionModel, IModel questionCategoryModel, RadioGroup radioGroup, boolean radioLabelVisible) {
+    super(id, questionModel, questionCategoryModel);
     this.radioGroup = radioGroup;
 
     // previous answer or default selection
@@ -88,23 +80,21 @@ public class RadioQuestionCategoryPanel extends Panel {
 
       @Override
       protected void onEvent(AjaxRequestTarget target) {
-        Question question = (Question) RadioQuestionCategoryPanel.this.questionModel.getObject();
-        QuestionCategory questionCategory = (QuestionCategory) RadioQuestionCategoryPanel.this.getModelObject();
 
         // make the radio group active for the selection
-        RadioQuestionCategoryPanel.this.radioGroup.setModel(RadioQuestionCategoryPanel.this.getModel());
+        QuestionCategoryRadioPanel.this.radioGroup.setModel(QuestionCategoryRadioPanel.this.getModel());
         if(getOpenField() != null) {
-          getOpenField().setRequired(question.isRequired());
+          getOpenField().setRequired(getQuestion().isRequired());
         }
 
         // exclusive choice, only one answer per question
-        activeQuestionnaireAdministrationService.deleteAnswers(question);
-        activeQuestionnaireAdministrationService.answer(question, questionCategory);
+        activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
+        activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory());
 
         // make sure a previously selected open field is not asked for
-        resetOpenAnswerDefinitionPanels(RadioQuestionCategoryPanel.this.getModel());
+        resetOpenAnswerDefinitionPanels(QuestionCategoryRadioPanel.this.radioGroup);
 
-        onRadioSelection(target, RadioQuestionCategoryPanel.this.questionModel, RadioQuestionCategoryPanel.this.getModel());
+        onRadioSelection(target, getQuestionModel(), getQuestionCategoryModel());
       }
 
     });
@@ -173,47 +163,24 @@ public class RadioQuestionCategoryPanel extends Panel {
     }
   }
 
-  /**
-   * Reset (set non required and null data) the open fields not associated to the given question category.
-   * @param questionCategoryModel
-   */
-  private void resetOpenAnswerDefinitionPanels(final IModel questionCategoryModel) {
-
-    radioGroup.visitChildren(new Component.IVisitor() {
-
-      public Object component(Component component) {
-        if(component instanceof AbstractOpenAnswerDefinitionPanel) {
-          if(!questionCategoryModel.equals(component.getModel())) {
-            log.info("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getModelObject());
-            AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
-            openField.setData(null);
-            openField.setRequired(false);
-          }
-        }
-        return CONTINUE_TRAVERSAL;
-      }
-
-    });
-  }
-
   private void onInternalOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    Question question = (Question) questionModel.getObject();
-    QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
-    log.info("openField.onSelect={}.{}", question, questionCategory);
+    if(radioGroup.getModel().equals(getQuestionCategoryModel())) return;
+
+    log.info("openField.onSelect={}.{}", getQuestion(), getQuestionCategory());
 
     // make sure radio selection does not conflict with open field selection
-    radioGroup.setModel(RadioQuestionCategoryPanel.this.getModel());
-    getOpenField().setRequired(question.isRequired());
+    radioGroup.setModel(QuestionCategoryRadioPanel.this.getModel());
+    getOpenField().setRequired(getQuestion().isRequired());
 
     // exclusive choice, only one answer per question
-    CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(question, questionCategory);
+    CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(getQuestion(), getQuestionCategory());
     if(previousAnswer == null) {
-      activeQuestionnaireAdministrationService.deleteAnswers(question);
-      activeQuestionnaireAdministrationService.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), null);
+      activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
+      activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getQuestionCategory().getCategory().getOpenAnswerDefinition(), null);
     }
 
     // make sure a previously selected open field is not asked for
-    resetOpenAnswerDefinitionPanels(questionCategoryModel);
+    resetOpenAnswerDefinitionPanels(radioGroup);
 
     onOpenFieldSelection(target, questionModel, questionCategoryModel);
   }
@@ -249,6 +216,11 @@ public class RadioQuestionCategoryPanel extends Panel {
    */
   public AbstractOpenAnswerDefinitionPanel getOpenField() {
     return openField;
+  }
+
+  @Override
+  protected boolean isToBeReseted(AbstractOpenAnswerDefinitionPanel openField) {
+    return !getQuestionCategoryModel().equals(openField.getModel());
   }
 
 }
