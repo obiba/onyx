@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.domain.parser.impl;
 
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +24,7 @@ import org.obiba.onyx.ruby.core.domain.BarcodePart;
 import org.springframework.context.MessageSourceResolvable;
 
 /**
- *
+ * Unit tests for <code>AcceptableValuesBarcodePartParser</code>
  */
 public class AcceptableValuesBarcodePartParserTest {
 
@@ -50,8 +52,10 @@ public class AcceptableValuesBarcodePartParserTest {
   public void testShouldPassEatAndValidatePart() {
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
     StringBuilder barcode = new StringBuilder("5432108978");
+
     BarcodePart result = parser.eatAndValidatePart(barcode, errors);
-    Assert.assertEquals("543", result.getPart());
+
+    Assert.assertEquals("543", result.getPartLabel().getCodes()[0]);
     Assert.assertEquals("2108978", barcode.toString());
   }
 
@@ -64,9 +68,12 @@ public class AcceptableValuesBarcodePartParserTest {
   public void testShouldFailEatAndValidatePartWithInvalidValue() {
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
     StringBuilder barcode = new StringBuilder("p5432108978");
+
     BarcodePart result = parser.eatAndValidatePart(barcode, errors);
+
     Assert.assertNull(result);
     Assert.assertEquals(1, errors.size());
+
     MessageSourceResolvable error = errors.get(0);
     Assert.assertEquals("BarcodePartValueError", error.getCodes()[0]);
   }
@@ -80,4 +87,21 @@ public class AcceptableValuesBarcodePartParserTest {
     Assert.assertEquals(3, size);
   }
 
+  /**
+   * Test method for
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser#setAcceptableValues()}.
+   */
+  @Test
+  public void testShouldFailSetAcceptableValuesWithException() {
+    Set<String> acceptableValues = new HashSet<String>();
+    acceptableValues.add("123");
+    acceptableValues.add("1234");
+
+    try {
+      parser.setAcceptableValues(acceptableValues);
+      fail("Should get IllegalArgumentException.");
+    } catch(IllegalArgumentException e) {
+      Assert.assertEquals("The acceptable values have different size.", e.getMessage());
+    }
+  }
 }

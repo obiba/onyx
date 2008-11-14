@@ -14,39 +14,25 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.springframework.context.MessageSourceResolvable;
 
 /**
- *
+ * Implementation for Participant barcode part parser
  */
 public class ParticipantCodeBarcodePartParser extends FixedSizeBarcodePartParser {
-
-  /**
-   * it's a regular expression that part need to match.
-   */
-  private String format;
 
   private ActiveInterviewService activeInterviewService;
 
   @Override
   protected MessageSourceResolvable validatePart(String part) {
     MessageSourceResolvable error = null;
-    if(!part.matches(format)) {
-      error = createBarcodeError("ParticipantCodeFormatError", "Invalid participant barcode format.");
-    } else {
-      Participant participant = activeInterviewService.getParticipant();
-      if(participant == null) {
-        error = createBarcodeError("ParticipantNotFoundError", "Current participant could not be found.");
-      } else if(!part.equals(participant.getBarcode())) {
-        error = createBarcodeError("ParticipantCodeMatchError", "Participant code does not match the current one.");
-      }
+
+    Participant participant = activeInterviewService.getParticipant();
+    if(participant == null) {
+      error = createBarcodeError("ParticipantNotFoundError", "Current participant could not be found.");
+    } else if(!part.equals(participant.getBarcode())) {
+
+      // The code must match the current participant code
+      error = createBarcodeError("ParticipantCodeMatchError", "Participant code does not match the current one.");
     }
     return error;
-  }
-
-  public void setFormat(String format) {
-    this.format = format;
-  }
-
-  public String getFormat() {
-    return format;
   }
 
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {

@@ -32,6 +32,7 @@ public class RandomDigitsBarcodePartParser extends FixedSizeBarcodePartParser {
   protected MessageSourceResolvable validatePart(String part) {
     MessageSourceResolvable error = null;
     if(!part.matches(format)) {
+      // The code must match the given pattern
       error = createBarcodeError("BarcodePartFormatError", "Invalid barcode part format.");
     }
     return error;

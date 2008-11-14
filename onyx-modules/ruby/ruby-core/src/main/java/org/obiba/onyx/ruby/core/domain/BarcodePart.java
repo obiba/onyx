@@ -10,6 +10,7 @@
 package org.obiba.onyx.ruby.core.domain;
 
 import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 
 /**
  * 
@@ -21,7 +22,7 @@ public class BarcodePart {
 
   private String part;
 
-  private String title;
+  private MessageSourceResolvable title;
 
   //
   // Constructors
@@ -35,25 +36,19 @@ public class BarcodePart {
   // Methods
   //
 
-  public void setTitle(String title) {
+  public void setPartTitle(MessageSourceResolvable title) {
     this.title = title;
   }
-  
-  public String getTitle() {
+
+  public MessageSourceResolvable getPartTitle() {
     return title;
   }
-  
-  public String getPart() {
-    return part;
-  }
-  
-  public MessageSourceResolvable getPartTitle() {
-    // TODO
-    return null;
-  }
 
+  /**
+   * @return part value wrapped in <code>DefaultMessageSourceResolvable</code>
+   */
   public MessageSourceResolvable getPartLabel() {
-    // TODO
-    return null;
+    MessageSourceResolvable partLabel = new DefaultMessageSourceResolvable(part);
+    return partLabel;
   }
 }

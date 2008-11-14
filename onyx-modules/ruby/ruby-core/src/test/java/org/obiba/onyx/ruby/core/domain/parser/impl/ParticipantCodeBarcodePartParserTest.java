@@ -27,7 +27,7 @@ import org.obiba.onyx.ruby.core.domain.BarcodePart;
 import org.springframework.context.MessageSourceResolvable;
 
 /**
- *
+ * Unit tests for <code>ParticipantCodeBarcodePartParse</code>
  */
 public class ParticipantCodeBarcodePartParserTest {
 
@@ -43,7 +43,6 @@ public class ParticipantCodeBarcodePartParserTest {
     activeInterviewServiceMock = createMock(ActiveInterviewService.class);
     parser = new ParticipantCodeBarcodePartParser();
     parser.setSize(5);
-    parser.setFormat("^[A-Za-z0-9]+$");
     parser.setActiveInterviewService(activeInterviewServiceMock);
   }
 
@@ -57,11 +56,14 @@ public class ParticipantCodeBarcodePartParserTest {
     String part = "54321";
     Participant participant = new Participant();
     participant.setBarcode(part);
+
     expect(activeInterviewServiceMock.getParticipant()).andReturn(participant);
     replay(activeInterviewServiceMock);
+
     MessageSourceResolvable error = parser.validatePart(part);
 
     verify(activeInterviewServiceMock);
+
     Assert.assertNull(error);
   }
 
@@ -76,6 +78,7 @@ public class ParticipantCodeBarcodePartParserTest {
     String part = "54321";
     Participant participant = new Participant();
     participant.setBarcode(part);
+
     expect(activeInterviewServiceMock.getParticipant()).andReturn(participant);
     replay(activeInterviewServiceMock);
 
@@ -83,26 +86,10 @@ public class ParticipantCodeBarcodePartParserTest {
     BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, errors);
 
     verify(activeInterviewServiceMock);
+
     Assert.assertEquals(0, errors.size());
-    Assert.assertEquals(part, barcodePart.getPart());
+    Assert.assertEquals(part, barcodePart.getPartLabel().getCodes()[0]);
     Assert.assertEquals("08981", barcodeFragment.toString());
-  }
-
-  /**
-   * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedSizeBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)}
-   * .
-   */
-  @Test
-  public void testShouldFailValidationWithFormatError() {
-    StringBuilder barcodeFragment = new StringBuilder("!5432108981");
-
-    List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
-    BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, errors);
-
-    Assert.assertEquals(1, errors.size());
-    Assert.assertNull(barcodePart);
-    Assert.assertEquals("ParticipantCodeFormatError", errors.get(0).getCodes()[0]);
   }
 
   /**
@@ -121,6 +108,7 @@ public class ParticipantCodeBarcodePartParserTest {
     BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, errors);
 
     verify(activeInterviewServiceMock);
+
     Assert.assertEquals(1, errors.size());
     Assert.assertNull(barcodePart);
     Assert.assertEquals("ParticipantNotFoundError", errors.get(0).getCodes()[0]);
@@ -145,6 +133,7 @@ public class ParticipantCodeBarcodePartParserTest {
     BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, errors);
 
     verify(activeInterviewServiceMock);
+
     Assert.assertEquals(1, errors.size());
     Assert.assertNull(barcodePart);
     Assert.assertEquals("ParticipantCodeMatchError", errors.get(0).getCodes()[0]);

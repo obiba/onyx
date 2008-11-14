@@ -9,56 +9,12 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.domain.parser.impl;
 
-import java.util.List;
-
-import org.obiba.onyx.ruby.core.domain.BarcodePart;
-import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
-import org.springframework.context.MessageSourceResolvable;
-import org.springframework.validation.ObjectError;
-
 /**
- *
+ * Common for barcode part parser with fixed size, defines size getter and setter methods
  */
-public abstract class FixedSizeBarcodePartParser implements IBarcodePartParser {
+public abstract class FixedSizeBarcodePartParser extends DefaultBarcodePartParser {
 
   private int size;
-
-  public MessageSourceResolvable getPartTitle() {
-
-    return null;
-  }
-
-  public BarcodePart eatAndValidatePart(StringBuilder barcodeFragment, List<MessageSourceResolvable> errors) {
-    BarcodePart barcodePart = null;
-
-    try {
-
-      String part = barcodeFragment.substring(0, size);
-      barcodeFragment.delete(0, size);
-      MessageSourceResolvable error = validatePart(part);
-
-      if(error != null) {
-        errors.add(error);
-      } else {
-        barcodePart = new BarcodePart(part);
-      }
-
-    } catch(Exception e) {
-      errors.add(createBarcodeError("BarcodePartSizeError", "Invalid barcode part size."));
-    }
-    return barcodePart;
-  }
-
-  protected abstract MessageSourceResolvable validatePart(String part);
-
-  /**
-   * @param code
-   * @param defaultMsg
-   */
-  protected MessageSourceResolvable createBarcodeError(String code, String defaultMsg) {
-    MessageSourceResolvable error = new ObjectError("Barcode", new String[] { code }, null, defaultMsg);
-    return error;
-  }
 
   public void setSize(int size) {
     this.size = size;

@@ -34,7 +34,7 @@ import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.springframework.context.MessageSourceResolvable;
 
 /**
- *
+ * Unit tests for <code>ActiveTubeRegistrationServiceImpl</code>
  */
 public class ActiveTubeRegistrationServiceImplTest {
 
