@@ -100,6 +100,9 @@ public class CheckBoxQuestionCategoryPanel extends Panel {
         }
         if(getOpenField() != null) {
           getOpenField().setRequired(getSelectionModel().isSelected());
+          if(!getSelectionModel().isSelected()) {
+            getOpenField().setData(null);
+          }
         }
         onCheckBoxSelection(target, CheckBoxQuestionCategoryPanel.this.questionModel, CheckBoxQuestionCategoryPanel.this.getModel());
       }
