@@ -14,7 +14,6 @@ import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.RadioQuestionCategoryPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
@@ -32,15 +31,14 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
 
   private IModel radioGroupsModel;
 
-  private IModel currentOpenFieldsModel;
-
   /**
+   * 
    * @param questionCategoryModel
+   * @param radioGroupsModel
    */
-  public QuestionCategoryRadioColumn(IModel questionCategoryModel, IModel radioGroupsModel, IModel currentOpenFieldsModel) {
+  public QuestionCategoryRadioColumn(IModel questionCategoryModel, IModel radioGroupsModel) {
     super(questionCategoryModel);
     this.radioGroupsModel = radioGroupsModel;
-    this.currentOpenFieldsModel = currentOpenFieldsModel;
   }
 
   @SuppressWarnings("serial")
@@ -54,48 +52,16 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
 
       @Override
       public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-        AbstractOpenAnswerDefinitionPanel currentOpenField = getCurrentOpenField(index);
-        log.info("onOpenFieldSelection().currentOpenField={}", currentOpenField != null ? currentOpenField.getModelObject() : null);
-        // ignore if multiple click in the same open field
-        if(getOpenField().equals(currentOpenField)) return;
-        log.info("onOpenFieldSelection().getOpenField={}", getOpenField().getModelObject());
-
-        // make sure a previously selected open field in the same row is not asked for
-        if(currentOpenField != null) {
-          currentOpenField.setRequired(false);
-        }
-        // make the open field active
-        setCurrentOpenField(index, getOpenField());
-
         // call for refresh
         onEvent(target);
       }
 
       @Override
       public void onRadioSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-        // make inactive the previously selected open field
-        AbstractOpenAnswerDefinitionPanel currentOpenField = getCurrentOpenField(index);
-        if(currentOpenField != null) {
-          currentOpenField.setData(null);
-          currentOpenField.setRequired(false);
-        }
-        setCurrentOpenField(index, getOpenField());
-
         // call for refresh
         onEvent(target);
       }
 
     });
   }
-
-  private AbstractOpenAnswerDefinitionPanel getCurrentOpenField(int index) {
-    AbstractOpenAnswerDefinitionPanel[] currentOpenFields = (AbstractOpenAnswerDefinitionPanel[]) currentOpenFieldsModel.getObject();
-    return currentOpenFields[index];
-  }
-
-  private void setCurrentOpenField(int index, AbstractOpenAnswerDefinitionPanel currentOpenField) {
-    AbstractOpenAnswerDefinitionPanel[] currentOpenFields = (AbstractOpenAnswerDefinitionPanel[]) currentOpenFieldsModel.getObject();
-    currentOpenFields[index] = currentOpenField;
-  }
-
 }

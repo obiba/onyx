@@ -49,8 +49,6 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultQuestionSharedCategoriesPanel.class);
 
-  private AbstractOpenAnswerDefinitionPanel[] currentOpenFields;
-
   private RadioGroupView radioGroupView;
 
   private CheckGroupView checkGroupView;
@@ -82,8 +80,6 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
       }
     };
 
-    this.currentOpenFields = new AbstractOpenAnswerDefinitionPanel[questionsProvider.size()];
-
     List<IColumn> columns = new ArrayList<IColumn>();
 
     // first column: labels of question's children
@@ -101,7 +97,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
     Question parentQuestion = (Question) getModelObject();
     if(!parentQuestion.isMultiple()) {
       for(QuestionCategory questionCategory : parentQuestion.getQuestionCategories()) {
-        columns.add(new QuestionCategoryRadioColumn(new QuestionnaireModel(questionCategory), new PropertyModel(this, "radioGroupView.groups"), new PropertyModel(this, "currentOpenFields")) {
+        columns.add(new QuestionCategoryRadioColumn(new QuestionnaireModel(questionCategory), new PropertyModel(this, "radioGroupView.groups")) {
           @Override
           public void onEvent(AjaxRequestTarget target) {
             log.info("radioColumn.onEvent()");
@@ -166,14 +162,6 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
       checkGroupView.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
     }
 
-  }
-
-  /**
-   * Get the array for storing the currently selected open field for each row.
-   * @return
-   */
-  public AbstractOpenAnswerDefinitionPanel[] getCurrentOpenFields() {
-    return currentOpenFields;
   }
 
   /**

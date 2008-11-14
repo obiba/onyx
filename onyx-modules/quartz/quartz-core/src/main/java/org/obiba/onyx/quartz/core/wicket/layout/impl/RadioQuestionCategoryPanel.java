@@ -8,6 +8,7 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -100,6 +101,9 @@ public class RadioQuestionCategoryPanel extends Panel {
         activeQuestionnaireAdministrationService.deleteAnswers(question);
         activeQuestionnaireAdministrationService.answer(question, questionCategory);
 
+        // make sure a previously selected open field is not asked for
+        resetOpenAnswerDefinitionPanels(RadioQuestionCategoryPanel.this.getModel());
+
         onRadioSelection(target, RadioQuestionCategoryPanel.this.questionModel, RadioQuestionCategoryPanel.this.getModel());
       }
 
@@ -169,6 +173,29 @@ public class RadioQuestionCategoryPanel extends Panel {
     }
   }
 
+  /**
+   * Reset (set non required and null data) the open fields not associated to the given question category.
+   * @param questionCategoryModel
+   */
+  private void resetOpenAnswerDefinitionPanels(final IModel questionCategoryModel) {
+
+    radioGroup.visitChildren(new Component.IVisitor() {
+
+      public Object component(Component component) {
+        if(component instanceof AbstractOpenAnswerDefinitionPanel) {
+          if(!questionCategoryModel.equals(component.getModel())) {
+            log.info("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getModelObject());
+            AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
+            openField.setData(null);
+            openField.setRequired(false);
+          }
+        }
+        return CONTINUE_TRAVERSAL;
+      }
+
+    });
+  }
+
   private void onInternalOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
     Question question = (Question) questionModel.getObject();
     QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
@@ -184,6 +211,9 @@ public class RadioQuestionCategoryPanel extends Panel {
       activeQuestionnaireAdministrationService.deleteAnswers(question);
       activeQuestionnaireAdministrationService.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), null);
     }
+
+    // make sure a previously selected open field is not asked for
+    resetOpenAnswerDefinitionPanels(questionCategoryModel);
 
     onOpenFieldSelection(target, questionModel, questionCategoryModel);
   }

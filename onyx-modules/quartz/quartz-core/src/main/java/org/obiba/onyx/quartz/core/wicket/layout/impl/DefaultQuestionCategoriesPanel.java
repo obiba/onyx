@@ -32,8 +32,6 @@ public class DefaultQuestionCategoriesPanel extends Panel {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultQuestionCategoriesPanel.class);
 
-  private AbstractOpenAnswerDefinitionPanel currentOpenField;
-
   public DefaultQuestionCategoriesPanel(String id, IModel questionModel) {
     super(id, questionModel);
     setOutputMarkupId(true);
@@ -69,29 +67,12 @@ public class DefaultQuestionCategoriesPanel extends Panel {
 
         @Override
         public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          // ignore if multiple click in the same open field
-          if(getOpenField().equals(currentOpenField)) return;
-
-          // make sure a previously selected open field is not asked for
-          if(currentOpenField != null) {
-            currentOpenField.setRequired(false);
-          }
-          // make the open field active
-          currentOpenField = getOpenField();
-
           // update all
           target.addComponent(DefaultQuestionCategoriesPanel.this);
         }
 
         @Override
         public void onRadioSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          // make inactive the previously selected open field
-          if(currentOpenField != null) {
-            currentOpenField.setData(null);
-            currentOpenField.setRequired(false);
-          }
-          currentOpenField = getOpenField();
-
           // update all
           target.addComponent(DefaultQuestionCategoriesPanel.this);
         }
@@ -129,5 +110,29 @@ public class DefaultQuestionCategoriesPanel extends Panel {
       });
     }
   }
+
+  // /**
+  // * Reset (set non required and null data) the open fields not associated to the given question category.
+  // * @param questionCategoryModel
+  // */
+  // private void resetOpenAnswerDefinitionPanels(final IModel questionCategoryModel) {
+  // MarkupContainer categories = (MarkupContainer) get("categories");
+  //
+  // categories.visitChildren(new Component.IVisitor() {
+  //
+  // public Object component(Component component) {
+  // if(component instanceof AbstractOpenAnswerDefinitionPanel) {
+  // if(!questionCategoryModel.equals(component.getModel())) {
+  // log.info("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getModelObject());
+  // AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
+  // openField.setData(null);
+  // openField.setRequired(false);
+  // }
+  // }
+  // return CONTINUE_TRAVERSAL;
+  // }
+  //
+  // });
+  // }
 
 }
