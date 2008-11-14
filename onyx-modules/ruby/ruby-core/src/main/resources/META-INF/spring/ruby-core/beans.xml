@@ -30,7 +30,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="baseRubyStageState" parent="baseStageState"
     class="org.obiba.onyx.quartz.engine.state.AbstractRubyStageState" abstract="true">
   </bean>
-
+    
   <bean id="rubyWaitingState" parent="baseRubyStageState" class="org.obiba.onyx.ruby.engine.state.RubyWaitingState"
     scope="prototype" />
 
@@ -50,5 +50,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="rubyCompletedState" parent="baseRubyStageState" class="org.obiba.onyx.ruby.engine.state.RubyCompletedState"
     scope="prototype" />
+    
+  <bean id="rubyNotApplicableState" parent="baseRubyStageState"
+    class="org.obiba.onyx.ruby.engine.state.RubyNotApplicableState" scope="prototype" />
 
 </beans>

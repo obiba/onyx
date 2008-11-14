@@ -30,6 +30,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.StageDependencyCondition;
 import org.obiba.onyx.engine.state.AbstractStageState;
@@ -41,12 +42,36 @@ import org.obiba.onyx.ruby.engine.state.RubyCompletedState;
 import org.obiba.onyx.ruby.engine.state.RubyContraIndicatedState;
 import org.obiba.onyx.ruby.engine.state.RubyInProgressState;
 import org.obiba.onyx.ruby.engine.state.RubyInterruptedState;
+import org.obiba.onyx.ruby.engine.state.RubyNotApplicableState;
 import org.obiba.onyx.ruby.engine.state.RubyReadyState;
 import org.obiba.onyx.ruby.engine.state.RubyWaitingState;
 
 public class RubyModuleTest {
+  //
+  // Constants
+  //
+
+  private static final String WAITING_STATE = "RubyWaitingState";
+
+  private static final String READY_STATE = "RubyReadyState";
+
+  private static final String CONTRAINDICATED_STATE = "RubyContraIndicatedState";
+
+  private static final String IN_PROGRESS_STATE = "RubyInProgressState";
+
+  private static final String INTERRUPTED_STATE = "RubyInterruptedState";
+
+  private static final String NOT_APPLICABLE_STATE = "RubyNotApplicableState";
+
+  //
+  // Instance Variables
+  //
+
+  private RubyModule rubyModule;
 
   private ApplicationContextMock applicationContextMock;
+
+  private ModuleRegistry moduleRegistry;
 
   private ActiveInterviewService activeInterviewServiceMock;
 
@@ -121,6 +146,18 @@ public class RubyModuleTest {
     applicationContextMock.putBean("rubyInterruptedState", rubyInterruptedState);
     AbstractStageState rubyCompletedState = new RubyCompletedState();
     applicationContextMock.putBean("rubyCompletedState", rubyCompletedState);
+    AbstractStageState rubyNotApplicableState = new RubyNotApplicableState();
+    applicationContextMock.putBean("rubyNotApplicableState", rubyNotApplicableState);
+
+    rubyModule = new RubyModule();
+    rubyModule.setApplicationContext(applicationContextMock);
+
+    List<Stage> stages = new ArrayList<Stage>();
+    stages.add(stage);
+    rubyModule.setStages(stages);
+
+    moduleRegistry = new ModuleRegistry();
+    moduleRegistry.registerModule(rubyModule);
   }
 
   //
@@ -138,248 +175,264 @@ public class RubyModuleTest {
   }
 
   @Test
-  public void testReadyToInProgressTransition() {
-    RubyModule rubyModule = new RubyModule();
-    rubyModule.setApplicationContext(applicationContextMock);
+  public void testWaitingToNotApplicableTransition() {
+    setDependencyConditionNotSatisfied();
 
-    // Set the dependency condition to TRUE (i.e., satisfied).
-    ((StageDependencyConditionMock) stage.getStageDependencyCondition()).setDependencySatisfied(Boolean.TRUE);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
+    exec.setModuleRegistry(moduleRegistry);
 
-    List<Stage> stages = new ArrayList<Stage>();
-    stages.add(stage);
-    rubyModule.setStages(stages);
+    // Set the current state to WAITING.
+    StageExecutionMemento memento = createMemento(WAITING_STATE);
+    exec.restoreFromMemento(memento);
 
     // Record expectations for mocks.
-    StageExecutionMemento template = new StageExecutionMemento();
-    template.setInterview(interview);
-    template.setStage(stage.getName());
-    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(template).anyTimes();
-    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(template).anyTimes();
-    expect(activeInterviewServiceMock.getParticipant()).andReturn(participant).anyTimes();
+    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(memento).anyTimes();
+    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(memento).anyTimes();
 
     // Stop recording expectations.
     replay(persistenceManagerMock);
-    replay(activeInterviewServiceMock);
 
-    // Create the StageExecutionContext. Initial state should be READY, since the dependency condition
-    // is satisfied.
+    // Fire a NOTAPPLICABLE event to trigger a transition to the NOT APPLICABLE state.
+    exec.castEvent(TransitionEvent.NOTAPPLICABLE);
+
+    // Verify expectations of mocks.
+    verify(persistenceManagerMock);
+
+    // Verify that we have now transitioned to the NOT APPLICABLE state.
+    memento = (StageExecutionMemento) exec.saveToMemento(null);
+    Assert.assertEquals(RubyNotApplicableState.class.getSimpleName(), memento.getState());
+  }
+
+  @Test
+  public void testReadyToInProgressTransition() {
+    setDependencyConditionSatisfied();
+
     StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
+    exec.setModuleRegistry(moduleRegistry);
 
-    // Fire the START event.
+    // Set the current state to READY.
+    StageExecutionMemento memento = createMemento(READY_STATE);
+    exec.restoreFromMemento(memento);
+
+    // Record expectations for mocks.
+    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(memento).anyTimes();
+    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(memento).anyTimes();
+
+    // Stop recording expectations.
+    replay(persistenceManagerMock);
+
+    // Fire a START event to trigger a transition to the IN PROGRESS state.
     exec.castEvent(TransitionEvent.START);
 
-    // Verify mocks.
+    // Verify expectations of mocks.
     verify(persistenceManagerMock);
-    verify(activeInterviewServiceMock);
 
     // Verify that we have now transitioned to the IN PROGRESS state.
-    StageExecutionMemento memento = (StageExecutionMemento) exec.saveToMemento(null);
+    memento = (StageExecutionMemento) exec.saveToMemento(null);
     Assert.assertEquals(RubyInProgressState.class.getSimpleName(), memento.getState());
   }
 
   @Test
   public void testInProgressToCompletedTransition() {
-    RubyModule rubyModule = new RubyModule();
-    rubyModule.setApplicationContext(applicationContextMock);
+    setDependencyConditionSatisfied();
 
-    // Set the dependency condition to TRUE (i.e., satisfied).
-    ((StageDependencyConditionMock) stage.getStageDependencyCondition()).setDependencySatisfied(Boolean.TRUE);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
+    exec.setModuleRegistry(moduleRegistry);
 
-    List<Stage> stages = new ArrayList<Stage>();
-    stages.add(stage);
-    rubyModule.setStages(stages);
+    // Set the current state to IN PROGRESS.
+    StageExecutionMemento memento = createMemento(IN_PROGRESS_STATE);
+    exec.restoreFromMemento(memento);
 
     // Record expectations for mocks.
-    StageExecutionMemento template = new StageExecutionMemento();
-    template.setInterview(interview);
-    template.setStage(stage.getName());
-    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(template).anyTimes();
-    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(template).anyTimes();
+    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(memento).anyTimes();
+    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(memento).anyTimes();
 
     // Stop recording expectations.
     replay(persistenceManagerMock);
 
-    // Create the StageExecutionContext. Initial state should be READY, since the dependency condition
-    // is satisfied.
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
-
-    // Fire the START event then the COMPLETE event. This should transition us to COMPLETED (by way
-    // of IN PROGRESS).
-    exec.castEvent(TransitionEvent.START);
+    // Fire a COMPLETE event to trigger a transition to the COMPLETED state.
     exec.castEvent(TransitionEvent.COMPLETE);
 
-    // Verify mocks.
+    // Verify expectations of mocks.
     verify(persistenceManagerMock);
 
     // Verify that we have now transitioned to the COMPLETED state.
-    StageExecutionMemento memento = (StageExecutionMemento) exec.saveToMemento(null);
+    memento = (StageExecutionMemento) exec.saveToMemento(null);
     Assert.assertEquals(RubyCompletedState.class.getSimpleName(), memento.getState());
   }
 
   @Test
   public void testInProgressToContraIndicatedTransition() {
-    RubyModule rubyModule = new RubyModule();
-    rubyModule.setApplicationContext(applicationContextMock);
+    setDependencyConditionSatisfied();
 
-    // Set the dependency condition to TRUE (i.e., satisfied).
-    ((StageDependencyConditionMock) stage.getStageDependencyCondition()).setDependencySatisfied(Boolean.TRUE);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
+    exec.setModuleRegistry(moduleRegistry);
 
-    List<Stage> stages = new ArrayList<Stage>();
-    stages.add(stage);
-    rubyModule.setStages(stages);
+    // Set the current state to IN PROGRESS.
+    StageExecutionMemento memento = createMemento(IN_PROGRESS_STATE);
+    exec.restoreFromMemento(memento);
 
     // Record expectations for mocks.
-    StageExecutionMemento template = new StageExecutionMemento();
-    template.setInterview(interview);
-    template.setStage(stage.getName());
-    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(template).anyTimes();
-    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(template).anyTimes();
+    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(memento).anyTimes();
+    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(memento).anyTimes();
 
     // Stop recording expectations.
     replay(persistenceManagerMock);
 
-    // Create the StageExecutionContext. Initial state should be READY, since the dependency condition
-    // is satisfied.
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
-
-    // Fire the START event then the CONTRAINDICATE event. This should transition us to CONTRAINDICATED (by way
-    // of IN PROGRESS).
-    exec.castEvent(TransitionEvent.START);
+    // Fire a CONTRAINDICATE event to trigger a transition to the CONTRAINDICATED state.
     exec.castEvent(TransitionEvent.CONTRAINDICATED);
 
-    // Verify mocks.
+    // Verify expectations of mocks.
     verify(persistenceManagerMock);
 
     // Verify that we have now transitioned to the CONTRAINDICATED state.
-    StageExecutionMemento memento = (StageExecutionMemento) exec.saveToMemento(null);
+    memento = (StageExecutionMemento) exec.saveToMemento(null);
     Assert.assertEquals(RubyContraIndicatedState.class.getSimpleName(), memento.getState());
   }
 
   @Test
   public void testInProgressToInterruptedTransition() {
-    RubyModule rubyModule = new RubyModule();
-    rubyModule.setApplicationContext(applicationContextMock);
+    setDependencyConditionSatisfied();
 
-    // Set the dependency condition to TRUE (i.e., satisfied).
-    ((StageDependencyConditionMock) stage.getStageDependencyCondition()).setDependencySatisfied(Boolean.TRUE);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
+    exec.setModuleRegistry(moduleRegistry);
 
-    List<Stage> stages = new ArrayList<Stage>();
-    stages.add(stage);
-    rubyModule.setStages(stages);
+    // Set the current state to IN PROGRESS.
+    StageExecutionMemento memento = createMemento(IN_PROGRESS_STATE);
+    exec.restoreFromMemento(memento);
 
     // Record expectations for mocks.
-    StageExecutionMemento template = new StageExecutionMemento();
-    template.setInterview(interview);
-    template.setStage(stage.getName());
-    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(template).anyTimes();
-    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(template).anyTimes();
+    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(memento).anyTimes();
+    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(memento).anyTimes();
 
     // Stop recording expectations.
     replay(persistenceManagerMock);
 
-    // Create the StageExecutionContext. Initial state should be READY, since the dependency condition
-    // is satisfied.
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
-
-    // Fire the START event then the INTERRUPT event. This should transition us to INTERRUPTED (by way
-    // of IN PROGRESS).
-    exec.castEvent(TransitionEvent.START);
+    // Fire an INTERRUPT event to trigger a transition to the INTERRUPTED state.
     exec.castEvent(TransitionEvent.INTERRUPT);
 
-    // Verify mocks.
+    // Verify expectations of mocks.
     verify(persistenceManagerMock);
 
     // Verify that we have now transitioned to the INTERRUPTED state.
-    StageExecutionMemento memento = (StageExecutionMemento) exec.saveToMemento(null);
+    memento = (StageExecutionMemento) exec.saveToMemento(null);
     Assert.assertEquals(RubyInterruptedState.class.getSimpleName(), memento.getState());
   }
 
   @Test
   public void testInterruptedToInProgressTransition() {
-    RubyModule rubyModule = new RubyModule();
-    rubyModule.setApplicationContext(applicationContextMock);
+    setDependencyConditionSatisfied();
 
-    // Set the dependency condition to TRUE (i.e., satisfied).
-    ((StageDependencyConditionMock) stage.getStageDependencyCondition()).setDependencySatisfied(Boolean.TRUE);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
+    exec.setModuleRegistry(moduleRegistry);
 
-    List<Stage> stages = new ArrayList<Stage>();
-    stages.add(stage);
-    rubyModule.setStages(stages);
+    // Set the current state to INTERRUPTED.
+    StageExecutionMemento memento = createMemento(INTERRUPTED_STATE);
+    exec.restoreFromMemento(memento);
 
     // Record expectations for mocks.
-    StageExecutionMemento template = new StageExecutionMemento();
-    template.setInterview(interview);
-    template.setStage(stage.getName());
-    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(template).anyTimes();
-    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(template).anyTimes();
-    expect(activeInterviewServiceMock.getParticipant()).andReturn(participant).anyTimes();
-
-    // TODO: Should expect call to resume method, not start. Update this when interrupt/resume feature is implemented.
-    expect(activeTubeRegistrationServiceMock.start(participant)).andReturn(participantTubeRegistration).anyTimes();
+    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(memento).anyTimes();
+    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(memento).anyTimes();
 
     // Stop recording expectations.
     replay(persistenceManagerMock);
-    replay(activeInterviewServiceMock);
-    replay(activeTubeRegistrationServiceMock);
 
-    // Create the StageExecutionContext. Initial state should be READY, since the dependency condition
-    // is satisfied.
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
-
-    // Fire the START event, the INTERRUPT event, then the RESUME event. This should transition us to IN PROGRESS (by
-    // way of IN PROGRESS and INTERRUPTED).
-    exec.castEvent(TransitionEvent.START);
-    exec.castEvent(TransitionEvent.INTERRUPT);
+    // Fire a RESUME event to trigger a transition to the IN PROGRESS state.
     exec.castEvent(TransitionEvent.RESUME);
 
-    // Verify mocks.
+    // Verify expectations of mocks.
     verify(persistenceManagerMock);
-    verify(activeInterviewServiceMock);
-    verify(activeTubeRegistrationServiceMock);
 
     // Verify that we have now transitioned to the IN PROGRESS state.
-    StageExecutionMemento memento = (StageExecutionMemento) exec.saveToMemento(null);
+    memento = (StageExecutionMemento) exec.saveToMemento(null);
     Assert.assertEquals(RubyInProgressState.class.getSimpleName(), memento.getState());
   }
 
   @Test
   public void testContraIndicatedToReadyTransition() {
-    RubyModule rubyModule = new RubyModule();
-    rubyModule.setApplicationContext(applicationContextMock);
+    setDependencyConditionSatisfied();
 
-    // Set the dependency condition to TRUE (i.e., satisfied).
-    ((StageDependencyConditionMock) stage.getStageDependencyCondition()).setDependencySatisfied(Boolean.TRUE);
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
+    exec.setModuleRegistry(moduleRegistry);
 
-    List<Stage> stages = new ArrayList<Stage>();
-    stages.add(stage);
-    rubyModule.setStages(stages);
+    // Set the current state to CONTRAINDICATED.
+    StageExecutionMemento memento = createMemento(CONTRAINDICATED_STATE);
+    exec.restoreFromMemento(memento);
 
     // Record expectations for mocks.
-    StageExecutionMemento template = new StageExecutionMemento();
-    template.setInterview(interview);
-    template.setStage(stage.getName());
-    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(template).anyTimes();
-    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(template).anyTimes();
+    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(memento).anyTimes();
+    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(memento).anyTimes();
 
     // Stop recording expectations.
     replay(persistenceManagerMock);
 
-    // Create the StageExecutionContext. Initial state should be READY, since the dependency condition
-    // is satisfied.
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
-
-    // Fire the START event, the CONTRAINDICATE event, then the CANCEL event. This should transition us to READY (by way
-    // of IN PROGRESS and CONTRAINDICATED).
-    exec.castEvent(TransitionEvent.START);
-    exec.castEvent(TransitionEvent.CONTRAINDICATED);
+    // Fire a CANCEL event to trigger a transition to the READY state.
     exec.castEvent(TransitionEvent.CANCEL);
 
-    // Verify mocks.
+    // Verify expectations of mocks.
     verify(persistenceManagerMock);
 
     // Verify that we have now transitioned to the READY state.
-    StageExecutionMemento memento = (StageExecutionMemento) exec.saveToMemento(null);
+    memento = (StageExecutionMemento) exec.saveToMemento(null);
     Assert.assertEquals(RubyReadyState.class.getSimpleName(), memento.getState());
+  }
+
+  @Test
+  public void testNotApplicableToReadyTransition() {
+    setDependencyConditionNotSatisfied();
+
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
+    exec.setModuleRegistry(moduleRegistry);
+
+    // Set the current state to NOT APPLICABLE.
+    StageExecutionMemento memento = createMemento(NOT_APPLICABLE_STATE);
+    exec.restoreFromMemento(memento);
+
+    // Record expectations for mocks.
+    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(memento).anyTimes();
+    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(memento).anyTimes();
+
+    // Stop recording expectations.
+    replay(persistenceManagerMock);
+
+    // Fire a VALID event to trigger a transition to the READY state.
+    exec.castEvent(TransitionEvent.VALID);
+
+    // Verify expectations of mocks.
+    verify(persistenceManagerMock);
+
+    // Verify that we have now transitioned to the READY state.
+    memento = (StageExecutionMemento) exec.saveToMemento(null);
+    Assert.assertEquals(RubyReadyState.class.getSimpleName(), memento.getState());
+  }
+
+  @Test
+  public void testNotApplicableToWaitingTransition() {
+    setDependencyConditionNotSatisfied();
+
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
+    exec.setModuleRegistry(moduleRegistry);
+
+    // Set the current state to NOT APPLICABLE.
+    StageExecutionMemento memento = createMemento(NOT_APPLICABLE_STATE);
+    exec.restoreFromMemento(memento);
+
+    // Record expectations for mocks.
+    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(memento).anyTimes();
+    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(memento).anyTimes();
+
+    // Stop recording expectations.
+    replay(persistenceManagerMock);
+
+    // Fire an INVALID event to trigger a transition to the WAITING state.
+    exec.castEvent(TransitionEvent.INVALID);
+
+    // Verify expectations of mocks.
+    verify(persistenceManagerMock);
+
+    // Verify that we have now transitioned to the WAITING state.
+    memento = (StageExecutionMemento) exec.saveToMemento(null);
+    Assert.assertEquals(RubyWaitingState.class.getSimpleName(), memento.getState());
   }
 
   //
@@ -425,6 +478,22 @@ public class RubyModuleTest {
     interview.setId(id);
 
     return interview;
+  }
+
+  private void setDependencyConditionSatisfied() {
+    ((StageDependencyConditionMock) stage.getStageDependencyCondition()).setDependencySatisfied(Boolean.TRUE);
+  }
+
+  private void setDependencyConditionNotSatisfied() {
+    ((StageDependencyConditionMock) stage.getStageDependencyCondition()).setDependencySatisfied(null);
+  }
+
+  private StageExecutionMemento createMemento(String stateName) {
+    StageExecutionMemento memento = new StageExecutionMemento();
+    memento.setInterview(interview);
+    memento.setStage(stage.getName());
+    memento.setState(stateName);
+    return memento;
   }
 
   //

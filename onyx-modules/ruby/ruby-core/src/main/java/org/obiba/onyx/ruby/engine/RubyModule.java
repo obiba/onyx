@@ -46,6 +46,8 @@ public class RubyModule implements Module, ApplicationContextAware {
 
   private static final String COMPLETED_STATE_BEAN = "rubyCompletedState";
 
+  private static final String NOT_APPLICABLE_STATE_BEAN = "rubyNotApplicableState";
+
   //
   // Instance Variables
   //
@@ -94,6 +96,7 @@ public class RubyModule implements Module, ApplicationContextAware {
     states.put(IN_PROGRESS_STATE_BEAN, (AbstractStageState) applicationContext.getBean(IN_PROGRESS_STATE_BEAN));
     states.put(INTERRUPTED_STATE_BEAN, (AbstractStageState) applicationContext.getBean(INTERRUPTED_STATE_BEAN));
     states.put(COMPLETED_STATE_BEAN, (AbstractStageState) applicationContext.getBean(COMPLETED_STATE_BEAN));
+    states.put(NOT_APPLICABLE_STATE_BEAN, (AbstractStageState) applicationContext.getBean(NOT_APPLICABLE_STATE_BEAN));
 
     initTransitionsFromWaiting(exec, states);
     initTransitionsFromReady(exec, states);
@@ -101,6 +104,7 @@ public class RubyModule implements Module, ApplicationContextAware {
     initTransitionsFromInProgress(exec, states);
     initTransitionsFromInterrupted(exec, states);
     initTransitionsFromCompleted(exec, states);
+    initTransitionsFromNotApplicable(exec, states);
 
     // Set initial state.
     setInitialState(stage, exec, states);
@@ -129,6 +133,9 @@ public class RubyModule implements Module, ApplicationContextAware {
 
     AbstractStageState ready = states.get(READY_STATE_BEAN);
     exec.addEdge(waiting, TransitionEvent.VALID, ready);
+
+    AbstractStageState notApplicable = states.get(NOT_APPLICABLE_STATE_BEAN);
+    exec.addEdge(waiting, TransitionEvent.NOTAPPLICABLE, notApplicable);
   }
 
   private void initTransitionsFromReady(StageExecutionContext exec, Map<String, AbstractStageState> states) {
@@ -139,6 +146,9 @@ public class RubyModule implements Module, ApplicationContextAware {
 
     AbstractStageState inProgress = states.get(IN_PROGRESS_STATE_BEAN);
     exec.addEdge(ready, TransitionEvent.START, inProgress);
+
+    AbstractStageState notApplicable = states.get(NOT_APPLICABLE_STATE_BEAN);
+    exec.addEdge(ready, TransitionEvent.NOTAPPLICABLE, notApplicable);
   }
 
   private void initTransitionsFromContraIndicated(StageExecutionContext exec, Map<String, AbstractStageState> states) {
@@ -149,6 +159,9 @@ public class RubyModule implements Module, ApplicationContextAware {
 
     AbstractStageState ready = states.get(READY_STATE_BEAN);
     exec.addEdge(contraIndicated, TransitionEvent.CANCEL, ready);
+
+    AbstractStageState notApplicable = states.get(NOT_APPLICABLE_STATE_BEAN);
+    exec.addEdge(contraIndicated, TransitionEvent.NOTAPPLICABLE, notApplicable);
   }
 
   private void initTransitionsFromInProgress(StageExecutionContext exec, Map<String, AbstractStageState> states) {
@@ -165,6 +178,9 @@ public class RubyModule implements Module, ApplicationContextAware {
 
     AbstractStageState completed = states.get(COMPLETED_STATE_BEAN);
     exec.addEdge(inProgress, TransitionEvent.COMPLETE, completed);
+
+    AbstractStageState notApplicable = states.get(NOT_APPLICABLE_STATE_BEAN);
+    exec.addEdge(inProgress, TransitionEvent.NOTAPPLICABLE, notApplicable);
   }
 
   private void initTransitionsFromInterrupted(StageExecutionContext exec, Map<String, AbstractStageState> states) {
@@ -178,6 +194,9 @@ public class RubyModule implements Module, ApplicationContextAware {
 
     AbstractStageState inProgress = states.get(IN_PROGRESS_STATE_BEAN);
     exec.addEdge(interrupted, TransitionEvent.RESUME, inProgress);
+
+    AbstractStageState notApplicable = states.get(NOT_APPLICABLE_STATE_BEAN);
+    exec.addEdge(interrupted, TransitionEvent.NOTAPPLICABLE, notApplicable);
   }
 
   private void initTransitionsFromCompleted(StageExecutionContext exec, Map<String, AbstractStageState> states) {
@@ -188,11 +207,25 @@ public class RubyModule implements Module, ApplicationContextAware {
 
     AbstractStageState ready = states.get(READY_STATE_BEAN);
     exec.addEdge(completed, TransitionEvent.CANCEL, ready);
+
+    AbstractStageState notApplicable = states.get(NOT_APPLICABLE_STATE_BEAN);
+    exec.addEdge(completed, TransitionEvent.NOTAPPLICABLE, notApplicable);
+  }
+
+  private void initTransitionsFromNotApplicable(StageExecutionContext exec, Map<String, AbstractStageState> states) {
+    AbstractStageState notApplicable = states.get(NOT_APPLICABLE_STATE_BEAN);
+
+    AbstractStageState waiting = states.get(WAITING_STATE_BEAN);
+    exec.addEdge(notApplicable, TransitionEvent.INVALID, waiting);
+
+    AbstractStageState ready = states.get(READY_STATE_BEAN);
+    exec.addEdge(notApplicable, TransitionEvent.VALID, ready);
   }
 
   private void setInitialState(Stage stage, StageExecutionContext exec, Map<String, AbstractStageState> states) {
     AbstractStageState waiting = states.get(WAITING_STATE_BEAN);
     AbstractStageState ready = states.get(READY_STATE_BEAN);
+    AbstractStageState notApplicable = states.get(NOT_APPLICABLE_STATE_BEAN);
 
     if(stage.getStageDependencyCondition() == null) {
       exec.setInitialState(ready);
@@ -202,8 +235,7 @@ public class RubyModule implements Module, ApplicationContextAware {
       } else if(stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService) == true) {
         exec.setInitialState(ready);
       } else {
-        // should never get here
-        throw new RuntimeException("Unexpected stage invalidation");
+        exec.setInitialState(notApplicable);
       }
     }
   }
