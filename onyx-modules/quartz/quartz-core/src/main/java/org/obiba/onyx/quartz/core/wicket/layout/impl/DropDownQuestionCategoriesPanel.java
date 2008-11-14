@@ -18,7 +18,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -40,9 +39,6 @@ public class DropDownQuestionCategoriesPanel extends Panel {
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
-
-  @SpringBean
-  private EntityQueryService queryService;
 
   private QuestionCategory selectedQuestionCategory;
 
@@ -74,9 +70,10 @@ public class DropDownQuestionCategoriesPanel extends Panel {
     add(new EmptyPanel("open"));
 
     // When navigating to previous question
+    CategoryAnswer previousAnswer = null;
     if(activeQuestionnaireAdministrationService.findAnswers(question).size() != 0) {
 
-      CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswers(question).get(0);
+      previousAnswer = activeQuestionnaireAdministrationService.findAnswers(question).get(0);
 
       for(QuestionCategory questionCategory : question.getQuestionCategories()) {
         if(questionCategory.getCategory().getName().equals(previousAnswer.getCategoryName())) {
@@ -93,6 +90,9 @@ public class DropDownQuestionCategoriesPanel extends Panel {
 
     questionCategoriesDropDownChoice.setLabel(new QuestionnaireStringResourceModel(question, "label"));
     questionCategoriesDropDownChoice.setRequired(question.isRequired());
+    if(!question.isRequired()) {
+      questionCategoriesDropDownChoice.setNullValid(true);
+    }
 
     // Set model on submission
     questionCategoriesDropDownChoice.add(new OnChangeAjaxBehavior() {
@@ -113,6 +113,7 @@ public class DropDownQuestionCategoriesPanel extends Panel {
         // Update component
         target.addComponent(DropDownQuestionCategoriesPanel.this);
       }
+
     });
 
     add(questionCategoriesDropDownChoice);
