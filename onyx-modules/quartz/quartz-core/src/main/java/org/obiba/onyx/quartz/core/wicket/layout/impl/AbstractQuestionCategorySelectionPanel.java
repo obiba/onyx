@@ -125,7 +125,18 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
    * @see #onOpenFieldSelection(AjaxRequestTarget, IModel, IModel)
    */
   protected void onInternalOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+    onOpenFieldSelection(target, questionModel, questionCategoryModel);
+  }
 
+  /**
+   * Called for internal use after open field is submited.
+   * @param target
+   * @param questionModel
+   * @param questionCategoryModel
+   * @see #onOpenFieldSubmit(AjaxRequestTarget, IModel, IModel)
+   */
+  public void onInternalOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+    onOpenFieldSubmit(target, questionModel, questionCategoryModel);
   }
 
   /**
@@ -154,7 +165,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
 
         @Override
         public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          onOpenFieldSubmit(target, questionModel, questionCategoryModel);
+          onInternalOpenFieldSubmit(target, questionModel, questionCategoryModel);
         }
 
         @Override
