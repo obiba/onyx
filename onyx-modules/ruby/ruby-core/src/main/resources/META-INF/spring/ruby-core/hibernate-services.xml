@@ -10,6 +10,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     class="org.obiba.onyx.ruby.core.service.impl.hibernate.ActiveTubeRegistrationServiceHibernateImpl">
     <property name="sessionFactory" ref="sessionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />
-    <property name="tubeRegistrationConfig" ref="tubeRegistrationConfiguration" />
+    <property name="tubeRegistrationConfiguration" ref="tubeRegistrationConfiguration" />
   </bean>
 </beans>
