@@ -127,12 +127,20 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
 
     // set checkbox as selected
     getSelectionModel().select();
-
     openField.setRequired(getQuestion().isRequired());
 
     activeQuestionnaireAdministrationService.answer((Question) questionModel.getObject(), (QuestionCategory) getModelObject(), ((QuestionCategory) getModelObject()).getCategory().getOpenAnswerDefinition(), null);
-    // target.addComponent(CheckBoxQuestionCategoryPanel.this);
+
     onOpenFieldSelection(target, questionModel, questionCategoryModel);
+  }
+
+  @Override
+  public void onInternalOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+    // make sure checkbox is selected in case of open field selection event was bypassed
+    getSelectionModel().select();
+    openField.setRequired(getQuestion().isRequired());
+
+    onOpenFieldSubmit(target, questionModel, questionCategoryModel);
   }
 
   /**
