@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.answer;
 
 import java.util.Date;
 
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
@@ -21,7 +22,7 @@ public class TimestampSource extends AnswerSource {
   public TimestampSource() {
   }
 
-  public Data getData() {
+  public Data getData(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService) {
     return new Data(DataType.DATE, new Date());
   }
 

@@ -14,6 +14,15 @@ import java.io.OutputStream;
 import java.util.Locale;
 import java.util.Properties;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.FixedSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.OpenAnswerSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ParticipantPropertySource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.TimestampSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.AnswerCondition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.DataComparator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.MultipleCondition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.NoAnswerCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -73,6 +82,17 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(Data.class, "type");
     xstream.alias("dataValidator", DataValidator.class);
     xstream.useAttributeFor(DataValidator.class, "dataType");
+    xstream.useAttributeFor(Condition.class, "name");
+    xstream.alias("answerCondition", AnswerCondition.class);
+    xstream.alias("noAnswerCondition", NoAnswerCondition.class);
+    xstream.alias("multipleCondition", MultipleCondition.class);
+    xstream.useAttributeFor(MultipleCondition.class, "conditionOperator");
+    xstream.alias("dataComparator", DataComparator.class);
+    xstream.useAttributeFor(DataComparator.class, "comparisionOperator");
+    xstream.alias("fixedSource", FixedSource.class);
+    xstream.alias("openAnswerSource", OpenAnswerSource.class);
+    xstream.alias("timestampSource", TimestampSource.class);
+    xstream.alias("participantPropertySource", ParticipantPropertySource.class);
   }
 
   /**

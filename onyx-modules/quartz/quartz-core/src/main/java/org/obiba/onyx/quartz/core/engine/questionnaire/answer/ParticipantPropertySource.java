@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.answer;
 
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.Data;
 
 public class ParticipantPropertySource extends AnswerSource {
@@ -28,7 +29,7 @@ public class ParticipantPropertySource extends AnswerSource {
     this.property = property;
   }
 
-  public Data getData() {
+  public Data getData(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService) {
     // TODO Auto-generated method stub
     return null;
   }

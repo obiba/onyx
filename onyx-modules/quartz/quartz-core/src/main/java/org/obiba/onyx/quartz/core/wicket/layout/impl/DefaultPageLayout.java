@@ -96,7 +96,7 @@ public class DefaultPageLayout extends PageLayout {
               // Get data from AnswerSource and answer current question (if not already answered).
               answer = activeQuestionnaireAdministrationService.findAnswer(category);
               if(answer == null) {
-                activeQuestionnaireAdministrationService.answer(category, category.getCategory().getOpenAnswerDefinition(), answerSource.getData());
+                activeQuestionnaireAdministrationService.answer(category, category.getCategory().getOpenAnswerDefinition(), answerSource.getData(activeQuestionnaireAdministrationService));
               }
               questionHasAnswers = true;
             }

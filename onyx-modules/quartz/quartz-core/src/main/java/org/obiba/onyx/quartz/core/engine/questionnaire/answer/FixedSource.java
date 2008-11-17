@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.answer;
 
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.Data;
 
 public class FixedSource extends AnswerSource {
@@ -17,11 +18,18 @@ public class FixedSource extends AnswerSource {
 
   private Data data;
 
+  public FixedSource() {
+  }
+
+  public FixedSource(Data data) {
+    this.data = data;
+  }
+
   public void setData(Data data) {
     this.data = data;
   }
 
-  public Data getData() {
+  public Data getData(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService) {
     return data;
   }
 

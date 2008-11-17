@@ -220,7 +220,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
       if(data != null && comparisionOperator != null && openAnswerDefinitionName != null) {
         OpenAnswerDefinition openAnswerDefinition = category.findOpenAnswerDefinition(openAnswerDefinitionName);
         if(openAnswerDefinition == null) throw new IllegalArgumentException("You cannot apply the data validation " + openAnswerDefinitionName + " on the selected category");
-        dataComparator = new DataComparator(comparisionOperator, data, openAnswerDefinition);
+        dataComparator = new DataComparator(comparisionOperator, openAnswerDefinition, data);
         answerCondition.setDataComparator(dataComparator);
       }
     }
