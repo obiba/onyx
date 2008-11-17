@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.wicket.util.string.Strings;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
@@ -86,7 +87,7 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
       Collection<String> fieldNameList = form.getFields().keySet();
       for(String fieldName : fieldNameList) {
         if(isMandatoryField(form, fieldName)) {
-          if(form.getField(fieldName).trim().isEmpty()) {
+          if(Strings.isEmpty(form.getField(fieldName))) {
             return false;
           }
         }

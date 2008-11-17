@@ -11,6 +11,8 @@ package org.obiba.onyx.marble.engine;
 
 import java.util.List;
 
+import org.apache.wicket.Application;
+import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;
@@ -18,6 +20,7 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
+import org.obiba.onyx.marble.core.wicket.consent.ElectronicConsentUploadPage;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -52,6 +55,8 @@ public class MarbleModule implements Module, ApplicationContextAware {
   }
 
   public void initialize() {
+    // Mount page to specific URL so it can be called from <embed> tag (submit form button).
+    ((WebApplication) Application.get()).mountBookmarkablePage("/uploadConsent", ElectronicConsentUploadPage.class);
   }
 
   public void shutdown() {

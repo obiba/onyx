@@ -21,7 +21,6 @@ public class ElectronicConsentPanel extends Panel {
   @SpringBean
   private ActiveConsentService activeConsentService;
 
-  @SuppressWarnings("serial")
   public ElectronicConsentPanel(String id, WizardForm form) {
     super(id);
     setOutputMarkupId(true);

@@ -1,9 +1,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:tx="http://www.springframework.org/schema/tx"
   xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
-http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
   <tx:annotation-driven transaction-manager="transactionManager" />
 
@@ -12,7 +11,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
       <list>
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="CON" />
-          <property name="module" value="marble"/>
+          <property name="module" value="marble" />
           <property name="description" value="Participant_Consent" />
           <property name="displayOrder" value="1" />
           <property name="userSessionService" ref="userSessionService" />
@@ -21,29 +20,37 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     </property>
   </bean>
 
-  <bean id="marbleReadyState" parent="baseMarbleStageState" class="org.obiba.onyx.marble.engine.state.MarbleReadyState"
-    scope="prototype">   
-  </bean>
-
-  <bean id="marbleInProgressState" parent="baseMarbleStageState"
-    class="org.obiba.onyx.marble.engine.state.MarbleInProgressState" scope="prototype"> 
-  </bean>
-
-  <bean id="marbleCompletedState" parent="baseMarbleStageState"
-    class="org.obiba.onyx.marble.engine.state.MarbleCompletedState" scope="prototype">  
-  </bean>
-
-  <bean id="baseMarbleStageState" parent="baseStageState" class="org.obiba.onyx.marble.engine.state.AbstractMarbleStageState" abstract="true">
+  <bean id="baseMarbleStageState" parent="baseStageState" class="org.obiba.onyx.marble.engine.state.AbstractMarbleStageState"
+    abstract="true">
     <property name="activeConsentService" ref="activeConsentService" />
+  </bean>
+
+  <bean id="marbleReadyState" parent="baseMarbleStageState" class="org.obiba.onyx.marble.engine.state.MarbleReadyState"
+    scope="prototype">
+  </bean>
+
+  <bean id="marbleInProgressState" parent="baseMarbleStageState" class="org.obiba.onyx.marble.engine.state.MarbleInProgressState"
+    scope="prototype">
+  </bean>
+
+  <bean id="marbleCompletedState" parent="baseMarbleStageState" class="org.obiba.onyx.marble.engine.state.MarbleCompletedState"
+    scope="prototype">
   </bean>
 
   <bean id="activeConsentService" class="org.obiba.onyx.marble.core.service.impl.DefaultActiveConsentServiceImpl"
     scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
-    <property name="activeInterviewService" ref="activeInterviewService" />    
+    <property name="activeInterviewService" ref="activeInterviewService" />
   </bean>
-  
-  <bean id="consentTemplateLoader" class="org.obiba.onyx.marble.core.wicket.consent.ElectronicConsentTemplateLoader" >
-  </bean>  
 
+  <bean id="consentTemplateLoader" class="org.obiba.onyx.marble.core.wicket.consent.ElectronicConsentTemplateLoader">
+  </bean>
+
+  <bean id="fdfProducer" class="org.obiba.onyx.marble.core.service.FdfProducer" scope="prototype">
+    <property name="templateLoader" ref="consentTemplateLoader" />
+    <property name="activeConsentService" ref="activeConsentService"/>
+    <property name="activeInterviewService" ref="activeInterviewService"/>
+    <!-- See java.text.SimpleDateFormat for details for possible date formating -->
+    <property name="dateFormat" value="yyyy-MM-dd"/>
+  </bean>
 </beans>
