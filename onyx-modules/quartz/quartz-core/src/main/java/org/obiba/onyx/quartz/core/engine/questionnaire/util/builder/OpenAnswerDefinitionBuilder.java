@@ -134,7 +134,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @param answerSource
    * @return
    */
-  public OpenAnswerDefinitionBuilder setOpenAnswerDefinitionAnswerSource(DataSource answerSource) {
+  public OpenAnswerDefinitionBuilder setOpenAnswerDefinitionDataSource(DataSource answerSource) {
     element.setDataSource(answerSource);
     return this;
   }
