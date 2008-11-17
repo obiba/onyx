@@ -60,6 +60,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
 import org.obiba.onyx.util.StringReferenceCompatibleMessageFormat;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.wicket.test.MockSpringApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,6 +135,8 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.2.label", locale, "Choice two");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.3.label", locale, "Choice three");
+    messageSource.addMessage("OpenAnswerDefinition.OPEN_3.label", locale, "Open three");
+    messageSource.addMessage("OpenAnswerDefinition.OPEN_3.unitLabel", locale, "Open three unit");
 
     messageSource.addMessage("Question.Q2.label", locale, "question2 label");
     messageSource.addMessage("Question.Q2.help", locale, "question2 help");
@@ -703,7 +706,7 @@ public class DefaultQuestionPanelTest {
       }
     });
 
-    dumpPage("testMultipleChoiceQuestionWithMultipleOpenAnswer");
+    // dumpPage("testMultipleChoiceQuestionWithMultipleOpenAnswer");
 
     // check all expected radios are here
     tester.assertComponent("panel:form:content:content:categories", CheckGroup.class);
@@ -711,7 +714,7 @@ public class DefaultQuestionPanelTest {
     tester.assertComponent("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox", CheckBox.class);
     tester.assertComponent("panel:form:content:content:categories:category:3:input:categoryLabel:checkbox", CheckBox.class);
 
-    // check previous answer is here (radio 2)
+    // check previous answer is here (cb 2)
     CheckGroup checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
     CheckBox checkbox2 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox");
     Collection<IModel> selections = (Collection<IModel>) checkGroup.getModelObject();
@@ -761,13 +764,14 @@ public class DefaultQuestionPanelTest {
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question1, question.getQuestionCategories().get(0))).andReturn(previousCategoryAnswer).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question1, question.getQuestionCategories().get(1))).andReturn(null).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question1, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer(question1, question.getCategories().get(2), question.getCategories().get(2).getOpenAnswerDefinition())).andReturn(null).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question2, question.getQuestionCategories().get(0))).andReturn(null).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question2, question.getQuestionCategories().get(1))).andReturn(null).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question2, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer(question2, question.getCategories().get(2), question.getCategories().get(2).getOpenAnswerDefinition())).andReturn(null).atLeastOnce();
 
-    // activeQuestionnaireAdministrationServiceMock.deleteAnswers(question);
-    // expect(activeQuestionnaireAdministrationServiceMock.answer(QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q3",
-    // "Q3.2"), null)).andReturn(new CategoryAnswer());
+    activeQuestionnaireAdministrationServiceMock.deleteAnswers(question1);
+    expect(activeQuestionnaireAdministrationServiceMock.answer(question1, question.getQuestionCategories().get(2), question.getCategories().get(2).getOpenAnswerDefinition(), null)).andReturn(new CategoryAnswer());
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
@@ -779,6 +783,10 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).anyTimes();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).anyTimes();
+      if(qCategory.getCategory().getOpenAnswerDefinition() != null) {
+        expect(questionnaireBundleMock.getPropertyKey(qCategory.getCategory().getOpenAnswerDefinition(), "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory.getCategory().getOpenAnswerDefinition(), "label")).anyTimes();
+        expect(questionnaireBundleMock.getPropertyKey(qCategory.getCategory().getOpenAnswerDefinition(), "unitLabel")).andReturn(propertyKeyProvider.getPropertyKey(qCategory.getCategory().getOpenAnswerDefinition(), "unitLabel")).anyTimes();
+      }
     }
     for(Question q : question.getQuestions()) {
       expect(questionnaireBundleMock.getPropertyKey(q, "label")).andReturn(propertyKeyProvider.getPropertyKey(q, "label")).anyTimes();
@@ -800,7 +808,46 @@ public class DefaultQuestionPanelTest {
       }
     });
 
-    // dumpPage("testSharedCategoriesArrayQuestion");
+    dumpPage("testSharedCategoriesArrayQuestion");
+
+    // tester.getComponentFromLastRenderedPage("panel:form:content:content:array:headers:2:header:label");
+    tester.assertLabel("panel:form:content:content:array:headers:2:header:label", "Choice one");
+    tester.assertLabel("panel:form:content:content:array:headers:3:header:label", "Choice two");
+    tester.assertLabel("panel:form:content:content:array:headers:4:header:label", "Choice three");
+
+    // check row labels as to be child question labels
+    tester.assertLabel("panel:form:content:content:array:rows:rows:1:group:cells:1:cell", "question3-1 label");
+    tester.assertLabel("panel:form:content:content:array:rows:rows:2:group:cells:1:cell", "question3-2 label");
+
+    // check all expected radios are here
+    tester.assertComponent("panel:form:content:content:array:rows:rows:1:group", RadioGroup.class);
+    tester.assertComponent("panel:form:content:content:array:rows:rows:1:group:cells:2:cell:categoryLabel:radio", Radio.class);
+    tester.assertComponent("panel:form:content:content:array:rows:rows:1:group:cells:3:cell:categoryLabel:radio", Radio.class);
+    tester.assertComponent("panel:form:content:content:array:rows:rows:1:group:cells:4:cell:categoryLabel:radio", Radio.class);
+    tester.assertComponent("panel:form:content:content:array:rows:rows:2:group", RadioGroup.class);
+    tester.assertComponent("panel:form:content:content:array:rows:rows:2:group:cells:2:cell:categoryLabel:radio", Radio.class);
+    tester.assertComponent("panel:form:content:content:array:rows:rows:2:group:cells:3:cell:categoryLabel:radio", Radio.class);
+    tester.assertComponent("panel:form:content:content:array:rows:rows:2:group:cells:4:cell:categoryLabel:radio", Radio.class);
+
+    tester.assertLabel("panel:form:content:content:array:rows:rows:1:group:cells:4:cell:open:label", "Open three");
+    tester.assertComponent("panel:form:content:content:array:rows:rows:1:group:cells:4:cell:open:open", DataField.class);
+
+    // check previous answer is here (radio 1.1)
+    RadioGroup radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:array:rows:rows:1:group");
+    Radio radio11 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:array:rows:rows:1:group:cells:2:cell:categoryLabel:radio");
+    Assert.assertEquals(radioGroup.getModelObject(), radio11.getModelObject());
+    Assert.assertTrue(radioGroup.isRequired());
+    FormComponent field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:array:rows:rows:1:group:cells:4:cell:open:open:input:field");
+    Assert.assertFalse(field.isRequired());
+
+    // select open field
+    tester.executeAjaxEvent("panel:form:content:content:array:rows:rows:1:group:cells:4:cell:open:open:input:field", "onclick");
+    radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:array:rows:rows:1:group");
+    Radio radio13 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:array:rows:rows:1:group:cells:4:cell:categoryLabel:radio");
+    Assert.assertEquals(radioGroup.getModelObject(), radio13.getModelObject());
+    Assert.assertTrue(radioGroup.isRequired());
+    field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:array:rows:rows:1:group:cells:4:cell:open:open:input:field");
+    Assert.assertTrue(field.isRequired());
 
     verify(activeInterviewServiceMock);
     verify(activeQuestionnaireAdministrationServiceMock);
@@ -833,7 +880,7 @@ public class DefaultQuestionPanelTest {
     builder.inPage("P2").withQuestion("Q2_MULTIPLE", true).withCategory("1").withOpenAnswerDefinition("OPEN_TEXT", DataType.TEXT);
     builder.inQuestion("Q2_MULTIPLE").withSharedCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
 
-    builder.withSection("S3").withPage("P3").withQuestion("Q3").withCategories("1", "2", "3");
+    builder.withSection("S3").withPage("P3").withQuestion("Q3").withCategories("1", "2").withCategory("3").withOpenAnswerDefinition("OPEN_3", DataType.TEXT);
     builder.inQuestion("Q3").withQuestion("Q3_1");
     builder.inQuestion("Q3").withQuestion("Q3_2");
 
