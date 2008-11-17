@@ -63,7 +63,7 @@
                   <question reference="31"/>
                   <category id="34" name="TIMESTAMP">
                     <openAnswerDefinition id="35" name="TIMESTAMP_P23" dataType="DATE">
-                      <answerSource class="org.obiba.onyx.quartz.core.engine.questionnaire.answer.TimestampSource" id="36"/>
+                      <answerSource class="timestampSource" id="36"/>
                     </openAnswerDefinition>
                   </category>
                 </questionCategory>
@@ -389,26 +389,21 @@
                       <category reference="27"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.quartz.core.engine.questionnaire.condition.NoAnswerCondition" id="180">
-                    <name>NO1</name>
+                  <condition class="noAnswerCondition" id="180" name="NO1">
                     <questions id="181">
                       <question reference="169"/>
                     </questions>
-                    <condition class="org.obiba.onyx.quartz.core.engine.questionnaire.condition.MultipleCondition" id="182">
-                      <name>MC1</name>
+                    <condition class="multipleCondition" id="182" name="MC1" conditionOperator="AND">
                       <conditions id="183">
-                        <org.obiba.onyx.quartz.core.engine.questionnaire.condition.AnswerCondition id="184">
-                          <name>AC1</name>
+                        <answerCondition id="184" name="AC1">
                           <question reference="131"/>
                           <category reference="134"/>
-                        </org.obiba.onyx.quartz.core.engine.questionnaire.condition.AnswerCondition>
-                        <org.obiba.onyx.quartz.core.engine.questionnaire.condition.AnswerCondition id="185">
-                          <name>AC2</name>
+                        </answerCondition>
+                        <answerCondition id="185" name="AC2">
                           <question reference="150"/>
                           <category reference="153"/>
-                        </org.obiba.onyx.quartz.core.engine.questionnaire.condition.AnswerCondition>
+                        </answerCondition>
                       </conditions>
-                      <conditionOperator>AND</conditionOperator>
                     </condition>
                   </condition>
                   <questions id="186"/>
@@ -1491,8 +1486,7 @@
                       <category id="611" name="2"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="org.obiba.onyx.quartz.core.engine.questionnaire.condition.AnswerCondition" id="612">
-                    <name>AC3</name>
+                  <condition class="answerCondition" id="612" name="AC3">
                     <questions id="613">
                       <question reference="606"/>
                     </questions>
