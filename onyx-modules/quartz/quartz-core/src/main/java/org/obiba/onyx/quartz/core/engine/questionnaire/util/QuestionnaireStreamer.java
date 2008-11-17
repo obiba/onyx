@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.util.Locale;
 import java.util.Properties;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ExternalOpenAnswerSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.FixedSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.OpenAnswerSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ParticipantPropertySource;
@@ -24,13 +25,14 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.condition.DataComparator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.MultipleCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.NoAnswerCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataSourceValidator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IPropertyKeyWriter;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.OutputStreamPropertyKeyWriterImpl;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
@@ -52,14 +54,18 @@ public class QuestionnaireStreamer {
   private void initializeXStream() {
     xstream = new XStream();
     xstream.setMode(XStream.ID_REFERENCES);
+
     xstream.alias("questionnaire", Questionnaire.class);
     xstream.useAttributeFor(Questionnaire.class, "name");
     xstream.useAttributeFor(Questionnaire.class, "version");
+
     xstream.alias("section", Section.class);
     xstream.useAttributeFor(Section.class, "name");
+
     xstream.alias("page", Page.class);
     xstream.useAttributeFor(Page.class, "name");
     xstream.useAttributeFor(Page.class, "uIFactoryName");
+
     xstream.alias("question", Question.class);
     xstream.useAttributeFor(Question.class, "name");
     xstream.useAttributeFor(Question.class, "number");
@@ -68,20 +74,28 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(Question.class, "minCount");
     xstream.useAttributeFor(Question.class, "maxCount");
     xstream.useAttributeFor(Question.class, "uIFactoryName");
+
     xstream.alias("category", Category.class);
     xstream.useAttributeFor(Category.class, "name");
+
     xstream.alias("questionCategory", QuestionCategory.class);
     xstream.useAttributeFor(QuestionCategory.class, "reselectable");
     xstream.useAttributeFor(QuestionCategory.class, "selected");
     xstream.useAttributeFor(QuestionCategory.class, "exportName");
+
     xstream.alias("open", OpenAnswerDefinition.class);
     xstream.useAttributeFor(OpenAnswerDefinition.class, "name");
     xstream.useAttributeFor(OpenAnswerDefinition.class, "dataType");
     xstream.useAttributeFor(OpenAnswerDefinition.class, "unit");
+
     xstream.alias("data", Data.class);
     xstream.useAttributeFor(Data.class, "type");
+
     xstream.alias("dataValidator", DataValidator.class);
     xstream.useAttributeFor(DataValidator.class, "dataType");
+    xstream.alias("dataSourceValidator", DataSourceValidator.class);
+    xstream.useAttributeFor(DataSourceValidator.class, "comparisionOperator");
+
     xstream.useAttributeFor(Condition.class, "name");
     xstream.alias("answerCondition", AnswerCondition.class);
     xstream.alias("noAnswerCondition", NoAnswerCondition.class);
@@ -89,10 +103,17 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(MultipleCondition.class, "conditionOperator");
     xstream.alias("dataComparator", DataComparator.class);
     xstream.useAttributeFor(DataComparator.class, "comparisionOperator");
+
     xstream.alias("fixedSource", FixedSource.class);
     xstream.alias("openAnswerSource", OpenAnswerSource.class);
+    xstream.alias("externalOpenAnswerSource", ExternalOpenAnswerSource.class);
+    xstream.useAttributeFor(ExternalOpenAnswerSource.class, "questionnaireName");
+    xstream.useAttributeFor(ExternalOpenAnswerSource.class, "questionName");
+    xstream.useAttributeFor(ExternalOpenAnswerSource.class, "categoryName");
+    xstream.useAttributeFor(ExternalOpenAnswerSource.class, "openAnswerDefinitionName");
     xstream.alias("timestampSource", TimestampSource.class);
     xstream.alias("participantPropertySource", ParticipantPropertySource.class);
+    xstream.useAttributeFor(ParticipantPropertySource.class, "property");
   }
 
   /**
