@@ -10,6 +10,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.wicket.layout.QuestionListProvider;
 
 /**
  * Support for question multiple or not, but without child questions.
@@ -26,11 +27,13 @@ public class DefaultQuestionPanel extends BaseQuestionPanel {
   @Override
   protected void setContent(String id) {
     Question question = (Question) getModelObject();
+
     if(question.getQuestions().size() == 0) {
       add(new DefaultQuestionCategoriesPanel(id, getModel()));
+    } else if(question.getQuestionCategories().size() == 0) {
+      add(new DefaultQuestionListPanel(id, new QuestionListProvider(question)));
     } else {
       add(new DefaultQuestionSharedCategoriesPanel(id, getModel()));
     }
   }
-
 }
