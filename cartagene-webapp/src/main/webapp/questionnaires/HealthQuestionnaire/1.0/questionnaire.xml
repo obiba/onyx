@@ -63,7 +63,7 @@
                   <question reference="31"/>
                   <category id="34" name="TIMESTAMP">
                     <openAnswerDefinition id="35" name="TIMESTAMP_P23" dataType="DATE">
-                      <answerSource class="timestampSource" id="36"/>
+                      <dataSource class="timestampSource" id="36"/>
                     </openAnswerDefinition>
                   </category>
                 </questionCategory>

@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.AnswerSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -34,7 +34,7 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
 
   private List<Data> defaultValues;
 
-  private AnswerSource answerSource;
+  private DataSource dataSource;
 
   private OpenAnswerDefinition parentOpenAnswerDefinition;
 
@@ -100,12 +100,12 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable {
     visitor.visit(this);
   }
 
-  public AnswerSource getAnswerSource() {
-    return answerSource;
+  public DataSource getDataSource() {
+    return dataSource;
   }
 
-  public void setAnswerSource(AnswerSource answerSource) {
-    this.answerSource = answerSource;
+  public void setDataSource(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
   @Override

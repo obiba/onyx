@@ -46,9 +46,9 @@ public class Category implements Serializable, ILocalizable {
     visitor.visit(this);
   }
 
-  public boolean hasAnswerSource() {
+  public boolean hasDataSource() {
     if(getOpenAnswerDefinition() != null) {
-      if(getOpenAnswerDefinition().getAnswerSource() != null) {
+      if(getOpenAnswerDefinition().getDataSource() != null) {
         return true;
       }
     }

@@ -11,7 +11,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.condition;
 
 import java.io.Serializable;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.AnswerSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.FixedSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.OpenAnswerSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -26,7 +26,7 @@ public class DataComparator implements Serializable {
 
   private ComparisionOperator comparisionOperator;
 
-  private AnswerSource dataSource;
+  private DataSource dataSource;
 
   private OpenAnswerDefinition openAnswerDefinition;
 
@@ -38,7 +38,7 @@ public class DataComparator implements Serializable {
     this(comparisionOperator, openAnswerDefinition, new OpenAnswerSource(question, category, openAnswerDefinitionSource));
   }
 
-  public DataComparator(ComparisionOperator comparisionOperator, OpenAnswerDefinition openAnswerDefinition, AnswerSource dataSource) {
+  public DataComparator(ComparisionOperator comparisionOperator, OpenAnswerDefinition openAnswerDefinition, DataSource dataSource) {
     super();
     this.comparisionOperator = comparisionOperator;
     this.dataSource = dataSource;

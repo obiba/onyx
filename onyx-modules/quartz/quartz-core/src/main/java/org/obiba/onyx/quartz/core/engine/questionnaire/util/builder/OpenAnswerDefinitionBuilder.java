@@ -10,7 +10,7 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
 import org.apache.wicket.validation.IValidator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.AnswerSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.IDataValidator;
@@ -130,12 +130,12 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
   }
 
   /**
-   * Set the {@link AnswerSource} associated with the current {@link OpenAnswerDefinition}.
+   * Set the {@link DataSource} associated with the current {@link OpenAnswerDefinition}.
    * @param answerSource
    * @return
    */
-  public OpenAnswerDefinitionBuilder setOpenAnswerDefinitionAnswerSource(AnswerSource answerSource) {
-    element.setAnswerSource(answerSource);
+  public OpenAnswerDefinitionBuilder setOpenAnswerDefinitionAnswerSource(DataSource answerSource) {
+    element.setDataSource(answerSource);
     return this;
   }
 

@@ -12,7 +12,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.answer;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.Data;
 
-public class FixedSource extends AnswerSource {
+public class FixedSource extends DataSource {
 
   private static final long serialVersionUID = 1L;
 

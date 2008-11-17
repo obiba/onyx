@@ -20,7 +20,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.DropDownQuestionPanelFactor
 import org.obiba.onyx.util.data.DataType;
 
 /**
- *
+ * 
  */
 public class QuestionnaireContentBuilder {
 
@@ -77,7 +77,7 @@ public class QuestionnaireContentBuilder {
     builder.inQuestion("Q5").withSharedCategory(NO_ANSWER).setExportName("88");
     builder.inQuestion("Q5").withSharedCategory(DONT_KNOW).setExportName("99");
     // builder.inQuestion("Q5").setAnswerCondition("AC4", "Q4", "1", "age",
-    // DataBuilder.buildInteger(Long.valueOf("45")), ComparisionOperator.gt, null);
+    // DataBuilder.buildInteger(Long.valueOf("45")), ComparisionOperator.gt);
 
     builder.inSection("SB").withSection("HOUSEHOLDSTATUS").withPage("P6").withQuestion("Q6").withCategory("1").withOpenAnswerDefinition("adults", DataType.INTEGER).addOpenAnswerDefinitionValidator(new NumberValidator.RangeValidator(1, 100));
     builder.inQuestion("Q6").withSharedCategory(NO_ANSWER).setExportName("88");

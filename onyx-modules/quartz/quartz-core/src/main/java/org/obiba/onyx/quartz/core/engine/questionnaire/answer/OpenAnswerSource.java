@@ -19,7 +19,7 @@ import org.obiba.onyx.util.data.Data;
 /**
  * Get the {@link Data} from a previous answer in the context of the currently administered questionnaire.
  */
-public class OpenAnswerSource extends AnswerSource {
+public class OpenAnswerSource extends DataSource {
 
   private static final long serialVersionUID = 1L;
 

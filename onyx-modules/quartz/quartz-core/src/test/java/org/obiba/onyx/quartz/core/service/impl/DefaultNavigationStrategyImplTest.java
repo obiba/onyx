@@ -283,7 +283,7 @@ public class DefaultNavigationStrategyImplTest {
     // Add Timestamp answer source to q1
     Category cat = new Category("1");
     OpenAnswerDefinition def = new OpenAnswerDefinition("timestamp", DataType.DATE);
-    def.setAnswerSource(new TimestampSource());
+    def.setDataSource(new TimestampSource());
     cat.setOpenAnswerDefinition(def);
     QuestionCategory qcat = new QuestionCategory();
     qcat.setCategory(cat);

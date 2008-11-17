@@ -14,7 +14,7 @@ import java.io.Serializable;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.Data;
 
-public abstract class AnswerSource implements Serializable {
+public abstract class DataSource implements Serializable {
 
   /**
    * Get the data for answer provisionning.

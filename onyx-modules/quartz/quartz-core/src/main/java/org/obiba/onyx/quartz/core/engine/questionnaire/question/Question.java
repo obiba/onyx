@@ -200,13 +200,13 @@ public class Question implements Serializable, ILocalizable {
     visitor.visit(this);
   }
 
-  public boolean hasAnswerSource() {
+  public boolean hasDataSource() {
 
     OpenAnswerDefinition openAnswerDefinition;
     List<Category> categories = getCategories();
     for(Category category : categories) {
       if((openAnswerDefinition = category.getOpenAnswerDefinition()) != null) {
-        if(openAnswerDefinition.getAnswerSource() != null) {
+        if(openAnswerDefinition.getDataSource() != null) {
           return true;
         }
       }

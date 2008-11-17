@@ -20,7 +20,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.AnswerSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -61,7 +61,7 @@ public class DefaultPageLayout extends PageLayout {
         Question question = (Question) item.getModelObject();
 
         // A question that can be answered through an AnswerSource (ex: TimestampSource) is not displayed.
-        if(answerQuestionIfAnswerSourceAvailable(question)) {
+        if(answerQuestionIfDataSourceAvailable(question)) {
           item.add(new EmptyPanel("question"));
 
         } else {
@@ -78,10 +78,10 @@ public class DefaultPageLayout extends PageLayout {
        * @param question Question to answer.
        * @return True, if question could be answered through AnswerSource.
        */
-      private boolean answerQuestionIfAnswerSourceAvailable(Question question) {
+      private boolean answerQuestionIfDataSourceAvailable(Question question) {
 
         OpenAnswerDefinition openAnswer;
-        AnswerSource answerSource;
+        DataSource dataSource;
         CategoryAnswer answer;
         boolean questionHasAnswers = false;
 
@@ -91,12 +91,12 @@ public class DefaultPageLayout extends PageLayout {
           if((openAnswer = category.getCategory().getOpenAnswerDefinition()) != null) {
 
             // AnswerSource found.
-            if((answerSource = openAnswer.getAnswerSource()) != null) {
+            if((dataSource = openAnswer.getDataSource()) != null) {
 
               // Get data from AnswerSource and answer current question (if not already answered).
               answer = activeQuestionnaireAdministrationService.findAnswer(category);
               if(answer == null) {
-                activeQuestionnaireAdministrationService.answer(category, category.getCategory().getOpenAnswerDefinition(), answerSource.getData(activeQuestionnaireAdministrationService));
+                activeQuestionnaireAdministrationService.answer(category, category.getCategory().getOpenAnswerDefinition(), dataSource.getData(activeQuestionnaireAdministrationService));
               }
               questionHasAnswers = true;
             }

@@ -344,7 +344,7 @@ public abstract class AbstractQuestionnaireTest {
         return;
       }
 
-      if(!question.isBoilerPlate() && question.isToBeAnswered(activeQuestionnaireAdministrationService) && !question.hasAnswerSource()) {
+      if(!question.isBoilerPlate() && question.isToBeAnswered(activeQuestionnaireAdministrationService) && !question.hasDataSource()) {
         answerQuestion(question, answerProvider.getAnswer(question));
         log.info("Answered question " + question.getName());
 

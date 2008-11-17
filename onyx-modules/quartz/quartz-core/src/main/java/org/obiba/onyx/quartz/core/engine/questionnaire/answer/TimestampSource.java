@@ -15,7 +15,7 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
-public class TimestampSource extends AnswerSource {
+public class TimestampSource extends DataSource {
 
   private static final long serialVersionUID = 5049448952613044101L;
 

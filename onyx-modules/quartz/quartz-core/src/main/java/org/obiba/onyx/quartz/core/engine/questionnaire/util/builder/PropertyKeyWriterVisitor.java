@@ -59,7 +59,7 @@ public class PropertyKeyWriterVisitor implements IWalkerVisitor {
     writePropertyKey(questionnaire);
     writer.writeComment("", "Shared categories", "");
     for(Category category : QuestionnaireFinder.getInstance(questionnaire).findSharedCategories()) {
-      if(!category.hasAnswerSource()) writePropertyKey(category);
+      if(!category.hasDataSource()) writePropertyKey(category);
     }
   }
 
@@ -73,14 +73,14 @@ public class PropertyKeyWriterVisitor implements IWalkerVisitor {
 
   public void visit(Question question) {
     // Questions with answer source should not be included in localization file, since they are not displayed on the UI.
-    if(!question.hasAnswerSource()) {
+    if(!question.hasDataSource()) {
       writer.writeComment("", "Question " + question.getName(), "");
       writePropertyKey(question);
     }
   }
 
   public void visit(QuestionCategory questionCategory) {
-    if(!questionCategory.getCategory().hasAnswerSource()) {
+    if(!questionCategory.getCategory().hasDataSource()) {
       writePropertyKey(questionCategory, questionCategory.getCategory());
     }
   }
@@ -91,7 +91,7 @@ public class PropertyKeyWriterVisitor implements IWalkerVisitor {
   }
 
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
-    if(openAnswerDefinition.getAnswerSource() == null) {
+    if(openAnswerDefinition.getDataSource() == null) {
       writePropertyKey(openAnswerDefinition);
     }
   }
