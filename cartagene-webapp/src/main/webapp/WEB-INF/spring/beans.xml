@@ -57,7 +57,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <value>classpath:config/ParticipantInterview</value>
         <value>classpath:config/JadeStageState</value>
         <value>classpath:config/MarbleStageState</value>
-        <value>classpath:config/RubyStageState</value>
         <value>classpath:config/MicaStageState</value>
         <value>classpath:config/QuartzStageState</value>
         <value>classpath:config/InstrumentParameter</value>
@@ -77,7 +76,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <value>instruments/interface-ecg-cardiosoft/InstrumentParameter</value>
         <value>instruments/interface-spirometry-minispir/InstrumentParameter</value>
         <value>instruments/interface-spirometry-minispir/ContraIndication</value>
-        <value>WEB-INF/config/ruby/ContraIndication</value>
+        
+        <value>WEB-INF/config/ruby/language-common</value>
+        <value>WEB-INF/config/ruby/language</value>
       </list>
     </property>
   </bean>
@@ -99,6 +100,25 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   
   <bean id="tubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
     <constructor-arg value="WEB-INF/config/ruby" />
+    
+    <!-- TEST -->
+    <property name="barcodeStructure">
+      <bean class="org.obiba.onyx.ruby.core.domain.BarcodeStructure">
+        <property name="parsers">
+          <list>
+            <bean class="org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser">
+              <property name="size" value="10" />
+              <property name="format" value=".*" />
+              <property name="partTitle">
+                <bean class="org.springframework.context.support.DefaultMessageSourceResolvable">
+                  <constructor-arg value="Ruby.BarcodePartColumn.TubeType" />
+                </bean>
+              </property>
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
   </bean>
   
 </beans>

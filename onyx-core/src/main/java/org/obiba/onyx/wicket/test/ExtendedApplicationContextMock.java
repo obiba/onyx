@@ -39,6 +39,21 @@ public class ExtendedApplicationContextMock extends ApplicationContextMock {
    * 
    * NOTE: All arguments are ignored. The same "canned" message is returned in all cases.
    * 
+   * @param code message key
+   * @param args message arguments (for placeholders)
+   * @param defaultMessage default message
+   * @param locale message locale
+   * @return message previously set by <code>setMessage</code>
+   */
+  public String getMessage(String code, Object[] args, String defaultMessage, Locale locale) {
+    return message;
+  }
+
+  /**
+   * Returns a "canned" message -- the message specified by the last call to <code>setMessage</code>.
+   * 
+   * NOTE: All arguments are ignored. The same "canned" message is returned in all cases.
+   * 
    * @param resolvable message source resolvable
    * @param locale message locale
    * @return message previously set by <code>setMessage</code>

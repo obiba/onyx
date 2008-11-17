@@ -11,15 +11,10 @@ package org.obiba.onyx.ruby.core.wicket.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
-import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
@@ -34,9 +29,6 @@ public class TubeRegistrationStep extends WizardStepPanel {
   // Instance Variables
   //
 
-  @SpringBean(name = "activeInterviewService")
-  private ActiveInterviewService activeInterviewService;
-
   @SpringBean
   protected ActiveTubeRegistrationService activeTubeRegistrationService;
 
@@ -48,10 +40,9 @@ public class TubeRegistrationStep extends WizardStepPanel {
     super(id);
     setOutputMarkupId(true);
 
-    Participant participant = activeInterviewService.getParticipant();
-    add(new Label(getTitleId(), new StringResourceModel("TubeRegistration", this, new Model(new ValueMap("participant=" + participant.getFullName())))));
+    add(new Label(getTitleId(), new SpringStringResourceModel("Ruby.TubeRegistrationTitle")));
 
-    add(new EmptyPanel(getContentId()));
+    add(new TubeRegistrationPanel(getContentId()));
   }
 
   //

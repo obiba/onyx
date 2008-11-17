@@ -10,6 +10,7 @@
 package org.obiba.onyx.ruby.core.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
@@ -23,11 +24,27 @@ public class BarcodeStructure {
   private List<IBarcodePartParser> parserList;
 
   //
+  // Constructors
+  //
+
+  public BarcodeStructure() {
+    parserList = new ArrayList<IBarcodePartParser>();
+  }
+
+  //
   // Methods
   //
 
   public void setParsers(List<IBarcodePartParser> parserList) {
-    this.parserList = parserList;
+    this.parserList.clear();
+
+    if(parserList != null) {
+      this.parserList.addAll(parserList);
+    }
+  }
+
+  public List<IBarcodePartParser> getParsers() {
+    return Collections.unmodifiableList(parserList);
   }
 
   public List<BarcodePart> parseBarcode(String barcode, List<MessageSourceResolvable> errors) {

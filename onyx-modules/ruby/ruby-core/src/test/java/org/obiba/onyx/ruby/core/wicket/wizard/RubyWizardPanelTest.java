@@ -15,6 +15,7 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -33,8 +34,11 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.ModuleRegistry;
+import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
+import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
+import org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
@@ -233,8 +237,22 @@ public class RubyWizardPanelTest {
     return messageSource;
   }
 
-  private TubeRegistrationConfiguration createTubeRegistrationConfiguration() throws Exception {
-    return new TubeRegistrationConfiguration();
+  private TubeRegistrationConfiguration createTubeRegistrationConfiguration() {
+    TubeRegistrationConfiguration tubeRegistrationConfiguration = new TubeRegistrationConfiguration();
+
+    RandomDigitsBarcodePartParser parser = new RandomDigitsBarcodePartParser();
+    parser.setSize(10);
+    parser.setFormat(".*");
+
+    List<IBarcodePartParser> parserList = new ArrayList<IBarcodePartParser>();
+    parserList.add(parser);
+
+    BarcodeStructure barcodeStructure = new BarcodeStructure();
+    barcodeStructure.setParsers(parserList);
+
+    tubeRegistrationConfiguration.setBarcodeStructure(barcodeStructure);
+
+    return tubeRegistrationConfiguration;
   }
 
   @SuppressWarnings("unchecked")
