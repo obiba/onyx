@@ -10,6 +10,7 @@
 package org.obiba.onyx.cartagene.questionnaire.util;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.wicket.validation.validator.NumberValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
@@ -184,51 +185,47 @@ public class QuestionnaireContentBuilder {
   public static QuestionnaireBuilder buildHealthQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
 
-    builder.withSection("SB").withPage("P1").withQuestion("A0");
-    builder.inPage("P1").addTimestamp("tsStart");
+    builder.withSection("A_ADMINISTRATION").withSection("ADMINISTRATIVE_DATA").withPage("1").withQuestion("A0");
+    builder.inPage("1").addTimestamp("TS_START");
 
-    builder.inSection("SB").withSection("GENDER").withPage("P2").withQuestion("sex").withCategory("male").setExportName("1");
-    builder.inQuestion("sex").withCategory("female").setExportName("2");
-    builder.inQuestion("sex").withSharedCategory(OTHER).setExportName("3");
-    builder.inQuestion("sex").withSharedCategory(NO_ANSWER).setExportName("8");
-    builder.inQuestion("sex").withSharedCategory(DONT_KNOW).setExportName("9");
+    builder.inSection("B_DEMOGRAPHY").withSection("GENDER").withPage("2").withQuestion("SEX").withCategory("MALE").setExportName("1");
+    builder.inQuestion("SEX").withCategory("FEMALE").setExportName("2");
+    builder.inQuestion("SEX").withSharedCategory(OTHER).setExportName("3");
+    builder.inQuestion("SEX").withSharedCategory(NO_ANSWER).setExportName("8");
+    builder.inQuestion("SEX").withSharedCategory(DONT_KNOW).setExportName("9");
 
-    builder.inSection("SB").withSection("BIRTHDATE").withPage("P3").withQuestion("dateOfBirth").withQuestion("dobYear").withCategory("dobYear").withOpenAnswerDefinition("dobYear", DataType.INTEGER).addOpenAnswerDefinitionValidator(new PatternValidator("\\d{4}"), DataType.TEXT);
-    builder.inQuestion("dobYear").withSharedCategory(NO_ANSWER).setExportName("8888");
-    builder.inQuestion("dobYear").withSharedCategory(DONT_KNOW).setExportName("9999");
-    builder.inQuestion("dateOfBirth").withQuestion("dobMonth").withCategory("dobMonth").withOpenAnswerDefinition("dobMonth", DataType.INTEGER).addOpenAnswerDefinitionValidator(new NumberValidator.RangeValidator(1, 12));
-    builder.inQuestion("dobMonth").withSharedCategory(NO_ANSWER).setExportName("88");
-    builder.inQuestion("dobMonth").withSharedCategory(DONT_KNOW).setExportName("99");
-    builder.inQuestion("dateOfBirth").withQuestion("dobDay").withCategory("dobDay").withOpenAnswerDefinition("dobDay", DataType.INTEGER).addOpenAnswerDefinitionValidator(new NumberValidator.RangeValidator(1, 31));
-    builder.inQuestion("dobDay").withSharedCategory(NO_ANSWER).setExportName("88");
-    builder.inQuestion("dobDay").withSharedCategory(DONT_KNOW).setExportName("99");
-    builder.inPage("P3").withQuestion("participantAge").withCategory("participantAge").withOpenAnswerDefinition("participantAge", DataType.INTEGER).addOpenAnswerDefinitionValidator(new NumberValidator.RangeValidator(40, 70));
-    builder.inQuestion("participantAge").withSharedCategory(NO_ANSWER).setExportName("88");
-    builder.inQuestion("participantAge").withSharedCategory(DONT_KNOW).setExportName("99");
+    builder.inSection("B_DEMOGRAPHY").withSection("AGE_DATE_BIRTH").withPage("3").withQuestion("DATE_OF_BIRTH").withQuestion("DOB_YEAR").withCategory("DOB_YEAR").withOpenAnswerDefinition("DOB_YEAR", DataType.INTEGER).addOpenAnswerDefinitionValidator(new PatternValidator("\\d{4}"), DataType.TEXT);
+    builder.inQuestion("DOB_YEAR").withSharedCategory(NO_ANSWER).setExportName("8888");
+    builder.inQuestion("DOB_YEAR").withSharedCategory(DONT_KNOW).setExportName("9999");
+    builder.inQuestion("DATE_OF_BIRTH").withQuestion("DOB_MONTH", DropDownQuestionPanelFactory.class).withCategories("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12");
+    builder.inQuestion("DOB_MONTH").withSharedCategory(NO_ANSWER).setExportName("88");
+    builder.inQuestion("DOB_MONTH").withSharedCategory(DONT_KNOW).setExportName("99");
+    builder.inQuestion("DATE_OF_BIRTH").withQuestion("DOB_DAY", DropDownQuestionPanelFactory.class).withCategories("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31");
+    builder.inQuestion("DOB_DAY").withSharedCategory(NO_ANSWER).setExportName("88");
+    builder.inQuestion("DOB_DAY").withSharedCategory(DONT_KNOW).setExportName("99");
+    builder.inPage("3").withQuestion("PARTICIPANT_AGE").withCategory("PARTICIPANT_AGE").withOpenAnswerDefinition("PARTICIPANT_AGE", DataType.INTEGER).addOpenAnswerDefinitionValidator(new NumberValidator.RangeValidator(40, 70));
+    builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(NO_ANSWER).setExportName("88");
+    builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(DONT_KNOW).setExportName("99");
 
-    builder.inSection("SB").withSection("MARITALSTATUS").withPage("P4").withQuestion("maritalStatus").withCategory("married").setExportName("1");
-    builder.inQuestion("maritalStatus").withCategory("divorced").setExportName("2");
-    builder.inQuestion("maritalStatus").withCategory("separated").setExportName("3");
-    builder.inQuestion("maritalStatus").withCategory("widowed").setExportName("4");
-    builder.inQuestion("maritalStatus").withCategory("single").setExportName("5");
-    builder.inQuestion("maritalStatus").withSharedCategory(NO_ANSWER).setExportName("88");
-    builder.inQuestion("maritalStatus").withSharedCategory(DONT_KNOW).setExportName("99");
+    builder.inSection("B_DEMOGRAPHY").withSection("MARITAL_STATUS").withPage("4").withQuestion("MARITAL_STATUS").withCategory("MARRIED").setExportName("1");
+    builder.inQuestion("MARITAL_STATUS").withCategory("DIVORCED").setExportName("2");
+    builder.inQuestion("MARITAL_STATUS").withCategory("SEPARATED").setExportName("3");
+    builder.inQuestion("MARITAL_STATUS").withCategory("WIDOWED").setExportName("4");
+    builder.inQuestion("MARITAL_STATUS").withCategory("SINGLE").setExportName("5");
+    builder.inQuestion("MARITAL_STATUS").withSharedCategory(NO_ANSWER).setExportName("88");
+    builder.inQuestion("MARITAL_STATUS").withSharedCategory(DONT_KNOW).setExportName("99");
 
-    builder.inSection("SB").withSection("SIBLING").withPage("P5").withQuestion("numberSiblingsAll").withCategory("openN").withOpenAnswerDefinition("openN", DataType.INTEGER).addOpenAnswerDefinitionValidator(new NumberValidator.RangeValidator(0, 99));
-    builder.inQuestion("numberSiblingsAll").withSharedCategory(NO_ANSWER).setExportName("88");
-    builder.inQuestion("numberSiblingsAll").withSharedCategory(DONT_KNOW).setExportName("99");
+    builder.inSection("B_DEMOGRAPHY").withSection("SIBLING").withPage("5").withQuestion("NUMBER_SIBLINGS_ALL").withCategory("OPEN_N").withOpenAnswerDefinition("OPEN_N", DataType.INTEGER).addOpenAnswerDefinitionValidator(new NumberValidator.MinimumValidator(0l));
+    builder.inQuestion("NUMBER_SIBLINGS_ALL").withSharedCategory(NO_ANSWER).setExportName("88");
+    builder.inQuestion("NUMBER_SIBLINGS_ALL").withSharedCategory(DONT_KNOW).setExportName("99");
 
-    // TODO Ajout validation sur autre valeur d'une autre question
-    builder.inSection("SIBLING").withPage("P6").withQuestion("numberOlderSiblings").withCategory("openN").withOpenAnswerDefinition("openN", DataType.INTEGER);
-    // TODO end
-    builder.inQuestion("numberOlderSiblings").withSharedCategory(NO_ANSWER).setExportName("88");
-    builder.inQuestion("numberOlderSiblings").withSharedCategory(DONT_KNOW).setExportName("99");
+    builder.inSection("B_DEMOGRAPHY").withSection("BIRTH_LOCATION").withPage("6").withQuestion("BL0");
+    builder.inSection("BIRTH_LOCATION").withPage("7").withQuestion("COUNTRY_BIRTH", DropDownQuestionPanelFactory.class).withCategories(Locale.getISOCountries());
+    builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(NO_ANSWER).setExportName("88");
+    builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(DONT_KNOW).setExportName("99");
 
-    builder.inSection("SB").withSection("EDUCATIONLEVEL").withPage("P7").withQuestion("bl0");
-    // TODO Établir la liste
-    builder.inSection("EDUCATIONLEVEL").withPage("P8").withQuestion("countryBirth", DropDownQuestionPanelFactory.class).withCategory("canada");
-    // TODO end
-    builder.inQuestion("countryBirth").withSharedCategories(NO_ANSWER, DONT_KNOW);
+    // TODO
+    builder.inSection("BIRTH_LOCATION").withPage("8").withQuestion("AGE_IMMIGRATION").withCategory("AGE").withOpenAnswerDefinition("AGE", DataType.INTEGER).addOpenAnswerDefinitionValidator(new NumberValidator.RangeValidator(0, 1));
 
     return builder;
   }
