@@ -6,10 +6,10 @@ import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.wicket.Resource;
 import org.apache.wicket.markup.html.DynamicWebResource;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.DynamicWebResource.ResourceState;
 import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.link.ResourceLink;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.link.InlineFrame;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -38,13 +38,21 @@ public class ParticipantReportPanel extends Panel {
 
     // Print participant consent form
     if(activeConsentService.getConsent().getPdfForm() != null) {
-      add(new ResourceLink("consentFormLink", this.createConsentFormResource()));
+      byte[] consentPdf = activeConsentService.getConsent().getPdfForm();
+      add(new InlineFrame("participantConsentDisplayFrame", new EmbeddedPdfPage(consentPdf)));
     } else {
-      add(new EmptyPanel("consentFormLink").setVisible(false));
+      add(new WebMarkupContainer("participantConsentDisplayFrame").setVisible(false));
     }
 
-    // Print participant report
-    add(new ResourceLink("participantReportLink", this.createParticipantReportResource()));
+    // Display participant report (embed pdf)
+    byte[] reportPdf;
+    try {
+      reportPdf = IOUtils.toByteArray(jadeReportContributor.getReport(activeConsentService.getConsent().getLocale()));
+    } catch(IOException e) {
+      log.error("Cannot read the Participant Report");
+      throw new RuntimeException(e);
+    }
+    add(new InlineFrame("participantReportDisplayFrame", new EmbeddedPdfPage(reportPdf)));
 
     // Add checkbox
     CheckBox printCheckBox = new CheckBox("printCheckBox", new Model());
@@ -73,7 +81,6 @@ public class ParticipantReportPanel extends Panel {
   }
 
   // Download consent form from server and open it
-  @SuppressWarnings("unused")
   private Resource createConsentFormResource() {
     Resource r = new DynamicWebResource() {
 
@@ -86,7 +93,6 @@ public class ParticipantReportPanel extends Panel {
   }
 
   // Create participant report form
-  @SuppressWarnings("unused")
   private Resource createParticipantReportResource() {
     Resource r = new DynamicWebResource() {
 
