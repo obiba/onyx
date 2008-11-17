@@ -9,6 +9,19 @@
   
   <bean id="tubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
     <constructor-arg value="classpath:/config" />
+    
+    <property name="barcodeStructure">
+      <bean class="org.obiba.onyx.ruby.core.domain.BarcodeStructure">
+        <property name="parsers">
+          <list>
+            <bean class="org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser">
+              <property name="size" value="10" />
+              <property name="format" value=".*" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
   </bean>
 
   <import resource="classpath:/test-hibernate-config.xml" />

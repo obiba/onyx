@@ -89,7 +89,7 @@ public class ParticipantTubeRegistrationTest extends BaseDefaultSpringContextTes
 
   @Test
   public void testRegisterAndUnregisterTube() {
-    String barcode = "123450011";
+    String barcode = "1234500110";
     RegisteredParticipantTube tube = new RegisteredParticipantTube();
     tube.setBarcode(barcode);
 

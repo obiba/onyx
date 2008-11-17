@@ -19,6 +19,7 @@ import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.contraindication.Contraindication.Type;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.Remark;
@@ -27,6 +28,7 @@ import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -34,16 +36,25 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareService implements ActiveTubeRegistrationService {
+  //
+  // Constants
+  //
 
   private static final Logger log = LoggerFactory.getLogger(ActiveTubeRegistrationServiceImpl.class);
+
+  private static final String DUPLICATE_BARCODE_ERROR = "";
+
+  //
+  // Instance Variables
+  //
 
   private TubeRegistrationConfiguration tubeRegistrationConfig;
 
   private Serializable currentTubeRegistrationId = null;
 
-  // private BarcodeStructure barcodeStructure;
-
-  // private IContraindicatable iContraindicatable;
+  //
+  // ActiveTubeRegistrationService Methods
+  //
 
   public ParticipantTubeRegistration start(Participant participant) {
     if(participant == null) {
@@ -110,6 +121,89 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     return participantTubeRegistration;
   }
 
+  public List<MessageSourceResolvable> registerTube(String barcode) {
+    List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
+
+    if(!isDuplicateBarcode(barcode)) {
+      BarcodeStructure barcodeStructure = tubeRegistrationConfig.getBarcodeStructure();
+      barcodeStructure.parseBarcode(barcode, errors);
+
+      if(errors.isEmpty()) {
+        RegisteredParticipantTube tube = new RegisteredParticipantTube();
+        tube.setRegistrationTime(new Date());
+        tube.setBarcode(barcode);
+        ParticipantTubeRegistration registration = getParticipantTubeRegistration();
+        registration.addRegisteredParticipantTube(tube);
+        getPersistenceManager().save(tube);
+        getPersistenceManager().save(registration);
+
+        log.info("Registered a participant tube with barcode '{}'", barcode);
+      }
+    } else { // duplicate barcode
+      DefaultMessageSourceResolvable error = new DefaultMessageSourceResolvable(DUPLICATE_BARCODE_ERROR);
+      errors.add(error);
+    }
+
+    return errors;
+  }
+
+  public void unregisterTube(String barcode) {
+    RegisteredParticipantTube tube = findTubeByBarcode(barcode);
+
+    checkBarcodeExists(barcode, tube);
+
+    ParticipantTubeRegistration registration = getParticipantTubeRegistration();
+    if(registration == null) {
+      throw new IllegalArgumentException("The current ParticipantTubeRegistration does not exist.");
+    }
+
+    registration.removeRegisteredParticipantTube(tube);
+    getPersistenceManager().save(registration);
+    getPersistenceManager().delete(tube);
+  }
+
+  public void setTubeComment(String barcode, String comment) {
+    RegisteredParticipantTube tube = findTubeByBarcode(barcode);
+
+    checkBarcodeExists(barcode, tube);
+
+    tube.setComment(comment);
+    getPersistenceManager().save(tube);
+  }
+
+  public void setTubeRemark(String barcode, Remark remark) {
+    RegisteredParticipantTube tube = findTubeByBarcode(barcode);
+
+    checkBarcodeExists(barcode, tube);
+
+    tube.setRemarkCode(remark.getCode());
+    getPersistenceManager().save(tube);
+  }
+
+  public boolean hasContraindications(Type type) {
+    return getParticipantTubeRegistration().hasContraindications(type);
+  }
+
+  public Contraindication getContraindication() {
+    return getParticipantTubeRegistration().getContraindication();
+  }
+
+  public void persistParticipantTubeRegistration() {
+    getPersistenceManager().save(getParticipantTubeRegistration());
+  }
+
+  //
+  // Methods
+  //
+
+  public void setTubeRegistrationConfiguration(TubeRegistrationConfiguration config) {
+    this.tubeRegistrationConfig = config;
+  }
+
+  public TubeRegistrationConfiguration getTubeRegistrationConfiguration() {
+    return tubeRegistrationConfig;
+  }
+
   /**
    * Creates a tube registration for the current interview and setup the flag
    * @param interview
@@ -126,46 +220,6 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     return registration;
   }
 
-  public List<MessageSourceResolvable> registerTube(String barcode) {
-    List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
-    // barcodeStructure.parseBarcode(barcode, errors);
-
-    if(errors.isEmpty()) {
-      RegisteredParticipantTube tube = new RegisteredParticipantTube();
-      tube.setRegistrationTime(new Date());
-      tube.setBarcode(barcode);
-      ParticipantTubeRegistration registration = getParticipantTubeRegistration();
-      registration.addRegisteredParticipantTube(tube);
-      getPersistenceManager().save(tube);
-      getPersistenceManager().save(registration);
-      log.info("A tube with code '{}' is registered.", barcode);
-    }
-    return errors;
-  }
-
-  public void setTubeComment(String barcode, String comment) {
-    RegisteredParticipantTube tube = findTubeByBarcode(barcode);
-    tube.setComment(comment);
-    getPersistenceManager().save(tube);
-  }
-
-  public void setTubeRemark(String barcode, Remark remark) {
-    RegisteredParticipantTube tube = findTubeByBarcode(barcode);
-    tube.setRemarkCode(remark.getCode());
-    getPersistenceManager().save(tube);
-  }
-
-  public void unregisterTube(String barcode) {
-    RegisteredParticipantTube tube = findTubeByBarcode(barcode);
-    ParticipantTubeRegistration registration = getParticipantTubeRegistration();
-    if(registration == null) {
-      throw new IllegalArgumentException("The current ParticipantTubeRegistration does not exist.");
-    }
-    registration.removeRegisteredParticipantTube(tube);
-    getPersistenceManager().save(registration);
-    getPersistenceManager().delete(tube);
-  }
-
   /**
    * Finds a tube by its barcode
    * 
@@ -176,39 +230,17 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     RegisteredParticipantTube tube = new RegisteredParticipantTube();
     tube.setBarcode(barcode);
     tube = getPersistenceManager().matchOne(tube);
-    if(tube == null) {
-      throw new IllegalArgumentException("Couldn't find the the tube with code '" + barcode + "'.");
-    }
+
     return tube;
   }
 
-  public boolean hasContraindications(Type type) {
-    return getParticipantTubeRegistration().hasContraindications(type);
+  private boolean isDuplicateBarcode(String barcode) {
+    return (findTubeByBarcode(barcode) != null);
   }
 
-  public Contraindication getContraindication() {
-    return getParticipantTubeRegistration().getContraindication();
+  private void checkBarcodeExists(String barcode, RegisteredParticipantTube tube) {
+    if(tube == null) {
+      throw new IllegalArgumentException("No tube with barcode '" + barcode + "' has been registered");
+    }
   }
-
-  public void persistParticipantTubeRegistration() {
-    getPersistenceManager().save(getParticipantTubeRegistration());
-  }
-
-  /*
-   * setter and getter methods
-   */
-  public void setTubeRegistrationConfiguration(TubeRegistrationConfiguration config) {
-    this.tubeRegistrationConfig = config;
-  }
-
-  public TubeRegistrationConfiguration getTubeRegistrationConfiguration() {
-    return tubeRegistrationConfig;
-  }
-
-  /*
-   * public void setBarcodeStructure(BarcodeStructure barcodeStructure) { this.barcodeStructure = barcodeStructure; }
-   * 
-   * public BarcodeStructure getBarcodeStructure() { return barcodeStructure; }
-   */
-
 }

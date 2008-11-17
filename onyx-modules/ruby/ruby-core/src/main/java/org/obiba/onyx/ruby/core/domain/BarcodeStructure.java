@@ -9,16 +9,13 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
 import org.springframework.context.MessageSourceResolvable;
 
-/**
- * 
- */
 public class BarcodeStructure {
-
   //
   // Instance Variables
   //
@@ -34,7 +31,14 @@ public class BarcodeStructure {
   }
 
   public List<BarcodePart> parseBarcode(String barcode, List<MessageSourceResolvable> errors) {
-    // TODO
-    return null;
+    List<BarcodePart> barcodePartList = new ArrayList<BarcodePart>();
+
+    StringBuilder barcodeFragment = new StringBuilder(barcode);
+
+    for(IBarcodePartParser parser : parserList) {
+      barcodePartList.add(parser.eatAndValidatePart(barcodeFragment, errors));
+    }
+
+    return barcodePartList;
   }
 }
