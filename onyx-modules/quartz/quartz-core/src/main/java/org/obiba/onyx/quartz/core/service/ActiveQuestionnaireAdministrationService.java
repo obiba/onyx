@@ -179,6 +179,17 @@ public interface ActiveQuestionnaireAdministrationService {
   public OpenAnswer findOpenAnswer(Question question, Category category, OpenAnswerDefinition openAnswerDefinition);
 
   /**
+   * Get the openAnswer for the {@link Question}, {@link Category} and the {@link OpenAnswerDefinition} for a different
+   * {@link Questionnaire}.
+   * @param questionnaireName
+   * @param questionName
+   * @param categoryName
+   * @param openAnswerDefinitionName
+   * @return null if not found
+   */
+  public OpenAnswer findOpenAnswer(String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName);
+
+  /**
    * Save or update the question and category answers.
    * @param questionCategory
    * @return
