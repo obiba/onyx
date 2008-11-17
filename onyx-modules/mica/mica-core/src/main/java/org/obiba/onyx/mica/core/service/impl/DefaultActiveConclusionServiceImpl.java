@@ -22,6 +22,8 @@ public class DefaultActiveConclusionServiceImpl extends PersistenceManagerAwareS
 
   private ActiveInterviewService activeInterviewService;
 
+  private boolean balsacConfirmationRequired = false;
+
   private Conclusion conclusion;
 
   public Conclusion getConclusion() {
@@ -51,6 +53,14 @@ public class DefaultActiveConclusionServiceImpl extends PersistenceManagerAwareS
 
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
     this.activeInterviewService = activeInterviewService;
+  }
+
+  public boolean isBalsacConfirmationRequired() {
+    return balsacConfirmationRequired;
+  }
+
+  public void setBalsacConfirmationRequired(boolean balsacConfirmationRequired) {
+    this.balsacConfirmationRequired = balsacConfirmationRequired;
   }
 
 }

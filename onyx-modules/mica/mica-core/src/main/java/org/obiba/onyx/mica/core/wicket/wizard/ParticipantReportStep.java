@@ -30,7 +30,15 @@ public class ParticipantReportStep extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    form.getPreviousLink().setEnabled(true);
+
+    // Previous link disabled if Balsac confirmation not required.
+    ConclusionWizardForm conclusionForm = (ConclusionWizardForm) form;
+    if(conclusionForm.getActiveConclusionService().isBalsacConfirmationRequired()) {
+      form.getPreviousLink().setEnabled(true);
+    } else {
+      form.getPreviousLink().setEnabled(false);
+    }
+
     form.getNextLink().setEnabled(false);
     form.getFinishLink().setEnabled(true);
   }

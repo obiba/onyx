@@ -49,9 +49,16 @@ public abstract class ConclusionWizardForm extends WizardForm {
   }
 
   private WizardStepPanel setupStaticWizardFlow() {
-    WizardStepPanel startStep = balsacConfirmationStep;
+    WizardStepPanel startStep;
+    if(activeConclusionService.isBalsacConfirmationRequired()) {
+      startStep = balsacConfirmationStep;
+      startStep.setNextStep(participantReportStep);
+      participantReportStep.setPreviousStep(startStep);
+    } else {
+      startStep = participantReportStep;
+    }
     startStep.setPreviousStep(startStep);
-    participantReportStep.setPreviousStep(startStep);
+
     return startStep;
   }
 

@@ -18,4 +18,6 @@ public interface ActiveConclusionService {
 
   public void save();
 
+  public boolean isBalsacConfirmationRequired();
+
 }

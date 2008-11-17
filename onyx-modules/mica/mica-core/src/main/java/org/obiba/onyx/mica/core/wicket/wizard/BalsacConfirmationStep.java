@@ -21,14 +21,14 @@ public class BalsacConfirmationStep extends WizardStepPanel {
   private static final long serialVersionUID = 1L;
 
   private BalsacConfirmationPanel balsacConfirmationPanel;
-  
+
   WizardStepPanel participantReportStep;
-   
+
   public BalsacConfirmationStep(String id, WizardStepPanel participantReportStep) {
     super(id);
     setOutputMarkupId(true);
     this.participantReportStep = participantReportStep;
-    
+
     add(new Label("title", new StringResourceModel("BalsacTitle", this, null)));
   }
 
@@ -43,11 +43,9 @@ public class BalsacConfirmationStep extends WizardStepPanel {
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
     setContent(target, balsacConfirmationPanel = new BalsacConfirmationPanel(getContentId()));
   }
-        
-   @Override
-   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
-    participantReportStep.setPreviousStep(this);
-    setNextStep(participantReportStep);
+
+  @Override
+  public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     balsacConfirmationPanel.save();
   }
 }

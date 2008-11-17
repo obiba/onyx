@@ -72,6 +72,7 @@
   <bean id="activeConclusionService" class="org.obiba.onyx.mica.core.service.impl.DefaultActiveConclusionServiceImpl"
     scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
+    <property name="balsacConfirmationRequired" value="true" />
   </bean>
   
    <bean id="jadeReportContributor" class="org.obiba.onyx.mica.core.service.impl.JadeReportContributor"
