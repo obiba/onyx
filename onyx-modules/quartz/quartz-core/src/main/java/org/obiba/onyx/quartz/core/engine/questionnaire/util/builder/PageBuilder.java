@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.TimestampSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -166,7 +165,7 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    */
   public PageBuilder addTimestamp(String name) {
     String timestampName = "TIMESTAMP_" + name;
-    withQuestion(timestampName).withSharedCategory("TIMESTAMP").withOpenAnswerDefinition(timestampName, DataType.DATE).setOpenAnswerDefinitionDataSource(new TimestampSource());
+    withQuestion(timestampName).withSharedCategory("TIMESTAMP").withOpenAnswerDefinition(timestampName, DataType.DATE).setTimestampSource();
     return this;
   }
 

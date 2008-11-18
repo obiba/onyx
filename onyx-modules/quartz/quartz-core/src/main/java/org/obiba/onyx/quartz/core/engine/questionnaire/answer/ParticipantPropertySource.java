@@ -18,7 +18,9 @@ public class ParticipantPropertySource extends DataSource {
 
   private String property;
 
-  public ParticipantPropertySource() {
+  public ParticipantPropertySource(String property) {
+    super();
+    this.property = property;
   }
 
   public String getProperty() {
@@ -30,8 +32,7 @@ public class ParticipantPropertySource extends DataSource {
   }
 
   public Data getData(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService) {
-    // TODO Auto-generated method stub
-    return null;
+    throw new UnsupportedOperationException("This method is not implemented yet.");
   }
 
 }

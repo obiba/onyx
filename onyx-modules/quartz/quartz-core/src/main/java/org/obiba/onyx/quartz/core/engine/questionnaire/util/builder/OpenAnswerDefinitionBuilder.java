@@ -11,6 +11,10 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
 import org.apache.wicket.validation.IValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ExternalOpenAnswerSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.OpenAnswerSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ParticipantPropertySource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.TimestampSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -130,12 +134,54 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
   }
 
   /**
-   * Set the {@link DataSource} associated with the current {@link OpenAnswerDefinition}.
-   * @param answerSource
+   * Set a {@link TimestampSource} as to be the {@link DataSource} for the current open answer definition.
    * @return
    */
-  public OpenAnswerDefinitionBuilder setOpenAnswerDefinitionDataSource(DataSource answerSource) {
-    element.setDataSource(answerSource);
+  public OpenAnswerDefinitionBuilder setTimestampSource() {
+    element.setDataSource(new TimestampSource());
+    return this;
+  }
+
+  /**
+   * Set a {@link OpenAnswerSource} as to be the {@link DataSource} for the current open answer definition.
+   * @param questionName
+   * @param categoryName
+   * @param openAnswerDefinitionName
+   * @return
+   */
+  public OpenAnswerDefinitionBuilder setOpenAnswerSource(String questionName, String categoryName, String openAnswerDefinitionName) {
+    QuestionnaireFinder finder = QuestionnaireFinder.getInstance(questionnaire);
+    Question question = finder.findQuestion(questionName);
+    if(question == null) throw invalidElementNameException(Question.class, questionName);
+    Category category = finder.findCategory(categoryName);
+    if(category == null) throw invalidElementNameException(Category.class, categoryName);
+    OpenAnswerDefinition open = finder.findOpenAnswerDefinition(openAnswerDefinitionName);
+    if(open == null) throw invalidElementNameException(OpenAnswerDefinition.class, openAnswerDefinitionName);
+
+    element.setDataSource(new OpenAnswerSource(question, category, open));
+    return this;
+  }
+
+  /**
+   * Set a {@link ExternalOpenAnswerSource} as to be the {@link DataSource} for the current open answer definition.
+   * @param questionnaireName
+   * @param questionName
+   * @param categoryName
+   * @param openAnswerDefinitionName
+   * @return
+   */
+  public OpenAnswerDefinitionBuilder setExternalOpenAnswerSource(String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
+    element.setDataSource(new ExternalOpenAnswerSource(questionnaireName, questionName, categoryName, openAnswerDefinitionName));
+    return this;
+  }
+
+  /**
+   * Set a {@link ParticipantPropertySource} as to be the {@link DataSource} for the current open answer definition.
+   * @param property
+   * @return
+   */
+  public OpenAnswerDefinitionBuilder setParticipantPropertySource(String property) {
+    element.setDataSource(new ParticipantPropertySource(property));
     return this;
   }
 
