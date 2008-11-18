@@ -7,7 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.core.wicket.layout.impl;
+package org.obiba.onyx.quartz.core.wicket.layout.impl.validation;
 
 import java.io.Serializable;
 
@@ -21,6 +21,7 @@ import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.IValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.BaseQuestionPanel;
 
 /**
  * Validates the question choices minimum/maximum count of answers. It uses the settings of the question by default, and
