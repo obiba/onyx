@@ -224,8 +224,82 @@ public class QuestionnaireContentBuilder {
     builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(NO_ANSWER).setExportName("88");
     builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(DONT_KNOW).setExportName("99");
 
-    // TODO
+    // TODO validations et conditions
     builder.inSection("BIRTH_LOCATION").withPage("8").withQuestion("AGE_IMMIGRATION").withCategory("AGE").withOpenAnswerDefinition("AGE", DataType.INTEGER).addOpenAnswerDefinitionValidator(new NumberValidator.RangeValidator(0, 1));
+    builder.inQuestion("AGE_IMMIGRATION").withCategory("YEAR").withOpenAnswerDefinition("YEAR", DataType.INTEGER);
+    builder.inQuestion("AGE_IMMIGRATION").withSharedCategory(NO_ANSWER).setExportName("8888");
+    builder.inQuestion("AGE_IMMIGRATION").withSharedCategory(DONT_KNOW).setExportName("9999");
+    builder.inSection("BIRTH_LOCATION").withPage("9").withQuestion("MOTHER_COUNTRY_BIRTH", DropDownQuestionPanelFactory.class).withCategories(Locale.getISOCountries());
+    builder.inQuestion("MOTHER_COUNTRY_BIRTH").withSharedCategory(NO_ANSWER).setExportName("88");
+    builder.inQuestion("MOTHER_COUNTRY_BIRTH").withSharedCategory(DONT_KNOW).setExportName("99");
+    builder.inSection("BIRTH_LOCATION").withPage("10").withQuestion("FATHER_COUNTRY_BIRTH", DropDownQuestionPanelFactory.class).withCategories(Locale.getISOCountries());
+    builder.inQuestion("FATHER_COUNTRY_BIRTH").withSharedCategory(NO_ANSWER).setExportName("88");
+    builder.inQuestion("FATHER_COUNTRY_BIRTH").withSharedCategory(DONT_KNOW).setExportName("99");
+
+    builder.inSection("B_DEMOGRAPHY").withSection("RESIDENCE_HISTORY").withPage("11").withQuestion("CURRENT_RESIDENCE").withCategory("OPEN_AN").withOpenAnswerDefinition("OPEN_AN", DataType.TEXT);
+    builder.inQuestion("CURRENT_RESIDENCE").withSharedCategory(NO_ANSWER).setExportName("8");
+    builder.inQuestion("CURRENT_RESIDENCE").withSharedCategory(DONT_KNOW).setExportName("9");
+    builder.inSection("RESIDENCE_HISTORY").withPage("12").withQuestion("POSTAL_CODE").withCategory("POSTAL_CODE3").withOpenAnswerDefinition("POSTAL_CODE3", DataType.TEXT);
+    builder.inQuestion("POSTAL_CODE").withSharedCategory(NO_ANSWER).setExportName("8");
+    builder.inQuestion("POSTAL_CODE").withSharedCategory(DONT_KNOW).setExportName("9");
+    // TODO attention aux categories avec openanswerdef de même nom!!!
+    builder.inSection("RESIDENCE_HISTORY").withPage("13").withQuestion("AGE_CURRENT_RESIDENCE").withCategory("AGE").withOpenAnswerDefinition("AGE", DataType.INTEGER);
+    builder.inQuestion("AGE_CURRENT_RESIDENCE").withSharedCategory(NO_ANSWER).setExportName("88");
+    builder.inQuestion("AGE_CURRENT_RESIDENCE").withSharedCategory(DONT_KNOW).setExportName("99");
+    // MEME QUESTION????
+    builder.inPage("13").withQuestion("YEAR_CURRENT_RESIDENCE").withCategory("YEAR").withOpenAnswerDefinition("YEAR", DataType.INTEGER);
+    builder.inQuestion("YEAR_CURRENT_RESIDENCE").withSharedCategory(NO_ANSWER).setExportName("8888");
+    builder.inQuestion("YEAR_CURRENT_RESIDENCE").withSharedCategory(DONT_KNOW).setExportName("9999");
+    // builder.inSection("RESIDENCE_HISTORY").withPage("14").withQuestion("CURRENT_IS_LONGEST_TIME_LIVED").???;
+    builder.inSection("RESIDENCE_HISTORY").withPage("15").withQuestion("LONGEST_TIME_COUNTRY", DropDownQuestionPanelFactory.class).withCategories(Locale.getISOCountries());
+    builder.inQuestion("LONGEST_TIME_COUNTRY").withSharedCategory(NO_ANSWER).setExportName("88");
+    builder.inQuestion("LONGEST_TIME_COUNTRY").withSharedCategory(DONT_KNOW).setExportName("99");
+    builder.inSection("RESIDENCE_HISTORY").withPage("16").withQuestion("LONGEST_TIME_REGION").withCategory("OPEN_AN").withOpenAnswerDefinition("OPEN_AN", DataType.TEXT);
+    builder.inQuestion("LONGEST_TIME_REGION").withSharedCategory(NO_ANSWER).setExportName("8");
+    builder.inQuestion("LONGEST_TIME_REGION").withSharedCategory(DONT_KNOW).setExportName("9");
+    builder.inSection("RESIDENCE_HISTORY").withPage("17").withQuestion("LONGEST_TIME_LOCATION").withCategory("OPEN_AN").withOpenAnswerDefinition("OPEN_AN", DataType.TEXT);
+    builder.inQuestion("LONGEST_TIME_LOCATION").withSharedCategory(NO_ANSWER).setExportName("8");
+    builder.inQuestion("LONGEST_TIME_LOCATION").withSharedCategory(DONT_KNOW).setExportName("9");
+    builder.inSection("RESIDENCE_HISTORY").withPage("18").withQuestion("LONGEST_TIME_POSTAL_CODE").withCategory("POSTAL_CODE3").withOpenAnswerDefinition("POSTAL_CODE3", DataType.TEXT);
+    builder.inQuestion("LONGEST_TIME_POSTAL_CODE").withSharedCategory(NO_ANSWER).setExportName("8");
+    builder.inQuestion("LONGEST_TIME_POSTAL_CODE").withSharedCategory(DONT_KNOW).setExportName("9");
+    builder.inSection("RESIDENCE_HISTORY").withPage("19").withQuestion("LONGEST_TIME_STREET").withCategory("OPEN_AN").withOpenAnswerDefinition("OPEN_AN", DataType.TEXT);
+    builder.inQuestion("LONGEST_TIME_STREET").withSharedCategory(NO_ANSWER).setExportName("8");
+    builder.inQuestion("LONGEST_TIME_STREET").withSharedCategory(DONT_KNOW).setExportName("9");
+    builder.inSection("RESIDENCE_HISTORY").withPage("20").withQuestion("LONGEST_TIME_CROSS_STREET").withCategory("OPEN_AN").withOpenAnswerDefinition("OPEN_AN", DataType.TEXT);
+    builder.inQuestion("LONGEST_TIME_CROSS_STREET").withSharedCategory(NO_ANSWER).setExportName("8");
+    builder.inQuestion("LONGEST_TIME_CROSS_STREET").withSharedCategory(DONT_KNOW).setExportName("9");
+    builder.inSection("RESIDENCE_HISTORY").withPage("21").withQuestion("LONGEST_TIME_AGE_STARTED_LIVING").withCategory("AGE").withOpenAnswerDefinition("AGE", DataType.INTEGER);
+    builder.inQuestion("LONGEST_TIME_AGE_STARTED_LIVING").withCategory("YEAR").withOpenAnswerDefinition("YEAR", DataType.INTEGER);
+    builder.inQuestion("LONGEST_TIME_AGE_STARTED_LIVING").withSharedCategory(NO_ANSWER).setExportName("8888");
+    builder.inQuestion("LONGEST_TIME_AGE_STARTED_LIVING").withSharedCategory(DONT_KNOW).setExportName("9999");
+    builder.inPage("21").addTimestamp("TS_DEM2");
+
+    builder.inSection("B_DEMOGRAPHY").withSection("LANGUAGE").withPage("22").withQuestion("FIRST_LANGUAGE_LEARNED", true).withCategory("ENGLISH").setExportName("1");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("FRENCH").setExportName("2");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("ARABIC").setExportName("3");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("CHINESE").setExportName("4");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("ABORIGINAL").setExportName("5");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("GERMAN").setExportName("6");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("GREEK").setExportName("7");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("HUNGARIAN").setExportName("8");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("ITALIAN").setExportName("9");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("KOREAN").setExportName("10");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("PERSIAN").setExportName("11");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("POLISH").setExportName("12");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("PORTUGUESE").setExportName("13");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("PUNJABI").setExportName("14");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("SPANISH").setExportName("15");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("TAGALOG").setExportName("16");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("UKRAINIAN").setExportName("17");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("VIETNAMESE").setExportName("18");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("DUTCH").setExportName("19");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("HINDI").setExportName("20");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("RUSSIAN").setExportName("21");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("TAMIL").setExportName("22");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withSharedCategory(OTHER).setExportName("23");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withSharedCategory(NO_ANSWER).setExportName("88");
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withSharedCategory(DONT_KNOW).setExportName("99");
 
     return builder;
   }
