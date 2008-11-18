@@ -15,10 +15,10 @@ import java.util.logging.LogRecord;
 import org.obiba.onyx.jade.instrument.service.ClientLoggingService;
 
 /**
- *
+ * An implementation of {@code java.util.logging.Handler} that sends {@code LogRecord} to Jade's
+ * {@link ClientLoggingService}.
  */
 public class RemoteHandler extends Handler {
-  // private static final Logger log = LoggerFactory.getLogger(RemoteHandler.class);
 
   private ClientLoggingService clientLoggingService;
 
@@ -33,8 +33,8 @@ public class RemoteHandler extends Handler {
   }
 
   @Override
-  public void publish(LogRecord arg0) {
-    clientLoggingService.logging(arg0);
+  public void publish(LogRecord record) {
+    clientLoggingService.logging(record);
   }
 
   public ClientLoggingService getClientLoggingService() {

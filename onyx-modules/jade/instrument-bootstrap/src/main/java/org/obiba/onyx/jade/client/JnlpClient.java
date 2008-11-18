@@ -86,8 +86,10 @@ public class JnlpClient {
   private static void addRemoteLoggingHandler(GenericApplicationContext appContext) {
     // Add remoteHandler into logger manually
     RemoteHandler remoteHandler = (RemoteHandler) appContext.getBean("remoteHandler");
-    log.debug("Remote Handler is {}", remoteHandler.getClass().getName());
-    LogManager.getLogManager().getLogger("").addHandler(remoteHandler);
+    if(remoteHandler != null) {
+      log.debug("Remote Handler is {}", remoteHandler.getClass().getName());
+      LogManager.getLogManager().getLogger("").addHandler(remoteHandler);
+    }
   }
 
   protected static GenericApplicationContext loadAppContext(String[] requestParams) {

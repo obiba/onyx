@@ -24,12 +24,13 @@ public class ClientLoggingServiceImpl implements ClientLoggingService {
   public void logging(LogRecord record) {
     assertNotNull(record);
     Logger log;
-    Level level = record.getLevel();
-    if(record.getClass() != null) {
+    if(record.getLoggerName() != null) {
       log = LoggerFactory.getLogger(record.getLoggerName());
     } else {
       log = LoggerFactory.getLogger(ClientLoggingServiceImpl.class);
     }
+
+    Level level = record.getLevel();
     if(level.equals(Level.FINE) || level.equals(Level.FINER) || level.equals(Level.FINEST)) {
       log.debug(record.getMessage());
     } else if(level.equals(Level.CONFIG)) {
@@ -48,7 +49,7 @@ public class ClientLoggingServiceImpl implements ClientLoggingService {
    */
   private void assertNotNull(LogRecord record) {
     if(record == null) {
-      throw new RuntimeException("The parameter logRecord must not be null.");
+      throw new IllegalArgumentException("The parameter logRecord must not be null.");
     }
   }
 }

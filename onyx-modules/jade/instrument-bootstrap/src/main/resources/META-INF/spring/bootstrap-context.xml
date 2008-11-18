@@ -9,11 +9,11 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
   <bean name="jnlpClient" class="org.obiba.onyx.jade.client.JnlpClient">
     <property name="instrumentExecutionService" ref="instrumentExecutionService" />
   </bean>
-  
+
   <bean name="remoteHandler" class="org.obiba.onyx.jade.logging.RemoteHandler">
     <property name="clientLoggingService" ref="clientLoggingService" />
   </bean>
-  
+
   <bean name="locale" class="java.util.Locale">
     <constructor-arg value="${locale}" />
   </bean>

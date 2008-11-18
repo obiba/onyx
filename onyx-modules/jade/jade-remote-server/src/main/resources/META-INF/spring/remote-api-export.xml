@@ -9,10 +9,10 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="service" ref="instrumentExecutionService" />
     <property name="serviceInterface" value="org.obiba.onyx.jade.instrument.service.InstrumentExecutionService" />
   </bean>
-  
-  <bean name="/ClientLoggingService" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter"
-    scope="session">
+
+  <bean name="/ClientLoggingService" class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
     <property name="service" ref="clientLoggingService" />
     <property name="serviceInterface" value="org.obiba.onyx.jade.instrument.service.ClientLoggingService" />
   </bean>
+
 </beans>
