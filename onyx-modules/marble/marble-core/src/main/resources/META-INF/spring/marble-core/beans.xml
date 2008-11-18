@@ -43,14 +43,16 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="activeInterviewService" ref="activeInterviewService" />
   </bean>
 
-  <bean id="consentTemplateLoader" class="org.obiba.onyx.marble.core.wicket.consent.ElectronicConsentTemplateLoader">
-  </bean>
-
   <bean id="fdfProducer" class="org.obiba.onyx.marble.core.service.FdfProducer" scope="prototype">
-    <property name="templateLoader" ref="consentTemplateLoader" />
+    <property name="consentFormTemplateLoader" ref="consentFormTemplateLoader"/>
     <property name="activeConsentService" ref="activeConsentService"/>
     <property name="activeInterviewService" ref="activeInterviewService"/>
     <!-- See java.text.SimpleDateFormat for details for possible date formating -->
     <property name="dateFormat" value="yyyy-MM-dd"/>
   </bean>
+  
+  <bean id="consentFormTemplateLoader" class="org.obiba.onyx.core.io.support.LocalizedResourceLoader">
+    <property name="resourcePath" value="WEB-INF/consent/ConsentForm" />
+    <property name="resourceExtension" value=".pdf" />      
+  </bean>  
 </beans>

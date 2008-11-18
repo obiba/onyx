@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.marble.core.wicket.consent.ElectronicConsentTemplateLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanWrapper;
@@ -37,14 +37,12 @@ import com.lowagie.text.pdf.AcroFields.Item;
  * Builds a FDF stream used to fill-in a PDF form. Allows filling in data from the Participant, the administrating User
  * and some system fields. The available system fields are "Date", "AcceptURL" and "RefuseURL". Any field named "Date"
  * will be replaced by the current system Date and formatted using the specified date format
- * {@link #setDateFormat(String)}. The URL system fields allow specifying the URLs to submit the PDF to when the consent
- * is accepted or refused.
+ * {@link #setDateFormat(String)}. The URL system fields allow specifying the URLs to submit the PDF to when the
+ * consent is accepted or refused.
  */
 public class FdfProducer {
 
   private static final Logger log = LoggerFactory.getLogger(FdfProducer.class);
-
-  private ElectronicConsentTemplateLoader templateLoader;
 
   private ActiveConsentService activeConsentService;
 
@@ -54,13 +52,7 @@ public class FdfProducer {
 
   private Map<String, Object> replaceContext;
 
-  public FdfProducer() {
-
-  }
-
-  public void setTemplateLoader(ElectronicConsentTemplateLoader templateLoader) {
-    this.templateLoader = templateLoader;
-  }
+  LocalizedResourceLoader consentFormTemplateLoader;
 
   public void setActiveConsentService(ActiveConsentService consentService) {
     this.activeConsentService = consentService;
@@ -74,6 +66,10 @@ public class FdfProducer {
     this.dateFormatter = new SimpleDateFormat(format);
   }
 
+  public void setConsentFormTemplateLoader(LocalizedResourceLoader consentFormTemplateLoader) {
+    this.consentFormTemplateLoader = consentFormTemplateLoader;
+  }
+
   /**
    * Returns an InputStream to the PDF template
    * @return an InputStream to the PDF template.
@@ -81,7 +77,7 @@ public class FdfProducer {
    */
   public InputStream getPdfTemplate() throws IOException {
     Locale pdfLocale = activeConsentService.getConsent().getLocale();
-    Resource pdfTemplate = templateLoader.getConsentTemplate(pdfLocale);
+    Resource pdfTemplate = consentFormTemplateLoader.getLocalizedResource(pdfLocale);
     if(pdfTemplate == null) {
       log.error("Expected non-null PDF template for locale {}. Make sure the ElectronicConsentTemplateLoader instance is configured properly.", pdfLocale);
       throw new IllegalStateException("No PDF template for locale " + pdfLocale);

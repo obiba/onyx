@@ -10,6 +10,7 @@
 package org.obiba.onyx.marble.core.service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 import java.util.Map;
 
@@ -21,20 +22,22 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.marble.core.wicket.consent.ElectronicConsentTemplateLoader;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
 import com.lowagie.text.pdf.FdfReader;
 import com.lowagie.text.pdf.AcroFields.Item;
 
 /**
- *
+ * 
  */
 public class FdfProducerTest {
 
-  FdfProducer producer = new FdfProducer();
+  FdfProducer producer = new FdfProducer() {
+    public InputStream getPdfTemplate() throws IOException {
+      return new ClassPathResource("cag.pdf", FdfProducerTest.class).getInputStream();
+    }
+  };
 
   ActiveConsentService consentService = EasyMock.createMock(ActiveConsentService.class);
 
@@ -52,15 +55,6 @@ public class FdfProducerTest {
   public void setupProducer() {
     producer.setActiveConsentService(consentService);
     producer.setActiveInterviewService(interviewService);
-
-    // Evil class. Cannot create a mock out of it.
-    producer.setTemplateLoader(new ElectronicConsentTemplateLoader() {
-      @Override
-      public Resource getConsentTemplate(Locale locale) {
-        return new ClassPathResource("cag.pdf", FdfProducerTest.class);
-      }
-    });
-
     consent.setLocale(Locale.ENGLISH);
     interview.setUser(user);
     participant.setFirstName("Philippe");

@@ -7,7 +7,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,6 +14,7 @@ import java.util.Locale;
 import java.util.Map.Entry;
 
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
@@ -24,6 +24,7 @@ import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.mica.core.service.ModuleReportContributor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.AcroFields;
@@ -41,6 +42,8 @@ public class JadeReportContributor implements Serializable, ModuleReportContribu
   private InstrumentRunService instrumentRunService;
 
   private InstrumentService instrumentService;
+
+  private LocalizedResourceLoader reportTemplateLoader;
 
   public JadeReportContributor() {
     super();
@@ -63,15 +66,12 @@ public class JadeReportContributor implements Serializable, ModuleReportContribu
   public InputStream getReport(Locale locale) {
 
     // Get report template
-    URL resource = getClass().getResource("/report/ParticipantReport_" + locale.getLanguage() + ".pdf");
-    if(resource == null) {
-      resource = getClass().getResource("/report/ParticipantReport_en.pdf");
-    }
+    Resource resource = reportTemplateLoader.getLocalizedResource(locale);
 
     // Read report template
     PdfReader pdfReader;
     try {
-      pdfReader = new PdfReader(resource.openStream());
+      pdfReader = new PdfReader(resource.getInputStream());
     } catch(Exception ex) {
       throw new RuntimeException("Report to participant template cannot be read", ex);
     }
@@ -273,4 +273,9 @@ public class JadeReportContributor implements Serializable, ModuleReportContribu
   public void setInstrumentService(InstrumentService instrumentService) {
     this.instrumentService = instrumentService;
   }
+
+  public void setReportTemplateLoader(LocalizedResourceLoader reportTemplateLoader) {
+    this.reportTemplateLoader = reportTemplateLoader;
+  }
+
 }

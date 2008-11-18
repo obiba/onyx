@@ -77,9 +77,15 @@
   
    <bean id="jadeReportContributor" class="org.obiba.onyx.mica.core.service.impl.JadeReportContributor"
     scope="session">
+    <property name="reportTemplateLoader" ref="reportTemplateLoader"/>    
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="instrumentRunService" ref="instrumentRunService" />
     <property name="instrumentService" ref="instrumentService" />
+  </bean>
+  
+  <bean id="reportTemplateLoader" class="org.obiba.onyx.core.io.support.LocalizedResourceLoader">
+    <property name="resourcePath" value="WEB-INF/report/ParticipantReport" />
+    <property name="resourceExtension" value=".pdf" />      
   </bean>
   
 </beans>
