@@ -9,24 +9,26 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.answer;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.util.data.DataBuilder;
 
 /**
- * Get the current date.
+ * Get the current year integer value.
  */
-public class TimestampSource extends DataSource {
+public class CurrentYearSource extends DataSource {
 
   private static final long serialVersionUID = 5049448952613044101L;
 
-  public TimestampSource() {
+  public CurrentYearSource() {
   }
 
   public Data getData(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService) {
-    return new Data(DataType.DATE, new Date());
+    Calendar c = Calendar.getInstance();
+    c.setTime(new Date());
+    return DataBuilder.buildInteger(c.get(Calendar.YEAR));
   }
-
 }
