@@ -9,9 +9,13 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.answer;
 
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.Data;
 
+/**
+ * Get a {@link Participant} property in a {@link Data}.
+ */
 public class ParticipantPropertySource extends DataSource {
 
   private static final long serialVersionUID = 5625713001098059689L;

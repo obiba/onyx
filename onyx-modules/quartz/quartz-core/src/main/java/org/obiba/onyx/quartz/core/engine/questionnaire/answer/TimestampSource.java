@@ -16,7 +16,7 @@ import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
 /**
- * Get the current date.
+ * Get the current {@link Date}.
  */
 public class TimestampSource extends DataSource {
 

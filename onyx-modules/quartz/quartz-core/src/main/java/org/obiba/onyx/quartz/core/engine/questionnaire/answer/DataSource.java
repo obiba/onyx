@@ -11,9 +11,13 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.answer;
 
 import java.io.Serializable;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.Data;
 
+/**
+ * Defines a way of getting a {@link Data} in the context of currently administered {@link Questionnaire}.
+ */
 public abstract class DataSource implements Serializable {
 
   /**
