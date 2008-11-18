@@ -16,6 +16,7 @@ import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -54,7 +55,8 @@ public class DefaultPageLayout extends PageLayout {
 
     add(new Label("label", new QuestionnaireStringResourceModel(page, "label")));
 
-    add(new DataView("questions", new PageQuestionsProvider(page)) {
+    DataView questionsView;
+    add(questionsView = new DataView("questions", new PageQuestionsProvider(page)) {
 
       @Override
       protected void populateItem(Item item) {
@@ -107,6 +109,7 @@ public class DefaultPageLayout extends PageLayout {
       }
 
     });
+    questionsView.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
 
     // TODO get it from questionnaire bundle ?
     add(HeaderContributor.forCss("css/questionnaire.css"));

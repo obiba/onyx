@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -42,7 +43,7 @@ public class DefaultQuestionListPanel extends Panel {
         QuestionPanel panel = questionPanelFactoryRegistry.get(question.getUIFactoryName()).createPanel("question", item.getModel());
         item.add(panel);
       }
-    });
+    }.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance()));
   }
 
 }
