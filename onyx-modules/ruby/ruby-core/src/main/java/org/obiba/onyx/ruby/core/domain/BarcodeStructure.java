@@ -54,6 +54,10 @@ public class BarcodeStructure {
 
     for(IBarcodePartParser parser : parserList) {
       barcodePartList.add(parser.eatAndValidatePart(barcodeFragment, errors));
+
+      if(!errors.isEmpty()) {
+        break;
+      }
     }
 
     return barcodePartList;

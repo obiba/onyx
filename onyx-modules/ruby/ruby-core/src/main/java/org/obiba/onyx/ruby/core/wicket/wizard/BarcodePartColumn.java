@@ -60,7 +60,8 @@ public class BarcodePartColumn extends AbstractColumn {
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
 
     List<BarcodePart> barcodePartList = barcodeStructure.parseBarcode(barcode, errors);
-    BarcodePart barcodePart = barcodePartList.get(cellItem.getIndex() - 1);
+    BarcodePart barcodePart = barcodePartList.get(cellItem.getIndex());
+
     MessageSourceResolvable barcodePartLabel = barcodePart.getPartLabel();
 
     cellItem.add(new Label(componentId, new SpringStringResourceModel(barcodePartLabel.getCodes()[0], barcodePartLabel.getArguments(), barcodePartLabel.getDefaultMessage())));

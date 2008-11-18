@@ -48,7 +48,9 @@ public class BarcodePart {
    * @return part value wrapped in <code>DefaultMessageSourceResolvable</code>
    */
   public MessageSourceResolvable getPartLabel() {
-    MessageSourceResolvable partLabel = new DefaultMessageSourceResolvable(part);
+    String partCode = (title != null) ? title.getCodes()[0] + "." + part : part;
+    MessageSourceResolvable partLabel = new DefaultMessageSourceResolvable(partCode);
+
     return partLabel;
   }
 }
