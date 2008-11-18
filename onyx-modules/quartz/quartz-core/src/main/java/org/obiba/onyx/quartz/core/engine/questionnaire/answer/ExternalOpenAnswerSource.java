@@ -14,7 +14,7 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 import org.obiba.onyx.util.data.Data;
 
 /**
- * Get the {@link Data} from a previous answer in the context of the currently administered questionnaire.
+ * Get the {@link Data} from a previous answer in the context of the previously administered questionnaire.
  */
 public class ExternalOpenAnswerSource extends DataSource {
 
