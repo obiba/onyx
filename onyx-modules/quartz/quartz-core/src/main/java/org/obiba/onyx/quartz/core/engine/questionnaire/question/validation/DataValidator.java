@@ -13,11 +13,16 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.Validatable;
+import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
 /**
- * 
+ * Validates a {@link Data} value, given a standard {@link IValidator} and specifying what is the {@link DataType} this
+ * validator is capable to validate.
+ * @see StringValidator
+ * @see NumberValidator
  */
 public class DataValidator implements IDataValidator {
 
@@ -26,10 +31,6 @@ public class DataValidator implements IDataValidator {
   private DataType dataType;
 
   private IValidator validator;
-
-  public DataValidator() {
-
-  }
 
   public DataValidator(IValidator validator, DataType dataType) {
     this.validator = validator;

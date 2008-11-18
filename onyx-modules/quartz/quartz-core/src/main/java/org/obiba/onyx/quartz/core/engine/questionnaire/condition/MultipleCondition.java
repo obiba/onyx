@@ -14,6 +14,9 @@ import java.util.List;
 
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 
+/**
+ * Combination a several {@link Condition} using a boolean operator.
+ */
 public class MultipleCondition extends Condition {
 
   private static final long serialVersionUID = 2969604617578085834L;

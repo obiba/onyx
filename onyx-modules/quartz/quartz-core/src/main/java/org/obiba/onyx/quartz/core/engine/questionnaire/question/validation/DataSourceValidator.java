@@ -20,7 +20,8 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 import org.obiba.onyx.util.data.Data;
 
 /**
- * 
+ * Validates a {@link Data} value by comparing it to the one provided by the {@link DataSource} in the context of the
+ * currently administered questionnaire.
  */
 public class DataSourceValidator implements IDataValidator {
 

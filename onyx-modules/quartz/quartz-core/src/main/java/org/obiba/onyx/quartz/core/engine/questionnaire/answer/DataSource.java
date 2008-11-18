@@ -11,12 +11,16 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.answer;
 
 import java.io.Serializable;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.DataCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataSourceValidator;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.Data;
 
 /**
  * Defines a way of getting a {@link Data} in the context of currently administered {@link Questionnaire}.
+ * @see DataCondition
+ * @see DataSourceValidator
  */
 public abstract class DataSource implements Serializable {
 

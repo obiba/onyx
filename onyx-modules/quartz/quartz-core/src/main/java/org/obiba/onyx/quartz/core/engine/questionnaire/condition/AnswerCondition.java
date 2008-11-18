@@ -15,6 +15,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 
+/**
+ * Condition on whether or not a ({@link Question}, {@link Category}) has been answered.
+ */
 public class AnswerCondition extends Condition {
 
   private static final long serialVersionUID = -7608048954030186313L;

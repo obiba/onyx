@@ -12,6 +12,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.Data;
 
+/**
+ * Compares two {@link Data} provided by {@link DataSource}.
+ */
 public class DataCondition extends Condition {
 
   private static final long serialVersionUID = -7608048954030186313L;

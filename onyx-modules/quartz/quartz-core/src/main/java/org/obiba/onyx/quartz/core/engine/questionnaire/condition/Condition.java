@@ -18,6 +18,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 
+/**
+ * Does a question is to be answered in the context of the currently administered questionnaire ?
+ */
 public abstract class Condition implements Serializable, ILocalizable {
 
   private String name;

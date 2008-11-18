@@ -11,6 +11,9 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.condition;
 
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 
+/**
+ * Condition which is the contrary of an inner condition.
+ */
 public class NotCondition extends Condition {
 
   /**
