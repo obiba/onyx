@@ -44,6 +44,7 @@ import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -150,7 +151,8 @@ public abstract class StageSelectionPanel extends Panel {
       columns.add(new AbstractColumn(new StringResourceModel("Name", StageSelectionPanel.this, null)) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          cellItem.add(new Label(componentId, new PropertyModel(rowModel, "description")));
+
+          cellItem.add(new Label(componentId, new MessageSourceResolvableStringModel(new PropertyModel(rowModel, "description"))));
         }
 
       });

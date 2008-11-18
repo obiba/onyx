@@ -9,32 +9,21 @@
  ******************************************************************************/
 package org.obiba.onyx.engine;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
-import static org.easymock.EasyMock.verify;
-
 import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
+import org.springframework.context.MessageSourceResolvable;
 
 public class StageTest {
 
   private ExtendedApplicationContextMock applicationContextMock;
 
-  private UserSessionService userSessionServiceMock;
-
   @Before
   public void setUp() {
     applicationContextMock = new ExtendedApplicationContextMock();
-
-    userSessionServiceMock = createMock(UserSessionService.class);
-    applicationContextMock.putBean("userSessionService", userSessionServiceMock);
   }
 
   /**
@@ -43,50 +32,20 @@ public class StageTest {
   @Test
   public void testGetDescription() {
     Stage heightMeasurementStage = new Stage();
-    heightMeasurementStage.setApplicationContext(applicationContextMock);
-    heightMeasurementStage.setUserSessionService(userSessionServiceMock);
+    heightMeasurementStage.setName("Height_Measurement");
 
-    String unLocalizedStageDescription = "Height_Measurement";
-    heightMeasurementStage.setDescription(unLocalizedStageDescription);
-
-    //
-    // Test in English locale ("en").
-    //
-    Locale englishLocale = new Locale("en");
+    MessageSourceResolvable resolvableDescription = heightMeasurementStage.getDescription();
 
     String expectedEnglishLocalizedStageDescription = "Height Measurement";
     applicationContextMock.setMessage(expectedEnglishLocalizedStageDescription);
 
-    expect(userSessionServiceMock.getLocale()).andReturn(englishLocale);
-
-    replay(userSessionServiceMock);
-
-    String actualEnglishLocalizedStageDescription = heightMeasurementStage.getDescription();
-
-    verify(userSessionServiceMock);
-
+    String actualEnglishLocalizedStageDescription = applicationContextMock.getMessage(resolvableDescription, Locale.ENGLISH);
     Assert.assertEquals(expectedEnglishLocalizedStageDescription, actualEnglishLocalizedStageDescription);
-
-    // Reset userSessionServiceMock (otherwise in the next part of the test the calls to getLocale()
-    // won't match expectations).
-    reset(userSessionServiceMock);
-
-    //
-    // Test in French locale ("fr").
-    //
-    Locale frenchLocale = new Locale("fr");
 
     // TODO: Substitute true French translation when it is added to the resource bundle
     String expectedFrenchLocalizedStageDescription = "fr:Height Measurement";
     applicationContextMock.setMessage(expectedFrenchLocalizedStageDescription);
-
-    expect(userSessionServiceMock.getLocale()).andReturn(frenchLocale);
-
-    replay(userSessionServiceMock);
-
-    String actualFrenchLocalizedStageDescription = heightMeasurementStage.getDescription();
-
-    verify(userSessionServiceMock);
+    String actualFrenchLocalizedStageDescription = applicationContextMock.getMessage(resolvableDescription, Locale.FRENCH);
 
     Assert.assertEquals(expectedFrenchLocalizedStageDescription, actualFrenchLocalizedStageDescription);
   }

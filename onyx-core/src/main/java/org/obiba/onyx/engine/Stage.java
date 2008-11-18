@@ -10,9 +10,8 @@
 package org.obiba.onyx.engine;
 
 import org.obiba.onyx.core.domain.participant.Interview;
-import org.obiba.onyx.core.service.UserSessionService;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 
 /**
  * A <code>Stage</code> is a step of an {@link Interview}. They are contributed by {@link Module}s. A
@@ -23,31 +22,17 @@ import org.springframework.context.ApplicationContextAware;
  * 
  * @see Module
  */
-public class Stage implements ApplicationContextAware {
+public class Stage {
 
-  private static final long serialVersionUID = 8309472904104798783L;
+  private static final String DESCRIPTION_KEY = ".description";
 
   private String name;
 
   private String module;
 
-  private String description;
-
   private Integer displayOrder;
 
   private StageDependencyCondition stageDependencyCondition;
-
-  private ApplicationContext context;
-
-  private UserSessionService userSessionService;
-
-  public void setApplicationContext(ApplicationContext context) {
-    this.context = context;
-  }
-
-  public void setUserSessionService(UserSessionService userSessionService) {
-    this.userSessionService = userSessionService;
-  }
 
   public String getName() {
     return name;
@@ -65,18 +50,9 @@ public class Stage implements ApplicationContextAware {
     this.module = module;
   }
 
-  public String getDescription() {
-    String retVal = description;
-
-    if(context != null && userSessionService != null) {
-      retVal = context.getMessage(description, null, userSessionService.getLocale());
-    }
-
-    return retVal;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
+  public MessageSourceResolvable getDescription() {
+    // Codes are <module>.<name>.description, <name>.description
+    return new DefaultMessageSourceResolvable(new String[] { getModule() + "." + getName() + DESCRIPTION_KEY, getName() + DESCRIPTION_KEY }, getName());
   }
 
   public Integer getDisplayOrder() {

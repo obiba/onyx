@@ -12,9 +12,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="CON" />
           <property name="module" value="marble" />
-          <property name="description" value="Participant_Consent" />
           <property name="displayOrder" value="1" />
-          <property name="userSessionService" ref="userSessionService" />
         </bean>
       </list>
     </property>

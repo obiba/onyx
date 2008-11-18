@@ -103,9 +103,7 @@ public class CommentsModalPanelTest implements Serializable {
     User user = createUser();
     Interview interview = createInterview(1l);
 
-    Stage stage = createStage("marble", "CON", "Participant_Consent", 1);
-    stage.setApplicationContext(applicationContextMock);
-    stage.setUserSessionService(userSessionServiceMock);
+    Stage stage = createStage("marble", "CON", 1);
 
     Participant participant = createParticipant(1l, "Suzan", "Tremblay");
     String generalComment = "general comment";
@@ -127,7 +125,7 @@ public class CommentsModalPanelTest implements Serializable {
     expect(userSessionServiceMock.getLocale()).andReturn(new Locale("en"));
     expectLastCall().anyTimes();
 
-    // We can't mock ModuleRegistry, so we'll create a mock Module instance and register that in the ModuleRegistry... 
+    // We can't mock ModuleRegistry, so we'll create a mock Module instance and register that in the ModuleRegistry...
     // This allows us to expect that ModuleRegistry.getStage() is called, and return the proper Stage instance
     Module mockModule = createMock(Module.class);
     expect(mockModule.getStages()).andReturn(Collections.singletonList(stage));
@@ -204,7 +202,7 @@ public class CommentsModalPanelTest implements Serializable {
     return interview;
   }
 
-  private Stage createStage(String module, String name, String description, int displayOrder) {
+  private Stage createStage(String module, String name, int displayOrder) {
     Stage stage = new Stage();
     stage.setModule(module);
     stage.setDisplayOrder(displayOrder);

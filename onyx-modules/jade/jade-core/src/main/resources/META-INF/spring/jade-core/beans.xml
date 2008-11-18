@@ -23,49 +23,37 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="STA" />
           <property name="module" value="jade" />
-          <property name="description" value="Height_Measurement" />
           <property name="displayOrder" value="2" />
-          <property name="userSessionService" ref="userSessionService" />
           <property name="stageDependencyCondition" ref="consentDependency" />
         </bean>
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="SIT" />
           <property name="module" value="jade" />
-          <property name="description" value="Sitting_Height_Measurement" />
           <property name="displayOrder" value="3" />
-          <property name="userSessionService" ref="userSessionService" />
           <property name="stageDependencyCondition" ref="consentDependency" />
         </bean>
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="HWC" />
           <property name="module" value="jade" />
-          <property name="description" value="Hips_and_Waist_Size_Measurement" />
           <property name="displayOrder" value="4" />
-          <property name="userSessionService" ref="userSessionService" />
           <property name="stageDependencyCondition" ref="consentDependency" />
         </bean>
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="BLP" />
           <property name="module" value="jade" />
-          <property name="description" value="Blood_Pressure_Measurement" />
           <property name="displayOrder" value="5" />
-          <property name="userSessionService" ref="userSessionService" />
           <property name="stageDependencyCondition" ref="consentDependency" />
         </bean>
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="MUS" />
           <property name="module" value="jade" />
-          <property name="description" value="Grip_Strength_Measurement" />
           <property name="displayOrder" value="6" />
-          <property name="userSessionService" ref="userSessionService" />
           <property name="stageDependencyCondition" ref="consentDependency" />
         </bean>
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="BIM" />
           <property name="module" value="jade" />
-          <property name="description" value="Weight_and_Bioimpedance_Measurement" />
           <property name="displayOrder" value="7" />
-          <property name="userSessionService" ref="userSessionService" />
           <property name="stageDependencyCondition">
             <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
               <property name="leftStageDependencyCondition" ref="consentDependency" />
@@ -77,9 +65,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="WEI" />
           <property name="module" value="jade" />
-          <property name="description" value="Weight_Measurement" />
           <property name="displayOrder" value="8" />
-          <property name="userSessionService" ref="userSessionService" />
           <property name="stageDependencyCondition">
             <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
               <property name="leftStageDependencyCondition" ref="consentDependency" />
@@ -101,9 +87,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="SPI" />
           <property name="module" value="jade" />
-          <property name="description" value="Spirometry_Measurement" />
           <property name="displayOrder" value="9" />
-          <property name="userSessionService" ref="userSessionService" />
 
           <property name="stageDependencyCondition">
             <!-- CON && STA && (BIM || WEI) -->
@@ -141,25 +125,19 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="ECG" />
           <property name="module" value="jade" />
-          <property name="description" value="Electrocardiogram_Measurement" />
           <property name="displayOrder" value="10" />
-          <property name="userSessionService" ref="userSessionService" />
           <property name="stageDependencyCondition" ref="consentDependency" />
         </bean>
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="BON" />
           <property name="module" value="jade" />
-          <property name="description" value="Bone_Density_Measurement" />
           <property name="displayOrder" value="11" />
-          <property name="userSessionService" ref="userSessionService" />
           <property name="stageDependencyCondition" ref="consentDependency" />
         </bean>
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="ART" />
           <property name="module" value="jade" />
-          <property name="description" value="Arterial_Stiffness_Measurement" />
           <property name="displayOrder" value="12" />
-          <property name="userSessionService" ref="userSessionService" />
           <property name="stageDependencyCondition" ref="consentDependency" />
         </bean>
       </list>
