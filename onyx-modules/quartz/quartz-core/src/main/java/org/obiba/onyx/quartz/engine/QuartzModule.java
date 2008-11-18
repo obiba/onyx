@@ -65,7 +65,6 @@ public class QuartzModule implements Module, ApplicationContextAware {
   public IStageExecution createStageExecution(Interview interview, Stage stage) {
     StageExecutionContext exec = (StageExecutionContext) applicationContext.getBean("stageExecutionContext");
     Boolean condition = stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService);
-    AbstractStageState initialStage;
 
     exec.setStage(stage);
     exec.setInterview(interview);
@@ -104,18 +103,19 @@ public class QuartzModule implements Module, ApplicationContextAware {
     exec.addEdge(notApplicable, TransitionEvent.VALID, ready);
     exec.addEdge(notApplicable, TransitionEvent.INVALID, waiting);
 
+    AbstractStageState initialState;
     if(stage.getStageDependencyCondition() == null) {
-      initialStage = ready;
+      initialState = ready;
     } else {
       if(condition == null) {
-        initialStage = waiting;
+        initialState = waiting;
       } else if(condition == true) {
-        initialStage = ready;
+        initialState = ready;
       } else {
-        initialStage = notApplicable;
+        initialState = notApplicable;
       }
     }
-    exec.setInitialState(initialStage);
+    exec.setInitialState(initialState);
 
     return exec;
   }
