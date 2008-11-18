@@ -22,7 +22,9 @@ public class MultipleCondition extends Condition {
 
   private ConditionOperator conditionOperator;
 
-  public MultipleCondition() {
+  public MultipleCondition(String name, ConditionOperator conditionOperator) {
+    super(name);
+    this.conditionOperator = conditionOperator;
     this.conditions = new ArrayList<Condition>();
   }
 

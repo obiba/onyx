@@ -11,7 +11,14 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.condition;
 
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 
-public class NoAnswerCondition extends Condition {
+public class NotCondition extends Condition {
+
+  /**
+   * @param name
+   */
+  public NotCondition(String name) {
+    super(name);
+  }
 
   private static final long serialVersionUID = -7934445960755750180L;
 

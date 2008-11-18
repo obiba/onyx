@@ -272,23 +272,31 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   }
 
   public ConditionBuilder setAnswerCondition(String name, String question) {
-    return setAnswerCondition(name, question, null, null, null, null);
+    return setAnswerCondition(name, question, null);
   }
 
-  public ConditionBuilder setAnswerCondition(String name, String question, String category, String openAnswerDefinition) {
-    return setAnswerCondition(name, question, category, openAnswerDefinition, null, null);
+  public ConditionBuilder setAnswerCondition(String name, String question, String category) {
+    return ConditionBuilder.createQuestionCondition(this, name, question, category);
   }
 
-  public ConditionBuilder setAnswerCondition(String name, String question, String category, String openAnswerDefinition, Data data, ComparisionOperator comparisionOperator) {
-    return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, data, comparisionOperator, null);
+  public ConditionBuilder setDataCondition(String name, String question, String category, String openAnswerDefinition, ComparisionOperator comparisionOperator, Data data) {
+    return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, comparisionOperator, data);
+  }
+
+  public ConditionBuilder setDataCondition(String name, String question, String category, String openAnswerDefinition, ComparisionOperator comparisionOperator, String questionName, String categoryName, String openAnswerDefinitionName) {
+    return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, comparisionOperator, questionName, categoryName, openAnswerDefinitionName);
+  }
+
+  public ConditionBuilder setDataCondition(String name, String question, String category, String openAnswerDefinition, ComparisionOperator comparisionOperator, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
+    return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, comparisionOperator, questionnaireName, questionName, categoryName, openAnswerDefinitionName);
   }
 
   public ConditionBuilder setMultipleCondition(String name, ConditionOperator operator) {
     return ConditionBuilder.createQuestionMultipleCondition(this, name, operator);
   }
 
-  public ConditionBuilder setNoAnswerCondition(String name) {
-    return ConditionBuilder.createQuestionNoAnswerCondition(this, name);
+  public ConditionBuilder setNotCondition(String name) {
+    return ConditionBuilder.createQuestionNotCondition(this, name);
   }
 
 }

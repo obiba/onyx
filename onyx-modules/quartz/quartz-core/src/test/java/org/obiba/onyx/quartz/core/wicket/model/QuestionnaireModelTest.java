@@ -297,9 +297,9 @@ public class QuestionnaireModelTest {
 
     // condition test
     builder.inSection("S1").withPage("P3").withQuestion("Q3").withCategories("1", "2", "3");
-    builder.inQuestion("Q2").setAnswerCondition("AC1", "Q1", "1", null);
+    builder.inQuestion("Q2").setAnswerCondition("AC1", "Q1", "1");
     builder.inQuestion("Q3").setMultipleCondition("MC1", ConditionOperator.AND).withAnswerCondition("AC2", "Q1", "1");
-    builder.inCondition("MC1").withNoAnswerCondition("NAC1").withAnswerCondition("AC3", "Q2", "2", "OPEN_TEXT", DataBuilder.buildText("valeur test"), ComparisionOperator.eq, null);
+    builder.inCondition("MC1").withNoAnswerCondition("NAC1").withDataCondition("AC3", "Q2", "2", "OPEN_TEXT", ComparisionOperator.eq, DataBuilder.buildText("valeur test"));
 
     // multiple OpenAnswer test
     builder.inSection("S1").withPage("P4").withQuestion("Q4").withCategory("1").withOpenAnswerDefinition("Date", DataType.DATE).withOpenAnswerDefinition("Year", DataType.INTEGER);

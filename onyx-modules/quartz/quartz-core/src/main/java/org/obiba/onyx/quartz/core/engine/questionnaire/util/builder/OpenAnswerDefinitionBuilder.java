@@ -110,8 +110,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisionOperator comparisionOperator, String questionName, String categoryName, String openAnswerDefinitionName) {
-    DataSourceBuilder builder = DataSourceBuilder.createOpenAnswerSource(questionnaire, questionName, categoryName, openAnswerDefinitionName);
-    element.addValidator(new DataSourceValidator(builder.getElement(), comparisionOperator));
+    element.addValidator(new DataSourceValidator(DataSourceBuilder.createOpenAnswerSource(questionnaire, questionName, categoryName, openAnswerDefinitionName).getElement(), comparisionOperator));
     return this;
   }
 
@@ -125,8 +124,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisionOperator comparisionOperator, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
-    DataSourceBuilder builder = DataSourceBuilder.createExternalOpenAnswerSource(questionnaire, questionnaireName, questionName, categoryName, openAnswerDefinitionName);
-    element.addValidator(new DataSourceValidator(builder.getElement(), comparisionOperator));
+    element.addValidator(new DataSourceValidator(DataSourceBuilder.createExternalOpenAnswerSource(questionnaire, questionnaireName, questionName, categoryName, openAnswerDefinitionName).getElement(), comparisionOperator));
     return this;
   }
 
@@ -137,8 +135,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisionOperator comparisionOperator, String property) {
-    DataSourceBuilder builder = DataSourceBuilder.createParticipantPropertySource(questionnaire, property);
-    element.addValidator(new DataSourceValidator(builder.getElement(), comparisionOperator));
+    element.addValidator(new DataSourceValidator(DataSourceBuilder.createParticipantPropertySource(questionnaire, property).getElement(), comparisionOperator));
     return this;
   }
 
@@ -195,8 +192,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder setOpenAnswerSource(String questionName, String categoryName, String openAnswerDefinitionName) {
-    DataSourceBuilder builder = DataSourceBuilder.createOpenAnswerSource(questionnaire, questionName, categoryName, openAnswerDefinitionName);
-    element.setDataSource(builder.getElement());
+    element.setDataSource(DataSourceBuilder.createOpenAnswerSource(questionnaire, questionName, categoryName, openAnswerDefinitionName).getElement());
     return this;
   }
 
@@ -209,8 +205,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder setExternalOpenAnswerSource(String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
-    DataSourceBuilder builder = DataSourceBuilder.createExternalOpenAnswerSource(questionnaire, questionnaireName, questionName, categoryName, openAnswerDefinitionName);
-    element.setDataSource(builder.getElement());
+    element.setDataSource(DataSourceBuilder.createExternalOpenAnswerSource(questionnaire, questionnaireName, questionName, categoryName, openAnswerDefinitionName).getElement());
     return this;
   }
 
@@ -221,8 +216,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder setParticipantPropertySource(String property) {
-    DataSourceBuilder builder = DataSourceBuilder.createParticipantPropertySource(questionnaire, property);
-    element.setDataSource(builder.getElement());
+    element.setDataSource(DataSourceBuilder.createParticipantPropertySource(questionnaire, property).getElement());
     return this;
   }
 

@@ -21,9 +21,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ParticipantPropert
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.TimestampSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.AnswerCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.DataComparator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.DataCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.MultipleCondition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.NoAnswerCondition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.NotCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -98,11 +98,11 @@ public class QuestionnaireStreamer {
 
     xstream.useAttributeFor(Condition.class, "name");
     xstream.alias("answerCondition", AnswerCondition.class);
-    xstream.alias("noAnswerCondition", NoAnswerCondition.class);
+    xstream.alias("dataCondition", DataCondition.class);
+    xstream.useAttributeFor(DataCondition.class, "comparisionOperator");
+    xstream.alias("notCondition", NotCondition.class);
     xstream.alias("multipleCondition", MultipleCondition.class);
     xstream.useAttributeFor(MultipleCondition.class, "conditionOperator");
-    xstream.alias("dataComparator", DataComparator.class);
-    xstream.useAttributeFor(DataComparator.class, "comparisionOperator");
 
     xstream.alias("fixedSource", FixedSource.class);
     xstream.alias("openAnswerSource", OpenAnswerSource.class);

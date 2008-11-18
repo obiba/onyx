@@ -389,7 +389,7 @@
                       <category reference="27"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="noAnswerCondition" id="180" name="NO1">
+                  <condition class="notCondition" id="180" name="NO1">
                     <questions id="181">
                       <question reference="169"/>
                     </questions>

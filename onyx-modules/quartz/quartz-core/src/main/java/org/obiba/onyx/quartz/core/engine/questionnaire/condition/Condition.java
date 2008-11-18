@@ -24,6 +24,11 @@ public abstract class Condition implements Serializable, ILocalizable {
 
   private List<Question> questions;
 
+  protected Condition(String name) {
+    super();
+    this.name = name;
+  }
+
   public String getName() {
     return name;
   }

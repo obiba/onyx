@@ -22,8 +22,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.condition.AnswerCondition
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.DataCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.MultipleCondition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.NoAnswerCondition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.NotCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -171,42 +172,36 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
 
     // Condition Test
     try {
-      builder.inQuestion("Q5").setAnswerCondition("AC1", "Q1", "1", null);
+      builder.inQuestion("Q5").setAnswerCondition("AC1", "Q1", "1");
       Assert.fail("Question category Q1.1 not found");
     } catch(IllegalStateException e) {
     }
 
-    builder.inQuestion("Q5").setAnswerCondition("AC1", "Q1", YES, null);
+    builder.inQuestion("Q5").setAnswerCondition("AC1", "Q1", YES);
     Assert.assertEquals("AC1", QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q5").getCondition().getName());
 
     try {
-      builder.inQuestion("Q5").setAnswerCondition("AC1", "Q2", "1", null);
+      builder.inQuestion("Q5").setAnswerCondition("AC1", "Q2", "1");
       Assert.fail("Condition AC1 already exists");
     } catch(IllegalArgumentException e) {
     }
 
-    try {
-      builder.inQuestion("Q5").setAnswerCondition("AC2", "Q2", "1", "OA1", DataBuilder.buildBoolean(true), ComparisionOperator.eq);
-      Assert.fail("no OpenAnswerDefinition for this questionCategory");
-    } catch(IllegalArgumentException e) {
-    }
-    builder.inQuestion("Q5").setAnswerCondition("AC2", "Q2", "1", null);
+    builder.inQuestion("Q5").setAnswerCondition("AC2", "Q2", "1");
     Assert.assertEquals("AC2", QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q5").getCondition().getName());
 
-    builder.inQuestion("Q6").setNoAnswerCondition("NAC1").withAnswerCondition("AC3", "Q2", "2");
+    builder.inQuestion("Q6").setNotCondition("NAC1").withAnswerCondition("AC3", "Q2", "2");
     builder.inQuestion("Q7").setMultipleCondition("MC1", ConditionOperator.AND).withAnswerCondition("AC4", "Q2", "2");
     builder.inCondition("MC1").withNoAnswerCondition("NAC2").withMultipleCondition("MC2", ConditionOperator.OR).withAnswerCondition("AC5", "Q2", DONT_KNOW);
-    builder.inCondition("MC2").withAnswerCondition("AC6", "Q5", OTHER_SPECIFY, "SPECIFY", DataBuilder.buildText("toto"), ComparisionOperator.ne, null);
+    builder.inCondition("MC2").withDataCondition("AC6", "Q5", OTHER_SPECIFY, "SPECIFY", ComparisionOperator.ne, DataBuilder.buildText("toto"));
 
     Condition condition_1 = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCondition("AC6");
     Condition condition_2 = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCondition("NAC1");
     Condition condition_3 = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCondition("MC2");
-    Assert.assertEquals(AnswerCondition.class, condition_1.getClass());
-    Assert.assertEquals(NoAnswerCondition.class, condition_2.getClass());
+    Assert.assertEquals(DataCondition.class, condition_1.getClass());
+    Assert.assertEquals(NotCondition.class, condition_2.getClass());
     Assert.assertEquals(MultipleCondition.class, condition_3.getClass());
-    Assert.assertNotNull(((AnswerCondition) condition_1).getDataComparator());
-    Assert.assertNotNull(((NoAnswerCondition) condition_2).getCondition());
-    Assert.assertEquals(AnswerCondition.class, ((NoAnswerCondition) condition_2).getCondition().getClass());
+    Assert.assertNotNull(((NotCondition) condition_2).getCondition());
+    Assert.assertEquals(AnswerCondition.class, ((NotCondition) condition_2).getCondition().getClass());
     Assert.assertEquals(2, ((MultipleCondition) condition_3).getConditions().size());
 
     // Add Timestamps to all pages

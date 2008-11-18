@@ -186,7 +186,7 @@
                       <category reference="24"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="noAnswerCondition" id="87" name="NO1">
+                  <condition class="notCondition" id="87" name="NO1">
                     <questions id="88">
                       <question reference="76"/>
                     </questions>
@@ -258,20 +258,20 @@
                       <category reference="24"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="answerCondition" id="117" name="AC4">
+                  <condition class="dataCondition" id="117" name="AC4" comparisionOperator="gt">
                     <questions id="118">
                       <question reference="103"/>
                     </questions>
-                    <question reference="76"/>
-                    <category reference="79"/>
-                    <dataComparator id="119" comparisionOperator="gt">
-                      <dataSource class="fixedSource" id="120">
-                        <data id="121" type="INTEGER">
-                          <value class="long">45</value>
-                        </data>
-                      </dataSource>
+                    <dataSource1 class="openAnswerSource" id="119">
+                      <question reference="76"/>
+                      <category reference="16"/>
                       <openAnswerDefinition reference="80"/>
-                    </dataComparator>
+                    </dataSource1>
+                    <dataSource2 class="fixedSource" id="120">
+                      <data id="121" type="INTEGER">
+                        <value class="long">45</value>
+                      </data>
+                    </dataSource2>
                   </condition>
                   <questions id="122"/>
                 </question>
@@ -375,7 +375,7 @@
                       <category reference="24"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="noAnswerCondition" id="163" name="NO2">
+                  <condition class="notCondition" id="163" name="NO2">
                     <questions id="164">
                       <question reference="152"/>
                     </questions>

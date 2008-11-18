@@ -66,4 +66,8 @@ public class DataSourceBuilder extends AbstractQuestionnaireElementBuilder<DataS
     return new DataSourceBuilder(questionnaire, new FixedSource(data));
   }
 
+  public DataSource getDataSource() {
+    return element;
+  }
+
 }

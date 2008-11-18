@@ -47,8 +47,8 @@ public class HealthQuestionnaireTest extends AbstractQuestionnaireTest {
     assertCurrentPage(getPage("P23"));
   }
 
-  @Test
-  @Dataset
+  // @Test
+  // @Dataset
   public void testCondition() {
     startQuestionnaire();
     assertCurrentPage(getPage("P1"));

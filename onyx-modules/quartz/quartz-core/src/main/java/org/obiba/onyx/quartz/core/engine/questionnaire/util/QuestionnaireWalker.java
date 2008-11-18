@@ -12,7 +12,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.MultipleCondition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.NoAnswerCondition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.NotCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -160,8 +160,8 @@ public class QuestionnaireWalker implements IVisitor {
         if(!visiteMore()) break;
       }
     }
-    if(visiteMore() && (condition instanceof NoAnswerCondition) && ((NoAnswerCondition) condition).getCondition() != null) {
-      ((NoAnswerCondition) condition).getCondition().accept(this);
+    if(visiteMore() && (condition instanceof NotCondition) && ((NotCondition) condition).getCondition() != null) {
+      ((NotCondition) condition).getCondition().accept(this);
     }
     if(!preOrder) condition.accept(visitor);
   }

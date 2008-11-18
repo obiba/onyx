@@ -11,7 +11,6 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.condition;
 import java.util.List;
 
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
-import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
@@ -24,11 +23,16 @@ public class AnswerCondition extends Condition {
 
   private Category category;
 
-  private Integer occurence;
-
   private AnswerCondition parentAnswerCondition;
 
-  private DataComparator dataComparator;
+  /**
+   * @param name
+   */
+  public AnswerCondition(String name, Question question, Category category) {
+    super(name);
+    this.question = question;
+    this.category = category;
+  }
 
   public Question getQuestion() {
     return question;
@@ -36,22 +40,6 @@ public class AnswerCondition extends Condition {
 
   public void setQuestion(Question question) {
     this.question = question;
-  }
-
-  public Integer getOccurence() {
-    return occurence;
-  }
-
-  public void setOccurence(Integer occurence) {
-    this.occurence = occurence;
-  }
-
-  public DataComparator getDataComparator() {
-    return dataComparator;
-  }
-
-  public void setDataComparator(DataComparator dataComparator) {
-    this.dataComparator = dataComparator;
   }
 
   public Category getCategory() {
@@ -83,11 +71,6 @@ public class AnswerCondition extends Condition {
     CategoryAnswer categoryAnswer = activeQuestionnaireAdministrationService.findAnswer(question, category);
 
     if(categoryAnswer == null) return false;
-
-    if(dataComparator != null) {
-      OpenAnswer openAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(question, category, dataComparator.getOpenAnswerDefinition());
-      return dataComparator.compare(activeQuestionnaireAdministrationService, openAnswer.getData());
-    }
 
     return true;
   }
