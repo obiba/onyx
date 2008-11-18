@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.CurrentYearSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ExternalOpenAnswerSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.OpenAnswerSource;
@@ -136,6 +137,29 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisionOperator comparisionOperator, String property) {
     element.addValidator(new DataSourceValidator(DataSourceBuilder.createParticipantPropertySource(questionnaire, property).getElement(), comparisionOperator));
+    return this;
+  }
+
+  /**
+   * Add a {@link IValidator} based on a {@link CurrentYearSource} to the current {@link OpenAnswerDefinition}.
+   * @param comparisionOperator
+   * @return
+   */
+  public OpenAnswerDefinitionBuilder addCurrentYearValidator(ComparisionOperator comparisionOperator) {
+    element.addValidator(new DataSourceValidator(DataSourceBuilder.createCurrentYearSource(questionnaire).getElement(), comparisionOperator));
+    return this;
+  }
+
+  /**
+   * Add a {@link IValidator} based on a {@link DataSource} to the current {@link OpenAnswerDefinition}.
+   * @param comparisionOperator
+   * @param dataSource
+   * @return
+   * @see TimestampSource
+   * @see CurrentYearSource
+   */
+  public OpenAnswerDefinitionBuilder addValidator(ComparisionOperator comparisionOperator, DataSource dataSource) {
+    element.addValidator(new DataSourceValidator(dataSource, comparisionOperator));
     return this;
   }
 

@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.CurrentYearSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ExternalOpenAnswerSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.FixedSource;
@@ -52,6 +53,10 @@ public class DataSourceBuilder extends AbstractQuestionnaireElementBuilder<DataS
 
   public static DataSourceBuilder createTimestampSource(Questionnaire questionnaire) {
     return new DataSourceBuilder(questionnaire, new TimestampSource());
+  }
+
+  public static DataSourceBuilder createCurrentYearSource(Questionnaire questionnaire) {
+    return new DataSourceBuilder(questionnaire, new CurrentYearSource());
   }
 
   public static DataSourceBuilder createParticipantPropertySource(Questionnaire questionnaire, String property) {
