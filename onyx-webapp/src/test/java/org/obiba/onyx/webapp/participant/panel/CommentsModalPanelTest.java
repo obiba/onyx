@@ -103,7 +103,7 @@ public class CommentsModalPanelTest implements Serializable {
     User user = createUser();
     Interview interview = createInterview(1l);
 
-    Stage stage = createStage("marble", "CON", 1);
+    Stage stage = createStage("marble", "CON");
 
     Participant participant = createParticipant(1l, "Suzan", "Tremblay");
     String generalComment = "general comment";
@@ -202,10 +202,9 @@ public class CommentsModalPanelTest implements Serializable {
     return interview;
   }
 
-  private Stage createStage(String module, String name, int displayOrder) {
+  private Stage createStage(String module, String name) {
     Stage stage = new Stage();
     stage.setModule(module);
-    stage.setDisplayOrder(displayOrder);
 
     return stage;
   }

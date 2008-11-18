@@ -17,7 +17,6 @@ import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -27,6 +26,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
@@ -146,9 +146,20 @@ public abstract class StageSelectionPanel extends Panel {
 
     @SuppressWarnings("serial")
     public StageListColumnProvider() {
-      columns.add(new PropertyColumn(new Model("#"), "displayOrder"));
+      columns.add(new AbstractColumn(new Model("#")) {
+        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+          // cellItem represents the cell (td). It's index is the column's index.
+          // To obtain the row's index, we must find the cell's parent Item class.
+          // See
+          // http://www.nabble.com/getIndex()-and-getCurrentPage()-in-Abstractcolumn-in-DataTabel-td20171197.html#a20171197
+          // and http://www.nabble.com/Item.getIndex%28%29-on-DefaultDataTable-tp17676006p17676006.html
+          Item row = ((Item) cellItem.findParent(Item.class));
+          // The Index is zero-based
+          cellItem.add(new Label(componentId, ((Integer) (row.getIndex() + 1)).toString()));
+        }
+      });
 
-      columns.add(new AbstractColumn(new StringResourceModel("Name", StageSelectionPanel.this, null)) {
+      columns.add(new AbstractColumn(new ResourceModel("Name")) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
 
@@ -157,7 +168,7 @@ public abstract class StageSelectionPanel extends Panel {
 
       });
 
-      columns.add(new AbstractColumn(new StringResourceModel("Status", StageSelectionPanel.this, null)) {
+      columns.add(new AbstractColumn(new ResourceModel("Status")) {
 
         public void populateItem(Item cellItem, String componentId, final IModel rowModel) {
           cellItem.add(new Label(componentId, new Model() {
@@ -171,7 +182,7 @@ public abstract class StageSelectionPanel extends Panel {
 
       });
 
-      columns.add(new AbstractColumn(new StringResourceModel("StartEndTime", StageSelectionPanel.this, null)) {
+      columns.add(new AbstractColumn(new ResourceModel("StartEndTime")) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Stage stage = (Stage) rowModel.getObject();
@@ -197,7 +208,7 @@ public abstract class StageSelectionPanel extends Panel {
         });
       }
 
-      columns.add(new AbstractColumn(new StringResourceModel("Comments", StageSelectionPanel.this, null)) {
+      columns.add(new AbstractColumn(new ResourceModel("Comments")) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           List<Action> interviewComments = activeInterviewService.getInterviewComments();

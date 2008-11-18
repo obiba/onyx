@@ -26,7 +26,6 @@
       <bean class="org.obiba.onyx.engine.Stage">
         <property name="name" value="SUM" />
         <property name="module" value="mica"/>
-        <property name="displayOrder" value="15" />
          
         <property name="stageDependencyCondition">
 	        <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">

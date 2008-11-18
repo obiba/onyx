@@ -3,6 +3,9 @@
   default-autowire="no">
 
   <bean id="participantReader" class="org.obiba.onyx.core.service.ParticipantExcelReader" scope="prototype" />
+  <bean id="stageOrderingStrategy" class="org.obiba.onyx.engine.StaticStageOrderingStrategy">
+    <property name="stageOrdering" value="" />
+  </bean>
 
   <import resource="test-hibernate-config.xml" />
   <import resource="test-db-config.xml" />

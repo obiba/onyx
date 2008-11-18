@@ -18,7 +18,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="SamplesCollection" />
           <property name="module" value="ruby" />
-          <property name="displayOrder" value="14" />
           <property name="stageDependencyCondition" ref="consentDependency" />
         </bean>
       </list>

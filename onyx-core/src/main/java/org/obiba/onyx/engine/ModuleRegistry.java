@@ -34,6 +34,8 @@ public class ModuleRegistry {
 
   private Map<String, Stage> stages = Collections.synchronizedMap(new HashMap<String, Stage>());
 
+  private Comparator<Stage> stageOrderingStrategy;
+
   public void registerModule(Module module) {
     log.info("Registeting module {}", module.getName());
     modules.put(module.getName(), module);
@@ -71,17 +73,22 @@ public class ModuleRegistry {
     return stages.get(name);
   }
 
+  public void setStageOrderingStrategy(Comparator<Stage> stageOrderingStrategy) {
+    this.stageOrderingStrategy = stageOrderingStrategy;
+  }
+
   /**
-   * Returns a list of registered {@link Stage} instance in order of their <code>displayOrder</code> property.
+   * Returns a list of registered {@link Stage} instance in order specified by the <code>stageOrderingStrategy</code>.
+   * If no strategy is defined, ordering is unspecified.
    * @return an ordered List of Stage.
    */
   public List<Stage> listStages() {
-    Set<Stage> set = new TreeSet<Stage>(new Comparator<Stage>() {
-      public int compare(Stage o1, Stage o2) {
-        return o1.getDisplayOrder().compareTo(o2.getDisplayOrder());
-      }
-    });
-    set.addAll(stages.values());
-    return new ArrayList<Stage>(set);
+    if(this.stageOrderingStrategy != null) {
+      Set<Stage> set = new TreeSet<Stage>(this.stageOrderingStrategy);
+      set.addAll(this.stages.values());
+      return new ArrayList<Stage>(set);
+    } else {
+      return new ArrayList<Stage>(this.stages.values());
+    }
   }
 }

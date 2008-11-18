@@ -18,7 +18,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="HealthQuestionnaire" />
           <property name="module" value="quartz" />
-          <property name="displayOrder" value="13" />
           <property name="stageDependencyCondition" ref="consentDependency" />
         </bean>
       </list>

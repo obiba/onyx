@@ -30,8 +30,6 @@ public class Stage {
 
   private String module;
 
-  private Integer displayOrder;
-
   private StageDependencyCondition stageDependencyCondition;
 
   public String getName() {
@@ -53,14 +51,6 @@ public class Stage {
   public MessageSourceResolvable getDescription() {
     // Codes are <module>.<name>.description, <name>.description
     return new DefaultMessageSourceResolvable(new String[] { getModule() + "." + getName() + DESCRIPTION_KEY, getName() + DESCRIPTION_KEY }, getName());
-  }
-
-  public Integer getDisplayOrder() {
-    return displayOrder;
-  }
-
-  public void setDisplayOrder(Integer displayOrder) {
-    this.displayOrder = displayOrder;
   }
 
   public StageDependencyCondition getStageDependencyCondition() {

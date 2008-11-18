@@ -12,7 +12,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="CON" />
           <property name="module" value="marble" />
-          <property name="displayOrder" value="1" />
         </bean>
       </list>
     </property>
