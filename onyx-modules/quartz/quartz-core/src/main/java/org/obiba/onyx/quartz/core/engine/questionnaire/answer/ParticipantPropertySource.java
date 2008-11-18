@@ -9,9 +9,17 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.answer;
 
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.io.Serializable;
+
+import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Get a {@link Participant} property in a {@link Data}.
@@ -19,6 +27,8 @@ import org.obiba.onyx.util.data.Data;
 public class ParticipantPropertySource extends DataSource {
 
   private static final long serialVersionUID = 5625713001098059689L;
+
+  private static final Logger log = LoggerFactory.getLogger(ParticipantPropertySource.class);
 
   private String property;
 
@@ -36,7 +46,22 @@ public class ParticipantPropertySource extends DataSource {
   }
 
   public Data getData(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService) {
+    Participant participant = activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant();
+    try {
+      for(PropertyDescriptor pd : Introspector.getBeanInfo(Participant.class).getPropertyDescriptors()) {
+        if(property.equals(pd.getName())) {
+          Object propertyValue = pd.getReadMethod().invoke(participant);
+          // log.info("source.participant.property." + property + "=" + propertyValue + " " +
+          // propertyValue.getClass().getSimpleName());
+          if(propertyValue instanceof Gender) {
+            propertyValue = propertyValue.toString();
+          }
+          return DataBuilder.build((Serializable) propertyValue);
+        }
+      }
+    } catch(Exception e) {
+      log.error("Could not participant property: " + property, e);
+    }
     throw new UnsupportedOperationException("This method is not implemented yet.");
   }
-
 }

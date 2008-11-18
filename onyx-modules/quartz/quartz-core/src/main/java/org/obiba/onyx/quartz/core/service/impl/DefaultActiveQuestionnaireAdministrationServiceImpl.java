@@ -281,7 +281,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     }
   }
 
-  protected QuestionnaireParticipant getQuestionnaireParticipant() {
+  public QuestionnaireParticipant getQuestionnaireParticipant() {
     return (getPersistenceManager().refresh(currentQuestionnaireParticipant));
   }
 

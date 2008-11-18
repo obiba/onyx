@@ -27,6 +27,12 @@ import org.obiba.onyx.util.data.Data;
 public interface ActiveQuestionnaireAdministrationService {
 
   /**
+   * Get the current participant for the currently administered questionnaire.
+   * @return
+   */
+  public QuestionnaireParticipant getQuestionnaireParticipant();
+
+  /**
    * Returns the current questionnaire page.
    * 
    * @return current page

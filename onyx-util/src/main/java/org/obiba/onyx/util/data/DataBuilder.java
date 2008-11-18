@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,6 +26,24 @@ import org.slf4j.LoggerFactory;
 public class DataBuilder {
 
   private static final Logger log = LoggerFactory.getLogger(DataBuilder.class);
+
+  public static Data build(Serializable value) {
+    Class<?> valueClass = value.getClass();
+
+    if(valueClass.isAssignableFrom(Boolean.class)) {
+      return buildBoolean((Boolean) value);
+    } else if(value instanceof Date) {
+      return buildDate((Date) value);
+    } else if(valueClass.isAssignableFrom(Double.class) || valueClass.isAssignableFrom(Float.class)) {
+      return buildDecimal(value.toString());
+    } else if(valueClass.isAssignableFrom(Integer.class) || valueClass.isAssignableFrom(Long.class)) {
+      return buildInteger(value.toString());
+    } else if(valueClass.isAssignableFrom(String.class)) {
+      return buildText((String) value);
+    } else {
+      throw new IllegalArgumentException("Cannot determine DataType for " + value);
+    }
+  }
 
   public static Data buildBoolean(Boolean booleanValue) {
     return new Data(DataType.BOOLEAN, booleanValue);
