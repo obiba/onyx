@@ -62,6 +62,9 @@ public class DataValidator implements IDataValidator {
 
     case INTEGER:
       return new Validatable(Long.valueOf(value));
+
+    case DECIMAL:
+      return new Validatable(Double.valueOf(value));
     }
 
     return null;

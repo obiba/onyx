@@ -10,6 +10,7 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
 import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ExternalOpenAnswerSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.OpenAnswerSource;
@@ -77,7 +78,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @param dataType
    * @return
    */
-  public OpenAnswerDefinitionBuilder addOpenAnswerDefinitionValidator(IValidator validator, DataType dataType) {
+  public OpenAnswerDefinitionBuilder addValidator(IValidator validator, DataType dataType) {
     element.addValidator(new DataValidator(validator, dataType));
     return this;
   }
@@ -87,12 +88,14 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @param validator
    * @return
    */
-  public OpenAnswerDefinitionBuilder addOpenAnswerDefinitionValidator(IValidator validator) {
+  public OpenAnswerDefinitionBuilder addValidator(IValidator validator) {
     if(validator instanceof IDataValidator) {
       element.addValidator((IDataValidator) validator);
       return this;
+    } else if(validator instanceof StringValidator) {
+      return addValidator(validator, DataType.TEXT);
     } else {
-      return addOpenAnswerDefinitionValidator(validator, element.getDataType());
+      return addValidator(validator, element.getDataType());
     }
   }
 
@@ -101,7 +104,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @param unit
    * @return
    */
-  public OpenAnswerDefinitionBuilder setOpenAnswerDefinitionUnit(String unit) {
+  public OpenAnswerDefinitionBuilder setUnit(String unit) {
     element.setUnit(unit);
 
     return this;
@@ -112,7 +115,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @param data
    * @return
    */
-  public OpenAnswerDefinitionBuilder setOpenAnswerDefinitionDefaultData(Data... defaultValues) {
+  public OpenAnswerDefinitionBuilder setDefaultData(Data... defaultValues) {
     for(Data value : defaultValues) {
       element.addDefaultValue(value);
     }
@@ -125,7 +128,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @param data
    * @return
    */
-  public OpenAnswerDefinitionBuilder setOpenAnswerDefinitionDefaultData(String... defaultValues) {
+  public OpenAnswerDefinitionBuilder setDefaultData(String... defaultValues) {
     for(String value : defaultValues) {
       element.addDefaultValue(value);
     }
