@@ -12,26 +12,48 @@ package org.obiba.onyx.ruby.core.wicket.wizard;
 import java.util.Iterator;
 
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
+import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
+import org.obiba.onyx.ruby.core.wicket.model.RegisteredParticipantTubeModel;
 
 public class RegisteredParticipantTubeProvider extends SortableDataProvider {
+  //
+  // Constants
+  //
 
   private static final long serialVersionUID = 1L;
 
+  //
+  // Instance Variables
+  //
+
+  @SpringBean
+  private ActiveTubeRegistrationService activeTubeRegistrationService;
+
+  //
+  // Constructors
+  //
+
+  public RegisteredParticipantTubeProvider() {
+    InjectorHolder.getInjector().inject(this);
+  }
+
+  //
+  // SortableDataProvider Methods
+  //
+
   public Iterator<RegisteredParticipantTube> iterator(int first, int count) {
-    // TODO: Using service, get all registered participant tubes for the current participant.
-    return null;
+    return activeTubeRegistrationService.getParticipantTubeRegistration().getRegisteredParticipantTubes().iterator();
   }
 
   public IModel model(Object object) {
-    // TODO: Implement RegisteredParticipantTubeModel.
-    // return new RegisteredParticipantTubeModel((RegisteredParticipantTubeModel)object);
-    return null;
+    return new RegisteredParticipantTubeModel((RegisteredParticipantTube) object);
   }
 
   public int size() {
-    // TODO: Using service, get the number of registered participant tubes for the current participant.
-    return 0;
+    return activeTubeRegistrationService.getParticipantTubeRegistration().getRegisteredParticipantTubes().size();
   }
 }

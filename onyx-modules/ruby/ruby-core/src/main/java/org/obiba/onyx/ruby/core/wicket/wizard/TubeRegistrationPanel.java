@@ -9,13 +9,13 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.wizard;
 
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
-import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 
@@ -26,22 +26,15 @@ public class TubeRegistrationPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  private static final int ROWS_PER_PAGE = 50;
-
   //
   // Instance Variables
   //
 
   @SpringBean(name = "activeInterviewService")
-  private ActiveInterviewService activeInterviewService;
+  private transient ActiveInterviewService activeInterviewService;
 
   @SpringBean
-  private ActiveTubeRegistrationService activeTubeRegistrationService;
-
-  @SpringBean
-  TubeRegistrationConfiguration tubeRegistrationConfiguration;
-
-  private OnyxEntityList<RegisteredParticipantTube> list;
+  private transient TubeRegistrationConfiguration tubeRegistrationConfiguration;
 
   //
   // Constructors
@@ -50,7 +43,9 @@ public class TubeRegistrationPanel extends Panel {
   public TubeRegistrationPanel(String id) {
     super(id);
 
+    add(new Label("scannedPrimaryTubes", new SpringStringResourceModel("Ruby.ScannedPrimaryTubes")));
+
     Participant participant = activeInterviewService.getParticipant();
-    add(list = new OnyxEntityList<RegisteredParticipantTube>("list", new RegisteredParticipantTubeProvider(), new RegisteredParticipantTubeColumnProvider(tubeRegistrationConfiguration), new SpringStringResourceModel("Ruby.RegisteredParticipantTubeList", new Object[] { participant.getFullName() }, null)));
+    add(new OnyxEntityList<RegisteredParticipantTube>("list", new RegisteredParticipantTubeProvider(), new RegisteredParticipantTubeColumnProvider(tubeRegistrationConfiguration), new SpringStringResourceModel("Ruby.RegisteredParticipantTubeList", new Object[] { participant.getFullName() }, null)));
   }
 }
