@@ -20,11 +20,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="version" ref="versionObject"/>
   </bean>
 
-  <bean id="onyxDatabaseSeed" class="org.obiba.onyx.webapp.seed.OnyxDatabaseSeed" scope="singleton">
-    <property name="resource" value="classpath:/stages.xml" />
-    <property name="persistenceManager" ref="persistenceManager" />
-  </bean>
-
   <bean id="testDatabaseSeed" class="org.obiba.onyx.webapp.seed.TestDatabaseSeed" scope="singleton">
     <property name="resourcePatterns">
       <list>
