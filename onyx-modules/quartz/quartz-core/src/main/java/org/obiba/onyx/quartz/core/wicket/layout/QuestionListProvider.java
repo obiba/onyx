@@ -10,20 +10,19 @@
 package org.obiba.onyx.quartz.core.wicket.layout;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.injection.web.InjectorHolder;
-import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.array.AbstractDataListProvider;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QuestionListProvider implements IDataProvider {
+public class QuestionListProvider extends AbstractDataListProvider<Question> {
 
   private static final long serialVersionUID = 227294946626164090L;
 
@@ -40,26 +39,18 @@ public class QuestionListProvider implements IDataProvider {
     this.parentQuestion = parentQuestion;
   }
 
-  @SuppressWarnings("unchecked")
-  public Iterator iterator(int first, int count) {
+  @Override
+  public List<Question> getDataList() {
     List<Question> questionToAnswer = new ArrayList<Question>();
-    for(Question question : parentQuestion.getQuestions().subList(first, first + count)) {
+    for(Question question : parentQuestion.getQuestions()) {
       if(question.isToBeAnswered(activeQuestionnaireAdministrationService)) questionToAnswer.add(question);
     }
-    return questionToAnswer.iterator();
+    return questionToAnswer;
   }
 
+  @Override
   public IModel model(Object object) {
     return new QuestionnaireModel((Question) object);
-  }
-
-  public int size() {
-    return parentQuestion.getQuestions().size();
-  }
-
-  public void detach() {
-    // TODO Auto-generated method stub
-
   }
 
 }

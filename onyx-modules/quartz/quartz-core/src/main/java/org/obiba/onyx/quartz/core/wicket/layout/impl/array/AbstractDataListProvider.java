@@ -12,12 +12,11 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortState;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.ISortableDataProvider;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
-public abstract class AbstractDataListProvider<T extends Serializable> implements ISortableDataProvider {
+public abstract class AbstractDataListProvider<T extends Serializable> implements IDataProvider {
 
   private static final long serialVersionUID = 1L;
 
@@ -36,16 +35,6 @@ public abstract class AbstractDataListProvider<T extends Serializable> implement
   }
 
   public void detach() {
-  }
-
-  public ISortState getSortState() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  public void setSortState(ISortState state) {
-    // TODO Auto-generated method stub
-
   }
 
 }
