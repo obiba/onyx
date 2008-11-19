@@ -235,6 +235,40 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
     return this;
   }
 
+  /**
+   * Add a {@link DataCondition} between an external open answer and a fixed data.
+   * @param name
+   * @param questionnaireName
+   * @param questionName
+   * @param categoryName
+   * @param openAnswerDefinitionName
+   * @param comparisionOperator
+   * @param data
+   * @return
+   */
+  public ConditionBuilder withDataCondition(String name, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName, ComparisionOperator comparisionOperator, Data data) {
+    DataCondition condition = new DataCondition(name, DataSourceBuilder.createExternalOpenAnswerSource(questionnaire, questionnaireName, questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisionOperator, DataSourceBuilder.createFixedSource(questionnaire, data).getDataSource());
+
+    if(element instanceof MultipleCondition) {
+      ((MultipleCondition) element).getConditions().add(condition);
+    } else if(element instanceof NotCondition) {
+      ((NotCondition) element).setCondition(condition);
+    }
+
+    element = condition;
+    return this;
+  }
+
+  /**
+   * Add a {@link DataCondition} between an open answer from the currently administered questionnaire and a fied data.
+   * @param name
+   * @param questionName
+   * @param categoryName
+   * @param openAnswerDefinitionName
+   * @param comparisionOperator
+   * @param data
+   * @return
+   */
   public ConditionBuilder withDataCondition(String name, String questionName, String categoryName, String openAnswerDefinitionName, ComparisionOperator comparisionOperator, Data data) {
     DataCondition condition = new DataCondition(name, DataSourceBuilder.createOpenAnswerSource(questionnaire, questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisionOperator, DataSourceBuilder.createFixedSource(questionnaire, data).getDataSource());
 
@@ -248,6 +282,18 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
     return this;
   }
 
+  /**
+   * Add a {@link DataCondition} between two open answer of the currently administered questionnaire.
+   * @param name
+   * @param questionName
+   * @param categoryName
+   * @param openAnswerDefinitionName
+   * @param comparisionOperator
+   * @param questionNameToCompare
+   * @param categoryNameToCompare
+   * @param openAnswerDefinitionNameToCompare
+   * @return
+   */
   public ConditionBuilder withDataCondition(String name, String questionName, String categoryName, String openAnswerDefinitionName, ComparisionOperator comparisionOperator, String questionNameToCompare, String categoryNameToCompare, String openAnswerDefinitionNameToCompare) {
     DataCondition condition = new DataCondition(name, DataSourceBuilder.createOpenAnswerSource(questionnaire, questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisionOperator, DataSourceBuilder.createOpenAnswerSource(questionnaire, questionNameToCompare, categoryNameToCompare, openAnswerDefinitionNameToCompare).getElement());
 
@@ -261,6 +307,20 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
     return this;
   }
 
+  /**
+   * Add a {@link DataCondition} between an open answer of the currently administered questionnaire and an external open
+   * answer.
+   * @param name
+   * @param questionName
+   * @param categoryName
+   * @param openAnswerDefinitionName
+   * @param comparisionOperator
+   * @param questionnaireNameToCompare
+   * @param questionNameToCompare
+   * @param categoryNameToCompare
+   * @param openAnswerDefinitionNameToCompare
+   * @return
+   */
   public ConditionBuilder withDataCondition(String name, String questionName, String categoryName, String openAnswerDefinitionName, ComparisionOperator comparisionOperator, String questionnaireNameToCompare, String questionNameToCompare, String categoryNameToCompare, String openAnswerDefinitionNameToCompare) {
     DataCondition condition = new DataCondition(name, DataSourceBuilder.createOpenAnswerSource(questionnaire, questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisionOperator, DataSourceBuilder.createExternalOpenAnswerSource(questionnaire, questionnaireNameToCompare, questionNameToCompare, categoryNameToCompare, openAnswerDefinitionNameToCompare).getDataSource());
 
