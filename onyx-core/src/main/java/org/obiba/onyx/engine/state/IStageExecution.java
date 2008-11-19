@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.state;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.Component;
@@ -19,10 +20,8 @@ import org.obiba.onyx.util.data.Data;
 
 /**
  * State Machine interface, exposed by {@link StageExecutionContext}.
- * 
- * @see State Machine Design Pattern http://dotnet.zcu.cz/NET_2006/Papers_2006/short/B31-full.pdf
- * @author Yannick Marcon
- * 
+ * <p>
+ * See State Machine Design Pattern http://dotnet.zcu.cz/NET_2006/Papers_2006/short/B31-full.pdf
  */
 public interface IStageExecution {
 
@@ -168,4 +167,18 @@ public interface IStageExecution {
    * @return the actionType for the state
    */
   public ActionType getStartingActionType();
+
+  /**
+   * Returns the time at which this stage's execution started. This is taken from the last executed action of type
+   * {@link ActionType#EXECUTE}.
+   * @return the time this execution started or null if it hasn't happened yet.
+   */
+  public Date getStartTime();
+
+  /**
+   * Returns the time at which this stage's execution became <code>complete</code> or null if the execution is not
+   * completed yet.
+   * @return the time at which this stage's execution became <code>complete</code>
+   */
+  public Date getEndTime();
 }

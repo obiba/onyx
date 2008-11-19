@@ -10,6 +10,7 @@
 package org.obiba.onyx.engine.state;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -272,5 +273,35 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
 
   public ActionType getStartingActionType() {
     return currentState.getStartingActionType();
+  }
+
+  public Date getStartTime() {
+    // Find the last action of type EXECUTE for this stage
+    Action lastExecuteAction = null;
+    for(Action action : getStageActionList()) {
+      if(action.getActionType() == ActionType.EXECUTE) lastExecuteAction = action;
+    }
+    return (lastExecuteAction != null) ? lastExecuteAction.getDateTime() : null;
+  }
+
+  public Date getEndTime() {
+    if(isCompleted() == false) {
+      return null;
+    }
+    // Return the last action's time
+    List<Action> actions = getStageActionList();
+    if(actions == null || actions.size() == 0) {
+      throw new IllegalStateException("Stage " + stage.getName() + " is in a completed state but has no associated action.");
+    }
+    return actions.get(actions.size() - 1).getDateTime();
+  }
+
+  private List<Action> getStageActionList() {
+    Action template = new Action();
+    template.setInterview(interview);
+    template.setStage(stage.getName());
+
+    return getPersistenceManager().match(template);
+
   }
 }

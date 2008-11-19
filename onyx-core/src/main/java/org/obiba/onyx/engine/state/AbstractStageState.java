@@ -10,6 +10,7 @@
 package org.obiba.onyx.engine.state;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -186,6 +187,14 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   }
 
   public ActionType getStartingActionType() {
+    return null;
+  }
+
+  public Date getEndTime() {
+    return null;
+  }
+
+  public Date getStartTime() {
     return null;
   }
 }

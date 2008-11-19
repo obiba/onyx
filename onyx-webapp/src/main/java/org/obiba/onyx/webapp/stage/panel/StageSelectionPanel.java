@@ -185,14 +185,13 @@ public abstract class StageSelectionPanel extends Panel {
       columns.add(new AbstractColumn(new ResourceModel("StartEndTime")) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Stage stage = (Stage) rowModel.getObject();
-          cellItem.add(new StageStartEndTimePanel(componentId, stage));
+          cellItem.add(new StageStartEndTimePanel(componentId, rowModel).setRenderBodyOnly(true));
         }
 
       });
 
       if(activeInterviewService.getInterview().getStatus().equals(InterviewStatus.IN_PROGRESS)) {
-        columns.add(new AbstractColumn(new Model("Actions")) {
+        columns.add(new AbstractColumn(new ResourceModel("Actions")) {
 
           public void populateItem(Item cellItem, String componentId, IModel rowModel) {
             Stage stage = (Stage) rowModel.getObject();
