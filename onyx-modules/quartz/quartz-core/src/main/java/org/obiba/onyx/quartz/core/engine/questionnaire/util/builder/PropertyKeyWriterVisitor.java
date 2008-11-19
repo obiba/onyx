@@ -146,7 +146,7 @@ public class PropertyKeyWriterVisitor implements IWalkerVisitor {
   }
 
   public void visit(Condition condition) {
-    writePropertyKey(condition);
+    // no localization properties for condition
   }
 
 }

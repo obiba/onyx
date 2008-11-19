@@ -174,8 +174,8 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
     }
   }
 
-  // TODO implement the following for condition
   public void visit(Condition condition) {
+    properties = new ArrayList<String>();
   }
 
   /**
