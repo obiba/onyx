@@ -11,12 +11,14 @@ package org.obiba.onyx.webapp.stage.panel;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
 import org.obiba.onyx.wicket.util.DateModelUtils;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 
 public class StageMenuBar extends MenuBar {
 
@@ -31,9 +33,9 @@ public class StageMenuBar extends MenuBar {
 
     Participant participant = activeInterviewService.getParticipant();
 
-    add(new Label("stageLabel", new PropertyModel(stageModel, "description")));
+    add(new Label("stageLabel", new MessageSourceResolvableStringModel(new PropertyModel(stageModel, "description"))));
     add(new Label("participantLabel", participant.getFullName() + " | " + participant.getBarcode()));
-    add(new Label("birthDateLabel", DateModelUtils.getDateModel(new PropertyModel(participant, "birthDate"))));
+    add(new Label("birthDateLabel", DateModelUtils.getDateModel(new Model(participant.getBirthDate()))));
   }
 
   protected void buildMenus() {
