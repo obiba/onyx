@@ -231,6 +231,8 @@ public abstract class AbstractQuestionnaireTest {
    * @param answer answer
    */
   public void answerQuestion(Question question, CategoryAnswer answer) {
+    if(answer == null) return;
+
     if(isOnCurrentPage(question)) {
       // Answer the question.
       addComment(question);
@@ -561,36 +563,43 @@ public abstract class AbstractQuestionnaireTest {
       openAnswer(question, answer);
     } else if(question.getUIFactoryName().equals("quartz.DropDownQuestionPanelFactory")) {
       dropDownAnswer(question, answer);
-    } else if(question.getQuestions().size() == 0) {
+    } else if(question.getParentQuestion() == null) {
       if(question.isMultiple()) {
         checkBoxButtonAnswer(question, answer);
       } else {
         radioButtonAnswer(question, answer);
       }
-    } else if(question.getQuestionCategories().size() == 0) {
-      // sub questions
+    } else if(question.getParentQuestion().getCategories().size() == 0) {
       throw new UnsupportedOperationException("Test of sub-questions not supported yet");
+      // TODO deal with sub question markup
+      // if(question.isMultiple()) {
+      // checkBoxButtonAnswer(question, answer);
+      // } else {
+      // radioButtonAnswer(question, answer);
+      // }
+    } else if(question.getCategories().size() == 0) {
+      if(question.getParentQuestion().isMultiple()) {
+        checkBoxArrayButtonAnswer(question, answer);
+      } else {
+        radioArrayButtonAnswer(question, answer);
+      }
     } else {
-      // shared
-      throw new UnsupportedOperationException("Test of question with shared categories not supported yet");
+      // joined
+      throw new UnsupportedOperationException("Test of question with joined categories not supported yet");
     }
   }
 
   /**
-   * Given a question and an "open" answer, sets the corresponding input field value and fires an "onblur" Ajax event to
-   * trigger persistence.
-   * 
-   * @param question question
-   * @param answer answer
+   * Get the path to the form component.
+   * @return
    */
-  private void openAnswer(Question question, CategoryAnswer answer) {
-    FormTester formTester = wicketTester.newFormTester(getFormPath());
-
-    Category category = question.findCategory(answer.getCategoryName());
-    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getInputFieldComponentId(question, category), "onclick");
-    formTester.setValue(getInputFieldComponentId(question, category), answer.getOpenAnswers().get(0).getData().getValueAsString());
-    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getInputFieldComponentId(question, category), ONBLUR_EVENT);
+  private String getFormPath() {
+    return "panel:content:form";
   }
+
+  //
+  // default question
+  //
 
   /**
    * Given a question and an radio button answer, selects the corresponding radio button and fires an "onchange" Ajax
@@ -620,38 +629,31 @@ public abstract class AbstractQuestionnaireTest {
     wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getCheckBoxButtonComponentId(question, answer), ONCHANGE_EVENT);
   }
 
-  private void dropDownAnswer(Question question, CategoryAnswer answer) {
+  /**
+   * Given a question and an "open" answer, sets the corresponding input field value and fires an "onblur" Ajax event to
+   * trigger persistence.
+   * 
+   * @param question question
+   * @param answer answer
+   */
+  private void openAnswer(Question question, CategoryAnswer answer) {
     FormTester formTester = wicketTester.newFormTester(getFormPath());
 
-    formTester.select(getDropDownComponentId(question), getCategoryIndex(question, answer));
-    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getDropDownComponentId(question), ONCHANGE_EVENT);
-  }
-
-  private String getFormPath() {
-    return "panel:content:form";
+    Category category = question.findCategory(answer.getCategoryName());
+    String openPath = getInputFieldComponentId(question, category);
+    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + openPath, "onclick");
+    formTester.setValue(openPath, answer.getOpenAnswers().get(0).getData().getValueAsString());
+    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + openPath, ONBLUR_EVENT);
   }
 
   private String getInputFieldComponentId(Question question, Category category) {
-    int index = question.getPage().getQuestions().indexOf(question) + 1;
     int categoryIndex = question.getCategories().indexOf(category) + 1;
-    return "step:panel:questions:" + index + ":question:content:categories:category:" + categoryIndex + ":input:open:open:input:field";
+    return getCategoryGroupComponentId(question) + ":category:" + categoryIndex + ":input:open:open:input:field";
   }
 
   private String getCategoryGroupComponentId(Question question) {
     int index = question.getPage().getQuestions().indexOf(question) + 1;
     return "step:panel:questions:" + index + ":question:content:categories";
-  }
-
-  private String getArrayCategoryGroupComponentId(Question question) {
-    Question parent = question.getParentQuestion();
-    int parentIndex = parent.getPage().getQuestions().indexOf(parent) + 1;
-    int index = parent.getQuestions().indexOf(question) + 1;
-    return "step:panel:questions:" + parentIndex + ":question:content:array:rows:rows:" + index + ":group";
-  }
-
-  private String getDropDownComponentId(Question question) {
-    int index = question.getPage().getQuestions().indexOf(question) + 1;
-    return "step:panel:questions:" + index + ":question:content:questionCategories";
   }
 
   private String getRadioButtonComponentId(Question question, CategoryAnswer answer) {
@@ -674,11 +676,60 @@ public abstract class AbstractQuestionnaireTest {
     return partBeforeIndex + COMPONENT_ID_SEPARATOR + buttonIndex + COMPONENT_ID_SEPARATOR + partAfterIndex;
   }
 
+  //
+  // dropdown question
+  // 
+
+  private void dropDownAnswer(Question question, CategoryAnswer answer) {
+    FormTester formTester = wicketTester.newFormTester(getFormPath());
+
+    formTester.select(getDropDownComponentId(question), getCategoryIndex(question, answer));
+    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getDropDownComponentId(question), ONCHANGE_EVENT);
+  }
+
+  private String getDropDownComponentId(Question question) {
+    int index = question.getPage().getQuestions().indexOf(question) + 1;
+    return "step:panel:questions:" + index + ":question:content:questionCategories";
+  }
+
+  //
+  // shared categories question array
+  //
+
+  private void checkBoxArrayButtonAnswer(Question question, CategoryAnswer answer) {
+    FormTester formTester = wicketTester.newFormTester(getFormPath());
+
+    formTester.select(getArrayCategoryGroupComponentId(question), getCategoryIndex(question.getParentQuestion(), answer));
+    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getCheckBoxArrayButtonComponentId(question, answer), ONCHANGE_EVENT);
+  }
+
+  private void radioArrayButtonAnswer(Question question, CategoryAnswer answer) {
+    FormTester formTester = wicketTester.newFormTester(getFormPath());
+
+    formTester.select(getArrayCategoryGroupComponentId(question), getCategoryIndex(question.getParentQuestion(), answer));
+    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getRadioArrayButtonComponentId(question, answer), ONCHANGE_EVENT);
+  }
+
+  private String getArrayCategoryGroupComponentId(Question question) {
+    Question parent = question.getParentQuestion();
+    int parentIndex = parent.getPage().getQuestions().indexOf(parent) + 1;
+    int index = parent.getQuestions().indexOf(question) + 1;
+    return "step:panel:questions:" + parentIndex + ":question:content:array:rows:rows:" + index + ":group";
+  }
+
+  private String getRadioArrayButtonComponentId(Question question, CategoryAnswer answer) {
+    return getArrayButtonComponentId(question, answer, "radio");
+  }
+
+  private String getCheckBoxArrayButtonComponentId(Question question, CategoryAnswer answer) {
+    return getArrayButtonComponentId(question, answer, "checkbox");
+  }
+
   private String getArrayButtonComponentId(Question question, CategoryAnswer answer, String type) {
-    // TODO: Generate id based on question. Currently assuming one question per page.
     String partBeforeIndex = getArrayCategoryGroupComponentId(question) + ":cells";
     String partAfterIndex = "cell:categoryLabel:" + type;
-    int buttonIndex = getCategoryIndex(question, answer) + 2; // 2-based (first column is sub-question labels).
+    int buttonIndex = getCategoryIndex(question.getParentQuestion(), answer) + 2; // 2-based (first column is
+    // sub-question labels).
 
     if(buttonIndex == -1) {
       Assert.fail("Invalid answer [" + answer.getCategoryName() + "] for question [" + question.getName() + "] (could not locate corresponding " + type + " button)");
@@ -687,6 +738,29 @@ public abstract class AbstractQuestionnaireTest {
     return partBeforeIndex + COMPONENT_ID_SEPARATOR + buttonIndex + COMPONENT_ID_SEPARATOR + partAfterIndex;
   }
 
+  private void openArrayAnswer(Question question, CategoryAnswer answer) {
+    FormTester formTester = wicketTester.newFormTester(getFormPath());
+
+    Category category = question.getParentQuestion().findCategory(answer.getCategoryName());
+    String openPath = getArrayInputFieldComponentId(question, category);
+    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + openPath, "onclick");
+    formTester.setValue(openPath, answer.getOpenAnswers().get(0).getData().getValueAsString());
+    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + openPath, ONBLUR_EVENT);
+  }
+
+  private String getArrayInputFieldComponentId(Question question, Category category) {
+    Question parent = question.getParentQuestion();
+    int categoryIndex = parent.getCategories().indexOf(category) + 2; // 2-based
+
+    return getArrayCategoryGroupComponentId(question) + ":cells:" + categoryIndex + ":cell:open:open:input:field";
+  }
+
+  /**
+   * Get the category index in given question.
+   * @param question
+   * @param answer
+   * @return
+   */
   private int getCategoryIndex(Question question, CategoryAnswer answer) {
     Category category = question.findCategory(answer.getCategoryName());
     return question.getCategories().indexOf(category);
