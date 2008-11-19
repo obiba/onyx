@@ -42,7 +42,9 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
 
   private static final Logger log = LoggerFactory.getLogger(ActiveTubeRegistrationServiceImpl.class);
 
-  private static final String DUPLICATE_BARCODE_ERROR = "";
+  private static final String INVALIDSIZE_BARCODE_ERROR = "Ruby.Error.InvalidSizeBarcode";
+
+  private static final String DUPLICATE_BARCODE_ERROR = "Ruby.Error.DuplicateBarcode";
 
   //
   // Instance Variables
@@ -124,7 +126,15 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
   public List<MessageSourceResolvable> registerTube(String barcode) {
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
 
-    if(!isDuplicateBarcode(barcode)) {
+    int expectedSize = tubeRegistrationConfig.getBarcodeStructure().getExpectedSize();
+
+    if(barcode.length() != expectedSize) {
+      DefaultMessageSourceResolvable error = new DefaultMessageSourceResolvable(new String[] { INVALIDSIZE_BARCODE_ERROR }, new Object[] { barcode, expectedSize, barcode.length() });
+      errors.add(error);
+    } else if(isDuplicateBarcode(barcode)) {
+      DefaultMessageSourceResolvable error = new DefaultMessageSourceResolvable(DUPLICATE_BARCODE_ERROR);
+      errors.add(error);
+    } else {
       BarcodeStructure barcodeStructure = tubeRegistrationConfig.getBarcodeStructure();
       barcodeStructure.parseBarcode(barcode, errors);
 
@@ -139,9 +149,6 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
 
         log.info("Registered a participant tube with barcode '{}'", barcode);
       }
-    } else { // duplicate barcode
-      DefaultMessageSourceResolvable error = new DefaultMessageSourceResolvable(DUPLICATE_BARCODE_ERROR);
-      errors.add(error);
     }
 
     return errors;

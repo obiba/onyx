@@ -62,4 +62,14 @@ public class BarcodeStructure {
 
     return barcodePartList;
   }
+
+  public int getExpectedSize() {
+    int expectedSize = 0;
+
+    for(IBarcodePartParser parser : parserList) {
+      expectedSize += parser.getSize();
+    }
+
+    return expectedSize;
+  }
 }

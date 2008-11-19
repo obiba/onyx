@@ -43,6 +43,10 @@ public class TubeRegistrationPanel extends Panel {
   public TubeRegistrationPanel(String id) {
     super(id);
 
+    setOutputMarkupId(true);
+
+    add(new TubeBarcodePanel("tubeBarcodePanel"));
+
     add(new Label("scannedPrimaryTubes", new SpringStringResourceModel("Ruby.ScannedPrimaryTubes")));
 
     Participant participant = activeInterviewService.getParticipant();
