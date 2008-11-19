@@ -119,6 +119,9 @@ public class ConditionTest {
   public void testNullDataCondition() {
     DataCondition condition = new DataCondition("condition", new FixedSource(null), ComparisionOperator.lt, new FixedSource(null));
     Assert.assertFalse(condition.isToBeAnswered(activeQuestionnaireAdministrationServiceMock));
+
+    condition = new DataCondition("condition", new FixedSource(null), ComparisionOperator.eq, new FixedSource(null));
+    Assert.assertTrue(condition.isToBeAnswered(activeQuestionnaireAdministrationServiceMock));
   }
 
   public Questionnaire createQuestionnaire() {
