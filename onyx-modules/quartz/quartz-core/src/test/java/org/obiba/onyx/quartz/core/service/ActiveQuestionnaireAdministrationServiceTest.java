@@ -87,6 +87,7 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     testFindAnswers(q1);
     testFindAnswer(q2);
     testFindOpenAnswer(q3);
+    testFindExternalOpenAnswer(q3);
     testSetActiveAnswers();
     testSetDeleteAnswer(q1);
     testSetDeleteAnswers(q1);
@@ -141,18 +142,34 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     Assert.assertEquals("6", openAnswer.getData().getValueAsString());
   }
 
+  private void testFindExternalOpenAnswer(Question q3) {
+    OpenAnswer openAnswer = activeQuestionnaireAdministrationService.findOpenAnswer(activeQuestionnaireAdministrationService.getQuestionnaire().getName(), q3.getName(), q3.getQuestionCategories().get(0).getCategory().getName(), q3.getQuestionCategories().get(0).getCategory().findOpenAnswerDefinition("MONTH").getName());
+    Assert.assertEquals("6", openAnswer.getData().getValueAsString());
+  }
+
   private void testSetActiveAnswers() {
     Question q3 = questionnaire.getPages().get(1).getQuestions().get(0);
     Question q4 = q3.getQuestions().get(0);
 
+    List<CategoryAnswer> actives = activeQuestionnaireAdministrationService.findActiveAnswers(q3);
+    Assert.assertEquals(0, actives.size());
+
     CategoryAnswer catAnswer_3 = activeQuestionnaireAdministrationService.answer(q3.getQuestionCategories().get(0), null, null);
     activeQuestionnaireAdministrationService.answer(q3.getQuestionCategories().get(1), null, null);
+
+    actives = activeQuestionnaireAdministrationService.findActiveAnswers(q3);
+    Assert.assertEquals(2, actives.size());
+
     CategoryAnswer catAnswer_4 = activeQuestionnaireAdministrationService.answer(q4.getQuestionCategories().get(1), null, null);
     activeQuestionnaireAdministrationService.answer(q4.getQuestionCategories().get(2), null, null);
 
     Assert.assertTrue(catAnswer_3.getActive());
     Assert.assertTrue(catAnswer_4.getActive());
     activeQuestionnaireAdministrationService.setActiveAnswers(q3, false);
+
+    actives = activeQuestionnaireAdministrationService.findActiveAnswers(q3);
+    Assert.assertEquals(0, actives.size());
+
     catAnswer_3 = activeQuestionnaireAdministrationService.findAnswer(q3.getQuestionCategories().get(0));
     catAnswer_4 = activeQuestionnaireAdministrationService.findAnswer(q4.getQuestionCategories().get(1));
     Assert.assertFalse(catAnswer_3.getActive());
