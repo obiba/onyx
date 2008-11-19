@@ -9,15 +9,15 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.bundle;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.Set;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.springframework.context.MessageSource;
 
-public interface QuestionnaireBundle {  
+public interface QuestionnaireBundle {
   /**
    * Returns the name of the bundle.
    * 
@@ -70,9 +70,9 @@ public interface QuestionnaireBundle {
    * 
    * a set containing two locales shall be returned -- <code>Locale("en")</code> and <code>Locale("fr")</code>.
    * 
-   * @return all languages in which the bundle's questionnaire may be administered 
+   * @return all languages in which the bundle's questionnaire may be administered
    */
-  public Set<Locale> getAvailableLanguages();
+  public List<Locale> getAvailableLanguages();
 
   /**
    * Returns the Spring <code>MessageSource</code> associated with the bundle.
@@ -83,13 +83,12 @@ public interface QuestionnaireBundle {
    * @return bundle message source
    */
   public MessageSource getMessageSource();
-  
+
   /**
-   * Given a localizable (a questionnaire, or a questionnaire element) and a property,
-   * returns the property's key.
-   *  
-   * @param localizable a questionnaire, or any element of a questionnaire that implements
-   *        the <code>ILocalizable</code> interface
+   * Given a localizable (a questionnaire, or a questionnaire element) and a property, returns the property's key.
+   * 
+   * @param localizable a questionnaire, or any element of a questionnaire that implements the <code>ILocalizable</code>
+   * interface
    * @param property property name
    * @return property key
    */

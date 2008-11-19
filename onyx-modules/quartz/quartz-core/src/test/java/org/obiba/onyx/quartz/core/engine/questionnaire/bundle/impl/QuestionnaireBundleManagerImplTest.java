@@ -22,6 +22,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 public class QuestionnaireBundleManagerImplTest {
 
@@ -47,7 +48,8 @@ public class QuestionnaireBundleManagerImplTest {
 
     // Create the bundle manager.
     bundleManager = new QuestionnaireBundleManagerImpl(bundleRootDirectory);
-    ((QuestionnaireBundleManagerImpl)bundleManager).setPropertyKeyProvider(new DefaultPropertyKeyProviderImpl());
+    ((QuestionnaireBundleManagerImpl) bundleManager).setPropertyKeyProvider(new DefaultPropertyKeyProviderImpl());
+    ((QuestionnaireBundleManagerImpl) bundleManager).setResourceLoader(new PathMatchingResourcePatternResolver());
   }
 
   @After

@@ -11,9 +11,9 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -24,6 +24,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 public class QuestionnaireBundleImplTest {
 
@@ -56,7 +57,8 @@ public class QuestionnaireBundleImplTest {
 
     // Create the bundle manager.
     bundleManager = new QuestionnaireBundleManagerImpl(bundleRootDirectory);
-    ((QuestionnaireBundleManagerImpl)bundleManager).setPropertyKeyProvider(new DefaultPropertyKeyProviderImpl());
+    ((QuestionnaireBundleManagerImpl) bundleManager).setPropertyKeyProvider(new DefaultPropertyKeyProviderImpl());
+    ((QuestionnaireBundleManagerImpl) bundleManager).setResourceLoader(new PathMatchingResourcePatternResolver());
 
     // Create the test bundle.
     bundle = bundleManager.createBundle(questionnaire);
@@ -122,7 +124,7 @@ public class QuestionnaireBundleImplTest {
     bundle.setLanguage(frLocale, frLanguage);
 
     // Get all available languages.
-    Set<Locale> languages = bundle.getAvailableLanguages();
+    List<Locale> languages = bundle.getAvailableLanguages();
 
     // Verify that the correct set of languages (locales) was returned.
     Assert.assertNotNull(languages);

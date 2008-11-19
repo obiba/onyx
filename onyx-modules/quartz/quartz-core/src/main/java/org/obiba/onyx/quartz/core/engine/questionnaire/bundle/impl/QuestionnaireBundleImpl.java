@@ -10,16 +10,15 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.Set;
 
+import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -57,11 +56,16 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
 
   private IPropertyKeyProvider propertyKeyProvider;
 
+  private ResourceLoader resourceLoader;
+
   //
   // Constructors
   //
 
   public QuestionnaireBundleImpl(ResourceLoader resourceLoader, File bundleVersionDir, Questionnaire questionnaire, IPropertyKeyProvider propertyKeyProvider) {
+
+    this.resourceLoader = resourceLoader;
+
     if(bundleVersionDir == null) {
       throw new IllegalArgumentException("Null bundle version directory");
     }
@@ -160,23 +164,13 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     return language;
   }
 
-  public Set<Locale> getAvailableLanguages() {
-    final Set<Locale> languages = new HashSet<Locale>();
-
-    // Iterate over all language files.
-    bundleVersionDir.listFiles(new FileFilter() {
-      public boolean accept(File file) {
-        String fileName = file.getName();
-        if(file.isFile() && fileName.startsWith(LANGUAGE_FILE_BASENAME + '_') && fileName.endsWith(LANGUAGE_FILE_EXTENSION)) {
-          languages.add(new Locale(extractLocaleString(fileName)));
-          return true;
-        }
-
-        return false;
-      }
-    });
-
-    return languages;
+  public List<Locale> getAvailableLanguages() {
+    LocalizedResourceLoader localizedResourceLoader = new LocalizedResourceLoader();
+    localizedResourceLoader.setResourceExtension(LANGUAGE_FILE_EXTENSION);
+    localizedResourceLoader.setResourceName(LANGUAGE_FILE_BASENAME);
+    localizedResourceLoader.setResourcePath(bundleVersionDir);
+    localizedResourceLoader.setResourceLoader(resourceLoader);
+    return localizedResourceLoader.getAvailableLocales();
   }
 
   public MessageSource getMessageSource() {
@@ -232,14 +226,4 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     return baseName.toString();
   }
 
-  private String extractLocaleString(String fileName) {
-    String localeString = null;
-
-    int startIndex = fileName.indexOf('_');
-    int endIndex = fileName.lastIndexOf(LANGUAGE_FILE_EXTENSION);
-
-    localeString = fileName.substring(startIndex + 1, endIndex);
-
-    return localeString;
-  }
 }

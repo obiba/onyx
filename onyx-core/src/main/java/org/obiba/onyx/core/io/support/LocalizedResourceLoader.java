@@ -28,7 +28,7 @@ public class LocalizedResourceLoader extends LocalizedResourceHelper implements 
   // The resource file extension.
   private String resourceExtension;
 
-  // The resource path (see org.springframework.core.io.ResourceLoader for more details).
+  // The resource base path (see org.springframework.core.io.ResourceLoader for more details).
   private String resourcePath;
 
   private ResourceLoader resourceLoader;
@@ -55,15 +55,15 @@ public class LocalizedResourceLoader extends LocalizedResourceHelper implements 
     Object[] resourceMessageVar = new Object[] { resourcePath, resourceName, resourceExtension };
     log.info("Searching for available locales for resource (path={}, name={}, extension={})", resourceMessageVar);
 
-    // Get the resource "real" path.
+    // Get the resource "real" path in the file system.
     File dir;
     try {
       dir = new File(resourceLoader.getResource(resourcePath).getURI());
 
       // If that path does not exist.
     } catch(IOException e) {
-      log.error("The resource path was not found (path={})", resourcePath);
-      return null;
+      log.error("The resource path was not found (path={}, name={}, extension={})", resourceMessageVar);
+      return languages;
     }
 
     // Iterate over all language files.
@@ -71,7 +71,7 @@ public class LocalizedResourceLoader extends LocalizedResourceHelper implements 
 
       public boolean accept(File file) {
         String fileName = file.getName();
-        log.info("Filename filtered being filtered is {}", fileName);
+        log.debug("Filename being filtered is {}", fileName);
         if(file.isFile() && fileName.startsWith(resourceName + '_') && fileName.endsWith(resourceExtension)) {
           String localeString = extractLocaleString(fileName);
 
@@ -86,12 +86,11 @@ public class LocalizedResourceLoader extends LocalizedResourceHelper implements 
 
     });
 
-    if(!languages.isEmpty()) {
-      return languages;
-    } else {
-      log.info("No locales available for resource  (path={}, name={}, extension={})", resourceMessageVar);
-      return null;
+    if(languages.isEmpty()) {
+      log.info("No locales available for resource (path={}, name={}, extension={})", resourceMessageVar);
     }
+
+    return languages;
   }
 
   private String extractLocaleString(String fileName) {
@@ -109,9 +108,11 @@ public class LocalizedResourceLoader extends LocalizedResourceHelper implements 
     this.resourceLoader = resourceLoader;
   }
 
-  public void setResourcePath(String resourcePath) {
-    if(resourcePath == null) throw new IllegalArgumentException("The resource base path must be specified.");
+  public void setResourcePath(File resourcePath) {
+    this.resourcePath = resourcePath.toURI().toString();
+  }
 
+  public void setResourcePath(String resourcePath) {
     if(!resourcePath.endsWith("/")) {
       this.resourcePath = resourcePath + "/";
     } else {
@@ -120,12 +121,10 @@ public class LocalizedResourceLoader extends LocalizedResourceHelper implements 
   }
 
   public void setResourceExtension(String resourceExtension) {
-    if(resourceExtension == null) throw new IllegalArgumentException("The resource file extension must be specified.");
     this.resourceExtension = resourceExtension;
   }
 
   public void setResourceName(String resourceName) {
-    if(resourceName == null) throw new IllegalArgumentException("The resource base name must be specified.");
     this.resourceName = resourceName;
   }
 
