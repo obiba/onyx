@@ -1,26 +1,28 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:tx="http://www.springframework.org/schema/tx"
-  xsi:schemaLocation="
-http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <!-- Loads the configuration properties. These are used throughout the spring context files to configure the deployment -->
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations">
+      <list>
+        <value>classpath:/onyx.properties</value>
+        <value>WEB-INF/config/onyx-config.properties</value>
+        <value>WEB-INF/config/*/module-config.properties</value>
+      </list>
+    </property>
+  </bean>
 
   <import resource="classpath:/META-INF/spring/remote-api-server.xml" />
-  
+
   <import resource="hibernate.xml" />
 
   <!-- These are mutualy exclusive (each defines a dataSource bean) -->
   <import resource="hsql-datasource.xml" />
   <!--import resource="mysql-datasource.xml" /-->
 
-
   <!-- Import Onyx and modules core context -->
   <import resource="classpath:META-INF/spring/onyx-core/context.xml" />
-  <import resource="classpath:META-INF/spring/jade-core/context.xml" />
-  <import resource="classpath:META-INF/spring/marble-core/context.xml" />
-  <import resource="classpath:META-INF/spring/quartz-core/context.xml" />
-  <import resource="classpath:META-INF/spring/ruby-core/context.xml" />
-  <import resource="classpath:META-INF/spring/mica-core/context.xml" />
-  
+
   <import resource="beans.xml" />
 
 </beans>

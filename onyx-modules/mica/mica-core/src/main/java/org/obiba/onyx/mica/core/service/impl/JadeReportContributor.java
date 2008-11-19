@@ -45,6 +45,8 @@ public class JadeReportContributor implements Serializable, ModuleReportContribu
 
   private LocalizedResourceLoader reportTemplateLoader;
 
+  private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
   public JadeReportContributor() {
     super();
   }
@@ -92,8 +94,7 @@ public class JadeReportContributor implements Serializable, ModuleReportContribu
       setMeasurementFields(participant, form);
 
       // Fill date field
-      SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-      String formattedDate = formatter.format(new Date());
+      String formattedDate = dateFormat.format(new Date());
       form.setField("DateInterview\\.date", formattedDate);
 
       stamper.close();
@@ -276,6 +277,10 @@ public class JadeReportContributor implements Serializable, ModuleReportContribu
 
   public void setReportTemplateLoader(LocalizedResourceLoader reportTemplateLoader) {
     this.reportTemplateLoader = reportTemplateLoader;
+  }
+
+  public void setDateFormat(String format) {
+    this.dateFormat = new SimpleDateFormat(format);
   }
 
 }

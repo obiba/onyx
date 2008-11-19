@@ -1,49 +1,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:tx="http://www.springframework.org/schema/tx"
   xsi:schemaLocation="
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
-	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
   <tx:annotation-driven transaction-manager="transactionManager" />
-  
-  <bean name="consentDependency" class="org.obiba.onyx.engine.ConsentStageDependencyCondition">
-    <property name="stageName" value="CON" />
-  </bean>
-  
-  <bean name="jadeDependency" class="org.obiba.onyx.engine.ModuleDependencyCondition">
-	<property name="moduleRegistry" ref="moduleRegistry" />
-	<property name="moduleName" value="jade" />
-  </bean>
-  
-  <bean name="quartzDependency" class="org.obiba.onyx.quartz.engine.state.QuartzStageDependencyCondition">
-    <property name="stageName" value="HealthQuestionnaire" />
-  </bean>
- 
- <bean id="micaOnyxModule" class="org.obiba.onyx.mica.engine.MicaModule">
-   <property name="activeInterviewService" ref="activeInterviewService" />
-   <property name="stages">
-      <bean class="org.obiba.onyx.engine.Stage">
-        <property name="name" value="SUM" />
-        <property name="module" value="mica"/>
-         
-        <property name="stageDependencyCondition">
-	        <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
-	             	<property name="leftStageDependencyCondition">
-	              	<bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
-	              	  	<property name="leftStageDependencyCondition" ref="consentDependency" />
-	              	  	<property name="operator" value="AND" />
-	              	  	<property name="rightStageDependencyCondition" ref="jadeDependency" />
-	              	</bean>
-	          		</property>
-	           	<property name="operator" value="AND" />
-			    <property name="rightStageDependencyCondition" ref="quartzDependency" />
-	      	</bean>
-    	</property>
-    </bean>
-   </property>
-  </bean>
-        
+
+
   <bean id="micaWaitingState" parent="baseStageState" class="org.obiba.onyx.mica.engine.state.MicaWaitingState"
     scope="prototype">
   </bean>
@@ -51,9 +14,9 @@
   <bean id="micaReadyState" parent="baseStageState" class="org.obiba.onyx.mica.engine.state.MicaReadyState"
     scope="prototype">
   </bean>
-  
-  <bean id="micaNotApplicableState" parent="baseStageState" class="org.obiba.onyx.mica.engine.state.MicaNotApplicableState"
-    scope="prototype">
+
+  <bean id="micaNotApplicableState" parent="baseStageState"
+    class="org.obiba.onyx.mica.engine.state.MicaNotApplicableState" scope="prototype">
   </bean>
 
   <bean id="micaInProgressState" parent="baseStageState" class="org.obiba.onyx.mica.engine.state.MicaInProgressState"
@@ -63,27 +26,28 @@
 
   <bean id="micaCompletedState" parent="baseStageState" class="org.obiba.onyx.mica.engine.state.MicaCompletedState"
     scope="prototype">
-   <property name="activeConclusionService" ref="activeConclusionService" />
+    <property name="activeConclusionService" ref="activeConclusionService" />
   </bean>
-  
+
   <bean id="activeConclusionService" class="org.obiba.onyx.mica.core.service.impl.DefaultActiveConclusionServiceImpl"
     scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="balsacConfirmationRequired" value="true" />
   </bean>
-  
-   <bean id="jadeReportContributor" class="org.obiba.onyx.mica.core.service.impl.JadeReportContributor"
+
+  <bean id="jadeReportContributor" class="org.obiba.onyx.mica.core.service.impl.JadeReportContributor"
     scope="session">
-    <property name="reportTemplateLoader" ref="reportTemplateLoader"/>    
+    <property name="reportTemplateLoader" ref="reportTemplateLoader" />
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="instrumentRunService" ref="instrumentRunService" />
     <property name="instrumentService" ref="instrumentService" />
+    <property name="dateFormat" value="${org.obiba.onyx.mica.report.dateFormat}" />
   </bean>
-  
+
   <bean id="reportTemplateLoader" class="org.obiba.onyx.core.io.support.LocalizedResourceLoader">
-    <property name="resourceDir" value="WEB-INF/report" />
-    <property name="resourceName" value="ParticipantReport" />
-    <property name="resourceExtension" value=".pdf" />      
+    <property name="resourcePath" value="${org.obiba.onyx.mica.resources.path}" />
+    <property name="resourceName" value="${org.obiba.onyx.mica.report.basename}" />
+    <property name="resourceExtension" value=".pdf" />
   </bean>
-  
+
 </beans>

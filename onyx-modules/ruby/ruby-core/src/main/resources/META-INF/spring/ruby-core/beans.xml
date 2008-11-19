@@ -7,23 +7,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <tx:annotation-driven transaction-manager="transactionManager" />
 
-  <bean name="consentDependency" class="org.obiba.onyx.engine.ConsentStageDependencyCondition">
-    <property name="stageName" value="CON" />
-  </bean>
-
-  <bean id="rubyOnyxModule" class="org.obiba.onyx.ruby.engine.RubyModule">
-    <property name="activeInterviewService" ref="activeInterviewService" />
-    <property name="stages">
-      <list>
-        <bean class="org.obiba.onyx.engine.Stage">
-          <property name="name" value="SamplesCollection" />
-          <property name="module" value="ruby" />
-          <property name="stageDependencyCondition" ref="consentDependency" />
-        </bean>
-      </list>
-    </property>
-  </bean>
-
   <bean id="baseRubyStageState" parent="baseStageState"
     class="org.obiba.onyx.quartz.engine.state.AbstractRubyStageState" abstract="true">
   </bean>

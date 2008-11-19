@@ -7,33 +7,28 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="location" value="classpath:/onyx.properties"/>
-  </bean>
-
   <bean id="versionObject" class="org.obiba.runtime.Version">
     <constructor-arg value="${org.obiba.onyx.version}" />
   </bean>
-  
+
   <bean id="applicationBean" class="org.obiba.onyx.webapp.OnyxApplication" scope="singleton">
     <property name="userService" ref="userService" />
-    <property name="version" ref="versionObject"/>
+    <property name="version" ref="versionObject" />
   </bean>
 
   <bean id="stageOrderingStrategy" class="org.obiba.onyx.engine.StaticStageOrderingStrategy">
-    <property name="stageOrdering"
-      value="CON,STA,SIT,HWC,BLP,MUS,BIM,WEI,SPI,ECG,BON,ART,HealthQuestionnaire,SamplesCollection,SUM" />
+    <property name="stageOrdering" value="${org.obiba.onyx.engine.staticStageOrder}" />
   </bean>
 
   <bean id="testDatabaseSeed" class="org.obiba.onyx.webapp.seed.TestDatabaseSeed" scope="singleton">
     <property name="resourcePatterns">
       <list>
-        <value>classpath:/appConfiguration.xml</value>       
+        <value>classpath:/appConfiguration.xml</value>
       </list>
     </property>
     <property name="developmentSeed" value="true" />
     <property name="persistenceManager" ref="persistenceManager" />
-  </bean>  
+  </bean>
 
   <bean id="onyxApplicationStartupListener" class="org.obiba.wicket.util.seed.DatabaseSeedWebApplicationStartupListener"
     scope="singleton">
@@ -44,13 +39,13 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
       </list>
     </property>
   </bean>
-  
-  <bean id="participantReader" class="org.obiba.onyx.cartagene.etl.participant.ParticipantExcelReader" scope="prototype">
+
+  <bean id="participantReader" class="org.obiba.onyx.cartagene.etl.participant.ParticipantExcelReader"
+    scope="prototype">
     <property name="startAtLine" value="3" />
   </bean>
-  
-  <bean id="messageSource" 
-    class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+
+  <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
     <property name="basenames">
       <list>
         <value>classpath:config/Stage</value>
@@ -76,60 +71,16 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <value>instruments/interface-ecg-cardiosoft/InstrumentParameter</value>
         <value>instruments/interface-spirometry-minispir/InstrumentParameter</value>
         <value>instruments/interface-spirometry-minispir/ContraIndication</value>
-        
+
         <value>WEB-INF/config/ruby/language-common</value>
         <value>WEB-INF/config/ruby/language</value>
       </list>
     </property>
   </bean>
-  
-  <bean id="userSessionService"
-    class="org.obiba.onyx.webapp.service.impl.UserSessionServiceImpl">
 
+  <bean id="userSessionService" class="org.obiba.onyx.webapp.service.impl.UserSessionServiceImpl">
     <!-- NOTE: Uncomment declaration below if this service is injected into a singleton bean. -->
     <!-- <aop:scoped-proxy /> -->
   </bean>
-  
-  <bean id="propertyKeyProvider" class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl" scope="prototype" />
-  
-  <bean id="questionnaireBundleManager"
-    class="org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl">
-    <constructor-arg value="questionnaires" />
-    <property name="propertyKeyProvider" ref="propertyKeyProvider" />
-  </bean>
-  
-  <bean id="tubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
-    <constructor-arg value="WEB-INF/config/ruby" />
-    
-    <!-- TEST -->
-    <property name="barcodeStructure">
-      <bean class="org.obiba.onyx.ruby.core.domain.BarcodeStructure">
-        <property name="parsers">
-          <list>
-            <!--  Participant Code Parser -->
-            <bean class="org.obiba.onyx.ruby.core.domain.parser.impl.ParticipantCodeBarcodePartParser">
-              <property name="activeInterviewService" ref="activeInterviewService" />
-              <property name="size" value="7" />
-            </bean>
-            <!--  Tube Type Parser -->
-            <bean class="org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser">
-              <property name="size" value="2" />
-              <property name="format" value=".*" />
-              <property name="partTitle">
-                <bean class="org.springframework.context.support.DefaultMessageSourceResolvable">
-                  <constructor-arg value="Ruby.BarcodePartColumn.TubeType" />
-                </bean>
-              </property>
-            </bean>
-            <!--  Sequence No. Parser -->
-            <bean class="org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser">
-              <property name="size" value="1" />
-              <property name="format" value=".*" />
-            </bean>
-          </list>
-        </property>
-      </bean>
-    </property>
-  </bean>
-  
+
 </beans>

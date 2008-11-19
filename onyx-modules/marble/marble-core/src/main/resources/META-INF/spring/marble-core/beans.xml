@@ -6,17 +6,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 
   <tx:annotation-driven transaction-manager="transactionManager" />
 
-  <bean id="marbleOnyxModule" class="org.obiba.onyx.marble.engine.MarbleModule">
-    <property name="stages">
-      <list>
-        <bean class="org.obiba.onyx.engine.Stage">
-          <property name="name" value="CON" />
-          <property name="module" value="marble" />
-        </bean>
-      </list>
-    </property>
-  </bean>
-
   <bean id="baseMarbleStageState" parent="baseStageState" class="org.obiba.onyx.marble.engine.state.AbstractMarbleStageState"
     abstract="true">
     <property name="activeConsentService" ref="activeConsentService" />
@@ -45,12 +34,12 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="activeConsentService" ref="activeConsentService"/>
     <property name="activeInterviewService" ref="activeInterviewService"/>
     <!-- See java.text.SimpleDateFormat for details for possible date formating -->
-    <property name="dateFormat" value="yyyy-MM-dd"/>
+    <property name="dateFormat" value="${org.obiba.onyx.marble.consent.dateFormat}"/>
   </bean>
   
   <bean id="consentFormTemplateLoader" class="org.obiba.onyx.core.io.support.LocalizedResourceLoader">
-    <property name="resourceDir" value="WEB-INF/consent" />
-    <property name="resourceName" value="ConsentForm" />    
+    <property name="resourcePath" value="${org.obiba.onyx.marble.resources.path}" />
+    <property name="resourceName" value="${org.obiba.onyx.marble.consent.basename}" />    
     <property name="resourceExtension" value=".pdf" />      
   </bean>  
 </beans>

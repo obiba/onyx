@@ -7,23 +7,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <tx:annotation-driven transaction-manager="transactionManager" />
 
-  <bean name="consentDependency" class="org.obiba.onyx.engine.ConsentStageDependencyCondition">
-    <property name="stageName" value="CON" />
-  </bean>
-  
-  <bean id="quartzOnyxModule" class="org.obiba.onyx.quartz.engine.QuartzModule">
-    <property name="activeInterviewService" ref="activeInterviewService" />
-    <property name="stages">
-      <list>
-        <bean class="org.obiba.onyx.engine.Stage">
-          <property name="name" value="HealthQuestionnaire" />
-          <property name="module" value="quartz" />
-          <property name="stageDependencyCondition" ref="consentDependency" />
-        </bean>
-      </list>
-    </property>
-  </bean>
-
   <bean id="quartzWaitingState" parent="baseQuartzStageState" class="org.obiba.onyx.quartz.engine.state.QuartzWaitingState"
     scope="prototype"/>
 
