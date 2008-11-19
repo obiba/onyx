@@ -70,8 +70,11 @@ public abstract class DefaultBarcodePartParser implements IBarcodePartParser {
    * @return
    */
   protected MessageSourceResolvable createBarcodeError(String code, String defaultMsg) {
-    MessageSourceResolvable error = new DefaultMessageSourceResolvable(new String[] { code }, defaultMsg);
-    return error;
+    return createBarcodeError(code, null, defaultMsg);
   }
 
+  protected MessageSourceResolvable createBarcodeError(String code, Object[] arguments, String defaultMsg) {
+    MessageSourceResolvable error = new DefaultMessageSourceResolvable(new String[] { code }, arguments, defaultMsg);
+    return error;
+  }
 }

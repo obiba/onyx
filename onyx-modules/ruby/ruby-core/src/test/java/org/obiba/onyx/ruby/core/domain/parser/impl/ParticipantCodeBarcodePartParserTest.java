@@ -48,8 +48,7 @@ public class ParticipantCodeBarcodePartParserTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.ParticipantCodeBarcodePartParser#validatePart(java.lang.String, org.obiba.onyx.core.service.ActiveInterviewService)}
-   * .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.ParticipantCodeBarcodePartParser#validatePart(java.lang.String, org.obiba.onyx.core.service.ActiveInterviewService)} .
    */
   @Test
   public void testShouldPassValidatePart() {
@@ -69,8 +68,7 @@ public class ParticipantCodeBarcodePartParserTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedSizeBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)}
-   * .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedSizeBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)} .
    */
   @Test
   public void testShouldPassEatAndValidatePart() {
@@ -94,8 +92,7 @@ public class ParticipantCodeBarcodePartParserTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedSizeBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)}
-   * .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedSizeBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)} .
    */
   @Test
   public void testShouldFailValidationWithParticipantNotFoundError() {
@@ -116,8 +113,7 @@ public class ParticipantCodeBarcodePartParserTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedSizeBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)}
-   * .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.FixedSizeBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)} .
    */
   @Test
   public void testShouldFailValidationWithParticipantNotMatchError() {
@@ -136,7 +132,7 @@ public class ParticipantCodeBarcodePartParserTest {
 
     Assert.assertEquals(1, errors.size());
     Assert.assertNull(barcodePart);
-    Assert.assertEquals("ParticipantCodeMatchError", errors.get(0).getCodes()[0]);
+    Assert.assertEquals("Ruby.Error.ParticipantMismatch", errors.get(0).getCodes()[0]);
   }
 
 }

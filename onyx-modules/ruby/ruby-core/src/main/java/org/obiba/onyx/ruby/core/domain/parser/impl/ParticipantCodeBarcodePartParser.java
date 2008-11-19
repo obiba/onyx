@@ -17,8 +17,21 @@ import org.springframework.context.MessageSourceResolvable;
  * Implementation for Participant barcode part parser
  */
 public class ParticipantCodeBarcodePartParser extends FixedSizeBarcodePartParser {
+  //
+  // Constants
+  //
+
+  private static final String PARTICIPANT_MISMATCH_BARCODE_ERROR = "Ruby.Error.ParticipantMismatch";
+
+  //
+  // Instance Variables
+  //
 
   private ActiveInterviewService activeInterviewService;
+
+  //
+  // FixedSizeBarcodePartParser Methods
+  //
 
   @Override
   protected MessageSourceResolvable validatePart(String part) {
@@ -30,7 +43,7 @@ public class ParticipantCodeBarcodePartParser extends FixedSizeBarcodePartParser
     } else if(!part.equals(participant.getBarcode())) {
 
       // The code must match the current participant code
-      error = createBarcodeError("ParticipantCodeMatchError", "Participant code does not match the current one.");
+      error = createBarcodeError(PARTICIPANT_MISMATCH_BARCODE_ERROR, new Object[] { part, participant.getBarcode() }, null);
     }
     return error;
   }

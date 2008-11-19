@@ -132,7 +132,7 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
       DefaultMessageSourceResolvable error = new DefaultMessageSourceResolvable(new String[] { INVALIDSIZE_BARCODE_ERROR }, new Object[] { barcode, expectedSize, barcode.length() });
       errors.add(error);
     } else if(isDuplicateBarcode(barcode)) {
-      DefaultMessageSourceResolvable error = new DefaultMessageSourceResolvable(DUPLICATE_BARCODE_ERROR);
+      DefaultMessageSourceResolvable error = new DefaultMessageSourceResolvable(new String[] {DUPLICATE_BARCODE_ERROR}, new Object[] { barcode });
       errors.add(error);
     } else {
       BarcodeStructure barcodeStructure = tubeRegistrationConfig.getBarcodeStructure();
