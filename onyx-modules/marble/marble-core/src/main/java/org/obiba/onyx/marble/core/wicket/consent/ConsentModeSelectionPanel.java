@@ -19,6 +19,7 @@ import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
 
@@ -26,7 +27,10 @@ public class ConsentModeSelectionPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  private static final List<Locale> consentLanguages = Arrays.asList(new Locale[] { Locale.FRENCH, Locale.ENGLISH });
+  private List<Locale> consentLanguages;
+
+  @SpringBean(name = "consentFormTemplateLoader")
+  LocalizedResourceLoader consentFormTemplateLoader;
 
   @SpringBean
   private ActiveConsentService activeConsentService;
@@ -36,7 +40,7 @@ public class ConsentModeSelectionPanel extends Panel {
     setOutputMarkupId(true);
 
     add(createConsentModeRadio());
-    add(createConsentLanguageDropDown());
+    add(createConsentLanguageDropDown(consentFormTemplateLoader.getAvailableLocales()));
 
     // Set default consent mode to electronic.
     activeConsentService.getConsent().setMode(ConsentMode.ELECTRONIC);
@@ -59,7 +63,7 @@ public class ConsentModeSelectionPanel extends Panel {
   }
 
   @SuppressWarnings("serial")
-  private DropDownChoice createConsentLanguageDropDown() {
+  private DropDownChoice createConsentLanguageDropDown(List<Locale> locales) {
 
     IChoiceRenderer choiceRenderer = new IChoiceRenderer() {
 
@@ -74,7 +78,7 @@ public class ConsentModeSelectionPanel extends Panel {
 
     };
 
-    DropDownChoice consentLanguageDropDown = new DropDownChoice("consentLanguage", new PropertyModel(activeConsentService, "consent.locale"), consentLanguages, choiceRenderer) {
+    DropDownChoice consentLanguageDropDown = new DropDownChoice("consentLanguage", new PropertyModel(activeConsentService, "consent.locale"), locales, choiceRenderer) {
 
       @Override
       protected boolean localizeDisplayValues() {

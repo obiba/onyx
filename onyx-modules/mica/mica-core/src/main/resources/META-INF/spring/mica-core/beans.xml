@@ -81,7 +81,8 @@
   </bean>
   
   <bean id="reportTemplateLoader" class="org.obiba.onyx.core.io.support.LocalizedResourceLoader">
-    <property name="resourcePath" value="WEB-INF/report/ParticipantReport" />
+    <property name="resourceDir" value="WEB-INF/report" />
+    <property name="resourceName" value="ParticipantReport" />
     <property name="resourceExtension" value=".pdf" />      
   </bean>
   
