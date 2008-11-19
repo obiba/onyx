@@ -265,15 +265,17 @@ public abstract class AbstractQuestionnaireTest {
    */
   @SuppressWarnings("serial")
   protected void addComment(final Question question, String comment) {
+    int index = question.getPage().getQuestions().indexOf(question) + 1;
+
     // Display comment modal panel.
-    wicketTester.executeAjaxEvent("panel:content:form:step:panel:questions:1:question:addComment", "onclick");
+    wicketTester.executeAjaxEvent("panel:content:form:step:panel:questions:" + index + ":question:addComment", "onclick");
 
     // Set comment in form.
-    FormTester commentForm = wicketTester.newFormTester("panel:content:form:step:panel:questions:1:question:addCommentModal:content:commentForm");
+    FormTester commentForm = wicketTester.newFormTester("panel:content:form:step:panel:questions:" + index + ":question:addCommentModal:content:commentForm");
     commentForm.setValue("newComment", comment);
 
     // Submit comment.
-    wicketTester.executeAjaxEvent("panel:content:form:step:panel:questions:1:question:addCommentModal:content:commentForm:saveComment", "onclick");
+    wicketTester.executeAjaxEvent("panel:content:form:step:panel:questions:" + index + ":question:addCommentModal:content:commentForm:saveComment", "onclick");
 
     // Make sure that comment is saved.
     Assert.assertEquals(comment, activeQuestionnaireAdministrationService.getComment(question));
