@@ -279,6 +279,10 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     return ConditionBuilder.createQuestionCondition(this, name, question, category);
   }
 
+  public ConditionBuilder setDataCondition(String name, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName, ComparisionOperator comparisionOperator, Data data) {
+    return ConditionBuilder.createQuestionCondition(this, name, questionnaireName, questionName, categoryName, openAnswerDefinitionName, comparisionOperator, data);
+  }
+
   public ConditionBuilder setDataCondition(String name, String question, String category, String openAnswerDefinition, ComparisionOperator comparisionOperator, Data data) {
     return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, comparisionOperator, data);
   }

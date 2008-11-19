@@ -60,6 +60,23 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
   }
 
   /**
+   * DataCondition
+   * @param parent
+   * @param name
+   * @param questionName
+   * @param categoryName
+   * @param openAnswerDefinitionName
+   * @param comparisionOperator
+   * @param dataSource
+   */
+  private ConditionBuilder(QuestionBuilder parent, String name, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName, ComparisionOperator comparisionOperator, DataSource dataSource) {
+    super(parent.getQuestionnaire());
+
+    element = new DataCondition(name, DataSourceBuilder.createExternalOpenAnswerSource(questionnaire, questionnaireName, questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisionOperator, dataSource);
+    element.addQuestion(parent.getElement());
+  }
+
+  /**
    * MultipleCondition
    * @param parent
    * @param name
@@ -87,6 +104,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
   }
 
   /**
+   * Add a {@link AnswerCondition} to current {@link Question}.
    * @param name
    * @param question
    * @param category
@@ -98,7 +116,23 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
   }
 
   /**
-   * Add a {@link AnswerCondition} to current {@link Question}.
+   * Add a {@link DataCondition} to current {@link Question}.
+   * @param questionBuilder
+   * @param name
+   * @param questionnaireName
+   * @param questionName
+   * @param categoryName
+   * @param openAnswerDefinitionName
+   * @param comparisionOperator
+   * @param data
+   * @return
+   */
+  public static ConditionBuilder createQuestionCondition(QuestionBuilder questionBuilder, String name, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName, ComparisionOperator comparisionOperator, Data data) {
+    return (new ConditionBuilder(questionBuilder, name, questionnaireName, questionName, categoryName, openAnswerDefinitionName, comparisionOperator, DataSourceBuilder.createFixedSource(questionBuilder.questionnaire, data).getElement()));
+  }
+
+  /**
+   * Add a {@link DataCondition} to current {@link Question}.
    * @param questionBuilder
    * @param questionName
    * @param categoryName
@@ -111,6 +145,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
   }
 
   /**
+   * Add a {@link DataCondition} to current {@link Question}.
    * @param questionBuilder
    * @param name
    * @param question
@@ -127,6 +162,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
   }
 
   /**
+   * Add a {@link DataCondition} to current {@link Question}.
    * @param questionBuilder
    * @param name
    * @param question
