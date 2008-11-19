@@ -41,10 +41,6 @@ public class ParticipantPropertySource extends DataSource {
     return property;
   }
 
-  public void setProperty(String property) {
-    this.property = property;
-  }
-
   public Data getData(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService) {
     Participant participant = activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant();
     try {
@@ -60,8 +56,8 @@ public class ParticipantPropertySource extends DataSource {
         }
       }
     } catch(Exception e) {
-      log.error("Could not participant property: " + property, e);
+      log.error("Could not resolve participant property: " + property, e);
     }
-    throw new UnsupportedOperationException("This method is not implemented yet.");
+    throw new IllegalArgumentException("Could not resolve participant property: " + property);
   }
 }

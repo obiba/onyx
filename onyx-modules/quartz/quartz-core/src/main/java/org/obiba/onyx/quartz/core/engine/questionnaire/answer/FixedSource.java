@@ -21,14 +21,7 @@ public class FixedSource extends DataSource {
 
   private Data data;
 
-  public FixedSource() {
-  }
-
   public FixedSource(Data data) {
-    this.data = data;
-  }
-
-  public void setData(Data data) {
     this.data = data;
   }
 

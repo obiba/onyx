@@ -23,6 +23,7 @@ import junit.framework.Assert;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
@@ -94,6 +95,7 @@ public class DataSourceTest {
     replay(activeQuestionnaireAdministrationServiceMock);
 
     DataSource source = DataSourceBuilder.createParticipantPropertySource(questionnaire, "birthDate").getDataSource();
+    Assert.assertEquals("birthDate", ((ParticipantPropertySource) source).getProperty());
     Data data = source.getData(activeQuestionnaireAdministrationServiceMock);
 
     log.debug("ParticipantPropertySource.data={}", data);
@@ -105,6 +107,53 @@ public class DataSourceTest {
     Assert.assertEquals(1973, c.get(Calendar.YEAR));
     Assert.assertEquals(1, c.get(Calendar.MONTH));
     Assert.assertEquals(15, c.get(Calendar.DATE));
+
+    verify(activeQuestionnaireAdministrationServiceMock);
+  }
+
+  @Test
+  public void testParticipantGenderPropertySource() {
+    Participant participant = new Participant();
+    participant.setGender(Gender.MALE);
+    QuestionnaireParticipant questionnaireParticipant = new QuestionnaireParticipant();
+    questionnaireParticipant.setParticipant(participant);
+
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaireParticipant()).andReturn(questionnaireParticipant).anyTimes();
+    replay(activeQuestionnaireAdministrationServiceMock);
+
+    DataSource source = DataSourceBuilder.createParticipantPropertySource(questionnaire, "gender").getDataSource();
+    Data data = source.getData(activeQuestionnaireAdministrationServiceMock);
+
+    log.debug("ParticipantPropertySource.data={}", data);
+
+    Assert.assertEquals(DataType.TEXT, data.getType());
+
+    String gender = data.getValue();
+    Assert.assertEquals(Gender.MALE.toString(), gender);
+
+    verify(activeQuestionnaireAdministrationServiceMock);
+  }
+
+  @Test
+  public void testInvalidParticipantPropertySource() {
+    Participant participant = new Participant();
+    Calendar c = Calendar.getInstance();
+    c.set(1973, 1, 15);
+    participant.setBirthDate(c.getTime());
+    QuestionnaireParticipant questionnaireParticipant = new QuestionnaireParticipant();
+    questionnaireParticipant.setParticipant(participant);
+
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaireParticipant()).andReturn(questionnaireParticipant).anyTimes();
+    replay(activeQuestionnaireAdministrationServiceMock);
+
+    DataSource source = DataSourceBuilder.createParticipantPropertySource(questionnaire, "coucou").getDataSource();
+
+    try {
+      source.getData(activeQuestionnaireAdministrationServiceMock);
+      Assert.fail();
+    } catch(IllegalArgumentException e) {
+
+    }
 
     verify(activeQuestionnaireAdministrationServiceMock);
   }
