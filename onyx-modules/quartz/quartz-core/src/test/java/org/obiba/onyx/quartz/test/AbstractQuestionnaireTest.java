@@ -559,12 +559,14 @@ public abstract class AbstractQuestionnaireTest {
    * @param answer answer
    */
   private void answerQuestionImpl(Question question, CategoryAnswer answer) {
-    if(answer.getOpenAnswers() != null && answer.getOpenAnswers().size() > 0) {
-      openAnswer(question, answer);
-    } else if(question.getUIFactoryName().equals("quartz.DropDownQuestionPanelFactory")) {
+    if(question.getUIFactoryName().equals("quartz.DropDownQuestionPanelFactory")) {
+      // TODO open answer for dropdown
       dropDownAnswer(question, answer);
     } else if(question.getParentQuestion() == null) {
-      if(question.isMultiple()) {
+      // default question
+      if(answer.getOpenAnswers() != null && answer.getOpenAnswers().size() > 0) {
+        openAnswer(question, answer);
+      } else if(question.isMultiple()) {
         checkBoxButtonAnswer(question, answer);
       } else {
         radioButtonAnswer(question, answer);
@@ -578,7 +580,9 @@ public abstract class AbstractQuestionnaireTest {
       // radioButtonAnswer(question, answer);
       // }
     } else if(question.getCategories().size() == 0) {
-      if(question.getParentQuestion().isMultiple()) {
+      if(answer.getOpenAnswers() != null && answer.getOpenAnswers().size() > 0) {
+        openArrayAnswer(question, answer);
+      } else if(question.getParentQuestion().isMultiple()) {
         checkBoxArrayButtonAnswer(question, answer);
       } else {
         radioArrayButtonAnswer(question, answer);
