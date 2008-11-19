@@ -548,8 +548,8 @@ public abstract class AbstractQuestionnaireTest {
   /**
    * Answers the specified question with the specified answer.
    * 
-   * Delegates to <code>openAnswer</code> in the case of an "open" answer, and to <code>radioButtonAnswer</code> in
-   * the case of a radio button selection.
+   * Delegates to <code>openAnswer</code> in the case of an "open" answer, and to
+   * <code>radio/checkBoxButtonAnswer</code> in the case of a radio/checkBox button selection.
    * 
    * @param question question
    * @param answer answer
@@ -559,8 +559,18 @@ public abstract class AbstractQuestionnaireTest {
       openAnswer(question, answer);
     } else if(question.getUIFactoryName().equals("quartz.DropDownQuestionPanelFactory")) {
       dropDownAnswer(question, answer);
+    } else if(question.getQuestions().size() == 0) {
+      if(question.isMultiple()) {
+        checkBoxButtonAnswer(question, answer);
+      } else {
+        radioButtonAnswer(question, answer);
+      }
+    } else if(question.getQuestionCategories().size() == 0) {
+      // sub questions
+      throw new UnsupportedOperationException("Test of sub-questions not supported yet");
     } else {
-      radioButtonAnswer(question, answer);
+      // shared
+      throw new UnsupportedOperationException("Test of question with shared categories not supported yet");
     }
   }
 
@@ -574,9 +584,10 @@ public abstract class AbstractQuestionnaireTest {
   private void openAnswer(Question question, CategoryAnswer answer) {
     FormTester formTester = wicketTester.newFormTester(getFormPath());
 
-    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getInputFieldComponentId(question), "onclick");
-    formTester.setValue(getInputFieldComponentId(question), answer.getOpenAnswers().get(0).getData().getValueAsString());
-    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getInputFieldComponentId(question), ONBLUR_EVENT);
+    Category category = question.findCategory(answer.getCategoryName());
+    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getInputFieldComponentId(question, category), "onclick");
+    formTester.setValue(getInputFieldComponentId(question, category), answer.getOpenAnswers().get(0).getData().getValueAsString());
+    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getInputFieldComponentId(question, category), ONBLUR_EVENT);
   }
 
   /**
@@ -589,14 +600,28 @@ public abstract class AbstractQuestionnaireTest {
   private void radioButtonAnswer(Question question, CategoryAnswer answer) {
     FormTester formTester = wicketTester.newFormTester(getFormPath());
 
-    formTester.select(getRadioGroupComponentId(question), getSelectIndex(question, answer));
+    formTester.select(getCategoryGroupComponentId(question), getCategoryIndex(question, answer));
     wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getRadioButtonComponentId(question, answer), ONCHANGE_EVENT);
+  }
+
+  /**
+   * Given a question and an checkbox button answer, selects the corresponding checkbox button and fires an "onchange"
+   * Ajax event to trigger persistence.
+   * 
+   * @param question question
+   * @param answer answer
+   */
+  private void checkBoxButtonAnswer(Question question, CategoryAnswer answer) {
+    FormTester formTester = wicketTester.newFormTester(getFormPath());
+
+    formTester.select(getCategoryGroupComponentId(question), getCategoryIndex(question, answer));
+    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getCheckBoxButtonComponentId(question, answer), ONCHANGE_EVENT);
   }
 
   private void dropDownAnswer(Question question, CategoryAnswer answer) {
     FormTester formTester = wicketTester.newFormTester(getFormPath());
 
-    formTester.select(getDropDownComponentId(question), getSelectIndex(question, answer));
+    formTester.select(getDropDownComponentId(question), getCategoryIndex(question, answer));
     wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getDropDownComponentId(question), ONCHANGE_EVENT);
   }
 
@@ -604,51 +629,65 @@ public abstract class AbstractQuestionnaireTest {
     return "panel:content:form";
   }
 
-  private String getInputFieldComponentId(Question question) {
-    // TODO: Generate id based on question. Currently assuming one question per page.
-    // Also assuming here that the input field is always the 1st category.
-    return "step:panel:questions:1:question:content:categories:category:1:input:open:open:input:field";
+  private String getInputFieldComponentId(Question question, Category category) {
+    int index = question.getPage().getQuestions().indexOf(question) + 1;
+    int categoryIndex = question.getCategories().indexOf(category) + 1;
+    return "step:panel:questions:" + index + ":question:content:categories:category:" + categoryIndex + ":input:open:open:input:field";
   }
 
-  private String getRadioGroupComponentId(Question question) {
-    // TODO: Generate id based on question. Currently assuming one question per page.
-    return "step:panel:questions:1:question:content:categories";
+  private String getCategoryGroupComponentId(Question question) {
+    int index = question.getPage().getQuestions().indexOf(question) + 1;
+    return "step:panel:questions:" + index + ":question:content:categories";
+  }
+
+  private String getArrayCategoryGroupComponentId(Question question) {
+    Question parent = question.getParentQuestion();
+    int parentIndex = parent.getPage().getQuestions().indexOf(parent) + 1;
+    int index = parent.getQuestions().indexOf(question) + 1;
+    return "step:panel:questions:" + parentIndex + ":question:content:array:rows:rows:" + index + ":group";
   }
 
   private String getDropDownComponentId(Question question) {
-    // TODO: Generate id based on question. Currently assuming one question per page.
-    return "step:panel:questions:1:question:content:questionCategories";
+    int index = question.getPage().getQuestions().indexOf(question) + 1;
+    return "step:panel:questions:" + index + ":question:content:questionCategories";
   }
 
   private String getRadioButtonComponentId(Question question, CategoryAnswer answer) {
-    // TODO: Generate id based on question. Currently assuming one question per page.
-    // return "step:panel:questions:1:question:content:categories:category:2:categoryLabel:input:radio";
-    String partBeforeIndex = "step:panel:questions:1:question:content:categories:category";
-    String partAfterIndex = "input:categoryLabel:radio";
-    int radioButtonIndex = getSelectIndex(question, answer) + 1; // 1-based.
-
-    if(radioButtonIndex == -1) {
-      Assert.fail("Invalid answer [" + answer.getCategoryName() + "] for question [" + question.getName() + "] (could not locate corresponding radio button)");
-    }
-
-    return partBeforeIndex + COMPONENT_ID_SEPARATOR + radioButtonIndex + COMPONENT_ID_SEPARATOR + partAfterIndex;
+    return getButtonComponentId(question, answer, "radio");
   }
 
-  private int getSelectIndex(Question question, CategoryAnswer answer) {
-    int radioButtonIndex = -1;
+  private String getCheckBoxButtonComponentId(Question question, CategoryAnswer answer) {
+    return getButtonComponentId(question, answer, "checkbox");
+  }
 
-    List<Category> categories = question.getCategories();
+  private String getButtonComponentId(Question question, CategoryAnswer answer, String type) {
+    String partBeforeIndex = getCategoryGroupComponentId(question) + ":category";
+    String partAfterIndex = "input:categoryLabel:" + type;
+    int buttonIndex = getCategoryIndex(question, answer) + 1; // 1-based.
 
-    for(int i = 0; i < categories.size(); i++) {
-      Category category = categories.get(i);
-
-      if(category.getName().equals(answer.getCategoryName())) {
-        radioButtonIndex = i; // 0-based.
-        break;
-      }
+    if(buttonIndex == -1) {
+      Assert.fail("Invalid answer [" + answer.getCategoryName() + "] for question [" + question.getName() + "] (could not locate corresponding " + type + " button)");
     }
 
-    return radioButtonIndex;
+    return partBeforeIndex + COMPONENT_ID_SEPARATOR + buttonIndex + COMPONENT_ID_SEPARATOR + partAfterIndex;
+  }
+
+  private String getArrayButtonComponentId(Question question, CategoryAnswer answer, String type) {
+    // TODO: Generate id based on question. Currently assuming one question per page.
+    String partBeforeIndex = getArrayCategoryGroupComponentId(question) + ":cells";
+    String partAfterIndex = "cell:categoryLabel:" + type;
+    int buttonIndex = getCategoryIndex(question, answer) + 2; // 2-based (first column is sub-question labels).
+
+    if(buttonIndex == -1) {
+      Assert.fail("Invalid answer [" + answer.getCategoryName() + "] for question [" + question.getName() + "] (could not locate corresponding " + type + " button)");
+    }
+
+    return partBeforeIndex + COMPONENT_ID_SEPARATOR + buttonIndex + COMPONENT_ID_SEPARATOR + partAfterIndex;
+  }
+
+  private int getCategoryIndex(Question question, CategoryAnswer answer) {
+    Category category = question.findCategory(answer.getCategoryName());
+    return question.getCategories().indexOf(category);
   }
 
   /**
