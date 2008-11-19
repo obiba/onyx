@@ -16,10 +16,9 @@ import java.util.Locale;
 import junit.framework.Assert;
 
 import org.apache.wicket.injection.web.InjectorHolder;
-import org.apache.wicket.spring.ISpringContextLocator;
 import org.apache.wicket.spring.injection.annot.AnnotSpringInjector;
 import org.apache.wicket.spring.test.ApplicationContextMock;
-import org.apache.wicket.util.tester.WicketTester;
+import org.apache.wicket.spring.test.SpringContextLocatorMock;
 import org.apache.wicket.validation.Validatable;
 import org.apache.wicket.validation.ValidationError;
 import org.junit.Before;
@@ -33,7 +32,6 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 
 /**
  * 
@@ -48,8 +46,6 @@ public class DataSourceValidatorTest {
 
   private Questionnaire questionnaire;
 
-  private WicketTester tester;
-
   @Before
   public void setUp() {
     activeQuestionnaireAdministrationServiceMock = createMock(ActiveQuestionnaireAdministrationService.class);
@@ -57,13 +53,7 @@ public class DataSourceValidatorTest {
     applicationContextMock = new ApplicationContextMock();
     applicationContextMock.putBean("activeQuestionnaireAdministrationService", activeQuestionnaireAdministrationServiceMock);
 
-    InjectorHolder.setInjector(new AnnotSpringInjector(new ISpringContextLocator() {
-
-      public ApplicationContext getSpringContext() {
-        return applicationContextMock;
-      }
-
-    }));
+    InjectorHolder.setInjector(new AnnotSpringInjector(new SpringContextLocatorMock(applicationContextMock)));
 
     questionnaire = createQuestionnaire();
 
