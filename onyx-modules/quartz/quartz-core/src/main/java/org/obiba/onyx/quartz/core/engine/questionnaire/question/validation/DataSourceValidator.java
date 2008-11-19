@@ -56,59 +56,42 @@ public class DataSourceValidator implements IDataValidator {
       Data data = dataSource.getData(activeQuestionnaireAdministrationService);
 
       ValidationError error = null;
-      if(dataToCompare == null && data != null) {
-        error = newValidationError("ExpectedToBeNotNull");
-        error.setVariable("expected", data);
-        error.setVariable("found", dataToCompare);
-      } else {
-        int result = dataToCompare.compareTo(data);
 
-        switch(comparisionOperator) {
-        case eq:
-          if(result != 0) {
-            error = newValidationError("ExpectedToBeEqual");
-            error.setVariable("expected", data);
-            error.setVariable("found", dataToCompare);
-          }
-          break;
-        case ne:
-          if(result == 0) {
-            error = newValidationError("ExpectedToBeDifferent");
-            error.setVariable("expected", data);
-            error.setVariable("found", dataToCompare);
-          }
-          break;
-        case lt:
-          if(result <= 0) {
-            error = newValidationError("ExpectedToBeLower");
-            error.setVariable("expected", data);
-            error.setVariable("found", dataToCompare);
-          }
-          break;
-        case le:
-          if(result < 0) {
-            error = newValidationError("ExpectedToBeLowerEqual");
-            error.setVariable("expected", data);
-            error.setVariable("found", dataToCompare);
-          }
-          break;
-        case gt:
-          if(result >= 0) {
-            error = newValidationError("ExpectedToBeGreater");
-            error.setVariable("expected", data);
-            error.setVariable("found", dataToCompare);
-          }
-          break;
-        case ge:
-          if(result > 0) {
-            error = newValidationError("ExpectedToBeGreaterEqual");
-            error.setVariable("expected", data);
-            error.setVariable("found", dataToCompare);
-          }
-          break;
-        default:
-          break;
+      int result = dataToCompare.compareTo(data);
+
+      switch(comparisionOperator) {
+      case eq:
+        if(result != 0) {
+          error = newValidationError("ExpectedToBeEqual", data, dataToCompare);
         }
+        break;
+      case ne:
+        if(result == 0) {
+          error = newValidationError("ExpectedToBeDifferent", data, dataToCompare);
+        }
+        break;
+      case lt:
+        if(result <= 0) {
+          error = newValidationError("ExpectedToBeLower", data, dataToCompare);
+        }
+        break;
+      case le:
+        if(result < 0) {
+          error = newValidationError("ExpectedToBeLowerEqual", data, dataToCompare);
+        }
+        break;
+      case gt:
+        if(result >= 0) {
+          error = newValidationError("ExpectedToBeGreater", data, dataToCompare);
+        }
+        break;
+      case ge:
+        if(result > 0) {
+          error = newValidationError("ExpectedToBeGreaterEqual", data, dataToCompare);
+        }
+        break;
+      default:
+        break;
       }
 
       if(error != null) {
@@ -116,9 +99,11 @@ public class DataSourceValidator implements IDataValidator {
       }
     }
 
-    private ValidationError newValidationError(String message) {
+    private ValidationError newValidationError(String message, Data data, Data dataToCompare) {
       ValidationError error = new ValidationError();
       error.setMessage("DataSourceValidator." + message);
+      if(data != null) error.setVariable("expected", data);
+      if(dataToCompare != null) error.setVariable("found", dataToCompare);
       return error;
     }
   }
