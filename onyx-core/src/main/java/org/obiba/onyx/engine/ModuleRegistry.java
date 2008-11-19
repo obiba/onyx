@@ -37,14 +37,14 @@ public class ModuleRegistry {
   private Comparator<Stage> stageOrderingStrategy;
 
   public void registerModule(Module module) {
-    log.info("Registeting module {}", module.getName());
+    log.info("Registeting module '{}' of type {}", module.getName(), module.getClass().getName());
     modules.put(module.getName(), module);
     List<Stage> moduleStages = module.getStages();
     for(Stage stage : moduleStages) {
-      log.info("Registeting stage {} from module {}", stage.getName(), module.getName());
+      log.info("Registeting stage '{}' from module '{}'", stage.getName(), module.getName());
       Stage existingStage = this.stages.get(stage.getName());
       if(existingStage != null) {
-        log.error("Unable to register stage {} from module {}: a stage with the same name was already registered by module {}.", new Object[] { stage.getName(), module.getName(), existingStage.getModule() });
+        log.error("Unable to register stage '{}' from module '{}': a stage with the same name was already registered by module {}.", new Object[] { stage.getName(), module.getName(), existingStage.getModule() });
         throw new IllegalStateException("A stage already exists with the name " + stage.getName());
       }
       this.stages.put(stage.getName(), stage);

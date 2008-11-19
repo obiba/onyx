@@ -20,9 +20,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
- * Get the {@link Module} from the Spring application context and (un)registrate them.
- * @author Yannick Marcon
- * 
+ * Finds all {@link Module} instances in the Spring {@code ApplicationContext} and registers them in the
+ * {@link ModuleRegistry}. The method {@link Module#initialize()} is called before registration. The method
+ * {@link Module#shutdown()} is called after un-registration.
  */
 public class ModuleRegistrationListener implements WebApplicationStartupListener, ApplicationContextAware {
 
@@ -37,9 +37,23 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
     Map<String, Module> modules = applicationContext.getBeansOfType(Module.class);
     if(modules != null) {
       for(Module module : modules.values()) {
-        log.info("Unregistering module '{}' of type {}", module.getName(), module.getClass().getSimpleName());
-        module.shutdown();
-        registry.unregisterModule(module.getName());
+
+        // Unregister the module from the registry.
+        try {
+          registry.unregisterModule(module.getName());
+        } catch(RuntimeException e) {
+          // Report the problem, but keep going in order to unregister the other modules if possible
+          log.error("An error occurred during module unregistration.", e);
+        }
+
+        // Shutdown the module
+        try {
+          log.info("Shuting down module '{}'", module.getName());
+          module.shutdown();
+        } catch(RuntimeException e) {
+          log.error("Could not shutdown module '{}'", module.getName());
+          log.error("Module shutdown failed due to the following exception.", e);
+        }
       }
     }
   }
@@ -49,9 +63,26 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
     Map<String, Module> modules = applicationContext.getBeansOfType(Module.class);
     if(modules != null) {
       for(Module module : modules.values()) {
-        log.info("Registering module '{}' of type {}", module.getName(), module.getClass().getSimpleName());
-        module.initialize();
-        registry.registerModule(module);
+
+        try {
+          log.info("Initializing module '{}' of type {}", module.getName(), module.getClass().getSimpleName());
+          module.initialize();
+        } catch(RuntimeException e) {
+          log.error("Could not initialize module '{}'", module.getName());
+          log.error("Module initialisation failed due to the following exception.", e);
+
+          // Try to register the other modules anyway
+          continue;
+        }
+
+        try {
+          registry.registerModule(module);
+        } catch(RuntimeException e) {
+          try {
+            module.shutdown();
+          } catch(RuntimeException ignored) {
+          }
+        }
       }
     }
   }
