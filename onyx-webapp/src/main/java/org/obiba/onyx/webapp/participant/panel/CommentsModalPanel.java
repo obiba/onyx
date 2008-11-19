@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.participant.panel;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -48,12 +49,12 @@ public abstract class CommentsModalPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  @SpringBean(name="activeInterviewService")
+  @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   @SpringBean
   private EntityQueryService queryService;
-  
+
   @SpringBean
   private ModuleRegistry moduleRegistry;
 
@@ -65,10 +66,13 @@ public abstract class CommentsModalPanel extends Panel {
 
   WebMarkupContainer previousComments;
 
-  public CommentsModalPanel(String id, final ModalWindow commentsWindow) {
+  public CommentsModalPanel(String id, final ModalWindow commentsWindow, String stage) {
     super(id);
     this.commentsWindow = commentsWindow;
     commentList = activeInterviewService.getInterviewComments();
+
+    filterOut(stage);
+
     setOutputMarkupId(true);
 
     add(new ParticipantPanel("participant", new DetachableEntityModel(queryService, activeInterviewService.getParticipant()), true));
@@ -77,7 +81,8 @@ public abstract class CommentsModalPanel extends Panel {
     add(feedback = new FeedbackPanel("feedback"));
     feedback.setOutputMarkupId(true);
 
-    // The WebMarkupContainer is needed to allow the DataView update through Ajax. The DataView cannot be update directly.
+    // The WebMarkupContainer is needed to allow the DataView update through Ajax. The DataView cannot be update
+    // directly.
     add(previousComments = new WebMarkupContainer("previousComments"));
     previousComments.add(new CommentsDataView("comment-list", new CommentsDataProvider()));
     previousComments.setOutputMarkupId(true);
@@ -104,6 +109,24 @@ public abstract class CommentsModalPanel extends Panel {
       }
     });
 
+  }
+
+  /**
+   * Filters out the comments not for this stage
+   * 
+   * @param stage
+   */
+  private void filterOut(String stage) {
+    if(stage != null) {
+      List<Action> comments = new ArrayList<Action>();
+
+      for(Action comment : commentList) {
+        if(stage.equals(comment.getStage())) {
+          comments.add(comment);
+        }
+      }
+      commentList = comments;
+    }
   }
 
   public abstract void onAddComments(AjaxRequestTarget target);

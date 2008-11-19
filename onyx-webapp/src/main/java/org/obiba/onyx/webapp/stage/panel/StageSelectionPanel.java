@@ -110,7 +110,7 @@ public abstract class StageSelectionPanel extends Panel {
     return null;
   }
 
-  abstract public void onViewComments(AjaxRequestTarget target);
+  abstract public void onViewComments(AjaxRequestTarget target, String stage);
 
   abstract public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action);
 
@@ -213,9 +213,10 @@ public abstract class StageSelectionPanel extends Panel {
           List<Action> interviewComments = activeInterviewService.getInterviewComments();
           Stage stage = (Stage) rowModel.getObject();
 
+          final String stageName = stage.getName();
           boolean foundActionComments = false;
           for(Action action : interviewComments) {
-            if(action.getStage() != null && action.getStage().equals(stage.getName())) {
+            if(action.getStage() != null && action.getStage().equals(stageName)) {
               foundActionComments = true;
               break;
             }
@@ -229,7 +230,7 @@ public abstract class StageSelectionPanel extends Panel {
 
               @Override
               public void onViewComments(AjaxRequestTarget target) {
-                StageSelectionPanel.this.onViewComments(target);
+                StageSelectionPanel.this.onViewComments(target, stageName);
               }
 
             });

@@ -149,7 +149,7 @@ public class CommentsModalPanelTest implements Serializable {
 
     tester.startPanel(new TestPanelSource() {
       public Panel getTestPanel(String panelId) {
-        return commentsModalPanel = new CommentsModalPanel(panelId, new ModalWindow("bogus")) {
+        return commentsModalPanel = new CommentsModalPanel(panelId, new ModalWindow("bogus"), null) {
           @Override
           public void onAddComments(AjaxRequestTarget target) {
             // do nothing
