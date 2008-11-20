@@ -103,7 +103,8 @@ public abstract class StageSelectionPanel extends Panel {
       IStageExecution exec = activeInterviewService.getStageExecution(stage);
       if(exec.isInteractive()) {
         log.warn("Wrong status for " + stage.getName());
-        feedbackPanel.warn(getString("WrongStatusForStage", new Model(new ValueMap("name=" + stage.getDescription()))));
+        String stageDescription = (String) new MessageSourceResolvableStringModel(stage.getDescription()).getObject();
+        feedbackPanel.warn(getString("WrongStatusForStage", new Model(new ValueMap("name=" + stageDescription))));
         return (new InteractiveStage(stage.getName(), activeInterviewService.getStatusAction().getUser()));
       }
     }
