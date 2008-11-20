@@ -24,6 +24,8 @@
     <constructor-arg value="${org.obiba.onyx.config.path}/ruby" />
 
     <!-- TEST -->
+    <property name="expectedTubeCount" value="3" />
+    
     <property name="barcodeStructure">
       <bean class="org.obiba.onyx.ruby.core.domain.BarcodeStructure">
         <property name="parsers">
