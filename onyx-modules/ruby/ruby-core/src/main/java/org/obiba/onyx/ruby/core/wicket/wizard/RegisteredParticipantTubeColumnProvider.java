@@ -13,7 +13,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.basic.Label;
@@ -53,8 +52,8 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
   //
 
   @SuppressWarnings("serial")
-  public RegisteredParticipantTubeColumnProvider(TubeRegistrationConfiguration tubeRegistrationConfiguration, TubeRegistrationPanel tubeRegistrationPanel) {
-    addDeleteColumn(tubeRegistrationPanel);
+  public RegisteredParticipantTubeColumnProvider(TubeRegistrationConfiguration tubeRegistrationConfiguration) {
+    addDeleteColumn();
     addBarcodeColumn();
     addBarcodePartColumns(tubeRegistrationConfiguration);
   }
@@ -83,12 +82,12 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
   // Methods
   //
 
-  private void addDeleteColumn(final Component componentToRender) {
+  private void addDeleteColumn() {
     columns.add(new AbstractColumn(new Model("")) {
       private static final long serialVersionUID = 1L;
 
       public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-        cellItem.add(new DeleteBarcodePanel(componentId, rowModel, componentToRender));
+        cellItem.add(new DeleteBarcodePanel(componentId, rowModel));
       }
     });
   }

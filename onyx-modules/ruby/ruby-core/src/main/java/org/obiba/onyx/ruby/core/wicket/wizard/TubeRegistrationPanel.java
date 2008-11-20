@@ -50,6 +50,6 @@ public class TubeRegistrationPanel extends Panel {
     add(new Label("scannedPrimaryTubes", new SpringStringResourceModel("Ruby.ScannedPrimaryTubes")));
 
     Participant participant = activeInterviewService.getParticipant();
-    add(new OnyxEntityList<RegisteredParticipantTube>("list", new RegisteredParticipantTubeProvider(), new RegisteredParticipantTubeColumnProvider(tubeRegistrationConfiguration, this), new SpringStringResourceModel("Ruby.RegisteredParticipantTubeList", new Object[] { participant.getFullName() }, null)));
+    add(new OnyxEntityList<RegisteredParticipantTube>("list", new RegisteredParticipantTubeProvider(), new RegisteredParticipantTubeColumnProvider(tubeRegistrationConfiguration), new SpringStringResourceModel("Ruby.RegisteredParticipantTubeList", new Object[] { participant.getFullName() }, null)));
   }
 }

@@ -9,16 +9,16 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.wizard;
 
-import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
+import org.obiba.wicket.JavascriptEventConfirmation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,29 +43,31 @@ public class DeleteBarcodePanel extends Panel {
   // Constructors
   //
 
-  public DeleteBarcodePanel(String id, IModel registeredParticipantTubeModel, Component componentToRender) {
+  public DeleteBarcodePanel(String id, IModel registeredParticipantTubeModel) {
     super(id, registeredParticipantTubeModel);
 
-    addDeleteLink(componentToRender);
+    addDeleteLink();
   }
 
   //
   // Methods
   //
 
-  private void addDeleteLink(final Component componentToRender) {
-    AjaxLink deleteLink = new AjaxLink("link") {
+  private void addDeleteLink() {
+    RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) DeleteBarcodePanel.this.getModelObject();
+    final String barcode = registeredParticipantTube.getBarcode();
+
+    Link deleteLink = new Link("link") {
       private static final long serialVersionUID = 1L;
 
-      public void onClick(final AjaxRequestTarget target) {
-        RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) DeleteBarcodePanel.this.getModelObject();
-        activeTubeRegistrationService.unregisterTube(registeredParticipantTube.getBarcode());
-
-        target.addComponent(componentToRender);
+      public void onClick() {
+        activeTubeRegistrationService.unregisterTube(barcode);
       }
     };
 
     deleteLink.add(new Label("linkLabel", new StringResourceModel("Delete", this, null)));
+
+    deleteLink.add(new JavascriptEventConfirmation("onclick", new SpringStringResourceModel("Ruby.Confirm.BarcodeDeletion", new Object[] { barcode }, null)));
 
     add(deleteLink);
   }
