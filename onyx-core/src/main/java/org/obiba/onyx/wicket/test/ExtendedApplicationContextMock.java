@@ -12,32 +12,22 @@ package org.obiba.onyx.wicket.test;
 import java.util.Locale;
 
 import org.apache.wicket.spring.test.ApplicationContextMock;
+import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 
 public class ExtendedApplicationContextMock extends ApplicationContextMock {
 
   private static final long serialVersionUID = 1L;
 
+  private static final String MESSAGE_SOURCE_BEAN_NAME = "messageSource";
+
   private String message;
 
   /**
-   * Returns a "canned" message -- the message specified by the last call to <code>setMessage</code>.
+   * If a message source bean exists in the context (with name "messageSource"), returns the message resolved with that
+   * bean.
    * 
-   * NOTE: All arguments are ignored. The same "canned" message is returned in all cases.
-   * 
-   * @param code message key
-   * @param args message arguments (for placeholders)
-   * @param locale message locale
-   * @return message previously set by <code>setMessage</code>
-   */
-  public String getMessage(String code, Object[] args, Locale locale) {
-    return message;
-  }
-
-  /**
-   * Returns a "canned" message -- the message specified by the last call to <code>setMessage</code>.
-   * 
-   * NOTE: All arguments are ignored. The same "canned" message is returned in all cases.
+   * Otherwise, the message configured with <code>setMessage</code> is returned.
    * 
    * @param code message key
    * @param args message arguments (for placeholders)
@@ -46,24 +36,47 @@ public class ExtendedApplicationContextMock extends ApplicationContextMock {
    * @return message previously set by <code>setMessage</code>
    */
   public String getMessage(String code, Object[] args, String defaultMessage, Locale locale) {
-    return message;
+    if(containsBean(MESSAGE_SOURCE_BEAN_NAME)) {
+      MessageSource messageSource = (MessageSource) this.getBean("messageSource");
+      return messageSource.getMessage(code, args, defaultMessage, locale);
+    } else {
+      return message;
+    }
   }
 
   /**
-   * Returns a "canned" message -- the message specified by the last call to <code>setMessage</code>.
+   * Equivalent to <code>getMessage(code, args, null, locale)</code>.
    * 
-   * NOTE: All arguments are ignored. The same "canned" message is returned in all cases.
+   * @param code message key
+   * @param args message arguments (for placeholders)
+   * @param locale message locale
+   * @return message previously set by <code>setMessage</code>
+   */
+  public String getMessage(String code, Object[] args, Locale locale) {
+    return getMessage(code, args, null, locale);
+  }
+
+  /**
+   * If a message source bean exists in the context (with name "messageSource"), returns the message resolved with that
+   * bean.
+   * 
+   * Otherwise, the message configured with <code>setMessage</code> is returned.
    * 
    * @param resolvable message source resolvable
    * @param locale message locale
    * @return message previously set by <code>setMessage</code>
    */
   public String getMessage(MessageSourceResolvable resolvable, Locale locale) {
-    return message;
+    if(containsBean(MESSAGE_SOURCE_BEAN_NAME)) {
+      MessageSource messageSource = (MessageSource) this.getBean("messageSource");
+      return messageSource.getMessage(resolvable, locale);
+    } else {
+      return message;
+    }
   }
 
   /**
-   * Sets the message returned by <code>getMessage</code>.
+   * Sets the message returned by <code>getMessage</code> when no message source exists in the context.
    * 
    * @param message the message
    */
