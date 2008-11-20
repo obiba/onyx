@@ -41,7 +41,17 @@ public class LocalizedResourceLoader extends LocalizedResourceHelper implements 
    */
   public Resource getLocalizedResource(Locale locale) {
     LocalizedResourceHelper templateLoader = new LocalizedResourceHelper(resourceLoader);
-    return templateLoader.findLocalizedResource(resourcePath + resourceName, resourceExtension, locale);
+    return templateLoader.findLocalizedResource(getResourceBasename(), resourceExtension, locale);
+  }
+
+  /**
+   * Returns the full basename of the localized resource.
+   * <p>
+   * This is the concatenation of {@code resourcePath}, {@code File.separator} and {@code resourceName}.
+   * @return
+   */
+  public String getResourceBasename() {
+    return resourcePath + File.separator + resourceName;
   }
 
   /**

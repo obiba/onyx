@@ -10,9 +10,9 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 public class QuestionnaireBundleImpl implements QuestionnaireBundle {
@@ -56,15 +57,14 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
 
   private IPropertyKeyProvider propertyKeyProvider;
 
-  private ResourceLoader resourceLoader;
+  /** Used to handle the language bundles which can be handled like any other localized resource */
+  private LocalizedResourceLoader messageBundleLoader;
 
   //
   // Constructors
   //
 
   public QuestionnaireBundleImpl(ResourceLoader resourceLoader, File bundleVersionDir, Questionnaire questionnaire, IPropertyKeyProvider propertyKeyProvider) {
-
-    this.resourceLoader = resourceLoader;
 
     if(bundleVersionDir == null) {
       throw new IllegalArgumentException("Null bundle version directory");
@@ -82,18 +82,26 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     this.questionnaire = questionnaire;
     this.propertyKeyProvider = propertyKeyProvider;
 
+    this.messageBundleLoader = new LocalizedResourceLoader();
+    this.messageBundleLoader.setResourceName(LANGUAGE_FILE_BASENAME);
+    this.messageBundleLoader.setResourceExtension(LANGUAGE_FILE_EXTENSION);
+    this.messageBundleLoader.setResourcePath(bundleVersionDir);
+    this.messageBundleLoader.setResourceLoader(resourceLoader);
+
     // Initialize the message source.
-    messageSource = new ReloadableResourceBundleMessageSource() {
+    ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource() {
       @Override
       protected MessageFormat createMessageFormat(String msg, Locale locale) {
         return new StringReferenceCompatibleMessageFormat((msg != null ? msg : ""), locale);
       }
     };
-    ((ReloadableResourceBundleMessageSource) messageSource).setBasename(getMessageSourceBasename(bundleVersionDir));
+    messageSource.setBasename(this.messageBundleLoader.getResourceBasename());
 
     if(resourceLoader != null) {
-      ((ReloadableResourceBundleMessageSource) messageSource).setResourceLoader(resourceLoader);
+      messageSource.setResourceLoader(resourceLoader);
     }
+
+    this.messageSource = messageSource;
 
     for(Locale locale : getAvailableLanguages()) {
       if(!this.questionnaire.getLocales().contains(locale)) this.questionnaire.addLocale(locale);
@@ -131,26 +139,24 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
   }
 
   public Properties getLanguage(Locale locale) {
+
     Properties language = null;
 
-    File languageFile = new File(bundleVersionDir, LANGUAGE_FILE_BASENAME + '_' + locale + LANGUAGE_FILE_EXTENSION);
-
-    if(languageFile.exists()) {
+    Resource messageBundle = messageBundleLoader.getLocalizedResource(locale);
+    if(messageBundle != null) {
       language = new Properties();
-
-      FileInputStream fis = null;
-
+      InputStream is = null;
       try {
-        language.load(fis = new FileInputStream(languageFile));
+        language.load(is = messageBundle.getInputStream());
       } catch(IOException ex) {
         language = null;
-        log.error("Failed to load language file", ex);
+        log.error("Failed to load language resource", ex);
       } finally {
-        if(fis != null) {
+        if(is != null) {
           try {
-            fis.close();
+            is.close();
           } catch(IOException ex) {
-            log.error("Failed to close language file input stream", ex);
+            log.error("Failed to close language input stream", ex);
           }
         }
       }
@@ -165,12 +171,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
   }
 
   public List<Locale> getAvailableLanguages() {
-    LocalizedResourceLoader localizedResourceLoader = new LocalizedResourceLoader();
-    localizedResourceLoader.setResourceExtension(LANGUAGE_FILE_EXTENSION);
-    localizedResourceLoader.setResourceName(LANGUAGE_FILE_BASENAME);
-    localizedResourceLoader.setResourcePath(bundleVersionDir);
-    localizedResourceLoader.setResourceLoader(resourceLoader);
-    return localizedResourceLoader.getAvailableLocales();
+    return messageBundleLoader.getAvailableLocales();
   }
 
   public MessageSource getMessageSource() {
@@ -197,33 +198,6 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     }
 
     return false;
-  }
-
-  /**
-   * Given a bundle version directory, returns the base name used to configure the Spring message source.
-   * 
-   * @param bundleVersionDir bundle version directory
-   * @return message source base name
-   */
-  private String getMessageSourceBasename(File bundleVersionDir) {
-    StringBuffer baseName = new StringBuffer();
-
-    // Append the bundle root directory.
-    baseName.append(bundleVersionDir.getParentFile().getParentFile().getName());
-
-    // Append the bundle directory.
-    baseName.append('/');
-    baseName.append(bundleVersionDir.getParentFile().getName());
-
-    // Append the bundle version directory.
-    baseName.append('/');
-    baseName.append(bundleVersionDir.getName());
-
-    // Append the resource bundle base name.
-    baseName.append('/');
-    baseName.append(LANGUAGE_FILE_BASENAME);
-
-    return baseName.toString();
   }
 
 }

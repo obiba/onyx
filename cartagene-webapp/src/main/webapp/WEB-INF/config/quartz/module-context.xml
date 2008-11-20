@@ -27,7 +27,7 @@
 
   <bean id="questionnaireBundleManager"
     class="org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl">
-    <constructor-arg value="questionnaires" />
+    <constructor-arg value="${org.obiba.onyx.quartz.resources.path}/questionnaires" />
     <property name="propertyKeyProvider" ref="propertyKeyProvider" />
   </bean>
 
