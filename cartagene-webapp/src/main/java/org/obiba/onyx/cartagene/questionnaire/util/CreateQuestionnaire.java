@@ -25,7 +25,7 @@ public class CreateQuestionnaire {
 
   private static File bundleRootDirectory = new File("target", "questionnaires");
 
-  private static File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp", "questionnaires");
+  private static File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
 
   private QuestionnaireBundle bundle;
 
