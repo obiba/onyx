@@ -9,11 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.wizard;
 
-import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
@@ -65,7 +64,7 @@ public class DeleteBarcodePanel extends Panel {
       }
     };
 
-    deleteLink.add(new Label("linkLabel", new StringResourceModel("Delete", this, null)));
+    deleteLink.add(new Image("linkImage"));
 
     deleteLink.add(new JavascriptEventConfirmation("onclick", new SpringStringResourceModel("Ruby.Confirm.BarcodeDeletion", new Object[] { barcode }, null)));
 
