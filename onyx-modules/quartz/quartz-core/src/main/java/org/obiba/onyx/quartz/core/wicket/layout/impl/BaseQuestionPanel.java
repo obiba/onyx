@@ -71,8 +71,8 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
       add(new EmptyPanel("specifications").setVisible(false));
     }
 
-    add(new Label("instructions", new QuestionnaireStringResourceModel(question, "instructions")));
-    add(new Label("caption", new QuestionnaireStringResourceModel(question, "caption")));
+    add(new Label("instructions", new QuestionnaireStringResourceModel(question, "instructions")).setEscapeModelStrings(false));
+    add(new Label("caption", new QuestionnaireStringResourceModel(question, "caption")).setEscapeModelStrings(false));
 
     // change the css rendering in case of a boiler plate
     if(question.isBoilerPlate()) {
