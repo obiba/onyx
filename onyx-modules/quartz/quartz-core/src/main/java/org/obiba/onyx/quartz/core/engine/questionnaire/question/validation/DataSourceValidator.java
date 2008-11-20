@@ -18,6 +18,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOperator;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.IDataUnitProvider;
 
 /**
  * Validates a {@link Data} value by comparing it to the one provided by the {@link DataSource} in the context of the
@@ -31,9 +32,15 @@ public class DataSourceValidator implements IDataValidator {
 
   private ComparisionOperator comparisionOperator;
 
+  private IDataUnitProvider dataUnitProvider;
+
   public DataSourceValidator(ComparisionOperator comparisionOperator, DataSource dataSource) {
     this.dataSource = dataSource;
     this.comparisionOperator = comparisionOperator;
+  }
+
+  public void setDataUnitProvider(IDataUnitProvider dataUnitProvider) {
+    this.dataUnitProvider = dataUnitProvider;
   }
 
   public void validate(IValidatable validatable) {
@@ -54,6 +61,9 @@ public class DataSourceValidator implements IDataValidator {
     public void validate(IValidatable validatable) {
       Data dataToCompare = (Data) validatable.getValue();
       Data data = dataSource.getData(activeQuestionnaireAdministrationService);
+      // TODO deal with units
+      String sourceUnit = dataSource.getUnit();
+      String validatableUnit = getUnit();
 
       ValidationError error = null;
 
@@ -101,10 +111,15 @@ public class DataSourceValidator implements IDataValidator {
 
     private ValidationError newValidationError(String message, Data data, Data dataToCompare) {
       ValidationError error = new ValidationError();
-      error.setMessage("DataSourceValidator." + message);
-      if(data != null) error.setVariable("expected", data);
-      if(dataToCompare != null) error.setVariable("found", dataToCompare);
+      error.addMessageKey("DataSourceValidator." + message);
+      if(data != null) error.setVariable("expected", data.getValue());
+      if(dataToCompare != null) error.setVariable("found", dataToCompare.getValue());
       return error;
     }
   }
+
+  public String getUnit() {
+    return dataUnitProvider != null ? dataUnitProvider.getUnit() : null;
+  }
+
 }

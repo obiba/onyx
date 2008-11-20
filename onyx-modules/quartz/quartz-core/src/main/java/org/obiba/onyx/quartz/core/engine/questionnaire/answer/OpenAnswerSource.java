@@ -45,4 +45,8 @@ public class OpenAnswerSource extends DataSource {
     return null;
   }
 
+  public String getUnit() {
+    return openAnswerDefinition.getUnit();
+  }
+
 }

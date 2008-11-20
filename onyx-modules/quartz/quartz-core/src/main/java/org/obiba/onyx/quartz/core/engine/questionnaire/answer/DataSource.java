@@ -16,13 +16,14 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataSourceValidator;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.IDataUnitProvider;
 
 /**
  * Defines a way of getting a {@link Data} in the context of currently administered {@link Questionnaire}.
  * @see DataCondition
  * @see DataSourceValidator
  */
-public abstract class DataSource implements Serializable {
+public abstract class DataSource implements Serializable, IDataUnitProvider {
 
   /**
    * Get the data for answer provisionning.

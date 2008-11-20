@@ -20,8 +20,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.IData
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.util.data.IDataUnitProvider;
 
-public class OpenAnswerDefinition implements Serializable, ILocalizable {
+public class OpenAnswerDefinition implements Serializable, ILocalizable, IDataUnitProvider {
 
   private static final long serialVersionUID = -7756577128502621726L;
 

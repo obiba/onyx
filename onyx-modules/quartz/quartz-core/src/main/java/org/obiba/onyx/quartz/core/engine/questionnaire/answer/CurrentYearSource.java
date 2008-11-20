@@ -31,4 +31,9 @@ public class CurrentYearSource extends DataSource {
     c.setTime(new Date());
     return DataBuilder.buildInteger(c.get(Calendar.YEAR));
   }
+
+  public String getUnit() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 }

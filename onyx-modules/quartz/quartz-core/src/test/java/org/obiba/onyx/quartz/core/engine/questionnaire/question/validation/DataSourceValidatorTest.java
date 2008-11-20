@@ -20,7 +20,6 @@ import org.apache.wicket.spring.injection.annot.AnnotSpringInjector;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.spring.test.SpringContextLocatorMock;
 import org.apache.wicket.validation.Validatable;
-import org.apache.wicket.validation.ValidationError;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOperator;
@@ -69,10 +68,6 @@ public class DataSourceValidatorTest {
     validatable = new Validatable(DataBuilder.buildInteger(2));
     validator.validate(validatable);
     Assert.assertEquals(1, validatable.getErrors().size());
-    String message = ((ValidationError) validatable.getErrors().get(0)).getMessage();
-    Assert.assertEquals("DataSourceValidator.ExpectedToBeEqual", message);
-
-    log.info(message);
   }
 
   @Test
@@ -85,10 +80,6 @@ public class DataSourceValidatorTest {
     validatable = new Validatable(DataBuilder.buildInteger(1));
     validator.validate(validatable);
     Assert.assertEquals(1, validatable.getErrors().size());
-    String message = ((ValidationError) validatable.getErrors().get(0)).getMessage();
-    Assert.assertEquals("DataSourceValidator.ExpectedToBeDifferent", message);
-
-    log.info(message);
   }
 
   @Test
@@ -97,10 +88,6 @@ public class DataSourceValidatorTest {
     Validatable validatable = new Validatable(DataBuilder.buildInteger(0));
     validator.validate(validatable);
     Assert.assertEquals(1, validatable.getErrors().size());
-    String message = ((ValidationError) validatable.getErrors().get(0)).getMessage();
-    Assert.assertEquals("DataSourceValidator.ExpectedToBeDifferent", message);
-
-    log.info(message);
   }
 
   @Test
@@ -113,16 +100,10 @@ public class DataSourceValidatorTest {
     validatable = new Validatable(DataBuilder.buildInteger(1));
     validator.validate(validatable);
     Assert.assertEquals(1, validatable.getErrors().size());
-    String message = ((ValidationError) validatable.getErrors().get(0)).getMessage();
-    Assert.assertEquals("DataSourceValidator.ExpectedToBeLower", message);
 
     validatable = new Validatable(DataBuilder.buildInteger(2));
     validator.validate(validatable);
     Assert.assertEquals(1, validatable.getErrors().size());
-    message = ((ValidationError) validatable.getErrors().get(0)).getMessage();
-    Assert.assertEquals("DataSourceValidator.ExpectedToBeLower", message);
-
-    log.info(message);
   }
 
   @Test
@@ -139,10 +120,6 @@ public class DataSourceValidatorTest {
     validatable = new Validatable(DataBuilder.buildInteger(2));
     validator.validate(validatable);
     Assert.assertEquals(1, validatable.getErrors().size());
-    String message = ((ValidationError) validatable.getErrors().get(0)).getMessage();
-    Assert.assertEquals("DataSourceValidator.ExpectedToBeLowerEqual", message);
-
-    log.info(message);
   }
 
   @Test
@@ -155,16 +132,10 @@ public class DataSourceValidatorTest {
     validatable = new Validatable(DataBuilder.buildInteger(1));
     validator.validate(validatable);
     Assert.assertEquals(1, validatable.getErrors().size());
-    String message = ((ValidationError) validatable.getErrors().get(0)).getMessage();
-    Assert.assertEquals("DataSourceValidator.ExpectedToBeGreater", message);
 
     validatable = new Validatable(DataBuilder.buildInteger(0));
     validator.validate(validatable);
     Assert.assertEquals(1, validatable.getErrors().size());
-    message = ((ValidationError) validatable.getErrors().get(0)).getMessage();
-    Assert.assertEquals("DataSourceValidator.ExpectedToBeGreater", message);
-
-    log.info(message);
   }
 
   @Test
@@ -181,10 +152,6 @@ public class DataSourceValidatorTest {
     validatable = new Validatable(DataBuilder.buildInteger(0));
     validator.validate(validatable);
     Assert.assertEquals(1, validatable.getErrors().size());
-    String message = ((ValidationError) validatable.getErrors().get(0)).getMessage();
-    Assert.assertEquals("DataSourceValidator.ExpectedToBeGreaterEqual", message);
-
-    log.info(message);
   }
 
   public Questionnaire createQuestionnaire() {

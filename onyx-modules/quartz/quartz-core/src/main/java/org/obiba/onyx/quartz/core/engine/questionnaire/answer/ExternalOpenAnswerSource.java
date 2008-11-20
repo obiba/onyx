@@ -45,4 +45,9 @@ public class ExternalOpenAnswerSource extends DataSource {
     return null;
   }
 
+  public String getUnit() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

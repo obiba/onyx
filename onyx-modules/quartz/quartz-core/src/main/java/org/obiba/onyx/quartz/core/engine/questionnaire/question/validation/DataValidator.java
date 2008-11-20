@@ -17,6 +17,7 @@ import org.apache.wicket.validation.validator.NumberValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.util.data.IDataUnitProvider;
 
 /**
  * Validates a {@link Data} value, given a standard {@link IValidator} and specifying what is the {@link DataType} this
@@ -32,9 +33,15 @@ public class DataValidator implements IDataValidator {
 
   private IValidator validator;
 
+  private IDataUnitProvider dataUnitProvider;
+
   public DataValidator(IValidator validator, DataType dataType) {
     this.validator = validator;
     this.dataType = dataType;
+  }
+
+  public void setDataUnitProvider(IDataUnitProvider dataUnitProvider) {
+    this.dataUnitProvider = dataUnitProvider;
   }
 
   public DataType getDataType() {
@@ -69,5 +76,9 @@ public class DataValidator implements IDataValidator {
     }
 
     return null;
+  }
+
+  public String getUnit() {
+    return dataUnitProvider != null ? dataUnitProvider.getUnit() : null;
   }
 }

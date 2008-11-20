@@ -7,19 +7,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.core.engine.questionnaire.question.validation;
-
-import org.apache.wicket.validation.IValidator;
+package org.obiba.onyx.util.data;
 
 /**
- * Dummy interface to identify that a {@link IValidator} is supposed to validate {@link Data} values.
+ * 
  */
-public interface IDataValidator extends IValidator {
+public interface IDataUnitProvider {
 
-  /**
-   * Gets the provider of validatable data value unit.
-   * @return
-   */
   public String getUnit();
 
 }

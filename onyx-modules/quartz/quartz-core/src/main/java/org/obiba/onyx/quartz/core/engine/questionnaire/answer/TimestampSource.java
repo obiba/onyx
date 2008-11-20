@@ -29,4 +29,9 @@ public class TimestampSource extends DataSource {
     return new Data(DataType.DATE, new Date());
   }
 
+  public String getUnit() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

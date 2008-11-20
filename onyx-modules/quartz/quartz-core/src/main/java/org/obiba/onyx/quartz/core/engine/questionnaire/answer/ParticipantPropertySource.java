@@ -32,9 +32,17 @@ public class ParticipantPropertySource extends DataSource {
 
   private String property;
 
+  private String unit;
+
   public ParticipantPropertySource(String property) {
     super();
     this.property = property;
+  }
+
+  public ParticipantPropertySource(String property, String unit) {
+    super();
+    this.property = property;
+    this.unit = unit;
   }
 
   public String getProperty() {
@@ -59,5 +67,9 @@ public class ParticipantPropertySource extends DataSource {
       log.error("Could not resolve participant property: " + property, e);
     }
     throw new IllegalArgumentException("Could not resolve participant property: " + property);
+  }
+
+  public String getUnit() {
+    return unit;
   }
 }

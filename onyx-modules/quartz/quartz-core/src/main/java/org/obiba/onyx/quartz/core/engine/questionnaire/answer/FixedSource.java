@@ -21,12 +21,25 @@ public class FixedSource extends DataSource {
 
   private Data data;
 
+  private String unit;
+
   public FixedSource(Data data) {
+    super();
     this.data = data;
+  }
+
+  public FixedSource(Data data, String unit) {
+    super();
+    this.data = data;
+    this.unit = unit;
   }
 
   public Data getData(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService) {
     return data;
+  }
+
+  public String getUnit() {
+    return unit;
   }
 
 }
