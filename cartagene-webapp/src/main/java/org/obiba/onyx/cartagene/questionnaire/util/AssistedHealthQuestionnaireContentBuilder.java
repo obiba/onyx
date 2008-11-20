@@ -59,7 +59,7 @@ public class AssistedHealthQuestionnaireContentBuilder {
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK").withSharedCategory(PNA, "8");
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK").withSharedCategory(DNK, "9");
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK").setAnswerCondition("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK_ACONDITION", "CURRENTLY_WORK", Y);
-    builder.inPage("2").withQuestion("WORK_VIGOROUS_ACTIVITY_TIME_DAY").withCategory("ACTIVITY_TIME_DAY").withOpenAnswerDefinition("ACTIVITY_TIME_DAY", DataType.INTEGER).withOpenAnswerDefinition("ACTIVITY_HOURS_DAY", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 16));
+    builder.inSection("PART1").withPage("2a").withQuestion("WORK_VIGOROUS_ACTIVITY_TIME_DAY").withCategory("ACTIVITY_TIME_DAY").withOpenAnswerDefinition("ACTIVITY_TIME_DAY", DataType.INTEGER).withOpenAnswerDefinition("ACTIVITY_HOURS_DAY", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 16));
     builder.inOpenAnswerDefinition("ACTIVITY_TIME_DAY").withOpenAnswerDefinition("ACTIVITY_MIN_DAY", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 960));
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_TIME_DAY").withSharedCategory(PNA, "888");
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_TIME_DAY").withSharedCategory(DNK, "999");
