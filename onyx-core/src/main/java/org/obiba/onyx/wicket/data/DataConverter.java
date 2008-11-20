@@ -37,7 +37,7 @@ public class DataConverter implements IConverter {
 
     Data data = null;
 
-    if(value == null || (!type.equals(DataType.TEXT) && value.length() == 0)) return null;
+    if(value == null || value.length() == 0) return null;
 
     try {
       switch(type) {
