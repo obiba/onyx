@@ -179,4 +179,9 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
     return !getQuestionCategoryModel().equals(openField.getModel());
   }
 
+  @Override
+  public boolean hasOpenField() {
+    return openField != null;
+  }
+
 }

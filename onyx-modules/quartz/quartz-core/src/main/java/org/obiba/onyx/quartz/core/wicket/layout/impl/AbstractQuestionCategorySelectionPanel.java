@@ -197,4 +197,6 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
 
     return openField;
   }
+
+  public abstract boolean hasOpenField();
 }

@@ -155,4 +155,9 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
   protected boolean isToBeReseted(AbstractOpenAnswerDefinitionPanel openField) {
     return getQuestionCategoryModel().equals(openField.getModel());
   }
+
+  @Override
+  public boolean hasOpenField() {
+    return openField != null;
+  }
 }

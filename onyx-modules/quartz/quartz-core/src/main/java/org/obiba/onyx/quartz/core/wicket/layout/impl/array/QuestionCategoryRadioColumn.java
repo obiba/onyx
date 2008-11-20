@@ -10,10 +10,13 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategorySelectionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCategoryRadioPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
@@ -48,7 +51,8 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
     radioGroup.setRequired(((Question) rowModel.getObject()).isRequired());
     radioGroup.setLabel(new QuestionnaireStringResourceModel(rowModel, "label"));
 
-    cellItem.add(new QuestionCategoryRadioPanel(componentId, rowModel, cellItem.getModel(), radioGroup, false) {
+    AbstractQuestionCategorySelectionPanel qCategoryPanel;
+    cellItem.add(qCategoryPanel = new QuestionCategoryRadioPanel(componentId, rowModel, cellItem.getModel(), radioGroup, false) {
 
       @Override
       public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
@@ -75,5 +79,10 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
       }
 
     });
+    if(qCategoryPanel.hasOpenField()) {
+      cellItem.add(new AttributeAppender("class", new Model("category-open"), " "));
+    } else {
+      cellItem.add(new AttributeAppender("class", new Model("category"), " "));
+    }
   }
 }

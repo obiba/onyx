@@ -118,6 +118,10 @@ table.array td.label {
 	width: 200px;
 }
 
+table.array td.category {
+	text-align:center;	
+}
+
 div.page div.question div.categories div.category {
 	padding-bottom:5px;
 }

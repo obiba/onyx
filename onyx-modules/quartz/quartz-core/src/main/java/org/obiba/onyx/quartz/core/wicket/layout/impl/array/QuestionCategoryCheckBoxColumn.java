@@ -10,11 +10,13 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategorySelectionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCategoryCheckBoxPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.MultipleChoiceQuestionValidator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
@@ -43,7 +45,8 @@ public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColu
     String label = new QuestionnaireStringResourceModel(question.getParentQuestion(), "label").getString() + " / " + new QuestionnaireStringResourceModel(question, "label").getString();
     checkGroup.setLabel(new Model(label));
 
-    cellItem.add(new QuestionCategoryCheckBoxPanel(componentId, rowModel, cellItem.getModel(), checkGroup, false) {
+    AbstractQuestionCategorySelectionPanel qCategoryPanel;
+    cellItem.add(qCategoryPanel = new QuestionCategoryCheckBoxPanel(componentId, rowModel, cellItem.getModel(), checkGroup, false) {
       @Override
       public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
         onEvent(target);
@@ -64,6 +67,11 @@ public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColu
         onEvent(target);
       }
     });
+    if(qCategoryPanel.hasOpenField()) {
+      cellItem.add(new AttributeAppender("class", new Model("category-open"), " "));
+    } else {
+      cellItem.add(new AttributeAppender("class", new Model("category"), " "));
+    }
   }
 
 }
