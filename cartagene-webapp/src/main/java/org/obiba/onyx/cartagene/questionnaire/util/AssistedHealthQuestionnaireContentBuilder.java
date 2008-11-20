@@ -52,9 +52,9 @@ public class AssistedHealthQuestionnaireContentBuilder {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaireAssisted", "1.0");
 
     builder.withSection("C_LIFE_HABITS").withSection("JOB_RELATED_PA").withSection("PART1").withPage("1").withQuestion("CURRENTLY_WORK").withSharedCategory(N, "0");
-    builder.inQuestion("CURRENTLY_WORK").withSharedCategories(Y, "1");
-    builder.inQuestion("CURRENTLY_WORK").withSharedCategories(PNA, "8");
-    builder.inQuestion("CURRENTLY_WORK").withSharedCategories(DNK, "9");
+    builder.inQuestion("CURRENTLY_WORK").withSharedCategory(Y, "1");
+    builder.inQuestion("CURRENTLY_WORK").withSharedCategory(PNA, "8");
+    builder.inQuestion("CURRENTLY_WORK").withSharedCategory(DNK, "9");
     builder.inSection("PART1").withPage("2").withQuestion("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK").withCategory("DAYS_WEEK").withOpenAnswerDefinition("DAYS_WEEK", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 7));
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK").withSharedCategory(PNA, "8");
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK").withSharedCategory(DNK, "9");
