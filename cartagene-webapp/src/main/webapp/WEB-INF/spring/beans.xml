@@ -7,13 +7,13 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-  <bean id="versionObject" class="org.obiba.runtime.Version">
-    <constructor-arg value="${org.obiba.onyx.version}" />
-  </bean>
-
   <bean id="applicationBean" class="org.obiba.onyx.webapp.OnyxApplication" scope="singleton">
     <property name="userService" ref="userService" />
-    <property name="version" ref="versionObject" />
+    <property name="version">
+      <bean class="org.obiba.runtime.Version">
+        <constructor-arg value="${org.obiba.onyx.version}" />
+      </bean>
+    </property>
   </bean>
 
   <bean id="stageOrderingStrategy" class="org.obiba.onyx.engine.StaticStageOrderingStrategy">
