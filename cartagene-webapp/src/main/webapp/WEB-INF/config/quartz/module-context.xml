@@ -6,6 +6,9 @@
   <bean name="consentDependency" class="org.obiba.onyx.engine.ConsentStageDependencyCondition">
     <property name="stageName" value="CON" />
   </bean>
+  <bean name="hqsaDependency" class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+    <property name="stageName" value="HealthQuestionnaireSelfAdministered" />
+  </bean>
 
   <bean id="quartzOnyxModule" class="org.obiba.onyx.quartz.engine.QuartzModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
@@ -16,6 +19,22 @@
           <property name="name" value="HealthQuestionnaire" />
           <property name="module" value="quartz" />
           <property name="stageDependencyCondition" ref="consentDependency" />
+        </bean>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="HealthQuestionnaireSelfAdministered" />
+          <property name="module" value="quartz" />
+          <property name="stageDependencyCondition" ref="consentDependency" />
+        </bean>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="HealthQuestionnaireAssisted" />
+          <property name="module" value="quartz" />          
+          <property name="stageDependencyCondition">
+            <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+              <property name="leftStageDependencyCondition" ref="consentDependency" />
+              <property name="operator" value="AND" />
+              <property name="rightStageDependencyCondition" ref="hqsaDependency" />
+            </bean>
+          </property>
         </bean>
       </list>
     </property>
