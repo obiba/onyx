@@ -88,6 +88,7 @@ table.array tr.headers th.category {
 	padding:10px;
 	font-weight: normal;
 	text-align:center;
+	width: 100px;
 }
 
 table.array tr.even {
@@ -114,6 +115,7 @@ table.array td.label {
 	padding-right:5px;
 	font-weight: bold;
 	text-align:left;
+	width: 200px;
 }
 
 div.page div.question div.categories div.category {
