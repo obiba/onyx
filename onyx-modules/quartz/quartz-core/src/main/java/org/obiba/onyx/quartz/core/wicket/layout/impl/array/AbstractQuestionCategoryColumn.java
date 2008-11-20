@@ -9,12 +9,12 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +32,20 @@ public abstract class AbstractQuestionCategoryColumn extends AbstractColumn {
     InjectorHolder.getInjector().inject(this);
   }
 
-  public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+  public void populateItem(final Item cellItem, final String componentId, final IModel rowModel) {
     cellItem.setModel(questionCategoryModel);
-    Question question = (Question) rowModel.getObject();
-    final int index = question.getParentQuestion().getQuestions().indexOf(question);
-    log.debug("QuestionCategoryColumn.index={}", index);
-    populateItem(cellItem, componentId, rowModel, index);
+    // find the row item index by exploring parents.
+    cellItem.visitParents(Item.class, new Component.IVisitor() {
+
+      public Object component(Component component) {
+        if(!component.equals(cellItem)) {
+          Item item = (Item) component;
+          log.debug("found item.index={}", item.getIndex());
+          populateItem(cellItem, componentId, rowModel, item.getIndex());
+        }
+        return null;
+      }
+    });
   }
 
   /**
