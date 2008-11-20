@@ -9,6 +9,7 @@
 
   <bean id="quartzOnyxModule" class="org.obiba.onyx.quartz.engine.QuartzModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
+    <property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
     <property name="stages">
       <list>
         <bean class="org.obiba.onyx.engine.Stage">

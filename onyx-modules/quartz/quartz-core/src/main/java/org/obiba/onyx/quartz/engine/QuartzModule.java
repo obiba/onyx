@@ -8,6 +8,7 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.engine;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.participant.Interview;
@@ -18,6 +19,8 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -34,12 +37,24 @@ public class QuartzModule implements Module, ApplicationContextAware {
 
   private List<Stage> stages;
 
+  private QuestionnaireBundleManager questionnaireBundleManager;
+
   public String getName() {
     return "quartz";
   }
 
   public void initialize() {
     log.info("initialize");
+    for(Iterator<Stage> iter = stages.iterator(); iter.hasNext();) {
+      Stage stage = iter.next();
+      QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(stage.getName());
+      if(bundle == null) {
+        log.warn("Stage '{}' is configured, but no associated questionnaire could be found in the resources.", stage.getName());
+        log.warn("Stage '{}' has will not be registered.");
+        iter.remove();
+      }
+
+    }
   }
 
   public void shutdown() {
@@ -60,6 +75,10 @@ public class QuartzModule implements Module, ApplicationContextAware {
 
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
     this.activeInterviewService = activeInterviewService;
+  }
+
+  public void setQuestionnaireBundleManager(QuestionnaireBundleManager questionnaireBundleManager) {
+    this.questionnaireBundleManager = questionnaireBundleManager;
   }
 
   public IStageExecution createStageExecution(Interview interview, Stage stage) {

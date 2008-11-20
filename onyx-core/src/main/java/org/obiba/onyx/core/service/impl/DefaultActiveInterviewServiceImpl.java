@@ -119,7 +119,8 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   public IStageExecution getStageExecution(String stageName) {
     Stage stage = moduleRegistry.getStage(stageName);
     if(stage == null) {
-      throw new IllegalArgumentException("Invalid stage name " + stageName);
+      log.warn("No stage with name '{}' is registered.", stageName);
+      return null;
     }
     return getStageExecution(stage);
   }

@@ -11,6 +11,8 @@ package org.obiba.onyx.engine;
 
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.state.IStageExecution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple {@link StageDependencyCondition} for making a {@link Stage} a prerequisite of another.
@@ -23,6 +25,8 @@ import org.obiba.onyx.engine.state.IStageExecution;
  */
 public class PreviousStageDependencyCondition implements StageDependencyCondition {
 
+  private static final Logger log = LoggerFactory.getLogger(PreviousStageDependencyCondition.class);
+
   private String stageName;
 
   public PreviousStageDependencyCondition() {
@@ -33,9 +37,17 @@ public class PreviousStageDependencyCondition implements StageDependencyConditio
   }
 
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
-    if(!activeInterviewService.getStageExecution(stageName).isCompleted()) return null;
-    else
+    IStageExecution stageExecution = activeInterviewService.getStageExecution(stageName);
+    if(stageExecution == null) {
+      log.warn("Stage '{}' does not seem to be present. Dependent stages will consider it as 'complete'. Make sure your configuration files are using the correct stage names in their dependency declarations.", stageName);
       return true;
+    }
+
+    if(stageExecution.isCompleted() == false) {
+      return null;
+    } else {
+      return true;
+    }
   }
 
   public boolean isDependentOn(String stageName) {
