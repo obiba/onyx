@@ -31,7 +31,7 @@ public class DataSourceValidator implements IDataValidator {
 
   private ComparisionOperator comparisionOperator;
 
-  public DataSourceValidator(DataSource dataSource, ComparisionOperator comparisionOperator) {
+  public DataSourceValidator(ComparisionOperator comparisionOperator, DataSource dataSource) {
     this.dataSource = dataSource;
     this.comparisionOperator = comparisionOperator;
   }
@@ -71,22 +71,22 @@ public class DataSourceValidator implements IDataValidator {
         }
         break;
       case lt:
-        if(result <= 0) {
+        if(result >= 0) {
           error = newValidationError("ExpectedToBeLower", data, dataToCompare);
         }
         break;
       case le:
-        if(result < 0) {
+        if(result > 0) {
           error = newValidationError("ExpectedToBeLowerEqual", data, dataToCompare);
         }
         break;
       case gt:
-        if(result >= 0) {
+        if(result <= 0) {
           error = newValidationError("ExpectedToBeGreater", data, dataToCompare);
         }
         break;
       case ge:
-        if(result > 0) {
+        if(result < 0) {
           error = newValidationError("ExpectedToBeGreaterEqual", data, dataToCompare);
         }
         break;

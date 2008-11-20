@@ -61,7 +61,7 @@ public class DataSourceValidatorTest {
 
   @Test
   public void testEqualDataSource() {
-    DataSourceValidator validator = new DataSourceValidator(DataSourceBuilder.createFixedSource(questionnaire, DataBuilder.buildInteger(1)).getDataSource(), ComparisionOperator.eq);
+    DataSourceValidator validator = new DataSourceValidator(ComparisionOperator.eq, DataSourceBuilder.createFixedSource(questionnaire, DataBuilder.buildInteger(1)).getDataSource());
     Validatable validatable = new Validatable(DataBuilder.buildInteger(1));
     validator.validate(validatable);
     Assert.assertEquals(0, validatable.getErrors().size());
@@ -77,7 +77,7 @@ public class DataSourceValidatorTest {
 
   @Test
   public void testDifferentDataSource() {
-    DataSourceValidator validator = new DataSourceValidator(DataSourceBuilder.createFixedSource(questionnaire, DataBuilder.buildInteger(1)).getDataSource(), ComparisionOperator.ne);
+    DataSourceValidator validator = new DataSourceValidator(ComparisionOperator.ne, DataSourceBuilder.createFixedSource(questionnaire, DataBuilder.buildInteger(1)).getDataSource());
     Validatable validatable = new Validatable(DataBuilder.buildInteger(0));
     validator.validate(validatable);
     Assert.assertEquals(0, validatable.getErrors().size());
@@ -93,7 +93,7 @@ public class DataSourceValidatorTest {
 
   @Test
   public void testNullDataSource() {
-    DataSourceValidator validator = new DataSourceValidator(DataSourceBuilder.createFixedSource(questionnaire, null).getDataSource(), ComparisionOperator.ne);
+    DataSourceValidator validator = new DataSourceValidator(ComparisionOperator.ne, DataSourceBuilder.createFixedSource(questionnaire, null).getDataSource());
     Validatable validatable = new Validatable(DataBuilder.buildInteger(0));
     validator.validate(validatable);
     Assert.assertEquals(1, validatable.getErrors().size());
@@ -105,8 +105,8 @@ public class DataSourceValidatorTest {
 
   @Test
   public void testLowerDataSource() {
-    DataSourceValidator validator = new DataSourceValidator(DataSourceBuilder.createFixedSource(questionnaire, DataBuilder.buildInteger(1)).getDataSource(), ComparisionOperator.lt);
-    Validatable validatable = new Validatable(DataBuilder.buildInteger(2));
+    DataSourceValidator validator = new DataSourceValidator(ComparisionOperator.lt, DataSourceBuilder.createFixedSource(questionnaire, DataBuilder.buildInteger(1)).getDataSource());
+    Validatable validatable = new Validatable(DataBuilder.buildInteger(0));
     validator.validate(validatable);
     Assert.assertEquals(0, validatable.getErrors().size());
 
@@ -116,17 +116,27 @@ public class DataSourceValidatorTest {
     String message = ((ValidationError) validatable.getErrors().get(0)).getMessage();
     Assert.assertEquals("DataSourceValidator.ExpectedToBeLower", message);
 
+    validatable = new Validatable(DataBuilder.buildInteger(2));
+    validator.validate(validatable);
+    Assert.assertEquals(1, validatable.getErrors().size());
+    message = ((ValidationError) validatable.getErrors().get(0)).getMessage();
+    Assert.assertEquals("DataSourceValidator.ExpectedToBeLower", message);
+
     log.info(message);
   }
 
   @Test
   public void testLowerEqualDataSource() {
-    DataSourceValidator validator = new DataSourceValidator(DataSourceBuilder.createFixedSource(questionnaire, DataBuilder.buildInteger(1)).getDataSource(), ComparisionOperator.le);
-    Validatable validatable = new Validatable(DataBuilder.buildInteger(2));
+    DataSourceValidator validator = new DataSourceValidator(ComparisionOperator.le, DataSourceBuilder.createFixedSource(questionnaire, DataBuilder.buildInteger(1)).getDataSource());
+    Validatable validatable = new Validatable(DataBuilder.buildInteger(0));
     validator.validate(validatable);
     Assert.assertEquals(0, validatable.getErrors().size());
 
-    validatable = new Validatable(DataBuilder.buildInteger(0));
+    validatable = new Validatable(DataBuilder.buildInteger(1));
+    validator.validate(validatable);
+    Assert.assertEquals(0, validatable.getErrors().size());
+
+    validatable = new Validatable(DataBuilder.buildInteger(2));
     validator.validate(validatable);
     Assert.assertEquals(1, validatable.getErrors().size());
     String message = ((ValidationError) validatable.getErrors().get(0)).getMessage();
@@ -137,8 +147,8 @@ public class DataSourceValidatorTest {
 
   @Test
   public void testGreaterDataSource() {
-    DataSourceValidator validator = new DataSourceValidator(DataSourceBuilder.createFixedSource(questionnaire, DataBuilder.buildInteger(1)).getDataSource(), ComparisionOperator.gt);
-    Validatable validatable = new Validatable(DataBuilder.buildInteger(0));
+    DataSourceValidator validator = new DataSourceValidator(ComparisionOperator.gt, DataSourceBuilder.createFixedSource(questionnaire, DataBuilder.buildInteger(1)).getDataSource());
+    Validatable validatable = new Validatable(DataBuilder.buildInteger(2));
     validator.validate(validatable);
     Assert.assertEquals(0, validatable.getErrors().size());
 
@@ -148,17 +158,27 @@ public class DataSourceValidatorTest {
     String message = ((ValidationError) validatable.getErrors().get(0)).getMessage();
     Assert.assertEquals("DataSourceValidator.ExpectedToBeGreater", message);
 
+    validatable = new Validatable(DataBuilder.buildInteger(0));
+    validator.validate(validatable);
+    Assert.assertEquals(1, validatable.getErrors().size());
+    message = ((ValidationError) validatable.getErrors().get(0)).getMessage();
+    Assert.assertEquals("DataSourceValidator.ExpectedToBeGreater", message);
+
     log.info(message);
   }
 
   @Test
   public void testGreaterEqualDataSource() {
-    DataSourceValidator validator = new DataSourceValidator(DataSourceBuilder.createFixedSource(questionnaire, DataBuilder.buildInteger(1)).getDataSource(), ComparisionOperator.ge);
-    Validatable validatable = new Validatable(DataBuilder.buildInteger(0));
+    DataSourceValidator validator = new DataSourceValidator(ComparisionOperator.ge, DataSourceBuilder.createFixedSource(questionnaire, DataBuilder.buildInteger(1)).getDataSource());
+    Validatable validatable = new Validatable(DataBuilder.buildInteger(2));
     validator.validate(validatable);
     Assert.assertEquals(0, validatable.getErrors().size());
 
-    validatable = new Validatable(DataBuilder.buildInteger(2));
+    validatable = new Validatable(DataBuilder.buildInteger(1));
+    validator.validate(validatable);
+    Assert.assertEquals(0, validatable.getErrors().size());
+
+    validatable = new Validatable(DataBuilder.buildInteger(0));
     validator.validate(validatable);
     Assert.assertEquals(1, validatable.getErrors().size());
     String message = ((ValidationError) validatable.getErrors().get(0)).getMessage();

@@ -111,7 +111,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisionOperator comparisionOperator, String questionName, String categoryName, String openAnswerDefinitionName) {
-    element.addValidator(new DataSourceValidator(DataSourceBuilder.createOpenAnswerSource(questionnaire, questionName, categoryName, openAnswerDefinitionName).getElement(), comparisionOperator));
+    element.addValidator(new DataSourceValidator(comparisionOperator, DataSourceBuilder.createOpenAnswerSource(questionnaire, questionName, categoryName, openAnswerDefinitionName).getElement()));
     return this;
   }
 
@@ -125,7 +125,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisionOperator comparisionOperator, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
-    element.addValidator(new DataSourceValidator(DataSourceBuilder.createExternalOpenAnswerSource(questionnaire, questionnaireName, questionName, categoryName, openAnswerDefinitionName).getElement(), comparisionOperator));
+    element.addValidator(new DataSourceValidator(comparisionOperator, DataSourceBuilder.createExternalOpenAnswerSource(questionnaire, questionnaireName, questionName, categoryName, openAnswerDefinitionName).getElement()));
     return this;
   }
 
@@ -136,7 +136,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisionOperator comparisionOperator, String property) {
-    element.addValidator(new DataSourceValidator(DataSourceBuilder.createParticipantPropertySource(questionnaire, property).getElement(), comparisionOperator));
+    element.addValidator(new DataSourceValidator(comparisionOperator, DataSourceBuilder.createParticipantPropertySource(questionnaire, property).getElement()));
     return this;
   }
 
@@ -146,7 +146,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addCurrentYearValidator(ComparisionOperator comparisionOperator) {
-    element.addValidator(new DataSourceValidator(DataSourceBuilder.createCurrentYearSource(questionnaire).getElement(), comparisionOperator));
+    element.addValidator(new DataSourceValidator(comparisionOperator, DataSourceBuilder.createCurrentYearSource(questionnaire).getElement()));
     return this;
   }
 
@@ -159,7 +159,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @see CurrentYearSource
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisionOperator comparisionOperator, DataSource dataSource) {
-    element.addValidator(new DataSourceValidator(dataSource, comparisionOperator));
+    element.addValidator(new DataSourceValidator(comparisionOperator, dataSource));
     return this;
   }
 
