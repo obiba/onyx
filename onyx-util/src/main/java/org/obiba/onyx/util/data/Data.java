@@ -167,11 +167,23 @@ public class Data implements Serializable, Comparable {
         if(value != null) {
           switch(type) {
           case BOOLEAN:
-          case INTEGER:
-          case DECIMAL:
           case DATE:
           case TEXT:
             result = ((Comparable) value).compareTo(data.getValue());
+            break;
+          case INTEGER: {
+            // compare two Integers or two Longs, can't mix them
+            Number numberValue = (Number) value;
+            Number dataValue = data.getValue();
+            result = Long.valueOf(numberValue.longValue()).compareTo(Long.valueOf(dataValue.longValue()));
+          }
+            break;
+          case DECIMAL: {
+            // compare two Floats or two Doubles, can't mix them
+            Number numberValue = (Number) value;
+            Number dataValue = data.getValue();
+            result = Double.valueOf(numberValue.doubleValue()).compareTo(Double.valueOf(dataValue.doubleValue()));
+          }
             break;
           case DATA:
             if(byteArraysEqual((byte[]) value, (byte[]) data.getValue())) {
