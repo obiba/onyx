@@ -171,11 +171,16 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
       throw new RuntimeException("Error initializing ECG database files", couldNotInitDbs);
     }
 
-    // Delete generated reports
     File reportFile = new File(getExportPath(), getXmlFileName());
-    reportFile.delete();
+    if(!reportFile.delete()) {
+      log.warn("Could not delete Cardiosoft XML output file!");
+    }
+
     reportFile = new File(getExportPath(), getPdfFileName());
-    reportFile.delete();
+    if(!reportFile.delete()) {
+      log.warn("Could not delete Cardiosoft PDF output file!");
+    }
+
   }
 
   /**
@@ -231,11 +236,11 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
     try {
       resultInputStream = new FileInputStream(new File(getExportPath(), getXmlFileName()));
       CardiosoftInstrumentResultParser resultParser = new CardiosoftInstrumentResultParser(resultInputStream);
-      sendDataToServer(resultParser);      
+      sendDataToServer(resultParser);
     } catch(FileNotFoundException fnfEx) {
       log.error("Cardiosoft output data file not found");
     }
-    
+
   }
 
   /**

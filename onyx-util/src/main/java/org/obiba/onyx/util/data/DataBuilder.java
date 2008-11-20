@@ -122,6 +122,12 @@ public class DataBuilder {
     } catch(IOException couldNotReadStream) {
       log.error("Error while reading binary data stream", couldNotReadStream);
       throw new RuntimeException(couldNotReadStream);
+    } finally {
+      try {
+        inputStream.close();
+      } catch(IOException e) {
+        log.warn("Could not close inputStream", e);
+      }
     }
 
     return new Data(DataType.DATA, convertedStream.toByteArray());
@@ -129,11 +135,18 @@ public class DataBuilder {
 
   public static Data buildBinary(File file) {
 
-    FileInputStream inputStream;
+    FileInputStream inputStream = null;
     try {
       inputStream = new FileInputStream(file);
     } catch(FileNotFoundException fileNotFound) {
       log.error("The file specified was not found", fileNotFound);
+
+      try {
+        inputStream.close();
+      } catch(IOException e) {
+        log.warn("Could not close inputStream", e);
+      }
+
       throw new RuntimeException(fileNotFound);
     }
     return buildBinary(inputStream);
