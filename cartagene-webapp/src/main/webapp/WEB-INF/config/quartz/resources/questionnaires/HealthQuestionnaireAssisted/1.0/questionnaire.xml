@@ -958,7 +958,7 @@
         <page id="396" name="11" uIFactoryName="quartz.DefaultPageLayoutFactory">
           <section reference="389"/>
           <questions id="397">
-            <question id="398" name="KNWS_HEALTH_FIRST_DEG_REL" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="398" name="KNOWS_HEALTH_FIRST_DEG_REL" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="396"/>
               <questionCategories id="399">
                 <questionCategory id="400" reselectable="false" selected="false" exportName="0">
