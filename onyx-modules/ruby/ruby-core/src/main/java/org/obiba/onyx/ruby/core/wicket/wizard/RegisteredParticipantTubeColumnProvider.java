@@ -13,17 +13,21 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSourceResolvable;
 
 class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serializable {
@@ -32,6 +36,9 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
   //
 
   private static final long serialVersionUID = 1L;
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(RegisteredParticipantTubeColumnProvider.class);
 
   //
   // Instance Variables
@@ -46,7 +53,8 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
   //
 
   @SuppressWarnings("serial")
-  public RegisteredParticipantTubeColumnProvider(TubeRegistrationConfiguration tubeRegistrationConfiguration) {
+  public RegisteredParticipantTubeColumnProvider(TubeRegistrationConfiguration tubeRegistrationConfiguration, TubeRegistrationPanel tubeRegistrationPanel) {
+    addDeleteColumn(tubeRegistrationPanel);
     addBarcodeColumn();
     addBarcodePartColumns(tubeRegistrationConfiguration);
   }
@@ -75,9 +83,20 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
   // Methods
   //
 
-  @SuppressWarnings("serial")
+  private void addDeleteColumn(final Component componentToRender) {
+    columns.add(new AbstractColumn(new Model("")) {
+      private static final long serialVersionUID = 1L;
+
+      public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+        cellItem.add(new DeleteBarcodePanel(componentId, rowModel, componentToRender));
+      }
+    });
+  }
+
   private void addBarcodeColumn() {
     columns.add(new AbstractColumn(new SpringStringResourceModel("Ruby.Barcode")) {
+      private static final long serialVersionUID = 1L;
+
       public void populateItem(Item cellItem, String componentId, IModel rowModel) {
         cellItem.add(new Label(componentId, new PropertyModel(rowModel, "barcode")));
       }
