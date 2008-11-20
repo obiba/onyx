@@ -95,7 +95,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   public Page startPage() {
     currentPage = navigationStrategy.getPageOnStart(this);
 
-    updateResumePage();
+    updateResumePage(currentPage);
 
     return currentPage;
   }
@@ -103,7 +103,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   public Page lastPage() {
     currentPage = navigationStrategy.getPageOnLast(this);
 
-    updateResumePage();
+    updateResumePage(currentPage);
 
     return currentPage;
   }
@@ -112,7 +112,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     currentPage = navigationStrategy.getPageOnPrevious(this, getCurrentPage());
 
     if(currentPage != null) {
-      updateResumePage();
+      updateResumePage(currentPage);
     }
 
     return currentPage;
@@ -122,7 +122,10 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     currentPage = navigationStrategy.getPageOnNext(this, getCurrentPage());
 
     if(currentPage != null) {
-      updateResumePage();
+      updateResumePage(currentPage);
+    } else {
+      // will resume to first page
+      updateResumePage(navigationStrategy.getPageOnStart(this));
     }
 
     return currentPage;
@@ -285,11 +288,11 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return (getPersistenceManager().refresh(currentQuestionnaireParticipant));
   }
 
-  private void updateResumePage() {
+  private void updateResumePage(Page resumePage) {
     currentQuestionnaireParticipant = getQuestionnaireParticipant();
 
     if(currentQuestionnaireParticipant != null) {
-      currentQuestionnaireParticipant.setResumePage(currentPage.getName());
+      currentQuestionnaireParticipant.setResumePage(resumePage.getName());
       getPersistenceManager().save(currentQuestionnaireParticipant);
     }
   }
