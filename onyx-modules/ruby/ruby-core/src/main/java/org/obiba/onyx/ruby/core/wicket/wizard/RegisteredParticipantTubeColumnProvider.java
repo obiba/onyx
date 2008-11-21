@@ -122,4 +122,8 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
       }
     }
   }
+
+  public int getFirstBarcodePartColumnIndex() {
+    return firstBarcodePartColumnIndex;
+  }
 }
