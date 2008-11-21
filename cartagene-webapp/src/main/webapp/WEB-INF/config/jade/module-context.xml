@@ -53,17 +53,6 @@
           </property>
         </bean>
         <bean class="org.obiba.onyx.engine.Stage">
-          <property name="name" value="BIM_BC418" />
-          <property name="module" value="jade" />
-          <property name="stageDependencyCondition">
-            <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
-              <property name="leftStageDependencyCondition" ref="consentDependency" />
-              <property name="operator" value="AND" />
-              <property name="rightStageDependencyCondition" ref="staDependency" />
-            </bean>
-          </property>
-        </bean>        
-        <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="WEI" />
           <property name="module" value="jade" />
           <property name="stageDependencyCondition">
@@ -73,22 +62,10 @@
               <property name="rightStageDependencyCondition">
                 <bean class="org.obiba.onyx.engine.InverseStageDependencyCondition">
                   <property name="stageDependencyCondition">
-                    <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
-                      <property name="leftStageDependencyCondition">                    
-                        <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
-                          <property name="instrumentService" ref="instrumentService" />
-                          <property name="instrumentRunService" ref="instrumentRunService" />
-                          <property name="stageName" value="BIM_BC418" />
-                        </bean>
-                      </property>                    
-                      <property name="operator" value="OR" />
-                      <property name="rightStageDependencyCondition">                    
-                        <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
-                          <property name="instrumentService" ref="instrumentService" />
-                          <property name="instrumentRunService" ref="instrumentRunService" />
-                          <property name="stageName" value="BIM_TBF310" />
-                        </bean>
-                      </property>
+                    <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
+                      <property name="instrumentService" ref="instrumentService" />
+                      <property name="instrumentRunService" ref="instrumentRunService" />
+                      <property name="stageName" value="BIM_TBF310" />
                     </bean>
                   </property>
                 </bean>
@@ -101,7 +78,7 @@
           <property name="module" value="jade" />
 
           <property name="stageDependencyCondition">
-            <!-- CON && STA && (BIM_TBF310 || WEI || BIM_BC418) -->
+            <!-- CON && STA && (BIM || WEI) -->
             <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
               <property name="leftStageDependencyCondition" ref="consentDependency" />
               <property name="operator" value="AND" />
@@ -112,22 +89,10 @@
                   <property name="rightStageDependencyCondition">
                     <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
                       <property name="leftStageDependencyCondition">
-                        <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
-                          <property name="leftStageDependencyCondition">                    
-                            <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
-                              <property name="instrumentService" ref="instrumentService" />
-                              <property name="instrumentRunService" ref="instrumentRunService" />
-                              <property name="stageName" value="BIM_BC418" />
-                            </bean>
-                          </property>                    
-                          <property name="operator" value="OR" />
-                          <property name="rightStageDependencyCondition">                    
-                            <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
-                              <property name="instrumentService" ref="instrumentService" />
-                              <property name="instrumentRunService" ref="instrumentRunService" />
-                              <property name="stageName" value="BIM_TBF310" />
-                            </bean>
-                          </property>
+                        <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
+                          <property name="instrumentService" ref="instrumentService" />
+                          <property name="instrumentRunService" ref="instrumentRunService" />
+                          <property name="stageName" value="BIM_TBF310" />
                         </bean>
                       </property>
                       <property name="operator" value="OR" />
