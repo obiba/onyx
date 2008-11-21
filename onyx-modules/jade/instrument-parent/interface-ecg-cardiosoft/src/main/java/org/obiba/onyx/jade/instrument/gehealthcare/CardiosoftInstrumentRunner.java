@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -230,7 +231,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
    */
   public void run() {
     externalAppHelper.launch();
-    FileInputStream resultInputStream;
+    FileInputStream resultInputStream = null;
 
     // Get data from external app
     try {
@@ -239,6 +240,12 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
       sendDataToServer(resultParser);
     } catch(FileNotFoundException fnfEx) {
       log.error("Cardiosoft output data file not found");
+    } finally {
+      try {
+        resultInputStream.close();
+      } catch(IOException e) {
+        log.warn("Could not close the inputStream", e);
+      }
     }
 
   }
