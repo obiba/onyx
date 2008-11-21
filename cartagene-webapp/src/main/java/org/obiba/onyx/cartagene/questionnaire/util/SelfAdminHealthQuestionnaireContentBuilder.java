@@ -81,7 +81,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("SEX").withSharedCategory(PNA, "8");
     builder.inQuestion("SEX").withSharedCategory(DNK, "9");
 
-    builder.inSection("B_DEMOGRAPHY").withSection("AGE_DATE_BIRTH").withPage("3").withQuestion("DATE_OF_BIRTH").withQuestion("DOB_YEAR").withCategory("DOB_YEAR").withOpenAnswerDefinition("DOB_YEAR", DataType.INTEGER).addValidator(new PatternValidator("\\d{4}"), DataType.TEXT);
+    builder.inSection("B_DEMOGRAPHY").withSection("AGE_DATE_BIRTH").withPage("3").withQuestion("DATE_OF_BIRTH").withQuestion("DOB_YEAR").withCategory("DOB_YEAR").withOpenAnswerDefinition("DOB_YEAR", DataType.INTEGER).addValidator(new PatternValidator("\\d{4}"));
     builder.inQuestion("DOB_YEAR").withSharedCategory(PNA, "8888");
     builder.inQuestion("DOB_YEAR").withSharedCategory(DNK, "9999");
     builder.inQuestion("DATE_OF_BIRTH").withQuestion("DOB_MONTH", DropDownQuestionPanelFactory.class).withCategories("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12");
