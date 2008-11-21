@@ -236,6 +236,7 @@
   <output id="bmi">
     <name>BMI</name>
     <description>Body_mass_index_calculated</description>
+    <measurementUnit>kg/m²</measurementUnit>
     <dataType>DECIMAL</dataType>
     <captureMethod>AUTOMATIC</captureMethod>
     <instrument reference="bioimp2" />
