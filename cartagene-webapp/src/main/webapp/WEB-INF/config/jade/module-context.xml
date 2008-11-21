@@ -11,7 +11,13 @@
     <property name="instrumentRunService" ref="instrumentRunService" />
     <property name="stageName" value="STA" />
   </bean>
-
+  
+  <bean name="blpDependency" class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
+    <property name="instrumentService" ref="instrumentService" />
+    <property name="instrumentRunService" ref="instrumentRunService" />
+    <property name="stageName" value="BLP" />
+  </bean>
+  
   <bean class="org.obiba.onyx.jade.engine.JadeModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="stages">
@@ -123,7 +129,13 @@
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="ART" />
           <property name="module" value="jade" />
-          <property name="stageDependencyCondition" ref="consentDependency" />
+          <property name="stageDependencyCondition">
+            <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+              <property name="leftStageDependencyCondition" ref="consentDependency" />
+              <property name="operator" value="AND" />
+              <property name="rightStageDependencyCondition" ref="blpDependency" />
+            </bean>
+          </property>
         </bean>
       </list>
     </property>

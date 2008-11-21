@@ -26,6 +26,11 @@
   <instrumentType id="blp">
     <name>BLP</name>
     <description>Blood Pressure measurement</description>
+    
+    <dependentTypes>
+      <instrumentType reference="art" />
+    </dependentTypes>
+    
   </instrumentType>
   
   <instrumentType id="mus">
@@ -90,12 +95,10 @@
   <instrumentType id="art">
     <name>ART</name>
     <description>Arterial Stiffness measurement</description>
-    
-    <!--
+
     <dependsOnTypes>
       <instrumentType reference="blp" />
     </dependsOnTypes>
-    -->
     
   </instrumentType>
   
