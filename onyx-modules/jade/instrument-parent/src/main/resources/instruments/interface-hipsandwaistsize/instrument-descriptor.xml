@@ -129,6 +129,7 @@
       </parameterSpreadCheck>
     </integrityChecks>
   </output>
+  
   <computedOutput>
     <name>Hips Size</name>
     <description>Average_Hips_Size_Measurement</description>
@@ -142,5 +143,19 @@
       <output reference="hips_size2" />
     </outputs>
   </computedOutput>
-
+  
+  <computedOutput>
+    <name>Waist_Hip</name>
+    <description>Waist_To_Hip_Ratio_Measurement</description>
+    <measurementUnit> </measurementUnit>
+    <dataType>DECIMAL</dataType>
+    <instrument reference="hwc1" />
+    <algorithm>RATIO</algorithm>
+    <captureMethod>COMPUTED</captureMethod>
+    <outputs>
+      <output reference="waist_size1" />
+      <output reference="hips_size1" />
+    </outputs>
+  </computedOutput>
+  
 </linked-list>

@@ -10,5 +10,5 @@
 package org.obiba.onyx.jade.core.domain.instrument;
 
 public enum InstrumentOutputParameterAlgorithm {
-  AVERAGE
+  AVERAGE, RATIO
 }

@@ -11,6 +11,7 @@ package org.obiba.onyx.jade.core.service.impl;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
@@ -153,40 +154,107 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     // TODO quick and dirty implementation, to be checked
     for(InstrumentOutputParameter param : getPersistenceManager().match(template)) {
+
       InstrumentComputedOutputParameter computedParam = (InstrumentComputedOutputParameter) param;
+      InstrumentRunValue computedRunValue = null;
+
       if(computedParam.getAlgorithm().equals(InstrumentOutputParameterAlgorithm.AVERAGE)) {
-        InstrumentRunValue computedRunValue = getOutputInstrumentRunValue(computedParam.getName());
+        computedRunValue = calculateAverageValue(currentRun, computedParam);
+      } else if(computedParam.getAlgorithm().equals(InstrumentOutputParameterAlgorithm.RATIO)) {
+        computedRunValue = calculateRatioValue(currentRun, computedParam);
+      }
 
-        double sum = 0;
-        int count = 0;
-        for(InstrumentOutputParameter p : computedParam.getInstrumentOutputParameters()) {
-          count++;
-          InstrumentRunValue runValue = currentRun.getInstrumentRunValue(p);
-          if(runValue.getDataType().equals(DataType.DECIMAL)) {
-            Double value = runValue.getValue();
-            sum += value;
-          } else if(runValue.getDataType().equals(DataType.INTEGER)) {
-            Long value = runValue.getValue();
-            sum += value.doubleValue();
-          }
-        }
-        double avg = sum / count;
-
-        Serializable avgValue = null;
-        if(computedRunValue.getDataType().equals(DataType.DECIMAL)) {
-          long avgInt = Math.round(avg * 100);
-          avgValue = (double) avgInt / 100;
-        } else if(computedRunValue.getDataType().equals(DataType.INTEGER)) {
-          avgValue = Math.round(avg);
-        }
-
-        if(avgValue != null) {
-          computedRunValue.setData(new Data(computedRunValue.getDataType(), avgValue));
-        }
-
+      if(computedRunValue != null) {
         getPersistenceManager().save(computedRunValue);
       }
     }
+  }
+
+  /**
+   * @param currentRun
+   * @param computedParam
+   */
+  private InstrumentRunValue calculateAverageValue(InstrumentRun currentRun, InstrumentComputedOutputParameter computedParam) {
+    InstrumentRunValue computedRunValue = getOutputInstrumentRunValue(computedParam.getName());
+
+    double sum = 0;
+    int count = 0;
+    for(InstrumentOutputParameter p : computedParam.getInstrumentOutputParameters()) {
+      count++;
+      InstrumentRunValue runValue = currentRun.getInstrumentRunValue(p);
+      if(runValue.getDataType().equals(DataType.DECIMAL)) {
+        Double value = runValue.getValue();
+        sum += value;
+      } else if(runValue.getDataType().equals(DataType.INTEGER)) {
+        Long value = runValue.getValue();
+        sum += value.doubleValue();
+      }
+    }
+    double avg = sum / count;
+
+    Serializable avgValue = null;
+    if(computedRunValue.getDataType().equals(DataType.DECIMAL)) {
+      long avgInt = Math.round(avg * 100);
+      avgValue = (double) avgInt / 100;
+    } else if(computedRunValue.getDataType().equals(DataType.INTEGER)) {
+      avgValue = Math.round(avg);
+    }
+
+    if(avgValue != null) {
+      computedRunValue.setData(new Data(computedRunValue.getDataType(), avgValue));
+    }
+
+    return computedRunValue;
+  }
+
+  /**
+   * @param currentRun
+   * @param computedParam
+   */
+  private InstrumentRunValue calculateRatioValue(InstrumentRun currentRun, InstrumentComputedOutputParameter computedParam) {
+    InstrumentRunValue computedRunValue = getOutputInstrumentRunValue(computedParam.getName());
+
+    List<InstrumentOutputParameter> parameters = computedParam.getInstrumentOutputParameters();
+    if(parameters == null || parameters.size() != 2) {
+      throw new IllegalArgumentException("The number of parameters provided is invalid, two parameters are needed.");
+    }
+
+    InstrumentRunValue runValue0 = currentRun.getInstrumentRunValue(parameters.get(0));
+    InstrumentRunValue runValue1 = currentRun.getInstrumentRunValue(parameters.get(1));
+    Double value0 = 0.0;
+    Double value1 = 0.0;
+
+    if(runValue0.getDataType().equals(DataType.DECIMAL)) {
+      value0 = runValue0.getValue();
+    } else if(runValue0.getDataType().equals(DataType.INTEGER)) {
+      Long valueInt = runValue0.getValue();
+      value0 = Double.valueOf(valueInt);
+    }
+    if(runValue1.getDataType().equals(DataType.DECIMAL)) {
+      value1 = runValue1.getValue();
+    } else if(runValue1.getDataType().equals(DataType.INTEGER)) {
+      Long valueInt = runValue1.getValue();
+      value1 = Double.valueOf(valueInt);
+    }
+
+    if(value1 == 0.0) {
+      throw new IllegalArgumentException("The second parameter must not be zero in Ratio parameter calculation.");
+    }
+    double ratio = value0 / value1;
+
+    Serializable ratioValue = null;
+    if(computedRunValue.getDataType().equals(DataType.DECIMAL)) {
+      long ratioInt = Math.round(ratio * 100);
+      ratioValue = (double) ratioInt / 100;
+    } else if(computedRunValue.getDataType().equals(DataType.INTEGER)) {
+      ratioValue = Math.round(ratio);
+    }
+
+    if(ratioValue != null) {
+      computedRunValue.setData(new Data(computedRunValue.getDataType(), ratioValue));
+    }
+
+    return computedRunValue;
   }
 
   public InstrumentRunValue getOutputInstrumentRunValue(String parameterName) {
