@@ -29,6 +29,7 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSourceResolvable;
 
 /**
  * The stage execution context is the entry point of stage state machines. It holds the current state, and performs the
@@ -189,7 +190,7 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
     return currentState.isCompleted();
   }
 
-  public String getMessage() {
+  public MessageSourceResolvable getMessage() {
     return currentState.getMessage();
   }
 
@@ -239,6 +240,10 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
 
   public Action getReason() {
     return currentState.getReason();
+  }
+
+  public MessageSourceResolvable getReasonMessage() {
+    return currentState.getReasonMessage();
   }
 
   public void restoreFromMemento(IEntity memento) {

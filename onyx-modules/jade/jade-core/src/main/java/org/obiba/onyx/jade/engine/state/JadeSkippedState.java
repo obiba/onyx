@@ -12,8 +12,6 @@
  */
 package org.obiba.onyx.jade.engine.state;
 
-import java.util.Locale;
-
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
@@ -55,22 +53,6 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
     // case not applicable transition
     Boolean var = areDependenciesCompleted();
     if(var != null && var == false) castEvent(TransitionEvent.NOTAPPLICABLE);
-  }
-
-  @Override
-  public String getMessage() {
-    Locale locale = userSessionService.getLocale();
-
-    String state = getName();
-    String reason = (getReason() != null) ? getReason().getEventReason() : null;
-
-    String message = context.getMessage(state, null, locale);
-
-    if(reason != null) {
-      message += " (" + context.getMessage(reason, null, locale) + ")";
-    }
-
-    return message;
   }
 
   @Override

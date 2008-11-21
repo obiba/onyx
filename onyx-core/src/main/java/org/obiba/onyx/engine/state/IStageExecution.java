@@ -17,6 +17,7 @@ import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.util.data.Data;
+import org.springframework.context.MessageSourceResolvable;
 
 /**
  * State Machine interface, exposed by {@link StageExecutionContext}.
@@ -137,7 +138,7 @@ public interface IStageExecution {
    * Get a message indicating the current state information (may include reasons why the current state was reached).
    * @return
    */
-  public String getMessage();
+  public MessageSourceResolvable getMessage();
 
   /**
    * Get the {@link Data} corresponding to the given for stage execution dependency resolution.
@@ -159,6 +160,14 @@ public interface IStageExecution {
    * @return the reason for the state
    */
   public Action getReason();
+
+  /**
+   * Returns a resolvable message based on the {@code Action} reason. This method may return null when no reason is
+   * available.
+   * @return a resolvable message or null if no reason is available.
+   * @see #getReason()
+   */
+  public MessageSourceResolvable getReasonMessage();
 
   /**
    * Returns the starting action type for the state (i.e., the first action that caused the transition to the current

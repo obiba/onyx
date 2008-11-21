@@ -27,13 +27,11 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.contraindication.IContraindicatable;
-import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.MessageSource;
 
 public class ObservedContraIndicationPanel extends Panel {
 
@@ -44,12 +42,6 @@ public class ObservedContraIndicationPanel extends Panel {
   private static final String YES = "Yes";
 
   private static final String NO = "No";
-
-  @SpringBean
-  private MessageSource messageSource;
-
-  @SpringBean
-  private UserSessionService userSessionService;
 
   private String selectedRadio;
 
@@ -159,7 +151,7 @@ public class ObservedContraIndicationPanel extends Panel {
 
     public Object getDisplayValue(Object object) {
       Contraindication ci = (Contraindication) object;
-      return messageSource.getMessage(ci, userSessionService.getLocale());
+      return new MessageSourceResolvableStringModel(ci).getObject();
     }
 
     public String getIdValue(Object object, int index) {

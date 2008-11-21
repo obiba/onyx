@@ -32,7 +32,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   </bean>
 
   <bean id="baseStageState" class="org.obiba.onyx.engine.state.AbstractStageState" abstract="true">
-    <property name="userSessionService" ref="userSessionService" />
     <property name="activeInterviewService" ref="activeInterviewService" />
   </bean>
 </beans>

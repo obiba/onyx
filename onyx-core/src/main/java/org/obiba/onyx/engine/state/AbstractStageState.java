@@ -12,11 +12,9 @@ package org.obiba.onyx.engine.state;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.wicket.Component;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
@@ -24,15 +22,13 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 
 /**
- * Base class for Stage states.
- * @author Yannick Marcon
- * 
+ * Helper class for implementing {@link IStageExecution}.
  */
-public abstract class AbstractStageState implements IStageExecution, ITransitionListener, ApplicationContextAware {
+public abstract class AbstractStageState implements IStageExecution, ITransitionListener {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AbstractStageState.class);
@@ -45,27 +41,15 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
 
   protected List<ActionDefinition> systemActionDefinitions = new ArrayList<ActionDefinition>();
 
-  protected ApplicationContext context;
-
   protected ActiveInterviewService activeInterviewService;
-
-  protected UserSessionService userSessionService;
 
   /**
    * The reason the stage is in its current state (i.e., the action that caused the stage to transition to this state).
    */
   private Action reason;
 
-  public void setUserSessionService(UserSessionService userSessionService) {
-    this.userSessionService = userSessionService;
-  }
-
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
     this.activeInterviewService = activeInterviewService;
-  }
-
-  public void setApplicationContext(ApplicationContext context) {
-    this.context = context;
   }
 
   public void setStage(Stage stage) {
@@ -165,9 +149,8 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
     return false;
   }
 
-  public String getMessage() {
-    Locale locale = userSessionService.getLocale();
-    return context.getMessage(getName(), null, locale);
+  public MessageSourceResolvable getMessage() {
+    return new DefaultMessageSourceResolvable(getName());
   }
 
   public Data getData(String key) {
@@ -180,6 +163,15 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
 
   public Action getReason() {
     return reason;
+  }
+
+  public MessageSourceResolvable getReasonMessage() {
+    String reason = (getReason() != null) ? getReason().getEventReason() : null;
+    if(reason != null) {
+      return new DefaultMessageSourceResolvable(new String[] { getName() + reason, reason }, reason);
+    } else {
+      return null;
+    }
   }
 
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {

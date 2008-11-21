@@ -195,10 +195,6 @@
                   <fileset dir="${project.build.directory}/${project.build.finalName}/instruments" includes="**/*.jar" />
                 </signjar>
 
-                <copy todir="${project.build.directory}/${project.build.finalName}/WEB-INF/config/ruby">
-                  <fileset dir="${project.basedir}/../onyx-modules/ruby/ruby-core/src/main/resources/config">
-                  </fileset>
-                </copy>
               </tasks>
             </configuration>
             <goals>

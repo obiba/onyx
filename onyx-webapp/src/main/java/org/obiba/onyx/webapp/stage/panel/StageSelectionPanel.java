@@ -21,6 +21,7 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvid
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
@@ -172,13 +173,7 @@ public abstract class StageSelectionPanel extends Panel {
       columns.add(new AbstractColumn(new ResourceModel("Status")) {
 
         public void populateItem(Item cellItem, String componentId, final IModel rowModel) {
-          cellItem.add(new Label(componentId, new Model() {
-            public Object getObject() {
-              Stage stage = (Stage) rowModel.getObject();
-              IStageExecution exec = activeInterviewService.getStageExecution(stage);
-              return exec.getMessage();
-            }
-          }));
+          cellItem.add(new StageStatusFragment(componentId, rowModel));
         }
 
       });
@@ -281,6 +276,35 @@ public abstract class StageSelectionPanel extends Panel {
       if(!stageUser.getLogin().equals(OnyxAuthenticatedSession.get().getUser().getLogin())) return false;
 
       return true;
+    }
+  }
+
+  private class StageStatusFragment extends Fragment {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * @param id
+     * @param model
+     */
+    public StageStatusFragment(String id, IModel model) {
+      super(id, "stageStatusFragment", StageSelectionPanel.this, model);
+      add(new Label("status", new MessageSourceResolvableStringModel(new PropertyModel(this, "stageExecution.message"))));
+      add(new Label("statusReason", new MessageSourceResolvableStringModel(new PropertyModel(this, "stageExecution.reasonMessage"))) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public boolean isVisible() {
+          return getStageExecution().getReasonMessage() != null;
+        }
+      });
+      get("status").setRenderBodyOnly(true);
+      get("statusReason").setRenderBodyOnly(true);
+    }
+
+    public IStageExecution getStageExecution() {
+      Stage stage = (Stage) getModelObject();
+      return activeInterviewService.getStageExecution(stage);
     }
   }
 }

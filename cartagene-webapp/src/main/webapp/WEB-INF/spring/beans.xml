@@ -45,9 +45,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="startAtLine" value="3" />
   </bean>
 
-  <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-    <property name="basenames">
-      <list>
+  <bean name="messageSource" class="org.obiba.onyx.spring.context.OnyxMessageSourceFactoryBean">
+    <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
+    <property name="extraBasenames">
+      <set>
         <value>classpath:config/Stage</value>
         <value>classpath:config/ParticipantInterview</value>
         <value>classpath:config/JadeStageState</value>
@@ -56,6 +57,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <value>classpath:config/QuartzStageState</value>
         <value>classpath:config/InstrumentParameter</value>
         <value>classpath:config/ContraIndication</value>
+        <value>classpath:config/language-common</value>
+
         <value>instruments/interface-height/InstrumentParameter</value>
         <value>instruments/interface-sitting-height/InstrumentParameter</value>
         <value>instruments/interface-hipsandwaistsize/InstrumentParameter</value>
@@ -72,9 +75,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <value>instruments/interface-spirometry-minispir/InstrumentParameter</value>
         <value>instruments/interface-spirometry-minispir/ContraIndication</value>
 
-        <value>WEB-INF/config/ruby/language-common</value>
-        <value>WEB-INF/config/ruby/language</value>
-      </list>
+      </set>
     </property>
   </bean>
 

@@ -1,4 +1,7 @@
 <wicket:panel>
   <div wicket:id="modal"></div>
-  <span wicket:id="list" />
+  <div wicket:id="list" />
+  <wicket:fragment wicket:id="stageStatusFragment">
+    <span wicket:id="status"/><wicket:enclosure> (<span wicket:id="statusReason"/>)</wicket:enclosure>
+  </wicket:fragment>
 </wicket:panel>

@@ -160,7 +160,8 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
   }
 
   private void assertInitialState() {
-    Assert.assertEquals("Ready", context1.getMessage());
+    assertStateName(context1, ReadyState.NAME);
+
     StageExecutionMemento memento = getMemento(context1);
     Assert.assertNull("Memento is not null", memento);
     memento = getMemento(context2);
@@ -175,72 +176,63 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
     // Send the START event in the first state machine
     doAction(ActionDefinitionBuilder.START_ACTION);
-    Assert.assertEquals("InProgress", context1.getMessage());
+    assertStateName(context1, InProgressState.NAME);
     Assert.assertEquals(false, context1.isCompleted());
-    StageExecutionMemento memento = getMemento(context1);
-    Assert.assertNotNull("Memento is null", memento);
-    Assert.assertEquals("InProgressState", memento.getState());
+    assertStateClass(context1, InProgressState.class);
 
-    Assert.assertEquals("Waiting", context2.getMessage());
-    memento = getMemento(context2);
-    Assert.assertNotNull("Memento is null", memento);
-    Assert.assertEquals("WaitingState", memento.getState());
+    assertStateName(context2, WaitingState.NAME);
+    assertStateClass(context2, WaitingState.class);
 
-    Assert.assertEquals("Waiting", context3.getMessage());
-    memento = getMemento(context3);
-    Assert.assertNotNull("Memento is null", memento);
-    Assert.assertEquals("WaitingState", memento.getState());
+    assertStateName(context3, WaitingState.NAME);
+    assertStateClass(context3, WaitingState.class);
   }
 
   @Test
   public void testCancelInProgress() {
     doAction(ActionDefinitionBuilder.START_ACTION);
-    Assert.assertEquals("InProgress", context1.getMessage());
-    Assert.assertEquals("Waiting", context2.getMessage());
-    Assert.assertEquals("Waiting", context3.getMessage());
+    assertStateName(context1, InProgressState.NAME);
+    assertStateName(context2, WaitingState.NAME);
+    assertStateName(context3, WaitingState.NAME);
 
     doAction(ActionDefinitionBuilder.CANCEL_ACTION);
-    Assert.assertEquals("Ready", context1.getMessage());
+    assertStateName(context1, ReadyState.NAME);
     Assert.assertEquals(false, context1.isCompleted());
-    Assert.assertEquals("Waiting", context2.getMessage());
-    Assert.assertEquals("Waiting", context3.getMessage());
+    assertStateName(context2, WaitingState.NAME);
+    assertStateName(context3, WaitingState.NAME);
   }
 
   @Test
   public void testCommentDuringInProgress() {
     doAction(ActionDefinitionBuilder.START_ACTION);
-    Assert.assertEquals("InProgress", context1.getMessage());
-    Assert.assertEquals("Waiting", context2.getMessage());
-    Assert.assertEquals("Waiting", context3.getMessage());
+    assertStateName(context1, InProgressState.NAME);
+    assertStateName(context2, WaitingState.NAME);
+    assertStateName(context3, WaitingState.NAME);
 
     doAction(ActionDefinitionBuilder.COMMENT_ACTION);
-    Assert.assertEquals("InProgress", context1.getMessage());
-    Assert.assertEquals("Waiting", context2.getMessage());
-    Assert.assertEquals("Waiting", context3.getMessage());
+    assertStateName(context1, InProgressState.NAME);
+    assertStateName(context2, WaitingState.NAME);
+    assertStateName(context3, WaitingState.NAME);
   }
 
   @Test
   public void testCompleteInProgress() {
     doAction(ActionDefinitionBuilder.START_ACTION);
-    Assert.assertEquals("InProgress", context1.getMessage());
-    Assert.assertEquals("Waiting", context2.getMessage());
-    Assert.assertEquals("Waiting", context3.getMessage());
+    assertStateName(context1, InProgressState.NAME);
+    assertStateName(context2, WaitingState.NAME);
+    assertStateName(context3, WaitingState.NAME);
 
     // complete the first stage and make assert that the second becomes ready
     doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
+    assertStateName(context1, CompletedState.NAME);
+    assertStateClass(context1, CompletedState.class);
     Assert.assertEquals(true, context1.isCompleted());
-    Assert.assertEquals("Completed", context1.getMessage());
     Assert.assertEquals(false, context1.isInteractive());
 
-    Assert.assertEquals("Ready", context2.getMessage());
-    StageExecutionMemento memento = getMemento(context2);
-    Assert.assertNotNull("Memento is null", memento);
-    Assert.assertEquals("ReadyState", memento.getState());
+    assertStateName(context2, ReadyState.NAME);
+    assertStateClass(context2, ReadyState.class);
 
-    Assert.assertEquals("Ready", context3.getMessage());
-    memento = getMemento(context3);
-    Assert.assertNotNull("Memento is null", memento);
-    Assert.assertEquals("ReadyState", memento.getState());
+    assertStateName(context3, ReadyState.NAME);
+    assertStateClass(context3, ReadyState.class);
   }
 
   @Test
@@ -248,21 +240,16 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     doAction(ActionDefinitionBuilder.START_ACTION);
     doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
     doAction(ActionDefinitionBuilder.CANCEL_ACTION);
-    Assert.assertEquals("Ready", context1.getMessage());
+
+    assertStateName(context1, ReadyState.NAME);
     Assert.assertEquals(false, context1.isInteractive());
-    StageExecutionMemento memento = getMemento(context1);
-    Assert.assertNotNull("Memento is null", memento);
-    Assert.assertEquals("ReadyState", memento.getState());
+    assertStateClass(context1, ReadyState.class);
 
-    Assert.assertEquals("Waiting", context2.getMessage());
-    memento = getMemento(context2);
-    Assert.assertNotNull("Memento is null", memento);
-    Assert.assertEquals("WaitingState", memento.getState());
+    assertStateName(context2, WaitingState.NAME);
+    assertStateClass(context2, WaitingState.class);
 
-    Assert.assertEquals("Waiting", context3.getMessage());
-    memento = getMemento(context3);
-    Assert.assertNotNull("Memento is null", memento);
-    Assert.assertEquals("WaitingState", memento.getState());
+    assertStateName(context3, WaitingState.NAME);
+    assertStateClass(context3, WaitingState.class);
   }
 
   @Test
@@ -271,25 +258,21 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
     doAction(context2, ActionDefinitionBuilder.START_ACTION);
     doAction(context2, ActionDefinitionBuilder.COMPLETE_ACTION);
-    Assert.assertEquals("Completed", context1.getMessage());
-    Assert.assertEquals("Completed", context2.getMessage());
-    Assert.assertEquals("Not Applicable", context3.getMessage());
+
+    assertStateName(context1, CompletedState.NAME);
+    assertStateName(context2, CompletedState.NAME);
+    assertStateName(context3, NotApplicableState.NAME);
 
     doAction(ActionDefinitionBuilder.CANCEL_ACTION);
-    Assert.assertEquals("Ready", context1.getMessage());
+    assertStateName(context1, ReadyState.NAME);
     Assert.assertEquals(false, context1.isInteractive());
-    StageExecutionMemento memento = getMemento(context1);
-    Assert.assertNotNull("Memento is null", memento);
-    Assert.assertEquals("ReadyState", memento.getState());
-    Assert.assertEquals("Waiting", context2.getMessage());
-    memento = getMemento(context2);
-    Assert.assertNotNull("Memento is null", memento);
-    Assert.assertEquals("WaitingState", memento.getState());
+    assertStateClass(context1, ReadyState.class);
 
-    Assert.assertEquals("Waiting", context3.getMessage());
-    memento = getMemento(context3);
-    Assert.assertNotNull("Memento is null", memento);
-    Assert.assertEquals("WaitingState", memento.getState());
+    assertStateName(context2, WaitingState.NAME);
+    assertStateClass(context2, WaitingState.class);
+
+    assertStateName(context3, WaitingState.NAME);
+    assertStateClass(context3, WaitingState.class);
   }
 
   @Test
@@ -299,7 +282,8 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     doAction(ActionDefinitionBuilder.CANCEL_ACTION);
     doAction(ActionDefinitionBuilder.START_ACTION);
     doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
-    Assert.assertEquals("Completed", context1.getMessage());
+
+    assertStateName(context1, CompletedState.NAME);
   }
 
   @Test
@@ -307,24 +291,20 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     doAction(ActionDefinitionBuilder.START_ACTION);
     doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
 
-    Assert.assertEquals("Completed", context1.getMessage());
-    Assert.assertEquals("Ready", context2.getMessage());
-    Assert.assertEquals("Ready", context3.getMessage());
-    StageExecutionMemento memento = getMemento(context3);
-    Assert.assertNotNull("Memento is null", memento);
-    Assert.assertEquals("ReadyState", memento.getState());
+    assertStateName(context1, CompletedState.NAME);
+    assertStateName(context2, ReadyState.NAME);
+    assertStateName(context3, ReadyState.NAME);
+    assertStateClass(context3, ReadyState.class);
 
     doAction(context3, ActionDefinitionBuilder.START_ACTION);
     doAction(context3, ActionDefinitionBuilder.COMPLETE_ACTION);
 
-    Assert.assertEquals("Completed", context3.getMessage());
-    memento = getMemento(context3);
-    Assert.assertNotNull("Memento is null", memento);
-    Assert.assertEquals("CompletedState", memento.getState());
+    assertStateName(context3, CompletedState.NAME);
+    assertStateClass(context3, CompletedState.class);
 
     doAction(context2, ActionDefinitionBuilder.START_ACTION);
     doAction(context2, ActionDefinitionBuilder.COMPLETE_ACTION);
-    Assert.assertEquals("Not Applicable", context3.getMessage());
+    assertStateName(context3, NotApplicableState.NAME);
   }
 
   private void doAction(ActionDefinition definition) {
@@ -340,7 +320,20 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     definition.getType().act(context, new Action(definition));
   }
 
+  private void assertStateName(StageExecutionContext context, String stateName) {
+    String codes[] = context.getMessage().getCodes();
+    Assert.assertArrayEquals(new String[] { stateName }, codes);
+  }
+
+  private void assertStateClass(StageExecutionContext context, Class<?> stateClass) {
+    StageExecutionMemento memento = getMemento(context);
+    Assert.assertNotNull("Memento is null", memento);
+    Assert.assertEquals(stateClass.getSimpleName(), memento.getState());
+  }
+
   public class WaitingState extends AbstractStageState {
+
+    public static final String NAME = "Waiting";
 
     public WaitingState() {
       setActiveInterviewService(StageExecutionTest.this.activeInterviewService);
@@ -353,18 +346,14 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
       castEvent(TransitionEvent.START);
     }
 
-    @Override
-    public String getMessage() {
-      return "Waiting";
-    }
-
     public String getName() {
-      return "Waiting";
+      return NAME;
     }
 
   }
 
   public class ReadyState extends AbstractStageState {
+    public static final String NAME = "Ready";
 
     public ReadyState() {
       setActiveInterviewService(StageExecutionTest.this.activeInterviewService);
@@ -379,13 +368,8 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
       castEvent(TransitionEvent.START);
     }
 
-    @Override
-    public String getMessage() {
-      return "Ready";
-    }
-
     public String getName() {
-      return "Ready";
+      return NAME;
     }
 
     @Override
@@ -397,6 +381,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
   }
 
   public class InProgressState extends AbstractStageState {
+    public static final String NAME = "InProgress";
 
     public InProgressState() {
       setActiveInterviewService(StageExecutionTest.this.activeInterviewService);
@@ -424,18 +409,14 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
       return true;
     }
 
-    @Override
-    public String getMessage() {
-      return "InProgress";
-    }
-
     public String getName() {
-      return "InProgress";
+      return NAME;
     }
 
   }
 
   public class CompletedState extends AbstractStageState {
+    public static final String NAME = "Completed";
 
     public CompletedState() {
       setActiveInterviewService(StageExecutionTest.this.activeInterviewService);
@@ -455,13 +436,8 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
       return true;
     }
 
-    @Override
-    public String getMessage() {
-      return "Completed";
-    }
-
     public String getName() {
-      return "Completed";
+      return NAME;
     }
 
     @Override
@@ -474,17 +450,14 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
   public class NotApplicableState extends AbstractStageState {
 
+    public static final String NAME = "NotApplicableState";
+
     public NotApplicableState() {
       setActiveInterviewService(StageExecutionTest.this.activeInterviewService);
     }
 
-    @Override
-    public String getMessage() {
-      return "Not Applicable";
-    }
-
     public String getName() {
-      return "NotApplicableState";
+      return NAME;
     }
 
     @Override
