@@ -132,7 +132,7 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
       DefaultMessageSourceResolvable error = new DefaultMessageSourceResolvable(new String[] { INVALIDSIZE_BARCODE_ERROR }, new Object[] { barcode, expectedSize, barcode.length() });
       errors.add(error);
     } else if(isDuplicateBarcode(barcode)) {
-      DefaultMessageSourceResolvable error = new DefaultMessageSourceResolvable(new String[] {DUPLICATE_BARCODE_ERROR}, new Object[] { barcode });
+      DefaultMessageSourceResolvable error = new DefaultMessageSourceResolvable(new String[] { DUPLICATE_BARCODE_ERROR }, new Object[] { barcode });
       errors.add(error);
     } else {
       BarcodeStructure barcodeStructure = tubeRegistrationConfig.getBarcodeStructure();
@@ -197,6 +197,22 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
 
   public void persistParticipantTubeRegistration() {
     getPersistenceManager().save(getParticipantTubeRegistration());
+  }
+
+  public void deleteParticipantTubeRegistration() {
+    ParticipantTubeRegistration participantTubeRegistration = getParticipantTubeRegistration();
+
+    if(participantTubeRegistration != null) {
+      List<RegisteredParticipantTube> registeredParticipantTubes = participantTubeRegistration.getRegisteredParticipantTubes();
+
+      for(RegisteredParticipantTube registeredParticipantTube : registeredParticipantTubes) {
+        getPersistenceManager().delete(registeredParticipantTube);
+      }
+
+      getPersistenceManager().delete(participantTubeRegistration);
+
+      currentTubeRegistrationId = null;
+    }
   }
 
   //

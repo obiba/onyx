@@ -108,4 +108,8 @@ public interface ActiveTubeRegistrationService {
    */
   public void end();
 
+  /**
+   * Deletes the current {@link ParticipantTubeRegistration} and all associated objects.
+   */
+  public void deleteParticipantTubeRegistration();
 }
