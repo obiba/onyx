@@ -53,7 +53,7 @@ public class BarcodePartColumnTest {
 
   @Test
   public void testColumnHeader() {
-    BarcodePartColumn barcodePartColumn = new BarcodePartColumn(new Model("testPartTitle"));
+    BarcodePartColumn barcodePartColumn = new BarcodePartColumn(new Model("testPartTitle"), 2);
 
     // Verify the column's header.
     Assert.assertEquals("testPartTitle", barcodePartColumn.getDisplayModel().getObject());
@@ -61,12 +61,14 @@ public class BarcodePartColumnTest {
 
   @Test
   public void testPopulateItem() {
-    BarcodePartColumn barcodePartColumn = new BarcodePartColumn(new Model("testPartTitle"));
+    int firstBarcodePartColumnIndex = 2;
+
+    BarcodePartColumn barcodePartColumn = new BarcodePartColumn(new Model("testPartTitle"), firstBarcodePartColumnIndex);
 
     RegisteredParticipantTube registeredParticipantTube = new RegisteredParticipantTube();
     registeredParticipantTube.setBarcode("1234567011");
 
-    Item cellItem = new Item("itemId", 0, new Model());
+    Item cellItem = new Item("itemId", firstBarcodePartColumnIndex, new Model());
     barcodePartColumn.populateItem(cellItem, "componentId", new Model(registeredParticipantTube));
 
     // Verify that the cell item contains a label with the expected text (<partTitle>.<partLabel>),

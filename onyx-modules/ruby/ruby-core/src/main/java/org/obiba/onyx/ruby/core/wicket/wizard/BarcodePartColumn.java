@@ -23,6 +23,8 @@ import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSourceResolvable;
 
 public class BarcodePartColumn extends AbstractColumn {
@@ -32,6 +34,9 @@ public class BarcodePartColumn extends AbstractColumn {
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(BarcodePartColumn.class);
+
   //
   // Instance Variables
   //
@@ -39,12 +44,17 @@ public class BarcodePartColumn extends AbstractColumn {
   @SpringBean
   private TubeRegistrationConfiguration tubeRegistrationConfiguration;
 
+  private int firstBarcodePartColumnIndex;
+
   //
   // Constructors
   //
 
-  public BarcodePartColumn(IModel displayModel) {
+  public BarcodePartColumn(IModel displayModel, int firstBarcodePartColumnIndex) {
     super(displayModel);
+
+    this.firstBarcodePartColumnIndex = firstBarcodePartColumnIndex;
+
     InjectorHolder.getInjector().inject(this);
   }
 
@@ -60,10 +70,25 @@ public class BarcodePartColumn extends AbstractColumn {
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
 
     List<BarcodePart> barcodePartList = barcodeStructure.parseBarcode(barcode, errors);
-    BarcodePart barcodePart = barcodePartList.get(cellItem.getIndex());
+
+    // From barcodePartList, extract the list of DISPLAYED bar code parts
+    // (i.e., those with a title). Only these bar code parts have corresponding
+    // columns.
+    List<BarcodePart> displayedBarcodePartList = new ArrayList<BarcodePart>();
+
+    for(BarcodePart barcodePart : barcodePartList) {
+      if(barcodePart.getPartTitle() != null) {
+        displayedBarcodePartList.add(barcodePart);
+      }
+    }
+
+    // From displayedBarcodePartList, get the bar code part to be rendered the current
+    // cell. Need to subtract firstBarcodePartColumnIndex from the cell item index, because
+    // there are additional columns in the table (the Delete column and the Barcode column).
+    int barcodePartIndex = cellItem.getIndex() - firstBarcodePartColumnIndex;
+    BarcodePart barcodePart = displayedBarcodePartList.get(barcodePartIndex);
 
     MessageSourceResolvable barcodePartLabel = barcodePart.getPartLabel();
-
     cellItem.add(new Label(componentId, new SpringStringResourceModel(barcodePartLabel.getCodes()[0], barcodePartLabel.getArguments(), barcodePartLabel.getDefaultMessage())));
   }
 }

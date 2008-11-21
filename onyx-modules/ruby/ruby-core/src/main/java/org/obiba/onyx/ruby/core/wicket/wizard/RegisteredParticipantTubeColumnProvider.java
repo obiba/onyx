@@ -47,6 +47,8 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
 
   private List<IColumn> additional = new ArrayList<IColumn>();
 
+  private int firstBarcodePartColumnIndex;
+
   //
   // Constructors
   //
@@ -90,6 +92,8 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
         cellItem.add(new DeleteBarcodePanel(componentId, rowModel));
       }
     });
+
+    firstBarcodePartColumnIndex++;
   }
 
   private void addBarcodeColumn() {
@@ -100,6 +104,8 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
         cellItem.add(new Label(componentId, new PropertyModel(rowModel, "barcode")));
       }
     });
+
+    firstBarcodePartColumnIndex++;
   }
 
   private void addBarcodePartColumns(TubeRegistrationConfiguration tubeRegistrationConfiguration) {
@@ -111,7 +117,7 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
       MessageSourceResolvable partTitle = parser.getPartTitle();
 
       if(partTitle != null) {
-        BarcodePartColumn partColumn = new BarcodePartColumn(new SpringStringResourceModel(parser.getPartTitle().getCodes()[0]));
+        BarcodePartColumn partColumn = new BarcodePartColumn(new SpringStringResourceModel(parser.getPartTitle().getCodes()[0]), firstBarcodePartColumnIndex);
         columns.add(partColumn);
       }
     }
