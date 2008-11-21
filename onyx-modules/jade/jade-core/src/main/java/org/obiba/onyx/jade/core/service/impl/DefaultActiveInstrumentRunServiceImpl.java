@@ -10,6 +10,7 @@
 package org.obiba.onyx.jade.core.service.impl;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -152,21 +153,70 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     template.setInstrument(currentRun.getInstrument());
     template.setCaptureMethod(InstrumentParameterCaptureMethod.COMPUTED);
 
+    List<InstrumentComputedOutputParameter> dependentComputedParameters = new ArrayList<InstrumentComputedOutputParameter>();
+
     // TODO quick and dirty implementation, to be checked
     for(InstrumentOutputParameter param : getPersistenceManager().match(template)) {
-
       InstrumentComputedOutputParameter computedParam = (InstrumentComputedOutputParameter) param;
-      InstrumentRunValue computedRunValue = null;
 
-      if(computedParam.getAlgorithm().equals(InstrumentOutputParameterAlgorithm.AVERAGE)) {
-        computedRunValue = calculateAverageValue(currentRun, computedParam);
-      } else if(computedParam.getAlgorithm().equals(InstrumentOutputParameterAlgorithm.RATIO)) {
-        computedRunValue = calculateRatioValue(currentRun, computedParam);
+      if(isReadyToCompute(currentRun, computedParam)) {
+        // First, compute the parameters not depend on other computed parameters
+        calculateAndPersistValue(currentRun, computedParam);
+      } else {
+        dependentComputedParameters.add(computedParam);
       }
+    }
+    // Then, compute the parameters that depend on other computed parameters
+    short maxRecur = 3; // Maximum dependence level
+    while(!dependentComputedParameters.isEmpty() && maxRecur > 0) {
 
-      if(computedRunValue != null) {
-        getPersistenceManager().save(computedRunValue);
+      List<InstrumentComputedOutputParameter> parameters = new ArrayList<InstrumentComputedOutputParameter>();
+      for(InstrumentComputedOutputParameter computedParam : dependentComputedParameters) {
+        if(isReadyToCompute(currentRun, computedParam)) {
+          calculateAndPersistValue(currentRun, computedParam);
+        } else {
+          parameters.add(computedParam);
+        }
       }
+      dependentComputedParameters = parameters;
+      maxRecur--;
+    }
+    if(!dependentComputedParameters.isEmpty()) {
+      log.warn("Computed Parameters depend on others not ready to calculate. Instrument: {}", currentRun.getInstrument().getName());
+    }
+  }
+
+  /**
+   * 
+   * @param currentRun
+   * @param computedParam
+   * @return
+   */
+  private boolean isReadyToCompute(InstrumentRun currentRun, InstrumentComputedOutputParameter computedParam) {
+    for(InstrumentOutputParameter p : computedParam.getInstrumentOutputParameters()) {
+      if(p.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED) && currentRun.getInstrumentRunValue(p) == null) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * 
+   * @param currentRun
+   * @param computedParam
+   */
+  private void calculateAndPersistValue(InstrumentRun currentRun, InstrumentComputedOutputParameter computedParam) {
+    InstrumentRunValue computedRunValue = null;
+
+    if(computedParam.getAlgorithm().equals(InstrumentOutputParameterAlgorithm.AVERAGE)) {
+      computedRunValue = calculateAverageValue(currentRun, computedParam);
+    } else if(computedParam.getAlgorithm().equals(InstrumentOutputParameterAlgorithm.RATIO)) {
+      computedRunValue = calculateRatioValue(currentRun, computedParam);
+    }
+    if(computedRunValue != null) {
+      getPersistenceManager().save(computedRunValue);
+      currentRun.addInstrumentRunValue(computedRunValue);
     }
   }
 

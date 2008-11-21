@@ -75,7 +75,7 @@
       </parameterSpreadCheck>
     </integrityChecks>
   </output>
-  <computedOutput>
+  <computedOutput id="waist_size_avg">
     <name>Waist Size</name>
     <description>Average_Waist_Size_Measurement</description>
     <measurementUnit>cm</measurementUnit>
@@ -130,7 +130,7 @@
     </integrityChecks>
   </output>
   
-  <computedOutput>
+  <computedOutput id="hips_size_avg">
     <name>Hips Size</name>
     <description>Average_Hips_Size_Measurement</description>
     <measurementUnit>cm</measurementUnit>
@@ -153,8 +153,8 @@
     <algorithm>RATIO</algorithm>
     <captureMethod>COMPUTED</captureMethod>
     <outputs>
-      <output reference="waist_size1" />
-      <output reference="hips_size1" />
+      <output reference="waist_size_avg" />
+      <output reference="hips_size_avg" />
     </outputs>
   </computedOutput>
   
