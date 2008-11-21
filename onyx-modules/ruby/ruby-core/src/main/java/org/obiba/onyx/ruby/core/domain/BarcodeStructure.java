@@ -53,9 +53,11 @@ public class BarcodeStructure {
     StringBuilder barcodeFragment = new StringBuilder(barcode);
 
     for(IBarcodePartParser parser : parserList) {
-      barcodePartList.add(parser.eatAndValidatePart(barcodeFragment, errors));
+      BarcodePart barcodePart = parser.eatAndValidatePart(barcodeFragment, errors);
 
-      if(!errors.isEmpty()) {
+      if(errors.isEmpty()) {
+        barcodePartList.add(barcodePart);
+      } else {
         break;
       }
     }
