@@ -58,19 +58,26 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public QuestionnaireParticipant start(Participant participant, Locale language) {
-    QuestionnaireParticipant questionnaireParticipantTemplate = new QuestionnaireParticipant();
 
     if(currentQuestionnaireParticipant != null) {
-      questionnaireParticipantTemplate = getQuestionnaireParticipant();
+      // refresh it
+      currentQuestionnaireParticipant = getQuestionnaireParticipant();
     } else {
+      QuestionnaireParticipant questionnaireParticipantTemplate = new QuestionnaireParticipant();
       questionnaireParticipantTemplate.setParticipant(participant);
       questionnaireParticipantTemplate.setQuestionnaireName(currentQuestionnaire.getName());
       questionnaireParticipantTemplate.setQuestionnaireVersion(currentQuestionnaire.getVersion());
+
+      // find an old questionnaire participant if any
+      currentQuestionnaireParticipant = getPersistenceManager().matchOne(questionnaireParticipantTemplate);
+      if(currentQuestionnaireParticipant == null) {
+        currentQuestionnaireParticipant = questionnaireParticipantTemplate;
+      }
     }
 
-    questionnaireParticipantTemplate.setLocale(language);
+    currentQuestionnaireParticipant.setLocale(language);
 
-    currentQuestionnaireParticipant = getPersistenceManager().save(questionnaireParticipantTemplate);
+    currentQuestionnaireParticipant = getPersistenceManager().save(currentQuestionnaireParticipant);
 
     return currentQuestionnaireParticipant;
   }

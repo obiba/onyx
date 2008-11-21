@@ -64,13 +64,20 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
     Boolean var = areDependenciesCompleted();
 
     if(var == null) {
-      if(wantTransitionEvent(TransitionEvent.INVALID)) castEvent(TransitionEvent.INVALID);
-    } else if(var == true && wantTransitionEvent(TransitionEvent.VALID)) castEvent(TransitionEvent.VALID);
-    else if(var == false && wantTransitionEvent(TransitionEvent.NOTAPPLICABLE)) castEvent(TransitionEvent.NOTAPPLICABLE);
+      if(wantTransitionEvent(TransitionEvent.INVALID)) {
+        castEvent(TransitionEvent.INVALID);
+      }
+    } else if(var == true && wantTransitionEvent(TransitionEvent.VALID)) {
+      castEvent(TransitionEvent.VALID);
+    } else if(var == false && wantTransitionEvent(TransitionEvent.NOTAPPLICABLE)) {
+      castEvent(TransitionEvent.NOTAPPLICABLE);
+    }
   }
 
   protected Boolean areDependenciesCompleted() {
-    if(stage.getStageDependencyCondition() != null) return stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService);
+    if(stage.getStageDependencyCondition() != null) {
+      return stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService);
+    }
     return true;
   }
 

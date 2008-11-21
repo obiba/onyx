@@ -118,6 +118,7 @@ public class QuartzModule implements Module, ApplicationContextAware {
     exec.addEdge(interrupted, TransitionEvent.CANCEL, ready);
     exec.addEdge(interrupted, TransitionEvent.RESUME, inProgress);
     exec.addEdge(interrupted, TransitionEvent.NOTAPPLICABLE, notApplicable);
+    exec.addEdge(interrupted, TransitionEvent.INVALID, waiting);
 
     exec.addEdge(notApplicable, TransitionEvent.VALID, ready);
     exec.addEdge(notApplicable, TransitionEvent.INVALID, waiting);

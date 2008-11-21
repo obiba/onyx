@@ -10,6 +10,8 @@
 package org.obiba.onyx.engine;
 
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 
@@ -25,6 +27,9 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 public class Stage {
 
   private static final String DESCRIPTION_KEY = ".description";
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(Stage.class);
 
   private String name;
 

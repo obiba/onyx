@@ -12,6 +12,8 @@ package org.obiba.onyx.engine;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.util.data.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -19,6 +21,8 @@ import org.obiba.onyx.util.data.Data;
 public class ConsentStageDependencyCondition implements StageDependencyCondition {
 
   private static final long serialVersionUID = 1L;
+
+  private static final Logger log = LoggerFactory.getLogger(ConsentStageDependencyCondition.class);
 
   private String stageName;
 
@@ -40,7 +44,7 @@ public class ConsentStageDependencyCondition implements StageDependencyCondition
       else {
         Data consentData = consent.getData("Consent");
         if(consentData != null) {
-          return (Boolean) consentData.getValue();
+          return consentData.getValue();
         } else
           return false;
       }
@@ -58,6 +62,11 @@ public class ConsentStageDependencyCondition implements StageDependencyCondition
 
   public void setStageName(String stageName) {
     this.stageName = stageName;
+  }
+
+  @Override
+  public String toString() {
+    return "[" + getClass().getSimpleName() + ":" + stageName + "]";
   }
 
 }

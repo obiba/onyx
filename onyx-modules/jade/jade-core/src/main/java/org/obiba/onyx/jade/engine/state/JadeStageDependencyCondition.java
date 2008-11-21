@@ -76,4 +76,9 @@ public class JadeStageDependencyCondition implements StageDependencyCondition {
   public void setStageName(String stageName) {
     this.stageName = stageName;
   }
+
+  @Override
+  public String toString() {
+    return "[" + getClass().getSimpleName() + ":" + stageName + "]";
+  }
 }

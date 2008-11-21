@@ -498,6 +498,11 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     public void setStageName(String stageName) {
       this.stageName = stageName;
     }
+
+    @Override
+    public String toString() {
+      return "[" + getClass().getSimpleName() + ":" + stageName + "]";
+    }
   }
 
 }

@@ -37,6 +37,7 @@ public class PreviousStageDependencyCondition implements StageDependencyConditio
   }
 
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
+    log.info("stageName={}", stageName);
     IStageExecution stageExecution = activeInterviewService.getStageExecution(stageName);
     if(stageExecution == null) {
       log.warn("Stage '{}' does not seem to be present. Dependent stages will consider it as 'complete'. Make sure your configuration files are using the correct stage names in their dependency declarations.", stageName);
@@ -60,5 +61,10 @@ public class PreviousStageDependencyCondition implements StageDependencyConditio
 
   public void setStageName(String stageName) {
     this.stageName = stageName;
+  }
+
+  @Override
+  public String toString() {
+    return "[" + getClass().getSimpleName() + ":" + stageName + "]";
   }
 }

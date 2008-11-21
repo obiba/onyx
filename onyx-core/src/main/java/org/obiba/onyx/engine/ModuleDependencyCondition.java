@@ -80,4 +80,9 @@ public class ModuleDependencyCondition implements StageDependencyCondition {
   public void setModuleName(String moduleName) {
     this.moduleName = moduleName;
   }
+
+  @Override
+  public String toString() {
+    return "[" + getClass().getSimpleName() + ":" + moduleName + "]";
+  }
 }

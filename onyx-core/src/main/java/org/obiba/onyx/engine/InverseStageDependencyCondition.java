@@ -44,4 +44,9 @@ public class InverseStageDependencyCondition implements StageDependencyCondition
   public Boolean getValueWhenNull() {
     return valueWhenNull;
   }
+
+  @Override
+  public String toString() {
+    return "[" + getClass().getSimpleName() + ":" + valueWhenNull + "]";
+  }
 }

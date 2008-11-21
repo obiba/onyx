@@ -10,6 +10,8 @@
 package org.obiba.onyx.engine;
 
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Allows composing two instances of {@link StageDependencyCondition} using a boolean operator.
@@ -50,6 +52,9 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
  */
 public class MultipleStageDependencyCondition implements StageDependencyCondition {
 
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(MultipleStageDependencyCondition.class);
+
   public enum Operator {
     AND, OR;
   }
@@ -63,6 +68,8 @@ public class MultipleStageDependencyCondition implements StageDependencyConditio
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
     Boolean leftResult = leftStageDependencyCondition.isDependencySatisfied(activeInterviewService);
     Boolean rightResult = rightStageDependencyCondition.isDependencySatisfied(activeInterviewService);
+
+    log.info("{}.isDependencySatisfied: {} {} {}", new Object[] { toString(), leftResult, operator, rightResult });
 
     if(leftResult != null && rightResult != null) {
       if(operator == Operator.AND) {
@@ -119,6 +126,11 @@ public class MultipleStageDependencyCondition implements StageDependencyConditio
    */
   private boolean isTrue(Boolean value) {
     return value != null && value == true;
+  }
+
+  @Override
+  public String toString() {
+    return "[" + getClass().getSimpleName() + ":" + leftStageDependencyCondition + ":" + operator + ":" + rightStageDependencyCondition + "]";
   }
 
 }
