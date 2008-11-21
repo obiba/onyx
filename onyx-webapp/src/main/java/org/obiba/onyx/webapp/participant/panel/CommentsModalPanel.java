@@ -44,6 +44,7 @@ import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 
 public abstract class CommentsModalPanel extends Panel {
 
@@ -208,7 +209,7 @@ public abstract class CommentsModalPanel extends Panel {
       kvPanel.addRow(new StringResourceModel("CommentTime", this, null), DateModelUtils.getDateTimeModel(new PropertyModel(comment, "dateTime")));
       IModel stageModel;
       if(comment.getStage() != null) {
-        stageModel = new PropertyModel(new StageModel(moduleRegistry, comment.getStage()), "description");
+        stageModel = new MessageSourceResolvableStringModel(new PropertyModel(new StageModel(moduleRegistry, comment.getStage()), "description"));
       } else {
         stageModel = new StringResourceModel("GeneralComment", this, null);
       }
