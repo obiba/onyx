@@ -34,8 +34,22 @@
   </instrumentType>
 
   <instrumentType id="bim">
-    <name>BIM</name>
-    <description>Bioimpedance measurement</description>
+    <name>BIM_TBF310</name>
+    <description>Bioimpedance measurement TBF-310</description>
+
+    <dependsOnTypes>
+      <instrumentType reference="sta" />
+    </dependsOnTypes>
+
+    <dependentTypes>
+      <instrumentType reference="spi" />
+    </dependentTypes>
+
+  </instrumentType>
+  
+  <instrumentType id="bim">
+    <name>BIM_BC418</name>
+    <description>Bioimpedance measurement BC-418</description>
 
     <dependsOnTypes>
       <instrumentType reference="sta" />

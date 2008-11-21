@@ -2,14 +2,14 @@
 <linked-list>
 
   <instrument id="bioimp1">
-    <name>Tanita TBF 310</name>
+    <name>Tanita TBF-310</name>
     <vendor>Tanita</vendor>
-    <model>TBF 310</model>
+    <model>TBF-310</model>
     <status>ACTIVE</status>
     <serialNumber>1234567890</serialNumber>
     <barcode>CAG1001</barcode>
     <instrumentType>
-      <name>BIM</name>
+      <name>BIM_TBF310</name>
     </instrumentType>
 
     <contraindications>
@@ -248,5 +248,253 @@
     <measurementUnit>kg</measurementUnit>
     <instrument reference="bioimp1" />
   </output>
+  
+  <instrument id="bioimp2">
+    <name>Tanita BC-418</name>
+    <vendor>Tanita</vendor>
+    <model>BC-418</model>
+    <status>ACTIVE</status>
+    <serialNumber>1234567890</serialNumber>
+    <barcode>CAG1002</barcode>
+    <instrumentType>
+      <name>BIM_BC418</name>
+    </instrumentType>
+
+    <contraindications>
+      <contraIndication>
+        <code>UnableToStandUnassistedHandicap</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>UnableToStandUnassistedWheelchair</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>UnableToStandUnassistedCast</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>Other</code>
+        <requiresDescription>true</requiresDescription>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>IrremovableMetallicDevice</code>
+        <type>ASKED</type>
+      </contraIndication>
+
+    </contraindications>
+  </instrument>
+
+  <interpretative>
+    <name>PhysicalActivityLast24Hours</name>
+    <description>PhysicalActivityLast24Hours</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>OBSERVED</type>
+    <instrument reference="bioimp2" />
+  </interpretative>
+
+  <fixedSource id="clothes_weight_source">
+    <value>1</value>
+  </fixedSource>
+  <input id="clothes_weight">
+    <name>ClothesWeight</name>
+    <description>Clothes_weight</description>
+    <dataType>DECIMAL</dataType>
+    <measurementUnit>kg</measurementUnit>
+    <captureMethod>MANUAL</captureMethod>
+    <inputSource reference="clothes_weight_source" />
+    <instrument reference="bioimp2" />
+  </input>
+
+  <participantPropertySource id="gender_source">
+    <property>gender</property>
+  </participantPropertySource>
+  <input id="gender_in">
+    <name>Gender</name>
+    <description>Participant_Gender</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <inputSource reference="gender_source" />
+    <instrument reference="bioimp2" />
+  </input>
+
+  <fixedSource id="body_type_source">
+    <value>STANDARD</value>
+  </fixedSource>
+  <input id="body_type_in">
+    <name>BodyType</name>
+    <description>Body_type</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <inputSource reference="body_type_source" />
+    <instrument reference="bioimp2" />
+  </input>
+
+  <participantPropertySource id="age_source">
+    <property>age</property>
+  </participantPropertySource>
+  <input id="age_in">
+    <name>Age</name>
+    <description>Participant_Age</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <inputSource reference="age_source" />
+    <instrument reference="bioimp2" />
+  </input>
+
+  <outputParameterSource id="measured_height">
+    <instrumentType>
+      <name>STA</name>
+    </instrumentType>
+    <parameterName>Height</parameterName>
+  </outputParameterSource>
+  <input id="height_in">
+    <name>Height</name>
+    <description>Measured_height</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="bioimp2" />
+    <inputSource reference="measured_height" />
+  </input>
+
+  <output id="body_type">
+    <name>BodyType</name>
+    <description>Body_type</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp2" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="body_type" />
+        <parameter reference="body_type_in" />
+        <customizedDescription>EqualsParameterCheck_BodyType</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+
+  <output id="gender">
+    <name>Gender</name>
+    <description>Output_gender</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp2" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="gender" />
+        <parameter reference="gender_in" />
+        <customizedDescription>EqualsParameterCheck_Gender</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+
+  <output id="age">
+    <name>Age</name>
+    <description>Output_age</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp2" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="age" />
+        <parameter reference="age_in" />
+        <customizedDescription>EqualsParameterCheck_Age</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+
+  <output id="height">
+    <name>Height</name>
+    <description>Output_height</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp2" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="height" />
+        <parameter reference="height_in" />
+        <customizedDescription>EqualsParameterCheck_Height</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+
+  <output id="weight">
+    <name>Weight</name>
+    <description>Measured_weight</description>
+    <measurementUnit>kg</measurementUnit>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="bmi">
+    <name>BMI</name>
+    <description>Body_mass_index_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="bmr">
+    <name>BMR</name>
+    <description>Basal_metabolic_rate_calculated</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kJ</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="impedance">
+    <name>Impedance</name>
+    <description>Measured_body_impedance</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>ohm</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="fat_percentage">
+    <name>FatPercentage</name>
+    <description>Fat_percentage_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>%</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="fat_mass">
+    <name>FatMass</name>
+    <description>Fat_mass_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="ffm">
+    <name>FatFreeMass</name>
+    <description>Fat_free_mass_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="tbw">
+    <name>TotalBodyWater</name>
+    <description>Total_Body_Water_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+  
 
 </linked-list>
