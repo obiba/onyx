@@ -24,14 +24,17 @@ public class MicaWaitingState extends AbstractMicaStageState implements Initiali
   }
 
   public String getName() {
-    return "Mica.Waiting";
+    return "Waiting";
   }
 
   @Override
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
-    if(transitionEvent.equals(TransitionEvent.INVALID)) return false;
-    else
+    if(transitionEvent.equals(TransitionEvent.INVALID)) {
+      return false;
+    }
+    else {
       return true;
+    }
   }
 
 }

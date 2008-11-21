@@ -85,7 +85,7 @@ public class JadeCompletedState extends AbstractStageState implements Initializi
   }
 
   public String getName() {
-    return "Jade.Completed";
+    return "Completed";
   }
 
   @Override

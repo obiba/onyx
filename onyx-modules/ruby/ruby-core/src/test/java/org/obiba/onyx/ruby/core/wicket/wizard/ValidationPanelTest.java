@@ -99,7 +99,7 @@ public class ValidationPanelTest {
     applicationContextMock.putBean("activeTubeRegistrationService", activeTubeRegistrationServiceMock);
 
     ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-    messageSource.setBasename("config/language-common");
+    messageSource.setBasename("META-INF/messages");
     applicationContextMock.putBean("messageSource", messageSource);
 
     MockSpringApplication application = new MockSpringApplication();

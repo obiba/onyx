@@ -61,7 +61,7 @@ public class JadeSkippedState extends AbstractStageState implements Initializing
   }
 
   public String getName() {
-    return "Jade.Skipped";
+    return "Skipped";
   }
 
   @Override

@@ -34,7 +34,7 @@ public class QuartzCompletedState extends AbstractQuartzStageState implements In
   }
 
   public String getName() {
-    return "Quartz.Completed";
+    return "Completed";
   }
 
   @Override

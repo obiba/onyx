@@ -49,7 +49,7 @@ public class MarbleInProgressState extends AbstractMarbleStageState implements I
   }
 
   public String getName() {
-    return "Marble.InProgress";
+    return "InProgress";
   }
 
 }

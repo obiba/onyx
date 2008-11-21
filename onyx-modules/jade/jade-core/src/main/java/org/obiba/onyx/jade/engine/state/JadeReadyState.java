@@ -57,7 +57,7 @@ public class JadeReadyState extends AbstractStageState implements InitializingBe
   }
 
   public String getName() {
-    return "Jade.Ready";
+    return "Ready";
   }
 
   @Override

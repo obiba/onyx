@@ -20,7 +20,7 @@ import org.obiba.onyx.engine.state.TransitionEvent;
 public class RubyNotApplicableState extends AbstractRubyStageState {
 
   public String getName() {
-    return "Ruby.NotApplicable";
+    return "NotApplicable";
   }
 
   @Override
@@ -30,8 +30,10 @@ public class RubyNotApplicableState extends AbstractRubyStageState {
 
   @Override
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
-    if(transitionEvent.equals(TransitionEvent.NOTAPPLICABLE)) return false;
-    else
+    if(transitionEvent.equals(TransitionEvent.NOTAPPLICABLE)) {
+      return false;
+    } else {
       return true;
+    }
   }
 }

@@ -150,7 +150,8 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   }
 
   public MessageSourceResolvable getMessage() {
-    return new DefaultMessageSourceResolvable(getName());
+    // Codes are: <fullname>, State.<name>, <name>
+    return new DefaultMessageSourceResolvable(new String[] { getFullName(), "State." + getName(), getName() }, getName());
   }
 
   public Data getData(String key) {
@@ -168,14 +169,10 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   public MessageSourceResolvable getReasonMessage() {
     String reason = (getReason() != null) ? getReason().getEventReason() : null;
     if(reason != null) {
-      return new DefaultMessageSourceResolvable(new String[] { getName() + reason, reason }, reason);
+      return new DefaultMessageSourceResolvable(new String[] { getName() + "." + reason, reason }, reason);
     } else {
       return null;
     }
-  }
-
-  protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
-    return true;
   }
 
   public ActionType getStartingActionType() {
@@ -188,5 +185,13 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
 
   public Date getStartTime() {
     return null;
+  }
+
+  protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
+    return true;
+  }
+
+  protected String getFullName() {
+    return getStage().getModule() + "." + getName();
   }
 }

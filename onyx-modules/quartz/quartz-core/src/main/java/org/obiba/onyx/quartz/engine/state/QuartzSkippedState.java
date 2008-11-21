@@ -33,7 +33,7 @@ public class QuartzSkippedState extends AbstractQuartzStageState implements Init
   }
 
   public String getName() {
-    return "Quartz.Skipped";
+    return "Skipped";
   }
 
   @Override

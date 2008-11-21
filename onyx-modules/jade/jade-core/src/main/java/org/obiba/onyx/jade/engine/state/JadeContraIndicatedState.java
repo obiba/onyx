@@ -45,7 +45,7 @@ public class JadeContraIndicatedState extends AbstractStageState implements Init
   }
 
   public String getName() {
-    return "Jade.ContraIndicated";
+    return "Contraindicated";
   }
 
   @Override

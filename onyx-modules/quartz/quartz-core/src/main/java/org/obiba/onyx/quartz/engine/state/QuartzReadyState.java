@@ -36,7 +36,7 @@ public class QuartzReadyState extends AbstractQuartzStageState implements Initia
   }
 
   public String getName() {
-    return "Quartz.Ready";
+    return "Ready";
   }
 
   @Override

@@ -53,7 +53,7 @@ public class MicaInProgressState extends AbstractMicaStageState implements Initi
   }
 
   public String getName() {
-    return "Mica.InProgress";
+    return "InProgress";
   }
 
 }

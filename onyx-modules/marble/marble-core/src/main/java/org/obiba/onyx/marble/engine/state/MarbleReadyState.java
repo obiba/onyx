@@ -38,7 +38,7 @@ public class MarbleReadyState extends AbstractMarbleStageState implements Initia
   }
 
   public String getName() {
-    return "Marble.Ready";
+    return "Ready";
   }
 
 }

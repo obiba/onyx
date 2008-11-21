@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.core.engine.state;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -322,7 +324,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
   private void assertStateName(StageExecutionContext context, String stateName) {
     String codes[] = context.getMessage().getCodes();
-    Assert.assertArrayEquals(new String[] { stateName }, codes);
+    Assert.assertTrue(Arrays.asList(codes).contains(stateName));
   }
 
   private void assertStateClass(StageExecutionContext context, Class<?> stateClass) {

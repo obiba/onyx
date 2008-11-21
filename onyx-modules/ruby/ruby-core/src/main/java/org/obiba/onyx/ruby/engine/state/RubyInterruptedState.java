@@ -41,7 +41,7 @@ public class RubyInterruptedState extends AbstractRubyStageState implements Init
   //
 
   public String getName() {
-    return "Ruby.Interrupted";
+    return "Interrupted";
   }
 
   @Override

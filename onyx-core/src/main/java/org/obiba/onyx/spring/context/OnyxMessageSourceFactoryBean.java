@@ -12,6 +12,8 @@ package org.obiba.onyx.spring.context;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Locale;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -21,20 +23,24 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.context.support.StaticMessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 /**
- * A {@code FactoryBean} that creates a special {@code MessageSource} compatible with Onyx's module configuration
- * structure.
+ * A {@code FactoryBean} that creates a special {@code MessageSource} compatible with Onyx's module structure.
  * <p>
- * The {@code MessageSource} is created by finding all bundles that respect Onyx's naming convention:
+ * A {@code MessageSource} is created by finding all bundles that respect Onyx's naming convention:
  * 
  * <pre>
  * onyxConfigPath/&lt;module&gt;/messages_&lt;locale&gt;.{properties,xml}
  * </pre>
- * 
+ * <p>
+ * Another {@code MessageSource} is created by finding all the bundles named "META-INF/messages" on the classpath. 
+ * This allows loading bundles from the module's jar files. This new {@code MessageSource} is set as the first's 
+ * {@code parent}. This allows overriding the default messages by re-defining the same kay in the bundles in 
+ * the configuration files. 
  * <p>
  * Extra bundles may be configured using the {@code extraBasenames} property.
  */
@@ -75,8 +81,8 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
 
     Set<String> basenames = new TreeSet<String>();
     if(this.resourceLoader instanceof ResourcePatternResolver) {
-      findBasenames(basenames, MESSAGES_PROPERTIES_SUFFIX);
-      findBasenames(basenames, MESSAGES_XML_SUFFIX);
+      findConfigBasenames(basenames, MESSAGES_PROPERTIES_SUFFIX);
+      findConfigBasenames(basenames, MESSAGES_XML_SUFFIX);
     }
     if(extraBasenames != null) {
       basenames.addAll(extraBasenames);
@@ -84,6 +90,9 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
     String[] basenamesArray = basenames.toArray(new String[] {});
     log.debug("MessageSource contains the following basenames: {}", Arrays.toString(basenamesArray));
     messageSource.setBasenames(basenamesArray);
+
+    MessageSource moduleMessageSource = loadJarBundles();
+    messageSource.setParentMessageSource(moduleMessageSource);
 
     return new StringReferenceFormatingMessageSource(messageSource);
   }
@@ -96,7 +105,7 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
     return true;
   }
 
-  protected void findBasenames(Set<String> basenames, String suffix) throws IOException {
+  protected void findConfigBasenames(Set<String> basenames, String suffix) throws IOException {
     ResourcePatternResolver resolver = (ResourcePatternResolver) this.resourceLoader;
 
     // Find all files that match "configPath/*/MESSAGES_BASENAME*suffix"
@@ -143,5 +152,41 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
     // Delete anything appearing after the bundle's name
     basename.delete(basenameIndex + MESSAGES_BUNDLENAME.length(), length);
     return basename.toString();
+  }
+
+  protected MessageSource loadJarBundles() throws IOException {
+    ResourcePatternResolver resolver = (ResourcePatternResolver) this.resourceLoader;
+
+    String bundlePattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "META-INF/" + MESSAGES_BUNDLENAME + "*" + MESSAGES_PROPERTIES_SUFFIX;
+
+    Resource[] messageResources = resolver.getResources(bundlePattern);
+
+    StaticMessageSource sms = new StaticMessageSource();
+    for(int i = 0; i < messageResources.length; i++) {
+      Resource resource = messageResources[i];
+      Locale locale = extractLocale(resource, MESSAGES_PROPERTIES_SUFFIX);
+      log.debug("Found module bundle resource {} with locale {}", resource.getDescription(), locale);
+
+      Properties props = new Properties();
+      props.load(resource.getInputStream());
+      sms.addMessages(props, locale);
+    }
+    return sms;
+  }
+
+  protected Locale extractLocale(Resource resource, String suffix) {
+    String filename = resource.getFilename();
+
+    StringBuilder locale = new StringBuilder(filename);
+    // Find the last part that fits the bundle's name
+    int basenameIndex = filename.lastIndexOf(MESSAGES_BUNDLENAME);
+    int length = MESSAGES_BUNDLENAME.length();
+
+    // Remove everything before the basename, the basename and one more char to eat the '_'
+    locale.delete(0, basenameIndex + length + 1);
+    int suffixIndex = locale.lastIndexOf(suffix);
+    locale.delete(suffixIndex, locale.length());
+
+    return new Locale(locale.toString());
   }
 }

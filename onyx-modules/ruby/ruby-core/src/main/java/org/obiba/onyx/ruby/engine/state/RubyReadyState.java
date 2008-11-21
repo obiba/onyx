@@ -39,7 +39,7 @@ public class RubyReadyState extends AbstractRubyStageState implements Initializi
   //
 
   public String getName() {
-    return "Ruby.Waiting";
+    return "Waiting";
   }
 
   @Override
@@ -51,8 +51,10 @@ public class RubyReadyState extends AbstractRubyStageState implements Initializi
 
   @Override
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
-    if(transitionEvent.equals(TransitionEvent.VALID)) return false;
-    else
+    if(transitionEvent.equals(TransitionEvent.VALID)) {
+      return false;
+    } else {
       return true;
+    }
   }
 }

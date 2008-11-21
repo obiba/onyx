@@ -20,14 +20,16 @@ import org.obiba.onyx.engine.state.TransitionEvent;
 public class QuartzWaitingState extends AbstractQuartzStageState {
 
   public String getName() {
-    return "Quartz.Waiting";
+    return "Waiting";
   }
 
   @Override
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
-    if(transitionEvent.equals(TransitionEvent.INVALID)) return false;
-    else
+    if(transitionEvent.equals(TransitionEvent.INVALID)) {
+      return false;
+    } else {
       return true;
+    }
   }
 
 }

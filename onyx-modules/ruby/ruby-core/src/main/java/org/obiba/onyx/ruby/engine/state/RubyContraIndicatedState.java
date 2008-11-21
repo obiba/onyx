@@ -57,14 +57,16 @@ public class RubyContraIndicatedState extends AbstractRubyStageState {
   }
 
   public String getName() {
-    return "Ruby.ContraIndicated";
+    return "ContraIndicated";
   }
 
   @Override
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
-    if(transitionEvent.equals(TransitionEvent.CONTRAINDICATED) || transitionEvent.equals(TransitionEvent.VALID) || transitionEvent.equals(TransitionEvent.NOTAPPLICABLE)) return false;
-    else
+    if(transitionEvent.equals(TransitionEvent.CONTRAINDICATED) || transitionEvent.equals(TransitionEvent.VALID) || transitionEvent.equals(TransitionEvent.NOTAPPLICABLE)) {
+      return false;
+    } else {
       return true;
+    }
   }
 
   @Override

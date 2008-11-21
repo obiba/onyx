@@ -40,7 +40,7 @@ public class MicaCompletedState extends AbstractMicaStageState implements Initia
   }
 
   public String getName() {
-    return "Mica.Completed";
+    return "Completed";
   }
 
   @Override

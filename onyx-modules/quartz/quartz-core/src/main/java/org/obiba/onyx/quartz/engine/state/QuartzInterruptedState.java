@@ -34,7 +34,7 @@ public class QuartzInterruptedState extends AbstractQuartzStageState implements 
   }
 
   public String getName() {
-    return "Quartz.Interrupted";
+    return "Interrupted";
   }
 
   @Override

@@ -2,13 +2,8 @@ package org.obiba.onyx.mica.engine.state;
 
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.springframework.beans.factory.InitializingBean;
 
-public class MicaNotApplicableState extends AbstractStageState implements InitializingBean {
-
-  public void afterPropertiesSet() throws Exception {
-    // TODO Auto-generated method stub
-  }
+public class MicaNotApplicableState extends AbstractStageState {
 
   @Override
   public boolean isCompleted() {
@@ -16,13 +11,15 @@ public class MicaNotApplicableState extends AbstractStageState implements Initia
   }
 
   public String getName() {
-    return "Mica.NotApplicable";
+    return "NotApplicable";
   }
 
   @Override
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
-    if(transitionEvent.equals(TransitionEvent.NOTAPPLICABLE)) return false;
-    else
+    if(transitionEvent.equals(TransitionEvent.NOTAPPLICABLE)) {
+      return false;
+    } else {
       return true;
+    }
   }
 }

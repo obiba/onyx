@@ -40,7 +40,7 @@ public class RubyCompletedState extends AbstractRubyStageState implements Initia
   //
 
   public String getName() {
-    return "Ruby.Completed";
+    return "Completed";
   }
 
   @Override

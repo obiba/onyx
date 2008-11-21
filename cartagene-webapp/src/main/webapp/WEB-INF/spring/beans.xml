@@ -51,13 +51,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
       <set>
         <value>classpath:config/Stage</value>
         <value>classpath:config/ParticipantInterview</value>
-        <value>classpath:config/JadeStageState</value>
-        <value>classpath:config/MarbleStageState</value>
-        <value>classpath:config/MicaStageState</value>
-        <value>classpath:config/QuartzStageState</value>
-        <value>classpath:config/InstrumentParameter</value>
-        <value>classpath:config/ContraIndication</value>
-        <value>classpath:config/language-common</value>
 
         <value>instruments/interface-height/InstrumentParameter</value>
         <value>instruments/interface-sitting-height/InstrumentParameter</value>

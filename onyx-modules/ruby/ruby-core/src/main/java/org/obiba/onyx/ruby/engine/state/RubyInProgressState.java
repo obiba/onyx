@@ -52,7 +52,7 @@ public class RubyInProgressState extends AbstractRubyStageState implements Initi
   //
 
   public String getName() {
-    return "Ruby.InProgress";
+    return "InProgress";
   }
 
   public Component getWidget(String id) {

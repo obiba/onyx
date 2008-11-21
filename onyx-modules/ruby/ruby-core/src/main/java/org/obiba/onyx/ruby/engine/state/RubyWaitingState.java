@@ -20,14 +20,16 @@ public class RubyWaitingState extends AbstractRubyStageState {
   //
 
   public String getName() {
-    return "Ruby.Waiting";
+    return "Waiting";
   }
 
   @Override
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
-    if(transitionEvent.equals(TransitionEvent.INVALID)) return false;
-    else
+    if(transitionEvent.equals(TransitionEvent.INVALID)) {
+      return false;
+    } else {
       return true;
+    }
   }
 
 }

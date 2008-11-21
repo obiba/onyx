@@ -89,7 +89,7 @@ public class JadeInProgressState extends AbstractStageState implements Initializ
   }
 
   public String getName() {
-    return "Jade.InProgress";
+    return "InProgress";
   }
 
 }

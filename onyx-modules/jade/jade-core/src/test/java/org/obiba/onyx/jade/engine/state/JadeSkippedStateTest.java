@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.engine.state;
 import org.junit.Assert;
 import org.junit.Test;
 import org.obiba.onyx.engine.Action;
+import org.obiba.onyx.engine.Stage;
 import org.springframework.context.MessageSourceResolvable;
 
 public class JadeSkippedStateTest {
@@ -25,6 +26,9 @@ public class JadeSkippedStateTest {
     String reasonSkipped = "DEFECTIVE_INSTRUMENT";
 
     JadeSkippedState skippedState = new JadeSkippedState();
+    skippedState.setStage(new Stage());
+    skippedState.getStage().setName("BIM");
+    skippedState.getStage().setModule("jade");
 
     Action reasonSkippedAction = new Action();
     reasonSkippedAction.setEventReason(reasonSkipped);

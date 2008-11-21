@@ -47,7 +47,7 @@ public class QuartzInProgressState extends AbstractQuartzStageState implements I
   }
 
   public String getName() {
-    return "Quartz.InProgress";
+    return "InProgress";
   }
 
   public Component getWidget(String id) {

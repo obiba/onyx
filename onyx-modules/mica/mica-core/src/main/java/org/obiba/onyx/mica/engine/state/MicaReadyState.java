@@ -49,7 +49,7 @@ public class MicaReadyState extends AbstractMicaStageState implements Initializi
   }
 
   public String getName() {
-    return "Mica.Ready";
+    return "Ready";
   }
 
 }

@@ -47,14 +47,16 @@ public class JadeWaitingState extends AbstractStageState implements Initializing
   }
 
   public String getName() {
-    return "Jade.Waiting";
+    return "Waiting";
   }
 
   @Override
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
-    if(transitionEvent.equals(TransitionEvent.INVALID)) return false;
-    else
+    if(transitionEvent.equals(TransitionEvent.INVALID)) {
+      return false;
+    } else {
       return true;
+    }
   }
 
 }
