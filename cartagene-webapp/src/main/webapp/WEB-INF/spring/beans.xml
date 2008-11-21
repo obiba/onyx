@@ -49,7 +49,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
     <property name="extraBasenames">
       <set>
-        <value>classpath:config/Stage</value>
         <value>classpath:config/ParticipantInterview</value>
 
         <value>instruments/interface-height/InstrumentParameter</value>
