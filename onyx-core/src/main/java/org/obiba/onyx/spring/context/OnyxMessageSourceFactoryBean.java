@@ -36,11 +36,12 @@ import org.springframework.core.io.support.ResourcePatternResolver;
  * <pre>
  * onyxConfigPath/&lt;module&gt;/messages_&lt;locale&gt;.{properties,xml}
  * </pre>
+ * 
  * <p>
- * Another {@code MessageSource} is created by finding all the bundles named "META-INF/messages" on the classpath. 
- * This allows loading bundles from the module's jar files. This new {@code MessageSource} is set as the first's 
- * {@code parent}. This allows overriding the default messages by re-defining the same kay in the bundles in 
- * the configuration files. 
+ * Another {@code MessageSource} is created by finding all the bundles named "META-INF/messages" on the classpath. This
+ * allows loading bundles from the module's jar files. This new {@code MessageSource} is set as the first's
+ * {@code parent}. This allows overriding the default messages by re-defining the same kay in the bundles in the
+ * configuration files.
  * <p>
  * Extra bundles may be configured using the {@code extraBasenames} property.
  */
@@ -62,8 +63,8 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
 
   public void setOnyxConfigPath(String onyxConfigPath) {
     this.onyxConfigPath = onyxConfigPath;
-    if(this.onyxConfigPath.endsWith(File.separator) == false) {
-      this.onyxConfigPath = this.onyxConfigPath + File.separator;
+    if(this.onyxConfigPath.endsWith("/") == false) {
+      this.onyxConfigPath = this.onyxConfigPath + "/";
     }
   }
 
@@ -137,7 +138,12 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
       return null;
     }
 
-    StringBuilder basename = new StringBuilder(bundleFile.getAbsolutePath());
+    String filename = bundleFile.getAbsolutePath();
+    // Make file pathname compatible with Spring's pathnames (if necessary)
+    if(File.separatorChar != '/') {
+      filename = filename.replace(File.separatorChar, '/');
+    }
+    StringBuilder basename = new StringBuilder(filename);
 
     int rootDirIndex = basename.lastIndexOf(onyxConfigPath);
     // Remove everything before onyxConfigPath
