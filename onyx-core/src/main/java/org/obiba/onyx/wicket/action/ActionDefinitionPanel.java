@@ -43,6 +43,7 @@ import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.util.DateModelUtils;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -71,7 +72,7 @@ public abstract class ActionDefinitionPanel extends Panel {
     Action action = new Action(definition);
     setModel(new Model(action));
 
-    add(new Label("description", definition.getDescription()));
+    add(new Label("description", new MessageSourceResolvableStringModel(definition.getDescription())));
 
     Form form = new Form("form");
     add(form);

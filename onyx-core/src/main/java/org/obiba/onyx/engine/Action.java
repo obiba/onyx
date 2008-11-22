@@ -28,7 +28,7 @@ import org.obiba.onyx.core.domain.user.User;
  * 
  * @see ActionType
  * @author Yannick Marcon
- *
+ * 
  */
 @Entity
 public class Action extends AbstractEntity {
@@ -36,11 +36,11 @@ public class Action extends AbstractEntity {
   private static final long serialVersionUID = -943609521870150739L;
 
   @ManyToOne
-  @JoinColumn(name="user_id")
+  @JoinColumn(name = "user_id")
   private User user;
 
   @ManyToOne
-  @JoinColumn(name="interview_id")
+  @JoinColumn(name = "interview_id")
   private Interview interview;
 
   @Enumerated(EnumType.STRING)
@@ -59,10 +59,14 @@ public class Action extends AbstractEntity {
   }
 
   public Action(ActionDefinition definition) {
-    this.type = definition.getType();
-    dateTime = new Date();
+    this(definition.getType());
   }
-  
+
+  public Action(ActionType type) {
+    this.type = type;
+    this.dateTime = new Date();
+  }
+
   public final User getUser() {
     return user;
   }
@@ -118,7 +122,7 @@ public class Action extends AbstractEntity {
   public final void setEventReason(String eventReason) {
     this.eventReason = eventReason;
   }
-  
+
   @Override
   public String toString() {
     return "[" + type + " " + dateTime + "]";

@@ -9,22 +9,22 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.engine.state;
 
+import java.util.Set;
+
 import org.apache.wicket.Component;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.ruby.core.wicket.RubyPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Ruby IN PROGRESS state.
  */
-public class RubyInProgressState extends AbstractRubyStageState implements InitializingBean {
+public class RubyInProgressState extends AbstractRubyStageState {
   //
   // Constants
   //
@@ -38,21 +38,22 @@ public class RubyInProgressState extends AbstractRubyStageState implements Initi
   private ActiveTubeRegistrationService activeTubeRegistrationService;
 
   //
-  // InitializingBean Methods
-  //
-
-  public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").getActionDefinition());
-    addAction(ActionDefinitionBuilder.create(ActionType.INTERRUPT, "Interrupt").getActionDefinition());
-    addSystemAction(ActionDefinitionBuilder.COMPLETE_ACTION);
-  }
-
-  //
   // AbstractRubyStageState Methods
   //
 
   public String getName() {
     return "InProgress";
+  }
+
+  @Override
+  protected void addUserActions(Set<ActionType> types) {
+    types.add(ActionType.STOP);
+    types.add(ActionType.INTERRUPT);
+  }
+
+  @Override
+  protected void addSystemActions(Set<ActionType> types) {
+    types.add(ActionType.COMPLETE);
   }
 
   public Component getWidget(String id) {

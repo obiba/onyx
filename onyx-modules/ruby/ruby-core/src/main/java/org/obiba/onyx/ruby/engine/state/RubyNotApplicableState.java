@@ -15,6 +15,9 @@
  */
 package org.obiba.onyx.ruby.engine.state;
 
+import java.util.Set;
+
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 
 public class RubyNotApplicableState extends AbstractRubyStageState {
@@ -26,6 +29,11 @@ public class RubyNotApplicableState extends AbstractRubyStageState {
   @Override
   public boolean isCompleted() {
     return true;
+  }
+
+  @Override
+  protected void addUserActions(Set<ActionType> types) {
+    // No possible user actions
   }
 
   @Override

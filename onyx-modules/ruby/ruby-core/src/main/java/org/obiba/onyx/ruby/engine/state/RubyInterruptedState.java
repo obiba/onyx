@@ -9,18 +9,18 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.engine.state;
 
+import java.util.Set;
+
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Ruby INTERRUPTED state.
  */
-public class RubyInterruptedState extends AbstractRubyStageState implements InitializingBean {
+public class RubyInterruptedState extends AbstractRubyStageState {
   //
   // Constants
   //
@@ -28,20 +28,17 @@ public class RubyInterruptedState extends AbstractRubyStageState implements Init
   private static final Logger log = LoggerFactory.getLogger(RubyInterruptedState.class);
 
   //
-  // InitializingBean Methods
-  //
-
-  public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").setAskParticipantId(true).setAskPassword(true).getActionDefinition());
-    addAction(ActionDefinitionBuilder.create(ActionType.EXECUTE, "Resume").setAskParticipantId(true).setAskPassword(true).getActionDefinition());
-  }
-
-  //
   // AbstractRubyStageState Methods
   //
 
   public String getName() {
     return "Interrupted";
+  }
+
+  @Override
+  protected void addUserActions(Set<ActionType> types) {
+    types.add(ActionType.STOP);
+    types.add(ActionType.EXECUTE);
   }
 
   @Override

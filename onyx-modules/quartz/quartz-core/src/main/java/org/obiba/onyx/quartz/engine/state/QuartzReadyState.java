@@ -16,27 +16,26 @@
  */
 package org.obiba.onyx.quartz.engine.state;
 
+import java.util.Set;
+
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinition;
-import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
-public class QuartzReadyState extends AbstractQuartzStageState implements InitializingBean {
+public class QuartzReadyState extends AbstractQuartzStageState {
 
   private static final Logger log = LoggerFactory.getLogger(QuartzReadyState.class);
 
-  public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinitionBuilder.START_ACTION);
-    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.SKIP, "Skip").setDescription("You may explain why this stage is skipped.").setAskParticipantId(true).setAskPassword(true).getActionDefinition();
-    addAction(def);
-  }
-
   public String getName() {
     return "Ready";
+  }
+
+  @Override
+  protected void addUserActions(Set<ActionType> types) {
+    types.add(ActionType.EXECUTE);
+    types.add(ActionType.SKIP);
   }
 
   @Override

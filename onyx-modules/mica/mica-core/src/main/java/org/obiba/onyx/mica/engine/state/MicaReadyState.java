@@ -12,13 +12,14 @@
  */
 package org.obiba.onyx.mica.engine.state;
 
+import java.util.Set;
+
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinitionBuilder;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.mica.core.service.ActiveConclusionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Mica Ready State, goes there each time a state is cancelled.
@@ -26,7 +27,7 @@ import org.springframework.beans.factory.InitializingBean;
  * @author Meryam Belhiah
  * 
  */
-public class MicaReadyState extends AbstractMicaStageState implements InitializingBean {
+public class MicaReadyState extends AbstractMicaStageState {
 
   private static final Logger log = LoggerFactory.getLogger(MicaReadyState.class);
 
@@ -37,8 +38,13 @@ public class MicaReadyState extends AbstractMicaStageState implements Initializi
     this.activeConclusionService = activeConsentService;
   }
 
-  public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinitionBuilder.START_ACTION);
+  // public void afterPropertiesSet() throws Exception {
+  // addAction(ActionDefinitionBuilder.START_ACTION);
+  // }
+
+  @Override
+  protected void addUserActions(Set<ActionType> types) {
+    types.add(ActionType.EXECUTE);
   }
 
   @Override

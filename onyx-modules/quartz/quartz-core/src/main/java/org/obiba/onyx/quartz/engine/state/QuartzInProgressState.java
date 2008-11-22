@@ -16,10 +16,11 @@
  */
 package org.obiba.onyx.quartz.engine.state;
 
+import java.util.Set;
+
 import org.apache.wicket.Component;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
@@ -28,19 +29,12 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.wicket.QuartzPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
-public class QuartzInProgressState extends AbstractQuartzStageState implements InitializingBean {
+public class QuartzInProgressState extends AbstractQuartzStageState {
 
   private static final Logger log = LoggerFactory.getLogger(QuartzInProgressState.class);
 
   private QuestionnaireBundleManager questionnaireBundleManager;
-
-  public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").getActionDefinition());
-    addAction(ActionDefinitionBuilder.create(ActionType.INTERRUPT, "Interrupt").getActionDefinition());
-    addSystemAction(ActionDefinitionBuilder.COMPLETE_ACTION);
-  }
 
   public void setQuestionnaireBundleManager(QuestionnaireBundleManager questionnaireBundleManager) {
     this.questionnaireBundleManager = questionnaireBundleManager;
@@ -48,6 +42,17 @@ public class QuartzInProgressState extends AbstractQuartzStageState implements I
 
   public String getName() {
     return "InProgress";
+  }
+
+  @Override
+  protected void addUserActions(Set<ActionType> types) {
+    types.add(ActionType.STOP);
+    types.add(ActionType.INTERRUPT);
+  }
+
+  @Override
+  protected void addSystemActions(Set<ActionType> types) {
+    types.add(ActionType.COMPLETE);
   }
 
   public Component getWidget(String id) {

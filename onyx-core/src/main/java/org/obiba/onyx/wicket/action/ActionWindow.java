@@ -94,19 +94,20 @@ public abstract class ActionWindow extends Panel {
 
     });
 
+    final IModel labelModel = new MessageSourceResolvableStringModel(actionDefinition.getLabel());
     if(stageModel != null && stageModel.getObject() != null) {
-      final String actionLabel = actionDefinition.getLabel();
       Model titleModel = new Model() {
         @Override
         public Object getObject() {
           Stage stage = (Stage) ActionWindow.this.getModelObject();
           MessageSourceResolvableStringModel stageDescriptionModel = new MessageSourceResolvableStringModel(stage.getDescription());
-          return stageDescriptionModel.getObject() + ": " + getString(actionLabel, null, actionLabel);
+          return stageDescriptionModel.getObject() + ": " + labelModel.getObject();
         }
       };
       modal.setTitle(titleModel);
-    } else
-      modal.setTitle(getString(actionDefinition.getLabel(), null, actionDefinition.getLabel()));
+    } else {
+      modal.setTitle(labelModel);
+    }
     modal.show(target);
   }
 }

@@ -11,24 +11,28 @@ package org.obiba.onyx.engine.state;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.wicket.Component;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
+import org.obiba.onyx.engine.ActionDefinitionConfiguration;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 
 /**
  * Helper class for implementing {@link IStageExecution}.
  */
-public abstract class AbstractStageState implements IStageExecution, ITransitionListener {
+public abstract class AbstractStageState implements IStageExecution, ITransitionListener, InitializingBean {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AbstractStageState.class);
@@ -37,9 +41,11 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
 
   private Stage stage;
 
-  protected List<ActionDefinition> actionDefinitions = new ArrayList<ActionDefinition>();
+  private Set<ActionType> userActions = new LinkedHashSet<ActionType>();
 
-  protected List<ActionDefinition> systemActionDefinitions = new ArrayList<ActionDefinition>();
+  private Set<ActionType> systemActions = new LinkedHashSet<ActionType>();;
+
+  private ActionDefinitionConfiguration actionDefinitionConfig;
 
   protected ActiveInterviewService activeInterviewService;
 
@@ -50,6 +56,15 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
 
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
     this.activeInterviewService = activeInterviewService;
+  }
+
+  public void setActionDefinitionConfiguration(ActionDefinitionConfiguration actionDefinitionConfig) {
+    this.actionDefinitionConfig = actionDefinitionConfig;
+  }
+
+  public void afterPropertiesSet() throws Exception {
+    addUserActions(userActions);
+    addSystemActions(systemActions);
   }
 
   public void setStage(Stage stage) {
@@ -89,34 +104,20 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
     this.eventSink = eventSink;
   }
 
-  protected void addAction(ActionDefinition action) {
-    actionDefinitions.add(action);
-  }
-
   public List<ActionDefinition> getActionDefinitions() {
-    return actionDefinitions;
+    return buildActionDefinitionList(userActions);
   }
 
   public ActionDefinition getActionDefinition(ActionType type) {
-    for(ActionDefinition def : actionDefinitions) {
-      if(def.getType().equals(type)) return def;
-    }
-    return null;
+    return actionDefinitionConfig.getActionDefinition(type, getName(), getStage().getModule(), getStage().getName());
   }
 
   public ActionDefinition getSystemActionDefinition(ActionType type) {
-    for(ActionDefinition def : systemActionDefinitions) {
-      if(def.getType().equals(type)) return def;
-    }
-    return null;
-  }
-
-  protected void addSystemAction(ActionDefinition action) {
-    systemActionDefinitions.add(action);
+    return actionDefinitionConfig.getActionDefinition(type, getName(), getStage().getModule(), getStage().getName());
   }
 
   public List<ActionDefinition> getSystemActionDefinitions() {
-    return systemActionDefinitions;
+    return buildActionDefinitionList(systemActions);
   }
 
   public void onEntry(TransitionEvent event) {
@@ -194,6 +195,12 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
     return null;
   }
 
+  abstract protected void addUserActions(Set<ActionType> types);
+
+  protected void addSystemActions(Set<ActionType> types) {
+
+  }
+
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
     return true;
   }
@@ -201,4 +208,14 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   protected String getFullName() {
     return getStage().getModule() + "." + getName();
   }
+
+  private List<ActionDefinition> buildActionDefinitionList(Set<ActionType> types) {
+    List<ActionDefinition> definitions = new ArrayList<ActionDefinition>(types.size());
+    for(ActionType type : types) {
+      ActionDefinition definition = actionDefinitionConfig.getActionDefinition(type, getName(), getStage().getModule(), getStage().getName());
+      definitions.add(definition);
+    }
+    return definitions;
+  }
+
 }

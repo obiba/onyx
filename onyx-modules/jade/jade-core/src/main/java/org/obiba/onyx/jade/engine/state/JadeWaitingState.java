@@ -9,34 +9,29 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.engine.state;
 
+import java.util.Set;
+
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinition;
-import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.AbstractStageState;
-import org.obiba.onyx.engine.state.ITransitionListener;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRunRefusalReason;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Jade Waiting State, goes there if a dependency is not satisfied.
- * @author Yannick Marcon
- * 
  */
-public class JadeWaitingState extends AbstractStageState implements InitializingBean, ITransitionListener {
+public class JadeWaitingState extends AbstractStageState {
 
   private static final Logger log = LoggerFactory.getLogger(JadeWaitingState.class);
 
-  public void afterPropertiesSet() throws Exception {
-    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.SKIP, "Skip").setDescription("You may explain why this stage is skipped.").setAskParticipantId(true).setAskPassword(true).getActionDefinition();
-    for(InstrumentRunRefusalReason reason : InstrumentRunRefusalReason.values()) {
-      def.addReason(reason.toString());
-      if(def.getDefaultReason() == null) def.setDefaultReason(reason.toString());
-    }
-    addAction(def);
+  public String getName() {
+    return "Waiting";
+  }
+
+  @Override
+  protected void addUserActions(Set<ActionType> types) {
+    types.add(ActionType.SKIP);
   }
 
   @Override
@@ -44,10 +39,6 @@ public class JadeWaitingState extends AbstractStageState implements Initializing
     super.skip(action);
     log.info("Jade Stage {} is skipping", super.getStage().getName());
     castEvent(TransitionEvent.SKIP);
-  }
-
-  public String getName() {
-    return "Waiting";
   }
 
   @Override

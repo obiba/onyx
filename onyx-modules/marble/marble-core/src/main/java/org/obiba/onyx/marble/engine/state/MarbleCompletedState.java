@@ -9,20 +9,31 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.engine.state;
 
+import java.util.Arrays;
+import java.util.Set;
+
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
-public class MarbleCompletedState extends AbstractMarbleStageState implements InitializingBean {
+public class MarbleCompletedState extends AbstractMarbleStageState {
 
   private static final Logger log = LoggerFactory.getLogger(MarbleCompletedState.class);
 
-  public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinitionBuilder.CANCEL_ACTION);
+  // public void afterPropertiesSet() throws Exception {
+  // addAction(ActionDefinitionBuilder.CANCEL_ACTION);
+  // }
+
+  public String getName() {
+    return "Completed";
+  }
+
+  @Override
+  protected void addUserActions(Set<ActionType> types) {
+    types.add(ActionType.STOP);
+    log.info("Marble Completed state has these actions {}", Arrays.toString(types.toArray()));
   }
 
   @Override
@@ -36,10 +47,6 @@ public class MarbleCompletedState extends AbstractMarbleStageState implements In
   @Override
   public boolean isCompleted() {
     return true;
-  }
-
-  public String getName() {
-    return "Completed";
   }
 
   @Override

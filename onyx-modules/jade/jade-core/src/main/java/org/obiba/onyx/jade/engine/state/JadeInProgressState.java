@@ -12,23 +12,21 @@
  */
 package org.obiba.onyx.jade.engine.state;
 
+import java.util.Set;
+
 import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinition;
-import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRunRefusalReason;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.JadePanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
-public class JadeInProgressState extends AbstractStageState implements InitializingBean {
+public class JadeInProgressState extends AbstractStageState {
 
   private static final Logger log = LoggerFactory.getLogger(JadeInProgressState.class);
 
@@ -38,14 +36,14 @@ public class JadeInProgressState extends AbstractStageState implements Initializ
     this.activeInstrumentRunService = activeInstrumentRunService;
   }
 
-  public void afterPropertiesSet() throws Exception {
-    ActionDefinition def = ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").getActionDefinition();
-    for(InstrumentRunRefusalReason reason : InstrumentRunRefusalReason.values()) {
-      def.addReason(reason.toString());
-      if(def.getDefaultReason() == null) def.setDefaultReason(reason.toString());
-    }
-    addAction(def);
-    addSystemAction(ActionDefinitionBuilder.COMPLETE_ACTION);
+  @Override
+  protected void addUserActions(Set<ActionType> types) {
+    types.add(ActionType.STOP);
+  }
+
+  @Override
+  protected void addSystemActions(Set<ActionType> types) {
+    types.add(ActionType.COMPLETE);
   }
 
   public Component getWidget(String id) {

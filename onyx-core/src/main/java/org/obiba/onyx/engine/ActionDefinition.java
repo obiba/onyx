@@ -13,12 +13,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+
 /**
  * An action definition, defines how getting information from the user to produce an {@link Action}.
  * 
  * @see ActionType
- * @author Yannick Marcon
- * 
  */
 public class ActionDefinition implements Serializable {
 
@@ -26,15 +27,8 @@ public class ActionDefinition implements Serializable {
 
   private ActionType type;
 
-  /**
-   * Label to be displayed to user for action identification.
-   */
-  private String label;
-
-  /**
-   * Description of the information needed to produce an action.
-   */
-  private String description;
+  /** A unique code for this action definition */
+  private String code;
 
   /**
    * Says if it requires operator authentication (using its password).
@@ -66,14 +60,9 @@ public class ActionDefinition implements Serializable {
    */
   private List<String> reasons;
 
-  /**
-   * Path to icon for displaying action in a friendly way.
-   */
-  private String iconPath;
-
-  public ActionDefinition(ActionType type, String label) {
+  public ActionDefinition(ActionType type, String code) {
     this.type = type;
-    this.label = label;
+    this.code = code;
   }
 
   public ActionType getType() {
@@ -84,20 +73,16 @@ public class ActionDefinition implements Serializable {
     this.type = type;
   }
 
-  public String getLabel() {
-    return label;
+  public String getCode() {
+    return code;
   }
 
-  public void setLabel(String label) {
-    this.label = label;
+  public MessageSourceResolvable getLabel() {
+    return new DefaultMessageSourceResolvable(calculateCodes(null), getType().toString());
   }
 
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
+  public MessageSourceResolvable getDescription() {
+    return new DefaultMessageSourceResolvable(calculateCodes(".description"), getType().toString());
   }
 
   public boolean isAskPassword() {
@@ -144,27 +129,21 @@ public class ActionDefinition implements Serializable {
     return reasons != null ? reasons : (reasons = new ArrayList<String>());
   }
 
-  public void addReason(String reason) {
-    getReasons().add(reason);
-  }
-
-  public void addReasons(String[] reasons) {
-    for(String reason : reasons) {
-      getReasons().add(reason);
-    }
-  }
-
-  public String getIconPath() {
-    return iconPath;
-  }
-
-  public void setIconPath(String iconPath) {
-    this.iconPath = iconPath;
-  }
-
   @Override
   public String toString() {
-    return type.toString();
+    return code.toString();
   }
 
+  protected String[] calculateCodes(String suffix) {
+    ArrayList<String> codes = new ArrayList<String>();
+    StringBuilder sb = new StringBuilder(getCode());
+    codes.add(sb.toString() + (suffix != null ? suffix : ""));
+    int lastDotIndex;
+    while((lastDotIndex = sb.lastIndexOf(".")) > 0) {
+      int length = sb.length();
+      sb.delete(lastDotIndex, length);
+      codes.add(sb.toString() + (suffix != null ? suffix : ""));
+    }
+    return codes.toArray(new String[codes.size()]);
+  }
 }

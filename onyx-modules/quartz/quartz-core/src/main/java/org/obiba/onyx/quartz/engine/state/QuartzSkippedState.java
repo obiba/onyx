@@ -15,25 +15,26 @@
  */
 package org.obiba.onyx.quartz.engine.state;
 
+import java.util.Set;
+
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
-public class QuartzSkippedState extends AbstractQuartzStageState implements InitializingBean {
+public class QuartzSkippedState extends AbstractQuartzStageState {
 
   private static final Logger log = LoggerFactory.getLogger(QuartzSkippedState.class);
 
-  public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinitionBuilder.CANCEL_SKIPPED_ACTION);
-  }
-
   public String getName() {
     return "Skipped";
+  }
+
+  @Override
+  protected void addUserActions(Set<ActionType> types) {
+    types.add(ActionType.STOP);
   }
 
   @Override

@@ -16,25 +16,26 @@
  */
 package org.obiba.onyx.quartz.engine.state;
 
+import java.util.Set;
+
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
-public class QuartzInterruptedState extends AbstractQuartzStageState implements InitializingBean {
+public class QuartzInterruptedState extends AbstractQuartzStageState {
 
   private static final Logger log = LoggerFactory.getLogger(QuartzInterruptedState.class);
 
-  public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").setAskParticipantId(true).setAskPassword(true).getActionDefinition());
-    addAction(ActionDefinitionBuilder.create(ActionType.EXECUTE, "Resume").setAskParticipantId(true).setAskPassword(true).getActionDefinition());
-  }
-
   public String getName() {
     return "Interrupted";
+  }
+
+  @Override
+  protected void addUserActions(Set<ActionType> types) {
+    types.add(ActionType.STOP);
+    types.add(ActionType.EXECUTE);
   }
 
   @Override

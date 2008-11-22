@@ -9,18 +9,18 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.engine.state;
 
+import java.util.Set;
+
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinitionBuilder;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Ruby COMPLETED state.
  */
-public class RubyCompletedState extends AbstractRubyStageState implements InitializingBean {
+public class RubyCompletedState extends AbstractRubyStageState {
   //
   // Constants
   //
@@ -28,19 +28,16 @@ public class RubyCompletedState extends AbstractRubyStageState implements Initia
   private static final Logger log = LoggerFactory.getLogger(RubyCompletedState.class);
 
   //
-  // InitializingBean Methods
-  //
-
-  public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinitionBuilder.create(ActionType.STOP, "Cancel").setDescription("You may explain why you are cancelling this stage.").setAskParticipantId(true).setAskPassword(true).getActionDefinition());
-  }
-
-  //
   // AbstractRubyStageState Methods
   //
 
   public String getName() {
     return "Completed";
+  }
+
+  @Override
+  protected void addUserActions(Set<ActionType> types) {
+    types.add(ActionType.STOP);
   }
 
   @Override

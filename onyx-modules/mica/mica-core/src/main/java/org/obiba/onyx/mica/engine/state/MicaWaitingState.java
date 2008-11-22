@@ -9,30 +9,30 @@
  ******************************************************************************/
 package org.obiba.onyx.mica.engine.state;
 
+import java.util.Set;
+
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.ITransitionListener;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
- * Jade Waiting State, goes there if a dependency is not satisfied.
- * @author Meryam Belhiah
- * 
  */
-public class MicaWaitingState extends AbstractMicaStageState implements InitializingBean, ITransitionListener {
-
-  public void afterPropertiesSet() throws Exception {
-  }
+public class MicaWaitingState extends AbstractMicaStageState implements ITransitionListener {
 
   public String getName() {
     return "Waiting";
   }
 
   @Override
+  protected void addUserActions(Set<ActionType> types) {
+    // No user action possible
+  }
+
+  @Override
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
     if(transitionEvent.equals(TransitionEvent.INVALID)) {
       return false;
-    }
-    else {
+    } else {
       return true;
     }
   }

@@ -9,17 +9,18 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.engine.state;
 
+import java.util.Set;
+
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinitionBuilder;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Ruby READY state.
  */
-public class RubyReadyState extends AbstractRubyStageState implements InitializingBean {
+public class RubyReadyState extends AbstractRubyStageState {
   //
   // Constants
   //
@@ -27,19 +28,16 @@ public class RubyReadyState extends AbstractRubyStageState implements Initializi
   private static final Logger log = LoggerFactory.getLogger(RubyReadyState.class);
 
   //
-  // InitializingBean Methods
-  //
-
-  public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinitionBuilder.START_ACTION);
-  }
-
-  //
   // AbstratRubyStageState Methods
   //
 
   public String getName() {
     return "Waiting";
+  }
+
+  @Override
+  protected void addUserActions(Set<ActionType> types) {
+    types.add(ActionType.EXECUTE);
   }
 
   @Override

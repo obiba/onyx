@@ -10,6 +10,7 @@
 package org.obiba.onyx.core.engine.state;
 
 import java.util.Arrays;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,8 +22,7 @@ import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl;
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinition;
-import org.obiba.onyx.engine.ActionDefinitionBuilder;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.InverseStageDependencyCondition;
 import org.obiba.onyx.engine.MultipleStageDependencyCondition;
 import org.obiba.onyx.engine.PreviousStageDependencyCondition;
@@ -177,7 +177,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     assertInitialState();
 
     // Send the START event in the first state machine
-    doAction(ActionDefinitionBuilder.START_ACTION);
+    doAction(ActionType.EXECUTE);
     assertStateName(context1, InProgressState.NAME);
     Assert.assertEquals(false, context1.isCompleted());
     assertStateClass(context1, InProgressState.class);
@@ -191,12 +191,12 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
   @Test
   public void testCancelInProgress() {
-    doAction(ActionDefinitionBuilder.START_ACTION);
+    doAction(ActionType.EXECUTE);
     assertStateName(context1, InProgressState.NAME);
     assertStateName(context2, WaitingState.NAME);
     assertStateName(context3, WaitingState.NAME);
 
-    doAction(ActionDefinitionBuilder.CANCEL_ACTION);
+    doAction(ActionType.STOP);
     assertStateName(context1, ReadyState.NAME);
     Assert.assertEquals(false, context1.isCompleted());
     assertStateName(context2, WaitingState.NAME);
@@ -205,12 +205,12 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
   @Test
   public void testCommentDuringInProgress() {
-    doAction(ActionDefinitionBuilder.START_ACTION);
+    doAction(ActionType.EXECUTE);
     assertStateName(context1, InProgressState.NAME);
     assertStateName(context2, WaitingState.NAME);
     assertStateName(context3, WaitingState.NAME);
 
-    doAction(ActionDefinitionBuilder.COMMENT_ACTION);
+    doAction(ActionType.COMMENT);
     assertStateName(context1, InProgressState.NAME);
     assertStateName(context2, WaitingState.NAME);
     assertStateName(context3, WaitingState.NAME);
@@ -218,13 +218,13 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
   @Test
   public void testCompleteInProgress() {
-    doAction(ActionDefinitionBuilder.START_ACTION);
+    doAction(ActionType.EXECUTE);
     assertStateName(context1, InProgressState.NAME);
     assertStateName(context2, WaitingState.NAME);
     assertStateName(context3, WaitingState.NAME);
 
     // complete the first stage and make assert that the second becomes ready
-    doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
+    doAction(ActionType.COMPLETE);
     assertStateName(context1, CompletedState.NAME);
     assertStateClass(context1, CompletedState.class);
     Assert.assertEquals(true, context1.isCompleted());
@@ -239,9 +239,9 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
   @Test
   public void testCancelCompleted() {
-    doAction(ActionDefinitionBuilder.START_ACTION);
-    doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
-    doAction(ActionDefinitionBuilder.CANCEL_ACTION);
+    doAction(ActionType.EXECUTE);
+    doAction(ActionType.COMPLETE);
+    doAction(ActionType.STOP);
 
     assertStateName(context1, ReadyState.NAME);
     Assert.assertEquals(false, context1.isInteractive());
@@ -256,16 +256,16 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
   @Test
   public void testCancelFirstWhenBothAreCompleted() {
-    doAction(ActionDefinitionBuilder.START_ACTION);
-    doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
-    doAction(context2, ActionDefinitionBuilder.START_ACTION);
-    doAction(context2, ActionDefinitionBuilder.COMPLETE_ACTION);
+    doAction(ActionType.EXECUTE);
+    doAction(ActionType.COMPLETE);
+    doAction(context2, ActionType.EXECUTE);
+    doAction(context2, ActionType.COMPLETE);
 
     assertStateName(context1, CompletedState.NAME);
     assertStateName(context2, CompletedState.NAME);
     assertStateName(context3, NotApplicableState.NAME);
 
-    doAction(ActionDefinitionBuilder.CANCEL_ACTION);
+    doAction(ActionType.STOP);
     assertStateName(context1, ReadyState.NAME);
     Assert.assertEquals(false, context1.isInteractive());
     assertStateClass(context1, ReadyState.class);
@@ -279,38 +279,38 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
   @Test
   public void testCompleteThenCancelAndCompleteAgain() {
-    doAction(ActionDefinitionBuilder.START_ACTION);
-    doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
-    doAction(ActionDefinitionBuilder.CANCEL_ACTION);
-    doAction(ActionDefinitionBuilder.START_ACTION);
-    doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
+    doAction(ActionType.EXECUTE);
+    doAction(ActionType.COMPLETE);
+    doAction(ActionType.STOP);
+    doAction(ActionType.EXECUTE);
+    doAction(ActionType.COMPLETE);
 
     assertStateName(context1, CompletedState.NAME);
   }
 
   @Test
   public void testMultipleAndInverseCondition() {
-    doAction(ActionDefinitionBuilder.START_ACTION);
-    doAction(ActionDefinitionBuilder.COMPLETE_ACTION);
+    doAction(ActionType.EXECUTE);
+    doAction(ActionType.COMPLETE);
 
     assertStateName(context1, CompletedState.NAME);
     assertStateName(context2, ReadyState.NAME);
     assertStateName(context3, ReadyState.NAME);
     assertStateClass(context3, ReadyState.class);
 
-    doAction(context3, ActionDefinitionBuilder.START_ACTION);
-    doAction(context3, ActionDefinitionBuilder.COMPLETE_ACTION);
+    doAction(context3, ActionType.EXECUTE);
+    doAction(context3, ActionType.COMPLETE);
 
     assertStateName(context3, CompletedState.NAME);
     assertStateClass(context3, CompletedState.class);
 
-    doAction(context2, ActionDefinitionBuilder.START_ACTION);
-    doAction(context2, ActionDefinitionBuilder.COMPLETE_ACTION);
+    doAction(context2, ActionType.EXECUTE);
+    doAction(context2, ActionType.COMPLETE);
     assertStateName(context3, NotApplicableState.NAME);
   }
 
-  private void doAction(ActionDefinition definition) {
-    doAction(context1, definition);
+  private void doAction(ActionType type) {
+    doAction(context1, type);
   }
 
   /**
@@ -318,8 +318,8 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
    * @param context
    * @param definition
    */
-  private void doAction(StageExecutionContext context, ActionDefinition definition) {
-    definition.getType().act(context, new Action(definition));
+  private void doAction(StageExecutionContext context, ActionType type) {
+    type.act(context, new Action(type));
   }
 
   private void assertStateName(StageExecutionContext context, String stateName) {
@@ -342,6 +342,11 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     }
 
     @Override
+    protected void addUserActions(Set<ActionType> types) {
+      // No user actions
+    }
+
+    @Override
     public void execute(Action action) {
       super.execute(action);
       log.info("Stage {} is starting", super.getStage().getName());
@@ -359,8 +364,12 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
     public ReadyState() {
       setActiveInterviewService(StageExecutionTest.this.activeInterviewService);
-      addAction(ActionDefinitionBuilder.START_ACTION);
-      addAction(ActionDefinitionBuilder.COMMENT_ACTION);
+    }
+
+    @Override
+    protected void addUserActions(Set<ActionType> types) {
+      types.add(ActionType.EXECUTE);
+      types.add(ActionType.COMMENT);
     }
 
     @Override
@@ -387,9 +396,17 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
     public InProgressState() {
       setActiveInterviewService(StageExecutionTest.this.activeInterviewService);
-      addAction(ActionDefinitionBuilder.CANCEL_ACTION);
-      addSystemAction(ActionDefinitionBuilder.COMPLETE_ACTION);
-      addAction(ActionDefinitionBuilder.COMMENT_ACTION);
+    }
+
+    @Override
+    protected void addUserActions(Set<ActionType> types) {
+      types.add(ActionType.STOP);
+      types.add(ActionType.COMMENT);
+    }
+
+    @Override
+    protected void addSystemActions(Set<ActionType> types) {
+      types.add(ActionType.COMPLETE);
     }
 
     @Override
@@ -422,8 +439,12 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
     public CompletedState() {
       setActiveInterviewService(StageExecutionTest.this.activeInterviewService);
-      addAction(ActionDefinitionBuilder.CANCEL_ACTION);
-      addAction(ActionDefinitionBuilder.COMMENT_ACTION);
+    }
+
+    @Override
+    protected void addUserActions(Set<ActionType> types) {
+      types.add(ActionType.STOP);
+      types.add(ActionType.COMMENT);
     }
 
     @Override
@@ -456,6 +477,10 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
     public NotApplicableState() {
       setActiveInterviewService(StageExecutionTest.this.activeInterviewService);
+    }
+
+    @Override
+    protected void addUserActions(Set<ActionType> types) {
     }
 
     public String getName() {

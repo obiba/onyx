@@ -30,7 +30,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
-import org.obiba.onyx.engine.ActionDefinitionBuilder;
+import org.obiba.onyx.engine.ActionDefinitionConfiguration;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
@@ -48,6 +48,9 @@ public class InterviewPage extends BasePage {
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
+
+  @SpringBean
+  private ActionDefinitionConfiguration actionDefinitionConfiguration;
 
   @SpringBean
   private EntityQueryService queryService;
@@ -135,11 +138,7 @@ public class InterviewPage extends BasePage {
       add(kvPanel);
 
       // Interview cancellation
-
-      final ActionDefinition cancelInterviewDef = ActionDefinitionBuilder.create(ActionType.STOP, new StringResourceModel("CancelInterview", this, null).getString()).setDescription(new StringResourceModel("ExplainCancelInterview", this, null).getString()).setAskParticipantId(true).setAskPassword(true).getActionDefinition();
-      cancelInterviewDef.addReasons(new String[] { "Reason1", "Reason2", "Reason3", "Other" });
-      cancelInterviewDef.setDefaultReason("Reason1");
-
+      final ActionDefinition cancelInterviewDef = actionDefinitionConfiguration.getActionDefinition(ActionType.STOP, "action.interview");
       final ActionWindow interviewActionWindow = new ActionWindow("modal") {
 
         private static final long serialVersionUID = 1L;
@@ -161,12 +160,12 @@ public class InterviewPage extends BasePage {
         public void onClick(AjaxRequestTarget target) {
           interviewActionWindow.show(target, null, cancelInterviewDef);
         }
+
+        @Override
+        public boolean isVisible() {
+          return interview.getStatus().equals(InterviewStatus.CANCELLED) == false;
+        }
       };
-
-      if(interview.getStatus().equals(InterviewStatus.CANCELLED)) link.setVisible(false);
-      else
-        link.setVisible(true);
-
       add(link);
 
       add(new StageSelectionPanel("stage-list", getFeedbackPanel()) {

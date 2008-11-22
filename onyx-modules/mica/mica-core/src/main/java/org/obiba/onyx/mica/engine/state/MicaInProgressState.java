@@ -12,22 +12,37 @@
  */
 package org.obiba.onyx.mica.engine.state;
 
+import java.util.Set;
+
 import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinitionBuilder;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.mica.core.wicket.MicaPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
-public class MicaInProgressState extends AbstractMicaStageState implements InitializingBean {
+public class MicaInProgressState extends AbstractMicaStageState {
 
   private static final Logger log = LoggerFactory.getLogger(MicaInProgressState.class);
 
-  public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinitionBuilder.CANCEL_ACTION);
-    addSystemAction(ActionDefinitionBuilder.COMPLETE_ACTION);
+  // public void afterPropertiesSet() throws Exception {
+  // addAction(ActionDefinitionBuilder.CANCEL_ACTION);
+  // addSystemAction(ActionDefinitionBuilder.COMPLETE_ACTION);
+  // }
+
+  public String getName() {
+    return "InProgress";
+  }
+
+  @Override
+  protected void addUserActions(Set<ActionType> types) {
+    types.add(ActionType.STOP);
+  }
+
+  @Override
+  protected void addSystemActions(Set<ActionType> types) {
+    types.add(ActionType.COMPLETE);
   }
 
   public Component getWidget(String id) {
@@ -50,10 +65,6 @@ public class MicaInProgressState extends AbstractMicaStageState implements Initi
   @Override
   public boolean isInteractive() {
     return true;
-  }
-
-  public String getName() {
-    return "InProgress";
   }
 
 }

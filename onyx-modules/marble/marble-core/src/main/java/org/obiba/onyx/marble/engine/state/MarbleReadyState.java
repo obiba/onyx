@@ -9,25 +9,28 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.engine.state;
 
+import java.util.Set;
+
 import org.obiba.onyx.engine.Action;
-import org.obiba.onyx.engine.ActionDefinitionBuilder;
+import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
- * Marble Ready State, goes there each time a state is cancelled.
- * 
- * @author Yannick Marcon
- * 
+ * Marble Ready State
  */
-public class MarbleReadyState extends AbstractMarbleStageState implements InitializingBean {
+public class MarbleReadyState extends AbstractMarbleStageState {
 
   private static final Logger log = LoggerFactory.getLogger(MarbleReadyState.class);
 
-  public void afterPropertiesSet() throws Exception {
-    addAction(ActionDefinitionBuilder.START_ACTION);
+  // public void afterPropertiesSet() throws Exception {
+  // addAction(ActionDefinitionBuilder.START_ACTION);
+  // }
+
+  @Override
+  protected void addUserActions(Set<ActionType> types) {
+    types.add(ActionType.EXECUTE);
   }
 
   @Override
