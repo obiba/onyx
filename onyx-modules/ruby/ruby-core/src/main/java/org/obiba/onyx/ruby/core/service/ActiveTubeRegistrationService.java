@@ -104,6 +104,13 @@ public interface ActiveTubeRegistrationService {
   public ParticipantTubeRegistration start(Participant participant);
 
   /**
+   * Resume an interrupted participant tube registration.
+   * 
+   * @param participant participant
+   */
+  public void resume(Participant participant);
+
+  /**
    * Set the end date to the current {@link ParticipantTubeRegistration}.
    */
   public void end();

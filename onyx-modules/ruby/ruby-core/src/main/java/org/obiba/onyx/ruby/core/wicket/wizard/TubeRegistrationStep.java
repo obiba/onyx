@@ -52,8 +52,10 @@ public class TubeRegistrationStep extends WizardStepPanel {
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
     form.getNextLink().setEnabled(true);
-    form.getPreviousLink().setEnabled(hasContraindications());
+    form.getPreviousLink().setEnabled(!((RubyWizardForm) form).isResuming() && hasContraindications());
     form.getFinishLink().setEnabled(false);
+
+    ((RubyWizardForm) form).getInterruptLink().setEnabled(true);
 
     if(target != null) {
       target.addComponent(form);

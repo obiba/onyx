@@ -78,6 +78,23 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     return currentRegistration;
   }
 
+  public void resume(Participant participant) {
+    if(participant == null) {
+      throw new IllegalArgumentException("participant cannot be null.");
+    }
+
+    Interview interview = participant.getInterview();
+    if(interview == null) {
+      throw new IllegalArgumentException("no interview found.");
+    }
+
+    ParticipantTubeRegistration template = new ParticipantTubeRegistration();
+    template.setInterview(interview);
+    ParticipantTubeRegistration participantTubeRegistration = getPersistenceManager().matchOne(template);
+
+    currentTubeRegistrationId = participantTubeRegistration.getId();
+  }
+
   public void end() {
     if(currentTubeRegistrationId == null) return;
 

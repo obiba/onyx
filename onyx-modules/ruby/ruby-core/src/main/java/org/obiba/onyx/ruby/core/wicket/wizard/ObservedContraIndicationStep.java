@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.wizard;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.PropertyModel;
@@ -42,6 +43,19 @@ public class ObservedContraIndicationStep extends AbstractRubyContraIndicationSt
   //
   // AbstractRubyContraIndicationStep Methods
   //
+
+  @Override
+  public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
+    super.handleWizardState(form, target);
+
+    // Disable interrupt link.
+    Component interruptLink = ((RubyWizardForm) form).getInterruptLink();
+    interruptLink.setEnabled(false);
+
+    if(target != null) {
+      target.addComponent(interruptLink);
+    }
+  }
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {

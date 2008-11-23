@@ -35,6 +35,9 @@ public class RubyContraIndicatedState extends AbstractRubyStageState {
   public void stop(Action action) {
     super.execute(action);
     log.info("Ruby Stage {} is canceling", super.getStage().getName());
+
+    activeTubeRegistrationService.deleteParticipantTubeRegistration();
+
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
     } else {

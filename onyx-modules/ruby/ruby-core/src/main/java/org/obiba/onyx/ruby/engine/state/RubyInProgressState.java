@@ -16,7 +16,6 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.ruby.core.wicket.RubyPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,7 @@ public class RubyInProgressState extends AbstractRubyStageState {
   // Instance Variables
   //
 
-  private ActiveTubeRegistrationService activeTubeRegistrationService;
+  private boolean resuming;
 
   //
   // AbstractRubyStageState Methods
@@ -94,10 +93,12 @@ public class RubyInProgressState extends AbstractRubyStageState {
   public void onEntry(TransitionEvent event) {
     Participant participant = activeInterviewService.getParticipant();
 
-    if(!isResuming()) {
-      activeTubeRegistrationService.start(participant);
+    if(event.equals(TransitionEvent.RESUME)) {
+      resuming = true;
+      activeTubeRegistrationService.resume(participant);
     } else {
-      // TODO: activeTubeRegistrationService.resume(participant);
+      resuming = false;
+      activeTubeRegistrationService.start(participant);
     }
   }
 
@@ -105,12 +106,7 @@ public class RubyInProgressState extends AbstractRubyStageState {
   // Methods
   //
 
-  public void setActiveTubeRegistrationService(ActiveTubeRegistrationService activeTubeRegistrationService) {
-    this.activeTubeRegistrationService = activeTubeRegistrationService;
-  }
-
   private boolean isResuming() {
-    // TODO: Implement!
-    return false;
+    return resuming;
   }
 }

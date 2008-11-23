@@ -10,10 +10,23 @@
 package org.obiba.onyx.ruby.engine.state;
 
 import org.obiba.onyx.engine.state.AbstractStageState;
+import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 
 /**
  * Base class for Ruby states.
  */
 public abstract class AbstractRubyStageState extends AbstractStageState {
+  //
+  // Instance Variables
+  //
 
+  protected ActiveTubeRegistrationService activeTubeRegistrationService;
+
+  //
+  // Methods
+  //
+
+  public void setActiveTubeRegistrationService(ActiveTubeRegistrationService activeTubeRegistrationService) {
+    this.activeTubeRegistrationService = activeTubeRegistrationService;
+  }
 }

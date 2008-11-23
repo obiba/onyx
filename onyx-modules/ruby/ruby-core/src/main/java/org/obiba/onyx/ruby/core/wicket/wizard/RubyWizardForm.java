@@ -9,10 +9,14 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.wizard;
 
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -20,7 +24,6 @@ import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
-import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
@@ -53,9 +56,6 @@ public class RubyWizardForm extends WizardForm {
   @SpringBean(name = "activeTubeRegistrationService")
   private ActiveTubeRegistrationService activeTubeRegistrationService;
 
-  @SpringBean
-  private TubeRegistrationConfiguration tubeRegistrationConfiguration;
-
   private WizardStepPanel observedContraIndicationStep;
 
   private WizardStepPanel askedContraIndicationStep;
@@ -78,6 +78,9 @@ public class RubyWizardForm extends WizardForm {
 
   public RubyWizardForm(String id, IModel model) {
     super(id, model);
+
+    // Add Interrupt button.
+    addInterruptLink();
 
     observedContraIndicationStep = new ObservedContraIndicationStep(getStepId());
     askedContraIndicationStep = new AskedContraIndicationStep(getStepId());
@@ -130,16 +133,28 @@ public class RubyWizardForm extends WizardForm {
     this.feedbackPanel = feedbackPanel;
   }
 
+  public Component getInterruptLink() {
+    return get("interrupt");
+  }
+
+  private void addInterruptLink() {
+    AjaxLink link = new AjaxLink("interrupt") {
+      private static final long serialVersionUID = 0L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        onInterrupt(target);
+      }
+
+    };
+    link.add(new AttributeModifier("value", true, new StringResourceModel("Interrupt", RubyWizardForm.this, null)));
+    add(link);
+  }
+
   public void initStartStep(boolean resuming) {
     this.resuming = resuming;
 
-    WizardStepPanel startStep = null;
-
-    if(resuming) {
-      startStep = tubeRegistrationStep;
-    } else {
-      startStep = setUpWizardFlow();
-    }
+    WizardStepPanel startStep = setUpWizardFlow();
 
     add(startStep);
     startStep.onStepInNext(this, null);
@@ -150,32 +165,34 @@ public class RubyWizardForm extends WizardForm {
     WizardStepPanel startStep = null;
     WizardStepPanel lastStep = null;
 
-    // are there observed contra-indications to display ?
-    if(activeTubeRegistrationService.hasContraindications(Contraindication.Type.OBSERVED)) {
-      if(startStep == null) {
-        startStep = observedContraIndicationStep;
-        lastStep = startStep;
+    if(!resuming) {
+      // are there observed contra-indications to display ?
+      if(activeTubeRegistrationService.hasContraindications(Contraindication.Type.OBSERVED)) {
+        if(startStep == null) {
+          startStep = observedContraIndicationStep;
+          lastStep = startStep;
+        } else {
+          lastStep.setNextStep(observedContraIndicationStep);
+          observedContraIndicationStep.setPreviousStep(lastStep);
+          lastStep = observedContraIndicationStep;
+        }
       } else {
-        lastStep.setNextStep(observedContraIndicationStep);
-        observedContraIndicationStep.setPreviousStep(lastStep);
-        lastStep = observedContraIndicationStep;
+        log.debug("No contra-indications of type OBSERVED. Skipping step.");
       }
-    } else {
-      log.debug("No contra-indications of type OBSERVED. Skipping step.");
-    }
 
-    // are there asked contra-indications to display ?
-    if(activeTubeRegistrationService.hasContraindications(Contraindication.Type.ASKED)) {
-      if(startStep == null) {
-        startStep = askedContraIndicationStep;
-        lastStep = startStep;
+      // are there asked contra-indications to display ?
+      if(activeTubeRegistrationService.hasContraindications(Contraindication.Type.ASKED)) {
+        if(startStep == null) {
+          startStep = askedContraIndicationStep;
+          lastStep = startStep;
+        } else {
+          lastStep.setNextStep(askedContraIndicationStep);
+          askedContraIndicationStep.setPreviousStep(lastStep);
+          lastStep = askedContraIndicationStep;
+        }
       } else {
-        lastStep.setNextStep(askedContraIndicationStep);
-        askedContraIndicationStep.setPreviousStep(lastStep);
-        lastStep = askedContraIndicationStep;
+        log.debug("No contra-indications of type ASKED. Skipping step.");
       }
-    } else {
-      log.debug("No contra-indications of type ASKED. Skipping step.");
     }
 
     if(startStep == null) {
@@ -197,5 +214,18 @@ public class RubyWizardForm extends WizardForm {
     }
 
     return startStep;
+  }
+
+  public void onInterrupt(AjaxRequestTarget target) {
+    IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
+    ActionDefinition actionDef = exec.getActionDefinition(ActionType.INTERRUPT);
+
+    if(actionDef != null) {
+      actionWindow.show(target, stageModel, actionDef);
+    }
+  }
+
+  public boolean isResuming() {
+    return resuming;
   }
 }
