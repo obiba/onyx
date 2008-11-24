@@ -207,8 +207,8 @@ public class DropDownQuestionPanelTest {
   public Questionnaire createQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
 
-    builder.withSection("S1").withPage("P1").withQuestion("Q1", DropDownQuestionPanelFactory.class).withCategories("1", "2", "3");
-    builder.withSection("S2").withPage("P2").withQuestion("Q2", DropDownQuestionPanelFactory.class).withCategory("1").withOpenAnswerDefinition("OPEN_INT", DataType.INTEGER);
+    builder.withSection("S1").withPage("P1").withQuestion("Q1", "1", DropDownQuestionPanelFactory.class).withCategories("1", "2", "3");
+    builder.withSection("S2").withPage("P2").withQuestion("Q2", "2", DropDownQuestionPanelFactory.class).withCategory("1").withOpenAnswerDefinition("OPEN_INT", DataType.INTEGER);
     builder.inQuestion("Q2").withCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
 
     builder.withSection("S3").withPage("P3").withQuestion("Q3").withCategories("1", "2", "3");

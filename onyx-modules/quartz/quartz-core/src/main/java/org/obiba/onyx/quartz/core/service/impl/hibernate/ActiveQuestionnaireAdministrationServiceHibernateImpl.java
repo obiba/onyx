@@ -41,7 +41,11 @@ public class ActiveQuestionnaireAdministrationServiceHibernateImpl extends Defau
   public CategoryAnswer findAnswer(Question question, Category category) {
     Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant", Operation.eq, getQuestionnaireParticipant()).add("categoryName", Operation.eq, category.getName()).add("questionAnswer.questionName", Operation.eq, question.getName()).getCriteria();
     return (CategoryAnswer) criteria.uniqueResult();
+  }
 
+  public CategoryAnswer findAnswer(String questionnaireName, String questionName, String categoryName) {
+    Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant.participant", Operation.eq, getQuestionnaireParticipant().getParticipant()).add("questionAnswer.questionnaireParticipant.questionnaireName", Operation.eq, questionnaireName).add("categoryName", Operation.eq, categoryName).add("questionAnswer.questionName", Operation.eq, questionName).getCriteria();
+    return (CategoryAnswer) criteria.uniqueResult();
   }
 
   @SuppressWarnings("unchecked")
@@ -56,6 +60,12 @@ public class ActiveQuestionnaireAdministrationServiceHibernateImpl extends Defau
     return criteria.list();
   }
 
+  @SuppressWarnings("unchecked")
+  public List<CategoryAnswer> findActiveAnswers(String questionnaireName, String questionName) {
+    Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant.participant", Operation.eq, getQuestionnaireParticipant().getParticipant()).add("questionAnswer.questionnaireParticipant.questionnaireName", Operation.eq, questionnaireName).add("questionAnswer.questionName", Operation.eq, questionName).add("active", Operation.eq, true).getCriteria();
+    return criteria.list();
+  }
+
   public OpenAnswer findOpenAnswer(QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition) {
     return findOpenAnswer(questionCategory.getQuestion(), questionCategory.getCategory(), openAnswerDefinition);
   }
@@ -67,7 +77,7 @@ public class ActiveQuestionnaireAdministrationServiceHibernateImpl extends Defau
 
   public OpenAnswer findOpenAnswer(String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
     QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant();
-    Criteria criteria = AssociationCriteria.create(OpenAnswer.class, getSession()).add("categoryAnswer.questionAnswer.questionnaireParticipant.participant", Operation.eq, questionnaireParticipant.getParticipant()).add("categoryAnswer.questionAnswer.questionnaireParticipant.questionnaireName", Operation.eq, questionnaireParticipant.getQuestionnaireName()).add("categoryAnswer.questionAnswer.questionName", Operation.eq, questionName).add("categoryAnswer.categoryName", Operation.eq, categoryName).add("openAnswerDefinitionName", Operation.eq, openAnswerDefinitionName).getCriteria();
+    Criteria criteria = AssociationCriteria.create(OpenAnswer.class, getSession()).add("categoryAnswer.questionAnswer.questionnaireParticipant.participant", Operation.eq, questionnaireParticipant.getParticipant()).add("categoryAnswer.questionAnswer.questionnaireParticipant.questionnaireName", Operation.eq, questionnaireName).add("categoryAnswer.questionAnswer.questionName", Operation.eq, questionName).add("categoryAnswer.categoryName", Operation.eq, categoryName).add("openAnswerDefinitionName", Operation.eq, openAnswerDefinitionName).getCriteria();
     return (OpenAnswer) criteria.uniqueResult();
   }
 

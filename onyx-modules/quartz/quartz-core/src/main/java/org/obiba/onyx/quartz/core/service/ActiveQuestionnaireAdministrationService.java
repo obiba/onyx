@@ -145,6 +145,14 @@ public interface ActiveQuestionnaireAdministrationService {
   public List<CategoryAnswer> findActiveAnswers(Question question);
 
   /**
+   * Get the active answers for a {@link Question}.
+   * @param questionnaireName
+   * @param questionName
+   * @return empty list if not found
+   */
+  public List<CategoryAnswer> findActiveAnswers(String questionnaireName, String questionName);
+
+  /**
    * Get the answer for the {@link QuestionCategory}.
    * @param questionCategory
    * @return null if not found
@@ -166,6 +174,15 @@ public interface ActiveQuestionnaireAdministrationService {
    * @return null if not found
    */
   public CategoryAnswer findAnswer(Question question, Category category);
+
+  /**
+   * Get the answer for the {@link Category}, {@link Question} and {@link Questionnaire}.
+   * @param questionnaireName
+   * @param questionName
+   * @param categoryName
+   * @return null if not found
+   */
+  public CategoryAnswer findAnswer(String questionnaireName, String questionName, String categoryName);
 
   /**
    * Get the openAnswer for the {@link QuestionCategory} and the {@link OpenAnswerDefinition}.

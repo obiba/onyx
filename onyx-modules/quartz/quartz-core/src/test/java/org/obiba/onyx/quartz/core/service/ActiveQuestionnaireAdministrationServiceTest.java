@@ -86,6 +86,8 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     testAnswer(questionnaireParticipant, q1, q2, q3);
     testFindAnswers(q1);
     testFindAnswer(q2);
+    testFindExternalAnswer(q2);
+    testFindActiveAnswers(q1);
     testFindOpenAnswer(q3);
     testFindExternalOpenAnswer(q3);
     testSetActiveAnswers();
@@ -135,6 +137,16 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     template.setCategoryAnswer(yearFound);
     List<OpenAnswer> openAnswers = persistenceManager.match(template);
     Assert.assertEquals("1979", openAnswers.get(0).getData().getValueAsString());
+  }
+
+  private void testFindExternalAnswer(Question q2) {
+    CategoryAnswer yearFound = activeQuestionnaireAdministrationService.findAnswer(activeQuestionnaireAdministrationService.getQuestionnaire().getName(), q2.getName(), q2.getQuestionCategories().get(0).getCategory().getName());
+    Assert.assertEquals("1", yearFound.getCategoryName());
+  }
+
+  private void testFindActiveAnswers(Question q1) {
+    List<CategoryAnswer> categoryAnswers = activeQuestionnaireAdministrationService.findActiveAnswers(activeQuestionnaireAdministrationService.getQuestionnaire().getName(), q1.getName());
+    Assert.assertEquals(3, categoryAnswers.size());
   }
 
   private void testFindOpenAnswer(Question q3) {

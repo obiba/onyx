@@ -99,7 +99,18 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    * @see #getQuestion()
    */
   public QuestionBuilder withQuestion(String name) {
-    return QuestionBuilder.createQuestion(this, name, false);
+    return QuestionBuilder.createQuestion(this, name, null, false);
+  }
+
+  /**
+   * Add a required, non multiple, with number {@link Question} to current {@link Page} and make it current
+   * {@link Question}.
+   * @param name
+   * @return
+   * @see #getQuestion()
+   */
+  public QuestionBuilder withQuestion(String name, String number) {
+    return QuestionBuilder.createQuestion(this, name, number, false);
   }
 
   /**
@@ -110,7 +121,18 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    * @see #getQuestion()
    */
   public QuestionBuilder withQuestion(String name, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
-    return QuestionBuilder.createQuestion(this, name, false, uiFactoryClass);
+    return QuestionBuilder.createQuestion(this, name, null, false, uiFactoryClass);
+  }
+
+  /**
+   * Add a required, non multiple, {@link Question} to current {@link Page} and make it current {@link Question}.
+   * @param name
+   * @param uiFactoryClass
+   * @return
+   * @see #getQuestion()
+   */
+  public QuestionBuilder withQuestion(String name, String number, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
+    return QuestionBuilder.createQuestion(this, name, number, false, uiFactoryClass);
   }
 
   /**
@@ -120,7 +142,17 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    * @see #getQuestion()
    */
   public QuestionBuilder withQuestion(String name, boolean multiple) {
-    return QuestionBuilder.createQuestion(this, name, multiple);
+    return QuestionBuilder.createQuestion(this, name, null, multiple);
+  }
+
+  /**
+   * Add a required, {@link Question} to current {@link Page} and make it current {@link Question}.
+   * @param name
+   * @return
+   * @see #getQuestion()
+   */
+  public QuestionBuilder withQuestion(String name, String number, boolean multiple) {
+    return QuestionBuilder.createQuestion(this, name, number, multiple);
   }
 
   /**
@@ -130,8 +162,8 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    * @return
    * @see #getQuestion()
    */
-  public QuestionBuilder withQuestion(String name, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
-    return QuestionBuilder.createQuestion(this, name, multiple, uiFactoryClass);
+  public QuestionBuilder withQuestion(String name, String number, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
+    return QuestionBuilder.createQuestion(this, name, number, multiple, uiFactoryClass);
   }
 
   /**

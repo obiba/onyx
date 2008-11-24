@@ -37,7 +37,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @param multiple
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
-  private QuestionBuilder(PageBuilder parent, String name, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
+  private QuestionBuilder(PageBuilder parent, String name, String number, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
     super(parent.getQuestionnaire());
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
@@ -46,6 +46,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
       throw invalidNameUnicityException(Question.class, name);
     }
     element = new Question(name);
+    element.setNumber(number);
     element.setRequired(true);
     element.setMultiple(multiple);
     try {
@@ -74,8 +75,8 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @return
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
-  public static QuestionBuilder createQuestion(PageBuilder parent, String name, boolean multiple) {
-    return createQuestion(parent, name, multiple, DefaultQuestionPanelFactory.class);
+  public static QuestionBuilder createQuestion(PageBuilder parent, String name, String number, boolean multiple) {
+    return createQuestion(parent, name, number, multiple, DefaultQuestionPanelFactory.class);
   }
 
   /**
@@ -86,8 +87,8 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @return
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
-  public static QuestionBuilder createQuestion(PageBuilder parent, String name, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
-    return new QuestionBuilder(parent, name, multiple, uiFactoryClass);
+  public static QuestionBuilder createQuestion(PageBuilder parent, String name, String number, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
+    return new QuestionBuilder(parent, name, number, multiple, uiFactoryClass);
   }
 
   /**
@@ -106,7 +107,17 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @return
    */
   public QuestionBuilder withQuestion(String name) {
-    return withQuestion(name, false);
+    return withQuestion(name, null, false);
+  }
+
+  /**
+   * Add a required, non multiple, with number {@link Question} to current {@link Question} and make it current
+   * {@link Question}.
+   * @param name
+   * @return
+   */
+  public QuestionBuilder withQuestion(String name, String number) {
+    return withQuestion(name, number, false);
   }
 
   /**
@@ -116,7 +127,17 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @return
    */
   public QuestionBuilder withQuestion(String name, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
-    return withQuestion(name, false, uiFactoryClass);
+    return withQuestion(name, null, false, uiFactoryClass);
+  }
+
+  /**
+   * Add a required, non multiple, {@link Question} to current {@link Question} and make it current {@link Question}.
+   * @param name
+   * @param uiFactoryClass
+   * @return
+   */
+  public QuestionBuilder withQuestion(String name, String number, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
+    return withQuestion(name, number, false, uiFactoryClass);
   }
 
   /**
@@ -127,7 +148,18 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @see #getQuestion()
    */
   public QuestionBuilder withQuestion(String name, boolean multiple) {
-    return withQuestion(name, multiple, DefaultQuestionPanelFactory.class);
+    return withQuestion(name, null, multiple, DefaultQuestionPanelFactory.class);
+  }
+
+  /**
+   * Add a required {@link Question} to current {@link Question} and make it current {@link Question}.
+   * @param name
+   * @param multiple
+   * @return
+   * @see #getQuestion()
+   */
+  public QuestionBuilder withQuestion(String name, String number, boolean multiple) {
+    return withQuestion(name, number, multiple, DefaultQuestionPanelFactory.class);
   }
 
   /**
@@ -138,7 +170,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @return
    * @see #getQuestion()
    */
-  public QuestionBuilder withQuestion(String name, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
+  public QuestionBuilder withQuestion(String name, String number, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
@@ -152,6 +184,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
       throw invalidQuestionPanelFactoryException(uiFactoryClass, e);
     }
     Question question = new Question(name);
+    question.setNumber(number);
     question.setRequired(true);
     question.setMultiple(multiple);
     question.setUIFactoryName(uiFactoryName);
@@ -277,6 +310,10 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
 
   public ConditionBuilder setAnswerCondition(String name, String question, String category) {
     return ConditionBuilder.createQuestionCondition(this, name, question, category);
+  }
+
+  public ConditionBuilder setExternalAnswerCondition(String name, String questionnaireName, String question, String category) {
+    return ConditionBuilder.createQuestionCondition(this, name, questionnaireName, question, category);
   }
 
   public ConditionBuilder setDataCondition(String name, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName, ComparisionOperator comparisionOperator, Data data) {

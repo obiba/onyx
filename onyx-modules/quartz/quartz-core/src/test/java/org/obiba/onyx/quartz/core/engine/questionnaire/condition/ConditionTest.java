@@ -110,6 +110,19 @@ public class ConditionTest {
   }
 
   @Test
+  public void testQuestionCategoryExternalAnswerCondition() {
+    Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("Q1");
+
+    expect(activeQuestionnaireAdministrationServiceMock.findActiveAnswers(questionnaire.getName(), question.getName())).andReturn(Arrays.asList(new CategoryAnswer[] { new CategoryAnswer() }));
+    replay(activeQuestionnaireAdministrationServiceMock);
+
+    ExternalAnswerCondition condition = new ExternalAnswerCondition("condition", questionnaire.getName(), question.getName(), null);
+    Assert.assertTrue(condition.isToBeAnswered(activeQuestionnaireAdministrationServiceMock));
+
+    verify(activeQuestionnaireAdministrationServiceMock);
+  }
+
+  @Test
   public void testDataCondition() {
     DataCondition condition = new DataCondition("condition", new FixedSource(DataBuilder.buildInteger(1)), ComparisionOperator.lt, new FixedSource(DataBuilder.buildInteger(2)));
     Assert.assertTrue(condition.isToBeAnswered(activeQuestionnaireAdministrationServiceMock));

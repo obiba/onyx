@@ -15,6 +15,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOper
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.DataCondition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ExternalAnswerCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.MultipleCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.NotCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -39,6 +40,15 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
     super(parent.getQuestionnaire());
 
     element = getValidAnswerCondition(name, questionName, categoryName);
+    element.addQuestion(parent.getElement());
+  }
+
+  private ConditionBuilder(QuestionBuilder parent, String name, String questionnaireName, String questionName, String categoryName) {
+    super(parent.getQuestionnaire());
+
+    if(QuestionnaireFinder.getInstance(questionnaire).findCondition(name) != null) throw invalidNameUnicityException(Condition.class, name);
+
+    element = new ExternalAnswerCondition(name, questionnaireName, questionName, categoryName);
     element.addQuestion(parent.getElement());
   }
 
@@ -113,6 +123,19 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    */
   public static ConditionBuilder createQuestionCondition(QuestionBuilder questionBuilder, String name, String question, String category) {
     return new ConditionBuilder(questionBuilder, name, question, category);
+  }
+
+  /**
+   * Add a {@link AnswerCondition} to current {@link Question}.
+   * @param name
+   * @param questionnaireName
+   * @param question
+   * @param category
+   * @param openAnswerDefinition
+   * @return
+   */
+  public static ConditionBuilder createQuestionCondition(QuestionBuilder questionBuilder, String name, String questionnaireName, String question, String category) {
+    return new ConditionBuilder(questionBuilder, name, questionnaireName, question, category);
   }
 
   /**
@@ -209,6 +232,32 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    */
   public ConditionBuilder withAnswerCondition(String name, String questionName) {
     return withAnswerCondition(name, questionName, null);
+  }
+
+  /**
+   * Add a {@link AnswerCondition} on the current ConditionBuilder.
+   * @param name
+   * @param questionName
+   * @param categoryName
+   * @param openAnswerDefinitionName
+   * @param data
+   * @param comparisionOperator
+   * @param occurence
+   * @return
+   */
+  public ConditionBuilder withExternalAnswerCondition(String name, String questionnaireName, String questionName, String categoryName) {
+    if(QuestionnaireFinder.getInstance(questionnaire).findCondition(name) != null) throw invalidNameUnicityException(Condition.class, name);
+
+    ExternalAnswerCondition externalAnswerCondition = new ExternalAnswerCondition(name, questionnaireName, questionName, categoryName);
+
+    if(element instanceof MultipleCondition) {
+      ((MultipleCondition) element).getConditions().add(externalAnswerCondition);
+    } else if(element instanceof NotCondition) {
+      ((NotCondition) element).setCondition(externalAnswerCondition);
+    }
+
+    element = externalAnswerCondition;
+    return this;
   }
 
   /**

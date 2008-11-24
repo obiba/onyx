@@ -49,8 +49,8 @@ public class CreateQuestionnaire {
   public void createQuestionnaire() {
     // Select the questionnaire you wish to create
     // QuestionnaireBuilder builder = TestQuestionnaireContentBuilder.buildTestQuestionnaire();
-    // QuestionnaireBuilder builder = SelfAdminHealthQuestionnaireContentBuilder.buildHealthQuestionnaire();
-    QuestionnaireBuilder builder = AssistedHealthQuestionnaireContentBuilder.buildHealthQuestionnaire();
+    QuestionnaireBuilder builder = SelfAdminHealthQuestionnaireContentBuilder.buildHealthQuestionnaire();
+    // QuestionnaireBuilder builder = AssistedHealthQuestionnaireContentBuilder.buildHealthQuestionnaire();
 
     // Create the bundle manager.
     QuestionnaireBundleManager bundleManager = new QuestionnaireBundleManagerImpl(bundleRootDirectory);
