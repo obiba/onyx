@@ -17,6 +17,11 @@
     <property name="moduleName" value="quartz" />
   </bean>
 
+  <bean name="rubyDependency" class="org.obiba.onyx.engine.ModuleDependencyCondition">
+    <property name="moduleRegistry" ref="moduleRegistry" />
+    <property name="moduleName" value="ruby" />
+  </bean>
+  
   <bean id="micaOnyxModule" class="org.obiba.onyx.mica.engine.MicaModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="stages">
@@ -28,13 +33,19 @@
           <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
             <property name="leftStageDependencyCondition">
               <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
-                <property name="leftStageDependencyCondition" ref="consentDependency" />
+                <property name="leftStageDependencyCondition">
+                  <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+                    <property name="leftStageDependencyCondition" ref="consentDependency" />
+                    <property name="operator" value="AND" />
+                    <property name="rightStageDependencyCondition" ref="jadeDependency" />
+                  </bean>
+                </property>
                 <property name="operator" value="AND" />
-                <property name="rightStageDependencyCondition" ref="jadeDependency" />
+                <property name="rightStageDependencyCondition" ref="quartzDependency" />
               </bean>
             </property>
             <property name="operator" value="AND" />
-            <property name="rightStageDependencyCondition" ref="quartzDependency" />
+            <property name="rightStageDependencyCondition" ref="rubyDependency" />
           </bean>
         </property>
       </bean>
