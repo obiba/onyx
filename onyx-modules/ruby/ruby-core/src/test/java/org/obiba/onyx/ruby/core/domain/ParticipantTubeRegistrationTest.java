@@ -15,9 +15,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.obiba.core.service.PersistenceManager;
-import org.obiba.core.test.spring.DbUnitAwareTestExecutionListener;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.contraindication.Contraindication.Type;
 import org.obiba.onyx.core.domain.participant.Interview;
@@ -28,14 +26,6 @@ import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.request.SessionScope;
@@ -43,11 +33,13 @@ import org.springframework.web.context.request.SessionScope;
 /**
  * Test the persistence with spring/hibernate environment
  */
-@Transactional
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/test-spring-context.xml" })
-@TransactionConfiguration(transactionManager = "transactionManager")
-@TestExecutionListeners(value = { DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class, DbUnitAwareTestExecutionListener.class })
+// @Transactional
+// @RunWith(SpringJUnit4ClassRunner.class)
+// @ContextConfiguration(locations = { "/test-spring-context.xml" })
+// @TransactionConfiguration(transactionManager = "transactionManager")
+// @TestExecutionListeners(value = { DependencyInjectionTestExecutionListener.class,
+// DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class,
+// DbUnitAwareTestExecutionListener.class })
 public class ParticipantTubeRegistrationTest {
 
   private ConfigurableApplicationContext applicationContext;
