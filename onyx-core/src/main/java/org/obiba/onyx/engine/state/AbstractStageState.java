@@ -109,11 +109,15 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   }
 
   public ActionDefinition getActionDefinition(ActionType type) {
-    return actionDefinitionConfig.getActionDefinition(type, getName(), getStage().getModule(), getStage().getName());
+    ActionDefinition definition = actionDefinitionConfig.getActionDefinition(type, getName(), getStage().getModule(), getStage().getName());
+    checkDefinitionForType(definition, type);
+    return definition;
   }
 
   public ActionDefinition getSystemActionDefinition(ActionType type) {
-    return actionDefinitionConfig.getActionDefinition(type, getName(), getStage().getModule(), getStage().getName());
+    ActionDefinition definition = actionDefinitionConfig.getActionDefinition(type, getName(), getStage().getModule(), getStage().getName());
+    checkDefinitionForType(definition, type);
+    return definition;
   }
 
   public List<ActionDefinition> getSystemActionDefinitions() {
@@ -213,9 +217,15 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
     List<ActionDefinition> definitions = new ArrayList<ActionDefinition>(types.size());
     for(ActionType type : types) {
       ActionDefinition definition = actionDefinitionConfig.getActionDefinition(type, getName(), getStage().getModule(), getStage().getName());
+      checkDefinitionForType(definition, type);
       definitions.add(definition);
     }
     return definitions;
   }
 
+  private void checkDefinitionForType(ActionDefinition definition, ActionType type) {
+    if(definition == null) {
+      throw new IllegalStateException("No ActionDefinition associated for ActionType " + type);
+    }
+  }
 }

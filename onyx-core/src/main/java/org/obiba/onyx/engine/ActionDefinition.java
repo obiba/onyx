@@ -65,6 +65,20 @@ public class ActionDefinition implements Serializable {
     this.code = code;
   }
 
+  ActionDefinition(ActionDefinition rhs) {
+    this.type = rhs.type;
+    this.code = rhs.code;
+    this.askPassword = rhs.askPassword;
+    this.askParticipantId = rhs.askParticipantId;
+    this.commentMandatory = rhs.commentMandatory;
+    this.reasonMandatory = rhs.reasonMandatory;
+    this.defaultReason = rhs.defaultReason;
+    if(rhs.reasons != null) {
+      this.reasons = new ArrayList<String>();
+      this.reasons.addAll(rhs.reasons);
+    }
+  }
+
   public ActionType getType() {
     return type;
   }
@@ -77,12 +91,16 @@ public class ActionDefinition implements Serializable {
     return code;
   }
 
+  public void setCode(String code) {
+    this.code = code;
+  }
+
   public MessageSourceResolvable getLabel() {
-    return new DefaultMessageSourceResolvable(calculateCodes(null), getType().toString());
+    return new DefaultMessageSourceResolvable(ActionDefinitionConfiguration.calculateCodes(this, null), getType().toString());
   }
 
   public MessageSourceResolvable getDescription() {
-    return new DefaultMessageSourceResolvable(calculateCodes(".description"), getType().toString());
+    return new DefaultMessageSourceResolvable(ActionDefinitionConfiguration.calculateCodes(this, ".description"), getType().toString());
   }
 
   public boolean isAskPassword() {
@@ -134,16 +152,4 @@ public class ActionDefinition implements Serializable {
     return code.toString();
   }
 
-  protected String[] calculateCodes(String suffix) {
-    ArrayList<String> codes = new ArrayList<String>();
-    StringBuilder sb = new StringBuilder(getCode());
-    codes.add(sb.toString() + (suffix != null ? suffix : ""));
-    int lastDotIndex;
-    while((lastDotIndex = sb.lastIndexOf(".")) > 0) {
-      int length = sb.length();
-      sb.delete(lastDotIndex, length);
-      codes.add(sb.toString() + (suffix != null ? suffix : ""));
-    }
-    return codes.toArray(new String[codes.size()]);
-  }
 }

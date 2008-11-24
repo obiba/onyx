@@ -1,0 +1,19 @@
+<actionDefinitions>
+  <!-- Ask the user's password for all actions of type "EXECUTE" -->
+  <actionDefinition>
+    <code>action.EXECUTE</code>
+    <type>EXECUTE</type>
+    <askPassword>true</askPassword>
+    <askParticipantId>true</askParticipantId>
+  </actionDefinition>
+
+  <!-- Require a comment for all actions of type "SKIP" -->
+  <actionDefinition>
+    <code>action.SKIP</code>
+    <type>SKIP</type>
+    <askPassword>true</askPassword>
+    <askParticipantId>true</askParticipantId>
+    <commentMandatory>true</commentMandatory>
+  </actionDefinition>
+
+</actionDefinitions>

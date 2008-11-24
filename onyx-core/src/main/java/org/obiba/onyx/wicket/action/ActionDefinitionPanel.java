@@ -87,19 +87,9 @@ public abstract class ActionDefinitionPanel extends Panel {
     form.add(new Label("participantGender", new StringResourceModel("Gender." + participant.getGender(), this, null)));
     form.add(new Label("participantBirthDate", DateModelUtils.getDateModel(new Model(participant.getBirthDate()))));
 
-    if(definition.isAskPassword()) {
-      form.add(new PasswordFragment("password"));
-    } else {
-      form.add(new EmptyPanel("password").setVisible(false));
-    }
-
-    if(definition.isAskParticipantId()) {
-      form.add(new BarcodeFragment("confirmBarcode"));
-    } else {
-      form.add(new EmptyPanel("confirmBarcode").setVisible(false));
-    }
-
-    form.add(new TextArea("comment", new PropertyModel(this, "action.comment")));
+    form.add(new PasswordFragment("password").setVisible(definition.isAskPassword()));
+    form.add(new BarcodeFragment("confirmBarcode").setVisible(definition.isAskParticipantId()));
+    form.add(new TextArea("comment", new PropertyModel(this, "action.comment")).setRequired(definition.isCommentMandatory()));
 
     action.setEventReason(definition.getDefaultReason());
     if(definition.getReasons().size() > 0) {

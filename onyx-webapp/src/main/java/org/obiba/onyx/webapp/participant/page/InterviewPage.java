@@ -138,7 +138,7 @@ public class InterviewPage extends BasePage {
       add(kvPanel);
 
       // Interview cancellation
-      final ActionDefinition cancelInterviewDef = actionDefinitionConfiguration.getActionDefinition(ActionType.STOP, "action.interview");
+      final ActionDefinition cancelInterviewDef = actionDefinitionConfiguration.getActionDefinition(ActionType.STOP, "Interview", null, null);
       final ActionWindow interviewActionWindow = new ActionWindow("modal") {
 
         private static final long serialVersionUID = 1L;
