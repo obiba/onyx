@@ -36,7 +36,6 @@ import org.obiba.onyx.engine.StageDependencyCondition;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.ruby.engine.state.RubyCompletedState;
 import org.obiba.onyx.ruby.engine.state.RubyContraIndicatedState;
@@ -92,8 +91,6 @@ public class RubyModuleTest {
 
   private Stage stage;
 
-  private ParticipantTubeRegistration participantTubeRegistration;
-
   //
   // Fixture Methods
   //
@@ -115,8 +112,6 @@ public class RubyModuleTest {
 
     StageDependencyConditionMock stageDependencyConditionMock = new StageDependencyConditionMock();
     stage.setStageDependencyCondition(stageDependencyConditionMock);
-
-    participantTubeRegistration = new ParticipantTubeRegistration();
 
     //
     // Create test application context and add to it the necessary mocks.

@@ -16,6 +16,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
+import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.wicket.RubyPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,17 @@ public class RubyInProgressState extends AbstractRubyStageState {
   @Override
   public void complete(Action action) {
     log.info("Ruby Stage {} is completing", super.getStage().getName());
-    castEvent(TransitionEvent.COMPLETE);
+
+    ParticipantTubeRegistration participantTubeRegistration = activeTubeRegistrationService.getParticipantTubeRegistration();
+    boolean contraIndicated = (participantTubeRegistration.getContraindication() != null);
+
+    activeTubeRegistrationService.end();
+
+    if(contraIndicated) {
+      castEvent(TransitionEvent.CONTRAINDICATED);
+    } else {
+      castEvent(TransitionEvent.COMPLETE);
+    }
   }
 
   @Override
