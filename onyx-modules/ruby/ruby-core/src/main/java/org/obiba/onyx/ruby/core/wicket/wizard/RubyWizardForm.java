@@ -129,6 +129,10 @@ public class RubyWizardForm extends WizardForm {
     this.actionWindow = window;
   }
 
+  public ActionWindow getActionWindow() {
+    return actionWindow;
+  }
+
   public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
     this.feedbackPanel = feedbackPanel;
   }
