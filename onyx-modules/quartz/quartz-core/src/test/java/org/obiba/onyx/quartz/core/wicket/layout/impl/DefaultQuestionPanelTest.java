@@ -880,10 +880,10 @@ public class DefaultQuestionPanelTest {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
 
     builder.withSection("S1").withPage("P1").withQuestion("Q1").withCategories("1", "2", "3", "4", "5", "6", "7", "8");
-    builder.inPage("P1").withQuestion("Q1_MULTIPLE", true).withCategories("1", "2", "3");
+    builder.inPage("P1").withQuestion("Q1_MULTIPLE", "1", true).withCategories("1", "2", "3");
     builder.withSection("S2").withPage("P2").withQuestion("Q2").withCategory("1").withOpenAnswerDefinition("OPEN_INT", DataType.INTEGER);
     builder.inQuestion("Q2").withSharedCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
-    builder.inPage("P2").withQuestion("Q2_MULTIPLE", true).withCategory("1").withOpenAnswerDefinition("OPEN_TEXT", DataType.TEXT);
+    builder.inPage("P2").withQuestion("Q2_MULTIPLE", "2", true).withCategory("1").withOpenAnswerDefinition("OPEN_TEXT", DataType.TEXT);
     builder.inQuestion("Q2_MULTIPLE").withSharedCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
 
     builder.withSection("S3").withPage("P3").withQuestion("Q3").withCategories("1", "2").withCategory("3").withOpenAnswerDefinition("OPEN_3", DataType.TEXT);
@@ -895,7 +895,7 @@ public class DefaultQuestionPanelTest {
     builder.inOpenAnswerDefinition("DURATION_OPEN").withOpenAnswerDefinition("DURATION_OPEN_MINUTES", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 960));
     builder.inQuestion("MULTIPLE_OPEN").withSharedCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
 
-    builder.inPage("P_MULTIPLE_OPEN").withQuestion("MULTIPLE_MULTIPLE_OPEN", true).withSharedCategory("MULTIPLE_DURATION").withOpenAnswerDefinition("MULTIPLE_DURATION_OPEN", DataType.INTEGER);
+    builder.inPage("P_MULTIPLE_OPEN").withQuestion("MULTIPLE_MULTIPLE_OPEN", "3", true).withSharedCategory("MULTIPLE_DURATION").withOpenAnswerDefinition("MULTIPLE_DURATION_OPEN", DataType.INTEGER);
     builder.inOpenAnswerDefinition("MULTIPLE_DURATION_OPEN").withOpenAnswerDefinition("MULTIPLE_DURATION_OPEN_HOURS", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 16));
     builder.inOpenAnswerDefinition("MULTIPLE_DURATION_OPEN").withOpenAnswerDefinition("MULTIPLE_DURATION_OPEN_MINUTES", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 960));
     builder.inQuestion("MULTIPLE_MULTIPLE_OPEN").withSharedCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
