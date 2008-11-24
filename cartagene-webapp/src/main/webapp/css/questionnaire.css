@@ -77,6 +77,10 @@ div.page div.questions div.question div.categories {
 	padding-left:15px;
 }
 
+div.page div.questions div.question div.categories td.category {
+	padding-right:10px;
+}
+
 table.array {
 	padding-bottom:5px;
 }
