@@ -11,17 +11,16 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 import java.util.ArrayList;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.html.form.RadioGroup;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.GridView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.MultipleChoiceQuestionValidator;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,42 +55,45 @@ public class DefaultQuestionCategoriesPanel extends Panel {
     radioGroup.setRequired(!question.isBoilerPlate() && question.isRequired());
     add(radioGroup);
 
-    RepeatingView repeater = new RepeatingView("category");
+    GridView repeater = new AbstractQuestionCategoriesView("category", getModel()) {
+
+      @Override
+      protected void populateItem(Item item) {
+        if(item.getModel() == null) {
+          item.add(new EmptyPanel("input").setVisible(false));
+        } else {
+          item.add(new QuestionCategoryRadioPanel("input", item.getModel(), radioGroup) {
+
+            @Override
+            public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+              // update all
+              target.addComponent(DefaultQuestionCategoriesPanel.this);
+            }
+
+            @Override
+            public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+              // update all
+              target.addComponent(DefaultQuestionCategoriesPanel.this);
+            }
+
+            @Override
+            public void onOpenFieldError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+              // update all
+              // target.addComponent(DefaultQuestionCategoriesPanel.this);
+            }
+
+            @Override
+            public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+              // update all
+              target.addComponent(DefaultQuestionCategoriesPanel.this);
+            }
+
+          });
+        }
+      }
+
+    };
     radioGroup.add(repeater);
-
-    for(QuestionCategory questionCategory : ((Question) getModelObject()).getQuestionCategories()) {
-      WebMarkupContainer item = new WebMarkupContainer(repeater.newChildId());
-      repeater.add(item);
-      item.setModel(new QuestionnaireModel(questionCategory));
-
-      item.add(new QuestionCategoryRadioPanel("input", item.getModel(), radioGroup) {
-
-        @Override
-        public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          // update all
-          target.addComponent(DefaultQuestionCategoriesPanel.this);
-        }
-
-        @Override
-        public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          // update all
-          target.addComponent(DefaultQuestionCategoriesPanel.this);
-        }
-
-        @Override
-        public void onOpenFieldError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          // update all
-          // target.addComponent(DefaultQuestionCategoriesPanel.this);
-        }
-
-        @Override
-        public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          // update all
-          target.addComponent(DefaultQuestionCategoriesPanel.this);
-        }
-
-      });
-    }
   }
 
   /**
@@ -100,28 +102,31 @@ public class DefaultQuestionCategoriesPanel extends Panel {
    */
   @SuppressWarnings("serial")
   private void addCheckBoxGroup(Question question) {
-    CheckGroup checkGroup = new CheckGroup("categories", new ArrayList<IModel>());
+    final CheckGroup checkGroup = new CheckGroup("categories", new ArrayList<IModel>());
     checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
     // checkGroup.setRequired(!question.isBoilerPlate() && question.isRequired());
     checkGroup.add(new MultipleChoiceQuestionValidator(getModel()));
     add(checkGroup);
 
-    RepeatingView repeater = new RepeatingView("category");
-    checkGroup.add(repeater);
+    GridView repeater = new AbstractQuestionCategoriesView("category", getModel()) {
 
-    for(final QuestionCategory questionCategory : ((Question) getModelObject()).getQuestionCategories()) {
-      WebMarkupContainer item = new WebMarkupContainer(repeater.newChildId());
-      repeater.add(item);
-      item.setModel(new QuestionnaireModel(questionCategory));
-
-      item.add(new QuestionCategoryCheckBoxPanel("input", item.getModel(), checkGroup) {
-        @Override
-        public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          // update all
-          target.addComponent(this);
+      @Override
+      protected void populateItem(Item item) {
+        if(item.getModel() == null) {
+          item.add(new EmptyPanel("input").setVisible(false));
+        } else {
+          item.add(new QuestionCategoryCheckBoxPanel("input", item.getModel(), checkGroup) {
+            @Override
+            public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+              // update all
+              target.addComponent(DefaultQuestionCategoriesPanel.this);
+            }
+          });
         }
-      });
-    }
+      }
+
+    };
+    checkGroup.add(repeater);
   }
 
 }

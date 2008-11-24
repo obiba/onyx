@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.test;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.tester.FormTester;
@@ -599,6 +600,10 @@ public abstract class AbstractQuestionnaireTest {
    */
   private String getFormPath() {
     return "panel:content:form";
+  }
+
+  private Form getForm() {
+    return (Form) wicketTester.getComponentFromLastRenderedPage("panel:content:form");
   }
 
   //

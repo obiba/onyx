@@ -31,6 +31,7 @@ import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -58,6 +59,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.De
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
+import org.obiba.onyx.quartz.test.ComponentTesterUtils;
 import org.obiba.onyx.util.StringReferenceCompatibleMessageFormat;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
@@ -126,6 +129,11 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("QuestionCategory.Q1.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q1.2.label", locale, "Choice two");
     messageSource.addMessage("QuestionCategory.Q1.3.label", locale, "Choice three");
+    messageSource.addMessage("QuestionCategory.Q1.4.label", locale, "Choice four");
+    messageSource.addMessage("QuestionCategory.Q1.5.label", locale, "Choice five");
+    messageSource.addMessage("QuestionCategory.Q1.6.label", locale, "Choice six");
+    messageSource.addMessage("QuestionCategory.Q1.7.label", locale, "Choice seven");
+    messageSource.addMessage("QuestionCategory.Q1.8.label", locale, "Choice height");
 
     messageSource.addMessage("Question.Q1_MULTIPLE.label", locale, "question label");
     messageSource.addMessage("Question.Q1_MULTIPLE.help", locale, "question help");
@@ -221,6 +229,11 @@ public class DefaultQuestionPanelTest {
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(0))).andReturn(previousCategoryAnswer).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(1))).andReturn(null).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(3))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(4))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(5))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(6))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(7))).andReturn(null).atLeastOnce();
     activeQuestionnaireAdministrationServiceMock.deleteAnswers(question);
     QuestionCategory questionCategory = question.getQuestionCategories().get(1);
     expect(activeQuestionnaireAdministrationServiceMock.answer(question, questionCategory)).andReturn(new CategoryAnswer());
@@ -253,7 +266,7 @@ public class DefaultQuestionPanelTest {
       }
     });
 
-    // tester.dumpPage();
+    // dumpPage("testExclusiveChoiceQuestion");
 
     // check question message resources
     tester.assertLabel("panel:form:content:label", "question label");
@@ -265,21 +278,23 @@ public class DefaultQuestionPanelTest {
     tester.executeAjaxEvent("panel:form:content:helpToggle:link", "onclick");
     tester.assertVisible("panel:form:content:help");
 
+    QuestionCategoriesProvider provider = new QuestionCategoriesProvider(new Model(question));
+
     // check all expected radios are here
     tester.assertComponent("panel:form:content:content:categories", RadioGroup.class);
-    tester.assertComponent("panel:form:content:content:categories:category:1:input:categoryLabel:radio", Radio.class);
-    tester.assertComponent("panel:form:content:content:categories:category:2:input:categoryLabel:radio", Radio.class);
-    tester.assertComponent("panel:form:content:content:categories:category:3:input:categoryLabel:radio", Radio.class);
 
-    // check previous answer is here (radio 1)
     RadioGroup radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    Radio radio1 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:categoryLabel:radio");
-    Assert.assertEquals(radioGroup.getModelObject(), radio1.getModelObject());
+    // assert radio count
+    Assert.assertEquals(8, ComponentTesterUtils.findChildren(radioGroup, Radio.class).size());
+    // assert one of them is selected
+    Assert.assertNotNull(ComponentTesterUtils.findChild(radioGroup, Radio.class, radioGroup.getModel()));
+    // check previous answer is here (radio 1)
+    Assert.assertEquals(radioGroup.getModel(), ComponentTesterUtils.findChildren(radioGroup, Radio.class).get(0).getModel());
 
-    // select radio 2
-    tester.executeAjaxEvent("panel:form:content:content:categories:category:2:input:categoryLabel:radio", "onchange");
+    // select radio 2 (the third in markup order because of the two columns)
+    tester.executeAjaxEvent(ComponentTesterUtils.findChildren(radioGroup, Radio.class).get(2), "onchange");
     radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    Radio radio2 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:radio");
+    Radio radio2 = (Radio) ComponentTesterUtils.findChildren(radioGroup, Radio.class).get(2);
     Assert.assertEquals(radioGroup.getModelObject(), radio2.getModelObject());
 
     verify(activeInterviewServiceMock);
@@ -342,27 +357,27 @@ public class DefaultQuestionPanelTest {
 
     // tester.dumpPage();
 
-    // check all expected radios are here
-    tester.assertComponent("panel:form:content:content:categories", RadioGroup.class);
-    tester.isInvisible("panel:form:content:content:categories:category:1:input:categoryLabel:radio");
-    tester.assertComponent("panel:form:content:content:categories:category:2:input:categoryLabel:radio", Radio.class);
-    tester.assertComponent("panel:form:content:content:categories:category:3:input:categoryLabel:radio", Radio.class);
-
-    // check previous answer is here (radio 2)
     RadioGroup radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    Radio radio2 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:radio");
-    Assert.assertEquals(radioGroup.getModelObject(), radio2.getModelObject());
+    // assert radio count
+    Assert.assertEquals(3, ComponentTesterUtils.findChildren(radioGroup, Radio.class).size());
+    // assert one of them is selected
+    Assert.assertNotNull(ComponentTesterUtils.findChild(radioGroup, Radio.class, radioGroup.getModel()));
+    // check previous answer is here (radio 2)
+    Radio radio2 = (Radio) ComponentTesterUtils.findChildren(radioGroup, Radio.class).get(1);
+    Assert.assertEquals(radioGroup.getModel(), radio2.getModel());
+
     Assert.assertTrue(radioGroup.isRequired());
-    FormComponent field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:open:input:field");
+
+    FormComponent field = (FormComponent) ComponentTesterUtils.findChildren(radioGroup, TextField.class).get(0);
     Assert.assertFalse(field.isRequired());
 
     // select open field
-    tester.executeAjaxEvent("panel:form:content:content:categories:category:1:input:open:open:input:field", "onclick");
+    tester.executeAjaxEvent(field, "onclick");
     radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    Radio radio1 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:categoryLabel:radio");
+    Radio radio1 = (Radio) ComponentTesterUtils.findChildren(radioGroup, Radio.class).get(0);
     Assert.assertEquals(radioGroup.getModelObject(), radio1.getModelObject());
     Assert.assertTrue(radioGroup.isRequired());
-    field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:open:input:field");
+    field = (FormComponent) ComponentTesterUtils.findChildren(radioGroup, TextField.class).get(0);
     Assert.assertTrue(field.isRequired());
 
     verify(activeInterviewServiceMock);
@@ -429,31 +444,30 @@ public class DefaultQuestionPanelTest {
 
     // dumpPage("testExclusiveChoiceQuestionWithMultipleOpenAnswer");
 
-    // check all expected radios are here
-    tester.assertComponent("panel:form:content:content:categories", RadioGroup.class);
-    tester.isInvisible("panel:form:content:content:categories:category:1:input:categoryLabel:radio");
-    tester.assertComponent("panel:form:content:content:categories:category:2:input:categoryLabel:radio", Radio.class);
-    tester.assertComponent("panel:form:content:content:categories:category:3:input:categoryLabel:radio", Radio.class);
-
-    // check previous answer is here (radio 2)
     RadioGroup radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    Radio radio2 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:radio");
-    Assert.assertEquals(radioGroup.getModelObject(), radio2.getModelObject());
+    // assert radio count
+    Assert.assertEquals(3, ComponentTesterUtils.findChildren(radioGroup, Radio.class).size());
+    // assert one of them is selected
+    Assert.assertNotNull(ComponentTesterUtils.findChild(radioGroup, Radio.class, radioGroup.getModel()));
+    // check previous answer is here (radio 2)
+    Radio radio2 = (Radio) ComponentTesterUtils.findChildren(radioGroup, Radio.class).get(1);
+    Assert.assertEquals(radioGroup.getModel(), radio2.getModel());
     Assert.assertTrue(radioGroup.isRequired());
-    FormComponent field1 = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:repeating:1:open:open:input:field");
+
+    FormComponent field1 = (FormComponent) ComponentTesterUtils.findChildren(radioGroup, TextField.class).get(0);
     Assert.assertFalse(field1.isRequired());
-    FormComponent field2 = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:repeating:2:open:open:input:field");
+    FormComponent field2 = (FormComponent) ComponentTesterUtils.findChildren(radioGroup, TextField.class).get(1);
     Assert.assertFalse(field2.isRequired());
 
     // select open field
-    tester.executeAjaxEvent("panel:form:content:content:categories:category:1:input:open:repeating:1:open:open:input:field", "onclick");
+    tester.executeAjaxEvent(field1, "onclick");
     radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    Radio radio1 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:categoryLabel:radio");
+    Radio radio1 = (Radio) ComponentTesterUtils.findChildren(radioGroup, Radio.class).get(0);
     Assert.assertEquals(radioGroup.getModelObject(), radio1.getModelObject());
     Assert.assertTrue(radioGroup.isRequired());
-    field1 = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:repeating:1:open:open:input:field");
+    field1 = (FormComponent) ComponentTesterUtils.findChildren(radioGroup, TextField.class).get(0);
     Assert.assertTrue(field1.isRequired());
-    field2 = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:repeating:2:open:open:input:field");
+    field1 = (FormComponent) ComponentTesterUtils.findChildren(radioGroup, TextField.class).get(1);
     Assert.assertTrue(field2.isRequired());
 
     verify(activeInterviewServiceMock);
@@ -522,24 +536,21 @@ public class DefaultQuestionPanelTest {
     tester.executeAjaxEvent("panel:form:content:helpToggle:link", "onclick");
     tester.assertVisible("panel:form:content:help");
 
-    // check all expected radios are here
-    tester.assertComponent("panel:form:content:content:categories", CheckGroup.class);
-    tester.assertComponent("panel:form:content:content:categories:category:1:input:categoryLabel:checkbox", CheckBox.class);
-    tester.assertComponent("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox", CheckBox.class);
-    tester.assertComponent("panel:form:content:content:categories:category:3:input:categoryLabel:checkbox", CheckBox.class);
-
     // check previous answer is here (checkbox 1)
     CheckGroup checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    CheckBox checkbox1 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:categoryLabel:checkbox");
+    // assert radio count
+    Assert.assertEquals(3, ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).size());
+    // assert first of them is selected
+    CheckBox checkbox1 = (CheckBox) ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).get(0);
     Collection<IModel> selections = (Collection<IModel>) checkGroup.getModelObject();
     Assert.assertEquals(1, selections.size());
     Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox1.getModel()).getQuestionCategory(), selections.iterator().next().getObject());
 
     // select checkbox 2
-    tester.executeAjaxEvent("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox", "onchange");
+    tester.executeAjaxEvent(ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).get(1), "onchange");
     checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    checkbox1 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:categoryLabel:checkbox");
-    CheckBox checkbox2 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox");
+    checkbox1 = (CheckBox) ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).get(0);
+    CheckBox checkbox2 = (CheckBox) ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).get(1);
     selections = (Collection<IModel>) checkGroup.getModelObject();
     Assert.assertEquals(2, selections.size());
     Iterator<IModel> iterator = selections.iterator();
@@ -547,10 +558,10 @@ public class DefaultQuestionPanelTest {
     Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox2.getModel()).getQuestionCategory(), iterator.next().getObject());
 
     // unselect checkbox 2
-    tester.executeAjaxEvent("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox", "onchange");
+    tester.executeAjaxEvent(checkbox2, "onchange");
     checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    checkbox1 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:categoryLabel:checkbox");
-    checkbox2 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox");
+    checkbox1 = (CheckBox) ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).get(0);
+    checkbox2 = (CheckBox) ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).get(1);
     selections = (Collection<IModel>) checkGroup.getModelObject();
     Assert.assertEquals(1, selections.size());
     iterator = selections.iterator();
@@ -615,30 +626,27 @@ public class DefaultQuestionPanelTest {
 
     // dumpPage("testMultipleChoiceQuestionWithOpenAnswer");
 
-    // check all expected radios are here
-    tester.assertComponent("panel:form:content:content:categories", CheckGroup.class);
-    tester.assertComponent("panel:form:content:content:categories:category:1:input:categoryLabel:checkbox", CheckBox.class);
-    tester.assertComponent("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox", CheckBox.class);
-    tester.assertComponent("panel:form:content:content:categories:category:3:input:categoryLabel:checkbox", CheckBox.class);
-
-    // check previous answer is here (checkbox 2)
+    // check previous answer is here (checkbox 1)
     CheckGroup checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    CheckBox checkbox2 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox");
+    // assert radio count
+    Assert.assertEquals(3, ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).size());
+    // assert first of them is selected
+    CheckBox checkbox2 = (CheckBox) ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).get(1);
     Collection<IModel> selections = (Collection<IModel>) checkGroup.getModelObject();
     Assert.assertEquals(1, selections.size());
     Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox2.getModel()).getQuestionCategory(), selections.iterator().next().getObject());
-    FormComponent field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:open:input:field");
+    FormComponent field = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(0);
     Assert.assertFalse(field.isRequired());
 
     // select open field
-    tester.executeAjaxEvent("panel:form:content:content:categories:category:1:input:open:open:input:field", "onclick");
+    tester.executeAjaxEvent(field, "onclick");
     checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:open:input:field");
+    field = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(0);
     Assert.assertTrue(field.isRequired());
 
     checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    CheckBox checkbox1 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:categoryLabel:checkbox");
-    checkbox2 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox");
+    CheckBox checkbox1 = (CheckBox) ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).get(0);
+    checkbox2 = (CheckBox) ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).get(1);
     selections = (Collection<IModel>) checkGroup.getModelObject();
     Assert.assertEquals(2, selections.size());
     Iterator<IModel> iterator = selections.iterator();
@@ -708,36 +716,34 @@ public class DefaultQuestionPanelTest {
 
     // dumpPage("testMultipleChoiceQuestionWithMultipleOpenAnswer");
 
-    // check all expected radios are here
-    tester.assertComponent("panel:form:content:content:categories", CheckGroup.class);
-    tester.isInvisible("panel:form:content:content:categories:category:1:input:categoryLabel:checkbox");
-    tester.assertComponent("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox", CheckBox.class);
-    tester.assertComponent("panel:form:content:content:categories:category:3:input:categoryLabel:checkbox", CheckBox.class);
-
-    // check previous answer is here (cb 2)
+    // check previous answer is here (checkbox 2)
     CheckGroup checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    CheckBox checkbox2 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:2:input:categoryLabel:checkbox");
+    // assert radio count
+    Assert.assertEquals(3, ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).size());
+    // assert first of them is selected
+    CheckBox checkbox2 = (CheckBox) ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).get(1);
     Collection<IModel> selections = (Collection<IModel>) checkGroup.getModelObject();
     Assert.assertEquals(1, selections.size());
     Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox2.getModel()).getQuestionCategory(), selections.iterator().next().getObject());
-    FormComponent field1 = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:repeating:1:open:open:input:field");
+    FormComponent field1 = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(0);
     Assert.assertFalse(field1.isRequired());
-    FormComponent field2 = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:repeating:2:open:open:input:field");
+    FormComponent field2 = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(1);
     Assert.assertFalse(field2.isRequired());
 
     // select open field
-    tester.executeAjaxEvent("panel:form:content:content:categories:category:1:input:open:repeating:1:open:open:input:field", "onclick");
+    tester.executeAjaxEvent(field1, "onclick");
     checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
-    CheckBox checkbox1 = (CheckBox) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:categoryLabel:checkbox");
+    CheckBox checkbox1 = (CheckBox) ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).get(0);
+    checkbox2 = (CheckBox) ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).get(1);
     selections = (Collection<IModel>) checkGroup.getModelObject();
     Assert.assertEquals(2, selections.size());
     Iterator<IModel> iterator = selections.iterator();
     Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox2.getModel()).getQuestionCategory(), iterator.next().getObject());
     Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox1.getModel()).getQuestionCategory(), iterator.next().getObject());
 
-    field1 = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:repeating:1:open:open:input:field");
+    field1 = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(0);
     Assert.assertTrue(field1.isRequired());
-    field2 = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories:category:1:input:open:repeating:2:open:open:input:field");
+    field2 = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(1);
     Assert.assertTrue(field2.isRequired());
 
     verify(activeInterviewServiceMock);
@@ -808,7 +814,7 @@ public class DefaultQuestionPanelTest {
       }
     });
 
-    dumpPage("testSharedCategoriesArrayQuestion");
+    // dumpPage("testSharedCategoriesArrayQuestion");
 
     // tester.getComponentFromLastRenderedPage("panel:form:content:content:array:headers:2:header:label");
     tester.assertLabel("panel:form:content:content:array:headers:2:header:label", "Choice one");
@@ -873,7 +879,7 @@ public class DefaultQuestionPanelTest {
   public Questionnaire createQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
 
-    builder.withSection("S1").withPage("P1").withQuestion("Q1").withCategories("1", "2", "3");
+    builder.withSection("S1").withPage("P1").withQuestion("Q1").withCategories("1", "2", "3", "4", "5", "6", "7", "8");
     builder.inPage("P1").withQuestion("Q1_MULTIPLE", true).withCategories("1", "2", "3");
     builder.withSection("S2").withPage("P2").withQuestion("Q2").withCategory("1").withOpenAnswerDefinition("OPEN_INT", DataType.INTEGER);
     builder.inQuestion("Q2").withSharedCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
