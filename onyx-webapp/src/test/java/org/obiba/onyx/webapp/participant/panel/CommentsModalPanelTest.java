@@ -82,7 +82,7 @@ public class CommentsModalPanelTest implements Serializable {
     queryServiceMock = createMock(EntityQueryService.class);
     applicationContextMock.putBean("queryService", queryServiceMock);
 
-    applicationContextMock.putBean("moduleRegistry", moduleRegistry = new ModuleRegistry());
+    applicationContextMock.putBean("moduleRegistry", moduleRegistry = new ModuleRegistryStub());
 
     userSessionServiceMock = createMock(UserSessionService.class);
     applicationContextMock.putBean("userSessionService", userSessionServiceMock);
