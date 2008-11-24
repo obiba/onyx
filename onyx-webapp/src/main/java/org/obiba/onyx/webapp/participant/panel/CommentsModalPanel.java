@@ -67,12 +67,15 @@ public abstract class CommentsModalPanel extends Panel {
 
   WebMarkupContainer previousComments;
 
+  private String stageName = null;
+
   public CommentsModalPanel(String id, final ModalWindow commentsWindow, String stage) {
     super(id);
     this.commentsWindow = commentsWindow;
     commentList = activeInterviewService.getInterviewComments();
+    this.stageName = stage;
 
-    filterOut(stage);
+    filterOut();
 
     setOutputMarkupId(true);
 
@@ -114,15 +117,13 @@ public abstract class CommentsModalPanel extends Panel {
 
   /**
    * Filters out the comments not for this stage
-   * 
-   * @param stage
    */
-  private void filterOut(String stage) {
-    if(stage != null) {
+  private void filterOut() {
+    if(stageName != null) {
       List<Action> comments = new ArrayList<Action>();
 
       for(Action comment : commentList) {
-        if(stage.equals(comment.getStage())) {
+        if(stageName.equals(comment.getStage())) {
           comments.add(comment);
         }
       }
@@ -156,11 +157,14 @@ public abstract class CommentsModalPanel extends Panel {
           // Add new comment to interview.
           Action comment = (Action) CommentForm.this.getModelObject();
           comment.setActionType(ActionType.COMMENT);
+          comment.setStage(stageName);
+
           activeInterviewService.doAction(null, comment, activeInterviewService.getInterview().getUser());
           CommentsModalPanel.this.onAddComments(target);
 
           // Refresh previous comments list.
           commentList = activeInterviewService.getInterviewComments();
+          filterOut();
           target.addComponent(previousComments);
 
           // Reset new comment form.
