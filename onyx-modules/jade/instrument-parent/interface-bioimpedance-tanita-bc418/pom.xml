@@ -30,6 +30,11 @@
       <version>2.1.7-r2</version>
       <classifier>win32</classifier>
     </dependency>
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>interface-bioimpedance-tanita-tbf310</artifactId>
+      <version>${project.version}</version>
+    </dependency>       
   </dependencies>
 
   <build>

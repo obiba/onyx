@@ -1,6 +1,5 @@
 package org.obiba.onyx.jade.instrument.tanita;
 
-
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
@@ -16,12 +15,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.TooManyListenersException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -53,8 +55,7 @@ import org.springframework.beans.factory.InitializingBean;
  * 
  */
 
-@SuppressWarnings( { "unused", "unused" })
-public class TanitaInstrument implements InstrumentRunner, InitializingBean, SerialPortEventListener {
+abstract public class TanitaInstrument implements InstrumentRunner, InitializingBean, SerialPortEventListener {
 
   protected Logger log;
 
@@ -234,10 +235,6 @@ public class TanitaInstrument implements InstrumentRunner, InitializingBean, Ser
     tanitaLocalSettings.setProperty("commPort", tanitaCommPort);
   }
 
-  public int getBaudeRate() {
-    return baudeRate;
-  }
-
   public void setBaudeRate(int baudeRate) {
     this.baudeRate = baudeRate;
   }
@@ -370,12 +367,12 @@ public class TanitaInstrument implements InstrumentRunner, InitializingBean, Ser
     this.locale = locale;
   }
 
-  protected Data getIntegerValue(JTextField f) {
-    return new Data(DataType.INTEGER, new Long(f.getText().trim()));
+  protected Data getIntegerValue(String f) {
+    return new Data(DataType.INTEGER, new Long(f.trim()));
   }
 
-  protected Data getDecimalValue(JTextField f) {
-    return new Data(DataType.DECIMAL, new Double(f.getText().trim()));
+  protected Data getDecimalValue(String f) {
+    return new Data(DataType.DECIMAL, new Double(f.trim()));
   }
 
   @SuppressWarnings("unchecked")
@@ -411,11 +408,9 @@ public class TanitaInstrument implements InstrumentRunner, InitializingBean, Ser
    * 
    * @param pOutputData The parsed output data from the Tanita.
    */
-  protected void setTanitaData(String[] pOutputData) {
-  }
+  abstract protected void setTanitaData(String[] pOutputData);
 
-  protected void sendOutputToServer() {
-  }
+  abstract protected void sendOutputToServer();
 
   /**
    * Builds the GUI which will display the bioimpedance results.
@@ -648,10 +643,80 @@ public class TanitaInstrument implements InstrumentRunner, InitializingBean, Ser
     }
   }
 
-  protected void setupSerialPort() {
+  /**
+   * Establish the connection with the device connected to the serial port.
+   */
+  public void setupSerialPort() {
+
+    try {
+
+      // If port already open, close it.
+      if(serialPort != null) {
+        serialPort.close();
+        serialPort = null;
+      }
+
+      // Initialize serial port attributes.
+      log.info("Fetching communication port {}", getTanitaCommPort());
+      CommPortIdentifier wPortId = CommPortIdentifier.getPortIdentifier(getTanitaCommPort());
+
+      log.info("Opening communication port {}", getTanitaCommPort());
+      serialPort = (SerialPort) wPortId.open(portOwnerName, 2000);
+
+      // Make sure the port is "Clear To Send"
+      serialPort.setSerialPortParams(baudeRate, dataLength, stopBit, parity);
+      bufferedReader = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
+
+      portIsAvailable = checkIfPortIsAvailable();
+
+    } catch(Exception wCouldNotAccessSerialPort) {
+      portIsAvailable = false;
+      log.warn("Could not access the specified serial port.");
+    }
   }
 
+  abstract protected boolean checkIfPortIsAvailable() throws TooManyListenersException;
+
+  /**
+   * Handles any serial port events from the Tanita.
+   * 
+   * @param pTanitaOutput The serial port event.
+   */
   public void serialEvent(SerialPortEvent pEvent) {
+
+    switch(pEvent.getEventType()) {
+
+    // Clear to send
+    case SerialPortEvent.CTS:
+
+      // If serial is not CTS, it means that the cable was disconnected.
+      // Attempt to reestablish the connection.
+      if(shutdown == false) {
+        // Only try to reestablish if we're not shutting down the
+        // application.
+        reestablishConnection();
+      }
+
+      break;
+
+    // Data is available at the serial port, so read it...
+    case SerialPortEvent.DATA_AVAILABLE:
+
+      try {
+        if(bufferedReader.ready()) {
+
+          // Parse and sets the data in the GUI.
+          String wResponse = bufferedReader.readLine().trim();
+          setTanitaData(parseTanitaData(wResponse));
+
+          // Enable save button, so data can be saved.
+          saveDataBtn.setEnabled(true);
+        }
+      } catch(IOException wErrorReadingDataOnSerialPort) {
+        JOptionPane.showMessageDialog(appWindow, tanitaResourceBundle.getString("Err.Result_communication"), tanitaResourceBundle.getString("Title.Communication_error"), JOptionPane.ERROR_MESSAGE);
+      }
+      break;
+    }
   }
 
   public void initialize() {
@@ -666,6 +731,26 @@ public class TanitaInstrument implements InstrumentRunner, InitializingBean, Ser
   }
 
   public void run() {
+
+    if(!externalAppHelper.isSotfwareAlreadyStarted("tanitaInstrumentRunner")) {
+
+      log.info("Starting Tanita GUI");
+      buildGUI();
+
+      // Obtain the lock outside the UI thread. This will block until the UI releases the lock, at which point it
+      // should
+      // be safe to exit the main thread.
+      synchronized(uiLock) {
+        try {
+          uiLock.wait();
+        } catch(InterruptedException e) {
+          throw new RuntimeException(e);
+        }
+      }
+      log.info("Lock obtained. Exiting software.");
+    } else {
+      JOptionPane.showMessageDialog(null, tanitaResourceBundle.getString("Err.Application_lock"), tanitaResourceBundle.getString("Title.Cannot_start_application"), JOptionPane.ERROR_MESSAGE);
+    }
   }
 
   public void shutdown() {
@@ -680,4 +765,5 @@ public class TanitaInstrument implements InstrumentRunner, InitializingBean, Ser
       }
     }
   }
+
 }

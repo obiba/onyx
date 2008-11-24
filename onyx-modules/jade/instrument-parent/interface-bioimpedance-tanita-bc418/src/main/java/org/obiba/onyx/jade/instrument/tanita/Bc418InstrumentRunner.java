@@ -1,8 +1,5 @@
 package org.obiba.onyx.jade.instrument.tanita;
 
-
-import gnu.io.CommPortIdentifier;
-import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 
 import java.io.BufferedReader;
@@ -14,7 +11,6 @@ import java.util.Map;
 import java.util.TooManyListenersException;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
@@ -29,130 +25,13 @@ import org.slf4j.LoggerFactory;
  */
 public class Bc418InstrumentRunner extends TanitaInstrument {
 
-  // Interface components
-  protected JTextField dateTxt;
-
-  protected JTextField timeTxt;
-
-  protected JTextField rLegImpedanceTxt;
-
-  protected JTextField lLegImpedanceTxt;
-
-  protected JTextField rArmImpedanceTxt;
-
-  protected JTextField lArmImpedanceTxt;
-
-  protected JTextField rLegFatPctTxt;
-
-  protected JTextField rLegFatMassTxt;
-
-  protected JTextField rLegFfmTxt;
-
-  protected JTextField rLegPredictedMuscleMassTxt;
-
-  protected JTextField lLegFatPctTxt;
-
-  protected JTextField lLegFatMassTxt;
-
-  protected JTextField lLegFfmTxt;
-
-  protected JTextField lLegPredictedMuscleMassTxt;
-
-  protected JTextField rArmFatPctTxt;
-
-  protected JTextField rArmFatMassTxt;
-
-  protected JTextField rArmFfmTxt;
-
-  protected JTextField rArmPredictedMuscleMassTxt;
-
-  protected JTextField lArmFatPctTxt;
-
-  protected JTextField lArmFatMassTxt;
-
-  protected JTextField lArmFfmTxt;
-
-  protected JTextField lArmPredictedMuscleMassTxt;
-
-  protected JTextField trunkFatPctTxt;
-
-  protected JTextField trunkFatMassTxt;
-
-  protected JTextField trunkFfmTxt;
-
-  protected JTextField trunkPredictedMuscleMassTxt;
-
   private BufferedReader bufferedReader;
 
+  String outputData[];
+
   public Bc418InstrumentRunner() throws Exception {
-
     super();
-
     log = LoggerFactory.getLogger(Bc418InstrumentRunner.class);
-
-    // Initialize interface components.
-    dateTxt = new ResultTextField();
-    timeTxt = new ResultTextField();
-
-    rLegImpedanceTxt = new ResultTextField();
-    lLegImpedanceTxt = new ResultTextField();
-    rArmImpedanceTxt = new ResultTextField();
-    lArmImpedanceTxt = new ResultTextField();
-
-    rLegFatPctTxt = new ResultTextField();
-    rLegFatMassTxt = new ResultTextField();
-    rLegFfmTxt = new ResultTextField();
-    rLegPredictedMuscleMassTxt = new ResultTextField();
-
-    lLegFatPctTxt = new ResultTextField();
-    lLegFatMassTxt = new ResultTextField();
-    lLegFfmTxt = new ResultTextField();
-    lLegPredictedMuscleMassTxt = new ResultTextField();
-
-    rArmFatPctTxt = new ResultTextField();
-    rArmFatMassTxt = new ResultTextField();
-    rArmFfmTxt = new ResultTextField();
-    rArmPredictedMuscleMassTxt = new ResultTextField();
-
-    lArmFatPctTxt = new ResultTextField();
-    lArmFatMassTxt = new ResultTextField();
-    lArmFfmTxt = new ResultTextField();
-    lArmPredictedMuscleMassTxt = new ResultTextField();
-
-    trunkFatPctTxt = new ResultTextField();
-    trunkFatMassTxt = new ResultTextField();
-    trunkFfmTxt = new ResultTextField();
-    trunkPredictedMuscleMassTxt = new ResultTextField();
-
-  }
-
-  /**
-   * Establish the connection with the device connected to the serial port.
-   */
-  protected void setupSerialPort() {
-
-    try {
-      // If port already open, close it.
-      if(serialPort != null) {
-        serialPort.close();
-        serialPort = null;
-      }
-
-      // Initialize serial port attributes.
-      log.info("Fetching communication port {}", getTanitaCommPort());
-      CommPortIdentifier wPortId = CommPortIdentifier.getPortIdentifier(getTanitaCommPort());
-
-      log.info("Opening communication port {}", getTanitaCommPort());
-      serialPort = (SerialPort) wPortId.open(portOwnerName, 2000);
-
-      // Set serial port parameters.
-      serialPort.setSerialPortParams(baudeRate, dataLength, stopBit, parity);
-
-      portIsAvailable = true;
-    } catch(Exception wCouldNotAccessSerialPort) {
-      portIsAvailable = false;
-      log.warn("Could not access the specified serial port.");
-    }
   }
 
   /**
@@ -181,6 +60,44 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
       }
       break;
     }
+  }
+
+  private String sendReceive(String pCommand) {
+    return sendReceive(pCommand.getBytes());
+  }
+
+  /**
+   * Send receive.
+   */
+  private String sendReceive(byte[] pCommand) {
+
+    String wResponse = null;
+
+    try {
+      if(pCommand != null) {
+
+        outputStream = serialPort.getOutputStream();
+        // Send parameter
+        outputStream.write(pCommand);
+        log.info("Sending data:{}", pCommand.toString());
+      }
+    } catch(IOException e) {
+      throw new RuntimeException("Error when sending data to device", e);
+    }
+
+    // Read response
+    try {
+      wResponse = bufferedReader.readLine().trim();
+      log.info("Receiving response:{}", wResponse);
+    } catch(IOException e) {
+      throw new RuntimeException("Error when receiving data from device", e);
+    }
+
+    return wResponse;
+  }
+
+  protected boolean checkIfPortIsAvailable() throws TooManyListenersException {
+    return true;
   }
 
   /**
@@ -285,77 +202,11 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
     }
   }
 
-  public void initialize() {
-    // super.initialize();
-    log.info("Refresh serial port list");
-    refreshSerialPortList();
-    log.info("Setup serial port");
-    setupSerialPort();
-    // If serial port is not available display error message
-    if(!portIsAvailable) {
-      reestablishConnection();
-    }
-    initParticipantData();
-  }
-
-  public void run() {
-    if(!externalAppHelper.isSotfwareAlreadyStarted("tanitaInstrumentRunner")) {
-
-      log.info("Starting Tanita BC-418 GUI");
-      buildGUI();
-
-      try {
-        serialPort.addEventListener(this);
-      } catch(TooManyListenersException e) {
-        throw new RuntimeException(e);
-      }
-      serialPort.notifyOnDataAvailable(true);
-
-      // Obtain the lock outside the UI thread. This will block until the
-      // UI releases the lock, at which point it should
-      // be safe to exit the main thread.
-
-      synchronized(uiLock) {
-        try {
-          uiLock.wait();
-        } catch(InterruptedException e) {
-          throw new RuntimeException(e);
-        }
-      }
-      log.info("Lock obtained. Exiting software.");
-    } else {
-      JOptionPane.showMessageDialog(null, tanitaResourceBundle.getString("Err.Application_lock"), tanitaResourceBundle.getString("Title.Cannot_start_application"), JOptionPane.ERROR_MESSAGE);
-    }
-  }
-
   /**
-   * Send receive.
+   * Reset the Tanita settings before a measurement.
    */
-  private String sendReceive(String pCommand) {
-
-    String wResponse = null;
-
-    try {
-      if(pCommand != null) {
-
-        outputStream = serialPort.getOutputStream();
-        // Send parameter
-        outputStream.write(pCommand.getBytes());
-        log.info("Sending data:{}", pCommand);
-      }
-    } catch(IOException e) {
-      throw new RuntimeException("Error when sending data to device", e);
-    }
-
-    // Read response
-    try {
-      wResponse = bufferedReader.readLine().trim();
-      log.info("Receiving response:{}", wResponse);
-    } catch(IOException e) {
-      throw new RuntimeException("Error when receiving data from device", e);
-    }
-
-    return wResponse;
+  private void resetTanita() {
+    sendReceive(new byte[] { (byte) 0x1F, (byte) 0x0D, (byte) 0x0A });
   }
 
   /**
@@ -364,65 +215,34 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
    * @param pOutputData The parsed output data from the Tanita.
    * @throws ParseException
    */
-  protected void setTanitaData(String[] pOutputData) {
+  protected void setTanitaData(String[] outputData) {
 
-    dateTxt.setText(pOutputData[0]);
-    timeTxt.setText(pOutputData[1]);
+    this.outputData = outputData;
 
-    String wBodyTypeCode = pOutputData[2];
+    String wBodyTypeCode = outputData[2];
     if(wBodyTypeCode.endsWith("0")) {
       bodyTypeTxt.setText("STANDARD");
     } else if(wBodyTypeCode.endsWith("2")) {
       bodyTypeTxt.setText("ATHLETIC");
     }
 
-    String wGender = pOutputData[3];
+    String wGender = outputData[3];
     if(wGender.equals("1")) {
       genderTxt.setText("MALE");
     } else if(wGender.equals("2")) {
       genderTxt.setText("FEMALE");
     }
 
-    heightTxt.setText(pOutputData[4]);
-    weightTxt.setText(pOutputData[5]);
-    fatPctTxt.setText(pOutputData[6]);
-    fatMassTxt.setText(pOutputData[7]);
-    ffmTxt.setText(pOutputData[8]);
-    tbwTxt.setText(pOutputData[9]);
-    ageTxt.setText(pOutputData[10]);
-    bmiTxt.setText(pOutputData[11]);
-    bmrTxt.setText(pOutputData[12]);
-
-    impedanceTxt.setText(pOutputData[13]);
-    rLegImpedanceTxt.setText(pOutputData[14]);
-    lLegImpedanceTxt.setText(pOutputData[15]);
-    rArmImpedanceTxt.setText(pOutputData[16]);
-    lArmImpedanceTxt.setText(pOutputData[17]);
-
-    rLegFatPctTxt.setText(pOutputData[18]);
-    rLegFatMassTxt.setText(pOutputData[19]);
-    rLegFfmTxt.setText(pOutputData[20]);
-    rLegPredictedMuscleMassTxt.setText(pOutputData[21]);
-
-    lLegFatPctTxt.setText(pOutputData[22]);
-    lLegFatMassTxt.setText(pOutputData[23]);
-    lLegFfmTxt.setText(pOutputData[24]);
-    lLegPredictedMuscleMassTxt.setText(pOutputData[25]);
-
-    rArmFatPctTxt.setText(pOutputData[26]);
-    rArmFatMassTxt.setText(pOutputData[27]);
-    rArmFfmTxt.setText(pOutputData[28]);
-    rArmPredictedMuscleMassTxt.setText(pOutputData[29]);
-
-    lArmFatPctTxt.setText(pOutputData[30]);
-    lArmFatMassTxt.setText(pOutputData[31]);
-    lArmFfmTxt.setText(pOutputData[32]);
-    lArmPredictedMuscleMassTxt.setText(pOutputData[33]);
-
-    trunkFatPctTxt.setText(pOutputData[34]);
-    trunkFatMassTxt.setText(pOutputData[35]);
-    trunkFfmTxt.setText(pOutputData[36]);
-    trunkPredictedMuscleMassTxt.setText(pOutputData[37]);
+    heightTxt.setText(outputData[4]);
+    weightTxt.setText(outputData[5]);
+    fatPctTxt.setText(outputData[6]);
+    fatMassTxt.setText(outputData[7]);
+    ffmTxt.setText(outputData[8]);
+    tbwTxt.setText(outputData[9]);
+    ageTxt.setText(outputData[10]);
+    bmiTxt.setText(outputData[11]);
+    bmrTxt.setText(outputData[12]);
+    impedanceTxt.setText(outputData[13]);
 
   }
 
@@ -432,53 +252,73 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
     Map<String, Data> output = new HashMap<String, Data>();
 
     output.put("BodyType", new Data(DataType.TEXT, bodyTypeTxt.getText()));
-    output.put("Weight", getDecimalValue(weightTxt));
-    output.put("Impedance", getIntegerValue(impedanceTxt));
-    output.put("BMI", getDecimalValue(bmiTxt));
-    output.put("BMR", getIntegerValue(bmrTxt));
-    output.put("FatFreeMass", getDecimalValue(ffmTxt));
-    output.put("FatMass", getDecimalValue(fatMassTxt));
-    output.put("TotalBodyWater", getDecimalValue(tbwTxt));
-    output.put("FatPercentage", getDecimalValue(fatPctTxt));
+    output.put("Weight", getDecimalValue(weightTxt.getText()));
+    output.put("Impedance", getIntegerValue(impedanceTxt.getText()));
+    output.put("BMI", getDecimalValue(bmiTxt.getText()));
+    output.put("BMR", getIntegerValue(bmrTxt.getText()));
+    output.put("FatFreeMass", getDecimalValue(ffmTxt.getText()));
+    output.put("FatMass", getDecimalValue(fatMassTxt.getText()));
+    output.put("TotalBodyWater", getDecimalValue(tbwTxt.getText()));
+    output.put("FatPercentage", getDecimalValue(fatPctTxt.getText()));
     output.put("Gender", new Data(DataType.TEXT, genderTxt.getText()));
-    output.put("Height", getIntegerValue(heightTxt));
-    output.put("Age", getIntegerValue(ageTxt));
+    output.put("Height", getIntegerValue(heightTxt.getText()));
+    output.put("Age", getIntegerValue(ageTxt.getText()));
 
-    output.put("Date", new Data(DataType.TEXT, dateTxt.getText()));
-    output.put("Time", new Data(DataType.TEXT, timeTxt.getText()));
+    output.put("Date", new Data(DataType.TEXT, outputData[0]));
+    output.put("Time", new Data(DataType.TEXT, outputData[1]));
 
-    output.put("RightLegImpedance", getIntegerValue(rLegImpedanceTxt));
-    output.put("LeftLegImpedance", getIntegerValue(lLegImpedanceTxt));
-    output.put("RightArmImpedance", getIntegerValue(rArmImpedanceTxt));
-    output.put("LeftArmImpedance", getIntegerValue(lArmImpedanceTxt));
+    output.put("RightLegImpedance", getIntegerValue(outputData[14]));
+    output.put("LeftLegImpedance", getIntegerValue(outputData[15]));
+    output.put("RightArmImpedance", getIntegerValue(outputData[16]));
+    output.put("LeftArmImpedance", getIntegerValue(outputData[17]));
 
-    output.put("RightLegFatPercentage", getDecimalValue(rLegFatPctTxt));
-    output.put("RightLegFatMass", getDecimalValue(rLegFatMassTxt));
-    output.put("RightLegFatFreeMass", getDecimalValue(rLegFfmTxt));
-    output.put("RightLegPredictedMuscleMass", getDecimalValue(rLegPredictedMuscleMassTxt));
+    output.put("RightLegFatPercentage", getDecimalValue(outputData[18]));
+    output.put("RightLegFatMass", getDecimalValue(outputData[19]));
+    output.put("RightLegFatFreeMass", getDecimalValue(outputData[20]));
+    output.put("RightLegPredictedMuscleMass", getDecimalValue(outputData[21]));
 
-    output.put("LeftLegFatPercentage", getDecimalValue(lLegFatPctTxt));
-    output.put("LeftLegFatMass", getDecimalValue(lLegFatMassTxt));
-    output.put("LeftLegFatFreeMass", getDecimalValue(lLegFfmTxt));
-    output.put("LeftLegPredictedMuscleMass", getDecimalValue(lLegPredictedMuscleMassTxt));
+    output.put("LeftLegFatPercentage", getDecimalValue(outputData[22]));
+    output.put("LeftLegFatMass", getDecimalValue(outputData[23]));
+    output.put("LeftLegFatFreeMass", getDecimalValue(outputData[24]));
+    output.put("LeftLegPredictedMuscleMass", getDecimalValue(outputData[25]));
 
-    output.put("RightArmFatPercentage", getDecimalValue(rArmFatPctTxt));
-    output.put("RightArmFatMass", getDecimalValue(rArmFatMassTxt));
-    output.put("RightArmFatFreeMass", getDecimalValue(rArmFfmTxt));
-    output.put("RightArmPredictedMuscleMass", getDecimalValue(rArmPredictedMuscleMassTxt));
+    output.put("RightArmFatPercentage", getDecimalValue(outputData[26]));
+    output.put("RightArmFatMass", getDecimalValue(outputData[27]));
+    output.put("RightArmFatFreeMass", getDecimalValue(outputData[28]));
+    output.put("RightArmPredictedMuscleMass", getDecimalValue(outputData[29]));
 
-    output.put("LeftArmFatPercentage", getDecimalValue(lArmFatPctTxt));
-    output.put("LeftArmFatMass", getDecimalValue(lArmFatMassTxt));
-    output.put("LeftArmFatFreeMass", getDecimalValue(lArmFfmTxt));
-    output.put("LeftArmPredictedMuscleMass", getDecimalValue(lArmPredictedMuscleMassTxt));
+    output.put("LeftArmFatPercentage", getDecimalValue(outputData[30]));
+    output.put("LeftArmFatMass", getDecimalValue(outputData[31]));
+    output.put("LeftArmFatFreeMass", getDecimalValue(outputData[32]));
+    output.put("LeftArmPredictedMuscleMass", getDecimalValue(outputData[33]));
 
-    output.put("TrunkFatPercentage", getDecimalValue(trunkFatPctTxt));
-    output.put("TrunkFatMass", getDecimalValue(trunkFatMassTxt));
-    output.put("TrunkFatFreeMass", getDecimalValue(trunkFfmTxt));
-    output.put("TrunkPredictedMuscleMass", getDecimalValue(trunkPredictedMuscleMassTxt));
+    output.put("TrunkFatPercentage", getDecimalValue(outputData[34]));
+    output.put("TrunkFatMass", getDecimalValue(outputData[35]));
+    output.put("TrunkFatFreeMass", getDecimalValue(outputData[36]));
+    output.put("TrunkPredictedMuscleMass", getDecimalValue(outputData[37]));
 
     instrumentExecutionService.addOutputParameterValues(output);
     log.info("Sending output of Tanita BC-418 to server done...");
     exitUI();
   }
+
+  public void initialize() {
+    super.initialize();
+
+    // TODO Reset not working, instrument not responding to reset code...
+    // resetTanita();
+    initParticipantData();
+  }
+
+  public void run() {
+    try {
+      serialPort.addEventListener(this);
+    } catch(TooManyListenersException e) {
+      throw new RuntimeException(e);
+    }
+    serialPort.notifyOnDataAvailable(true);
+
+    super.run();
+  }
+
 }
