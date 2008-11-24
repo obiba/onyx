@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.contraindication.Contraindication.Type;
@@ -60,12 +61,12 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
 
   public ParticipantTubeRegistration start(Participant participant) {
     if(participant == null) {
-      throw new IllegalArgumentException("participant cannot be null.");
+      throw new IllegalArgumentException("Null participant");
     }
 
     Interview interview = participant.getInterview();
     if(interview == null) {
-      throw new IllegalArgumentException("no interview found.");
+      throw new IllegalArgumentException("Null participant interview");
     }
 
     // stop existing Registration if there is one
@@ -80,17 +81,27 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
 
   public void resume(Participant participant) {
     if(participant == null) {
-      throw new IllegalArgumentException("participant cannot be null.");
+      throw new IllegalArgumentException("Null participant");
     }
 
     Interview interview = participant.getInterview();
     if(interview == null) {
-      throw new IllegalArgumentException("no interview found.");
+      throw new IllegalArgumentException("Null participant interview");
     }
 
+    // Query all saved participant tube registrations for the current interview.
+    // There could be more than one if, for example, one was started and contra-indicated
+    // and then another one was started...
     ParticipantTubeRegistration template = new ParticipantTubeRegistration();
     template.setInterview(interview);
-    ParticipantTubeRegistration participantTubeRegistration = getPersistenceManager().matchOne(template);
+    List<ParticipantTubeRegistration> participantTubeRegistrations = getPersistenceManager().match(template, new SortingClause("startTime", false));
+
+    if(participantTubeRegistrations == null || participantTubeRegistrations.isEmpty()) {
+      throw new IllegalStateException("No participant tube registration to resume");
+    }
+
+    // Resume with the latest one (i.e., the one with the latest start time).
+    ParticipantTubeRegistration participantTubeRegistration = participantTubeRegistrations.get(0);
 
     currentTubeRegistrationId = participantTubeRegistration.getId();
   }
