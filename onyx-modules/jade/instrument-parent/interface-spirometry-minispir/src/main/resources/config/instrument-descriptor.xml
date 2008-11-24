@@ -64,7 +64,7 @@
     <dataType>TEXT</dataType>
     <captureMethod>MANUAL</captureMethod>
     <type>OBSERVED</type>
-    <instrument reference="bioimp1" />
+    <instrument reference="spi1" />
   </interpretative>
 
   <interpretative>
@@ -73,7 +73,7 @@
     <dataType>TEXT</dataType>
     <captureMethod>MANUAL</captureMethod>
     <type>OBSERVED</type>
-    <instrument reference="bioimp1" />
+    <instrument reference="spi1" />
   </interpretative>
 
   <interpretative>
@@ -82,7 +82,7 @@
     <dataType>TEXT</dataType>
     <captureMethod>MANUAL</captureMethod>
     <type>OBSERVED</type>
-    <instrument reference="bioimp1" />
+    <instrument reference="spi1" />
   </interpretative>
 
   <interpretative>
@@ -91,7 +91,7 @@
     <dataType>TEXT</dataType>
     <captureMethod>MANUAL</captureMethod>
     <type>OBSERVED</type>
-    <instrument reference="bioimp1" />
+    <instrument reference="spi1" />
   </interpretative>
 
   <interpretative>
@@ -100,7 +100,7 @@
     <dataType>TEXT</dataType>
     <captureMethod>MANUAL</captureMethod>
     <type>OBSERVED</type>
-    <instrument reference="bioimp1" />
+    <instrument reference="spi1" />
   </interpretative>
 
   <participantPropertySource id="id_source">
