@@ -110,7 +110,7 @@ public class RubyWizardPanelTest {
 
     recordAndReplayCommonExpectations(false, false);
 
-    startWicketPanel();
+    startWicketPanel(false);
 
     verifyCommonMocks();
 
@@ -127,7 +127,7 @@ public class RubyWizardPanelTest {
 
     recordAndReplayCommonExpectations(true, false);
 
-    startWicketPanel();
+    startWicketPanel(false);
 
     verifyCommonMocks();
 
@@ -144,7 +144,7 @@ public class RubyWizardPanelTest {
 
     recordAndReplayCommonExpectations(false, true);
 
-    startWicketPanel();
+    startWicketPanel(false);
 
     verifyCommonMocks();
 
@@ -152,6 +152,23 @@ public class RubyWizardPanelTest {
     WizardStepPanel stepPanel = (WizardStepPanel) rubyWizardPanel.getWizardForm().get("step");
     Assert.assertNotNull(stepPanel);
     Assert.assertTrue(stepPanel instanceof AskedContraIndicationStep);
+  }
+
+  @Test
+  public void testResumesAtTubeRegistrationStep() {
+    recordAndReplayCommonExpectations(false, true);
+
+    startWicketPanel(true);
+
+    verifyCommonMocks();
+
+    // Verify that the wizard is positioned at the Tube Registration step.
+    WizardStepPanel stepPanel = (WizardStepPanel) rubyWizardPanel.getWizardForm().get("step");
+    Assert.assertNotNull(stepPanel);
+    Assert.assertTrue(stepPanel instanceof TubeRegistrationStep);
+
+    // Verify that there is no previous step.
+    Assert.assertNull(stepPanel.getPreviousStep());
   }
 
   //
@@ -292,12 +309,12 @@ public class RubyWizardPanelTest {
     verify(activeTubeRegistrationServiceMock);
   }
 
-  private void startWicketPanel() {
+  private void startWicketPanel(final boolean resuming) {
     wicketTester.startPanel(new TestPanelSource() {
       private static final long serialVersionUID = 1L;
 
       public Panel getTestPanel(String panelId) {
-        rubyWizardPanel = new RubyWizardPanel(panelId, new Model(), new StageModel(moduleRegistry, "SamplesCollection"), false);
+        rubyWizardPanel = new RubyWizardPanel(panelId, new Model(), new StageModel(moduleRegistry, "SamplesCollection"), resuming);
         return rubyWizardPanel;
       }
     });
