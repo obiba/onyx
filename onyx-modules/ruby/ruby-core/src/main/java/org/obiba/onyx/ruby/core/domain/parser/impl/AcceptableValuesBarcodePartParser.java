@@ -19,8 +19,21 @@ import org.springframework.context.MessageSourceResolvable;
  * Implementation for barcode part parser with acceptable values
  */
 public class AcceptableValuesBarcodePartParser extends DefaultBarcodePartParser {
+  //
+  // Constants
+  //
+
+  private static final String UNKNOWN_TUBETYPE_SEQUENCENUMBER_BARCODE_ERROR = "Ruby.Error.UnknownTubeTypeSequenceNumber";
+
+  //
+  // Instance Variables
+  //
 
   private Set<String> acceptableValues;
+
+  //
+  // Constructors
+  //
 
   /**
    * The constructor that initialises acceptableValues
@@ -29,6 +42,32 @@ public class AcceptableValuesBarcodePartParser extends DefaultBarcodePartParser 
     super();
     this.acceptableValues = new HashSet<String>();
   }
+
+  //
+  // DefaultBarcodePartParser Methods
+  //
+
+  public int getSize() {
+    if(acceptableValues.isEmpty()) {
+      return 0;
+    } else {
+      return acceptableValues.iterator().next().length();
+    }
+  }
+
+  @Override
+  protected MessageSourceResolvable validatePart(String part) {
+    MessageSourceResolvable error = null;
+    if(!acceptableValues.contains(part)) {
+      // The part must be one of the acceptable values
+      error = createBarcodeError(UNKNOWN_TUBETYPE_SEQUENCENUMBER_BARCODE_ERROR, new Object[] { part }, UNKNOWN_TUBETYPE_SEQUENCENUMBER_BARCODE_ERROR);
+    }
+    return error;
+  }
+
+  //
+  // Methods
+  //
 
   /**
    * Validates and sets the acceptable values' copy
@@ -55,23 +94,4 @@ public class AcceptableValuesBarcodePartParser extends DefaultBarcodePartParser 
   public Set<String> getAcceptableValues() {
     return Collections.unmodifiableSet(acceptableValues);
   }
-
-  public int getSize() {
-    if(acceptableValues.isEmpty()) {
-      return 0;
-    } else {
-      return acceptableValues.iterator().next().length();
-    }
-  }
-
-  @Override
-  protected MessageSourceResolvable validatePart(String part) {
-    MessageSourceResolvable error = null;
-    if(!acceptableValues.contains(part)) {
-      // The part must be one of the acceptable values
-      error = createBarcodeError("BarcodePartValueError", "Invalid barcode part value.");
-    }
-    return error;
-  }
-
 }

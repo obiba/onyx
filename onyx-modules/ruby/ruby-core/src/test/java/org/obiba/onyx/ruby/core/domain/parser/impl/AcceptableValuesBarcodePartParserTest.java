@@ -45,8 +45,7 @@ public class AcceptableValuesBarcodePartParserTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)}
-   * .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)} .
    */
   @Test
   public void testShouldPassEatAndValidatePart() {
@@ -61,8 +60,7 @@ public class AcceptableValuesBarcodePartParserTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)}
-   * .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)} .
    */
   @Test
   public void testShouldFailEatAndValidatePartWithInvalidSize() {
@@ -80,8 +78,7 @@ public class AcceptableValuesBarcodePartParserTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)}
-   * .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, org.obiba.onyx.core.service.ActiveInterviewService, java.util.List)} .
    */
   @Test
   public void testShouldFailEatAndValidatePartWithInvalidValue() {
@@ -94,7 +91,7 @@ public class AcceptableValuesBarcodePartParserTest {
     Assert.assertEquals(1, errors.size());
 
     MessageSourceResolvable error = errors.get(0);
-    Assert.assertEquals("BarcodePartValueError", error.getCodes()[0]);
+    Assert.assertEquals("Ruby.Error.UnknownTubeTypeSequenceNumber", error.getCodes()[0]);
   }
 
   /**
