@@ -38,6 +38,7 @@ public class RubyReadyState extends AbstractRubyStageState {
   @Override
   protected void addUserActions(Set<ActionType> types) {
     types.add(ActionType.EXECUTE);
+    types.add(ActionType.SKIP);
   }
 
   @Override
@@ -45,6 +46,13 @@ public class RubyReadyState extends AbstractRubyStageState {
     super.execute(action);
     log.info("Ruby Stage {} is starting", super.getStage().getName());
     castEvent(TransitionEvent.START);
+  }
+
+  @Override
+  public void skip(Action action) {
+    super.skip(action);
+    log.info("Ruby Stage {} is skipping", super.getStage().getName());
+    castEvent(TransitionEvent.SKIP);
   }
 
   @Override

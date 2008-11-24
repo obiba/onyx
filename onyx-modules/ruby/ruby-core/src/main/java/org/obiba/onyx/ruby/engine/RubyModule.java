@@ -38,6 +38,8 @@ public class RubyModule implements Module, ApplicationContextAware {
 
   private static final String READY_STATE_BEAN = "rubyReadyState";
 
+  private static final String SKIPPED_STATE_BEAN = "rubySkippedState";
+
   private static final String CONTRAINDICATED_STATE_BEAN = "rubyContraIndicatedState";
 
   private static final String IN_PROGRESS_STATE_BEAN = "rubyInProgressState";
@@ -92,6 +94,7 @@ public class RubyModule implements Module, ApplicationContextAware {
     Map<String, AbstractStageState> states = new HashMap<String, AbstractStageState>();
     states.put(WAITING_STATE_BEAN, (AbstractStageState) applicationContext.getBean(WAITING_STATE_BEAN));
     states.put(READY_STATE_BEAN, (AbstractStageState) applicationContext.getBean(READY_STATE_BEAN));
+    states.put(SKIPPED_STATE_BEAN, (AbstractStageState) applicationContext.getBean(SKIPPED_STATE_BEAN));
     states.put(CONTRAINDICATED_STATE_BEAN, (AbstractStageState) applicationContext.getBean(CONTRAINDICATED_STATE_BEAN));
     states.put(IN_PROGRESS_STATE_BEAN, (AbstractStageState) applicationContext.getBean(IN_PROGRESS_STATE_BEAN));
     states.put(INTERRUPTED_STATE_BEAN, (AbstractStageState) applicationContext.getBean(INTERRUPTED_STATE_BEAN));
@@ -100,6 +103,7 @@ public class RubyModule implements Module, ApplicationContextAware {
 
     initTransitionsFromWaiting(exec, states);
     initTransitionsFromReady(exec, states);
+    initTransitionsFromSkipped(exec, states);
     initTransitionsFromContraIndicated(exec, states);
     initTransitionsFromInProgress(exec, states);
     initTransitionsFromInterrupted(exec, states);
@@ -134,6 +138,9 @@ public class RubyModule implements Module, ApplicationContextAware {
     AbstractStageState ready = states.get(READY_STATE_BEAN);
     exec.addEdge(waiting, TransitionEvent.VALID, ready);
 
+    AbstractStageState skipped = states.get(SKIPPED_STATE_BEAN);
+    exec.addEdge(waiting, TransitionEvent.SKIP, skipped);
+
     AbstractStageState notApplicable = states.get(NOT_APPLICABLE_STATE_BEAN);
     exec.addEdge(waiting, TransitionEvent.NOTAPPLICABLE, notApplicable);
   }
@@ -144,11 +151,27 @@ public class RubyModule implements Module, ApplicationContextAware {
     AbstractStageState waiting = states.get(WAITING_STATE_BEAN);
     exec.addEdge(ready, TransitionEvent.INVALID, waiting);
 
+    AbstractStageState skipped = states.get(SKIPPED_STATE_BEAN);
+    exec.addEdge(ready, TransitionEvent.SKIP, skipped);
+
     AbstractStageState inProgress = states.get(IN_PROGRESS_STATE_BEAN);
     exec.addEdge(ready, TransitionEvent.START, inProgress);
 
     AbstractStageState notApplicable = states.get(NOT_APPLICABLE_STATE_BEAN);
     exec.addEdge(ready, TransitionEvent.NOTAPPLICABLE, notApplicable);
+  }
+
+  private void initTransitionsFromSkipped(StageExecutionContext exec, Map<String, AbstractStageState> states) {
+    AbstractStageState skipped = states.get(SKIPPED_STATE_BEAN);
+
+    AbstractStageState waiting = states.get(WAITING_STATE_BEAN);
+    exec.addEdge(skipped, TransitionEvent.INVALID, waiting);
+
+    AbstractStageState ready = states.get(READY_STATE_BEAN);
+    exec.addEdge(skipped, TransitionEvent.CANCEL, ready);
+
+    AbstractStageState notApplicable = states.get(NOT_APPLICABLE_STATE_BEAN);
+    exec.addEdge(skipped, TransitionEvent.NOTAPPLICABLE, notApplicable);
   }
 
   private void initTransitionsFromContraIndicated(StageExecutionContext exec, Map<String, AbstractStageState> states) {

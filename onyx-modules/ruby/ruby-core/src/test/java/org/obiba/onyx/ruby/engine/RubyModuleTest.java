@@ -44,6 +44,7 @@ import org.obiba.onyx.ruby.engine.state.RubyInProgressState;
 import org.obiba.onyx.ruby.engine.state.RubyInterruptedState;
 import org.obiba.onyx.ruby.engine.state.RubyNotApplicableState;
 import org.obiba.onyx.ruby.engine.state.RubyReadyState;
+import org.obiba.onyx.ruby.engine.state.RubySkippedState;
 import org.obiba.onyx.ruby.engine.state.RubyWaitingState;
 
 public class RubyModuleTest {
@@ -54,6 +55,8 @@ public class RubyModuleTest {
   private static final String WAITING_STATE = "RubyWaitingState";
 
   private static final String READY_STATE = "RubyReadyState";
+
+  private static final String SKIPPED_STATE = "RubySkippedState";
 
   private static final String CONTRAINDICATED_STATE = "RubyContraIndicatedState";
 
@@ -136,6 +139,8 @@ public class RubyModuleTest {
     applicationContextMock.putBean("rubyWaitingState", rubyWaitingState);
     AbstractStageState rubyReadyState = new RubyReadyState();
     applicationContextMock.putBean("rubyReadyState", rubyReadyState);
+    AbstractStageState rubySkippedState = new RubySkippedState();
+    applicationContextMock.putBean("rubySkippedState", rubySkippedState);
     AbstractStageState rubyContraIndicatedState = new RubyContraIndicatedState();
     applicationContextMock.putBean("rubyContraIndicatedState", rubyContraIndicatedState);
     RubyInProgressState rubyInProgressState = new RubyInProgressState();
@@ -201,6 +206,64 @@ public class RubyModuleTest {
     // Verify that we have now transitioned to the NOT APPLICABLE state.
     memento = (StageExecutionMemento) exec.saveToMemento(null);
     Assert.assertEquals(RubyNotApplicableState.class.getSimpleName(), memento.getState());
+  }
+
+  @Test
+  public void testWaitingToSkippedTransition() {
+    setDependencyConditionNotSatisfied();
+
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
+    exec.setModuleRegistry(moduleRegistry);
+
+    // Set the current state to WAITING.
+    StageExecutionMemento memento = createMemento(WAITING_STATE);
+    exec.restoreFromMemento(memento);
+
+    // Record expectations for mocks.
+    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(memento).anyTimes();
+    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(memento).anyTimes();
+
+    // Stop recording expectations.
+    replay(persistenceManagerMock);
+
+    // Fire a SKIP event to trigger a transition to the SKIPPED state.
+    exec.castEvent(TransitionEvent.SKIP);
+
+    // Verify expectations of mocks.
+    verify(persistenceManagerMock);
+
+    // Verify that we have now transitioned to the SKIPPED state.
+    memento = (StageExecutionMemento) exec.saveToMemento(null);
+    Assert.assertEquals(RubySkippedState.class.getSimpleName(), memento.getState());
+  }
+
+  @Test
+  public void testReadyToSkippedTransition() {
+    setDependencyConditionSatisfied();
+
+    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
+    exec.setModuleRegistry(moduleRegistry);
+
+    // Set the current state to READY.
+    StageExecutionMemento memento = createMemento(READY_STATE);
+    exec.restoreFromMemento(memento);
+
+    // Record expectations for mocks.
+    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(memento).anyTimes();
+    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(memento).anyTimes();
+
+    // Stop recording expectations.
+    replay(persistenceManagerMock);
+
+    // Fire a SKIP event to trigger a transition to the SKIPPED state.
+    exec.castEvent(TransitionEvent.SKIP);
+
+    // Verify expectations of mocks.
+    verify(persistenceManagerMock);
+
+    // Verify that we have now transitioned to the SKIPPED state.
+    memento = (StageExecutionMemento) exec.saveToMemento(null);
+    Assert.assertEquals(RubySkippedState.class.getSimpleName(), memento.getState());
   }
 
   @Test

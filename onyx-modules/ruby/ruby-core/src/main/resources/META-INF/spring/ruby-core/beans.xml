@@ -18,6 +18,9 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="rubyReadyState" parent="baseRubyStageState" class="org.obiba.onyx.ruby.engine.state.RubyReadyState"
     scope="prototype" />
 
+  <bean id="rubySkippedState" parent="baseRubyStageState" class="org.obiba.onyx.ruby.engine.state.RubySkippedState"
+    scope="prototype" />
+    
   <bean id="rubyContraIndicatedState" parent="baseRubyStageState"
     class="org.obiba.onyx.ruby.engine.state.RubyContraIndicatedState" scope="prototype" />
 
