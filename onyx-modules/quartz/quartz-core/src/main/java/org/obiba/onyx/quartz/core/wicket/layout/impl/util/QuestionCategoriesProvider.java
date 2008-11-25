@@ -16,6 +16,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.AbstractDataListProvider;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Get the question categories.
@@ -23,6 +25,11 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 public class QuestionCategoriesProvider extends AbstractDataListProvider<QuestionCategory> {
 
   private static final long serialVersionUID = 1L;
+
+  public static final String ROW_COUNT_KEY = "rowCount";
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(QuestionCategoriesProvider.class);
 
   private IModel questionModel;
 
@@ -32,12 +39,16 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<Questio
   }
 
   public LineToMatrixPermutation<QuestionCategory> getPermutator() {
-    return new LineToMatrixPermutation<QuestionCategory>(((Question) questionModel.getObject()).getQuestionCategories());
+    Question question = (Question) questionModel.getObject();
+    int rowCount = LineToMatrixPermutation.DEFAULT_ROW_COUNT;
+    if(question.getUIArguments() != null) {
+      rowCount = question.getUIArguments().getInt(ROW_COUNT_KEY, LineToMatrixPermutation.DEFAULT_ROW_COUNT);
+    }
+    return new LineToMatrixPermutation<QuestionCategory>(question.getQuestionCategories(), rowCount);
   }
 
   @Override
   public List<QuestionCategory> getDataList() {
-
     return getPermutator().getMatrixList();
   }
 

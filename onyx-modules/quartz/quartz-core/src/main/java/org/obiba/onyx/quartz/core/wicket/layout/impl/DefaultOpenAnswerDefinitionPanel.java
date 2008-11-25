@@ -9,6 +9,7 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -139,6 +140,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
       @Override
       protected void onError(final AjaxRequestTarget target, RuntimeException e) {
         log.info("openField.onError.{}.data={}", getQuestion() + ":" + getQuestionCategory() + ":" + getOpenAnswerDefinition().getName(), getData());
+        log.info("openField.onError={}", Session.get().getFeedbackMessages().iterator().next());
         DefaultOpenAnswerDefinitionPanel.this.onError(target, getQuestionModel(), DefaultOpenAnswerDefinitionPanel.this.getModel());
 
         // refesh feedback panel to display error messages

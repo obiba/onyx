@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +26,17 @@ public class ComponentTesterUtils {
 
   private static final Logger log = LoggerFactory.getLogger(ComponentTesterUtils.class);
 
+  /**
+   * Find the first child of given class, and with model equals to the given model.
+   * @param parent
+   * @param clazz
+   * @param model
+   * @return
+   */
   public static Component findChild(WebMarkupContainer parent, final Class clazz, final IModel model) {
-    if(parent == null) return null;
+    if(parent == null) {
+      throw new IllegalArgumentException("parent cannot be null.");
+    }
 
     return (Component) parent.visitChildren(new Component.IVisitor() {
 
@@ -34,6 +44,34 @@ public class ComponentTesterUtils {
         if(clazz.isAssignableFrom(component.getClass()) && component.getModel().equals(model)) {
           log.debug("child.path: {}", component.getPath());
           return component;
+        }
+        return CONTINUE_TRAVERSAL;
+      }
+
+    });
+
+  }
+
+  /**
+   * Find the first child of given class, and with model object equals to the given localizable.
+   * @param parent
+   * @param clazz
+   * @param localizable
+   * @return
+   */
+  public static Component findChild(WebMarkupContainer parent, final Class clazz, final ILocalizable localizable) {
+    if(parent == null) {
+      throw new IllegalArgumentException("parent cannot be null.");
+    }
+
+    return (Component) parent.visitChildren(new Component.IVisitor() {
+
+      public Object component(Component component) {
+        if(clazz.isAssignableFrom(component.getClass())) {
+          if(component.getModelObject() != null && localizable.getClass().isAssignableFrom(component.getModelObject().getClass()) && localizable.getName().equals(((ILocalizable) component.getModelObject()).getName())) {
+            log.info("child.{}.path: {}", localizable.getName(), component.getPath());
+            return component;
+          }
         }
         return CONTINUE_TRAVERSAL;
       }
@@ -54,11 +92,21 @@ public class ComponentTesterUtils {
         path += ":" + p;
       }
     }
+
+    log.info("extractPath={}", path);
     return path;
   }
 
+  /**
+   * Get all children of the given class.
+   * @param parent
+   * @param clazz
+   * @return
+   */
   public static List<Component> findChildren(WebMarkupContainer parent, final Class clazz) {
-    if(parent == null) return null;
+    if(parent == null) {
+      throw new IllegalArgumentException("parent cannot be null.");
+    }
 
     final List<Component> children = new ArrayList<Component>();
 

@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.util.Locale;
 import java.util.Properties;
 
+import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ExternalOpenAnswerSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.FixedSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.OpenAnswerSource;
@@ -114,6 +115,8 @@ public class QuestionnaireStreamer {
     xstream.alias("timestampSource", TimestampSource.class);
     xstream.alias("participantPropertySource", ParticipantPropertySource.class);
     xstream.useAttributeFor(ParticipantPropertySource.class, "property");
+
+    xstream.alias("valueMap", ValueMap.class);
   }
 
   /**

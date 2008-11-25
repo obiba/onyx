@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.wicket.wizard;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.form.Form;
@@ -30,11 +31,15 @@ import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * WizardForm for the questionnaire Contains Language Selection Step, Conclusion Step and Interrupt link
  */
 public class QuestionnaireWizardForm extends WizardForm {
+
+  private static final Logger log = LoggerFactory.getLogger(QuestionnaireWizardForm.class);
 
   //
   // Constants
@@ -104,7 +109,8 @@ public class QuestionnaireWizardForm extends WizardForm {
   }
 
   public void onError(AjaxRequestTarget target, Form form) {
-    target.addComponent(feedbackPanel);
+    log.info("onError={}", Session.get().getFeedbackMessages().iterator().next());
+    target.addComponent(getFeedbackPanel());
   }
 
   @Override

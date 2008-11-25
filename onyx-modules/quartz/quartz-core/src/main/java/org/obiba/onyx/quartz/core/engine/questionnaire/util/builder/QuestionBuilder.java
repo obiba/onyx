@@ -218,6 +218,12 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     return this;
   }
 
+  public QuestionBuilder addUIArgument(String key, String value) {
+    element.addUIArgument(key, value);
+
+    return this;
+  }
+
   /**
    * Add a {@link Category} to current {@link Question}, make it the current category.
    * @param name

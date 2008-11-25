@@ -12,7 +12,10 @@ package org.obiba.onyx.quartz.test;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.FormComponent;
+import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.tester.FormTester;
@@ -31,6 +34,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
@@ -39,6 +43,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.IPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.test.provider.AnswerProvider;
 import org.obiba.wicket.test.MockSpringApplication;
 import org.slf4j.Logger;
@@ -602,10 +607,6 @@ public abstract class AbstractQuestionnaireTest {
     return "panel:content:form";
   }
 
-  private Form getForm() {
-    return (Form) wicketTester.getComponentFromLastRenderedPage("panel:content:form");
-  }
-
   //
   // default question
   //
@@ -621,7 +622,7 @@ public abstract class AbstractQuestionnaireTest {
     FormTester formTester = wicketTester.newFormTester(getFormPath());
 
     formTester.select(getCategoryGroupComponentId(question), getCategoryIndex(question, answer));
-    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getRadioButtonComponentId(question, answer), ONCHANGE_EVENT);
+    wicketTester.executeAjaxEvent(getQuestionCategoryComponent(question, answer, Radio.class), ONCHANGE_EVENT);
   }
 
   /**
@@ -635,7 +636,7 @@ public abstract class AbstractQuestionnaireTest {
     FormTester formTester = wicketTester.newFormTester(getFormPath());
 
     formTester.select(getCategoryGroupComponentId(question), getCategoryIndex(question, answer));
-    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + getCheckBoxButtonComponentId(question, answer), ONCHANGE_EVENT);
+    wicketTester.executeAjaxEvent(getQuestionCategoryComponent(question, answer, CheckBox.class), ONCHANGE_EVENT);
   }
 
   /**
@@ -646,18 +647,16 @@ public abstract class AbstractQuestionnaireTest {
    * @param answer answer
    */
   private void openAnswer(Question question, CategoryAnswer answer) {
-    FormTester formTester = wicketTester.newFormTester(getFormPath());
+    List<Component> fields = getQuestionCategoryFormComponent(question, answer);
+    wicketTester.executeAjaxEvent(fields.get(0), "onclick");
 
-    Category category = question.findCategory(answer.getCategoryName());
-    String openPath = getInputFieldComponentId(question, category);
-    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + openPath, "onclick");
-    formTester.setValue(openPath, answer.getOpenAnswers().get(0).getData().getValueAsString());
-    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + openPath, ONBLUR_EVENT);
+    fields = getQuestionCategoryFormComponent(question, answer);
+    setFormComponentValue((FormComponent) fields.get(0), answer.getOpenAnswers().get(0).getData().getValueAsString());
+    wicketTester.executeAjaxEvent(fields.get(0), ONBLUR_EVENT);
   }
 
-  private String getInputFieldComponentId(Question question, Category category) {
-    int categoryIndex = question.getCategories().indexOf(category) + 1;
-    return getCategoryGroupComponentId(question) + ":category:" + categoryIndex + ":input:open:open:input:field";
+  private void setFormComponentValue(FormComponent formComponent, String value) {
+    wicketTester.getServletRequest().setParameter(formComponent.getInputName(), value);
   }
 
   private String getCategoryGroupComponentId(Question question) {
@@ -665,24 +664,22 @@ public abstract class AbstractQuestionnaireTest {
     return "step:panel:questions:" + index + ":question:content:categories";
   }
 
-  private String getRadioButtonComponentId(Question question, CategoryAnswer answer) {
-    return getButtonComponentId(question, answer, "radio");
+  private FormComponent getCategoryGroupComponent(Question question) {
+    int index = question.getPage().getQuestions().indexOf(question) + 1;
+    String path = getFormPath() + ":step:panel:questions:" + index + ":question:content:categories";
+    return (FormComponent) wicketTester.getComponentFromLastRenderedPage(path);
   }
 
-  private String getCheckBoxButtonComponentId(Question question, CategoryAnswer answer) {
-    return getButtonComponentId(question, answer, "checkbox");
+  private List<Component> getQuestionCategoryFormComponent(Question question, CategoryAnswer answer) {
+    AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) getQuestionCategoryComponent(question, answer, AbstractOpenAnswerDefinitionPanel.class);
+    return ComponentTesterUtils.findChildren(openField, FormComponent.class);
   }
 
-  private String getButtonComponentId(Question question, CategoryAnswer answer, String type) {
-    String partBeforeIndex = getCategoryGroupComponentId(question) + ":category";
-    String partAfterIndex = "input:categoryLabel:" + type;
-    int buttonIndex = getCategoryIndex(question, answer) + 1; // 1-based.
+  private Component getQuestionCategoryComponent(Question question, CategoryAnswer answer, Class clazz) {
+    FormComponent group = getCategoryGroupComponent(question);
+    QuestionCategory questionCategory = question.findQuestionCategory(answer.getCategoryName());
 
-    if(buttonIndex == -1) {
-      Assert.fail("Invalid answer [" + answer.getCategoryName() + "] for question [" + question.getName() + "] (could not locate corresponding " + type + " button)");
-    }
-
-    return partBeforeIndex + COMPONENT_ID_SEPARATOR + buttonIndex + COMPONENT_ID_SEPARATOR + partAfterIndex;
+    return ComponentTesterUtils.findChild(group, clazz, questionCategory);
   }
 
   //

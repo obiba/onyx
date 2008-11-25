@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
@@ -37,6 +38,8 @@ public class Question implements Serializable, ILocalizable {
   private Integer maxCount;
 
   private String uIFactoryName;
+
+  private ValueMap uIArguments;
 
   private List<QuestionCategory> questionCategories;
 
@@ -105,6 +108,18 @@ public class Question implements Serializable, ILocalizable {
 
   public void setUIFactoryName(String factoryName) {
     uIFactoryName = factoryName;
+  }
+
+  public ValueMap getUIArguments() {
+    return uIArguments;
+  }
+
+  public ValueMap addUIArgument(String key, String value) {
+    if(uIArguments == null) {
+      uIArguments = new ValueMap();
+    }
+    uIArguments.add(key, value);
+    return uIArguments;
   }
 
   public List<QuestionCategory> getQuestionCategories() {
