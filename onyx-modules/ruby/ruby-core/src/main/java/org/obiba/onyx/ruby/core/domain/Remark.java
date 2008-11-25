@@ -9,13 +9,17 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.domain;
 
+import java.io.Serializable;
+
 import org.springframework.context.MessageSourceResolvable;
 
-public class Remark implements MessageSourceResolvable {
+public class Remark implements MessageSourceResolvable, Serializable {
+
+  private static final long serialVersionUID = 1L;
+
   //
   // Instance Variables
   //
-
   private String code;
 
   //

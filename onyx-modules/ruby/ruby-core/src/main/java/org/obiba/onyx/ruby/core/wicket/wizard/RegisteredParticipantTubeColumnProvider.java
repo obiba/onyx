@@ -23,6 +23,8 @@ import org.apache.wicket.model.PropertyModel;
 import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
+import org.obiba.onyx.ruby.core.wicket.tube.CommentPanel;
+import org.obiba.onyx.ruby.core.wicket.tube.RemarkSelectorPanel;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.slf4j.Logger;
@@ -58,6 +60,8 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
     addDeleteColumn();
     addBarcodeColumn();
     addBarcodePartColumns(tubeRegistrationConfiguration);
+    addRemarkColumn(tubeRegistrationConfiguration);
+    addCommentColumn();
   }
 
   //
@@ -125,5 +129,29 @@ class RegisteredParticipantTubeColumnProvider implements IColumnProvider, Serial
 
   public int getFirstBarcodePartColumnIndex() {
     return firstBarcodePartColumnIndex;
+  }
+
+  private void addRemarkColumn(TubeRegistrationConfiguration tubeRegistrationConfiguration) {
+    final TubeRegistrationConfiguration finalTubeRegConf = tubeRegistrationConfiguration;
+
+    columns.add(new AbstractColumn(new SpringStringResourceModel("Ruby.Remark")) {
+      private static final long serialVersionUID = 1L;
+
+      public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+        cellItem.add(new RemarkSelectorPanel(componentId, rowModel, finalTubeRegConf));
+      }
+    });
+
+  }
+
+  private void addCommentColumn() {
+    columns.add(new AbstractColumn(new SpringStringResourceModel("Ruby.Comment")) {
+      private static final long serialVersionUID = 1L;
+
+      public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+        cellItem.add(new CommentPanel(componentId, rowModel));
+      }
+    });
+
   }
 }
