@@ -11,7 +11,6 @@ package org.obiba.onyx.webapp.base.page;
 
 import java.util.Locale;
 
-import org.apache.wicket.Application;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.html.IHeaderContributor;
@@ -38,7 +37,7 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware, I
     feedbackPanel = new FeedbackPanel("feedback");
     feedbackPanel.setOutputMarkupId(true);
     add(feedbackPanel);
-    
+
     if(((OnyxAuthenticatedSession) getSession()).isSignedIn()) {
       add(new HeaderPanel("header"));
     } else {
@@ -46,7 +45,7 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware, I
     }
 
     add(new MenuBar("menuBar"));
-    add(new Label("version", ((OnyxApplication)getApplication()).getVersion().toString()));
+    add(new Label("version", ((OnyxApplication) getApplication()).getVersion().toString()));
 
     add(new Label("baseAjaxIndicator", new StringResourceModel("Processing", this, null)));
   }
@@ -71,6 +70,9 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware, I
   }
 
   public void renderHead(IHeaderResponse response) {
+    response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "jquery.js"));
+    response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "jquery.layout.js"));
+    response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "ui.js"));
     response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "onyx.js"));
   }
 

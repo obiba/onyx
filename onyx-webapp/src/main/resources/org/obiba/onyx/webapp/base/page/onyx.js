@@ -41,3 +41,29 @@ if (window.addEventListener) {
         window.attachEvent("onload", Focus.setInitialFocus);
     }
 }
+
+//////////////////////////////////////////////////////////////////////
+// JQuery Layout
+//////////////////////////////////////////////////////////////////////
+var myLayout; // a var is required because this page utilizes: myLayout.allowOverflow() method
+
+//
+// ON PAGE LOAD
+//
+$(document).ready(function () {
+	myLayout = $('body').layout( baseLayoutSettings );
+});
+
+//
+// Base Layout Settings
+//
+var baseLayoutSettings = {
+	name: "baseLayout",
+	defaults: {
+		spacing_open: 0,
+		spacing_closed:0
+	},
+	north: {
+		size: 63
+	}
+}

@@ -8,25 +8,32 @@
   </head>
 
   <body>
-    <div id="pageWrapper">
-      <div id="pageHeader">
-      	<span id="pageHeader1" wicket:id="header"></span>
-        <span style="clear:both;"></span>
+    <div class="ui-layout-north">
+      	<div id="pageHeader">
+      		<span id="pageHeader1" wicket:id="header"></span>
+        	<span style="clear:both;"></span>
+      	</div>
+      	<div id="menuBar">
+        	<div wicket:id="menuBar"></div>
+      	</div>
       </div>
-      <div id="menuBar">
-        <div wicket:id="menuBar"></div>
+      
+      <div class="ui-layout-center">
+      	<div id="contentWrapper">
+        	<span style="display: none;" class="base-ajax-indicator" id="base-ajax-indicator" wicket:id="baseAjaxIndicator" />
+        	<div id="feedback">
+          		<span wicket:id="feedback" />
+        	</div>
+        	<wicket:child/>
+      	</div>
+      </div> 
+           
+      <div class="ui-layout-south">
+      	<div id="pageFooter">
+        	<p>&copy; 2008 <a href="http://obiba.org">Obiba</a> <span wicket:id="version"/></p>
+      	</div>
       </div>
-      <div id="contentWrapper">
-        <span style="display: none;" class="base-ajax-indicator" id="base-ajax-indicator" wicket:id="baseAjaxIndicator" />
-        <div id="feedback">
-          <span wicket:id="feedback" />
-        </div>
-        <wicket:child/>
-      </div>      
-      <div id="pageFooter">
-        <p>&copy; 2008 <a href="http://obiba.org">Obiba</a> <span wicket:id="version"/></p>
-      </div>
-    </div>
+      
   </body>
 
 </html>

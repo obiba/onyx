@@ -68,7 +68,7 @@ div.banner {
 
 #pageHeader1 {
 	height: 25px;
-	width:1000px;
+	width:100%;
 	float:left;
 	text-align:right;
 	font-weight:bold;
