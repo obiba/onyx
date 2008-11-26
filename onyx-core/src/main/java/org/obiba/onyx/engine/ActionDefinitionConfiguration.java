@@ -61,7 +61,8 @@ public class ActionDefinitionConfiguration implements ResourceLoaderAware, Initi
         log.debug("Found ActionDefinition with code {}", code);
 
         // treat the case of the top-level "template" ActionDefinition that is associated to all types.
-        if(actionDefinition.getType() == null && actionDefinition.getCode().equalsIgnoreCase(ACTION_PREFIX)) {
+        String newCode = buildCode(type, stateName, module, stage);
+        if(code.equals(newCode) == false) {
           // copy the default ActionDefinition
           actionDefinition = new ActionDefinition(actionDefinition);
           // set the copy's type to the required type.
@@ -70,6 +71,7 @@ public class ActionDefinitionConfiguration implements ResourceLoaderAware, Initi
           actionDefinition.setCode(buildCode(type, stateName, module, stage));
           actionDefinitionCache.put(actionDefinition.getCode().toLowerCase(), actionDefinition);
         }
+
         return actionDefinition;
       }
     }
