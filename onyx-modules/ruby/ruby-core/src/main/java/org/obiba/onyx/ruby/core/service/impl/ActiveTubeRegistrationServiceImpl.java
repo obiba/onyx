@@ -211,7 +211,9 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
 
     checkBarcodeExists(barcode, tube);
 
-    tube.setRemarkCode(remark.getCode());
+    if(remark != null) tube.setRemarkCode(remark.getCode());
+    else
+      tube.setRemarkCode(null);
     getPersistenceManager().save(tube);
   }
 

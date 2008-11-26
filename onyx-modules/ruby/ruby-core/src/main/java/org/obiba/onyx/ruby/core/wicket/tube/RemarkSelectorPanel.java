@@ -86,6 +86,8 @@ public class RemarkSelectorPanel extends Panel {
 
     });
 
+    ddcRemarks.setNullValid(true);
+
     add(ddcRemarks);
   }
 
