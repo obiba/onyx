@@ -14,6 +14,9 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.markup.repeater.data.GridView;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListFilter;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
 
 /**
@@ -22,12 +25,15 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProv
 public abstract class AbstractQuestionCategoriesView extends GridView {
 
   public AbstractQuestionCategoriesView(String id, IModel questionModel) {
-    this(id, questionModel, null);
+    this(id, questionModel, null, null);
   }
 
-  public AbstractQuestionCategoriesView(String id, IModel questionModel, QuestionCategoriesProvider.IQuestionCategoryFilter filter) {
-    super(id, new QuestionCategoriesProvider(questionModel, filter));
-    setColumns(((QuestionCategoriesProvider) getDataProvider()).getPermutator().getColumnCount());
+  public AbstractQuestionCategoriesView(String id, IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<QuestionCategory> permutator) {
+    super(id, new QuestionCategoriesProvider(questionModel, filter, permutator));
+
+    QuestionCategoriesProvider provider = ((QuestionCategoriesProvider) getDataProvider());
+    setColumns(provider.getDataListPermutator().getColumnCount());
+
     setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
   }
 

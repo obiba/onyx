@@ -40,18 +40,16 @@ public class CreateQuestionnaire {
       }
     }
 
-    c.createQuestionnaire();
+    // Select the questionnaire you wish to create
+    c.createQuestionnaire(TestQuestionnaireContentBuilder.buildTestQuestionnaire());
+    c.createQuestionnaire(SelfAdminHealthQuestionnaireContentBuilder.buildHealthQuestionnaire());
+    c.createQuestionnaire(AssistedHealthQuestionnaireContentBuilder.buildHealthQuestionnaire());
   }
 
   public CreateQuestionnaire() {
   }
 
-  public void createQuestionnaire() {
-    // Select the questionnaire you wish to create
-    // QuestionnaireBuilder builder = TestQuestionnaireContentBuilder.buildTestQuestionnaire();
-    QuestionnaireBuilder builder = SelfAdminHealthQuestionnaireContentBuilder.buildHealthQuestionnaire();
-    // QuestionnaireBuilder builder = AssistedHealthQuestionnaireContentBuilder.buildHealthQuestionnaire();
-
+  public void createQuestionnaire(QuestionnaireBuilder builder) {
     // Create the bundle manager.
     QuestionnaireBundleManager bundleManager = new QuestionnaireBundleManagerImpl(bundleRootDirectory);
     ((QuestionnaireBundleManagerImpl) bundleManager).setPropertyKeyProvider(new DefaultPropertyKeyProviderImpl());

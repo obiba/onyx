@@ -44,7 +44,7 @@ public class TestQuestionnaireContentBuilder {
     builder.withSection("S_MULTIPLE_OPEN").withPage("P_MULTIPLE_OPEN").withQuestion("MULTIPLE_OPEN").withSharedCategory("DURATION").withOpenAnswerDefinition("DURATION_OPEN", DataType.INTEGER);
     builder.inOpenAnswerDefinition("DURATION_OPEN").withOpenAnswerDefinition("DURATION_OPEN_HOURS", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 16));
     builder.inOpenAnswerDefinition("DURATION_OPEN").withOpenAnswerDefinition("DURATION_OPEN_MINUTES", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 960));
-    builder.inQuestion("MULTIPLE_OPEN").withSharedCategories(DONT_KNOW, NO_ANSWER);
+    builder.inQuestion("MULTIPLE_OPEN").withSharedCategories(true, DONT_KNOW, NO_ANSWER);
 
     builder.withSection("S_MULTIPLE").withPage("P_MULTIPLE").withQuestion("MULTIPLE_1", true).setAnswerCount(1, 2).withCategories("1", "2", "3");
 
@@ -62,6 +62,7 @@ public class TestQuestionnaireContentBuilder {
     builder.inQuestion("Q1").withSharedCategory(DONT_KNOW).setExportName("9");
 
     builder.inSection("SB").withSection("BIRTHDATE").withPage("P2").withQuestion("Q2", DropDownQuestionPanelFactory.class).withCategory("1").withOpenAnswerDefinition("year", DataType.INTEGER).addValidator(new PatternValidator("\\d{4}"), DataType.TEXT);
+    builder.inQuestion("Q2").withCategory("2");
     builder.inQuestion("Q2").withSharedCategory(NO_ANSWER).setExportName("8888");
     builder.inQuestion("Q2").withSharedCategory(DONT_KNOW).setExportName("9999");
     builder.inSection("BIRTHDATE").withPage("P3").withQuestion("Q3").withCategory("1").withOpenAnswerDefinition("month", DataType.INTEGER).addValidator(new PatternValidator("\\d\\d?"), DataType.TEXT);

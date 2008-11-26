@@ -18,7 +18,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListFilter;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesToMatrixPermutator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,13 +44,13 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
     radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
     add(radioGroup);
 
-    GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), new QuestionCategoriesProvider.IQuestionCategoryFilter() {
+    GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), new IDataListFilter<QuestionCategory>() {
 
       public boolean accept(QuestionCategory questionCategory) {
         return questionCategory.getCategory().isEscape();
       }
 
-    }) {
+    }, new QuestionCategoriesToMatrixPermutator(getModel())) {
 
       @Override
       protected void populateItem(Item item) {

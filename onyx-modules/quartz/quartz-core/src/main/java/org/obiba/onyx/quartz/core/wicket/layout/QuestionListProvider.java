@@ -17,7 +17,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.array.AbstractDataListProvider;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.AbstractDataListProvider;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

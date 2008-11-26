@@ -6,7 +6,7 @@
  * You should have received a copy of the GNU General Public License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  **********************************************************************************************************************/
-package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
+package org.obiba.onyx.quartz.core.wicket.layout.impl.util;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -19,6 +19,32 @@ import org.apache.wicket.model.Model;
 public abstract class AbstractDataListProvider<T extends Serializable> implements IDataProvider {
 
   private static final long serialVersionUID = 1L;
+
+  protected IDataListFilter<T> filter;
+
+  protected IDataListPermutator<T> permutator;
+
+  public AbstractDataListProvider() {
+    this(null, null);
+  }
+
+  public AbstractDataListProvider(IDataListFilter<T> filter) {
+    this(filter, null);
+  }
+
+  public AbstractDataListProvider(IDataListFilter<T> filter, IDataListPermutator<T> permutator) {
+    super();
+    this.filter = filter;
+    this.permutator = permutator;
+  }
+
+  /**
+   * To be overridden if list is to be permutated.
+   * @return
+   */
+  public IDataListPermutator<T> getDataListPermutator() {
+    return permutator;
+  }
 
   public abstract List<T> getDataList();
 

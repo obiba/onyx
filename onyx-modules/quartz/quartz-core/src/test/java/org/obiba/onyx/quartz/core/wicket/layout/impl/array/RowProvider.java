@@ -12,6 +12,8 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.AbstractDataListProvider;
+
 class RowProvider extends AbstractDataListProvider<Row> {
 
   private List<Row> rows = new ArrayList<Row>();

@@ -15,7 +15,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOper
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.DropDownQuestionPanelFactory;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesToMatrixPermutator;
 import org.obiba.onyx.util.data.DataType;
 
 /**
@@ -100,9 +100,9 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
 
     builder.withSection("B_DEMOGRAPHY").withSection("GENDER").withPage("2").withQuestion("SEX", "1").withCategory("MALE").setExportName("1");
     builder.inQuestion("SEX").withCategory("FEMALE").setExportName("2");
-    builder.inQuestion("SEX").withSharedCategory(OTHER, "3");
-    builder.inQuestion("SEX").withSharedCategory(PNA, "8");
-    builder.inQuestion("SEX").withSharedCategory(DNK, "9");
+    builder.inQuestion("SEX").withSharedCategory(OTHER, "3").setEscape(true);
+    builder.inQuestion("SEX").withSharedCategory(PNA, "8").setEscape(true);
+    builder.inQuestion("SEX").withSharedCategory(DNK, "9").setEscape(true);
 
     builder.inSection("B_DEMOGRAPHY").withSection("AGE_DATE_BIRTH").withPage("3").withQuestion("DATE_OF_BIRTH", "2").withQuestion("DOB_YEAR").withCategory("DOB_YEAR").withOpenAnswerDefinition("DOB_YEAR", DataType.INTEGER).addValidator(new PatternValidator("\\d{4}"));
     builder.inQuestion("DOB_YEAR").withSharedCategory(PNA, "8888");
@@ -204,7 +204,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inCondition("LONGEST_TIME_AGE_STARTED_LIVING_MCONDITION").withAnswerCondition("LONGEST_TIME_AGE_STARTED_LIVING_ACONDITION_1", "CURRENT_IS_LONGEST_TIME_LIVED", DNK);
     builder.inPage("21").addTimestamp("TS_DEM2");
 
-    builder.inSection("B_DEMOGRAPHY").withSection("LANGUAGE").withPage("22").withQuestion("FIRST_LANGUAGE_LEARNED", "21", true).addUIArgument(QuestionCategoriesProvider.ROW_COUNT_KEY, "10").withCategory("ENGLISH").setExportName("1");
+    builder.inSection("B_DEMOGRAPHY").withSection("LANGUAGE").withPage("22").withQuestion("FIRST_LANGUAGE_LEARNED", "21", true).addUIArgument(QuestionCategoriesToMatrixPermutator.ROW_COUNT_KEY, "10").withCategory("ENGLISH").setExportName("1");
     builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("FRENCH").setExportName("2");
     builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("ARABIC").setExportName("3");
     builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("CHINESE").setExportName("4");

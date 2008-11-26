@@ -23,7 +23,7 @@
                   <questionCategories id="17">
                     <questionCategory id="18" reselectable="false" selected="false">
                       <question reference="16"/>
-                      <category id="19" name="TIMESTAMP">
+                      <category id="19" name="TIMESTAMP" escape="false">
                         <openAnswerDefinition id="20" name="TIMESTAMP_TS_AI" dataType="DATE">
                           <dataSource class="timestampSource" id="21"/>
                         </openAnswerDefinition>
@@ -53,23 +53,23 @@
                   <questionCategories id="32">
                     <questionCategory id="33" reselectable="false" selected="false" exportName="1">
                       <question reference="31"/>
-                      <category id="34" name="MALE"/>
+                      <category id="34" name="MALE" escape="false"/>
                     </questionCategory>
                     <questionCategory id="35" reselectable="false" selected="false" exportName="2">
                       <question reference="31"/>
-                      <category id="36" name="FEMALE"/>
+                      <category id="36" name="FEMALE" escape="false"/>
                     </questionCategory>
                     <questionCategory id="37" reselectable="false" selected="false" exportName="3">
                       <question reference="31"/>
-                      <category id="38" name="OTHER"/>
+                      <category id="38" name="OTHER" escape="true"/>
                     </questionCategory>
                     <questionCategory id="39" reselectable="false" selected="false" exportName="8">
                       <question reference="31"/>
-                      <category id="40" name="PNA"/>
+                      <category id="40" name="PNA" escape="true"/>
                     </questionCategory>
                     <questionCategory id="41" reselectable="false" selected="false" exportName="9">
                       <question reference="31"/>
-                      <category id="42" name="DNK"/>
+                      <category id="42" name="DNK" escape="true"/>
                     </questionCategory>
                   </questionCategories>
                   <questions id="43"/>
@@ -93,7 +93,7 @@
                       <questionCategories id="53">
                         <questionCategory id="54" reselectable="false" selected="false">
                           <question reference="52"/>
-                          <category id="55" name="DOB_YEAR">
+                          <category id="55" name="DOB_YEAR" escape="false">
                             <openAnswerDefinition id="56" name="DOB_YEAR" dataType="INTEGER">
                               <validators id="57">
                                 <dataValidator id="58" dataType="TEXT">
@@ -125,51 +125,51 @@
                       <questionCategories id="66">
                         <questionCategory id="67" reselectable="false" selected="false">
                           <question reference="65"/>
-                          <category id="68" name="01"/>
+                          <category id="68" name="01" escape="false"/>
                         </questionCategory>
                         <questionCategory id="69" reselectable="false" selected="false">
                           <question reference="65"/>
-                          <category id="70" name="02"/>
+                          <category id="70" name="02" escape="false"/>
                         </questionCategory>
                         <questionCategory id="71" reselectable="false" selected="false">
                           <question reference="65"/>
-                          <category id="72" name="03"/>
+                          <category id="72" name="03" escape="false"/>
                         </questionCategory>
                         <questionCategory id="73" reselectable="false" selected="false">
                           <question reference="65"/>
-                          <category id="74" name="04"/>
+                          <category id="74" name="04" escape="false"/>
                         </questionCategory>
                         <questionCategory id="75" reselectable="false" selected="false">
                           <question reference="65"/>
-                          <category id="76" name="05"/>
+                          <category id="76" name="05" escape="false"/>
                         </questionCategory>
                         <questionCategory id="77" reselectable="false" selected="false">
                           <question reference="65"/>
-                          <category id="78" name="06"/>
+                          <category id="78" name="06" escape="false"/>
                         </questionCategory>
                         <questionCategory id="79" reselectable="false" selected="false">
                           <question reference="65"/>
-                          <category id="80" name="07"/>
+                          <category id="80" name="07" escape="false"/>
                         </questionCategory>
                         <questionCategory id="81" reselectable="false" selected="false">
                           <question reference="65"/>
-                          <category id="82" name="08"/>
+                          <category id="82" name="08" escape="false"/>
                         </questionCategory>
                         <questionCategory id="83" reselectable="false" selected="false">
                           <question reference="65"/>
-                          <category id="84" name="09"/>
+                          <category id="84" name="09" escape="false"/>
                         </questionCategory>
                         <questionCategory id="85" reselectable="false" selected="false">
                           <question reference="65"/>
-                          <category id="86" name="10"/>
+                          <category id="86" name="10" escape="false"/>
                         </questionCategory>
                         <questionCategory id="87" reselectable="false" selected="false">
                           <question reference="65"/>
-                          <category id="88" name="11"/>
+                          <category id="88" name="11" escape="false"/>
                         </questionCategory>
                         <questionCategory id="89" reselectable="false" selected="false">
                           <question reference="65"/>
-                          <category id="90" name="12"/>
+                          <category id="90" name="12" escape="false"/>
                         </questionCategory>
                         <questionCategory id="91" reselectable="false" selected="false" exportName="88">
                           <question reference="65"/>
@@ -187,127 +187,127 @@
                       <questionCategories id="95">
                         <questionCategory id="96" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="97" name="01"/>
+                          <category id="97" name="01" escape="false"/>
                         </questionCategory>
                         <questionCategory id="98" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="99" name="02"/>
+                          <category id="99" name="02" escape="false"/>
                         </questionCategory>
                         <questionCategory id="100" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="101" name="03"/>
+                          <category id="101" name="03" escape="false"/>
                         </questionCategory>
                         <questionCategory id="102" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="103" name="04"/>
+                          <category id="103" name="04" escape="false"/>
                         </questionCategory>
                         <questionCategory id="104" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="105" name="05"/>
+                          <category id="105" name="05" escape="false"/>
                         </questionCategory>
                         <questionCategory id="106" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="107" name="06"/>
+                          <category id="107" name="06" escape="false"/>
                         </questionCategory>
                         <questionCategory id="108" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="109" name="07"/>
+                          <category id="109" name="07" escape="false"/>
                         </questionCategory>
                         <questionCategory id="110" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="111" name="08"/>
+                          <category id="111" name="08" escape="false"/>
                         </questionCategory>
                         <questionCategory id="112" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="113" name="09"/>
+                          <category id="113" name="09" escape="false"/>
                         </questionCategory>
                         <questionCategory id="114" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="115" name="10"/>
+                          <category id="115" name="10" escape="false"/>
                         </questionCategory>
                         <questionCategory id="116" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="117" name="11"/>
+                          <category id="117" name="11" escape="false"/>
                         </questionCategory>
                         <questionCategory id="118" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="119" name="12"/>
+                          <category id="119" name="12" escape="false"/>
                         </questionCategory>
                         <questionCategory id="120" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="121" name="13"/>
+                          <category id="121" name="13" escape="false"/>
                         </questionCategory>
                         <questionCategory id="122" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="123" name="14"/>
+                          <category id="123" name="14" escape="false"/>
                         </questionCategory>
                         <questionCategory id="124" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="125" name="15"/>
+                          <category id="125" name="15" escape="false"/>
                         </questionCategory>
                         <questionCategory id="126" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="127" name="16"/>
+                          <category id="127" name="16" escape="false"/>
                         </questionCategory>
                         <questionCategory id="128" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="129" name="17"/>
+                          <category id="129" name="17" escape="false"/>
                         </questionCategory>
                         <questionCategory id="130" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="131" name="18"/>
+                          <category id="131" name="18" escape="false"/>
                         </questionCategory>
                         <questionCategory id="132" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="133" name="19"/>
+                          <category id="133" name="19" escape="false"/>
                         </questionCategory>
                         <questionCategory id="134" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="135" name="20"/>
+                          <category id="135" name="20" escape="false"/>
                         </questionCategory>
                         <questionCategory id="136" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="137" name="21"/>
+                          <category id="137" name="21" escape="false"/>
                         </questionCategory>
                         <questionCategory id="138" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="139" name="22"/>
+                          <category id="139" name="22" escape="false"/>
                         </questionCategory>
                         <questionCategory id="140" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="141" name="23"/>
+                          <category id="141" name="23" escape="false"/>
                         </questionCategory>
                         <questionCategory id="142" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="143" name="24"/>
+                          <category id="143" name="24" escape="false"/>
                         </questionCategory>
                         <questionCategory id="144" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="145" name="25"/>
+                          <category id="145" name="25" escape="false"/>
                         </questionCategory>
                         <questionCategory id="146" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="147" name="26"/>
+                          <category id="147" name="26" escape="false"/>
                         </questionCategory>
                         <questionCategory id="148" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="149" name="27"/>
+                          <category id="149" name="27" escape="false"/>
                         </questionCategory>
                         <questionCategory id="150" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="151" name="28"/>
+                          <category id="151" name="28" escape="false"/>
                         </questionCategory>
                         <questionCategory id="152" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="153" name="29"/>
+                          <category id="153" name="29" escape="false"/>
                         </questionCategory>
                         <questionCategory id="154" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="155" name="30"/>
+                          <category id="155" name="30" escape="false"/>
                         </questionCategory>
                         <questionCategory id="156" reselectable="false" selected="false">
                           <question reference="94"/>
-                          <category id="157" name="31"/>
+                          <category id="157" name="31" escape="false"/>
                         </questionCategory>
                         <questionCategory id="158" reselectable="false" selected="false" exportName="88">
                           <question reference="94"/>
@@ -328,7 +328,7 @@
                   <questionCategories id="162">
                     <questionCategory id="163" reselectable="false" selected="false">
                       <question reference="161"/>
-                      <category id="164" name="PARTICIPANT_AGE">
+                      <category id="164" name="PARTICIPANT_AGE" escape="false">
                         <openAnswerDefinition id="165" name="PARTICIPANT_AGE" dataType="INTEGER">
                           <validators id="166">
                             <dataValidator id="167" dataType="INTEGER">
@@ -369,23 +369,23 @@
                   <questionCategories id="179">
                     <questionCategory id="180" reselectable="false" selected="false" exportName="1">
                       <question reference="178"/>
-                      <category id="181" name="MARRIED"/>
+                      <category id="181" name="MARRIED" escape="false"/>
                     </questionCategory>
                     <questionCategory id="182" reselectable="false" selected="false" exportName="2">
                       <question reference="178"/>
-                      <category id="183" name="DIVORCED"/>
+                      <category id="183" name="DIVORCED" escape="false"/>
                     </questionCategory>
                     <questionCategory id="184" reselectable="false" selected="false" exportName="3">
                       <question reference="178"/>
-                      <category id="185" name="SEPARATED"/>
+                      <category id="185" name="SEPARATED" escape="false"/>
                     </questionCategory>
                     <questionCategory id="186" reselectable="false" selected="false" exportName="4">
                       <question reference="178"/>
-                      <category id="187" name="WIDOWED"/>
+                      <category id="187" name="WIDOWED" escape="false"/>
                     </questionCategory>
                     <questionCategory id="188" reselectable="false" selected="false" exportName="5">
                       <question reference="178"/>
-                      <category id="189" name="SINGLE"/>
+                      <category id="189" name="SINGLE" escape="false"/>
                     </questionCategory>
                     <questionCategory id="190" reselectable="false" selected="false" exportName="88">
                       <question reference="178"/>
@@ -414,7 +414,7 @@
                   <questionCategories id="199">
                     <questionCategory id="200" reselectable="false" selected="false">
                       <question reference="198"/>
-                      <category id="201" name="OPEN_N">
+                      <category id="201" name="OPEN_N" escape="false">
                         <openAnswerDefinition id="202" name="OPEN_N" dataType="INTEGER">
                           <validators id="203">
                             <dataValidator id="204" dataType="INTEGER">
@@ -464,55 +464,55 @@
                   <questionCategories id="221">
                     <questionCategory id="222" reselectable="false" selected="false">
                       <question reference="220"/>
-                      <category id="223" name="CA"/>
+                      <category id="223" name="CA" escape="false"/>
                     </questionCategory>
                     <questionCategory id="224" reselectable="false" selected="false">
                       <question reference="220"/>
-                      <category id="225" name="IT"/>
+                      <category id="225" name="IT" escape="false"/>
                     </questionCategory>
                     <questionCategory id="226" reselectable="false" selected="false">
                       <question reference="220"/>
-                      <category id="227" name="FR"/>
+                      <category id="227" name="FR" escape="false"/>
                     </questionCategory>
                     <questionCategory id="228" reselectable="false" selected="false">
                       <question reference="220"/>
-                      <category id="229" name="HT"/>
+                      <category id="229" name="HT" escape="false"/>
                     </questionCategory>
                     <questionCategory id="230" reselectable="false" selected="false">
                       <question reference="220"/>
-                      <category id="231" name="LB"/>
+                      <category id="231" name="LB" escape="false"/>
                     </questionCategory>
                     <questionCategory id="232" reselectable="false" selected="false">
                       <question reference="220"/>
-                      <category id="233" name="US"/>
+                      <category id="233" name="US" escape="false"/>
                     </questionCategory>
                     <questionCategory id="234" reselectable="false" selected="false">
                       <question reference="220"/>
-                      <category id="235" name="CN"/>
+                      <category id="235" name="CN" escape="false"/>
                     </questionCategory>
                     <questionCategory id="236" reselectable="false" selected="false">
                       <question reference="220"/>
-                      <category id="237" name="VN"/>
+                      <category id="237" name="VN" escape="false"/>
                     </questionCategory>
                     <questionCategory id="238" reselectable="false" selected="false">
                       <question reference="220"/>
-                      <category id="239" name="PT"/>
+                      <category id="239" name="PT" escape="false"/>
                     </questionCategory>
                     <questionCategory id="240" reselectable="false" selected="false">
                       <question reference="220"/>
-                      <category id="241" name="GR"/>
+                      <category id="241" name="GR" escape="false"/>
                     </questionCategory>
                     <questionCategory id="242" reselectable="false" selected="false">
                       <question reference="220"/>
-                      <category id="243" name="MA"/>
+                      <category id="243" name="MA" escape="false"/>
                     </questionCategory>
                     <questionCategory id="244" reselectable="false" selected="false">
                       <question reference="220"/>
-                      <category id="245" name="GB"/>
+                      <category id="245" name="GB" escape="false"/>
                     </questionCategory>
                     <questionCategory id="246" reselectable="false" selected="false" exportName="77">
                       <question reference="220"/>
-                      <category id="247" name="ELSEWHERE"/>
+                      <category id="247" name="ELSEWHERE" escape="false"/>
                     </questionCategory>
                     <questionCategory id="248" reselectable="false" selected="false" exportName="88">
                       <question reference="220"/>
@@ -535,7 +535,7 @@
                   <questionCategories id="254">
                     <questionCategory id="255" reselectable="false" selected="false">
                       <question reference="253"/>
-                      <category id="256" name="AGE">
+                      <category id="256" name="AGE" escape="false">
                         <openAnswerDefinition id="257" name="AGE" dataType="INTEGER">
                           <validators id="258">
                             <dataValidator id="259" dataType="INTEGER">
@@ -557,7 +557,7 @@
                     </questionCategory>
                     <questionCategory id="264" reselectable="false" selected="false">
                       <question reference="253"/>
-                      <category id="265" name="YEAR">
+                      <category id="265" name="YEAR" escape="false">
                         <openAnswerDefinition id="266" name="YEAR" dataType="INTEGER">
                           <validators id="267">
                             <dataSourceValidator id="268" comparisionOperator="ge">
@@ -772,7 +772,7 @@
                   <questionCategories id="332">
                     <questionCategory id="333" reselectable="false" selected="false">
                       <question reference="331"/>
-                      <category id="334" name="OPEN_AN">
+                      <category id="334" name="OPEN_AN" escape="false">
                         <openAnswerDefinition id="335" name="OPEN_AN" dataType="TEXT">
                           <openAnswerDefinitions id="336"/>
                         </openAnswerDefinition>
@@ -799,7 +799,7 @@
                   <questionCategories id="343">
                     <questionCategory id="344" reselectable="false" selected="false">
                       <question reference="342"/>
-                      <category id="345" name="POSTAL_CODE3">
+                      <category id="345" name="POSTAL_CODE3" escape="false">
                         <openAnswerDefinition id="346" name="POSTAL_CODE3" dataType="TEXT">
                           <validators id="347">
                             <dataValidator id="348" dataType="TEXT">
@@ -877,11 +877,11 @@
                   <questionCategories id="371">
                     <questionCategory id="372" reselectable="false" selected="false" exportName="0">
                       <question reference="370"/>
-                      <category id="373" name="N"/>
+                      <category id="373" name="N" escape="false"/>
                     </questionCategory>
                     <questionCategory id="374" reselectable="false" selected="false" exportName="1">
                       <question reference="370"/>
-                      <category id="375" name="Y"/>
+                      <category id="375" name="Y" escape="false"/>
                     </questionCategory>
                     <questionCategory id="376" reselectable="false" selected="false" exportName="8">
                       <question reference="370"/>
@@ -1239,91 +1239,91 @@
                   <questionCategories id="488">
                     <questionCategory id="489" reselectable="false" selected="false" exportName="1">
                       <question reference="486"/>
-                      <category id="490" name="ENGLISH"/>
+                      <category id="490" name="ENGLISH" escape="false"/>
                     </questionCategory>
                     <questionCategory id="491" reselectable="false" selected="false" exportName="2">
                       <question reference="486"/>
-                      <category id="492" name="FRENCH"/>
+                      <category id="492" name="FRENCH" escape="false"/>
                     </questionCategory>
                     <questionCategory id="493" reselectable="false" selected="false" exportName="3">
                       <question reference="486"/>
-                      <category id="494" name="ARABIC"/>
+                      <category id="494" name="ARABIC" escape="false"/>
                     </questionCategory>
                     <questionCategory id="495" reselectable="false" selected="false" exportName="4">
                       <question reference="486"/>
-                      <category id="496" name="CHINESE"/>
+                      <category id="496" name="CHINESE" escape="false"/>
                     </questionCategory>
                     <questionCategory id="497" reselectable="false" selected="false" exportName="5">
                       <question reference="486"/>
-                      <category id="498" name="ABORIGINAL"/>
+                      <category id="498" name="ABORIGINAL" escape="false"/>
                     </questionCategory>
                     <questionCategory id="499" reselectable="false" selected="false" exportName="6">
                       <question reference="486"/>
-                      <category id="500" name="GERMAN"/>
+                      <category id="500" name="GERMAN" escape="false"/>
                     </questionCategory>
                     <questionCategory id="501" reselectable="false" selected="false" exportName="7">
                       <question reference="486"/>
-                      <category id="502" name="GREEK"/>
+                      <category id="502" name="GREEK" escape="false"/>
                     </questionCategory>
                     <questionCategory id="503" reselectable="false" selected="false" exportName="8">
                       <question reference="486"/>
-                      <category id="504" name="HUNGARIAN"/>
+                      <category id="504" name="HUNGARIAN" escape="false"/>
                     </questionCategory>
                     <questionCategory id="505" reselectable="false" selected="false" exportName="9">
                       <question reference="486"/>
-                      <category id="506" name="ITALIAN"/>
+                      <category id="506" name="ITALIAN" escape="false"/>
                     </questionCategory>
                     <questionCategory id="507" reselectable="false" selected="false" exportName="10">
                       <question reference="486"/>
-                      <category id="508" name="KOREAN"/>
+                      <category id="508" name="KOREAN" escape="false"/>
                     </questionCategory>
                     <questionCategory id="509" reselectable="false" selected="false" exportName="11">
                       <question reference="486"/>
-                      <category id="510" name="PERSIAN"/>
+                      <category id="510" name="PERSIAN" escape="false"/>
                     </questionCategory>
                     <questionCategory id="511" reselectable="false" selected="false" exportName="12">
                       <question reference="486"/>
-                      <category id="512" name="POLISH"/>
+                      <category id="512" name="POLISH" escape="false"/>
                     </questionCategory>
                     <questionCategory id="513" reselectable="false" selected="false" exportName="13">
                       <question reference="486"/>
-                      <category id="514" name="PORTUGUESE"/>
+                      <category id="514" name="PORTUGUESE" escape="false"/>
                     </questionCategory>
                     <questionCategory id="515" reselectable="false" selected="false" exportName="14">
                       <question reference="486"/>
-                      <category id="516" name="PUNJABI"/>
+                      <category id="516" name="PUNJABI" escape="false"/>
                     </questionCategory>
                     <questionCategory id="517" reselectable="false" selected="false" exportName="15">
                       <question reference="486"/>
-                      <category id="518" name="SPANISH"/>
+                      <category id="518" name="SPANISH" escape="false"/>
                     </questionCategory>
                     <questionCategory id="519" reselectable="false" selected="false" exportName="16">
                       <question reference="486"/>
-                      <category id="520" name="TAGALOG"/>
+                      <category id="520" name="TAGALOG" escape="false"/>
                     </questionCategory>
                     <questionCategory id="521" reselectable="false" selected="false" exportName="17">
                       <question reference="486"/>
-                      <category id="522" name="UKRAINIAN"/>
+                      <category id="522" name="UKRAINIAN" escape="false"/>
                     </questionCategory>
                     <questionCategory id="523" reselectable="false" selected="false" exportName="18">
                       <question reference="486"/>
-                      <category id="524" name="VIETNAMESE"/>
+                      <category id="524" name="VIETNAMESE" escape="false"/>
                     </questionCategory>
                     <questionCategory id="525" reselectable="false" selected="false" exportName="19">
                       <question reference="486"/>
-                      <category id="526" name="DUTCH"/>
+                      <category id="526" name="DUTCH" escape="false"/>
                     </questionCategory>
                     <questionCategory id="527" reselectable="false" selected="false" exportName="20">
                       <question reference="486"/>
-                      <category id="528" name="HINDI"/>
+                      <category id="528" name="HINDI" escape="false"/>
                     </questionCategory>
                     <questionCategory id="529" reselectable="false" selected="false" exportName="21">
                       <question reference="486"/>
-                      <category id="530" name="RUSSIAN"/>
+                      <category id="530" name="RUSSIAN" escape="false"/>
                     </questionCategory>
                     <questionCategory id="531" reselectable="false" selected="false" exportName="22">
                       <question reference="486"/>
-                      <category id="532" name="TAMIL"/>
+                      <category id="532" name="TAMIL" escape="false"/>
                     </questionCategory>
                     <questionCategory id="533" reselectable="false" selected="false" exportName="23">
                       <question reference="486"/>
@@ -1520,71 +1520,71 @@
                   <questionCategories id="613">
                     <questionCategory id="614" reselectable="false" selected="false" exportName="A">
                       <question reference="612"/>
-                      <category id="615" name="AGRICULTURE"/>
+                      <category id="615" name="AGRICULTURE" escape="false"/>
                     </questionCategory>
                     <questionCategory id="616" reselectable="false" selected="false" exportName="B">
                       <question reference="612"/>
-                      <category id="617" name="FISHING"/>
+                      <category id="617" name="FISHING" escape="false"/>
                     </questionCategory>
                     <questionCategory id="618" reselectable="false" selected="false" exportName="C">
                       <question reference="612"/>
-                      <category id="619" name="MINING"/>
+                      <category id="619" name="MINING" escape="false"/>
                     </questionCategory>
                     <questionCategory id="620" reselectable="false" selected="false" exportName="D">
                       <question reference="612"/>
-                      <category id="621" name="MANUFACTURING"/>
+                      <category id="621" name="MANUFACTURING" escape="false"/>
                     </questionCategory>
                     <questionCategory id="622" reselectable="false" selected="false" exportName="E">
                       <question reference="612"/>
-                      <category id="623" name="ELECTRICITY"/>
+                      <category id="623" name="ELECTRICITY" escape="false"/>
                     </questionCategory>
                     <questionCategory id="624" reselectable="false" selected="false" exportName="F">
                       <question reference="612"/>
-                      <category id="625" name="CONSTRUCTION"/>
+                      <category id="625" name="CONSTRUCTION" escape="false"/>
                     </questionCategory>
                     <questionCategory id="626" reselectable="false" selected="false" exportName="G">
                       <question reference="612"/>
-                      <category id="627" name="TRADE"/>
+                      <category id="627" name="TRADE" escape="false"/>
                     </questionCategory>
                     <questionCategory id="628" reselectable="false" selected="false" exportName="H">
                       <question reference="612"/>
-                      <category id="629" name="RESTAURATION"/>
+                      <category id="629" name="RESTAURATION" escape="false"/>
                     </questionCategory>
                     <questionCategory id="630" reselectable="false" selected="false" exportName="I">
                       <question reference="612"/>
-                      <category id="631" name="TRANSPORT"/>
+                      <category id="631" name="TRANSPORT" escape="false"/>
                     </questionCategory>
                     <questionCategory id="632" reselectable="false" selected="false" exportName="J">
                       <question reference="612"/>
-                      <category id="633" name="FINANCIAL"/>
+                      <category id="633" name="FINANCIAL" escape="false"/>
                     </questionCategory>
                     <questionCategory id="634" reselectable="false" selected="false" exportName="K">
                       <question reference="612"/>
-                      <category id="635" name="REAL_ESTATE"/>
+                      <category id="635" name="REAL_ESTATE" escape="false"/>
                     </questionCategory>
                     <questionCategory id="636" reselectable="false" selected="false" exportName="L">
                       <question reference="612"/>
-                      <category id="637" name="PUBLIC_ADMIN"/>
+                      <category id="637" name="PUBLIC_ADMIN" escape="false"/>
                     </questionCategory>
                     <questionCategory id="638" reselectable="false" selected="false" exportName="M">
                       <question reference="612"/>
-                      <category id="639" name="EDUCATION"/>
+                      <category id="639" name="EDUCATION" escape="false"/>
                     </questionCategory>
                     <questionCategory id="640" reselectable="false" selected="false" exportName="N">
                       <question reference="612"/>
-                      <category id="641" name="HEALTH_SOCIAL"/>
+                      <category id="641" name="HEALTH_SOCIAL" escape="false"/>
                     </questionCategory>
                     <questionCategory id="642" reselectable="false" selected="false" exportName="O">
                       <question reference="612"/>
-                      <category id="643" name="OTHER_COMMUNITY"/>
+                      <category id="643" name="OTHER_COMMUNITY" escape="false"/>
                     </questionCategory>
                     <questionCategory id="644" reselectable="false" selected="false" exportName="P">
                       <question reference="612"/>
-                      <category id="645" name="PRIVATE_HOUSEHOLD"/>
+                      <category id="645" name="PRIVATE_HOUSEHOLD" escape="false"/>
                     </questionCategory>
                     <questionCategory id="646" reselectable="false" selected="false" exportName="Q">
                       <question reference="612"/>
-                      <category id="647" name="EXTRATERRITORIAL"/>
+                      <category id="647" name="EXTRATERRITORIAL" escape="false"/>
                     </questionCategory>
                     <questionCategory id="648" reselectable="false" selected="false" exportName="77">
                       <question reference="612"/>
@@ -2069,35 +2069,35 @@
                   <questionCategories id="830">
                     <questionCategory id="831" reselectable="false" selected="false" exportName="7">
                       <question reference="829"/>
-                      <category id="832" name="DAILY"/>
+                      <category id="832" name="DAILY" escape="false"/>
                     </questionCategory>
                     <questionCategory id="833" reselectable="false" selected="false" exportName="6">
                       <question reference="829"/>
-                      <category id="834" name="4TO5_WEEK"/>
+                      <category id="834" name="4TO5_WEEK" escape="false"/>
                     </questionCategory>
                     <questionCategory id="835" reselectable="false" selected="false" exportName="5">
                       <question reference="829"/>
-                      <category id="836" name="2TO3_WEEK"/>
+                      <category id="836" name="2TO3_WEEK" escape="false"/>
                     </questionCategory>
                     <questionCategory id="837" reselectable="false" selected="false" exportName="4">
                       <question reference="829"/>
-                      <category id="838" name="WEEKLY"/>
+                      <category id="838" name="WEEKLY" escape="false"/>
                     </questionCategory>
                     <questionCategory id="839" reselectable="false" selected="false" exportName="3">
                       <question reference="829"/>
-                      <category id="840" name="2TO3_MONTH"/>
+                      <category id="840" name="2TO3_MONTH" escape="false"/>
                     </questionCategory>
                     <questionCategory id="841" reselectable="false" selected="false" exportName="2">
                       <question reference="829"/>
-                      <category id="842" name="MONTHLY"/>
+                      <category id="842" name="MONTHLY" escape="false"/>
                     </questionCategory>
                     <questionCategory id="843" reselectable="false" selected="false" exportName="1">
                       <question reference="829"/>
-                      <category id="844" name="LESS_MONTHLY"/>
+                      <category id="844" name="LESS_MONTHLY" escape="false"/>
                     </questionCategory>
                     <questionCategory id="845" reselectable="false" selected="false" exportName="0">
                       <question reference="829"/>
-                      <category id="846" name="NEVER"/>
+                      <category id="846" name="NEVER" escape="false"/>
                     </questionCategory>
                     <questionCategory id="847" reselectable="false" selected="false" exportName="88">
                       <question reference="829"/>
@@ -2127,7 +2127,7 @@
                   <questionCategories id="855">
                     <questionCategory id="856" reselectable="false" selected="false">
                       <question reference="854"/>
-                      <category id="857" name="ALCOHOL_DAY_QTY">
+                      <category id="857" name="ALCOHOL_DAY_QTY" escape="false">
                         <openAnswerDefinition id="858" name="ALCOHOL_DAY_QTY" dataType="INTEGER">
                           <validators id="859">
                             <dataValidator id="860" dataType="INTEGER">
@@ -2456,11 +2456,11 @@
                     </questionCategory>
                     <questionCategory id="964" reselectable="false" selected="false" exportName="2">
                       <question reference="956"/>
-                      <category id="965" name="6TO11_YEAR"/>
+                      <category id="965" name="6TO11_YEAR" escape="false"/>
                     </questionCategory>
                     <questionCategory id="966" reselectable="false" selected="false" exportName="1">
                       <question reference="956"/>
-                      <category id="967" name="1TO5_YEAR"/>
+                      <category id="967" name="1TO5_YEAR" escape="false"/>
                     </questionCategory>
                     <questionCategory id="968" reselectable="false" selected="false" exportName="0">
                       <question reference="956"/>

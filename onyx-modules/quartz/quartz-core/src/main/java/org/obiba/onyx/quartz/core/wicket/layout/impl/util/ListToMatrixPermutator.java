@@ -21,9 +21,11 @@ import org.slf4j.LoggerFactory;
  * Permute list elements so that it can be displayed in a matrix style: reading is by column, writing is by row. Matrix
  * has a fixed count of rows, columns count is set accordingly.
  */
-public class LineToMatrixPermutation<T> {
+public class ListToMatrixPermutator<T> implements IDataListPermutator<T> {
 
-  private static final Logger log = LoggerFactory.getLogger(LineToMatrixPermutation.class);
+  private static final long serialVersionUID = 1L;
+
+  private static final Logger log = LoggerFactory.getLogger(ListToMatrixPermutator.class);
 
   public static int DEFAULT_ROW_COUNT = 5;
 
@@ -37,15 +39,17 @@ public class LineToMatrixPermutation<T> {
 
   private int columnCount;
 
-  public LineToMatrixPermutation(List<T> lineList) {
-    this(lineList, DEFAULT_ROW_COUNT);
+  public ListToMatrixPermutator() {
+    this(DEFAULT_ROW_COUNT);
   }
 
-  public LineToMatrixPermutation(List<T> lineList, int rowCount) {
+  public ListToMatrixPermutator(int rowCount) {
     super();
-    this.lineList = lineList;
     this.rowCount = rowCount;
-    permuteInternal();
+  }
+
+  protected void setRowCount(int rowCount) {
+    this.rowCount = rowCount;
   }
 
   public int getRowCount() {
@@ -99,6 +103,12 @@ public class LineToMatrixPermutation<T> {
     while(matrixList.size() > 0 && matrixList.get(matrixList.size() - 1) == null) {
       matrixList.remove(matrixList.size() - 1);
     }
+  }
+
+  public List<T> permute(List<T> list) {
+    this.lineList = list;
+    permuteInternal();
+    return matrixList;
   }
 
 }

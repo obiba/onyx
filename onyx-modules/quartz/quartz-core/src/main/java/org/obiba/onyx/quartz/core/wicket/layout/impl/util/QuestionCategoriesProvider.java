@@ -9,14 +9,12 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.util;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.array.AbstractDataListProvider;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,30 +26,28 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<Questio
 
   private static final long serialVersionUID = 1L;
 
-  public static final String ROW_COUNT_KEY = "rowCount";
-
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(QuestionCategoriesProvider.class);
 
   private IModel questionModel;
 
-  private IQuestionCategoryFilter filter;
-
   public QuestionCategoriesProvider(IModel questionModel) {
     this(questionModel, null);
   }
 
-  public QuestionCategoriesProvider(IModel questionModel, IQuestionCategoryFilter filter) {
-    this.questionModel = questionModel;
-    this.filter = filter;
+  public QuestionCategoriesProvider(IModel questionModel, IDataListFilter<QuestionCategory> filter) {
+    this(questionModel, filter, null);
   }
 
-  public LineToMatrixPermutation<QuestionCategory> getPermutator() {
+  public QuestionCategoriesProvider(IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<QuestionCategory> permutator) {
+    super(filter, permutator);
+    this.questionModel = questionModel;
+    getDataList();
+  }
+
+  @Override
+  public List<QuestionCategory> getDataList() {
     Question question = (Question) questionModel.getObject();
-    int rowCount = LineToMatrixPermutation.DEFAULT_ROW_COUNT;
-    if(question.getUIArguments() != null) {
-      rowCount = question.getUIArguments().getInt(ROW_COUNT_KEY, LineToMatrixPermutation.DEFAULT_ROW_COUNT);
-    }
     List<QuestionCategory> categories;
     if(filter == null) {
       categories = question.getQuestionCategories();
@@ -61,12 +57,12 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<Questio
         if(filter.accept(questionCategory)) categories.add(questionCategory);
       }
     }
-    return new LineToMatrixPermutation<QuestionCategory>(categories, rowCount);
-  }
-
-  @Override
-  public List<QuestionCategory> getDataList() {
-    return getPermutator().getMatrixList();
+    IDataListPermutator<QuestionCategory> permutator = getDataListPermutator();
+    if(permutator != null) {
+      return permutator.permute(categories);
+    } else {
+      return categories;
+    }
   }
 
   @Override
@@ -77,12 +73,4 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<Questio
     return null;
   }
 
-  /**
-   * Use this interface to filter question category list from question.
-   */
-  public interface IQuestionCategoryFilter extends Serializable {
-
-    public boolean accept(QuestionCategory questionCategory);
-
-  }
 }

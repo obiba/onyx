@@ -21,9 +21,9 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  */
-public class LineToMatrixPermutationTest {
+public class ListToMatrixPermutatorTest {
 
-  static final Logger log = LoggerFactory.getLogger(LineToMatrixPermutationTest.class);
+  static final Logger log = LoggerFactory.getLogger(ListToMatrixPermutatorTest.class);
 
   @Test
   public void testPermutation1() {
@@ -34,7 +34,7 @@ public class LineToMatrixPermutationTest {
   @Test
   public void testPermutation2() {
     List<String> line = Arrays.asList(new String[] { "0", "1", "2", "3", "4", "5", "6", "7" });
-    LineToMatrixPermutation<String> permutator = permute(line, 2, 5);
+    ListToMatrixPermutator<String> permutator = permute(line, 2, 5);
     Assert.assertEquals(2, permutator.getRow(7));
     Assert.assertEquals(1, permutator.getColumn(7));
   }
@@ -48,7 +48,7 @@ public class LineToMatrixPermutationTest {
   @Test
   public void testPermutation4() {
     List<String> line = Arrays.asList(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16" });
-    LineToMatrixPermutation<String> permutator = permute(line, 4, 5);
+    ListToMatrixPermutator<String> permutator = permute(line, 4, 5);
     Assert.assertEquals(3, permutator.getRow(13));
     Assert.assertEquals(2, permutator.getColumn(13));
     Assert.assertEquals(1, permutator.getRow(16));
@@ -56,11 +56,11 @@ public class LineToMatrixPermutationTest {
     Assert.assertEquals(3, permutator.getColumn(16));
   }
 
-  private LineToMatrixPermutation<String> permute(List<String> line, int columnCountExpected, int rowCountExpected) {
-    LineToMatrixPermutation<String> permutator = new LineToMatrixPermutation<String>(line);
+  private ListToMatrixPermutator<String> permute(List<String> line, int columnCountExpected, int rowCountExpected) {
+    ListToMatrixPermutator<String> permutator = new ListToMatrixPermutator<String>();
+    log.info("matrix={}", permutator.permute(line));
     Assert.assertEquals(columnCountExpected, permutator.getColumnCount());
     Assert.assertEquals(rowCountExpected, permutator.getRowCount());
-    log.info("matrix={}", permutator.getMatrixList());
     int k = 0;
     for(int i = 0; i < permutator.getRowCount(); i++) {
       System.out.print("[ ");

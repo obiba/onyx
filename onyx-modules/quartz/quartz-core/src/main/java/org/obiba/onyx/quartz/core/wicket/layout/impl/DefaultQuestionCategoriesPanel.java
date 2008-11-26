@@ -9,6 +9,7 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.CheckGroup;
@@ -19,7 +20,14 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.GridView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListFilter;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesToMatrixPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
@@ -31,6 +39,11 @@ public class DefaultQuestionCategoriesPanel extends Panel {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultQuestionCategoriesPanel.class);
+
+  @SpringBean
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+
+  private DefaultEscapeQuestionCategoriesPanel escapeQuestionCategoriesPanel;
 
   public DefaultQuestionCategoriesPanel(String id, IModel questionModel) {
     super(id, questionModel);
@@ -44,6 +57,21 @@ public class DefaultQuestionCategoriesPanel extends Panel {
     }
   }
 
+  private boolean hasEscapeQuestionCategories() {
+    for(Category category : ((Question) getModelObject()).getCategories()) {
+      if(category.isEscape()) return true;
+    }
+    return false;
+  }
+
+  private IModel getQuestionModel() {
+    return getModel();
+  }
+
+  private Question getQuestion() {
+    return (Question) getModelObject();
+  }
+
   /**
    * Add a radio group, used by single choice question.
    * @param question
@@ -55,7 +83,7 @@ public class DefaultQuestionCategoriesPanel extends Panel {
     radioGroup.setRequired(!question.isBoilerPlate() && question.isRequired());
     add(radioGroup);
 
-    GridView repeater = new AbstractQuestionCategoriesView("category", getModel()) {
+    GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), null, new QuestionCategoriesToMatrixPermutator(getModel())) {
 
       @Override
       protected void populateItem(Item item) {
@@ -94,6 +122,8 @@ public class DefaultQuestionCategoriesPanel extends Panel {
 
     };
     radioGroup.add(repeater);
+
+    add(new EmptyPanel("escapeCategories").setVisible(false));
   }
 
   /**
@@ -108,7 +138,13 @@ public class DefaultQuestionCategoriesPanel extends Panel {
     checkGroup.add(new AnswerCountValidator(getModel()));
     add(checkGroup);
 
-    GridView repeater = new AbstractQuestionCategoriesView("category", getModel()) {
+    GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), new IDataListFilter<QuestionCategory>() {
+
+      public boolean accept(QuestionCategory questionCategory) {
+        return !questionCategory.getCategory().isEscape();
+      }
+
+    }, new QuestionCategoriesToMatrixPermutator(getModel())) {
 
       @Override
       protected void populateItem(Item item) {
@@ -121,12 +157,41 @@ public class DefaultQuestionCategoriesPanel extends Panel {
               // update all
               target.addComponent(DefaultQuestionCategoriesPanel.this);
             }
+
+            @Override
+            public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+
+              if(escapeQuestionCategoriesPanel != null) {
+                Question question = getQuestion();
+                for(CategoryAnswer answer : activeQuestionnaireAdministrationService.findAnswers(question)) {
+                  QuestionCategory questionCategory = question.findQuestionCategory(answer.getCategoryName());
+                  if(questionCategory.getCategory().isEscape()) {
+                    activeQuestionnaireAdministrationService.deleteAnswer(question, questionCategory);
+                  }
+                }
+                escapeQuestionCategoriesPanel.setNoSelection();
+              }
+              target.addComponent(DefaultQuestionCategoriesPanel.this);
+            }
           });
+
         }
       }
 
     };
     checkGroup.add(repeater);
-  }
 
+    if(hasEscapeQuestionCategories()) {
+      add(escapeQuestionCategoriesPanel = new DefaultEscapeQuestionCategoriesPanel("escapeCategories", getQuestionModel()) {
+        @SuppressWarnings("unchecked")
+        @Override
+        public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+          ((Collection<IModel>) checkGroup.getModelObject()).clear();
+          target.addComponent(DefaultQuestionCategoriesPanel.this);
+        }
+      });
+    } else {
+      add(new EmptyPanel("escapeCategories").setVisible(false));
+    }
+  }
 }
