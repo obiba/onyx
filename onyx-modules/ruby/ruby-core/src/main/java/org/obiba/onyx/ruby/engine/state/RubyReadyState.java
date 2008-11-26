@@ -32,7 +32,7 @@ public class RubyReadyState extends AbstractRubyStageState {
   //
 
   public String getName() {
-    return "Waiting";
+    return "Ready";
   }
 
   @Override
