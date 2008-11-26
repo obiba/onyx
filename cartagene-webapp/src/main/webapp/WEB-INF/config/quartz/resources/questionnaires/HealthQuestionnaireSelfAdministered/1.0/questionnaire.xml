@@ -61,7 +61,7 @@
                     </questionCategory>
                     <questionCategory id="37" reselectable="false" selected="false" exportName="3">
                       <question reference="31"/>
-                      <category id="38" name="OTHER" escape="true"/>
+                      <category id="38" name="OTHER" escape="false"/>
                     </questionCategory>
                     <questionCategory id="39" reselectable="false" selected="false" exportName="8">
                       <question reference="31"/>
@@ -1228,7 +1228,7 @@
                       <int>16</int>
                       <int>1</int>
                       <string>rowCount</string>
-                      <string>10</string>
+                      <string>8</string>
                     </map>
                     <valueMap>
                       <default>

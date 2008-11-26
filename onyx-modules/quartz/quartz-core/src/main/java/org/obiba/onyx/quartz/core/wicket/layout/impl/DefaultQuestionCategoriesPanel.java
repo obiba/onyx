@@ -26,8 +26,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesToMatrixPermutator;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
@@ -138,13 +138,7 @@ public class DefaultQuestionCategoriesPanel extends Panel {
     checkGroup.add(new AnswerCountValidator(getModel()));
     add(checkGroup);
 
-    GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), new IDataListFilter<QuestionCategory>() {
-
-      public boolean accept(QuestionCategory questionCategory) {
-        return !questionCategory.getCategory().isEscape();
-      }
-
-    }, new QuestionCategoriesToMatrixPermutator(getModel())) {
+    GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), new QuestionCategoryEscapeFilter(false), new QuestionCategoriesToMatrixPermutator(getModel())) {
 
       @Override
       protected void populateItem(Item item) {

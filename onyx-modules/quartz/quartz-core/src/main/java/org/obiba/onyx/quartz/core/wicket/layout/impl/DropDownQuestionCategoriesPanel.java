@@ -27,8 +27,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -177,13 +177,7 @@ public class DropDownQuestionCategoriesPanel extends Panel {
   }
 
   public List<QuestionCategory> getQuestionCategories() {
-    QuestionCategoriesProvider provider = new QuestionCategoriesProvider(getQuestionModel(), new IDataListFilter<QuestionCategory>() {
-
-      public boolean accept(QuestionCategory questionCategory) {
-        return !questionCategory.getCategory().isEscape();
-      }
-
-    });
+    QuestionCategoriesProvider provider = new QuestionCategoriesProvider(getQuestionModel(), new QuestionCategoryEscapeFilter(false));
     return provider.getDataList();
   }
 

@@ -100,7 +100,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
 
     builder.withSection("B_DEMOGRAPHY").withSection("GENDER").withPage("2").withQuestion("SEX", "1").withCategory("MALE").setExportName("1");
     builder.inQuestion("SEX").withCategory("FEMALE").setExportName("2");
-    builder.inQuestion("SEX").withSharedCategory(OTHER, "3").setEscape(true);
+    builder.inQuestion("SEX").withSharedCategory(OTHER, "3");
     builder.inQuestion("SEX").withSharedCategory(PNA, "8").setEscape(true);
     builder.inQuestion("SEX").withSharedCategory(DNK, "9").setEscape(true);
 
@@ -204,7 +204,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inCondition("LONGEST_TIME_AGE_STARTED_LIVING_MCONDITION").withAnswerCondition("LONGEST_TIME_AGE_STARTED_LIVING_ACONDITION_1", "CURRENT_IS_LONGEST_TIME_LIVED", DNK);
     builder.inPage("21").addTimestamp("TS_DEM2");
 
-    builder.inSection("B_DEMOGRAPHY").withSection("LANGUAGE").withPage("22").withQuestion("FIRST_LANGUAGE_LEARNED", "21", true).addUIArgument(QuestionCategoriesToMatrixPermutator.ROW_COUNT_KEY, "10").withCategory("ENGLISH").setExportName("1");
+    builder.inSection("B_DEMOGRAPHY").withSection("LANGUAGE").withPage("22").withQuestion("FIRST_LANGUAGE_LEARNED", "21", true).addUIArgument(QuestionCategoriesToMatrixPermutator.ROW_COUNT_KEY, "8").withCategory("ENGLISH").setExportName("1");
     builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("FRENCH").setExportName("2");
     builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("ARABIC").setExportName("3");
     builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("CHINESE").setExportName("4");
