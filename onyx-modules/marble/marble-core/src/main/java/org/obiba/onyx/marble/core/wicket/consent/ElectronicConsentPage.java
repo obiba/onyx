@@ -31,14 +31,15 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
 
   private static final Logger log = LoggerFactory.getLogger(ElectronicConsentPage.class);
 
+  // Display parameters for the embedded PDF.
+  private static final String PDF_OPEN_PARAMETERS = "#toolbar=0&navpanes=0&scrollbar=1&zoom=80,0,0";
+
   @SpringBean
   private FdfProducer fdfProducer;
 
   private DynamicWebResource pdfResource;
 
   private DynamicWebResource fdfResource;
-
-  private Component finishButton;
 
   @SuppressWarnings("serial")
   public ElectronicConsentPage(final Component finishButton) {
@@ -81,7 +82,7 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
           @Override
           synchronized public byte[] getData() {
             if(fdf == null) {
-              String pdfUrl = RequestUtils.toAbsolutePath(urlFor(IResourceListener.INTERFACE) + "#toolbar=0&navpanes=0&scrollbar=1");
+              String pdfUrl = RequestUtils.toAbsolutePath(urlFor(IResourceListener.INTERFACE) + PDF_OPEN_PARAMETERS);
               log.info("PDF URL is {}", pdfUrl);
               PageParameters params = new PageParameters();
               params.add("accepted", "true");
