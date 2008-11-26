@@ -1,7 +1,11 @@
 package org.obiba.onyx.quartz.core.wicket.wizard;
 
+import java.util.Locale;
+
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -18,6 +22,9 @@ public class QuestionnaireWizardPanel extends WizardPanel {
   //
   // Instance Variables
   //
+
+  @SpringBean
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   private QuestionnaireWizardForm wizardForm;
 
@@ -61,5 +68,13 @@ public class QuestionnaireWizardPanel extends WizardPanel {
 
   public FeedbackPanel getFeedbackPanel() {
     return wizardForm.getFeedbackPanel();
+  }
+
+  /**
+   * Get the locale of the questionnaire.
+   */
+  @Override
+  public Locale getLocale() {
+    return activeQuestionnaireAdministrationService.getLanguage();
   }
 }

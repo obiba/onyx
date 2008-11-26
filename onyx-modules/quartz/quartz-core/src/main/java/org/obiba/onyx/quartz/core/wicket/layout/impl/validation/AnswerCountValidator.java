@@ -72,6 +72,8 @@ public class AnswerCountValidator implements INullAcceptingValidator, IClusterab
   private ValidationError newValidationError(Integer minCount, Integer maxCount, int count) {
     ValidationError error = new ValidationError();
 
+    error.setVariable("count", count);
+
     String key = "";
     if(minCount != null) {
       error.setVariable("min", minCount);
