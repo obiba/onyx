@@ -233,4 +233,8 @@ public abstract class WizardForm extends Form {
   public LoadableDetachableModel getLabelModel(String label) {
     return new StringResourceModel(label, WizardForm.this, null);
   }
+
+  public void changeWizardFormStyle(String cssClassName) {
+    add(new AttributeModifier("class", new Model(cssClassName)));
+  }
 }
