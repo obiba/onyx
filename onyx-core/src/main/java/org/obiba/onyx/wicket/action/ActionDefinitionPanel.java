@@ -203,10 +203,9 @@ public abstract class ActionDefinitionPanel extends Panel {
     public BarcodeFragment(String id) {
       super(id, "barcodeFragment", ActionDefinitionPanel.this);
       final Participant participantTemplate = new Participant();
-      TextField barcodeTextField = new TextField("confirmBarcode", new PropertyModel(participantTemplate, "barcode"));
+      TextField barcodeTextField = new TextField("ParticipantCode", new PropertyModel(participantTemplate, "barcode"));
       add(barcodeTextField.add(new RequiredFormFieldBehavior()));
 
-      // participantBarcode.setLabel(new StringResourceModel("ConfirmParticipantCode", this, null));
       barcodeTextField.add(new IValidator() {
 
         public void validate(IValidatable validatable) {
