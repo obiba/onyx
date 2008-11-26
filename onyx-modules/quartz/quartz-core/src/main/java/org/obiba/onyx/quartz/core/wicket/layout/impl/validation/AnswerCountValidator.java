@@ -9,11 +9,12 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.validation;
 
+import org.apache.wicket.IClusterable;
 import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.INullAcceptingValidator;
 import org.apache.wicket.validation.IValidatable;
-import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
@@ -22,7 +23,7 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
  * Validates the question choices minimum/maximum count of answers. It uses the settings of the question by default, and
  * if none is found and question parent exists, question parent settings are used.
  */
-public class AnswerCountValidator implements IValidator {
+public class AnswerCountValidator implements INullAcceptingValidator, IClusterable {
 
   private static final long serialVersionUID = 1L;
 

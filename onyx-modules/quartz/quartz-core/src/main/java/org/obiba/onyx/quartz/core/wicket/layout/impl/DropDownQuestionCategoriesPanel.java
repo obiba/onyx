@@ -29,6 +29,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -156,6 +157,7 @@ public class DropDownQuestionCategoriesPanel extends Panel {
           target.addComponent(DropDownQuestionCategoriesPanel.this);
         }
       });
+      escapeQuestionCategoriesPanel.add(new AnswerCountValidator(getQuestionModel()));
     } else {
       add(new EmptyPanel("escapeCategories").setVisible(false));
     }

@@ -16,6 +16,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.GridView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.validation.IValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesToMatrixPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
@@ -86,10 +87,27 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
     radioGroup.add(repeater);
   }
 
+  /**
+   * Reset the model of the radio group (no selection).
+   */
   public void setNoSelection() {
     radioGroup.setModel(new Model());
   }
 
+  /**
+   * Add a validator to radio group.
+   * @param validator
+   */
+  public void add(IValidator validator) {
+    radioGroup.add(validator);
+  }
+
+  /**
+   * Called on radio selection.
+   * @param target
+   * @param questionModel
+   * @param questionCategoryModel
+   */
   public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
   }
 }
