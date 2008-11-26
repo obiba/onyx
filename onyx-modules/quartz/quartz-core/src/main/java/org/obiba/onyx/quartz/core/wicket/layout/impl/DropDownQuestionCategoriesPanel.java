@@ -9,6 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
+import java.util.List;
+
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -19,12 +22,15 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
+import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +48,10 @@ public class DropDownQuestionCategoriesPanel extends Panel {
 
   private QuestionCategory selectedQuestionCategory;
 
+  private DropDownChoice questionCategoriesDropDownChoice;
+
+  private DefaultEscapeQuestionCategoriesPanel escapeQuestionCategoriesPanel;
+
   private AbstractOpenAnswerDefinitionPanel openField;
 
   public DropDownQuestionCategoriesPanel(String id, IModel questionModel) {
@@ -49,22 +59,6 @@ public class DropDownQuestionCategoriesPanel extends Panel {
     setOutputMarkupId(true);
 
     Question question = (Question) getModelObject();
-
-    if(!question.isMultiple()) {
-      addDropdownChoice(question);
-    }
-  }
-
-  private IModel getQuestionModel() {
-    return getModel();
-  }
-
-  /**
-   * Add a drop down choice, used by single choice question.
-   * @param question
-   */
-  @SuppressWarnings("serial")
-  private void addDropdownChoice(final Question question) {
 
     // This component is visible when an open answer is needed
     add(new EmptyPanel("open"));
@@ -85,38 +79,111 @@ public class DropDownQuestionCategoriesPanel extends Panel {
       updateOpenAnswerDefinitionPanel(selectedQuestionCategory);
     }
 
-    DropDownChoice questionCategoriesDropDownChoice = new DropDownChoice("questionCategories", new PropertyModel(this, "selectedQuestionCategory"), new PropertyModel(question, "questionCategories"), new QuestionCategoryChoiceRenderer());
+    questionCategoriesDropDownChoice = new DropDownChoice("questionCategories", new PropertyModel(this, "selectedQuestionCategory"), new PropertyModel(this, "questionCategories"), new QuestionCategoryChoiceRenderer());
     questionCategoriesDropDownChoice.setOutputMarkupId(true);
 
     questionCategoriesDropDownChoice.setLabel(new QuestionnaireStringResourceModel(question, "label"));
-    questionCategoriesDropDownChoice.setRequired(question.isRequired());
-    if(!question.isRequired()) {
-      questionCategoriesDropDownChoice.setNullValid(true);
-    }
+    questionCategoriesDropDownChoice.setNullValid(true);
 
     // Set model on submission
     questionCategoriesDropDownChoice.add(new OnChangeAjaxBehavior() {
 
       @Override
-      protected void onUpdate(AjaxRequestTarget target) {
+      protected void onUpdate(final AjaxRequestTarget target) {
 
         log.info("onUpdate()={}", selectedQuestionCategory);
 
         updateOpenAnswerDefinitionPanel(selectedQuestionCategory);
 
         // Exclusive choice, only one answer per question
-        activeQuestionnaireAdministrationService.deleteAnswers(selectedQuestionCategory.getQuestion());
-        if(selectedQuestionCategory.getCategory().getOpenAnswerDefinition() == null) {
+        activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
+        if(selectedQuestionCategory != null && selectedQuestionCategory.getCategory().getOpenAnswerDefinition() == null) {
           activeQuestionnaireAdministrationService.answer(selectedQuestionCategory);
         }
+
+        if(escapeQuestionCategoriesPanel != null) {
+          escapeQuestionCategoriesPanel.setNoSelection();
+        }
+
+        // refesh feedback panel to remove older error messages
+        visitParents(WizardForm.class, new Component.IVisitor() {
+
+          public Object component(Component component) {
+            log.info("found a wizard form");
+            WizardForm form = (WizardForm) component;
+            if(form.getFeedbackPanel() != null) {
+              target.addComponent(form.getFeedbackPanel());
+            }
+            return component;
+          }
+
+        });
 
         // Update component
         target.addComponent(DropDownQuestionCategoriesPanel.this);
       }
 
-    });
+      @Override
+      protected void onError(final AjaxRequestTarget target, RuntimeException e) {
+        // refesh feedback panel to display error messages
+        visitParents(WizardForm.class, new Component.IVisitor() {
 
+          public Object component(Component component) {
+            log.info("found a wizard form");
+            WizardForm form = (WizardForm) component;
+            if(form.getFeedbackPanel() != null) {
+              target.addComponent(form.getFeedbackPanel());
+            }
+            return component;
+          }
+
+        });
+        // Update component
+        target.addComponent(DropDownQuestionCategoriesPanel.this);
+      }
+
+    });
     add(questionCategoriesDropDownChoice);
+
+    if(hasEscapeQuestionCategories()) {
+      add(escapeQuestionCategoriesPanel = new DefaultEscapeQuestionCategoriesPanel("escapeCategories", getQuestionModel()) {
+        @Override
+        public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+          setSelectedQuestionCategory(null);
+          questionCategoriesDropDownChoice.setRequired(false);
+          updateOpenAnswerDefinitionPanel(null);
+          target.addComponent(DropDownQuestionCategoriesPanel.this);
+        }
+      });
+    } else {
+      add(new EmptyPanel("escapeCategories").setVisible(false));
+    }
+  }
+
+  private IModel getQuestionModel() {
+    return getModel();
+  }
+
+  private Question getQuestion() {
+    return (Question) getModelObject();
+  }
+
+  private boolean hasEscapeQuestionCategories() {
+    for(Category category : ((Question) getModelObject()).getCategories()) {
+      if(category.isEscape()) return true;
+    }
+    return false;
+  }
+
+  public List<QuestionCategory> getQuestionCategories() {
+    QuestionCategoriesProvider provider = new QuestionCategoriesProvider(getQuestionModel(), new QuestionCategoriesProvider.IQuestionCategoryFilter() {
+
+      public boolean accept(QuestionCategory questionCategory) {
+        return !questionCategory.getCategory().isEscape();
+      }
+
+    });
+    return provider.getDataList();
   }
 
   /**
@@ -128,14 +195,15 @@ public class DropDownQuestionCategoriesPanel extends Panel {
 
     // Text to be displayed to an end user
     public Object getDisplayValue(Object object) {
-      QuestionCategory questionCat = (QuestionCategory) object;
+      if(object == null) return null;
 
-      return (new QuestionnaireStringResourceModel(questionCat, "label").getString());
+      return (new QuestionnaireStringResourceModel((QuestionCategory) object, "label").getString());
     }
 
     public String getIdValue(Object object, int index) {
-      QuestionCategory questionCat = (QuestionCategory) object;
-      return questionCat.getName();
+      if(object == null) return null;
+
+      return ((QuestionCategory) object).getName();
     }
   }
 
@@ -146,18 +214,23 @@ public class DropDownQuestionCategoriesPanel extends Panel {
    */
   @SuppressWarnings("serial")
   private void updateOpenAnswerDefinitionPanel(QuestionCategory questionCategory) {
-    OpenAnswerDefinition openAnswerDefinition = questionCategory.getCategory().getOpenAnswerDefinition();
-
-    if(openAnswerDefinition != null) {
-      if(openAnswerDefinition.getOpenAnswerDefinitions().size() == 0) {
-        openField = new DefaultOpenAnswerDefinitionPanel("open", getQuestionModel(), new QuestionnaireModel(questionCategory));
-      } else {
-        openField = new MultipleOpenAnswerDefinitionPanel("open", getQuestionModel(), new QuestionnaireModel(questionCategory));
-      }
-      get("open").replaceWith(openField);
-    } else {
+    if(questionCategory == null) {
       openField = null;
       get("open").replaceWith(new EmptyPanel("open"));
+    } else {
+      OpenAnswerDefinition openAnswerDefinition = questionCategory.getCategory().getOpenAnswerDefinition();
+
+      if(openAnswerDefinition != null) {
+        if(openAnswerDefinition.getOpenAnswerDefinitions().size() == 0) {
+          openField = new DefaultOpenAnswerDefinitionPanel("open", getQuestionModel(), new QuestionnaireModel(questionCategory));
+        } else {
+          openField = new MultipleOpenAnswerDefinitionPanel("open", getQuestionModel(), new QuestionnaireModel(questionCategory));
+        }
+        get("open").replaceWith(openField);
+      } else {
+        openField = null;
+        get("open").replaceWith(new EmptyPanel("open"));
+      }
     }
   }
 

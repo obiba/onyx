@@ -22,7 +22,11 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProv
 public abstract class AbstractQuestionCategoriesView extends GridView {
 
   public AbstractQuestionCategoriesView(String id, IModel questionModel) {
-    super(id, new QuestionCategoriesProvider(questionModel));
+    this(id, questionModel, null);
+  }
+
+  public AbstractQuestionCategoriesView(String id, IModel questionModel, QuestionCategoriesProvider.IQuestionCategoryFilter filter) {
+    super(id, new QuestionCategoriesProvider(questionModel, filter));
     setColumns(((QuestionCategoriesProvider) getDataProvider()).getPermutator().getColumnCount());
     setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
   }

@@ -78,6 +78,7 @@ public class QuestionnaireStreamer {
 
     xstream.alias("category", Category.class);
     xstream.useAttributeFor(Category.class, "name");
+    xstream.useAttributeFor(Category.class, "escape");
 
     xstream.alias("questionCategory", QuestionCategory.class);
     xstream.useAttributeFor(QuestionCategory.class, "reselectable");

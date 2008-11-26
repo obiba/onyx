@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.util;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.model.IModel;
@@ -33,9 +35,15 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<Questio
 
   private IModel questionModel;
 
-  public QuestionCategoriesProvider(IModel questionModel) {
-    this.questionModel = questionModel;
+  private IQuestionCategoryFilter filter;
 
+  public QuestionCategoriesProvider(IModel questionModel) {
+    this(questionModel, null);
+  }
+
+  public QuestionCategoriesProvider(IModel questionModel, IQuestionCategoryFilter filter) {
+    this.questionModel = questionModel;
+    this.filter = filter;
   }
 
   public LineToMatrixPermutation<QuestionCategory> getPermutator() {
@@ -44,7 +52,16 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<Questio
     if(question.getUIArguments() != null) {
       rowCount = question.getUIArguments().getInt(ROW_COUNT_KEY, LineToMatrixPermutation.DEFAULT_ROW_COUNT);
     }
-    return new LineToMatrixPermutation<QuestionCategory>(question.getQuestionCategories(), rowCount);
+    List<QuestionCategory> categories;
+    if(filter == null) {
+      categories = question.getQuestionCategories();
+    } else {
+      categories = new ArrayList<QuestionCategory>();
+      for(QuestionCategory questionCategory : question.getQuestionCategories()) {
+        if(filter.accept(questionCategory)) categories.add(questionCategory);
+      }
+    }
+    return new LineToMatrixPermutation<QuestionCategory>(categories, rowCount);
   }
 
   @Override
@@ -58,5 +75,14 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<Questio
       return new QuestionnaireModel((QuestionCategory) object);
     }
     return null;
+  }
+
+  /**
+   * Use this interface to filter question category list from question.
+   */
+  public interface IQuestionCategoryFilter extends Serializable {
+
+    public boolean accept(QuestionCategory questionCategory);
+
   }
 }

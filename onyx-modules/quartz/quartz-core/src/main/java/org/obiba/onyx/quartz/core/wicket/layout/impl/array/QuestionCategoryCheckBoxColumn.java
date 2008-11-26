@@ -18,7 +18,7 @@ import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategorySelectionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCategoryCheckBoxPanel;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.MultipleChoiceQuestionValidator;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 
 public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColumn {
@@ -40,7 +40,7 @@ public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColu
   @Override
   public void populateItem(Item cellItem, String componentId, IModel rowModel, int index) {
     CheckGroup checkGroup = ((CheckGroup[]) checkGroupsModel.getObject())[index];
-    checkGroup.add(new MultipleChoiceQuestionValidator(rowModel));
+    checkGroup.add(new AnswerCountValidator(rowModel));
     Question question = (Question) rowModel.getObject();
     String label = new QuestionnaireStringResourceModel(question.getParentQuestion(), "label").getString() + " / " + new QuestionnaireStringResourceModel(question, "label").getString();
     checkGroup.setLabel(new Model(label));

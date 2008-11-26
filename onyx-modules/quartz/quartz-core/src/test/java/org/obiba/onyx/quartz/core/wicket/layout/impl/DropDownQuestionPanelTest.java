@@ -45,7 +45,6 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
 import org.obiba.onyx.util.StringReferenceCompatibleMessageFormat;
-import org.obiba.onyx.util.data.DataType;
 import org.obiba.wicket.test.MockSpringApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,25 +109,6 @@ public class DropDownQuestionPanelTest {
     messageSource.addMessage("QuestionCategory.Q1.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q1.2.label", locale, "Choice two");
     messageSource.addMessage("QuestionCategory.Q1.3.label", locale, "Choice three");
-    messageSource.addMessage("Question.Q2.label", locale, "question2 label");
-    messageSource.addMessage("Question.Q2.help", locale, "question2 help");
-    messageSource.addMessage("Question.Q2.instructions", locale, "question2 instructions");
-    messageSource.addMessage("Question.Q2.caption", locale, "question2 caption");
-    messageSource.addMessage("QuestionCategory.Q2.1.label", locale, "Choice one");
-    messageSource.addMessage("QuestionCategory.Q2.DONT_KNOW.label", locale, "Dont know");
-    messageSource.addMessage("QuestionCategory.Q2.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
-    messageSource.addMessage("OpenAnswerDefinition.OPEN_INT.label", locale, "open label");
-    messageSource.addMessage("OpenAnswerDefinition.OPEN_INT.unitLabel", locale, "open unit label");
-
-    messageSource.addMessage("Question.Q3.label", locale, "question3 label");
-    messageSource.addMessage("Question.Q3.help", locale, "question3 help");
-    messageSource.addMessage("Question.Q3.instructions", locale, "question3 instructions");
-    messageSource.addMessage("Question.Q3.caption", locale, "question3 caption");
-    messageSource.addMessage("QuestionCategory.Q3.1.label", locale, "Choice one");
-    messageSource.addMessage("QuestionCategory.Q3.2.label", locale, "Choice two");
-    messageSource.addMessage("QuestionCategory.Q3.3.label", locale, "Choice three");
-    messageSource.addMessage("Question.Q3_1.label", locale, "question3-1 label");
-    messageSource.addMessage("Question.Q3_2.label", locale, "question3-2 label");
 
     propertyKeyProvider = new DefaultPropertyKeyProviderImpl();
 
@@ -208,12 +188,6 @@ public class DropDownQuestionPanelTest {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
 
     builder.withSection("S1").withPage("P1").withQuestion("Q1", "1", DropDownQuestionPanelFactory.class).withCategories("1", "2", "3");
-    builder.withSection("S2").withPage("P2").withQuestion("Q2", "2", DropDownQuestionPanelFactory.class).withCategory("1").withOpenAnswerDefinition("OPEN_INT", DataType.INTEGER);
-    builder.inQuestion("Q2").withCategories("DONT_KNOW", "PREFER_NOT_ANSWER");
-
-    builder.withSection("S3").withPage("P3").withQuestion("Q3").withCategories("1", "2", "3");
-    builder.inQuestion("Q3").withQuestion("Q3_1");
-    builder.inQuestion("Q3").withQuestion("Q3_2");
 
     Questionnaire q = builder.getQuestionnaire();
     q.addLocale(locale);

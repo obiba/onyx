@@ -52,7 +52,9 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
-    return new CategoryBuilder(parent, new Category(name));
+    Category category = new Category(name);
+    category.setEscape(false);
+    return new CategoryBuilder(parent, category);
   }
 
   /**
@@ -96,6 +98,16 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
   }
 
   /**
+   * Set if the current category ({@link Category}) allows to escape question answer.
+   * @param escape
+   * @return
+   */
+  public CategoryBuilder setEscape(boolean escape) {
+    questionCategory.getCategory().setEscape(escape);
+    return this;
+  }
+
+  /**
    * Set the {@link OpenAnswerDefinition} to the current category.
    * @param name
    * @param dataType
@@ -112,6 +124,7 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
    */
   public CategoryBuilder withCategory(String name) {
     this.element = new Category(name);
+    element.setEscape(false);
     questionCategory = createQuestionCategory(questionCategory.getQuestion());
     return this;
   }

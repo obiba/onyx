@@ -294,6 +294,22 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   }
 
   /**
+   * Add a set of shared {@link Category} to current {@link Question}, with escape attribute.
+   * @param escape
+   * @param names
+   * @return
+   */
+  public CategoryBuilder withSharedCategories(boolean escape, String... names) {
+    CategoryBuilder child = null;
+
+    for(String name : names) {
+      child = withSharedCategory(name).setEscape(escape);
+    }
+
+    return child;
+  }
+
+  /**
    * Check question name unicity.
    * @param name
    * @return

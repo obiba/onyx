@@ -20,6 +20,8 @@ public class Category implements Serializable, ILocalizable {
 
   private String name;
 
+  private boolean escape;
+
   private OpenAnswerDefinition openAnswerDefinition;
 
   public Category(String name) {
@@ -32,6 +34,14 @@ public class Category implements Serializable, ILocalizable {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public boolean isEscape() {
+    return escape;
+  }
+
+  public void setEscape(boolean escape) {
+    this.escape = escape;
   }
 
   public OpenAnswerDefinition getOpenAnswerDefinition() {
