@@ -417,6 +417,11 @@ div.wicket-modal div.w_content_1 div.footer {
   margin-top: 10px;
 }
 
+div.wicket-modal {
+  overflow: auto;
+}
+
+
 /*************** End Modal Window ********************/
 
 /*************** Wizard ********************/
