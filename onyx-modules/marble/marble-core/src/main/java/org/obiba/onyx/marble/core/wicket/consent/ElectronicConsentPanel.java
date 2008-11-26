@@ -8,6 +8,7 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.marble.core.wicket.consent;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.link.InlineFrame;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -21,9 +22,12 @@ public class ElectronicConsentPanel extends Panel {
   @SpringBean
   private ActiveConsentService activeConsentService;
 
+  private WizardForm form;
+
   public ElectronicConsentPanel(String id, WizardForm form) {
     super(id);
     setOutputMarkupId(true);
+    this.form = form;
   }
 
   @Override
@@ -31,18 +35,19 @@ public class ElectronicConsentPanel extends Panel {
     Boolean consentIsAccepted = activeConsentService.getConsent().isAccepted();
     Boolean consentIsValid = activeConsentService.validateElectronicConsent();
     Boolean consentIsSubmitted = activeConsentService.isConsentFormSubmitted();
+    Component finishButton = form.getFinishLink();
 
     // If consent form not submitted yet, display a new blank form in the IFrame.
     if(!consentIsSubmitted) {
-      addOrReplace(new InlineFrame("pdfSubmitFrame", new ElectronicConsentPage()));
+      addOrReplace(new InlineFrame("pdfSubmitFrame", new ElectronicConsentPage(finishButton)));
 
       // If consent form is submitted and valid, display confirmation page in the IFrame.
     } else if(!consentIsAccepted || (consentIsAccepted && consentIsValid)) {
-      addOrReplace(new InlineFrame("pdfSubmitFrame", new ElectronicConsentSubmittedPage()));
+      addOrReplace(new InlineFrame("pdfSubmitFrame", new ElectronicConsentSubmittedPage(finishButton.getId())));
 
       // If submitted but invalid, display current form in the IFrame + error message.
     } else if(consentIsAccepted && !consentIsValid) {
-      addOrReplace(new InlineFrame("pdfSubmitFrame", new ElectronicConsentPage()));
+      addOrReplace(new InlineFrame("pdfSubmitFrame", new ElectronicConsentPage(finishButton)));
       error(getString("InvalidConsentForm"));
     }
     super.onBeforeRender();

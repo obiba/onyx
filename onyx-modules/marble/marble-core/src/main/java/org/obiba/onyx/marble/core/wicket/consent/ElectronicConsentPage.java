@@ -11,6 +11,7 @@ package org.obiba.onyx.marble.core.wicket.consent;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.IResourceListener;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.ComponentTag;
@@ -37,8 +38,10 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
 
   private DynamicWebResource fdfResource;
 
+  private Component finishButton;
+
   @SuppressWarnings("serial")
-  public ElectronicConsentPage() {
+  public ElectronicConsentPage(final Component finishButton) {
 
     pdfResource = new DynamicWebResource() {
       @Override
@@ -82,10 +85,12 @@ public class ElectronicConsentPage extends WebPage implements IResourceListener 
               log.info("PDF URL is {}", pdfUrl);
               PageParameters params = new PageParameters();
               params.add("accepted", "true");
+              params.add("finishLinkId", finishButton.getMarkupId());
               String acceptUrl = RequestUtils.toAbsolutePath(urlFor(ElectronicConsentUploadPage.class, params).toString());
 
               params = new PageParameters();
               params.add("accepted", "false");
+              params.add("finishLinkId", finishButton.getMarkupId());
               String refuseUrl = RequestUtils.toAbsolutePath(urlFor(ElectronicConsentUploadPage.class, params).toString());
               try {
                 fdf = fdfProducer.buildFdf(pdfUrl, acceptUrl, refuseUrl);

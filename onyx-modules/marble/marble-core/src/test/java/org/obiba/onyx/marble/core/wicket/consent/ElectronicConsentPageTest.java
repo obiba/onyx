@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.core.wicket.consent;
 
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ public class ElectronicConsentPageTest {
   @Test
   public void testEmbedTag() {
     WicketTester tester = new WicketTester();
-    tester.startPage(ElectronicConsentPage.class);
+    tester.startPage(new ElectronicConsentPage(new WebMarkupContainer("finishButton")));
     tester.dumpPage();
   }
 }

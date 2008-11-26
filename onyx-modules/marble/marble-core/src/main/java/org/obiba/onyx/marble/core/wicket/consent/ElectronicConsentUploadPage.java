@@ -29,7 +29,7 @@ public class ElectronicConsentUploadPage extends WebPage {
       uploadElectronicForm();
     }
 
-    setResponsePage(ElectronicConsentSubmittedPage.class);
+    setResponsePage(new ElectronicConsentSubmittedPage(pageParams.getString("finishLinkId")));
   }
 
   private boolean confirmConsent(PageParameters pageParams) {

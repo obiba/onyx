@@ -13,7 +13,9 @@ public class ElectronicConsentSubmittedPage extends WebPage implements IHeaderCo
   @SpringBean
   private ActiveConsentService activeConsentService;
 
-  public ElectronicConsentSubmittedPage() {
+  String finishLinkId;
+
+  public ElectronicConsentSubmittedPage(String finishLinkId) {
     super();
     Boolean consentIsAccepted = activeConsentService.getConsent().isAccepted();
     if(consentIsAccepted) {
@@ -22,9 +24,11 @@ public class ElectronicConsentSubmittedPage extends WebPage implements IHeaderCo
       add(new Label("message", new StringResourceModel("MessageRefused", this, null)));
     }
 
+    this.finishLinkId = finishLinkId;
+
   }
 
   public void renderHead(IHeaderResponse response) {
-    response.renderOnLoadJavascript("parent.document.getElementsByName('finish')[0].click();");
+    response.renderOnLoadJavascript("parent.document.getElementById('" + finishLinkId + "').click();");
   }
 }
