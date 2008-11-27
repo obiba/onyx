@@ -56,10 +56,18 @@
       <rangeCheck>
         <targetParameter reference="sta1_height1" />
         <decimalMinValueMale>70.0</decimalMinValueMale>
-        <decimalMaxValueMale>213.0</decimalMaxValueMale>
+        <decimalMaxValueMale>207.0</decimalMaxValueMale>
         <decimalMinValueFemale>70.0</decimalMinValueFemale>
-        <decimalMaxValueFemale>213.0</decimalMaxValueFemale>
+        <decimalMaxValueFemale>207.0</decimalMaxValueFemale>
       </rangeCheck>
+      <rangeCheck>
+        <type>WARNING</type>
+        <targetParameter reference="sta1_height1" />
+        <decimalMinValueMale>148.0</decimalMinValueMale>
+        <decimalMaxValueMale>192.0</decimalMaxValueMale>
+        <decimalMinValueFemale>148.0</decimalMinValueFemale>
+        <decimalMaxValueFemale>192.0</decimalMaxValueFemale>
+      </rangeCheck>       
     </integrityChecks>
   </output>
   <output id="sta1_height2">
@@ -73,10 +81,18 @@
       <rangeCheck>
         <targetParameter reference="sta1_height2" />
         <decimalMinValueMale>70.0</decimalMinValueMale>
-        <decimalMaxValueMale>213.0</decimalMaxValueMale>
+        <decimalMaxValueMale>207.0</decimalMaxValueMale>
         <decimalMinValueFemale>70.0</decimalMinValueFemale>
-        <decimalMaxValueFemale>213.0</decimalMaxValueFemale>
+        <decimalMaxValueFemale>207.0</decimalMaxValueFemale>
       </rangeCheck>
+      <rangeCheck>
+        <type>WARNING</type>
+        <targetParameter reference="sta1_height2" />
+        <decimalMinValueMale>148.0</decimalMinValueMale>
+        <decimalMaxValueMale>192.0</decimalMaxValueMale>
+        <decimalMinValueFemale>148.0</decimalMinValueFemale>
+        <decimalMaxValueFemale>192.0</decimalMaxValueFemale>
+      </rangeCheck>      
       <parameterSpreadCheck>
         <targetParameter reference="sta1_height2" />
         <parameter reference="sta1_height1" />

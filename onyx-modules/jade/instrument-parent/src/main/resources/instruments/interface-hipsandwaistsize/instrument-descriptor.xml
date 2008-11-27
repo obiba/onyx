@@ -50,6 +50,14 @@
         <integerMinValueFemale>20</integerMinValueFemale>
         <integerMaxValueFemale>199</integerMaxValueFemale>
       </rangeCheck>
+      <rangeCheck>
+        <type>WARNING</type>
+        <targetParameter reference="waist_size1" />
+        <integerMinValueMale>62</integerMinValueMale>
+        <integerMaxValueMale>140</integerMaxValueMale>
+        <integerMinValueFemale>62</integerMinValueFemale>
+        <integerMaxValueFemale>140</integerMaxValueFemale>
+      </rangeCheck>      
     </integrityChecks>
   </output>
   <output id="waist_size2">
@@ -67,6 +75,14 @@
         <integerMinValueFemale>20</integerMinValueFemale>
         <integerMaxValueFemale>199</integerMaxValueFemale>
       </rangeCheck>
+      <rangeCheck>
+        <type>WARNING</type>
+        <targetParameter reference="waist_size2" />
+        <integerMinValueMale>62</integerMinValueMale>
+        <integerMaxValueMale>140</integerMaxValueMale>
+        <integerMinValueFemale>62</integerMinValueFemale>
+        <integerMaxValueFemale>140</integerMaxValueFemale>
+      </rangeCheck>        
       <parameterSpreadCheck>
         <targetParameter reference="waist_size1" />
         <parameter reference="waist_size2" />
@@ -104,6 +120,14 @@
         <integerMinValueFemale>20</integerMinValueFemale>
         <integerMaxValueFemale>199</integerMaxValueFemale>
       </rangeCheck>
+      <rangeCheck>
+        <type>WARNING</type>
+        <targetParameter reference="hips_size1" />
+        <integerMinValueMale>84</integerMinValueMale>
+        <integerMaxValueMale>171</integerMaxValueMale>
+        <integerMinValueFemale>84</integerMinValueFemale>
+        <integerMaxValueFemale>171</integerMaxValueFemale>
+      </rangeCheck>        
     </integrityChecks>
   </output>
   <output id="hips_size2">
@@ -121,6 +145,14 @@
         <integerMinValueFemale>20</integerMinValueFemale>
         <integerMaxValueFemale>199</integerMaxValueFemale>
       </rangeCheck>
+      <rangeCheck>
+        <type>WARNING</type>
+        <targetParameter reference="hips_size2" />
+        <integerMinValueMale>84</integerMinValueMale>
+        <integerMaxValueMale>171</integerMaxValueMale>
+        <integerMinValueFemale>84</integerMinValueFemale>
+        <integerMaxValueFemale>171</integerMaxValueFemale>
+      </rangeCheck>        
       <parameterSpreadCheck>
         <targetParameter reference="hips_size2" />
         <parameter reference="hips_size1" />

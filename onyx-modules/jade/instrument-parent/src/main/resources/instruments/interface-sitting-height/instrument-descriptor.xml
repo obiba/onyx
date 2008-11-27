@@ -36,6 +36,15 @@
     <instrument reference="sta1" />
   </interpretative>
 
+  <output id="sit1_stool_height">
+    <name>Stool Height</name>
+    <description>Stool_Height</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="sit1" />
+  </output>
+
   <output id="sit1_height1">
     <name>Sitting Height 1</name>
     <description>First_Sitting_Height_Measurement</description>
@@ -47,9 +56,9 @@
       <rangeCheck>
         <targetParameter reference="sit1_height1" />
         <decimalMinValueMale>70.0</decimalMinValueMale>
-        <decimalMaxValueMale>213.0</decimalMaxValueMale>
+        <decimalMaxValueMale>207.0</decimalMaxValueMale>
         <decimalMinValueFemale>70.0</decimalMinValueFemale>
-        <decimalMaxValueFemale>213.0</decimalMaxValueFemale>
+        <decimalMaxValueFemale>207.0</decimalMaxValueFemale>
       </rangeCheck>
     </integrityChecks>
   </output>
@@ -64,9 +73,9 @@
       <rangeCheck>
         <targetParameter reference="sit1_height2" />
         <decimalMinValueMale>70.0</decimalMinValueMale>
-        <decimalMaxValueMale>213.0</decimalMaxValueMale>
+        <decimalMaxValueMale>207.0</decimalMaxValueMale>
         <decimalMinValueFemale>70.0</decimalMinValueFemale>
-        <decimalMaxValueFemale>213.0</decimalMaxValueFemale>
+        <decimalMaxValueFemale>207.0</decimalMaxValueFemale>
       </rangeCheck>
       <parameterSpreadCheck>
         <targetParameter reference="sit1_height2" />
@@ -75,6 +84,7 @@
       </parameterSpreadCheck>
     </integrityChecks>
   </output>
+    
   <computedOutput>
     <name>Sitting_Height</name>
     <description>Average_Sitting_Height_Measurement</description>
