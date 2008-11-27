@@ -14,7 +14,6 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.core.domain.participant.Province;
 import org.obiba.onyx.core.etl.participant.AbstractParticipantExcelReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,12 +42,6 @@ public class ParticipantExcelReader extends AbstractParticipantExcelReader {
     } else if(gender.equals("F")) {
       participant.setGender(Gender.FEMALE);
     }
-    participant.setStreet(getTextValue(row, evaluator, row.getCell(8)));
-    participant.setCity(getTextValue(row, evaluator, row.getCell(9)));
-    participant.setProvince(Province.valueOf(getTextValue(row, evaluator, row.getCell(10))));
-    participant.setCountry(getTextValue(row, evaluator, row.getCell(11)));
-    participant.setPostalCode(getTextValue(row, evaluator, row.getCell(12)));
-    participant.setPhone(getTextValue(row, evaluator, row.getCell(13)));
 
     return participant;
   }

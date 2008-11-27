@@ -9,14 +9,17 @@
  ******************************************************************************/
 package org.obiba.onyx.core.domain.participant;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -25,12 +28,20 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.obiba.core.domain.AbstractEntity;
+import org.obiba.onyx.util.data.Data;
 
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "barcode", "enrollmentId" }) })
 public class Participant extends AbstractEntity {
+  //
+  // Constants
+  //
 
   private static final long serialVersionUID = 7720576329990574921L;
+
+  //
+  // Instance Variables
+  //
 
   private String firstName;
 
@@ -48,20 +59,11 @@ public class Participant extends AbstractEntity {
 
   private String siteNo;
 
-  private String street;
-
-  private String apartment;
-
-  private String city;
-
-  @Enumerated(EnumType.STRING)
-  private Province province;
-
-  private String country;
-
-  private String postalCode;
-
-  private String phone;
+  /**
+   * List of values of configured participant attributes.
+   */
+  @OneToMany(mappedBy = "participant")
+  private List<ParticipantAttributeValue> configuredAttributeValues;
 
   @OneToOne(mappedBy = "participant")
   private Appointment appointment;
@@ -69,13 +71,9 @@ public class Participant extends AbstractEntity {
   @OneToOne(mappedBy = "participant")
   private Interview interview;
 
-  public String getSiteNo() {
-    return siteNo;
-  }
-
-  public void setSiteNo(String siteNo) {
-    this.siteNo = siteNo;
-  }
+  //
+  // Methods
+  //
 
   public String getFirstName() {
     return firstName;
@@ -93,6 +91,10 @@ public class Participant extends AbstractEntity {
     this.lastName = lastName;
   }
 
+  public String getFullName() {
+    return getFirstName() + " " + getLastName();
+  }
+
   public Gender getGender() {
     return gender;
   }
@@ -107,6 +109,40 @@ public class Participant extends AbstractEntity {
 
   public void setBirthDate(Date birthDate) {
     this.birthDate = birthDate;
+  }
+
+  @Transient
+  public Long getAge() {
+    Calendar todayCal = Calendar.getInstance();
+    Calendar birthCal = Calendar.getInstance();
+
+    birthCal.setTime((Date) getBirthDate());
+    Long age = todayCal.getTimeInMillis() - birthCal.getTimeInMillis();
+    Double ageDouble = SI.MILLI(SI.SECOND).getConverterTo(NonSI.YEAR).convert(Double.valueOf(age.toString()));
+    ageDouble = Math.floor(ageDouble);
+    age = Math.round(ageDouble);
+
+    return (age);
+  }
+
+  public String getBarcode() {
+    return barcode;
+  }
+
+  public void setBarcode(String barcode) {
+    this.barcode = barcode;
+  }
+
+  public String getEnrollmentId() {
+    return enrollmentId;
+  }
+
+  public void setEnrollmentId(String enrollmentId) {
+    this.enrollmentId = enrollmentId;
+  }
+
+  public String getSiteNo() {
+    return siteNo;
   }
 
   public Appointment getAppointment() {
@@ -127,94 +163,90 @@ public class Participant extends AbstractEntity {
     this.interview.setParticipant(this);
   }
 
-  public String getBarcode() {
-    return barcode;
+  public void setSiteNo(String siteNo) {
+    this.siteNo = siteNo;
   }
 
-  public void setBarcode(String barcode) {
-    this.barcode = barcode;
+  /**
+   * Returns the list of configured attribute values.
+   * 
+   * NOTE: If a configured attribute has the value <code>null</code>, it may or may not appear in this list. It
+   * <i>will</i> appear in this list only if it had previously been assigned a non-<code>null</code> value.
+   * 
+   * @return list of configured attribute values
+   */
+  public List<ParticipantAttributeValue> getConfiguredAttributeValues() {
+    return (configuredAttributeValues != null) ? configuredAttributeValues : new ArrayList<ParticipantAttributeValue>();
   }
 
-  public String getEnrollmentId() {
-    return enrollmentId;
+  /**
+   * Updates the list of configured attribute values.
+   * 
+   * @param configuredAttributeValues list of configured attribute values
+   */
+  public void setConfiguredAttributeValues(List<ParticipantAttributeValue> configuredAttributeValues) {
+    if(configuredAttributeValues != null) {
+      getConfiguredAttributeValues().addAll(configuredAttributeValues);
+    }
   }
 
-  public void setEnrollmentId(String enrollmentId) {
-    this.enrollmentId = enrollmentId;
+  /**
+   * Returns the value of a configured participant attribute.
+   * 
+   * @param attributeName attribute name
+   * @return value of the specified attribute (or <code>null</code> if none assigned)
+   * @throws IllegalArgumentException if <code>attributeName</code> is <code>null</code>
+   */
+  public Data getConfiguredAttributeValue(String attributeName) {
+    if(attributeName == null) {
+      throw new IllegalArgumentException("Null attribute name");
+    }
+
+    for(ParticipantAttributeValue attributeValue : getConfiguredAttributeValues()) {
+      if(attributeValue.getAttributeName().equals(attributeName)) {
+        Data data = attributeValue.getData();
+        return (data != null) ? data : null;
+      }
+    }
+
+    return null;
   }
 
-  public String getFullName() {
-    return getFirstName() + " " + getLastName();
+  /**
+   * Updates the value of a configured participant attribute.
+   * 
+   * @param attributeName attribute name
+   * @param data new value (or <code>null</code> to assign no value)
+   * @throws IllegalArgumentException if <code>attributeName</code> is <code>null</code> or if no attribute with
+   * that name is configured
+   */
+  public void setConfiguredAttributeValue(String attributeName, Data data) {
+    if(attributeName == null) {
+      throw new IllegalArgumentException("Null attribute name");
+    }
+
+    // If the list of configured attribute values contains a value for the specified
+    // attribute, update that value.
+    for(ParticipantAttributeValue attributeValue : getConfiguredAttributeValues()) {
+      if(attributeValue.getAttributeName().equals(attributeName)) {
+        if(data == null) {
+          data = new Data(attributeValue.getAttributeType(), null);
+        }
+        attributeValue.setData(data);
+        return;
+      }
+    }
+
+    // The list of configured attribute values does NOT contain a value for the specified
+    // attribute. So create a new ParticipantAttributeValue and append it to the list.
+    ParticipantAttributeValue attributeValue = new ParticipantAttributeValue();
+    attributeValue.setAttributeName(attributeName);
+
+    if(data != null) {
+      attributeValue.setAttributeType(data.getType());
+      attributeValue.setData(data);
+    }
+
+    getConfiguredAttributeValues().add(attributeValue);
   }
-
-  @Transient
-  public Long getAge() {
-    Calendar todayCal = Calendar.getInstance();
-    Calendar birthCal = Calendar.getInstance();
-
-    birthCal.setTime((Date) getBirthDate());
-    Long age = todayCal.getTimeInMillis() - birthCal.getTimeInMillis();
-    Double ageDouble = SI.MILLI(SI.SECOND).getConverterTo(NonSI.YEAR).convert(Double.valueOf(age.toString()));
-    ageDouble = Math.floor(ageDouble);
-    age = Math.round(ageDouble);
-
-    return (age);
-  }
-
-  public String getStreet() {
-    return street;
-  }
-
-  public void setStreet(String street) {
-    this.street = street;
-  }
-
-  public String getApartment() {
-    return apartment;
-  }
-
-  public void setApartment(String apartment) {
-    this.apartment = apartment;
-  }
-
-  public String getCity() {
-    return city;
-  }
-
-  public void setCity(String city) {
-    this.city = city;
-  }
-
-  public Province getProvince() {
-    return province;
-  }
-
-  public void setProvince(Province province) {
-    this.province = province;
-  }
-
-  public String getCountry() {
-    return country;
-  }
-
-  public void setCountry(String country) {
-    this.country = country;
-  }
-
-  public String getPostalCode() {
-    return postalCode;
-  }
-
-  public void setPostalCode(String postalCode) {
-    this.postalCode = postalCode;
-  }
-
-  public String getPhone() {
-    return phone;
-  }
-
-  public void setPhone(String phone) {
-    this.phone = phone;
-  }
-
 }

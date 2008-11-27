@@ -28,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.core.domain.participant.Province;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.wicket.test.MockSpringApplication;
 
@@ -90,8 +89,6 @@ public class EditParticipantPanelTest {
     p.setLastName("Tremblay");
     p.setBarcode("1234");
     p.setBirthDate(new Date());
-    p.setCity("Montr�al");
-    p.setProvince(Province.QC);
     p.setGender(Gender.MALE);
     return p;
   }
