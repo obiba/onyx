@@ -37,7 +37,7 @@ A:hover {
 .subLegend {
   border-style: none;
   background: white;
-  font-size=10px;
+  font-size: 10px;
   color: #00008B;
 }
 
@@ -121,7 +121,6 @@ div.banner {
   color: #FFFFFF;
   font-family: verdana, arial, sans-serif;
   font-size:12px;
-  border-top:1px solid FFFFFF;
 }
 
 #menuAddOns{
@@ -138,7 +137,7 @@ div.banner {
 }
 #menu{
 	float:left;
-	margin:left:15px;
+	margin-left:15px;
 }
 
 #contentWrapper {
