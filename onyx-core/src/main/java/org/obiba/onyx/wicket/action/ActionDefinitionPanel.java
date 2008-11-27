@@ -66,7 +66,7 @@ public abstract class ActionDefinitionPanel extends Panel {
   private FeedbackPanel feedback;
 
   @SuppressWarnings("serial")
-  public ActionDefinitionPanel(String id, ActionDefinition definition) {
+  public ActionDefinitionPanel(String id, ActionDefinition definition, AjaxRequestTarget target) {
     super(id);
 
     Action action = new Action(definition);
@@ -87,9 +87,26 @@ public abstract class ActionDefinitionPanel extends Panel {
     form.add(new Label("participantGender", new StringResourceModel("Gender." + participant.getGender(), this, null)));
     form.add(new Label("participantBirthDate", DateModelUtils.getDateModel(new Model(participant.getBirthDate()))));
 
-    form.add(new PasswordFragment("password").setVisible(definition.isAskPassword()));
-    form.add(new BarcodeFragment("confirmBarcode").setVisible(definition.isAskParticipantId()));
-    form.add(new TextArea("comment", new PropertyModel(this, "action.comment")).setRequired(definition.isCommentMandatory()));
+    PasswordFragment pwdFragment = new PasswordFragment("password");
+    form.add(pwdFragment.setVisible(definition.isAskPassword()));
+
+    BarcodeFragment barcodeFragment = new BarcodeFragment("confirmBarcode");
+    form.add(barcodeFragment.setVisible(definition.isAskParticipantId()));
+
+    TextArea commentArea = new TextArea("comment", new PropertyModel(this, "action.comment"));
+    form.add(commentArea.setRequired(definition.isCommentMandatory()));
+
+    // request for focus on first field
+    if(pwdFragment.isVisible()) {
+      pwdFragment.pwdTextField.setOutputMarkupId(true);
+      target.focusComponent(pwdFragment.pwdTextField);
+    } else if(barcodeFragment.isVisible()) {
+      barcodeFragment.barcodeTextField.setOutputMarkupId(true);
+      target.focusComponent(barcodeFragment.barcodeTextField);
+    } else {
+      commentArea.setOutputMarkupId(true);
+      target.focusComponent(commentArea);
+    }
 
     action.setEventReason(definition.getDefaultReason());
     if(definition.getReasons().size() > 0) {
@@ -181,10 +198,12 @@ public abstract class ActionDefinitionPanel extends Panel {
   @SuppressWarnings("serial")
   private class PasswordFragment extends Fragment {
 
+    PasswordTextField pwdTextField;
+
     public PasswordFragment(String id) {
       super(id, "passwordFragment", ActionDefinitionPanel.this);
       final User operatorTemplate = new User();
-      PasswordTextField pwdTextField = new PasswordTextField("password", new PropertyModel(operatorTemplate, "password"));
+      pwdTextField = new PasswordTextField("password", new PropertyModel(operatorTemplate, "password"));
       add(pwdTextField.add(new RequiredFormFieldBehavior()));
       pwdTextField.add(new IValidator() {
 
@@ -200,12 +219,13 @@ public abstract class ActionDefinitionPanel extends Panel {
   @SuppressWarnings("serial")
   private class BarcodeFragment extends Fragment {
 
+    TextField barcodeTextField;
+
     public BarcodeFragment(String id) {
       super(id, "barcodeFragment", ActionDefinitionPanel.this);
       final Participant participantTemplate = new Participant();
-      TextField barcodeTextField = new TextField("ParticipantCode", new PropertyModel(participantTemplate, "barcode"));
+      barcodeTextField = new TextField("ParticipantCode", new PropertyModel(participantTemplate, "barcode"));
       add(barcodeTextField.add(new RequiredFormFieldBehavior()));
-
       barcodeTextField.add(new IValidator() {
 
         public void validate(IValidatable validatable) {

@@ -85,7 +85,7 @@ public abstract class ActionWindow extends Panel {
   @SuppressWarnings("serial")
   public void show(AjaxRequestTarget target, IModel stageModel, ActionDefinition actionDefinition) {
     setModel(stageModel);
-    modal.setContent(new ActionDefinitionPanel(modal.getContentId(), actionDefinition) {
+    modal.setContent(new ActionDefinitionPanel(modal.getContentId(), actionDefinition, target) {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
