@@ -114,7 +114,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
       // Add comment action link.
       add(new AjaxLink("addComment") {
         public void onClick(AjaxRequestTarget target) {
-          commentWindow.setContent(new QuestionCommentModalPanel("content", commentWindow, BaseQuestionPanel.this.getModel()));
+          commentWindow.setContent(new QuestionCommentModalPanel("content", commentWindow, BaseQuestionPanel.this.getModel(), target));
           commentWindow.show(target);
         }
       });

@@ -38,7 +38,7 @@ public class QuestionCommentModalPanel extends Panel {
 
   private String comment;
 
-  public QuestionCommentModalPanel(String id, ModalWindow commentWindow, IModel questionModel) {
+  public QuestionCommentModalPanel(String id, ModalWindow commentWindow, IModel questionModel, AjaxRequestTarget target) {
     super(id, questionModel);
     this.commentWindow = commentWindow;
 
@@ -47,7 +47,7 @@ public class QuestionCommentModalPanel extends Panel {
     add(feedback = new FeedbackPanel("feedback"));
     feedback.setOutputMarkupId(true);
 
-    add(new CommentForm("commentForm"));
+    add(new CommentForm("commentForm", target));
 
   }
 
@@ -56,7 +56,7 @@ public class QuestionCommentModalPanel extends Panel {
     private static final long serialVersionUID = 1L;
 
     @SuppressWarnings("serial")
-    public CommentForm(String id) {
+    public CommentForm(String id, AjaxRequestTarget target) {
       super(id);
 
       setModel(new Model(QuestionCommentModalPanel.this));
@@ -64,6 +64,7 @@ public class QuestionCommentModalPanel extends Panel {
       final TextArea newComment = new TextArea("newComment", new PropertyModel(getModel(), "comment"));
       newComment.add(new RequiredFormFieldBehavior());
       newComment.setOutputMarkupId(true);
+      target.focusComponent(newComment);
       add(newComment);
 
       // Save a new comment.
