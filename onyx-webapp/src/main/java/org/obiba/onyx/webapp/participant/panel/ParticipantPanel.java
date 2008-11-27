@@ -41,15 +41,16 @@ public class ParticipantPanel extends Panel {
     kvPanel.addRow(new StringResourceModel("Gender", this, null), new PropertyModel(this, "localizedGender"));
     kvPanel.addRow(new StringResourceModel("BirthDate", this, null), DateModelUtils.getShortDateModel(new PropertyModel(getModel(), "birthDate")));
 
-    if(!shortList) {
-      kvPanel.addRow(new StringResourceModel("Street", this, null), new PropertyModel(getModel(), "street"));
-      kvPanel.addRow(new StringResourceModel("Apartment", this, null), new PropertyModel(getModel(), "apartment"));
-      kvPanel.addRow(new StringResourceModel("City", this, null), new PropertyModel(getModel(), "city"));
-      kvPanel.addRow(new StringResourceModel("Province", this, null), new PropertyModel(getModel(), "province"));
-      kvPanel.addRow(new StringResourceModel("Country", this, null), new PropertyModel(getModel(), "country"));
-      kvPanel.addRow(new StringResourceModel("PostalCode", this, null), new PropertyModel(getModel(), "postalCode"));
-      kvPanel.addRow(new StringResourceModel("Phone", this, null), new PropertyModel(getModel(), "phone"));
-    }
+    /*
+     * if(!shortList) { kvPanel.addRow(new StringResourceModel("Street", this, null), new PropertyModel(getModel(),
+     * "street")); kvPanel.addRow(new StringResourceModel("Apartment", this, null), new PropertyModel(getModel(),
+     * "apartment")); kvPanel.addRow(new StringResourceModel("City", this, null), new PropertyModel(getModel(),
+     * "city")); kvPanel.addRow(new StringResourceModel("Province", this, null), new PropertyModel(getModel(),
+     * "province")); kvPanel.addRow(new StringResourceModel("Country", this, null), new PropertyModel(getModel(),
+     * "country")); kvPanel.addRow(new StringResourceModel("PostalCode", this, null), new PropertyModel(getModel(),
+     * "postalCode")); kvPanel.addRow(new StringResourceModel("Phone", this, null), new PropertyModel(getModel(),
+     * "phone")); }
+     */
 
     add(kvPanel);
   }

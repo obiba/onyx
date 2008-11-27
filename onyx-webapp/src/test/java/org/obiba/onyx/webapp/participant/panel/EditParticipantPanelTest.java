@@ -13,16 +13,17 @@ import static org.easymock.EasyMock.createMock;
 
 import java.util.Date;
 
+import junit.framework.Assert;
+
 import org.apache.wicket.Page;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.test.ApplicationContextMock;
+import org.apache.wicket.util.tester.DummyHomePage;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.easymock.EasyMock;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.core.domain.participant.Gender;
@@ -34,9 +35,9 @@ import org.obiba.wicket.test.MockSpringApplication;
 @SuppressWarnings("serial")
 public class EditParticipantPanelTest {
 
-  WicketTester tester;
+  private WicketTester tester;
 
-  ParticipantService mockParticipantService;
+  private ParticipantService mockParticipantService;
 
   @Before
   public void setup() {
@@ -66,25 +67,21 @@ public class EditParticipantPanelTest {
 
     tester.startPanel(new TestPanelSource() {
       public Panel getTestPanel(String panelId) {
-        return new EditParticipantPanel(panelId, new Model(p), new ModalWindow("bogus"));
+        DummyHomePage dummyHomePage = new DummyHomePage();
+        return new EditParticipantPanel(panelId, new Model(p), dummyHomePage, "edit");
       }
     });
     tester.dumpPage();
 
     FormTester formTester = tester.newFormTester("panel:editParticipantForm");
-
-    formTester.setValue("apartment", "400");
-
-    // formTester.submit(); WICKET-1828: does not submit through AJAX
-    // tester.clickLink("panel:editParticipantForm:saveAction", true); WICKET-1828: does not submit new values
+    formTester.select("gender", 0);
 
     tester.executeAjaxEvent("panel:editParticipantForm:saveAction", "onclick");
-
     tester.assertNoErrorMessage();
 
     EasyMock.verify(mockParticipantService);
 
-    Assert.assertEquals("400", p.getApartment());
+    Assert.assertEquals(Gender.FEMALE, p.getGender());
   }
 
   public Participant newTestParticipant() {
@@ -98,4 +95,5 @@ public class EditParticipantPanelTest {
     p.setGender(Gender.MALE);
     return p;
   }
+
 }

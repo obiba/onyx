@@ -11,10 +11,6 @@ package org.obiba.onyx.webapp.participant.panel;
 
 import java.io.Serializable;
 
-import org.apache.wicket.Page;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
@@ -43,30 +39,27 @@ public class AssignCodeToParticipantPanel extends Panel {
   @SpringBean
   private EntityQueryService queryService;
 
-  private Page sourcePage;
+  private final Model receptionCommentModel = new Model();
 
   private static final long serialVersionUID = 1L;
 
-  public AssignCodeToParticipantPanel(String id, IModel participantModel, Page sourcePage) {
+  public AssignCodeToParticipantPanel(String id, IModel participantModel) {
 
     super(id);
-
-    this.sourcePage = sourcePage;
 
     add(new AssignCodeToParticipantForm("assignCodeToParticipantForm", participantModel));
 
   }
 
-  private class AssignCodeToParticipantForm extends Form {
+  public class AssignCodeToParticipantForm extends Form {
 
     private static final long serialVersionUID = 1L;
 
     @SuppressWarnings("serial")
     public AssignCodeToParticipantForm(String id, final IModel participantModel) {
-      super(id);
-      final Participant participantTemplate = new Participant();
+      super(id, participantModel);
 
-      TextField participantCode = new TextField("participantCode", new PropertyModel(participantTemplate, "barcode"));
+      TextField participantCode = new TextField("participantCode", new PropertyModel(getModel(), "barcode"));
       participantCode.add(new RequiredFormFieldBehavior());
       participantCode.add(new IValidator() {
 
@@ -80,29 +73,11 @@ public class AssignCodeToParticipantPanel extends Panel {
 
       });
       add(participantCode);
-
-      // TODO comment at reception time
-      final Model receptionCommentModel = new Model();
       add(new TextArea("comment", receptionCommentModel));
+    }
 
-      add(new Button("submit", participantModel) {
-
-        @Override
-        public void onSubmit() {
-          participantService.assignCodeToParticipant((Participant) participantModel.getObject(), participantTemplate.getBarcode(), (String) receptionCommentModel.getObject(), OnyxAuthenticatedSession.get().getUser());
-          setResponsePage(sourcePage);
-        }
-      });
-
-      add(new AjaxLink("cancel") {
-
-        @Override
-        public void onClick(AjaxRequestTarget target) {
-          setResponsePage(sourcePage);
-        }
-
-      });
-
+    public void onSubmit(Participant participant) {
+      participantService.assignCodeToParticipant(participant, participant.getBarcode(), (String) receptionCommentModel.getObject(), OnyxAuthenticatedSession.get().getUser());
     }
   }
 
@@ -119,7 +94,6 @@ public class AssignCodeToParticipantPanel extends Panel {
       StringResourceModel strModel = new StringResourceModel("ParticipantIDAlreadyAssigned", AssignCodeToParticipantPanel.this, new Model(new ValueMap("id=" + id)));
       return strModel.getString();
     }
-
   }
 
 }

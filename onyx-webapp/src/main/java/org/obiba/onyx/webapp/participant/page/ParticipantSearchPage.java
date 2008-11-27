@@ -196,7 +196,8 @@ public class ParticipantSearchPage extends BasePage {
       @Override
       public void onClick(AjaxRequestTarget target) {
         // TODO enroll volunteer
-        target.addComponent(getFeedbackPanel());
+        // target.addComponent(getFeedbackPanel());
+        setResponsePage(new ParticipantReceptionPage(new Model(new Participant()), ParticipantSearchPage.this, "enrollment"));
       }
 
     });
@@ -451,7 +452,7 @@ public class ParticipantSearchPage extends BasePage {
                   activeInterviewService.setParticipant(p);
                   setResponsePage(InterviewPage.class);
                 } else {
-                  setResponsePage(new ParticipantReceptionPage(rowModel, ParticipantSearchPage.this));
+                  setResponsePage(new ParticipantReceptionPage(rowModel, ParticipantSearchPage.this, "reception"));
                 }
               }
             }

@@ -10,53 +10,52 @@
 package org.obiba.onyx.webapp.participant.page;
 
 import org.apache.wicket.Page;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.model.ResourceModel;
 import org.obiba.onyx.webapp.base.page.BasePage;
-import org.obiba.onyx.webapp.participant.panel.AssignCodeToParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
-import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class ParticipantReceptionPage extends BasePage {
 
+  private static final String RECEPTION = "reception";
+
+  private static final String ENROLLMENT = "enrollment";
+
   @SuppressWarnings("serial")
-  public ParticipantReceptionPage(IModel participantModel, Page sourcePage) {
+  public ParticipantReceptionPage(IModel participantModel, Page sourcePage, String mode) {
     super();
 
-    final ParticipantPanel participantPanel = new ParticipantPanel("participantPanel", participantModel);
-    add(participantPanel);
-    add(new AssignCodeToParticipantPanel("assignCodeToParticipantPanel", participantModel, sourcePage));
+    if(mode.equals(RECEPTION)) {
+      add(new TitleFragment("title", "participantReception"));
+      add(new InstructionFragment("instruction", "receiveParticipantInstructions"));
+    } else if(mode.equals(ENROLLMENT)) {
+      add(new TitleFragment("title", "volunteerRegistration"));
+      add(new InstructionFragment("instruction", "enrollParticipantInstructions"));
+    }
 
-    //
-    // Add the Edit Participant pop-up.
-    //
-    final ModalWindow editParticipantModalWindow = new ModalWindow("editParticipantModalWindow");
-    editParticipantModalWindow.setTitle(new StringResourceModel("Participant", this, null));
-    editParticipantModalWindow.setInitialHeight(435);
-    editParticipantModalWindow.setInitialWidth(400);
-    editParticipantModalWindow.setContent(new EditParticipantPanel("content", participantModel, editParticipantModalWindow));
-    editParticipantModalWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+    add(new EditParticipantPanel("editParticipantPanel", participantModel, sourcePage, mode));
+  }
 
-      public void onClose(AjaxRequestTarget target) {
-        target.addComponent(participantPanel);
-      }
+  @SuppressWarnings("serial")
+  private class TitleFragment extends Fragment {
 
-    });
-    add(editParticipantModalWindow);
+    public TitleFragment(String id, String titleKey) {
+      super(id, "titleFragment", ParticipantReceptionPage.this);
+      add(new Label("titleMessage", new ResourceModel(titleKey)));
+    }
+  }
 
-    @SuppressWarnings("serial")
-    AjaxLink link = new AjaxLink("editParticipantAction") {
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        editParticipantModalWindow.show(target);
-      }
-    };
+  @SuppressWarnings("serial")
+  private class InstructionFragment extends Fragment {
 
-    add(link);
+    public InstructionFragment(String id, String messageKey) {
+      super(id, "instructionFragment", ParticipantReceptionPage.this);
+      add(new MultiLineLabel("instructionMessage", new ResourceModel(messageKey)));
+    }
   }
 }
