@@ -26,6 +26,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
 
   @Autowired(required = true)
   ParticipantService participantService;
-  
+
   @Test
   @Dataset
   public void testParticipantByCode() {
@@ -85,20 +86,20 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
     long participantId = 4l;
     long userId = 1l; // administrator
     String barcode = "100004";
-    
+
     Participant participant = persistenceManager.get(Participant.class, participantId);
     Assert.assertNotNull(participant);
-    
+
     User user = persistenceManager.get(User.class, userId);
     Assert.assertNotNull(user);
-    
+
     participantService.assignCodeToParticipant(participant, barcode, null, user);
-    
+
     // Verify that the bar code was persisted.
     participant = persistenceManager.get(Participant.class, 4l);
     Assert.assertEquals(barcode, participant.getBarcode());
   }
-  
+
   @Test
   @Dataset
   public void testAssignCodeToParticipantWithComment() {
@@ -106,19 +107,19 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
     long userId = 1l; // administrator
     String barcode = "100004";
     String receptionComment = "test comment";
-    
+
     Participant participant = persistenceManager.get(Participant.class, participantId);
     Assert.assertNotNull(participant);
-    
+
     User user = persistenceManager.get(User.class, userId);
     Assert.assertNotNull(user);
-    
+
     participantService.assignCodeToParticipant(participant, barcode, receptionComment, user);
-    
+
     // Verify that the bar code was persisted.
     participant = persistenceManager.get(Participant.class, participantId);
     Assert.assertEquals(barcode, participant.getBarcode());
-    
+
     // Verify that the comment was persisted.
     Action commentTemplate = new Action();
     commentTemplate.setActionType(ActionType.COMMENT);
@@ -129,9 +130,9 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
     Assert.assertTrue(comments.size() == 1);
     Assert.assertEquals(comments.get(0).getComment(), receptionComment);
   }
-  
+
   @Test
-  @Dataset(filenames={"AppConfigurationForParticipantServiceTest.xml"})
+  @Dataset(filenames = { "AppConfigurationForParticipantServiceTest.xml" })
   public void testParticipantReader() {
     try {
       participantService.updateParticipants(getClass().getResourceAsStream("rendez-vous.xls"));
@@ -202,4 +203,48 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
 
   }
 
+  @Test
+  @Dataset
+  public void testUpdateConfiguredAttribute() {
+    long participantId = 4l;
+    String attributeName = "phone";
+    String attributeValue1 = "450-466-6666";
+    String attributeValue2 = "514-488-8888";
+
+    // Fetch the test participant.
+    Participant participant = persistenceManager.get(Participant.class, participantId);
+    Assert.assertNotNull(participant);
+
+    // Update the value of the configured attribute to attributeValue1.
+    participant.setConfiguredAttributeValue(attributeName, DataBuilder.buildText(attributeValue1));
+    participantService.updateParticipant(participant);
+
+    // Re-fetch the test participant.
+    participant = persistenceManager.get(Participant.class, participantId);
+
+    // Verify that the configured attribute has been updated to the new value.
+    Assert.assertNotNull(participant.getConfiguredAttributeValue(attributeName));
+    Assert.assertEquals(attributeValue1, participant.getConfiguredAttributeValue(attributeName).getValue());
+
+    // Now update the value to null.
+    participant.setConfiguredAttributeValue(attributeName, null);
+    participantService.updateParticipant(participant);
+
+    // Re-fetch the test participant.
+    participant = persistenceManager.get(Participant.class, participantId);
+
+    // Verify that the configured attribute has been updated to null.
+    Assert.assertNull(participant.getConfiguredAttributeValue(attributeName));
+
+    // Finally update the value to attributeValue2.
+    participant.setConfiguredAttributeValue(attributeName, DataBuilder.buildText(attributeValue2));
+    participantService.updateParticipant(participant);
+
+    // Re-fetch the test participant.
+    participant = persistenceManager.get(Participant.class, participantId);
+
+    // Verify that the configured attribute has been updated to the new value.
+    Assert.assertNotNull(participant.getConfiguredAttributeValue(attributeName));
+    Assert.assertEquals(attributeValue2, participant.getConfiguredAttributeValue(attributeName).getValue());
+  }
 }

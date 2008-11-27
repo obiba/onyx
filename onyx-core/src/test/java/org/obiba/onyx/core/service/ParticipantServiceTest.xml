@@ -56,7 +56,7 @@
     last_name="Spathis"
     gender="MALE"
     birth_date="1972-10-01 00:00:00" />
-
+  
   <appointment id="4"
     appointment_code="100004"
     date="2008-07-01 09:00:00"
@@ -67,5 +67,7 @@
     an Integrity constraint violation.
   -->
   <action />
-   
+     
+  <participant_attribute_value />
+  
 </dataset>

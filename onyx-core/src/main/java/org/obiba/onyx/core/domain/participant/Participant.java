@@ -205,7 +205,7 @@ public class Participant extends AbstractEntity {
     for(ParticipantAttributeValue attributeValue : getConfiguredAttributeValues()) {
       if(attributeValue.getAttributeName().equals(attributeName)) {
         Data data = attributeValue.getData();
-        return (data != null) ? data : null;
+        return (data != null && data.getValue() != null) ? data : null;
       }
     }
 
