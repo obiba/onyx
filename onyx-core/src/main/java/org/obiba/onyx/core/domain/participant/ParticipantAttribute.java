@@ -83,7 +83,11 @@ public class ParticipantAttribute {
    * @param allowedValues allowed values of attribute
    */
   public void setAllowedValues(List<String> allowedValues) {
-    this.allowedValues.clear();
+    if(this.allowedValues == null) {
+      this.allowedValues = new ArrayList<String>();
+    } else {
+      this.allowedValues.clear();
+    }
 
     if(allowedValues != null) {
       this.allowedValues.addAll(allowedValues);
