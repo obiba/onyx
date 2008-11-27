@@ -174,7 +174,7 @@
   
   <output id="blp1_systolic3">
     <name>Systolic Blood Pressure 3</name>
-    <description>Second_Systolic_Blood_Pressure_Measurement</description>
+    <description>Third_Systolic_Blood_Pressure_Measurement</description>
     <measurementUnit>mmHg</measurementUnit>
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -198,8 +198,8 @@
     </integrityChecks>
   </output>
   <output id="blp1_diastolic3">
-    <name>Diastolic Blood Pressure 2</name>
-    <description>Second_Diastolic_Blood_Pressure_Measurement</description>
+    <name>Diastolic Blood Pressure 3</name>
+    <description>Third_Diastolic_Blood_Pressure_Measurement</description>
     <measurementUnit>mmHg</measurementUnit>
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
@@ -223,8 +223,8 @@
     </integrityChecks>
   </output>
   <output id="blp1_pulse3">
-    <name>Pulse Rate 2</name>
-    <description>Second_Pulse_Rate_Measurement</description>
+    <name>Pulse Rate 3</name>
+    <description>Third_Pulse_Rate_Measurement</description>
     <measurementUnit>BPM</measurementUnit>
     <dataType>INTEGER</dataType>
     <captureMethod>MANUAL</captureMethod>
