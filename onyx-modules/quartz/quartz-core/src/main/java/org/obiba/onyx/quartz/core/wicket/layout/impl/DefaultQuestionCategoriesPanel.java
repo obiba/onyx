@@ -134,7 +134,6 @@ public class DefaultQuestionCategoriesPanel extends Panel {
   private void addCheckBoxGroup(Question question) {
     final CheckGroup checkGroup = new CheckGroup("categories", new ArrayList<IModel>());
     checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
-    // checkGroup.setRequired(!question.isBoilerPlate() && question.isRequired());
     checkGroup.add(new AnswerCountValidator(getModel()));
     add(checkGroup);
 
@@ -154,7 +153,6 @@ public class DefaultQuestionCategoriesPanel extends Panel {
 
             @Override
             public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-
               if(escapeQuestionCategoriesPanel != null) {
                 Question question = getQuestion();
                 for(CategoryAnswer answer : activeQuestionnaireAdministrationService.findAnswers(question)) {

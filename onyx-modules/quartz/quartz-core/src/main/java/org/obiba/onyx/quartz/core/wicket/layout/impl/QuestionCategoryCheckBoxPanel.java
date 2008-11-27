@@ -83,7 +83,8 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
       @Override
       protected void onEvent(AjaxRequestTarget target) {
         // toggle selection
-        getSelectionModel().setObject(!getSelectionModel().isSelected());
+        // note: call for setModelObject to ensure modelChanged trigger is properly called
+        checkbox.setModelObject(!getSelectionModel().isSelected());
 
         if(getSelectionModel().isSelected()) {
           activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getQuestionCategory().getCategory().getOpenAnswerDefinition(), null);
