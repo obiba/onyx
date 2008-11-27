@@ -10,6 +10,7 @@
 package org.obiba.onyx.webapp.participant.panel;
 
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
 
 import java.util.Date;
 
@@ -26,6 +27,8 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ParticipantService;
@@ -38,14 +41,18 @@ public class EditParticipantPanelTest {
 
   private ParticipantService mockParticipantService;
 
+  private EntityQueryService mockQueryService;
+
   @Before
   public void setup() {
 
     ApplicationContextMock mockCtx = new ApplicationContextMock();
 
     mockParticipantService = createMock(ParticipantService.class);
+    mockQueryService = createMock(EntityQueryService.class);
 
     mockCtx.putBean("participantService", mockParticipantService);
+    mockCtx.putBean("entityQueryService", mockQueryService);
 
     MockSpringApplication application = new MockSpringApplication();
     application.setApplicationContext(mockCtx);
@@ -61,8 +68,10 @@ public class EditParticipantPanelTest {
 
     // We expect the updateParticipant method to be called once
     mockParticipantService.updateParticipant(p);
+    expect(mockQueryService.matchOne((ApplicationConfiguration) EasyMock.anyObject())).andReturn(new ApplicationConfiguration());
 
     EasyMock.replay(mockParticipantService);
+    EasyMock.replay(mockQueryService);
 
     tester.startPanel(new TestPanelSource() {
       public Panel getTestPanel(String panelId) {
@@ -79,6 +88,7 @@ public class EditParticipantPanelTest {
     tester.assertNoErrorMessage();
 
     EasyMock.verify(mockParticipantService);
+    EasyMock.verify(mockQueryService);
 
     Assert.assertEquals(Gender.FEMALE, p.getGender());
   }

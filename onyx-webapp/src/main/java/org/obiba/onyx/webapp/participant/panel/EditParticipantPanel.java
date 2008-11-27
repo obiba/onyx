@@ -10,6 +10,7 @@
 package org.obiba.onyx.webapp.participant.panel;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.wicket.Page;
@@ -32,6 +33,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.DateValidator;
+import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -53,6 +57,9 @@ public class EditParticipantPanel extends Panel {
 
   @SpringBean
   private ParticipantService participantService;
+
+  @SpringBean
+  private EntityQueryService queryService;
 
   private FeedbackPanel feedbackPanel;
 
@@ -88,12 +95,17 @@ public class EditParticipantPanel extends Panel {
         add(new RowFragment("enrollmentId", getModel()));
 
       if(participant.getAppointment() == null) participant.setAppointment(new Appointment(participant, new Date()));
+      if(participant.getSiteNo() == null) {
+        ApplicationConfiguration appConfig = queryService.matchOne(new ApplicationConfiguration());
+        participant.setSiteNo(appConfig.getSiteNo());
+      }
 
       add(new TextField("firstName", new PropertyModel(getModel(), "firstName")).setRequired(true).setLabel(new ResourceModel("FirstName")));
       add(new TextField("lastName", new PropertyModel(getModel(), "lastName")).setRequired(true).setLabel(new ResourceModel("LastName")));
       add(createGenderDropDown());
       add(createBirthDateField());
       add(createAppointmentDateField());
+      add(new Label("siteNo", new PropertyModel(getModel(), "siteNo")));
 
       if(mode.equals(RECEPTION) || mode.equals(ENROLLMENT)) {
         add(new AssignCodeToParticipantPanel("assignCodeToParticipantPanel", participantModel));
@@ -167,6 +179,13 @@ public class EditParticipantPanel extends Panel {
 
     appointmentDateField.setRequired(true);
     appointmentDateField.setLabel(new ResourceModel("Appointment"));
+
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(new Date());
+    cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), 0);
+    cal.set(Calendar.MILLISECOND, 0);
+
+    appointmentDateField.add(DateValidator.minimum(cal.getTime()));
 
     return appointmentDateField;
   }

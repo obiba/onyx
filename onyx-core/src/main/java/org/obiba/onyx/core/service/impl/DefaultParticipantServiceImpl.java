@@ -84,6 +84,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
   public void updateParticipant(Participant participant) {
     persistenceManager.save(participant);
+    persistenceManager.save(participant.getAppointment());
   }
 
   public void updateParticipantList() throws ValidationRuntimeException {
