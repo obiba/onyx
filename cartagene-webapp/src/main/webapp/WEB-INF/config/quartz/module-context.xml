@@ -15,11 +15,11 @@
     <property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
     <property name="stages">
       <list>
-        <bean class="org.obiba.onyx.engine.Stage">
+        <!--bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="HealthQuestionnaire" />
           <property name="module" value="quartz" />
           <property name="stageDependencyCondition" ref="consentDependency" />
-        </bean>
+        </bean-->
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="HealthQuestionnaireSelfAdministered" />
           <property name="module" value="quartz" />

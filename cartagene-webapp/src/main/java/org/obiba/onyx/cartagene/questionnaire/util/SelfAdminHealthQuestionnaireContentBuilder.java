@@ -95,7 +95,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
   public static QuestionnaireBuilder buildHealthQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaireSelfAdministered", "1.0");
 
-    builder.withSection("A_ADMINISTRATION").withSection("ADMINISTRATIVE_DATA").withPage("1").withQuestion("A0", "1");
+    builder.withSection("A_ADMINISTRATION").withSection("ADMINISTRATIVE_DATA").withPage("1").withQuestion("A0");
     builder.inPage("1").addTimestamp("TS_START");
 
     builder.withSection("B_DEMOGRAPHY").withSection("GENDER").withPage("2").withQuestion("SEX", "1").withCategory("MALE").setExportName("1");

@@ -13,7 +13,7 @@
             <page id="11" name="1" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="9"/>
               <questions id="12">
-                <question id="13" name="A0" number="1" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="13" name="A0" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="11"/>
                   <questionCategories id="14"/>
                   <questions id="15"/>
