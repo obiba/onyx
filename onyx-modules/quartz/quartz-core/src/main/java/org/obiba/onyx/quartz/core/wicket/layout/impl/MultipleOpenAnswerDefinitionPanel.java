@@ -20,6 +20,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
+import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +64,8 @@ public class MultipleOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinit
 
   @SuppressWarnings("serial")
   private void initialize() {
+    setOutputMarkupId(true);
+
     RepeatingView repeating = new RepeatingView("repeating");
     add(repeating);
 
@@ -98,6 +101,13 @@ public class MultipleOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinit
   public void setRequired(boolean required) {
     for(AbstractOpenAnswerDefinitionPanel panel : abstractOpenAnswerDefinitionPanels) {
       panel.setRequired(required);
+    }
+  }
+
+  @Override
+  public void setFieldModelObject(Data data) {
+    for(AbstractOpenAnswerDefinitionPanel panel : abstractOpenAnswerDefinitionPanels) {
+      panel.setFieldModelObject(data);
     }
   }
 }

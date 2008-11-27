@@ -148,11 +148,35 @@ public class DataField extends Panel {
   }
 
   /**
-   * Get for munderlying filed if it is enabled.
+   * Get for underlying field if it is enabled.
    * @return
    */
   public boolean isFieldEnabled() {
     return input.getField().isEnabled();
+  }
+
+  /**
+   * Set the model of the underlying field.
+   * @param data
+   */
+  public void setFieldModel(IModel model) {
+    input.getField().setModel(model);
+  }
+
+  /**
+   * Set the model object of the underlying field.
+   * @param data
+   */
+  public void setFieldModelObject(Data data) {
+    input.getField().setModelObject(data);
+  }
+
+  /**
+   * Check if underlying field has error message.
+   * @return
+   */
+  public boolean hasFieldErrorMessage() {
+    return input.getField().hasErrorMessage();
   }
 
   /**

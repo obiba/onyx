@@ -128,4 +128,6 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
 
   public abstract void setRequired(boolean required);
 
+  public abstract void setFieldModelObject(Data data);
+
 }

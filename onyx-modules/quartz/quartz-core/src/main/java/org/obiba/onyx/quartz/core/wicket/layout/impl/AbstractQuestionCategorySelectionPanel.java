@@ -54,7 +54,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
           if(isToBeReseted((AbstractOpenAnswerDefinitionPanel) component)) {
             log.info("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getModelObject());
             AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
-            openField.setData(null);
+            openField.setFieldModelObject(null);
             openField.setRequired(false);
           }
         }

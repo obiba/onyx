@@ -206,4 +206,9 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     return openField.isFieldEnabled();
   }
 
+  @Override
+  public void setFieldModelObject(Data data) {
+    openField.setFieldModelObject(data);
+  }
+
 }
