@@ -45,14 +45,17 @@ if (window.addEventListener) {
 //////////////////////////////////////////////////////////////////////
 // JQuery Layout
 //////////////////////////////////////////////////////////////////////
-var myLayout; // a var is required because this page utilizes: myLayout.allowOverflow() method
+var outerLayout, innerLayout; // a var is required because this page utilizes: myLayout.allowOverflow() method
 
 //
 // ON PAGE LOAD
 //
 $(document).ready(function () {
-	myLayout = $('body').layout( baseLayoutSettings );
+	outerLayout = $('body').layout( baseLayoutSettings );
+	//innerLayout = $('body > div.ui-layout-center > div#contentWrapper > wicket:child > wicket:extend > div.stage').layout( stageLayoutSettings );
 });
+
+
 
 //
 // Base Layout Settings
@@ -65,5 +68,19 @@ var baseLayoutSettings = {
 	},
 	north: {
 		size: 63
+	},
+	center: {
+		onresize: "innerLayout.resizeAll"	// resize INNER LAYOUT when center pane resizes
+	}
+}
+
+//
+// Stage Layout Settings
+//
+var stageLayoutSettings = {
+	name: "stageLayout",
+	defaults: {
+		spacing_open: 0,
+		spacing_closed:0
 	}
 }
