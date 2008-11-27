@@ -13,6 +13,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
@@ -45,6 +47,7 @@ public class ParticipantAttributeValue extends AbstractEntity {
 
   private String attributeName;
 
+  @Enumerated(EnumType.STRING)
   private DataType attributeType;
 
   private Double decimalValue;
