@@ -35,7 +35,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
 
     Question question = (Question) getModelObject();
     if(question.getNumber() != null) {
-      add(new Label("number", question.getNumber() + " "));
+      add(new Label("number", question.getNumber() + ") "));
     } else {
       add(new Label("number"));
     }

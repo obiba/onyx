@@ -26,6 +26,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
 import org.obiba.onyx.quartz.core.wicket.layout.PageQuestionsProvider;
@@ -51,7 +52,17 @@ public class DefaultPageLayout extends PageLayout {
     setOutputMarkupId(true);
 
     Page page = (Page) getModelObject();
-    add(new Label("section", new QuestionnaireStringResourceModel(page.getSection(), "label")));
+    Section section = page.getSection();
+    String sectionString = (new QuestionnaireStringResourceModel(section, "label")).getString();
+    section = section.getParentSection();
+    while(section != null) {
+      String str = (new QuestionnaireStringResourceModel(section, "label")).getString();
+      if(str != null && str.trim().length() != 0) {
+        sectionString = str + " / " + sectionString;
+      }
+      section = section.getParentSection();
+    }
+    add(new Label("section", sectionString));
 
     add(new Label("label", new QuestionnaireStringResourceModel(page, "label")));
 

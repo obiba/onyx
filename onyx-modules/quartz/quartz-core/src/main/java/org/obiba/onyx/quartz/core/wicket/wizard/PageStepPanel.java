@@ -52,7 +52,7 @@ public class PageStepPanel extends WizardStepPanel {
 
     setOutputMarkupId(true);
 
-    add(new Label(getTitleId(), new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "label")));
+    add(new Label(getTitleId(), new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "label")).setVisible(false));
 
     // Get the configured page layout factory.
     Page page = (Page) getModelObject();

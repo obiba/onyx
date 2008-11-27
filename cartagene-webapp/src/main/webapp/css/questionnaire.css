@@ -6,9 +6,9 @@ div.page {
 }
 
 div.page div.section {
-	text-align: center;
+	font-weight: bold;
+	font-size: larger;	
 	padding-bottom:10px;
-	padding-top:10px;
 }
 
 div.page div.label {
@@ -58,7 +58,6 @@ div.page div.questions div.question div.help {
 
 div.page div.questions div.question div.instructions {
 	font-style: italic;
-	font-size: smaller;
 	padding-bottom:5px;
 }
 
@@ -68,7 +67,6 @@ div.page div.questions div.question div.caption {
 }
 
 div.page div.questions div.question div.specifications {
-	font-size: smaller;
 	padding-bottom:5px;
 	padding-top:5px;
 }
