@@ -2,8 +2,13 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
   default-autowire="no">
   
+  <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl">
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+  
   <bean id="activeTubeRegistrationService" class="org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl" scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
+    <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="tubeRegistrationConfiguration" ref="tubeRegistrationConfiguration" />
   </bean>
   

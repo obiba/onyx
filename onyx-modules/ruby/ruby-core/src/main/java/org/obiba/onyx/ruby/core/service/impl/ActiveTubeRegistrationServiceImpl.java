@@ -20,6 +20,7 @@ import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.contraindication.Contraindication.Type;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
@@ -50,6 +51,8 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
   //
   // Instance Variables
   //
+
+  private ActiveInterviewService activeInterviewService;
 
   private TubeRegistrationConfiguration tubeRegistrationConfig;
 
@@ -89,12 +92,7 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
       throw new IllegalArgumentException("Null participant interview");
     }
 
-    // Query all saved participant tube registrations for the current interview.
-    // There could be more than one if, for example, one was started and contra-indicated
-    // and then another one was started...
-    ParticipantTubeRegistration template = new ParticipantTubeRegistration();
-    template.setInterview(interview);
-    List<ParticipantTubeRegistration> participantTubeRegistrations = getPersistenceManager().match(template, new SortingClause("startTime", false));
+    List<ParticipantTubeRegistration> participantTubeRegistrations = getParticipantTubeRegistrations(interview);
 
     if(participantTubeRegistrations == null || participantTubeRegistrations.isEmpty()) {
       throw new IllegalStateException("No participant tube registration to resume");
@@ -102,6 +100,7 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
 
     // Resume with the latest one (i.e., the one with the latest start time).
     ParticipantTubeRegistration participantTubeRegistration = participantTubeRegistrations.get(0);
+    participantTubeRegistration.setTubeRegistrationConfig(tubeRegistrationConfig);
 
     currentTubeRegistrationId = participantTubeRegistration.getId();
   }
@@ -135,10 +134,10 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
   }
 
   /**
-   * Finds the current ParticipantTubeRegistration and return it, it will create a new one if there is no
-   * TubeRegistration for current Interview.
+   * Finds the current ParticipantTubeRegistration and return it.
    * 
-   * @return
+   * @return participant tube registration of the participant currently being interviewed (if there are many, returns
+   * the latest one)
    */
   public ParticipantTubeRegistration getParticipantTubeRegistration() {
     ParticipantTubeRegistration participantTubeRegistration = null;
@@ -146,6 +145,15 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     if(currentTubeRegistrationId != null) {
       participantTubeRegistration = getPersistenceManager().get(ParticipantTubeRegistration.class, currentTubeRegistrationId);
       participantTubeRegistration.setTubeRegistrationConfig(tubeRegistrationConfig);
+    } else {
+      Interview interview = activeInterviewService.getInterview();
+      List<ParticipantTubeRegistration> participantTubeRegistrations = getParticipantTubeRegistrations(interview);
+
+      if(participantTubeRegistrations != null && !participantTubeRegistrations.isEmpty()) {
+        // Take the first on the list -- this is the latest one.
+        participantTubeRegistration = participantTubeRegistrations.get(0);
+        participantTubeRegistration.setTubeRegistrationConfig(tubeRegistrationConfig);
+      }
     }
 
     return participantTubeRegistration;
@@ -249,6 +257,10 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
   // Methods
   //
 
+  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
+    this.activeInterviewService = activeInterviewService;
+  }
+
   public void setTubeRegistrationConfiguration(TubeRegistrationConfiguration config) {
     this.tubeRegistrationConfig = config;
   }
@@ -271,6 +283,23 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     registration = getPersistenceManager().save(registration);
     currentTubeRegistrationId = registration.getId();
     return registration;
+  }
+
+  /**
+   * Returns a list of all saved participant tube registrations for the participant currently being interviewed.
+   * 
+   * Note: There could be more than one participant tube registration for a given participant if, for example, one was
+   * started and contra-indicated and then another one was started.
+   * 
+   * @param interview current interview
+   * @return list of participant tube registrations for the participant currently being interviewed
+   */
+  private List<ParticipantTubeRegistration> getParticipantTubeRegistrations(Interview interview) {
+    ParticipantTubeRegistration template = new ParticipantTubeRegistration();
+    template.setInterview(interview);
+    List<ParticipantTubeRegistration> participantTubeRegistrations = getPersistenceManager().match(template, new SortingClause("startTime", false));
+
+    return participantTubeRegistrations;
   }
 
   /**
