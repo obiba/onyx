@@ -986,11 +986,11 @@
                     </questionCategory>
                     <questionCategory id="499" reselectable="false" selected="false" exportName="88">
                       <question reference="13"/>
-                      <category id="500" name="PNA" escape="false"/>
+                      <category id="500" name="PNA" escape="true"/>
                     </questionCategory>
                     <questionCategory id="501" reselectable="false" selected="false" exportName="99">
                       <question reference="13"/>
-                      <category id="502" name="DNK" escape="false"/>
+                      <category id="502" name="DNK" escape="true"/>
                     </questionCategory>
                   </questionCategories>
                   <condition class="org.obiba.onyx.quartz.core.engine.questionnaire.condition.ExternalAnswerCondition" id="503" name="COUNTRY_BIRTH_ELSEWHERE_ECONDITION">

@@ -58,8 +58,8 @@ public class AssistedHealthQuestionnaireContentBuilder {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaireAssisted", "1.0");
 
     builder.withSection("B_DEMOGRAPHY").withSection("BIRTH_LOCATION").withPage("1").withQuestion("COUNTRY_BIRTH_ELSEWHERE", "1", DropDownQuestionPanelFactory.class).withSharedCategories(LIST_OF_COUNTRY);
-    builder.inQuestion("COUNTRY_BIRTH_ELSEWHERE").withSharedCategory(PNA, "88");
-    builder.inQuestion("COUNTRY_BIRTH_ELSEWHERE").withSharedCategory(DNK, "99");
+    builder.inQuestion("COUNTRY_BIRTH_ELSEWHERE").withSharedCategory(PNA, "88").setEscape(true);
+    builder.inQuestion("COUNTRY_BIRTH_ELSEWHERE").withSharedCategory(DNK, "99").setEscape(true);
     builder.inQuestion("COUNTRY_BIRTH_ELSEWHERE").setExternalAnswerCondition("COUNTRY_BIRTH_ELSEWHERE_ECONDITION", "HealthQuestionnaireSelfAdministered", "COUNTRY_BIRTH", "ELSEWHERE");
     // Pour les parents? Pays de résidence?
 
