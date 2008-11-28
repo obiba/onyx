@@ -176,7 +176,11 @@ public class Participant extends AbstractEntity {
    * @return list of configured attribute values
    */
   public List<ParticipantAttributeValue> getConfiguredAttributeValues() {
-    return (configuredAttributeValues != null) ? configuredAttributeValues : new ArrayList<ParticipantAttributeValue>();
+    if(configuredAttributeValues == null) {
+      configuredAttributeValues = new ArrayList<ParticipantAttributeValue>();
+    }
+
+    return configuredAttributeValues;
   }
 
   /**
@@ -186,6 +190,7 @@ public class Participant extends AbstractEntity {
    */
   public void setConfiguredAttributeValues(List<ParticipantAttributeValue> configuredAttributeValues) {
     if(configuredAttributeValues != null) {
+      getConfiguredAttributeValues().clear();
       getConfiguredAttributeValues().addAll(configuredAttributeValues);
     }
   }
@@ -217,8 +222,7 @@ public class Participant extends AbstractEntity {
    * 
    * @param attributeName attribute name
    * @param data new value (or <code>null</code> to assign no value)
-   * @throws IllegalArgumentException if <code>attributeName</code> is <code>null</code> or if no attribute with
-   * that name is configured
+   * @throws IllegalArgumentException if <code>attributeName</code> is <code>null</code> that name is configured
    */
   public void setConfiguredAttributeValue(String attributeName, Data data) {
     if(attributeName == null) {
