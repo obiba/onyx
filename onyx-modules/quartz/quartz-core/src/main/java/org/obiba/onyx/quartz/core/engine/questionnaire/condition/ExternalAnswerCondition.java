@@ -50,7 +50,7 @@ public class ExternalAnswerCondition extends Condition {
     }
 
     CategoryAnswer categoryAnswer = activeQuestionnaireAdministrationService.findAnswer(questionnaireName, questionName, categoryName);
-    if(categoryAnswer == null) return false;
+    if(categoryAnswer == null || !categoryAnswer.getActive()) return false;
 
     return true;
   }

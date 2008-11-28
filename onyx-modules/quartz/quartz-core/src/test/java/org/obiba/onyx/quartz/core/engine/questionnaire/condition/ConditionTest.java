@@ -57,7 +57,9 @@ public class ConditionTest {
     Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("Q1");
     Category category = question.findCategory("1");
 
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, category)).andReturn(new CategoryAnswer());
+    CategoryAnswer answer = new CategoryAnswer();
+    answer.setActive(true);
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, category)).andReturn(answer);
     replay(activeQuestionnaireAdministrationServiceMock);
 
     AnswerCondition condition = new AnswerCondition("condition", question, category);

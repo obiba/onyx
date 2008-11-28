@@ -17,8 +17,12 @@ import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.slf4j.Logger;
@@ -45,7 +49,9 @@ public class PageQuestionsProvider implements IDataProvider {
   public Iterator iterator(int first, int count) {
     List<Question> questionToAnswer = new ArrayList<Question>();
     for(Question question : page.getQuestions().subList(first, first + count)) {
-      if(question.isToBeAnswered(activeQuestionnaireAdministrationService)) questionToAnswer.add(question);
+      if(!answerQuestionIfDataSourceAvailable(question) && question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
+        questionToAnswer.add(question);
+      }
     }
     return questionToAnswer.iterator();
   }
@@ -61,6 +67,40 @@ public class PageQuestionsProvider implements IDataProvider {
   public void detach() {
     // TODO Auto-generated method stub
 
+  }
+
+  /**
+   * Answers the question using the data provided by any AnswerSource associated to its categories.
+   * 
+   * @param question Question to answer.
+   * @return True, if question could be answered through AnswerSource.
+   */
+  private boolean answerQuestionIfDataSourceAvailable(Question question) {
+
+    OpenAnswerDefinition openAnswer;
+    DataSource dataSource;
+    CategoryAnswer answer;
+    boolean questionHasAnswers = false;
+
+    // Search for AnswerSource by looping through question categories.
+    List<QuestionCategory> categories = question.getQuestionCategories();
+    for(QuestionCategory category : categories) {
+      if((openAnswer = category.getCategory().getOpenAnswerDefinition()) != null) {
+
+        // AnswerSource found.
+        if((dataSource = openAnswer.getDataSource()) != null) {
+
+          // Get data from AnswerSource and answer current question (if not already answered).
+          answer = activeQuestionnaireAdministrationService.findAnswer(category);
+          if(answer == null) {
+            activeQuestionnaireAdministrationService.answer(category, category.getCategory().getOpenAnswerDefinition(), dataSource.getData(activeQuestionnaireAdministrationService));
+          }
+          questionHasAnswers = true;
+        }
+      }
+    }
+
+    return questionHasAnswers;
   }
 
 }

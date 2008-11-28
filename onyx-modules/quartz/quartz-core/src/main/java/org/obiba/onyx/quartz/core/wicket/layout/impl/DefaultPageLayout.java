@@ -14,18 +14,13 @@ import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
@@ -73,50 +68,9 @@ public class DefaultPageLayout extends PageLayout {
       protected void populateItem(Item item) {
         Question question = (Question) item.getModelObject();
 
-        // A question that can be answered through an AnswerSource (ex: TimestampSource) is not displayed.
-        if(answerQuestionIfDataSourceAvailable(question)) {
-          item.add(new EmptyPanel("question"));
-
-        } else {
-          QuestionPanel panel = questionPanelFactoryRegistry.get(question.getUIFactoryName()).createPanel("question", item.getModel());
-          questionPanels.add(panel);
-          item.add(panel);
-        }
-
-      }
-
-      /**
-       * Answers the question using the data provided by any AnswerSource associated to its categories.
-       * 
-       * @param question Question to answer.
-       * @return True, if question could be answered through AnswerSource.
-       */
-      private boolean answerQuestionIfDataSourceAvailable(Question question) {
-
-        OpenAnswerDefinition openAnswer;
-        DataSource dataSource;
-        CategoryAnswer answer;
-        boolean questionHasAnswers = false;
-
-        // Search for AnswerSource by looping through question categories.
-        List<QuestionCategory> categories = question.getQuestionCategories();
-        for(QuestionCategory category : categories) {
-          if((openAnswer = category.getCategory().getOpenAnswerDefinition()) != null) {
-
-            // AnswerSource found.
-            if((dataSource = openAnswer.getDataSource()) != null) {
-
-              // Get data from AnswerSource and answer current question (if not already answered).
-              answer = activeQuestionnaireAdministrationService.findAnswer(category);
-              if(answer == null) {
-                activeQuestionnaireAdministrationService.answer(category, category.getCategory().getOpenAnswerDefinition(), dataSource.getData(activeQuestionnaireAdministrationService));
-              }
-              questionHasAnswers = true;
-            }
-          }
-        }
-
-        return questionHasAnswers;
+        QuestionPanel panel = questionPanelFactoryRegistry.get(question.getUIFactoryName()).createPanel("question", item.getModel());
+        questionPanels.add(panel);
+        item.add(panel);
       }
 
     });
