@@ -75,6 +75,10 @@ public class CategoryAnswer extends AbstractEntity {
     this.active = active;
   }
 
+  public boolean isActive() {
+    return this.active;
+  }
+
   public CategoryAnswer getParentCategoryAnswer() {
     return parentCategoryAnswer;
   }

@@ -42,7 +42,7 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
     List<Page> pages = questionnaire.getPages();
 
     for(Page page : pages) {
-      if(page.getQuestions().isEmpty() || NavigationStrategySupport.hasNonAnswerSourceQuestion(service, page)) {
+      if(page.getQuestions().isEmpty() || NavigationStrategySupport.hasQuestionToBeAnswered(service, page)) {
         startPage = page;
         break;
       }

@@ -73,9 +73,9 @@ public class AnswerCondition extends Condition {
 
     CategoryAnswer categoryAnswer = activeQuestionnaireAdministrationService.findAnswer(question, category);
 
-    if(categoryAnswer == null || !categoryAnswer.getActive()) return false;
+    if(categoryAnswer == null) return false;
 
-    return true;
+    return (categoryAnswer.isActive());
   }
 
 }

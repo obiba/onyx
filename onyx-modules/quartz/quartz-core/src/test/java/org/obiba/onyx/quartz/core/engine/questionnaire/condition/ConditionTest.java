@@ -58,12 +58,45 @@ public class ConditionTest {
     Category category = question.findCategory("1");
 
     CategoryAnswer answer = new CategoryAnswer();
+    answer.setCategoryName(category.getName());
     answer.setActive(true);
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, category)).andReturn(answer);
     replay(activeQuestionnaireAdministrationServiceMock);
 
     AnswerCondition condition = new AnswerCondition("condition", question, category);
     Assert.assertTrue(condition.isToBeAnswered(activeQuestionnaireAdministrationServiceMock));
+
+    verify(activeQuestionnaireAdministrationServiceMock);
+  }
+
+  @Test
+  public void testQuestionCategoryAnswerConditionFailOnActive() {
+
+    Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("Q1");
+    Category category = question.findCategory("1");
+
+    CategoryAnswer answer = new CategoryAnswer();
+    answer.setActive(false);
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, category)).andReturn(answer);
+    replay(activeQuestionnaireAdministrationServiceMock);
+
+    AnswerCondition condition = new AnswerCondition("condition", question, category);
+    Assert.assertFalse(condition.isToBeAnswered(activeQuestionnaireAdministrationServiceMock));
+
+    verify(activeQuestionnaireAdministrationServiceMock);
+  }
+
+  @Test
+  public void testQuestionCategoryAnswerConditionFailOnCategory() {
+
+    Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("Q1");
+    Category category = question.findCategory("1");
+
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, category)).andReturn(null);
+    replay(activeQuestionnaireAdministrationServiceMock);
+
+    AnswerCondition condition = new AnswerCondition("condition", question, category);
+    Assert.assertFalse(condition.isToBeAnswered(activeQuestionnaireAdministrationServiceMock));
 
     verify(activeQuestionnaireAdministrationServiceMock);
   }
@@ -116,6 +149,21 @@ public class ConditionTest {
     Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("Q1");
 
     expect(activeQuestionnaireAdministrationServiceMock.findActiveAnswers(questionnaire.getName(), question.getName())).andReturn(Arrays.asList(new CategoryAnswer[] { new CategoryAnswer() }));
+    replay(activeQuestionnaireAdministrationServiceMock);
+
+    ExternalAnswerCondition condition = new ExternalAnswerCondition("condition", questionnaire.getName(), question.getName(), null);
+    Assert.assertTrue(condition.isToBeAnswered(activeQuestionnaireAdministrationServiceMock));
+
+    verify(activeQuestionnaireAdministrationServiceMock);
+  }
+
+  @Test
+  public void testQuestionCategoryExternalAnswerConditionFailOnActive() {
+    Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("Q1");
+
+    CategoryAnswer answer = new CategoryAnswer();
+    answer.setActive(false);
+    expect(activeQuestionnaireAdministrationServiceMock.findActiveAnswers(questionnaire.getName(), question.getName())).andReturn(Arrays.asList(new CategoryAnswer[] { answer }));
     replay(activeQuestionnaireAdministrationServiceMock);
 
     ExternalAnswerCondition condition = new ExternalAnswerCondition("condition", questionnaire.getName(), question.getName(), null);

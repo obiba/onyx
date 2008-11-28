@@ -24,9 +24,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
-import org.obiba.onyx.quartz.core.wicket.layout.PageQuestionsProvider;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.PageQuestionsProvider;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 
 public class DefaultPageLayout extends PageLayout {

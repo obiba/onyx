@@ -10,7 +10,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.wicket.layout.QuestionListProvider;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionListProvider;
 
 /**
  * Support for question multiple or not, but without child questions.
