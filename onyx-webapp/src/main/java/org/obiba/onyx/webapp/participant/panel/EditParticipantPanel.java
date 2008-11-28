@@ -10,7 +10,6 @@
 package org.obiba.onyx.webapp.participant.panel;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.wicket.Page;
@@ -19,7 +18,6 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DateField;
-import org.apache.wicket.extensions.yui.calendar.DateTimeField;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -33,12 +31,12 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.validation.validator.DateValidator;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.webapp.participant.panel.AssignCodeToParticipantPanel.AssignCodeToParticipantForm;
 import org.slf4j.Logger;
@@ -90,11 +88,16 @@ public class EditParticipantPanel extends Panel {
 
       Participant participant = (Participant) getModelObject();
 
-      if(participant.getEnrollmentId() == null) add(new EmptyPanel("enrollmentId"));
-      else
+      // set recruitmentType for participant to volunteer if it is null
+      if(participant.getRecruitmentType() == null) {
+        participant.setRecruitmentType(RecruitmentType.VOLUNTEER);
+        add(new EmptyPanel("enrollmentId"));
+      } else
         add(new RowFragment("enrollmentId", getModel()));
 
       if(participant.getAppointment() == null) participant.setAppointment(new Appointment(participant, new Date()));
+
+      // set Assessment Center Id for participant
       if(participant.getSiteNo() == null) {
         ApplicationConfiguration appConfig = queryService.matchOne(new ApplicationConfiguration());
         participant.setSiteNo(appConfig.getSiteNo());
@@ -104,17 +107,12 @@ public class EditParticipantPanel extends Panel {
       add(new TextField("lastName", new PropertyModel(getModel(), "lastName")).setRequired(true).setLabel(new ResourceModel("LastName")));
       add(createGenderDropDown());
       add(createBirthDateField());
-      add(createAppointmentDateField());
-      add(new Label("siteNo", new PropertyModel(getModel(), "siteNo")));
 
       if(mode.equals(RECEPTION) || mode.equals(ENROLLMENT)) {
         add(new AssignCodeToParticipantPanel("assignCodeToParticipantPanel", participantModel));
       } else {
         add(new EmptyPanel("assignCodeToParticipantPanel"));
       }
-
-      // mettre appointment date/time
-      // mettre assessment center id
 
       @SuppressWarnings("serial")
       AjaxSubmitLink submitLink = new AjaxSubmitLink("saveAction") {
@@ -167,27 +165,6 @@ public class EditParticipantPanel extends Panel {
     birthDateField.setLabel(new ResourceModel("BirthDate"));
 
     return birthDateField;
-  }
-
-  @SuppressWarnings("serial")
-  private DateTimeField createAppointmentDateField() {
-    DateTimeField appointmentDateField = new DateTimeField("appointment", new PropertyModel(getModel(), "appointment.date")) {
-      protected DateTextField newDateTextField(String id, PropertyModel dateFieldModel) {
-        return DateTextField.forDatePattern(id, dateFieldModel, "yyyy-MM-dd");
-      }
-    };
-
-    appointmentDateField.setRequired(true);
-    appointmentDateField.setLabel(new ResourceModel("Appointment"));
-
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date());
-    cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), 0);
-    cal.set(Calendar.MILLISECOND, 0);
-
-    appointmentDateField.add(DateValidator.minimum(cal.getTime()));
-
-    return appointmentDateField;
   }
 
   @SuppressWarnings("serial")

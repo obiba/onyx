@@ -14,6 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.etl.participant.AbstractParticipantExcelReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,7 @@ public class ParticipantExcelReader extends AbstractParticipantExcelReader {
     } else if(gender.equals("F")) {
       participant.setGender(Gender.FEMALE);
     }
+    participant.setRecruitmentType(RecruitmentType.ENROLLED);
 
     return participant;
   }

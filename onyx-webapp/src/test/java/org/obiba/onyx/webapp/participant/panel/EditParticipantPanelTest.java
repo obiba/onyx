@@ -31,6 +31,7 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.wicket.test.MockSpringApplication;
 
@@ -100,7 +101,8 @@ public class EditParticipantPanelTest {
     p.setBarcode("1234");
     p.setBirthDate(new Date());
     p.setGender(Gender.MALE);
+    p.setEnrollmentId("10001010");
+    p.setRecruitmentType(RecruitmentType.ENROLLED);
     return p;
   }
-
 }

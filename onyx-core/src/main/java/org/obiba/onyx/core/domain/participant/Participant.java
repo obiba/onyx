@@ -59,6 +59,9 @@ public class Participant extends AbstractEntity {
 
   private String siteNo;
 
+  @Enumerated(EnumType.STRING)
+  private RecruitmentType recruitmentType;
+
   /**
    * List of values of configured participant attributes.
    */
@@ -167,6 +170,14 @@ public class Participant extends AbstractEntity {
     this.siteNo = siteNo;
   }
 
+  public RecruitmentType getRecruitmentType() {
+    return recruitmentType;
+  }
+
+  public void setRecruitmentType(RecruitmentType recruitmentType) {
+    this.recruitmentType = recruitmentType;
+  }
+
   /**
    * Returns the list of configured attribute values.
    * 
@@ -253,4 +264,5 @@ public class Participant extends AbstractEntity {
 
     getConfiguredAttributeValues().add(attributeValue);
   }
+
 }
