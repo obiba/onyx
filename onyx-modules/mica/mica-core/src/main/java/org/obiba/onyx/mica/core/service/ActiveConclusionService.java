@@ -8,6 +8,7 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.mica.core.service;
 
+import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.mica.domain.conclusion.Conclusion;
 
 public interface ActiveConclusionService {
@@ -19,5 +20,7 @@ public interface ActiveConclusionService {
   public void save();
 
   public boolean isBalsacConfirmationRequired();
+
+  public Consent getParticipantConsent();
 
 }

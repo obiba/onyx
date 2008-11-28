@@ -10,6 +10,7 @@ package org.obiba.onyx.mica.core.service.impl;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.mica.core.service.ActiveConclusionService;
 import org.obiba.onyx.mica.domain.conclusion.Conclusion;
 import org.slf4j.Logger;
@@ -44,6 +45,14 @@ public class DefaultActiveConclusionServiceImpl extends PersistenceManagerAwareS
 
   public void save() {
     getPersistenceManager().save(this.conclusion);
+  }
+
+  public Consent getParticipantConsent() {
+    // Retrieve consent for current interview.
+    Consent template = new Consent();
+    template.setInterview(activeInterviewService.getInterview());
+    template.setDeleted(false);
+    return getPersistenceManager().matchOne(template);
   }
 
   public ActiveInterviewService getActiveInterviewService() {
