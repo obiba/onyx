@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<linked-list>
+
+  <!-- Instruments -->
+  <!-- spirometer1 -->
+  <instrument id="bone1">
+    <name>Bone Density 1</name>
+    <vendor>GE Healthcare</vendor>
+    <model>Achilles Express</model>
+    <serialNumber>1234567890</serialNumber>
+    <barcode>CAG0210</barcode>
+    <status>ACTIVE</status>
+    <instrumentType>
+      <name>BON</name>
+    </instrumentType>
+    <instrumentParameters>
+      <input reference="id" />
+      <input reference="last_name" />
+      <input reference="first_name" />
+      <input reference="birth_date" />
+      <input reference="gender" />
+      <input reference="foot_scanned" />
+
+      <output reference="Chart_Num" />
+      <output reference="LName" />
+      <output reference="FName" />
+      <output reference="DOB" />
+      <output reference="Sex" />
+      <output reference="sidescanned" />
+      <output reference="assessment" />
+      <output reference="fxrisk" />
+      <output reference="total" />
+      <output reference="tscore" />
+      <output reference="agematched" />
+      <output reference="percentnormal" />
+      <output reference="stiffnessindex" />
+      <output reference="id" />
+      <output reference="SOS" />
+      <output reference="BUA" />
+      <output reference="achillesbitmap" />
+    </instrumentParameters>
+
+    <contraindications>
+      <contraIndication>
+        <code>OpenWoundsBreaksSoresOnFeet</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>Other</code>
+        <requiresDescription>true</requiresDescription>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>OpenWoundsBreaksSoresOnFeet</code>
+        <type>ASKED</type>
+      </contraIndication>
+
+    </contraindications>
+  </instrument>
+
+  <interpretative>
+    <name>FractureLeftFoot</name>
+    <description>FractureLeftFoot</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>ASKED</type>
+    <instrument reference="sta1" />
+  </interpretative>
+
+  <interpretative>
+    <name>FractureRightFoot</name>
+    <description>FractureRightFoot</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>ASKED</type>
+    <instrument reference="sta1" />
+  </interpretative>
+
+  <interpretative>
+    <name>MetalWorkLeftHeel</name>
+    <description>MetalWorkLeftHeel</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>ASKED</type>
+    <instrument reference="sta1" />
+  </interpretative>
+
+  <interpretative>
+    <name>MetalWorkRightHeel</name>
+    <description>MetalWorkRightHeel</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>ASKED</type>
+    <instrument reference="sta1" />
+  </interpretative>
+
+  <participantPropertySource id="id_source">
+    <property>barcode</property>
+  </participantPropertySource>
+  <input id="id">
+    <name>id</name>
+    <description>Participant_Barcode</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="id_source" />
+    <instrument reference="bone1" />
+  </input>
+
+  <participantPropertySource id="last_name_source">
+    <property>lastName</property>
+  </participantPropertySource>
+  <input id="last_name">
+    <name>last_name</name>
+    <description>Participant_Last_Name</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="last_name_source" />
+    <instrument reference="bone1" />
+  </input>
+
+  <participantPropertySource id="first_name_source">
+    <property>firstName</property>
+  </participantPropertySource>
+  <input id="first_name">
+    <name>first_name</name>
+    <description>Participant_First_Name</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="first_name_source" />
+    <instrument reference="bone1" />
+  </input>
+
+  <participantPropertySource id="birth_date_source">
+    <property>birthDate</property>
+  </participantPropertySource>
+  <input id="birth_date">
+    <name>birth_date</name>
+    <description>Participant_Date_of_Birth</description>
+    <dataType>DATE</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="birth_date_source" />
+    <instrument reference="bone1" />
+  </input>
+
+  <participantPropertySource id="gender_source">
+    <property>gender</property>
+  </participantPropertySource>
+  <input id="gender">
+    <name>gender</name>
+    <description>Participant_Gender</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="gender_source" />
+    <instrument reference="bone1" />
+  </input>
+
+  <operatorSource id="foot_scanned_source">
+    <choices>L,R</choices>
+  </operatorSource>
+  <input id="foot_scanned">
+    <name>foot_scanned</name>
+    <description>Foot_Scanned</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <inputSource reference="foot_scanned_source" />
+    <instrument reference="bone1" />
+  </input>
+
+  <output id="Chart_Num">
+    <name>Participant Barcode</name>
+    <description>Participant_Barcode</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="Chart_Num" />
+        <parameter reference="id" />
+        <customizedDescription>EqualsParameterCheck_Bone_Density</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+  <output id="LName">
+    <name>Participant Last Name</name>
+    <description>Participant_Last_Name</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="LName" />
+        <parameter reference="last_name" />
+        <customizedDescription>EqualsParameterCheck_Bone_Density</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+  <output id="FName">
+    <name>Participant First Name</name>
+    <description>Participant_First_Name</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="FName" />
+        <parameter reference="first_name" />
+        <customizedDescription>EqualsParameterCheck_Bone_Density</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+  <output id="DOB">
+    <name>Participant Date of Birth</name>
+    <description>Participant_Date_of_Birth</description>
+    <dataType>DATE</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+    <!-- <integrityChecks>
+      <equalsParameterCheck>
+      <targetParameter reference="DOB" />
+      <parameter reference="birth_date" />
+      </equalsParameterCheck>
+      </integrityChecks>  -->
+  </output>
+  <output id="Sex">
+    <name>Participant Gender</name>
+    <description>Participant_Gender</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="Sex" />
+        <parameter reference="gender" />
+        <customizedDescription>EqualsParameterCheck_Bone_Density</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+  <output id="sidescanned">
+    <name>Foot Scanned</name>
+    <description>Foot_Scanned</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="sidescanned" />
+        <parameter reference="foot_scanned" />
+        <customizedDescription>EqualsParameterCheck_Bone_Density</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+  <output id="assessment">
+    <name>Assessment</name>
+    <description>Assessment</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+  </output>
+  <output id="fxrisk">
+    <name>Fracture Risk</name>
+    <description>Fracture_Risk</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+  </output>
+  <output id="total">
+    <name>Stiffness Index Result</name>
+    <description>Stiffness_Index_Result</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+  </output>
+  <output id="tscore">
+    <name>T-Score</name>
+    <description>T-Score</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+  </output>
+  <output id="zscore">
+    <name>Z-Score</name>
+    <description>Z-Score</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+  </output>
+  <output id="percentnormal">
+    <name>% Young Adult</name>
+    <description>%_Young_Adult</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>%</measurementUnit>
+    <instrument reference="bone1" />
+  </output>
+  <output id="agematched">
+    <name>% Age Matched</name>
+    <description>%_Age_Matched</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>%</measurementUnit>
+    <instrument reference="bone1" />
+  </output>
+  <output id="achillesbitmap">
+    <name>Stiffness Index graph</name>
+    <description>Stiffness_Index_graph</description>
+    <dataType>DATA</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+  </output>
+  <output id="stiffnessindex">
+    <name>Stiffness_Index</name>
+    <description>Stiffness_Index</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+  </output>
+  <output id="achillesbitmap2">
+    <name>Ultrasound Graphic</name>
+    <description>Ultrasound_Graphic</description>
+    <dataType>DATA</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+  </output>
+  <output id="sos">
+    <name>Speed of Ultrasound</name>
+    <description>Speed_of_Ultrasound</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+  </output>
+  <output id="bua">
+    <name>Broadband Ultrasound Attenuation</name>
+    <description>Broadband_Ultrasound_Attenuation</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+  </output>
+  <output id="appversion">
+    <name>Achilles Software Version</name>
+    <description>Achilles_Software_Version</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+  </output>
+  <output id="roi_x">
+    <name>Region of Intersection X coordinate</name>
+    <description>Region_of_Intersection_X_coordinate</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+  </output>
+  <output id="roi_y">
+    <name>Region of Intersection Y coordinate</name>
+    <description>Region_of_Intersection_Y_coordinate</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+  </output>
+  <output id="roi_z">
+    <name>Region of Intersection Z coordinate</name>
+    <description>Region_of_Intersection_Z_coordinate</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="bone1" />
+  </output>
+
+</linked-list>

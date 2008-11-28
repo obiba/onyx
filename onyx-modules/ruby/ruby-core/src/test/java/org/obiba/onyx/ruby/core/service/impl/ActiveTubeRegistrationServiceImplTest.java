@@ -1,0 +1,297 @@
+/*******************************************************************************
+ * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v3.0.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+package org.obiba.onyx.ruby.core.service.impl;
+
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.fail;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.obiba.core.service.PersistenceManager;
+import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
+import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
+import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
+import org.obiba.onyx.ruby.core.domain.Remark;
+import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
+import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
+import org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser;
+import org.springframework.context.MessageSourceResolvable;
+
+/**
+ * Unit tests for <code>ActiveTubeRegistrationServiceImpl</code>
+ */
+public class ActiveTubeRegistrationServiceImplTest {
+
+  private ActiveTubeRegistrationServiceImpl service;
+
+  private PersistenceManager persistenceManagerMock;
+
+  private TubeRegistrationConfiguration tubeRegistrationConfig;
+
+  private Participant participant;
+
+  private Interview interview;
+
+  /**
+   * @throws java.lang.Exception
+   */
+  @Before
+  public void setUp() throws Exception {
+    participant = new Participant();
+    interview = new Interview();
+    participant.setBarcode("10234");
+    participant.setInterview(interview);
+
+    persistenceManagerMock = createMock(PersistenceManager.class);
+
+    tubeRegistrationConfig = createTubeRegistrationConfiguration();
+
+    service = new ActiveTubeRegistrationServiceImpl();
+
+    service.setPersistenceManager(persistenceManagerMock);
+    service.setTubeRegistrationConfiguration(tubeRegistrationConfig);
+  }
+
+  /**
+   * Test method for
+   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#getExpectedTubeCount()}.
+   */
+  @Test
+  public void testGetExpectedTubeCount() {
+    tubeRegistrationConfig.setExpectedTubeCount(10);
+    int count = service.getExpectedTubeCount();
+
+    Assert.assertEquals(10, count);
+  }
+
+  /**
+   * Test method for
+   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#getRegisteredTubeCount()}.
+   */
+  @Test
+  public void testGetRegisteredTubeCount() {
+    Serializable registrationId = "123";
+
+    ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
+    registration.setTubeRegistrationConfig(tubeRegistrationConfig);
+    registration.addRegisteredParticipantTube(new RegisteredParticipantTube());
+    registration.setId(registrationId);
+
+    expect(persistenceManagerMock.save(isA(ParticipantTubeRegistration.class))).andReturn(registration);
+    expect(persistenceManagerMock.get(ParticipantTubeRegistration.class, registrationId)).andReturn(registration);
+
+    replay(persistenceManagerMock);
+
+    service.start(participant);
+    int count = service.getRegisteredTubeCount();
+
+    verify(persistenceManagerMock);
+
+    // Should get exactly one Registered Tube
+    Assert.assertEquals(1, count);
+
+  }
+
+  /**
+   * Test method for
+   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#registerTube(java.lang.String)}.
+   */
+  @Test
+  public void testRegisterTubeWithRegistrationCreated() {
+
+    String barcode = "1012345601";
+    Serializable registrationId = "123";
+    Interview interview = new Interview();
+
+    // Set up the Tube Registration object need to be created
+    ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
+    registration.setTubeRegistrationConfig(tubeRegistrationConfig);
+    registration.setInterview(interview);
+    registration.setStartTime(new Date());
+    registration.setId(registrationId);
+
+    RegisteredParticipantTube tube = new RegisteredParticipantTube();
+    tube.setRegistrationTime(new Date());
+    tube.setBarcode(barcode);
+
+    // Set expectations
+    expect(persistenceManagerMock.save(isA(ParticipantTubeRegistration.class))).andReturn(registration).anyTimes();
+    expect(persistenceManagerMock.get(ParticipantTubeRegistration.class, registrationId)).andReturn(registration).anyTimes();
+    expect(persistenceManagerMock.save(isA(RegisteredParticipantTube.class))).andReturn(tube).anyTimes();
+    expect(persistenceManagerMock.matchOne(isA(RegisteredParticipantTube.class))).andReturn(null).anyTimes();
+
+    replay(persistenceManagerMock);
+
+    service.start(participant);
+    List<MessageSourceResolvable> errors = service.registerTube(barcode);
+
+    verify(persistenceManagerMock);
+
+    // Should get no errors
+    Assert.assertTrue(errors.isEmpty());
+
+  }
+
+  /**
+   * Test method for
+   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#setTubeComment(java.lang.String, java.lang.String)} .
+   */
+  @Test
+  public void testSetTubeComment() {
+    String barcode = "101234560108";
+    RegisteredParticipantTube tube = new RegisteredParticipantTube();
+    tube.setRegistrationTime(new Date());
+    tube.setBarcode(barcode);
+
+    expect(persistenceManagerMock.matchOne(isA(RegisteredParticipantTube.class))).andReturn(tube).once();
+    expect(persistenceManagerMock.save(isA(RegisteredParticipantTube.class))).andReturn(tube).once();
+
+    replay(persistenceManagerMock);
+
+    service.setTubeComment(barcode, "test comment");
+
+    verify(persistenceManagerMock);
+
+    // The comment should be set
+    Assert.assertEquals("test comment", tube.getComment());
+
+  }
+
+  /**
+   * Test method for
+   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#setTubeComment(java.lang.String, java.lang.String)} .
+   */
+  @Test
+  public void testFailToSetTubeComment() {
+    String barcode = "1012345601";
+
+    expect(persistenceManagerMock.matchOne(isA(RegisteredParticipantTube.class))).andReturn(null).once();
+
+    replay(persistenceManagerMock);
+
+    try {
+      service.setTubeComment(barcode, "test comment");
+      fail("Should get IllegalArgumentException.");
+    } catch(IllegalArgumentException e) {
+      // Hope to get IllegalArgumentException
+      Assert.assertEquals("No tube with barcode '" + barcode + "' has been registered", e.getMessage());
+    }
+
+    verify(persistenceManagerMock);
+
+  }
+
+  /**
+   * Test method for
+   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#setTubeRemark(java.lang.String, org.obiba.onyx.ruby.core.domain.Remark)} .
+   */
+  @Test
+  public void testSetTubeRemark() {
+    String barcode = "101234560108";
+    RegisteredParticipantTube tube = new RegisteredParticipantTube();
+    tube.setRegistrationTime(new Date());
+    tube.setBarcode(barcode);
+
+    Remark remark = new Remark("123");
+
+    expect(persistenceManagerMock.matchOne(isA(RegisteredParticipantTube.class))).andReturn(tube).once();
+    expect(persistenceManagerMock.save(isA(RegisteredParticipantTube.class))).andReturn(tube).once();
+
+    replay(persistenceManagerMock);
+
+    service.setTubeRemark(barcode, remark);
+
+    verify(persistenceManagerMock);
+
+    // The remark code should be set
+    Assert.assertEquals("123", tube.getRemarkCode());
+  }
+
+  /**
+   * Test method for
+   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#unregisterTube(java.lang.String)}.
+   */
+  @Test
+  public void testUnregisterTube() {
+    String barcode = "101234560108";
+    Serializable registrationId = "123";
+
+    // create the tube need to be unregistered
+    RegisteredParticipantTube tube = new RegisteredParticipantTube();
+    tube.setRegistrationTime(new Date());
+    tube.setBarcode(barcode);
+
+    // create another tube which is not to be removed from registration
+    RegisteredParticipantTube tube1 = new RegisteredParticipantTube();
+    tube1.setBarcode("111");
+
+    ParticipantTubeRegistration registration = new ParticipantTubeRegistration();
+    registration.setTubeRegistrationConfig(tubeRegistrationConfig);
+    registration.addRegisteredParticipantTube(tube);
+    registration.addRegisteredParticipantTube(tube1);
+    registration.setInterview(interview);
+    registration.setStartTime(new Date());
+    registration.setId(registrationId);
+
+    expect(persistenceManagerMock.matchOne(isA(RegisteredParticipantTube.class))).andReturn(tube);
+    expect(persistenceManagerMock.save(isA(ParticipantTubeRegistration.class))).andReturn(registration).times(2);
+    expect(persistenceManagerMock.get(ParticipantTubeRegistration.class, registrationId)).andReturn(registration);
+
+    persistenceManagerMock.delete(isA(RegisteredParticipantTube.class));
+
+    replay(persistenceManagerMock);
+
+    // The tube need to be unregistered should be in the registration
+    // before executing the unregisterTube()
+    Assert.assertTrue(registration.getRegisteredParticipantTubes().contains(tube));
+
+    service.start(participant);
+    service.unregisterTube(barcode);
+
+    verify(persistenceManagerMock);
+
+    // The tube is gone after executing the unregisterTube()
+    Assert.assertFalse(registration.getRegisteredParticipantTubes().contains(tube));
+
+    // But another tube is still there
+    Assert.assertTrue(registration.getRegisteredParticipantTubes().contains(tube1));
+  }
+
+  private TubeRegistrationConfiguration createTubeRegistrationConfiguration() {
+    TubeRegistrationConfiguration tubeRegistrationConfiguration = new TubeRegistrationConfiguration();
+
+    RandomDigitsBarcodePartParser parser = new RandomDigitsBarcodePartParser();
+    parser.setSize(10);
+    parser.setFormat(".*");
+
+    List<IBarcodePartParser> parserList = new ArrayList<IBarcodePartParser>();
+    parserList.add(parser);
+
+    BarcodeStructure barcodeStructure = new BarcodeStructure();
+    barcodeStructure.setParsers(parserList);
+
+    tubeRegistrationConfiguration.setBarcodeStructure(barcodeStructure);
+
+    return tubeRegistrationConfiguration;
+  }
+}

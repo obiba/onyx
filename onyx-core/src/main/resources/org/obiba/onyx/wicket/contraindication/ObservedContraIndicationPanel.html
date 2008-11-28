@@ -1,0 +1,31 @@
+<wicket:panel>
+  <table>
+    <tr>
+      <td>
+        <span wicket:id="radioGroup">
+          <wicket:container wicket:id="radioItem">
+            <input type="radio" wicket:id="radio" />
+            <label wicket:id="radioLabel"></label>
+          </wicket:container>
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <select wicket:id="ciChoice" />
+      </td>
+    </tr>
+    <wicket:enclosure child="otherCi">
+      <tr>
+        <td>
+          <span wicket:id="otherLabel" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <textarea wicket:id="otherCi" rows="3" cols="40"></textarea>
+        </td>
+      </tr>
+    </wicket:enclosure>
+  </table>
+</wicket:panel>

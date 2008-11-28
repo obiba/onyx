@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<linked-list>
+
+  <instrument id="hwc1">
+    <name>Hips Waist Tape 1</name>
+    <vendor>Seca</vendor>
+    <model>Seca Measuring Tape</model>
+    <barcode>hwc01</barcode>
+    <status>ACTIVE</status>
+    <instrumentType>
+      <name>HWC</name>
+    </instrumentType>
+    <contraindications>
+      <contraIndication>
+        <code>UnableToStandUnassistedHandicap</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>UnableToStandUnassistedWheelchair</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>UnableToStandUnassistedCast</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>Other</code>
+        <requiresDescription>true</requiresDescription>
+        <type>OBSERVED</type>
+      </contraIndication>
+    </contraindications>
+  </instrument>
+
+
+  <output id="waist_size1">
+    <name>Waist Size 1</name>
+    <description>First_Waist_Size_Measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="hwc1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="waist_size1" />
+        <integerMinValueMale>20</integerMinValueMale>
+        <integerMaxValueMale>199</integerMaxValueMale>
+        <integerMinValueFemale>20</integerMinValueFemale>
+        <integerMaxValueFemale>199</integerMaxValueFemale>
+      </rangeCheck>
+      <rangeCheck>
+        <type>WARNING</type>
+        <targetParameter reference="waist_size1" />
+        <integerMinValueMale>62</integerMinValueMale>
+        <integerMaxValueMale>140</integerMaxValueMale>
+        <integerMinValueFemale>62</integerMinValueFemale>
+        <integerMaxValueFemale>140</integerMaxValueFemale>
+      </rangeCheck>      
+    </integrityChecks>
+  </output>
+  <output id="waist_size2">
+    <name>Waist Size 2</name>
+    <description>Second_Waist_Size_Measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="hwc1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="waist_size2" />
+        <integerMinValueMale>20</integerMinValueMale>
+        <integerMaxValueMale>199</integerMaxValueMale>
+        <integerMinValueFemale>20</integerMinValueFemale>
+        <integerMaxValueFemale>199</integerMaxValueFemale>
+      </rangeCheck>
+      <rangeCheck>
+        <type>WARNING</type>
+        <targetParameter reference="waist_size2" />
+        <integerMinValueMale>62</integerMinValueMale>
+        <integerMaxValueMale>140</integerMaxValueMale>
+        <integerMinValueFemale>62</integerMinValueFemale>
+        <integerMaxValueFemale>140</integerMaxValueFemale>
+      </rangeCheck>        
+      <parameterSpreadCheck>
+        <targetParameter reference="waist_size1" />
+        <parameter reference="waist_size2" />
+        <percent>5</percent>
+        <offset>1</offset>
+      </parameterSpreadCheck>
+    </integrityChecks>
+  </output>
+  <computedOutput id="waist_size_avg">
+    <name>Waist Size</name>
+    <description>Average_Waist_Size_Measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <instrument reference="hwc1" />
+    <algorithm>AVERAGE</algorithm>
+    <captureMethod>COMPUTED</captureMethod>
+    <outputs>
+      <output reference="waist_size1" />
+      <output reference="waist_size2" />
+    </outputs>
+  </computedOutput>
+
+  <output id="hips_size1">
+    <name>Hips Size 1</name>
+    <description>First_Hips_Size_Measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="hwc1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="hips_size1" />
+        <integerMinValueMale>20</integerMinValueMale>
+        <integerMaxValueMale>199</integerMaxValueMale>
+        <integerMinValueFemale>20</integerMinValueFemale>
+        <integerMaxValueFemale>199</integerMaxValueFemale>
+      </rangeCheck>
+      <rangeCheck>
+        <type>WARNING</type>
+        <targetParameter reference="hips_size1" />
+        <integerMinValueMale>84</integerMinValueMale>
+        <integerMaxValueMale>171</integerMaxValueMale>
+        <integerMinValueFemale>84</integerMinValueFemale>
+        <integerMaxValueFemale>171</integerMaxValueFemale>
+      </rangeCheck>        
+    </integrityChecks>
+  </output>
+  <output id="hips_size2">
+    <name>Hips Size 2</name>
+    <description>Second_Hips_Size_Measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <instrument reference="hwc1" />
+    <integrityChecks>
+      <rangeCheck>
+        <targetParameter reference="hips_size2" />
+        <integerMinValueMale>20</integerMinValueMale>
+        <integerMaxValueMale>199</integerMaxValueMale>
+        <integerMinValueFemale>20</integerMinValueFemale>
+        <integerMaxValueFemale>199</integerMaxValueFemale>
+      </rangeCheck>
+      <rangeCheck>
+        <type>WARNING</type>
+        <targetParameter reference="hips_size2" />
+        <integerMinValueMale>84</integerMinValueMale>
+        <integerMaxValueMale>171</integerMaxValueMale>
+        <integerMinValueFemale>84</integerMinValueFemale>
+        <integerMaxValueFemale>171</integerMaxValueFemale>
+      </rangeCheck>        
+      <parameterSpreadCheck>
+        <targetParameter reference="hips_size2" />
+        <parameter reference="hips_size1" />
+        <percent>5</percent>
+        <offset>1</offset>
+      </parameterSpreadCheck>
+    </integrityChecks>
+  </output>
+  
+  <computedOutput id="hips_size_avg">
+    <name>Hips Size</name>
+    <description>Average_Hips_Size_Measurement</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <instrument reference="hwc1" />
+    <algorithm>AVERAGE</algorithm>
+    <captureMethod>COMPUTED</captureMethod>
+    <outputs>
+      <output reference="hips_size1" />
+      <output reference="hips_size2" />
+    </outputs>
+  </computedOutput>
+  
+  <computedOutput>
+    <name>Waist_Hip</name>
+    <description>Waist_To_Hip_Ratio_Measurement</description>
+    <measurementUnit> </measurementUnit>
+    <dataType>DECIMAL</dataType>
+    <instrument reference="hwc1" />
+    <algorithm>RATIO</algorithm>
+    <captureMethod>COMPUTED</captureMethod>
+    <outputs>
+      <output reference="waist_size_avg" />
+      <output reference="hips_size_avg" />
+    </outputs>
+  </computedOutput>
+  
+</linked-list>

@@ -1,0 +1,13 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+  default-autowire="no">
+  
+  <bean id="instrumentExecutionService" class="org.obiba.onyx.jade.instrument.service.InstrumentExecutionServiceImpl">
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+  
+  <import resource="classpath:/test-hibernate-config.xml" />
+  <import resource="classpath:/test-db-config.xml" />
+  <import resource="classpath:META-INF/spring/jade-core/context.xml" />
+
+</beans>

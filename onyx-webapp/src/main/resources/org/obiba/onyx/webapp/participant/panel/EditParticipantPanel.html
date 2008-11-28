@@ -1,0 +1,66 @@
+<wicket:panel>
+  <div wicket:id="feedback" class="feedback"></div>
+  <form wicket:id="editParticipantForm">
+    <div>
+		<fieldset>
+			<legend><wicket:message key="participantInfo" /></legend>
+			<table class="keyValueTable">
+			  <tbody>
+			    <span wicket:id="enrollmentId" />
+			    <tr>
+				  <td class="keyValueTableKey">
+				    <label for="firstName"><wicket:message key="FirstName" /></label>
+				  </td>
+				  <td class="keyValueTableValueEven">
+				    <input wicket:id="firstName" id="firstName" type="text" size="20"/>
+				  </td>
+			    </tr>
+			    <tr>
+				  <td class="keyValueTableKey">
+				    <label for="lastName"><wicket:message key="LastName" /></label>
+				  </td>
+				  <td class="keyValueTableValueOdd">
+				    <input wicket:id="lastName" id="lastName" type="text" size="20"/>
+				  </td>
+			    </tr>
+			    <tr>
+				  <td class="keyValueTableKey">
+				    <label for="gender"><wicket:message key="Gender" /></label>
+				  </td>
+				  <td class="keyValueTableValueEven">
+				    <select wicket:id="gender" id="gender">
+				      <option>Female</option>
+				      <option>Male</option>
+				    </select>
+				  </td>
+			    </tr>
+			    <tr>
+				  <td class="keyValueTableKey">
+				    <label for="birthDate"><wicket:message key="BirthDate" /></label>
+				  </td>
+				  <td class="keyValueTableValueOdd">
+				    <div wicket:id="birthDate" />
+				  </td>
+			    </tr>
+			  </tbody>
+			</table>
+		</fieldset>
+    </div>
+    <br/>
+    <div>
+		<fieldset>
+			<span wicket:id="assignCodeToParticipantPanel"/>
+    </fieldset>
+    </div>
+	<div class="footer">
+    	<input type="button" wicket:id="saveAction" wicket:message="value:Save" />
+    	<input type="button" wicket:id="cancelAction" wicket:message="value:Cancel" />
+    </div>
+  </form>
+</wicket:panel>
+<wicket:fragment wicket:id="rowFragment">
+  <tr>
+  	<td class="keyValueTableKey"><span wicket:id="label"/></td>
+    <td class="keyValueTableValueOdd"><span wicket:id="value"/></td>
+  </tr>
+</wicket:fragment>

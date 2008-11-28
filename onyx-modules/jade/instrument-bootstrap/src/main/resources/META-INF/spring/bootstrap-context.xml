@@ -1,0 +1,21 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+  <import resource="classpath:/META-INF/spring/remote-api-client.xml" />
+
+  <bean name="jnlpClient" class="org.obiba.onyx.jade.client.JnlpClient">
+    <property name="instrumentExecutionService" ref="instrumentExecutionService" />
+  </bean>
+
+  <bean name="remoteHandler" class="org.obiba.onyx.jade.logging.RemoteHandler">
+    <property name="clientLoggingService" ref="clientLoggingService" />
+  </bean>
+
+  <bean name="locale" class="java.util.Locale">
+    <constructor-arg value="${locale}" />
+  </bean>
+
+</beans>

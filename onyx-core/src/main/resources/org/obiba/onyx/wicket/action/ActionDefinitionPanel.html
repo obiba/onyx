@@ -1,0 +1,66 @@
+<wicket:panel>
+  <div class="header">
+  	<span wicket:id="description"/>
+  </div>
+  <form wicket:id="form">
+  	<span wicket:id="feedback" />
+  	<table class="keyValueTable">
+  	  <tr>
+  	    <td valign="top" class="keyValueTableKey"><wicket:message key="Participant" /></td>
+  		<td class="keyValueTableValueOdd"><span wicket:id="participantName"/></td>
+  	  </tr>
+  	  
+  	  <tr>
+  	    <td valign="top" class="keyValueTableKey"><wicket:message key="Gender" /></td>
+  		<td class="keyValueTableValueEven"><span wicket:id="participantGender"/></td>
+  	  </tr>
+  	  
+  	  <tr>
+  	    <td valign="top" class="keyValueTableKey"><wicket:message key="BirthDate" /></td>
+  		<td class="keyValueTableValueOdd"><span wicket:id="participantBirthDate"/></td>
+  	  </tr>
+  	  <tr>
+  	    <td colspan="2">&nbsp;</td>
+  	  </tr>
+  	  <tr>
+  	    <td valign="top" class="keyValueTableKey"><wicket:message key="FieldTeamMember" /></td>
+  		<td class="keyValueTableValueOdd"><span wicket:id="operator"/></td>
+  	  </tr>
+  	  <tr wicket:id="password"></tr>
+  	  <tr>
+  	    <td colspan="2">&nbsp;</td>
+  	  </tr>
+  	  <tr wicket:id="confirmBarcode"></tr>
+  	  <tr>
+  	    <td valign="top" class="keyValueTableKey"><wicket:message key="Comment" /></td>
+  		<td class="keyValueTableValueEven">
+  			<textarea wicket:id="comment" rows="3" cols="40">
+  			</textarea></td>
+  	  </tr>
+  	  <tr wicket:id="reasons"></tr>
+  	</table>
+  	<div class="footer">
+  		<input type="submit" wicket:message="value:Continue" wicket:id="submit"/>
+        <input type="button" wicket:message="value:Cancel" wicket:id="cancel"/>
+    </div>
+  </form>
+</wicket:panel>
+<wicket:fragment wicket:id="barcodeFragment">
+  	  <tr>
+  	    <td valign="top" class="keyValueTableKey"><wicket:message key="ParticipantCode" /></td>
+    	<td class="keyValueTableValueOdd"><input type="text" wicket:id="ParticipantCode" /></td>
+  	  </tr>
+</wicket:fragment>
+<wicket:fragment wicket:id="passwordFragment">
+  	  <tr>
+  	    <td valign="top" class="keyValueTableKey"><wicket:message key="Password" /></td>
+  		<td class="keyValueTableValueEven"><input type="password" wicket:id="password" /></td>
+  	  </tr>
+</wicket:fragment>
+<wicket:fragment wicket:id="reasonsFragment">
+  	  <tr>
+  	    <td valign="top" class="keyValueTableKey"><wicket:message key="Reasons" /></td>
+  		<td class="keyValueTableValueOdd">
+  			<select wicket:id="reasonsSelect"/></td>
+  	  </tr>
+</wicket:fragment>

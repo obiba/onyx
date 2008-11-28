@@ -1,0 +1,42 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+  <bean name="actionDefinitionConfiguration" class="org.obiba.onyx.engine.ActionDefinitionConfiguration">
+    <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}"/>
+  </bean>
+
+  <bean id="stageExecutionContext" class="org.obiba.onyx.engine.state.StageExecutionContext" scope="prototype">
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="moduleRegistry" ref="moduleRegistry" />
+  </bean>
+
+  <bean id="appConfigService" class="org.obiba.onyx.core.service.impl.DefaultApplicationConfigurationServiceImpl">
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+
+  <bean id="moduleRegistry" class="org.obiba.onyx.engine.ModuleRegistry">
+    <property name="stageOrderingStrategy" ref="stageOrderingStrategy" />
+  </bean>
+
+  <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl"
+    scope="session" destroy-method="shutdown">
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="moduleRegistry" ref="moduleRegistry" />
+    <aop:scoped-proxy proxy-target-class="false" />
+  </bean>
+
+  <bean id="moduleRegistrationListener" class="org.obiba.onyx.engine.ModuleRegistrationListener">
+    <property name="moduleRegistry" ref="moduleRegistry" />
+  </bean>
+
+  <bean id="baseStageState" class="org.obiba.onyx.engine.state.AbstractStageState" abstract="true">
+    <property name="activeInterviewService" ref="activeInterviewService" />
+    <property name="actionDefinitionConfiguration" ref="actionDefinitionConfiguration" />
+  </bean>
+</beans>

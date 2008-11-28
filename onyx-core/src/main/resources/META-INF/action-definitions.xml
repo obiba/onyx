@@ -1,0 +1,10 @@
+<actionDefinitions>
+  <!-- Define a top-level ActionDefinition that will be used for all undefined ActionDefinition -->
+  <actionDefinition>
+    <code>action</code>
+    <askPassword>false</askPassword>
+    <askParticipantId>true</askParticipantId>
+    <commentMandatory>false</commentMandatory>
+    <reasonMandatory>false</reasonMandatory>
+  </actionDefinition>
+</actionDefinitions>

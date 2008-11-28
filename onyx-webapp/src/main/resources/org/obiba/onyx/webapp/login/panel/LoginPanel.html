@@ -1,0 +1,35 @@
+<html xmlns:wicket>
+<body>
+  <wicket:panel>
+		<form wicket:id="signInForm">
+			<table>
+				<tr>
+					<td align="right"><wicket:message key="login" />:</td>
+					<td>
+						<input type="text" wicket:id="username" size="30"/>
+					</td>
+				</tr>
+				<tr>
+					<td align="right"><wicket:message key="password" />:</td>
+					<td>
+						<input value="password" type="password" wicket:id="password" size="30"/>
+					</td>
+				</tr>
+				<tr wicket:id="rememberMeRow">
+					<td></td>
+					<td> <input type="checkbox" wicket:id="rememberMe"/> Remember Me </td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<input type="submit" name="submit" wicket:message="value:signIn"/>
+						<input type="reset" wicket:message="value:reset"/>
+					</td>
+				</tr>
+			</table>
+		</form>
+		<br>
+		<a wicket:id="forgotPassword"><wicket:message key="ForgotPassword" /></a>
+  </wicket:panel>
+</body>
+</html>

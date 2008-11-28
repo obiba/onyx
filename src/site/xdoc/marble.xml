@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+  <properties>
+    <title>Marble Overview</title>
+    <author>Vincent Ferretti</author>
+    <author>Nancy Lambert</author>
+    <author>Philippe Laflamme</author>
+  </properties>
+  <body>
+    <section name="Overview">
+      <p>
+        This module is responsible for the administration of the consent forms. Main features are
+        <ul>
+          <li>Supports both manual and electronic signature</li>
+          <li>Supports any kind of consent form in any language</li>
+        </ul>
+      </p>
+			<subsection name="Screenshots">
+        <p>
+          <ul>
+            <li><a href="images/screens/marble/starting.png">Consent Form Selection</a></li>
+            <li><a href="images/screens/marble/signed-consent.jpg">Electronic Signature</a></li>
+          </ul>
+        </p>
+      </subsection>
+    </section>
+  </body>
+</document>

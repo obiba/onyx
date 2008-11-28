@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<linked-list>
+
+  <instrument id="sphygmoCor1">
+    <name>SphygmoCor 1</name>
+    <vendor>AtCor Medical</vendor>
+    <model>SphygmoCor</model>
+    <serialNumber>01400</serialNumber>
+    <barcode>sphygmoCor1</barcode>
+    <status>ACTIVE</status>
+    <instrumentType>
+      <name>ART</name>
+    </instrumentType>
+    <contraindications>
+      <contraIndication>
+        <code>Other</code>
+        <requiresDescription>true</requiresDescription>
+        <type>OBSERVED</type>
+      </contraIndication>
+    </contraindications>
+  </instrument>
+
+  <participantPropertySource id="id_source">
+    <property>barcode</property>
+  </participantPropertySource>
+
+  <input id="id">
+    <name>ID</name>
+    <description>Participant_Barcode</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="id_source" />
+    <instrument reference="sphygmoCor1" />
+  </input>
+
+  <participantPropertySource id="last_name_source">
+    <property>lastName</property>
+  </participantPropertySource>
+  <input id="last_name">
+    <name>LastName</name>
+    <description>Participant_Last_Name</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="last_name_source" />
+    <instrument reference="sphygmoCor1" />
+  </input>
+
+  <participantPropertySource id="first_name_source">
+    <property>firstName</property>
+  </participantPropertySource>
+  <input id="first_name_in">
+    <name>FirstName</name>
+    <description>Participant_First_Name</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="first_name_source" />
+    <instrument reference="sphygmoCor1" />
+  </input>
+
+  <participantPropertySource id="birth_date_source">
+    <property>birthDate</property>
+  </participantPropertySource>
+  <input id="birth_date">
+    <name>BirthDate</name>
+    <description>Participant_Date_of_Birth</description>
+    <dataType>DATE</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="birth_date_source" />
+    <instrument reference="sphygmoCor1" />
+  </input>
+
+  <participantPropertySource id="gender_source">
+    <property>gender</property>
+  </participantPropertySource>
+  <input id="gender">
+    <name>Gender</name>
+    <description>Participant_Gender</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="gender_source" />
+    <instrument reference="sphygmoCor1" />
+  </input>
+
+  <fixedSource id="systolic_pressure_source">
+    <value>123</value>
+  </fixedSource>
+  <input id="systolic_pressure">
+    <name>SystolicPressure</name>
+    <description>Systolic_Pressure</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="systolic_pressure_source" />
+    <instrument reference="sphygmoCor1" />
+  </input>
+
+  <fixedSource id="diastolic_pressure_source">
+    <value>65</value>
+  </fixedSource>
+  <input id="diastolic_pressure">
+    <name>DiastolicPressure</name>
+    <description>Diastolic_Pressure</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="diastolic_pressure_source" />
+    <instrument reference="sphygmoCor1" />
+  </input>
+
+  <!-- 
+    <outputParameterSource id="systolic_pressure_source">
+    <instrumentType>
+    <name>BLP</name>
+    </instrumentType>
+    <parameterName>SystolicPressure</parameterName>
+    </outputParameterSource>
+    <input id="systolicPressure">
+    <name>SystolicPressure</name>
+    <description>Systolic_Pressure</description>
+    <measurementUnit>mmHg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <inputSource reference="systolic_pressure_source" />
+    <instrument reference="blp1" />
+    </input>  
+    
+    <outputParameterSource id="diastolic_pressure_source">
+    <instrumentType>
+    <name>BLP</name>
+    </instrumentType>
+    <parameterName>DiastolicPressure</parameterName>
+    </outputParameterSource>
+    <input id="diastolicPressure">
+    <name>Weight</name>
+    <description>Diastolic_Pressure</description>
+    <measurementUnit>mmHg</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <inputSource reference="diastolic_pressure_source" />
+    <instrument reference="blp1" />
+    </input>
+  -->
+
+  <output id="PATIENT_ID">
+    <name>Participant Barcode</name>
+    <description>Participant_Barcode</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="sphygmoCor1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="PATIENT_ID" />
+        <parameter reference="id" />
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+  <output id="FAM_NAME">
+    <name>Participant Last Name</name>
+    <description>Participant_Last_Name</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="sphygmoCor1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="FAM_NAME" />
+        <parameter reference="last_name" />
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+  <output id="FIRST_NAME">
+    <name>Participant First Name</name>
+    <description>Participant_First_Name</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="sphygmoCor1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="FIRST_NAME" />
+        <parameter reference="first_name_in" />
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+  <output id="DOB">
+    <name>Participant Date of Birth</name>
+    <description>Participant_Date_of_Birth</description>
+    <dataType>DATE</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="sphygmoCor1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="DOB" />
+        <parameter reference="birth_date" />
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+  <output id="SEX">
+    <name>Participant Gender</name>
+    <description>Participant_Gender</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="sphygmoCor1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="SEX" />
+        <parameter reference="gender" />
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+  <output id="SP">
+    <name>Systolic Pressure</name>
+    <description>Systolic_Pressure</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="sphygmoCor1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="SP" />
+        <parameter reference="systolic_pressure" />
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+  <output id="DP">
+    <name>Diastolic Pressure</name>
+    <description>Diastolic_Pressure</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit></measurementUnit>
+    <instrument reference="sphygmoCor1" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="DP" />
+        <parameter reference="diastolic_pressure" />
+        <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+
+  <output id="Peripheral_Pulse_Quality_Control_Pulse_Height">
+    <name>Peripheral_Pulse_Quality_Control_Pulse_Height</name>
+    <description>Peripheral Pulse Quality Control Pulse Height</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Peripheral_Pulse_Quality_Control_Pulse_Height_Variation">
+    <name>Peripheral_Pulse_Quality_Control_Pulse_Height_Variation</name>
+    <description>Peripheral_Pulse_Quality_Control_Pulse_Height_Variation</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Peripheral_Pulse_Quality_Control_Pulse_Length_Variation">
+    <name>Peripheral_Pulse_Quality_Control_Pulse_Length_Variation</name>
+    <description>Peripheral_Pulse_Quality_Control_Pulse_Length_Variation</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Peripheral_Pulse_Quality_Control_Diastolic_Variation">
+    <name>Peripheral_Pulse_Quality_Control_Diastolic_Variation</name>
+    <description>Peripheral_Pulse_Quality_Control_Diastolic_Variation</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Peripheral_Systolic_Pressure">
+    <name>Peripheral_Systolic_Pressure</name>
+    <description>Peripheral_Systolic_Pressure</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>mmHg</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Peripheral_Diastolic_Pressure">
+    <name>Peripheral_Diastolic_Pressure</name>
+    <description>Peripheral_Diastolic_Pressure</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>mmHg</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Peripheral_Mean_Pressure">
+    <name>Peripheral_Mean_Pressure</name>
+    <description>Peripheral_Mean_Pressure</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>mmHg</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Peripheral_T1">
+    <name>Peripheral_T1</name>
+    <description>Peripheral_T1</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>ms</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Peripheral_T2">
+    <name>Peripheral_T2</name>
+    <description>Peripheral_T2</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>ms</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+
+  <output id="Peripheral_Augmentation_Index">
+    <name>Peripheral_Augmentation_Index</name>
+    <description>Peripheral_Augmentation_Index</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>%</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="End_Systolic_Pressure">
+    <name>End_Systolic_Pressure</name>
+    <description>End_Systolic_Pressure</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Peripheral_P1">
+    <name>Peripheral_P1</name>
+    <description>Peripheral_P1</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Peripheral_P2">
+    <name>Peripheral_P2</name>
+    <description>Peripheral_P2</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Peripheral_Confidence_Level_of_T1">
+    <name>Peripheral_Confidence_Level_of_T1</name>
+    <description>Peripheral_Confidence_Level_of_T1</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Peripheral_Confidence_Level_of_T2">
+    <name>Peripheral_Confidence_Level_of_T2</name>
+    <description>Peripheral_Confidence_Level_of_T2</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_Augmented_Pressure">
+    <name>Central_Augmented_Pressure</name>
+    <description>Central_Augmented_Pressure</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>mmHg</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_Mean_Pressure_of_Systole">
+    <name>Central_Mean_Pressure_of_Systole</name>
+    <description>Central_Mean_Pressure_of_Systole</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>mmHg</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_Mean_Pressure_of_Diastole">
+    <name>Central_Mean_Pressure_of_Diastole</name>
+    <description>Central_Mean_Pressure_of_Diastole</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>mmHg</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_Tension_Time_Index">
+    <name>Central_Tension_Time_Index</name>
+    <description>Central_Tension_Time_Index</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+
+  <output id="Central_Diastolic_Time_Index">
+    <name>Central_Diastolic_Time_Index</name>
+    <description>Central_Diastolic_Time_Index</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_Buckberg_SubEndocardial_Viability_Ratio">
+    <name>Central_Buckberg_SubEndocardial_Viability_Ratio</name>
+    <description>Central_Buckberg_SubEndocardial_Viability_Ratio</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>%</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Augmentation_Load">
+    <name>Augmentation_Load</name>
+    <description>Augmentation_Load</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Augmentation_Time_Index">
+    <name>Augmentation_Time_Index</name>
+    <description>Augmentation_Time_Index</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Heart_Rate">
+    <name>Heart_Rate</name>
+    <description>Heart_Rate</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>bmp</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_Pulse_Period">
+    <name>Central_Pulse_Period</name>
+    <description>Central_Pulse_Period</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>ms</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_Diastolic_Duration">
+    <name>Central_Diastolic_Duration</name>
+    <description>Central_Diastolic_Duration</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_ED_Period_Percent_Ejection_duration">
+    <name>Central_ED_Period_Percent_Ejection_duration</name>
+    <description>Central_ED_Period_Percent_Ejection_duration</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>%</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Period_ED_Period_Percent">
+    <name>Period_ED_Period_Percent</name>
+    <description>Period_ED_Period_Percent</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_Pulse_Height">
+    <name>Central_Pulse_Height</name>
+    <description>Central_Pulse_Height</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>mmHg</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_Aug_PH_Percent">
+    <name>Central_Aug_PH_Percent</name>
+    <description>Central_Aug_PH_Percent</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>%</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_Pressure_at_T1_Dp">
+    <name>Central_Pressure_at_T1_Dp</name>
+    <description>Central_Pressure_at_T1_Dp</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>%</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Time_of_the_Start_of_the_Reflected_Wave">
+    <name>Time_of_the_Start_of_the_Reflected_Wave</name>
+    <description>Time_of_the_Start_of_the_Reflected_Wave</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>ms</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_Systolic_Pressure">
+    <name>Central_Systolic_Pressure</name>
+    <description>Central_Systolic_Pressure</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>mmHg</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_Diastolic_Pressure">
+    <name>Central_Diastolic_Pressure</name>
+    <description>Central_Diastolic_Pressure</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>mmHg</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_Mean_Pressure">
+    <name>Central_Mean_Pressure</name>
+    <description>Central_Mean_Pressure</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_T1">
+    <name>Central_T1</name>
+    <description>Central_T1</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>ms</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_T2">
+    <name>Central_T2</name>
+    <description>Central_T2</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>ms</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+  <output id="Central_Augmentation_Index">
+    <name>Central_Augmentation_Index</name>
+    <description>Central_Augmentation_Index</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+
+  <output id="Central_End_Systolic_Pressure">
+    <name>Central_End_Systolic_Pressure</name>
+    <description>Central_End_Systolic_Pressure</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>mmHg</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+
+  <output id="Central_Pressure_at_T1">
+    <name>Central_Pressure_at_T1</name>
+    <description>Central_Pressure_at_T1</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>mmHg</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+
+  <output id="Central_Pressure_at_T2">
+    <name>Central_Pressure_at_T2</name>
+    <description>Central_Pressure_at_T2</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>mmHg</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+
+  <output id="Central_T1_ED_Percent">
+    <name>Central_T1_ED_Percent</name>
+    <description>Central_T1_ED_Percent</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>mmHg</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+
+  <output id="Central_T2_ED_Percent">
+    <name>Central_T2_ED_Percent</name>
+    <description>Central_T2_ED_Percent</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>mmHg</measurementUnit>
+    <instrument reference="sphygmoCor1" />
+  </output>
+
+  <output id="Central_Confidence_Level_of_T1">
+    <name>Central_Confidence_Level_of_T1</name>
+    <description>Central_Confidence_Level_of_T1</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+
+  <output id="Central_Confidence_Level_of_T2">
+    <name>Central_Confidence_Level_of_T2</name>
+    <description>Central_Confidence_Level_of_T2</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+
+  <output id="Operator_Index">
+    <name>Operator_Index</name>
+    <description>Operator_Index</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="sphygmoCor1" />
+  </output>
+
+</linked-list>

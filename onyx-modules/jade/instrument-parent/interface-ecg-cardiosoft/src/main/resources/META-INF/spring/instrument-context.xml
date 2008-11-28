@@ -1,0 +1,24 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+  <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.gehealthcare.CardiosoftInstrumentRunner">
+    <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
+    <property name="externalAppHelper" ref="externalAppHelper"/>
+    <property name="cardioPath" value="C:\\CARDIO\\"/>
+    <property name="initPath" value="C:\\CARDIO\\initecg\\"/>
+    <property name="databasePath" value="C:\\CARDIO\\DATABASE\\"/>
+    <property name="exportPath" value="C:\\CARDIO\\Export\\"/>
+    <property name="settingsFileName" value="CARDIO.INI"/>
+    <property name="xmlFileName" value="cartagene.xml"/>
+    <property name="pdfFileName" value="cartagene.pdf"/>
+  </bean>
+  
+  <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">
+    <property name="workDir" value="c:\\CARDIO" />
+    <property name="executable" value="Cardio.exe" />  
+  </bean>
+  
+</beans>

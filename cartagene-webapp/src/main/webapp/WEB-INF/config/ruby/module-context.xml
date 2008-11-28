@@ -1,0 +1,71 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <import resource="classpath:META-INF/spring/ruby-core/context.xml" />
+
+  <bean name="consentDependency" class="org.obiba.onyx.engine.ConsentStageDependencyCondition">
+    <property name="stageName" value="CON" />
+  </bean>
+
+  <bean id="rubyOnyxModule" class="org.obiba.onyx.ruby.engine.RubyModule">
+    <property name="activeInterviewService" ref="activeInterviewService" />
+    <property name="stages">
+      <list>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="SamplesCollection" />
+          <property name="module" value="ruby" />
+          <property name="stageDependencyCondition" ref="consentDependency" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="tubeRegistrationConfiguration" class="org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration">
+    <constructor-arg value="${org.obiba.onyx.config.path}/ruby" />
+
+    <property name="expectedTubeCount" value="16" />
+    
+    <property name="barcodeStructure">
+      <bean class="org.obiba.onyx.ruby.core.domain.BarcodeStructure">
+        <property name="parsers">
+          <list>
+            <!-- Participant Code Parser -->
+            <bean class="org.obiba.onyx.ruby.core.domain.parser.impl.ParticipantCodeBarcodePartParser">
+              <property name="activeInterviewService" ref="activeInterviewService" />
+              <property name="size" value="7" />
+            </bean>
+            <!-- Tube Type Parser -->
+            <bean class="org.obiba.onyx.ruby.core.domain.parser.impl.AcceptableValuesBarcodePartParser">
+              <property name="partTitle">
+                <bean class="org.springframework.context.support.DefaultMessageSourceResolvable">
+                  <constructor-arg value="Ruby.BarcodePartColumn.TubeType" />
+                </bean>
+              </property>
+              <property name="acceptableValues">
+                <set>
+                  <value>011</value>
+                  <value>021</value>
+                  <value>022</value>
+                  <value>023</value>
+                  <value>024</value>
+                  <value>025</value>
+                  <value>031</value>
+                  <value>041</value>
+                  <value>042</value>
+                  <value>043</value>
+                  <value>044</value>
+                  <value>051</value>
+                  <value>061</value>
+                  <value>071</value>
+                  <value>081</value>
+                  <value>091</value>
+                </set>
+              </property>
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+</beans>

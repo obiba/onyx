@@ -1,0 +1,21 @@
+<wicket:panel>
+	<p>
+		<wicket:message key="ParticipantReportInstruction" />
+	</p>
+	<p>
+		<input 	type="button"
+				wicket:id="participantReportLink" 
+				wicket:message="value:PrintReport"
+				style="width:165px">
+		<br> 
+		<br>
+		<input 	type="button" 
+				wicket:id="consentFormLink"
+				wicket:message="value:PrintConsentForm"
+				style="width:165px">
+	</p>
+	<p>
+		<input type="checkbox" wicket:id="printCheckBox"/>
+		<wicket:message key="CheckBoxMsg" />
+	</p>
+</wicket:panel>

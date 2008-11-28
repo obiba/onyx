@@ -1,0 +1,79 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+  <bean id="applicationBean" class="org.obiba.onyx.webapp.OnyxApplication" scope="singleton">
+    <property name="userService" ref="userService" />
+    <property name="version">
+      <bean class="org.obiba.runtime.Version">
+        <constructor-arg value="${org.obiba.onyx.version}" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="stageOrderingStrategy" class="org.obiba.onyx.engine.StaticStageOrderingStrategy">
+    <property name="stageOrdering" value="${org.obiba.onyx.engine.staticStageOrder}" />
+  </bean>
+
+  <bean id="testDatabaseSeed" class="org.obiba.onyx.webapp.seed.TestDatabaseSeed" scope="singleton">
+    <property name="resourcePatterns">
+      <list>
+        <value>classpath:/appConfiguration.xml</value>
+      </list>
+    </property>
+    <property name="developmentSeed" value="true" />
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+
+  <bean id="onyxApplicationStartupListener" class="org.obiba.wicket.util.seed.DatabaseSeedWebApplicationStartupListener"
+    scope="singleton">
+    <property name="databaseSeeds">
+      <list>
+        <ref bean="testDatabaseSeed" />
+        <ref bean="jadeDatabaseSeed" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="participantReader" class="org.obiba.onyx.cartagene.etl.participant.ParticipantExcelReader"
+    scope="prototype">
+    <property name="startAtLine" value="3" />
+  </bean>
+
+  <bean name="messageSource" class="org.obiba.onyx.spring.context.OnyxMessageSourceFactoryBean">
+    <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
+    <property name="extraBasenames">
+      <set>
+        <value>classpath:config/ParticipantInterview</value>
+
+        <value>instruments/interface-height/InstrumentParameter</value>
+        <value>instruments/interface-sitting-height/InstrumentParameter</value>
+        <value>instruments/interface-hipsandwaistsize/InstrumentParameter</value>
+        <value>instruments/interface-blood-pressure/InstrumentParameter</value>
+        <value>instruments/interface-musclestrength/InstrumentParameter</value>
+        <value>instruments/interface-musclestrength/ContraIndication</value>
+        <value>instruments/interface-weight/InstrumentParameter</value>
+        <value>instruments/interface-arterialstiffness-sphygmocor/InstrumentParameter</value>
+        <value>instruments/interface-bioimpedance-tanita-tbf310/InstrumentParameter</value>
+        <value>instruments/interface-bioimpedance-tanita-tbf310/ContraIndication</value>
+        <value>instruments/interface-bonedensity-achillesexpress/InstrumentParameter</value>
+        <value>instruments/interface-bonedensity-achillesexpress/ContraIndication</value>
+        <value>instruments/interface-ecg-cardiosoft/InstrumentParameter</value>
+        <value>instruments/interface-spirometry-minispir/InstrumentParameter</value>
+        <value>instruments/interface-spirometry-minispir/ContraIndication</value>
+
+      </set>
+    </property>
+  </bean>
+
+  <bean id="userSessionService" class="org.obiba.onyx.webapp.service.impl.UserSessionServiceImpl">
+    <!-- NOTE: Uncomment declaration below if this service is injected into a singleton bean. -->
+    <!-- <aop:scoped-proxy /> -->
+  </bean>
+
+</beans>

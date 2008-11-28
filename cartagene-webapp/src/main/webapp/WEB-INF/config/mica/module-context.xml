@@ -1,0 +1,54 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <import resource="classpath:META-INF/spring/mica-core/context.xml" />
+
+  <bean name="consentDependency" class="org.obiba.onyx.engine.ConsentStageDependencyCondition">
+    <property name="stageName" value="CON" />
+  </bean>
+
+  <bean name="jadeDependency" class="org.obiba.onyx.engine.ModuleDependencyCondition">
+    <property name="moduleRegistry" ref="moduleRegistry" />
+    <property name="moduleName" value="jade" />
+  </bean>
+
+  <bean name="quartzDependency" class="org.obiba.onyx.engine.ModuleDependencyCondition">
+    <property name="moduleRegistry" ref="moduleRegistry" />
+    <property name="moduleName" value="quartz" />
+  </bean>
+
+  <bean name="rubyDependency" class="org.obiba.onyx.engine.ModuleDependencyCondition">
+    <property name="moduleRegistry" ref="moduleRegistry" />
+    <property name="moduleName" value="ruby" />
+  </bean>
+  
+  <bean id="micaOnyxModule" class="org.obiba.onyx.mica.engine.MicaModule">
+    <property name="activeInterviewService" ref="activeInterviewService" />
+    <property name="stages">
+      <bean class="org.obiba.onyx.engine.Stage">
+        <property name="name" value="SUM" />
+        <property name="module" value="mica" />
+
+        <property name="stageDependencyCondition">
+          <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+            <property name="leftStageDependencyCondition">
+              <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+                <property name="leftStageDependencyCondition">
+                  <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+                    <property name="leftStageDependencyCondition" ref="consentDependency" />
+                    <property name="operator" value="AND" />
+                    <property name="rightStageDependencyCondition" ref="jadeDependency" />
+                  </bean>
+                </property>
+                <property name="operator" value="AND" />
+                <property name="rightStageDependencyCondition" ref="quartzDependency" />
+              </bean>
+            </property>
+            <property name="operator" value="AND" />
+            <property name="rightStageDependencyCondition" ref="rubyDependency" />
+          </bean>
+        </property>
+      </bean>
+    </property>
+  </bean>
+</beans>

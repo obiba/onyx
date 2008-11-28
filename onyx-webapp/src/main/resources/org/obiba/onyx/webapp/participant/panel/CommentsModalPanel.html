@@ -1,0 +1,35 @@
+<wicket:panel>
+        
+	<fieldset>
+		<legend><wicket:message key="Participant" /></legend>	
+		<span wicket:id="participant" />
+	</fieldset>    
+
+    <span wicket:id="feedback"/>
+
+	<fieldset>
+		<legend><wicket:message key="AddNewComments" /></legend>
+		<form wicket:id="commentForm">
+					
+			<textarea cols="60" rows="3" wicket:id="newComment" name="newComment"></textarea><br>
+			  
+		    <input type="submit" wicket:id="saveComment" wicket:message="value:Save"> 		
+		    <input type="button" wicket:id="cancelComment" wicket:message="value:cancel">	
+		</form>
+	</fieldset> 
+    
+   	<fieldset wicket:id="previousComments">
+    	<legend><wicket:message key="PreviousComments" /> (<wicket:message key="SortedByTime" />)</legend>  
+    	<br>
+    	<b><span wicket:id="noComments"/></b>
+		<table cellspacing="0">
+	    	<tr wicket:id ="comment-list">
+	    		<td>
+		    		<span wicket:id ="comment-panel"/><br>
+	    		</td>    		    		
+	    	</tr>
+	   	</table> 
+    </fieldset>   	    
+   	    
+</wicket:panel>    
+

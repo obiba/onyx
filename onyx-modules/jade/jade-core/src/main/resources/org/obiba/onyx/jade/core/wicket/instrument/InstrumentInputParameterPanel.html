@@ -1,0 +1,34 @@
+<wicket:panel>
+	<table>
+		<span wicket:id="askedInputs" />
+		<span wicket:id="observedInputs" />
+		<span wicket:id="inputs" />
+	</table>
+</wicket:panel>
+<wicket:fragment wicket:id="interpretativeFragment">
+	<tr>
+		<td colspan="2" class="wizard-title"><span wicket:id="title"/></td>
+	</tr>
+	<tr wicket:id="repeat">
+		<td><span wicket:id="label"/></td>
+		<td style="width: 300px;">
+			<span wicket:id="radioGroup">
+				<span wicket:id="radioItem">
+            		<label wicket:id="radioLabel">
+            			<input type="radio" wicket:id="radio"/>
+                		<span wicket:id="label"></span>
+                	</label>
+            	</span>
+        	</span>
+        </td>
+	</tr>
+</wicket:fragment>
+<wicket:fragment wicket:id="inputFragment">
+	<tr>
+		<td colspan="2" class="wizard-title"><span class="wizard-title" wicket:id="title"/></td>
+	</tr>
+	<tr wicket:id="repeat">
+		<td><span wicket:id="label"/></td>
+		<td><span wicket:id="field"/></td>
+	</tr>
+</wicket:fragment>

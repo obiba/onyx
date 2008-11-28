@@ -1,0 +1,22 @@
+<html>
+  <body>
+    <wicket:extend>
+	  	<span wicket:id="title" />
+	  	<br/><br/>
+        <div>
+			<fieldset>
+				<legend><wicket:message key="instructions" /></legend>    
+				<span wicket:id="instruction" />
+			</fieldset>
+        </div>
+        <br/>
+        <div wicket:id="editParticipantPanel"/>
+		<wicket:fragment wicket:id="titleFragment">
+			<span wicket:id="titleMessage"/>
+		</wicket:fragment>
+	  	<wicket:fragment wicket:id="instructionFragment">
+		  <span wicket:id="instructionMessage"/>
+		</wicket:fragment>
+    </wicket:extend>
+  </body>
+</html>

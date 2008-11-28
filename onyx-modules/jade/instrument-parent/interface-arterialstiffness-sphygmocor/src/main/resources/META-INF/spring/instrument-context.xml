@@ -1,0 +1,50 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+  <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.atcor.SphygmoCorInstrumentRunner">
+    <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
+    <property name="externalAppHelper" ref="externalAppHelper" />
+    <property name="sphygmoCorDao" ref="sphygmoCorDao" />
+  </bean>
+  
+  <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">
+    <property name="workDir" value="C:\Program Files\AtCor\SphygmoCor CvMS" />
+    <property name="executable" value="scor.exe" />
+     
+    <!--
+    <property name="workDir" value="${externalAppHelper.workDir}" />
+    <property name="executable" value="${externalAppHelper.executable}" />
+    -->
+  </bean>
+  
+  <bean id="sphygmoCorDao" class="org.obiba.onyx.jade.instrument.atcor.dao.impl.JdbcSphygmoCorDao">
+    <property name="dataSource" ref="dataSource" />
+  </bean>
+  
+  <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <property name="driverClassName" value="sun.jdbc.odbc.JdbcOdbcDriver" />
+    <property name="url" value="jdbc:odbc:Driver={MicroSoft Access Driver (*.mdb)};DBQ=c:/Program Files/AtCor/SphygmoCor CvMS/data/scor.xyz" />    
+    <property name="username" value="" />
+    <property name="password" value="" />
+    
+    <!--
+    <property name="url" value="${jdbc.url}" />    
+    <property name="username" value="${jdbc.username}" />
+    <property name="password" value="${jdbc.password}" />
+    -->
+  </bean>
+  
+  <!--
+  <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations">
+      <list>
+        <value>/META-INF/spring/jdbc.properties</value>
+        <value>/META-INF/spring/externalAppHelper.properties</value>
+      </list>
+    </property>
+  </bean>
+  -->
+</beans>

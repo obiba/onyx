@@ -1,0 +1,22 @@
+<dataset>
+
+	<role id="1" name="SYSTEM_ADMINISTRATOR" />
+	<role id="2" name="PARTICIPANT_MANAGER" />
+	<role id="3" name="DATA_COLLECTION_OPERATOR" />
+
+	<user id="1" last_name="Administrator" first_name="ONYX"
+		login="administrator" password="password" email="test@obiba.org"
+		status="ACTIVE" deleted="false" />
+	<user id="2" last_name="Dupont" first_name="Natasha" login="ndupont"
+		password="tata" email="test2obiba.org" status="ACTIVE"
+		deleted="false" />
+	<user id="3" last_name="Dupond" first_name="Pierre" login="pdupond"
+		password="toto" email="test3@obiba.org" status="ACTIVE"
+		deleted="false" />
+
+	<user_roles user_id="1" role_id="1" />
+	<user_roles user_id="2" role_id="1" />
+	<user_roles user_id="2" role_id="3" />
+	<user_roles user_id="3" role_id="2" />
+
+</dataset>

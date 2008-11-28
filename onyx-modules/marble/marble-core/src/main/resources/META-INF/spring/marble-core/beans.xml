@@ -1,0 +1,45 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+  <tx:annotation-driven transaction-manager="transactionManager" />
+
+  <bean id="baseMarbleStageState" parent="baseStageState" class="org.obiba.onyx.marble.engine.state.AbstractMarbleStageState"
+    abstract="true">
+    <property name="activeConsentService" ref="activeConsentService" />
+  </bean>
+
+  <bean id="marbleReadyState" parent="baseMarbleStageState" class="org.obiba.onyx.marble.engine.state.MarbleReadyState"
+    scope="prototype">
+  </bean>
+
+  <bean id="marbleInProgressState" parent="baseMarbleStageState" class="org.obiba.onyx.marble.engine.state.MarbleInProgressState"
+    scope="prototype">
+  </bean>
+
+  <bean id="marbleCompletedState" parent="baseMarbleStageState" class="org.obiba.onyx.marble.engine.state.MarbleCompletedState"
+    scope="prototype">
+  </bean>
+
+  <bean id="activeConsentService" class="org.obiba.onyx.marble.core.service.impl.DefaultActiveConsentServiceImpl"
+    scope="session">
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="activeInterviewService" ref="activeInterviewService" />
+  </bean>
+
+  <bean id="fdfProducer" class="org.obiba.onyx.marble.core.service.FdfProducer" scope="prototype">
+    <property name="consentFormTemplateLoader" ref="consentFormTemplateLoader"/>
+    <property name="activeConsentService" ref="activeConsentService"/>
+    <property name="activeInterviewService" ref="activeInterviewService"/>
+    <!-- See java.text.SimpleDateFormat for details for possible date formating -->
+    <property name="dateFormat" value="${org.obiba.onyx.marble.consent.dateFormat}"/>
+  </bean>
+  
+  <bean id="consentFormTemplateLoader" class="org.obiba.onyx.core.io.support.LocalizedResourceLoader">
+    <property name="resourcePath" value="${org.obiba.onyx.marble.resources.path}" />
+    <property name="resourceName" value="${org.obiba.onyx.marble.consent.basename}" />    
+    <property name="resourceExtension" value=".pdf" />      
+  </bean>  
+</beans>

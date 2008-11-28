@@ -1,0 +1,31 @@
+<participantAttributes>
+  <attribute>
+    <name>AllowedValuesAttribute</name>
+    <mandatoryAtEnrollment>true</mandatoryAtEnrollment>
+    <mandatoryAtReception>false</mandatoryAtReception>
+    <editableAtReception>true</editableAtReception>
+    <editableAfterReception>false</editableAfterReception>
+    <type>TEXT</type>
+    <allowedValues>
+      <string>Value1</string>
+      <string>Value2</string>
+      <string>Value3</string>
+    </allowedValues>
+  </attribute>
+  <attribute>
+    <name>IntegerAttribute</name>
+    <mandatoryAtEnrollment>false</mandatoryAtEnrollment>
+    <mandatoryAtReception>true</mandatoryAtReception>
+    <editableAtReception>false</editableAtReception>
+    <editableAfterReception>true</editableAfterReception>
+    <type>INTEGER</type>
+  </attribute>
+    <attribute>
+    <name>DateAttribute</name>
+    <mandatoryAtEnrollment>true</mandatoryAtEnrollment>
+    <mandatoryAtReception>true</mandatoryAtReception>
+    <editableAtReception>true</editableAtReception>
+    <editableAfterReception>true</editableAfterReception>
+    <type>DATE</type>
+  </attribute>
+</participantAttributes>

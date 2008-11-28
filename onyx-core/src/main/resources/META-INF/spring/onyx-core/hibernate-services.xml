@@ -1,0 +1,22 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+  <tx:annotation-driven transaction-manager="transactionManager" />
+
+  <bean id="participantService"
+    class="org.obiba.onyx.core.service.impl.hibernate.ParticipantServiceHibernateImpl" scope="singleton">
+    <property name="sessionFactory" ref="sessionFactory" />
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="participantReader" ref="participantReader" />
+  </bean>
+  
+  <bean id="userService"
+    class="org.obiba.onyx.core.service.impl.hibernate.UserServiceHibernateImpl" scope="singleton">
+    <property name="sessionFactory" ref="sessionFactory" />
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+  
+</beans>

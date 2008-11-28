@@ -1,0 +1,53 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <import resource="classpath:META-INF/spring/quartz-core/context.xml" />
+
+  <bean name="consentDependency" class="org.obiba.onyx.engine.ConsentStageDependencyCondition">
+    <property name="stageName" value="CON" />
+  </bean>
+  <bean name="hqsaDependency" class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
+    <property name="stageName" value="HealthQuestionnaireSelfAdministered" />
+  </bean>
+
+  <bean id="quartzOnyxModule" class="org.obiba.onyx.quartz.engine.QuartzModule">
+    <property name="activeInterviewService" ref="activeInterviewService" />
+    <property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
+    <property name="stages">
+      <list>
+        <!--bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="HealthQuestionnaire" />
+          <property name="module" value="quartz" />
+          <property name="stageDependencyCondition" ref="consentDependency" />
+        </bean-->
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="HealthQuestionnaireSelfAdministered" />
+          <property name="module" value="quartz" />
+          <property name="stageDependencyCondition" ref="consentDependency" />
+        </bean>
+        <bean class="org.obiba.onyx.engine.Stage">
+          <property name="name" value="HealthQuestionnaireAssisted" />
+          <property name="module" value="quartz" />          
+          <property name="stageDependencyCondition">
+            <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+              <property name="leftStageDependencyCondition" ref="consentDependency" />
+              <property name="operator" value="AND" />
+              <property name="rightStageDependencyCondition" ref="hqsaDependency" />
+            </bean>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="propertyKeyProvider"
+    class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl"
+    scope="prototype" />
+
+  <bean id="questionnaireBundleManager"
+    class="org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl">
+    <constructor-arg value="${org.obiba.onyx.quartz.resources.path}/questionnaires" />
+    <property name="propertyKeyProvider" ref="propertyKeyProvider" />
+  </bean>
+
+</beans>

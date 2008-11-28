@@ -1,0 +1,70 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+  default-autowire="no">
+
+  <bean id="questionnaireParticipantService"
+    class="org.obiba.onyx.quartz.core.service.impl.hibernate.QuestionnaireParticipantServiceHibernateImpl"
+    scope="singleton">
+    <property name="sessionFactory" ref="sessionFactory" />
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+
+  <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl">
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+
+  <bean id="userSessionService" class="org.obiba.onyx.core.service.impl.UserSessionServiceBeanImpl" />
+
+  <bean id="propertyKeyProvider"
+    class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl"
+    scope="prototype" />
+
+  <bean id="baseStageState" class="org.obiba.onyx.engine.state.AbstractStageState" abstract="true">
+    <property name="userSessionService" ref="userSessionService" />
+  </bean>
+
+  <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+    <property name="scopes">
+      <map>
+        <entry key="session">
+          <bean class="org.obiba.onyx.util.testconfig.CustomScope" />
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+  <bean id="navigationStrategy"
+    class="org.obiba.onyx.quartz.core.service.impl.DefaultNavigationStrategyImpl" />
+
+  <!-- Questionnaire UI factories -->
+  <bean id="quartz.DefaultPageLayoutFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultPageLayoutFactory" />
+  
+  <bean id="quartz.DefaultQuestionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultQuestionPanelFactory" />
+  
+  <bean id="quartz.DropDownQuestionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DropDownQuestionPanelFactory" />
+  
+  <bean id="pageLayoutFactoryRegistry" class="org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry" />
+  
+  <bean id="questionPanelFactoryRegistry" class="org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry" />
+    
+  <bean id="activeQuestionnaireAdministrationService"
+    class="org.obiba.onyx.quartz.core.service.impl.hibernate.ActiveQuestionnaireAdministrationServiceHibernateImpl"
+    scope="session">
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="sessionFactory" ref="sessionFactory" />
+    <property name="navigationStrategy" ref="navigationStrategy" />
+  </bean>
+
+  <bean id="questionnaireBundleManager"
+    class="org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl">
+    <constructor-arg
+      value="classpath:/questionnaires" />
+    <property name="propertyKeyProvider" ref="propertyKeyProvider" />
+  </bean>
+
+  <bean id="moduleRegistry" class="org.obiba.onyx.engine.ModuleRegistry" />
+
+  <import resource="classpath:/test-hibernate-config.xml" />
+  <import resource="classpath:/test-db-config.xml" />
+
+</beans>

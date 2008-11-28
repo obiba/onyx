@@ -1,0 +1,70 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+  <tx:annotation-driven transaction-manager="transactionManager" />
+
+  <bean id="jadeWaitingState" parent="baseStageState" class="org.obiba.onyx.jade.engine.state.JadeWaitingState"
+    scope="prototype">
+  </bean>
+
+  <bean id="jadeReadyState" parent="baseStageState" class="org.obiba.onyx.jade.engine.state.JadeReadyState"
+    scope="prototype">
+  </bean>
+
+  <bean id="jadeNotApplicableState" parent="baseStageState"
+    class="org.obiba.onyx.jade.engine.state.JadeNotApplicableState" scope="prototype">
+  </bean>
+
+  <bean id="jadeContraIndicatedState" parent="baseStageState"
+    class="org.obiba.onyx.jade.engine.state.JadeContraIndicatedState" scope="prototype">
+  </bean>
+
+  <bean id="jadeInProgressState" parent="baseStageState" class="org.obiba.onyx.jade.engine.state.JadeInProgressState"
+    scope="prototype">
+    <property name="activeInstrumentRunService" ref="activeInstrumentRunService" />
+  </bean>
+
+  <bean id="jadeSkippedState" parent="baseStageState" class="org.obiba.onyx.jade.engine.state.JadeSkippedState"
+    scope="prototype">
+  </bean>
+
+  <bean id="jadeCompletedState" parent="baseStageState" class="org.obiba.onyx.jade.engine.state.JadeCompletedState"
+    scope="prototype">
+    <property name="instrumentRunService" ref="instrumentRunService" />
+    <property name="instrumentService" ref="instrumentService" />
+  </bean>
+
+  <bean id="instrumentService" class="org.obiba.onyx.jade.core.service.impl.DefaultInstrumentServiceImpl">
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+
+  <bean id="activeInstrumentRunService"
+    class="org.obiba.onyx.jade.core.service.impl.DefaultActiveInstrumentRunServiceImpl" scope="session">
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="userSessionService" ref="userSessionService" />
+  </bean>
+
+  <bean id="instrumentDescriptorService"
+    class="org.obiba.onyx.jade.core.service.impl.DefaultInstrumentDescriptorServiceImpl" />
+
+  <bean id="inputDataSourceVisitor" class="org.obiba.onyx.jade.core.service.impl.InputDataSourceVisitorImpl"
+    scope="prototype">
+    <property name="instrumentRunService" ref="instrumentRunService" />
+  </bean>
+
+  <bean id="jadeDatabaseSeed" class="org.obiba.onyx.jade.core.wicket.seed.JadeDatabaseSeed" scope="singleton">
+    <property name="resourcePatterns">
+      <list>
+        <value>${org.obiba.onyx.jade.instruments.path}/instrumentTypes-descriptor.xml</value>
+        <value>${org.obiba.onyx.jade.instruments.path}/**/instrument-descriptor.xml</value>
+      </list>
+    </property>
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="instrumentService" ref="instrumentService" />
+    <property name="instrumentDescriptorService" ref="instrumentDescriptorService" />
+  </bean>
+</beans>

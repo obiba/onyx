@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+  <properties>
+    <title>Quartz Overview</title>
+    <author>Vincent Ferretti</author>
+    <author>Nancy Lambert</author>
+    <author>Philippe Laflamme</author>
+  </properties>
+  <body>
+    <section name="Overview">
+      <p>
+        This module is used to administer questionnaires. Its main features are
+        <ul>
+          <li>Supports many questionnaires concurrently</li>
+          <li>Supports multi-language versions of the same questionnaire</li>
+          <li>Questionnaires are displayed through a series of web pages. A web page contains one or more
+            questions. The order of the displayed pages is driven by the order of the questions in the questionnaire.
+          </li>
+          <li>The display of each question may be made to depend on answers to earlier questions (skip patterns)</li>
+          <li>Supports many types of questions / answers e.g. free text, single-selection, multi-selection,
+            dropdown lists, boilerplates</li>
+          <li>Questions sharing answer categories may be displayed in a table format</li>
+          <li>Answers are validated according to unit rules and context (answers to previous questions)</li>
+          <li>Answers are persisted as answered and displayed when the questions are revisited. Answers to
+            revisited questions may be changed and the dependent skip patterns modified accordingly.</li>
+        </ul>
+      </p>
+			<subsection name="Screenshots">
+        <p>
+          <ul>
+            <li><a href="images/screens/quartz/shared.png">Example Question Page</a></li>
+          </ul>
+        </p>
+      </subsection>
+    </section>
+  </body>
+</document>

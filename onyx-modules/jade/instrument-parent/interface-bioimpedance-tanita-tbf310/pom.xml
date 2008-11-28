@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>Jade Bioimpedance Tanita TBF-310 Interface</name>
+  <description>Physical Measurement Bioimpedance Tanita TBF-310 Interface</description>
+
+  <parent>
+    <groupId>org.obiba.jade.instrument</groupId>
+    <artifactId>instrument-parent</artifactId>
+    <version>1.0-M4-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <groupId>org.obiba.jade.instrument</groupId>
+  <artifactId>interface-bioimpedance-tanita-tbf310</artifactId>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.rxtx</groupId>
+      <artifactId>rxtx</artifactId>
+      <version>2.1.7-r2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.rxtx</groupId>
+      <artifactId>rxtx-lib</artifactId>
+      <version>2.1.7-r2</version>
+      <classifier>win32</classifier>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo.webstart</groupId>
+        <artifactId>webstart-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>make-jnlp</id>
+            <configuration>
+              <jnlp>
+                <!-- 
+                  Overriden to hardcode a nativelib resource node. 
+                  Maven Webstart plugin does not support nativelibs. 
+                  See: http://jira.codehaus.org/browse/MWEBSTART-8 
+                -->
+                <inputTemplateResourcePath>${project.basedir}</inputTemplateResourcePath>
+              </jnlp>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

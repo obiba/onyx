@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp
+    spec="$jnlpspec"
+    codebase="${codebaseUrl}">
+  <information>
+    <title>$project.name</title>
+    <vendor>Obiba</vendor>
+#if($offlineAllowed)
+    <offline-allowed/>
+
+#end
+  </information>
+#if($allPermissions)
+  <security>
+     <all-permissions/>
+  </security>
+#end
+  <resources>
+    <j2se version="$j2seVersion"/>
+     $dependencies
+  </resources>
+  <application-desc main-class="${mainClass}">
+    <argument><![CDATA[__config__]]></argument>
+  </application-desc>
+
+</jnlp>
+

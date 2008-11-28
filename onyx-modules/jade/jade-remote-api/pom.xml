@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>Jade Remote API</name>
+  <description>Physical Measurement Remote API</description>
+
+  <groupId>org.obiba.jade</groupId>
+  <artifactId>jade-remote-api</artifactId>
+  <packaging>jar</packaging>
+
+  <parent>
+    <artifactId>jade</artifactId>
+    <groupId>org.obiba.jade</groupId>
+    <version>1.0-M4-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.obiba.onyx</groupId>
+      <artifactId>onyx-util</artifactId>
+      <version>1.0-M3-SNAPSHOT</version>
+    </dependency>
+
+  </dependencies>
+
+</project>

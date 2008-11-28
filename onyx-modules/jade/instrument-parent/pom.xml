@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>Jade Instrument</name>
+  <description>Physical Measurement Instrument Parent POM</description>
+
+  <groupId>org.obiba.jade.instrument</groupId>
+  <artifactId>instrument-parent</artifactId>
+  <packaging>pom</packaging>
+
+  <parent>
+    <artifactId>jade</artifactId>
+    <groupId>org.obiba.jade</groupId>
+    <version>1.0-M4-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <modules>
+    <module>interface-bioimpedance-tanita-tbf310</module>
+    <module>interface-bioimpedance-tanita-bc418</module>    
+    <module>interface-ecg-cardiosoft</module>
+    <module>interface-spirometry-minispir</module>
+    <module>interface-bonedensity-achillesexpress</module>
+    <module>interface-arterialstiffness-sphygmocor</module>
+  </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>instrument-bootstrap</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- Use the JDK's logging implementation so we reduce the number of dependencies for instrument projects -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!-- 
+          Child projects should run the webstart-maven-plugin. 
+          Its configuration should be common accross all instruments and is defined here. 
+        -->
+        <plugin>
+          <groupId>org.codehaus.mojo.webstart</groupId>
+          <artifactId>webstart-maven-plugin</artifactId>
+          <version>1.0-alpha-2</version>
+          <executions>
+            <execution>
+              <id>make-jnlp</id><!-- this is used for inheritance merges -->
+              <phase>package</phase><!-- append to the packaging phase. -->
+              <goals>
+                <goal>jnlp-single</goal><!-- goals == mojos -->
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <!--
+              Set to true to exclude all transitive dependencies. Default is false.
+            -->
+            <excludeTransitive>false</excludeTransitive>
+
+            <!-- The path where the libraries are stored within the jnlp structure. not required. by default the libraries are within the working directory -->
+            <libPath>lib</libPath>
+
+            <!-- JNLP generation -->
+            <jnlp>
+
+              <!-- 
+                Overriden to use a common template specified in the parent project.
+                this only works if the child project is located directly under the parent.
+              -->
+              <inputTemplateResourcePath>${project.basedir}/..</inputTemplateResourcePath>
+
+              <!-- relative to inputTemplateResourcePath -->
+              <!--inputTemplate>src/main/jnlp/template.vm</inputTemplate-->
+              <!--outputFile>launch.jnlp</outputFile--><!-- defaults to launch.jnlp -->
+
+              <!-- used to automatically identify the jar containing the main class. -->
+              <!-- this is perhaps going to change -->
+              <mainClass>org.obiba.onyx.jade.client.JnlpClient</mainClass>
+
+            </jnlp>
+
+
+            <!-- causes a version attribute to be output in each jar resource element, optional, default is false -->
+            <outputJarVersions>false</outputJarVersions>
+            <verbose>false</verbose>
+
+            <resourcesDirectory>src/main/resources/config</resourcesDirectory>
+
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>

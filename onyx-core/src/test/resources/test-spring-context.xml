@@ -1,0 +1,14 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+  default-autowire="no">
+
+  <bean id="participantReader" class="org.obiba.onyx.core.service.ParticipantExcelReader" scope="prototype" />
+  <bean id="stageOrderingStrategy" class="org.obiba.onyx.engine.StaticStageOrderingStrategy">
+    <property name="stageOrdering" value="" />
+  </bean>
+
+  <import resource="test-hibernate-config.xml" />
+  <import resource="test-db-config.xml" />
+  <import resource="classpath:META-INF/spring/onyx-core/context.xml" />
+
+</beans>

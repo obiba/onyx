@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+  <properties>
+    <title>Onyx - The Assessment Center Application</title>
+    <author>Vincent Ferretti</author>
+    <author>Nancy Lambert</author>
+    <author>Philippe Laflamme</author>
+  </properties>
+  <body>
+    <section name="Introduction">
+      <p>Onyx is the application that manages participant interviews at the assessment centers. This
+      application is currently under development by a team of 8 people. The timelines are short.. Very little
+      documentation is available for now and this web site is far from complete due to lack of time. If you are
+      interested in knowing more about the project or wish to collaborate, please contact directly <a href="mailto:info@obiba.org">info@obiba.org</a>.org. Only
+      a very general overview of the system is provided here.</p> 
+    </section>
+    <section name="Overview">
+      <p>In Onyx, an interview is represented formally as a sequence of stages that participants have to pass through
+        in order to complete their visit at the assessment center. For example, the informed consent signature is
+        usually the first required stage of any interview. The main responsibility of Onyx is to provide the applicative
+        backbone into which independent data collection software used by stages (e.g. a CAPI software for questionnaire
+        administration) can be easily plugged (see figure 1). This modular and generic architecture allows a very
+        customizable system. Biobanks can configure Onyx for their own specific stages and software.</p>
+
+      <p>Once configured, Onyx controls both the order and availability of the stages (e.g. no stages are available
+        prior to informed consent signature) and captures many administrative parameters such as starting and ending
+        times of each stage. Onyx also manages participant appointment and reception as well as data exportation to the
+        study central database.</p>
+
+      <p><img src="images/flow.png"/>Figure 1: Onyx main functionalities in blue. Orange hexagons represent data collection software or modules used in each stage.</p>
+
+		  <subsection name="Screenshots">
+        <p>
+          <ul>
+            <li><a href="images/screens/onyx/participant-list.png">Appointment Management</a></li>
+            <li><a href="images/screens/onyx/reception.png">Participant Reception</a></li>
+            <li><a href="images/screens/onyx/participant-interview.png">Participant Interview</a></li>
+            <li><a href="images/screens/onyx/popup.png">Starting an Interview Stage</a></li>
+          </ul>
+        </p>
+      </subsection>
+      <subsection name="CPAC Data Collection Modules">
+        <p>The OBiBa team is currently developing a series of stage modules for the CPAC cohorts. Each of them uses
+          generic data models and tools that can be configured to meet requirements of other biobanks. These modules are:
+        </p>
+        <ul>
+          <li>
+            <a href="marble.html">Marble - Consent</a>
+          </li>
+          <li>
+            <a href="quartz.html">Quartz - CAPI</a>
+          </li>
+          <li>
+            <a href="jade.html">Jade - Physical Measurements</a>
+          </li>
+          <li>
+            <a href="ruby.html">Ruby - Sample Collection</a>
+          </li>
+          <li>
+            <a href="mica.html">Mica - Conclusion</a>
+          </li>
+        </ul>
+      </subsection>
+    </section>
+    
+  </body>
+</document>

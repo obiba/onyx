@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<linked-list>
+
+  <instrument id="bioimp2">
+    <name>Tanita BC-418</name>
+    <vendor>Tanita</vendor>
+    <model>BC-418</model>
+    <status>ACTIVE</status>
+    <serialNumber>1234567890</serialNumber>
+    <barcode>CAG1002</barcode>
+    <instrumentType>
+      <name>BIM_BC418</name>
+    </instrumentType>
+    <contraindications>
+      <contraIndication>
+        <code>UnableToStandUnassistedHandicap</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>UnableToStandUnassistedWheelchair</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>UnableToStandUnassistedCast</code>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>Other</code>
+        <requiresDescription>true</requiresDescription>
+        <type>OBSERVED</type>
+      </contraIndication>
+
+      <contraIndication>
+        <code>IrremovableMetallicDevice</code>
+        <type>ASKED</type>
+      </contraIndication>
+    </contraindications>
+  </instrument>
+
+  <interpretative>
+    <name>PhysicalActivityLast24Hours</name>
+    <description>PhysicalActivityLast24Hours</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>MANUAL</captureMethod>
+    <type>OBSERVED</type>
+    <instrument reference="bioimp2" />
+  </interpretative>
+
+  <fixedSource id="clothes_weight_source">
+    <value>1</value>
+  </fixedSource>
+
+  <input id="clothes_weight">
+    <name>ClothesWeight</name>
+    <description>Clothes_weight</description>
+    <dataType>DECIMAL</dataType>
+    <measurementUnit>kg</measurementUnit>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="clothes_weight_source" />
+    <instrument reference="bioimp2" />
+  </input>
+
+  <participantPropertySource id="gender_source">
+    <property>gender</property>
+  </participantPropertySource>
+  <input id="gender_in">
+    <name>Gender</name>
+    <description>Participant_Gender</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="gender_source" />
+    <instrument reference="bioimp2" />
+  </input>
+
+  <fixedSource id="body_type_source">
+    <value>STANDARD</value>
+  </fixedSource>
+  <input id="body_type_in">
+    <name>BodyType</name>
+    <description>Body_type</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="body_type_source" />
+    <instrument reference="bioimp2" />
+  </input>
+
+  <participantPropertySource id="age_source">
+    <property>age</property>
+  </participantPropertySource>
+  <input id="age_in">
+    <name>Age</name>
+    <description>Participant_Age</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <inputSource reference="age_source" />
+    <instrument reference="bioimp2" />
+  </input>
+
+  <outputParameterSource id="measured_height">
+    <instrumentType>
+      <name>STA</name>
+    </instrumentType>
+    <parameterName>Height</parameterName>
+  </outputParameterSource>
+  <input id="height_in">
+    <name>Height</name>
+    <description>Measured_height</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp2" />
+    <inputSource reference="measured_height" />
+  </input>
+
+  <output id="date">
+    <name>Date</name>
+    <description>Measurement_date</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="time">
+    <name>Time</name>
+    <description>Measurement_time</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="body_type">
+    <name>BodyType</name>
+    <description>Body_type</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp2" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="body_type" />
+        <parameter reference="body_type_in" />
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+
+  <output id="gender">
+    <name>Gender</name>
+    <description>Output_gender</description>
+    <dataType>TEXT</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp2" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="gender" />
+        <parameter reference="gender_in" />
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+
+  <output id="age">
+    <name>Age</name>
+    <description>Output_age</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp2" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="age" />
+        <parameter reference="age_in" />
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+
+  <output id="height">
+    <name>Height</name>
+    <description>Output_height</description>
+    <measurementUnit>cm</measurementUnit>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp2" />
+    <integrityChecks>
+      <equalsParameterCheck>
+        <targetParameter reference="height" />
+        <parameter reference="height_in" />
+      </equalsParameterCheck>
+    </integrityChecks>
+  </output>
+
+  <output id="weight">
+    <name>Weight</name>
+    <description>Measured_weight</description>
+    <measurementUnit>kg</measurementUnit>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="fat_percentage">
+    <name>FatPercentage</name>
+    <description>Fat_percentage_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>%</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="fat_mass">
+    <name>FatMass</name>
+    <description>Fat_mass_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="ffm">
+    <name>FatFreeMass</name>
+    <description>Fat_free_mass_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="tbw">
+    <name>TotalBodyWater</name>
+    <description>Total_Body_Water_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="bmi">
+    <name>BMI</name>
+    <description>Body_mass_index_calculated</description>
+    <measurementUnit>kg/m²</measurementUnit>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="bmr">
+    <name>BMR</name>
+    <description>Basal_metabolic_rate_calculated</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kJ</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="impedance">
+    <name>Impedance</name>
+    <description>Measured_body_impedance</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>ohm</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="right_leg_impedance">
+    <name>RightLegImpedance</name>
+    <description>Measured_right_leg_impedance</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>ohm</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="left_leg_impedance">
+    <name>LeftLegImpedance</name>
+    <description>Measured_left_leg_impedance</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>ohm</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="right_arm_impedance">
+    <name>RightArmImpedance</name>
+    <description>Measured_right_arm_impedance</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>ohm</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="left_arm_impedance">
+    <name>LeftArmImpedance</name>
+    <description>Measured_left_arm_impedance</description>
+    <dataType>INTEGER</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>ohm</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="right_leg_fat_percentage">
+    <name>RightLegFatPercentage</name>
+    <description>Right_leg_fat_percentage_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>%</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="right_leg_fat_mass">
+    <name>RightLegFatMass</name>
+    <description>Right_leg_fat_mass_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="Right_leg_ffm">
+    <name>RightLegFatFreeMass</name>
+    <description>Right_Leg_fat_free_mass_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="right_leg_pms">
+    <name>RightLegPredictedMuscleMass</name>
+    <description>Right_leg_predicted_muscle_mass</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="left_leg_fat_percentage">
+    <name>LeftLegFatPercentage</name>
+    <description>Left_leg_fat_percentage_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>%</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="left_leg_fat_mass">
+    <name>LeftLegFatMass</name>
+    <description>Left_leg_fat_mass_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="left_leg_ffm">
+    <name>LeftLegFatFreeMass</name>
+    <description>Left_Leg_fat_free_mass_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="left_leg_pms">
+    <name>LeftLegPredictedMuscleMass</name>
+    <description>Left_leg_predicted_muscle_mass</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="right_arm_fat_percentage">
+    <name>RightArmFatPercentage</name>
+    <description>Right_arm_fat_percentage_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>%</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="right_arm_fat_mass">
+    <name>RightArmFatMass</name>
+    <description>Right_Arm_fat_mass_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="Right_arm_ffm">
+    <name>RightArmFatFreeMass</name>
+    <description>Right_Arm_fat_free_mass_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="right_arm_pms">
+    <name>RightArmPredictedMuscleMass</name>
+    <description>Right_arm_predicted_muscle_mass</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="left_arm_fat_percentage">
+    <name>LeftArmFatPercentage</name>
+    <description>Left_arm_fat_percentage_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>%</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="left_arm_fat_mass">
+    <name>LeftArmFatMass</name>
+    <description>Left_arm_fat_mass_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="Left_arm_ffm">
+    <name>LeftArmFatFreeMass</name>
+    <description>Left_Arm_fat_free_mass_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="left_arm_pms">
+    <name>LeftArmPredictedMuscleMass</name>
+    <description>Left_arm_predicted_muscle_mass</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="trunk_fat_percentage">
+    <name>TrunkFatPercentage</name>
+    <description>Trunk_fat_percentage_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>%</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="trunk_fat_mass">
+    <name>TrunkFatMass</name>
+    <description>Trunk_fat_mass_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="trunk_ffm">
+    <name>TrunkFatFreeMass</name>
+    <description>Trunk_fat_free_mass_calculated</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+
+  <output id="trunk_pms">
+    <name>TrunkPredictedMuscleMass</name>
+    <description>Trunk_predicted_muscle_mass</description>
+    <dataType>DECIMAL</dataType>
+    <captureMethod>AUTOMATIC</captureMethod>
+    <measurementUnit>kg</measurementUnit>
+    <instrument reference="bioimp2" />
+  </output>
+</linked-list>
