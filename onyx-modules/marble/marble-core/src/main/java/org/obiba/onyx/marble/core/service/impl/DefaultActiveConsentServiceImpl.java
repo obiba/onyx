@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.apache.wicket.util.string.Strings;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
+import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.domain.consent.Consent;
@@ -41,19 +42,24 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
     this.activeInterviewService = activeInterviewService;
   }
 
-  public void setConsent(Consent consent) {
-    this.consent = consent;
+  public Consent getConsent() {
+    return getConsent(false);
   }
 
-  public Consent getConsent() {
-    Consent template = null;
+  public Consent getConsent(boolean newInstance) {
 
-    // Attempt to retrieve from database.
-    if(consent == null) {
-      template = new Consent();
-      template.setInterview(activeInterviewService.getInterview());
-      template.setDeleted(false);
-      consent = getPersistenceManager().matchOne(template);
+    Interview currentInterview = activeInterviewService.getInterview();
+
+    // Consent doesn't exist or new object requested.
+    if(consent == null || newInstance) {
+      consent = new Consent();
+      consent.setInterview(currentInterview);
+      consent.setDeleted(false);
+
+      log.debug("Created new consent object for interview id = {}", currentInterview.getId());
+
+    } else {
+      log.debug("Returning consent object found in current session = {}", currentInterview.getId());
     }
 
     return consent;

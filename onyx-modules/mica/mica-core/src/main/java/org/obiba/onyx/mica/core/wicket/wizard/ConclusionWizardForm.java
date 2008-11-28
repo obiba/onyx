@@ -12,7 +12,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.mica.core.service.ActiveConclusionService;
-import org.obiba.onyx.mica.domain.conclusion.Conclusion;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 import org.slf4j.Logger;
@@ -34,9 +33,7 @@ public abstract class ConclusionWizardForm extends WizardForm {
   private WizardStepPanel participantReportStep;
 
   public ConclusionWizardForm(String id, IModel interviewConclusionModel) {
-    super(id);
-
-    activeConclusionService.setConclusion((Conclusion) interviewConclusionModel.getObject());
+    super(id, interviewConclusionModel);
 
     participantReportStep = new ParticipantReportStep(getStepId());
     balsacConfirmationStep = new BalsacConfirmationStep(getStepId(), participantReportStep);

@@ -12,8 +12,6 @@ package org.obiba.onyx.marble.core.wicket.wizard;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.marble.core.service.ActiveConsentService;
-import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
@@ -22,9 +20,6 @@ public abstract class ConsentWizardForm extends WizardForm {
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
-  @SpringBean
-  private ActiveConsentService activeConsentService;
-
   private WizardStepPanel consentModeSelectionStep;
 
   private WizardStepPanel electronicConsentStep;
@@ -32,9 +27,7 @@ public abstract class ConsentWizardForm extends WizardForm {
   private WizardStepPanel consentConfirmationStep;
 
   public ConsentWizardForm(String id, IModel interviewConsentModel) {
-    super(id);
-
-    activeConsentService.setConsent((Consent) interviewConsentModel.getObject());
+    super(id, interviewConsentModel);
 
     consentConfirmationStep = new ManualConsentStep(getStepId());
     electronicConsentStep = new ElectronicConsentStep(getStepId(), consentConfirmationStep);

@@ -27,20 +27,19 @@ public class DefaultActiveConclusionServiceImpl extends PersistenceManagerAwareS
   private Conclusion conclusion;
 
   public Conclusion getConclusion() {
-    Conclusion wConclusion = null;
+    return getConclusion(false);
+  }
 
-    // Attempt to retrieve from database.
-    if(conclusion == null) {
-      wConclusion = new Conclusion();
-      wConclusion.setInterview(activeInterviewService.getInterview());
-      conclusion = getPersistenceManager().matchOne(wConclusion);
+  public Conclusion getConclusion(boolean newInstance) {
+
+    // Consent doesn't exist or new object requested.
+    if(conclusion == null || newInstance) {
+      conclusion = new Conclusion();
+      conclusion.setInterview(activeInterviewService.getInterview());
     }
 
     return conclusion;
-  }
 
-  public void setConclusion(Conclusion conclusion) {
-    this.conclusion = conclusion;
   }
 
   public void save() {

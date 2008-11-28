@@ -24,10 +24,6 @@ public class MarbleReadyState extends AbstractMarbleStageState {
 
   private static final Logger log = LoggerFactory.getLogger(MarbleReadyState.class);
 
-  // public void afterPropertiesSet() throws Exception {
-  // addAction(ActionDefinitionBuilder.START_ACTION);
-  // }
-
   @Override
   protected void addUserActions(Set<ActionType> types) {
     types.add(ActionType.EXECUTE);

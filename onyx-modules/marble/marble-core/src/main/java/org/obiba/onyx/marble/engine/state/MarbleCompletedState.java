@@ -22,10 +22,6 @@ public class MarbleCompletedState extends AbstractMarbleStageState {
 
   private static final Logger log = LoggerFactory.getLogger(MarbleCompletedState.class);
 
-  // public void afterPropertiesSet() throws Exception {
-  // addAction(ActionDefinitionBuilder.CANCEL_ACTION);
-  // }
-
   public String getName() {
     return "Completed";
   }

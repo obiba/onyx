@@ -23,6 +23,7 @@ import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
+import org.obiba.onyx.mica.core.service.ActiveConclusionService;
 import org.obiba.onyx.mica.core.wicket.wizard.ConclusionWizardForm;
 import org.obiba.onyx.mica.domain.conclusion.Conclusion;
 import org.obiba.onyx.wicket.IEngineComponentAware;
@@ -44,13 +45,16 @@ public class MicaPanel extends Panel implements IEngineComponentAware {
   private ActiveInterviewService activeInterviewService;
 
   @SpringBean
+  private ActiveConclusionService activeConclusionService;
+
+  @SpringBean
   private ModuleRegistry moduleRegistry;
 
   private ActionWindow actionWindow;
 
   private FeedbackPanel feedbackPanel;
 
-  private MarbleModel model;
+  private MicaModel model;
 
   Conclusion interviewConclusion;
 
@@ -58,12 +62,9 @@ public class MicaPanel extends Panel implements IEngineComponentAware {
   public MicaPanel(String id, Stage stage) {
     super(id);
 
-    Conclusion interviewConclusion = new Conclusion();
-    interviewConclusion.setInterview(activeInterviewService.getInterview());
+    model = new MicaModel(new StageModel(moduleRegistry, stage.getName()), new Model(activeConclusionService.getConclusion(true)));
 
-    model = new MarbleModel(new StageModel(moduleRegistry, stage.getName()), new Model(interviewConclusion));
-
-    add(new WizardPanel("content", model.getConsentModel()) {
+    add(new WizardPanel("content", model.getConclusionModel()) {
 
       @Override
       public WizardForm createForm(String componentId) {
@@ -85,6 +86,7 @@ public class MicaPanel extends Panel implements IEngineComponentAware {
             if(actionDef != null) {
               actionWindow.show(target, model.getStageModel(), actionDef);
             }
+            activeConclusionService.save();
           }
 
           @Override
@@ -104,12 +106,12 @@ public class MicaPanel extends Panel implements IEngineComponentAware {
   }
 
   @SuppressWarnings("serial")
-  private class MarbleModel implements Serializable {
+  private class MicaModel implements Serializable {
     private IModel conclusionModel;
 
     private IModel stageModel;
 
-    public MarbleModel(IModel stageModel, IModel consentModel) {
+    public MicaModel(IModel stageModel, IModel consentModel) {
       this.conclusionModel = consentModel;
       this.stageModel = stageModel;
     }
@@ -118,7 +120,7 @@ public class MicaPanel extends Panel implements IEngineComponentAware {
       return (Conclusion) conclusionModel.getObject();
     }
 
-    public IModel getConsentModel() {
+    public IModel getConclusionModel() {
       return conclusionModel;
     }
 

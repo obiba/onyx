@@ -14,7 +14,7 @@ public interface ActiveConclusionService {
 
   public Conclusion getConclusion();
 
-  public void setConclusion(Conclusion conclusion);
+  public Conclusion getConclusion(boolean newInstance);
 
   public void save();
 

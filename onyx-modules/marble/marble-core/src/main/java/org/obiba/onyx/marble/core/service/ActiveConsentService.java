@@ -17,16 +17,17 @@ import org.obiba.onyx.marble.domain.consent.Consent;
 public interface ActiveConsentService {
 
   /**
-   * Sets the {@link Consent} for the current interview.
-   * @param consent The consent
-   */
-  public void setConsent(Consent consent);
-
-  /**
    * Returns the {@link Consent} for the current interview.
    * @return The consent
    */
   public Consent getConsent();
+
+  /**
+   * Returns the {@link Consent} for the current interview.
+   * @param newInstance If true, create a new consent object and return it.
+   * @return
+   */
+  public Consent getConsent(boolean newInstance);
 
   /**
    * Persists the {@link Consent} for the current interview.

@@ -43,9 +43,10 @@ public class BalsacConfirmationStep extends WizardStepPanel {
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
     setContent(target, balsacConfirmationPanel = new BalsacConfirmationPanel(getContentId()));
   }
-
+  
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     balsacConfirmationPanel.save();
-  }
+  }  
+
 }

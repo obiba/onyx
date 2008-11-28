@@ -32,6 +32,7 @@
   <bean id="activeConclusionService" class="org.obiba.onyx.mica.core.service.impl.DefaultActiveConclusionServiceImpl"
     scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
+    <property name="activeInterviewService" ref="activeInterviewService" />    
     <property name="balsacConfirmationRequired" value="true" />
   </bean>
 

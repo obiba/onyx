@@ -18,7 +18,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.mica.core.service.ActiveConclusionService;
-import org.obiba.onyx.mica.domain.conclusion.Conclusion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,11 +118,6 @@ public class BalsacConfirmationPanel extends Panel {
   }
 
   public void save() {
-    activeConclusionService.setConclusion(null);
-    Conclusion conclusion = new Conclusion();
-    conclusion.setInterview(activeInterviewService.getInterview());
-    activeConclusionService.setConclusion(conclusion);
-
     if(radioGroup.getValue().equals(YES)) {
       activeConclusionService.getConclusion().setAccepted(true);
       activeConclusionService.getConclusion().setBarcode(balsacBarcode.getValue());
@@ -131,7 +125,6 @@ public class BalsacConfirmationPanel extends Panel {
       activeConclusionService.getConclusion().setAccepted(false);
 
     }
-    activeConclusionService.save();
   }
 
   @SuppressWarnings("serial")

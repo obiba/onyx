@@ -23,11 +23,6 @@ public class MarbleInProgressState extends AbstractMarbleStageState {
 
   private static final Logger log = LoggerFactory.getLogger(MarbleInProgressState.class);
 
-  // public void afterPropertiesSet() throws Exception {
-  // addAction(ActionDefinitionBuilder.CANCEL_ACTION);
-  // addSystemAction(ActionDefinitionBuilder.COMPLETE_ACTION);
-  // }
-
   public String getName() {
     return "InProgress";
   }
