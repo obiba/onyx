@@ -33,9 +33,9 @@ public class ParticipantAttribute {
 
   private boolean mandatoryAtReception;
 
-  private boolean editableAtEnrollment;
-
   private boolean editableAtReception;
+
+  private boolean editableAfterReception;
 
   //
   // Methods
@@ -143,38 +143,38 @@ public class ParticipantAttribute {
   }
 
   /**
-   * Sets whether the attribute is editable at the time of enrollment.
-   * 
-   * @param editableAtEnrollment
-   */
-  public void setEditableAtEnrollment(boolean editableAtEnrollment) {
-    this.editableAtEnrollment = editableAtEnrollment;
-  }
-
-  /**
-   * Indicates whether the attribute is editable at the time of enrollment.
-   * 
-   * @return <code>true</code> if the attribute is mandatory at the time of enrollment
-   */
-  public boolean isEditableAtEnrollment() {
-    return editableAtEnrollment;
-  }
-
-  /**
    * Sets whether the attribute is editable at the time of reception.
    * 
-   * @param editableAtReception whether the attribute is editable at the time of reception
+   * @param editableAtReception
    */
-  public void setEditableAtReception(boolean editableAtReception) {
+  public void seEditableAtReception(boolean editableAtReception) {
     this.editableAtReception = editableAtReception;
   }
 
   /**
    * Indicates whether the attribute is editable at the time of reception.
    * 
-   * @return <code>true</code> if the attribute is editable at the time of reception.
+   * @return <code>true</code> if the attribute is mandatory at the time of enrollment
    */
   public boolean isEditableAtReception() {
     return editableAtReception;
+  }
+
+  /**
+   * Sets whether the attribute is editable after the time of reception.
+   * 
+   * @param editableAfterReception whether the attribute is editable after the time of reception
+   */
+  public void setEditableAfterReception(boolean editableAfterReception) {
+    this.editableAfterReception = editableAfterReception;
+  }
+
+  /**
+   * Indicates whether the attribute is editable after the time of reception.
+   * 
+   * @return <code>true</code> if the attribute is editable after the time of reception.
+   */
+  public boolean isEditableAfterReception() {
+    return editableAfterReception;
   }
 }

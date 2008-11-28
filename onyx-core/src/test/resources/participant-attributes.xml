@@ -3,8 +3,8 @@
     <name>AllowedValuesAttribute</name>
     <mandatoryAtEnrollment>true</mandatoryAtEnrollment>
     <mandatoryAtReception>false</mandatoryAtReception>
-    <editableAtEnrollment>true</editableAtEnrollment>
-    <editableAtReception>false</editableAtReception>
+    <editableAtReception>true</editableAtReception>
+    <editableAfterReception>false</editableAfterReception>
     <type>TEXT</type>
     <allowedValues>
       <string>Value1</string>
@@ -16,16 +16,16 @@
     <name>IntegerAttribute</name>
     <mandatoryAtEnrollment>false</mandatoryAtEnrollment>
     <mandatoryAtReception>true</mandatoryAtReception>
-    <editableAtEnrollment>false</editableAtEnrollment>
-    <editableAtReception>true</editableAtReception>
+    <editableAtReception>false</editableAtReception>
+    <editableAfterReception>true</editableAfterReception>
     <type>INTEGER</type>
   </attribute>
     <attribute>
     <name>DateAttribute</name>
     <mandatoryAtEnrollment>true</mandatoryAtEnrollment>
     <mandatoryAtReception>true</mandatoryAtReception>
-    <editableAtEnrollment>true</editableAtEnrollment>
     <editableAtReception>true</editableAtReception>
+    <editableAfterReception>true</editableAfterReception>
     <type>DATE</type>
   </attribute>
 </participantAttributes>
