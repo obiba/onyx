@@ -31,7 +31,7 @@ public class ElectronicConsentStep extends WizardStepPanel {
     form.getPreviousLink().setEnabled(true);
     form.getNextLink().setEnabled(false);
     form.getFinishLink().setEnabled(true);
-    form.getCancelLink().setEnabled(false);
+    form.getCancelLink().setEnabled(true);
   }
 
   @Override
@@ -41,13 +41,13 @@ public class ElectronicConsentStep extends WizardStepPanel {
 
     // Replace the WizardForm css to get rid of the blue border that surrounds the form.
     // This border is taking too much space when the electronic consent form is displayed.
-    form.changeWizardFormStyle("wizard-form");
+    form.changeWizardFormStyle("wizard-consent");
   }
 
   @Override
   public void onStepInPrevious(WizardForm form, AjaxRequestTarget target) {
     super.onStepInPrevious(form, target);
-    form.changeWizardFormStyle("wizard-form");
+    form.changeWizardFormStyle("wizard-consent");
   }
 
   @Override
@@ -60,6 +60,12 @@ public class ElectronicConsentStep extends WizardStepPanel {
   public void onStepOutPrevious(WizardForm form, AjaxRequestTarget target) {
     super.onStepOutPrevious(form, target);
     form.changeWizardFormStyle("wizard");
+  }
+
+  @Override
+  public void onStepOutNextError(WizardForm form, AjaxRequestTarget target) {
+    super.onStepOutNextError(form, target);
+    form.changeWizardFormStyle("wizard-consent");
   }
 
 }
