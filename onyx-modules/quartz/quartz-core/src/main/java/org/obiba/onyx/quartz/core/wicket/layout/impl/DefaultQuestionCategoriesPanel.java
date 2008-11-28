@@ -80,7 +80,7 @@ public class DefaultQuestionCategoriesPanel extends Panel {
   private void addRadioGroup(Question question) {
     final RadioGroup radioGroup = new RadioGroup("categories", new Model());
     radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
-    radioGroup.setRequired(!question.isBoilerPlate() && question.isRequired());
+    radioGroup.add(new AnswerCountValidator(getQuestionModel()));
     add(radioGroup);
 
     GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), null, new QuestionCategoriesToMatrixPermutator(getModel())) {
@@ -102,12 +102,6 @@ public class DefaultQuestionCategoriesPanel extends Panel {
             public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
               // update all
               target.addComponent(DefaultQuestionCategoriesPanel.this);
-            }
-
-            @Override
-            public void onOpenFieldError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              // update all
-              // target.addComponent(DefaultQuestionCategoriesPanel.this);
             }
 
             @Override
@@ -134,7 +128,7 @@ public class DefaultQuestionCategoriesPanel extends Panel {
   private void addCheckBoxGroup(Question question) {
     final CheckGroup checkGroup = new CheckGroup("categories", new ArrayList<IModel>());
     checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
-    checkGroup.add(new AnswerCountValidator(getModel()));
+    checkGroup.add(new AnswerCountValidator(getQuestionModel()));
     add(checkGroup);
 
     GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), new QuestionCategoryEscapeFilter(false), new QuestionCategoriesToMatrixPermutator(getModel())) {

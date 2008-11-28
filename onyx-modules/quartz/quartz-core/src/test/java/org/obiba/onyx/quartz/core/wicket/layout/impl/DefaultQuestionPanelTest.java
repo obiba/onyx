@@ -366,19 +366,13 @@ public class DefaultQuestionPanelTest {
     Radio radio2 = (Radio) ComponentTesterUtils.findChildren(radioGroup, Radio.class).get(1);
     Assert.assertEquals(radioGroup.getModel(), radio2.getModel());
 
-    Assert.assertTrue(radioGroup.isRequired());
-
     FormComponent field = (FormComponent) ComponentTesterUtils.findChildren(radioGroup, TextField.class).get(0);
-    Assert.assertFalse(field.isRequired());
 
     // select open field
     tester.executeAjaxEvent(field, "onclick");
     radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
     Radio radio1 = (Radio) ComponentTesterUtils.findChildren(radioGroup, Radio.class).get(0);
     Assert.assertEquals(radioGroup.getModelObject(), radio1.getModelObject());
-    Assert.assertTrue(radioGroup.isRequired());
-    field = (FormComponent) ComponentTesterUtils.findChildren(radioGroup, TextField.class).get(0);
-    Assert.assertTrue(field.isRequired());
 
     verify(activeInterviewServiceMock);
     verify(activeQuestionnaireAdministrationServiceMock);
@@ -452,23 +446,14 @@ public class DefaultQuestionPanelTest {
     // check previous answer is here (radio 2)
     Radio radio2 = (Radio) ComponentTesterUtils.findChildren(radioGroup, Radio.class).get(1);
     Assert.assertEquals(radioGroup.getModel(), radio2.getModel());
-    Assert.assertTrue(radioGroup.isRequired());
 
     FormComponent field1 = (FormComponent) ComponentTesterUtils.findChildren(radioGroup, TextField.class).get(0);
-    Assert.assertFalse(field1.isRequired());
-    FormComponent field2 = (FormComponent) ComponentTesterUtils.findChildren(radioGroup, TextField.class).get(1);
-    Assert.assertFalse(field2.isRequired());
 
     // select open field
     tester.executeAjaxEvent(field1, "onclick");
     radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
     Radio radio1 = (Radio) ComponentTesterUtils.findChildren(radioGroup, Radio.class).get(0);
     Assert.assertEquals(radioGroup.getModelObject(), radio1.getModelObject());
-    Assert.assertTrue(radioGroup.isRequired());
-    field1 = (FormComponent) ComponentTesterUtils.findChildren(radioGroup, TextField.class).get(0);
-    Assert.assertTrue(field1.isRequired());
-    field1 = (FormComponent) ComponentTesterUtils.findChildren(radioGroup, TextField.class).get(1);
-    Assert.assertTrue(field2.isRequired());
 
     verify(activeInterviewServiceMock);
     verify(activeQuestionnaireAdministrationServiceMock);
@@ -636,13 +621,11 @@ public class DefaultQuestionPanelTest {
     Assert.assertEquals(1, selections.size());
     Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox2.getModel()).getQuestionCategory(), selections.iterator().next().getObject());
     FormComponent field = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(0);
-    Assert.assertFalse(field.isRequired());
 
     // select open field
     tester.executeAjaxEvent(field, "onclick");
     checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
     field = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(0);
-    Assert.assertTrue(field.isRequired());
 
     checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
     CheckBox checkbox1 = (CheckBox) ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).get(0);
@@ -726,9 +709,7 @@ public class DefaultQuestionPanelTest {
     Assert.assertEquals(1, selections.size());
     Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox2.getModel()).getQuestionCategory(), selections.iterator().next().getObject());
     FormComponent field1 = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(0);
-    Assert.assertFalse(field1.isRequired());
     FormComponent field2 = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(1);
-    Assert.assertFalse(field2.isRequired());
 
     // select open field
     tester.executeAjaxEvent(field1, "onclick");
@@ -740,11 +721,6 @@ public class DefaultQuestionPanelTest {
     Iterator<IModel> iterator = selections.iterator();
     Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox2.getModel()).getQuestionCategory(), iterator.next().getObject());
     Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox1.getModel()).getQuestionCategory(), iterator.next().getObject());
-
-    field1 = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(0);
-    Assert.assertTrue(field1.isRequired());
-    field2 = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(1);
-    Assert.assertTrue(field2.isRequired());
 
     verify(activeInterviewServiceMock);
     verify(activeQuestionnaireAdministrationServiceMock);
@@ -842,18 +818,12 @@ public class DefaultQuestionPanelTest {
     RadioGroup radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:array:rows:rows:1:group");
     Radio radio11 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:array:rows:rows:1:group:cells:2:cell:categoryLabel:radio");
     Assert.assertEquals(radioGroup.getModelObject(), radio11.getModelObject());
-    Assert.assertTrue(radioGroup.isRequired());
-    FormComponent field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:array:rows:rows:1:group:cells:4:cell:open:open:input:field");
-    Assert.assertFalse(field.isRequired());
 
     // select open field
     tester.executeAjaxEvent("panel:form:content:content:array:rows:rows:1:group:cells:4:cell:open:open:input:field", "onclick");
     radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:array:rows:rows:1:group");
     Radio radio13 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:array:rows:rows:1:group:cells:4:cell:categoryLabel:radio");
     Assert.assertEquals(radioGroup.getModelObject(), radio13.getModelObject());
-    Assert.assertTrue(radioGroup.isRequired());
-    field = (FormComponent) tester.getComponentFromLastRenderedPage("panel:form:content:content:array:rows:rows:1:group:cells:4:cell:open:open:input:field");
-    Assert.assertTrue(field.isRequired());
 
     verify(activeInterviewServiceMock);
     verify(activeQuestionnaireAdministrationServiceMock);

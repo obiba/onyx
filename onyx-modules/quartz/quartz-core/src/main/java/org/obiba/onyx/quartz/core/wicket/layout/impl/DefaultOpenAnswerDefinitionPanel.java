@@ -16,13 +16,13 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidator;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -108,9 +108,6 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
         openField.add(validator);
       }
     }
-
-    // TODO check if open answer is always required when defined ?
-    openField.setRequired(true);
     add(openField);
 
     openField.add(new AjaxFormComponentUpdatingBehavior("onblur") {
@@ -173,29 +170,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     });
 
     // set the label of the field
-    QuestionnaireStringResourceModel questionCategoryLabel = new QuestionnaireStringResourceModel(getQuestionCategory(), "label");
-    QuestionnaireStringResourceModel questionLabel = new QuestionnaireStringResourceModel(getQuestionModel(), "label");
-    if(!getQuestionCategory().getQuestion().getName().equals(getQuestion().getName())) {
-      openField.setLabel(new Model(questionLabel.getString() + " / " + questionCategoryLabel.getString()));
-    } else if(!isEmptyString(openLabel.getString())) {
-      openField.setLabel(openLabel);
-    } else if(!isEmptyString(unitLabel.getString())) {
-      openField.setLabel(unitLabel);
-    } else if(!isEmptyString(questionCategoryLabel.getString())) {
-      openField.setLabel(questionCategoryLabel);
-    } else {
-      // last chance : the question label !
-      openField.setLabel(questionLabel);
-    }
-  }
-
-  private boolean isEmptyString(String str) {
-    return str == null || str.trim().length() == 0;
-  }
-
-  public void setRequired(boolean required) {
-    log.debug("required={}", required);
-    openField.setRequired(required);
+    openField.setLabel(QuestionnaireStringResourceModelHelper.getStringResourceModel(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition()));
   }
 
   public void setFieldEnabled(boolean enabled) {

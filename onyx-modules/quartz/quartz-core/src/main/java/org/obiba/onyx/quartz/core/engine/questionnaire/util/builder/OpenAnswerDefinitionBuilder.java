@@ -58,6 +58,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
       throw invalidNameUnicityException(OpenAnswerDefinition.class, name);
     }
     element = new OpenAnswerDefinition(name, dataType);
+    element.setRequired(true);
     parent.getElement().setOpenAnswerDefinition(element);
   }
 
@@ -160,6 +161,16 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisionOperator comparisionOperator, DataSource dataSource) {
     element.addValidator(new DataSourceValidator(comparisionOperator, dataSource));
+    return this;
+  }
+
+  /**
+   * Set the required to the current {@link OpenAnswerDefinition}.
+   * @param required
+   * @return
+   */
+  public OpenAnswerDefinitionBuilder setRequired(boolean required) {
+    element.setRequired(required);
     return this;
   }
 
@@ -269,6 +280,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
     }
 
     OpenAnswerDefinition openAnswerDefinition = new OpenAnswerDefinition(name, dataType);
+    openAnswerDefinition.setRequired(false);
     element.addOpenAnswerDefinition(openAnswerDefinition);
     element = openAnswerDefinition;
     return this;

@@ -9,15 +9,15 @@
         <page id="8" name="P_MULTIPLE_OPEN" uIFactoryName="quartz.DefaultPageLayoutFactory">
           <section reference="6"/>
           <questions id="9">
-            <question id="10" name="MULTIPLE_OPEN" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="10" name="MULTIPLE_OPEN" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="8"/>
               <questionCategories id="11">
                 <questionCategory id="12" reselectable="false" selected="false">
                   <question reference="10"/>
                   <category id="13" name="DURATION" escape="false">
-                    <openAnswerDefinition id="14" name="DURATION_OPEN" dataType="INTEGER">
+                    <openAnswerDefinition id="14" name="DURATION_OPEN" dataType="INTEGER" required="true">
                       <openAnswerDefinitions id="15">
-                        <open id="16" name="DURATION_OPEN_HOURS" dataType="INTEGER">
+                        <open id="16" name="DURATION_OPEN_HOURS" dataType="INTEGER" required="false">
                           <validators id="17">
                             <dataValidator id="18" dataType="INTEGER">
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="19">
@@ -29,7 +29,7 @@
                           <parentOpenAnswerDefinition reference="14"/>
                           <openAnswerDefinitions id="20"/>
                         </open>
-                        <open id="21" name="DURATION_OPEN_MINUTES" dataType="INTEGER">
+                        <open id="21" name="DURATION_OPEN_MINUTES" dataType="INTEGER" required="false">
                           <validators id="22">
                             <dataValidator id="23" dataType="INTEGER">
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="24">
@@ -56,13 +56,13 @@
               </questionCategories>
               <questions id="30"/>
             </question>
-            <question id="31" name="TIMESTAMP_P_MULTIPLE_OPEN" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="31" name="TIMESTAMP_P_MULTIPLE_OPEN" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="8"/>
               <questionCategories id="32">
                 <questionCategory id="33" reselectable="false" selected="false">
                   <question reference="31"/>
                   <category id="34" name="TIMESTAMP" escape="false">
-                    <openAnswerDefinition id="35" name="TIMESTAMP_P23" dataType="DATE">
+                    <openAnswerDefinition id="35" name="TIMESTAMP_P23" dataType="DATE" required="true">
                       <dataSource class="timestampSource" id="36"/>
                     </openAnswerDefinition>
                   </category>
@@ -80,7 +80,7 @@
         <page id="41" name="P_MULTIPLE" uIFactoryName="quartz.DefaultPageLayoutFactory">
           <section reference="39"/>
           <questions id="42">
-            <question id="43" name="MULTIPLE_1" required="true" multiple="true" minCount="1" maxCount="2" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="43" name="MULTIPLE_1" multiple="true" minCount="1" maxCount="2" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="41"/>
               <questionCategories id="44">
                 <questionCategory id="45" reselectable="false" selected="false">
@@ -98,7 +98,7 @@
               </questionCategories>
               <questions id="51"/>
             </question>
-            <question id="52" name="TIMESTAMP_P_MULTIPLE" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="52" name="TIMESTAMP_P_MULTIPLE" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="41"/>
               <questionCategories id="53">
                 <questionCategory id="54" reselectable="false" selected="false">
@@ -118,7 +118,7 @@
         <page id="59" name="P_ARRAY" uIFactoryName="quartz.DefaultPageLayoutFactory">
           <section reference="57"/>
           <questions id="60">
-            <question id="61" name="SHARED_CATEGORIES_QUESTION_ARRAY" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="61" name="SHARED_CATEGORIES_QUESTION_ARRAY" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="59"/>
               <questionCategories id="62">
                 <questionCategory id="63" reselectable="false" selected="false">
@@ -140,26 +140,26 @@
                 <questionCategory id="69" reselectable="false" selected="false">
                   <question reference="61"/>
                   <category id="70" name="OTHER_OPINION" escape="false">
-                    <openAnswerDefinition id="71" name="SPECIFY_OPINION" dataType="TEXT">
+                    <openAnswerDefinition id="71" name="SPECIFY_OPINION" dataType="TEXT" required="true">
                       <openAnswerDefinitions id="72"/>
                     </openAnswerDefinition>
                   </category>
                 </questionCategory>
               </questionCategories>
               <questions id="73">
-                <question id="74" name="SHARED_CATEGORIES_QUESTION_1" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="74" name="SHARED_CATEGORIES_QUESTION_1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <questionCategories id="75"/>
                   <parentQuestion reference="61"/>
                   <questions id="76"/>
                 </question>
-                <question id="77" name="SHARED_CATEGORIES_QUESTION_2" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="77" name="SHARED_CATEGORIES_QUESTION_2" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <questionCategories id="78"/>
                   <parentQuestion reference="61"/>
                   <questions id="79"/>
                 </question>
               </questions>
             </question>
-            <question id="80" name="SHARED_MULTIPLE_CATEGORIES_QUESTION_ARRAY" required="true" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="80" name="SHARED_MULTIPLE_CATEGORIES_QUESTION_ARRAY" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="59"/>
               <questionCategories id="81">
                 <questionCategory id="82" reselectable="false" selected="false">
@@ -177,26 +177,26 @@
                 <questionCategory id="88" reselectable="false" selected="false">
                   <question reference="80"/>
                   <category id="89" name="OTHER_COLOR" escape="false">
-                    <openAnswerDefinition id="90" name="SPECIFY_COLOR" dataType="TEXT">
+                    <openAnswerDefinition id="90" name="SPECIFY_COLOR" dataType="TEXT" required="true">
                       <openAnswerDefinitions id="91"/>
                     </openAnswerDefinition>
                   </category>
                 </questionCategory>
               </questionCategories>
               <questions id="92">
-                <question id="93" name="SHARED_MULTIPLE_CATEGORIES_QUESTION_1" required="true" multiple="true" minCount="2" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="93" name="SHARED_MULTIPLE_CATEGORIES_QUESTION_1" multiple="true" minCount="2" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <questionCategories id="94"/>
                   <parentQuestion reference="80"/>
                   <questions id="95"/>
                 </question>
-                <question id="96" name="SHARED_MULTIPLE_CATEGORIES_QUESTION_2" required="true" multiple="true" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="96" name="SHARED_MULTIPLE_CATEGORIES_QUESTION_2" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <questionCategories id="97"/>
                   <parentQuestion reference="80"/>
                   <questions id="98"/>
                 </question>
               </questions>
             </question>
-            <question id="99" name="TIMESTAMP_P_ARRAY" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="99" name="TIMESTAMP_P_ARRAY" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="59"/>
               <questionCategories id="100">
                 <questionCategory id="101" reselectable="false" selected="false">
@@ -220,7 +220,7 @@
             <page id="109" name="P1" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="107"/>
               <questions id="110">
-                <question id="111" name="Q1" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="111" name="Q1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="109"/>
                   <questionCategories id="112">
                     <questionCategory id="113" reselectable="false" selected="false">
@@ -246,7 +246,7 @@
                   </questionCategories>
                   <questions id="121"/>
                 </question>
-                <question id="122" name="TIMESTAMP_P1" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="122" name="TIMESTAMP_P1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="109"/>
                   <questionCategories id="123">
                     <questionCategory id="124" reselectable="false" selected="false">
@@ -267,13 +267,13 @@
             <page id="129" name="P2" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="127"/>
               <questions id="130">
-                <question id="131" name="Q2" required="true" multiple="false" uIFactoryName="quartz.DropDownQuestionPanelFactory">
+                <question id="131" name="Q2" multiple="false" minCount="1" uIFactoryName="quartz.DropDownQuestionPanelFactory">
                   <page reference="129"/>
                   <questionCategories id="132">
                     <questionCategory id="133" reselectable="false" selected="false">
                       <question reference="131"/>
                       <category id="134" name="1" escape="false">
-                        <openAnswerDefinition id="135" name="year" dataType="INTEGER">
+                        <openAnswerDefinition id="135" name="year" dataType="INTEGER" required="true">
                           <validators id="136">
                             <dataValidator id="137" dataType="TEXT">
                               <validator class="org.apache.wicket.validation.validator.PatternValidator" id="138">
@@ -303,7 +303,7 @@
                   </questionCategories>
                   <questions id="145"/>
                 </question>
-                <question id="146" name="TIMESTAMP_P2" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="146" name="TIMESTAMP_P2" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="129"/>
                   <questionCategories id="147">
                     <questionCategory id="148" reselectable="false" selected="false">
@@ -318,13 +318,13 @@
             <page id="150" name="P3" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="127"/>
               <questions id="151">
-                <question id="152" name="Q3" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="152" name="Q3" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="150"/>
                   <questionCategories id="153">
                     <questionCategory id="154" reselectable="false" selected="false">
                       <question reference="152"/>
                       <category id="155" name="1" escape="false">
-                        <openAnswerDefinition id="156" name="month" dataType="INTEGER">
+                        <openAnswerDefinition id="156" name="month" dataType="INTEGER" required="true">
                           <validators id="157">
                             <dataValidator id="158" dataType="TEXT">
                               <validator class="org.apache.wicket.validation.validator.PatternValidator" id="159">
@@ -350,7 +350,7 @@
                   </questionCategories>
                   <questions id="164"/>
                 </question>
-                <question id="165" name="TIMESTAMP_P3" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="165" name="TIMESTAMP_P3" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="150"/>
                   <questionCategories id="166">
                     <questionCategory id="167" reselectable="false" selected="false">
@@ -365,13 +365,13 @@
             <page id="169" name="P4" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="127"/>
               <questions id="170">
-                <question id="171" name="Q4" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="171" name="Q4" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="169"/>
                   <questionCategories id="172">
                     <questionCategory id="173" reselectable="false" selected="false">
                       <question reference="171"/>
                       <category id="174" name="1" escape="false">
-                        <openAnswerDefinition id="175" name="age" dataType="INTEGER">
+                        <openAnswerDefinition id="175" name="age" dataType="INTEGER" required="true">
                           <validators id="176">
                             <dataValidator id="177" dataType="INTEGER">
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="178">
@@ -412,7 +412,7 @@
                   </condition>
                   <questions id="188"/>
                 </question>
-                <question id="189" name="TIMESTAMP_P4" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="189" name="TIMESTAMP_P4" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="169"/>
                   <questionCategories id="190">
                     <questionCategory id="191" reselectable="false" selected="false">
@@ -433,7 +433,7 @@
             <page id="196" name="P5" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="194"/>
               <questions id="197">
-                <question id="198" name="Q5" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="198" name="Q5" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="196"/>
                   <questionCategories id="199">
                     <questionCategory id="200" reselectable="false" selected="false">
@@ -467,7 +467,7 @@
                   </questionCategories>
                   <questions id="212"/>
                 </question>
-                <question id="213" name="TIMESTAMP_P5" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="213" name="TIMESTAMP_P5" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="196"/>
                   <questionCategories id="214">
                     <questionCategory id="215" reselectable="false" selected="false">
@@ -488,13 +488,13 @@
             <page id="220" name="P6" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="218"/>
               <questions id="221">
-                <question id="222" name="Q6" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="222" name="Q6" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="220"/>
                   <questionCategories id="223">
                     <questionCategory id="224" reselectable="false" selected="false">
                       <question reference="222"/>
                       <category id="225" name="1" escape="false">
-                        <openAnswerDefinition id="226" name="adults" dataType="INTEGER">
+                        <openAnswerDefinition id="226" name="adults" dataType="INTEGER" required="true">
                           <validators id="227">
                             <dataValidator id="228" dataType="INTEGER">
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="229">
@@ -518,7 +518,7 @@
                   </questionCategories>
                   <questions id="233"/>
                 </question>
-                <question id="234" name="TIMESTAMP_P6" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="234" name="TIMESTAMP_P6" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="220"/>
                   <questionCategories id="235">
                     <questionCategory id="236" reselectable="false" selected="false">
@@ -533,13 +533,13 @@
             <page id="238" name="P7" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="218"/>
               <questions id="239">
-                <question id="240" name="Q7" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="240" name="Q7" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="238"/>
                   <questionCategories id="241">
                     <questionCategory id="242" reselectable="false" selected="false">
                       <question reference="240"/>
                       <category id="243" name="1" escape="false">
-                        <openAnswerDefinition id="244" name="children" dataType="INTEGER">
+                        <openAnswerDefinition id="244" name="children" dataType="INTEGER" required="true">
                           <validators id="245">
                             <dataValidator id="246" dataType="INTEGER">
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="247">
@@ -563,7 +563,7 @@
                   </questionCategories>
                   <questions id="251"/>
                 </question>
-                <question id="252" name="TIMESTAMP_P7" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="252" name="TIMESTAMP_P7" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="238"/>
                   <questionCategories id="253">
                     <questionCategory id="254" reselectable="false" selected="false">
@@ -584,13 +584,13 @@
             <page id="259" name="P8" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="257"/>
               <questions id="260">
-                <question id="261" name="Q8" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="261" name="Q8" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="259"/>
                   <questionCategories id="262">
                     <questionCategory id="263" reselectable="false" selected="false">
                       <question reference="261"/>
                       <category id="264" name="1" escape="false">
-                        <openAnswerDefinition id="265" name="siblings" dataType="INTEGER">
+                        <openAnswerDefinition id="265" name="siblings" dataType="INTEGER" required="true">
                           <validators id="266">
                             <dataValidator id="267" dataType="INTEGER">
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="268">
@@ -614,7 +614,7 @@
                   </questionCategories>
                   <questions id="272"/>
                 </question>
-                <question id="273" name="TIMESTAMP_P8" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="273" name="TIMESTAMP_P8" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="259"/>
                   <questionCategories id="274">
                     <questionCategory id="275" reselectable="false" selected="false">
@@ -629,13 +629,13 @@
             <page id="277" name="P9" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="257"/>
               <questions id="278">
-                <question id="279" name="Q9" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="279" name="Q9" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="277"/>
                   <questionCategories id="280">
                     <questionCategory id="281" reselectable="false" selected="false">
                       <question reference="279"/>
                       <category id="282" name="1" escape="false">
-                        <openAnswerDefinition id="283" name="olderSiblings" dataType="INTEGER">
+                        <openAnswerDefinition id="283" name="olderSiblings" dataType="INTEGER" required="true">
                           <validators id="284">
                             <dataValidator id="285" dataType="INTEGER">
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="286">
@@ -659,7 +659,7 @@
                   </questionCategories>
                   <questions id="290"/>
                 </question>
-                <question id="291" name="TIMESTAMP_P9" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="291" name="TIMESTAMP_P9" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="277"/>
                   <questionCategories id="292">
                     <questionCategory id="293" reselectable="false" selected="false">
@@ -674,7 +674,7 @@
             <page id="295" name="P10" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="257"/>
               <questions id="296">
-                <question id="297" name="Q10" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="297" name="Q10" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="295"/>
                   <questionCategories id="298">
                     <questionCategory id="299" reselectable="false" selected="false" exportName="0">
@@ -696,7 +696,7 @@
                   </questionCategories>
                   <questions id="305"/>
                 </question>
-                <question id="306" name="TIMESTAMP_P10" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="306" name="TIMESTAMP_P10" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="295"/>
                   <questionCategories id="307">
                     <questionCategory id="308" reselectable="false" selected="false">
@@ -711,7 +711,7 @@
             <page id="310" name="P11" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="257"/>
               <questions id="311">
-                <question id="312" name="Q11" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="312" name="Q11" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="310"/>
                   <questionCategories id="313">
                     <questionCategory id="314" reselectable="false" selected="false" exportName="0">
@@ -733,7 +733,7 @@
                   </questionCategories>
                   <questions id="318"/>
                 </question>
-                <question id="319" name="TIMESTAMP_P11" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="319" name="TIMESTAMP_P11" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="310"/>
                   <questionCategories id="320">
                     <questionCategory id="321" reselectable="false" selected="false">
@@ -754,12 +754,12 @@
             <page id="326" name="P12" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="324"/>
               <questions id="327">
-                <question id="328" name="Q12" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="328" name="Q12" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="326"/>
                   <questionCategories id="329"/>
                   <questions id="330"/>
                 </question>
-                <question id="331" name="TIMESTAMP_P12" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="331" name="TIMESTAMP_P12" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="326"/>
                   <questionCategories id="332">
                     <questionCategory id="333" reselectable="false" selected="false">
@@ -774,13 +774,13 @@
             <page id="335" name="P13" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="324"/>
               <questions id="336">
-                <question id="337" name="Q13" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="337" name="Q13" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="335"/>
                   <questionCategories id="338">
                     <questionCategory id="339" reselectable="false" selected="false">
                       <question reference="337"/>
                       <category id="340" name="1" escape="false">
-                        <openAnswerDefinition id="341" name="years" dataType="INTEGER">
+                        <openAnswerDefinition id="341" name="years" dataType="INTEGER" required="true">
                           <validators id="342">
                             <dataValidator id="343" dataType="INTEGER">
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="344">
@@ -804,7 +804,7 @@
                   </questionCategories>
                   <questions id="348"/>
                 </question>
-                <question id="349" name="TIMESTAMP_P13" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="349" name="TIMESTAMP_P13" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="335"/>
                   <questionCategories id="350">
                     <questionCategory id="351" reselectable="false" selected="false">
@@ -819,7 +819,7 @@
             <page id="353" name="P14" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="324"/>
               <questions id="354">
-                <question id="355" name="Q14" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="355" name="Q14" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="353"/>
                   <questionCategories id="356">
                     <questionCategory id="357" reselectable="false" selected="false">
@@ -865,7 +865,7 @@
                   </questionCategories>
                   <questions id="375"/>
                 </question>
-                <question id="376" name="TIMESTAMP_P14" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="376" name="TIMESTAMP_P14" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="353"/>
                   <questionCategories id="377">
                     <questionCategory id="378" reselectable="false" selected="false">
@@ -880,7 +880,7 @@
             <page id="380" name="P15" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="324"/>
               <questions id="381">
-                <question id="382" name="Q15" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="382" name="Q15" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="380"/>
                   <questionCategories id="383">
                     <questionCategory id="384" reselectable="false" selected="false" exportName="0">
@@ -902,7 +902,7 @@
                   </questionCategories>
                   <questions id="388"/>
                 </question>
-                <question id="389" name="TIMESTAMP_P15" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="389" name="TIMESTAMP_P15" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="380"/>
                   <questionCategories id="390">
                     <questionCategory id="391" reselectable="false" selected="false">
@@ -923,12 +923,12 @@
             <page id="396" name="P16" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="394"/>
               <questions id="397">
-                <question id="398" name="Q16" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="398" name="Q16" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="396"/>
                   <questionCategories id="399"/>
                   <questions id="400"/>
                 </question>
-                <question id="401" name="TIMESTAMP_P16" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="401" name="TIMESTAMP_P16" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="396"/>
                   <questionCategories id="402">
                     <questionCategory id="403" reselectable="false" selected="false">
@@ -943,7 +943,7 @@
             <page id="405" name="P17_1" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="394"/>
               <questions id="406">
-                <question id="407" name="Q17" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="407" name="Q17" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="405"/>
                   <questionCategories id="408">
                     <questionCategory id="409" reselectable="false" selected="false" exportName="0">
@@ -969,7 +969,7 @@
                   </questionCategories>
                   <questions id="416"/>
                 </question>
-                <question id="417" name="TIMESTAMP_P17_1" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="417" name="TIMESTAMP_P17_1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="405"/>
                   <questionCategories id="418">
                     <questionCategory id="419" reselectable="false" selected="false">
@@ -984,7 +984,7 @@
             <page id="421" name="P17_2" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="394"/>
               <questions id="422">
-                <question id="423" name="Q18" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="423" name="Q18" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="421"/>
                   <questionCategories id="424">
                     <questionCategory id="425" reselectable="false" selected="false" exportName="0">
@@ -1010,7 +1010,7 @@
                   </questionCategories>
                   <questions id="430"/>
                 </question>
-                <question id="431" name="TIMESTAMP_P17_2" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="431" name="TIMESTAMP_P17_2" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="421"/>
                   <questionCategories id="432">
                     <questionCategory id="433" reselectable="false" selected="false">
@@ -1025,7 +1025,7 @@
             <page id="435" name="P17_3" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="394"/>
               <questions id="436">
-                <question id="437" name="Q19" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="437" name="Q19" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="435"/>
                   <questionCategories id="438">
                     <questionCategory id="439" reselectable="false" selected="false" exportName="0">
@@ -1047,7 +1047,7 @@
                   </questionCategories>
                   <questions id="443"/>
                 </question>
-                <question id="444" name="TIMESTAMP_P17_3" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="444" name="TIMESTAMP_P17_3" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="435"/>
                   <questionCategories id="445">
                     <questionCategory id="446" reselectable="false" selected="false">
@@ -1062,7 +1062,7 @@
             <page id="448" name="P17_4" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="394"/>
               <questions id="449">
-                <question id="450" name="Q20" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="450" name="Q20" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="448"/>
                   <questionCategories id="451">
                     <questionCategory id="452" reselectable="false" selected="false" exportName="0">
@@ -1084,7 +1084,7 @@
                   </questionCategories>
                   <questions id="456"/>
                 </question>
-                <question id="457" name="TIMESTAMP_P17_4" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="457" name="TIMESTAMP_P17_4" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="448"/>
                   <questionCategories id="458">
                     <questionCategory id="459" reselectable="false" selected="false">
@@ -1099,7 +1099,7 @@
             <page id="461" name="P17_5" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="394"/>
               <questions id="462">
-                <question id="463" name="Q21" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="463" name="Q21" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="461"/>
                   <questionCategories id="464">
                     <questionCategory id="465" reselectable="false" selected="false" exportName="0">
@@ -1121,7 +1121,7 @@
                   </questionCategories>
                   <questions id="469"/>
                 </question>
-                <question id="470" name="TIMESTAMP_P17_5" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="470" name="TIMESTAMP_P17_5" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="461"/>
                   <questionCategories id="471">
                     <questionCategory id="472" reselectable="false" selected="false">
@@ -1136,7 +1136,7 @@
             <page id="474" name="P17_6" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="394"/>
               <questions id="475">
-                <question id="476" name="Q22" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="476" name="Q22" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="474"/>
                   <questionCategories id="477">
                     <questionCategory id="478" reselectable="false" selected="false" exportName="0">
@@ -1158,7 +1158,7 @@
                   </questionCategories>
                   <questions id="482"/>
                 </question>
-                <question id="483" name="TIMESTAMP_P17_6" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="483" name="TIMESTAMP_P17_6" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="474"/>
                   <questionCategories id="484">
                     <questionCategory id="485" reselectable="false" selected="false">
@@ -1173,7 +1173,7 @@
             <page id="487" name="P17_7" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="394"/>
               <questions id="488">
-                <question id="489" name="Q23" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="489" name="Q23" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="487"/>
                   <questionCategories id="490">
                     <questionCategory id="491" reselectable="false" selected="false" exportName="0">
@@ -1195,7 +1195,7 @@
                   </questionCategories>
                   <questions id="495"/>
                 </question>
-                <question id="496" name="TIMESTAMP_P17_7" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="496" name="TIMESTAMP_P17_7" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="487"/>
                   <questionCategories id="497">
                     <questionCategory id="498" reselectable="false" selected="false">
@@ -1210,7 +1210,7 @@
             <page id="500" name="P17_8" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="394"/>
               <questions id="501">
-                <question id="502" name="Q24" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="502" name="Q24" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="500"/>
                   <questionCategories id="503">
                     <questionCategory id="504" reselectable="false" selected="false" exportName="0">
@@ -1232,7 +1232,7 @@
                   </questionCategories>
                   <questions id="508"/>
                 </question>
-                <question id="509" name="TIMESTAMP_P17_8" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="509" name="TIMESTAMP_P17_8" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="500"/>
                   <questionCategories id="510">
                     <questionCategory id="511" reselectable="false" selected="false">
@@ -1247,13 +1247,13 @@
             <page id="513" name="P18" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="394"/>
               <questions id="514">
-                <question id="515" name="Q25" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="515" name="Q25" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="513"/>
                   <questionCategories id="516">
                     <questionCategory id="517" reselectable="false" selected="false">
                       <question reference="515"/>
                       <category id="518" name="1" escape="false">
-                        <openAnswerDefinition id="519" name="job" dataType="TEXT">
+                        <openAnswerDefinition id="519" name="job" dataType="TEXT" required="true">
                           <openAnswerDefinitions id="520"/>
                         </openAnswerDefinition>
                       </category>
@@ -1269,7 +1269,7 @@
                   </questionCategories>
                   <questions id="523"/>
                 </question>
-                <question id="524" name="TIMESTAMP_P18" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="524" name="TIMESTAMP_P18" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="513"/>
                   <questionCategories id="525">
                     <questionCategory id="526" reselectable="false" selected="false">
@@ -1284,7 +1284,7 @@
             <page id="528" name="P19" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="394"/>
               <questions id="529">
-                <question id="530" name="Q26" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="530" name="Q26" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="528"/>
                   <questionCategories id="531">
                     <questionCategory id="532" reselectable="false" selected="false">
@@ -1334,7 +1334,7 @@
                   </questionCategories>
                   <questions id="551"/>
                 </question>
-                <question id="552" name="TIMESTAMP_P19" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="552" name="TIMESTAMP_P19" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="528"/>
                   <questionCategories id="553">
                     <questionCategory id="554" reselectable="false" selected="false">
@@ -1349,13 +1349,13 @@
             <page id="556" name="P20" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="394"/>
               <questions id="557">
-                <question id="558" name="Q27" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="558" name="Q27" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="556"/>
                   <questionCategories id="559">
                     <questionCategory id="560" reselectable="false" selected="false">
                       <question reference="558"/>
                       <category id="561" name="1" escape="false">
-                        <openAnswerDefinition id="562" name="specify" dataType="TEXT">
+                        <openAnswerDefinition id="562" name="specify" dataType="TEXT" required="true">
                           <openAnswerDefinitions id="563"/>
                         </openAnswerDefinition>
                       </category>
@@ -1371,7 +1371,7 @@
                   </questionCategories>
                   <questions id="566"/>
                 </question>
-                <question id="567" name="TIMESTAMP_P20" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="567" name="TIMESTAMP_P20" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="556"/>
                   <questionCategories id="568">
                     <questionCategory id="569" reselectable="false" selected="false">
@@ -1386,7 +1386,7 @@
             <page id="571" name="P21" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="394"/>
               <questions id="572">
-                <question id="573" name="Q28" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="573" name="Q28" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="571"/>
                   <questionCategories id="574">
                     <questionCategory id="575" reselectable="false" selected="false" exportName="0">
@@ -1408,7 +1408,7 @@
                   </questionCategories>
                   <questions id="579"/>
                 </question>
-                <question id="580" name="TIMESTAMP_P21" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="580" name="TIMESTAMP_P21" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="571"/>
                   <questionCategories id="581">
                     <questionCategory id="582" reselectable="false" selected="false">
@@ -1423,7 +1423,7 @@
             <page id="584" name="P22" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="394"/>
               <questions id="585">
-                <question id="586" name="Q29" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="586" name="Q29" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="584"/>
                   <questionCategories id="587">
                     <questionCategory id="588" reselectable="false" selected="false" exportName="0">
@@ -1445,7 +1445,7 @@
                   </questionCategories>
                   <questions id="592"/>
                 </question>
-                <question id="593" name="TIMESTAMP_P22" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="593" name="TIMESTAMP_P22" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="584"/>
                   <questionCategories id="594">
                     <questionCategory id="595" reselectable="false" selected="false">
@@ -1460,7 +1460,7 @@
             <page id="597" name="P23" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="394"/>
               <questions id="598">
-                <question id="599" name="Q30" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="599" name="Q30" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="597"/>
                   <questionCategories id="600">
                     <questionCategory id="601" reselectable="false" selected="false">
@@ -1478,7 +1478,7 @@
                   </questionCategories>
                   <questions id="607"/>
                 </question>
-                <question id="608" name="Q31" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="608" name="Q31" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="597"/>
                   <questionCategories id="609">
                     <questionCategory id="610" reselectable="false" selected="false">
@@ -1499,7 +1499,7 @@
                   </condition>
                   <questions id="616"/>
                 </question>
-                <question id="617" name="TIMESTAMP_P23" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="617" name="TIMESTAMP_P23" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="597"/>
                   <questionCategories id="618">
                     <questionCategory id="619" reselectable="false" selected="false">

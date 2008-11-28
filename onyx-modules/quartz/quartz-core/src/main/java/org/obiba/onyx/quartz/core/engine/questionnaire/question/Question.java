@@ -29,8 +29,6 @@ public class Question implements Serializable, ILocalizable {
 
   private Page page;
 
-  private boolean required;
-
   private boolean multiple;
 
   private Integer minCount;
@@ -78,11 +76,7 @@ public class Question implements Serializable, ILocalizable {
   }
 
   public boolean isRequired() {
-    return required;
-  }
-
-  public void setRequired(boolean required) {
-    this.required = required;
+    return minCount != null && minCount > 0;
   }
 
   public boolean isMultiple() {

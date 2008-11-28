@@ -126,8 +126,6 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
   public void onError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
   }
 
-  public abstract void setRequired(boolean required);
-
   public abstract void setFieldModelObject(Data data);
 
 }

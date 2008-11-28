@@ -21,6 +21,8 @@ import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PageStepPanel extends WizardStepPanel {
   //
@@ -28,6 +30,9 @@ public class PageStepPanel extends WizardStepPanel {
   //
 
   private static final long serialVersionUID = 1L;
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(PageStepPanel.class);
 
   //
   // Instance Variables
@@ -56,6 +61,7 @@ public class PageStepPanel extends WizardStepPanel {
 
     // Get the configured page layout factory.
     Page page = (Page) getModelObject();
+    log.info("page={}", page);
     IPageLayoutFactory pageLayoutFactory = pageLayoutFactoryRegistry.get(page.getUIFactoryName());
 
     // Create the page layout component, using the configured factory.

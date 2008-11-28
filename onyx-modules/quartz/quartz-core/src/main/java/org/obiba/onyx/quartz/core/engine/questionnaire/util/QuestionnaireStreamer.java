@@ -70,7 +70,6 @@ public class QuestionnaireStreamer {
     xstream.alias("question", Question.class);
     xstream.useAttributeFor(Question.class, "name");
     xstream.useAttributeFor(Question.class, "number");
-    xstream.useAttributeFor(Question.class, "required");
     xstream.useAttributeFor(Question.class, "multiple");
     xstream.useAttributeFor(Question.class, "minCount");
     xstream.useAttributeFor(Question.class, "maxCount");
@@ -89,6 +88,7 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(OpenAnswerDefinition.class, "name");
     xstream.useAttributeFor(OpenAnswerDefinition.class, "dataType");
     xstream.useAttributeFor(OpenAnswerDefinition.class, "unit");
+    xstream.useAttributeFor(OpenAnswerDefinition.class, "required");
 
     xstream.alias("data", Data.class);
     xstream.useAttributeFor(Data.class, "type");

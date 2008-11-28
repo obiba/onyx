@@ -92,7 +92,6 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
           activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestionCategory());
         }
         if(getOpenField() != null) {
-          getOpenField().setRequired(getQuestion().isRequired() && getSelectionModel().isSelected());
           if(!getSelectionModel().isSelected()) {
             resetOpenAnswerDefinitionPanels(QuestionCategoryCheckBoxPanel.this);
           }
@@ -110,7 +109,6 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
       // there is an open field
       openField = newOpenAnswerDefinitionPanel("open");
-      openField.setRequired(selectionModel.isSelected() && questionCategory.getQuestion().isRequired());
       add(openField);
 
     } else {
@@ -128,7 +126,6 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
 
     // set checkbox as selected
     getSelectionModel().select();
-    openField.setRequired(getQuestion().isRequired());
 
     activeQuestionnaireAdministrationService.answer((Question) questionModel.getObject(), (QuestionCategory) getModelObject(), ((QuestionCategory) getModelObject()).getCategory().getOpenAnswerDefinition(), null);
 
@@ -139,7 +136,6 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
   public void onInternalOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
     // make sure checkbox is selected in case of open field selection event was bypassed
     getSelectionModel().select();
-    openField.setRequired(getQuestion().isRequired());
 
     onOpenFieldSubmit(target, questionModel, questionCategoryModel);
   }

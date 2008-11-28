@@ -71,13 +71,13 @@ public class AssistedHealthQuestionnaireContentBuilder {
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK").withSharedCategory(PNA, "8");
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK").withSharedCategory(DNK, "9");
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK").setAnswerCondition("WORK_VIGOROUS_ACTIVITY_DAYS_WEEK_ACONDITION", "CURRENTLY_WORK", Y);
-    builder.inSection("PART1").withPage("2b").withQuestion("WORK_VIGOROUS_ACTIVITY_TIME_DAY", "4").withCategory("ACTIVITY_TIME_DAY").withOpenAnswerDefinition("ACTIVITY_TIME_DAY", DataType.INTEGER).withOpenAnswerDefinition("ACTIVITY_HOURS_DAY", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 16));
-    builder.inOpenAnswerDefinition("ACTIVITY_TIME_DAY").withOpenAnswerDefinition("ACTIVITY_MIN_DAY", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 960));
+    builder.inSection("PART1").withPage("2b").withQuestion("WORK_VIGOROUS_ACTIVITY_TIME_DAY", "4").withCategory("ACTIVITY_TIME_DAY").withOpenAnswerDefinition("ACTIVITY_TIME_DAY", DataType.INTEGER).withOpenAnswerDefinition("ACTIVITY_HOURS_DAY", DataType.INTEGER).setRequired(false).addValidator(new NumberValidator.RangeValidator(0, 16));
+    builder.inOpenAnswerDefinition("ACTIVITY_TIME_DAY").withOpenAnswerDefinition("ACTIVITY_MIN_DAY", DataType.INTEGER).setRequired(false).addValidator(new NumberValidator.RangeValidator(0, 960));
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_TIME_DAY").withSharedCategory(PNA, "888");
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_TIME_DAY").withSharedCategory(DNK, "999");
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_TIME_DAY").setDataCondition("WORK_VIGOROUS_ACTIVITY_TIME_DAY_DCONDITION", "WORK_VIGOROUS_ACTIVITY_DAYS_WEEK", "DAYS_WEEK", "DAYS_WEEK", ComparisionOperator.gt, DataBuilder.buildInteger(0l));
-    builder.inSection("PART1").withPage("3").withQuestion("WORK_VIGOROUS_ACTIVITY_TIME_WEEK", "5").withCategory("ACTIVITY_TIME_WEEK").withOpenAnswerDefinition("ACTIVITY_TIME_WEEK", DataType.INTEGER).withOpenAnswerDefinition("ACTIVITY_HOURS_WEEK", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 112));
-    builder.inOpenAnswerDefinition("ACTIVITY_TIME_WEEK").withOpenAnswerDefinition("ACTIVITY_MIN_WEEK", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 6720));
+    builder.inSection("PART1").withPage("3").withQuestion("WORK_VIGOROUS_ACTIVITY_TIME_WEEK", "5").withCategory("ACTIVITY_TIME_WEEK").withOpenAnswerDefinition("ACTIVITY_TIME_WEEK", DataType.INTEGER).withOpenAnswerDefinition("ACTIVITY_HOURS_WEEK", DataType.INTEGER).setRequired(false).addValidator(new NumberValidator.RangeValidator(0, 112));
+    builder.inOpenAnswerDefinition("ACTIVITY_TIME_WEEK").withOpenAnswerDefinition("ACTIVITY_MIN_WEEK", DataType.INTEGER).setRequired(false).addValidator(new NumberValidator.RangeValidator(0, 6720));
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_TIME_WEEK").withSharedCategory(PNA, "8888");
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_TIME_WEEK").withSharedCategory(DNK, "9999");
     builder.inQuestion("WORK_VIGOROUS_ACTIVITY_TIME_WEEK").setAnswerCondition("WORK_VIGOROUS_ACTIVITY_TIME_WEEK_ACONDITION", "WORK_VIGOROUS_ACTIVITY_TIME_DAY", DNK);

@@ -83,9 +83,6 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
 
         // make the radio group active for the selection
         QuestionCategoryRadioPanel.this.radioGroup.setModel(QuestionCategoryRadioPanel.this.getModel());
-        if(getOpenField() != null) {
-          getOpenField().setRequired(getQuestion().isRequired());
-        }
 
         // exclusive choice, only one answer per question
         activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
@@ -107,7 +104,6 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
       // there is an open field
       openField = newOpenAnswerDefinitionPanel("open");
-      openField.setRequired(false);
       add(openField);
 
       // make radio associated to open answer optionally visible using css styling
@@ -123,14 +119,8 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
 
     if(previousAnswer != null) {
       radioGroup.setModel(questionCategoryModel);
-      if(openField != null) {
-        openField.setRequired(questionCategory.getQuestion().isRequired());
-      }
     } else if(questionCategory.isSelected()) {
       radioGroup.setModel(questionCategoryModel);
-      if(openField != null) {
-        openField.setRequired(questionCategory.getQuestion().isRequired());
-      }
       activeQuestionnaireAdministrationService.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), null);
     }
   }
@@ -142,7 +132,6 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
 
     // make sure radio selection does not conflict with open field selection
     radioGroup.setModel(getQuestionCategoryModel());
-    getOpenField().setRequired(getQuestion().isRequired());
 
     // exclusive choice, only one answer per question
     CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(getQuestion(), getQuestionCategory());
@@ -161,7 +150,6 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
   public void onInternalOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
     // make sure radio selection does not conflict with open field selection
     radioGroup.setModel(getQuestionCategoryModel());
-    getOpenField().setRequired(getQuestion().isRequired());
 
     onOpenFieldSubmit(target, questionModel, questionCategoryModel);
   }

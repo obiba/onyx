@@ -42,7 +42,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
   }
 
   /**
-   * Reset (set non required and null data) the open fields not associated to the current question category.
+   * Reset (set null data) the open fields not associated to the current question category.
    * @param parentContainer
    */
   protected void resetOpenAnswerDefinitionPanels(MarkupContainer parentContainer) {
@@ -55,7 +55,6 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
             log.info("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getModelObject());
             AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
             openField.setFieldModelObject(null);
-            openField.setRequired(false);
           }
         }
         return CONTINUE_TRAVERSAL;

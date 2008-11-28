@@ -47,7 +47,8 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     }
     element = new Question(name);
     element.setNumber(number);
-    element.setRequired(true);
+    // required by default
+    element.setMinCount(1);
     element.setMultiple(multiple);
     try {
       element.setUIFactoryName(uiFactoryClass.newInstance().getBeanName());
@@ -185,22 +186,12 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     }
     Question question = new Question(name);
     question.setNumber(number);
-    question.setRequired(true);
+    // required by default
+    question.setMinCount(1);
     question.setMultiple(multiple);
     question.setUIFactoryName(uiFactoryName);
     element.addQuestion(question);
     element = question;
-
-    return this;
-  }
-
-  /**
-   * Set if current {@link Question} is required.
-   * @param required
-   * @return
-   */
-  public QuestionBuilder setRequired(boolean required) {
-    element.setRequired(required);
 
     return this;
   }
@@ -214,6 +205,18 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   public QuestionBuilder setAnswerCount(Integer minCount, Integer maxCount) {
     element.setMinCount(minCount);
     element.setMaxCount(maxCount);
+
+    return this;
+  }
+
+  /**
+   * Set the exact answer count (min and max count are equals).
+   * @param count
+   * @return
+   */
+  public QuestionBuilder setAnswerCount(Integer count) {
+    element.setMinCount(count);
+    element.setMaxCount(count);
 
     return this;
   }

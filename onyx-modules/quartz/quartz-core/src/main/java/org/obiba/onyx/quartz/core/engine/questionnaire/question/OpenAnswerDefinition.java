@@ -30,6 +30,8 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable, IDataUn
 
   private DataType dataType;
 
+  private boolean required;
+
   private String unit;
 
   private List<IDataValidator> validators;
@@ -61,6 +63,14 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable, IDataUn
 
   public void setDataType(DataType dataType) {
     this.dataType = dataType;
+  }
+
+  public boolean isRequired() {
+    return required;
+  }
+
+  public void setRequired(boolean required) {
+    this.required = required;
   }
 
   public String getUnit() {

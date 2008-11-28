@@ -13,7 +13,7 @@
             <page id="11" name="1" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="9"/>
               <questions id="12">
-                <question id="13" name="COUNTRY_BIRTH_ELSEWHERE" number="1" required="true" multiple="false" uIFactoryName="quartz.DropDownQuestionPanelFactory">
+                <question id="13" name="COUNTRY_BIRTH_ELSEWHERE" number="1" multiple="false" minCount="1" uIFactoryName="quartz.DropDownQuestionPanelFactory">
                   <page reference="11"/>
                   <questionCategories id="14">
                     <questionCategory id="15" reselectable="false" selected="false">
@@ -1023,7 +1023,7 @@
                 <page id="515" name="2" uIFactoryName="quartz.DefaultPageLayoutFactory">
                   <section reference="513"/>
                   <questions id="516">
-                    <question id="517" name="CURRENTLY_WORK" number="2" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="517" name="CURRENTLY_WORK" number="2" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <page reference="515"/>
                       <questionCategories id="518">
                         <questionCategory id="519" reselectable="false" selected="false" exportName="0">
@@ -1050,13 +1050,13 @@
                 <page id="526" name="2a" uIFactoryName="quartz.DefaultPageLayoutFactory">
                   <section reference="513"/>
                   <questions id="527">
-                    <question id="528" name="WORK_VIGOROUS_ACTIVITY_DAYS_WEEK" number="3" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="528" name="WORK_VIGOROUS_ACTIVITY_DAYS_WEEK" number="3" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <page reference="526"/>
                       <questionCategories id="529">
                         <questionCategory id="530" reselectable="false" selected="false">
                           <question reference="528"/>
                           <category id="531" name="DAYS_WEEK" escape="false">
-                            <openAnswerDefinition id="532" name="DAYS_WEEK" dataType="INTEGER">
+                            <openAnswerDefinition id="532" name="DAYS_WEEK" dataType="INTEGER" required="true">
                               <validators id="533">
                                 <dataValidator id="534" dataType="INTEGER">
                                   <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="535">
@@ -1092,15 +1092,15 @@
                 <page id="542" name="2b" uIFactoryName="quartz.DefaultPageLayoutFactory">
                   <section reference="513"/>
                   <questions id="543">
-                    <question id="544" name="WORK_VIGOROUS_ACTIVITY_TIME_DAY" number="4" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="544" name="WORK_VIGOROUS_ACTIVITY_TIME_DAY" number="4" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <page reference="542"/>
                       <questionCategories id="545">
                         <questionCategory id="546" reselectable="false" selected="false">
                           <question reference="544"/>
                           <category id="547" name="ACTIVITY_TIME_DAY" escape="false">
-                            <openAnswerDefinition id="548" name="ACTIVITY_TIME_DAY" dataType="INTEGER">
+                            <openAnswerDefinition id="548" name="ACTIVITY_TIME_DAY" dataType="INTEGER" required="true">
                               <openAnswerDefinitions id="549">
-                                <open id="550" name="ACTIVITY_HOURS_DAY" dataType="INTEGER">
+                                <open id="550" name="ACTIVITY_HOURS_DAY" dataType="INTEGER" required="false">
                                   <validators id="551">
                                     <dataValidator id="552" dataType="INTEGER">
                                       <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="553">
@@ -1112,7 +1112,7 @@
                                   <parentOpenAnswerDefinition reference="548"/>
                                   <openAnswerDefinitions id="554"/>
                                 </open>
-                                <open id="555" name="ACTIVITY_MIN_DAY" dataType="INTEGER">
+                                <open id="555" name="ACTIVITY_MIN_DAY" dataType="INTEGER" required="false">
                                   <validators id="556">
                                     <dataValidator id="557" dataType="INTEGER">
                                       <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="558">
@@ -1159,15 +1159,15 @@
                 <page id="568" name="3" uIFactoryName="quartz.DefaultPageLayoutFactory">
                   <section reference="513"/>
                   <questions id="569">
-                    <question id="570" name="WORK_VIGOROUS_ACTIVITY_TIME_WEEK" number="5" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="570" name="WORK_VIGOROUS_ACTIVITY_TIME_WEEK" number="5" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <page reference="568"/>
                       <questionCategories id="571">
                         <questionCategory id="572" reselectable="false" selected="false">
                           <question reference="570"/>
                           <category id="573" name="ACTIVITY_TIME_WEEK" escape="false">
-                            <openAnswerDefinition id="574" name="ACTIVITY_TIME_WEEK" dataType="INTEGER">
+                            <openAnswerDefinition id="574" name="ACTIVITY_TIME_WEEK" dataType="INTEGER" required="true">
                               <openAnswerDefinitions id="575">
-                                <open id="576" name="ACTIVITY_HOURS_WEEK" dataType="INTEGER">
+                                <open id="576" name="ACTIVITY_HOURS_WEEK" dataType="INTEGER" required="false">
                                   <validators id="577">
                                     <dataValidator id="578" dataType="INTEGER">
                                       <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="579">
@@ -1179,7 +1179,7 @@
                                   <parentOpenAnswerDefinition reference="574"/>
                                   <openAnswerDefinitions id="580"/>
                                 </open>
-                                <open id="581" name="ACTIVITY_MIN_WEEK" dataType="INTEGER">
+                                <open id="581" name="ACTIVITY_MIN_WEEK" dataType="INTEGER" required="false">
                                   <validators id="582">
                                     <dataValidator id="583" dataType="INTEGER">
                                       <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="584">
@@ -1231,7 +1231,7 @@
             <page id="597" name="4" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="595"/>
               <questions id="598">
-                <question id="599" name="BONE_FRACTURE_OCCURRENCE" number="6" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="599" name="BONE_FRACTURE_OCCURRENCE" number="6" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="597"/>
                   <questionCategories id="600">
                     <questionCategory id="601" reselectable="false" selected="false" exportName="0">
@@ -1258,7 +1258,7 @@
             <page id="606" name="5" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="595"/>
               <questions id="607">
-                <question id="608" name="BONE_FRACTURE_WHICH" number="7" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="608" name="BONE_FRACTURE_WHICH" number="7" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="606"/>
                   <questionCategories id="609">
                     <questionCategory id="610" reselectable="false" selected="false" exportName="0">
@@ -1286,82 +1286,82 @@
                     <category reference="522"/>
                   </condition>
                   <questions id="616">
-                    <question id="617" name="VERTEBRA_FRACTURE_OCCURRENCE" number="1.1" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="617" name="VERTEBRA_FRACTURE_OCCURRENCE" number="1.1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="618"/>
                       <parentQuestion reference="608"/>
                       <questions id="619"/>
                     </question>
-                    <question id="620" name="STERNUM_FRACTURE_OCCURRENCE" number="1.2" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="620" name="STERNUM_FRACTURE_OCCURRENCE" number="1.2" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="621"/>
                       <parentQuestion reference="608"/>
                       <questions id="622"/>
                     </question>
-                    <question id="623" name="SACRUM_FRACTURE_OCCURRENCE" number="1.3" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="623" name="SACRUM_FRACTURE_OCCURRENCE" number="1.3" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="624"/>
                       <parentQuestion reference="608"/>
                       <questions id="625"/>
                     </question>
-                    <question id="626" name="WRIST_FRACTURE_OCCURRENCE" number="1.4" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="626" name="WRIST_FRACTURE_OCCURRENCE" number="1.4" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="627"/>
                       <parentQuestion reference="608"/>
                       <questions id="628"/>
                     </question>
-                    <question id="629" name="FOREARM_FRACTURE_OCCURRENCE" number="1.5" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="629" name="FOREARM_FRACTURE_OCCURRENCE" number="1.5" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="630"/>
                       <parentQuestion reference="608"/>
                       <questions id="631"/>
                     </question>
-                    <question id="632" name="HUMERUS_FRACTURE_OCCURRENCE" number="1.6" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="632" name="HUMERUS_FRACTURE_OCCURRENCE" number="1.6" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="633"/>
                       <parentQuestion reference="608"/>
                       <questions id="634"/>
                     </question>
-                    <question id="635" name="SCAPULA_FRACTURE_OCCURRENCE" number="1.7" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="635" name="SCAPULA_FRACTURE_OCCURRENCE" number="1.7" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="636"/>
                       <parentQuestion reference="608"/>
                       <questions id="637"/>
                     </question>
-                    <question id="638" name="CLAVICLE_FRACTURE_OCCURRENCE" number="1.8" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="638" name="CLAVICLE_FRACTURE_OCCURRENCE" number="1.8" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="639"/>
                       <parentQuestion reference="608"/>
                       <questions id="640"/>
                     </question>
-                    <question id="641" name="RIB_FRACTURE_OCCURRENCE" number="1.9" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="641" name="RIB_FRACTURE_OCCURRENCE" number="1.9" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="642"/>
                       <parentQuestion reference="608"/>
                       <questions id="643"/>
                     </question>
-                    <question id="644" name="FOOT_FRACTURE_OCCURRENCE" number="1.10" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="644" name="FOOT_FRACTURE_OCCURRENCE" number="1.10" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="645"/>
                       <parentQuestion reference="608"/>
                       <questions id="646"/>
                     </question>
-                    <question id="647" name="ANKLE_FRACTURE_OCCURRENCE" number="1.11" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="647" name="ANKLE_FRACTURE_OCCURRENCE" number="1.11" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="648"/>
                       <parentQuestion reference="608"/>
                       <questions id="649"/>
                     </question>
-                    <question id="650" name="TIBIA_FIBULA_FRACTURE_OCCURRENCE" number="1.12" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="650" name="TIBIA_FIBULA_FRACTURE_OCCURRENCE" number="1.12" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="651"/>
                       <parentQuestion reference="608"/>
                       <questions id="652"/>
                     </question>
-                    <question id="653" name="FEMUR_FRACTURE_OCCURRENCE" number="1.13" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="653" name="FEMUR_FRACTURE_OCCURRENCE" number="1.13" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="654"/>
                       <parentQuestion reference="608"/>
                       <questions id="655"/>
                     </question>
-                    <question id="656" name="HIP_FRACTURE_OCCURRENCE" number="1.14" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="656" name="HIP_FRACTURE_OCCURRENCE" number="1.14" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="657"/>
                       <parentQuestion reference="608"/>
                       <questions id="658"/>
                     </question>
-                    <question id="659" name="PELVIS_FRACTURE_OCCURRENCE" number="1.15" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="659" name="PELVIS_FRACTURE_OCCURRENCE" number="1.15" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="660"/>
                       <parentQuestion reference="608"/>
                       <questions id="661"/>
                     </question>
-                    <question id="662" name="OTHER_BONE_FRACTURE_OCCURRENCE" number="1.16" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="662" name="OTHER_BONE_FRACTURE_OCCURRENCE" number="1.16" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="663"/>
                       <parentQuestion reference="608"/>
                       <questions id="664"/>
@@ -1373,13 +1373,13 @@
             <page id="665" name="6" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="595"/>
               <questions id="666">
-                <question id="667" name="OTHER_BONE_FRACTURE_TYPE" number="8" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="667" name="OTHER_BONE_FRACTURE_TYPE" number="8" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="665"/>
                   <questionCategories id="668">
                     <questionCategory id="669" reselectable="false" selected="false">
                       <question reference="667"/>
                       <category id="670" name="OPEN_AN" escape="false">
-                        <openAnswerDefinition id="671" name="OPEN_AN" dataType="TEXT">
+                        <openAnswerDefinition id="671" name="OPEN_AN" dataType="TEXT" required="true">
                           <openAnswerDefinitions id="672"/>
                         </openAnswerDefinition>
                       </category>
@@ -1407,7 +1407,7 @@
             <page id="678" name="7" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="595"/>
               <questions id="679">
-                <question id="680" name="BONE_FRACTURE_SIDE" number="9" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="680" name="BONE_FRACTURE_SIDE" number="9" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="678"/>
                   <questionCategories id="681">
                     <questionCategory id="682" reselectable="false" selected="false" exportName="1">
@@ -1487,7 +1487,7 @@
                     </conditions>
                   </condition>
                   <questions id="705">
-                    <question id="706" name="WRIST_FRACTURE_SIDE" number="1.4" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="706" name="WRIST_FRACTURE_SIDE" number="1.4" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="707"/>
                       <condition class="answerCondition" id="708" name="WRIST_FRACTURE_SIDE_ACONDITION">
                         <questions id="709">
@@ -1499,7 +1499,7 @@
                       <parentQuestion reference="680"/>
                       <questions id="710"/>
                     </question>
-                    <question id="711" name="FOREARM_FRACTURE_SIDE" number="1.5" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="711" name="FOREARM_FRACTURE_SIDE" number="1.5" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="712"/>
                       <condition class="answerCondition" id="713" name="FOREARM_FRACTURE_SIDE_ACONDITION">
                         <questions id="714">
@@ -1511,7 +1511,7 @@
                       <parentQuestion reference="680"/>
                       <questions id="715"/>
                     </question>
-                    <question id="716" name="HUMERUS_FRACTURE_SIDE" number="1.6" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="716" name="HUMERUS_FRACTURE_SIDE" number="1.6" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="717"/>
                       <condition class="answerCondition" id="718" name="HUMERUS_FRACTURE_SIDE_ACONDITION">
                         <questions id="719">
@@ -1523,7 +1523,7 @@
                       <parentQuestion reference="680"/>
                       <questions id="720"/>
                     </question>
-                    <question id="721" name="SCAPULA_FRACTURE_SIDE" number="1.7" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="721" name="SCAPULA_FRACTURE_SIDE" number="1.7" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="722"/>
                       <condition class="answerCondition" id="723" name="SCAPULA_FRACTURE_SIDE_ACONDITION">
                         <questions id="724">
@@ -1535,7 +1535,7 @@
                       <parentQuestion reference="680"/>
                       <questions id="725"/>
                     </question>
-                    <question id="726" name="CLAVICLE_FRACTURE_SIDE" number="1.8" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="726" name="CLAVICLE_FRACTURE_SIDE" number="1.8" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="727"/>
                       <condition class="answerCondition" id="728" name="CLAVICLE_FRACTURE_SIDE_ACONDITION">
                         <questions id="729">
@@ -1547,7 +1547,7 @@
                       <parentQuestion reference="680"/>
                       <questions id="730"/>
                     </question>
-                    <question id="731" name="RIB_FRACTURE_SIDE" number="1.9" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="731" name="RIB_FRACTURE_SIDE" number="1.9" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="732"/>
                       <condition class="answerCondition" id="733" name="RIB_FRACTURE_SIDE_ACONDITION">
                         <questions id="734">
@@ -1559,7 +1559,7 @@
                       <parentQuestion reference="680"/>
                       <questions id="735"/>
                     </question>
-                    <question id="736" name="FOOT_FRACTURE_SIDE" number="1.10" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="736" name="FOOT_FRACTURE_SIDE" number="1.10" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="737"/>
                       <condition class="answerCondition" id="738" name="FOOT_FRACTURE_SIDE_ACONDITION">
                         <questions id="739">
@@ -1571,7 +1571,7 @@
                       <parentQuestion reference="680"/>
                       <questions id="740"/>
                     </question>
-                    <question id="741" name="ANKLE_FRACTURE_SIDE" number="1.11" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="741" name="ANKLE_FRACTURE_SIDE" number="1.11" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="742"/>
                       <condition class="answerCondition" id="743" name="ANKLE_FRACTURE_SIDE_ACONDITION">
                         <questions id="744">
@@ -1583,7 +1583,7 @@
                       <parentQuestion reference="680"/>
                       <questions id="745"/>
                     </question>
-                    <question id="746" name="TIBIA_FIBULA_FRACTURE_SIDE" number="1.12" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="746" name="TIBIA_FIBULA_FRACTURE_SIDE" number="1.12" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="747"/>
                       <condition class="answerCondition" id="748" name="TIBIA_FIBULA_FRACTURE_SIDE_ACONDITION">
                         <questions id="749">
@@ -1595,7 +1595,7 @@
                       <parentQuestion reference="680"/>
                       <questions id="750"/>
                     </question>
-                    <question id="751" name="FEMUR_FRACTURE_SIDE" number="1.13" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="751" name="FEMUR_FRACTURE_SIDE" number="1.13" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="752"/>
                       <condition class="answerCondition" id="753" name="FEMUR_FRACTURE_SIDE_ACONDITION">
                         <questions id="754">
@@ -1607,7 +1607,7 @@
                       <parentQuestion reference="680"/>
                       <questions id="755"/>
                     </question>
-                    <question id="756" name="HIP_FRACTURE_SIDE" number="1.14" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="756" name="HIP_FRACTURE_SIDE" number="1.14" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="757"/>
                       <condition class="answerCondition" id="758" name="HIP_FRACTURE_SIDE_ACONDITION">
                         <questions id="759">
@@ -1619,7 +1619,7 @@
                       <parentQuestion reference="680"/>
                       <questions id="760"/>
                     </question>
-                    <question id="761" name="PELVIS_FRACTURE_SIDE" number="1.15" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="761" name="PELVIS_FRACTURE_SIDE" number="1.15" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="762"/>
                       <condition class="answerCondition" id="763" name="PELVIS_FRACTURE_SIDE_ACONDITION">
                         <questions id="764">
@@ -1649,7 +1649,7 @@
             <page id="772" name="8" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="770"/>
               <questions id="773">
-                <question id="774" name="PM0" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="774" name="PM0" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="772"/>
                   <questionCategories id="775"/>
                   <questions id="776"/>
@@ -1659,7 +1659,7 @@
             <page id="777" name="9" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="770"/>
               <questions id="778">
-                <question id="779" name="TAKING_RX_MED_OCCURENCE" number="10" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="779" name="TAKING_RX_MED_OCCURENCE" number="10" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="777"/>
                   <questionCategories id="780">
                     <questionCategory id="781" reselectable="false" selected="false" exportName="0">
@@ -1686,13 +1686,13 @@
             <page id="786" name="9a" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="770"/>
               <questions id="787">
-                <question id="788" name="RX_MEDICATION" number="11" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="788" name="RX_MEDICATION" number="11" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="786"/>
                   <questionCategories id="789">
                     <questionCategory id="790" reselectable="false" selected="false">
                       <question reference="788"/>
                       <category id="791" name="MED_NUMBER" escape="false">
-                        <openAnswerDefinition id="792" name="MED_NUMBER" dataType="INTEGER">
+                        <openAnswerDefinition id="792" name="MED_NUMBER" dataType="INTEGER" required="true">
                           <validators id="793">
                             <dataValidator id="794" dataType="INTEGER">
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="795">
@@ -1728,13 +1728,13 @@
             <page id="802" name="9b" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="770"/>
               <questions id="803">
-                <question id="804" name="MEDICATION1_TYPE" number="12" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="804" name="MEDICATION1_TYPE" number="12" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="802"/>
                   <questionCategories id="805">
                     <questionCategory id="806" reselectable="false" selected="false">
                       <question reference="804"/>
                       <category id="807" name="TYPE" escape="false">
-                        <openAnswerDefinition id="808" name="TYPE" dataType="TEXT">
+                        <openAnswerDefinition id="808" name="TYPE" dataType="TEXT" required="true">
                           <openAnswerDefinitions id="809"/>
                         </openAnswerDefinition>
                       </category>
@@ -1765,7 +1765,7 @@
                   </condition>
                   <questions id="817"/>
                 </question>
-                <question id="818" name="MED1_TYPE_INFO_SOURCE" number="13" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="818" name="MED1_TYPE_INFO_SOURCE" number="13" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="802"/>
                   <questionCategories id="819">
                     <questionCategory id="820" reselectable="false" selected="false" exportName="0">
@@ -1807,7 +1807,7 @@
             <page id="833" name="9c" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="770"/>
               <questions id="834">
-                <question id="835" name="MEDICATION2_TYPE" number="14" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="835" name="MEDICATION2_TYPE" number="14" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="833"/>
                   <questionCategories id="836">
                     <questionCategory id="837" reselectable="false" selected="false">
@@ -1840,7 +1840,7 @@
                   </condition>
                   <questions id="845"/>
                 </question>
-                <question id="846" name="MED2_TYPE_INFO_SOURCE" number="15" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="846" name="MED2_TYPE_INFO_SOURCE" number="15" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="833"/>
                   <questionCategories id="847">
                     <questionCategory id="848" reselectable="false" selected="false" exportName="0">
@@ -1882,7 +1882,7 @@
             <page id="858" name="9d" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="770"/>
               <questions id="859">
-                <question id="860" name="MEDICATION3_TYPE" number="16" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="860" name="MEDICATION3_TYPE" number="16" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="858"/>
                   <questionCategories id="861">
                     <questionCategory id="862" reselectable="false" selected="false">
@@ -1915,7 +1915,7 @@
                   </condition>
                   <questions id="870"/>
                 </question>
-                <question id="871" name="MED3_TYPE_INFO_SOURCE" number="17" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="871" name="MED3_TYPE_INFO_SOURCE" number="17" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="858"/>
                   <questionCategories id="872">
                     <questionCategory id="873" reselectable="false" selected="false" exportName="0">
@@ -1952,13 +1952,13 @@
                   </condition>
                   <questions id="882"/>
                 </question>
-                <question id="883" name="TIMESTAMP_TS_VMH" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="883" name="TIMESTAMP_TS_VMH" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="858"/>
                   <questionCategories id="884">
                     <questionCategory id="885" reselectable="false" selected="false">
                       <question reference="883"/>
                       <category id="886" name="TIMESTAMP" escape="false">
-                        <openAnswerDefinition id="887" name="TIMESTAMP_TS_VMH" dataType="DATE">
+                        <openAnswerDefinition id="887" name="TIMESTAMP_TS_VMH" dataType="DATE" required="true">
                           <dataSource class="timestampSource" id="888"/>
                           <openAnswerDefinitions id="889"/>
                         </openAnswerDefinition>
@@ -1983,7 +1983,7 @@
             <page id="897" name="10" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="895"/>
               <questions id="898">
-                <question id="899" name="ME0" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="899" name="ME0" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="897"/>
                   <questionCategories id="900"/>
                   <questions id="901"/>
@@ -1999,13 +1999,13 @@
             <page id="905" name="11" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="903"/>
               <questions id="906">
-                <question id="907" name="NUMBER_PREGNANCIES_ALL" number="18" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="907" name="NUMBER_PREGNANCIES_ALL" number="18" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="905"/>
                   <questionCategories id="908">
                     <questionCategory id="909" reselectable="false" selected="false">
                       <question reference="907"/>
                       <category id="910" name="OPEN_N_0" escape="false">
-                        <openAnswerDefinition id="911" name="OPEN_N_0" dataType="INTEGER">
+                        <openAnswerDefinition id="911" name="OPEN_N_0" dataType="INTEGER" required="true">
                           <validators id="912">
                             <dataValidator id="913" dataType="INTEGER">
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="914">
@@ -2041,7 +2041,7 @@
             <page id="921" name="12" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="903"/>
               <questions id="922">
-                <question id="923" name="NUMBER_LIVE_BIRTHS" number="19" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="923" name="NUMBER_LIVE_BIRTHS" number="19" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="921"/>
                   <questionCategories id="924">
                     <questionCategory id="925" reselectable="false" selected="false">
@@ -2085,7 +2085,7 @@
             <page id="937" name="13" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="935"/>
               <questions id="938">
-                <question id="939" name="NUMBER_CHILDREN_FATHERED" number="20" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="939" name="NUMBER_CHILDREN_FATHERED" number="20" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="937"/>
                   <questionCategories id="940">
                     <questionCategory id="941" reselectable="false" selected="false">
@@ -2111,13 +2111,13 @@
                   </condition>
                   <questions id="946"/>
                 </question>
-                <question id="947" name="NEO_FIRST_DEG_REL_NUMBER" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="947" name="NEO_FIRST_DEG_REL_NUMBER" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="937"/>
                   <questionCategories id="948">
                     <questionCategory id="949" reselectable="false" selected="false">
                       <question reference="947"/>
                       <category id="950" name="OPEN_N" escape="false">
-                        <openAnswerDefinition id="951" name="OPEN_N" dataType="INTEGER">
+                        <openAnswerDefinition id="951" name="OPEN_N" dataType="INTEGER" required="true">
                           <validators id="952">
                             <dataValidator id="953" dataType="INTEGER">
                               <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="954">
@@ -2179,7 +2179,7 @@
                     </conditions>
                   </condition>
                   <questions id="973">
-                    <question id="974" name="NEOPLASM_NUMBER_SIBLINGS" number="1.3" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="974" name="NEOPLASM_NUMBER_SIBLINGS" number="1.3" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="975"/>
                       <condition class="dataCondition" id="976" name="NEOPLASM_NUMBER_SIBLINGS_DCONDITION" comparisionOperator="gt">
                         <questions id="977">
@@ -2195,7 +2195,7 @@
                       <parentQuestion reference="947"/>
                       <questions id="981"/>
                     </question>
-                    <question id="982" name="NEOPLASM_NUMBER_CHILDREN" number="1.4" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                    <question id="982" name="NEOPLASM_NUMBER_CHILDREN" number="1.4" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="983"/>
                       <condition class="multipleCondition" id="984" name="NEOPLASM_NUMBER_CHILDREN_MCONDITION" conditionOperator="OR">
                         <questions id="985">
@@ -2245,12 +2245,12 @@
         <page id="999" name="14" uIFactoryName="quartz.DefaultPageLayoutFactory">
           <section reference="997"/>
           <questions id="1000">
-            <question id="1001" name="FHD01" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="1001" name="FHD01" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="999"/>
               <questionCategories id="1002"/>
               <questions id="1003"/>
             </question>
-            <question id="1004" name="NEOPLASM_TYPE_FATHER" number="24" required="true" multiple="false" uIFactoryName="quartz.DropDownQuestionPanelFactory">
+            <question id="1004" name="NEOPLASM_TYPE_FATHER" number="24" multiple="false" minCount="1" uIFactoryName="quartz.DropDownQuestionPanelFactory">
               <page reference="999"/>
               <questionCategories id="1005">
                 <questionCategory id="1006" reselectable="false" selected="false" exportName="5">
@@ -2342,9 +2342,9 @@
                 <questions id="1047">
                   <question reference="1004"/>
                 </questions>
-                <question id="1048" name="NEOPLASM_FATHER" number="1.2" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="1048" name="NEOPLASM_FATHER" number="1.2" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <questionCategories id="1049"/>
-                  <parentQuestion id="1050" name="NEO_FIRST_DEG_REL_WHICH" number="23" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <parentQuestion id="1050" name="NEO_FIRST_DEG_REL_WHICH" number="23" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                     <page id="1051" name="17" uIFactoryName="quartz.DefaultPageLayoutFactory">
                       <section id="1052" name="NEOPLASMS">
                         <parentSection reference="997"/>
@@ -2352,7 +2352,7 @@
                           <page id="1054" name="16" uIFactoryName="quartz.DefaultPageLayoutFactory">
                             <section reference="1052"/>
                             <questions id="1055">
-                              <question id="1056" name="NEO_FIRST_DEG_REL_OCCURRENCE" number="22" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                              <question id="1056" name="NEO_FIRST_DEG_REL_OCCURRENCE" number="22" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                 <page reference="1054"/>
                                 <questionCategories id="1057">
                                   <questionCategory id="1058" reselectable="false" selected="false" exportName="0">
@@ -2376,12 +2376,12 @@
                                   <questions id="1063">
                                     <question reference="1056"/>
                                   </questions>
-                                  <question id="1064" name="KNOWS_HEALTH_FIRST_DEG_REL" number="21" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                                  <question id="1064" name="KNOWS_HEALTH_FIRST_DEG_REL" number="21" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                     <page id="1065" name="15" uIFactoryName="quartz.DefaultPageLayoutFactory">
                                       <section reference="997"/>
                                       <questions id="1066">
                                         <question reference="1064"/>
-                                        <question id="1067" name="NEOPLASM_TYPE_SIB1" number="30" required="true" multiple="false" uIFactoryName="quartz.DropDownQuestionPanelFactory">
+                                        <question id="1067" name="NEOPLASM_TYPE_SIB1" number="30" multiple="false" minCount="1" uIFactoryName="quartz.DropDownQuestionPanelFactory">
                                           <page reference="1065"/>
                                           <questionCategories id="1068">
                                             <questionCategory id="1069" reselectable="false" selected="false" exportName="1">
@@ -2498,7 +2498,7 @@
                                           </condition>
                                           <questions id="1101"/>
                                         </question>
-                                        <question id="1102" name="NEOPLASM_OTHER_TYPE_SIB1" number="31" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                                        <question id="1102" name="NEOPLASM_OTHER_TYPE_SIB1" number="31" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                           <page reference="1065"/>
                                           <questionCategories id="1103">
                                             <questionCategory id="1104" reselectable="false" selected="false">
@@ -2523,13 +2523,13 @@
                                           </condition>
                                           <questions id="1109"/>
                                         </question>
-                                        <question id="1110" name="NEOPLASM_AGE_SIB1" number="32" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                                        <question id="1110" name="NEOPLASM_AGE_SIB1" number="32" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                           <page reference="1065"/>
                                           <questionCategories id="1111">
                                             <questionCategory id="1112" reselectable="false" selected="false">
                                               <question reference="1110"/>
                                               <category id="1113" name="OTHER_AGE" escape="false">
-                                                <openAnswerDefinition id="1114" name="OTHER_AGE" dataType="INTEGER">
+                                                <openAnswerDefinition id="1114" name="OTHER_AGE" dataType="INTEGER" required="true">
                                                   <validators id="1115">
                                                     <dataValidator id="1116" dataType="INTEGER">
                                                       <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="1117">
@@ -2567,13 +2567,13 @@
                                           </condition>
                                           <questions id="1126"/>
                                         </question>
-                                        <question id="1127" name="BIRTH_RANK_SIB1" number="33" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                                        <question id="1127" name="BIRTH_RANK_SIB1" number="33" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                           <page reference="1065"/>
                                           <questionCategories id="1128">
                                             <questionCategory id="1129" reselectable="false" selected="false">
                                               <question reference="1127"/>
                                               <category id="1130" name="BIRTH_RANK" escape="false">
-                                                <openAnswerDefinition id="1131" name="BIRTH_RANK" dataType="INTEGER">
+                                                <openAnswerDefinition id="1131" name="BIRTH_RANK" dataType="INTEGER" required="true">
                                                   <validators id="1132">
                                                     <dataValidator id="1133" dataType="INTEGER">
                                                       <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="1134">
@@ -2611,7 +2611,7 @@
                                           </condition>
                                           <questions id="1143"/>
                                         </question>
-                                        <question id="1144" name="NEOPLASM_TYPE_SIB2" number="34" required="true" multiple="false" uIFactoryName="quartz.DropDownQuestionPanelFactory">
+                                        <question id="1144" name="NEOPLASM_TYPE_SIB2" number="34" multiple="false" minCount="1" uIFactoryName="quartz.DropDownQuestionPanelFactory">
                                           <page reference="1065"/>
                                           <questionCategories id="1145">
                                             <questionCategory id="1146" reselectable="false" selected="false" exportName="1">
@@ -2728,7 +2728,7 @@
                                           </condition>
                                           <questions id="1175"/>
                                         </question>
-                                        <question id="1176" name="NEOPLASM_OTHER_TYPE_SIB2" number="35" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                                        <question id="1176" name="NEOPLASM_OTHER_TYPE_SIB2" number="35" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                           <page reference="1065"/>
                                           <questionCategories id="1177">
                                             <questionCategory id="1178" reselectable="false" selected="false">
@@ -2753,7 +2753,7 @@
                                           </condition>
                                           <questions id="1183"/>
                                         </question>
-                                        <question id="1184" name="NEOPLASM_AGE_SIB2" number="36" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                                        <question id="1184" name="NEOPLASM_AGE_SIB2" number="36" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                           <page reference="1065"/>
                                           <questionCategories id="1185">
                                             <questionCategory id="1186" reselectable="false" selected="false">
@@ -2786,7 +2786,7 @@
                                           </condition>
                                           <questions id="1194"/>
                                         </question>
-                                        <question id="1195" name="BIRTH_RANK_SIB2" number="37" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                                        <question id="1195" name="BIRTH_RANK_SIB2" number="37" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                           <page reference="1065"/>
                                           <questionCategories id="1196">
                                             <questionCategory id="1197" reselectable="false" selected="false">
@@ -2845,7 +2845,7 @@
                                 </condition>
                                 <questions id="1212"/>
                               </question>
-                              <question id="1213" name="NEOPLASM_TYPE_CHILD1" number="38" required="true" multiple="false" uIFactoryName="quartz.DropDownQuestionPanelFactory">
+                              <question id="1213" name="NEOPLASM_TYPE_CHILD1" number="38" multiple="false" minCount="1" uIFactoryName="quartz.DropDownQuestionPanelFactory">
                                 <page reference="1054"/>
                                 <questionCategories id="1214">
                                   <questionCategory id="1215" reselectable="false" selected="false" exportName="1">
@@ -2962,7 +2962,7 @@
                                 </condition>
                                 <questions id="1244"/>
                               </question>
-                              <question id="1245" name="NEOPLASM_OTHER_TYPE_CHILD1" number="39" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                              <question id="1245" name="NEOPLASM_OTHER_TYPE_CHILD1" number="39" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                 <page reference="1054"/>
                                 <questionCategories id="1246">
                                   <questionCategory id="1247" reselectable="false" selected="false">
@@ -2987,7 +2987,7 @@
                                 </condition>
                                 <questions id="1252"/>
                               </question>
-                              <question id="1253" name="NEOPLASM_AGE_CHILD1" number="40" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                              <question id="1253" name="NEOPLASM_AGE_CHILD1" number="40" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                 <page reference="1054"/>
                                 <questionCategories id="1254">
                                   <questionCategory id="1255" reselectable="false" selected="false">
@@ -3020,7 +3020,7 @@
                                 </condition>
                                 <questions id="1263"/>
                               </question>
-                              <question id="1264" name="BIRTH_RANK_CHILD1" number="41" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                              <question id="1264" name="BIRTH_RANK_CHILD1" number="41" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                 <page reference="1054"/>
                                 <questionCategories id="1265">
                                   <questionCategory id="1266" reselectable="false" selected="false">
@@ -3053,7 +3053,7 @@
                                 </condition>
                                 <questions id="1274"/>
                               </question>
-                              <question id="1275" name="NEOPLASM_TYPE_CHILD2" number="42" required="true" multiple="false" uIFactoryName="quartz.DropDownQuestionPanelFactory">
+                              <question id="1275" name="NEOPLASM_TYPE_CHILD2" number="42" multiple="false" minCount="1" uIFactoryName="quartz.DropDownQuestionPanelFactory">
                                 <page reference="1054"/>
                                 <questionCategories id="1276">
                                   <questionCategory id="1277" reselectable="false" selected="false" exportName="1">
@@ -3170,7 +3170,7 @@
                                 </condition>
                                 <questions id="1306"/>
                               </question>
-                              <question id="1307" name="NEOPLASM_OTHER_TYPE_CHILD2" number="43" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                              <question id="1307" name="NEOPLASM_OTHER_TYPE_CHILD2" number="43" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                 <page reference="1054"/>
                                 <questionCategories id="1308">
                                   <questionCategory id="1309" reselectable="false" selected="false">
@@ -3195,7 +3195,7 @@
                                 </condition>
                                 <questions id="1314"/>
                               </question>
-                              <question id="1315" name="NEOPLASM_AGE_CHILD2" number="44" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                              <question id="1315" name="NEOPLASM_AGE_CHILD2" number="44" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                 <page reference="1054"/>
                                 <questionCategories id="1316">
                                   <questionCategory id="1317" reselectable="false" selected="false">
@@ -3228,7 +3228,7 @@
                                 </condition>
                                 <questions id="1325"/>
                               </question>
-                              <question id="1326" name="BIRTH_RANK_CHILD2" number="45" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                              <question id="1326" name="BIRTH_RANK_CHILD2" number="45" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                 <page reference="1054"/>
                                 <questionCategories id="1327">
                                   <questionCategory id="1328" reselectable="false" selected="false">
@@ -3267,7 +3267,7 @@
                           <page id="1337" name="18" uIFactoryName="quartz.DefaultPageLayoutFactory">
                             <section reference="1052"/>
                             <questions id="1338">
-                              <question id="1339" name="FHD02" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                              <question id="1339" name="FHD02" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                 <page reference="1337"/>
                                 <questionCategories id="1340"/>
                                 <condition class="answerCondition" id="1341" name="FHD02_ACONDITION">
@@ -3284,7 +3284,7 @@
                           <page id="1344" name="19" uIFactoryName="quartz.DefaultPageLayoutFactory">
                             <section reference="1052"/>
                             <questions id="1345">
-                              <question id="1346" name="FHD03" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                              <question id="1346" name="FHD03" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                 <page reference="1344"/>
                                 <questionCategories id="1347"/>
                                 <condition class="dataCondition" id="1348" name="FHD03_ACONDITION" comparisionOperator="gt">
@@ -3309,7 +3309,7 @@
                           <page id="1354" name="20" uIFactoryName="quartz.DefaultPageLayoutFactory">
                             <section reference="1052"/>
                             <questions id="1355">
-                              <question id="1356" name="FHD04" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                              <question id="1356" name="FHD04" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                 <page reference="1354"/>
                                 <questionCategories id="1357"/>
                                 <condition class="dataCondition" id="1358" name="FHD04_DCONDITION" comparisionOperator="gt">
@@ -3364,7 +3364,7 @@
                       <category reference="522"/>
                     </condition>
                     <questions id="1373">
-                      <question id="1374" name="NEOPLASM_MOTHER" number="1.1" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                      <question id="1374" name="NEOPLASM_MOTHER" number="1.1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                         <questionCategories id="1375"/>
                         <parentQuestion reference="1050"/>
                         <questions id="1376"/>
@@ -3378,7 +3378,7 @@
               </condition>
               <questions id="1378"/>
             </question>
-            <question id="1379" name="NEOPLASM_OTHER_TYPE_FATHER" number="25" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="1379" name="NEOPLASM_OTHER_TYPE_FATHER" number="25" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="999"/>
               <questionCategories id="1380">
                 <questionCategory id="1381" reselectable="false" selected="false">
@@ -3403,7 +3403,7 @@
               </condition>
               <questions id="1386"/>
             </question>
-            <question id="1387" name="NEOPLASM_AGE_FATHER" number="26" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="1387" name="NEOPLASM_AGE_FATHER" number="26" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="999"/>
               <questionCategories id="1388">
                 <questionCategory id="1389" reselectable="false" selected="false">
@@ -3428,7 +3428,7 @@
               </condition>
               <questions id="1394"/>
             </question>
-            <question id="1395" name="NEOPLASM_TYPE_MOTHER" number="27" required="true" multiple="false" uIFactoryName="quartz.DropDownQuestionPanelFactory">
+            <question id="1395" name="NEOPLASM_TYPE_MOTHER" number="27" multiple="false" minCount="1" uIFactoryName="quartz.DropDownQuestionPanelFactory">
               <page reference="999"/>
               <questionCategories id="1396">
                 <questionCategory id="1397" reselectable="false" selected="false" exportName="1">
@@ -3533,7 +3533,7 @@
               </condition>
               <questions id="1422"/>
             </question>
-            <question id="1423" name="NEOPLASM_OTHER_TYPE_MOTHER" number="28" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="1423" name="NEOPLASM_OTHER_TYPE_MOTHER" number="28" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="999"/>
               <questionCategories id="1424">
                 <questionCategory id="1425" reselectable="false" selected="false">
@@ -3558,7 +3558,7 @@
               </condition>
               <questions id="1430"/>
             </question>
-            <question id="1431" name="NEOPLASM_AGE_MOTHER" number="29" required="true" multiple="false" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="1431" name="NEOPLASM_AGE_MOTHER" number="29" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="999"/>
               <questionCategories id="1432">
                 <questionCategory id="1433" reselectable="false" selected="false">
