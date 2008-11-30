@@ -18,31 +18,34 @@ import org.slf4j.LoggerFactory;
 /**
  * 
  */
-public class ConsentStageDependencyCondition implements StageDependencyCondition {
+public class StageVariableStageDependencyCondition implements StageDependencyCondition {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LoggerFactory.getLogger(ConsentStageDependencyCondition.class);
+  private static final Logger log = LoggerFactory.getLogger(StageVariableStageDependencyCondition.class);
 
   private String stageName;
 
-  public ConsentStageDependencyCondition() {
+  private String variableName;
+
+  public StageVariableStageDependencyCondition() {
   }
 
-  public ConsentStageDependencyCondition(String name) {
+  public StageVariableStageDependencyCondition(String name) {
     this.stageName = name;
   }
 
   /**
-   * Returns a Boolean depending on the fact that the step is completed and also on its result Null if not completed
-   * True if completed and consented False if completed and not consented
+   * Returns a Boolean depending on the fact that the step is completed and also on its result. Returns null if
+   * dependent stage is not completed, other the method returns the value of the dependent stage's data.
    */
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
-    IStageExecution consent = activeInterviewService.getStageExecution(stageName);
-    if(consent != null) {
-      if(!consent.isCompleted()) return null;
-      else {
-        Data consentData = consent.getData("Consent");
+    IStageExecution stage = activeInterviewService.getStageExecution(stageName);
+    if(stage != null) {
+      if(stage.isCompleted() == false) {
+        return null;
+      } else {
+        Data consentData = stage.getData(variableName);
         if(consentData != null) {
           return consentData.getValue();
         } else
@@ -64,9 +67,17 @@ public class ConsentStageDependencyCondition implements StageDependencyCondition
     this.stageName = stageName;
   }
 
+  public void setVariableName(String variableName) {
+    this.variableName = variableName;
+  }
+
+  public String getVariableName() {
+    return variableName;
+  }
+
   @Override
   public String toString() {
-    return "[" + getClass().getSimpleName() + ":" + stageName + "]";
+    return "[" + getClass().getSimpleName() + ":" + stageName + "." + variableName + "]";
   }
 
 }

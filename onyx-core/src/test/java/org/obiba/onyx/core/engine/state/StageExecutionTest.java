@@ -124,9 +124,8 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     inverseCondition.setStageDependencyCondition(new SpecificStageDependencyCondition("dummy2"));
 
     MultipleStageDependencyCondition multipleCondition = new MultipleStageDependencyCondition();
-    multipleCondition.setLeftStageDependencyCondition(inverseCondition);
     multipleCondition.setOperator(Operator.AND);
-    multipleCondition.setRightStageDependencyCondition(new PreviousStageDependencyCondition("dummy1"));
+    multipleCondition.setConditions(Arrays.asList(inverseCondition, new PreviousStageDependencyCondition("dummy1")));
 
     stage3.setStageDependencyCondition(multipleCondition);
 

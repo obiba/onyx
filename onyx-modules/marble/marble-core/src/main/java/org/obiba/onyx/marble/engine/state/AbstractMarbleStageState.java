@@ -28,7 +28,7 @@ public abstract class AbstractMarbleStageState extends AbstractStageState {
 
   @Override
   public Data getData(String key) {
-    if(key.equals("Consent")) {
+    if(key.equalsIgnoreCase("Consent")) {
       return DataBuilder.buildBoolean(activeConsentService.getConsent().isAccepted());
     }
     return null;

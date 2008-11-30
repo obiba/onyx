@@ -3,10 +3,6 @@
 
   <import resource="classpath:META-INF/spring/ruby-core/context.xml" />
 
-  <bean name="consentDependency" class="org.obiba.onyx.engine.ConsentStageDependencyCondition">
-    <property name="stageName" value="CON" />
-  </bean>
-
   <bean id="rubyOnyxModule" class="org.obiba.onyx.ruby.engine.RubyModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="stages">
@@ -14,7 +10,12 @@
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="SamplesCollection" />
           <property name="module" value="ruby" />
-          <property name="stageDependencyCondition" ref="consentDependency" />
+          <property name="stageDependencyCondition">
+            <bean class="org.obiba.onyx.engine.StageVariableStageDependencyCondition">
+              <property name="stageName" value="CON" />
+              <property name="variableName" value="consent" />
+            </bean>
+          </property>
         </bean>
       </list>
     </property>
@@ -24,7 +25,7 @@
     <constructor-arg value="${org.obiba.onyx.config.path}/ruby" />
 
     <property name="expectedTubeCount" value="16" />
-    
+
     <property name="barcodeStructure">
       <bean class="org.obiba.onyx.ruby.core.domain.BarcodeStructure">
         <property name="parsers">

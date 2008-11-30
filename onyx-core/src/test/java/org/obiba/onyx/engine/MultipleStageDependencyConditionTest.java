@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.engine;
 
+import java.util.Arrays;
+
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,8 +36,7 @@ public class MultipleStageDependencyConditionTest {
   private MultipleStageDependencyCondition setupCondition(Operator op) {
     MultipleStageDependencyCondition mult = new MultipleStageDependencyCondition();
     mult.setOperator(op);
-    mult.setLeftStageDependencyCondition(first);
-    mult.setRightStageDependencyCondition(second);
+    mult.setConditions(Arrays.asList(first, second));
     return mult;
   }
 

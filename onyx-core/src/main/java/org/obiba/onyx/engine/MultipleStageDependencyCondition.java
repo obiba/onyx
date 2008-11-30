@@ -9,6 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.engine;
 
+import java.util.List;
+
+import org.obiba.core.util.StringUtil;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +20,8 @@ import org.slf4j.LoggerFactory;
  * Allows composing two instances of {@link StageDependencyCondition} using a boolean operator.
  * <p>
  * The normal boolean logic applies for determining the return value. The notable cases are shown in the following
- * table. <table>
+ * table.
+ * <table>
  * <tr>
  * <td>Operator</td>
  * <td>Left</td>
@@ -47,12 +51,12 @@ import org.slf4j.LoggerFactory;
  * <td>false</td>
  * <td>null</td>
  * </tr>
- * </table> For the OR operator, null is returned whenever one of the two conditions is returns null and the other is
- * false. The reason being that one returning null may return true on subsequent calls.
+ * </table>
+ * For the OR operator, null is returned whenever one of the two conditions is returns null and the other is false. The
+ * reason being that one returning null may return true on subsequent calls.
  */
 public class MultipleStageDependencyCondition implements StageDependencyCondition {
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MultipleStageDependencyCondition.class);
 
   public enum Operator {
@@ -61,47 +65,61 @@ public class MultipleStageDependencyCondition implements StageDependencyConditio
 
   private Operator operator;
 
-  private StageDependencyCondition leftStageDependencyCondition;
-
-  private StageDependencyCondition rightStageDependencyCondition;
+  private List<StageDependencyCondition> conditions;
 
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
-    Boolean leftResult = leftStageDependencyCondition.isDependencySatisfied(activeInterviewService);
-    Boolean rightResult = rightStageDependencyCondition.isDependencySatisfied(activeInterviewService);
+    if(conditions == null) throw new IllegalStateException("conditions cannot be null");
+    if(conditions.size() < 2) throw new IllegalStateException("at least 2 conditions required for MultipleStageDependencyCondition");
+    if(operator == null) throw new IllegalStateException("operator cannot be null");
 
-    log.info("{}.isDependencySatisfied: {} {} {}", new Object[] { toString(), leftResult, operator, rightResult });
-
-    if(leftResult != null && rightResult != null) {
-      if(operator == Operator.AND) {
-        return (leftResult && rightResult);
-      } else {
-        return (leftResult || rightResult);
-      }
-    } else {
-      if(operator == Operator.AND) {
-        if(isFalse(leftResult) || isFalse(rightResult)) {
-          return false;
-        }
-        return null;
-      } else {
-        if(isTrue(leftResult) || isTrue(rightResult)) {
-          return true;
-        }
-        return null;
-      }
+    if(log.isDebugEnabled()) {
+      log.debug("{}.isDependencySatisfied: {}", new Object[] { toString(), StringUtil.collectionToString(conditions) });
     }
+
+    StageDependencyCondition condition = conditions.get(0);
+    Boolean returnValue = condition.isDependencySatisfied(activeInterviewService);
+    for(int i = 1; i < conditions.size(); i++) {
+      condition = conditions.get(i);
+
+      Boolean left = returnValue;
+      Boolean right = condition.isDependencySatisfied(activeInterviewService);
+
+      switch(operator) {
+      case AND:
+        if(isTrue(left) && isTrue(right)) {
+          returnValue = true;
+        } else if(isFalse(left) || isFalse(right)) {
+          returnValue = false;
+        } else {
+          returnValue = null;
+        }
+        break;
+      case OR:
+        if(isTrue(left) || isTrue(right)) {
+          returnValue = true;
+        } else if(isFalse(left) && isFalse(right)) {
+          returnValue = false;
+        } else {
+          returnValue = null;
+        }
+        break;
+      }
+      log.debug("{}.isDependencySatisfied: {} {} {} -> {}", new Object[] { toString(), left, operator, right, returnValue });
+    }
+    return returnValue;
   }
 
   public boolean isDependentOn(String stageName) {
-    return (leftStageDependencyCondition.isDependentOn(stageName) || rightStageDependencyCondition.isDependentOn(stageName));
+    for(StageDependencyCondition condition : this.conditions) {
+      if(condition.isDependentOn(stageName)) {
+        return true;
+      }
+    }
+    return false;
   }
 
-  public void setLeftStageDependencyCondition(StageDependencyCondition leftStageDependencyCondition) {
-    this.leftStageDependencyCondition = leftStageDependencyCondition;
-  }
-
-  public void setRightStageDependencyCondition(StageDependencyCondition rightStageDependencyCondition) {
-    this.rightStageDependencyCondition = rightStageDependencyCondition;
+  public void setConditions(List<StageDependencyCondition> conditions) {
+    this.conditions = conditions;
   }
 
   public void setOperator(Operator operator) {
@@ -130,7 +148,6 @@ public class MultipleStageDependencyCondition implements StageDependencyConditio
 
   @Override
   public String toString() {
-    return "[" + getClass().getSimpleName() + ":" + leftStageDependencyCondition + ":" + operator + ":" + rightStageDependencyCondition + "]";
+    return "[" + getClass().getSimpleName() + "(" + conditions.size() + "):" + operator + "]";
   }
-
 }

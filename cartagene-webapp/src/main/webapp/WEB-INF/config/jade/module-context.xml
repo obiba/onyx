@@ -2,8 +2,9 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
   <import resource="classpath:META-INF/spring/jade-core/context.xml" />
 
-  <bean name="consentDependency" class="org.obiba.onyx.engine.ConsentStageDependencyCondition" >
+  <bean name="consentDependency" class="org.obiba.onyx.engine.StageVariableStageDependencyCondition">
     <property name="stageName" value="CON" />
+    <property name="variableName" value="consent" />
   </bean>
 
   <bean name="staDependency" class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
@@ -11,13 +12,13 @@
     <property name="instrumentRunService" ref="instrumentRunService" />
     <property name="stageName" value="STA" />
   </bean>
-  
+
   <bean name="blpDependency" class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
     <property name="instrumentService" ref="instrumentService" />
     <property name="instrumentRunService" ref="instrumentRunService" />
     <property name="stageName" value="BLP" />
   </bean>
-  
+
   <bean class="org.obiba.onyx.jade.engine.JadeModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="stages">
@@ -52,9 +53,13 @@
           <property name="module" value="jade" />
           <property name="stageDependencyCondition">
             <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
-              <property name="leftStageDependencyCondition" ref="consentDependency" />
               <property name="operator" value="AND" />
-              <property name="rightStageDependencyCondition" ref="staDependency" />
+              <property name="conditions">
+                <list>
+                  <ref bean="consentDependency" />
+                  <ref bean="staDependency" />
+                </list>
+              </property>
             </bean>
           </property>
         </bean>
@@ -62,23 +67,29 @@
           <property name="name" value="WEI" />
           <property name="module" value="jade" />
           <property name="stageDependencyCondition">
+
+            <!-- CON && !BIM -->
             <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
-              <property name="leftStageDependencyCondition" ref="consentDependency" />
               <property name="operator" value="AND" />
-              <property name="rightStageDependencyCondition">
-                <bean class="org.obiba.onyx.engine.InverseStageDependencyCondition">
-                  <property name="stageDependencyCondition">
-                    <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
-                      <property name="instrumentService" ref="instrumentService" />
-                      <property name="instrumentRunService" ref="instrumentRunService" />
-                      <property name="stageName" value="BIM_TBF310" />
-                    </bean>
-                  </property>
-                </bean>
+              <property name="conditions">
+                <list>
+                  <ref bean="consentDependency" />
+
+                  <bean class="org.obiba.onyx.engine.InverseStageDependencyCondition">
+                    <property name="stageDependencyCondition">
+                      <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
+                        <property name="instrumentService" ref="instrumentService" />
+                        <property name="instrumentRunService" ref="instrumentRunService" />
+                        <property name="stageName" value="BIM_TBF310" />
+                      </bean>
+                    </property>
+                  </bean>
+                </list>
               </property>
             </bean>
           </property>
         </bean>
+
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="SPI" />
           <property name="module" value="jade" />
@@ -86,36 +97,34 @@
           <property name="stageDependencyCondition">
             <!-- CON && STA && (BIM || WEI) -->
             <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
-              <property name="leftStageDependencyCondition" ref="consentDependency" />
               <property name="operator" value="AND" />
-              <property name="rightStageDependencyCondition">
-                <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
-                  <property name="leftStageDependencyCondition" ref="staDependency" />
-                  <property name="operator" value="AND" />
-                  <property name="rightStageDependencyCondition">
-                    <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
-                      <property name="leftStageDependencyCondition">
+              <property name="conditions">
+                <list>
+                  <ref bean="consentDependency" />
+                  <ref bean="staDependency" />
+                  <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
+                    <property name="operator" value="OR" />
+                    <property name="conditions">
+                      <list>
                         <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
                           <property name="instrumentService" ref="instrumentService" />
                           <property name="instrumentRunService" ref="instrumentRunService" />
                           <property name="stageName" value="BIM_TBF310" />
                         </bean>
-                      </property>
-                      <property name="operator" value="OR" />
-                      <property name="rightStageDependencyCondition">
                         <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
                           <property name="instrumentService" ref="instrumentService" />
                           <property name="instrumentRunService" ref="instrumentRunService" />
                           <property name="stageName" value="WEI" />
                         </bean>
-                      </property>
-                    </bean>
-                  </property>
-                </bean>
+                      </list>
+                    </property>
+                  </bean>
+                </list>
               </property>
             </bean>
           </property>
         </bean>
+
         <bean class="org.obiba.onyx.engine.Stage">
           <property name="name" value="ECG" />
           <property name="module" value="jade" />
@@ -131,9 +140,13 @@
           <property name="module" value="jade" />
           <property name="stageDependencyCondition">
             <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
-              <property name="leftStageDependencyCondition" ref="consentDependency" />
               <property name="operator" value="AND" />
-              <property name="rightStageDependencyCondition" ref="blpDependency" />
+              <property name="conditions">
+                <list>
+                  <ref bean="consentDependency" />
+                  <ref bean="blpDependency" />
+                </list>
+              </property>
             </bean>
           </property>
         </bean>
