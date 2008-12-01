@@ -1,0 +1,26 @@
+<stages>
+  <stage>
+    <name>SUM</name>
+    <module>mica</module>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>CON</stageName>
+          <variableName>consent</variableName>
+        </variableCondition>
+        <moduleCondition>
+          <moduleName>jade</moduleName>
+        </moduleCondition>
+        <moduleCondition>
+          <moduleName>quartz</moduleName>
+        </moduleCondition>
+        <moduleCondition>
+          <moduleName>ruby</moduleName>
+        </moduleCondition>
+
+      </conditions>
+    </stageDependencyCondition>
+  </stage>
+
+</stages>

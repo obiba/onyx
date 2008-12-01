@@ -1,0 +1,12 @@
+<stages>
+
+  <stage>
+    <name>SamplesCollection</name>
+    <module>ruby</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>CON</stageName>
+      <variableName>consent</variableName>
+    </stageDependencyCondition>
+  </stage>
+
+</stages>

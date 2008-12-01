@@ -3,45 +3,13 @@
 
   <import resource="classpath:META-INF/spring/quartz-core/context.xml" />
 
-  <bean name="consentDependency" class="org.obiba.onyx.engine.StageVariableStageDependencyCondition">
-    <property name="stageName" value="CON" />
-    <property name="variableName" value="consent" />
-  </bean>
-
-  <bean name="hqsaDependency" class="org.obiba.onyx.engine.PreviousStageDependencyCondition">
-    <property name="stageName" value="HealthQuestionnaireSelfAdministered" />
-  </bean>
-
   <bean id="quartzOnyxModule" class="org.obiba.onyx.quartz.engine.QuartzModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
     <property name="stages">
-      <list>
-        <!--
-          bean class="org.obiba.onyx.engine.Stage"> <property name="name" value="HealthQuestionnaire" /> <property
-          name="module" value="quartz" /> <property name="stageDependencyCondition" ref="consentDependency" /> </bean
-        -->
-        <bean class="org.obiba.onyx.engine.Stage">
-          <property name="name" value="HealthQuestionnaireSelfAdministered" />
-          <property name="module" value="quartz" />
-          <property name="stageDependencyCondition" ref="consentDependency" />
-        </bean>
-        <bean class="org.obiba.onyx.engine.Stage">
-          <property name="name" value="HealthQuestionnaireAssisted" />
-          <property name="module" value="quartz" />
-          <property name="stageDependencyCondition">
-            <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
-              <property name="operator" value="AND" />
-              <property name="conditions">
-                <list>
-                  <ref bean="consentDependency" />
-                  <ref bean="hqsaDependency" />
-                </list>
-              </property>
-            </bean>
-          </property>
-        </bean>
-      </list>
+      <bean class="org.obiba.onyx.engine.StageDescriptorFactoryBean">
+        <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/quartz/stages.xml" />
+      </bean>
     </property>
   </bean>
 

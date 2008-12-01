@@ -1,0 +1,68 @@
+<stages>
+  <stage>
+    <name>Stage1</name>
+    <module>Module1</module>
+  </stage>
+
+  <stage>
+    <name>Stage2</name>
+    <module>Module1</module>
+    <stageDependencyCondition class="stageCondition">
+      <stageName>Stage1</stageName>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>Stage3</name>
+    <module>Module1</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>Stage2</stageName>
+      <variableName>VAR2</variableName>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>Stage4</name>
+    <module>Module1</module>
+    <stageDependencyCondition class="inverseCondition">
+      <stageDependencyCondition class="variableCondition">
+        <stageName>Stage2</stageName>
+        <variableName>VAR2</variableName>
+      </stageDependencyCondition>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>Stage5</name>
+    <module>Module1</module>
+    <stageDependencyCondition class="moduleCondition">
+      <moduleName>Module0</moduleName>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>Stage6</name>
+    <module>Module1</module>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <stageCondition>
+          <stageName>Stage1</stageName>
+        </stageCondition>
+        <variableCondition>
+          <stageName>Stage2</stageName>
+          <variableName>VAR2</variableName>
+        </variableCondition>
+        <inverseCondition>
+          <stageCondition>
+            <stageName>Stage3</stageName>
+          </stageCondition>
+        </inverseCondition>
+        <moduleCondition>
+          <moduleName>Module1</moduleName>
+        </moduleCondition>
+      </conditions>
+    </stageDependencyCondition>
+  </stage>
+
+</stages>

@@ -1,0 +1,151 @@
+<stages>
+  <stage>
+    <name>STA</name>
+    <module>jade</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>CON</stageName>
+      <variableName>consent</variableName>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>SIT</name>
+    <module>jade</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>CON</stageName>
+      <variableName>consent</variableName>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>HWC</name>
+    <module>jade</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>CON</stageName>
+      <variableName>consent</variableName>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>MUS</name>
+    <module>jade</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>CON</stageName>
+      <variableName>consent</variableName>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>BLP</name>
+    <module>jade</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>CON</stageName>
+      <variableName>consent</variableName>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>BIM_TBF310</name>
+    <module>jade</module>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>CON</stageName>
+          <variableName>consent</variableName>
+        </variableCondition>
+        <variableCondition>
+          <stageName>STA</stageName>
+          <variableName>height</variableName>
+        </variableCondition>
+      </conditions>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>WEI</name>
+    <module>jade</module>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>CON</stageName>
+          <variableName>consent</variableName>
+        </variableCondition>
+        <inverseCondition>
+          <stageDependencyCondition class="variableCondition">
+            <stageName>BIM_TBF310</stageName>
+            <variableName>weight</variableName>
+          </stageDependencyCondition>
+        </inverseCondition>
+      </conditions>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>SPI</name>
+    <module>jade</module>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>CON</stageName>
+          <variableName>consent</variableName>
+        </variableCondition>
+        <variableCondition>
+          <stageName>STA</stageName>
+          <variableName>height</variableName>
+        </variableCondition>
+        <multipleCondition>
+          <operator>OR</operator>
+          <conditions>
+            <variableCondition>
+              <stageName>BIM_TBF310</stageName>
+              <variableName>weight</variableName>
+            </variableCondition>
+            <variableCondition>
+              <stageName>WEI</stageName>
+              <variableName>weight</variableName>
+            </variableCondition>
+          </conditions>
+        </multipleCondition>
+      </conditions>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>ECG</name>
+    <module>jade</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>CON</stageName>
+      <variableName>consent</variableName>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>BON</name>
+    <module>jade</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>CON</stageName>
+      <variableName>consent</variableName>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>ART</name>
+    <module>jade</module>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>CON</stageName>
+          <variableName>consent</variableName>
+        </variableCondition>
+        <variableCondition>
+          <stageName>BLP</stageName>
+          <variableName>Systolic_Blood_Pressure</variableName>
+        </variableCondition>
+      </conditions>
+    </stageDependencyCondition>
+  </stage>
+</stages>

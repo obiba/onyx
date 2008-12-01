@@ -4,12 +4,9 @@
 
   <bean class="org.obiba.onyx.marble.engine.MarbleModule">
     <property name="stages">
-      <list>
-        <bean class="org.obiba.onyx.engine.Stage">
-          <property name="name" value="CON" />
-          <property name="module" value="marble" />
-        </bean>
-      </list>
+      <bean class="org.obiba.onyx.engine.StageDescriptorFactoryBean">
+        <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/marble/stages.xml" />
+      </bean>
     </property>
   </bean>
 

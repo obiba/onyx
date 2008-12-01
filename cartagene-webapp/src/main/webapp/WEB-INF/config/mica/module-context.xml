@@ -6,38 +6,8 @@
   <bean id="micaOnyxModule" class="org.obiba.onyx.mica.engine.MicaModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="stages">
-      <bean class="org.obiba.onyx.engine.Stage">
-        <property name="name" value="SUM" />
-        <property name="module" value="mica" />
-
-        <property name="stageDependencyCondition">
-          <bean class="org.obiba.onyx.engine.MultipleStageDependencyCondition">
-            <property name="operator" value="AND" />
-            <property name="conditions">
-              <list>
-                <bean class="org.obiba.onyx.engine.StageVariableStageDependencyCondition">
-                  <property name="stageName" value="CON" />
-                  <property name="variableName" value="consent" />
-                </bean>
-
-                <bean class="org.obiba.onyx.engine.ModuleDependencyCondition">
-                  <property name="moduleRegistry" ref="moduleRegistry" />
-                  <property name="moduleName" value="jade" />
-                </bean>
-
-                <bean class="org.obiba.onyx.engine.ModuleDependencyCondition">
-                  <property name="moduleRegistry" ref="moduleRegistry" />
-                  <property name="moduleName" value="quartz" />
-                </bean>
-
-                <bean class="org.obiba.onyx.engine.ModuleDependencyCondition">
-                  <property name="moduleRegistry" ref="moduleRegistry" />
-                  <property name="moduleName" value="ruby" />
-                </bean>
-              </list>
-            </property>
-          </bean>
-        </property>
+      <bean class="org.obiba.onyx.engine.StageDescriptorFactoryBean">
+        <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/mica/stages.xml" />
       </bean>
     </property>
   </bean>

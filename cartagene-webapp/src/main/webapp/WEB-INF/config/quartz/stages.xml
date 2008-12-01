@@ -1,0 +1,38 @@
+<stages>
+
+  <!--stage>
+    <name>HealthQuestionnaire</name>
+    <module>quartz</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>CON</stageName>
+      <variableName>consent</variableName>
+    </stageDependencyCondition>
+  </stage-->
+
+  <stage>
+    <name>HealthQuestionnaireSelfAdministered</name>
+    <module>quartz</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>CON</stageName>
+      <variableName>consent</variableName>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
+    <name>HealthQuestionnaireAssisted</name>
+    <module>quartz</module>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>CON</stageName>
+          <variableName>consent</variableName>
+        </variableCondition>
+        <stageCondition>
+          <stageName>HealthQuestionnaireSelfAdministered</stageName>
+        </stageCondition>
+      </conditions>
+    </stageDependencyCondition>
+  </stage>
+
+</stages>

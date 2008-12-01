@@ -13,6 +13,8 @@ import java.util.List;
 
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.state.IStageExecution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An implementation of {@link StageDependencyCondition} that requires that all {@link Stage}s of a {@link Module} be
@@ -22,7 +24,7 @@ import org.obiba.onyx.engine.state.IStageExecution;
  */
 public class ModuleDependencyCondition implements StageDependencyCondition {
 
-  private static final long serialVersionUID = 1L;
+  private static Logger log = LoggerFactory.getLogger(ModuleDependencyCondition.class);
 
   private ModuleRegistry moduleRegistry;
 
@@ -42,10 +44,12 @@ public class ModuleDependencyCondition implements StageDependencyCondition {
 
       if(!stageExecution.isCompleted()) {
         // At least one stage is not complete, return null since
+        log.debug("Dependendant module {} not complete due to stage {}", moduleName, oneStage.getName());
         return null;
       }
     }
 
+    log.debug("Dependendant module {} is complete", moduleName);
     return true;
   }
 
