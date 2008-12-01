@@ -16,8 +16,9 @@ import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
-import org.apache.wicket.extensions.yui.calendar.DateField;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -154,15 +155,18 @@ public class EditParticipantPanel extends Panel {
   }
 
   @SuppressWarnings("serial")
-  private DateField createBirthDateField() {
-    DateField birthDateField = new DateField("birthDate", new PropertyModel(getModel(), "birthDate")) {
-      protected DateTextField newDateTextField(String id, PropertyModel dateFieldModel) {
-        return DateTextField.forDatePattern(id, dateFieldModel, "yyyy-MM-dd");
-      }
-    };
+  private DateTextField createBirthDateField() {
+    DateTextField birthDateField = new DateTextField("birthDate", new PropertyModel(getModel(), "birthDate"), new PatternDateConverter("yyyy-MM-dd", true));
 
     birthDateField.setRequired(true);
-    birthDateField.setLabel(new ResourceModel("BirthDate"));
+    birthDateField.setLabel(new ResourceModel("BirthDateWithFormat"));
+
+    birthDateField.add(new DatePicker() {
+      @Override
+      public boolean enableMonthYearSelection() {
+        return true;
+      }
+    });
 
     return birthDateField;
   }
