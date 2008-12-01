@@ -103,6 +103,13 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
     commentWindow.setInitialWidth(550);
     commentWindow.setResizable(false);
 
+    commentWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
+      public boolean onCloseButtonClicked(AjaxRequestTarget target) {
+        // same as cancel
+        return true;
+      }
+    });
+
     commentWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
       public void onClose(AjaxRequestTarget target) {
       }
