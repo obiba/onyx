@@ -255,6 +255,7 @@ public class Participant extends AbstractEntity {
     // The list of configured attribute values does NOT contain a value for the specified
     // attribute. So create a new ParticipantAttributeValue and append it to the list.
     ParticipantAttributeValue attributeValue = new ParticipantAttributeValue();
+    attributeValue.setParticipant(this);
     attributeValue.setAttributeName(attributeName);
 
     if(data != null) {
