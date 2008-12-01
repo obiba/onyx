@@ -13,12 +13,11 @@ import java.util.Set;
 
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
-import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JadeContraIndicatedState extends AbstractStageState {
+public class JadeContraIndicatedState extends AbstractJadeStageState {
 
   private static final Logger log = LoggerFactory.getLogger(JadeCompletedState.class);
 
@@ -49,9 +48,11 @@ public class JadeContraIndicatedState extends AbstractStageState {
 
   @Override
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
-    if(transitionEvent.equals(TransitionEvent.CONTRAINDICATED) || transitionEvent.equals(TransitionEvent.VALID) || transitionEvent.equals(TransitionEvent.NOTAPPLICABLE)) return false;
-    else
+    if(transitionEvent == TransitionEvent.CONTRAINDICATED || transitionEvent == TransitionEvent.VALID || transitionEvent == TransitionEvent.NOTAPPLICABLE) {
+      return false;
+    } else {
       return true;
+    }
   }
 
   @Override

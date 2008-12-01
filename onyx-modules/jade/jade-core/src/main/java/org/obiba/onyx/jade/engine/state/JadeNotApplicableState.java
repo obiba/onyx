@@ -12,10 +12,9 @@ package org.obiba.onyx.jade.engine.state;
 import java.util.Set;
 
 import org.obiba.onyx.engine.ActionType;
-import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 
-public class JadeNotApplicableState extends AbstractStageState {
+public class JadeNotApplicableState extends AbstractJadeStageState {
 
   @Override
   public boolean isCompleted() {

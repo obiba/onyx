@@ -16,7 +16,6 @@ import java.util.Set;
 
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
-import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Jade Ready State, goes there each time a state is cancelled.
  */
-public class JadeReadyState extends AbstractStageState {
+public class JadeReadyState extends AbstractJadeStageState {
 
   private static final Logger log = LoggerFactory.getLogger(JadeReadyState.class);
 
@@ -54,8 +53,10 @@ public class JadeReadyState extends AbstractStageState {
 
   @Override
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
-    if(transitionEvent.equals(TransitionEvent.VALID)) return false;
-    else
+    if(transitionEvent.equals(TransitionEvent.VALID)) {
+      return false;
+    } else {
       return true;
+    }
   }
 }

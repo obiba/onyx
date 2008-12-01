@@ -7,16 +7,14 @@
     <property name="variableName" value="consent" />
   </bean>
 
-  <bean name="staDependency" class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
-    <property name="instrumentService" ref="instrumentService" />
-    <property name="instrumentRunService" ref="instrumentRunService" />
+  <bean name="staDependency" class="org.obiba.onyx.engine.StageVariableStageDependencyCondition">
     <property name="stageName" value="STA" />
+    <property name="variableName" value="height" />
   </bean>
 
-  <bean name="blpDependency" class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
-    <property name="instrumentService" ref="instrumentService" />
-    <property name="instrumentRunService" ref="instrumentRunService" />
+  <bean name="blpDependency" class="org.obiba.onyx.engine.StageVariableStageDependencyCondition">
     <property name="stageName" value="BLP" />
+    <property name="variableName" value="Systolic_Blood_Pressure" />
   </bean>
 
   <bean class="org.obiba.onyx.jade.engine.JadeModule">
@@ -77,10 +75,9 @@
 
                   <bean class="org.obiba.onyx.engine.InverseStageDependencyCondition">
                     <property name="stageDependencyCondition">
-                      <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
-                        <property name="instrumentService" ref="instrumentService" />
-                        <property name="instrumentRunService" ref="instrumentRunService" />
+                      <bean class="org.obiba.onyx.engine.StageVariableStageDependencyCondition">
                         <property name="stageName" value="BIM_TBF310" />
+                        <property name="variableName" value="weight" />
                       </bean>
                     </property>
                   </bean>
@@ -106,15 +103,13 @@
                     <property name="operator" value="OR" />
                     <property name="conditions">
                       <list>
-                        <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
-                          <property name="instrumentService" ref="instrumentService" />
-                          <property name="instrumentRunService" ref="instrumentRunService" />
+                        <bean class="org.obiba.onyx.engine.StageVariableStageDependencyCondition">
                           <property name="stageName" value="BIM_TBF310" />
+                          <property name="variableName" value="weight" />
                         </bean>
-                        <bean class="org.obiba.onyx.jade.engine.state.JadeStageDependencyCondition">
-                          <property name="instrumentService" ref="instrumentService" />
-                          <property name="instrumentRunService" ref="instrumentRunService" />
+                        <bean class="org.obiba.onyx.engine.StageVariableStageDependencyCondition">
                           <property name="stageName" value="WEI" />
+                          <property name="variableName" value="weight" />
                         </bean>
                       </list>
                     </property>

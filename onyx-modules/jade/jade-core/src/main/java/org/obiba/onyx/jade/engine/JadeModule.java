@@ -80,7 +80,6 @@ public class JadeModule implements Module, ApplicationContextAware {
     exec.addEdge(notApplicable, TransitionEvent.VALID, ready);
     exec.addEdge(notApplicable, TransitionEvent.INVALID, waiting);
 
-    // if (dependsOn != null && dependsOn.length>0) {
     exec.addEdge(waiting, TransitionEvent.NOTAPPLICABLE, notApplicable);
     exec.addEdge(waiting, TransitionEvent.CONTRAINDICATED, notApplicable);
     exec.addEdge(waiting, TransitionEvent.VALID, ready);

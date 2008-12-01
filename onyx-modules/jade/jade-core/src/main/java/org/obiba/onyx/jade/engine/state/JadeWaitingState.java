@@ -13,7 +13,6 @@ import java.util.Set;
 
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
-import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Jade Waiting State, goes there if a dependency is not satisfied.
  */
-public class JadeWaitingState extends AbstractStageState {
+public class JadeWaitingState extends AbstractJadeStageState {
 
   private static final Logger log = LoggerFactory.getLogger(JadeWaitingState.class);
 
@@ -43,7 +42,7 @@ public class JadeWaitingState extends AbstractStageState {
 
   @Override
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
-    if(transitionEvent.equals(TransitionEvent.INVALID)) {
+    if(transitionEvent == TransitionEvent.INVALID) {
       return false;
     } else {
       return true;

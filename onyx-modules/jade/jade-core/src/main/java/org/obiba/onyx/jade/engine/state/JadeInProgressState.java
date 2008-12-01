@@ -17,7 +17,6 @@ import java.util.Set;
 import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
-import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
@@ -26,7 +25,7 @@ import org.obiba.onyx.jade.core.wicket.JadePanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JadeInProgressState extends AbstractStageState {
+public class JadeInProgressState extends AbstractJadeStageState {
 
   private static final Logger log = LoggerFactory.getLogger(JadeInProgressState.class);
 
