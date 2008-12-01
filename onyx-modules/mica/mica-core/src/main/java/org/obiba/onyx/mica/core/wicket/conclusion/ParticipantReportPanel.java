@@ -13,7 +13,9 @@ import org.apache.wicket.markup.html.link.InlineFrame;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.marble.core.service.ActiveConsentService;
+import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.marble.core.service.ConsentService;
+import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.mica.core.service.impl.JadeReportContributor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +27,15 @@ public class ParticipantReportPanel extends Panel {
   private static final Logger log = LoggerFactory.getLogger(BalsacConfirmationPanel.class);
 
   @SpringBean
-  private ActiveConsentService activeConsentService;
+  private JadeReportContributor jadeReportContributor;
 
   @SpringBean
-  private JadeReportContributor jadeReportContributor;
+  private ConsentService consentService;
+
+  @SpringBean(name = "activeInterviewService")
+  private ActiveInterviewService activeInterviewService;
+
+  private Consent participantConsent;
 
   @SuppressWarnings("serial")
   public ParticipantReportPanel(String id) {
@@ -36,9 +43,11 @@ public class ParticipantReportPanel extends Panel {
     super(id);
     setOutputMarkupId(true);
 
+    participantConsent = consentService.getConsent(activeInterviewService.getInterview());
+
     // Print participant consent form
-    if(activeConsentService.getConsent().getPdfForm() != null) {
-      byte[] consentPdf = activeConsentService.getConsent().getPdfForm();
+    if(participantConsent.getPdfForm() != null) {
+      byte[] consentPdf = participantConsent.getPdfForm();
       add(new InlineFrame("participantConsentDisplayFrame", new EmbeddedPdfPage(consentPdf)));
     } else {
       add(new WebMarkupContainer("participantConsentDisplayFrame").setVisible(false));
@@ -47,7 +56,7 @@ public class ParticipantReportPanel extends Panel {
     // Display participant report (embed pdf)
     byte[] reportPdf;
     try {
-      reportPdf = IOUtils.toByteArray(jadeReportContributor.getReport(activeConsentService.getConsent().getLocale()));
+      reportPdf = IOUtils.toByteArray(jadeReportContributor.getReport(participantConsent.getLocale()));
     } catch(IOException e) {
       log.error("Cannot read the Participant Report");
       throw new RuntimeException(e);
@@ -86,7 +95,7 @@ public class ParticipantReportPanel extends Panel {
 
       protected ResourceState getResourceState() {
 
-        return new PdfResourceState(activeConsentService.getConsent().getPdfForm());
+        return new PdfResourceState(participantConsent.getPdfForm());
       }
     };
     return r;
@@ -98,7 +107,7 @@ public class ParticipantReportPanel extends Panel {
 
       protected ResourceState getResourceState() {
 
-        InputStream in = jadeReportContributor.getReport(activeConsentService.getConsent().getLocale());
+        InputStream in = jadeReportContributor.getReport(participantConsent.getLocale());
 
         try {
           return new PdfResourceState(IOUtils.toByteArray(in));

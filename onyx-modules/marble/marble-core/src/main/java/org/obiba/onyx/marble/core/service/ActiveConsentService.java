@@ -29,16 +29,6 @@ public interface ActiveConsentService {
   public Consent getConsent();
 
   /**
-   * Persists the {@link Consent} for the current interview.
-   */
-  public void update();
-
-  /**
-   * Marks the previous {@link Consent} (if exist) as deleted.
-   */
-  public void deletePreviousConsent();
-
-  /**
    * Validates the content of the electronic consent form.
    * @return True if valid, false if not.
    */

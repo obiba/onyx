@@ -25,6 +25,7 @@ import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
+import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.core.wicket.wizard.ConsentWizardForm;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
@@ -43,6 +44,9 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
 
   @SpringBean
   private ActiveConsentService activeConsentService;
+
+  @SpringBean
+  private ConsentService consentService;
 
   @SpringBean
   private ModuleRegistry moduleRegistry;
@@ -100,7 +104,7 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
             } else {
               IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
               ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
-              activeConsentService.update();
+              consentService.saveConsent(activeConsentService.getConsent());
               if(actionDef != null) {
                 actionWindow.show(target, model.getStageModel(), actionDef);
               }

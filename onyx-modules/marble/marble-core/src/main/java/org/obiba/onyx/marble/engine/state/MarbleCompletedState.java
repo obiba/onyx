@@ -40,7 +40,7 @@ public class MarbleCompletedState extends AbstractMarbleStageState {
   public void stop(Action action) {
     super.execute(action);
     log.info("Marble Stage {} is cancelling", super.getStage().getName());
-    getActiveConsentService().deletePreviousConsent();
+    consentService.deletePreviousConsent(activeInterviewService.getInterview());
     castEvent(TransitionEvent.CANCEL);
   }
 
