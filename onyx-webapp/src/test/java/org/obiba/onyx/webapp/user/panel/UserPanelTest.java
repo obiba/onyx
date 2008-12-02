@@ -202,7 +202,7 @@ public class UserPanelTest {
   private User newUserTest() {
     User u = new User();
 
-    u.setId(1);
+    u.setId(1l);
     u.setLogin("ndupont");
     u.setLastName("Dupont");
     u.setFirstName("Nathalie");
@@ -225,15 +225,15 @@ public class UserPanelTest {
     List<Role> roleList = new ArrayList<Role>();
 
     Role roleInstance = Role.DATA_COLLECTION_OPERATOR;
-    roleInstance.setId(1);
+    roleInstance.setId(1l);
     roleList.add(roleInstance);
 
     roleInstance = Role.PARTICIPANT_MANAGER;
-    roleInstance.setId(2);
+    roleInstance.setId(2l);
     roleList.add(roleInstance);
 
     roleInstance = Role.SYSTEM_ADMINISTRATOR;
-    roleInstance.setId(3);
+    roleInstance.setId(3l);
     roleList.add(roleInstance);
 
     return (roleList);
