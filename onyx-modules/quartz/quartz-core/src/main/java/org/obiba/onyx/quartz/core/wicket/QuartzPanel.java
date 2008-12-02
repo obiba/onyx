@@ -48,7 +48,7 @@ public class QuartzPanel extends Panel implements IEngineComponentAware {
     add(wizardPanel = new QuestionnaireWizardPanel("content", new QuestionnaireModel(activeQuestionnaireAdministrationService.getQuestionnaire()), new StageModel(moduleRegistry, stage.getName()), resuming));
   }
 
-  public void setActionWindwon(ActionWindow window) {
+  public void setActionWindow(ActionWindow window) {
     wizardPanel.setActionWindow(window);
   }
 

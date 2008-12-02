@@ -105,7 +105,7 @@ public class RubyPanelTest {
         ;
       }
     };
-    rubyPanel.setActionWindwon(actionWindow);
+    rubyPanel.setActionWindow(actionWindow);
 
     verifyCommonMocks();
 

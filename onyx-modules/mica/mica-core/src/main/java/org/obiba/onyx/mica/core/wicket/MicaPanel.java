@@ -134,7 +134,7 @@ public class MicaPanel extends Panel implements IEngineComponentAware {
 
   }
 
-  public void setActionWindwon(ActionWindow window) {
+  public void setActionWindow(ActionWindow window) {
     this.actionWindow = window;
   }
 

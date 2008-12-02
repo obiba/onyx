@@ -102,7 +102,7 @@ public class JadePanel extends Panel implements IEngineComponentAware {
     return queryService.matchOne(template);
   }
 
-  public void setActionWindwon(ActionWindow window) {
+  public void setActionWindow(ActionWindow window) {
     this.actionWindow = window;
   }
 

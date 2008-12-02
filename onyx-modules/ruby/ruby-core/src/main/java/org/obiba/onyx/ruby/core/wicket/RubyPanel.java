@@ -52,7 +52,7 @@ public class RubyPanel extends Panel implements IEngineComponentAware {
   // IEngineComponentAware Methods
   //
 
-  public void setActionWindwon(ActionWindow window) {
+  public void setActionWindow(ActionWindow window) {
     wizardPanel.setActionWindow(window);
   }
 
