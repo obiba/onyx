@@ -99,7 +99,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
     FormComponentLabel radioLabel = new FormComponentLabel("categoryLabel", radio);
     add(radioLabel);
     radioLabel.add(radio);
-    radioLabel.add(new Label("label", radio.getLabel()).setRenderBodyOnly(true).setVisible(radioLabelVisible));
+    radioLabel.add(new Label("label", radio.getLabel()).setRenderBodyOnly(true).setVisible(radioLabelVisible).setEscapeModelStrings(false));
 
     if(questionCategory.getCategory().getOpenAnswerDefinition() != null) {
       // there is an open field

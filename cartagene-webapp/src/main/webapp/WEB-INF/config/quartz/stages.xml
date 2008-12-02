@@ -10,6 +10,15 @@
   </stage-->
 
   <stage>
+    <name>CIPreliminaryQuestionnaire</name>
+    <module>quartz</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>CON</stageName>
+      <variableName>consent</variableName>
+    </stageDependencyCondition>
+  </stage>
+
+  <stage>
     <name>HealthQuestionnaireSelfAdministered</name>
     <module>quartz</module>
     <stageDependencyCondition class="variableCondition">
