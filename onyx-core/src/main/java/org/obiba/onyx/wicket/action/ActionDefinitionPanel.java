@@ -29,7 +29,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IErrorMessageSource;
 import org.apache.wicket.validation.IValidatable;
@@ -42,11 +41,11 @@ import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 
 public abstract class ActionDefinitionPanel extends Panel {
 
@@ -183,8 +182,7 @@ public abstract class ActionDefinitionPanel extends Panel {
       super(id, "reasonsFragment", ActionDefinitionPanel.this);
       add(new DropDownChoice("reasonsSelect", new PropertyModel(ActionDefinitionPanel.this, "action.eventReason"), reasons, new IChoiceRenderer() {
         public Object getDisplayValue(Object object) {
-          ApplicationContext context = ((SpringWebApplication) (ActionDefinitionPanel.this.getApplication())).getSpringContextLocator().getSpringContext();
-          return context.getMessage(object.toString(), null, userSessionService.getLocale());
+          return new SpringStringResourceModel(object.toString()).getString();
         }
 
         public String getIdValue(Object object, int index) {

@@ -10,6 +10,7 @@
 package org.obiba.onyx.webapp;
 
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.Component;
@@ -22,7 +23,8 @@ import org.apache.wicket.authorization.IUnauthorizedComponentInstantiationListen
 import org.apache.wicket.authorization.UnauthorizedInstantiationException;
 import org.apache.wicket.authorization.strategies.role.RoleAuthorizationStrategy;
 import org.apache.wicket.markup.html.pages.AccessDeniedPage;
-import org.apache.wicket.spring.SpringWebApplication;
+import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.spring.ISpringContextLocator;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.PackageName;
 import org.obiba.onyx.core.domain.user.User;
@@ -34,13 +36,36 @@ import org.obiba.onyx.webapp.login.page.LoginPage;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 import org.obiba.onyx.webapp.stage.page.StagePage;
 import org.obiba.runtime.Version;
+import org.obiba.wicket.application.ISpringWebApplication;
 import org.obiba.wicket.application.WebApplicationStartupListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.beans.factory.config.PropertiesFactoryBean;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.ServletContextResource;
+import org.springframework.web.context.support.XmlWebApplicationContext;
 
-public class OnyxApplication extends SpringWebApplication implements IUnauthorizedComponentInstantiationListener {
+public class OnyxApplication extends WebApplication implements ISpringWebApplication, IUnauthorizedComponentInstantiationListener {
 
   private final Logger log = LoggerFactory.getLogger(OnyxApplication.class);
+
+  /**
+   * Singleton instance of spring application context locator
+   */
+  private final static ISpringContextLocator contextLocator = new ISpringContextLocator() {
+
+    private static final long serialVersionUID = 1L;
+
+    public ApplicationContext getSpringContext() {
+      Application app = Application.get();
+      return ((OnyxApplication) app).internalGetApplicationContext();
+    }
+  };
+
+  private XmlWebApplicationContext applicationContext;
 
   private UserService userService;
 
@@ -62,11 +87,98 @@ public class OnyxApplication extends SpringWebApplication implements IUnauthoriz
     this.version = version;
   }
 
+  @Override
+  public Session newSession(Request request, Response response) {
+    return new OnyxAuthenticatedSession(this, request);
+  }
+
+  public void onUnauthorizedInstantiation(Component component) {
+    // If there is a sign in page class declared, and the unauthorized component is a page, but it's not the sign in
+    // page
+    if(component instanceof Page) {
+      if(!OnyxAuthenticatedSession.get().isSignedIn()) {
+        // Redirect to intercept page to let the user sign in
+        throw new RestartResponseAtInterceptPageException(LoginPage.class);
+      } else {
+        // User is signed in but doesn't have the proper access rights. Display error and redirect accordingly.
+        throw new RestartResponseAtInterceptPageException(AccessDeniedPage.class);
+      }
+    } else {
+      // The component was not a page, so show an error message in the FeedbackPanel of the page
+      component.error("You do not have sufficient privileges to see this component.");
+      throw new UnauthorizedInstantiationException(component.getClass());
+    }
+  }
+
+  public ISpringContextLocator getSpringContextLocator() {
+    return contextLocator;
+  }
+
+  @Override
+  public Class<?> getHomePage() {
+    User template = new User();
+    template.setDeleted(false);
+
+    if(userService.getUserCount(template) > 0) {
+      if(OnyxAuthenticatedSession.get().isSignedIn()) {
+        return HomePage.class;
+      } else {
+        return LoginPage.class;
+      }
+    } else {
+      return ApplicationConfigurationPage.class;
+    }
+  }
+
+  public boolean isDevelopmentMode() {
+    return Application.DEVELOPMENT.equalsIgnoreCase(getConfigurationType());
+  }
+
+  protected final ApplicationContext internalGetApplicationContext() {
+    return applicationContext;
+  }
+
+  protected void createApplicationContext() {
+    try {
+      PropertiesFactoryBean pfb = new PropertiesFactoryBean();
+      pfb.setLocation(new ServletContextResource(getServletContext(), "WEB-INF/onyx.properties"));
+      pfb.setSingleton(false);
+      Properties onyxProperties = (Properties) pfb.getObject();
+
+      String configPath = onyxProperties.getProperty("org.obiba.onyx.config.path");
+      if(configPath == null) {
+        throw new IllegalStateException("Onyx config path not set.");
+      }
+
+      PropertyPlaceholderConfigurer configurer = new PropertyPlaceholderConfigurer();
+      configurer.setProperties(onyxProperties);
+      // This must be set to true in order to let another PropertyPlaceholderConfigurer replace the unresolved entries.
+      configurer.setIgnoreUnresolvablePlaceholders(true);
+
+      applicationContext = new XmlWebApplicationContext();
+      applicationContext.setServletContext(getServletContext());
+      applicationContext.addBeanFactoryPostProcessor(configurer);
+      applicationContext.setConfigLocation("WEB-INF/spring/context.xml," + configPath + "/*/module-context.xml");
+      applicationContext.refresh();
+
+      getServletContext().setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, applicationContext);
+
+      applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(this, AutowireCapableBeanFactory.AUTOWIRE_BY_NAME, false);
+
+    } catch(Exception e) {
+      throw new RuntimeException(e);
+    }
+
+    super.internalInit();
+  }
+
   protected void init() {
     log.info("Onyx Web Application is starting");
     super.init();
 
-    super.addComponentInstantiationListener(new SpringComponentInjector(this, super.internalGetApplicationContext()));
+    createApplicationContext();
+
+    super.addComponentInstantiationListener(new SpringComponentInjector(this, applicationContext));
 
     forEachListeners(new IListenerCallback() {
       public void handleListener(String beanName, WebApplicationStartupListener listener) {
@@ -100,28 +212,10 @@ public class OnyxApplication extends SpringWebApplication implements IUnauthoriz
         return false;
       }
     });
+    log.info("Destroying Spring ApplicationContext");
+    applicationContext.destroy();
     log.info("Onyx Web Application has been stopped");
     super.onDestroy();
-  }
-
-  @Override
-  public Class<?> getHomePage() {
-    User template = new User();
-    template.setDeleted(false);
-
-    if(userService.getUserCount(template) > 0) {
-      if(OnyxAuthenticatedSession.get().isSignedIn()) {
-        return HomePage.class;
-      } else {
-        return LoginPage.class;
-      }
-    } else {
-      return ApplicationConfigurationPage.class;
-    }
-  }
-
-  public boolean isDevelopmentMode() {
-    return Application.DEVELOPMENT.equalsIgnoreCase(getConfigurationType());
   }
 
   /**
@@ -131,7 +225,7 @@ public class OnyxApplication extends SpringWebApplication implements IUnauthoriz
    */
   @SuppressWarnings("unchecked")
   private void forEachListeners(IListenerCallback callback) {
-    Map<String, WebApplicationStartupListener> listeners = super.internalGetApplicationContext().getBeansOfType(WebApplicationStartupListener.class);
+    Map<String, WebApplicationStartupListener> listeners = applicationContext.getBeansOfType(WebApplicationStartupListener.class);
     if(listeners != null) {
       for(Map.Entry<String, WebApplicationStartupListener> entry : listeners.entrySet()) {
         log.info("Executing WebApplicationStartupListener named {} of type {}", entry.getKey(), entry.getValue().getClass().getSimpleName());
@@ -154,29 +248,6 @@ public class OnyxApplication extends SpringWebApplication implements IUnauthoriz
     public void handleListener(String beanName, WebApplicationStartupListener listener);
 
     public boolean terminateOnException();
-  }
-
-  @Override
-  public Session newSession(Request request, Response response) {
-    return new OnyxAuthenticatedSession(this, request);
-  }
-
-  public void onUnauthorizedInstantiation(Component component) {
-    // If there is a sign in page class declared, and the unauthorized component is a page, but it's not the sign in
-    // page
-    if(component instanceof Page) {
-      if(!OnyxAuthenticatedSession.get().isSignedIn()) {
-        // Redirect to intercept page to let the user sign in
-        throw new RestartResponseAtInterceptPageException(LoginPage.class);
-      } else {
-        // User is signed in but doesn't have the proper access rights. Display error and redirect accordingly.
-        throw new RestartResponseAtInterceptPageException(AccessDeniedPage.class);
-      }
-    } else {
-      // The component was not a page, so show an error message in the FeedbackPanel of the page
-      component.error("You do not have sufficient privileges to see this component.");
-      throw new UnauthorizedInstantiationException(component.getClass());
-    }
   }
 
 }

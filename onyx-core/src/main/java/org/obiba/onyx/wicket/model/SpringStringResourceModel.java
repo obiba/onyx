@@ -18,6 +18,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.util.string.interpolator.PropertyVariableInterpolator;
+import org.obiba.wicket.application.ISpringWebApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 
@@ -65,7 +66,7 @@ public class SpringStringResourceModel extends LoadableDetachableModel {
   public SpringStringResourceModel(final IModel resourceKeyModel) {
     this(resourceKeyModel, null, null, null);
   }
-  
+
   /**
    * Localize the given resource key.
    * @param resourceKey The resource key for this string resource
@@ -74,7 +75,7 @@ public class SpringStringResourceModel extends LoadableDetachableModel {
   public SpringStringResourceModel(final String resourceKey, final IModel model) {
     this(resourceKey, model, null, resourceKey);
   }
-  
+
   /**
    * Localize the given resource key.
    * @param resourceKeyModel The resource key model for this string resource
@@ -101,7 +102,7 @@ public class SpringStringResourceModel extends LoadableDetachableModel {
   public SpringStringResourceModel(final IModel resourceKeyModel, final String defaultValue) {
     this(resourceKeyModel, null, null, defaultValue);
   }
-  
+
   /**
    * Localize the given resource key, return default value if key not found.
    * @param resourceKey The resource key for this string resource
@@ -121,7 +122,7 @@ public class SpringStringResourceModel extends LoadableDetachableModel {
   public SpringStringResourceModel(final IModel resourceKeyModel, final IModel model, final String defaultValue) {
     this(resourceKeyModel, model, null, defaultValue);
   }
-  
+
   /**
    * Localize the given resource key, return default value if key not found.
    * @param resourceKey The resource key for this string resource
@@ -143,7 +144,7 @@ public class SpringStringResourceModel extends LoadableDetachableModel {
   public SpringStringResourceModel(final IModel resourceKeyModel, final Object[] parameters, final String defaultValue) {
     this(resourceKeyModel, null, parameters, defaultValue);
   }
-  
+
   /**
    * Localize the given resource key, return default value if key not found.
    * @param resourceKey The resource key for this string resource
@@ -181,11 +182,19 @@ public class SpringStringResourceModel extends LoadableDetachableModel {
 
   protected Object load() {
     // Initialize information that we need to work successfully
-    final Session session = Session.get();
-    if(session != null && Application.get() instanceof SpringWebApplication) {
-      context = ((SpringWebApplication) Application.get()).getSpringContextLocator().getSpringContext();
+
+    Session session = Session.get();
+    if(session != null) {
       locale = session.getLocale();
-    } else {
+    }
+    Application application = Application.get();
+    if(application instanceof SpringWebApplication) {
+      context = ((SpringWebApplication) application).getSpringContextLocator().getSpringContext();
+    } else if(application instanceof ISpringWebApplication) {
+      context = ((ISpringWebApplication) application).getSpringContextLocator().getSpringContext();
+    }
+
+    if(locale == null || context == null) {
       throw new WicketRuntimeException("Cannot attach a string resource model without a Session context or a valid Application context because that is required to get a Spring application Context");
     }
     return getStringResource();
@@ -196,7 +205,7 @@ public class SpringStringResourceModel extends LoadableDetachableModel {
     if(model != null) {
       model.detach();
     }
-    if (resourceKeyModel != null) {
+    if(resourceKeyModel != null) {
       resourceKeyModel.detach();
     }
     // nullification
@@ -211,7 +220,7 @@ public class SpringStringResourceModel extends LoadableDetachableModel {
   private String getStringResource() {
     String key = getResourceKey();
     String value = context.getMessage(key, getParameters(), defaultValue, locale);
-    
+
     return value != null ? value : key;
   }
 
