@@ -35,7 +35,7 @@ public class ConfirmResumePanel extends Panel {
   //
 
   @SpringBean(name = "activeInterviewService")
-  private transient ActiveInterviewService activeInterviewService;
+  private ActiveInterviewService activeInterviewService;
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;

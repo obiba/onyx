@@ -34,7 +34,7 @@ public class OutputParametersStep extends WizardStepPanel {
   private static final long serialVersionUID = 6617334507631332206L;
 
   @SpringBean
-  private transient EntityQueryService queryService;
+  private EntityQueryService queryService;
   
   @SpringBean
   private transient ActiveInstrumentRunService activeInstrumentRunService;

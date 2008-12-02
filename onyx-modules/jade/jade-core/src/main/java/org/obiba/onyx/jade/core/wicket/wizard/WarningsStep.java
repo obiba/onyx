@@ -30,7 +30,7 @@ public class WarningsStep extends WizardStepPanel {
   private static final long serialVersionUID = 1L;
 
   @SpringBean
-  private transient ActiveInstrumentRunService activeInstrumentRunService;
+  private ActiveInstrumentRunService activeInstrumentRunService;
 
   @SpringBean(name = "userSessionService")
   private UserSessionService userSessionService;

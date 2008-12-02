@@ -52,10 +52,10 @@ public class QuestionnaireWizardForm extends WizardForm {
   //
 
   @SpringBean(name = "activeInterviewService")
-  private transient ActiveInterviewService activeInterviewService;
+  private ActiveInterviewService activeInterviewService;
 
   @SpringBean
-  private transient ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   private WizardStepPanel languageSelectionStep;
 

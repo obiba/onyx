@@ -36,13 +36,13 @@ public class IntegrityCheckValidator extends AbstractValidator {
   private IntegrityCheck integrityCheck;
 
   @SpringBean
-  private transient InstrumentRunService instrumentRunService;
+  private InstrumentRunService instrumentRunService;
 
   @SpringBean
-  private transient ActiveInstrumentRunService activeInstrumentRunService;
+  private ActiveInstrumentRunService activeInstrumentRunService;
 
   @SpringBean
-  private transient UserSessionService userSessionService;
+  private UserSessionService userSessionService;
 
   public IntegrityCheckValidator(IntegrityCheck integrityCheck) {
     this.integrityCheck = integrityCheck;
