@@ -13,8 +13,9 @@ import org.apache.wicket.markup.html.link.InlineFrame;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.domain.consent.Consent;
-import org.obiba.onyx.mica.core.service.ActiveConclusionService;
 import org.obiba.onyx.mica.core.service.impl.JadeReportContributor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,10 @@ public class ParticipantReportPanel extends Panel {
   private JadeReportContributor jadeReportContributor;
 
   @SpringBean
-  private ActiveConclusionService activeConclusionService;
+  private ConsentService consentService;
+
+  @SpringBean(name = "activeInterviewService")
+  private ActiveInterviewService activeInterviewService;
 
   private Consent participantConsent;
 
@@ -39,7 +43,7 @@ public class ParticipantReportPanel extends Panel {
     super(id);
     setOutputMarkupId(true);
 
-    participantConsent = activeConclusionService.getParticipantConsent();
+    participantConsent = consentService.getConsent(activeInterviewService.getInterview());
 
     // Print participant consent form
     if(participantConsent.getPdfForm() != null) {

@@ -9,29 +9,45 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.engine.state;
 
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
+import org.obiba.onyx.marble.core.service.ConsentService;
+import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 
 public abstract class AbstractMarbleStageState extends AbstractStageState {
 
-  private ActiveConsentService activeConsentService;
+  protected ActiveInterviewService activeInterviewService;
 
-  public void setActiveConsentService(ActiveConsentService activeConsentService) {
-    this.activeConsentService = activeConsentService;
-  }
+  protected ActiveConsentService activeConsentService;
 
-  protected ActiveConsentService getActiveConsentService() {
-    return activeConsentService;
-  }
+  protected ConsentService consentService;
 
   @Override
   public Data getData(String key) {
+    Consent interviewConsent;
+
     if(key.equalsIgnoreCase("Consent")) {
-      return DataBuilder.buildBoolean(activeConsentService.getConsent().isAccepted());
+      interviewConsent = consentService.getConsent(activeInterviewService.getInterview());
+      if(interviewConsent == null) {
+        interviewConsent = activeConsentService.getConsent();
+      }
+      return DataBuilder.buildBoolean(interviewConsent.isAccepted());
     }
     return null;
   }
 
+  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
+    this.activeInterviewService = activeInterviewService;
+  }
+
+  public void setConsentService(ConsentService consentService) {
+    this.consentService = consentService;
+  }
+
+  public void setActiveConsentService(ActiveConsentService activeConsentService) {
+    this.activeConsentService = activeConsentService;
+  }
 }

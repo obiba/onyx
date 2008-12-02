@@ -65,12 +65,6 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
     return consent;
   }
 
-  public void update() {
-    if(consent != null) {
-      getPersistenceManager().save(consent);
-    }
-  }
-
   @SuppressWarnings("unchecked")
   public boolean validateElectronicConsent() {
 
@@ -118,17 +112,6 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
 
     // Fields name ending with ".mandatoryFields" are required.
     return fieldName.contains("\\.mandatoryField") && fieldType != AcroFields.FIELD_TYPE_SIGNATURE && fieldType != AcroFields.FIELD_TYPE_PUSHBUTTON;
-  }
-
-  public void deletePreviousConsent() {
-    Consent template = new Consent();
-    template.setInterview(activeInterviewService.getInterview());
-    template.setDeleted(false);
-    List<Consent> previousConsents = getPersistenceManager().match(template);
-    for(Consent consent : previousConsents) {
-      consent.setDeleted(true);
-      getPersistenceManager().save(consent);
-    }
   }
 
   public boolean isConsentFormSubmitted() {
