@@ -12,8 +12,6 @@
     </property>
   </bean>
 
-  <import resource="classpath:/META-INF/spring/remote-api-server.xml" />
-
   <import resource="hibernate.xml" />
 
   <!-- These are mutualy exclusive (each defines a dataSource bean) -->

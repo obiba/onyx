@@ -46,6 +46,7 @@
     <property name="searchPatterns">
       <set>
         <value>classpath*:org/obiba/**/*.class</value>
+        <!-- If you contributed a module that has its own persisted classes, add them here -->
       </set>
     </property>
     <!-- Specify annotations to look for in classes -->

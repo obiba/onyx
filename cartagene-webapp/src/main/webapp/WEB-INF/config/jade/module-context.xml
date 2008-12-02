@@ -3,6 +3,18 @@
 
   <import resource="classpath:META-INF/spring/jade-core/context.xml" />
 
+  <!-- Import the remote API service declaration -->
+  <import resource="classpath:/META-INF/spring/remote-api-server.xml" />
+
+  <bean id="jadeSeedStartupListener" class="org.obiba.wicket.util.seed.DatabaseSeedWebApplicationStartupListener"
+    scope="singleton">
+    <property name="databaseSeeds">
+      <list>
+        <ref bean="jadeDatabaseSeed" />
+      </list>
+    </property>
+  </bean>
+
   <bean class="org.obiba.onyx.jade.engine.JadeModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="stages">

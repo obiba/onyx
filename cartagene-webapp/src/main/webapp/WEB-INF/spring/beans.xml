@@ -35,7 +35,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="databaseSeeds">
       <list>
         <ref bean="testDatabaseSeed" />
-        <ref bean="jadeDatabaseSeed" />
       </list>
     </property>
   </bean>
@@ -49,8 +48,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
     <property name="extraBasenames">
       <set>
-        <value>classpath:config/ParticipantInterview</value>
-
         <value>instruments/interface-height/InstrumentParameter</value>
         <value>instruments/interface-sitting-height/InstrumentParameter</value>
         <value>instruments/interface-hipsandwaistsize/InstrumentParameter</value>
@@ -66,7 +63,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
         <value>instruments/interface-ecg-cardiosoft/InstrumentParameter</value>
         <value>instruments/interface-spirometry-minispir/InstrumentParameter</value>
         <value>instruments/interface-spirometry-minispir/ContraIndication</value>
-
       </set>
     </property>
   </bean>
