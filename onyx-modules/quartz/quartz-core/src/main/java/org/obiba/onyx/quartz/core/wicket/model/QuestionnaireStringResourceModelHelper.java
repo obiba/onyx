@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.model;
 
+import java.util.regex.Pattern;
+
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -37,11 +39,11 @@ public class QuestionnaireStringResourceModelHelper {
 
     if(!questionCategory.getQuestion().getName().equals(question.getName())) {
       model = new Model(questionLabel.getString() + " / " + questionCategoryLabel.getString());
-    } else if(!isEmptyString(openLabel.getString())) {
+    } else if(isValidString(openLabel.getString())) {
       model = openLabel;
-    } else if(!isEmptyString(unitLabel.getString())) {
+    } else if(isValidString(unitLabel.getString())) {
       model = unitLabel;
-    } else if(!isEmptyString(questionCategoryLabel.getString())) {
+    } else if(isValidString(questionCategoryLabel.getString())) {
       model = questionCategoryLabel;
     } else {
       // last chance : the question label !
@@ -51,7 +53,16 @@ public class QuestionnaireStringResourceModelHelper {
     return model;
   }
 
-  private static boolean isEmptyString(String str) {
-    return str == null || str.trim().length() == 0;
+  /**
+   * Check if string is not empty and may mean something.
+   * @param str
+   * @return
+   */
+  private static boolean isValidString(String str) {
+    if(str == null || str.trim().length() == 0) {
+      Pattern pattern = Pattern.compile("[a-zA-Z0-9]+");
+      return pattern.matcher(str).matches();
+    }
+    return false;
   }
 }
