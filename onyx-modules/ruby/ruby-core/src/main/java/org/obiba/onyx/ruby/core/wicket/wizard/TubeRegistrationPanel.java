@@ -31,10 +31,10 @@ public class TubeRegistrationPanel extends Panel {
   //
 
   @SpringBean(name = "activeInterviewService")
-  private transient ActiveInterviewService activeInterviewService;
+  private ActiveInterviewService activeInterviewService;
 
   @SpringBean
-  private transient TubeRegistrationConfiguration tubeRegistrationConfiguration;
+  private TubeRegistrationConfiguration tubeRegistrationConfiguration;
 
   //
   // Constructors

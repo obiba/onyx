@@ -41,7 +41,7 @@ public class TubeBarcodePanel extends Panel {
   //
 
   @SpringBean(name = "activeTubeRegistrationService")
-  private transient ActiveTubeRegistrationService activeTubeRegistrationService;
+  private ActiveTubeRegistrationService activeTubeRegistrationService;
 
   private TextField tubeBarcode;
 
