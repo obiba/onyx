@@ -22,7 +22,7 @@ import org.obiba.onyx.ruby.core.domain.BarcodePart;
 import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
-import org.obiba.onyx.wicket.model.SpringStringResourceModel;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSourceResolvable;
@@ -89,6 +89,6 @@ public class BarcodePartColumn extends AbstractColumn {
     BarcodePart barcodePart = displayedBarcodePartList.get(barcodePartIndex);
 
     MessageSourceResolvable barcodePartLabel = barcodePart.getPartLabel();
-    cellItem.add(new Label(componentId, new SpringStringResourceModel(barcodePartLabel.getCodes()[0], barcodePartLabel.getArguments(), barcodePartLabel.getDefaultMessage())));
+    cellItem.add(new Label(componentId, new MessageSourceResolvableStringModel(barcodePartLabel)));
   }
 }
