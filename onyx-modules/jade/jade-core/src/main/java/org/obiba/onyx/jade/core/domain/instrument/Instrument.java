@@ -57,7 +57,7 @@ public class Instrument extends AbstractEntity {
   @JoinColumn(name = "instrument_type_id")
   private InstrumentType instrumentType;
 
-  @OneToMany(mappedBy = "instrument")
+  @OneToMany(mappedBy = "instrument", cascade = CascadeType.ALL)
   private List<InstrumentParameter> instrumentParameters;
 
   @OneToMany(mappedBy = "instrument")

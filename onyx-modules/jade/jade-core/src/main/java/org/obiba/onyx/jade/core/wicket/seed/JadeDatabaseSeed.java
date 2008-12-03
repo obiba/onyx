@@ -95,7 +95,10 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
             log.error("Cannot find resource : " + resource.getDescription());
             throw new RuntimeException(cannotFindResource);
           }
-
+          // For cascading
+          for(InstrumentParameter parameter : instrument.getInstrumentParameters()) {
+            parameter.setInstrument(instrument);
+          }
         } else if(entity instanceof OutputParameterSource) {
           OutputParameterSource source = (OutputParameterSource) entity;
           InstrumentType type = instrumentService.getInstrumentType(source.getInstrumentType().getName());
