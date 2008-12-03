@@ -102,15 +102,19 @@ public abstract class InstrumentLaunchPanel extends Panel {
     for(InstrumentInputParameter param : instrumentService.getInstrumentInputParameter(instrument, true)) {
       final InstrumentRunValue runValue = activeInstrumentRunService.getInputInstrumentRunValue(param.getName());
       Data data = inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param);
-
-      if(!data.getType().equals(runValue.getDataType())) {
-        UnitParameterValueConverter converter = new UnitParameterValueConverter();
-        converter.convert(runValue, data);
+      if(data != null) {
+        if(!data.getType().equals(runValue.getDataType())) {
+          UnitParameterValueConverter converter = new UnitParameterValueConverter();
+          converter.convert(runValue, data);
+        } else {
+          runValue.setData(data);
+        }
+        activeInstrumentRunService.update(runValue);
       } else {
-        runValue.setData(data);
+        log.error("The value for instrument parameter {} comes from an InputSource, but this source has not produced a value. Please correct stage dependencies or your instrument-descriptor.xml file for this instrument.", param.getDescription());
+        error("An unexpected problem occurred while setting up this instrument's run. Please contact support.");
       }
 
-      activeInstrumentRunService.update(runValue);
     }
 
     RepeatingView repeat = new RepeatingView("repeat");
