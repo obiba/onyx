@@ -96,6 +96,7 @@ public class JadeReportContributor implements Serializable, ModuleReportContribu
       // Fill date field
       String formattedDate = dateFormat.format(new Date());
       form.setField("DateInterview\\.date", formattedDate);
+      form.setField("Date", formattedDate);
       stamper.setFormFlattening(true);
 
       stamper.close();
