@@ -11,6 +11,7 @@ package org.obiba.onyx.jade.core.wicket.seed;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -96,8 +97,10 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
             throw new RuntimeException(cannotFindResource);
           }
           // For cascading
-          for(InstrumentParameter parameter : instrument.getInstrumentParameters()) {
-            parameter.setInstrument(instrument);
+          if(instrument.getInstrumentParameters() != null) {
+            for(InstrumentParameter parameter : instrument.getInstrumentParameters()) {
+              parameter.setInstrument(instrument);
+            }
           }
         } else if(entity instanceof OutputParameterSource) {
           OutputParameterSource source = (OutputParameterSource) entity;
@@ -147,6 +150,7 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
     log.info("initializeXstream");
     super.initializeXstream(xstream);
     xstream.alias("instrumentType", InstrumentType.class);
+    xstream.alias("instruments", LinkedList.class);
     xstream.alias("instrument", Instrument.class);
     xstream.alias("contraIndication", Contraindication.class);
     xstream.alias("interpretative", InterpretativeParameter.class);
