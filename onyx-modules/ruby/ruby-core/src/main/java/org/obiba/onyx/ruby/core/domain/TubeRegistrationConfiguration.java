@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
@@ -213,6 +214,7 @@ public class TubeRegistrationConfiguration implements ResourceLoaderAware, Initi
       fis = new FileInputStream(contraIndicationsFile);
 
       XStream xstream = new XStream();
+      xstream.alias("contraindications", LinkedList.class);
       xstream.alias("contraindication", Contraindication.class);
 
       List<Contraindication> contraIndications = (List<Contraindication>) xstream.fromXML(fis);
@@ -239,6 +241,7 @@ public class TubeRegistrationConfiguration implements ResourceLoaderAware, Initi
       fis = new FileInputStream(remarksFile);
 
       XStream xstream = new XStream();
+      xstream.alias("remarks", LinkedList.class);
       xstream.alias("remark", Remark.class);
 
       List<Remark> remarks = (List<Remark>) xstream.fromXML(fis);
