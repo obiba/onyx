@@ -21,6 +21,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
+import org.obiba.onyx.wicket.behavior.InvalidFormFieldBehavior;
 import org.obiba.onyx.wicket.toggle.ToggleLink;
 
 public abstract class BaseQuestionPanel extends QuestionPanel {
@@ -80,7 +81,9 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
       add(new EmptyPanel("content").setVisible(false));
     } else {
       setContent("content");
+      add(new InvalidFormFieldBehavior());
     }
+
   }
 
   @SuppressWarnings("serial")

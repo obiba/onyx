@@ -26,6 +26,7 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.wicket.behavior.InvalidFormFieldBehavior;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.slf4j.Logger;
@@ -112,6 +113,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
         openField.add(validator);
       }
     }
+    openField.add(new InvalidFormFieldBehavior());
 
     if(getOpenAnswerDefinition().getUIArguments() != null) {
       int size = getOpenAnswerDefinition().getUIArguments().getInt(INPUT_SIZE_KEY, -1);
