@@ -25,7 +25,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
-public class QuestionCommentModalPanel extends Panel {
+public abstract class QuestionCommentModalPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
@@ -72,6 +72,7 @@ public class QuestionCommentModalPanel extends Panel {
 
         protected void onSubmit(AjaxRequestTarget target, Form form) {
           activeQuestionnaireAdministrationService.addComment((Question) QuestionCommentModalPanel.this.getModelObject(), comment);
+          QuestionCommentModalPanel.this.onAddComment(target);
           commentWindow.close(target);
         }
 
@@ -97,6 +98,8 @@ public class QuestionCommentModalPanel extends Panel {
   public String getComment() {
     return comment;
   }
+
+  protected abstract void onAddComment(AjaxRequestTarget target);
 
   public void setComment(String comment) {
     this.comment = comment;

@@ -115,21 +115,42 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
       }
     });
 
+    final WebMarkupContainer imageLink = new WebMarkupContainer("comment-action");
+    imageLink.setOutputMarkupId(true);
+    add(imageLink);
+
     // Boiler Plate questions should not have comments.
     if(!question.isBoilerPlate()) {
 
+      // Display a different link if a comment already exist for question.
+      String comment = activeQuestionnaireAdministrationService.getComment(question);
+      if(comment != null) {
+        switchToEditStyle(imageLink);
+      }
+
       // Add comment action link.
-      add(new AjaxLink("addComment") {
+      imageLink.add(new AjaxLink("addComment") {
         public void onClick(AjaxRequestTarget target) {
-          commentWindow.setContent(new QuestionCommentModalPanel("content", commentWindow, BaseQuestionPanel.this.getModel(), target));
+          commentWindow.setContent(new QuestionCommentModalPanel("content", commentWindow, BaseQuestionPanel.this.getModel(), target) {
+
+            protected void onAddComment(AjaxRequestTarget target) {
+              switchToEditStyle(imageLink);
+              target.addComponent(imageLink);
+            }
+
+          });
           commentWindow.show(target);
         }
       });
 
     } else {
-      add(new WebMarkupContainer("addComment").setVisible(false));
+      imageLink.add(new WebMarkupContainer("addComment").setVisible(false));
     }
 
+  }
+
+  private void switchToEditStyle(WebMarkupContainer imageLink) {
+    imageLink.add(new AttributeModifier("class", new Model("comment-edit")));
   }
 
   protected abstract void setContent(String string);

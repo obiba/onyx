@@ -276,7 +276,7 @@ public abstract class AbstractQuestionnaireTest {
     int index = question.getPage().getQuestions().indexOf(question) + 1;
 
     // Display comment modal panel.
-    wicketTester.executeAjaxEvent("panel:content:form:step:panel:questions:" + index + ":question:addComment", "onclick");
+    wicketTester.executeAjaxEvent("panel:content:form:step:panel:questions:" + index + ":question:comment-action:addComment", "onclick");
 
     // Set comment in form.
     FormTester commentForm = wicketTester.newFormTester("panel:content:form:step:panel:questions:" + index + ":question:addCommentModal:content:commentForm");
