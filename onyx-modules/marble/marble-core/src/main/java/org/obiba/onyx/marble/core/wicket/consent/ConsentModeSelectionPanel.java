@@ -14,7 +14,6 @@ import java.util.Locale;
 
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
@@ -22,6 +21,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
+import org.obiba.wicket.markup.html.form.LocaleDropDownChoice;
 
 public class ConsentModeSelectionPanel extends Panel {
 
@@ -64,32 +64,10 @@ public class ConsentModeSelectionPanel extends Panel {
 
   @SuppressWarnings("serial")
   private DropDownChoice createConsentLanguageDropDown(List<Locale> locales) {
-
-    IChoiceRenderer choiceRenderer = new IChoiceRenderer() {
-
-      public Object getDisplayValue(Object object) {
-        Locale lang = (Locale) object;
-        return lang.getDisplayLanguage(getLocale());
-      }
-
-      public String getIdValue(Object object, int index) {
-        return object.toString();
-      }
-
-    };
-
-    DropDownChoice consentLanguageDropDown = new DropDownChoice("consentLanguage", new PropertyModel(activeConsentService, "consent.locale"), locales, choiceRenderer) {
-
-      @Override
-      protected boolean localizeDisplayValues() {
-        return true;
-      }
-
-    };
-
+    LocaleDropDownChoice consentLanguageDropDown = new LocaleDropDownChoice("consentLanguage", new PropertyModel(activeConsentService, "consent.locale"), locales);
+    consentLanguageDropDown.setUseSessionLocale(true);
     consentLanguageDropDown.setRequired(true);
     consentLanguageDropDown.setNullValid(true);
-
     return consentLanguageDropDown;
   }
 
