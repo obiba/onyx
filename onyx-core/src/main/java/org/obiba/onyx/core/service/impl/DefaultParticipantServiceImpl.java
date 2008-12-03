@@ -24,6 +24,7 @@ import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.participant.ParticipantAttributeValue;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.etl.participant.IParticipantReadListener;
 import org.obiba.onyx.core.etl.participant.IParticipantReader;
@@ -46,9 +47,10 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultParticipantServiceImpl.class);
 
-  private IParticipantReader participantReader;
+  @SuppressWarnings("unused")
+  private static final Logger appointmentListUpdatelog = LoggerFactory.getLogger("appointmentListUpdate");
 
-  private boolean participantReaderCallbackInitialized = false;
+  private IParticipantReader participantReader;
 
   public void setParticipantReader(IParticipantReader participantReader) {
     this.participantReader = participantReader;
@@ -88,9 +90,13 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
   }
 
   public void updateParticipantList() throws ValidationRuntimeException {
+    appointmentListUpdatelog.info("Start updating appointments");
+
     ApplicationConfiguration appConfig = new ApplicationConfiguration();
     appConfig = getPersistenceManager().matchOne(appConfig);
     if(appConfig.getParticipantDirectoryPath() == null) {
+      appointmentListUpdatelog.error("Abort updating appointments: " + "No participants list repository");
+
       ValidationRuntimeException vex = new ValidationRuntimeException();
       vex.reject("NoParticipantsListRepository", "No participants list repository.");
       throw vex;
@@ -110,9 +116,12 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
       }
     } else {
       log.error("Participants update list repository does not exists or is not a directory: {}", dir.getAbsolutePath());
+      appointmentListUpdatelog.error("Abort updating appointments: " + "Participants update list repository does not exists or is not a directory (" + dir.getAbsolutePath() + ")");
     }
 
     if(lastModifiedFile == null) {
+      appointmentListUpdatelog.error("Abort updating appointments: No participants list file found in: " + appConfig.getParticipantDirectoryPath());
+
       ValidationRuntimeException vex = new ValidationRuntimeException();
       vex.reject("NoParticipantsListFileFound", new String[] { appConfig.getParticipantDirectoryPath() }, "No participants list file found in: " + appConfig.getParticipantDirectoryPath());
       throw vex;
@@ -121,13 +130,24 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     log.info("participantFile={}", lastModifiedFile.getAbsolutePath());
     try {
       updateParticipants(new FileInputStream(lastModifiedFile));
+      appointmentListUpdatelog.info("End updating appointments");
     } catch(FileNotFoundException e) {
       // should not happen cause we found it by exploring the directory
+      appointmentListUpdatelog.error("Abort updating appointments: No participants list file found in: " + appConfig.getParticipantDirectoryPath());
+
+      ValidationRuntimeException vex = new ValidationRuntimeException();
+      vex.reject("NoParticipantsListFileFound", new String[] { appConfig.getParticipantDirectoryPath() }, "No participants list file found in: " + appConfig.getParticipantDirectoryPath());
+      throw vex;
+    } catch(IllegalArgumentException e) {
+      appointmentListUpdatelog.error("Abort updating appointments: Validation error - " + e.getMessage());
+
+      ValidationRuntimeException vex = new ValidationRuntimeException();
+      vex.reject("ParticipantsListFileValidationError", "ParticipantsListFileValidationError");
+      throw vex;
     }
   }
 
   public void updateParticipants(InputStream participantsListStream) throws ValidationRuntimeException {
-
     final ApplicationConfiguration appConfig = getPersistenceManager().matchOne(new ApplicationConfiguration());
 
     final ValidationRuntimeException vex = new ValidationRuntimeException();
@@ -153,6 +173,10 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
             log.debug("adding participant={}", participant.getEnrollmentId());
             getPersistenceManager().save(participant);
             getPersistenceManager().save(participant.getAppointment());
+
+            for(ParticipantAttributeValue configuredAttribute : participant.getConfiguredAttributeValues()) {
+              getPersistenceManager().save(configuredAttribute);
+            }
           } else {
             log.debug("persistedParticipant.interview={}", persistedParticipant.getInterview());
             if(persistedParticipant.getInterview() != null && persistedParticipant.getInterview().getStatus().equals(InterviewStatus.COMPLETED)) {
@@ -196,6 +220,11 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
         log.debug("removing appointment.appointmentCode={}", p.getAppointment().getAppointmentCode());
         getPersistenceManager().delete(p.getAppointment());
       }
+
+      for(ParticipantAttributeValue configuredAttribute : p.getConfiguredAttributeValues()) {
+        getPersistenceManager().delete(configuredAttribute);
+      }
+
       log.debug("removing participant.enrollmentId={}", p.getEnrollmentId());
       getPersistenceManager().delete(p);
     }

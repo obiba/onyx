@@ -2,7 +2,29 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
   default-autowire="no">
 
-  <bean id="participantReader" class="org.obiba.onyx.core.service.ParticipantExcelReader" scope="prototype" />
+  <bean id="participantMetadata" class="org.obiba.onyx.core.domain.participant.ParticipantMetadata">
+    <property name="onyxConfigPath" value="classpath:" />
+  </bean>
+
+  <bean id="participantReader" class="org.obiba.onyx.core.etl.participant.impl.DefaultParticipantExcelReader" scope="prototype">
+    <property name="participantMetadata" ref="participantMetadata" />
+    <property name="headerRowNumber" value="2" />
+    <property name="firstDataRowNumber" value="3" />
+    <property name="columnNameToAttributeNameMap">
+      <map>
+        <entry key="Participant ID">
+          <value>Enrollment ID</value>
+        </entry>
+        <entry key="Sex">
+          <value>Gender</value>
+        </entry>
+        <entry key="Appointment date/time">
+          <value>Appointment Time</value>
+        </entry>
+      </map>
+    </property>
+  </bean>
+  
   <bean id="stageOrderingStrategy" class="org.obiba.onyx.engine.StaticStageOrderingStrategy">
     <property name="stageOrdering" value="" />
   </bean>

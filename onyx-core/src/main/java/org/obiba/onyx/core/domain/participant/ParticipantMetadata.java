@@ -38,14 +38,17 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   private String onyxConfigPath;
 
-  private List<ParticipantAttribute> attributes;
+  private List<ParticipantAttribute> essentialAttributes;
+
+  private List<ParticipantAttribute> configuredAttributes;
 
   //
   // Constructors
   //
 
   public ParticipantMetadata() {
-    attributes = new ArrayList<ParticipantAttribute>();
+    essentialAttributes = new ArrayList<ParticipantAttribute>();
+    configuredAttributes = new ArrayList<ParticipantAttribute>();
   }
 
   //
@@ -78,15 +81,53 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
   }
 
   /**
-   * Set the (configurable) participant attributes.
+   * Set the essential participant attributes.
    * 
    * @param attributes participant attributes
    */
-  public void setAttributes(List<ParticipantAttribute> attributes) {
-    this.attributes.clear();
+  public void setEssentialAttributes(List<ParticipantAttribute> attributes) {
+    this.essentialAttributes.clear();
 
     if(attributes != null) {
-      this.attributes.addAll(attributes);
+      this.essentialAttributes.addAll(attributes);
+    }
+  }
+
+  /**
+   * Returns the essential participant attributes.
+   * 
+   * @return participant attributes
+   */
+  public List<ParticipantAttribute> getEssentialAttributes() {
+    return Collections.unmodifiableList(essentialAttributes);
+  }
+
+  /**
+   * Returns the essential attribute with the specified name.
+   * 
+   * @param name attribute name
+   * @return attribute with the specified name (or <code>null</code> if no such attribute exists)
+   */
+  public ParticipantAttribute getEssentialAttribute(String name) {
+    for(ParticipantAttribute attribute : essentialAttributes) {
+      if(attribute.getName().equals(name)) {
+        return attribute;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Set the configured participant attributes.
+   * 
+   * @param attributes participant attributes
+   */
+  public void setConfiguredAttributes(List<ParticipantAttribute> attributes) {
+    this.configuredAttributes.clear();
+
+    if(attributes != null) {
+      this.configuredAttributes.addAll(attributes);
     }
   }
 
@@ -95,18 +136,18 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
    * 
    * @return participant attributes
    */
-  public List<ParticipantAttribute> getAttributes() {
-    return Collections.unmodifiableList(attributes);
+  public List<ParticipantAttribute> getConfiguredAttributes() {
+    return Collections.unmodifiableList(configuredAttributes);
   }
 
   /**
-   * Returns the attribute with the specified name.
+   * Returns the configured attribute with the specified name.
    * 
    * @param name attribute name
    * @return attribute with the specified name (or <code>null</code> if no such attribute exists)
    */
-  public ParticipantAttribute getAttribute(String name) {
-    for(ParticipantAttribute attribute : attributes) {
+  public ParticipantAttribute getConfiguredAttribute(String name) {
+    for(ParticipantAttribute attribute : configuredAttributes) {
       if(attribute.getName().equals(name)) {
         return attribute;
       }
@@ -122,24 +163,38 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
    */
   public void initConfig() throws IOException {
     ResourcePatternResolver resolver = (ResourcePatternResolver) this.resourceLoader;
-
-    Resource configPath = resolver.getResource(onyxConfigPath);
-
     Resource[] resources = null;
+
+    // Load essential participant attributes.
+    resources = resolver.getResources(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "META-INF/" + PARTICIPANT_ATTRIBUTES_FILENAME);
+    initEssentialAttributes(resources);
+
+    // Load configured participant attributes.
+    Resource configPath = resolver.getResource(onyxConfigPath);
 
     if(configPath != null && configPath.exists()) {
       resources = resolver.getResources(onyxConfigPath + "/" + PARTICIPANT_ATTRIBUTES_FILENAME);
-      initAttributes(resources);
+      initConfiguredAttributes(resources);
     }
   }
 
-  private void initAttributes(Resource[] resources) throws IOException {
+  private void initEssentialAttributes(Resource[] resources) throws IOException {
     if(resources != null && resources.length > 0) {
       ParticipantAttributeReader reader = new ParticipantAttributeReader();
       reader.setResources(resources);
       List<ParticipantAttribute> attributes = reader.read();
 
-      setAttributes(attributes);
+      setEssentialAttributes(attributes);
+    }
+  }
+
+  private void initConfiguredAttributes(Resource[] resources) throws IOException {
+    if(resources != null && resources.length > 0) {
+      ParticipantAttributeReader reader = new ParticipantAttributeReader();
+      reader.setResources(resources);
+      List<ParticipantAttribute> attributes = reader.read();
+
+      setConfiguredAttributes(attributes);
     }
   }
 }

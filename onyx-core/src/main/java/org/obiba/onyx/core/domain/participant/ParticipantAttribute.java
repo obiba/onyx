@@ -29,6 +29,8 @@ public class ParticipantAttribute {
 
   private List<String> allowedValues;
 
+  private boolean assignableAtEnrollment;
+
   private boolean mandatoryAtEnrollment;
 
   private boolean mandatoryAtReception;
@@ -104,6 +106,24 @@ public class ParticipantAttribute {
       allowedValues = new ArrayList<String>();
     }
     return Collections.unmodifiableList(allowedValues);
+  }
+
+  /**
+   * Sets whether the attribute is assignable at the time of enrollment.
+   * 
+   * @param assignableAtEnrollment whether attribute is assignable at time of enrollment
+   */
+  public void setAssignableAtEnrollment(boolean assignableAtEnrollment) {
+    this.assignableAtEnrollment = assignableAtEnrollment;
+  }
+
+  /**
+   * Indicates whether the attribute is assignable at the time of enrollment.
+   * 
+   * @return <code>true</code> if the attribute is assignable at the time of enrollment
+   */
+  public boolean isAssignableAtEnrollment() {
+    return assignableAtEnrollment;
   }
 
   /**

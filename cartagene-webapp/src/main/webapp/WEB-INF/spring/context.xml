@@ -19,7 +19,7 @@
   <import resource="hibernate.xml" />
 
   <!-- Load the datasource configuration file. -->
-  <!-- These are mutualy exclusive (each defines a dataSource bean) -->
+  <!-- These are mutually exclusive (each defines a dataSource bean) -->
   <import resource="hsql-datasource.xml" />
   <!--import resource="mysql-datasource.xml" /-->
 
@@ -33,9 +33,35 @@
   </bean>
 
   <!-- The class that reads the participant Excel sheet. Override to fit your needs. -->
-  <bean id="participantReader" class="org.obiba.onyx.cartagene.etl.participant.ParticipantExcelReader"
+  <bean id="participantReader" class="org.obiba.onyx.core.etl.participant.impl.DefaultParticipantExcelReader"
     scope="prototype">
-    <property name="startAtLine" value="3" />
+    <property name="participantMetadata" ref="participantMetadata" />
+    <property name="headerRowNumber" value="2" />
+    <property name="firstDataRowNumber" value="3" />
+    
+    <!-- 
+      Column name to attribute name map.
+      
+      The "key" is the column name, the "value" is the attribute name.
+    
+      NOTE: Entries required here only where the attribute name is NOT used as the column name.  
+    -->
+    <property name="columnNameToAttributeNameMap">
+      <map>
+        <entry key="Participant ID">
+          <value>Enrollment ID</value>
+        </entry>
+        <entry key="Collection Site Id">
+          <value>Assessment Center ID</value>
+        </entry>
+        <entry key="Sex">
+          <value>Gender</value>
+        </entry>
+        <entry key="Appointment date/time">
+          <value>Appointment Time</value>
+        </entry>
+      </map>
+    </property>
   </bean>
 
   <!-- Implementation of UserService. Should not need to be overriden. -->

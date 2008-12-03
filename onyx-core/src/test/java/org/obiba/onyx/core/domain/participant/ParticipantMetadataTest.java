@@ -54,7 +54,7 @@ public class ParticipantMetadataTest {
     }
 
     // Verify that the attribute list is not null and is of the expected size (3).
-    List<ParticipantAttribute> attributes = participantMetadata.getAttributes();
+    List<ParticipantAttribute> attributes = participantMetadata.getConfiguredAttributes();
     assertNotNull(attributes);
     assertEquals(3, attributes.size());
 
@@ -69,7 +69,7 @@ public class ParticipantMetadataTest {
     String[] attributeNames = { "AllowedValuesAttribute", "IntegerAttribute", "DateAttribute" };
 
     for(String attributeName : attributeNames) {
-      ParticipantAttribute attribute = participantMetadata.getAttribute(attributeName);
+      ParticipantAttribute attribute = participantMetadata.getConfiguredAttribute(attributeName);
       assertNotNull(attribute);
       assertEquals(attributeName, attribute.getName());
     }
@@ -77,7 +77,7 @@ public class ParticipantMetadataTest {
 
   @Test
   public void testGetAttributeWithAttributeNotInMetadata() {
-    ParticipantAttribute attribute = participantMetadata.getAttribute("NoSuchAttribute");
+    ParticipantAttribute attribute = participantMetadata.getConfiguredAttribute("NoSuchAttribute");
     assertNull(attribute);
   }
 

@@ -43,4 +43,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="actionDefinitionConfiguration" ref="actionDefinitionConfiguration" />
   </bean>
+  
+  <bean id="participantMetadata" class="org.obiba.onyx.core.domain.participant.ParticipantMetadata">
+    <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}"/>
+  </bean>
 </beans>
