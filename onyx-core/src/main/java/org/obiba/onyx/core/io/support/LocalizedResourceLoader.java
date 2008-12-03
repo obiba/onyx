@@ -85,10 +85,25 @@ public class LocalizedResourceLoader extends LocalizedResourceHelper implements 
         if(file.isFile() && fileName.startsWith(resourceName + '_') && fileName.endsWith(resourceExtension)) {
           String localeString = extractLocaleString(fileName);
 
-          log.info("Found the following locale \"{}\" for resource \"{}\"", localeString, resourceName);
+          Locale locale = null;
+          if(localeString.contains("_")) {
+            String[] parts = localeString.split("_");
+            if(parts.length == 3) {
+              locale = new Locale(parts[0], parts[1], parts[2]);
+            } else if(parts.length == 2) {
+              locale = new Locale(parts[0], parts[1]);
+            } else {
+              log.warn("Cannot decode localeString {} to a Locale proper for resource {}.", localeString, resourceName);
+            }
+          } else {
+            locale = new Locale(localeString);
+          }
 
-          languages.add(new Locale(localeString));
-          return true;
+          if(locale != null) {
+            log.info("Found the following locale \"{}\" for resource \"{}\"", locale, resourceName);
+            languages.add(locale);
+            return true;
+          }
         }
 
         return false;
