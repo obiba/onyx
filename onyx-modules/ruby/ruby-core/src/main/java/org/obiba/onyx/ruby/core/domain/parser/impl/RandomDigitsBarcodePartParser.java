@@ -9,32 +9,24 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.domain.parser.impl;
 
+import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
 import org.springframework.context.MessageSourceResolvable;
 
 /**
- * Implement random barcode part validation
+ * A {@link IBarcodePartParser} that validates that the part is a series of digits.
  */
 public class RandomDigitsBarcodePartParser extends FixedSizeBarcodePartParser {
-  /**
-   * it's a regular expression that part need to match.
-   */
-  private String format;
 
-  public void setFormat(String format) {
-    this.format = format;
-  }
-
-  public String getFormat() {
-    return format;
-  }
+  private static final String DIGIT_MISMATCH_BARCODE_ERROR = "Ruby.Error.DigitMismatch";
 
   @Override
   protected MessageSourceResolvable validatePart(String part) {
-    MessageSourceResolvable error = null;
-    if(!part.matches(format)) {
-      // The code must match the given pattern
-      error = createBarcodeError("BarcodePartFormatError", "Invalid barcode part format.");
+    for(int i = 0; i < part.length(); i++) {
+      char c = part.charAt(i);
+      if(Character.isDigit(c) == false) {
+        return createBarcodeError(DIGIT_MISMATCH_BARCODE_ERROR, new Object[] { part, getSize(), c, new Integer(i + 1) }, "Invalid barcode part format.");
+      }
     }
-    return error;
+    return null;
   }
 }

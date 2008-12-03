@@ -24,25 +24,24 @@ import org.springframework.context.MessageSourceResolvable;
  */
 public class RandomDigitsBarcodePartParserTest {
 
-  private RandomDigitsBarcodePartParser parser;
+  private RegularExpressionBarcodePartParser parser;
 
   /**
    * @throws java.lang.Exception
    */
   @Before
   public void setUp() throws Exception {
-    parser = new RandomDigitsBarcodePartParser();
+    parser = new RegularExpressionBarcodePartParser();
     parser.setSize(5);
   }
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)}
-   * .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)} .
    */
   @Test
   public void testShouldPassWithNumericFormat() {
-    parser.setFormat("^\\d+$");
+    parser.setExpression("^\\d+$");
 
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
     BarcodePart result = parser.eatAndValidatePart(new StringBuilder("1234567890"), errors);
@@ -53,29 +52,27 @@ public class RandomDigitsBarcodePartParserTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)}
-   * .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)} .
    */
   @Test
   public void testShouldFailWithNumericFormat() {
-    parser.setFormat("^\\d+$");
+    parser.setExpression("^\\d+$");
 
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
     BarcodePart result = parser.eatAndValidatePart(new StringBuilder("e1234567890"), errors);
 
     Assert.assertEquals(1, errors.size());
     Assert.assertNull(result);
-    Assert.assertEquals("BarcodePartFormatError", errors.get(0).getCodes()[0]);
+    Assert.assertEquals(RegularExpressionBarcodePartParser.REGULAR_EXPRESSION_MISMATCH_BARCODE_ERROR, errors.get(0).getCodes()[0]);
   }
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)}
-   * .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)} .
    */
   @Test
   public void testShouldPassWithAlphaNumericFormat() {
-    parser.setFormat("^[A-Za-z0-9]+$");
+    parser.setExpression("^[A-Za-z0-9]+$");
 
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
     BarcodePart result = parser.eatAndValidatePart(new StringBuilder("Ae1234567890"), errors);
@@ -86,19 +83,18 @@ public class RandomDigitsBarcodePartParserTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)}
-   * .
+   * {@link org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser#eatAndValidatePart(java.lang.StringBuilder, java.util.List)} .
    */
   @Test
   public void testShouldFailWithAlphaNumericFormat() {
-    parser.setFormat("^[A-Za-z0-9]+$");
+    parser.setExpression("^[A-Za-z0-9]+$");
 
     List<MessageSourceResolvable> errors = new ArrayList<MessageSourceResolvable>();
     BarcodePart result = parser.eatAndValidatePart(new StringBuilder("e1 234567890"), errors);
 
     Assert.assertEquals(1, errors.size());
     Assert.assertNull(result);
-    Assert.assertEquals("BarcodePartFormatError", errors.get(0).getCodes()[0]);
+    Assert.assertEquals(RegularExpressionBarcodePartParser.REGULAR_EXPRESSION_MISMATCH_BARCODE_ERROR, errors.get(0).getCodes()[0]);
   }
 
 }

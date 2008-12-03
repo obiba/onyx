@@ -38,7 +38,7 @@ import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
-import org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser;
+import org.obiba.onyx.ruby.core.domain.parser.impl.RegularExpressionBarcodePartParser;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.ruby.core.wicket.wizard.RubyWizardForm;
 import org.obiba.onyx.ruby.core.wicket.wizard.RubyWizardPanel;
@@ -240,9 +240,9 @@ public class RubyPanelTest {
   private TubeRegistrationConfiguration createTubeRegistrationConfiguration() {
     TubeRegistrationConfiguration tubeRegistrationConfiguration = new TubeRegistrationConfiguration();
 
-    RandomDigitsBarcodePartParser parser = new RandomDigitsBarcodePartParser();
+    RegularExpressionBarcodePartParser parser = new RegularExpressionBarcodePartParser();
     parser.setSize(10);
-    parser.setFormat(".*");
+    parser.setExpression(".*");
 
     List<IBarcodePartParser> parserList = new ArrayList<IBarcodePartParser>();
     parserList.add(parser);

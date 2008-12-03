@@ -19,9 +19,9 @@
       <bean class="org.obiba.onyx.ruby.core.domain.BarcodeStructure">
         <property name="parsers">
           <list>
-            <bean class="org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser">
+            <bean class="org.obiba.onyx.ruby.core.domain.parser.impl.RegularExpressionBarcodePartParser">
               <property name="size" value="10" />
-              <property name="format" value=".*" />
+              <property name="expression" value=".*" />
             </bean>
           </list>
         </property>

@@ -34,7 +34,7 @@ import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.Remark;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
-import org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser;
+import org.obiba.onyx.ruby.core.domain.parser.impl.RegularExpressionBarcodePartParser;
 import org.springframework.context.MessageSourceResolvable;
 
 /**
@@ -280,9 +280,9 @@ public class ActiveTubeRegistrationServiceImplTest {
   private TubeRegistrationConfiguration createTubeRegistrationConfiguration() {
     TubeRegistrationConfiguration tubeRegistrationConfiguration = new TubeRegistrationConfiguration();
 
-    RandomDigitsBarcodePartParser parser = new RandomDigitsBarcodePartParser();
+    RegularExpressionBarcodePartParser parser = new RegularExpressionBarcodePartParser();
     parser.setSize(10);
-    parser.setFormat(".*");
+    parser.setExpression(".*");
 
     List<IBarcodePartParser> parserList = new ArrayList<IBarcodePartParser>();
     parserList.add(parser);

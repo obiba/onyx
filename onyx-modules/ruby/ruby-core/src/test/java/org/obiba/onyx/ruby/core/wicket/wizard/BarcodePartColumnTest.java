@@ -23,7 +23,7 @@ import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
-import org.obiba.onyx.ruby.core.domain.parser.impl.RandomDigitsBarcodePartParser;
+import org.obiba.onyx.ruby.core.domain.parser.impl.RegularExpressionBarcodePartParser;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
 import org.obiba.wicket.test.MockSpringApplication;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -83,9 +83,9 @@ public class BarcodePartColumnTest {
   //
 
   private void initDomainObjects() throws Exception {
-    RandomDigitsBarcodePartParser partParser = new RandomDigitsBarcodePartParser();
+    RegularExpressionBarcodePartParser partParser = new RegularExpressionBarcodePartParser();
     partParser.setSize(7);
-    partParser.setFormat(".*");
+    partParser.setExpression(".*");
     partParser.setPartTitle(new DefaultMessageSourceResolvable("testPartTitle"));
 
     List<IBarcodePartParser> partParserList = new ArrayList<IBarcodePartParser>();
