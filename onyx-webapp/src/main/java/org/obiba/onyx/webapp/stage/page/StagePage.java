@@ -27,11 +27,14 @@ import org.obiba.onyx.webapp.stage.panel.StageHeaderPanel;
 import org.obiba.onyx.webapp.stage.panel.StageMenuBar;
 import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.action.ActionWindow;
+import org.obiba.onyx.wicket.behavior.ajaxbackbutton.HistoryAjaxBehavior;
+import org.obiba.onyx.wicket.behavior.ajaxbackbutton.HistoryIFrame;
+import org.obiba.onyx.wicket.behavior.ajaxbackbutton.IHistoryAjaxBehaviorOwner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
-public class StagePage extends BasePage /* implements IHistoryAjaxBehaviorOwner */{
+public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
 
   private static final Logger log = LoggerFactory.getLogger(StagePage.class);
 
@@ -40,7 +43,7 @@ public class StagePage extends BasePage /* implements IHistoryAjaxBehaviorOwner 
 
   private StageMenuBar menuBar;
 
-  // private HistoryAjaxBehavior historyAjaxBehavior;
+  private HistoryAjaxBehavior historyAjaxBehavior;
 
   @SuppressWarnings("serial")
   public StagePage(IModel stageModel) {
@@ -83,43 +86,34 @@ public class StagePage extends BasePage /* implements IHistoryAjaxBehaviorOwner 
 
       });
 
-      // // The hidden (CSS position) iframe which will capture the back/forward button clicks
-      // HistoryIFrame historyIFrame = new HistoryIFrame("historyIframe", getPageMap());
-      // add(historyIFrame);
-      //
-      // // The Ajax behavior which will be called after each click on back/forward buttons
-      // historyAjaxBehavior = new HistoryAjaxBehavior() {
-      //
-      // private static final long serialVersionUID = 1L;
-      //
-      // @Override
-      // @SuppressWarnings("unchecked")
-      // public void onAjaxHistoryEvent(final AjaxRequestTarget target, final String componentId) {
-      // log.info("onAjaxHistoryEvent.component={}", componentId);
-      // if(componentId != null && componentId.length() > 0) {
-      // visitChildren(new Component.IVisitor() {
-      //
-      // public Object component(Component component) {
-      // if(component.getPath().equals(componentId)) {
-      // log.info("component.class={}", component.getClass().getName());
-      // if(component instanceof AjaxLink) {
-      // ((AjaxLink) component).onClick(target);
-      // }
-      // // else if (component instanceof AjaxButton) {
-      // // ((AjaxButton)component).onSubmit();
-      // // }
-      // return component;
-      // }
-      // return CONTINUE_TRAVERSAL;
-      // }
-      //
-      // });
-      // }
-      // // ((AjaxLink<Void>) Page4AjaxBackButton.this.get(componentId)).onClick(target);
-      // }
-      //
-      // };
-      // add(historyAjaxBehavior);
+      // The hidden (CSS position) iframe which will capture the back/forward button clicks
+      HistoryIFrame historyIFrame = new HistoryIFrame("historyIframe", getPageMap());
+      add(historyIFrame);
+
+      // The Ajax behavior which will be called after each click on back/forward buttons
+      historyAjaxBehavior = new HistoryAjaxBehavior() {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public void onAjaxHistoryEvent(final AjaxRequestTarget target, final String componentId) {
+          log.info("onAjaxHistoryEvent.component={}", componentId);
+          setResponsePage(new InvalidStagePage(StagePage.this));
+          // if(componentId != null && componentId.length() > 0) {
+          // visitChildren(new Component.IVisitor() {
+          //
+          // public Object component(Component component) {
+          // if(component.getId().equals(componentId)) {
+          // log.info("component.class={}", component.getClass().getName());
+          // if(component instanceof AjaxLink) {
+          // ((AjaxLink) component).onClick(target);
+          // } else if(component instanceof AjaxButton) {
+          // }
+        }
+
+      };
+      add(historyAjaxBehavior);
 
       if(!exec.isInteractive()) {
         add(new EmptyPanel("stage-component"));
@@ -135,15 +129,8 @@ public class StagePage extends BasePage /* implements IHistoryAjaxBehaviorOwner 
     }
   }
 
-  // public HistoryAjaxBehavior getHistoryAjaxBehavior() {
-  // return historyAjaxBehavior;
-  // }
-
-  // @Override
-  // public void renderHead(IHeaderResponse response) {
-  // super.renderHead(response);
-  // response.renderJavascript("function unload_handler() { return 'stage unload!'; }
-  // window.onbeforeunload=unload_handler;", "stageUnload");
-  // }
+  public HistoryAjaxBehavior getHistoryAjaxBehavior() {
+    return historyAjaxBehavior;
+  }
 
 }

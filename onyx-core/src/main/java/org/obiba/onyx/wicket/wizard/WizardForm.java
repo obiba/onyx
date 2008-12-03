@@ -22,6 +22,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.obiba.onyx.wicket.behavior.ajaxbackbutton.HistoryAjaxBehavior;
+import org.obiba.onyx.wicket.behavior.ajaxbackbutton.IHistoryAjaxBehaviorOwner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,6 +82,10 @@ public abstract class WizardForm extends Form {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
+        HistoryAjaxBehavior historyAjaxBehavior = getHistoryAjaxBehavior();
+        if(historyAjaxBehavior != null) {
+          historyAjaxBehavior.registerAjaxEvent(target, this);
+        }
         if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
         WizardForm.this.gotoPrevious(target);
       }
@@ -98,6 +104,10 @@ public abstract class WizardForm extends Form {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         log.debug("next.onSubmit");
+        HistoryAjaxBehavior historyAjaxBehavior = getHistoryAjaxBehavior();
+        if(historyAjaxBehavior != null) {
+          historyAjaxBehavior.registerAjaxEvent(target, this);
+        }
         if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
         WizardForm.this.gotoNext(target);
       }
@@ -170,7 +180,7 @@ public abstract class WizardForm extends Form {
 
   protected void gotoNext(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
-    log.info("gotoNext.currentStep=" + currentStep.getClass().getName());
+    log.info("gotoNext.currentStep={}", currentStep.getClass().getName());
     currentStep.onStepOutNext(WizardForm.this, target);
 
     WizardStepPanel next = currentStep.getNextStep();
@@ -184,7 +194,7 @@ public abstract class WizardForm extends Form {
 
   protected void gotoPrevious(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
-    log.info("gotoPrevious.currentStep=" + currentStep.getClass().getName());
+    log.info("gotoPrevious.currentStep={}", currentStep.getClass().getName());
     currentStep.onStepOutPrevious(WizardForm.this, target);
 
     WizardStepPanel previous = currentStep.getPreviousStep();
@@ -206,6 +216,17 @@ public abstract class WizardForm extends Form {
 
   public FeedbackPanel getFeedbackPanel() {
     return null;
+  }
+
+  public HistoryAjaxBehavior getHistoryAjaxBehavior() {
+    HistoryAjaxBehavior behavior = (HistoryAjaxBehavior) visitParents(IHistoryAjaxBehaviorOwner.class, new Component.IVisitor() {
+
+      public Object component(Component component) {
+        return ((IHistoryAjaxBehaviorOwner) component).getHistoryAjaxBehavior();
+      }
+
+    });
+    return behavior;
   }
 
   public static String getStepId() {
