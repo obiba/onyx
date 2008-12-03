@@ -64,10 +64,16 @@ public class AssignCodeToParticipantPanel extends Panel {
       participantCode.add(new IValidator() {
 
         public void validate(final IValidatable validatable) {
-          Participant template = new Participant();
-          template.setBarcode((String) validatable.getValue());
-          if(queryService.count(template) > 0) {
-            validatable.error(new ParticipantIDValidationError((String) validatable.getValue()));
+
+          Participant participant = (Participant) getModel().getObject();
+          if(participant.getBarcode() != null) {
+            validatable.error(new ParticipantAlreadyReceivedError());
+          } else {
+            Participant template = new Participant();
+            template.setBarcode((String) validatable.getValue());
+            if(queryService.count(template) > 0) {
+              validatable.error(new BarCodeAlreadyUsedError((String) validatable.getValue()));
+            }
           }
         }
 
@@ -82,17 +88,26 @@ public class AssignCodeToParticipantPanel extends Panel {
   }
 
   @SuppressWarnings("serial")
-  private class ParticipantIDValidationError implements IValidationError, Serializable {
+  private class BarCodeAlreadyUsedError implements IValidationError, Serializable {
 
     private String id;
 
-    public ParticipantIDValidationError(String id) {
+    public BarCodeAlreadyUsedError(String id) {
       this.id = id;
     }
 
     public String getErrorMessage(IErrorMessageSource messageSource) {
-      StringResourceModel strModel = new StringResourceModel("ParticipantIDAlreadyAssigned", AssignCodeToParticipantPanel.this, new Model(new ValueMap("id=" + id)));
+      StringResourceModel strModel = new StringResourceModel("BarCodeAlreadyUsed", AssignCodeToParticipantPanel.this, new Model(new ValueMap("id=" + id)));
       return strModel.getString();
+    }
+  }
+
+  @SuppressWarnings("serial")
+  private class ParticipantAlreadyReceivedError implements IValidationError, Serializable {
+
+    public String getErrorMessage(IErrorMessageSource messageSource) {
+      String cancelButtonLabel = new StringResourceModel("Cancel", AssignCodeToParticipantPanel.this, null).getString();
+      return new StringResourceModel("ParticipantAlreadyReceived", AssignCodeToParticipantPanel.this, null, new Object[] { cancelButtonLabel }).getString();
     }
   }
 
