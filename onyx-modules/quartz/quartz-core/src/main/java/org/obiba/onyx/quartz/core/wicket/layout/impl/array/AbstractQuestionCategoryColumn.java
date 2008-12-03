@@ -74,15 +74,7 @@ public abstract class AbstractQuestionCategoryColumn extends AbstractColumn {
    * Called when a ajax refresh is required.
    * @param target
    */
-  public void onEvent(AjaxRequestTarget target) {
-
-  }
-
-  /**
-   * Called when a ajax refresh is required.
-   * @param target
-   */
-  public void onErrorEvent(AjaxRequestTarget target) {
+  public void onSelection(AjaxRequestTarget target) {
 
   }
 

@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
@@ -33,6 +34,8 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable, IDataUn
   private boolean required;
 
   private String unit;
+
+  private ValueMap uIArguments;
 
   private List<IDataValidator> validators;
 
@@ -79,6 +82,18 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable, IDataUn
 
   public void setUnit(String unit) {
     this.unit = unit;
+  }
+
+  public ValueMap getUIArguments() {
+    return uIArguments;
+  }
+
+  public ValueMap addUIArgument(String key, String value) {
+    if(uIArguments == null) {
+      uIArguments = new ValueMap();
+    }
+    uIArguments.add(key, value);
+    return uIArguments;
   }
 
   public List<IDataValidator> getValidators() {

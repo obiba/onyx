@@ -8,6 +8,7 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -108,6 +109,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
 
       // make radio associated to open answer optionally visible using css styling
       radio.add(new AttributeAppender("class", new Model("radio-open"), " "));
+      radioLabel.add(new AttributeModifier("class", new Model("label-open")));
 
     } else {
       // no open answer

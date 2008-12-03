@@ -99,12 +99,6 @@ public class DefaultQuestionCategoriesPanel extends Panel {
             }
 
             @Override
-            public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              // update all
-              target.addComponent(DefaultQuestionCategoriesPanel.this);
-            }
-
-            @Override
             public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
               // update all
               target.addComponent(DefaultQuestionCategoriesPanel.this);

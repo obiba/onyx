@@ -26,6 +26,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataS
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.IDataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
@@ -74,6 +75,27 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
       throw invalidNamePatternException(name);
     }
     return new OpenAnswerDefinitionBuilder(parent, name, dataType);
+  }
+
+  /**
+   * Add argument that will be interpreted by specific open answer UI.
+   * @param key
+   * @param value
+   * @return
+   */
+  public OpenAnswerDefinitionBuilder addUIArgument(String key, String value) {
+    element.addUIArgument(key, value);
+
+    return this;
+  }
+
+  /**
+   * Set the size of the open input field.
+   * @param size
+   * @return
+   */
+  public OpenAnswerDefinitionBuilder setSize(int size) {
+    return addUIArgument(DefaultOpenAnswerDefinitionPanel.INPUT_SIZE_KEY, Integer.toString(size));
   }
 
   /**

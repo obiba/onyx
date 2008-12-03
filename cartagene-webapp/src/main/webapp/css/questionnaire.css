@@ -88,6 +88,19 @@ div.page div.questions div.question div.categories td.category {
 	padding-right:10px;
 }
 
+div.page div.questions div.question div.categories td.category label.label {
+}
+
+div.page div.questions div.question div.categories td.category label.label-open {
+	/*margin-left:25px;*/
+	float:left;
+	margin-right:5px;
+}
+
+div.page div.questions div.question div.categories td.category div.open {
+	float:right;
+}
+
 table.array {
 	padding-bottom:5px;
 }
@@ -138,5 +151,5 @@ div.page div.question div.categories div.category {
 }
 
 .radio-open {
-	display: none;
+	/*display: none;*/
 }

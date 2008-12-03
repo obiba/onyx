@@ -13,7 +13,6 @@ import org.apache.wicket.validation.validator.NumberValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesToMatrixPermutator;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
@@ -62,7 +61,7 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inQuestion("CURRENTLY_PREGNANT").withSharedCategory(DNK, "9");
     // TODO: implémenter condition à partir de participant information
 
-    builder.inSection("S1_PARTICIPANT").withPage("2").withQuestion("CURRENT_PREGNANCY_WEEKS", "2").withSharedCategory(OPEN_N).withOpenAnswerDefinition(OPEN_N, DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 40));
+    builder.inSection("S1_PARTICIPANT").withPage("2").withQuestion("CURRENT_PREGNANCY_WEEKS", "2").withSharedCategory(OPEN_N).withOpenAnswerDefinition(OPEN_N, DataType.INTEGER).setSize(2).addValidator(new NumberValidator.RangeValidator(0, 40));
     builder.inQuestion("CURRENT_PREGNANCY_WEEKS").withSharedCategory(PNA, "8");
     builder.inQuestion("CURRENT_PREGNANCY_WEEKS").withSharedCategory(DNK, "9");
     builder.inQuestion("CURRENT_PREGNANCY_WEEKS").setAnswerCondition("CURRENT_PREGNANCY_WEEKS_ACONDITION", "CURRENTLY_PREGNANT", Y);
@@ -71,11 +70,11 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inCondition("HW_CI_BP_MCONDITION").withAnswerCondition("HW_CI_BP_ACONDITION_0", "CURRENT_PREGNANCY_WEEKS", DNK);
     builder.inCondition("HW_CI_BP_MCONDITION").withAnswerCondition("HW_CI_BP_ACONDITION_1", "CURRENT_PREGNANCY_WEEKS", PNA);
 
-    builder.inSection("S1_PARTICIPANT").withPage("4").withQuestion("LAST_FULL_MEAL_WHEN", "3").withSharedCategory(TIME_TODAY).withOpenAnswerDefinition(TIME_TODAY, DataType.INTEGER).withOpenAnswerDefinition("HOUR_TODAY", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 23));
-    builder.inOpenAnswerDefinition(TIME_TODAY).withOpenAnswerDefinition("MINUTE_TODAY", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 59));
-    builder.inQuestion("LAST_FULL_MEAL_WHEN").withSharedCategory(TIME_YESTERDAY).withOpenAnswerDefinition(TIME_YESTERDAY, DataType.INTEGER).withOpenAnswerDefinition("HOUR_YESTERDAY", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 23));
-    builder.inOpenAnswerDefinition(TIME_YESTERDAY).withOpenAnswerDefinition("MINUTE_YESTERDAY", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 59));
-    builder.inQuestion("LAST_FULL_MEAL_WHEN").withSharedCategory(HOURS_AGO).withOpenAnswerDefinition(HOURS_AGO, DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 24));
+    builder.inSection("S1_PARTICIPANT").withPage("4").withQuestion("LAST_FULL_MEAL_WHEN", "3").withSharedCategory(TIME_TODAY).withOpenAnswerDefinition(TIME_TODAY, DataType.INTEGER).withOpenAnswerDefinition("HOUR_TODAY", DataType.INTEGER).setSize(2).addValidator(new NumberValidator.RangeValidator(0, 23));
+    builder.inOpenAnswerDefinition(TIME_TODAY).withOpenAnswerDefinition("MINUTE_TODAY", DataType.INTEGER).setSize(2).addValidator(new NumberValidator.RangeValidator(0, 59));
+    builder.inQuestion("LAST_FULL_MEAL_WHEN").withSharedCategory(TIME_YESTERDAY).withOpenAnswerDefinition(TIME_YESTERDAY, DataType.INTEGER).withOpenAnswerDefinition("HOUR_YESTERDAY", DataType.INTEGER).setSize(2).addValidator(new NumberValidator.RangeValidator(0, 23));
+    builder.inOpenAnswerDefinition(TIME_YESTERDAY).withOpenAnswerDefinition("MINUTE_YESTERDAY", DataType.INTEGER).setSize(2).addValidator(new NumberValidator.RangeValidator(0, 59));
+    builder.inQuestion("LAST_FULL_MEAL_WHEN").withSharedCategory(HOURS_AGO).withOpenAnswerDefinition(HOURS_AGO, DataType.INTEGER).setSize(2).addValidator(new NumberValidator.RangeValidator(0, 24));
 
     builder.inPage("4").withQuestion("LAST_CAFFEINE_WHEN", "4").withSharedCategory(TIME_TODAY);
     builder.inQuestion("LAST_CAFFEINE_WHEN").withSharedCategory(TIME_YESTERDAY);
@@ -99,7 +98,7 @@ public class CIPreliminaryQuestionnaireContentBuilder {
 
     // Blood Pressure and Heart Rate
 
-    builder.withSection("S2_BP_HR").withSection("S2_EC_OBS").withPage("5").withQuestion("BP_OBSERVED_CI", "10").addUIArgument(QuestionCategoriesToMatrixPermutator.ROW_COUNT_KEY, "6").withSharedCategory(RASHES_BOTH_ARMS);
+    builder.withSection("S2_BP_HR").withSection("S2_EC_OBS").withPage("5").withQuestion("BP_OBSERVED_CI", "10").setRowCount(6).withSharedCategory(RASHES_BOTH_ARMS);
     builder.inQuestion("BP_OBSERVED_CI").withSharedCategory(CAST_BOTH_ARMS);
     builder.inQuestion("BP_OBSERVED_CI").withSharedCategory(DOUBLE_ARM_PARALYSIS);
     builder.inQuestion("BP_OBSERVED_CI").withSharedCategory(AMPUTATION_WITHERED);

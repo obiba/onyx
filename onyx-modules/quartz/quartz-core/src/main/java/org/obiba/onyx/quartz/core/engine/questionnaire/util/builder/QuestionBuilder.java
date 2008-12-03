@@ -21,6 +21,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultQuestionPanelFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesToMatrixPermutator;
 import org.obiba.onyx.util.data.Data;
 
 /**
@@ -221,10 +222,25 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     return this;
   }
 
+  /**
+   * Add argument that will be interpreted by specific question UI.
+   * @param key
+   * @param value
+   * @return
+   */
   public QuestionBuilder addUIArgument(String key, String value) {
     element.addUIArgument(key, value);
 
     return this;
+  }
+
+  /**
+   * Question categories are displayed in a grid (multiple row and columns), the count of rows can be specified.
+   * @param count
+   * @return
+   */
+  public QuestionBuilder setRowCount(int count) {
+    return addUIArgument(QuestionCategoriesToMatrixPermutator.ROW_COUNT_KEY, Integer.toString(count));
   }
 
   /**

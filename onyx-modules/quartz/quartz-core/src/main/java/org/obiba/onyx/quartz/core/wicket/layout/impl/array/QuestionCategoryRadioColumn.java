@@ -57,25 +57,13 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
       @Override
       public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
         // call for refresh
-        onEvent(target);
-      }
-
-      @Override
-      public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-        // call for refresh
-        onEvent(target);
-      }
-
-      @Override
-      public void onOpenFieldError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-        // call for refresh
-        onErrorEvent(target);
+        QuestionCategoryRadioColumn.this.onSelection(target);
       }
 
       @Override
       public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
         // call for refresh
-        onEvent(target);
+        QuestionCategoryRadioColumn.this.onSelection(target);
       }
 
     });

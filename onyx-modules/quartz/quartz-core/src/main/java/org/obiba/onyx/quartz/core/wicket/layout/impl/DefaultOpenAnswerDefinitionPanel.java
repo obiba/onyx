@@ -13,9 +13,11 @@ import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidator;
@@ -34,6 +36,8 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
   private static final long serialVersionUID = 8950481253772691811L;
 
   private static final Logger log = LoggerFactory.getLogger(DefaultOpenAnswerDefinitionPanel.class);
+
+  public static final String INPUT_SIZE_KEY = "size";
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
@@ -108,6 +112,14 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
         openField.add(validator);
       }
     }
+
+    if(getOpenAnswerDefinition().getUIArguments() != null) {
+      int size = getOpenAnswerDefinition().getUIArguments().getInt(INPUT_SIZE_KEY, -1);
+      if(size > 0) {
+        openField.add(new AttributeAppender("size", new Model(Integer.toString(size)), ""));
+      }
+    }
+
     add(openField);
 
     openField.add(new AjaxFormComponentUpdatingBehavior("onblur") {
@@ -122,7 +134,6 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
         visitParents(WizardForm.class, new Component.IVisitor() {
 
           public Object component(Component component) {
-            log.info("found a wizard form");
             WizardForm form = (WizardForm) component;
             if(form.getFeedbackPanel() != null) {
               target.addComponent(form.getFeedbackPanel());
@@ -138,13 +149,12 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
       protected void onError(final AjaxRequestTarget target, RuntimeException e) {
         log.info("openField.onError.{}.data={}", getQuestion() + ":" + getQuestionCategory() + ":" + getOpenAnswerDefinition().getName(), getData());
         log.info("openField.onError={}", Session.get().getFeedbackMessages().iterator().next());
-        DefaultOpenAnswerDefinitionPanel.this.onError(target, getQuestionModel(), DefaultOpenAnswerDefinitionPanel.this.getModel());
+        super.onError(target, e);
 
         // refesh feedback panel to display error messages
         visitParents(WizardForm.class, new Component.IVisitor() {
 
           public Object component(Component component) {
-            log.info("found a wizard form");
             WizardForm form = (WizardForm) component;
             if(form.getFeedbackPanel() != null) {
               target.addComponent(form.getFeedbackPanel());
@@ -153,7 +163,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
           }
 
         });
-        super.onError(target, e);
+        DefaultOpenAnswerDefinitionPanel.this.onError(target, getQuestionModel(), DefaultOpenAnswerDefinitionPanel.this.getModel());
       }
 
     });
