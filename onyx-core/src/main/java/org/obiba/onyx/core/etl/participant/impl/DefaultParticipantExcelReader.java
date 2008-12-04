@@ -95,6 +95,14 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
   private List<IParticipantReadListener> listeners = new ArrayList<IParticipantReadListener>();
 
   //
+  // Constructors
+  //
+
+  public DefaultParticipantExcelReader() {
+    columnNameToAttributeNameMap = new HashMap<String, String>();
+  }
+
+  //
   // IParticipantReader Methods
   //
 
@@ -158,37 +166,19 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
 
   public void setParticipantMetadata(ParticipantMetadata participantMetadata) {
     this.participantMetadata = participantMetadata;
+
+    if(participantMetadata != null) {
+      addDefaultColumnNameToAttributeNameMapEntries();
+    }
   }
 
   public void setColumnNameToAttributeNameMap(Map<String, String> columnNameToAttributeNameMap) {
-    // Initialize columnNameToAttributeNameMap. Convert all keys to UPPERCASE.
-    this.columnNameToAttributeNameMap = new HashMap<String, String>();
-
-    Iterator<String> mapIter = columnNameToAttributeNameMap.keySet().iterator();
-    while(mapIter.hasNext()) {
-      String key = mapIter.next();
-      this.columnNameToAttributeNameMap.put(key.toUpperCase(), columnNameToAttributeNameMap.get(key));
-    }
-
-    // Set default mappings for essential attributes.
-    for(ParticipantAttribute essentialAttribute : participantMetadata.getEssentialAttributes()) {
-      if(!essentialAttribute.isAssignableAtEnrollment()) {
-        continue;
-      }
-
-      String essentialAttributeName = essentialAttribute.getName();
-
-      if(!columnNameToAttributeNameMap.containsValue(essentialAttributeName)) {
-        this.columnNameToAttributeNameMap.put(essentialAttributeName.toUpperCase(), essentialAttributeName);
-      }
-    }
-
-    // Set default mappings for configured attributes.
-    for(ParticipantAttribute configuredAttribute : participantMetadata.getConfiguredAttributes()) {
-      String configuredAttributeName = configuredAttribute.getName();
-
-      if(!columnNameToAttributeNameMap.containsValue(configuredAttributeName)) {
-        this.columnNameToAttributeNameMap.put(configuredAttributeName.toUpperCase(), configuredAttributeName);
+    if(columnNameToAttributeNameMap != null) {
+      // Add map entries to columnNameToAttributeNameMap. Convert all keys to UPPERCASE.
+      Iterator<String> mapIter = columnNameToAttributeNameMap.keySet().iterator();
+      while(mapIter.hasNext()) {
+        String key = mapIter.next();
+        this.columnNameToAttributeNameMap.put(key.toUpperCase(), columnNameToAttributeNameMap.get(key));
       }
     }
   }
@@ -334,6 +324,34 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
       if(configuredAttribute.isAssignableAtEnrollment()) {
         HSSFCell cell = row.getCell(attributeNameToColumnIndexMap.get(configuredAttribute.getName().toUpperCase()));
         setConfiguredAttribute(participant, configuredAttribute, cell, evaluator);
+      }
+    }
+  }
+
+  private void addDefaultColumnNameToAttributeNameMapEntries() {
+    if(columnNameToAttributeNameMap == null) {
+      columnNameToAttributeNameMap = new HashMap<String, String>();
+    }
+
+    // Set default mappings for essential attributes.
+    for(ParticipantAttribute essentialAttribute : participantMetadata.getEssentialAttributes()) {
+      if(!essentialAttribute.isAssignableAtEnrollment()) {
+        continue;
+      }
+
+      String essentialAttributeName = essentialAttribute.getName();
+
+      if(!columnNameToAttributeNameMap.containsValue(essentialAttributeName)) {
+        columnNameToAttributeNameMap.put(essentialAttributeName.toUpperCase(), essentialAttributeName);
+      }
+    }
+
+    // Set default mappings for configured attributes.
+    for(ParticipantAttribute configuredAttribute : participantMetadata.getConfiguredAttributes()) {
+      String configuredAttributeName = configuredAttribute.getName();
+
+      if(!columnNameToAttributeNameMap.containsValue(configuredAttributeName)) {
+        columnNameToAttributeNameMap.put(configuredAttributeName.toUpperCase(), configuredAttributeName);
       }
     }
   }
