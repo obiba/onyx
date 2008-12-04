@@ -6,7 +6,7 @@
     	
     	<table style="width: 100%">
     		<tr>
-    			<td>
+    			<td style="width: 50%">
     				<fieldset>
     					<legend><wicket:message key="ParticipantSearch" /></legend>
     					<form wicket:id="searchForm">
@@ -37,15 +37,7 @@
 					</fieldset>
     			</td>
     			<td valign="top">
-    				<fieldset>
-    					<legend><wicket:message key="Action" /></legend>
-    					<div style="margin-bottom:10px;">
-    						<a wicket:id="volunteer"><wicket:message key="EnrollVolunteer" /></a>
-    					</div>
-    					<div>
-    						<a wicket:id="update"><wicket:message key="UpdateParticipantsList" /></a>
-    					</div>
-					</fieldset>
+    				<span wicket:id="actions"/>
     			</td>
     		</tr>
     		<tr>
@@ -61,6 +53,18 @@
     			</td>
     		</tr>
     	</table>
+    	
+    	<wicket:fragment wicket:id="actionFragment">
+		  <fieldset>
+			<legend><wicket:message key="Action" /></legend>
+			<div style="margin-bottom:10px;">
+				<a wicket:id="volunteer"><wicket:message key="EnrollVolunteer" /></a>
+			</div>
+			<div>
+				<a wicket:id="update"><wicket:message key="UpdateParticipantsList" /></a>
+			</div>
+		  </fieldset>
+		</wicket:fragment>
     </wicket:extend>
   </body>
 </html>

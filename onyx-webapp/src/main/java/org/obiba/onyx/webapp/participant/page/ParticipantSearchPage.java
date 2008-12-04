@@ -29,6 +29,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -46,6 +48,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
@@ -205,44 +208,9 @@ public class ParticipantSearchPage extends BasePage {
 
     });
 
-    add(new AjaxLink("volunteer") {
-
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        // TODO enroll volunteer
-        // target.addComponent(getFeedbackPanel());
-        setResponsePage(new ParticipantReceptionPage(new Model(new Participant()), ParticipantSearchPage.this, "enrollment"));
-      }
-
-    });
-
-    Link link = new Link("update") {
-
-      @Override
-      public void onClick() {
-        try {
-          participantService.updateParticipantList();
-          info(ParticipantSearchPage.this.getString("ParticipantsListSuccessfullyUpdated"));
-        } catch(ValidationRuntimeException e) {
-          for(ObjectError oe : e.getAllObjectErrors()) {
-            Object[] args = oe.getArguments();
-            IModel model = null;
-            if(oe.getCode().equals("ParticipantInterviewCompletedWithAppointmentInTheFuture") && args != null && args.length == 4) {
-              ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1]);
-              model = new Model(map);
-            } else if(oe.getCode().equals("WrongParticipantSiteName") && args != null && args.length >= 3) {
-              ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1] + ",site=" + args[2]);
-              model = new Model(map);
-            }
-            error(ParticipantSearchPage.this.getString(oe.getCode(), model, oe.getDefaultMessage()));
-          }
-          log.error("Failed updating participants: {}", e.toString());
-        }
-      }
-
-    };
-    link.add(new JavascriptEventConfirmation("onclick", new StringResourceModel("ConfirmParticipantsListUpdate", this, null)));
-    add(link);
+    if(OnyxAuthenticatedSession.get().getRoles().hasRole("PARTICIPANT_MANAGER")) add(new ActionFragment("actions"));
+    else
+      add(new EmptyPanel("actions"));
 
     add(new Link("excel") {
 
@@ -263,6 +231,52 @@ public class ParticipantSearchPage extends BasePage {
 
     participantList = new OnyxEntityList<Participant>("participant-list", new AppointedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
     add(participantList);
+  }
+
+  @SuppressWarnings("serial")
+  private class ActionFragment extends Fragment {
+
+    public ActionFragment(String id) {
+      super(id, "actionFragment", ParticipantSearchPage.this);
+      add(new AjaxLink("volunteer") {
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          // TODO enroll volunteer
+          // target.addComponent(getFeedbackPanel());
+          setResponsePage(new ParticipantReceptionPage(new Model(new Participant()), ParticipantSearchPage.this, "enrollment"));
+        }
+
+      });
+
+      Link link = new Link("update") {
+
+        @Override
+        public void onClick() {
+          try {
+            participantService.updateParticipantList();
+            info(ParticipantSearchPage.this.getString("ParticipantsListSuccessfullyUpdated"));
+          } catch(ValidationRuntimeException e) {
+            for(ObjectError oe : e.getAllObjectErrors()) {
+              Object[] args = oe.getArguments();
+              IModel model = null;
+              if(oe.getCode().equals("ParticipantInterviewCompletedWithAppointmentInTheFuture") && args != null && args.length == 4) {
+                ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1]);
+                model = new Model(map);
+              } else if(oe.getCode().equals("WrongParticipantSiteName") && args != null && args.length >= 3) {
+                ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1] + ",site=" + args[2]);
+                model = new Model(map);
+              }
+              error(ParticipantSearchPage.this.getString(oe.getCode(), model, oe.getDefaultMessage()));
+            }
+            log.error("Failed updating participants: {}", e.toString());
+          }
+        }
+
+      };
+      link.add(new JavascriptEventConfirmation("onclick", new StringResourceModel("ConfirmParticipantsListUpdate", this, null)));
+      add(link);
+    }
   }
 
   private OnyxEntityList<Participant> getAllParticipantsList() {
@@ -455,9 +469,8 @@ public class ParticipantSearchPage extends BasePage {
           actions.add(new StringResourceModel("View", ParticipantSearchPage.this, null));
           if(p.getBarcode() != null) {
             actions.add(new StringResourceModel("Interview", ParticipantSearchPage.this, null));
-            if(isParticipantEditable == true) actions.add(new StringResourceModel("Edit", ParticipantSearchPage.this, null));
-          } else
-            actions.add(new StringResourceModel("Receive", ParticipantSearchPage.this, null));
+            if(isParticipantEditable == true && OnyxAuthenticatedSession.get().getRoles().hasRole("PARTICIPANT_MANAGER")) actions.add(new StringResourceModel("Edit", ParticipantSearchPage.this, null));
+          } else if(OnyxAuthenticatedSession.get().getRoles().hasRole("PARTICIPANT_MANAGER")) actions.add(new StringResourceModel("Receive", ParticipantSearchPage.this, null));
 
           cellItem.add(new AjaxLinkList(componentId, actions, "") {
 
