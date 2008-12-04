@@ -36,6 +36,7 @@
   <bean id="participantReader" class="org.obiba.onyx.core.etl.participant.impl.DefaultParticipantExcelReader"
     scope="prototype">
     <property name="participantMetadata" ref="participantMetadata" />
+    <property name="sheetNumber" value="1" />
     <property name="headerRowNumber" value="2" />
     <property name="firstDataRowNumber" value="3" />
 

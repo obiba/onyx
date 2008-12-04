@@ -80,6 +80,11 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
   private Map<String, Integer> attributeNameToColumnIndexMap;
 
   /**
+   * Sheet number.
+   */
+  private int sheetNumber;
+
+  /**
    * Header row number.
    */
   private int headerRowNumber;
@@ -117,7 +122,7 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
   @SuppressWarnings("unchecked")
   public void process(InputStream input) throws IOException, IllegalArgumentException {
     HSSFWorkbook wb = new HSSFWorkbook(input);
-    HSSFSheet sheet = wb.getSheetAt(0);
+    HSSFSheet sheet = wb.getSheetAt(sheetNumber - 1);
     HSSFFormulaEvaluator evaluator = new HSSFFormulaEvaluator(wb);
 
     initAttributeNameToColumnIndexMap(sheet.getRow(headerRowNumber - 1));
@@ -183,6 +188,10 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
     }
   }
 
+  public void setSheetNumber(int sheetNumber) {
+    this.sheetNumber = sheetNumber;
+  }
+
   public void setHeaderRowNumber(int headerRowNumber) {
     this.headerRowNumber = headerRowNumber;
   }
@@ -202,11 +211,10 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
 
     attributeNameToColumnIndexMap = new HashMap<String, Integer>();
 
-    int firstCellNum = headerRow.getFirstCellNum();
-    int lastCellNum = headerRow.getLastCellNum();
+    Iterator cellIter = headerRow.cellIterator();
 
-    for(int cellNum = firstCellNum; cellNum < lastCellNum; cellNum++) {
-      HSSFCell cell = headerRow.getCell(cellNum);
+    while(cellIter.hasNext()) {
+      HSSFCell cell = (HSSFCell) cellIter.next();
 
       if(cell != null) {
         if(cell.getCellType() != HSSFCell.CELL_TYPE_STRING) {
@@ -219,7 +227,11 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
           String attributeName = (String) columnNameToAttributeNameMap.get(columnName.toUpperCase());
 
           if(attributeName != null) {
-            attributeNameToColumnIndexMap.put(attributeName.toUpperCase(), cellNum);
+            if(!attributeNameToColumnIndexMap.containsKey(attributeName.toUpperCase())) {
+              attributeNameToColumnIndexMap.put(attributeName.toUpperCase(), cell.getColumnIndex());
+            } else {
+              throw new IllegalArgumentException("Duplicate column for field: " + attributeName);
+            }
           }
         }
       }
