@@ -25,7 +25,6 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.DummyHomePage;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.TestPanelSource;
@@ -41,7 +40,9 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
 import org.obiba.wicket.test.MockSpringApplication;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 @SuppressWarnings("serial")
 public class EditParticipantPanelTest implements Serializable {
@@ -58,8 +59,7 @@ public class EditParticipantPanelTest implements Serializable {
 
   @Before
   public void setup() {
-
-    ApplicationContextMock mockCtx = new ApplicationContextMock();
+    ExtendedApplicationContextMock mockCtx = new ExtendedApplicationContextMock();
 
     mockParticipantService = createMock(ParticipantService.class);
     mockQueryService = createMock(EntityQueryService.class);
@@ -67,7 +67,8 @@ public class EditParticipantPanelTest implements Serializable {
     mockCtx.putBean("participantService", mockParticipantService);
     mockCtx.putBean("entityQueryService", mockQueryService);
 
-    participantMetadata = new ParticipantMetadata();
+    ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("test-spring-context.xml");
+    participantMetadata = (ParticipantMetadata) context.getBean("participantMetadata");
     mockCtx.putBean("participantMetadata", participantMetadata);
 
     MockSpringApplication application = new MockSpringApplication();
@@ -98,6 +99,10 @@ public class EditParticipantPanelTest implements Serializable {
       }
     });
 
+    FormTester formTester = tester.newFormTester("panel:editParticipantForm");
+    formTester.select("metadata:repeat:1:field:input:select", 3);
+    formTester.setValue("metadata:repeat:2:field:input:field", "Peel street");
+
     tester.executeAjaxEvent("panel:editParticipantForm:saveAction", "onclick");
     tester.assertNoErrorMessage();
 
@@ -108,8 +113,16 @@ public class EditParticipantPanelTest implements Serializable {
     tester.assertComponent("panel:editParticipantForm:birthDate:value", Label.class);
     tester.assertComponent("panel:editParticipantForm:assignCodeToParticipantPanel", EmptyPanel.class);
 
+    tester.assertComponent("panel:editParticipantForm:metadata:repeat:1:field:input:select", DropDownChoice.class);
+    tester.assertComponent("panel:editParticipantForm:metadata:repeat:2:field:input:field", TextField.class);
+    tester.assertComponent("panel:editParticipantForm:metadata:repeat:3:field:input:field", TextField.class);
+    tester.assertComponent("panel:editParticipantForm:metadata:repeat:4:field", Label.class);
+
     EasyMock.verify(mockParticipantService);
     EasyMock.verify(mockQueryService);
+
+    Assert.assertEquals("NB", p.getConfiguredAttributeValue("Province").getValueAsString());
+    Assert.assertEquals("Peel street", p.getConfiguredAttributeValue("Street").getValueAsString());
   }
 
   @SuppressWarnings("serial")
@@ -142,6 +155,8 @@ public class EditParticipantPanelTest implements Serializable {
     formTester.setValue("firstName:value", "Martine");
     formTester.select("gender:gender", 0);
     formTester.setValue("assignCodeToParticipantPanel:assignCodeToParticipantForm:participantCode", "1234");
+    formTester.setValue("metadata:repeat:2:field:input:field", "Peel street");
+    formTester.setValue("metadata:repeat:4:field:input:field", "514-398-3311 ext 00721");
 
     tester.assertComponent("panel:editParticipantForm:enrollmentId:value", Label.class);
     tester.assertComponent("panel:editParticipantForm:firstName:value", TextField.class);
@@ -149,6 +164,11 @@ public class EditParticipantPanelTest implements Serializable {
     tester.assertComponent("panel:editParticipantForm:gender:gender", DropDownChoice.class);
     tester.assertComponent("panel:editParticipantForm:birthDate:value", DateTextField.class);
     tester.assertComponent("panel:editParticipantForm:assignCodeToParticipantPanel", AssignCodeToParticipantPanel.class);
+
+    tester.assertComponent("panel:editParticipantForm:metadata:repeat:1:field:input:select", DropDownChoice.class);
+    tester.assertComponent("panel:editParticipantForm:metadata:repeat:2:field:input:field", TextField.class);
+    tester.assertComponent("panel:editParticipantForm:metadata:repeat:3:field", Label.class);
+    tester.assertComponent("panel:editParticipantForm:metadata:repeat:4:field:input:field", TextField.class);
 
     tester.executeAjaxEvent("panel:editParticipantForm:saveAction", "onclick");
     tester.assertNoErrorMessage();
@@ -158,6 +178,8 @@ public class EditParticipantPanelTest implements Serializable {
 
     Assert.assertEquals("Martine", p.getFirstName());
     Assert.assertEquals(Gender.FEMALE, p.getGender());
+    Assert.assertEquals("Peel street", p.getConfiguredAttributeValue("Street").getValueAsString());
+    Assert.assertEquals("514-398-3311 ext 00721", p.getConfiguredAttributeValue("Phone").getValueAsString());
   }
 
   @SuppressWarnings("serial")
@@ -193,12 +215,19 @@ public class EditParticipantPanelTest implements Serializable {
     formTester.select("gender:gender", 1);
     formTester.setValue("birthDate", "05-05-1979");
     formTester.setValue("assignCodeToParticipantPanel:assignCodeToParticipantForm:participantCode", "1234");
+    formTester.setValue("metadata:repeat:2:field:input:field", "Peel street");
+    formTester.setValue("metadata:repeat:4:field:input:field", "514-398-3311 ext 00721");
 
     tester.assertComponent("panel:editParticipantForm:firstName:value", TextField.class);
     tester.assertComponent("panel:editParticipantForm:lastName:value", TextField.class);
     tester.assertComponent("panel:editParticipantForm:gender:gender", DropDownChoice.class);
     tester.assertComponent("panel:editParticipantForm:birthDate:value", DateTextField.class);
     tester.assertComponent("panel:editParticipantForm:assignCodeToParticipantPanel", AssignCodeToParticipantPanel.class);
+
+    tester.assertComponent("panel:editParticipantForm:metadata:repeat:1:field:input:select", DropDownChoice.class);
+    tester.assertComponent("panel:editParticipantForm:metadata:repeat:2:field:input:field", TextField.class);
+    tester.assertComponent("panel:editParticipantForm:metadata:repeat:3:field", Label.class);
+    tester.assertComponent("panel:editParticipantForm:metadata:repeat:4:field:input:field", TextField.class);
 
     Assert.assertNull(formTester.getForm().get("enrollmentId:value"));
 
@@ -210,6 +239,8 @@ public class EditParticipantPanelTest implements Serializable {
 
     Assert.assertEquals("Martin", p.getFirstName());
     Assert.assertEquals(Gender.MALE, p.getGender());
+    Assert.assertEquals("Peel street", p.getConfiguredAttributeValue("Street").getValueAsString());
+    Assert.assertEquals("514-398-3311 ext 00721", p.getConfiguredAttributeValue("Phone").getValueAsString());
   }
 
   public Participant newTestParticipant() {

@@ -320,7 +320,7 @@ public class EditParticipantPanel extends Panel {
 
         IModel attributeValueModel;
         if(participant.getParticipantAttributeValue(attribute.getName()) == null) {
-          participant.setConfiguredAttributeValue(attribute.getName(), null);
+          participant.setConfiguredAttributeValue(attribute.getName(), new Data(attribute.getType()));
           attributeValueModel = new Model(participant.getParticipantAttributeValue(attribute.getName()));
         } else {
           attributeValueModel = new DetachableEntityModel(queryService, participant.getParticipantAttributeValue(attribute.getName()));
