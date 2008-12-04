@@ -145,7 +145,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
     // make sure a previously selected open field is not asked for
     resetOpenAnswerDefinitionPanels(radioGroup);
 
-    onOpenFieldSelection(target, questionModel, questionCategoryModel);
+    onSelection(target, questionModel, questionCategoryModel);
   }
 
   @Override

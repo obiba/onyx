@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IQuestionAnswerChangedListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,11 +110,10 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
   }
 
   /**
-   * Called when open field is selected: persist the category answer with no data yet.
+   * Called when selector is clicked.
    * @param target
    */
-  public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-
+  public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
   }
 
   /**
@@ -124,7 +124,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
    * @see #onOpenFieldSelection(AjaxRequestTarget, IModel, IModel)
    */
   protected void onInternalOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    onOpenFieldSelection(target, questionModel, questionCategoryModel);
+    onSelection(target, questionModel, questionCategoryModel);
   }
 
   /**
@@ -134,15 +134,21 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
    * @param questionCategoryModel
    * @see #onOpenFieldSubmit(AjaxRequestTarget, IModel, IModel)
    */
-  public void onInternalOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+  protected void onInternalOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
     onOpenFieldSubmit(target, questionModel, questionCategoryModel);
   }
 
   /**
-   * Called when selector is clicked.
+   * Find the first parent that will to be warned about a changing question answer.
    * @param target
+   * @param questionModel
+   * @param questionCategoryModel
    */
-  public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+  protected void fireQuestionAnswerChanged(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+    IQuestionAnswerChangedListener parentListener = (IQuestionAnswerChangedListener) findParent(IQuestionAnswerChangedListener.class);
+    if(parentListener != null) {
+      parentListener.onQuestionAnswerChanged(target, questionModel, questionCategoryModel);
+    }
   }
 
   /**

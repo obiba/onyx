@@ -47,15 +47,12 @@ public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColu
 
     AbstractQuestionCategorySelectionPanel qCategoryPanel;
     cellItem.add(qCategoryPanel = new QuestionCategoryCheckBoxPanel(componentId, rowModel, cellItem.getModel(), checkGroup, false) {
+
       @Override
       public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
         QuestionCategoryCheckBoxColumn.this.onSelection(target);
       }
 
-      @Override
-      public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-        QuestionCategoryCheckBoxColumn.this.onSelection(target);
-      }
     });
     if(qCategoryPanel.hasOpenField()) {
       cellItem.add(new AttributeAppender("class", new Model("category-open"), " "));

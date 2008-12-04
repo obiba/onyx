@@ -129,7 +129,7 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
 
     activeQuestionnaireAdministrationService.answer((Question) questionModel.getObject(), (QuestionCategory) getModelObject(), ((QuestionCategory) getModelObject()).getCategory().getOpenAnswerDefinition(), null);
 
-    onOpenFieldSelection(target, questionModel, questionCategoryModel);
+    onSelection(target, questionModel, questionCategoryModel);
   }
 
   @Override

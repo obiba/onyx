@@ -26,10 +26,11 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IQuestionAnswerChangedListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.PageQuestionsProvider;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 
-public class DefaultPageLayout extends PageLayout {
+public class DefaultPageLayout extends PageLayout implements IQuestionAnswerChangedListener {
 
   private static final long serialVersionUID = -1757316578083924986L;
 
@@ -90,6 +91,13 @@ public class DefaultPageLayout extends PageLayout {
     for(QuestionPanel panel : questionPanels) {
       panel.onPrevious(target);
     }
+  }
+
+  public void onQuestionAnswerChanged(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+    // for(QuestionPanel panel : questionPanels) {
+    // panel.setActiveAnswers(false);
+    // }
+    target.addComponent(this);
   }
 
 }

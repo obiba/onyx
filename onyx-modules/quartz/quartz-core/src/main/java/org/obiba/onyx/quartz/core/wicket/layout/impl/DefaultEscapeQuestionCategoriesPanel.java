@@ -54,29 +54,16 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
           item.add(new QuestionCategoryRadioPanel("input", item.getModel(), radioGroup) {
 
             @Override
-            public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+            public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
               // update all
               target.addComponent(DefaultEscapeQuestionCategoriesPanel.this);
+              fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
               DefaultEscapeQuestionCategoriesPanel.this.onSelection(target, questionModel, questionCategoryModel);
             }
 
             @Override
             public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              // update all
-              target.addComponent(DefaultEscapeQuestionCategoriesPanel.this);
-            }
-
-            @Override
-            public void onOpenFieldError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              // update all
-              // target.addComponent(DefaultQuestionCategoriesPanel.this);
-            }
-
-            @Override
-            public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              // update all
-              target.addComponent(DefaultEscapeQuestionCategoriesPanel.this);
-              DefaultEscapeQuestionCategoriesPanel.this.onSelection(target, questionModel, questionCategoryModel);
+              fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
             }
 
           });

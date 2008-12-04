@@ -40,21 +40,21 @@ public class QuestionPanel extends Panel {
    * Called when page is left to go to next page.
    */
   public void onNext(AjaxRequestTarget target) {
-    Question question = (Question) getModelObject();
-    if(!question.isBoilerPlate()) {
-      log.info("onNext.{}.active=true", question.getName());
-      activeQuestionnaireAdministrationService.setActiveAnswers(question, true);
-    }
+    setActiveAnswers(true);
   }
 
   /**
    * Called when page is left to go to previous page.
    */
   public void onPrevious(AjaxRequestTarget target) {
+    setActiveAnswers(false);
+  }
+
+  public void setActiveAnswers(boolean active) {
     Question question = (Question) getModelObject();
     if(!question.isBoilerPlate()) {
-      log.info("onPrevious.{}.active=false", question.getName());
-      activeQuestionnaireAdministrationService.setActiveAnswers(question, false);
+      log.info("onPrevious.{}.active={}", question.getName(), active);
+      activeQuestionnaireAdministrationService.setActiveAnswers(question, active);
     }
   }
 

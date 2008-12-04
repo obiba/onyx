@@ -93,15 +93,10 @@ public class DefaultQuestionCategoriesPanel extends Panel {
           item.add(new QuestionCategoryRadioPanel("input", item.getModel(), radioGroup) {
 
             @Override
-            public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              // update all
-              target.addComponent(DefaultQuestionCategoriesPanel.this);
-            }
-
-            @Override
             public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
               // update all
               target.addComponent(DefaultQuestionCategoriesPanel.this);
+              fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
             }
 
           });
@@ -133,11 +128,6 @@ public class DefaultQuestionCategoriesPanel extends Panel {
           item.add(new EmptyPanel("input").setVisible(false));
         } else {
           item.add(new QuestionCategoryCheckBoxPanel("input", item.getModel(), checkGroup) {
-            @Override
-            public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              // update all
-              target.addComponent(DefaultQuestionCategoriesPanel.this);
-            }
 
             @Override
             public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
@@ -152,7 +142,14 @@ public class DefaultQuestionCategoriesPanel extends Panel {
                 escapeQuestionCategoriesPanel.setNoSelection();
               }
               target.addComponent(DefaultQuestionCategoriesPanel.this);
+              fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
             }
+
+            @Override
+            public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+              fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
+            }
+
           });
 
         }
@@ -163,12 +160,14 @@ public class DefaultQuestionCategoriesPanel extends Panel {
 
     if(hasEscapeQuestionCategories()) {
       add(escapeQuestionCategoriesPanel = new DefaultEscapeQuestionCategoriesPanel("escapeCategories", getQuestionModel()) {
+
         @SuppressWarnings("unchecked")
         @Override
         public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
           ((Collection<IModel>) checkGroup.getModelObject()).clear();
           target.addComponent(DefaultQuestionCategoriesPanel.this);
         }
+
       });
     } else {
       add(new EmptyPanel("escapeCategories").setVisible(false));

@@ -55,12 +55,6 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
     cellItem.add(qCategoryPanel = new QuestionCategoryRadioPanel(componentId, rowModel, cellItem.getModel(), radioGroup, false) {
 
       @Override
-      public void onOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-        // call for refresh
-        QuestionCategoryRadioColumn.this.onSelection(target);
-      }
-
-      @Override
       public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
         // call for refresh
         QuestionCategoryRadioColumn.this.onSelection(target);
