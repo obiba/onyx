@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.OddEvenItem;
 import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.markup.repeater.data.GridView;
 import org.apache.wicket.model.IModel;
@@ -40,6 +41,11 @@ public abstract class AbstractQuestionCategoriesView extends GridView {
   @Override
   protected void populateEmptyItem(Item item) {
     item.add(new EmptyPanel("input").setVisible(false));
+  }
+
+  @Override
+  protected Item newRowItem(String id, int index) {
+    return new OddEvenItem(id, index, null);
   }
 
 }
