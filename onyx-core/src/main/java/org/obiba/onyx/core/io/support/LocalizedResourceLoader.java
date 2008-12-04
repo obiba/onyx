@@ -68,11 +68,12 @@ public class LocalizedResourceLoader extends LocalizedResourceHelper implements 
     // Get the resource "real" path in the file system.
     File dir;
     try {
-      dir = new File(resourceLoader.getResource(resourcePath).getURI());
-
-      // If that path does not exist.
+      Resource path = resourceLoader.getResource(resourcePath);
+      // Doesn't support resource that are not on the file system. Sorry.
+      dir = path.getFile();
     } catch(IOException e) {
-      log.error("The resource path was not found (path={}, name={}, extension={})", resourceMessageVar);
+      log.error("The resource path '{}' cannot be used because it cannot be converted to a File on the filesystem.", resourcePath);
+      log.error("LocalizedResourceLoader configuration is [path={}, name={}, extension={}]", resourceMessageVar);
       return languages;
     }
 
