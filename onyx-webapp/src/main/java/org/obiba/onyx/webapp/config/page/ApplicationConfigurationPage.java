@@ -159,15 +159,14 @@ public class ApplicationConfigurationPage extends BasePage {
 
     private void saveConfiguration() {
 
-      // set up the roles
-      Role adminRole = userService.createRole(Role.SYSTEM_ADMINISTRATOR);
-      userService.createRole(Role.PARTICIPANT_MANAGER);
-      userService.createRole(Role.DATA_COLLECTION_OPERATOR);
-
       // Setup administrator user.
       User user = model.getUser();
       user.setPassword(User.digest(user.getPassword()));
-      user.addRole(adminRole);
+
+      user.addRole(userService.createRole(Role.SYSTEM_ADMINISTRATOR));
+      user.addRole(userService.createRole(Role.PARTICIPANT_MANAGER));
+      user.addRole(userService.createRole(Role.DATA_COLLECTION_OPERATOR));
+
       user.setLanguage(Session.get().getLocale());
       user.setDeleted(false);
       user.setStatus(Status.ACTIVE);

@@ -287,7 +287,7 @@ public class DefaultParticipantExcelReaderTest {
 
         // Verify that the participant's configured attributes have been assigned the correct values.
         Assert.assertEquals("299, Avenue des Pins Ouest", participant.getConfiguredAttributeValue("Street").getValue());
-        Assert.assertEquals("Montréal", participant.getConfiguredAttributeValue("City").getValue());
+        Assert.assertEquals("Montr\u00e9al", participant.getConfiguredAttributeValue("City").getValue());
         Assert.assertEquals("QC", participant.getConfiguredAttributeValue("Province").getValue());
         Assert.assertEquals("Canada", participant.getConfiguredAttributeValue("Country").getValue());
         Assert.assertEquals("H1T 2M4", participant.getConfiguredAttributeValue("Postal Code").getValue());

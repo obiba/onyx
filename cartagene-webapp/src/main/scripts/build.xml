@@ -1,0 +1,56 @@
+<project name="Onyx Deployment" default="war" basedir=".">
+
+  <property name="webapp" value="${basedir}/cartagene-webapp"/>
+  <property name="keystore" value="keystore.jks"/>
+  <property name="war" value="${basedir}/onyx.war"/>
+
+  <property name="context" value="/onyx"/>
+  <property name="url" value="http://localhost:8080/manager"/>
+  <property name="username" value="admin"/>
+  <property name="password" value="tomcatadmin"/>
+
+  <path id="lib.path">
+    <fileset dir="lib" includes="*.jar"/>
+  </path>
+
+  <!-- Configure the custom Ant tasks for the Manager application -->
+  <taskdef name="deploy"    classname="org.apache.catalina.ant.DeployTask" classpathref="lib.path"/>
+  <taskdef name="list"      classname="org.apache.catalina.ant.ListTask" classpathref="lib.path"/>
+  <taskdef name="reload"    classname="org.apache.catalina.ant.ReloadTask" classpathref="lib.path"/>
+  <taskdef name="resources" classname="org.apache.catalina.ant.ResourcesTask" classpathref="lib.path"/>
+  <taskdef name="roles"     classname="org.apache.catalina.ant.RolesTask" classpathref="lib.path"/>
+  <taskdef name="start"     classname="org.apache.catalina.ant.StartTask" classpathref="lib.path"/>
+  <taskdef name="stop"      classname="org.apache.catalina.ant.StopTask" classpathref="lib.path"/>
+  <taskdef name="undeploy"  classname="org.apache.catalina.ant.UndeployTask" classpathref="lib.path"/>
+
+  <target name="war" depends="sign">
+    <war destfile="${war}" needxmlfile="false">
+      <fileset dir="${webapp}"/>
+    </war>
+  </target>
+
+  <target name="deploy" depends="war,undeploy">
+    <deploy url="${url}" username="${username}" password="${password}" path="${context}" war="${war}"/>
+  </target>
+
+  <target name="undeploy">
+    <undeploy url="${url}" username="${username}" password="${password}" path="${context}" failonerror="false"/>
+  </target>
+
+  <target name="sign">
+    <signjar alias="jade" keystore="${keystore}" lazy="true" storepass="changeme">
+      <fileset dir="${webapp}/instruments" includes="**/*.jar" />
+    </signjar>
+  </target>
+
+  <target name="makekey">
+    <genkey alias="jade" keystore="${keystore}" storepass="changeme" validity="730">
+      <dname>
+        <param name="CN" value="Onyx Assessment Center"/>
+        <param name="OU" value="CSDT"/>
+        <param name="O"  value="OBiBa Contiortium"/>
+        <param name="C"  value="CA"/>
+      </dname>
+    </genkey>
+  </target>
+</project>
