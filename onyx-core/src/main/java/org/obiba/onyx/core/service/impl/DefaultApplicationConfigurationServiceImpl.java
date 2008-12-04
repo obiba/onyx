@@ -9,16 +9,30 @@
  ******************************************************************************/
 package org.obiba.onyx.core.service.impl;
 
+import java.io.IOException;
+
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class DefaultApplicationConfigurationServiceImpl extends PersistenceManagerAwareService implements ApplicationConfigurationService {
+public class DefaultApplicationConfigurationServiceImpl extends PersistenceManagerAwareService implements ApplicationConfigurationService, ResourceLoaderAware {
+  protected ResourceLoader resourceLoader;
 
   public void createApplicationConfiguration(ApplicationConfiguration appConfiguration) {
+    try {
+      appConfiguration.setParticipantDirectoryPath(resourceLoader.getResource("/participants/").getFile().getAbsolutePath());
+    } catch(IOException e) {
+      throw new RuntimeException(e);
+    }
     persistenceManager.save(appConfiguration);
+  }
+
+  public void setResourceLoader(ResourceLoader resourceLoader) {
+    this.resourceLoader = resourceLoader;
   }
 
 }
