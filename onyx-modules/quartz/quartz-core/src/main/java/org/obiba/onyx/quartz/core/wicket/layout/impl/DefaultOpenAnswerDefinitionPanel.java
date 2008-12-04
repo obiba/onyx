@@ -8,7 +8,6 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -179,17 +178,10 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
    * @param target
    */
   private void updateFeedback(final AjaxRequestTarget target) {
-    visitParents(WizardForm.class, new Component.IVisitor() {
-
-      public Object component(Component component) {
-        WizardForm form = (WizardForm) component;
-        if(form.getFeedbackPanel() != null) {
-          target.addComponent(form.getFeedbackPanel());
-        }
-        return component;
-      }
-
-    });
+    WizardForm wizard = (WizardForm) findParent(WizardForm.class);
+    if(wizard != null && wizard.getFeedbackPanel() != null) {
+      target.addComponent(wizard.getFeedbackPanel());
+    }
     target.addComponent(openField.getField());
   }
 
