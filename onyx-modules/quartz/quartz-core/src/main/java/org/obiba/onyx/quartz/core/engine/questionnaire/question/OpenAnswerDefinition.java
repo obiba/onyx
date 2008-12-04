@@ -35,7 +35,7 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable, IDataUn
 
   private String unit;
 
-  private ValueMap uIArguments;
+  private List<String[]> uIArguments;
 
   private List<IDataValidator> validators;
 
@@ -84,16 +84,21 @@ public class OpenAnswerDefinition implements Serializable, ILocalizable, IDataUn
     this.unit = unit;
   }
 
-  public ValueMap getUIArguments() {
-    return uIArguments;
+  public ValueMap getUIArgumentsValueMap() {
+    if(uIArguments == null) return null;
+
+    ValueMap map = new ValueMap();
+    for(String[] pair : uIArguments) {
+      map.add(pair[0], pair[1]);
+    }
+    return map;
   }
 
-  public ValueMap addUIArgument(String key, String value) {
+  public void addUIArgument(String key, String value) {
     if(uIArguments == null) {
-      uIArguments = new ValueMap();
+      uIArguments = new ArrayList<String[]>();
     }
-    uIArguments.add(key, value);
-    return uIArguments;
+    uIArguments.add(new String[] { key, value });
   }
 
   public List<IDataValidator> getValidators() {

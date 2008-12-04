@@ -18,6 +18,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.IValidator;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
@@ -116,8 +117,9 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     }
 
     // UI arguments as attributes
-    if(getOpenAnswerDefinition().getUIArguments() != null) {
-      int size = getOpenAnswerDefinition().getUIArguments().getInt(INPUT_SIZE_KEY, -1);
+    ValueMap arguments = getOpenAnswerDefinition().getUIArgumentsValueMap();
+    if(arguments != null) {
+      int size = arguments.getInt(INPUT_SIZE_KEY, -1);
       if(size > 0) {
         openField.add(new AttributeAppender("size", new Model(Integer.toString(size)), ""));
       }

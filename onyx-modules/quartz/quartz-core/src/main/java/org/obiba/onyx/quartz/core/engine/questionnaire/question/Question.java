@@ -37,7 +37,7 @@ public class Question implements Serializable, ILocalizable {
 
   private String uIFactoryName;
 
-  private ValueMap uIArguments;
+  private List<String[]> uIArguments;
 
   private List<QuestionCategory> questionCategories;
 
@@ -104,16 +104,21 @@ public class Question implements Serializable, ILocalizable {
     uIFactoryName = factoryName;
   }
 
-  public ValueMap getUIArguments() {
-    return uIArguments;
+  public ValueMap getUIArgumentsValueMap() {
+    if(uIArguments == null) return null;
+
+    ValueMap map = new ValueMap();
+    for(String[] pair : uIArguments) {
+      map.add(pair[0], pair[1]);
+    }
+    return map;
   }
 
-  public ValueMap addUIArgument(String key, String value) {
+  public void addUIArgument(String key, String value) {
     if(uIArguments == null) {
-      uIArguments = new ValueMap();
+      uIArguments = new ArrayList<String[]>();
     }
-    uIArguments.add(key, value);
-    return uIArguments;
+    uIArguments.add(new String[] { key, value });
   }
 
   public List<QuestionCategory> getQuestionCategories() {

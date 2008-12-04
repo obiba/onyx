@@ -10,6 +10,7 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl.util;
 
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 
@@ -25,8 +26,9 @@ public class QuestionCategoriesToMatrixPermutator extends ListToMatrixPermutator
   public QuestionCategoriesToMatrixPermutator(IModel questionModel) {
     super();
     Question question = (Question) questionModel.getObject();
-    if(question.getUIArguments() != null) {
-      setRowCount(question.getUIArguments().getInt(ROW_COUNT_KEY, ListToMatrixPermutator.DEFAULT_ROW_COUNT));
+    ValueMap arguments = question.getUIArgumentsValueMap();
+    if(arguments != null) {
+      setRowCount(arguments.getInt(ROW_COUNT_KEY, ListToMatrixPermutator.DEFAULT_ROW_COUNT));
     }
   }
 
