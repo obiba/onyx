@@ -100,6 +100,7 @@
   
   <bean id="participantMetadata" class="org.obiba.onyx.core.domain.participant.ParticipantMetadata">
     <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
+    <property name="supportedRecruitmentTypesString" value="${org.obiba.onyx.supportedRecruitmentTypes}"/>
   </bean>
 
 </beans>

@@ -46,6 +46,8 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   private List<ParticipantAttribute> configuredAttributes;
 
+  private List<RecruitmentType> supportedRecruitmentTypes;
+
   //
   // Constructors
   //
@@ -210,4 +212,29 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
     return false;
   }
 
+  public void setSupportedRecruitmentTypes(List<RecruitmentType> supportedRecruitmentTypes) {
+    this.supportedRecruitmentTypes = supportedRecruitmentTypes;
+  }
+
+  /**
+   * Set the supported recruitment type using a comma separated list of recruitment types.
+   * @param supportedRecruitmentTypes.
+   */
+  public void setSupportedRecruitmentTypesString(String supportedRecruitmentTypes) {
+    if(supportedRecruitmentTypes != null) {
+
+      List<RecruitmentType> recruitmentTypeList = new ArrayList<RecruitmentType>();
+
+      String recruitmentTypeName[] = supportedRecruitmentTypes.split(",");
+      for(String name : recruitmentTypeName) {
+        recruitmentTypeList.add(RecruitmentType.valueOf(name));
+      }
+
+      this.setSupportedRecruitmentTypes(recruitmentTypeList);
+    }
+  }
+
+  public List<RecruitmentType> getSupportedRecruitmentTypes() {
+    return this.supportedRecruitmentTypes;
+  }
 }

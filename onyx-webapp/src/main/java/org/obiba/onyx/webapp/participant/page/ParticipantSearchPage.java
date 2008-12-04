@@ -46,6 +46,7 @@ import org.obiba.core.validation.exception.ValidationRuntimeException;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
+import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
@@ -238,7 +239,8 @@ public class ParticipantSearchPage extends BasePage {
 
     public ActionFragment(String id) {
       super(id, "actionFragment", ParticipantSearchPage.this);
-      add(new AjaxLink("volunteer") {
+
+      AjaxLink volunteerLink = new AjaxLink("volunteer") {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
@@ -247,7 +249,12 @@ public class ParticipantSearchPage extends BasePage {
           setResponsePage(new ParticipantReceptionPage(new Model(new Participant()), ParticipantSearchPage.this, "enrollment"));
         }
 
-      });
+      };
+
+      if(participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.VOLUNTEER)) volunteerLink.setVisible(true);
+      else
+        volunteerLink.setVisible(false);
+      add(volunteerLink);
 
       Link link = new Link("update") {
 
@@ -275,6 +282,9 @@ public class ParticipantSearchPage extends BasePage {
 
       };
       link.add(new JavascriptEventConfirmation("onclick", new StringResourceModel("ConfirmParticipantsListUpdate", this, null)));
+      if(participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.ENROLLED)) link.setVisible(true);
+      else
+        link.setVisible(false);
       add(link);
     }
   }
