@@ -83,8 +83,6 @@ public abstract class AbstractQuestionnaireTest {
 
   private static final String COMPONENT_ID_SEPARATOR = ":";
 
-  private static final String ONBLUR_EVENT = "onblur";
-
   private static final String ONCHANGE_EVENT = "onchange";
 
   //
@@ -151,6 +149,7 @@ public abstract class AbstractQuestionnaireTest {
     initUIFactoryRegistries();
   }
 
+  @SuppressWarnings("unchecked")
   private void initUIFactoryRegistries() {
     PageLayoutFactoryRegistry pageLayoutFactoryRegistry = (PageLayoutFactoryRegistry) applicationContext.getBean("pageLayoutFactoryRegistry");
     QuestionPanelFactoryRegistry questionPanelFactoryRegistry = (QuestionPanelFactoryRegistry) applicationContext.getBean("questionPanelFactoryRegistry");
@@ -652,7 +651,7 @@ public abstract class AbstractQuestionnaireTest {
 
     fields = getQuestionCategoryFormComponent(question, answer);
     setFormComponentValue((FormComponent) fields.get(0), answer.getOpenAnswers().get(0).getData().getValueAsString());
-    wicketTester.executeAjaxEvent(fields.get(0), ONBLUR_EVENT);
+    wicketTester.executeAjaxEvent(fields.get(0), ONCHANGE_EVENT);
   }
 
   private void setFormComponentValue(FormComponent formComponent, String value) {
@@ -675,6 +674,7 @@ public abstract class AbstractQuestionnaireTest {
     return ComponentTesterUtils.findChildren(openField, FormComponent.class);
   }
 
+  @SuppressWarnings("unchecked")
   private Component getQuestionCategoryComponent(Question question, CategoryAnswer answer, Class clazz) {
     FormComponent group = getCategoryGroupComponent(question);
     QuestionCategory questionCategory = question.findQuestionCategory(answer.getCategoryName());
@@ -751,7 +751,7 @@ public abstract class AbstractQuestionnaireTest {
     String openPath = getArrayInputFieldComponentId(question, category);
     wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + openPath, "onclick");
     formTester.setValue(openPath, answer.getOpenAnswers().get(0).getData().getValueAsString());
-    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + openPath, ONBLUR_EVENT);
+    wicketTester.executeAjaxEvent(getFormPath() + COMPONENT_ID_SEPARATOR + openPath, ONCHANGE_EVENT);
   }
 
   private String getArrayInputFieldComponentId(Question question, Category category) {

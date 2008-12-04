@@ -161,7 +161,7 @@ public class DefaultOpenAnswerDefinitionPanelTest {
     formTester.setValue("content:open:input:field", "123");
 
     // check submit of value
-    tester.executeAjaxEvent("panel:form:content:open:input:field", "onblur");
+    tester.executeAjaxEvent("panel:form:content:open:input:field", "onchange");
     Assert.assertNotNull(openMock.getData());
     value = openMock.getData().getValue();
     Assert.assertEquals(123, value.intValue());
@@ -232,7 +232,7 @@ public class DefaultOpenAnswerDefinitionPanelTest {
     formTester.select("content:open:input:select", 1);
 
     // check submit of value
-    tester.executeAjaxEvent("panel:form:content:open:input:select", "onblur");
+    tester.executeAjaxEvent("panel:form:content:open:input:select", "onchange");
     Assert.assertNotNull(openMock.getData());
     value = openMock.getData().getValue();
     Assert.assertEquals("b", value);

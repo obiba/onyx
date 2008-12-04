@@ -9,7 +9,6 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -107,14 +106,17 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     } else {
       openField = new DataField("open", new PropertyModel(this, "data"), getOpenAnswerDefinition().getDataType(), unitLabel.getString());
     }
+    openField.getField().setOutputMarkupId(true);
+    add(openField);
 
+    // validators
     if(getOpenAnswerDefinition().getValidators() != null) {
       for(IValidator validator : getOpenAnswerDefinition().getValidators()) {
         openField.add(validator);
       }
     }
-    openField.add(new InvalidFormFieldBehavior());
 
+    // UI arguments as attributes
     if(getOpenAnswerDefinition().getUIArguments() != null) {
       int size = getOpenAnswerDefinition().getUIArguments().getInt(INPUT_SIZE_KEY, -1);
       if(size > 0) {
@@ -122,52 +124,22 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
       }
     }
 
-    add(openField);
+    // behaviors
+    openField.add(new InvalidFormFieldBehavior());
 
-    openField.add(new AjaxFormComponentUpdatingBehavior("onblur") {
-
+    openField.add(new AjaxFormComponentUpdatingBehavior("onchange") {
       @Override
-      protected void onUpdate(final AjaxRequestTarget target) {
-        log.info("openField.onUpdate.{}.data={}", getQuestion() + ":" + getQuestionCategory() + ":" + getOpenAnswerDefinition().getName(), getData());
-        // persist data
-        activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
-
-        // refresh feeback to clean a previous error message
-        visitParents(WizardForm.class, new Component.IVisitor() {
-
-          public Object component(Component component) {
-            WizardForm form = (WizardForm) component;
-            if(form.getFeedbackPanel() != null) {
-              target.addComponent(form.getFeedbackPanel());
-            }
-            return component;
-          }
-
-        });
-        DefaultOpenAnswerDefinitionPanel.this.onSubmit(target, getQuestionModel(), DefaultOpenAnswerDefinitionPanel.this.getModel());
+      protected void onUpdate(AjaxRequestTarget target) {
+        log.info("openField.onChange.onUpdate.{}.data={}", getQuestion() + ":" + getQuestionCategory() + ":" + getOpenAnswerDefinition().getName(), getData());
+        onInternalSubmit(target);
       }
 
       @Override
-      protected void onError(final AjaxRequestTarget target, RuntimeException e) {
-        log.info("openField.onError.{}.data={}", getQuestion() + ":" + getQuestionCategory() + ":" + getOpenAnswerDefinition().getName(), getData());
-        log.info("openField.onError={}", Session.get().getFeedbackMessages().iterator().next());
+      protected void onError(AjaxRequestTarget target, RuntimeException e) {
+        log.info("openField.onChange.onError.{}.data={}", getQuestion() + ":" + getQuestionCategory() + ":" + getOpenAnswerDefinition().getName(), getData());
         super.onError(target, e);
-
-        // refesh feedback panel to display error messages
-        visitParents(WizardForm.class, new Component.IVisitor() {
-
-          public Object component(Component component) {
-            WizardForm form = (WizardForm) component;
-            if(form.getFeedbackPanel() != null) {
-              target.addComponent(form.getFeedbackPanel());
-            }
-            return component;
-          }
-
-        });
-        DefaultOpenAnswerDefinitionPanel.this.onError(target, getQuestionModel(), DefaultOpenAnswerDefinitionPanel.this.getModel());
+        onInternalError(target);
       }
-
     });
 
     openField.add(new AjaxEventBehavior("onclick") {
@@ -183,6 +155,42 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
     // set the label of the field
     openField.setLabel(QuestionnaireStringResourceModelHelper.getStringResourceModel(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition()));
+  }
+
+  private void onInternalSubmit(final AjaxRequestTarget target) {
+    // persist data
+    activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
+
+    // clean a previous error message
+    updateFeedback(target);
+
+    DefaultOpenAnswerDefinitionPanel.this.onSubmit(target, getQuestionModel(), getQuestionCategoryModel());
+  }
+
+  private void onInternalError(final AjaxRequestTarget target) {
+    // display error messages
+    updateFeedback(target);
+
+    DefaultOpenAnswerDefinitionPanel.this.onError(target, getQuestionModel(), getQuestionCategoryModel());
+  }
+
+  /**
+   * Refresh wizard feedback panel and input field.
+   * @param target
+   */
+  private void updateFeedback(final AjaxRequestTarget target) {
+    visitParents(WizardForm.class, new Component.IVisitor() {
+
+      public Object component(Component component) {
+        WizardForm form = (WizardForm) component;
+        if(form.getFeedbackPanel() != null) {
+          target.addComponent(form.getFeedbackPanel());
+        }
+        return component;
+      }
+
+    });
+    target.addComponent(openField.getField());
   }
 
   public void setFieldEnabled(boolean enabled) {

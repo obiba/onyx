@@ -60,7 +60,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.De
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
 import org.obiba.onyx.quartz.test.ComponentTesterUtils;
 import org.obiba.onyx.util.StringReferenceCompatibleMessageFormat;
 import org.obiba.onyx.util.data.DataType;
@@ -280,8 +279,6 @@ public class DefaultQuestionPanelTest {
     tester.isInvisible("panel:form:content:help");
     tester.executeAjaxEvent("panel:form:content:helpToggle:link", "onclick");
     tester.assertVisible("panel:form:content:help");
-
-    QuestionCategoriesProvider provider = new QuestionCategoriesProvider(new Model(question));
 
     // check all expected radios are here
     tester.assertComponent("panel:form:content:content:categories", RadioGroup.class);
@@ -564,6 +561,7 @@ public class DefaultQuestionPanelTest {
     verify(questionnaireBundleMock);
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void testMultipleChoiceQuestionWithOpenAnswer() {
 
@@ -649,6 +647,7 @@ public class DefaultQuestionPanelTest {
     verify(questionnaireBundleMock);
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void testMultipleChoiceQuestionWithMultipleOpenAnswer() {
 
@@ -717,7 +716,6 @@ public class DefaultQuestionPanelTest {
     Assert.assertEquals(1, selections.size());
     Assert.assertEquals(((QuestionCategoryCheckBoxModel) checkbox2.getModel()).getQuestionCategory(), selections.iterator().next().getObject());
     FormComponent field1 = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(0);
-    FormComponent field2 = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(1);
 
     // select open field
     tester.executeAjaxEvent(field1, "onclick");
@@ -840,6 +838,7 @@ public class DefaultQuestionPanelTest {
     verify(questionnaireBundleMock);
   }
 
+  @SuppressWarnings("unused")
   private void dumpPage(String testName) {
     tester.dumpPage();
     File dump = new File("target/" + getClass().getSimpleName() + "-" + testName + ".html");
