@@ -11,16 +11,11 @@ package org.obiba.onyx.webapp.config.page;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Session;
-import org.apache.wicket.extensions.ajax.markup.html.autocomplete.AutoCompleteTextField;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
@@ -34,11 +29,8 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.validation.IErrorMessageSource;
-import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidationError;
-import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
-import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.user.Role;
@@ -115,49 +107,16 @@ public class ApplicationConfigurationPage extends BasePage {
 
       TextField administratorEmail = new TextField("email", new PropertyModel(model, "user.email"));
       add(administratorEmail.add(EmailAddressValidator.getInstance()));
-      add(administratorEmail.add(StringValidator.maximumLength(30)));
 
       studyLogo = new FileUploadField("studyLogo");
 
       // Make sure that the file uploaded is either a "jpg", a "gif", a "jpeg" or a "bmp".
-      add(studyLogo.add(new PatternValidator(".*((\\.jpg)|(\\.gif)|(\\.jpeg)|(\\.bmp))", Pattern.CASE_INSENSITIVE)).setRequired(true));
+      // add(studyLogo.add(new PatternValidator(".*((\\.jpg)|(\\.gif)|(\\.jpeg)|(\\.bmp))",
+      // Pattern.CASE_INSENSITIVE)).setRequired(true));
 
       // Set max size of upload to two megabytes. A logo should not be bigger than that!!
       setMaxSize(Bytes.megabytes(2));
       setMultiPart(true);
-
-      AutoCompleteTextField participantUpdateDirectory = new AutoCompleteTextField("participantUpdateDirectory", new PropertyModel(model, "participantDirectoryPath")) {
-
-        @SuppressWarnings("unchecked")
-        protected Iterator getChoices(String input) {
-          File dir = new File(input);
-          List<String> choices = new ArrayList<String>();
-          if(dir.exists() && dir.isDirectory()) {
-            choices.add(dir.getAbsolutePath());
-            for(File subDir : dir.listFiles()) {
-              if(subDir.isDirectory() && !subDir.getName().startsWith(".")) {
-                choices.add(subDir.getAbsolutePath());
-              }
-            }
-          }
-          return choices.iterator();
-        }
-
-      };
-      participantUpdateDirectory.add(new AbstractValidator() {
-
-        protected void onValidate(IValidatable validatable) {
-          File dir = new File((String) validatable.getValue());
-          if(!dir.exists()) {
-            validatable.error(new ParticipantsListDirectoryValidationError("ParticipantsListRepositoryDoesNotExist"));
-          } else if(!dir.isDirectory()) {
-            validatable.error(new ParticipantsListDirectoryValidationError("ParticipantsListRepositoryIsNotDirectory"));
-          }
-        }
-
-      });
-      participantUpdateDirectory.add(new RequiredFormFieldBehavior());
-      add(participantUpdateDirectory);
 
       add(new Button("saveButton"));
     }
