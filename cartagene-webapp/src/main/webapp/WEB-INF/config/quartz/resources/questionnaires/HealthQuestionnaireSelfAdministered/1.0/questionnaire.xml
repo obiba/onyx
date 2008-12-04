@@ -1216,7 +1216,7 @@
             <page id="484" name="22" uIFactoryName="quartz.DefaultPageLayoutFactory">
               <section reference="482"/>
               <questions id="485">
-                <question id="486" name="FIRST_LANGUAGE_LEARNED" number="21" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="486" name="FIRST_LANGUAGE_LEARNED" number="21" multiple="true" minCount="1" maxCount="4" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <page reference="484"/>
                   <uIArguments id="487" serialization="custom">
                     <unserializable-parents/>

@@ -203,7 +203,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inCondition("LONGEST_TIME_AGE_STARTED_LIVING_MCONDITION").withAnswerCondition("LONGEST_TIME_AGE_STARTED_LIVING_ACONDITION_1", "CURRENT_IS_LONGEST_TIME_LIVED", DNK);
     builder.inPage("21").addTimestamp("TS_DEM2");
 
-    builder.inSection("B_DEMOGRAPHY").withSection("LANGUAGE").withPage("22").withQuestion("FIRST_LANGUAGE_LEARNED", "21", true).setRowCount(8).withCategory("ENGLISH").setExportName("1");
+    builder.inSection("B_DEMOGRAPHY").withSection("LANGUAGE").withPage("22").withQuestion("FIRST_LANGUAGE_LEARNED", "21", true).setAnswerCount(1, 4).setRowCount(8).withCategory("ENGLISH").setExportName("1");
     builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("FRENCH").setExportName("2");
     builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("ARABIC").setExportName("3");
     builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("CHINESE").setExportName("4");
