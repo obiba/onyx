@@ -43,12 +43,13 @@ public class AssignCodeToParticipantPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  public AssignCodeToParticipantPanel(String id, IModel participantModel) {
-
+  public AssignCodeToParticipantPanel(String id) {
     super(id);
+  }
 
+  public AssignCodeToParticipantPanel(String id, IModel participantModel) {
+    super(id);
     add(new AssignCodeToParticipantForm("assignCodeToParticipantForm", participantModel));
-
   }
 
   public class AssignCodeToParticipantForm extends Form {

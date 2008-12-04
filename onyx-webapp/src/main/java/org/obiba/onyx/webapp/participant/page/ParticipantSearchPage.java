@@ -43,9 +43,12 @@ import org.obiba.core.service.SortingClause;
 import org.obiba.core.validation.exception.ValidationRuntimeException;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.webapp.base.page.BasePage;
+import org.obiba.onyx.webapp.participant.panel.EditParticipantModalPanel;
+import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.wicket.behavior.EnterOnKeyPressBehaviour;
@@ -75,11 +78,16 @@ public class ParticipantSearchPage extends BasePage {
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
+  @SpringBean
+  private ParticipantMetadata participantMetadata;
+
   private OnyxEntityList<Participant> participantList;
 
   private Participant template = new Participant();
 
   private ModalWindow participantDetailsModalWindow;
+
+  private ModalWindow editParticipantDetailsModalWindow;
 
   @SuppressWarnings("serial")
   public ParticipantSearchPage() {
@@ -90,6 +98,12 @@ public class ParticipantSearchPage extends BasePage {
     participantDetailsModalWindow.setInitialHeight(300);
     participantDetailsModalWindow.setInitialWidth(400);
     add(participantDetailsModalWindow);
+
+    editParticipantDetailsModalWindow = new ModalWindow("editParticipantDetailsModalWindow");
+    editParticipantDetailsModalWindow.setTitle(new StringResourceModel("EditParticipantInfo", this, null));
+    editParticipantDetailsModalWindow.setInitialHeight(400);
+    editParticipantDetailsModalWindow.setInitialWidth(600);
+    add(editParticipantDetailsModalWindow);
 
     Form form = new Form("searchForm");
     add(form);
@@ -430,14 +444,19 @@ public class ParticipantSearchPage extends BasePage {
         }
 
       });
+
+      final boolean isParticipantEditable = participantMetadata.hasEditableAfterReceptionConfiguredAttribute();
+
       columns.add(new AbstractColumn(new StringResourceModel("Actions", ParticipantSearchPage.this, null)) {
 
         public void populateItem(final Item cellItem, String componentId, final IModel rowModel) {
           final List<IModel> actions = new ArrayList<IModel>();
           final Participant p = (Participant) rowModel.getObject();
           actions.add(new StringResourceModel("View", ParticipantSearchPage.this, null));
-          if(p.getBarcode() != null) actions.add(new StringResourceModel("Interview", ParticipantSearchPage.this, null));
-          else
+          if(p.getBarcode() != null) {
+            actions.add(new StringResourceModel("Interview", ParticipantSearchPage.this, null));
+            if(isParticipantEditable == true) actions.add(new StringResourceModel("Edit", ParticipantSearchPage.this, null));
+          } else
             actions.add(new StringResourceModel("Receive", ParticipantSearchPage.this, null));
 
           cellItem.add(new AjaxLinkList(componentId, actions, "") {
@@ -454,6 +473,9 @@ public class ParticipantSearchPage extends BasePage {
                 } else {
                   setResponsePage(new ParticipantReceptionPage(rowModel, ParticipantSearchPage.this, "reception"));
                 }
+              } else if(actions.indexOf(model) == 2) {
+                editParticipantDetailsModalWindow.setContent(new EditParticipantModalPanel("content", new EditParticipantPanel("content", rowModel, ParticipantSearchPage.this, "edit", editParticipantDetailsModalWindow)));
+                editParticipantDetailsModalWindow.show(target);
               }
             }
 

@@ -207,6 +207,27 @@ public class Participant extends AbstractEntity {
   }
 
   /**
+   * Returns the ParticipantAttributeValue of a configured participant attribute.
+   * 
+   * @param attributeName attribute name
+   * @return value of the specified attribute (or <code>null</code> if none assigned)
+   * @throws IllegalArgumentException if <code>attributeName</code> is <code>null</code>
+   */
+  public ParticipantAttributeValue getParticipantAttributeValue(String attributeName) {
+    if(attributeName == null) {
+      throw new IllegalArgumentException("Null attribute name");
+    }
+
+    for(ParticipantAttributeValue attributeValue : getConfiguredAttributeValues()) {
+      if(attributeValue.getAttributeName().equals(attributeName)) {
+        return attributeValue;
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * Returns the value of a configured participant attribute.
    * 
    * @param attributeName attribute name

@@ -111,11 +111,18 @@ public class ParticipantAttributeValue extends AbstractEntity {
       } else {
         throw new IllegalArgumentException("DataType " + getAttributeType() + " expected, " + data.getType() + " received.");
       }
+    } else {
+      decimalValue = null;
+      integerValue = null;
+      dateValue = null;
+      textValue = null;
     }
   }
 
   public Data getData() {
     Data data = null;
+
+    if(getAttributeType() == null) return null;
 
     switch(getAttributeType()) {
     case DECIMAL:

@@ -35,6 +35,8 @@ import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
+import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -64,6 +66,8 @@ public class CommentsModalPanelTest implements Serializable {
 
   private CommentsModalPanel commentsModalPanel;
 
+  private ParticipantMetadata participantMetadata;
+
   @Before
   public void setup() {
     applicationContextMock = new ApplicationContextMock() {
@@ -86,6 +90,9 @@ public class CommentsModalPanelTest implements Serializable {
 
     userSessionServiceMock = createMock(UserSessionService.class);
     applicationContextMock.putBean("userSessionService", userSessionServiceMock);
+
+    participantMetadata = new ParticipantMetadata();
+    applicationContextMock.putBean("participantMetadata", participantMetadata);
 
     MockSpringApplication application = new MockSpringApplication();
     application.setApplicationContext(applicationContextMock);
@@ -214,6 +221,7 @@ public class CommentsModalPanelTest implements Serializable {
     participant.setId(id);
     participant.setFirstName(firstName);
     participant.setLastName(lastName);
+    participant.setRecruitmentType(RecruitmentType.ENROLLED);
 
     return participant;
   }

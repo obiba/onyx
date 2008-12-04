@@ -96,5 +96,9 @@
       </list>
     </property>
   </bean>
+  
+  <bean id="participantMetadata" class="org.obiba.onyx.core.domain.participant.ParticipantMetadata">
+    <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
+  </bean>
 
 </beans>

@@ -226,6 +226,14 @@ public class DataField extends Panel {
     return input.getField().getFeedbackMessage();
   }
 
+  /**
+   * Get the underlying field component.
+   * @return
+   */
+  public FormComponent getField() {
+    return input.getField();
+  }
+
   private abstract class FieldFragment extends Fragment {
 
     protected FormComponent field = null;
@@ -336,4 +344,5 @@ public class DataField extends Panel {
       add(field);
     }
   }
+
 }

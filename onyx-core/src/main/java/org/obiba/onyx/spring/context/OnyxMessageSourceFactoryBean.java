@@ -11,7 +11,9 @@ package org.obiba.onyx.spring.context;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
@@ -126,10 +128,14 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
     // For example, this will find "WEB-INF/config/myModule/messages_en.properties"
 
     String resourcePattern = pathPrefix + "*/" + MESSAGES_BUNDLENAME + "*" + suffix;
+    String resourcePatternParent = onyxConfigPath + MESSAGES_BUNDLENAME + "*" + suffix;
+
     log.debug("Finding resources that match pattern {}", resourcePattern);
-    Resource[] messageResources = resolver.getResources(resourcePattern);
-    for(int i = 0; i < messageResources.length; i++) {
-      Resource resource = messageResources[i];
+    List<Resource> messageResources = new ArrayList<Resource>();
+    messageResources.addAll(Arrays.asList(resolver.getResources(resourcePattern)));
+    messageResources.addAll(Arrays.asList(resolver.getResources(resourcePatternParent)));
+
+    for(Resource resource : messageResources) {
       String basename = resolveBasename(pathPrefix, resource);
       log.debug("Basename for bundle resource {} resolved as {}", resource.getDescription(), basename);
       if(basename != null) {

@@ -10,6 +10,7 @@
 package org.obiba.onyx.core.domain.participant;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +24,10 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 /**
  * Participant metadata.
  */
-public class ParticipantMetadata implements ResourceLoaderAware, InitializingBean {
+public class ParticipantMetadata implements ResourceLoaderAware, InitializingBean, Serializable {
+
+  private static final long serialVersionUID = 1L;
+
   //
   // Constants
   //
@@ -197,4 +201,13 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
       setConfiguredAttributes(attributes);
     }
   }
+
+  public boolean hasEditableAfterReceptionConfiguredAttribute() {
+    for(ParticipantAttribute attribute : configuredAttributes) {
+      if(attribute.isEditableAfterReception() == true) return true;
+    }
+
+    return false;
+  }
+
 }

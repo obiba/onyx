@@ -1,0 +1,48 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+  default-autowire="no">
+  
+  <bean id="participantMetadata" class="org.obiba.onyx.core.domain.participant.ParticipantMetadata">
+    <property name="attributes">
+      <list>
+        <bean class="org.obiba.onyx.core.domain.participant.ParticipantAttribute">
+          <property name="name" value="AllowedValuesAttribute"/>
+          <property name="mandatoryAtEnrollment" value="true"/>
+          <property name="mandatoryAtReception" value="false"/>
+          <property name="editableAtReception" value="true"/>
+          <property name="editableAfterReception" value="false"/>
+          <property name="type" value="TEXT"/>
+          <property name="allowedValues">
+            <list>
+              <value>Value1</value>
+              <value>Value2</value>
+              <value>Value3</value>
+            </list>
+          </property>
+        </bean>
+        
+        <bean class="org.obiba.onyx.core.domain.participant.ParticipantAttribute">
+          <property name="name" value="IntegerAttribute"/>
+          <property name="mandatoryAtEnrollment" value="false"/>
+          <property name="mandatoryAtReception" value="false"/>
+          <property name="editableAtReception" value="false"/>
+          <property name="editableAfterReception" value="true"/>
+          <property name="type" value="INTEGER"/>
+        </bean>
+        
+        <bean class="org.obiba.onyx.core.domain.participant.ParticipantAttribute">
+          <property name="name" value="DateAttribute"/>
+          <property name="mandatoryAtEnrollment" value="true"/>
+          <property name="mandatoryAtReception" value="true"/>
+          <property name="editableAtReception" value="true"/>
+          <property name="editableAfterReception" value="true"/>
+          <property name="type" value="DATE"/>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+</beans>
+
+  
+</participantAttributes>

@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.core.domain.participant;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,10 +19,12 @@ import org.obiba.onyx.util.data.DataType;
 /**
  * Participant attribute.
  */
-public class ParticipantAttribute {
+public class ParticipantAttribute implements Serializable {
   //
   // Instance Variables
   //
+
+  private static final long serialVersionUID = 1L;
 
   private String name;
 
@@ -167,7 +170,7 @@ public class ParticipantAttribute {
    * 
    * @param editableAtReception
    */
-  public void seEditableAtReception(boolean editableAtReception) {
+  public void setEditableAtReception(boolean editableAtReception) {
     this.editableAtReception = editableAtReception;
   }
 
