@@ -276,8 +276,18 @@ public class DataField extends Panel {
           public IConverter getConverter(Class type) {
             return new DataConverter(dataType);
           }
+
+          @Override
+          public String getTextFormat() {
+            return DataConverter.DATE_FORMAT;
+          }
         };
-        field.add(new DatePicker());
+        field.add(new DatePicker() {
+          @Override
+          protected boolean enableMonthYearSelection() {
+            return true;
+          }
+        });
         break;
       case INTEGER:
         field = new TextField("field", model, Long.class) {

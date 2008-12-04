@@ -10,11 +10,12 @@
 package org.obiba.onyx.wicket.data;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Locale;
 
+import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.convert.IConverter;
-import org.apache.wicket.util.convert.converters.DateConverter;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
@@ -25,6 +26,8 @@ public class DataConverter implements IConverter {
   private static final long serialVersionUID = 3639500916194340039L;
 
   private static final Logger log = LoggerFactory.getLogger(DataConverter.class);
+
+  public static final String DATE_FORMAT = "yyyy-MM-dd";
 
   private DataType type;
 
@@ -46,8 +49,7 @@ public class DataConverter implements IConverter {
         break;
 
       case DATE:
-        DateConverter dateConverter = new DateConverter();
-        data = new Data(type, (Serializable) dateConverter.convertToObject(value, locale));
+        data = new Data(type, (Serializable) getDateConverter().convertToObject(value, locale));
         break;
 
       case DECIMAL:
@@ -80,7 +82,17 @@ public class DataConverter implements IConverter {
   public String convertToString(Object value, Locale locale) {
     Data data = (Data) value;
     if(data == null || data.getValue() == null) return null;
-    return data.getValueAsString();
+
+    if(type.equals(DataType.DATE)) {
+      Date date = data.getValue();
+      return getDateConverter().convertToString(date, locale);
+    } else {
+      return data.getValueAsString();
+    }
+  }
+
+  public IConverter getDateConverter() {
+    return new PatternDateConverter(DATE_FORMAT, true);
   }
 
 }
