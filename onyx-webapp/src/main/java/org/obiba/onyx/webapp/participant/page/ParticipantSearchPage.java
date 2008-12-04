@@ -20,6 +20,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
@@ -29,7 +30,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
@@ -208,9 +208,9 @@ public class ParticipantSearchPage extends BasePage {
 
     });
 
-    if(OnyxAuthenticatedSession.get().getRoles().hasRole("PARTICIPANT_MANAGER")) add(new ActionFragment("actions"));
-    else
-      add(new EmptyPanel("actions"));
+    ActionFragment actionFrag;
+    add(actionFrag = new ActionFragment("actions"));
+    MetaDataRoleAuthorizationStrategy.authorize(actionFrag, RENDER, "PARTICIPANT_MANAGER");
 
     add(new Link("excel") {
 
