@@ -136,20 +136,24 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
     int line = 0;
 
     while(row != null) {
-      line = row.getRowNum() + 1;
+      // Need this check because even though the row iterator only returns "physical" rows, rows containing
+      // cells with whitespace only are also returned. We want to ignore those rows.
+      if(!rowContainsWhitespaceOnly(evaluator, row)) {
+        line = row.getRowNum() + 1;
 
-      Participant participant = null;
+        Participant participant = null;
 
-      try {
-        participant = processParticipant(row, evaluator);
-        participant.setAppointment(processAppointment(row, evaluator));
-      } catch(IllegalArgumentException ex) {
-        throw new IllegalArgumentException("Error at line " + line + ": " + ex.getMessage());
-      }
+        try {
+          participant = processParticipant(row, evaluator);
+          participant.setAppointment(processAppointment(row, evaluator));
+        } catch(IllegalArgumentException ex) {
+          throw new IllegalArgumentException("Error at line " + line + ": " + ex.getMessage());
+        }
 
-      // Notify listeners that a participant has been processed.
-      for(IParticipantReadListener listener : listeners) {
-        listener.onParticipantRead(line, participant);
+        // Notify listeners that a participant has been processed.
+        for(IParticipantReadListener listener : listeners) {
+          listener.onParticipantRead(line, participant);
+        }
       }
 
       if(rowIter.hasNext()) {
@@ -441,5 +445,23 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
         throw new IllegalArgumentException("No value for mandatory field: " + attribute.getName());
       }
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  private boolean rowContainsWhitespaceOnly(HSSFFormulaEvaluator evaluator, HSSFRow row) {
+    boolean rowContainsWhitespaceOnly = true;
+
+    Iterator cellIter = row.cellIterator();
+
+    while(cellIter.hasNext()) {
+      HSSFCell cell = (HSSFCell) cellIter.next();
+
+      if(!ExcelReaderSupport.containsWhitespace(evaluator, cell)) {
+        rowContainsWhitespaceOnly = false;
+        break;
+      }
+    }
+
+    return rowContainsWhitespaceOnly;
   }
 }

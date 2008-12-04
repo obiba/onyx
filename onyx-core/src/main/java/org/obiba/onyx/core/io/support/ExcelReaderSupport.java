@@ -145,4 +145,33 @@ public class ExcelReaderSupport {
 
     return rvalue;
   }
+
+  public static boolean containsWhitespace(HSSFFormulaEvaluator evaluator, HSSFCell cell) {
+    if(cell == null) return false;
+
+    boolean containsWhitespace = false;
+
+    String textValue = null;
+
+    if(cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
+      evaluator.evaluate(cell);
+      HSSFFormulaEvaluator.CellValue cellValue = evaluator.evaluate(cell);
+
+      switch(cellValue.getCellType()) {
+      case HSSFCell.CELL_TYPE_STRING:
+        textValue = cellValue.getStringValue();
+        break;
+      }
+    } else if(cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+      textValue = cell.getRichStringCellValue().getString();
+    }
+
+    if(textValue != null) {
+      if(textValue.trim().length() == 0) {
+        containsWhitespace = true;
+      }
+    }
+
+    return containsWhitespace;
+  }
 }

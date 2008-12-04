@@ -303,6 +303,13 @@ public class DefaultParticipantExcelReaderTest {
     reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_includesConfiguredAttributes.xls"));
   }
 
+  @Test
+  public void testProcessWithRowContainingWhitespaceOnly() throws IOException {
+    DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, false);
+
+    reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_rowContainingWhitespaceOnly.xls"));
+  }
+
   //
   // Helper Methods
   //
