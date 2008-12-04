@@ -59,12 +59,21 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
 
   private String onyxConfigPath;
 
+  private String instrumentDirectory;
+
   private Set<String> extraBasenames;
 
   public void setOnyxConfigPath(String onyxConfigPath) {
     this.onyxConfigPath = onyxConfigPath;
     if(this.onyxConfigPath.endsWith("/") == false) {
       this.onyxConfigPath = this.onyxConfigPath + "/";
+    }
+  }
+
+  public void setInstrumentDirectory(String instrumentDirectory) {
+    this.instrumentDirectory = instrumentDirectory;
+    if(this.instrumentDirectory.endsWith("/") == false) {
+      this.instrumentDirectory = this.instrumentDirectory + "/";
     }
   }
 
@@ -82,8 +91,12 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
 
     Set<String> basenames = new TreeSet<String>();
     if(this.resourceLoader instanceof ResourcePatternResolver) {
-      findConfigBasenames(basenames, MESSAGES_PROPERTIES_SUFFIX);
-      findConfigBasenames(basenames, MESSAGES_XML_SUFFIX);
+      findBasenames(basenames, onyxConfigPath, MESSAGES_PROPERTIES_SUFFIX);
+      findBasenames(basenames, onyxConfigPath, MESSAGES_XML_SUFFIX);
+      if(instrumentDirectory != null && instrumentDirectory.length() > 0) {
+        findBasenames(basenames, instrumentDirectory, MESSAGES_PROPERTIES_SUFFIX);
+        findBasenames(basenames, instrumentDirectory, MESSAGES_XML_SUFFIX);
+      }
     }
     if(extraBasenames != null) {
       basenames.addAll(extraBasenames);
@@ -106,18 +119,18 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
     return true;
   }
 
-  protected void findConfigBasenames(Set<String> basenames, String suffix) throws IOException {
+  protected void findBasenames(Set<String> basenames, String pathPrefix, String suffix) throws IOException {
     ResourcePatternResolver resolver = (ResourcePatternResolver) this.resourceLoader;
 
-    // Find all files that match "configPath/*/MESSAGES_BASENAME*suffix"
+    // Find all files that match "pathPrefix/*/MESSAGES_BASENAME*suffix"
     // For example, this will find "WEB-INF/config/myModule/messages_en.properties"
 
-    String resourcePattern = onyxConfigPath + "*/" + MESSAGES_BUNDLENAME + "*" + suffix;
+    String resourcePattern = pathPrefix + "*/" + MESSAGES_BUNDLENAME + "*" + suffix;
     log.debug("Finding resources that match pattern {}", resourcePattern);
     Resource[] messageResources = resolver.getResources(resourcePattern);
     for(int i = 0; i < messageResources.length; i++) {
       Resource resource = messageResources[i];
-      String basename = resolveBasename(resource);
+      String basename = resolveBasename(pathPrefix, resource);
       log.debug("Basename for bundle resource {} resolved as {}", resource.getDescription(), basename);
       if(basename != null) {
         basenames.add(basename);
@@ -125,7 +138,7 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
     }
   }
 
-  protected String resolveBasename(Resource bundleResource) {
+  protected String resolveBasename(String pathPrefix, Resource bundleResource) {
 
     // Resource#getFilename() does not return the full path. As such, we must get the underlying File instance.
     // Since all Resource instances are not File instances, this will only work with resources on the filesystem.
@@ -145,8 +158,8 @@ public class OnyxMessageSourceFactoryBean implements FactoryBean, ResourceLoader
     }
     StringBuilder basename = new StringBuilder(filename);
 
-    int rootDirIndex = basename.lastIndexOf(onyxConfigPath);
-    // Remove everything before onyxConfigPath
+    int rootDirIndex = basename.lastIndexOf(pathPrefix);
+    // Remove everything before pathPrefix
     if(rootDirIndex > 0) {
       basename.delete(0, rootDirIndex);
     }

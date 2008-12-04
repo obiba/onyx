@@ -38,12 +38,12 @@
     <property name="participantMetadata" ref="participantMetadata" />
     <property name="headerRowNumber" value="2" />
     <property name="firstDataRowNumber" value="3" />
-    
+
     <!-- 
       Column name to attribute name map.
       
       The "key" is the column name, the "value" is the attribute name.
-    
+      
       NOTE: Entries required here only where the attribute name is NOT used as the column name.  
     -->
     <property name="columnNameToAttributeNameMap">
@@ -74,25 +74,7 @@
     Currently, this is used to load the instrument's resource bundles until this is refactored -->
   <bean name="messageSource" class="org.obiba.onyx.spring.context.OnyxMessageSourceFactoryBean">
     <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
-    <property name="extraBasenames">
-      <set>
-        <value>instruments/interface-height/InstrumentParameter</value>
-        <value>instruments/interface-sitting-height/InstrumentParameter</value>
-        <value>instruments/interface-hipsandwaistsize/InstrumentParameter</value>
-        <value>instruments/interface-blood-pressure/InstrumentParameter</value>
-        <value>instruments/interface-musclestrength/InstrumentParameter</value>
-        <value>instruments/interface-musclestrength/ContraIndication</value>
-        <value>instruments/interface-weight/InstrumentParameter</value>
-        <value>instruments/interface-arterialstiffness-sphygmocor/InstrumentParameter</value>
-        <value>instruments/interface-bioimpedance-tanita-tbf310/InstrumentParameter</value>
-        <value>instruments/interface-bioimpedance-tanita-tbf310/ContraIndication</value>
-        <value>instruments/interface-bonedensity-achillesexpress/InstrumentParameter</value>
-        <value>instruments/interface-bonedensity-achillesexpress/ContraIndication</value>
-        <value>instruments/interface-ecg-cardiosoft/InstrumentParameter</value>
-        <value>instruments/interface-spirometry-minispir/InstrumentParameter</value>
-        <value>instruments/interface-spirometry-minispir/ContraIndication</value>
-      </set>
-    </property>
+    <property name="instrumentDirectory" value="instruments/" />
   </bean>
 
   <!-- Used only during development -->
