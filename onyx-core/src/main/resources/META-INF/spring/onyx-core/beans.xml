@@ -8,7 +8,7 @@ http://www.springframework.org/schema/context http://www.springframework.org/sch
 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
   <bean name="version" class="org.obiba.runtime.Version" primary="true">
-    <constructor-arg value="${project.version}-b${buildNumber}" />
+    <constructor-arg value="${project.version}" />
   </bean>
 
   <bean name="actionDefinitionConfiguration" class="org.obiba.onyx.engine.ActionDefinitionConfiguration">
