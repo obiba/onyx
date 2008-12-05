@@ -12,17 +12,19 @@
   </role>
   <user>
     <lastName>ONYX Administrator</lastName>
-    <firstName>The</firstName>    
+    <firstName>The</firstName>
     <login>administrator</login>
     <password>password</password>
     <email>test@obiba.org</email>
     <status>ACTIVE</status>
     <deleted>false</deleted>
     <roles>
-    	<role reference="sysAdmin"/>
+      <role reference="sysAdmin" />
+      <role reference="partManager" />
+      <role reference="dataOperator" />
     </roles>
   </user>
-  
+
   <config>
     <siteName>CHUM</siteName>
     <siteNo>cag001</siteNo>
