@@ -184,10 +184,10 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
   public void setColumnNameToAttributeNameMap(Map<String, String> columnNameToAttributeNameMap) {
     if(columnNameToAttributeNameMap != null) {
       // Add map entries to columnNameToAttributeNameMap. Convert all keys to UPPERCASE.
-      Iterator<String> mapIter = columnNameToAttributeNameMap.keySet().iterator();
+      Iterator<Map.Entry<String, String>> mapIter = columnNameToAttributeNameMap.entrySet().iterator();
       while(mapIter.hasNext()) {
-        String key = mapIter.next();
-        this.columnNameToAttributeNameMap.put(key.toUpperCase(), columnNameToAttributeNameMap.get(key));
+        Map.Entry<String, String> mapEntry = mapIter.next();
+        this.columnNameToAttributeNameMap.put(mapEntry.getKey().toUpperCase(), mapEntry.getValue());
       }
     }
   }
