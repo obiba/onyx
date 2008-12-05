@@ -16,8 +16,6 @@ import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 
 public class ExcelReaderSupport {
   public static Boolean getBooleanValue(HSSFFormulaEvaluator evaluator, HSSFCell cell) {
-    if(cell == null) return null;
-
     Boolean rvalue = false;
 
     if(cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
@@ -28,9 +26,6 @@ public class ExcelReaderSupport {
       case HSSFCell.CELL_TYPE_BOOLEAN:
         rvalue = cellValue.getBooleanValue();
         break;
-      case HSSFCell.CELL_TYPE_NUMERIC:
-        rvalue = Boolean.parseBoolean(Long.valueOf((long) cellValue.getNumberValue()).toString());
-        break;
       case HSSFCell.CELL_TYPE_STRING:
         rvalue = Boolean.parseBoolean(cellValue.getStringValue());
         break;
@@ -39,9 +34,6 @@ public class ExcelReaderSupport {
       switch(cell.getCellType()) {
       case HSSFCell.CELL_TYPE_BOOLEAN:
         rvalue = cell.getBooleanCellValue();
-        break;
-      case HSSFCell.CELL_TYPE_NUMERIC:
-        rvalue = Boolean.parseBoolean(Long.valueOf((long) cell.getNumericCellValue()).toString());
         break;
       case HSSFCell.CELL_TYPE_STRING:
         rvalue = Boolean.parseBoolean(cell.getRichStringCellValue().getString());
@@ -57,8 +49,6 @@ public class ExcelReaderSupport {
   }
 
   public static Date getDateValue(HSSFFormulaEvaluator evaluator, HSSFCell cell) {
-    if(cell == null) return null;
-
     Date rvalue = null;
 
     if(cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
@@ -86,8 +76,6 @@ public class ExcelReaderSupport {
   }
 
   public static Double getNumericValue(HSSFFormulaEvaluator evaluator, HSSFCell cell) {
-    if(cell == null) return null;
-
     Double rvalue = null;
 
     if(cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
@@ -115,8 +103,6 @@ public class ExcelReaderSupport {
   }
 
   public static String getTextValue(HSSFFormulaEvaluator evaluator, HSSFCell cell) {
-    if(cell == null) return null;
-
     String rvalue = null;
 
     if(cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
@@ -147,8 +133,6 @@ public class ExcelReaderSupport {
   }
 
   public static boolean containsWhitespace(HSSFFormulaEvaluator evaluator, HSSFCell cell) {
-    if(cell == null) return false;
-
     boolean containsWhitespace = false;
 
     String textValue = null;

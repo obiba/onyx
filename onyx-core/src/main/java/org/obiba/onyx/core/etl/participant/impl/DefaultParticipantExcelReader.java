@@ -381,6 +381,8 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
   }
 
   private Data getAttributeValue(ParticipantAttribute attribute, HSSFCell cell, HSSFFormulaEvaluator evaluator) {
+    if(cell == null) return null;
+
     Data data = null;
 
     try {
@@ -410,15 +412,7 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
     // For TEXT-type attributes, if the attribute has a list of allowed values, validate that the value
     // is within that list.
     if(attribute.getType().equals(DataType.TEXT) && data != null) {
-      List<String> allowedValues = attribute.getAllowedValues();
-
-      if(!allowedValues.isEmpty()) {
-        String textValue = data.getValue();
-
-        if(!allowedValues.contains(textValue)) {
-          throw new IllegalArgumentException("Value not allowed for field '" + attribute.getName() + "': " + textValue);
-        }
-      }
+      checkValueAllowed(attribute, data);
     }
 
     return data;
@@ -443,6 +437,18 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
     if(attribute.isMandatoryAtEnrollment()) {
       if(attributeValue == null || attributeValue.getValue() == null) {
         throw new IllegalArgumentException("No value for mandatory field: " + attribute.getName());
+      }
+    }
+  }
+
+  private void checkValueAllowed(ParticipantAttribute attribute, Data data) {
+    List<String> allowedValues = attribute.getAllowedValues();
+
+    if(!allowedValues.isEmpty()) {
+      String textValue = data.getValue();
+
+      if(!allowedValues.contains(textValue)) {
+        throw new IllegalArgumentException("Value not allowed for field '" + attribute.getName() + "': " + textValue);
       }
     }
   }
