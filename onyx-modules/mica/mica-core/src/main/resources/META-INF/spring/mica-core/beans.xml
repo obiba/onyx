@@ -33,7 +33,7 @@
     scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="activeInterviewService" ref="activeInterviewService" />    
-    <property name="balsacConfirmationRequired" value="true" />
+    <property name="balsacConfirmationRequired" value="${org.obiba.onyx.mica.balsacConfirmationRequired}" />
   </bean>
 
   <bean id="jadeReportContributor" class="org.obiba.onyx.mica.core.service.impl.JadeReportContributor"
