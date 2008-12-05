@@ -200,4 +200,9 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     openField.setFieldModelObject(data);
   }
 
+  @Override
+  public void resetField() {
+    openField.setFieldModelObject(null);
+    openField.getField().clearInput();
+  }
 }

@@ -17,6 +17,7 @@ import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IQuestionAnswerChangedListener;
+import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +56,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
           if(isToBeReseted((AbstractOpenAnswerDefinitionPanel) component)) {
             log.info("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getModelObject());
             AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
-            openField.setFieldModelObject(null);
+            openField.resetField();
           }
         }
         return CONTINUE_TRAVERSAL;
@@ -204,4 +205,12 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
   }
 
   public abstract boolean hasOpenField();
+
+  protected void resetFeedbackPanel(AjaxRequestTarget target) {
+    WizardForm wizard = (WizardForm) findParent(WizardForm.class);
+    if(wizard != null && wizard.getFeedbackPanel() != null) {
+      target.addComponent(wizard.getFeedbackPanel());
+    }
+  }
+
 }

@@ -103,4 +103,12 @@ public class MultipleOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinit
       panel.setFieldModelObject(data);
     }
   }
+
+  @Override
+  public void resetField() {
+    setFieldModelObject(null);
+    for(AbstractOpenAnswerDefinitionPanel panel : abstractOpenAnswerDefinitionPanels) {
+      panel.resetField();
+    }
+  }
 }
