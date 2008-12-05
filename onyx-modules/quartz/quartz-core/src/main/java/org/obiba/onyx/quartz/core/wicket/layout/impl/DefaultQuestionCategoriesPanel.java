@@ -99,6 +99,11 @@ public class DefaultQuestionCategoriesPanel extends Panel {
               fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
             }
 
+            @Override
+            public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+              fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
+            }
+
           });
         }
       }

@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.basic.Label;
@@ -40,8 +41,6 @@ public class DefaultPageLayout extends PageLayout implements IQuestionAnswerChan
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  private List<QuestionPanel> questionPanels = new ArrayList<QuestionPanel>();
-
   @SuppressWarnings("serial")
   public DefaultPageLayout(String id, IModel pageModel) {
     super(id, pageModel);
@@ -70,7 +69,6 @@ public class DefaultPageLayout extends PageLayout implements IQuestionAnswerChan
         Question question = (Question) item.getModelObject();
 
         QuestionPanel panel = questionPanelFactoryRegistry.get(question.getUIFactoryName()).createPanel("question", item.getModel());
-        questionPanels.add(panel);
         item.add(panel);
       }
 
@@ -82,21 +80,42 @@ public class DefaultPageLayout extends PageLayout implements IQuestionAnswerChan
   }
 
   public void onNext(AjaxRequestTarget target) {
-    for(QuestionPanel panel : questionPanels) {
+    for(QuestionPanel panel : getQuestionPanels()) {
       panel.onNext(target);
     }
   }
 
   public void onPrevious(AjaxRequestTarget target) {
-    for(QuestionPanel panel : questionPanels) {
+    for(QuestionPanel panel : getQuestionPanels()) {
       panel.onPrevious(target);
     }
   }
 
+  public List<QuestionPanel> getQuestionPanels() {
+    final List<QuestionPanel> questionPanels = new ArrayList<QuestionPanel>();
+
+    visitChildren(QuestionPanel.class, new Component.IVisitor() {
+
+      public Object component(Component component) {
+        questionPanels.add((QuestionPanel) component);
+        return CONTINUE_TRAVERSAL;
+      }
+
+    });
+
+    return questionPanels;
+  }
+
   public void onQuestionAnswerChanged(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    // for(QuestionPanel panel : questionPanels) {
-    // panel.setActiveAnswers(false);
-    // }
+    for(QuestionPanel panel : getQuestionPanels()) {
+      Question question = (Question) panel.getModelObject();
+      if(!question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
+        // a question is not to be answered any more due to in-page conditions, make sure subsequent conditions will be
+        // correctly resolved.
+        panel.setActiveAnswers(false);
+      }
+    }
+    // update the whole layout because some questions can (dis)appear.
     target.addComponent(this);
   }
 

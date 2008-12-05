@@ -50,6 +50,8 @@ public class PageQuestionsProvider implements IDataProvider {
     List<Question> questionToAnswer = new ArrayList<Question>();
     for(Question question : page.getQuestions().subList(first, first + count)) {
       if(!answerQuestionIfDataSourceAvailable(question) && question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
+        // if there are in-page conditions, make sure it is correctly resolved (case of cascading questions).
+        activeQuestionnaireAdministrationService.setActiveAnswers(question, true);
         questionToAnswer.add(question);
       }
     }

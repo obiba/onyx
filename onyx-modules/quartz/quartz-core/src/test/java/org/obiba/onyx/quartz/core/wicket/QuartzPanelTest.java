@@ -123,6 +123,8 @@ public class QuartzPanelTest {
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer((QuestionCategory) EasyMock.anyObject())).andReturn(new CategoryAnswer()).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer((Question) EasyMock.anyObject(), (QuestionCategory) EasyMock.anyObject())).andReturn(new CategoryAnswer()).anyTimes();
 
+    activeQuestionnaireAdministrationServiceMock.setActiveAnswers((Question) EasyMock.anyObject(), EasyMock.anyBoolean());
+
     replay(activeInterviewServiceMock);
     replay(activeQuestionnaireAdministrationServiceMock);
     replay(questionnaireBundleManagerMock);

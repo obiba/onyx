@@ -53,7 +53,7 @@ public class QuestionPanel extends Panel {
   public void setActiveAnswers(boolean active) {
     Question question = (Question) getModelObject();
     if(!question.isBoilerPlate()) {
-      log.info("onPrevious.{}.active={}", question.getName(), active);
+      log.info("setActiveAnswers.{}.active={}", question.getName(), active);
       activeQuestionnaireAdministrationService.setActiveAnswers(question, active);
     }
   }

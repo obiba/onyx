@@ -149,7 +149,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
   }
 
   @Override
-  public void onInternalOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+  protected void onInternalOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
     // make sure radio selection does not conflict with open field selection
     radioGroup.setModel(getQuestionCategoryModel());
 

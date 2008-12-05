@@ -165,14 +165,14 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     // clean a previous error message
     updateFeedback(target);
 
-    DefaultOpenAnswerDefinitionPanel.this.onSubmit(target, getQuestionModel(), getQuestionCategoryModel());
+    onSubmit(target, getQuestionModel(), getQuestionCategoryModel());
   }
 
   private void onInternalError(final AjaxRequestTarget target) {
     // display error messages
     updateFeedback(target);
 
-    DefaultOpenAnswerDefinitionPanel.this.onError(target, getQuestionModel(), getQuestionCategoryModel());
+    onError(target, getQuestionModel(), getQuestionCategoryModel());
   }
 
   /**

@@ -189,7 +189,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
 
         @Override
         public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          onOpenFieldSubmit(target, questionModel, questionCategoryModel);
+          onInternalOpenFieldSubmit(target, questionModel, questionCategoryModel);
         }
 
         @Override

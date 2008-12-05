@@ -133,7 +133,7 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
   }
 
   @Override
-  public void onInternalOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+  protected void onInternalOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
     // make sure checkbox is selected in case of open field selection event was bypassed
     getSelectionModel().select();
 

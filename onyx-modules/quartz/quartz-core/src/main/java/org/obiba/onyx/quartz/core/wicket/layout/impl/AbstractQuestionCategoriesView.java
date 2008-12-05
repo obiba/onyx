@@ -19,11 +19,16 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  */
 public abstract class AbstractQuestionCategoriesView extends GridView {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(AbstractQuestionCategoriesView.class);
 
   public AbstractQuestionCategoriesView(String id, IModel questionModel) {
     this(id, questionModel, null, null);
@@ -45,7 +50,14 @@ public abstract class AbstractQuestionCategoriesView extends GridView {
 
   @Override
   protected Item newRowItem(String id, int index) {
-    return new OddEvenItem(id, index, null);
+    // log.info("newRowItem({})", index);
+    return new OddEvenItem(id, index, getModel());
   }
+
+  // @Override
+  // protected Item newItem(String id, int index, IModel model) {
+  // // log.info("newItem({},{})", index, model);
+  // return super.newItem(id, index, model);
+  // }
 
 }
