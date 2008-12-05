@@ -47,7 +47,7 @@ public class ParticipantReportPanel extends Panel {
 
     // Print participant consent form
     if(participantConsent.getPdfForm() != null) {
-      byte[] consentPdf = participantConsent.getPdfForm();
+      byte[] consentPdf = participantConsent.getNonEditablePdfForm();
       add(new InlineFrame("participantConsentDisplayFrame", new EmbeddedPdfPage(consentPdf)));
     } else {
       add(new WebMarkupContainer("participantConsentDisplayFrame").setVisible(false));
