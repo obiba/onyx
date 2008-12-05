@@ -155,7 +155,7 @@ div.page div.question div.categories div.category {
 }
 
 div.field-invalid {
-	border:1px dashed red;
+	border-left:3px solid red;
 	padding-left:5px;
 }
 
