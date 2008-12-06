@@ -11,10 +11,9 @@ package org.obiba.onyx.print;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -44,15 +43,17 @@ public class PdfPrintingService implements InitializingBean {
 
   private static final Logger log = LoggerFactory.getLogger(PdfPrintingService.class);
 
-  /** The DocFlavors that we've implemented for printing PDFs */
-  protected static final DocFlavor[] IMPLEMENTED_FLAVORS = { DocFlavor.BYTE_ARRAY.PDF, DocFlavor.INPUT_STREAM.PDF };
+  /**
+   * The implementations of PdfHandler. Each instance can handle printing a PDF file onto a specific DocFlavor. They are
+   * ordered is a way that if the PrintService handles PDF directly, the PDF will not be converted by this bean.
+   */
+  protected final PdfHandler[] IMPLEMENTED_FLAVORS = { new PdfByteArrayPdfHandler(), new PdfInputStreamPdfHandler(), new PostscriptByteArrayPdfHandler() };
 
   protected String printerName;
 
   protected PrintService printService;
 
-  /** The subset of flavors supported by the printService instance from the set of IMPLEMENTED_FLAVORS */
-  protected Set<DocFlavor> supportedFlavors = new HashSet<DocFlavor>();
+  protected PdfHandler supportedHandler;
 
   public void afterPropertiesSet() throws Exception {
     // Try to find a PrintService instance with the specified name if any
@@ -83,17 +84,18 @@ public class PdfPrintingService implements InitializingBean {
     if(printService == null) {
       log.warn("No default printer found. Printing will not be available.");
     } else {
-      // We have a PrintService instance. Extract the supported flavors out of our implemented flavors.
-      for(DocFlavor flavor : IMPLEMENTED_FLAVORS) {
-        if(printService.isDocFlavorSupported(flavor)) {
-          supportedFlavors.add(flavor);
+      // We have a PrintService instance. Find the first handler that this service accepts.
+      for(PdfHandler handler : IMPLEMENTED_FLAVORS) {
+        if(printService.isDocFlavorSupported(handler.getImplementedFlavor())) {
+          supportedHandler = handler;
+          break;
         }
       }
 
-      if(supportedFlavors.size() > 0) {
-        log.info("Printer {} supports PDF printing. Printing will be available.", printService.getName());
+      if(supportedHandler != null) {
+        log.info("Printer {} supports PDF printing through handler {}. PDF printing will be available.", printService.getName(), supportedHandler.getClass().getSimpleName());
       } else {
-        log.warn("Printer {} does not support printing PDF files directly. Printing will not be available.", printService.getName());
+        log.warn("Printer {} does not support printing PDF files directly. PDF printing will not be available.", printService.getName());
         printService = null;
       }
     }
@@ -103,51 +105,95 @@ public class PdfPrintingService implements InitializingBean {
     this.printerName = printerName;
   }
 
-  public boolean supportsByteArray() {
-    return supportedFlavors.contains(DocFlavor.BYTE_ARRAY.PDF);
-  }
-
-  public boolean supportsInputStream() {
-    return supportedFlavors.contains(DocFlavor.INPUT_STREAM.PDF);
+  public boolean supportsPdfPrinting() {
+    return supportedHandler != null;
   }
 
   public void printPdf(byte[] pdf) throws PrintException {
-    if(supportsByteArray()) {
-      log.debug("Sending PDF to printer as byte array");
-      print(pdf, DocFlavor.BYTE_ARRAY.PDF);
-    } else {
-      // Adapt the byte array if the printer supports input stream printing
-      if(supportsInputStream()) {
-        printPdf(new ByteArrayInputStream(pdf));
-      } else {
-        throw new PrintException("Printer does not support PDF printing");
-      }
-    }
+    printPdf(new ByteArrayInputStream(pdf));
   }
 
   public void printPdf(InputStream pdf) throws PrintException {
-    if(supportsInputStream()) {
-      log.debug("Sending PDF to printer as InputStream");
-      print(pdf, DocFlavor.INPUT_STREAM.PDF);
-    } else {
-      // Adapt the input stream to a byte array if the printer supports byte array printing
-      if(supportsByteArray()) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-          Streams.copy(pdf, baos);
-        } catch(IOException e) {
-          throw new PrintException(e);
-        }
-        printPdf(baos.toByteArray());
-      } else {
-        throw new PrintException("Printer does not support PDF printing");
-      }
-    }
+    supportedHandler.printPdf(pdf);
   }
 
   protected void print(Object source, DocFlavor flavor) throws PrintException {
+    log.info("Starting print job");
     DocPrintJob printJob = printService.createPrintJob();
     printJob.print(new SimpleDoc(source, flavor, null), null);
+    log.info("Print job finished");
   }
 
+  public static void main(String[] args) throws Exception {
+    PdfPrintingService pps = new PdfPrintingService();
+    pps.afterPropertiesSet();
+    pps.printPdf(new FileInputStream(args[0]));
+  }
+
+  private interface PdfHandler {
+    public DocFlavor getImplementedFlavor();
+
+    public void printPdf(InputStream pdf) throws PrintException;
+  }
+
+  private class PdfByteArrayPdfHandler implements PdfHandler {
+
+    public DocFlavor getImplementedFlavor() {
+      return DocFlavor.BYTE_ARRAY.PDF;
+    }
+
+    public void printPdf(InputStream pdf) throws PrintException {
+      // Adapt the input stream to a byte array
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      try {
+        Streams.copy(pdf, baos);
+      } catch(IOException e) {
+        throw new PrintException(e);
+      }
+      print(baos.toByteArray(), getImplementedFlavor());
+    }
+
+  }
+
+  private class PdfInputStreamPdfHandler implements PdfHandler {
+
+    public DocFlavor getImplementedFlavor() {
+      return DocFlavor.INPUT_STREAM.PDF;
+    }
+
+    public void printPdf(InputStream pdf) throws PrintException {
+      print(pdf, getImplementedFlavor());
+    }
+
+  }
+
+  /**
+   * Converts the PDF stream to a Postscript stream using {@link PdfToPs} then sends the resulting postscript to the
+   * printer. This handler is used for printers and print servers that don't handle PDF files directly.
+   */
+  private class PostscriptByteArrayPdfHandler implements PdfHandler {
+
+    public DocFlavor getImplementedFlavor() {
+      return DocFlavor.BYTE_ARRAY.POSTSCRIPT;
+    }
+
+    public void printPdf(InputStream pdf) throws PrintException {
+      // Convert the pdf to postscript
+      PdfToPs pdfToPs = PdfToPs.get();
+      if(pdfToPs == null) {
+        throw new PrintException("Cannot convert PDF to Postscript. PDF cannot be printed.");
+      }
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      try {
+        if(pdfToPs.convert(pdf, baos) == false) {
+          throw new PrintException("Error converting PDF to Postscript for printing.");
+        }
+        baos.close();
+      } catch(IOException e) {
+        throw new PrintException("Error converting PDF to Postscript for printing.", e);
+      }
+      print(baos.toByteArray(), getImplementedFlavor());
+    }
+
+  }
 }
