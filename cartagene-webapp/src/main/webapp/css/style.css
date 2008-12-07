@@ -423,6 +423,40 @@ div.wicket-modal {
 
 /*************** End Modal Window ********************/
 
+/*************** Dialog ********************/
+
+div.dialogContent {
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.dialogIcon {
+  float: left;
+}
+
+.dialogMessage {
+  padding-left: 35px;
+}
+
+.dialogMessage p {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 5px;
+}
+
+div.dialogButtons ul {
+  margin-top: 25px;
+  padding: 0;
+  list-style-type: none;
+  text-align: center;
+}
+
+div.dialogButtons ul li {
+  display: inline;
+}
+
+/*************** End Dialog ********************/
+
 /*************** Wizard ********************/
 
 form.wizard {
