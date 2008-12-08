@@ -24,6 +24,7 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
+import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.instrument.UnitParameterValueConverter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
@@ -125,38 +126,48 @@ public abstract class InstrumentLaunchPanel extends Panel {
     template.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
     template.setInstrument(instrument);
 
-    if(queryService.count(template) > 0) {
+    boolean manualCaptureRequired = false;
+    for(final InstrumentInputParameter param : queryService.match(template)) {
+
+      // We don't want to display parameters that were manually entered by the user in the previous step.
+      // These will be automatically sent to the instrument.
+      if(!(param.getInputSource() instanceof OperatorSource)) {
+
+        manualCaptureRequired = true;
+
+        WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
+        repeat.add(item);
+
+        // Inject the Spring application context and the user session service
+        // into the instrument parameter. NOTE: These are dependencies of
+        // InstrumentParameter.getDescription().
+        // param.setApplicationContext(((SpringWebApplication)
+        // getApplication()).getSpringContextLocator().getSpringContext());
+        // param.setUserSessionService(userSessionService);
+
+        item.add(new Label("instruction", new StringResourceModel("TypeTheValueInTheInstrument", InstrumentLaunchPanel.this, new Model() {
+          public Object getObject() {
+            InstrumentRunValue runValue = activeInstrumentRunService.getInputInstrumentRunValue(param.getName());
+            ValueMap map = new ValueMap("description=" + new SpringStringResourceModel(param.getDescription()).getString());
+            if(runValue.getData() != null && runValue.getData().getValue() != null) {
+              map.put("value", new SpringStringResourceModel(runValue.getData().getValueAsString()).getString());
+              String unit = param.getMeasurementUnit();
+              if(unit == null) {
+                unit = "";
+              }
+              map.put("unit", unit);
+            }
+            return map;
+          }
+        })));
+
+      }
+    }
+
+    if(manualCaptureRequired) {
       add(new Label("instructions", new StringResourceModel("Instructions", InstrumentLaunchPanel.this, null)));
     } else {
       add(new EmptyPanel("instructions"));
-    }
-
-    for(final InstrumentInputParameter param : queryService.match(template)) {
-      WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
-      repeat.add(item);
-
-      // Inject the Spring application context and the user session service
-      // into the instrument parameter. NOTE: These are dependencies of
-      // InstrumentParameter.getDescription().
-      // param.setApplicationContext(((SpringWebApplication)
-      // getApplication()).getSpringContextLocator().getSpringContext());
-      // param.setUserSessionService(userSessionService);
-
-      item.add(new Label("instruction", new StringResourceModel("TypeTheValueInTheInstrument", InstrumentLaunchPanel.this, new Model() {
-        public Object getObject() {
-          InstrumentRunValue runValue = activeInstrumentRunService.getInputInstrumentRunValue(param.getName());
-          ValueMap map = new ValueMap("description=" + new SpringStringResourceModel(param.getDescription()).getString());
-          if(runValue.getData() != null && runValue.getData().getValue() != null) {
-            map.put("value", new SpringStringResourceModel(runValue.getData().getValueAsString()).getString());
-            String unit = param.getMeasurementUnit();
-            if(unit == null) {
-              unit = "";
-            }
-            map.put("unit", unit);
-          }
-          return map;
-        }
-      })));
     }
 
   }
