@@ -33,10 +33,18 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
 
   private RadioGroup radioGroup;
 
+  private IModel parentQuestionCategoryModel;
+
   @SuppressWarnings("serial")
   public DefaultEscapeQuestionCategoriesPanel(String id, IModel questionModel) {
+    this(id, questionModel, null);
+  }
+
+  public DefaultEscapeQuestionCategoriesPanel(String id, IModel questionModel, IModel parentQuestionCategoryModel) {
     super(id, questionModel);
     setOutputMarkupId(true);
+
+    this.parentQuestionCategoryModel = parentQuestionCategoryModel;
 
     Question question = (Question) getModelObject();
 

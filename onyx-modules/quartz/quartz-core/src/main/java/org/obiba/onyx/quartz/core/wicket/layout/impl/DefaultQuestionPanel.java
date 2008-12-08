@@ -33,7 +33,18 @@ public class DefaultQuestionPanel extends BaseQuestionPanel {
     } else if(question.getQuestionCategories().size() == 0) {
       add(new DefaultQuestionListPanel(id, new QuestionListProvider(question)));
     } else {
-      add(new DefaultQuestionSharedCategoriesPanel(id, getModel()));
+      boolean shared = true;
+      for(Question child : question.getQuestions()) {
+        if(child.getCategories().size() > 0) {
+          shared = false;
+          break;
+        }
+      }
+      if(shared) {
+        add(new DefaultQuestionSharedCategoriesPanel(id, getModel()));
+      } else {
+        add(new DefaultQuestionJoinedCategoriesPanel(id, getModel()));
+      }
     }
   }
 }

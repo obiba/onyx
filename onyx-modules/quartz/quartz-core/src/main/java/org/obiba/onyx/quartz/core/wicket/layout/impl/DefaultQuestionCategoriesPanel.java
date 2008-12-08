@@ -45,9 +45,28 @@ public class DefaultQuestionCategoriesPanel extends Panel {
 
   private DefaultEscapeQuestionCategoriesPanel escapeQuestionCategoriesPanel;
 
+  private IModel parentQuestionCategoryModel;
+
+  /**
+   * Constructor for a stand-alone question.
+   * @param id
+   * @param questionModel
+   */
   public DefaultQuestionCategoriesPanel(String id, IModel questionModel) {
+    this(id, questionModel, null);
+  }
+
+  /**
+   * Constructor for a joined categories question.
+   * @param id
+   * @param questionModel
+   * @param parentQuestionCategoryModel
+   */
+  public DefaultQuestionCategoriesPanel(String id, IModel questionModel, IModel parentQuestionCategoryModel) {
     super(id, questionModel);
     setOutputMarkupId(true);
+
+    this.parentQuestionCategoryModel = parentQuestionCategoryModel;
 
     Question question = (Question) getModelObject();
     if(!question.isMultiple()) {
@@ -70,6 +89,12 @@ public class DefaultQuestionCategoriesPanel extends Panel {
 
   private Question getQuestion() {
     return (Question) getModelObject();
+  }
+
+  private QuestionCategory getParentQuestionCategory() {
+    if(parentQuestionCategoryModel == null) return null;
+
+    return (QuestionCategory) parentQuestionCategoryModel.getObject();
   }
 
   /**
