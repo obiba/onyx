@@ -12,7 +12,9 @@ package org.obiba.onyx.core.domain.participant;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
@@ -192,6 +194,15 @@ public class Participant extends AbstractEntity {
     }
 
     return configuredAttributeValues;
+  }
+
+  public Map<String, String> getConfiguredAttributesMap() {
+    Map<String, String> configuredAttributesMap = new HashMap<String, String>();
+
+    for(ParticipantAttributeValue participantAttribute : configuredAttributeValues) {
+      configuredAttributesMap.put(participantAttribute.getAttributeName(), participantAttribute.getData().getValueAsString());
+    }
+    return configuredAttributesMap;
   }
 
   /**

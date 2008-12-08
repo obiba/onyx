@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.slf4j.Logger;
@@ -177,7 +178,7 @@ public class FdfProducer {
   protected Object findValue(String key) {
     if(key.contains(".")) {
       // Handle field names of type "Participant.firstName"
-      String values[] = key.split("\\.");
+      String values[] = key.split("\\.", 2);
       if(values != null && values.length == 2) {
         // The entity's name
         String entityName = values[0];
@@ -215,7 +216,7 @@ public class FdfProducer {
     // Delete "form[0].page[0]." string to keep only the custom name given to the field
     // The field name ends with [0] which is removed
     // PDF doesn't allow dots in field names. If you use one, it is substituted by "\.", so we undo this also
-    return longName.replaceFirst(pattern, "").replaceFirst("\\[[0-9]+\\]", "").replaceAll("\\\\.", ".");
+    return longName.replaceFirst(pattern, "").replaceFirst("\\[[0-9]+\\]", "").replaceAll("\\\\", "");
   }
 
 }
