@@ -43,6 +43,10 @@ public class TestQuestionnaireContentBuilder {
   public static QuestionnaireBuilder buildTestQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
 
+    builder.withSection("S_JOINED_ARRAY").withPage("P_JOINED_ARRAY").withQuestion("JOINED_PARENT").withCategories("1", "2", "3");
+    builder.inQuestion("JOINED_PARENT").withQuestion("JOINED_CHILD1").withCategories("a", "b", "c");
+    builder.inQuestion("JOINED_PARENT").withQuestion("JOINED_CHILD2").withCategories("y", "n");
+
     builder.withSection("S_MULTIPLE_OPEN").withPage("P_MULTIPLE_OPEN").withQuestion("MULTIPLE_OPEN").withSharedCategory("DURATION").withOpenAnswerDefinition("DURATION_OPEN", DataType.INTEGER);
     builder.inOpenAnswerDefinition("DURATION_OPEN").withOpenAnswerDefinition("DURATION_OPEN_HOURS", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 16));
     builder.inOpenAnswerDefinition("DURATION_OPEN").withOpenAnswerDefinition("DURATION_OPEN_MINUTES", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 960));
