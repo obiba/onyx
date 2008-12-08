@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -56,7 +57,6 @@ import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.wicket.behavior.EnterOnKeyPressBehaviour;
-import org.obiba.onyx.wicket.component.ConfirmationListener;
 import org.obiba.onyx.wicket.component.ConfirmationWindow;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.util.DateModelUtils;
@@ -237,7 +237,15 @@ public class ParticipantSearchPage extends BasePage {
     add(participantList);
 
     updateParticipantsModalWindow = new ConfirmationWindow("updateParticipantsModalWindow", new StringResourceModel("ConfirmParticipantsListUpdate", this, null));
-    updateParticipantsModalWindow.addListener(new UpdateParticipantsConfirmationListener());
+    updateParticipantsModalWindow.addOkBehavior(new AjaxEventBehavior("onClick") {
+      public void onEvent(AjaxRequestTarget target) {
+        updateParticipants();
+        updateParticipantsModalWindow.close(target);
+
+        target.addComponent(ParticipantSearchPage.this.getFeedbackPanel());
+        target.addComponent(participantList);
+      }
+    });
     add(updateParticipantsModalWindow);
   }
 
@@ -503,35 +511,24 @@ public class ParticipantSearchPage extends BasePage {
     }
   }
 
-  private class UpdateParticipantsConfirmationListener implements ConfirmationListener, Serializable {
-    private static final long serialVersionUID = 1L;
-
-    public void onConfirm(AjaxRequestTarget target) {
-      target.addComponent(ParticipantSearchPage.this.getFeedbackPanel());
-      target.addComponent(participantList);
-
-      updateParticipants();
-    }
-
-    private void updateParticipants() {
-      try {
-        participantService.updateParticipantList();
-        info(ParticipantSearchPage.this.getString("ParticipantsListSuccessfullyUpdated"));
-      } catch(ValidationRuntimeException e) {
-        for(ObjectError oe : e.getAllObjectErrors()) {
-          Object[] args = oe.getArguments();
-          IModel model = null;
-          if(oe.getCode().equals("ParticipantInterviewCompletedWithAppointmentInTheFuture") && args != null && args.length == 4) {
-            ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1]);
-            model = new Model(map);
-          } else if(oe.getCode().equals("WrongParticipantSiteName") && args != null && args.length >= 3) {
-            ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1] + ",site=" + args[2]);
-            model = new Model(map);
-          }
-          error(ParticipantSearchPage.this.getString(oe.getCode(), model, oe.getDefaultMessage()));
+  private void updateParticipants() {
+    try {
+      participantService.updateParticipantList();
+      info(ParticipantSearchPage.this.getString("ParticipantsListSuccessfullyUpdated"));
+    } catch(ValidationRuntimeException e) {
+      for(ObjectError oe : e.getAllObjectErrors()) {
+        Object[] args = oe.getArguments();
+        IModel model = null;
+        if(oe.getCode().equals("ParticipantInterviewCompletedWithAppointmentInTheFuture") && args != null && args.length == 4) {
+          ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1]);
+          model = new Model(map);
+        } else if(oe.getCode().equals("WrongParticipantSiteName") && args != null && args.length >= 3) {
+          ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1] + ",site=" + args[2]);
+          model = new Model(map);
         }
-        log.error("Failed updating participants: {}", e.toString());
+        error(ParticipantSearchPage.this.getString(oe.getCode(), model, oe.getDefaultMessage()));
       }
+      log.error("Failed updating participants: {}", e.toString());
     }
   }
 }

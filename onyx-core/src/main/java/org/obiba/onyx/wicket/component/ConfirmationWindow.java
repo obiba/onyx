@@ -9,11 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.wicket.component;
 
-import java.util.ArrayList;
-
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.image.Image;
@@ -36,7 +35,7 @@ public class ConfirmationWindow extends ModalWindow {
   // Instance Variables
   //
 
-  private ArrayList<ConfirmationListener> listeners;
+  private ConfirmationFragment confirmationFragment;
 
   //
   // Constructors
@@ -46,11 +45,9 @@ public class ConfirmationWindow extends ModalWindow {
     super(id);
 
     setTitle((new StringResourceModel("Confirm", this, null)));
-    setContent(new ConfirmationFragment(getContentId(), messageModel));
+    setContent(confirmationFragment = new ConfirmationFragment(getContentId(), messageModel));
     setInitialHeight(height);
     setInitialWidth(width);
-
-    listeners = new ArrayList<ConfirmationListener>();
   }
 
   public ConfirmationWindow(String id, IModel messageModel) {
@@ -61,25 +58,13 @@ public class ConfirmationWindow extends ModalWindow {
   // Methods
   //
 
-  public synchronized void addListener(ConfirmationListener listener) {
-    listeners.add(listener);
-  }
-
-  public synchronized void removeListener(ConfirmationListener listener) {
-    listeners.remove(listener);
-  }
-
-  @SuppressWarnings("unchecked")
-  private void notifyListeners(AjaxRequestTarget target) {
-    ArrayList<ConfirmationListener> listenersClone = null;
-
-    synchronized(this) {
-      listenersClone = (ArrayList<ConfirmationListener>) listeners.clone();
-    }
-
-    for(ConfirmationListener listener : listenersClone) {
-      listener.onConfirm(target);
-    }
+  /**
+   * Adds a behavior to the OK button.
+   * 
+   * @param behavior
+   */
+  public void addOkBehavior(IBehavior behavior) {
+    confirmationFragment.okLink.add(behavior);
   }
 
   //
@@ -135,7 +120,6 @@ public class ConfirmationWindow extends ModalWindow {
 
         public void onClick(AjaxRequestTarget target) {
           closeWindow(target);
-          ConfirmationWindow.this.notifyListeners(target);
         }
       };
     }
