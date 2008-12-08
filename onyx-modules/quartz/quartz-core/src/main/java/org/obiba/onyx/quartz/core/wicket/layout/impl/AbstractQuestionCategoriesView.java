@@ -9,6 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.OddEvenItem;
@@ -30,6 +33,8 @@ public abstract class AbstractQuestionCategoriesView extends GridView {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AbstractQuestionCategoriesView.class);
 
+  private Map<Integer, Item> rowIndexToItem = new HashMap<Integer, Item>();
+
   public AbstractQuestionCategoriesView(String id, IModel questionModel) {
     this(id, questionModel, null, null);
   }
@@ -48,16 +53,21 @@ public abstract class AbstractQuestionCategoriesView extends GridView {
     item.add(new EmptyPanel("input").setVisible(false));
   }
 
+  /**
+   * Create a new row or reuse a previously instanciated one at the same index.
+   */
   @Override
   protected Item newRowItem(String id, int index) {
-    // log.info("newRowItem({})", index);
-    return new OddEvenItem(id, index, getModel());
+    // see QUA-79
+    Item rowItem = rowIndexToItem.get(index);
+    if(rowItem == null) {
+      rowItem = new OddEvenItem(id, index, null);
+      rowIndexToItem.put(index, rowItem);
+    } else {
+      // make sure we can add children to this reused item
+      rowItem.removeAll();
+    }
+    return rowItem;
   }
-
-  // @Override
-  // protected Item newItem(String id, int index, IModel model) {
-  // // log.info("newItem({},{})", index, model);
-  // return super.newItem(id, index, model);
-  // }
 
 }
