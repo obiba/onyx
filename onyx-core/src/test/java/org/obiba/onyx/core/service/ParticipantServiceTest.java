@@ -180,20 +180,20 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
         Assert.fail("ValidationRuntimeException not thrown");
       } catch(ValidationRuntimeException ve) {
         List<ObjectError> oes = ve.getAllObjectErrors();
-        Assert.assertEquals("Not the right count of errors", 2, oes.size());
+        // only errors for appointment date passed are reported
+        Assert.assertEquals("Not the right count of errors", 6, oes.size());
         ObjectError oe = oes.get(0);
-        Assert.assertEquals("Not the right error code", "ParticipantInterviewCompletedWithAppointmentInTheFuture", oe.getCode());
-        Assert.assertEquals("Not the right error arguments count", 2, oe.getArguments().length);
-        Assert.assertEquals("Not the right error argument line", "3", oe.getArguments()[0]);
-        Assert.assertEquals("Not the right error argument id", "100001", oe.getArguments()[1]);
-        oe = oes.get(1);
-        Assert.assertEquals("Not the right error code", "WrongParticipantSiteName", oe.getCode());
-        Assert.assertEquals("Not the right error arguments count", 4, oe.getArguments().length);
-        Assert.assertEquals("Not the right error argument line", "10", oe.getArguments()[0]);
-        Assert.assertEquals("Not the right error argument id", "100008", oe.getArguments()[1]);
-        Assert.assertEquals("Not the right error argument participant site name", "cag002", oe.getArguments()[2]);
-        Assert.assertEquals("Not the right error argument app site name", "cag001", oe.getArguments()[3]);
+        Assert.assertEquals("Not the right error code", "AppointmentDatePassed", oe.getCode());
+        Assert.assertEquals("Not the right error arguments count", 3, oe.getArguments().length);
+        Assert.assertEquals("Not the right error argument line", "4", oe.getArguments()[0]);
+        Assert.assertEquals("Not the right error argument id", "100002", oe.getArguments()[1]);
+        oe = oes.get(5);
+        Assert.assertEquals("Not the right error code", "AppointmentDatePassed", oe.getCode());
+        Assert.assertEquals("Not the right error arguments count", 3, oe.getArguments().length);
+        Assert.assertEquals("Not the right error argument line", "9", oe.getArguments()[0]);
+        Assert.assertEquals("Not the right error argument id", "100007", oe.getArguments()[1]);
         log.info(ve.toString());
+        // wrong site records are only warned in log file and ignored
       }
 
     } catch(ValidationRuntimeException e) {

@@ -147,7 +147,7 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
           participant = processParticipant(row, evaluator);
           participant.setAppointment(processAppointment(row, evaluator));
         } catch(IllegalArgumentException ex) {
-          throw new IllegalArgumentException("Error at line " + line + ": " + ex.getMessage());
+          throw new IllegalArgumentException("Line " + line + ": " + ex.getMessage());
         }
 
         // Notify listeners that a participant has been processed.

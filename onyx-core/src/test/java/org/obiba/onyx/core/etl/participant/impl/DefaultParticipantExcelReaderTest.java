@@ -191,7 +191,7 @@ public class DefaultParticipantExcelReaderTest {
       reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_missingMandatoryAttributeValue.xls"));
     } catch(IllegalArgumentException ex) {
       String errorMessage = ex.getMessage();
-      Assert.assertEquals("Error at line 4: No value for mandatory field: Enrollment ID", errorMessage);
+      Assert.assertEquals("Line 4: No value for mandatory field: Enrollment ID", errorMessage);
       return;
     }
 
@@ -212,7 +212,7 @@ public class DefaultParticipantExcelReaderTest {
       reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_wrongAttributeValueType.xls"));
     } catch(IllegalArgumentException ex) {
       String errorMessage = ex.getMessage();
-      Assert.assertEquals("Error at line 5: Wrong data type value for field 'Appointment Time': TEST", errorMessage);
+      Assert.assertEquals("Line 5: Wrong data type value for field 'Appointment Time': TEST", errorMessage);
       return;
     }
 
@@ -233,7 +233,7 @@ public class DefaultParticipantExcelReaderTest {
       reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_notAllowedAttributeValue.xls"));
     } catch(IllegalArgumentException ex) {
       String errorMessage = ex.getMessage();
-      Assert.assertEquals("Error at line 3: Value not allowed for field 'Gender': TEST", errorMessage);
+      Assert.assertEquals("Line 3: Value not allowed for field 'Gender': TEST", errorMessage);
       return;
     }
 

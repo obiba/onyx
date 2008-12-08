@@ -57,7 +57,7 @@ public interface ParticipantService {
   /**
    * Look in the special directory the participant list and add/update the participant/appointment list.
    */
-  public void updateParticipantList() throws ValidationRuntimeException;
+  public void updateParticipantList(User user) throws ValidationRuntimeException;
 
   /**
    * Update participants and their appointment from the given participants file.
