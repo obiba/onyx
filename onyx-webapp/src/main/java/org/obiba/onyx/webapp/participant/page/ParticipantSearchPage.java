@@ -513,22 +513,25 @@ public class ParticipantSearchPage extends BasePage {
 
   private void updateParticipants() {
     try {
-      participantService.updateParticipantList();
+      participantService.updateParticipantList(OnyxAuthenticatedSession.get().getUser());
       info(ParticipantSearchPage.this.getString("ParticipantsListSuccessfullyUpdated"));
     } catch(ValidationRuntimeException e) {
       for(ObjectError oe : e.getAllObjectErrors()) {
         Object[] args = oe.getArguments();
         IModel model = null;
-        if(oe.getCode().equals("ParticipantInterviewCompletedWithAppointmentInTheFuture") && args != null && args.length == 4) {
-          ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1]);
-          model = new Model(map);
-        } else if(oe.getCode().equals("WrongParticipantSiteName") && args != null && args.length >= 3) {
+        if(oe.getCode().equals("WrongParticipantSiteName") && args != null && args.length >= 3) {
           ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1] + ",site=" + args[2]);
+          model = new Model(map);
+        } else if(oe.getCode().equals("AppointmentDatePassed") && args != null && args.length == 3) {
+          ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1] + ",date=" + args[2]);
+          model = new Model(map);
+        } else if(oe.getCode().equals("ParticipantsListFileValidationError") && args != null && args.length == 1) {
+          ValueMap map = new ValueMap("message=" + args[0]);
           model = new Model(map);
         }
         error(ParticipantSearchPage.this.getString(oe.getCode(), model, oe.getDefaultMessage()));
-      }
-      log.error("Failed updating participants: {}", e.toString());
+    	}
+    	log.error("Failed updating participants: {}", e.toString());
     }
-  }
+	}
 }
