@@ -14,7 +14,7 @@
   <parent>
     <artifactId>ruby</artifactId>
     <groupId>org.obiba.ruby</groupId>
-    <version>1.0-M1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
   </parent>
 
   <dependencies>
