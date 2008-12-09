@@ -196,17 +196,18 @@ public class Participant extends AbstractEntity {
     return configuredAttributeValues;
   }
 
-  /*
-   * getConfiguredAttributesMap is auto-magically called by spring only so it is "normal" not to find it anywhere in the
-   * application code
+  @Transient
+  /**
+   * This method returns a map containing all the participant attributes. This is used by Spring to access the
+   * attributes through the "javabeans" property standard.
    */
-  public Map<String, String> getConfiguredAttributesMap() {
-    Map<String, String> configuredAttributesMap = new HashMap<String, String>();
+  public Map<String, Object> getAttributes() {
+    Map<String, Object> attributesMap = new HashMap<String, Object>();
 
     for(ParticipantAttributeValue participantAttribute : configuredAttributeValues) {
-      configuredAttributesMap.put(participantAttribute.getAttributeName(), participantAttribute.getData().getValueAsString());
+      attributesMap.put(participantAttribute.getAttributeName(), participantAttribute.getData().getValue());
     }
-    return configuredAttributesMap;
+    return attributesMap;
   }
 
   /**
@@ -225,15 +226,20 @@ public class Participant extends AbstractEntity {
    * Returns the ParticipantAttributeValue of a configured participant attribute.
    * 
    * @param attributeName attribute name
-   * @return ParticipantAttributeValue of the specified attribute (or <code>null</code> if none assigned)
+   * @return value of the specified attribute (or <code>null</code> if none assigned)
    * @throws IllegalArgumentException if <code>attributeName</code> is <code>null</code>
    */
   public ParticipantAttributeValue getParticipantAttributeValue(String attributeName) {
-    if(attributeName == null) throw new IllegalArgumentException("Null attribute name");
+    if(attributeName == null) {
+      throw new IllegalArgumentException("Null attribute name");
+    }
 
     for(ParticipantAttributeValue attributeValue : getConfiguredAttributeValues()) {
-      if(attributeValue.getAttributeName().equals(attributeName)) return attributeValue;
+      if(attributeValue.getAttributeName().equals(attributeName)) {
+        return attributeValue;
+      }
     }
+
     return null;
   }
 
