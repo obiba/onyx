@@ -81,63 +81,37 @@
     <instrument reference="sphygmoCor1" />
   </input>
 
-  <fixedSource id="systolic_pressure_source">
-    <value>123</value>
-  </fixedSource>
+  <outputParameterSource id="systolic_pressure_source">
+    <instrumentType>
+      <name>BLP</name>
+    </instrumentType>
+    <parameterName>Systolic_Blood_Pressure</parameterName>
+  </outputParameterSource>
   <input id="systolic_pressure">
     <name>SystolicPressure</name>
     <description>Systolic_Pressure</description>
+    <measurementUnit>mmHg</measurementUnit>    
     <dataType>INTEGER</dataType>
-    <captureMethod>AUTOMATIC</captureMethod>
+    <captureMethod>MANUAL</captureMethod>
     <inputSource reference="systolic_pressure_source" />
     <instrument reference="sphygmoCor1" />
   </input>
 
-  <fixedSource id="diastolic_pressure_source">
-    <value>65</value>
-  </fixedSource>
+  <outputParameterSource id="diastolic_pressure_source">
+    <instrumentType>
+      <name>BLP</name>
+    </instrumentType>
+    <parameterName>Diastolic_Blood_Pressure</parameterName>
+  </outputParameterSource>
   <input id="diastolic_pressure">
     <name>DiastolicPressure</name>
     <description>Diastolic_Pressure</description>
+    <measurementUnit>mmHg</measurementUnit>
     <dataType>INTEGER</dataType>
-    <captureMethod>AUTOMATIC</captureMethod>
+    <captureMethod>MANUAL</captureMethod>
     <inputSource reference="diastolic_pressure_source" />
     <instrument reference="sphygmoCor1" />
   </input>
-
-  <!-- 
-    <outputParameterSource id="systolic_pressure_source">
-    <instrumentType>
-    <name>BLP</name>
-    </instrumentType>
-    <parameterName>SystolicPressure</parameterName>
-    </outputParameterSource>
-    <input id="systolicPressure">
-    <name>SystolicPressure</name>
-    <description>Systolic_Pressure</description>
-    <measurementUnit>mmHg</measurementUnit>
-    <dataType>INTEGER</dataType>
-    <captureMethod>MANUAL</captureMethod>
-    <inputSource reference="systolic_pressure_source" />
-    <instrument reference="blp1" />
-    </input>  
-    
-    <outputParameterSource id="diastolic_pressure_source">
-    <instrumentType>
-    <name>BLP</name>
-    </instrumentType>
-    <parameterName>DiastolicPressure</parameterName>
-    </outputParameterSource>
-    <input id="diastolicPressure">
-    <name>Weight</name>
-    <description>Diastolic_Pressure</description>
-    <measurementUnit>mmHg</measurementUnit>
-    <dataType>INTEGER</dataType>
-    <captureMethod>MANUAL</captureMethod>
-    <inputSource reference="diastolic_pressure_source" />
-    <instrument reference="blp1" />
-    </input>
-  -->
 
   <output id="PATIENT_ID">
     <name>Participant Barcode</name>
