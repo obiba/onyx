@@ -130,7 +130,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
 
     builder.inSection("B_DEMOGRAPHY").withSection("BIRTH_LOCATION").withPage("6").withQuestion("BL0");
     builder.inSection("BIRTH_LOCATION").withPage("7").withQuestion("COUNTRY_BIRTH", "6", DropDownQuestionPanelFactory.class).withSharedCategories(CA, IT, FR, HT, LB, US, CN, VN, PT, GR, MA, GB);
-    builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(ELSEWHERE, "77");
+    builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(ELSEWHERE, "77").setEscape(true);
     builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(PNA, "88");
     builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(DNK, "99");
     builder.inSection("BIRTH_LOCATION").withPage("8").withQuestion("AGE_IMMIGRATION", "7").withSharedCategory(AGE).withOpenAnswerDefinition(AGE, DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0l)).addValidator(ComparisionOperator.le, "PARTICIPANT_AGE", "PARTICIPANT_AGE", "PARTICIPANT_AGE");

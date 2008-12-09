@@ -512,7 +512,7 @@
                     </questionCategory>
                     <questionCategory id="246" reselectable="false" selected="false" exportName="77">
                       <question reference="220"/>
-                      <category id="247" name="ELSEWHERE" escape="false"/>
+                      <category id="247" name="ELSEWHERE" escape="true"/>
                     </questionCategory>
                     <questionCategory id="248" reselectable="false" selected="false" exportName="88">
                       <question reference="220"/>
