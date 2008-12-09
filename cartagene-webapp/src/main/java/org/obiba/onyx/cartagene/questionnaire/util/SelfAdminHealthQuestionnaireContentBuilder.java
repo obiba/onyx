@@ -185,7 +185,8 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inSection("RESIDENCE_HISTORY").withPage("18").withQuestion("LONGEST_TIME_POSTAL_CODE", "17").withSharedCategory(POSTAL_CODE3);
     builder.inQuestion("LONGEST_TIME_POSTAL_CODE").withSharedCategory(PNA, "888");
     builder.inQuestion("LONGEST_TIME_POSTAL_CODE").withSharedCategory(DNK, "999");
-    builder.inQuestion("LONGEST_TIME_POSTAL_CODE").setAnswerCondition("LONGEST_TIME_POSTAL_CODE_ACONDITION", "LONGEST_TIME_COUNTRY", "CA");
+    builder.inQuestion("LONGEST_TIME_POSTAL_CODE").setMultipleCondition("LONGEST_TIME_POSTAL_CODE_MCONDITION", ConditionOperator.AND).withAnswerCondition("LONGEST_TIME_POSTAL_CODE_ACONDITION_0", "LONGEST_TIME_LOCATION", OPEN_AN);
+    builder.inCondition("LONGEST_TIME_POSTAL_CODE_MCONDITION").withAnswerCondition("LONGEST_TIMEPOSTAL_CODE_ACONDITION_1", "LONGEST_TIME_COUNTRY", "CA");
     builder.inSection("RESIDENCE_HISTORY").withPage("19").withQuestion("LONGEST_TIME_STREET", "18").withSharedCategory(OPEN_AN);
     builder.inQuestion("LONGEST_TIME_STREET").withSharedCategory(PNA, "88");
     builder.inQuestion("LONGEST_TIME_STREET").withSharedCategory(DNK, "99");
@@ -199,11 +200,14 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("LONGEST_TIME_AGE_STARTED_LIVING").withSharedCategory(YEAR);
     builder.inQuestion("LONGEST_TIME_AGE_STARTED_LIVING").withSharedCategory(PNA, "8888");
     builder.inQuestion("LONGEST_TIME_AGE_STARTED_LIVING").withSharedCategory(DNK, "9999");
-    builder.inQuestion("LONGEST_TIME_AGE_STARTED_LIVING").setMultipleCondition("LONGEST_TIME_AGE_STARTED_LIVING_MCONDITION", ConditionOperator.OR).withAnswerCondition("LONGEST_TIME_AGE_STARTED_LIVING_ACONDITION_0", "CURRENT_IS_LONGEST_TIME_LIVED", N);
-    builder.inCondition("LONGEST_TIME_AGE_STARTED_LIVING_MCONDITION").withAnswerCondition("LONGEST_TIME_AGE_STARTED_LIVING_ACONDITION_1", "CURRENT_IS_LONGEST_TIME_LIVED", DNK);
+    builder.inQuestion("LONGEST_TIME_AGE_STARTED_LIVING").setMultipleCondition("LONGEST_TIME_AGE_STARTED_LIVING_MCONDITION", ConditionOperator.AND).withAnswerCondition("LONGEST_TIME_AGE_STARTED_LIVING_ACONDITION_0", "LONGEST_TIME_COUNTRY");
+    builder.inCondition("LONGEST_TIME_AGE_STARTED_LIVING_MCONDITION").withNoAnswerCondition("LONGEST_TIME_AGE_STARTED_LIVING_NCONDITION_0").withAnswerCondition("LONGEST_TIME_AGE_STARTED_LIVING_ACONDITION_1", "COUNTRY_BIRTH", PNA);
+    builder.inCondition("LONGEST_TIME_AGE_STARTED_LIVING_MCONDITION").withNoAnswerCondition("LONGEST_TIME_AGE_STARTED_LIVING_NCONDITION_1").withAnswerCondition("LONGEST_TIME_AGE_STARTED_LIVING_ACONDITION_2", "COUNTRY_BIRTH", DNK);
+
     builder.inPage("21").addTimestamp("TS_DEM2");
 
-    builder.inSection("B_DEMOGRAPHY").withSection("LANGUAGE").withPage("22").withQuestion("FIRST_LANGUAGE_LEARNED", "21", true).setAnswerCount(1, 4).setRowCount(8).withCategory("ENGLISH").setExportName("1");
+    builder.inSection("B_DEMOGRAPHY").withSection("LANGUAGE").withPage("22").withQuestion("FIRST_LANGUAGE_LEARNED", "21", true).setAnswerCount(1, 4).setRowCount(8);
+    builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("ENGLISH").setExportName("1");
     builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("FRENCH").setExportName("2");
     builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("ARABIC").setExportName("3");
     builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("CHINESE").setExportName("4");
@@ -297,7 +301,13 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inSection("WORKING_STATUS").withPage("31").withQuestion("LONGEST_JOB_TITLE", "30").withSharedCategory(OPEN_AN);
     builder.inQuestion("LONGEST_JOB_TITLE").withSharedCategory(PNA, "8");
     builder.inQuestion("LONGEST_JOB_TITLE").withSharedCategory(DNK, "9");
-    builder.inQuestion("LONGEST_JOB_TITLE").setAnswerCondition("LONGEST_JOB_TITLE_ACONDITION", "EVER_WORKED", Y);
+    builder.inQuestion("LONGEST_JOB_TITLE").setMultipleCondition("LONGEST_JOB_TITLE_MCONDITION_0", ConditionOperator.OR);
+    builder.inCondition("LONGEST_JOB_TITLE_MCONDITION_0").withAnswerCondition("LONGEST_JOB_TITLE_ACONDITION0", "EVER_WORKED", Y);
+    builder.inCondition("LONGEST_JOB_TITLE_MCONDITION_0").withMultipleCondition("LONGEST_JOB_TITLE_MCONDITION_1", ConditionOperator.AND);
+    builder.inCondition("LONGEST_JOB_TITLE_MCONDITION_1").withAnswerCondition("LONGEST_JOB_TITLE_ACONDITION1", "IS_LONGEST_TIME_OCCUPATION", N);
+    builder.inCondition("LONGEST_JOB_TITLE_MCONDITION_1").withMultipleCondition("LONGEST_JOB_TITLE_MCONDITION_2", ConditionOperator.OR);
+    builder.inCondition("LONGEST_JOB_TITLE_MCONDITION_2").withAnswerCondition("LONGEST_JOB_TITLE_ACONDITION_1", "EMPLOYED", Y);
+    builder.inCondition("LONGEST_JOB_TITLE_MCONDITION_2").withAnswerCondition("LONGEST_JOB_TITLE_ACONDITION_2", "SELF_EMPLOYED", Y);
 
     builder.withSection("C_LIFE_HABITS").withSection("TOBACCO_USE").withPage("32").withQuestion("EVER_USED", "31").withSharedCategory(N, "0");
     builder.inQuestion("EVER_USED").withSharedCategory(Y, "1");
@@ -368,32 +378,20 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inSection("ALCOHOL_INTAKE").withPage("38").withQuestion("WHITE_WINE_DAY_QTY", "36").withSharedCategory(ALCOHOL_DAY_QTY);
     builder.inQuestion("WHITE_WINE_DAY_QTY").withSharedCategory(PNA, "888");
     builder.inQuestion("WHITE_WINE_DAY_QTY").withSharedCategory(DNK, "999");
-    builder.inQuestion("WHITE_WINE_DAY_QTY").setMultipleCondition("WHITE_WINE_DAY_QTY_MCONDITION", ConditionOperator.OR).withAnswerCondition("WHITE_WINE_DAY_QTY_ACONDITION_0", "ALCOHOL_FREQUENCY", DAILY);
-    builder.inCondition("WHITE_WINE_DAY_QTY_MCONDITION").withAnswerCondition("WHITE_WINE_DAY_QTY_ACONDITION_1", "ALCOHOL_FREQUENCY", _4TO5_WEEK);
-    builder.inCondition("WHITE_WINE_DAY_QTY_MCONDITION").withAnswerCondition("WHITE_WINE_DAY_QTY_ACONDITION_2", "ALCOHOL_FREQUENCY", _2TO3_WEEK);
-    builder.inCondition("WHITE_WINE_DAY_QTY_MCONDITION").withAnswerCondition("WHITE_WINE_DAY_QTY_ACONDITION_3", "ALCOHOL_FREQUENCY", WEEKLY);
+    builder.inQuestion("WHITE_WINE_DAY_QTY").setAnswerCondition("WHITE_WINE_DAY_QTY_ACONDITION", "RED_WINE_DAY_QTY");
     builder.inSection("ALCOHOL_INTAKE").withPage("39").withQuestion("BEER_DAY_QTY", "37").withSharedCategory(ALCOHOL_DAY_QTY);
     builder.inQuestion("BEER_DAY_QTY").withSharedCategory(PNA, "888");
     builder.inQuestion("BEER_DAY_QTY").withSharedCategory(DNK, "999");
-    builder.inQuestion("BEER_DAY_QTY").setMultipleCondition("BEER_DAY_QTY_MCONDITION", ConditionOperator.OR).withAnswerCondition("BEER_DAY_QTY_ACONDITION_0", "ALCOHOL_FREQUENCY", DAILY);
-    builder.inCondition("BEER_DAY_QTY_MCONDITION").withAnswerCondition("BEER_DAY_QTY_ACONDITION_1", "ALCOHOL_FREQUENCY", _4TO5_WEEK);
-    builder.inCondition("BEER_DAY_QTY_MCONDITION").withAnswerCondition("BEER_DAY_QTY_ACONDITION_2", "ALCOHOL_FREQUENCY", _2TO3_WEEK);
-    builder.inCondition("BEER_DAY_QTY_MCONDITION").withAnswerCondition("BEER_DAY_QTY_ACONDITION_3", "ALCOHOL_FREQUENCY", WEEKLY);
+    builder.inQuestion("BEER_DAY_QTY").setAnswerCondition("BEER_DAY_QTY_ACONDITION", "RED_WINE_DAY_QTY");
     builder.inSection("ALCOHOL_INTAKE").withPage("40").withQuestion("LIQUOR_DAY_QTY", "38").withSharedCategory(ALCOHOL_DAY_QTY);
     builder.inQuestion("LIQUOR_DAY_QTY").withSharedCategory(PNA, "888");
     builder.inQuestion("LIQUOR_DAY_QTY").withSharedCategory(DNK, "999");
-    builder.inQuestion("LIQUOR_DAY_QTY").setMultipleCondition("LIQUOR_DAY_QTY_MCONDITION", ConditionOperator.OR).withAnswerCondition("LIQUOR_DAY_QTY_ACONDITION_0", "ALCOHOL_FREQUENCY", DAILY);
-    builder.inCondition("LIQUOR_DAY_QTY_MCONDITION").withAnswerCondition("LIQUOR_DAY_QTY_ACONDITION_1", "ALCOHOL_FREQUENCY", _4TO5_WEEK);
-    builder.inCondition("LIQUOR_DAY_QTY_MCONDITION").withAnswerCondition("LIQUOR_DAY_QTY_ACONDITION_2", "ALCOHOL_FREQUENCY", _2TO3_WEEK);
-    builder.inCondition("LIQUOR_DAY_QTY_MCONDITION").withAnswerCondition("LIQUOR_DAY_QTY_ACONDITION_3", "ALCOHOL_FREQUENCY", WEEKLY);
+    builder.inQuestion("LIQUOR_DAY_QTY").setAnswerCondition("LIQUOR_DAY_QTY_ACONDITION", "RED_WINE_DAY_QTY");
     builder.inSection("ALCOHOL_INTAKE").withPage("41").withQuestion("OTHER_ALCOHOL_DAY", "39").withSharedCategory(N, "0");
     builder.inQuestion("OTHER_ALCOHOL_DAY").withSharedCategory(Y, "1");
     builder.inQuestion("OTHER_ALCOHOL_DAY").withSharedCategory(PNA, "8");
     builder.inQuestion("OTHER_ALCOHOL_DAY").withSharedCategory(DNK, "9");
-    builder.inQuestion("OTHER_ALCOHOL_DAY").setMultipleCondition("OTHER_ALCOHOL_DAY_MCONDITION", ConditionOperator.OR).withAnswerCondition("OTHER_ALCOHOL_DAY_ACONDITION_0", "ALCOHOL_FREQUENCY", DAILY);
-    builder.inCondition("OTHER_ALCOHOL_DAY_MCONDITION").withAnswerCondition("OTHER_ALCOHOL_DAY_ACONDITION_1", "ALCOHOL_FREQUENCY", _4TO5_WEEK);
-    builder.inCondition("OTHER_ALCOHOL_DAY_MCONDITION").withAnswerCondition("OTHER_ALCOHOL_DAY_ACONDITION_2", "ALCOHOL_FREQUENCY", _2TO3_WEEK);
-    builder.inCondition("OTHER_ALCOHOL_DAY_MCONDITION").withAnswerCondition("OTHER_ALCOHOL_DAY_ACONDITION_3", "ALCOHOL_FREQUENCY", WEEKLY);
+    builder.inQuestion("OTHER_ALCOHOL_DAY").setAnswerCondition("OTHER_ALCOHOL_DAY_ACONDITION", "RED_WINE_DAY_QTY");
     builder.inSection("ALCOHOL_INTAKE").withPage("42").withQuestion("OTHER_ALCOHOL_DAY_ID", "40").withSharedCategory(OPEN_AN);
     builder.inQuestion("OTHER_ALCOHOL_DAY_ID").withSharedCategory(PNA, "88");
     builder.inQuestion("OTHER_ALCOHOL_DAY_ID").withSharedCategory(DNK, "99");
@@ -440,7 +438,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("BINGE_DRINKING_FEMALE_HEAVY_FREQ").withSharedCategory(NEVER, "0");
     builder.inQuestion("BINGE_DRINKING_FEMALE_HEAVY_FREQ").withSharedCategory(PNA, "88");
     builder.inQuestion("BINGE_DRINKING_FEMALE_HEAVY_FREQ").withSharedCategory(DNK, "99");
-    builder.inQuestion("BINGE_DRINKING_FEMALE_HEAVY_FREQ").setMultipleCondition("BINGE_DRINKING_FEMALE_HEAVY_FREQ_MCONDITION_0", ConditionOperator.AND).withAnswerCondition("BINGE_DRINKING_FEMALE_HEAVY_FREQ_ACONDITION_0", "SEX", "MALE");
+    builder.inQuestion("BINGE_DRINKING_FEMALE_HEAVY_FREQ").setMultipleCondition("BINGE_DRINKING_FEMALE_HEAVY_FREQ_MCONDITION_0", ConditionOperator.AND).withAnswerCondition("BINGE_DRINKING_FEMALE_HEAVY_FREQ_ACONDITION_0", "SEX", "FEMALE");
     builder.inCondition("BINGE_DRINKING_FEMALE_HEAVY_FREQ_MCONDITION_0").withMultipleCondition("BINGE_DRINKING_FEMALE_HEAVY_FREQ_MCONDITION_1", ConditionOperator.OR).withAnswerCondition("BINGE_DRINKING_FEMALE_HEAVY_FREQ_ACONDITION_1", "ALCOHOL_FREQUENCY", DAILY);
     builder.inCondition("BINGE_DRINKING_FEMALE_HEAVY_FREQ_MCONDITION_1").withAnswerCondition("BINGE_DRINKING_FEMALE_HEAVY_FREQ_ACONDITION_2", "ALCOHOL_FREQUENCY", _4TO5_WEEK);
     builder.inCondition("BINGE_DRINKING_FEMALE_HEAVY_FREQ_MCONDITION_1").withAnswerCondition("BINGE_DRINKING_FEMALE_HEAVY_FREQ_ACONDITION_3", "ALCOHOL_FREQUENCY", _2TO3_WEEK);
@@ -452,7 +450,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("BINGE_DRINKING_FEMALE_MOD_FREQ").withSharedCategory(NEVER, "0");
     builder.inQuestion("BINGE_DRINKING_FEMALE_MOD_FREQ").withSharedCategory(PNA, "88");
     builder.inQuestion("BINGE_DRINKING_FEMALE_MOD_FREQ").withSharedCategory(DNK, "99");
-    builder.inQuestion("BINGE_DRINKING_FEMALE_MOD_FREQ").setMultipleCondition("BINGE_DRINKING_FEMALE_MOD_FREQ_MCONDITION_0", ConditionOperator.AND).withAnswerCondition("BINGE_DRINKING_FEMALE_MOD_FREQ_ACONDITION_0", "SEX", "MALE");
+    builder.inQuestion("BINGE_DRINKING_FEMALE_MOD_FREQ").setMultipleCondition("BINGE_DRINKING_FEMALE_MOD_FREQ_MCONDITION_0", ConditionOperator.AND).withAnswerCondition("BINGE_DRINKING_FEMALE_MOD_FREQ_ACONDITION_0", "SEX", "FEMALE");
     builder.inCondition("BINGE_DRINKING_FEMALE_MOD_FREQ_MCONDITION_0").withMultipleCondition("BINGE_DRINKING_FEMALE_MOD_FREQ_MCONDITION_1", ConditionOperator.OR).withAnswerCondition("BINGE_DRINKING_FEMALE_MOD_FREQ_ACONDITION_1", "ALCOHOL_FREQUENCY", _2TO3_MONTH);
     builder.inCondition("BINGE_DRINKING_FEMALE_MOD_FREQ_MCONDITION_1").withAnswerCondition("BINGE_DRINKING_FEMALE_MOD_FREQ_ACONDITION_2", "ALCOHOL_FREQUENCY", MONTHLY);
     builder.inCondition("BINGE_DRINKING_FEMALE_MOD_FREQ_MCONDITION_1").withAnswerCondition("BINGE_DRINKING_FEMALE_MOD_FREQ_ACONDITION_3", "ALCOHOL_FREQUENCY", LESS_MONTHLY);
