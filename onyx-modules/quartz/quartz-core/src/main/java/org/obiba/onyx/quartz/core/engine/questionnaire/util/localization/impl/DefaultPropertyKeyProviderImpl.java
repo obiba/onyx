@@ -31,15 +31,15 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
   //
   // Questionnaire element properties, with their default values.
   //
-  private List<String> questionnaireProperties = Arrays.asList("label", "description", "labelNext", "imageNext", "labelPrevious", "imagePrevious", "labelStart", "labelFinish", "labelInterrupt", "labelResume", "labelCancel");
+  private List<String> questionnaireProperties = Arrays.asList("label", "description", "labelNext", "labelPrevious", "labelStart", "labelFinish", "labelInterrupt", "labelResume", "labelCancel");
 
   private List<String> sectionProperties = Arrays.asList("label");
 
   private List<String> pageProperties = Arrays.asList("label");
 
-  private List<String> questionProperties = Arrays.asList("label", "instructions", "caption", "help", "image", "specifications");
+  private List<String> questionProperties = Arrays.asList("label", "instructions", "caption", "help", "specifications", "categoryOrder");
 
-  private List<String> categoryProperties = Arrays.asList("label", "image");
+  private List<String> categoryProperties = Arrays.asList("label");
 
   private List<String> openAnswerDefinitionProperties = new ArrayList<String>(Arrays.asList("label", "unitLabel"));
 

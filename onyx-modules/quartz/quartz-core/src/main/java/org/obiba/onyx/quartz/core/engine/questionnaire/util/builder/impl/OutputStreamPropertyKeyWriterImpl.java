@@ -10,7 +10,9 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl;
 
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IPropertyKeyWriter;
@@ -28,7 +30,11 @@ public class OutputStreamPropertyKeyWriterImpl implements IPropertyKeyWriter {
 
   public OutputStreamPropertyKeyWriterImpl(Properties language, OutputStream outputStream) {
     this.language = language;
-    this.printWriter = new PrintWriter(outputStream);
+    try {
+      this.printWriter = new PrintWriter(new OutputStreamWriter(outputStream, "ISO-8859-1"));
+    } catch(UnsupportedEncodingException e) {
+      throw new UnsupportedOperationException(e.getMessage());
+    }
   }
 
   public void endBloc() {
@@ -49,7 +55,7 @@ public class OutputStreamPropertyKeyWriterImpl implements IPropertyKeyWriter {
   }
 
   public void writeComment(String... comments) {
-    for (String comment : comments) {
+    for(String comment : comments) {
       printWriter.println("## " + comment);
     }
   }
