@@ -37,6 +37,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.array.QuestionCategoryCheck
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.QuestionCategoryRadioColumn;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.RadioGroupView;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.AbstractDataListProvider;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
@@ -95,8 +96,9 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
 
     // following columns: the question's categories
     Question parentQuestion = (Question) getModelObject();
+    QuestionCategoriesProvider provider = new QuestionCategoriesProvider(getModel());
     if(!parentQuestion.isMultiple()) {
-      for(QuestionCategory questionCategory : parentQuestion.getQuestionCategories()) {
+      for(QuestionCategory questionCategory : provider.getDataList()) {
         columns.add(new QuestionCategoryRadioColumn(new QuestionnaireModel(questionCategory), new PropertyModel(this, "radioGroupView.groups")) {
           @Override
           public void onSelection(AjaxRequestTarget target) {
@@ -115,7 +117,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
 
       });
     } else {
-      for(QuestionCategory questionCategory : parentQuestion.getQuestionCategories()) {
+      for(QuestionCategory questionCategory : provider.getDataList()) {
         columns.add(new QuestionCategoryCheckBoxColumn(new QuestionnaireModel(questionCategory), new PropertyModel(this, "checkGroupView.groups")) {
           @Override
           public void onSelection(AjaxRequestTarget target) {

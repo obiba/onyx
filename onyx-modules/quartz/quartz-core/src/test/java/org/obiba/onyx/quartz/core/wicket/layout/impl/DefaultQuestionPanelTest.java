@@ -783,8 +783,7 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).anyTimes();
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).anyTimes();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).anyTimes();
-    // expect(questionnaireBundleMock.getPropertyKey(question,
-    // "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).anyTimes();
       if(qCategory.getCategory().getOpenAnswerDefinition() != null) {

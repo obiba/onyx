@@ -57,7 +57,7 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<Questio
     String categoryOrder = null;
     try {
       categoryOrder = new QuestionnaireStringResourceModel(questionModel, "categoryOrder").getString();
-      log.info("{}.categoryOrder={}", question, categoryOrder);
+      // log.info("{}.categoryOrder={}", question, categoryOrder);
     } catch(NoSuchMessageException e) {
       log.debug("categoryOrder not defined for question {}", question);
     }
