@@ -126,6 +126,7 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("Question.Q1.specifications", locale, "question specifications");
     messageSource.addMessage("Question.Q1.instructions", locale, "question instructions");
     messageSource.addMessage("Question.Q1.caption", locale, "question caption");
+    messageSource.addMessage("Question.Q1.categoryOrder", locale, "");
     messageSource.addMessage("QuestionCategory.Q1.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q1.2.label", locale, "Choice two");
     messageSource.addMessage("QuestionCategory.Q1.3.label", locale, "Choice three");
@@ -140,6 +141,7 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("Question.Q1_MULTIPLE.specifications", locale, "question specifications");
     messageSource.addMessage("Question.Q1_MULTIPLE.instructions", locale, "question instructions");
     messageSource.addMessage("Question.Q1_MULTIPLE.caption", locale, "question caption");
+    messageSource.addMessage("Question.Q1_MULTIPLE.categoryOrder", locale, "");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.2.label", locale, "Choice two");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.3.label", locale, "Choice three");
@@ -151,6 +153,7 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("Question.Q2.specifications", locale, "question2 specifications");
     messageSource.addMessage("Question.Q2.instructions", locale, "question2 instructions");
     messageSource.addMessage("Question.Q2.caption", locale, "question2 caption");
+    messageSource.addMessage("Question.Q2.categoryOrder", locale, "");
     messageSource.addMessage("QuestionCategory.Q2.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q2.DONT_KNOW.label", locale, "Dont know");
     messageSource.addMessage("QuestionCategory.Q2.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
@@ -162,6 +165,7 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("Question.MULTIPLE_OPEN.specifications", locale, "question2 specifications");
     messageSource.addMessage("Question.MULTIPLE_OPEN.instructions", locale, "question2 instructions");
     messageSource.addMessage("Question.MULTIPLE_OPEN.caption", locale, "question2 caption");
+    messageSource.addMessage("Question.MULTIPLE_OPEN.categoryOrder", locale, "");
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.DURATION.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.DONT_KNOW.label", locale, "Dont know");
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
@@ -175,6 +179,7 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.specifications", locale, "question2 specifications");
     messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.instructions", locale, "question2 instructions");
     messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.caption", locale, "question2 caption");
+    messageSource.addMessage("Question.MULTIPLE_MULTIPLE_OPEN.categoryOrder", locale, "");
     messageSource.addMessage("QuestionCategory.MULTIPLE_MULTIPLE_OPEN.MULTIPLE_DURATION.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.MULTIPLE_MULTIPLE_OPEN.DONT_KNOW.label", locale, "Dont know");
     messageSource.addMessage("QuestionCategory.MULTIPLE_MULTIPLE_OPEN.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
@@ -188,6 +193,7 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("Question.Q2_MULTIPLE.specifications", locale, "question2 specifications");
     messageSource.addMessage("Question.Q2_MULTIPLE.instructions", locale, "question2 instructions");
     messageSource.addMessage("Question.Q2_MULTIPLE.caption", locale, "question2 caption");
+    messageSource.addMessage("Question.Q2_MULTIPLE.categoryOrder", locale, "");
     messageSource.addMessage("QuestionCategory.Q2_MULTIPLE.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q2_MULTIPLE.DONT_KNOW.label", locale, "Dont know");
     messageSource.addMessage("QuestionCategory.Q2_MULTIPLE.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
@@ -199,6 +205,7 @@ public class DefaultQuestionPanelTest {
     messageSource.addMessage("Question.Q3.specifications", locale, "question3 specifications");
     messageSource.addMessage("Question.Q3.instructions", locale, "question3 instructions");
     messageSource.addMessage("Question.Q3.caption", locale, "question3 caption");
+    messageSource.addMessage("Question.Q3.categoryOrder", locale, "");
     messageSource.addMessage("QuestionCategory.Q3.1.label", locale, "Choice one");
     messageSource.addMessage("QuestionCategory.Q3.2.label", locale, "Choice two");
     messageSource.addMessage("QuestionCategory.Q3.3.label", locale, "Choice three");
@@ -248,6 +255,7 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
     }
@@ -334,6 +342,7 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
     }
@@ -414,6 +423,7 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
     }
@@ -492,6 +502,7 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
     }
@@ -592,6 +603,7 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
     }
@@ -680,6 +692,7 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).atLeastOnce();
+    expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
     }
@@ -770,6 +783,8 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "instructions")).andReturn(propertyKeyProvider.getPropertyKey(question, "instructions")).anyTimes();
     expect(questionnaireBundleMock.getPropertyKey(question, "specifications")).andReturn(propertyKeyProvider.getPropertyKey(question, "specifications")).anyTimes();
     expect(questionnaireBundleMock.getPropertyKey(question, "caption")).andReturn(propertyKeyProvider.getPropertyKey(question, "caption")).anyTimes();
+    // expect(questionnaireBundleMock.getPropertyKey(question,
+    // "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).anyTimes();
       if(qCategory.getCategory().getOpenAnswerDefinition() != null) {
