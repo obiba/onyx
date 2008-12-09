@@ -251,10 +251,11 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
     try {
       participantReader.process(participantsListStream);
-      if(listener != null) participantReader.removeParticipantReadListener(listener);
     } catch(IOException e) {
       log.error("Update participants list read failed.", e);
       throw new ValidationRuntimeException("UpdateParticipantsListReadFailed", "Update participants list read failed.");
+    } finally {
+      if(listener != null) participantReader.removeParticipantReadListener(listener);
     }
   }
 
