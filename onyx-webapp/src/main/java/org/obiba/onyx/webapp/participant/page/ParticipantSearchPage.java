@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -239,11 +240,11 @@ public class ParticipantSearchPage extends BasePage {
     updateParticipantsModalWindow = new ConfirmationWindow("updateParticipantsModalWindow", new StringResourceModel("ConfirmParticipantsListUpdate", this, null));
     updateParticipantsModalWindow.addOkBehavior(new AjaxEventBehavior("onClick") {
       public void onEvent(AjaxRequestTarget target) {
-        updateParticipants();
+        UpdateParticipantListBehavior updateCallback = new UpdateParticipantListBehavior();
+        updateParticipantsModalWindow.add(updateCallback);
         updateParticipantsModalWindow.close(target);
 
-        target.addComponent(ParticipantSearchPage.this.getFeedbackPanel());
-        target.addComponent(participantList);
+        target.appendJavascript(updateCallback.getJavascript());
       }
     });
     add(updateParticipantsModalWindow);
@@ -511,27 +512,42 @@ public class ParticipantSearchPage extends BasePage {
     }
   }
 
-  private void updateParticipants() {
-    try {
-      participantService.updateParticipantList(OnyxAuthenticatedSession.get().getUser());
-      info(ParticipantSearchPage.this.getString("ParticipantsListSuccessfullyUpdated"));
-    } catch(ValidationRuntimeException e) {
-      for(ObjectError oe : e.getAllObjectErrors()) {
-        Object[] args = oe.getArguments();
-        IModel model = null;
-        if(oe.getCode().equals("WrongParticipantSiteName") && args != null && args.length >= 3) {
-          ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1] + ",site=" + args[2]);
-          model = new Model(map);
-        } else if(oe.getCode().equals("AppointmentDatePassed") && args != null && args.length == 3) {
-          ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1] + ",date=" + args[2]);
-          model = new Model(map);
-        } else if(oe.getCode().equals("ParticipantsListFileValidationError") && args != null && args.length == 1) {
-          ValueMap map = new ValueMap("message=" + args[0]);
-          model = new Model(map);
-        }
-        error(ParticipantSearchPage.this.getString(oe.getCode(), model, oe.getDefaultMessage()));
-    	}
-    	log.error("Failed updating participants: {}", e.toString());
+  private class UpdateParticipantListBehavior extends AbstractDefaultAjaxBehavior implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    public void respond(AjaxRequestTarget target) {
+      updateParticipants();
+
+      target.addComponent(ParticipantSearchPage.this.getFeedbackPanel());
+      target.addComponent(participantList);
     }
-	}
+
+    public String getJavascript() {
+      return this.getCallbackScript().toString();
+    }
+
+    private void updateParticipants() {
+      try {
+        participantService.updateParticipantList(OnyxAuthenticatedSession.get().getUser());
+        info(ParticipantSearchPage.this.getString("ParticipantsListSuccessfullyUpdated"));
+      } catch(ValidationRuntimeException e) {
+        for(ObjectError oe : e.getAllObjectErrors()) {
+          Object[] args = oe.getArguments();
+          IModel model = null;
+          if(oe.getCode().equals("WrongParticipantSiteName") && args != null && args.length >= 3) {
+            ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1] + ",site=" + args[2]);
+            model = new Model(map);
+          } else if(oe.getCode().equals("AppointmentDatePassed") && args != null && args.length == 3) {
+            ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1] + ",date=" + args[2]);
+            model = new Model(map);
+          } else if(oe.getCode().equals("ParticipantsListFileValidationError") && args != null && args.length == 1) {
+            ValueMap map = new ValueMap("message=" + args[0]);
+            model = new Model(map);
+          }
+          error(ParticipantSearchPage.this.getString(oe.getCode(), model, oe.getDefaultMessage()));
+        }
+        log.error("Failed updating participants: {}", e.toString());
+      }
+    }
+  }
 }
