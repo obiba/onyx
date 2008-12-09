@@ -47,4 +47,8 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="participantMetadata" class="org.obiba.onyx.core.domain.participant.ParticipantMetadata">
     <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}"/>
   </bean>
+  
+  <bean id="pdfPrintingService" class="org.obiba.onyx.print.PdfPrintingService">
+    <property name="printerName" value="${org.obiba.onyx.pdfPrinterName}" />  
+  </bean>  
 </beans>

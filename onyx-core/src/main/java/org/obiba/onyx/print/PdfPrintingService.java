@@ -47,7 +47,7 @@ public class PdfPrintingService implements InitializingBean {
    * The implementations of PdfHandler. Each instance can handle printing a PDF file onto a specific DocFlavor. They are
    * ordered is a way that if the PrintService handles PDF directly, the PDF will not be converted by this bean.
    */
-  protected final PdfHandler[] IMPLEMENTED_FLAVORS = { new PdfByteArrayPdfHandler(), new PdfInputStreamPdfHandler(), new PostscriptByteArrayPdfHandler() };
+  protected final PdfHandler[] IMPLEMENTED_FLAVORS = { new PdfByteArrayPdfHandler(), new PdfInputStreamPdfHandler(), new PostscriptByteArrayPdfHandler(), new ApplicationByteArrayPdfHandler() };
 
   protected String printerName;
 
@@ -167,33 +167,45 @@ public class PdfPrintingService implements InitializingBean {
 
   }
 
-  /**
-   * Converts the PDF stream to a Postscript stream using {@link PdfToPs} then sends the resulting postscript to the
-   * printer. This handler is used for printers and print servers that don't handle PDF files directly.
-   */
-  private class PostscriptByteArrayPdfHandler implements PdfHandler {
-
-    public DocFlavor getImplementedFlavor() {
-      return DocFlavor.BYTE_ARRAY.POSTSCRIPT;
-    }
+  private abstract class CustomByteArrayPdfHandler implements PdfHandler {
 
     public void printPdf(InputStream pdf) throws PrintException {
       // Convert the pdf to postscript
       PdfToPs pdfToPs = PdfToPs.get();
       if(pdfToPs == null) {
-        throw new PrintException("Cannot convert PDF to Postscript. PDF cannot be printed.");
+        throw new PrintException("Cannot convert PDF to " + getImplementedFlavor().getMimeType() + ". PDF cannot be printed.");
       }
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       try {
         if(pdfToPs.convert(pdf, baos) == false) {
-          throw new PrintException("Error converting PDF to Postscript for printing.");
+          throw new PrintException("Error converting PDF to " + getImplementedFlavor().getMimeType() + " for printing.");
         }
         baos.close();
       } catch(IOException e) {
-        throw new PrintException("Error converting PDF to Postscript for printing.", e);
+        throw new PrintException("Error converting PDF to " + getImplementedFlavor().getMimeType() + " for printing.", e);
       }
       print(baos.toByteArray(), getImplementedFlavor());
     }
 
+  }
+
+  /**
+   * Converts the PDF stream to a Postscript stream using {@link PdfToPs} then sends the resulting postscript to the
+   * printer. This handler is used for printers and print servers that don't handle PDF files directly.
+   */
+  private class PostscriptByteArrayPdfHandler extends CustomByteArrayPdfHandler {
+    public DocFlavor getImplementedFlavor() {
+      return DocFlavor.BYTE_ARRAY.POSTSCRIPT;
+    }
+  }
+
+  /**
+   * This implementation was added to support a special application stream (Available on Windows) for printers that
+   * don't support Postscript.
+   */
+  private class ApplicationByteArrayPdfHandler extends CustomByteArrayPdfHandler {
+    public DocFlavor getImplementedFlavor() {
+      return DocFlavor.BYTE_ARRAY.AUTOSENSE;
+    }
   }
 }
