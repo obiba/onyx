@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
@@ -86,6 +87,7 @@ public class MicaPanel extends Panel implements IEngineComponentAware {
             if(actionDef != null) {
               actionWindow.show(target, model.getStageModel(), actionDef);
             }
+            activeInterviewService.setStatus(InterviewStatus.COMPLETED);
             activeConclusionService.save();
           }
 
