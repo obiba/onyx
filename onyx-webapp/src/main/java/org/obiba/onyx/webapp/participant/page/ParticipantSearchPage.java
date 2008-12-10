@@ -16,8 +16,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
-import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -44,7 +42,6 @@ import org.apache.wicket.util.value.ValueMap;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
-import org.obiba.core.validation.exception.ValidationRuntimeException;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
@@ -58,7 +55,6 @@ import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.wicket.behavior.EnterOnKeyPressBehaviour;
-import org.obiba.onyx.wicket.component.ConfirmationWindow;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.link.AjaxLinkList;
@@ -67,7 +63,6 @@ import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 import org.obiba.wicket.util.resource.CsvResourceStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.validation.ObjectError;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class ParticipantSearchPage extends BasePage {
@@ -95,7 +90,7 @@ public class ParticipantSearchPage extends BasePage {
 
   private ModalWindow editParticipantDetailsModalWindow;
 
-  private ConfirmationWindow updateParticipantsModalWindow;
+  private UpdateParticipantListWindow updateParticipantListWindow;
 
   @SuppressWarnings("serial")
   public ParticipantSearchPage() {
@@ -213,7 +208,7 @@ public class ParticipantSearchPage extends BasePage {
 
     });
 
-    ActionFragment actionFrag;
+    final ActionFragment actionFrag;
     add(actionFrag = new ActionFragment("actions"));
     MetaDataRoleAuthorizationStrategy.authorize(actionFrag, RENDER, "PARTICIPANT_MANAGER");
 
@@ -237,17 +232,8 @@ public class ParticipantSearchPage extends BasePage {
     participantList = new OnyxEntityList<Participant>("participant-list", new AppointedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
     add(participantList);
 
-    updateParticipantsModalWindow = new ConfirmationWindow("updateParticipantsModalWindow", new StringResourceModel("ConfirmParticipantsListUpdate", this, null));
-    updateParticipantsModalWindow.addOkBehavior(new AjaxEventBehavior("onClick") {
-      public void onEvent(AjaxRequestTarget target) {
-        UpdateParticipantListBehavior updateCallback = new UpdateParticipantListBehavior();
-        updateParticipantsModalWindow.add(updateCallback);
-        updateParticipantsModalWindow.close(target);
-
-        target.appendJavascript(updateCallback.getJavascript());
-      }
-    });
-    add(updateParticipantsModalWindow);
+    updateParticipantListWindow = new UpdateParticipantListWindow("updateParticipantListWindow", participantList);
+    add(updateParticipantListWindow);
   }
 
   @SuppressWarnings("serial")
@@ -268,7 +254,10 @@ public class ParticipantSearchPage extends BasePage {
 
       AjaxLink updateParticipantsLink = new AjaxLink("update") {
         public void onClick(AjaxRequestTarget target) {
-          updateParticipantsModalWindow.show(target);
+          updateParticipantListWindow.showConfirmation();
+          updateParticipantListWindow.show(target);
+
+          target.addComponent(updateParticipantListWindow.get("content"));
         }
       };
       updateParticipantsLink.setVisible(participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.ENROLLED));
@@ -509,45 +498,6 @@ public class ParticipantSearchPage extends BasePage {
 
     public List<IColumn> getRequiredColumns() {
       return columns;
-    }
-  }
-
-  private class UpdateParticipantListBehavior extends AbstractDefaultAjaxBehavior implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    public void respond(AjaxRequestTarget target) {
-      updateParticipants();
-
-      target.addComponent(ParticipantSearchPage.this.getFeedbackPanel());
-      target.addComponent(participantList);
-    }
-
-    public String getJavascript() {
-      return this.getCallbackScript().toString();
-    }
-
-    private void updateParticipants() {
-      try {
-        participantService.updateParticipantList(OnyxAuthenticatedSession.get().getUser());
-        info(ParticipantSearchPage.this.getString("ParticipantsListSuccessfullyUpdated"));
-      } catch(ValidationRuntimeException e) {
-        for(ObjectError oe : e.getAllObjectErrors()) {
-          Object[] args = oe.getArguments();
-          IModel model = null;
-          if(oe.getCode().equals("WrongParticipantSiteName") && args != null && args.length >= 3) {
-            ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1] + ",site=" + args[2]);
-            model = new Model(map);
-          } else if(oe.getCode().equals("AppointmentDatePassed") && args != null && args.length == 3) {
-            ValueMap map = new ValueMap("line=" + args[0] + ",id=" + args[1] + ",date=" + args[2]);
-            model = new Model(map);
-          } else if(oe.getCode().equals("ParticipantsListFileValidationError") && args != null && args.length == 1) {
-            ValueMap map = new ValueMap("message=" + args[0]);
-            model = new Model(map);
-          }
-          error(ParticipantSearchPage.this.getString(oe.getCode(), model, oe.getDefaultMessage()));
-        }
-        log.error("Failed updating participants: {}", e.toString());
-      }
     }
   }
 }
