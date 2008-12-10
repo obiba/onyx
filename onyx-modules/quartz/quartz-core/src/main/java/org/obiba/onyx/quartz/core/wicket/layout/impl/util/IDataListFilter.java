@@ -12,10 +12,16 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.util;
 import java.io.Serializable;
 
 /**
- * 
+ * Interface defining the filtering process.
+ * @see AbstractDataListProvider
  */
 public interface IDataListFilter<T> extends Serializable {
 
+  /**
+   * True if item is accepted by the filter.
+   * @param item
+   * @return
+   */
   public boolean accept(T item);
 
 }

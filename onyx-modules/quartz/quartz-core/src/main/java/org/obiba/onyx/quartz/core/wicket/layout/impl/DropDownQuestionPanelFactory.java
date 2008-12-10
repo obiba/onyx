@@ -12,6 +12,10 @@ import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 
+/**
+ * Factory of dropdown question panel.
+ * @see DropDownQuestionPanel
+ */
 public class DropDownQuestionPanelFactory implements IQuestionPanelFactory {
 
   public QuestionPanel createPanel(String id, IModel questionModel) {

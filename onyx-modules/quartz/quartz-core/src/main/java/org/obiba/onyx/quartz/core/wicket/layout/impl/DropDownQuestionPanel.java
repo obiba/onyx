@@ -12,7 +12,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 import org.apache.wicket.model.IModel;
 
 /**
- * 
+ * Question categories are presented in a dropdown.
  */
 public class DropDownQuestionPanel extends BaseQuestionPanel {
 

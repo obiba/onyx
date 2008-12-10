@@ -11,13 +11,11 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
 import java.util.List;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -32,14 +30,14 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscape
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
-import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Build a drop down choice panel, used by single choice question.
+ * Build a drop down choice panel, used by single choice question, and add escape categories in a radio group if there
+ * are any.
  */
-public class DropDownQuestionCategoriesPanel extends Panel {
+public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelectionPanel {
 
   private static final long serialVersionUID = 5144933183339704600L;
 
@@ -103,43 +101,20 @@ public class DropDownQuestionCategoriesPanel extends Panel {
           activeQuestionnaireAdministrationService.answer(selectedQuestionCategory);
         }
 
+        fireQuestionAnswerChanged(target, getQuestionModel(), selectedQuestionCategory == null ? null : new QuestionnaireModel(selectedQuestionCategory));
+
         if(escapeQuestionCategoriesPanel != null) {
           escapeQuestionCategoriesPanel.setNoSelection();
         }
 
-        // refesh feedback panel to remove older error messages
-        visitParents(WizardForm.class, new Component.IVisitor() {
-
-          public Object component(Component component) {
-            log.info("found a wizard form");
-            WizardForm form = (WizardForm) component;
-            if(form.getFeedbackPanel() != null) {
-              target.addComponent(form.getFeedbackPanel());
-            }
-            return component;
-          }
-
-        });
-
+        updateFeedbackPanel(target);
         // Update component
         target.addComponent(DropDownQuestionCategoriesPanel.this);
       }
 
       @Override
       protected void onError(final AjaxRequestTarget target, RuntimeException e) {
-        // refesh feedback panel to display error messages
-        visitParents(WizardForm.class, new Component.IVisitor() {
-
-          public Object component(Component component) {
-            log.info("found a wizard form");
-            WizardForm form = (WizardForm) component;
-            if(form.getFeedbackPanel() != null) {
-              target.addComponent(form.getFeedbackPanel());
-            }
-            return component;
-          }
-
-        });
+        updateFeedbackPanel(target);
         // Update component
         target.addComponent(DropDownQuestionCategoriesPanel.this);
       }
@@ -238,4 +213,5 @@ public class DropDownQuestionCategoriesPanel extends Panel {
   public void setSelectedQuestionCategory(QuestionCategory selectedQuestionCategory) {
     this.selectedQuestionCategory = selectedQuestionCategory;
   }
+
 }

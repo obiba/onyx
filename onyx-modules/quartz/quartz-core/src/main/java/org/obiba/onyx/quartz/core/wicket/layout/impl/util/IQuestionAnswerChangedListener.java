@@ -17,6 +17,12 @@ import org.apache.wicket.model.IModel;
  */
 public interface IQuestionAnswerChangedListener {
 
+  /**
+   * Called when answer persistence has changed.
+   * @param target
+   * @param questionModel
+   * @param questionCategoryModel
+   */
   public void onQuestionAnswerChanged(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel);
 
 }

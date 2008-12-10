@@ -12,20 +12,18 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IQuestionAnswerChangedListener;
-import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Abstract to share some facilities between radio/checkbox based question category selectors.
  */
-public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
+public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestionCategorySelectionPanel {
 
+  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AbstractQuestionCategorySelectionPanel.class);
 
   /**
@@ -42,37 +40,6 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
     super(id, questionCategoryModel);
     this.questionModel = questionModel;
   }
-
-  /**
-   * Reset (set null data) the open fields not associated to the current question category.
-   * @param parentContainer
-   */
-  protected void resetOpenAnswerDefinitionPanels(MarkupContainer parentContainer) {
-
-    parentContainer.visitChildren(new Component.IVisitor() {
-
-      public Object component(Component component) {
-        if(component instanceof AbstractOpenAnswerDefinitionPanel) {
-          if(isToBeReseted((AbstractOpenAnswerDefinitionPanel) component)) {
-            log.info("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getModelObject());
-            AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
-            openField.resetField();
-          }
-        }
-        return CONTINUE_TRAVERSAL;
-      }
-
-    });
-  }
-
-  /**
-   * When an open field is visited for reseting, this method should answer whether or not the operation should be
-   * performed (usually depending on its associated model).
-   * @param openField
-   * @return
-   * @see #resetOpenAnswerDefinitionPanels(MarkupContainer)
-   */
-  protected abstract boolean isToBeReseted(AbstractOpenAnswerDefinitionPanel openField);
 
   protected IModel getQuestionModel() {
     return questionModel;
@@ -140,20 +107,6 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
   }
 
   /**
-   * Find the first parent that will to be warned about a changing question answer.
-   * @param target
-   * @param questionModel
-   * @param questionCategoryModel
-   * @see IQuestionAnswerChangedListener
-   */
-  protected void fireQuestionAnswerChanged(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    IQuestionAnswerChangedListener parentListener = (IQuestionAnswerChangedListener) findParent(IQuestionAnswerChangedListener.class);
-    if(parentListener != null) {
-      parentListener.onQuestionAnswerChanged(target, questionModel, questionCategoryModel);
-    }
-  }
-
-  /**
    * Factory method to get the appropriate {@link AbstractOpenAnswerDefinitionPanel} for this question category.
    * @param id
    * @return
@@ -163,6 +116,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
     AbstractOpenAnswerDefinitionPanel openField;
 
     if(getQuestionCategory().getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().size() == 0) {
+      // case there is a simple open answer
       openField = new DefaultOpenAnswerDefinitionPanel(id, getQuestionModel(), getQuestionCategoryModel()) {
 
         @Override
@@ -182,6 +136,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
 
       };
     } else {
+      // case there are multiple open answers
       openField = new MultipleOpenAnswerDefinitionPanel(id, getQuestionModel(), getQuestionCategoryModel()) {
 
         @Override
@@ -205,13 +160,41 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
     return openField;
   }
 
-  public abstract boolean hasOpenField();
+  /**
+   * Reset (set null data) the open fields not associated to the current question category.
+   * @param parentContainer
+   */
+  protected void resetOpenAnswerDefinitionPanels(MarkupContainer parentContainer) {
 
-  protected void resetFeedbackPanel(AjaxRequestTarget target) {
-    WizardForm wizard = (WizardForm) findParent(WizardForm.class);
-    if(wizard != null && wizard.getFeedbackPanel() != null) {
-      target.addComponent(wizard.getFeedbackPanel());
-    }
+    parentContainer.visitChildren(new Component.IVisitor() {
+
+      public Object component(Component component) {
+        if(component instanceof AbstractOpenAnswerDefinitionPanel) {
+          if(isToBeReseted((AbstractOpenAnswerDefinitionPanel) component)) {
+            log.info("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getModelObject());
+            AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
+            openField.resetField();
+          }
+        }
+        return CONTINUE_TRAVERSAL;
+      }
+
+    });
   }
+
+  /**
+   * When an open field is visited for reseting, this method should answer whether or not the operation should be
+   * performed (usually depending on its associated model).
+   * @param openField
+   * @return
+   * @see #resetOpenAnswerDefinitionPanels(MarkupContainer)
+   */
+  protected abstract boolean isToBeReseted(AbstractOpenAnswerDefinitionPanel openField);
+
+  /**
+   * Does question category has an associated open answer field.
+   * @return
+   */
+  public abstract boolean hasOpenField();
 
 }

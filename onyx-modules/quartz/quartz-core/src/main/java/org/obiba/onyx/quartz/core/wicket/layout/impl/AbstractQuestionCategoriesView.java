@@ -26,19 +26,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * Base class for viewing the question categories in a grid, given a category list and a permutation rule.
+ * @see IDataListPermutator
+ * @see QuestionCategoriesProvider
  */
 public abstract class AbstractQuestionCategoriesView extends GridView {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AbstractQuestionCategoriesView.class);
 
+  /**
+   * A map for creating row items at a given index only once.
+   */
   private Map<Integer, Item> rowIndexToItem = new HashMap<Integer, Item>();
 
-  public AbstractQuestionCategoriesView(String id, IModel questionModel) {
-    this(id, questionModel, null, null);
-  }
-
+  /**
+   * Constructor using a {@link QuestionCategoriesProvider} as a data provider for the grid.
+   * @param id
+   * @param questionModel the question from which categories are extracted
+   * @param filter filters the categories list
+   * @param permutator permute the categories of the list so that it can be presented in a grid
+   */
   public AbstractQuestionCategoriesView(String id, IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<QuestionCategory> permutator) {
     super(id, new QuestionCategoriesProvider(questionModel, filter, permutator));
 

@@ -24,6 +24,10 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.behavior.InvalidFormFieldBehavior;
 import org.obiba.onyx.wicket.toggle.ToggleLink;
 
+/**
+ * Base class for implementing question UIs: it defines the question header including label, help, instructions, comment
+ * etc and content place holder.
+ */
 public abstract class BaseQuestionPanel extends QuestionPanel {
 
   private static final long serialVersionUID = -391676180175754335L;
@@ -156,6 +160,10 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
     imageLink.add(new AttributeModifier("class", new Model("comment-edit")));
   }
 
+  /**
+   * Method to implement for the definition of question content component.
+   * @param string
+   */
   protected abstract void setContent(String string);
 
 }

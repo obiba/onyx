@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * Category column with radio buttons, questions are in the rows.
  */
 public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn {
 
@@ -35,7 +35,7 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
   private IModel radioGroupsModel;
 
   /**
-   * 
+   * Constructor given a way to find the radio group to associate using row index.
    * @param questionCategoryModel
    * @param radioGroupsModel
    */

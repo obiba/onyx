@@ -97,7 +97,7 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
         if(getOpenField() != null) {
           if(!getSelectionModel().isSelected()) {
             resetOpenAnswerDefinitionPanels(QuestionCategoryCheckBoxPanel.this);
-            resetFeedbackPanel(target);
+            updateFeedbackPanel(target);
           }
         }
         onSelection(target, getQuestionModel(), QuestionCategoryCheckBoxPanel.this.getModel());

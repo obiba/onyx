@@ -12,6 +12,10 @@ import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 
+/**
+ * Default question panel factory.
+ * @see DefaultQuestionPanel
+ */
 public class DefaultQuestionPanelFactory implements IQuestionPanelFactory {
 
   public QuestionPanel createPanel(String id, IModel questionModel) {

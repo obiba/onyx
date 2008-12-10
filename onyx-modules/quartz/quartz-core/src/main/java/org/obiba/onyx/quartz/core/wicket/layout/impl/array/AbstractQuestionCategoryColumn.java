@@ -19,6 +19,9 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Base class for building question array columns.
+ */
 public abstract class AbstractQuestionCategoryColumn extends AbstractColumn {
 
   private static final Logger log = LoggerFactory.getLogger(AbstractQuestionCategoryColumn.class);
@@ -35,17 +38,11 @@ public abstract class AbstractQuestionCategoryColumn extends AbstractColumn {
   public void populateItem(final Item cellItem, final String componentId, final IModel rowModel) {
     cellItem.setModel(questionCategoryModel);
     // find the row item index by exploring parents.
-    cellItem.visitParents(Item.class, new Component.IVisitor() {
-
-      public Object component(Component component) {
-        if(!component.equals(cellItem)) {
-          Item item = (Item) component;
-          log.debug("found item.index={}", item.getIndex());
-          populateItem(cellItem, componentId, rowModel, item.getIndex());
-        }
-        return null;
-      }
-    });
+    Item parentItem = (Item) cellItem.findParent(Item.class);
+    if(parentItem != null) {
+      log.debug("found parentItem.index={}", parentItem.getIndex());
+      populateItem(cellItem, componentId, rowModel, parentItem.getIndex());
+    }
   }
 
   @Override

@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.NoSuchMessageException;
 
 /**
- * Get the question categories.
+ * Get the question categories, performing ordering, filtering and permutation when applicable.
  */
 public class QuestionCategoriesProvider extends AbstractDataListProvider<QuestionCategory> {
 

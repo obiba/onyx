@@ -24,6 +24,10 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Escape question categories are a valid way of not answering the normal set of categories (for instance "Prefer not
+ * answer" regarding a multiple choice question). The escape categories are presented in a radio group.
+ */
 public class DefaultEscapeQuestionCategoriesPanel extends Panel {
 
   private static final long serialVersionUID = 5144933183339704600L;
@@ -33,13 +37,27 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
 
   private RadioGroup radioGroup;
 
+  /**
+   * Question category, usefull for joined categories array questions.
+   */
   private IModel parentQuestionCategoryModel;
 
+  /**
+   * Constructor around given question.
+   * @param id
+   * @param questionModel
+   */
   @SuppressWarnings("serial")
   public DefaultEscapeQuestionCategoriesPanel(String id, IModel questionModel) {
     this(id, questionModel, null);
   }
 
+  /**
+   * Constructor, given a question and a parent question category context.
+   * @param id
+   * @param questionModel
+   * @param parentQuestionCategoryModel
+   */
   public DefaultEscapeQuestionCategoriesPanel(String id, IModel questionModel, IModel parentQuestionCategoryModel) {
     super(id, questionModel);
     setOutputMarkupId(true);

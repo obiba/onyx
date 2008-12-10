@@ -44,6 +44,9 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Shared categories question array UI. Children questions are presented in rows, parent question categories in columns.
+ */
 public class DefaultQuestionSharedCategoriesPanel extends Panel {
 
   private static final long serialVersionUID = 5144933183339704600L;
@@ -60,6 +63,11 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
+  /**
+   * Constructor, given the question array (holding the categories, and the children question).
+   * @param id
+   * @param questionModel
+   */
   @SuppressWarnings("serial")
   public DefaultQuestionSharedCategoriesPanel(String id, IModel questionModel) {
     super(id, questionModel);

@@ -92,7 +92,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
         // make sure a previously selected open field is not asked for
         resetOpenAnswerDefinitionPanels(QuestionCategoryRadioPanel.this.radioGroup);
 
-        resetFeedbackPanel(target);
+        updateFeedbackPanel(target);
 
         onSelection(target, getQuestionModel(), getQuestionCategoryModel());
       }

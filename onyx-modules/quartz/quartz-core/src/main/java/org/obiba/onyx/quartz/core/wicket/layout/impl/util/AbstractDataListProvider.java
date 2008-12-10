@@ -16,6 +16,11 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
+/**
+ * Data provider build on a templated list, with filtering and permutation facilities.
+ * 
+ * @param <T>
+ */
 public abstract class AbstractDataListProvider<T extends Serializable> implements IDataProvider {
 
   private static final long serialVersionUID = 1L;

@@ -45,17 +45,6 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
   private DataField openField;
 
   /**
-   * Constructor given the question category (needed for persistency).
-   * @param id
-   * @param questionCategoryModel
-   * @param openAnswerDefinitionModel
-   */
-  public DefaultOpenAnswerDefinitionPanel(String id, IModel questionCategoryModel) {
-    super(id, questionCategoryModel);
-    initialize();
-  }
-
-  /**
    * Constructor.
    * 
    * @param id

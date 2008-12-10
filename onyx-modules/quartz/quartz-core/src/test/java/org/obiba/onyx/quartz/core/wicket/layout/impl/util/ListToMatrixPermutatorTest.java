@@ -34,7 +34,7 @@ public class ListToMatrixPermutatorTest {
   @Test
   public void testPermutation2() {
     List<String> line = Arrays.asList(new String[] { "0", "1", "2", "3", "4", "5", "6", "7" });
-    ListToMatrixPermutator<String> permutator = permute(line, 2, 5);
+    ListToGridPermutator<String> permutator = permute(line, 2, 5);
     Assert.assertEquals(2, permutator.getRow(7));
     Assert.assertEquals(1, permutator.getColumn(7));
   }
@@ -48,7 +48,7 @@ public class ListToMatrixPermutatorTest {
   @Test
   public void testPermutation4() {
     List<String> line = Arrays.asList(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16" });
-    ListToMatrixPermutator<String> permutator = permute(line, 4, 5);
+    ListToGridPermutator<String> permutator = permute(line, 4, 5);
     Assert.assertEquals(3, permutator.getRow(13));
     Assert.assertEquals(2, permutator.getColumn(13));
     Assert.assertEquals(1, permutator.getRow(16));
@@ -56,8 +56,8 @@ public class ListToMatrixPermutatorTest {
     Assert.assertEquals(3, permutator.getColumn(16));
   }
 
-  private ListToMatrixPermutator<String> permute(List<String> line, int columnCountExpected, int rowCountExpected) {
-    ListToMatrixPermutator<String> permutator = new ListToMatrixPermutator<String>();
+  private ListToGridPermutator<String> permute(List<String> line, int columnCountExpected, int rowCountExpected) {
+    ListToGridPermutator<String> permutator = new ListToGridPermutator<String>();
     log.info("matrix={}", permutator.permute(line));
     Assert.assertEquals(columnCountExpected, permutator.getColumnCount());
     Assert.assertEquals(rowCountExpected, permutator.getRowCount());
@@ -65,8 +65,8 @@ public class ListToMatrixPermutatorTest {
     for(int i = 0; i < permutator.getRowCount(); i++) {
       System.out.print("[ ");
       for(int j = 0; j < permutator.getColumnCount(); j++) {
-        if(k < permutator.getMatrixList().size()) {
-          System.out.print(permutator.getMatrixList().get(k) + " ");
+        if(k < permutator.getGridList().size()) {
+          System.out.print(permutator.getGridList().get(k) + " ");
           k++;
         } else {
           System.out.print("- ");

@@ -20,6 +20,7 @@ import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
@@ -31,6 +32,12 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IQuestionAnswerChanged
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.PageQuestionsProvider;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 
+/**
+ * Default page layout implementation, as a list of questions to be answered, presented in their self-provided UI, and
+ * able to deal with in-page conditions resolution updates.
+ * @see IQuestionAnswerChangedListener
+ * @see Condition
+ */
 public class DefaultPageLayout extends PageLayout implements IQuestionAnswerChangedListener {
 
   private static final long serialVersionUID = -1757316578083924986L;
@@ -41,6 +48,11 @@ public class DefaultPageLayout extends PageLayout implements IQuestionAnswerChan
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
+  /**
+   * Constructor, given a questionnaire page.
+   * @param id
+   * @param pageModel
+   */
   @SuppressWarnings("serial")
   public DefaultPageLayout(String id, IModel pageModel) {
     super(id, pageModel);
@@ -79,18 +91,28 @@ public class DefaultPageLayout extends PageLayout implements IQuestionAnswerChan
     add(HeaderContributor.forCss("css/questionnaire.css"));
   }
 
+  /**
+   * Called when going next page, forward it to page questions.
+   */
   public void onNext(AjaxRequestTarget target) {
     for(QuestionPanel panel : getQuestionPanels()) {
       panel.onNext(target);
     }
   }
 
+  /**
+   * Called when going previous page, forward it to page questions.
+   */
   public void onPrevious(AjaxRequestTarget target) {
     for(QuestionPanel panel : getQuestionPanels()) {
       panel.onPrevious(target);
     }
   }
 
+  /**
+   * Get by introspection the question panels (at all depth) of the page.
+   * @return
+   */
   public List<QuestionPanel> getQuestionPanels() {
     final List<QuestionPanel> questionPanels = new ArrayList<QuestionPanel>();
 
@@ -106,6 +128,9 @@ public class DefaultPageLayout extends PageLayout implements IQuestionAnswerChan
     return questionPanels;
   }
 
+  /**
+   * Called when an answer is given to a question and then requires to update the resolution of in-page conditions.
+   */
   public void onQuestionAnswerChanged(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
     for(QuestionPanel panel : getQuestionPanels()) {
       Question question = (Question) panel.getModelObject();

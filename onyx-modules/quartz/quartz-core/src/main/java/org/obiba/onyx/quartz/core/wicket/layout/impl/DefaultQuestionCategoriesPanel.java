@@ -33,6 +33,10 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Panel containing the question categories in a grid view of radios or checkboxes depending the questions multiple
+ * flag.
+ */
 public class DefaultQuestionCategoriesPanel extends Panel {
 
   private static final long serialVersionUID = 5144933183339704600L;
@@ -45,6 +49,9 @@ public class DefaultQuestionCategoriesPanel extends Panel {
 
   private DefaultEscapeQuestionCategoriesPanel escapeQuestionCategoriesPanel;
 
+  /**
+   * Context in which answer are given (case of joined categories question array).
+   */
   private IModel parentQuestionCategoryModel;
 
   /**
@@ -76,6 +83,11 @@ public class DefaultQuestionCategoriesPanel extends Panel {
     }
   }
 
+  /**
+   * Escape categories are presented in an additionnal radio grid view if any.
+   * @return
+   * @see DefaultEscapeQuestionCategoriesPanel
+   */
   private boolean hasEscapeQuestionCategories() {
     for(Category category : ((Question) getModelObject()).getCategories()) {
       if(category.isEscape()) return true;
@@ -85,16 +97,6 @@ public class DefaultQuestionCategoriesPanel extends Panel {
 
   private IModel getQuestionModel() {
     return getModel();
-  }
-
-  private Question getQuestion() {
-    return (Question) getModelObject();
-  }
-
-  private QuestionCategory getParentQuestionCategory() {
-    if(parentQuestionCategoryModel == null) return null;
-
-    return (QuestionCategory) parentQuestionCategoryModel.getObject();
   }
 
   /**

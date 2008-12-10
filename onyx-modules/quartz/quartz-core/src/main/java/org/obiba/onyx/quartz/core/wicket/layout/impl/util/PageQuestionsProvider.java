@@ -28,6 +28,9 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Page questions to be answered provider, performing the condition resolution for each question of the page.
+ */
 public class PageQuestionsProvider implements IDataProvider {
 
   private static final long serialVersionUID = 227294946626164090L;

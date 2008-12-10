@@ -17,7 +17,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 /**
  * 
  */
-public class QuestionCategoriesToMatrixPermutator extends ListToMatrixPermutator<QuestionCategory> {
+public class QuestionCategoriesToMatrixPermutator extends ListToGridPermutator<QuestionCategory> {
 
   private static final long serialVersionUID = 1L;
 
@@ -28,7 +28,7 @@ public class QuestionCategoriesToMatrixPermutator extends ListToMatrixPermutator
     Question question = (Question) questionModel.getObject();
     ValueMap arguments = question.getUIArgumentsValueMap();
     if(arguments != null) {
-      setRowCount(arguments.getInt(ROW_COUNT_KEY, ListToMatrixPermutator.DEFAULT_ROW_COUNT));
+      setRowCount(arguments.getInt(ROW_COUNT_KEY, ListToGridPermutator.DEFAULT_ROW_COUNT));
     }
   }
 

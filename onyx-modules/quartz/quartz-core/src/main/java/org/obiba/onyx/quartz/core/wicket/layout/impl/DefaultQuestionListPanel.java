@@ -20,9 +20,11 @@ import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
 
 /**
- * 
+ * List of questions.
  */
 public class DefaultQuestionListPanel extends Panel {
+
+  private static final long serialVersionUID = 1L;
 
   @SpringBean
   private QuestionPanelFactoryRegistry questionPanelFactoryRegistry;

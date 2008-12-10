@@ -19,7 +19,9 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.util.data.Data;
 
 /**
- * 
+ * Base class the building open answer panels.
+ * @see DefaultOpenAnswerDefinitionPanel
+ * @see MultipleOpenAnswerDefinitionPanel
  */
 public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
 
@@ -30,21 +32,19 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
    */
   private IModel questionModel;
 
+  /**
+   * The open answer definition we are dealing with.
+   */
   private IModel openAnswerDefinitionModel;
 
+  /**
+   * The data being provisionned.
+   */
   private Data data;
 
   /**
-   * 
-   * @param id
-   * @param questionCategoryModel
-   */
-  public AbstractOpenAnswerDefinitionPanel(String id, IModel questionCategoryModel) {
-    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel);
-  }
-
-  /**
-   * 
+   * Constructor, using the question to be associated to the question category. Question is not necessarily the parent
+   * question of the category (case of array questions).
    * @param id
    * @param questionModel
    * @param questionCategoryModel
@@ -54,7 +54,8 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
   }
 
   /**
-   * 
+   * Constructor, using the question to be associated to the question category and the open answer definition. Question
+   * is not necessarily the parent question of the category (case of array questions).
    * @param id
    * @param questionModel
    * @param questionCategoryModel
@@ -90,10 +91,18 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
     return (OpenAnswerDefinition) getOpenAnswerDefinitionModel().getObject();
   }
 
+  /**
+   * Set the current data.
+   * @return
+   */
   public Data getData() {
     return data;
   }
 
+  /**
+   * Get the current data.
+   * @param data
+   */
   public void setData(Data data) {
     this.data = data;
   }
@@ -126,8 +135,15 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
   public void onError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
   }
 
+  /**
+   * Set the model object data of the open field.
+   * @param data
+   */
   public abstract void setFieldModelObject(Data data);
 
+  /**
+   * Call this to reset the open field content.
+   */
   public abstract void resetField();
 
 }

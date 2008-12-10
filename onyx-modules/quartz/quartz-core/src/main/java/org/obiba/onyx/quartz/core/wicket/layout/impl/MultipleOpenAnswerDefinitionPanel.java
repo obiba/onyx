@@ -40,17 +40,6 @@ public class MultipleOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinit
   private List<AbstractOpenAnswerDefinitionPanel> abstractOpenAnswerDefinitionPanels = new ArrayList<AbstractOpenAnswerDefinitionPanel>();
 
   /**
-   * Constructor given the question category (needed for persistency).
-   * @param id
-   * @param questionCategoryModel
-   * @param openAnswerDefinitionModel
-   */
-  public MultipleOpenAnswerDefinitionPanel(String id, IModel questionCategoryModel) {
-    super(id, questionCategoryModel);
-    initialize();
-  }
-
-  /**
    * Constructor.
    * 
    * @param id

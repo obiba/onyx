@@ -23,14 +23,18 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 
 /**
- * 
+ * Question array build around columns definition and row provider: builds the headers, not the cell content.
  */
 public abstract class AbstractQuestionArray extends Panel {
 
   private static final long serialVersionUID = 1L;
 
   /**
+   * Constructor building the headers from the given column headers, and call building cells content.
    * @param id
+   * @param questionModel
+   * @param columns
+   * @param rows
    */
   public AbstractQuestionArray(String id, IModel questionModel, List<IColumn> columns, IDataProvider rows) {
     super(id, questionModel);
@@ -53,6 +57,13 @@ public abstract class AbstractQuestionArray extends Panel {
     add(getRowsContent("rows", columns, rows));
   }
 
+  /**
+   * To be implemented for building array cells.
+   * @param id
+   * @param columns
+   * @param rows
+   * @return
+   */
   public abstract Component getRowsContent(String id, List<IColumn> columns, IDataProvider rows);
 
 }

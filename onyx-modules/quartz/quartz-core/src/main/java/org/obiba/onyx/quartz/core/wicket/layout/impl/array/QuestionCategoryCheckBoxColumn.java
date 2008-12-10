@@ -21,6 +21,9 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCategoryCheckBoxPan
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 
+/**
+ * Category column with check boxes, questions are in the rows.
+ */
 public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColumn {
 
   private static final long serialVersionUID = 1L;
@@ -28,8 +31,9 @@ public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColu
   private IModel checkGroupsModel;
 
   /**
+   * Constructor given a way to find the check box group to associate using row index.
    * @param questionCategoryModel
-   * @param defaultQuestionSharedCategoriesPanel TODO
+   * @param defaultQuestionSharedCategoriesPanel
    */
   public QuestionCategoryCheckBoxColumn(IModel questionCategoryModel, IModel checkGroupsModel) {
     super(questionCategoryModel);

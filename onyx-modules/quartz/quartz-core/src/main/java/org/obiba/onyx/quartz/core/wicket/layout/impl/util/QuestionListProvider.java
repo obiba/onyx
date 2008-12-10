@@ -21,6 +21,9 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Provides the children questions to be answered.
+ */
 public class QuestionListProvider extends AbstractDataListProvider<Question> {
 
   private static final long serialVersionUID = 227294946626164090L;

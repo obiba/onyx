@@ -12,7 +12,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.util;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 
 /**
- * 
+ * Question category filter upon escape category flag.
  */
 public class QuestionCategoryEscapeFilter implements IDataListFilter<QuestionCategory> {
 

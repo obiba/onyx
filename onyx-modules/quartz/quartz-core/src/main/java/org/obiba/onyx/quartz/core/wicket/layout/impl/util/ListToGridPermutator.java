@@ -18,20 +18,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Permute list elements so that it can be displayed in a matrix style: reading is by column, writing is by row. Matrix
- * has a fixed count of rows, columns count is set accordingly.
+ * Permute list elements so that it can be displayed in a grid style: reading is by column, writing is by row. Grid has
+ * a fixed count of rows, columns count is set accordingly.
  */
-public class ListToMatrixPermutator<T> implements IDataListPermutator<T> {
+public class ListToGridPermutator<T> implements IDataListPermutator<T> {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LoggerFactory.getLogger(ListToMatrixPermutator.class);
+  private static final Logger log = LoggerFactory.getLogger(ListToGridPermutator.class);
 
   public static int DEFAULT_ROW_COUNT = 5;
 
   private List<T> lineList;
 
-  private List<T> matrixList;
+  private List<T> gridList;
 
   private Map<Integer, Integer[]> indexMap = new HashMap<Integer, Integer[]>();
 
@@ -39,11 +39,11 @@ public class ListToMatrixPermutator<T> implements IDataListPermutator<T> {
 
   private int columnCount;
 
-  public ListToMatrixPermutator() {
+  public ListToGridPermutator() {
     this(DEFAULT_ROW_COUNT);
   }
 
-  public ListToMatrixPermutator(int rowCount) {
+  public ListToGridPermutator(int rowCount) {
     super();
     this.rowCount = rowCount;
   }
@@ -60,8 +60,8 @@ public class ListToMatrixPermutator<T> implements IDataListPermutator<T> {
     return columnCount;
   }
 
-  public List<T> getMatrixList() {
-    return matrixList;
+  public List<T> getGridList() {
+    return gridList;
   }
 
   public Map<Integer, Integer[]> getIndexMap() {
@@ -84,31 +84,31 @@ public class ListToMatrixPermutator<T> implements IDataListPermutator<T> {
     }
 
     // do permutation
-    matrixList = new ArrayList<T>();
+    gridList = new ArrayList<T>();
     for(int i = 0; i < rowCount; i++) {
       for(int j = 0; j < columnCount; j++) {
         int lineIndex = i + j * rowCount;
-        log.debug("({}, {}) lineIndex={} lineList.size={} matrixList.size={}", new Object[] { i, j, lineIndex, lineList.size(), matrixList.size() });
+        log.debug("({}, {}) lineIndex={} lineList.size={} gridList.size={}", new Object[] { i, j, lineIndex, lineList.size(), gridList.size() });
 
         if(lineIndex < lineList.size()) {
           indexMap.put(lineIndex, new Integer[] { i, j });
           log.debug("       adding index={}", lineIndex);
-          matrixList.add(lineList.get(lineIndex));
+          gridList.add(lineList.get(lineIndex));
         } else {
           // fill remaining rows with null
-          matrixList.add(null);
+          gridList.add(null);
         }
       }
     }
-    while(matrixList.size() > 0 && matrixList.get(matrixList.size() - 1) == null) {
-      matrixList.remove(matrixList.size() - 1);
+    while(gridList.size() > 0 && gridList.get(gridList.size() - 1) == null) {
+      gridList.remove(gridList.size() - 1);
     }
   }
 
   public List<T> permute(List<T> list) {
     this.lineList = list;
     permuteInternal();
-    return matrixList;
+    return gridList;
   }
 
 }

@@ -12,6 +12,10 @@ import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.wicket.layout.IPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
 
+/**
+ * Default page panel factory.
+ * @see DefaultPageLayout
+ */
 public class DefaultPageLayoutFactory implements IPageLayoutFactory {
 
   public PageLayout createLayout(String id, IModel pageModel) {
