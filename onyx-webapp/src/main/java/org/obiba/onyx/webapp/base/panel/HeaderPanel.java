@@ -34,24 +34,24 @@ public class HeaderPanel extends Panel {
 
   public HeaderPanel(String id) {
     super(id);
-    
+
     add(new Label("studyName", new PropertyModel(model, "config.studyName")));
     add(new Label("siteName", new PropertyModel(model, "config.siteName")));
     add(new Label("userLoggedIn", new PropertyModel(model, "userLoggedIn.fullName")));
-    
-    add(new Link("profile"){
+
+    add(new Link("profile") {
 
       private static final long serialVersionUID = 1L;
 
       @Override
       public void onClick() {
         OnyxAuthenticatedSession.get().getUser();
-        setResponsePage(ProfilePage.class);
+        setResponsePage(new ProfilePage(getPage().getPageMapEntry().getNumericId()));
       }
     });
-    
+
     add(new Link("quit") {
-      
+
       private static final long serialVersionUID = 1L;
 
       @Override
@@ -73,12 +73,12 @@ public class HeaderPanel extends Panel {
 
     public ApplicationConfiguration getConfig() {
       ApplicationConfiguration template = new ApplicationConfiguration();
-      //  TODO not supposed to happen, but test environment was broken
-      for (ApplicationConfiguration conf : queryService.match(template)) {
+      // TODO not supposed to happen, but test environment was broken
+      for(ApplicationConfiguration conf : queryService.match(template)) {
         return conf;
       }
       return null;
-      //return ( queryService.matchOne( template ) );
+      // return ( queryService.matchOne( template ) );
     }
 
   }

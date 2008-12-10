@@ -38,9 +38,9 @@ public abstract class ChangePasswordPanel extends Panel {
   @SpringBean
   private UserService userService;
 
-  public ChangePasswordPanel(String id) {
+  public ChangePasswordPanel(String id, int previousPageId) {
     super(id);
-    add(new ChangePasswordForm("changePasswordForm"));
+    add(new ChangePasswordForm("changePasswordForm", previousPageId));
   }
 
   private class ChangePasswordForm extends Form {
@@ -49,7 +49,7 @@ public abstract class ChangePasswordPanel extends Panel {
 
     ChangePasswordPanelModel model = new ChangePasswordPanelModel();
 
-    public ChangePasswordForm(String id) {
+    public ChangePasswordForm(String id, final int previousPageId) {
       super(id);
 
       PasswordTextField password = new PasswordTextField("password", new PropertyModel(model, "password"));
@@ -96,8 +96,7 @@ public abstract class ChangePasswordPanel extends Panel {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          int currentPageId = getPage().getPageMapEntry().getNumericId();
-          setResponsePage(getPage().getPageMap().get((currentPageId - 1), -1));
+          setResponsePage(getPage().getPageMap().get(previousPageId, -1));
         }
       });
     }

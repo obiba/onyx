@@ -32,7 +32,7 @@ public class ProfilePage extends BasePage {
   @SpringBean
   private UserService userService;
 
-  public ProfilePage() {
+  public ProfilePage(int previousPageId) {
     super();
 
     AjaxLanguageChoicePanel languageSelect = new AjaxLanguageChoicePanel("languageSelect", new StringResourceModel("Language", this, null), Arrays.asList(new Locale[] { Locale.FRENCH, Locale.ENGLISH })) {
@@ -61,7 +61,7 @@ public class ProfilePage extends BasePage {
 
     add(languageSelect);
 
-    ChangePasswordPanel changePassword = new ChangePasswordPanel("changePassword") {
+    ChangePasswordPanel changePassword = new ChangePasswordPanel("changePassword", previousPageId) {
       private static final long serialVersionUID = 1L;
 
       public void onSuccess() {
