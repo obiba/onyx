@@ -1,103 +1,104 @@
 /*
 * Default Questionnaire elements stylesheet.
 */
-div.page {
+.page {
 	
 }
 
-div.page div.section {
+.section {
 	font-weight: bold;
 	font-size: larger;	
 	padding-bottom:10px;
 }
 
-div.page div.label {
+.page > div.label {
 	line-height:1.4;
 }
 
-div.page div.questions {
+.questions {
 	padding-bottom:10px;
 }
 
-div.page div.questions div.boilerplate {
+.boilerplate {
+	line-height:1.4;
 }
 
-div.page div.questions div.question {
+.question {
 }
 
-div.page div.questions div.question div.label {
+.question > div.label {
 	font-weight: bold;
 	padding-bottom:5px;
 	padding-top:5px;
 }
 
-div.page div.questions div.question span.help-toggle {
+.help-toggle {
 	background: url(../images/icons/16X16/help2.gif) no-repeat;
 	margin-left: 5px;
 }
 
-div.page div.questions div.question span.help-toggle a:hover {
+.help-toggle a:hover {
 	text-decoration: none;
 }
 
-div.page div.questions div.question span.comment-add {
+.comment-add {
 	background: url(../images/icons/16X16/message_add.gif) no-repeat;
 	margin-left: 10px;
 }
 
-div.page div.questions div.question span.comment-edit {
+.comment-edit {
 	background: url(../images/icons/16X16/message_edit.gif) no-repeat;
 	margin-left: 10px;
 }
 
-div.page div.questions div.question span.comment-edit a:hover {
+.comment-edit a:hover {
 	text-decoration: none;
 }
 
-div.page div.questions div.question span.existing-comment-edit a:hover {
+.existing-comment-edit a:hover {
 	text-decoration: none;
 }
 
-div.page div.questions div.question div.help {
+.help {
 	padding:5px;
 	margin-top:5px;
 	background-color:#F0F0F0;
 	border:1px solid #BBBBBB;
 }
 
-div.page div.questions div.question div.instructions {
+.instructions {
 	font-style: italic;
 	padding-bottom:5px;
 }
 
-div.page div.questions div.question div.caption {
+.caption {
 	padding-left:15px;
 	padding-bottom:5px;
 }
 
-div.page div.questions div.question div.specifications {
+.specifications {
 	padding-bottom:5px;
 	padding-top:5px;
 }
 
-div.page div.questions div.question div.categories {
+.categories {
 	padding-left:15px;
 }
 
-div.page div.questions div.question div.categories td.category {
+.categories td.category {
 	padding-right:10px;
 }
 
-div.page div.questions div.question div.categories td.category label.label {
+.category .label {
 }
 
-div.page div.questions div.question div.categories td.category label.label-open {
+label.label-open {
 	/*margin-left:25px;*/
 	float:left;
 	margin-right:5px;
 }
 
-div.page div.questions div.question div.categories td.category div.open {
+div.open {
 	float:right;
 }
 
@@ -112,7 +113,7 @@ table.array tr.headers th.category {
 	padding:10px;
 	font-weight: normal;
 	text-align:center;
-	width: 100px;
+	/*width: 100px;*/
 }
 
 table.array tr.even {
@@ -152,6 +153,9 @@ div.page div.question div.categories div.category {
 
 .radio-open {
 	/*display: none;*/
+}
+
+.checkbox-open {
 }
 
 div.field-invalid {
