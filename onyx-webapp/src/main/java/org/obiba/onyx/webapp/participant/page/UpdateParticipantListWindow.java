@@ -97,7 +97,8 @@ public class UpdateParticipantListWindow extends ModalWindow {
   }
 
   public void showResult(boolean updateSucceeded) {
-    IModel messageModel = new ResourceModel(updateSucceeded ? "ParticipantsListSuccessfullyUpdated" : "ParticipantListUpdateFailed");
+    String messageKey = updateSucceeded ? "ParticipantsListSuccessfullyUpdated" : "ParticipantListUpdateFailed";
+    IModel messageModel = new ResourceModel(messageKey, messageKey);
     resultFragment.resultLabel.setModel(messageModel);
 
     replaceOrAddFragment(resultFragment);
@@ -119,7 +120,7 @@ public class UpdateParticipantListWindow extends ModalWindow {
   // Inner Classes
   //
 
-  private class ConfirmationFragment extends Fragment {
+  class ConfirmationFragment extends Fragment {
 
     private static final long serialVersionUID = 1L;
 
@@ -176,7 +177,7 @@ public class UpdateParticipantListWindow extends ModalWindow {
     }
   }
 
-  private class ProgressFragment extends Fragment {
+  class ProgressFragment extends Fragment {
 
     private static final long serialVersionUID = 1L;
 
@@ -195,7 +196,7 @@ public class UpdateParticipantListWindow extends ModalWindow {
     }
   }
 
-  private class ResultFragment extends Fragment {
+  class ResultFragment extends Fragment {
 
     private static final long serialVersionUID = 1L;
 
