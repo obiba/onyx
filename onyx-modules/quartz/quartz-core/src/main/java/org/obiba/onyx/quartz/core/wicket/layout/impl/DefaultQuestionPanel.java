@@ -43,7 +43,7 @@ public class DefaultQuestionPanel extends BaseQuestionPanel {
       if(shared) {
         add(new DefaultQuestionSharedCategoriesPanel(id, getModel()));
       } else {
-        add(new DefaultQuestionJoinedCategoriesPanel(id, getModel()));
+        throw new UnsupportedOperationException("Joined categories array questions not supported yet");
       }
     }
   }
