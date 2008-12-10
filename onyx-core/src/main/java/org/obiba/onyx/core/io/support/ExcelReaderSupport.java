@@ -52,19 +52,14 @@ public class ExcelReaderSupport {
     Date rvalue = null;
 
     if(cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
-      evaluator.evaluate(cell);
       HSSFFormulaEvaluator.CellValue cellValue = evaluator.evaluate(cell);
 
-      switch(cellValue.getCellType()) {
-      case HSSFCell.CELL_TYPE_NUMERIC:
+      if(cellValue.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
         rvalue = cell.getDateCellValue();
-        break;
       }
     } else {
-      switch(cell.getCellType()) {
-      case HSSFCell.CELL_TYPE_NUMERIC:
+      if(cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
         rvalue = cell.getDateCellValue();
-        break;
       }
     }
 
@@ -79,19 +74,14 @@ public class ExcelReaderSupport {
     Double rvalue = null;
 
     if(cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
-      evaluator.evaluate(cell);
       HSSFFormulaEvaluator.CellValue cellValue = evaluator.evaluate(cell);
 
-      switch(cellValue.getCellType()) {
-      case HSSFCell.CELL_TYPE_NUMERIC:
+      if(cellValue.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
         rvalue = cellValue.getNumberValue();
-        break;
       }
     } else {
-      switch(cell.getCellType()) {
-      case HSSFCell.CELL_TYPE_NUMERIC:
+      if(cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
         rvalue = cell.getNumericCellValue();
-        break;
       }
     }
 
@@ -106,13 +96,10 @@ public class ExcelReaderSupport {
     String rvalue = null;
 
     if(cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
-      evaluator.evaluate(cell);
       HSSFFormulaEvaluator.CellValue cellValue = evaluator.evaluate(cell);
 
-      switch(cellValue.getCellType()) {
-      case HSSFCell.CELL_TYPE_STRING:
+      if(cellValue.getCellType() == HSSFCell.CELL_TYPE_STRING) {
         rvalue = cellValue.getStringValue();
-        break;
       }
     } else {
       switch(cell.getCellType()) {
@@ -138,13 +125,10 @@ public class ExcelReaderSupport {
     String textValue = null;
 
     if(cell.getCellType() == HSSFCell.CELL_TYPE_FORMULA) {
-      evaluator.evaluate(cell);
       HSSFFormulaEvaluator.CellValue cellValue = evaluator.evaluate(cell);
 
-      switch(cellValue.getCellType()) {
-      case HSSFCell.CELL_TYPE_STRING:
+      if(cellValue.getCellType() == HSSFCell.CELL_TYPE_STRING) {
         textValue = cellValue.getStringValue();
-        break;
       }
     } else if(cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
       textValue = cell.getRichStringCellValue().getString();

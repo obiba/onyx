@@ -268,20 +268,14 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
   }
 
   private Appointment processAppointment(HSSFRow row, HSSFFormulaEvaluator evaluator) {
-    ParticipantAttribute attribute = null;
+    Appointment appointment = new Appointment();
     Data data = null;
 
-    Appointment appointment = new Appointment();
-
-    attribute = participantMetadata.getEssentialAttribute(ENROLLMENT_ID_ATTRIBUTE_NAME);
-    data = getAttributeValue(attribute, row.getCell(attributeNameToColumnIndexMap.get(ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    checkMandatoryCondition(attribute, data);
+    data = getEssentialAttributeValue(ENROLLMENT_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
     String enrollmentId = data.getValue();
     appointment.setAppointmentCode(enrollmentId);
 
-    attribute = participantMetadata.getEssentialAttribute(APPOINTMENT_TIME_ATTRIBUTE_NAME);
-    data = getAttributeValue(attribute, row.getCell(attributeNameToColumnIndexMap.get(APPOINTMENT_TIME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    checkMandatoryCondition(attribute, data);
+    data = getEssentialAttributeValue(APPOINTMENT_TIME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(APPOINTMENT_TIME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
     Date appointmentTime = data.getValue();
     appointment.setDate(appointmentTime);
 
@@ -291,42 +285,29 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
   protected void setParticipantEssentialAttributes(Participant participant, HSSFRow row, HSSFFormulaEvaluator evaluator) {
     participant.setRecruitmentType(RecruitmentType.ENROLLED);
 
-    ParticipantAttribute attribute = null;
     Data data = null;
 
-    attribute = participantMetadata.getEssentialAttribute(ENROLLMENT_ID_ATTRIBUTE_NAME);
-    data = getAttributeValue(attribute, row.getCell(attributeNameToColumnIndexMap.get(ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    checkMandatoryCondition(attribute, data);
+    data = getEssentialAttributeValue(ENROLLMENT_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ENROLLMENT_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
     String enrollmentId = data.getValue();
     participant.setEnrollmentId(enrollmentId);
 
-    attribute = participantMetadata.getEssentialAttribute(ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME);
-    data = getAttributeValue(attribute, row.getCell(attributeNameToColumnIndexMap.get(ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    checkMandatoryCondition(attribute, data);
+    data = getEssentialAttributeValue(ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(ASSESSMENT_CENTER_ID_ATTRIBUTE_NAME.toUpperCase())), evaluator);
     String assessmentCenterId = data.getValue();
     participant.setSiteNo(assessmentCenterId);
 
-    attribute = participantMetadata.getEssentialAttribute(FIRST_NAME_ATTRIBUTE_NAME);
-    data = getAttributeValue(attribute, row.getCell(attributeNameToColumnIndexMap.get(FIRST_NAME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    checkMandatoryCondition(attribute, data);
+    data = getEssentialAttributeValue(FIRST_NAME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(FIRST_NAME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
     String firstName = data.getValue();
     participant.setFirstName(firstName);
 
-    attribute = participantMetadata.getEssentialAttribute(LAST_NAME_ATTRIBUTE_NAME);
-    data = getAttributeValue(attribute, row.getCell(attributeNameToColumnIndexMap.get(LAST_NAME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    checkMandatoryCondition(attribute, data);
+    data = getEssentialAttributeValue(LAST_NAME_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(LAST_NAME_ATTRIBUTE_NAME.toUpperCase())), evaluator);
     String lastName = data.getValue();
     participant.setLastName(lastName);
 
-    attribute = participantMetadata.getEssentialAttribute(BIRTH_DATE_ATTRIBUTE_NAME);
-    data = getAttributeValue(attribute, row.getCell(attributeNameToColumnIndexMap.get(BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    checkMandatoryCondition(attribute, data);
+    data = getEssentialAttributeValue(BIRTH_DATE_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())), evaluator);
     Date birthDate = data.getValue();
     participant.setBirthDate(birthDate);
 
-    attribute = participantMetadata.getEssentialAttribute(GENDER_ATTRIBUTE_NAME);
-    data = getAttributeValue(attribute, row.getCell(attributeNameToColumnIndexMap.get(GENDER_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    checkMandatoryCondition(attribute, data);
+    data = getEssentialAttributeValue(GENDER_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(GENDER_ATTRIBUTE_NAME.toUpperCase())), evaluator);
     String gender = data.getValue();
     if(gender.equals("M")) {
       participant.setGender(Gender.MALE);
@@ -380,8 +361,28 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
     participant.setConfiguredAttributeValue(attribute.getName(), data);
   }
 
+  private Data getEssentialAttributeValue(String attributeName, HSSFCell cell, HSSFFormulaEvaluator evaluator) {
+    ParticipantAttribute attribute = participantMetadata.getEssentialAttribute(attributeName);
+    Data data = getAttributeValue(attribute, cell, evaluator);
+
+    return data;
+  }
+
+  /**
+   * Returns the value of the participant attribute stored in the specified data cell.
+   * 
+   * @param attribute participant attribute
+   * @param cell data cell
+   * @param evaluator cell evaluator
+   * @return attribute value (or <code>null</code> if none)
+   * @throws IllegalArgumentException if the cell type is not compatible with the attribute type, or if the attribute is
+   * mandatory but its value is <code>null</code>
+   */
   private Data getAttributeValue(ParticipantAttribute attribute, HSSFCell cell, HSSFFormulaEvaluator evaluator) {
-    if(cell == null) return null;
+    if(cell == null) {
+      checkMandatoryCondition(attribute, null);
+      return null;
+    }
 
     Data data = null;
 
@@ -414,6 +415,8 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
     if(attribute.getType().equals(DataType.TEXT) && data != null) {
       checkValueAllowed(attribute, data);
     }
+
+    checkMandatoryCondition(attribute, data);
 
     return data;
   }
