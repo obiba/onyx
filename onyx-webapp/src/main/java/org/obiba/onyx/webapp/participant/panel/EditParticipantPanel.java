@@ -18,6 +18,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -355,6 +356,7 @@ public class EditParticipantPanel extends Panel {
 
           if(attribute.isMandatoryAtReception() == true) field.setRequired(true);
           field.setLabel(new SpringStringResourceModel(new PropertyModel(attribute, "name")));
+          field.getField().add(new AttributeAppender("class", true, new Model("nofocus"), " "));
 
           item.add(field);
         } else {
