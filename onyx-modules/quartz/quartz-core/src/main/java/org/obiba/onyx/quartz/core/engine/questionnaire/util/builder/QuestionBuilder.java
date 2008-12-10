@@ -21,7 +21,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultQuestionPanelFactory;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesToMatrixPermutator;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.util.data.Data;
 
 /**
@@ -240,7 +240,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @return
    */
   public QuestionBuilder setRowCount(int count) {
-    return addUIArgument(QuestionCategoriesToMatrixPermutator.ROW_COUNT_KEY, Integer.toString(count));
+    return addUIArgument(QuestionCategoryListToGridPermutator.ROW_COUNT_KEY, Integer.toString(count));
   }
 
   /**

@@ -26,7 +26,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesToMatrixPermutator;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
@@ -110,7 +110,7 @@ public class DefaultQuestionCategoriesPanel extends Panel {
     radioGroup.add(new AnswerCountValidator(getQuestionModel()));
     add(radioGroup);
 
-    GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), null, new QuestionCategoriesToMatrixPermutator(getModel())) {
+    GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), null, new QuestionCategoryListToGridPermutator(getModel())) {
 
       @Override
       protected void populateItem(Item item) {
@@ -152,7 +152,7 @@ public class DefaultQuestionCategoriesPanel extends Panel {
     checkGroup.add(new AnswerCountValidator(getQuestionModel()));
     add(checkGroup);
 
-    GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), new QuestionCategoryEscapeFilter(false), new QuestionCategoriesToMatrixPermutator(getModel())) {
+    GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), new QuestionCategoryEscapeFilter(false), new QuestionCategoryListToGridPermutator(getModel())) {
 
       @Override
       protected void populateItem(Item item) {

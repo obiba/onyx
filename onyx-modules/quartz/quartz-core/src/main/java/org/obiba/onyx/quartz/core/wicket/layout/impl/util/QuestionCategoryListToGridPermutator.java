@@ -15,15 +15,15 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 
 /**
- * 
+ * Turns the list of question categories, in a grid representation.
  */
-public class QuestionCategoriesToMatrixPermutator extends ListToGridPermutator<QuestionCategory> {
+public class QuestionCategoryListToGridPermutator extends ListToGridPermutator<QuestionCategory> {
 
   private static final long serialVersionUID = 1L;
 
   public static final String ROW_COUNT_KEY = "rowCount";
 
-  public QuestionCategoriesToMatrixPermutator(IModel questionModel) {
+  public QuestionCategoryListToGridPermutator(IModel questionModel) {
     super();
     Question question = (Question) questionModel.getObject();
     ValueMap arguments = question.getUIArgumentsValueMap();
