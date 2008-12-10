@@ -48,6 +48,11 @@ public abstract class AbstractQuestionCategoryColumn extends AbstractColumn {
     });
   }
 
+  @Override
+  public Component getHeader(String componentId) {
+    return super.getHeader(componentId).setEscapeModelStrings(false);
+  }
+
   /**
    * Get the question category model.
    * @return
@@ -74,7 +79,7 @@ public abstract class AbstractQuestionCategoryColumn extends AbstractColumn {
    * Called when a ajax refresh is required.
    * @param target
    */
-  public void onSelection(AjaxRequestTarget target) {
+  public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
 
   }
 

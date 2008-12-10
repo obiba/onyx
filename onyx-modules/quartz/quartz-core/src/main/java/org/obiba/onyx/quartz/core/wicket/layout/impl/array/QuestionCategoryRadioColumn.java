@@ -57,7 +57,7 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
       @Override
       public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
         // call for refresh
-        QuestionCategoryRadioColumn.this.onSelection(target);
+        QuestionCategoryRadioColumn.this.onSelection(target, questionModel, questionCategoryModel);
       }
 
     });

@@ -144,6 +144,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends Panel {
    * @param target
    * @param questionModel
    * @param questionCategoryModel
+   * @see IQuestionAnswerChangedListener
    */
   protected void fireQuestionAnswerChanged(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
     IQuestionAnswerChangedListener parentListener = (IQuestionAnswerChangedListener) findParent(IQuestionAnswerChangedListener.class);

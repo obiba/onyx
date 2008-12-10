@@ -37,6 +37,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.array.QuestionCategoryCheck
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.QuestionCategoryRadioColumn;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.RadioGroupView;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.AbstractDataListProvider;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IQuestionAnswerChangedListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
@@ -88,7 +89,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
 
       public void populateItem(Item cellItem, String componentId, IModel rowModel) {
         Question question = (Question) rowModel.getObject();
-        cellItem.add(new Label(componentId, new QuestionnaireStringResourceModel(question, "label")));
+        cellItem.add(new Label(componentId, new QuestionnaireStringResourceModel(question, "label")).setEscapeModelStrings(false));
         cellItem.add(new AttributeAppender("class", new Model("label"), " "));
       }
 
@@ -101,9 +102,10 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
       for(QuestionCategory questionCategory : provider.getDataList()) {
         columns.add(new QuestionCategoryRadioColumn(new QuestionnaireModel(questionCategory), new PropertyModel(this, "radioGroupView.groups")) {
           @Override
-          public void onSelection(AjaxRequestTarget target) {
+          public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
             log.info("radioColumn.onEvent()");
             target.addComponent(array);
+            fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
           }
         });
       }
@@ -120,9 +122,10 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
       for(QuestionCategory questionCategory : provider.getDataList()) {
         columns.add(new QuestionCategoryCheckBoxColumn(new QuestionnaireModel(questionCategory), new PropertyModel(this, "checkGroupView.groups")) {
           @Override
-          public void onSelection(AjaxRequestTarget target) {
+          public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
             log.info("checkboxColumn.onEvent()");
             target.addComponent(array);
+            fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
           }
 
         });
@@ -181,6 +184,20 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
    */
   public CheckGroupView getCheckGroupView() {
     return checkGroupView;
+  }
+
+  /**
+   * Find the first parent that will to be warned about a changing question answer.
+   * @param target
+   * @param questionModel
+   * @param questionCategoryModel
+   * @see IQuestionAnswerChangedListener
+   */
+  protected void fireQuestionAnswerChanged(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+    IQuestionAnswerChangedListener parentListener = (IQuestionAnswerChangedListener) findParent(IQuestionAnswerChangedListener.class);
+    if(parentListener != null) {
+      parentListener.onQuestionAnswerChanged(target, questionModel, questionCategoryModel);
+    }
   }
 
 }

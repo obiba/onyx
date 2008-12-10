@@ -50,7 +50,7 @@ public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColu
 
       @Override
       public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-        QuestionCategoryCheckBoxColumn.this.onSelection(target);
+        QuestionCategoryCheckBoxColumn.this.onSelection(target, questionModel, questionCategoryModel);
       }
 
     });

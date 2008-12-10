@@ -8,14 +8,17 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -111,6 +114,9 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
       // there is an open field
       openField = newOpenAnswerDefinitionPanel("open");
       add(openField);
+
+      checkbox.add(new AttributeAppender("class", new Model("checkbox-open"), " "));
+      checkboxLabel.add(new AttributeModifier("class", new Model("label-open")));
 
     } else {
       // no open answer
