@@ -403,6 +403,7 @@ public class ParticipantSearchPage extends BasePage {
 
     @SuppressWarnings("serial")
     public ParticipantListColumnProvider() {
+      if(participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.ENROLLED)) columns.add(new PropertyColumn(new StringResourceModel("EnrollmentId", ParticipantSearchPage.this, null), "enrollmentId", "enrollmentId"));
       columns.add(new PropertyColumn(new StringResourceModel("ParticipantCode", ParticipantSearchPage.this, null), "barcode", "barcode"));
       columns.add(new PropertyColumn(new StringResourceModel("LastName", ParticipantSearchPage.this, null), "lastName", "lastName"));
       columns.add(new PropertyColumn(new StringResourceModel("FirstName", ParticipantSearchPage.this, null), "firstName", "firstName"));
