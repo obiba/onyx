@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -161,6 +162,9 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
     IParticipantReadListener listener = null;
 
+    final List<Participant> updatedParticipant = new ArrayList<Participant>();
+    final List<Participant> createdParticipant = new ArrayList<Participant>();
+
     participantReader.addParticipantReadListener(listener = new IParticipantReadListener() {
 
       public void onParticipantRead(int line, Participant participant) throws ValidationRuntimeException {
@@ -173,7 +177,13 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
           persistedParticipant.setEnrollmentId(participant.getEnrollmentId());
           persistedParticipant = getPersistenceManager().matchOne(persistedParticipant);
 
-          if(persistedParticipant == null && isNewAppointmentDateValid(participant, line) == true) {
+          if(persistedParticipant == null) {
+            if(isNewAppointmentDateValid(participant, line) == false) {
+              SimpleDateFormat formater = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+              vex.reject(participant, "AppointmentDatePassed", new String[] { Integer.toString(line), participant.getEnrollmentId(), formater.format(participant.getAppointment().getDate()) }, "Participant's appointment date is passed.");
+              return;
+            }
+
             log.debug("adding participant={}", participant.getEnrollmentId());
             getPersistenceManager().save(participant);
             getPersistenceManager().save(participant.getAppointment());
@@ -181,6 +191,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
             for(ParticipantAttributeValue configuredAttribute : participant.getConfiguredAttributeValues()) {
               getPersistenceManager().save(configuredAttribute);
             }
+            createdParticipant.add(participant);
 
           } else if(persistedParticipant != null) {
             log.debug("persistedParticipant.interview={}", persistedParticipant.getInterview());
@@ -194,12 +205,12 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
               // update its appointment date
               Appointment appointment = persistedParticipant.getAppointment();
               if(persistedParticipant.getAppointment() == null) {
+                // new appointment
                 log.debug("adding participant.appointment={}", participant.getEnrollmentId());
                 appointment = participant.getAppointment();
                 appointment.setParticipant(persistedParticipant);
                 getPersistenceManager().save(appointment);
               } else {
-
                 // appointment in database exists
                 if(participant.getAppointment().getDate().equals(persistedParticipant.getAppointment().getDate())) {
                   appointmentListUpdatelog.warn("Line {}: Appointment date for participant {} same in database => participant update ignored", line, participant.getAppointment().getDate());
@@ -208,8 +219,9 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
                 persistedParticipant.getAppointment().setDate(participant.getAppointment().getDate());
                 getPersistenceManager().save(persistedParticipant.getAppointment());
-
               }
+
+              updatedParticipant.add(participant);
             }
           }
         }
@@ -217,17 +229,15 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
       public void onParticipantReadEnd(int line) throws ValidationRuntimeException {
         if(vex.getAllObjectErrors().size() > 0) throw vex;
+        appointmentListUpdatelog.info("Number of participants created: {}", createdParticipant.size());
+        appointmentListUpdatelog.info("Number of participants updated: {}", updatedParticipant.size());
       }
 
-      private boolean isNewAppointmentDateValid(Participant participant, Integer line) throws ValidationRuntimeException {
+      private boolean isNewAppointmentDateValid(Participant participant, Integer line) {
         Date newAppointmentDate = participant.getAppointment().getDate();
         if(newAppointmentDate != null && newAppointmentDate.compareTo(new Date()) < 0) {
           SimpleDateFormat formater = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-          appointmentListUpdatelog.error("Abort updating appointments: Error at line {}: Appointment date {} is passed", line, formater.format(participant.getAppointment().getDate()));
-          vex.reject(participant, "AppointmentDatePassed", new String[] { Integer.toString(line), participant.getEnrollmentId(), formater.format(participant.getAppointment().getDate()) }, "Participant's appointment date is passed.");
-          if(vex.getAllObjectErrors().size() == 10) {
-            throw vex;
-          }
+          appointmentListUpdatelog.error("Abort updating appointments: Error at line {}: Appointment date {} is passed", line, formater.format(newAppointmentDate));
           return false;
         } else
           return true;
