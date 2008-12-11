@@ -26,8 +26,6 @@ public class QuestionnaireWizardPanel extends WizardPanel {
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  private QuestionnaireWizardForm wizardForm;
-
   //
   // Constructors
   //
@@ -35,8 +33,8 @@ public class QuestionnaireWizardPanel extends WizardPanel {
   public QuestionnaireWizardPanel(String id, IModel questionnaireModel, StageModel stageModel, boolean resuming) {
     super(id, questionnaireModel);
 
-    wizardForm.setStageModel(stageModel);
-    wizardForm.initStartStep(resuming);
+    getQuestionnaireWizardForm().setStageModel(stageModel);
+    getQuestionnaireWizardForm().initStartStep(resuming);
   }
 
   //
@@ -45,29 +43,27 @@ public class QuestionnaireWizardPanel extends WizardPanel {
 
   @Override
   public WizardForm createForm(String componentId) {
-    wizardForm = new QuestionnaireWizardForm(componentId, getModel());
-
-    return wizardForm;
+    return new QuestionnaireWizardForm(componentId, getModel());
   }
 
   //
   // Methods
   //
 
-  public WizardForm getWizardForm() {
-    return wizardForm;
+  public QuestionnaireWizardForm getQuestionnaireWizardForm() {
+    return (QuestionnaireWizardForm) getWizardForm();
   }
 
   public void setActionWindow(ActionWindow window) {
-    wizardForm.setActionWindow(window);
+    getQuestionnaireWizardForm().setActionWindow(window);
   }
 
   public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
-    wizardForm.setFeedbackPanel(feedbackPanel);
+    getQuestionnaireWizardForm().setFeedbackPanel(feedbackPanel);
   }
 
   public FeedbackPanel getFeedbackPanel() {
-    return wizardForm.getFeedbackPanel();
+    return getQuestionnaireWizardForm().getFeedbackPanel();
   }
 
   /**

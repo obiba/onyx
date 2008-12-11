@@ -21,19 +21,23 @@ public abstract class WizardPanel extends Panel {
   @SpringBean
   protected EntityQueryService queryService;
 
-  private WizardForm form;
+  private WizardForm wizardForm;
 
   public WizardPanel(String id, IModel model) {
     super(id);
     setModel(model);
 
-    form = createForm("form");
-    add(form);
-    
+    wizardForm = createForm("form");
+    add(wizardForm);
+
   }
-  
+
+  public WizardForm getWizardForm() {
+    return wizardForm;
+  }
+
   public boolean isCanceled() {
-    return form.isCanceled();
+    return wizardForm.isCanceled();
   }
 
   public abstract WizardForm createForm(String componentId);
@@ -42,5 +46,4 @@ public abstract class WizardPanel extends Panel {
     return queryService;
   }
 
-  
 }

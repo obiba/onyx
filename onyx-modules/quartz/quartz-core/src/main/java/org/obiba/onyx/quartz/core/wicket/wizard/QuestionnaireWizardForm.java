@@ -173,6 +173,8 @@ public class QuestionnaireWizardForm extends WizardForm {
     };
     link.add(new AttributeModifier("value", true, new StringResourceModel("Interrupt", QuestionnaireWizardForm.this, null)));
     add(link);
+
+    // add(new ToggleLink("more", new Model("More"), new Model("Less"), link));
   }
 
   public Component getInterruptLink() {
