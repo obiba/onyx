@@ -1,8 +1,14 @@
 /*
 * Default Questionnaire elements stylesheet.
 */
+
+.questionnaire-form-data {
+	border-bottom:1px solid #375FB7;
+	overflow:auto;
+	margin-bottom:10px;
+}
+
 .page {
-	
 }
 
 .section {
