@@ -609,21 +609,6 @@
     </repository>
 
     <repository>
-      <id>spring-s3</id>
-      <name>Springframework Maven SNAPSHOT (and milestone) Repository</name>
-      <url>http://s3.amazonaws.com/maven.springframework.org/snapshot</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-
-    <repository>
-      <id>spring-s3.milestones</id>
-      <name>Spring Portfolio Maven MILESTONE Repository</name>
-      <url>http://s3.amazonaws.com/maven.springframework.org/milestone</url>
-    </repository>
-
-    <repository>
       <id>org.wicketstuff</id>
       <name>Wicket Stuff Repository</name>
       <url>http://wicketstuff.org/maven/repository</url>
@@ -677,7 +662,7 @@
 
   <properties>
     <wicket.version>1.3.5</wicket.version>
-    <spring.version>2.5.5</spring.version>
+    <spring.version>2.5.6</spring.version>
     <slf4j.version>1.4.3</slf4j.version>
     <obiba.commons.version>1.0.2-SNAPSHOT</obiba.commons.version>
     <jta.version>1.0.1B</jta.version>
