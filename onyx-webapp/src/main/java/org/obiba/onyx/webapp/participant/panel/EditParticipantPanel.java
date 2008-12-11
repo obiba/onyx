@@ -73,6 +73,17 @@ public class EditParticipantPanel extends Panel {
   // edit step for participants
   private static final String EDIT = "edit";
 
+  // constant for fixed attributes
+  private static String BARCODE = "barcode";
+
+  private static String FIRST_NAME = "firstName";
+
+  private static String LAST_NAME = "lastName";
+
+  private static String GENDER = "gender";
+
+  private static String BIRTH_DATE = "birthDate";
+
   @SpringBean
   private ParticipantMetadata participantMetadata;
 
@@ -135,7 +146,6 @@ public class EditParticipantPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings("serial")
     public EditParticipantForm(String id, final IModel participantModel, final ModalWindow modalWindow) {
       super(id, participantModel);
 
@@ -156,17 +166,17 @@ public class EditParticipantPanel extends Panel {
       }
 
       if(mode.equals(EDIT)) {
-        add(new RowFragment("barcode", getModel(), "ParticipantCode", "barcode"));
-        add(new RowFragment("firstName", getModel(), "FirstName", "firstName"));
-        add(new RowFragment("lastName", getModel(), "LastName", "lastName"));
-        add(new RowFragment("gender", getModel(), "Gender", "gender"));
-        add(new RowFragment("birthDate", getModel(), "BirthDate", "birthDate"));
+        add(new RowFragment(BARCODE, getModel(), "ParticipantCode", BARCODE));
+        add(new RowFragment(FIRST_NAME, getModel(), "FirstName", FIRST_NAME));
+        add(new RowFragment(LAST_NAME, getModel(), "LastName", LAST_NAME));
+        add(new RowFragment(GENDER, getModel(), "Gender", GENDER));
+        add(new RowFragment(BIRTH_DATE, getModel(), "BirthDate", BIRTH_DATE));
       } else {
-        add(new EmptyPanel("barcode"));
-        add(new TextFieldFragment("firstName", getModel(), "FirstName*", new TextField("value", new PropertyModel(getModel(), "firstName")).setRequired(true).setLabel(new ResourceModel("FirstName"))));
-        add(new TextFieldFragment("lastName", getModel(), "LastName*", new TextField("value", new PropertyModel(getModel(), "lastName")).setRequired(true).setLabel(new ResourceModel("LastName"))));
-        add(new DropDownFragment("gender", getModel(), "Gender*", createGenderDropDown()));
-        add(new DateFragment("birthDate", getModel(), "BirthDate*", createBirthDateField()));
+        add(new EmptyPanel(BARCODE));
+        add(new TextFieldFragment(FIRST_NAME, getModel(), "FirstName*", new TextField("value", new PropertyModel(getModel(), FIRST_NAME)).setRequired(true).setLabel(new ResourceModel("FirstName"))));
+        add(new TextFieldFragment(LAST_NAME, getModel(), "LastName*", new TextField("value", new PropertyModel(getModel(), LAST_NAME)).setRequired(true).setLabel(new ResourceModel("LastName"))));
+        add(new DropDownFragment(GENDER, getModel(), "Gender*", createGenderDropDown()));
+        add(new DateFragment(BIRTH_DATE, getModel(), "BirthDate*", createBirthDateField()));
       }
 
       if(participantMetadata.getConfiguredAttributes().size() == 0) add(new EmptyPanel("metadata"));
@@ -211,8 +221,9 @@ public class EditParticipantPanel extends Panel {
   }
 
   // Fragment definitions for fixed fields
-  @SuppressWarnings("serial")
   private class RowFragment extends Fragment {
+    private static final long serialVersionUID = 1L;
+
     public RowFragment(String id, IModel participantModel, String label, String field) {
       super(id, "rowFragment", EditParticipantPanel.this);
       add(new Label("label", new ResourceModel(label)));
@@ -220,8 +231,9 @@ public class EditParticipantPanel extends Panel {
     }
   }
 
-  @SuppressWarnings("serial")
   private class TextFieldFragment extends Fragment {
+    private static final long serialVersionUID = 1L;
+
     public TextFieldFragment(String id, IModel participantModel, String label, FormComponent component) {
       super(id, "textFieldFragment", EditParticipantPanel.this);
       add(new Label("label", new ResourceModel(label)));
@@ -229,8 +241,9 @@ public class EditParticipantPanel extends Panel {
     }
   }
 
-  @SuppressWarnings("serial")
   private class DropDownFragment extends Fragment {
+    private static final long serialVersionUID = 1L;
+
     public DropDownFragment(String id, IModel participantModel, String label, FormComponent component) {
       super(id, "genderFragment", EditParticipantPanel.this);
       add(new Label("label", new ResourceModel(label)));
@@ -238,8 +251,9 @@ public class EditParticipantPanel extends Panel {
     }
   }
 
-  @SuppressWarnings("serial")
   private class DateFragment extends Fragment {
+    private static final long serialVersionUID = 1L;
+
     public DateFragment(String id, IModel participantModel, String label, FormComponent component) {
       super(id, "dateFragment", EditParticipantPanel.this);
       add(new Label("label", new ResourceModel(label)));
@@ -247,14 +261,15 @@ public class EditParticipantPanel extends Panel {
     }
   }
 
-  @SuppressWarnings("serial")
   private DateTextField createBirthDateField() {
-    DateTextField birthDateField = new DateTextField("value", new PropertyModel(getModel(), "birthDate"), new PatternDateConverter("yyyy-MM-dd", true));
+    DateTextField birthDateField = new DateTextField("value", new PropertyModel(getModel(), BIRTH_DATE), new PatternDateConverter("yyyy-MM-dd", true));
 
     birthDateField.setRequired(true);
     birthDateField.setLabel(new ResourceModel("BirthDateWithFormat"));
 
     birthDateField.add(new DatePicker() {
+      private static final long serialVersionUID = 1L;
+
       @Override
       public boolean enableMonthYearSelection() {
         return true;
@@ -264,9 +279,10 @@ public class EditParticipantPanel extends Panel {
     return birthDateField;
   }
 
-  @SuppressWarnings("serial")
   private DropDownChoice createGenderDropDown() {
-    DropDownChoice genderDropDown = new DropDownChoice("gender", new PropertyModel(getModel(), "gender"), Arrays.asList(Gender.values()), new GenderRenderer()) {
+    DropDownChoice genderDropDown = new DropDownChoice(GENDER, new PropertyModel(getModel(), GENDER), Arrays.asList(Gender.values()), new GenderRenderer()) {
+
+      private static final long serialVersionUID = 1L;
 
       @Override
       protected boolean localizeDisplayValues() {
@@ -283,8 +299,9 @@ public class EditParticipantPanel extends Panel {
     return genderDropDown;
   }
 
-  @SuppressWarnings("serial")
   private class GenderRenderer implements IChoiceRenderer {
+
+    private static final long serialVersionUID = 1L;
 
     public Object getDisplayValue(Object object) {
       // Prepend "Gender." to generate the proper resource bundle key
@@ -297,8 +314,9 @@ public class EditParticipantPanel extends Panel {
   }
 
   // Fragment definition for Metadata fields
-  @SuppressWarnings("serial")
   private class MetadataFragment extends Fragment {
+
+    private static final long serialVersionUID = 1L;
 
     public MetadataFragment(String id, IModel participantModel, List<ParticipantAttribute> attributes) {
       super(id, "metadataFragment", EditParticipantPanel.this);
@@ -315,7 +333,7 @@ public class EditParticipantPanel extends Panel {
         Label label = new Label("label", (new SpringStringResourceModel(new PropertyModel(attribute, "name"))).getString());
         item.add(label);
 
-        if(attribute.isMandatoryAtReception() == true) item.add(new Label("mandatory", " *"));
+        if(attribute.isMandatoryAtReception()) item.add(new Label("mandatory", " *"));
         else
           item.add(new Label("mandatory", ""));
 
@@ -337,6 +355,8 @@ public class EditParticipantPanel extends Panel {
 
             field = new DataField("field", new PropertyModel(attributeValueModel, "data"), attribute.getType(), allowedValues, new IChoiceRenderer() {
 
+              private static final long serialVersionUID = 1L;
+
               public Object getDisplayValue(Object object) {
                 Data data = (Data) object;
                 return (new SpringStringResourceModel(data.getValueAsString())).getString();
@@ -349,12 +369,12 @@ public class EditParticipantPanel extends Panel {
 
             }, null);
 
-            if(attribute.isMandatoryAtReception() == false) ((DropDownChoice) field.getField()).setNullValid(true);
+            if(!attribute.isMandatoryAtReception()) ((DropDownChoice) field.getField()).setNullValid(true);
           } else {
             field = new DataField("field", new PropertyModel(attributeValueModel, "data"), attribute.getType());
           }
 
-          if(attribute.isMandatoryAtReception() == true) field.setRequired(true);
+          if(attribute.isMandatoryAtReception()) field.setRequired(true);
           field.setLabel(new SpringStringResourceModel(new PropertyModel(attribute, "name")));
           field.getField().add(new AttributeAppender("class", true, new Model("nofocus"), " "));
 
