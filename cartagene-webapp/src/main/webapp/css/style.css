@@ -425,9 +425,21 @@ div.wicket-modal {
 
 /*************** Dialog ********************/
 
-div.dialogContent {
+.centeredHorizontally {
+  text-align: center;
+}
+
+.smallTopMargin {
   margin-top: 10px;
+}
+
+.largeTopMargin {
+  margin-top: 30px;
+}
+
+.dialogContent {
   margin-left: 10px;
+  margin-right: 10px;
 }
 
 .dialogIcon {
@@ -444,15 +456,19 @@ div.dialogContent {
   padding-top: 5px;
 }
 
-div.dialogButtons ul {
-  margin-top: 25px;
+.dialogButtons ul {
+  margin-bottom: 10px;
   padding: 0;
   list-style-type: none;
   text-align: center;
 }
 
-div.dialogButtons ul li {
+.dialogButtons ul li {
   display: inline;
+}
+
+.progressBar {
+  padding-top: 5px;
 }
 
 /*************** End Dialog ********************/
