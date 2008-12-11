@@ -1,4 +1,21 @@
 ///////////////////////////////////////////////////////////////////////////////
+// WindowUtil class
+///////////////////////////////////////////////////////////////////////////////
+
+WindowUtil = {};
+
+WindowUtil.attachEvent = function(event, callback) {
+	if (window.addEventListener) {
+    	window.addEventListener(event, callback, true);
+	} else {
+    	if (window.attachEvent) {
+        	window.attachEvent("on" + event, callback);
+    	}
+	}
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 // Focus class that set the focus to the first input at page load
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -34,12 +51,31 @@ Focus.setInitialFocus = function() {
     }
 }
 
-if (window.addEventListener) {
+WindowUtil.attachEvent("load", Focus.setInitialFocus);
+
+/*if (window.addEventListener) {
     window.addEventListener("load", Focus.setInitialFocus, true);
 } else {
     if (window.attachEvent) {
         window.attachEvent("onload", Focus.setInitialFocus);
     }
+}*/
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Resizer class to resize an element
+///////////////////////////////////////////////////////////////////////////////
+
+Resizer = {}
+
+Resizer.resize  = function(id, offsetBottom) {
+	var height=window.innerWidth;//Firefox
+	if (document.body.clientHeight)
+		{
+		height=document.body.clientHeight;//IE
+	}
+	//resize the html according to the size of the window 
+	document.getElementById(id).style.height=parseInt(height-offsetBottom-document.getElementById(id).offsetTop)+"px";
 }
 
 //////////////////////////////////////////////////////////////////////

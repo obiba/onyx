@@ -10,9 +10,8 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.quartz.core.wicket.questionnaire.ConfirmResumePanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
-import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
-public class ConfirmResumeStep extends WizardStepPanel {
+public class ConfirmResumeStep extends QuestionnaireWizardStepPanel {
   //
   // Constants
   //
@@ -60,6 +59,7 @@ public class ConfirmResumeStep extends WizardStepPanel {
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
     QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
     setNextStep(questionnaireWizardForm.getResumeStep());
+    onPageStep(target);
   }
 
   /**

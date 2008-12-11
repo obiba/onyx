@@ -20,11 +20,10 @@ import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
-import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PageStepPanel extends WizardStepPanel {
+public class PageStepPanel extends QuestionnaireWizardStepPanel {
   //
   // Constants
   //
@@ -92,6 +91,7 @@ public class PageStepPanel extends WizardStepPanel {
     QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
     pageLayout.onPrevious(target);
     setPreviousStep(questionnaireWizardForm.getPreviousStep());
+    onPageStep(target);
   }
 
   @Override
@@ -99,11 +99,13 @@ public class PageStepPanel extends WizardStepPanel {
     QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
     pageLayout.onNext(target);
     setNextStep(questionnaireWizardForm.getNextStep());
+    onPageStep(target);
   }
 
   @Override
   public void onStepOutNextError(WizardForm form, AjaxRequestTarget target) {
     target.addComponent(pageLayout);
+    onPageStep(target);
   }
 
   //

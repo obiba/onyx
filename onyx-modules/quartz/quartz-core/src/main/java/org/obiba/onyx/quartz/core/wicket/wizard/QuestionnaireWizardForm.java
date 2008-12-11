@@ -111,6 +111,7 @@ public class QuestionnaireWizardForm extends WizardForm {
   public void onError(AjaxRequestTarget target, Form form) {
     log.info("onError={}", Session.get().getFeedbackMessages().iterator().next());
     target.addComponent(getFeedbackPanel());
+    target.appendJavascript("resizeWizardContent();");
   }
 
   @Override

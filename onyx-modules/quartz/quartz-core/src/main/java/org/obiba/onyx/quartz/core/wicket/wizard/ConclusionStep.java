@@ -14,9 +14,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
-import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
-public class ConclusionStep extends WizardStepPanel {
+public class ConclusionStep extends QuestionnaireWizardStepPanel {
   //
   // Constants
   //
@@ -57,5 +56,6 @@ public class ConclusionStep extends WizardStepPanel {
   public void onStepOutPrevious(WizardForm form, AjaxRequestTarget target) {
     QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
     setPreviousStep(questionnaireWizardForm.getLastPageStep());
+    onPageStep(target);
   }
 }

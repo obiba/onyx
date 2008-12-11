@@ -173,6 +173,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     if(wizard != null && wizard.getFeedbackPanel() != null) {
       target.addComponent(wizard.getFeedbackPanel());
     }
+    target.appendJavascript("resizeWizardContent();");
     target.addComponent(openField.getField());
   }
 
