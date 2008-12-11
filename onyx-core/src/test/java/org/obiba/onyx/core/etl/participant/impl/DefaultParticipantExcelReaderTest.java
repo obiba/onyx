@@ -310,6 +310,26 @@ public class DefaultParticipantExcelReaderTest {
     reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_rowContainingWhitespaceOnly.xls"));
   }
 
+  /**
+   * Tests processing of an appointment list containing a duplicate enrollment id.
+   * 
+   * @throws IOException if the appointment list could not be read
+   */
+  @Test
+  public void testProcessWithDuplicateDuplicateEnrollmentId() throws IOException {
+    DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, false);
+
+    try {
+      reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_duplicateEnrollmentId.xls"));
+    } catch(IllegalArgumentException ex) {
+      String errorMessage = ex.getMessage();
+      Assert.assertEquals("Line 5: Duplicate Enrollment ID", errorMessage);
+      return;
+    }
+
+    Assert.fail("Should have thrown an IllegalArgumentException");
+  }
+
   //
   // Helper Methods
   //

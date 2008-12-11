@@ -14,9 +14,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
@@ -125,6 +127,9 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
     HSSFSheet sheet = wb.getSheetAt(sheetNumber - 1);
     HSSFFormulaEvaluator evaluator = new HSSFFormulaEvaluator(wb);
 
+    // Keep track of enrollment ids -- duplicates not allowed!
+    Set<String> enrollmentIds = new HashSet<String>();
+
     initAttributeNameToColumnIndexMap(sheet.getRow(headerRowNumber - 1));
 
     Iterator<HSSFRow> rowIter = (Iterator<HSSFRow>) sheet.rowIterator();
@@ -146,6 +151,8 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
         try {
           participant = processParticipant(row, evaluator);
           participant.setAppointment(processAppointment(row, evaluator));
+
+          checkUniqueEnrollmentId(enrollmentIds, participant.getEnrollmentId());
         } catch(IllegalArgumentException ex) {
           throw new IllegalArgumentException("Line " + line + ": " + ex.getMessage());
         }
@@ -454,6 +461,14 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
         throw new IllegalArgumentException("Value not allowed for field '" + attribute.getName() + "': " + textValue);
       }
     }
+  }
+
+  private void checkUniqueEnrollmentId(Set<String> enrollmentIds, String enrollmentId) {
+    if(enrollmentIds.contains(enrollmentId)) {
+      throw new IllegalArgumentException("Duplicate " + ENROLLMENT_ID_ATTRIBUTE_NAME);
+    }
+
+    enrollmentIds.add(enrollmentId);
   }
 
   @SuppressWarnings("unchecked")
