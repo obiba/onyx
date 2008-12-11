@@ -6,7 +6,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,9 +30,7 @@ import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 
-public class JadeReportContributor implements Serializable, ModuleReportContributor {
-
-  private static final long serialVersionUID = 1L;
+public class JadeReportContributor implements ModuleReportContributor {
 
   private static final Logger log = LoggerFactory.getLogger(JadeReportContributor.class);
 
