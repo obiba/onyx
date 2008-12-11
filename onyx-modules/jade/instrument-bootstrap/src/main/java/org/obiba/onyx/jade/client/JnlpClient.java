@@ -14,6 +14,7 @@ import java.util.Properties;
 import java.util.logging.LogManager;
 
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
+import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.jade.logging.RemoteHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,7 @@ public class JnlpClient {
 
     addRemoteLoggingHandler(appContext);
 
+    InstrumentExecutionService instrumentExecutionService = (InstrumentExecutionService) appContext.getBean("instrumentExecutionService");
     try {
       // Fetch the InstrumentRunner implementation from the application context and run it.
       InstrumentRunner instrumentRunner = (InstrumentRunner) appContext.getBean("instrumentRunner");
@@ -49,6 +51,7 @@ public class JnlpClient {
           instrumentRunner.run();
         } catch(Exception e) {
           log.error("Unexpected error while executing runner", e);
+          instrumentExecutionService.instrumentRunnerError(e);
         } finally {
 
           try {
@@ -64,6 +67,7 @@ public class JnlpClient {
       }
     } catch(Exception ex) {
       log.error("Unexpected error while initializing runner {}", ex);
+      instrumentExecutionService.instrumentRunnerError(ex);
     } finally {
       // Make sure application context is destroyed.
       log.info("Destroying application context");

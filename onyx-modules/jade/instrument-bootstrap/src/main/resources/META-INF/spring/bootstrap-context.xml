@@ -6,10 +6,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 
   <import resource="classpath:/META-INF/spring/remote-api-client.xml" />
 
-  <bean name="jnlpClient" class="org.obiba.onyx.jade.client.JnlpClient">
-    <property name="instrumentExecutionService" ref="instrumentExecutionService" />
-  </bean>
-
   <bean name="remoteHandler" class="org.obiba.onyx.jade.logging.RemoteHandler">
     <property name="clientLoggingService" ref="clientLoggingService" />
   </bean>
