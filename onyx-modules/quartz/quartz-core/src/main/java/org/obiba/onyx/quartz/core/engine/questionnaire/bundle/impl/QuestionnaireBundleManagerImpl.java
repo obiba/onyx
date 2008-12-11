@@ -92,7 +92,10 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
     rootDir = resourceLoader.getResource(resourcePath).getFile();
 
     if(!rootDir.exists()) {
-      rootDir.mkdirs();
+      if(!rootDir.mkdirs()) {
+        throw new IllegalArgumentException("Unable to create root directory: " + rootDir);
+      }
+
     }
 
     if(!isValidRootDirectory(rootDir)) {
@@ -222,12 +225,18 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
   private void serializeBundle(QuestionnaireBundle bundle) throws IOException {
     // Create the bundle version directory, which will contain the questionnaire.
     File bundleVersionDir = new File(new File(rootDir, bundle.getQuestionnaire().getName()), bundle.getQuestionnaire().getVersion());
-    bundleVersionDir.mkdirs();
+    if(!bundleVersionDir.exists()) {
+      if(!bundleVersionDir.mkdirs()) {
+        throw new IllegalArgumentException("Failed creating bundle version directory: " + bundleVersionDir);
+      }
+    }
 
     // Create the questionnaire file.
     File questionnaireFile = new File(bundleVersionDir, QUESTIONNAIRE_BASE_NAME + ".xml");
     if(!questionnaireFile.exists()) {
-      questionnaireFile.createNewFile();
+      if(!questionnaireFile.createNewFile()) {
+        throw new IllegalArgumentException("Failed creating questionnaire file: " + questionnaireFile);
+      }
     }
 
     // Serialize the questionnaire to the file.

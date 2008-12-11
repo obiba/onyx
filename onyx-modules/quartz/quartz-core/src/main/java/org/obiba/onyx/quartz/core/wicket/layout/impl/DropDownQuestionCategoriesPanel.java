@@ -54,6 +54,7 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
 
   private AbstractOpenAnswerDefinitionPanel openField;
 
+  @SuppressWarnings("serial")
   public DropDownQuestionCategoriesPanel(String id, IModel questionModel) {
     super(id, questionModel);
     setOutputMarkupId(true);

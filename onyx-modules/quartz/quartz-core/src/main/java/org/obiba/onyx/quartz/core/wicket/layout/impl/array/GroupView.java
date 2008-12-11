@@ -10,6 +10,7 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -81,7 +82,7 @@ public abstract class GroupView<T extends FormComponent> extends DataViewBase {
   public GroupView(String id, ICellPopulator[] populators, IDataProvider dataProvider) {
     super(id, dataProvider);
 
-    this.populators = populators;
+    this.populators = Arrays.copyOf(populators, populators.length);
     this.groups = newGroups(dataProvider.size());
   }
 
@@ -195,7 +196,7 @@ public abstract class GroupView<T extends FormComponent> extends DataViewBase {
   }
 
   public T[] getGroups() {
-    return groups;
+    return Arrays.copyOf(groups, groups.length);
   }
 
   public T getGroup(int index) {

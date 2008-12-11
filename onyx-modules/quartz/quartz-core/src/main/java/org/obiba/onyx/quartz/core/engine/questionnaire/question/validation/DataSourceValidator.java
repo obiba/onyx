@@ -62,8 +62,8 @@ public class DataSourceValidator implements IDataValidator {
       Data dataToCompare = (Data) validatable.getValue();
       Data data = dataSource.getData(activeQuestionnaireAdministrationService);
       // TODO deal with units
-      String sourceUnit = dataSource.getUnit();
-      String validatableUnit = getUnit();
+      // String sourceUnit = dataSource.getUnit();
+      // String validatableUnit = getUnit();
 
       ValidationError error = null;
 

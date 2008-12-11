@@ -170,7 +170,7 @@ public class QuestionnaireFinder {
   public List<Category> findGlobalCategories() {
     Map<String, Category> map = new HashMap<String, Category>();
     for(Category category : findSharedCategories()) {
-      if(!map.containsKey(category)) {
+      if(!map.containsKey(category.getName())) {
         map.put(category.getName(), category);
       } else {
         map.remove(category.getName());

@@ -18,8 +18,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.IValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +40,7 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
   /**
    * Question category, usefull for joined categories array questions.
    */
+  @SuppressWarnings("unused")
   private IModel parentQuestionCategoryModel;
 
   /**
@@ -58,6 +59,7 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
    * @param questionModel
    * @param parentQuestionCategoryModel
    */
+  @SuppressWarnings("serial")
   public DefaultEscapeQuestionCategoriesPanel(String id, IModel questionModel, IModel parentQuestionCategoryModel) {
     super(id, questionModel);
     setOutputMarkupId(true);

@@ -27,7 +27,7 @@ public class ListToGridPermutator<T> implements IDataListPermutator<T> {
 
   private static final Logger log = LoggerFactory.getLogger(ListToGridPermutator.class);
 
-  public static int DEFAULT_ROW_COUNT = 5;
+  public static final int DEFAULT_ROW_COUNT = 5;
 
   private List<T> lineList;
 

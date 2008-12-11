@@ -26,8 +26,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
@@ -52,6 +52,7 @@ public class DefaultQuestionCategoriesPanel extends Panel {
   /**
    * Context in which answer are given (case of joined categories question array).
    */
+  @SuppressWarnings("unused")
   private IModel parentQuestionCategoryModel;
 
   /**

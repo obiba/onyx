@@ -16,9 +16,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
-import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
@@ -33,9 +31,6 @@ public class MultipleOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinit
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MultipleOpenAnswerDefinitionPanel.class);
-
-  @SpringBean
-  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   private List<AbstractOpenAnswerDefinitionPanel> abstractOpenAnswerDefinitionPanels = new ArrayList<AbstractOpenAnswerDefinitionPanel>();
 
