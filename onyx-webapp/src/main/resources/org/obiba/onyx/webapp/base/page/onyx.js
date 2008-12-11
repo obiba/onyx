@@ -53,14 +53,6 @@ Focus.setInitialFocus = function() {
 
 WindowUtil.attachEvent("load", Focus.setInitialFocus);
 
-/*if (window.addEventListener) {
-    window.addEventListener("load", Focus.setInitialFocus, true);
-} else {
-    if (window.attachEvent) {
-        window.attachEvent("onload", Focus.setInitialFocus);
-    }
-}*/
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Resizer class to resize an element
