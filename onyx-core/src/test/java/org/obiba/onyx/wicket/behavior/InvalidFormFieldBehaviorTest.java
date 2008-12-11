@@ -16,11 +16,13 @@ import org.apache.wicket.util.tester.DummyHomePage;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
+import org.apache.wicket.util.tester.TagTester;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.Validatable;
 import org.apache.wicket.validation.validator.NumberValidator;
 import org.junit.Test;
+import org.junit.Assert;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -34,7 +36,6 @@ import org.slf4j.LoggerFactory;
  */
 public class InvalidFormFieldBehaviorTest {
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(InvalidFormFieldBehaviorTest.class);
 
   @Test
@@ -77,7 +78,8 @@ public class InvalidFormFieldBehaviorTest {
 
     // tester.dumpPage();
 
-    tester.assertContains("input name=\"content:input:field\" value=\"10\"");
+    TagTester tagTester = tester.getTagByWicketId("field");
+    Assert.assertEquals("10", tagTester.getAttribute("value"));
 
     FormTester formTester = tester.newFormTester("panel:form");
     formTester.setValue("panel:form:content:input:field", "10");
@@ -85,7 +87,7 @@ public class InvalidFormFieldBehaviorTest {
 
     // tester.dumpPage();
 
-    tester.assertContains("input name=\"content:input:field\" value=\"10\" class=\"field-invalid\"");
-
+    tagTester = tester.getTagByWicketId("field");
+    Assert.assertTrue(tagTester.getAttributeContains("class", "field-invalid"));
   }
 }
