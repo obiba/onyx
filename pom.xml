@@ -500,11 +500,20 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
+        <inherited>false</inherited>
         <configuration>
           <inputEncoding>ISO-8859-1</inputEncoding>
           <templateFile>${basedir}/src/site/maven-site.vm</templateFile>
         </configuration>
       </plugin>
+
+      <!-- Required when using the emma-maven-plugin (see reporting section) -->
+      <!--plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+        <forkMode>always</forkMode>
+        </configuration>
+        </plugin-->
 
     </plugins>
 
@@ -550,6 +559,36 @@
 
   </build>
 
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>1.2</version>
+        <configuration>
+          <xmlOutput>true</xmlOutput>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <configuration>
+          <linkXref>false</linkXref>
+          <sourceEncoding>ISO-8859-1</sourceEncoding>
+          <minimumTokens>30</minimumTokens>
+          <targetJdk>1.5</targetJdk>
+        </configuration>
+      </plugin>
+
+      <!-- Disabled due to Hudson bug: https://hudson.dev.java.net/issues/show_bug.cgi?id=2158 -->
+      <!-- plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>emma-maven-plugin</artifactId>
+        <version>1.0-alpha-2-SNAPSHOT</version>
+        <inherited>true</inherited>
+        </plugin-->
+    </plugins>
+  </reporting>
+
   <repositories>
     <repository>
       <id>obiba.org</id>
@@ -594,6 +633,19 @@
     </repository>
 
   </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>snapshots.codehaus.org</id>
+      <url>http://snapshots.repository.codehaus.org</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
 
   <distributionManagement>
     <!-- Site deployment location -->
@@ -672,41 +724,6 @@
             </executions>
           </plugin>
 
-          <!-- Enable the FindBugs plugin for static code analysis reporting -->
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>findbugs-maven-plugin</artifactId>
-            <version>1.2</version>
-            <executions>
-              <execution>
-                <phase>verify</phase>
-                <goals>
-                  <goal>findbugs</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <xmlOutput>true</xmlOutput>
-            </configuration>
-          </plugin>
-
-          <plugin>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>verify</phase>
-                <goals>
-                  <goal>pmd</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <linkXref>false</linkXref>
-              <sourceEncoding>ISO-8859-1</sourceEncoding>
-              <minimumTokens>30</minimumTokens>
-              <targetJdk>1.5</targetJdk>
-            </configuration>
-          </plugin>
         </plugins>
       </build>
 
