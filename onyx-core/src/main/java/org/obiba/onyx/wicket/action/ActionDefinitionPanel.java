@@ -10,6 +10,7 @@
 package org.obiba.onyx.wicket.action;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -84,7 +85,7 @@ public abstract class ActionDefinitionPanel extends Panel {
     Participant participant = activeInterviewService.getParticipant();
     form.add(new Label("participantName", participant.getFullName()));
     form.add(new Label("participantGender", new StringResourceModel("Gender." + participant.getGender(), this, null)));
-    form.add(new Label("participantBirthDate", DateModelUtils.getDateModel(new Model(participant.getBirthDate()))));
+    form.add(new Label("participantBirthDate", DateModelUtils.getDateModel(new PropertyModel(this, "dateFormat"), new Model(participant.getBirthDate()))));
 
     PasswordFragment pwdFragment = new PasswordFragment("password");
     form.add(pwdFragment.setVisible(definition.isAskPassword()));
@@ -149,6 +150,10 @@ public abstract class ActionDefinitionPanel extends Panel {
 
   public boolean isCancelled() {
     return cancelled;
+  }
+
+  public DateFormat getDateFormat() {
+    return userSessionService.getDateFormat();
   }
 
   /**

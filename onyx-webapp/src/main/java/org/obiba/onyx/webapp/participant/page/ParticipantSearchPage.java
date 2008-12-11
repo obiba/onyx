@@ -10,6 +10,7 @@
 package org.obiba.onyx.webapp.participant.page;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -48,6 +49,7 @@ import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantModalPanel;
@@ -72,6 +74,9 @@ public class ParticipantSearchPage extends BasePage {
 
   @SpringBean
   private EntityQueryService queryService;
+
+  @SpringBean
+  private UserSessionService userSessionService;
 
   @SpringBean
   private ParticipantService participantService;
@@ -419,7 +424,7 @@ public class ParticipantSearchPage extends BasePage {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Participant p = (Participant) rowModel.getObject();
-          cellItem.add(new Label(componentId, DateModelUtils.getShortDateModel(new Model(p.getBirthDate()))));
+          cellItem.add(new Label(componentId, DateModelUtils.getDateModel(new PropertyModel(ParticipantListColumnProvider.this, "dateFormat"), new Model(p.getBirthDate()))));
         }
 
       });
@@ -428,7 +433,7 @@ public class ParticipantSearchPage extends BasePage {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           Participant p = (Participant) rowModel.getObject();
-          if(p.getAppointment() != null) cellItem.add(new Label(componentId, DateModelUtils.getShortDateTimeModel(new Model(p.getAppointment().getDate()))));
+          if(p.getAppointment() != null) cellItem.add(new Label(componentId, DateModelUtils.getDateTimeModel(new PropertyModel(ParticipantListColumnProvider.this, "dateTimeFormat"), new Model(p.getAppointment().getDate()))));
           else
             cellItem.add(new Label(componentId, ""));
         }
@@ -499,6 +504,14 @@ public class ParticipantSearchPage extends BasePage {
 
     public List<IColumn> getRequiredColumns() {
       return columns;
+    }
+
+    public DateFormat getDateFormat() {
+      return userSessionService.getDateFormat();
+    }
+
+    public DateFormat getDateTimeFormat() {
+      return userSessionService.getDateTimeFormat();
     }
   }
 }

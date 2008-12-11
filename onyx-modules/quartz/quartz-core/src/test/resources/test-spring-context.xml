@@ -13,7 +13,10 @@
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 
-  <bean id="userSessionService" class="org.obiba.onyx.core.service.impl.UserSessionServiceBeanImpl" />
+  <bean id="userSessionService" class="org.obiba.onyx.core.service.impl.UserSessionServiceBeanImpl">
+    <property name="datePattern" value="yyyy-MM-dd" />
+    <property name="dateTimePattern" value="yyyy-MM-dd HH:mm" />
+  </bean>
 
   <bean id="propertyKeyProvider"
     class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl"

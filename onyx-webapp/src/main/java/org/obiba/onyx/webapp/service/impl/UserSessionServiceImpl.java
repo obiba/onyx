@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import org.obiba.onyx.core.domain.user.User;
@@ -16,7 +18,19 @@ import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 
 public class UserSessionServiceImpl implements UserSessionService {
- 
+
+  private String datePattern;
+
+  private String dateTimePattern;
+
+  public void setDatePattern(String pattern) {
+    this.datePattern = pattern;
+  }
+
+  public void setDateTimePattern(String pattern) {
+    this.dateTimePattern = pattern;
+  }
+
   public Locale getLocale() {
     return OnyxAuthenticatedSession.get().getLocale();
   }
@@ -24,9 +38,16 @@ public class UserSessionServiceImpl implements UserSessionService {
   public void setLocale(Locale locale) {
     OnyxAuthenticatedSession.get().setLocale(locale);
   }
-  
+
   public User getUser() {
     return OnyxAuthenticatedSession.get().getUser();
   }
 
+  public DateFormat getDateFormat() {
+    return new SimpleDateFormat(datePattern, getLocale());
+  }
+
+  public DateFormat getDateTimeFormat() {
+    return new SimpleDateFormat(dateTimePattern, getLocale());
+  }
 }

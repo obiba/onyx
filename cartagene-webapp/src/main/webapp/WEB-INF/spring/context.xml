@@ -69,6 +69,9 @@
   <bean id="userSessionService" class="org.obiba.onyx.webapp.service.impl.UserSessionServiceImpl">
     <!-- NOTE: Uncomment declaration below if this service is injected into a singleton bean. -->
     <!-- <aop:scoped-proxy /> -->
+    
+    <property name="datePattern" value="${org.obiba.onyx.dateFormat}" />
+    <property name="dateTimePattern" value="${org.obiba.onyx.dateTimeFormat}" />
   </bean>
 
   <!-- Defines Onyx's MessageSource bean. extraBasenames can be used to load other ResourceBundles as required.

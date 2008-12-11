@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.participant.panel;
 
+import java.text.DateFormat;
+
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -19,11 +21,15 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 
 public class ParticipantPanel extends Panel {
+
+  @SpringBean
+  UserSessionService userSessionService;
 
   @SpringBean
   ParticipantMetadata participantMetadata;
@@ -47,7 +53,7 @@ public class ParticipantPanel extends Panel {
     if(participant.getBarcode() != null) kvPanel.addRow(new StringResourceModel("ParticipantCode", this, null), new PropertyModel(getModel(), "barcode"));
     kvPanel.addRow(new StringResourceModel("Name", this, null), new PropertyModel(getModel(), "fullName"));
     kvPanel.addRow(new StringResourceModel("Gender", this, null), new PropertyModel(this, "localizedGender"));
-    kvPanel.addRow(new StringResourceModel("BirthDate", this, null), DateModelUtils.getShortDateModel(new PropertyModel(getModel(), "birthDate")));
+    kvPanel.addRow(new StringResourceModel("BirthDate", this, null), DateModelUtils.getDateModel(new PropertyModel(this, "dateFormat"), new PropertyModel(getModel(), "birthDate")));
 
     for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
       String value = (participant.getConfiguredAttributeValue(attribute.getName()) != null) ? participant.getConfiguredAttributeValue(attribute.getName()).getValueAsString() : null;
@@ -59,5 +65,9 @@ public class ParticipantPanel extends Panel {
 
   public String getLocalizedGender() {
     return getString("Gender." + ((Participant) getModelObject()).getGender());
+  }
+
+  public DateFormat getDateFormat() {
+    return userSessionService.getDateFormat();
   }
 }

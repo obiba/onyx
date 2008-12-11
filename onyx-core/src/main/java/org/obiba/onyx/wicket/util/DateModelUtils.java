@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.wicket.util;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -26,6 +27,10 @@ public class DateModelUtils {
     return new FormatingDateTimeModel(SimpleDateFormat.MEDIUM, dateModel);
   }
 
+  public static IModel getDateTimeModel(IModel formatModel, IModel dateModel) {
+    return new FormatingDateTimeModel(formatModel, dateModel);
+  }
+
   public static IModel getShortDateModel(IModel dateModel) {
     return new FormatingDateModel(SimpleDateFormat.SHORT, dateModel);
   }
@@ -34,9 +39,15 @@ public class DateModelUtils {
     return new FormatingDateModel(SimpleDateFormat.MEDIUM, dateModel);
   }
 
+  public static IModel getDateModel(IModel formatModel, IModel dateModel) {
+    return new FormatingDateModel(formatModel, dateModel);
+  }
+
   private static class FormatingDateTimeModel extends Model {
 
     private static final long serialVersionUID = 0L;
+
+    IModel formatModel;
 
     int format;
 
@@ -47,10 +58,24 @@ public class DateModelUtils {
       this.dateModel = dateModel;
     }
 
+    FormatingDateTimeModel(IModel formatModel, IModel dateModel) {
+      this.formatModel = formatModel;
+      this.dateModel = dateModel;
+    }
+
     @Override
     public Object getObject() {
       Date date = (Date) dateModel.getObject();
+
       if(date != null) {
+        if(formatModel != null) {
+          DateFormat dateFormat = (DateFormat) formatModel.getObject();
+
+          if(dateFormat != null) {
+            return dateFormat.format(date);
+          }
+        }
+
         return SimpleDateFormat.getDateTimeInstance(format, SimpleDateFormat.SHORT, WebSession.get().getLocale()).format(date);
       }
       return "";
@@ -61,6 +86,10 @@ public class DateModelUtils {
 
     private static final long serialVersionUID = 0L;
 
+    SimpleDateFormat formatter;
+
+    IModel formatModel;
+
     int format;
 
     IModel dateModel;
@@ -70,10 +99,24 @@ public class DateModelUtils {
       this.dateModel = dateModel;
     }
 
+    FormatingDateModel(IModel formatModel, IModel dateModel) {
+      this.formatModel = formatModel;
+      this.dateModel = dateModel;
+    }
+
     @Override
     public Object getObject() {
       Date date = (Date) dateModel.getObject();
+
       if(date != null) {
+        if(formatModel != null) {
+          DateFormat dateFormat = (DateFormat) formatModel.getObject();
+
+          if(dateFormat != null) {
+            return dateFormat.format(date);
+          }
+        }
+
         return SimpleDateFormat.getDateInstance(format, WebSession.get().getLocale()).format(date);
       }
       return "";
