@@ -142,7 +142,7 @@ public class DataBuilder {
       log.error("The file specified was not found", fileNotFound);
 
       try {
-        inputStream.close();
+        if(inputStream != null) inputStream.close();
       } catch(IOException e) {
         log.warn("Could not close inputStream", e);
       }

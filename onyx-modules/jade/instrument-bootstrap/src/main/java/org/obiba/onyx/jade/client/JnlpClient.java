@@ -14,7 +14,6 @@ import java.util.Properties;
 import java.util.logging.LogManager;
 
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
-import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.jade.logging.RemoteHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +23,6 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 public class JnlpClient {
-
-  private static InstrumentExecutionService instrumentExecutionService;
 
   private static final Logger log = LoggerFactory.getLogger(JnlpClient.class);
 
@@ -38,41 +35,36 @@ public class JnlpClient {
 
     addRemoteLoggingHandler(appContext);
 
-    // Launch measurement process.
-    InstrumentRunner instrumentRunner = (InstrumentRunner) appContext.getBean("instrumentRunner");
-    if(instrumentRunner == null) {
-
-    }
-    log.info("Instrument Runner Type is {}", instrumentRunner.getClass().getName());
     try {
-
-      log.info("Initializing runner");
-      instrumentRunner.initialize();
-
-      try {
-        log.info("Executing runner");
-        instrumentRunner.run();
-      } catch(Exception e) {
-        log.error("Unexpected error while executing runner {}", e);
-        instrumentExecutionService.instrumentRunnerError(e);
-      } finally {
+      // Fetch the InstrumentRunner implementation from the application context and run it.
+      InstrumentRunner instrumentRunner = (InstrumentRunner) appContext.getBean("instrumentRunner");
+      if(instrumentRunner == null) {
+        log.error("Bootstrap was launched without an instrument runner. Make sure the instrument-context.xml file declares a bean named 'instrumentRunner'. This bean must implement the {} interface.", InstrumentRunner.class.getName());
+      } else {
+        log.info("Initializing Instrument Runner of type {}", instrumentRunner.getClass().getName());
+        instrumentRunner.initialize();
 
         try {
-          log.info("Shutting down runner");
-          instrumentRunner.shutdown();
+          log.info("Executing runner");
+          instrumentRunner.run();
         } catch(Exception e) {
-          // Errors during shutdown are ignored.
-          log.warn("An exception was caught during shutdown, but will be ignored: {}", e.getMessage());
-          log.debug("Exception caught:", e);
+          log.error("Unexpected error while executing runner", e);
+        } finally {
+
+          try {
+            log.info("Shutting down runner");
+            instrumentRunner.shutdown();
+          } catch(Exception e) {
+            // Errors during shutdown are ignored.
+            log.warn("An exception was caught during shutdown, but will be ignored: {}", e.getMessage());
+            log.debug("Exception caught:", e);
+          }
+
         }
-
       }
-
     } catch(Exception ex) {
       log.error("Unexpected error while initializing runner {}", ex);
-      instrumentExecutionService.instrumentRunnerError(ex);
     } finally {
-
       // Make sure application context is destroyed.
       log.info("Destroying application context");
       appContext.destroy();
@@ -93,6 +85,7 @@ public class JnlpClient {
   }
 
   protected static GenericApplicationContext loadAppContext(String[] requestParams) {
+    Properties paramsProp = loadServiceParams(requestParams);
 
     // Load bootstrap context files.
     GenericApplicationContext appContext = new GenericApplicationContext();
@@ -102,7 +95,6 @@ public class JnlpClient {
 
     // Load remote API context file and configure server parameters in context file.
     xmlReader.loadBeanDefinitions(new ClassPathResource("/META-INF/spring/remote-api-client.xml"));
-    Properties paramsProp = loadServiceParams(requestParams);
     PropertyPlaceholderConfigurer c = new PropertyPlaceholderConfigurer();
     c.setProperties(paramsProp);
     appContext.addBeanFactoryPostProcessor(c);
@@ -125,14 +117,6 @@ public class JnlpClient {
       throw new RuntimeException("Error! Client was unable to load application parameters.");
     }
 
-  }
-
-  public InstrumentExecutionService getInstrumentExecutionService() {
-    return instrumentExecutionService;
-  }
-
-  public void setInstrumentExecutionService(InstrumentExecutionService instrumentExecutionService) {
-    JnlpClient.instrumentExecutionService = instrumentExecutionService;
   }
 
 }
