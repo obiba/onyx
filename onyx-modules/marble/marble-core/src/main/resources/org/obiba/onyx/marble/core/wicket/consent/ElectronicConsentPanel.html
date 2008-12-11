@@ -1,27 +1,17 @@
 <wicket:panel>
-<script language="JavaScript">
 
-function resize_iframe() {
-resize('consentFrame',150);
-}
+	<script language="JavaScript">
 
-function resize(id, offsetBottom) {
+		function resizeIFrame() {
+			Resizer.resize('consentFrame',150);
+		}
 
-	var height=window.innerWidth;//Firefox
-	if (document.body.clientHeight)
-	{
-		height=document.body.clientHeight;//IE
-	}
-	//resize the html according to the size of the window 
-	document.getElementById(id).style.height=parseInt(height-offsetBottom-document.getElementById(id).offsetTop)+"px";
-	
-}
+		// Resize the iframe every time the window is resized.
+		WindowUtil.attachEvent("resize", resizeIFrame);
+		
+	</script>
 
-// Resize the iframe every time the window is resized.
-window.onresize=resize_iframe;
-</script>
-
-<iframe id="consentFrame" onload="resize_iframe()" width="100%" height="300px" frameborder="1"  marginheight="0" marginwidth="0" scrolling="no" wicket:id="pdfSubmitFrame">
-</iframe>
+	<iframe id="consentFrame" onload="resizeIFrame();" width="100%" height="300px" frameborder="1"  marginheight="0" marginwidth="0" scrolling="no" wicket:id="pdfSubmitFrame">
+	</iframe>
 
 </wicket:panel>
