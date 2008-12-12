@@ -69,8 +69,6 @@ public class InstrumentInputParameterPanel extends Panel {
 
   private static final String NO = "No";
 
-  private static final String DOESNOT_KNOW = "DoesNotKnow";
-
   @SpringBean
   private EntityQueryService queryService;
 
@@ -166,7 +164,7 @@ public class InstrumentInputParameterPanel extends Panel {
         interpretativeRadioGroups.add(radioGroup);
         radioGroup.setLabel(new SpringStringResourceModel(new PropertyModel(param, "description")));
         item.add(radioGroup);
-        ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { YES, NO, DOESNOT_KNOW })) {
+        ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { YES, NO })) {
 
           @Override
           protected void populateItem(ListItem listItem) {
@@ -214,7 +212,7 @@ public class InstrumentInputParameterPanel extends Panel {
     }
 
     public boolean isSelected() {
-      return selectionKey.equals(YES) || selectionKey.equals(DOESNOT_KNOW);
+      return selectionKey.equals(YES);
     }
 
     public String getParameterName() {
