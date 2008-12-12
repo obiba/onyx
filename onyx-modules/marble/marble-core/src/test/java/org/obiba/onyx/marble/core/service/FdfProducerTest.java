@@ -22,6 +22,7 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.springframework.core.io.ClassPathResource;
 
@@ -43,6 +44,8 @@ public class FdfProducerTest {
 
   ActiveInterviewService interviewService = EasyMock.createMock(ActiveInterviewService.class);
 
+  ApplicationConfigurationService applicationConfigurationService = EasyMock.createMock(ApplicationConfigurationService.class);
+
   Consent consent = new Consent();
 
   Interview interview = new Interview();
@@ -55,6 +58,7 @@ public class FdfProducerTest {
   public void setupProducer() {
     producer.setActiveConsentService(consentService);
     producer.setActiveInterviewService(interviewService);
+    producer.setAppConfigService(applicationConfigurationService);
     consent.setLocale(Locale.ENGLISH);
     interview.setUser(user);
     participant.setFirstName("Philippe");

@@ -39,6 +39,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="consentFormTemplateLoader" ref="consentFormTemplateLoader"/>
     <property name="activeConsentService" ref="activeConsentService"/>
     <property name="activeInterviewService" ref="activeInterviewService"/>
+    <property name="appConfigService" ref="appConfigService"/>    
     <!-- See java.text.SimpleDateFormat for details for possible date formating -->
     <property name="dateFormat" value="${org.obiba.onyx.marble.consent.dateFormat}"/>
   </bean>

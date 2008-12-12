@@ -35,4 +35,9 @@ public class DefaultApplicationConfigurationServiceImpl extends PersistenceManag
     this.resourceLoader = resourceLoader;
   }
 
+  public ApplicationConfiguration getApplicationConfiguration() {
+    ApplicationConfiguration appConfiguration = new ApplicationConfiguration();
+    return persistenceManager.matchOne(appConfiguration);
+  }
+
 }

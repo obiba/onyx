@@ -15,4 +15,6 @@ public interface ApplicationConfigurationService {
 
   public void createApplicationConfiguration(ApplicationConfiguration appConfiguration);
 
+  public ApplicationConfiguration getApplicationConfiguration();
+
 }

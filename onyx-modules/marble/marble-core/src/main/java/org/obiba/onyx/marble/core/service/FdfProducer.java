@@ -18,9 +18,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanWrapper;
@@ -55,12 +55,18 @@ public class FdfProducer {
 
   LocalizedResourceLoader consentFormTemplateLoader;
 
+  ApplicationConfigurationService appConfigService;
+
   public void setActiveConsentService(ActiveConsentService consentService) {
     this.activeConsentService = consentService;
   }
 
   public void setActiveInterviewService(ActiveInterviewService interviewService) {
     this.activeInterviewService = interviewService;
+  }
+
+  public void setAppConfigService(ApplicationConfigurationService appConfigService) {
+    this.appConfigService = appConfigService;
   }
 
   public void setDateFormat(String format) {
@@ -134,6 +140,7 @@ public class FdfProducer {
     replaceContext.put("Participant", activeInterviewService.getParticipant());
     replaceContext.put("User", activeInterviewService.getInterview().getUser());
     replaceContext.put("Date", dateFormatter.format(new Date()));
+    replaceContext.put("Application", appConfigService.getApplicationConfiguration());
     replaceContext.put("AcceptURL", acceptUrl);
     replaceContext.put("RefuseURL", refuseUrl);
   }
