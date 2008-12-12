@@ -19,9 +19,9 @@ import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 
 public class UserSessionServiceImpl implements UserSessionService {
 
-  private String datePattern;
+  private String datePattern = DEFAULT_DATE_FORMAT_PATTERN;
 
-  private String dateTimePattern;
+  private String dateTimePattern = DEFAULT_DATETIME_FORMAT_PATTERN;
 
   public void setDatePattern(String pattern) {
     this.datePattern = pattern;

@@ -49,6 +49,7 @@ import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.webapp.participant.panel.AssignCodeToParticipantPanel.AssignCodeToParticipantForm;
 import org.obiba.onyx.wicket.data.DataField;
@@ -92,6 +93,9 @@ public class EditParticipantPanel extends Panel {
 
   @SpringBean
   private EntityQueryService queryService;
+
+  @SpringBean
+  private UserSessionService userSessionService;
 
   private FeedbackPanel feedbackPanel;
 
@@ -227,7 +231,27 @@ public class EditParticipantPanel extends Panel {
     public RowFragment(String id, IModel participantModel, String label, String field) {
       super(id, "rowFragment", EditParticipantPanel.this);
       add(new Label("label", new ResourceModel(label)));
-      add(new Label("value", new PropertyModel(participantModel, field)));
+
+      IModel valueModel = new PropertyModel(participantModel, field);
+
+      // Date handling. If the field value is a date, format it using the configured
+      // date format. Note: Since we cannot tell from the participant meta-data whether
+      // this is a date or a date/time, currently we are assuming here that this is a date
+      // and formatting accordingly.
+      if(valueModel.getObject() != null && valueModel.getObject() instanceof Date) {
+        final Date date = (Date) valueModel.getObject();
+
+        valueModel = new Model() {
+          private static final long serialVersionUID = 1L;
+
+          @Override
+          public Object getObject() {
+            return userSessionService.getDateFormat().format(date);
+          }
+        };
+      }
+
+      add(new Label("value", valueModel));
     }
   }
 

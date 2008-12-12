@@ -10,6 +10,7 @@
 package org.obiba.onyx.webapp.participant.page;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.util.Date;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -28,6 +29,7 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionDefinitionConfiguration;
@@ -45,6 +47,9 @@ import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class InterviewPage extends BasePage {
+
+  @SpringBean(name = "userSessionService")
+  private UserSessionService userSessionService;
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
@@ -208,13 +213,17 @@ public class InterviewPage extends BasePage {
   private class ActiveInterviewModel implements Serializable {
 
     public String getStartDate() {
+      DateFormat dateTimeFormat = userSessionService.getDateTimeFormat();
       Date date = activeInterviewService.getInterview().getStartDate();
-      return date == null ? "" : DateModelUtils.getShortDateTimeModel(new Model(date)).getObject().toString();
+
+      return date == null ? "" : DateModelUtils.getDateTimeModel(new Model(dateTimeFormat), new Model(date)).getObject().toString();
     }
 
     public String getEndDate() {
+      DateFormat dateTimeFormat = userSessionService.getDateTimeFormat();
       Date date = activeInterviewService.getInterview().getEndDate();
-      return date == null ? "" : DateModelUtils.getShortDateTimeModel(new Model(date)).getObject().toString();
+
+      return date == null ? "" : DateModelUtils.getDateTimeModel(new Model(dateTimeFormat), new Model(date)).getObject().toString();
     }
 
     public String getStatus() {

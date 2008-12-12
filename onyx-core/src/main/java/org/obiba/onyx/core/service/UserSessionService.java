@@ -15,6 +15,17 @@ import java.util.Locale;
 import org.obiba.onyx.core.domain.user.User;
 
 public interface UserSessionService {
+  //
+  // Constants
+  //
+
+  public static final String DEFAULT_DATE_FORMAT_PATTERN = "yyyy-MM-dd";
+
+  public static final String DEFAULT_DATETIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm";
+
+  //
+  // Methods
+  //
 
   public Locale getLocale();
 

@@ -29,9 +29,9 @@ public class UserSessionServiceBeanImpl implements UserSessionService {
 
   private Locale locale = Locale.ENGLISH;
 
-  private String datePattern;
+  private String datePattern = DEFAULT_DATE_FORMAT_PATTERN;
 
-  private String dateTimePattern;
+  private String dateTimePattern = DEFAULT_DATETIME_FORMAT_PATTERN;
 
   public void setDatePattern(String pattern) {
     this.datePattern = pattern;

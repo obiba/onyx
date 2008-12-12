@@ -13,6 +13,7 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.wicket.Page;
@@ -40,6 +41,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
 import org.obiba.wicket.test.MockSpringApplication;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -53,7 +55,7 @@ public class EditParticipantPanelTest implements Serializable {
 
   private EntityQueryService mockQueryService;
 
-  private ParticipantMetadata participantMetadata;
+  private UserSessionService mockUserSessionService;
 
   private Participant p = newTestParticipant();
 
@@ -63,12 +65,14 @@ public class EditParticipantPanelTest implements Serializable {
 
     mockParticipantService = createMock(ParticipantService.class);
     mockQueryService = createMock(EntityQueryService.class);
+    mockUserSessionService = createMock(UserSessionService.class);
 
     mockCtx.putBean("participantService", mockParticipantService);
     mockCtx.putBean("entityQueryService", mockQueryService);
+    mockCtx.putBean("userSessionService", mockUserSessionService);
 
     ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("test-spring-context.xml");
-    participantMetadata = (ParticipantMetadata) context.getBean("participantMetadata");
+    ParticipantMetadata participantMetadata = (ParticipantMetadata) context.getBean("participantMetadata");
     mockCtx.putBean("participantMetadata", participantMetadata);
 
     MockSpringApplication application = new MockSpringApplication();
@@ -86,9 +90,11 @@ public class EditParticipantPanelTest implements Serializable {
     p.setRecruitmentType(RecruitmentType.ENROLLED);
 
     // We expect the updateParticipant method to be called once
+    expect(mockUserSessionService.getDateFormat()).andReturn(new SimpleDateFormat("yyyy-MM-dd")).anyTimes();
     mockParticipantService.updateParticipant(p);
     expect(mockQueryService.matchOne((ApplicationConfiguration) EasyMock.anyObject())).andReturn(new ApplicationConfiguration());
 
+    EasyMock.replay(mockUserSessionService);
     EasyMock.replay(mockParticipantService);
     EasyMock.replay(mockQueryService);
 
@@ -118,6 +124,7 @@ public class EditParticipantPanelTest implements Serializable {
     tester.assertComponent("panel:editParticipantForm:metadata:repeat:3:field:input:field", TextField.class);
     tester.assertComponent("panel:editParticipantForm:metadata:repeat:4:field", Label.class);
 
+    EasyMock.verify(mockUserSessionService);
     EasyMock.verify(mockParticipantService);
     EasyMock.verify(mockQueryService);
 

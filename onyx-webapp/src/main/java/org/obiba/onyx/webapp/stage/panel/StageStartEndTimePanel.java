@@ -9,18 +9,24 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.stage.panel;
 
+import java.text.DateFormat;
+
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 
 public class StageStartEndTimePanel extends Panel {
+
+  @SpringBean(name = "userSessionService")
+  private UserSessionService userSessionService;
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
@@ -29,8 +35,8 @@ public class StageStartEndTimePanel extends Panel {
 
   public StageStartEndTimePanel(String id, IModel stageModel) {
     super(id, stageModel);
-    add(new Label("startTime", DateModelUtils.getShortDateTimeModel(new PropertyModel(this, "stageExecution.startTime"))));
-    add(new Label("endTime", DateModelUtils.getShortDateTimeModel(new PropertyModel(this, "stageExecution.endTime"))));
+    add(new Label("startTime", DateModelUtils.getDateTimeModel(new PropertyModel(this, "dateTimeFormat"), new PropertyModel(this, "stageExecution.startTime"))));
+    add(new Label("endTime", DateModelUtils.getDateTimeModel(new PropertyModel(this, "dateTimeFormat"), new PropertyModel(this, "stageExecution.endTime"))));
     get("startTime").setRenderBodyOnly(true);
     get("endTime").setRenderBodyOnly(true);
   }
@@ -46,4 +52,7 @@ public class StageStartEndTimePanel extends Panel {
     return activeInterviewService.getStageExecution(stage);
   }
 
+  public DateFormat getDateTimeFormat() {
+    return userSessionService.getDateTimeFormat();
+  }
 }
