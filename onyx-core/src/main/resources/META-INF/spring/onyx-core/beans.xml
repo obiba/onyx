@@ -32,6 +32,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     scope="session" destroy-method="shutdown">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="moduleRegistry" ref="moduleRegistry" />
+    <property name="participantService" ref="participantService" />
     <aop:scoped-proxy proxy-target-class="false" />
   </bean>
 

@@ -12,9 +12,7 @@ package org.obiba.onyx.core.service.impl;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
@@ -24,6 +22,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Module;
@@ -44,11 +43,14 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
 
   private ModuleRegistry moduleRegistry;
 
-  // Map of Interview.id to Map of Stage.id to StageExecutionContext
-  private Map<Serializable, Map<Serializable, StageExecutionContext>> interviewStageContexts = new HashMap<Serializable, Map<Serializable, StageExecutionContext>>();
+  private ParticipantService participantService;
 
   public void setModuleRegistry(ModuleRegistry moduleRegistry) {
     this.moduleRegistry = moduleRegistry;
+  }
+
+  public void setParticipantService(ParticipantService participantService) {
+    this.participantService = participantService;
   }
 
   public Participant getParticipant() {
@@ -80,19 +82,13 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     if(currentParticipant == null) return null;
 
     // try to find it in memory
-    Interview interview = getInterview();
-    Map<Serializable, StageExecutionContext> contexts = interviewStageContexts.get(interview.getId());
-    if(contexts == null) {
-      contexts = new HashMap<Serializable, StageExecutionContext>();
-      interviewStageContexts.put(interview.getId(), contexts);
-    }
-    StageExecutionContext exec = contexts.get(stage.getName());
+    StageExecutionContext exec = participantService.retrieveStageExecutionContext(currentParticipant, stage);
 
     if(exec == null) {
       Module module = moduleRegistry.getModule(stage.getModule());
-      exec = (StageExecutionContext) module.createStageExecution(getInterview(), stage);
+      exec = (StageExecutionContext) module.createStageExecution(currentParticipant.getInterview(), stage);
 
-      for(StageExecutionContext sec : contexts.values()) {
+      for(StageExecutionContext sec : participantService.getStageExecutionContexts(currentParticipant)) {
         if(exec.getStage().getStageDependencyCondition() != null) {
           if(exec.getStage().getStageDependencyCondition().isDependentOn(sec.getStage().getName())) {
             sec.addTransitionListener(exec);
@@ -100,9 +96,9 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
         }
       }
 
-      contexts.put(stage.getName(), exec);
+      participantService.storeStageExecutionContext(currentParticipant, exec);
 
-      // try to find it in memory
+      // try to find previous state in memento
       StageExecutionMemento template = new StageExecutionMemento();
       template.setStage(stage.getName());
       template.setInterview(getInterview());
@@ -110,7 +106,6 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
       if(memento != null) {
         exec.restoreFromMemento(memento);
       }
-
     }
 
     return exec;

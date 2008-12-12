@@ -10,6 +10,7 @@
 package org.obiba.onyx.core.service;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,8 @@ import org.obiba.core.validation.exception.ValidationRuntimeException;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.engine.state.StageExecutionContext;
 
 public interface ParticipantService {
 
@@ -38,20 +41,69 @@ public interface ParticipantService {
    */
   public int countParticipantsByCode(String code);
 
+  /**
+   * Get the list of participants by like-comparing the first and last name to the given name.
+   * @param likeName
+   * @param paging
+   * @param clauses
+   * @return
+   */
   public List<Participant> getParticipantsByName(String likeName, PagingClause paging, SortingClause... clauses);
 
+  /**
+   * Count the participants by like-comparing the first and last name to the given name.
+   * @param likeName
+   * @return
+   */
   public int countParticipantsByName(String likeName);
 
+  /**
+   * Get the list of participants by their interview status.
+   * @param status
+   * @param paging
+   * @param clauses
+   * @return
+   */
   public List<Participant> getParticipants(InterviewStatus status, PagingClause paging, SortingClause... clauses);
 
+  /**
+   * Count the participants by their interview status.
+   * @param status
+   * @return
+   */
   public int countParticipants(InterviewStatus status);
 
+  /**
+   * Get the list of participants having an appointment between the given dates.
+   * @param from
+   * @param to
+   * @param paging
+   * @param clauses
+   * @return
+   */
   public List<Participant> getParticipants(Date from, Date to, PagingClause paging, SortingClause... clauses);
 
+  /**
+   * Count the participants having an appointment between the given dates.
+   * @param from
+   * @param to
+   * @return
+   */
   public int countParticipants(Date from, Date to);
 
+  /**
+   * Assign a barcode to a participant.
+   * @param participant
+   * @param barcode
+   * @param receptionComment
+   * @param user
+   */
   public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment, User user);
 
+  /**
+   * Save the participant, its appointment and metadata.
+   * @param participant
+   */
   public void updateParticipant(Participant participant);
 
   /**
@@ -64,4 +116,27 @@ public interface ParticipantService {
    * @param participantsList
    */
   public void updateParticipants(InputStream participantsListStream) throws ValidationRuntimeException;
+
+  /**
+   * Store the participant given stage execution context.
+   * @param participant
+   * @param exec
+   */
+  public void storeStageExecutionContext(Participant participant, StageExecutionContext exec);
+
+  /**
+   * Get the participant stage execution context.
+   * @param participant
+   * @param stage
+   * @return
+   */
+  public StageExecutionContext retrieveStageExecutionContext(Participant participant, Stage stage);
+
+  /**
+   * Get the stage execution contexts of the participant.
+   * @param participant
+   * @return
+   */
+  public Collection<StageExecutionContext> getStageExecutionContexts(Participant participant);
+
 }
