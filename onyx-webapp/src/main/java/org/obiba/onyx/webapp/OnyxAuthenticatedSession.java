@@ -45,8 +45,8 @@ public final class OnyxAuthenticatedSession extends WebSession {
       User template = new User();
       template.setLogin(login);
       User fetchedUser = null;
-      for (User u : queryService.match(template)) {
-        if (!u.isDeleted()) {
+      for(User u : queryService.match(template)) {
+        if(!u.isDeleted()) {
           fetchedUser = u;
           break;
         }
@@ -54,11 +54,9 @@ public final class OnyxAuthenticatedSession extends WebSession {
       if(fetchedUser != null && !fetchedUser.isDeleted() && fetchedUser.getPassword().equals(User.digest(password))) {
         user = fetchedUser;
 
-        if(user.getLanguage() != null)
+        if(user.getLanguage() != null) {
           setLocale(user.getLanguage());
-        
-        // Forcing initialization of user's roles
-        // user.getRoles().size();
+        }
       }
     }
     return user != null;
@@ -68,6 +66,9 @@ public final class OnyxAuthenticatedSession extends WebSession {
    * @return true if user is signed in
    */
   public boolean isSignedIn() {
+    if(isSessionInvalidated()) {
+      user = null;
+    }
     return user != null;
   }
 
@@ -94,18 +95,24 @@ public final class OnyxAuthenticatedSession extends WebSession {
   public Roles getRoles() {
     if(isSignedIn()) {
 
-      // Prepare the role list in a string provided to the Wicket Roles class. 
-      StringBuilder roleList = new StringBuilder();
-      
       User template = new User();
       template.setLogin(user.getLogin());
-      
-      for (Role r : queryService.matchOne(template).getRoles()) {
-        if (roleList.length()!= 0)
-          roleList.append(",");
+      template.setDeleted(false);
+      template = queryService.matchOne(template);
+      // case user has disappeared or was virtually deleted
+      if(template == null) {
+        signOut();
+        return null;
+      }
+
+      // Prepare the role list in a string provided to the Wicket Roles class.
+      StringBuilder roleList = new StringBuilder();
+
+      for(Role r : template.getRoles()) {
+        if(roleList.length() != 0) roleList.append(",");
         roleList.append(r.getName());
       }
-      
+
       Roles userRoles = new Roles(roleList.toString());
       return userRoles;
     }

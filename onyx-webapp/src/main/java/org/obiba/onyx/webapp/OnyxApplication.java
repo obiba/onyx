@@ -35,6 +35,7 @@ import org.obiba.onyx.webapp.home.page.HomePage;
 import org.obiba.onyx.webapp.login.page.LoginPage;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 import org.obiba.onyx.webapp.stage.page.StagePage;
+import org.obiba.onyx.webapp.user.page.UserSearchPage;
 import org.obiba.runtime.Version;
 import org.obiba.wicket.application.ISpringWebApplication;
 import org.obiba.wicket.application.WebApplicationStartupListener;
@@ -193,6 +194,7 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
     // nice urls
     mount("participant", PackageName.forClass(ParticipantSearchPage.class));
     mount("stage", PackageName.forClass(StagePage.class));
+    mount("user", PackageName.forClass(UserSearchPage.class));
 
     getSecuritySettings().setAuthorizationStrategy(new RoleAuthorizationStrategy(new UserRolesAuthorizer()));
     getSecuritySettings().setUnauthorizedComponentInstantiationListener(this);
@@ -214,6 +216,8 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
     });
     log.info("Destroying Spring ApplicationContext");
     applicationContext.destroy();
+    log.info("Destroying Web Application sessions");
+    getSessionStore().destroy();
     log.info("Onyx Web Application has been stopped");
     super.onDestroy();
   }
