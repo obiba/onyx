@@ -7,7 +7,7 @@
     <askParticipantId>true</askParticipantId>
   </actionDefinition>
 
-  <!-- Require a comment for all actions of type "SKIP" -->
+  <!-- Require a comment for all actions of type "SKIP" and "STOP" (Cancel) -->
   <actionDefinition>
     <code>action.SKIP</code>
     <type>SKIP</type>
@@ -15,5 +15,12 @@
     <askParticipantId>true</askParticipantId>
     <commentMandatory>true</commentMandatory>
   </actionDefinition>
+  <actionDefinition>
+    <code>action.STOP</code>
+    <type>STOP</type>
+    <askPassword>true</askPassword>
+    <askParticipantId>true</askParticipantId>
+    <commentMandatory>true</commentMandatory>
+  </actionDefinition>  
 
 </actionDefinitions>
