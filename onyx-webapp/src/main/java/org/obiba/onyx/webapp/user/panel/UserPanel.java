@@ -37,6 +37,8 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.wicket.markup.html.form.LocaleDropDownChoice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Defines User Form for adding/editing user
@@ -44,6 +46,9 @@ import org.obiba.wicket.markup.html.form.LocaleDropDownChoice;
 public class UserPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(UserPanel.class);
 
   @SpringBean
   private UserService userService;
@@ -116,6 +121,7 @@ public class UserPanel extends Panel {
 
       LocaleDropDownChoice ddc = new LocaleDropDownChoice("language", new PropertyModel(getModel(), "language"), Arrays.asList(new Locale[] { Locale.FRENCH, Locale.ENGLISH }));
       ddc.setUseSessionLocale(true);
+      // ddc.setLabel(new StringResourceModel("Language", this, null));
       ddc.add(new RequiredFormFieldBehavior());
       add(ddc);
 
@@ -128,8 +134,10 @@ public class UserPanel extends Panel {
           super.onSubmit();
           User user = (User) UserPanelForm.this.getModelObject();
           String newPassword = UserPanel.this.password.getModelObjectAsString();
-
-          user.setPassword(User.digest(newPassword));
+          // password is changed only if new password is entered
+          if(newPassword != null && newPassword.length() > 0) {
+            user.setPassword(User.digest(newPassword));
+          }
 
           if(user.getLogin() == null) generateLogin(user);
           if(user.getStatus() == null) user.setStatus(Status.ACTIVE);

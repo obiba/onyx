@@ -1,38 +1,39 @@
 <wicket:panel>
 	<form wicket:id="userPanelForm">
 		<span wicket:id="feedback"/>
-	 	<table>
+	 	<table class="keyValueTable">
 			<tr>
-	    		<td><label for="lastName"><wicket:message key="LastName" /></label></td>
-	    		<td><input wicket:id="lastName" id="lastName" type="text" size="20"/></td>
+	    		<td valign="top" class="keyValueTableKey"><label for="lastName"><wicket:message key="LastName" /></label></td>
+	    		<td class="keyValueTableValueOdd"><input wicket:id="lastName" id="lastName" type="text" size="20"/></td>
 	    	</tr>
 	    	<tr>
-	    		<td><label for="firstName"><wicket:message key="FirstName" /></label></td>
-	    		<td><input wicket:id="firstName" id="firstName" type="text" size="20"/></td>
+	    		<td valign="top" class="keyValueTableKey"><label for="firstName"><wicket:message key="FirstName" /></label></td>
+	    		<td class="keyValueTableValueEven"><input wicket:id="firstName" id="firstName" type="text" size="20"/></td>
 	    	</tr>
 	    	<tr>
-	    		<td><label for="login"><wicket:message key="Login" /></label></td>
-	    		<td><input wicket:id="login" id="login" type="text" size="20"/></td>
+	    		<td valign="top" class="keyValueTableKey"><label for="login"><wicket:message key="Login" /></label></td>
+	    		<td class="keyValueTableValueOdd"><input wicket:id="login" id="login" type="text" size="20"/></td>
 	    	</tr>
 	    	<tr>
-	    		<td><label for="password"><wicket:message key="Password" /></label></td>
-	    		<td><input wicket:id="password" id="password" type="password" size="20"/></td>
+	    		<td valign="top" class="keyValueTableKey"><label for="password"><wicket:message key="Password" /></label></td>
+	    		<td class="keyValueTableValueEven"><input wicket:id="password" id="password" type="password" size="20"/></td>
 	    	</tr>
 	    	<tr>
-	    		<td><label for="email"><wicket:message key="Email" /></label></td>
-	    		<td><input wicket:id="email" id="email" type="text" size="20"/></td>
+	    		<td valign="top" class="keyValueTableKey"><label for="email"><wicket:message key="Email" /></label></td>
+	    		<td class="keyValueTableValueOdd"><input wicket:id="email" id="email" type="text" size="20"/></td>
 	    	</tr>
 	    	<tr>
-	    		<td><label for="roles"><wicket:message key="Role(s)" /></label></td>
-	    		<td><select wicket:id="roles"/></td>
+	    		<td valign="top" class="keyValueTableKey"><label for="roles"><wicket:message key="Role(s)" /></label></td>
+	    		<td class="keyValueTableValueEven"><select wicket:id="roles"/></td>
 	    	</tr>
 	    	<tr>
-	    		<td><label for="language"><wicket:message key="Language" /></label></td>
-	    		<td><select wicket:id="language" /></td>
+	    		<td valign="top" class="keyValueTableKey"><label for="language"><wicket:message key="Language" /></label></td>
+	    		<td class="keyValueTableValueOdd"><select wicket:id="language" /></td>
 	    	</tr>
 		</table>
-		<br/>
+		<div class="footer">
 	    <button wicket:id="save"><wicket:message key="Save"/></button> 		
-        <button wicket:id="cancel"><wicket:message key="Cancel"/></button>    
+        <button wicket:id="cancel"><wicket:message key="Cancel"/></button>
+        </div>    
 	</form>
 </wicket:panel>

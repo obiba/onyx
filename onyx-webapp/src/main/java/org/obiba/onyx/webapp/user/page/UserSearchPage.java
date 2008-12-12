@@ -88,6 +88,7 @@ public class UserSearchPage extends BasePage {
     });
     userDetailsModalWindow.setInitialWidth(400);
     userDetailsModalWindow.setInitialHeight(450);
+    userDetailsModalWindow.setCookieName("user-details-modal");
     add(userDetailsModalWindow);
 
     add(new AjaxLink("addUser") {
