@@ -23,4 +23,16 @@
     <commentMandatory>true</commentMandatory>
   </actionDefinition>  
 
+  <!-- 
+    Providing a reason and/or comment is optional when cancelling an interview.
+    There are no configured reasons (i.e., no dropdown list of reasons) from which
+    to choose.
+  -->
+  <actionDefinition>
+    <code>action.STOP.Interview</code>
+    <type>STOP</type>
+    <askPassword>false</askPassword>
+    <commentMandatory>false</commentMandatory>
+    <reasonMandatory>false</reasonMandatory>
+  </actionDefinition>
 </actionDefinitions>

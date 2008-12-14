@@ -41,6 +41,7 @@ import org.obiba.onyx.webapp.participant.panel.CommentsModalPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.webapp.stage.panel.StageSelectionPanel;
 import org.obiba.onyx.wicket.action.ActionWindow;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
@@ -229,10 +230,12 @@ public class InterviewPage extends BasePage {
     public String getStatus() {
       Action act = activeInterviewService.getStatusAction();
       ValueMap map = null;
+
       if(act != null && act.getEventReason() != null) {
-        // TODO localize the reason
-        map = new ValueMap("reason=" + act.getEventReason());
+        String reason = (new SpringStringResourceModel(act.getEventReason())).getString();
+        map = new ValueMap("reason=" + reason);
       }
+
       return (new StringResourceModel("InterviewStatus." + activeInterviewService.getInterview().getStatus(), InterviewPage.this, new Model(map))).getString();
     }
   }
