@@ -229,14 +229,14 @@ public class InterviewPage extends BasePage {
 
     public String getStatus() {
       Action act = activeInterviewService.getStatusAction();
-      ValueMap map = null;
 
       if(act != null && act.getEventReason() != null) {
         String reason = (new SpringStringResourceModel(act.getEventReason())).getString();
-        map = new ValueMap("reason=" + reason);
+        ValueMap map = new ValueMap("reason=" + reason);
+        return (new StringResourceModel("InterviewStatus." + activeInterviewService.getInterview().getStatus() + ".WithReason", InterviewPage.this, new Model(map))).getString();
+      } else {
+        return (new StringResourceModel("InterviewStatus." + activeInterviewService.getInterview().getStatus(), InterviewPage.this, null)).getString();
       }
-
-      return (new StringResourceModel("InterviewStatus." + activeInterviewService.getInterview().getStatus(), InterviewPage.this, new Model(map))).getString();
     }
   }
 
