@@ -46,9 +46,9 @@
     <integrityChecks>
       <rangeCheck>
         <targetParameter reference="wei1_weight" />
-        <decimalMinValueMale>0.0</decimalMinValueMale>
+        <decimalMinValueMale>30.0</decimalMinValueMale>
         <decimalMaxValueMale>270.0</decimalMaxValueMale>
-        <decimalMinValueFemale>0.0</decimalMinValueFemale>
+        <decimalMinValueFemale>30.0</decimalMinValueFemale>
         <decimalMaxValueFemale>270.0</decimalMaxValueFemale>
       </rangeCheck>
     </integrityChecks>
