@@ -87,7 +87,7 @@ public class ObservedContraIndicationPanel extends Panel {
 
       @Override
       public boolean isEnabled() {
-        return selectedRadio == null || selectedRadio == YES;
+        return selectedRadio == null || selectedRadio.equals(YES);
       }
 
       @Override
@@ -103,7 +103,7 @@ public class ObservedContraIndicationPanel extends Panel {
     contraIndicationDropDownChoice.add(new OnChangeAjaxBehavior() {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        log.debug("ddc.onUpdate() selectedRadio={} selectedCi={}", selectedRadio, getContraindicatable().getContraindication());
+        log.debug("contraIndicationDropDownChoice.onUpdate() selectedRadio={} selectedCi={}", selectedRadio, getContraindicatable().getContraindication());
         // make sure the right radio is selected
         // use setModelObject in order to let the RadioGroup component be aware of the change.
         radioGroup.setModelObject(getContraindicatable().isContraindicated() ? YES : NO);
