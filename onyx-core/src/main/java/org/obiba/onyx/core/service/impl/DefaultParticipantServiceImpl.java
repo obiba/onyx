@@ -188,9 +188,11 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
           persistedParticipant = getPersistenceManager().matchOne(persistedParticipant);
 
           if(persistedParticipant == null) {
-            if(isNewAppointmentDateValid(participant, line) == false) {
+            if(!isNewAppointmentDateValid(participant, line)) {
               SimpleDateFormat formater = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-              vex.reject(participant, "AppointmentDatePassed", new String[] { Integer.toString(line), participant.getEnrollmentId(), formater.format(participant.getAppointment().getDate()) }, "Participant's appointment date is passed.");
+              String newAppointmentDate = formater.format(participant.getAppointment().getDate());
+              appointmentListUpdatelog.error("Abort updating appointments: Error at line {}: Appointment date {} is passed", line, newAppointmentDate);
+              vex.reject(participant, "AppointmentDatePassed", new String[] { Integer.toString(line), participant.getEnrollmentId(), newAppointmentDate }, "Participant's appointment date is in the past.");
               return;
             }
 
@@ -210,7 +212,10 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
               appointmentListUpdatelog.warn("Line {}: Interview completed => participant update ignored", line);
             } else {
               // not completed
-              if(isNewAppointmentDateValid(participant, line) == false) return;
+              if(!isNewAppointmentDateValid(participant, line)) {
+                appointmentListUpdatelog.warn("Line {}: Appointment date/time is in the past => participant update ignored", line);
+                return;
+              }
 
               // update its appointment date
               Appointment appointment = persistedParticipant.getAppointment();
@@ -246,11 +251,10 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
       private boolean isNewAppointmentDateValid(Participant participant, Integer line) {
         Date newAppointmentDate = participant.getAppointment().getDate();
         if(newAppointmentDate != null && newAppointmentDate.compareTo(new Date()) < 0) {
-          SimpleDateFormat formater = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-          appointmentListUpdatelog.error("Abort updating appointments: Error at line {}: Appointment date {} is passed", line, formater.format(newAppointmentDate));
           return false;
-        } else
+        } else {
           return true;
+        }
       }
     });
 
