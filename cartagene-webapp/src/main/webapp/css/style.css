@@ -34,6 +34,11 @@ A:hover {
 	background-repeat:no-repeat;*/
 }
 
+.toggler {
+	cursor:pointer;
+	vertical-align:middle;
+}
+
 .subLegend {
   border-style: none;
   background: white;

@@ -9,9 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.wizard;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 
@@ -45,7 +47,7 @@ public class ConclusionStep extends QuestionnaireWizardStepPanel {
     form.getNextLink().setEnabled(false);
     form.getPreviousLink().setEnabled(true);
     ((QuestionnaireWizardForm) form).getInterruptLink().setEnabled(false);
-    form.getFinishLink().setEnabled(true);
+    form.getFinishLink().setEnabled(true).add(new AttributeModifier("style", new Model("display:inline;")));
 
     if(target != null) {
       target.addComponent(form);
