@@ -323,7 +323,7 @@ public class EditParticipantPanel extends Panel {
     return genderDropDown;
   }
 
-  private class GenderRenderer implements IChoiceRenderer {
+  private static class GenderRenderer implements IChoiceRenderer {
 
     private static final long serialVersionUID = 1L;
 
@@ -354,7 +354,7 @@ public class EditParticipantPanel extends Panel {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
-        Label label = new Label("label", (new SpringStringResourceModel(new PropertyModel(attribute, "name"))).getString());
+        Label label = new Label("label", new SpringStringResourceModel(new PropertyModel(attribute, "name")));
         item.add(label);
 
         if(attribute.isMandatoryAtReception()) item.add(new Label("mandatory", " *"));
