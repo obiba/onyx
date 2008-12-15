@@ -9,8 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
+import java.util.Date;
+
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.CurrentYearSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DateSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ExternalOpenAnswerSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.FixedSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.OpenAnswerSource;
@@ -24,7 +27,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.util.data.Data;
 
 /**
- * DataSource builder.
+ * DataSource builder: defines the way to retrieve data.
  */
 public class DataSourceBuilder extends AbstractQuestionnaireElementBuilder<DataSource> {
 
@@ -51,24 +54,40 @@ public class DataSourceBuilder extends AbstractQuestionnaireElementBuilder<DataS
     return new DataSourceBuilder(questionnaire, questionName, categoryName, openAnswerDefinitionName);
   }
 
-  public static DataSourceBuilder createTimestampSource(Questionnaire questionnaire) {
-    return new DataSourceBuilder(questionnaire, new TimestampSource());
+  public static DataSourceBuilder createTimestampSource() {
+    return new DataSourceBuilder(null, new TimestampSource());
   }
 
-  public static DataSourceBuilder createCurrentYearSource(Questionnaire questionnaire) {
-    return new DataSourceBuilder(questionnaire, new CurrentYearSource());
+  public static DataSourceBuilder createDateSource() {
+    return new DataSourceBuilder(null, new DateSource());
   }
 
-  public static DataSourceBuilder createParticipantPropertySource(Questionnaire questionnaire, String property) {
-    return new DataSourceBuilder(questionnaire, new ParticipantPropertySource(property));
+  public static DataSourceBuilder createDateSource(int field, int amount) {
+    return new DataSourceBuilder(null, new DateSource().setDateModifier(field, amount));
   }
 
-  public static DataSourceBuilder createExternalOpenAnswerSource(Questionnaire questionnaire, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
-    return new DataSourceBuilder(questionnaire, new ExternalOpenAnswerSource(questionnaireName, questionName, categoryName, openAnswerDefinitionName));
+  public static DataSourceBuilder createDateSource(Date date) {
+    return new DataSourceBuilder(null, new DateSource(date));
   }
 
-  public static DataSourceBuilder createFixedSource(Questionnaire questionnaire, Data data) {
-    return new DataSourceBuilder(questionnaire, new FixedSource(data));
+  public static DataSourceBuilder createDateSource(Date date, int field, int amount) {
+    return new DataSourceBuilder(null, new DateSource(date).setDateModifier(field, amount));
+  }
+
+  public static DataSourceBuilder createCurrentYearSource() {
+    return new DataSourceBuilder(null, new CurrentYearSource());
+  }
+
+  public static DataSourceBuilder createParticipantPropertySource(String property) {
+    return new DataSourceBuilder(null, new ParticipantPropertySource(property));
+  }
+
+  public static DataSourceBuilder createExternalOpenAnswerSource(String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
+    return new DataSourceBuilder(null, new ExternalOpenAnswerSource(questionnaireName, questionName, categoryName, openAnswerDefinitionName));
+  }
+
+  public static DataSourceBuilder createFixedSource(Data data) {
+    return new DataSourceBuilder(null, new FixedSource(data));
   }
 
   public DataSource getDataSource() {

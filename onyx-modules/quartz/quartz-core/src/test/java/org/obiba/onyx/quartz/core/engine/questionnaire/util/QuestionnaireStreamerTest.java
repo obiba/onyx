@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -24,8 +25,10 @@ import org.apache.wicket.validation.validator.PatternValidator;
 import org.junit.Test;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.util.FileUtil;
+import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataValidator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.DataSourceBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,8 +68,9 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
     builder.inPage("P4").withQuestion("Q6").withCategory("DATE").withOpenAnswerDefinition("DATE", DataType.DATE).withOpenAnswerDefinition("YEAR", DataType.INTEGER).addValidator(new DataValidator(new PatternValidator("\\d{4}"), DataType.TEXT));
     builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("MONTH", DataType.INTEGER).addValidator(new DataValidator(new NumberValidator.RangeValidator(1, 12), DataType.INTEGER));
     builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("DAY", DataType.INTEGER).addValidator(new DataValidator(new NumberValidator.RangeValidator(1, 31), DataType.INTEGER));
+    builder.inQuestion("Q6").setDataCondition("C1", "Q5", OTHER_SPECIFY, "SPECIFY", ComparisionOperator.gt, DataSourceBuilder.createDateSource(Calendar.DAY_OF_MONTH, -1).getDataSource());
 
-    // System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
+    System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
 
     // try {
     // File original = new File("target", "original.xml");

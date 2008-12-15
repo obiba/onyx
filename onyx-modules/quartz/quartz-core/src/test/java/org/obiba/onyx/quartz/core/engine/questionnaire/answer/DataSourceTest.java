@@ -60,7 +60,7 @@ public class DataSourceTest {
 
   @Test
   public void testCurrentYearSource() {
-    DataSource source = DataSourceBuilder.createCurrentYearSource(questionnaire).getDataSource();
+    DataSource source = DataSourceBuilder.createCurrentYearSource().getDataSource();
     Data data = source.getData(activeQuestionnaireAdministrationServiceMock);
 
     Calendar c = Calendar.getInstance();
@@ -73,7 +73,7 @@ public class DataSourceTest {
 
   @Test
   public void testFixedSource() {
-    DataSource source = DataSourceBuilder.createFixedSource(questionnaire, DataBuilder.buildInteger(1)).getDataSource();
+    DataSource source = DataSourceBuilder.createFixedSource(DataBuilder.buildInteger(1)).getDataSource();
     Data data = source.getData(activeQuestionnaireAdministrationServiceMock);
 
     Assert.assertEquals(DataType.INTEGER, data.getType());
@@ -94,7 +94,7 @@ public class DataSourceTest {
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaireParticipant()).andReturn(questionnaireParticipant).anyTimes();
     replay(activeQuestionnaireAdministrationServiceMock);
 
-    DataSource source = DataSourceBuilder.createParticipantPropertySource(questionnaire, "birthDate").getDataSource();
+    DataSource source = DataSourceBuilder.createParticipantPropertySource("birthDate").getDataSource();
     Assert.assertEquals("birthDate", ((ParticipantPropertySource) source).getProperty());
     Data data = source.getData(activeQuestionnaireAdministrationServiceMock);
 
@@ -121,7 +121,7 @@ public class DataSourceTest {
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaireParticipant()).andReturn(questionnaireParticipant).anyTimes();
     replay(activeQuestionnaireAdministrationServiceMock);
 
-    DataSource source = DataSourceBuilder.createParticipantPropertySource(questionnaire, "gender").getDataSource();
+    DataSource source = DataSourceBuilder.createParticipantPropertySource("gender").getDataSource();
     Data data = source.getData(activeQuestionnaireAdministrationServiceMock);
 
     log.debug("ParticipantPropertySource.data={}", data);
@@ -146,7 +146,7 @@ public class DataSourceTest {
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaireParticipant()).andReturn(questionnaireParticipant).anyTimes();
     replay(activeQuestionnaireAdministrationServiceMock);
 
-    DataSource source = DataSourceBuilder.createParticipantPropertySource(questionnaire, "coucou").getDataSource();
+    DataSource source = DataSourceBuilder.createParticipantPropertySource("coucou").getDataSource();
 
     try {
       source.getData(activeQuestionnaireAdministrationServiceMock);
@@ -160,7 +160,7 @@ public class DataSourceTest {
 
   @Test
   public void testTimestampSource() {
-    DataSource source = DataSourceBuilder.createTimestampSource(questionnaire).getDataSource();
+    DataSource source = DataSourceBuilder.createTimestampSource().getDataSource();
     Data data = source.getData(activeQuestionnaireAdministrationServiceMock);
 
     Assert.assertEquals(DataType.DATE, data.getType());
@@ -172,6 +172,27 @@ public class DataSourceTest {
     Calendar c2 = Calendar.getInstance();
     c2.setTime(date);
     Assert.assertEquals(c1.get(Calendar.YEAR), c2.get(Calendar.YEAR));
+    Assert.assertEquals(c1.get(Calendar.MONTH), c2.get(Calendar.MONTH));
+    Assert.assertEquals(c1.get(Calendar.DATE), c2.get(Calendar.DATE));
+    Assert.assertEquals(c1.get(Calendar.HOUR), c2.get(Calendar.HOUR));
+
+    log.debug("TimestampSource.data={}", data);
+  }
+
+  @Test
+  public void testDateSource() {
+    DataSource source = DataSourceBuilder.createDateSource(Calendar.YEAR, -1).getDataSource();
+    Data data = source.getData(activeQuestionnaireAdministrationServiceMock);
+
+    Assert.assertEquals(DataType.DATE, data.getType());
+
+    Calendar c1 = Calendar.getInstance();
+    c1.setTime(new Date());
+
+    Date date = data.getValue();
+    Calendar c2 = Calendar.getInstance();
+    c2.setTime(date);
+    Assert.assertEquals(c1.get(Calendar.YEAR) - 1, c2.get(Calendar.YEAR));
     Assert.assertEquals(c1.get(Calendar.MONTH), c2.get(Calendar.MONTH));
     Assert.assertEquals(c1.get(Calendar.DATE), c2.get(Calendar.DATE));
     Assert.assertEquals(c1.get(Calendar.HOUR), c2.get(Calendar.HOUR));
@@ -255,7 +276,7 @@ public class DataSourceTest {
     expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer("HealthQuestionnaire1", "Q2", "2", "OPEN_TEXT")).andReturn(openAnswer).anyTimes();
     replay(activeQuestionnaireAdministrationServiceMock);
 
-    DataSource source = DataSourceBuilder.createExternalOpenAnswerSource(questionnaire, "HealthQuestionnaire1", "Q2", "2", "OPEN_TEXT").getDataSource();
+    DataSource source = DataSourceBuilder.createExternalOpenAnswerSource("HealthQuestionnaire1", "Q2", "2", "OPEN_TEXT").getDataSource();
     Data data = source.getData(activeQuestionnaireAdministrationServiceMock);
 
     log.debug("ExternalOpenAnswerSource.data={}", data);
@@ -272,7 +293,7 @@ public class DataSourceTest {
     expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer("HealthQuestionnaire1", "Q2", "2", "OPEN_TEXT")).andReturn(null).anyTimes();
     replay(activeQuestionnaireAdministrationServiceMock);
 
-    DataSource source = DataSourceBuilder.createExternalOpenAnswerSource(questionnaire, "HealthQuestionnaire1", "Q2", "2", "OPEN_TEXT").getDataSource();
+    DataSource source = DataSourceBuilder.createExternalOpenAnswerSource("HealthQuestionnaire1", "Q2", "2", "OPEN_TEXT").getDataSource();
     Data data = source.getData(activeQuestionnaireAdministrationServiceMock);
 
     log.debug("ExternalOpenAnswerSource.data={}", data);
@@ -295,7 +316,7 @@ public class DataSourceTest {
     expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer("HealthQuestionnaire1", "Q2", "2", "OPEN_TEXT")).andReturn(openAnswer).anyTimes();
     replay(activeQuestionnaireAdministrationServiceMock);
 
-    DataSource source = DataSourceBuilder.createExternalOpenAnswerSource(questionnaire, "HealthQuestionnaire1", "Q2", "2", "OPEN_TEXT").getDataSource();
+    DataSource source = DataSourceBuilder.createExternalOpenAnswerSource("HealthQuestionnaire1", "Q2", "2", "OPEN_TEXT").getDataSource();
     Data data = source.getData(activeQuestionnaireAdministrationServiceMock);
 
     log.debug("ExternalOpenAnswerSource.data={}", data);

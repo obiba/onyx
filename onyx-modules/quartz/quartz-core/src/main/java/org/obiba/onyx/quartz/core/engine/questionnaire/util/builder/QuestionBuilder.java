@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.obiba.onyx.core.domain.participant.Gender;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -392,6 +393,20 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   }
 
   /**
+   * Compare an open answer to given data from data source.
+   * @param name
+   * @param question
+   * @param category
+   * @param openAnswerDefinition
+   * @param comparisionOperator
+   * @param dataSource
+   * @return
+   */
+  public ConditionBuilder setDataCondition(String name, String question, String category, String openAnswerDefinition, ComparisionOperator comparisionOperator, DataSource dataSource) {
+    return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, comparisionOperator, dataSource);
+  }
+
+  /**
    * Compare two open answers.
    * @param name
    * @param question
@@ -459,6 +474,18 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    */
   public ConditionBuilder setDataCondition(String name, ComparisionOperator comparisionOperator, Gender gender) {
     return ConditionBuilder.createQuestionCondition(this, name, comparisionOperator, gender);
+  }
+
+  /**
+   * Compare two data from data sources.
+   * @param name
+   * @param dataSource1
+   * @param comparisionOperator
+   * @param dataSource2
+   * @return
+   */
+  public ConditionBuilder setDataCondition(String name, DataSource dataSource1, ComparisionOperator comparisionOperator, DataSource dataSource2) {
+    return ConditionBuilder.createQuestionCondition(this, name, dataSource1, comparisionOperator, dataSource2);
   }
 
   /**
