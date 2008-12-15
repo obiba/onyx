@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 import java.util.List;
 import java.util.Map;
 
+import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -329,6 +330,157 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   }
 
   /**
+   * Condition on any category is chosen in the given question.
+   * @param name
+   * @param question
+   * @return
+   */
+  public ConditionBuilder setAnswerCondition(String name, String question) {
+    return setAnswerCondition(name, question, null);
+  }
+
+  /**
+   * Condition on a category choice.
+   * @param name
+   * @param question
+   * @param category
+   * @return
+   */
+  public ConditionBuilder setAnswerCondition(String name, String question, String category) {
+    return ConditionBuilder.createQuestionCondition(this, name, question, category);
+  }
+
+  /**
+   * Condition on category choice in another questionnaire.
+   * @param name
+   * @param questionnaireName
+   * @param question
+   * @param category
+   * @return
+   */
+  public ConditionBuilder setExternalAnswerCondition(String name, String questionnaireName, String question, String category) {
+    return ConditionBuilder.createQuestionCondition(this, name, questionnaireName, question, category);
+  }
+
+  /**
+   * Compare an open answer from another questionnaire to given data.
+   * @param name
+   * @param questionnaireName
+   * @param questionName
+   * @param categoryName
+   * @param openAnswerDefinitionName
+   * @param comparisionOperator
+   * @param data
+   * @return
+   */
+  public ConditionBuilder setDataCondition(String name, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName, ComparisionOperator comparisionOperator, Data data) {
+    return ConditionBuilder.createQuestionCondition(this, name, questionnaireName, questionName, categoryName, openAnswerDefinitionName, comparisionOperator, data);
+  }
+
+  /**
+   * Compare an open answer to given data.
+   * @param name
+   * @param question
+   * @param category
+   * @param openAnswerDefinition
+   * @param comparisionOperator
+   * @param data
+   * @return
+   */
+  public ConditionBuilder setDataCondition(String name, String question, String category, String openAnswerDefinition, ComparisionOperator comparisionOperator, Data data) {
+    return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, comparisionOperator, data);
+  }
+
+  /**
+   * Compare two open answers.
+   * @param name
+   * @param question
+   * @param category
+   * @param openAnswerDefinition
+   * @param comparisionOperator
+   * @param questionName
+   * @param categoryName
+   * @param openAnswerDefinitionName
+   * @return
+   */
+  public ConditionBuilder setDataCondition(String name, String question, String category, String openAnswerDefinition, ComparisionOperator comparisionOperator, String questionName, String categoryName, String openAnswerDefinitionName) {
+    return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, comparisionOperator, questionName, categoryName, openAnswerDefinitionName);
+  }
+
+  /**
+   * Compare an open answer to an open answer in another questionnaire.
+   * @param name
+   * @param question
+   * @param category
+   * @param openAnswerDefinition
+   * @param comparisionOperator
+   * @param questionnaireName
+   * @param questionName
+   * @param categoryName
+   * @param openAnswerDefinitionName
+   * @return
+   */
+  public ConditionBuilder setDataCondition(String name, String question, String category, String openAnswerDefinition, ComparisionOperator comparisionOperator, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
+    return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, comparisionOperator, questionnaireName, questionName, categoryName, openAnswerDefinitionName);
+  }
+
+  /**
+   * Compare participant property to given data.
+   * @param name
+   * @param participantProperty
+   * @param comparisionOperator
+   * @param data
+   * @return
+   */
+  public ConditionBuilder setDataCondition(String name, String participantProperty, ComparisionOperator comparisionOperator, Data data) {
+    return ConditionBuilder.createQuestionCondition(this, name, participantProperty, comparisionOperator, data);
+  }
+
+  /**
+   * Compare participant property to open answer.
+   * @param name
+   * @param participantProperty
+   * @param comparisionOperator
+   * @param question
+   * @param category
+   * @param openAnswerDefinition
+   * @return
+   */
+  public ConditionBuilder setDataCondition(String name, String participantProperty, ComparisionOperator comparisionOperator, String question, String category, String openAnswerDefinition) {
+    return ConditionBuilder.createQuestionCondition(this, name, participantProperty, comparisionOperator, question, category, openAnswerDefinition);
+  }
+
+  /**
+   * Compare participant gender to given gender.
+   * @param name
+   * @param comparisionOperator
+   * @param gender
+   * @return
+   */
+  public ConditionBuilder setDataCondition(String name, ComparisionOperator comparisionOperator, Gender gender) {
+    return ConditionBuilder.createQuestionCondition(this, name, comparisionOperator, gender);
+  }
+
+  /**
+   * Set a multiple condition that will contain several conditions to be compared with each other.
+   * @param name
+   * @param operator
+   * @return
+   */
+  public ConditionBuilder setMultipleCondition(String name, ConditionOperator operator) {
+    return ConditionBuilder.createQuestionMultipleCondition(this, name, operator);
+  }
+
+  /**
+   * Set a condition that will resolve with the the opposit of inner condition resolution.
+   * @param name
+   * @return
+   */
+  public ConditionBuilder setNotCondition(String name) {
+    return ConditionBuilder.createQuestionNotCondition(this, name);
+  }
+
+  /**
    * Check question name unicity.
    * @param name
    * @return
@@ -337,48 +489,22 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
     return (QuestionnaireFinder.getInstance(questionnaire).findQuestion(name) == null);
   }
 
+  /**
+   * Check shared category name unicity.
+   * @param name
+   * @return
+   */
   private IllegalArgumentException invalidSharedCategoryNameUnicityException(String name) {
     return new IllegalArgumentException("There are several categories with name: " + name);
   }
 
+  /**
+   * Check question panel factory is operational.
+   * @param uiFactoryClass
+   * @param e
+   * @return
+   */
   private IllegalArgumentException invalidQuestionPanelFactoryException(Class<? extends IQuestionPanelFactory> uiFactoryClass, Exception e) {
     return new IllegalArgumentException("Unable to get question panel factory name from " + uiFactoryClass.getName(), e);
   }
-
-  public ConditionBuilder setAnswerCondition(String name, String question) {
-    return setAnswerCondition(name, question, null);
-  }
-
-  public ConditionBuilder setAnswerCondition(String name, String question, String category) {
-    return ConditionBuilder.createQuestionCondition(this, name, question, category);
-  }
-
-  public ConditionBuilder setExternalAnswerCondition(String name, String questionnaireName, String question, String category) {
-    return ConditionBuilder.createQuestionCondition(this, name, questionnaireName, question, category);
-  }
-
-  public ConditionBuilder setDataCondition(String name, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName, ComparisionOperator comparisionOperator, Data data) {
-    return ConditionBuilder.createQuestionCondition(this, name, questionnaireName, questionName, categoryName, openAnswerDefinitionName, comparisionOperator, data);
-  }
-
-  public ConditionBuilder setDataCondition(String name, String question, String category, String openAnswerDefinition, ComparisionOperator comparisionOperator, Data data) {
-    return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, comparisionOperator, data);
-  }
-
-  public ConditionBuilder setDataCondition(String name, String question, String category, String openAnswerDefinition, ComparisionOperator comparisionOperator, String questionName, String categoryName, String openAnswerDefinitionName) {
-    return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, comparisionOperator, questionName, categoryName, openAnswerDefinitionName);
-  }
-
-  public ConditionBuilder setDataCondition(String name, String question, String category, String openAnswerDefinition, ComparisionOperator comparisionOperator, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
-    return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, comparisionOperator, questionnaireName, questionName, categoryName, openAnswerDefinitionName);
-  }
-
-  public ConditionBuilder setMultipleCondition(String name, ConditionOperator operator) {
-    return ConditionBuilder.createQuestionMultipleCondition(this, name, operator);
-  }
-
-  public ConditionBuilder setNotCondition(String name) {
-    return ConditionBuilder.createQuestionNotCondition(this, name);
-  }
-
 }
