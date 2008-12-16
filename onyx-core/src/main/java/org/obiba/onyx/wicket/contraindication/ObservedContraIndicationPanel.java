@@ -60,7 +60,7 @@ public class ObservedContraIndicationPanel extends Panel {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
         log.info("radioGroup.onUpdate={}", selectedRadio);
-        if(selectedRadio == NO) {
+        if(selectedRadio.equals(NO)) {
           log.info("invalidating models");
           contraIndicationDropDownChoice.setModelObject(null);
           otherContraIndication.setModelObject(null);
