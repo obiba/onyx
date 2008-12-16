@@ -29,13 +29,24 @@ import org.obiba.onyx.util.data.DataBuilder;
 public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condition> {
 
   /**
-   * Constructor using {@link QuestionBuilder} to get the {@link Question} it is applied to.
-   * @param parent
+   * Constructor build around a pre-existing {@link Condition}.
+   * @param questionnaire
    * @param condition
    */
   private ConditionBuilder(Questionnaire questionnaire, Condition condition) {
     super(questionnaire);
     this.element = condition;
+  }
+
+  /**
+   * Constructor using {@link QuestionBuilder} to get the {@link Question} it is applied to.
+   * @param parent
+   * @param condition
+   */
+  private ConditionBuilder(QuestionBuilder parent, Condition condition) {
+    super(parent.getQuestionnaire());
+    this.element = condition;
+    this.element.addQuestion(parent.getElement());
   }
 
   /**
@@ -48,8 +59,8 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
   private ConditionBuilder(QuestionBuilder parent, String name, String questionName, String categoryName) {
     super(parent.getQuestionnaire());
 
-    element = getValidAnswerCondition(name, questionName, categoryName);
-    element.addQuestion(parent.getElement());
+    this.element = getValidAnswerCondition(name, questionName, categoryName);
+    this.element.addQuestion(parent.getElement());
   }
 
   /**
@@ -247,8 +258,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @return
    */
   public static ConditionBuilder createQuestionCondition(QuestionBuilder questionBuilder, String name, String participantProperty, ComparisionOperator comparisionOperator, Data data) {
-    Questionnaire questionnaire = questionBuilder.getQuestionnaire();
-    return new ConditionBuilder(questionnaire, new DataCondition(name, DataSourceBuilder.createParticipantPropertySource(participantProperty).getDataSource(), comparisionOperator, DataSourceBuilder.createFixedSource(data).getDataSource()));
+    return new ConditionBuilder(questionBuilder, new DataCondition(name, DataSourceBuilder.createParticipantPropertySource(participantProperty).getDataSource(), comparisionOperator, DataSourceBuilder.createFixedSource(data).getDataSource()));
   }
 
   /**
@@ -264,7 +274,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    */
   public static ConditionBuilder createQuestionCondition(QuestionBuilder questionBuilder, String name, String participantProperty, ComparisionOperator comparisionOperator, String question, String category, String openAnswerDefinition) {
     Questionnaire questionnaire = questionBuilder.getQuestionnaire();
-    return new ConditionBuilder(questionnaire, new DataCondition(name, DataSourceBuilder.createParticipantPropertySource(participantProperty).getDataSource(), comparisionOperator, DataSourceBuilder.createOpenAnswerSource(questionnaire, question, category, openAnswerDefinition).getDataSource()));
+    return new ConditionBuilder(questionBuilder, new DataCondition(name, DataSourceBuilder.createParticipantPropertySource(participantProperty).getDataSource(), comparisionOperator, DataSourceBuilder.createOpenAnswerSource(questionnaire, question, category, openAnswerDefinition).getDataSource()));
   }
 
   /**
@@ -276,8 +286,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @return
    */
   public static ConditionBuilder createQuestionCondition(QuestionBuilder questionBuilder, String name, ComparisionOperator comparisionOperator, Gender gender) {
-    Questionnaire questionnaire = questionBuilder.getQuestionnaire();
-    return new ConditionBuilder(questionnaire, new DataCondition(name, DataSourceBuilder.createParticipantPropertySource("gender").getDataSource(), comparisionOperator, DataSourceBuilder.createFixedSource(DataBuilder.buildText(gender.toString())).getDataSource()));
+    return new ConditionBuilder(questionBuilder, new DataCondition(name, DataSourceBuilder.createParticipantPropertySource("gender").getDataSource(), comparisionOperator, DataSourceBuilder.createFixedSource(DataBuilder.buildText(gender.toString())).getDataSource()));
   }
 
   /**
@@ -596,5 +605,4 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
   public static ConditionBuilder inCondition(Questionnaire questionnaire, Condition condition) {
     return new ConditionBuilder(questionnaire, condition);
   }
-
 }

@@ -25,6 +25,7 @@ import org.apache.wicket.validation.validator.PatternValidator;
 import org.junit.Test;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.util.FileUtil;
+import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataValidator;
@@ -60,6 +61,7 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
 
     builder.inSection("S1").withSection("S1_2").withPage("P3");
     builder.inPage("P3").withQuestion("Q4").withSharedCategories(YES, NO, DONT_KNOW);
+    builder.inQuestion("Q4").setDataCondition("Q4_GENDER", ComparisionOperator.eq, Gender.MALE);
 
     builder.withSection("S2").withSection("S2_1").withPage("P4");
     builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));

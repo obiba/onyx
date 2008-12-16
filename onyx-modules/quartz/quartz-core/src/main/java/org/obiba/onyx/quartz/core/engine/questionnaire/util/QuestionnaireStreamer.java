@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.wicket.util.value.ValueMap;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.CurrentYearSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DateModifier;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DateSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ExternalOpenAnswerSource;
@@ -118,7 +119,7 @@ public class QuestionnaireStreamer {
     xstream.alias("timestampSource", TimestampSource.class);
     xstream.alias("participantPropertySource", ParticipantPropertySource.class);
     xstream.useAttributeFor(ParticipantPropertySource.class, "property");
-
+    xstream.alias("currentYearSource", CurrentYearSource.class);
     xstream.alias("dateSource", DateSource.class);
     xstream.alias("dateModifier", DateModifier.class);
     xstream.useAttributeFor(DateModifier.class, "field");
