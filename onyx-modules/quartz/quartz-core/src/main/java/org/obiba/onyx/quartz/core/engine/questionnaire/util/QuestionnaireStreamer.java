@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.wicket.util.value.ValueMap;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ArithmeticOperationSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.CurrentYearSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DateModifier;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DateSource;
@@ -124,6 +125,9 @@ public class QuestionnaireStreamer {
     xstream.alias("dateModifier", DateModifier.class);
     xstream.useAttributeFor(DateModifier.class, "field");
     xstream.useAttributeFor(DateModifier.class, "amount");
+    xstream.alias("arithmeticOperationSource", ArithmeticOperationSource.class);
+    xstream.useAttributeFor(ArithmeticOperationSource.class, "operator");
+    xstream.useAttributeFor(ArithmeticOperationSource.class, "dataType");
 
     xstream.alias("valueMap", ValueMap.class);
   }

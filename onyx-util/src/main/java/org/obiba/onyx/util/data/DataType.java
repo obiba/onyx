@@ -10,5 +10,42 @@
 package org.obiba.onyx.util.data;
 
 public enum DataType {
-  BOOLEAN, DATA, DATE, DECIMAL, INTEGER, TEXT
+  BOOLEAN {
+    @Override
+    public boolean isNumberType() {
+      return false;
+    }
+  },
+  DATA {
+    @Override
+    public boolean isNumberType() {
+      return false;
+    }
+  },
+  DATE {
+    @Override
+    public boolean isNumberType() {
+      return false;
+    }
+  },
+  DECIMAL {
+    @Override
+    public boolean isNumberType() {
+      return true;
+    }
+  },
+  INTEGER {
+    @Override
+    public boolean isNumberType() {
+      return true;
+    }
+  },
+  TEXT {
+    @Override
+    public boolean isNumberType() {
+      return false;
+    }
+  };
+
+  public abstract boolean isNumberType();
 }

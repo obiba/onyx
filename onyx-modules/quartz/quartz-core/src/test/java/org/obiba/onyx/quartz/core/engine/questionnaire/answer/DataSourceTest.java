@@ -326,6 +326,92 @@ public class DataSourceTest {
     verify(activeQuestionnaireAdministrationServiceMock);
   }
 
+  @Test
+  public void testAritmeticOperandSource() {
+    // INTEGER - INTEGER = DECIMAL
+    ArithmeticOperationSource source = new ArithmeticOperationSource(new FixedSource(DataBuilder.buildInteger(2)), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(3)));
+    source.setDataType(DataType.DECIMAL);
+    Data data = source.getData(activeQuestionnaireAdministrationServiceMock);
+    log.info("ArithmeticOperationSource.data={}", data);
+
+    Assert.assertNotNull(data);
+    Assert.assertEquals(DataType.DECIMAL, data.getType());
+    Assert.assertEquals("-1.0", data.getValueAsString());
+
+    // INTEGER - INTEGER = INTEGER
+    source = new ArithmeticOperationSource(new FixedSource(DataBuilder.buildInteger(2)), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(3)));
+    data = source.getData(activeQuestionnaireAdministrationServiceMock);
+    log.info("ArithmeticOperationSource.data={}", data);
+
+    Assert.assertNotNull(data);
+    Assert.assertEquals(DataType.INTEGER, data.getType());
+    Assert.assertEquals("-1", data.getValueAsString());
+
+    // DECIMAL - INTEGER = DECIMAL
+    source = new ArithmeticOperationSource(new FixedSource(DataBuilder.buildDecimal(2f)), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(3)));
+    data = source.getData(activeQuestionnaireAdministrationServiceMock);
+    log.info("ArithmeticOperationSource.data={}", data);
+
+    Assert.assertNotNull(data);
+    Assert.assertEquals(DataType.DECIMAL, data.getType());
+    Assert.assertEquals("-1.0", data.getValueAsString());
+
+    // TEXT - INTEGER = TEXT
+    source = new ArithmeticOperationSource(new FixedSource(DataBuilder.buildText("2")), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(3)));
+    data = source.getData(activeQuestionnaireAdministrationServiceMock);
+    log.info("ArithmeticOperationSource.data={}", data);
+
+    Assert.assertNotNull(data);
+    Assert.assertEquals(DataType.TEXT, data.getType());
+    Assert.assertEquals("-1.0", data.getValueAsString());
+
+    // INTEGER - INTEGER = TEXT
+    source = new ArithmeticOperationSource(new FixedSource(DataBuilder.buildInteger(2)), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(3)));
+    source.setDataType(DataType.TEXT);
+    data = source.getData(activeQuestionnaireAdministrationServiceMock);
+    log.info("ArithmeticOperationSource.data={}", data);
+
+    Assert.assertNotNull(data);
+    Assert.assertEquals(DataType.TEXT, data.getType());
+    Assert.assertEquals("-1.0", data.getValueAsString());
+
+    // Error on result data type
+    source = new ArithmeticOperationSource(new FixedSource(DataBuilder.buildInteger(2)), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(3)));
+    try {
+      source.setDataType(DataType.BOOLEAN);
+      Assert.fail();
+    } catch(IllegalArgumentException e) {
+    }
+
+    // Error on operand data type
+    source = new ArithmeticOperationSource(new FixedSource(DataBuilder.buildBoolean(true)), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(3)));
+    try {
+      data = source.getData(activeQuestionnaireAdministrationServiceMock);
+      Assert.fail();
+    } catch(IllegalArgumentException e) {
+    }
+
+    // Null operand handling
+    source = new ArithmeticOperationSource(new FixedSource(null), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(3)));
+    data = source.getData(activeQuestionnaireAdministrationServiceMock);
+    log.info("ArithmeticOperationSource.data={}", data);
+
+    Assert.assertNotNull(data);
+    Assert.assertEquals(DataType.INTEGER, data.getType());
+    Assert.assertEquals("-3", data.getValueAsString());
+
+    // Null operand handling
+    source = new ArithmeticOperationSource(new FixedSource(DataBuilder.buildInteger(2)), ArithmeticOperator.divide, new FixedSource(null));
+    source.setDataType(DataType.DECIMAL);
+    data = source.getData(activeQuestionnaireAdministrationServiceMock);
+    log.info("ArithmeticOperationSource.data={}", data);
+
+    Assert.assertNotNull(data);
+    Assert.assertEquals(DataType.DECIMAL, data.getType());
+    Assert.assertEquals("Infinity", data.getValueAsString());
+
+  }
+
   public Questionnaire createQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaire", "1.0");
 

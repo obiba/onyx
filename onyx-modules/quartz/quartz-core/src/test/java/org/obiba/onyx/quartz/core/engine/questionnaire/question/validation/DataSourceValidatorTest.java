@@ -43,6 +43,7 @@ public class DataSourceValidatorTest {
 
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationServiceMock;
 
+  @SuppressWarnings("unused")
   private Questionnaire questionnaire;
 
   @Before
@@ -84,7 +85,7 @@ public class DataSourceValidatorTest {
 
   @Test
   public void testNullDataSource() {
-    DataSourceValidator validator = new DataSourceValidator(ComparisionOperator.ne, DataSourceBuilder.createFixedSource(null).getDataSource());
+    DataSourceValidator validator = new DataSourceValidator(ComparisionOperator.eq, DataSourceBuilder.createFixedSource(null).getDataSource());
     Validatable validatable = new Validatable(DataBuilder.buildInteger(0));
     validator.validate(validatable);
     Assert.assertEquals(1, validatable.getErrors().size());

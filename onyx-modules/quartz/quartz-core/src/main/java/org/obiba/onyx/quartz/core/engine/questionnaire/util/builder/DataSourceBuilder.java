@@ -11,6 +11,8 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
 import java.util.Date;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ArithmeticOperator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ArithmeticOperationSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.CurrentYearSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DateSource;
@@ -88,6 +90,10 @@ public class DataSourceBuilder extends AbstractQuestionnaireElementBuilder<DataS
 
   public static DataSourceBuilder createFixedSource(Data data) {
     return new DataSourceBuilder(null, new FixedSource(data));
+  }
+
+  public static DataSourceBuilder createArithmeticOperationSource(DataSource left, ArithmeticOperator operator, DataSource right) {
+    return new DataSourceBuilder(null, new ArithmeticOperationSource(left, operator, right));
   }
 
   public DataSource getDataSource() {

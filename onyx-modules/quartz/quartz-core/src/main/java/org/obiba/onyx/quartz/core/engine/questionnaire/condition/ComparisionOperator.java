@@ -9,6 +9,54 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.condition;
 
+import org.obiba.onyx.util.data.Data;
+
+/**
+ * Comparision result between two Data.
+ */
 public enum ComparisionOperator {
-  eq, ne, lt, le, gt, ge
+  eq {
+    @Override
+    public boolean compare(Data left, Data right) {
+      return left.compareTo(right) == 0;
+    }
+  },
+  ne {
+    @Override
+    public boolean compare(Data left, Data right) {
+      return left.compareTo(right) != 0;
+    }
+  },
+  lt {
+    @Override
+    public boolean compare(Data left, Data right) {
+      return left.compareTo(right) < 0;
+    }
+  },
+  le {
+    @Override
+    public boolean compare(Data left, Data right) {
+      return left.compareTo(right) <= 0;
+    }
+  },
+  gt {
+    @Override
+    public boolean compare(Data left, Data right) {
+      return left.compareTo(right) > 0;
+    }
+  },
+  ge {
+    @Override
+    public boolean compare(Data left, Data right) {
+      return left.compareTo(right) >= 0;
+    }
+  };
+
+  /**
+   * Compares two data.
+   * @param left
+   * @param right
+   * @return if result is positive for the operator
+   */
+  public abstract boolean compare(Data left, Data right);
 }

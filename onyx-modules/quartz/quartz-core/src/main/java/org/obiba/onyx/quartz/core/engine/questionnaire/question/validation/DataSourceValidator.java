@@ -19,6 +19,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOper
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.IDataUnitProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Validates a {@link Data} value by comparing it to the one provided by the {@link DataSource} in the context of the
@@ -27,6 +29,9 @@ import org.obiba.onyx.util.data.IDataUnitProvider;
 public class DataSourceValidator implements IDataValidator {
 
   private static final long serialVersionUID = 1L;
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(DataSourceValidator.class);
 
   private DataSource dataSource;
 
@@ -64,48 +69,37 @@ public class DataSourceValidator implements IDataValidator {
       // TODO deal with units
       // String sourceUnit = dataSource.getUnit();
       // String validatableUnit = getUnit();
+      log.info("comparing: {} {} {}", new Object[] { dataToCompare, comparisionOperator, data });
 
-      ValidationError error = null;
+      if(!comparisionOperator.compare(dataToCompare, data)) {
+        ValidationError error = null;
 
-      int result = dataToCompare.compareTo(data);
-
-      switch(comparisionOperator) {
-      case eq:
-        if(result != 0) {
+        switch(comparisionOperator) {
+        case eq:
           error = newValidationError("ExpectedToBeEqual", data, dataToCompare);
-        }
-        break;
-      case ne:
-        if(result == 0) {
+          break;
+        case ne:
           error = newValidationError("ExpectedToBeDifferent", data, dataToCompare);
-        }
-        break;
-      case lt:
-        if(result >= 0) {
+          break;
+        case lt:
           error = newValidationError("ExpectedToBeLower", data, dataToCompare);
-        }
-        break;
-      case le:
-        if(result > 0) {
+          break;
+        case le:
           error = newValidationError("ExpectedToBeLowerEqual", data, dataToCompare);
-        }
-        break;
-      case gt:
-        if(result <= 0) {
+          break;
+        case gt:
           error = newValidationError("ExpectedToBeGreater", data, dataToCompare);
-        }
-        break;
-      case ge:
-        if(result < 0) {
+          break;
+        case ge:
           error = newValidationError("ExpectedToBeGreaterEqual", data, dataToCompare);
+          break;
+        default:
+          break;
         }
-        break;
-      default:
-        break;
-      }
 
-      if(error != null) {
-        validatable.error(error);
+        if(error != null) {
+          validatable.error(error);
+        }
       }
     }
 
