@@ -12,7 +12,7 @@ package org.obiba.onyx.util.data;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Data implements Serializable, Comparable {
+public class Data implements Serializable, Comparable<Data> {
 
   private static final long serialVersionUID = -2470483891384378865L;
 
@@ -157,45 +157,45 @@ public class Data implements Serializable, Comparable {
     return arraysEqual;
   }
 
-  public int compareTo(Object object) {
+  public int compareTo(Data data) {
     int result = 0;
 
-    if(object instanceof Data) {
-      Data data = (Data) object;
-
-      if(data.getType().equals(type)) {
-        if(value != null) {
-          switch(type) {
-          case BOOLEAN:
-          case DATE:
-          case TEXT:
-            result = ((Comparable) value).compareTo(data.getValue());
-            break;
-          case INTEGER: {
-            // compare two Integers or two Longs, can't mix them
-            Number numberValue = (Number) value;
-            Number dataValue = data.getValue();
-            result = Long.valueOf(numberValue.longValue()).compareTo(Long.valueOf(dataValue.longValue()));
-          }
-            break;
-          case DECIMAL: {
-            // compare two Floats or two Doubles, can't mix them
-            Number numberValue = (Number) value;
-            Number dataValue = data.getValue();
-            result = Double.valueOf(numberValue.doubleValue()).compareTo(Double.valueOf(dataValue.doubleValue()));
-          }
-            break;
-          case DATA:
-            if(byteArraysEqual((byte[]) value, (byte[]) data.getValue())) {
-              result = 0;
-            } else {
-              result = 1;
-            }
-            break;
-          }
-        } else {
-          result = (data.getValue() == null) ? 0 : 1;
+    if(data != null && data.getType().equals(type)) {
+      if(value != null && data.getValue() != null) {
+        switch(type) {
+        case BOOLEAN:
+          result = ((Boolean) value).compareTo((Boolean) data.getValue());
+          break;
+        case DATE:
+          result = ((Date) value).compareTo((Date) data.getValue());
+          break;
+        case TEXT:
+          result = ((String) value).compareTo((String) data.getValue());
+          break;
+        case INTEGER: {
+          // compare two Integers or two Longs, can't mix them        
+          Number numberValue = (Number) value;
+          Number dataValue = data.getValue();
+          result = Long.valueOf(numberValue.longValue()).compareTo(Long.valueOf(dataValue.longValue()));
         }
+          break;
+        case DECIMAL: {
+          // compare two Floats or two Doubles, can't mix them
+          Number numberValue = (Number) value;
+          Number dataValue = data.getValue();
+          result = Double.valueOf(numberValue.doubleValue()).compareTo(Double.valueOf(dataValue.doubleValue()));
+        }
+          break;
+        case DATA:
+          if(byteArraysEqual((byte[]) value, (byte[]) data.getValue())) {
+            result = 0;
+          } else {
+            result = 1;
+          }
+          break;
+        }
+      } else {
+        result = (value == data.getValue()) ? 0 : 1;
       }
     }
 

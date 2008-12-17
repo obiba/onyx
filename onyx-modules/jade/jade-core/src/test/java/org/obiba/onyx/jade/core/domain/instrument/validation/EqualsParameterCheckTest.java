@@ -9,7 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,52 +36,52 @@ public class EqualsParameterCheckTest {
   private EqualsParameterCheck equalsParameterCheck;
 
   private ParticipantInterview interview;
-  
+
   private InstrumentRun instrumentRun;
-  
+
   private InstrumentType instrumentType;
-  
+
   private Instrument instrument;
-  
+
   private InstrumentParameter checkedParameter;
-  
+
   private InstrumentParameter otherParameter;
 
   private InstrumentRunService instrumentRunServiceMock;
-  
+
   private ActiveInstrumentRunService activeInstrumentRunServiceMock;
-  
+
   @Before
   public void setUp() {
     equalsParameterCheck = new EqualsParameterCheck();
 
     interview = new ParticipantInterview();
-    
+
     instrumentType = new InstrumentType();
-    
+
     instrument = new Instrument();
     instrument.setInstrumentType(instrumentType);
-    
+
     instrumentRun = new InstrumentRun();
     instrumentRun.setParticipantInterview(interview);
     instrumentRun.setInstrument(instrument);
-    
+
     checkedParameter = new InstrumentOutputParameter();
     checkedParameter.setName("checkedParamName");
-    
+
     otherParameter = new InstrumentInputParameter();
     otherParameter.setName("otherParamName");
-    
+
     equalsParameterCheck.setTargetParameter(checkedParameter);
     equalsParameterCheck.setParameter(otherParameter);
-    
+
     instrumentRunServiceMock = createMock(InstrumentRunService.class);
-    
+
     activeInstrumentRunServiceMock = createMock(ActiveInstrumentRunService.class);
   }
-  
+
   /**
-   * Tests equal DataType.INTEGER parameters. 
+   * Tests equal DataType.INTEGER parameters.
    */
   @Test
   public void testIntegerParametersEqual() {
@@ -87,25 +90,25 @@ public class EqualsParameterCheckTest {
 
     // Initialize checked parameter's run value.
     Data checkedData = DataBuilder.buildInteger(100l);
-    
+
     // Initialize other parameter's run value.
     Data otherData = DataBuilder.buildInteger(100l);
-    
+
     InstrumentRunValue otherRunValue = new InstrumentRunValue();
     otherRunValue.setInstrumentParameter(otherParameter);
     otherRunValue.setData(otherData);
 
-    expect(activeInstrumentRunServiceMock.getInputInstrumentRunValue(otherParameter.getName())).andReturn(otherRunValue);   
+    expect(activeInstrumentRunServiceMock.getInputInstrumentRunValue(otherParameter.getName())).andReturn(otherRunValue);
 
     replay(activeInstrumentRunServiceMock);
-        
+
     Assert.assertTrue(equalsParameterCheck.checkParameterValue(checkedData, instrumentRunServiceMock, activeInstrumentRunServiceMock));
-    
+
     verify(activeInstrumentRunServiceMock);
   }
-  
+
   /**
-   * Tests unequal DataType.INTEGER parameters. 
+   * Tests unequal DataType.INTEGER parameters.
    */
   @Test
   public void testIntegerParametersUnequal() {
@@ -114,20 +117,42 @@ public class EqualsParameterCheckTest {
 
     // Initialize checked parameter's run value.
     Data checkedData = DataBuilder.buildInteger(100l);
-    
+
     // Initialize other parameter's run value.
     Data otherData = DataBuilder.buildInteger(200l);
-    
+
     InstrumentRunValue otherRunValue = new InstrumentRunValue();
     otherRunValue.setInstrumentParameter(otherParameter);
     otherRunValue.setData(otherData);
 
     expect(activeInstrumentRunServiceMock.getInputInstrumentRunValue(otherParameter.getName())).andReturn(otherRunValue);
-   
+
     replay(activeInstrumentRunServiceMock);
-        
+
     Assert.assertFalse(equalsParameterCheck.checkParameterValue(checkedData, instrumentRunServiceMock, activeInstrumentRunServiceMock));
-    
+
     verify(activeInstrumentRunServiceMock);
+  }
+
+  @Test
+  public void testParametersWithOperator() {
+    checkedParameter.setDataType(DataType.INTEGER);
+    otherParameter.setDataType(DataType.INTEGER);
+
+    // Initialize checked parameter's run value.
+    Data checkedData = DataBuilder.buildInteger(9l);
+
+    // Initialize other parameter's run value.
+    Data otherData = DataBuilder.buildInteger(100l);
+
+    InstrumentRunValue otherRunValue = new InstrumentRunValue();
+    otherRunValue.setInstrumentParameter(otherParameter);
+    otherRunValue.setData(otherData);
+
+    expect(activeInstrumentRunServiceMock.getInputInstrumentRunValue(otherParameter.getName())).andReturn(otherRunValue);
+    replay(activeInstrumentRunServiceMock);
+    equalsParameterCheck.setOperator(ComparisonOperator.LESSER);
+    Assert.assertTrue(equalsParameterCheck.checkParameterValue(checkedData, instrumentRunServiceMock, activeInstrumentRunServiceMock));
+
   }
 }

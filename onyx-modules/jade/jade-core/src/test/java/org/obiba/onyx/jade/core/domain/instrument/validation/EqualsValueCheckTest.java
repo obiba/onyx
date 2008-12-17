@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
+import java.util.Date;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -224,4 +226,178 @@ public class EqualsValueCheckTest {
     equalsValueCheck.setData(new Data(DataType.TEXT, null)); // null
     Assert.assertFalse(equalsValueCheck.checkParameterValue(fooData, null, null));
   }
+
+  /**
+   * Tests DataType.BOOLEAN values using operators.
+   */
+  @Test
+  public void testCheckParameterValueBooleanWithOperators() {
+    instrumentParameter.setDataType(DataType.BOOLEAN);
+
+    // Test run value equals true.
+    Data runValue = DataBuilder.buildBoolean(true);
+
+    // Check value = false.
+    equalsValueCheck.setData(DataBuilder.buildBoolean(false));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value = true.
+    equalsValueCheck.setData(DataBuilder.buildBoolean(true));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Operator should be ignored for booleans.
+    equalsValueCheck.setOperator(ComparisonOperator.LESSER);
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    equalsValueCheck.setOperator(ComparisonOperator.GREATER);
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    equalsValueCheck.setOperator(ComparisonOperator.GREATER_EQUALS);
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+  }
+
+  /**
+   * Tests DataType.TEXT values using operators.
+   */
+  @Test
+  public void testCheckParameterValueTextWithOperators() {
+    instrumentParameter.setDataType(DataType.TEXT);
+
+    // Test run value equals "genomic".
+    Data runValue = DataBuilder.buildText("genomic");
+
+    // Check value = "genomic" should be true.
+    equalsValueCheck.setData(DataBuilder.buildText("genomic"));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value = "blood" should be false.
+    equalsValueCheck.setData(DataBuilder.buildText("blood"));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value > "blood".
+    equalsValueCheck.setData(DataBuilder.buildText("blood"));
+    equalsValueCheck.setOperator(ComparisonOperator.GREATER);
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+  }
+
+  /**
+   * Tests DataType.INTEGER values using operators.
+   */
+  @Test
+  public void testCheckParameterValueIntegerWithOperators() {
+    instrumentParameter.setDataType(DataType.INTEGER);
+
+    // Test run value equals 100.
+    Data runValue = DataBuilder.buildInteger(100l);
+
+    // Check value < 1 should be false.
+    equalsValueCheck.setData(DataBuilder.buildInteger(1l));
+    equalsValueCheck.setOperator(ComparisonOperator.LESSER);
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value > 1 should be true.
+    equalsValueCheck.setOperator(ComparisonOperator.GREATER);
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value < 100 should be false.
+    equalsValueCheck.setOperator(ComparisonOperator.LESSER);
+    equalsValueCheck.setData(DataBuilder.buildInteger(100l));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value <= 100 should be true.
+    equalsValueCheck.setOperator(ComparisonOperator.LESSER_EQUALS);
+    equalsValueCheck.setData(DataBuilder.buildInteger(100l));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value >= 100 should be true.
+    equalsValueCheck.setOperator(ComparisonOperator.GREATER_EQUALS);
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value = 100 should be true.
+    equalsValueCheck.setOperator(ComparisonOperator.EQUALS);
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value < 101 should be true.
+    equalsValueCheck.setOperator(ComparisonOperator.LESSER);
+    equalsValueCheck.setData(DataBuilder.buildInteger(101l));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+  }
+
+  /**
+   * Tests DataType.DECIMAL values using operators.
+   */
+  @Test
+  public void testCheckParameterValueDecimalWithOperators() {
+    instrumentParameter.setDataType(DataType.DECIMAL);
+
+    // Test run value equals 1.5
+    Data runValue = DataBuilder.buildDecimal(1.5d);
+
+    // Check value = 1.5 should be true.
+    equalsValueCheck.setData(DataBuilder.buildDecimal(1.5d));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value >= 1.5 should be true.
+    equalsValueCheck.setOperator(ComparisonOperator.GREATER_EQUALS);
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value <= 1.5 should be true.
+    equalsValueCheck.setOperator(ComparisonOperator.LESSER_EQUALS);
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value > 1.5 should be false.
+    equalsValueCheck.setOperator(ComparisonOperator.GREATER);
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value > 1.499 should be true.
+    equalsValueCheck.setOperator(ComparisonOperator.GREATER);
+    equalsValueCheck.setData(DataBuilder.buildDecimal(1.499d));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value < 1.501 should be true.
+    equalsValueCheck.setOperator(ComparisonOperator.LESSER);
+    equalsValueCheck.setData(DataBuilder.buildDecimal(1.501d));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value = 1.500 should be true.
+    equalsValueCheck.setOperator(ComparisonOperator.EQUALS);
+    equalsValueCheck.setData(DataBuilder.buildDecimal(1.500d));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value = 1.501 should be false.
+    equalsValueCheck.setOperator(ComparisonOperator.EQUALS);
+    equalsValueCheck.setData(DataBuilder.buildDecimal(1.501d));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+  }
+
+  /**
+   * Tests DataType.DATE values using operators.
+   */
+  @Test
+  public void testCheckParameterValueDateWithOperators() {
+    instrumentParameter.setDataType(DataType.DATE);
+
+    // Test run value equals to current time.
+    long currentTime = System.currentTimeMillis();
+    Data runValue = DataBuilder.buildDate(new Date(currentTime));
+
+    // Check value = current time should be true.
+    equalsValueCheck.setData(DataBuilder.buildDate(new Date(currentTime)));
+    equalsValueCheck.setOperator(ComparisonOperator.EQUALS);
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value < an hour ago should be false.
+    equalsValueCheck.setData(DataBuilder.buildDate(new Date(currentTime - 3600 * 1000)));
+    equalsValueCheck.setOperator(ComparisonOperator.LESSER);
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+    // Check value > an hour ago should be true.
+    equalsValueCheck.setData(DataBuilder.buildDate(new Date(currentTime - 3600 * 1000)));
+    equalsValueCheck.setOperator(ComparisonOperator.GREATER);
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+
+  }
+
 }

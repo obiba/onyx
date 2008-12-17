@@ -10,24 +10,21 @@
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
-import org.apache.wicket.Application;
-import org.apache.wicket.spring.SpringWebApplication;
-import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
-import org.springframework.context.ApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Integrity check to verify that an instrument run value is equal to a given (fixed) value.
@@ -41,6 +38,8 @@ import org.springframework.context.ApplicationContext;
 @DiscriminatorValue("EqualsValueCheck")
 public class EqualsValueCheck extends AbstractIntegrityCheck implements IntegrityCheck {
 
+  private static final Logger log = LoggerFactory.getLogger(EqualsValueCheck.class);
+
   private static final long serialVersionUID = 1L;
 
   private Boolean booleanValue;
@@ -51,13 +50,16 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
 
   private String textValue;
 
+  @Enumerated(EnumType.STRING)
+  private ComparisonOperator operator = ComparisonOperator.EQUALS;
+
   @Temporal(TemporalType.TIMESTAMP)
   private Date dateValue;
-  
+
   public EqualsValueCheck() {
     super();
   }
-  
+
   public DataType getValueType() {
     return getTargetParameter().getDataType();
   }
@@ -77,9 +79,17 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
   public void setTextValue(String value) {
     textValue = value;
   }
-  
+
   public void setDateValue(Date value) {
     dateValue = value;
+  }
+
+  public ComparisonOperator getOperator() {
+    return operator;
+  }
+
+  public void setOperator(ComparisonOperator operator) {
+    this.operator = operator;
   }
 
   public void setData(Data data) {
@@ -102,7 +112,7 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
         case TEXT:
           textValue = data.getValue();
           break;
-          
+
         case DATE:
           dateValue = data.getValue();
           break;
@@ -132,7 +142,7 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
     case TEXT:
       data = DataBuilder.buildText(textValue);
       break;
-      
+
     case DATE:
       data = DataBuilder.buildDate(dateValue);
     }
@@ -153,18 +163,34 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
    */
   public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
 
-    boolean isEqual = false;
+    int compareResult = paramData.compareTo(getData());
 
-    if(paramData != null) {
-      isEqual = paramData.equals(getData());
+    log.debug("Compare result = {}", compareResult);
+    log.debug("Value being checked = {} ", paramData);
+    log.debug("Check = {}, Operator = {}", getData(), getOperator());
+
+    boolean result = false;
+    if(compareResult == 0) {
+      if(operator == ComparisonOperator.LESSER_EQUALS || operator == ComparisonOperator.EQUALS || operator == ComparisonOperator.GREATER_EQUALS || getData().getType() == DataType.BOOLEAN) {
+        result = true;
+      }
+    } else if(compareResult < 0) {
+      if(operator == ComparisonOperator.LESSER || operator == ComparisonOperator.LESSER_EQUALS) {
+        result = true;
+      }
     } else {
-      isEqual = (getData() == null);
+      if(operator == ComparisonOperator.GREATER || operator == ComparisonOperator.GREATER_EQUALS) {
+        result = true;
+      }
     }
 
-    return isEqual;
+    log.debug("Result is {}", result);
+    return result;
+
   }
-  
+
   protected Object[] getDescriptionArgs(ActiveInstrumentRunService activeRunService) {
     return new Object[] { getTargetParameter().getDescription(), getData().getValue() };
   }
+
 }
