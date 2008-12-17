@@ -45,7 +45,7 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
   private InstrumentParameter parameter;
 
   @Enumerated(EnumType.STRING)
-  private ComparisonOperator operator = ComparisonOperator.EQUALS;
+  private ComparisonOperator operator;
 
   public EqualsParameterCheck() {
     equalsValueCheck = new EqualsValueCheck();

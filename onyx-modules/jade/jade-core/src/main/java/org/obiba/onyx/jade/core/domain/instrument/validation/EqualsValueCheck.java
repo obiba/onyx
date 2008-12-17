@@ -51,7 +51,7 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
   private String textValue;
 
   @Enumerated(EnumType.STRING)
-  private ComparisonOperator operator = ComparisonOperator.EQUALS;
+  private ComparisonOperator operator;
 
   @Temporal(TemporalType.TIMESTAMP)
   private Date dateValue;
@@ -164,6 +164,11 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
   public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
 
     int compareResult = paramData.compareTo(getData());
+
+    // Set default comparison operator to equals.
+    if(operator == null) {
+      operator = ComparisonOperator.EQUALS;
+    }
 
     log.debug("Compare result = {}", compareResult);
     log.debug("Value being checked = {} ", paramData);
