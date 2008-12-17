@@ -94,7 +94,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
       } else {
         InstrumentOutputParameter template = new InstrumentOutputParameter();
         template.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
-        template.setInstrument(activeInstrumentRunService.getInstrument());
+        template.setInstrumentType(activeInstrumentRunService.getInstrumentType());
 
         List<InstrumentOutputParameter> outputParams = queryService.match(template);
 

@@ -94,7 +94,7 @@ public class OutputParametersStep extends WizardStepPanel {
 
     // Query the output parameters.
     InstrumentOutputParameter template = new InstrumentOutputParameter();
-    template.setInstrument(activeInstrumentRunService.getInstrument());
+    template.setInstrumentType(activeInstrumentRunService.getInstrumentType());
     template.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
 
     List<InstrumentOutputParameter> outputParams = queryService.match(template);

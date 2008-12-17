@@ -58,7 +58,7 @@
       <version>${project.version}</version>
       <scope>runtime</scope>
     </dependency>
-   	<dependency>
+    <dependency>
       <groupId>org.obiba.mica</groupId>
       <artifactId>mica-core</artifactId>
       <version>${project.version}</version>
@@ -133,6 +133,53 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>interface-bioimpedance-tanita-bc418</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>interface-bioimpedance-tanita-tbf310</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>interface-arterialstiffness</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>interface-bonedensity</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>interface-ecg</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>interface-spirometry</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -144,6 +191,71 @@
       </plugin>
 
       <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-instruments</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.obiba.jade.instrument</groupId>
+                  <artifactId>interface-bioimpedance-tanita-bc418</artifactId>
+                  <type>zip</type>
+                  <outputDirectory>
+                    ${project.build.directory}/${project.build.finalName}/instruments/Impedence418
+                  </outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.obiba.jade.instrument</groupId>
+                  <artifactId>interface-bioimpedance-tanita-tbf310</artifactId>
+                  <type>zip</type>
+                  <outputDirectory>
+                    ${project.build.directory}/${project.build.finalName}/instruments/Impedence310
+                  </outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.obiba.jade.instrument</groupId>
+                  <artifactId>interface-arterialstiffness</artifactId>
+                  <type>zip</type>
+                  <outputDirectory>
+                    ${project.build.directory}/${project.build.finalName}/instruments/ArtStiffness
+                  </outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.obiba.jade.instrument</groupId>
+                  <artifactId>interface-bonedensity</artifactId>
+                  <type>zip</type>
+                  <outputDirectory>
+                    ${project.build.directory}/${project.build.finalName}/instruments/BoneDensity
+                  </outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.obiba.jade.instrument</groupId>
+                  <artifactId>interface-ecg</artifactId>
+                  <type>zip</type>
+                  <outputDirectory>
+                    ${project.build.directory}/${project.build.finalName}/instruments/ECG
+                  </outputDirectory>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.obiba.jade.instrument</groupId>
+                  <artifactId>interface-spirometry</artifactId>
+                  <type>zip</type>
+                  <outputDirectory>
+                    ${project.build.directory}/${project.build.finalName}/instruments/Spirometry
+                  </outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <version>1.2</version>
         <executions>
@@ -151,45 +263,6 @@
             <phase>process-resources</phase>
             <configuration>
               <tasks>
-
-                <!--
-                  Place any ant task here. You can add anything
-                  you can add between <target> and </target> in a
-                  build.xml.
-                -->
-
-                <copy todir="${project.build.directory}/${project.build.finalName}/instruments">
-                  <fileset
-                    dir="${project.basedir}/../onyx-modules/jade/instrument-parent/src/main/resources/instruments">
-                    <include name="**/*.*" />
-                  </fileset>
-                </copy>
-
-                <copy todir="${project.build.directory}/${project.build.finalName}/instruments">
-                  <fileset dir="${project.basedir}/../onyx-modules/jade/instrument-parent">
-                    <include name="interface-*/target/jnlp/**/*.*" />
-                    <exclude name="interface-*/target/jnlp/**/instrument-descriptor.xml" />
-                  </fileset>
-                  <chainedmapper>
-                    <filtermapper>
-                      <replacestring from="\" to="/" />
-                      <replacestring from="/target/jnlp" to="/" />
-                    </filtermapper>
-                  </chainedmapper>
-                </copy>
-
-                <copy todir="${project.build.directory}/${project.build.finalName}/instruments">
-                  <fileset dir="${project.basedir}/../onyx-modules/jade/instrument-parent">
-                    <include name="interface-*/target/jnlp/**/instrument-descriptor.xml" />
-                    <include name="interface-*/target/jnlp/**/*.properties" />
-                  </fileset>
-                  <chainedmapper>
-                    <filtermapper>
-                      <replacestring from="\" to="/" />
-                      <replacestring from="/target/jnlp/lib" to="/" />
-                    </filtermapper>
-                  </chainedmapper>
-                </copy>
 
                 <signjar alias="jade" keystore="${basedir}/cartagene.jks" lazy="true" storepass="onyxadmin">
                   <fileset dir="${project.build.directory}/${project.build.finalName}/instruments" includes="**/*.jar" />

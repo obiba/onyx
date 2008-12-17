@@ -34,7 +34,7 @@ import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 import org.apache.wicket.util.string.interpolator.VariableInterpolator;
-import org.obiba.onyx.jade.core.domain.instrument.Instrument;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,21 +44,16 @@ public class InstrumentLauncher implements Serializable {
 
   private static final Logger log = LoggerFactory.getLogger(InstrumentLauncher.class);
 
-  private Instrument instrument;
-
   private String instrumentCodeBase;
 
-  public InstrumentLauncher(Instrument instrument, String instrumentCodeBase) {
+  public InstrumentLauncher(InstrumentType instrument, String instrumentCodeBase) {
     super();
-    this.instrument = instrument;
     this.instrumentCodeBase = instrumentCodeBase;
   }
 
   @SuppressWarnings("serial")
   public void launch() {
-    if(instrument != null && instrumentCodeBase != null) {
-      log.info("launch {} !", instrument.getInstrumentType());
-
+    if(instrumentCodeBase != null) {
       ServletContext context = ((WebApplication) RequestCycle.get().getApplication()).getServletContext();
 
       log.info("codeBase={}", instrumentCodeBase);

@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.service.impl.hibernate;
 
+import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -38,11 +40,18 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
   }
 
   public InstrumentRun getLastInstrumentRun(Participant participant, InstrumentType instrumentType) {
-    return (InstrumentRun) AssociationCriteria.create(InstrumentRun.class, getSession()).add("instrument.instrumentType", Operation.eq, instrumentType).add("participantInterview.participant", Operation.eq, participant).addSortingClauses(new SortingClause("timeEnd", false)).getCriteria().uniqueResult();
+    InstrumentRun template = new InstrumentRun();
+    template.setInstrumentType(instrumentType);
+    template.setParticipant(participant);
+    List<InstrumentRun> runs = getPersistenceManager().match(template, SortingClause.create("timeEnd", false));
+    if(runs != null && runs.size() > 0) {
+      return runs.get(0);
+    }
+    return null;
   }
 
   public InstrumentRun getLastCompletedInstrumentRun(Participant participant, InstrumentType instrumentType) {
-    Criteria criteria = AssociationCriteria.create(InstrumentRun.class, getSession()).add("instrument.instrumentType", Operation.eq, instrumentType).add("participantInterview.participant", Operation.eq, participant).addSortingClauses(new SortingClause("timeEnd", false)).getCriteria();
+    Criteria criteria = AssociationCriteria.create(InstrumentRun.class, getSession()).add("instrumentType", Operation.eq, instrumentType).add("participant", Operation.eq, participant).addSortingClauses(new SortingClause("timeEnd", false)).getCriteria();
     criteria.add(Restrictions.or(Restrictions.eq("status", InstrumentRunStatus.COMPLETED), Restrictions.eq("status", InstrumentRunStatus.CONTRA_INDICATED)));
 
     return (InstrumentRun) criteria.setMaxResults(1).uniqueResult();
@@ -53,7 +62,10 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
     InstrumentRun run = getLastCompletedInstrumentRun(participant, instrumentType);
 
     if(run != null) {
+      System.out.println("Run id=" + run.getId());
+      System.out.println("Param name=" + parameterName);
       runValue = (InstrumentRunValue) AssociationCriteria.create(InstrumentRunValue.class, getSession()).add("instrumentRun", Operation.eq, run).add("instrumentParameter.name", Operation.eq, parameterName).getCriteria().uniqueResult();
+
     }
     return runValue;
   }

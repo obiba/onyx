@@ -12,17 +12,17 @@ package org.obiba.onyx.jade.core.domain.instrument;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
+import org.obiba.onyx.core.domain.contraindication.Contraindication;
 
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "name" }) })
@@ -37,15 +37,16 @@ public class InstrumentType extends AbstractEntity {
   @Column(length = 200)
   private String description;
 
-  @OneToMany(mappedBy = "instrumentType")
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "instrument_type_id")
   private List<Instrument> instruments;
 
-  @ManyToMany
-  @JoinTable(name = "instrument_type_dependencies", joinColumns = @JoinColumn(name = "instrument_type_id"), inverseJoinColumns = @JoinColumn(name = "depends_on_instrument_type_id"))
-  private List<InstrumentType> dependsOnTypes;
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "instrument_type_id")
+  private List<InstrumentParameter> instrumentParameters;
 
-  @ManyToMany(mappedBy = "dependsOnTypes")
-  private List<InstrumentType> dependentTypes;
+  @OneToMany(cascade = CascadeType.ALL)
+  private List<Contraindication> contraindications;
 
   public InstrumentType() {
   }
@@ -82,19 +83,12 @@ public class InstrumentType extends AbstractEntity {
     }
   }
 
-  public List<InstrumentType> getDependsOnTypes() {
-    return dependsOnTypes != null ? dependsOnTypes : (dependsOnTypes = new ArrayList<InstrumentType>());
+  public List<Contraindication> getContraindications() {
+    return contraindications;
   }
 
-  public List<InstrumentType> getDependentTypes() {
-    return dependentTypes != null ? dependentTypes : (dependentTypes = new ArrayList<InstrumentType>());
-  }
-
-  public void addDependentType(InstrumentType instrumentType) {
-    if(!this.equals(instrumentType)) {
-      getDependentTypes().add(instrumentType);
-      instrumentType.getDependsOnTypes().add(this);
-    }
+  public List<InstrumentParameter> getInstrumentParameters() {
+    return instrumentParameters;
   }
 
   @Override

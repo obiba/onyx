@@ -25,6 +25,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService implements InstrumentService {
 
+  private String instrumentsPath;
+
+  public void setInstrumentsPath(String instrumentsPath) {
+    this.instrumentsPath = instrumentsPath;
+  }
+
   public InstrumentType createInstrumentType(String name, String description) {
     InstrumentType type = new InstrumentType(name, description);
     return getPersistenceManager().save(type);
@@ -33,11 +39,6 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
   public InstrumentType getInstrumentType(String name) {
     InstrumentType template = new InstrumentType(name, null);
     return getPersistenceManager().matchOne(template);
-  }
-
-  public void addInstrumentTypeDependency(InstrumentType type, InstrumentType dependency) {
-    type.addDependentType(dependency);
-    getPersistenceManager().save(type);
   }
 
   public List<Instrument> getInstruments(String typeName) {
@@ -66,32 +67,36 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     }
   }
 
-  public boolean isInteractiveInstrument(Instrument instrument) {
+  public boolean isInteractiveInstrument(InstrumentType instrument) {
     if(instrument == null) return false;
 
     InstrumentOutputParameter template = new InstrumentOutputParameter();
-    template.setInstrument(instrument);
+    template.setInstrumentType(instrument);
     template.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
 
     return getPersistenceManager().count(template) > 0;
   }
 
-  public int countInstrumentInputParameter(Instrument instrument, boolean readOnlySource) {
+  public int countInstrumentInputParameter(InstrumentType instrument, boolean readOnlySource) {
     return getInstrumentInputParameter(instrument, readOnlySource).size();
   }
 
-  public List<InstrumentInputParameter> getInstrumentInputParameter(Instrument instrument, boolean readOnlySource) {
+  public List<InstrumentInputParameter> getInstrumentInputParameter(InstrumentType instrument, boolean readOnlySource) {
     List<InstrumentInputParameter> list = new ArrayList<InstrumentInputParameter>();
     InstrumentInputParameter template = new InstrumentInputParameter();
-    template.setInstrument(instrument);
-    
-    for (InstrumentInputParameter param : getPersistenceManager().match(template)) {
-      if (param.getInputSource() != null && param.getInputSource().isReadOnly() == readOnlySource) {
+    template.setInstrumentType(instrument);
+
+    for(InstrumentInputParameter param : getPersistenceManager().match(template)) {
+      if(param.getInputSource() != null && param.getInputSource().isReadOnly() == readOnlySource) {
         list.add(param);
       }
     }
-    
+
     return list;
+  }
+
+  public String getInstrumentInstallPath(InstrumentType type) {
+    return instrumentsPath + "/" + type.getName();
   }
 
 }

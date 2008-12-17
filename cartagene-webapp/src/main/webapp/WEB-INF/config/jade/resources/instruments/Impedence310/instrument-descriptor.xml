@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+
+  <name>Impedence310</name>
+
+  <instrument>
+    <name>Tanita TBF-310</name>
+    <vendor>Tanita</vendor>
+    <model>TBF-310</model>
+    <status>ACTIVE</status>
+    <serialNumber>1234567890</serialNumber>
+    <barcode>CAG1001</barcode>
+  </instrument>
+
+  <contraindications>
+    <contraIndication>
+      <code>UnableToStandUnassistedHandicap</code>
+      <type>OBSERVED</type>
+    </contraIndication>
+
+    <contraIndication>
+      <code>UnableToStandUnassistedWheelchair</code>
+      <type>OBSERVED</type>
+    </contraIndication>
+
+    <contraIndication>
+      <code>UnableToStandUnassistedCast</code>
+      <type>OBSERVED</type>
+    </contraIndication>
+
+    <contraIndication>
+      <code>Other</code>
+      <requiresDescription>true</requiresDescription>
+      <type>OBSERVED</type>
+    </contraIndication>
+
+    <contraIndication>
+      <code>IrremovableMetallicDevice</code>
+      <type>ASKED</type>
+    </contraIndication>
+
+  </contraindications>
+
+  <instrumentParameters>
+    <interpretative>
+      <name>PhysicalActivityLast24Hours</name>
+      <description>PhysicalActivityLast24Hours</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <type>OBSERVED</type>
+    </interpretative>
+
+    <input id="clothes_weight">
+      <name>ClothesWeight</name>
+      <description>Clothes_weight</description>
+      <dataType>DECIMAL</dataType>
+      <measurementUnit>kg</measurementUnit>
+      <captureMethod>MANUAL</captureMethod>
+      <inputSource class="fixedSource">
+        <value>1</value>
+      </inputSource>
+    </input>
+
+    <input id="gender_in">
+      <name>Gender</name>
+      <description>Participant_Gender</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <inputSource class="participantPropertySource">
+        <property>gender</property>
+      </inputSource>
+    </input>
+
+    <input id="body_type_in">
+      <name>BodyType</name>
+      <description>Body_type</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <inputSource class="fixedSource">
+        <value>STANDARD</value>
+      </inputSource>
+    </input>
+
+    <input id="age_in">
+      <name>Age</name>
+      <description>Participant_Age</description>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <inputSource class="participantPropertySource">
+        <property>age</property>
+      </inputSource>
+    </input>
+
+    <input id="height_in">
+      <name>Height</name>
+      <description>Measured_height</description>
+      <measurementUnit>cm</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <inputSource class="outputParameterSource">
+        <instrumentType>StandingHeight</instrumentType>
+        <parameterName>Height</parameterName>
+      </inputSource>
+    </input>
+
+    <output id="body_type">
+      <name>BodyType</name>
+      <description>Body_type</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <integrityChecks>
+        <equalsParameterCheck>
+          <targetParameter reference="body_type" />
+          <parameter reference="body_type_in" />
+          <customizedDescription>EqualsParameterCheck_BodyType</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+
+    <output id="gender">
+      <name>Gender</name>
+      <description>Output_gender</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <integrityChecks>
+        <equalsParameterCheck>
+          <targetParameter reference="gender" />
+          <parameter reference="gender_in" />
+          <customizedDescription>EqualsParameterCheck_Gender</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+
+    <output id="age">
+      <name>Age</name>
+      <description>Output_age</description>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <integrityChecks>
+        <equalsParameterCheck>
+          <targetParameter reference="age" />
+          <parameter reference="age_in" />
+          <customizedDescription>EqualsParameterCheck_Age</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+
+    <output id="height">
+      <name>Height</name>
+      <description>Output_height</description>
+      <measurementUnit>cm</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <integrityChecks>
+        <equalsParameterCheck>
+          <targetParameter reference="height" />
+          <parameter reference="height_in" />
+          <customizedDescription>EqualsParameterCheck_Height</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+
+    <output id="weight">
+      <name>Weight</name>
+      <description>Measured_weight</description>
+      <measurementUnit>kg</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="bmi">
+      <name>BMI</name>
+      <description>Body_mass_index_calculated</description>
+      <measurementUnit>kg/m²</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="bmr">
+      <name>BMR</name>
+      <description>Basal_metabolic_rate_calculated</description>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>kJ</measurementUnit>
+    </output>
+
+    <output id="impedance">
+      <name>Impedance</name>
+      <description>Measured_body_impedance</description>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>ohm</measurementUnit>
+    </output>
+
+    <output id="fat_percentage">
+      <name>FatPercentage</name>
+      <description>Fat_percentage_calculated</description>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>%</measurementUnit>
+    </output>
+
+    <output id="fat_mass">
+      <name>FatMass</name>
+      <description>Fat_mass_calculated</description>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>kg</measurementUnit>
+    </output>
+
+    <output id="ffm">
+      <name>FatFreeMass</name>
+      <description>Fat_free_mass_calculated</description>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>kg</measurementUnit>
+    </output>
+
+    <output id="tbw">
+      <name>TotalBodyWater</name>
+      <description>Total_Body_Water_calculated</description>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>kg</measurementUnit>
+    </output>
+  </instrumentParameters>
+</instrumentType>

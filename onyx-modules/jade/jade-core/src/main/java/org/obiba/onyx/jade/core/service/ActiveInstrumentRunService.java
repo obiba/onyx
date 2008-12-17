@@ -48,16 +48,14 @@ public interface ActiveInstrumentRunService {
   public InstrumentRunStatus getInstrumentRunStatus();
 
   /**
-   * Set the current {@link InstrumentType}.
-   * @return
-   */
-  public void setInstrumentType(InstrumentType instrumentType);
-
-  /**
    * Get the current {@link InstrumentType}.
    * @return
    */
   public InstrumentType getInstrumentType();
+
+  public Instrument getInstrument();
+
+  public void setInstrument(Instrument instrument);
 
   /**
    * Get the current {@link InstrumentRun}.
@@ -66,18 +64,12 @@ public interface ActiveInstrumentRunService {
   public InstrumentRun getInstrumentRun();
 
   /**
-   * Get the {@link Instrument} associated to the current {@link InstrumentRun}.
-   * @return
-   */
-  public Instrument getInstrument();
-
-  /**
    * Create the current {@link InstrumentRun} without persisting it.
    * @param participant
    * @param instrument
    * @return
    */
-  public InstrumentRun start(Participant participant, Instrument instrument);
+  public InstrumentRun start(Participant participant, InstrumentType instrument);
 
   /**
    * Get the associated {@link Participant}

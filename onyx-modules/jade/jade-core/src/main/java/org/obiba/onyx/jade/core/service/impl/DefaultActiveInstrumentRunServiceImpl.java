@@ -30,7 +30,6 @@ import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
-import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
@@ -47,11 +46,9 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
   private Serializable currentRunId = null;
 
-  private Serializable instrumentTypeId = null;
-
-  public InstrumentRun start(Participant participant, Instrument instrument) {
+  public InstrumentRun start(Participant participant, InstrumentType instrumentType) {
     if(participant == null) throw new IllegalArgumentException("participant cannot be null");
-    if(instrument == null) throw new IllegalArgumentException("instrument cannot be null");
+    if(instrumentType == null) throw new IllegalArgumentException("instrumentType cannot be null");
 
     if(currentRunId != null) {
       InstrumentRun currentRun = getInstrumentRun();
@@ -61,16 +58,9 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
       currentRun = null;
     }
 
-    ParticipantInterview participantInterviewTemplate = new ParticipantInterview();
-    participantInterviewTemplate.setParticipant(participant);
-    ParticipantInterview participantInterview = getPersistenceManager().matchOne(participantInterviewTemplate);
-    if(participantInterview == null) {
-      participantInterview = getPersistenceManager().save(participantInterviewTemplate);
-    }
-
     InstrumentRun currentRun = new InstrumentRun();
-    currentRun.setParticipantInterview(participantInterview);
-    currentRun.setInstrument(instrument);
+    currentRun.setParticipant(participant);
+    currentRun.setInstrumentType(instrumentType);
     currentRun.setStatus(InstrumentRunStatus.IN_PROGRESS);
     currentRun.setTimeStart(new Date());
     currentRun.setUser(userSessionService.getUser());
@@ -123,12 +113,11 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   public Participant getParticipant() {
     if(currentRunId == null) return null;
 
-    return getInstrumentRun().getParticipantInterview().getParticipant();
+    return getInstrumentRun().getParticipant();
   }
 
   public void reset() {
     currentRunId = null;
-    instrumentTypeId = null;
   }
 
   public void persistRun() {
@@ -150,7 +139,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     InstrumentRun currentRun = getInstrumentRun();
 
     InstrumentOutputParameter template = new InstrumentOutputParameter();
-    template.setInstrument(currentRun.getInstrument());
+    template.setInstrumentType(currentRun.getInstrumentType());
     template.setCaptureMethod(InstrumentParameterCaptureMethod.COMPUTED);
 
     List<InstrumentComputedOutputParameter> dependentComputedParameters = new ArrayList<InstrumentComputedOutputParameter>();
@@ -182,7 +171,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
       maxRecur--;
     }
     if(!dependentComputedParameters.isEmpty()) {
-      log.warn("Computed Parameters depend on others not ready to calculate. Instrument: {}", currentRun.getInstrument().getName());
+      log.warn("Computed Parameters depend on others not ready to calculate. Instrument: {}", currentRun.getInstrumentType().getName());
     }
   }
 
@@ -314,11 +303,11 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     InstrumentOutputParameter instrumentOutputParameter = new InstrumentOutputParameter();
     instrumentOutputParameter.setName(parameterName);
-    instrumentOutputParameter.setInstrument(currentRun.getInstrument());
+    instrumentOutputParameter.setInstrumentType(currentRun.getInstrumentType());
     instrumentOutputParameter = getPersistenceManager().matchOne(instrumentOutputParameter);
 
     if(instrumentOutputParameter == null) {
-      throw new IllegalArgumentException("No such output parameter name for instrument " + currentRun.getInstrument().getName() + " :" + parameterName);
+      throw new IllegalArgumentException("No such output parameter name for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterName);
     }
 
     InstrumentRunValue valueTemplate = new InstrumentRunValue();
@@ -342,11 +331,11 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     InstrumentInputParameter instrumentInputParameter = new InstrumentInputParameter();
     instrumentInputParameter.setName(parameterName);
-    instrumentInputParameter.setInstrument(currentRun.getInstrument());
+    instrumentInputParameter.setInstrumentType(currentRun.getInstrumentType());
     instrumentInputParameter = getPersistenceManager().matchOne(instrumentInputParameter);
 
     if(instrumentInputParameter == null) {
-      throw new IllegalArgumentException("No such input parameter name for instrument " + currentRun.getInstrument().getName() + " :" + parameterName);
+      throw new IllegalArgumentException("No such input parameter name for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterName);
     }
 
     InstrumentRunValue valueTemplate = new InstrumentRunValue();
@@ -370,11 +359,11 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     InterpretativeParameter instrumentInterpretativeParameter = new InterpretativeParameter();
     instrumentInterpretativeParameter.setName(parameterName);
-    instrumentInterpretativeParameter.setInstrument(currentRun.getInstrument());
+    instrumentInterpretativeParameter.setInstrumentType(currentRun.getInstrumentType());
     instrumentInterpretativeParameter = getPersistenceManager().matchOne(instrumentInterpretativeParameter);
 
     if(instrumentInterpretativeParameter == null) {
-      throw new IllegalArgumentException("No such interpretative parameter name for instrument " + currentRun.getInstrument().getName() + " :" + parameterName);
+      throw new IllegalArgumentException("No such interpretative parameter name for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterName);
     }
 
     InstrumentRunValue valueTemplate = new InstrumentRunValue();
@@ -392,16 +381,11 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public InstrumentType getInstrumentType() {
-    return getPersistenceManager().get(InstrumentType.class, instrumentTypeId);
+    return getInstrumentRun().getInstrumentType();
   }
 
-  public void setInstrumentType(InstrumentType instrumentType) {
-    if(instrumentType == null) throw new IllegalArgumentException("InstrumentType cannot be null");
-    this.instrumentTypeId = instrumentType.getId();
-  }
-
-  public Instrument getInstrument() {
-    return getInstrumentRun().getInstrument();
+  public void setInstrument(Instrument instrument) {
+    getInstrumentRun().setInstrument(instrument);
   }
 
   public Contraindication getContraindication() {
@@ -425,6 +409,10 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
   public void setUserSessionService(UserSessionService userSessionService) {
     this.userSessionService = userSessionService;
+  }
+
+  public Instrument getInstrument() {
+    return getInstrumentRun().getInstrument();
   }
 
 }

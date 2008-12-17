@@ -4,31 +4,32 @@
   <instrument_type id="2" name="BIM" description="Bioimpedance" />
   <instrument_type id="3" name="SPI" description="Spirometry" />
 
-  <instrument_type_dependencies instrument_type_id="2" depends_on_instrument_type_id="1" />
-  <instrument_type_dependencies instrument_type_id="3" depends_on_instrument_type_id="1" />
-  <instrument_type_dependencies instrument_type_id="3" depends_on_instrument_type_id="2" />
-
   <instrument id="1" instrument_type_id="1" name="Tape 1" vendor="Seca" model="Model 214" status="ACTIVE" />
   <instrument id="2" instrument_type_id="1" name="Tape 2" vendor="Seca" model="Model 214" status="ACTIVE" />
   <instrument id="3" instrument_type_id="2" name="BioImp 1" vendor="Tanita" model="TBF 310" status="ACTIVE" />
 
+  <!-- BIM Parameters -->
+  <instrument_parameter id="1" name="height" data_type="INTEGER" instrument_type_id="2" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="cm"/>
+  <instrument_parameter id="2" name="weigth" data_type="INTEGER" instrument_type_id="2" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="kg"/>
+  <instrument_parameter id="3" name="heigth_in_meter" data_type="DECIMAL" instrument_type_id="2" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="m"/>
+  <instrument_parameter id="4" name="weigth_in_gram" data_type="INTEGER" instrument_type_id="2" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="g"/>
+  <instrument_parameter id="7" name="weigth_in_pound" data_type="INTEGER" instrument_type_id="2" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="lb"/>
+
+  <!-- STA Parameters -->
+  <instrument_parameter id="5" name="birth" data_type="DATE" instrument_type_id="1" instrument_parameter_type="InstrumentInputParameter"/>
+  <instrument_parameter id="6" name="age_in_ms" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="ms"/>
+  <instrument_parameter id="8" name="age" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="year"/>
+
   <participant id="1" barcode="1" last_name="Dupont" first_name="Laura" gender="FEMALE" birth_date="1979-09-04 00:00:00"/>
   <interview id="1" participant_id="1"/>
-  <participant_interview id="1" participant_id="1"/>
-  
-  <instrument_run id="1" time_start="2008-08-10 08:16:00" time_end="2008-08-10 09:16:00" participant_interview_id="1" status="COMPLETED" instrument_id="3"/>
-  <instrument_run id="2" time_start="2008-08-12 08:16:00" time_end="2008-08-12 09:16:00" participant_interview_id="1" status="COMPLETED" instrument_id="3"/>
-  <instrument_run id="3" time_start="2008-08-14 08:16:00" time_end="2008-08-14 09:16:00" participant_interview_id="1" status="COMPLETED" instrument_id="1"/>
-  
-  <instrument_parameter id="1" name="heigth" data_type="INTEGER" instrument_id="3" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="cm"/>
-  <instrument_parameter id="2" name="weigth" data_type="INTEGER" instrument_id="3" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="kg"/>
-  <instrument_parameter id="3" name="heigth_in_meter" data_type="DECIMAL" instrument_id="3" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="m"/>
-  <instrument_parameter id="4" name="weigth_in_gram" data_type="INTEGER" instrument_id="3" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="g"/>
-  <instrument_parameter id="5" name="birth" data_type="DATE" instrument_id="1" instrument_parameter_type="InstrumentInputParameter"/>
-  <instrument_parameter id="6" name="age_in_ms" data_type="INTEGER" instrument_id="1" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="ms"/>
-  <instrument_parameter id="7" name="weigth_in_pound" data_type="INTEGER" instrument_id="3" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="lb"/>
-  <instrument_parameter id="8" name="age" data_type="INTEGER" instrument_id="1" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="year"/>
-  
+
+  <!-- BIM Run -->
+  <instrument_run id="1" time_start="2008-08-10 08:16:00" time_end="2008-08-10 09:16:00" participant_id="1" status="COMPLETED" instrument_type_id="2" instrument_id="3"/>
+  <!-- BIM Run -->
+  <instrument_run id="2" time_start="2008-08-12 08:16:00" time_end="2008-08-12 09:16:00" participant_id="1" status="COMPLETED" instrument_type_id="2" instrument_id="3"/>
+  <!-- STA Run -->
+  <instrument_run id="3" time_start="2008-08-14 08:16:00" time_end="2008-08-14 09:16:00" participant_id="1" status="COMPLETED" instrument_type_id="1" instrument_id="1"/>
+
   <instrument_run_value id="1" instrument_run_id="1" instrument_parameter_id="1" integer_value="185"/>
   <instrument_run_value id="2" instrument_run_id="1" instrument_parameter_id="2" integer_value="75"/>
   <instrument_run_value id="3" instrument_run_id="2" instrument_parameter_id="1" integer_value="187"/>

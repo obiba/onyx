@@ -28,9 +28,11 @@ import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.contraindication.IContraindicatable;
 import org.obiba.onyx.core.domain.contraindication.Contraindication.Type;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 
 @Entity
 public class InstrumentRun extends AbstractEntity implements IContraindicatable {
@@ -38,11 +40,15 @@ public class InstrumentRun extends AbstractEntity implements IContraindicatable 
   private static final long serialVersionUID = -2756620040202577411L;
 
   @ManyToOne
-  @JoinColumn(name = "participant_interview_id")
-  private ParticipantInterview participantInterview;
+  @JoinColumn(name = "participant_id")
+  private Participant participant;
 
   @OneToMany(mappedBy = "instrumentRun")
   private List<InstrumentRunValue> instrumentRunValues;
+
+  @ManyToOne
+  @JoinColumn(name = "instrument_type_id")
+  private InstrumentType instrumentType;
 
   @ManyToOne
   @JoinColumn(name = "instrument_id")
@@ -61,12 +67,6 @@ public class InstrumentRun extends AbstractEntity implements IContraindicatable 
   @Temporal(TemporalType.TIMESTAMP)
   private Date timeEnd;
 
-  @Enumerated(EnumType.STRING)
-  private InstrumentRunRefusalReason refusalReason;
-
-  @Column(length = 2000)
-  private String refusalReasonComment;
-
   private String contraindicationCode;
 
   @Column(length = 2000)
@@ -76,12 +76,20 @@ public class InstrumentRun extends AbstractEntity implements IContraindicatable 
     super();
   }
 
-  public ParticipantInterview getParticipantInterview() {
-    return participantInterview;
+  public Participant getParticipant() {
+    return participant;
   }
 
-  public void setParticipantInterview(ParticipantInterview participantInterview) {
-    this.participantInterview = participantInterview;
+  public void setParticipant(Participant participant) {
+    this.participant = participant;
+  }
+
+  public Instrument getInstrument() {
+    return instrument;
+  }
+
+  public void setInstrument(Instrument instrument) {
+    this.instrument = instrument;
   }
 
   public List<InstrumentRunValue> getInstrumentRunValues() {
@@ -102,12 +110,12 @@ public class InstrumentRun extends AbstractEntity implements IContraindicatable 
     return null;
   }
 
-  public Instrument getInstrument() {
-    return instrument;
+  public InstrumentType getInstrumentType() {
+    return instrumentType;
   }
 
-  public void setInstrument(Instrument instrument) {
-    this.instrument = instrument;
+  public void setInstrumentType(InstrumentType instrument) {
+    this.instrumentType = instrument;
   }
 
   public InstrumentRunStatus getStatus() {
@@ -134,26 +142,6 @@ public class InstrumentRun extends AbstractEntity implements IContraindicatable 
     this.timeEnd = timeEnd;
   }
 
-  public InstrumentRunRefusalReason getRefusalReason() {
-    return refusalReason;
-  }
-
-  public boolean isRefused() {
-    return refusalReason != null;
-  }
-
-  public void setRefusalReason(InstrumentRunRefusalReason refusalReason) {
-    this.refusalReason = refusalReason;
-  }
-
-  public String getRefusalReasonComment() {
-    return refusalReasonComment;
-  }
-
-  public void setRefusalReasonComment(String refusalReasonComment) {
-    this.refusalReasonComment = refusalReasonComment;
-  }
-
   public User getUser() {
     return user;
   }
@@ -163,7 +151,7 @@ public class InstrumentRun extends AbstractEntity implements IContraindicatable 
   }
 
   public Contraindication getContraindication() {
-    for(Contraindication ci : instrument.getContraindications()) {
+    for(Contraindication ci : instrumentType.getContraindications()) {
       if(ci.getCode().equals(contraindicationCode)) return ci;
     }
     return null;
@@ -188,7 +176,7 @@ public class InstrumentRun extends AbstractEntity implements IContraindicatable 
   @Transient
   public List<Contraindication> getContraindications(Contraindication.Type type) {
     List<Contraindication> ciList = new ArrayList<Contraindication>(5);
-    for(Contraindication ci : this.instrument.getContraindications()) {
+    for(Contraindication ci : this.instrumentType.getContraindications()) {
       if(ci.getType() == type) ciList.add(ci);
     }
     return ciList.size() > 0 ? ciList : null;

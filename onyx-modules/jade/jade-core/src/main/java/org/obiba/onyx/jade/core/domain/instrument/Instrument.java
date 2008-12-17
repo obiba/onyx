@@ -9,24 +9,17 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.core.domain.contraindication.Contraindication;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "barcode" }) })
@@ -53,18 +46,11 @@ public class Instrument extends AbstractEntity {
   @Enumerated(EnumType.STRING)
   private InstrumentStatus status;
 
+  // insertable and updatable are set to false so that the bi-directional relation
+  // is managed by the parent instead of this class
   @ManyToOne
-  @JoinColumn(name = "instrument_type_id")
+  @JoinColumn(name = "instrument_type_id", insertable = false, updatable = false)
   private InstrumentType instrumentType;
-
-  @OneToMany(mappedBy = "instrument", cascade = CascadeType.ALL)
-  private List<InstrumentParameter> instrumentParameters;
-
-  @OneToMany(mappedBy = "instrument")
-  private List<InstrumentRun> instrumentRuns;
-
-  @OneToMany(cascade = CascadeType.ALL)
-  private List<Contraindication> contraindications;
 
   public Instrument() {
   }
@@ -123,32 +109,6 @@ public class Instrument extends AbstractEntity {
 
   public void setInstrumentType(InstrumentType instrumentType) {
     this.instrumentType = instrumentType;
-  }
-
-  public List<InstrumentParameter> getInstrumentParameters() {
-    return instrumentParameters != null ? instrumentParameters : (instrumentParameters = new ArrayList<InstrumentParameter>());
-  }
-
-  public void addInstrumentParameter(InstrumentParameter instrumentParameter) {
-    if(instrumentParameter != null) {
-      getInstrumentParameters().add(instrumentParameter);
-      instrumentParameter.setInstrument(this);
-    }
-  }
-
-  public List<InstrumentRun> getInstrumentRuns() {
-    return instrumentRuns != null ? instrumentRuns : (instrumentRuns = new ArrayList<InstrumentRun>());
-  }
-
-  public void addInstrumentRun(InstrumentRun instrumentRun) {
-    if(instrumentRun != null) {
-      getInstrumentRuns().add(instrumentRun);
-      instrumentRun.setInstrument(this);
-    }
-  }
-
-  public List<Contraindication> getContraindications() {
-    return contraindications;
   }
 
 }

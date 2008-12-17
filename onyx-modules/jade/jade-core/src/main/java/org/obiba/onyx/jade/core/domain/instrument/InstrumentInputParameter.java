@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -19,8 +20,8 @@ import javax.persistence.ManyToOne;
 public class InstrumentInputParameter extends InstrumentParameter {
 
   private static final long serialVersionUID = -5035544856948727535L;
-  
-  @ManyToOne
+
+  @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "input_source_id")
   private InputSource inputSource;
 

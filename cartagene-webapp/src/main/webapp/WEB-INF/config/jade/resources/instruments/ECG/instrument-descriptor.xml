@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+  <name>ECG</name>
+
+  <instrument>
+    <name>ECG 1</name>
+    <vendor>GE</vendor>
+    <model>CardioSoft</model>
+    <serialNumber>1234567890</serialNumber>
+    <barcode>ecg1</barcode>
+    <status>ACTIVE</status>
+  </instrument>
+
+  <contraindications>
+    <contraIndication>
+      <code>Other</code>
+      <requiresDescription>true</requiresDescription>
+      <type>OBSERVED</type>
+    </contraIndication>
+  </contraindications>
+
+  <instrumentParameters>
+    <output id="time">
+      <name>time</name>
+      <description>Time_of_measurement</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="date">
+      <name>date</name>
+      <description>Date_of_measurement</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="diagnosis">
+      <name>diagnosis</name>
+      <description>Diagnosis_of_measurement</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="filterSetting">
+      <name>filterSetting</name>
+      <description>Filter_Settings_of_measurement</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="diagnosisVersion">
+      <name>diagnosisVersion</name>
+      <description>Diagnosis_Version_of_measurement</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="ventricularRate">
+      <name>ventricularRate</name>
+      <description>Ventricular_Rate</description>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>BPM</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="pQInterval">
+      <name>PQInterval</name>
+      <description>PQ_Interval</description>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="pDuration">
+      <name>PDuration</name>
+      <description>P_Duration</description>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="qRsDuration">
+      <name>QRsDuration</name>
+      <description>QRS_Duration</description>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="qTInterval">
+      <name>QTInterval</name>
+      <description>QT_Interval</description>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="qTCInterval">
+      <name>QTCInterval</name>
+      <description>QTC_Interval</description>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="rRInterval">
+      <name>RRInterval</name>
+      <description>RR_Interval</description>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="pPInterval">
+      <name>PPInterval</name>
+      <description>PP_Interval</description>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="pAxis">
+      <name>PAxis</name>
+      <description>P_Axis</description>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>degree</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="rAxis">
+      <name>RAxis</name>
+      <description>R_Axis</description>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>degree</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="tAxis">
+      <name>TAxis</name>
+      <description>T_Axis</description>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>degree</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="qRSNum">
+      <name>QRSNum</name>
+      <description>QRS_Number</description>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="pOnset">
+      <name>POnset</name>
+      <description>P_Onset</description>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="pOffset">
+      <name>POffset</name>
+      <description>P_Offset</description>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="qOnset">
+      <name>QOnset</name>
+      <description>Q_Onset</description>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="qOffset">
+      <name>QOffset</name>
+      <description>Q_Offset</description>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="tOffset">
+      <name>TOffset</name>
+      <description>T_Offset</description>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="xmlFile">
+      <name>xmlFile</name>
+      <description>Xml_File</description>
+      <dataType>DATA</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output id="pdfFile">
+      <name>pdfFile</name>
+      <description>Pdf_File</description>
+      <dataType>DATA</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+  </instrumentParameters>
+</instrumentType>

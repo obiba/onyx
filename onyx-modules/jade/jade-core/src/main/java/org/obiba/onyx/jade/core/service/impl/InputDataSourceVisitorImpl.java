@@ -18,6 +18,7 @@ import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.FixedSource;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.MultipleOutputParameterSource;
 import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.instrument.OutputParameterSource;
@@ -25,6 +26,7 @@ import org.obiba.onyx.jade.core.domain.instrument.ParticipantPropertySource;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,11 +37,17 @@ public class InputDataSourceVisitorImpl implements InputDataSourceVisitor {
 
   private InstrumentRunService instrumentRunService;
 
+  private InstrumentService instrumentService;
+
   private Data data;
 
   private Participant participant;
 
   private InstrumentInputParameter parameter;
+
+  public void setInstrumentService(InstrumentService instrumentService) {
+    this.instrumentService = instrumentService;
+  }
 
   public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
     this.instrumentRunService = instrumentRunService;
@@ -112,23 +120,26 @@ public class InputDataSourceVisitorImpl implements InputDataSourceVisitor {
   }
 
   public void visit(OutputParameterSource source) {
-    InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, source.getInstrumentType(), source.getParameterName());
-    if(runValue != null) {
-      // TODO unit conversion when necessary
-      // TODO type conversion when possible (INTEGER->DECIMAL->TEXT...)
-      data = runValue.getData();
+    InstrumentType type = instrumentService.getInstrumentType(source.getInstrumentType());
+    System.out.println(type);
+    if(type != null) {
+      InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, source.getParameterName());
+      System.out.println(runValue);
+      if(runValue != null) {
+        // TODO unit conversion when necessary
+        // TODO type conversion when possible (INTEGER->DECIMAL->TEXT...)
+        data = runValue.getData();
+      }
     }
   }
 
   public void visit(MultipleOutputParameterSource source) {
     for(OutputParameterSource outputParameterSource : source.getOutputParameterSourceList()) {
-      InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, outputParameterSource.getInstrumentType(), outputParameterSource.getParameterName());
-      if(runValue != null) {
-        if(runValue.getData().getValue() != null) {
-          data = runValue.getData();
-          break;
-        }
+      this.visit(outputParameterSource);
+      if(data != null) {
+        break;
       }
     }
   }
+
 }

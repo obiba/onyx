@@ -34,8 +34,8 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
 import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
@@ -89,7 +89,7 @@ public class InstrumentInputParameterPanel extends Panel {
     setOutputMarkupId(true);
 
     InterpretativeParameter template = new InterpretativeParameter();
-    template.setInstrument(activeInstrumentRunService.getInstrument());
+    template.setInstrumentType(activeInstrumentRunService.getInstrumentType());
     template.setType(ParticipantInteractionType.ASKED);
     if(queryService.count(template) == 0) {
       add(new EmptyPanel("askedInputs"));
@@ -104,8 +104,8 @@ public class InstrumentInputParameterPanel extends Panel {
       add(new InterpretativeFragment("observedInputs", queryService.match(template), ParticipantInteractionType.OBSERVED));
     }
 
-    Instrument instrument = activeInstrumentRunService.getInstrument();
-    List<InstrumentInputParameter> instrumentInputParameters = instrumentService.getInstrumentInputParameter(instrument, false);
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    List<InstrumentInputParameter> instrumentInputParameters = instrumentService.getInstrumentInputParameter(instrumentType, false);
 
     if(instrumentInputParameters.size() == 0) {
       add(new EmptyPanel("inputs"));

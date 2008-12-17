@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
-import org.obiba.onyx.core.domain.user.User;
-import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
@@ -45,23 +43,23 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
   }
 
   public String getParticipantFirstName() {
-    return (getInstrumentRun().getParticipantInterview().getParticipant().getFirstName());
+    return (getInstrumentRun().getParticipant().getFirstName());
   }
 
   public String getParticipantLastName() {
-    return (getInstrumentRun().getParticipantInterview().getParticipant().getLastName());
+    return (getInstrumentRun().getParticipant().getLastName());
   }
 
   public Date getParticipantBirthDate() {
-    return (getInstrumentRun().getParticipantInterview().getParticipant().getBirthDate());
+    return (getInstrumentRun().getParticipant().getBirthDate());
   }
 
   public String getParticipantGender() {
-    return (getInstrumentRun().getParticipantInterview().getParticipant().getGender().toString());
+    return (getInstrumentRun().getParticipant().getGender().toString());
   }
 
   public String getParticipantID() {
-    return (getInstrumentRun().getParticipantInterview().getParticipant().getBarcode());
+    return (getInstrumentRun().getParticipant().getBarcode());
   }
 
   public Map<String, Data> getInputParametersValue(String... parameters) {
@@ -93,12 +91,6 @@ public class InstrumentExecutionServiceImpl extends PersistenceManagerAwareServi
 
   public void instrumentRunnerError(Exception error) {
     InstrumentRun run = getInstrumentRun();
-    Instrument instrument = run.getInstrument();
-    User user = run.getUser();
-
-    log.error("Instrument runner error (run id={}) encountered on {} (Vendor={}, Model={}, Barcode={}) by {} (username={}) : ", new Object[] { run.getId(), instrument.getName(), instrument.getVendor(), instrument.getModel(), instrument.getBarcode(), user.getFullName(), user.getLogin() });
-    log.error("Error stack trace:", error);
-
     run.setStatus(InstrumentRunStatus.IN_ERROR);
     getPersistenceManager().save(run);
   }

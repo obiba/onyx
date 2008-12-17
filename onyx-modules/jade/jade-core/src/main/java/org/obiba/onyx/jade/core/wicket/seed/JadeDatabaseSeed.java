@@ -9,11 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.seed;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.core.service.PersistenceManager;
@@ -34,8 +30,6 @@ import org.obiba.onyx.jade.core.domain.instrument.validation.EqualsParameterChec
 import org.obiba.onyx.jade.core.domain.instrument.validation.EqualsValueCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.ParameterSpreadCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.RangeCheck;
-import org.obiba.onyx.jade.core.service.InstrumentDescriptorService;
-import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.wicket.util.seed.XstreamResourceDatabaseSeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,91 +43,21 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
 
   private PersistenceManager persistenceManager;
 
-  private InstrumentService instrumentService;
-
-  private InstrumentDescriptorService instrumentDescriptorService;
-
   private boolean toPersist = false;
 
   public void setPersistenceManager(PersistenceManager persistenceManager) {
     this.persistenceManager = persistenceManager;
   }
 
-  public void setInstrumentService(InstrumentService instrumentService) {
-    this.instrumentService = instrumentService;
-  }
-
-  public InstrumentDescriptorService getInstrumentDescriptorService() {
-    return instrumentDescriptorService;
-  }
-
-  public void setInstrumentDescriptorService(InstrumentDescriptorService instrumentDescriptorService) {
-    this.instrumentDescriptorService = instrumentDescriptorService;
-  }
-
   @SuppressWarnings("unchecked")
   @Override
   protected void handleXstreamResult(Resource resource, Object result) {
-    if(result != null && result instanceof List) {
-      List<Object> objects = (List<Object>) result;
-
-      Set<String> inputParameterNames = new HashSet<String>(10);
-      Set<String> outputParameterNames = new HashSet<String>(10);
-      for(Object entity : objects) {
-
-        if(entity instanceof Instrument) {
-          Instrument instrument = (Instrument) entity;
-          InstrumentType type = instrumentService.getInstrumentType(instrument.getInstrumentType().getName());
-          instrument.setInstrumentType(type);
-          // find code base:
-          // resource is in .../<codeBase>/lib/instrument-descriptor.xml
-
-          try {
-            String codeBase = resource.getFile().getParentFile().getParentFile().getName() + "/" + resource.getFile().getParentFile().getName();
-            log.info("Seeding instrument descriptor service with instrument {} code base {}", instrument.getBarcode(), codeBase);
-            instrumentDescriptorService.setCodeBase(instrument.getBarcode(), codeBase);
-          } catch(IOException cannotFindResource) {
-            log.error("Cannot find resource : " + resource.getDescription());
-            throw new RuntimeException(cannotFindResource);
-          }
-          // For cascading
-          if(instrument.getInstrumentParameters() != null) {
-            for(InstrumentParameter parameter : instrument.getInstrumentParameters()) {
-              parameter.setInstrument(instrument);
-            }
-          }
-        } else if(entity instanceof OutputParameterSource) {
-          OutputParameterSource source = (OutputParameterSource) entity;
-          InstrumentType type = instrumentService.getInstrumentType(source.getInstrumentType().getName());
-          source.setInstrumentType(type);
-        } else if(entity instanceof InstrumentParameter) {
-          InstrumentParameter parameter = (InstrumentParameter) entity;
-
-          String type;
-          Set<String> names;
-          if(entity instanceof InstrumentInputParameter) {
-            type = "input";
-            names = inputParameterNames;
-          } else {
-            type = "output";
-            names = outputParameterNames;
-          }
-
-          // Add the name to the set. If the Set already contains the name, throw an exception describing the problem.
-          // if(names.add(parameter.getName()) == false) {
-          // log.error("The instrument descriptor {} contains multiple {} parameters with name {}. Instrument parameters
-          // must have a unique name for within its instrument.", new Object[] { resource.getDescription(), type,
-          // parameter.getName() });
-          // throw new IllegalStateException("The instrument descriptor " + resource.getDescription() + " contains
-          // multiple " + type + " parameters with name " + parameter.getName() + ". Instrument parameters must have a
-          // unique name for within its instrument.");
-          // }
-        }
-
-        if(toPersist) {
-          log.info("Seeding database from [" + resource + "] with entity {} of type {}", entity, entity.getClass().getSimpleName());
-          persistenceManager.save(entity);
-        }
+    if(result != null && result instanceof InstrumentType) {
+      InstrumentType type = (InstrumentType) result;
+      List<InstrumentParameter> parameters = type.getInstrumentParameters();
+      log.info("Loaded instrument type {} with {} parameters.", type.getName(), (parameters != null ? parameters.size() : -1));
+      if(toPersist) {
+        persistenceManager.save(type);
       }
     }
   }
@@ -147,12 +71,11 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
 
   @Override
   protected void initializeXstream(XStream xstream) {
-    log.info("initializeXstream");
     super.initializeXstream(xstream);
     xstream.alias("instrumentType", InstrumentType.class);
-    xstream.alias("instruments", LinkedList.class);
     xstream.alias("instrument", Instrument.class);
     xstream.alias("contraIndication", Contraindication.class);
+    xstream.alias("contraindication", Contraindication.class);
     xstream.alias("interpretative", InterpretativeParameter.class);
     xstream.alias("input", InstrumentInputParameter.class);
     xstream.alias("output", InstrumentOutputParameter.class);

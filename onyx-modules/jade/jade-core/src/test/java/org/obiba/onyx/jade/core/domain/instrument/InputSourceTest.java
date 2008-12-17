@@ -68,19 +68,20 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
 
   @Test
   @Dataset
-  public void testOutputParameterRetriever() {
+  public void testOutputParameterSource() {
     Participant participant = queryService.get(Participant.class, 1l);
-    InstrumentType instrumentType = queryService.get(InstrumentType.class, 2l);
+    Assert.assertNotNull(participant);
 
     InstrumentInputParameter param = new InstrumentInputParameter();
     OutputParameterSource outputParameterSource = new OutputParameterSource();
-    outputParameterSource.setParameterName("heigth");
-    outputParameterSource.setInstrumentType(instrumentType);
+    outputParameterSource.setParameterName("height");
+    outputParameterSource.setInstrumentType("BIM");
     param.setDataType(DataType.INTEGER);
     param.setInputSource(outputParameterSource);
 
     Data resultData = inputDataSourceVisitor.getData(participant, param);
-    Assert.assertEquals(Long.valueOf(187), resultData.getValue());
+    Assert.assertNotNull(resultData);
+    Assert.assertEquals(new Long(187), resultData.getValue());
     Assert.assertEquals(DataType.INTEGER, resultData.getType());
   }
 

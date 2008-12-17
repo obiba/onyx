@@ -13,7 +13,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
-import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
@@ -33,9 +32,6 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
   @SpringBean
   private EntityQueryService queryService;
-
-  @SpringBean(name = "activeInterviewService")
-  private ActiveInterviewService activeInterviewService;
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
@@ -61,14 +57,11 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
   public InstrumentWizardForm(String id, IModel instrumentTypeModel) {
     super(id);
-
-    activeInstrumentRunService.setInstrumentType((InstrumentType) instrumentTypeModel.getObject());
-
     WizardStepPanel startStep = null;
 
-    instrumentSelectionStep = new InstrumentSelectionStep(getStepId());
     observedContraIndicationStep = new ObservedContraIndicationStep(getStepId());
     askedContraIndicationStep = new AskedContraIndicationStep(getStepId());
+    instrumentSelectionStep = new InstrumentSelectionStep(getStepId(), instrumentTypeModel);
     inputParametersStep = new InputParametersStep(getStepId());
     instrumentLaunchStep = new InstrumentLaunchStep(getStepId());
     conclusionStep = new ConclusionStep(getStepId());
@@ -78,19 +71,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
     warningStep.setNextStep(conclusionStep);
     warningStep.setPreviousStep(outputParametersStep);
 
-    // do we need to select the instrument ?
-    Instrument template = new Instrument();
-    template.setInstrumentType((InstrumentType) instrumentTypeModel.getObject());
-    template.setStatus(InstrumentStatus.ACTIVE);
-    if(queryService.count(template) > 1) {
-      activeInstrumentRunService.reset();
-      startStep = instrumentSelectionStep;
-    } else {
-      // pre selected instrument
-      activeInstrumentRunService.start(activeInterviewService.getParticipant(), queryService.matchOne(template));
-      startStep = setUpWizardFlow();
-    }
-
+    startStep = setUpWizardFlow();
     add(startStep);
     startStep.onStepInNext(this, null);
     startStep.handleWizardState(this, null);
@@ -128,14 +109,33 @@ public abstract class InstrumentWizardForm extends WizardForm {
       log.debug("No contraindications of type ASKED. Skipping step.");
     }
 
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    // do we need to select the instrument ?
+    Instrument instrumentTemplate = new Instrument();
+    instrumentTemplate.setInstrumentType(instrumentType);
+    instrumentTemplate.setStatus(InstrumentStatus.ACTIVE);
+    log.info("instruments.count={}", queryService.count(instrumentTemplate));
+    if(queryService.count(instrumentTemplate) > 1) {
+      if(startStep == null) {
+        startStep = instrumentSelectionStep;
+        lastStep = startStep;
+      } else {
+        lastStep.setNextStep(instrumentSelectionStep);
+        instrumentSelectionStep.setPreviousStep(lastStep);
+        lastStep = instrumentSelectionStep;
+      }
+    } else {
+      // pre selected instrument
+      activeInstrumentRunService.setInstrument(queryService.matchOne(instrumentTemplate));
+    }
+
     // are there input parameters with input source that requires user provisionning ?
     // or interpretative questions
-    Instrument instrument = activeInstrumentRunService.getInstrument();
     InterpretativeParameter template = new InterpretativeParameter();
-    template.setInstrument(instrument);
+    template.setInstrumentType(instrumentType);
     log.info("instrumentInterpretativeParameters.count={}", queryService.count(template));
-    log.info("instrumentInputParameters.count={}", instrumentService.countInstrumentInputParameter(instrument, false));
-    if(queryService.count(template) > 0 || instrumentService.countInstrumentInputParameter(instrument, false) > 0) {
+    log.info("instrumentInputParameters.count={}", instrumentService.countInstrumentInputParameter(instrumentType, false));
+    if(queryService.count(template) > 0 || instrumentService.countInstrumentInputParameter(instrumentType, false) > 0) {
       if(startStep == null) {
         startStep = inputParametersStep;
         lastStep = startStep;
@@ -148,8 +148,8 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
     // are there output parameters that are to be captured automatically from instrument (i.e. requires instrument
     // launch) ?
-    log.info("instrument.isInteractive={}", instrumentService.isInteractiveInstrument(instrument));
-    if(instrumentService.isInteractiveInstrument(instrument)) {
+    log.info("instrument.isInteractive={}", instrumentService.isInteractiveInstrument(instrumentType));
+    if(instrumentService.isInteractiveInstrument(instrumentType)) {
       if(startStep == null) {
         startStep = instrumentLaunchStep;
         lastStep = startStep;
@@ -162,7 +162,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
     // are there output parameters that are to be captured manually from instrument ?
     InstrumentOutputParameter opTemplate = new InstrumentOutputParameter();
-    opTemplate.setInstrument(instrument);
+    opTemplate.setInstrumentType(instrumentType);
     opTemplate.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
     log.info("instrumentOutputParameters.MANUAL.count={}", queryService.count(opTemplate));
     if(queryService.count(opTemplate) > 0) {

@@ -55,7 +55,7 @@ public class InstrumentOutputParameterPanel extends Panel {
     setOutputMarkupId(true);
 
     InstrumentOutputParameter template = new InstrumentOutputParameter();
-    template.setInstrument(activeInstrumentRunService.getInstrument());
+    template.setInstrumentType(activeInstrumentRunService.getInstrumentType());
     template.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
 
     if(queryService.count(template) == 0) {

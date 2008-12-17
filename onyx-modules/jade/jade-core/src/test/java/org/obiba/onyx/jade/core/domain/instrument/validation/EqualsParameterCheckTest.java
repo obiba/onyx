@@ -17,6 +17,7 @@ import static org.easymock.EasyMock.verify;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
@@ -24,7 +25,6 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
-import org.obiba.onyx.jade.core.domain.run.ParticipantInterview;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
@@ -35,7 +35,7 @@ public class EqualsParameterCheckTest {
 
   private EqualsParameterCheck equalsParameterCheck;
 
-  private ParticipantInterview interview;
+  private Participant participant;
 
   private InstrumentRun instrumentRun;
 
@@ -55,16 +55,14 @@ public class EqualsParameterCheckTest {
   public void setUp() {
     equalsParameterCheck = new EqualsParameterCheck();
 
-    interview = new ParticipantInterview();
-
     instrumentType = new InstrumentType();
 
     instrument = new Instrument();
     instrument.setInstrumentType(instrumentType);
 
     instrumentRun = new InstrumentRun();
-    instrumentRun.setParticipantInterview(interview);
-    instrumentRun.setInstrument(instrument);
+    instrumentRun.setParticipant(participant);
+    instrumentRun.setInstrumentType(instrumentType);
 
     checkedParameter = new InstrumentOutputParameter();
     checkedParameter.setName("checkedParamName");

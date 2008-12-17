@@ -12,8 +12,6 @@ package org.obiba.onyx.jade.core.domain.instrument;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import org.obiba.onyx.jade.core.service.InputSourceVisitor;
 
@@ -23,9 +21,8 @@ public class OutputParameterSource extends InputSource {
 
   private static final long serialVersionUID = 79789789454360982L;
 
-  @ManyToOne
-  @JoinColumn(name = "instrument_type_id")
-  private InstrumentType instrumentType;
+  @Column(length = 200)
+  private String instrumentType;
 
   @Column(length = 200)
   private String parameterName;
@@ -39,11 +36,11 @@ public class OutputParameterSource extends InputSource {
     return true;
   }
 
-  public InstrumentType getInstrumentType() {
+  public String getInstrumentType() {
     return instrumentType;
   }
 
-  public void setInstrumentType(InstrumentType instrumentType) {
+  public void setInstrumentType(String instrumentType) {
     this.instrumentType = instrumentType;
   }
 

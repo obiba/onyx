@@ -103,10 +103,10 @@ public class InstrumentRunPanel extends Panel {
       kvPanel.addRow(new StringResourceModel("EndDate", this, null), DateModelUtils.getShortDateTimeModel(new PropertyModel(run, "timeEnd")));
     }
 
-    boolean isInteractive = instrumentService.isInteractiveInstrument(run.getInstrument());
+    boolean isInteractive = instrumentService.isInteractiveInstrument(run.getInstrumentType());
 
     InterpretativeParameter interpretative = new InterpretativeParameter();
-    interpretative.setInstrument(run.getInstrument());
+    interpretative.setInstrumentType(run.getInstrumentType());
 
     if(queryService.count(interpretative) > 0) {
       add(getKeyValueDataPanel("interpretatives", new StringResourceModel("Interpretatives", this, null), queryService.match(interpretative)));
@@ -115,7 +115,7 @@ public class InstrumentRunPanel extends Panel {
     }
 
     InstrumentInputParameter input = new InstrumentInputParameter();
-    input.setInstrument(run.getInstrument());
+    input.setInstrumentType(run.getInstrumentType());
 
     if(queryService.count(input) > 0) {
       String key = isInteractive ? "InstrumentInputs" : "OperatorInputs";
@@ -125,7 +125,7 @@ public class InstrumentRunPanel extends Panel {
     }
 
     InstrumentOutputParameter output = new InstrumentOutputParameter();
-    output.setInstrument(run.getInstrument());
+    output.setInstrumentType(run.getInstrumentType());
 
     if(queryService.count(output) > 0) {
       String key = isInteractive ? "InstrumentOutputs" : "OperatorOutputs";

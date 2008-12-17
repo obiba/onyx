@@ -58,9 +58,11 @@ public abstract class InstrumentParameter extends AbstractEntity {
   @Enumerated(EnumType.STRING)
   private InstrumentParameterCaptureMethod captureMethod;
 
+  // insertable and updatable are set to false so that the bi-directional relation
+  // is managed by the parent instead of this class
   @ManyToOne
-  @JoinColumn(name = "instrument_id")
-  private Instrument instrument;
+  @JoinColumn(name = "instrument_type_id", insertable = false, updatable = false)
+  private InstrumentType instrumentType;
 
   @OneToMany(mappedBy = "instrumentParameter")
   private List<InstrumentRunValue> instrumentRunValues;
@@ -132,12 +134,12 @@ public abstract class InstrumentParameter extends AbstractEntity {
     this.captureMethod = captureMethod;
   }
 
-  public Instrument getInstrument() {
-    return instrument;
+  public InstrumentType getInstrumentType() {
+    return instrumentType;
   }
 
-  public void setInstrument(Instrument instrument) {
-    this.instrument = instrument;
+  public void setInstrumentType(InstrumentType instrumentType) {
+    this.instrumentType = instrumentType;
   }
 
   public List<InstrumentRunValue> getInstrumentRunValues() {

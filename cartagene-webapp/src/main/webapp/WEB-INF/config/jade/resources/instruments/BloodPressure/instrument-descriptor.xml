@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+  <name>BloodPressure</name>
+
+  <instruments>
+    <instrument>
+      <name>Blood Pressure Monitor 1</name>
+      <vendor>Omron</vendor>
+      <model>Model 907</model>
+      <serialNumber>20080200041AF</serialNumber>
+      <barcode>blp01</barcode>
+      <status>ACTIVE</status>
+    </instrument>
+    <instrument>
+      <name>Blood Pressure Monitor 2</name>
+      <vendor>Omron</vendor>
+      <model>Model 907</model>
+      <serialNumber>20080400041AF</serialNumber>
+      <barcode>blp02</barcode>
+      <status>ACTIVE</status>
+    </instrument>
+  </instruments>
+
+  <contraindications>
+    <contraIndication>
+      <code>Other</code>
+      <requiresDescription>true</requiresDescription>
+      <type>OBSERVED</type>
+    </contraIndication>
+  </contraindications>
+
+  <instrumentParameters>
+    <output id="blp1_systolic1">
+      <name>Systolic Blood Pressure 1</name>
+      <description>First_Systolic_Blood_Pressure_Measurement</description>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          <targetParameter reference="blp1_systolic1" />
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>299</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>299</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          <targetParameter reference="blp1_systolic1" />
+          <integerMinValueMale>82</integerMinValueMale>
+          <integerMaxValueMale>195</integerMaxValueMale>
+          <integerMinValueFemale>82</integerMinValueFemale>
+          <integerMaxValueFemale>195</integerMaxValueFemale>
+        </rangeCheck>
+      </integrityChecks>
+    </output>
+
+    <output id="blp1_diastolic1">
+      <name>Diastolic Blood Pressure 1</name>
+      <description>First_Diastolic_Blood_Pressure_Measurement</description>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          <targetParameter reference="blp1_diastolic1" />
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>299</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>299</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          <targetParameter reference="blp1_diastolic1" />
+          <integerMinValueMale>57</integerMinValueMale>
+          <integerMaxValueMale>103</integerMaxValueMale>
+          <integerMinValueFemale>57</integerMinValueFemale>
+          <integerMaxValueFemale>103</integerMaxValueFemale>
+        </rangeCheck>
+        <equalsParameterCheck>
+          <targetParameter reference="blp1_diastolic1" />
+          <parameter reference="blp1_systolic1" />
+          <operator>LESSER</operator>
+          <customizedDescription>EqualsParameterCheck_SystolicGreaterThanDiastolic1</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+
+    <output id="blp1_pulse1">
+      <name>Pulse Rate 1</name>
+      <description>First_Pulse_Rate_Measurement</description>
+      <measurementUnit>BPM</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          <targetParameter reference="blp1_pulse1" />
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>199</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>199</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          <targetParameter reference="blp1_pulse1" />
+          <integerMinValueMale>42</integerMinValueMale>
+          <integerMaxValueMale>101</integerMaxValueMale>
+          <integerMinValueFemale>42</integerMinValueFemale>
+          <integerMaxValueFemale>101</integerMaxValueFemale>
+        </rangeCheck>
+      </integrityChecks>
+    </output>
+
+    <output id="blp1_systolic2">
+      <name>Systolic Blood Pressure 2</name>
+      <description>Second_Systolic_Blood_Pressure_Measurement</description>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          <targetParameter reference="blp1_systolic2" />
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>299</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>299</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          <targetParameter reference="blp1_systolic2" />
+          <integerMinValueMale>82</integerMinValueMale>
+          <integerMaxValueMale>195</integerMaxValueMale>
+          <integerMinValueFemale>82</integerMinValueFemale>
+          <integerMaxValueFemale>195</integerMaxValueFemale>
+        </rangeCheck>
+      </integrityChecks>
+    </output>
+
+    <output id="blp1_diastolic2">
+      <name>Diastolic Blood Pressure 2</name>
+      <description>Second_Diastolic_Blood_Pressure_Measurement</description>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          <targetParameter reference="blp1_diastolic2" />
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>299</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>299</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          <targetParameter reference="blp1_diastolic2" />
+          <integerMinValueMale>57</integerMinValueMale>
+          <integerMaxValueMale>103</integerMaxValueMale>
+          <integerMinValueFemale>57</integerMinValueFemale>
+          <integerMaxValueFemale>103</integerMaxValueFemale>
+        </rangeCheck>
+        <equalsParameterCheck>
+          <targetParameter reference="blp1_diastolic2" />
+          <parameter reference="blp1_systolic2" />
+          <operator>LESSER</operator>
+          <customizedDescription>EqualsParameterCheck_SystolicGreaterThanDiastolic2</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+
+    <output id="blp1_pulse2">
+      <name>Pulse Rate 2</name>
+      <description>Second_Pulse_Rate_Measurement</description>
+      <measurementUnit>BPM</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          <targetParameter reference="blp1_pulse2" />
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>199</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>199</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          <targetParameter reference="blp1_pulse2" />
+          <integerMinValueMale>42</integerMinValueMale>
+          <integerMaxValueMale>101</integerMaxValueMale>
+          <integerMinValueFemale>42</integerMinValueFemale>
+          <integerMaxValueFemale>101</integerMaxValueFemale>
+        </rangeCheck>
+      </integrityChecks>
+    </output>
+
+    <output id="blp1_systolic3">
+      <name>Systolic Blood Pressure 3</name>
+      <description>Third_Systolic_Blood_Pressure_Measurement</description>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          <targetParameter reference="blp1_systolic3" />
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>299</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>299</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          <targetParameter reference="blp1_systolic3" />
+          <integerMinValueMale>82</integerMinValueMale>
+          <integerMaxValueMale>195</integerMaxValueMale>
+          <integerMinValueFemale>82</integerMinValueFemale>
+          <integerMaxValueFemale>195</integerMaxValueFemale>
+        </rangeCheck>
+      </integrityChecks>
+    </output>
+
+    <output id="blp1_diastolic3">
+      <name>Diastolic Blood Pressure 3</name>
+      <description>Third_Diastolic_Blood_Pressure_Measurement</description>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          <targetParameter reference="blp1_diastolic3" />
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>299</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>299</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          <targetParameter reference="blp1_diastolic3" />
+          <integerMinValueMale>57</integerMinValueMale>
+          <integerMaxValueMale>103</integerMaxValueMale>
+          <integerMinValueFemale>57</integerMinValueFemale>
+          <integerMaxValueFemale>103</integerMaxValueFemale>
+        </rangeCheck>
+        <equalsParameterCheck>
+          <targetParameter reference="blp1_diastolic3" />
+          <parameter reference="blp1_systolic3" />
+          <operator>LESSER</operator>
+          <customizedDescription>EqualsParameterCheck_SystolicGreaterThanDiastolic3</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+
+    <output id="blp1_pulse3">
+      <name>Pulse Rate 3</name>
+      <description>Third_Pulse_Rate_Measurement</description>
+      <measurementUnit>BPM</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          <targetParameter reference="blp1_pulse3" />
+          <integerMinValueMale>30</integerMinValueMale>
+          <integerMaxValueMale>199</integerMaxValueMale>
+          <integerMinValueFemale>30</integerMinValueFemale>
+          <integerMaxValueFemale>199</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          <targetParameter reference="blp1_pulse3" />
+          <integerMinValueMale>42</integerMinValueMale>
+          <integerMaxValueMale>101</integerMaxValueMale>
+          <integerMinValueFemale>42</integerMinValueFemale>
+          <integerMaxValueFemale>101</integerMaxValueFemale>
+        </rangeCheck>
+      </integrityChecks>
+    </output>
+
+    <computedOutput>
+      <name>Systolic_Blood_Pressure</name>
+      <description>Average_Systolic_Blood_Pressure_Measurement</description>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <algorithm>AVERAGE</algorithm>
+      <captureMethod>COMPUTED</captureMethod>
+      <outputs>
+        <output reference="blp1_systolic1" />
+        <output reference="blp1_systolic2" />
+        <output reference="blp1_systolic3" />
+      </outputs>
+    </computedOutput>
+
+    <computedOutput>
+      <name>Diastolic_Blood_Pressure</name>
+      <description>Average_Diastolic_Blood_Pressure_Measurement</description>
+      <measurementUnit>mmHg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <algorithm>AVERAGE</algorithm>
+      <captureMethod>COMPUTED</captureMethod>
+      <outputs>
+        <output reference="blp1_diastolic1" />
+        <output reference="blp1_diastolic2" />
+        <output reference="blp1_diastolic3" />
+      </outputs>
+    </computedOutput>
+
+    <computedOutput>
+      <name>Pulse Rate</name>
+      <description>Average_Pulse_Rate_Measurement</description>
+      <measurementUnit>BPM</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <algorithm>AVERAGE</algorithm>
+      <captureMethod>COMPUTED</captureMethod>
+      <outputs>
+        <output reference="blp1_pulse1" />
+        <output reference="blp1_pulse2" />
+        <output reference="blp1_pulse3" />
+      </outputs>
+    </computedOutput>
+  </instrumentParameters>
+</instrumentType>

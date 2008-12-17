@@ -16,7 +16,6 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -31,14 +30,15 @@ public class InstrumentSelector extends Panel {
 
   private static final long serialVersionUID = 3920957095572085598L;
 
-  private Instrument instrument = null;
-
   @SpringBean
   private EntityQueryService queryService;
 
+  private IModel instrumentModel;
+
   @SuppressWarnings("serial")
-  public InstrumentSelector(String id, IModel instrumentTypeModel) {
+  public InstrumentSelector(String id, IModel instrumentTypeModel, IModel instrumentModel) {
     super(id, instrumentTypeModel);
+    this.instrumentModel = instrumentModel;
 
     // get only active instruments in this type.
     Instrument template = new Instrument();
@@ -61,12 +61,11 @@ public class InstrumentSelector extends Panel {
     add(debugField);
   }
 
-  public Instrument getInstrument() {
-    return instrument;
-  }
-
-  public void setInstrument(Instrument instrument) {
-    this.instrument = instrument;
+  @Override
+  public void detachModels() {
+    if(instrumentModel != null) {
+      instrumentModel.detach();
+    }
   }
 
   @SuppressWarnings("serial")
@@ -75,7 +74,7 @@ public class InstrumentSelector extends Panel {
     public Selector(String id) {
       super(id, "selectorFragment", InstrumentSelector.this);
 
-      final TextField tf = new RequiredTextField("field", new PropertyModel(InstrumentSelector.this, "instrument"), Instrument.class) {
+      final TextField tf = new RequiredTextField("field", instrumentModel, Instrument.class) {
         @SuppressWarnings("unchecked")
         @Override
         public IConverter getConverter(Class type) {

@@ -78,7 +78,6 @@
     Currently, this is used to load the instrument's resource bundles until this is refactored -->
   <bean name="messageSource" class="org.obiba.onyx.spring.context.OnyxMessageSourceFactoryBean">
     <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
-    <property name="instrumentDirectory" value="instruments/" />
   </bean>
 
   <!-- Used only during development -->

@@ -11,6 +11,7 @@ package org.obiba.onyx.jade.core.domain.instrument;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -25,13 +26,8 @@ public class MultipleOutputParameterSource extends InputSource {
 
   private static final long serialVersionUID = 1L;
 
-  @ManyToMany
-  @JoinTable(
-          name="multiple_output_parameters",
-          joinColumns = { @JoinColumn(name="multiple_output_parameter_source_id") },
-          inverseJoinColumns = @JoinColumn(name="output_parameter_source_id")
-  )
-  
+  @ManyToMany(cascade = CascadeType.ALL)
+  @JoinTable(name = "multiple_output_parameters", joinColumns = { @JoinColumn(name = "multiple_output_parameter_source_id") }, inverseJoinColumns = @JoinColumn(name = "output_parameter_source_id"))
   private List<OutputParameterSource> outputParameterSourceList;
 
   public MultipleOutputParameterSource() {
@@ -54,5 +50,5 @@ public class MultipleOutputParameterSource extends InputSource {
   public void setOutputParameterSourceList(List<OutputParameterSource> outputParameterSourceList) {
     this.outputParameterSourceList = outputParameterSourceList;
   }
-  
+
 }

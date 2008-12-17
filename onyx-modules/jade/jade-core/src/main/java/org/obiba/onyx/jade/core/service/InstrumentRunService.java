@@ -12,7 +12,6 @@ package org.obiba.onyx.jade.core.service;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
@@ -26,7 +25,7 @@ public interface InstrumentRunService {
    * @param instrument
    * @return
    */
-  public List<InstrumentRun> getCompletedInstrumentRuns(Participant participant, Instrument instrument);
+  public List<InstrumentRun> getCompletedInstrumentRuns(Participant participant, InstrumentType instrument);
 
   /**
    * Get the last instrument whatever is its status for participant and instrument type.

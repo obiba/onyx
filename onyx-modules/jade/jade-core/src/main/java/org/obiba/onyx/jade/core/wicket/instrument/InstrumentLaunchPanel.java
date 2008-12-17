@@ -21,15 +21,14 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.instrument.UnitParameterValueConverter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
-import org.obiba.onyx.jade.core.service.InstrumentDescriptorService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
@@ -67,27 +66,18 @@ public abstract class InstrumentLaunchPanel extends Panel {
   @SpringBean
   private InstrumentService instrumentService;
 
-  @SpringBean
-  private InstrumentDescriptorService instrumentDescriptorService;
-
   @SuppressWarnings("serial")
   public InstrumentLaunchPanel(String id) {
     super(id);
     setOutputMarkupId(true);
 
-    Instrument instrument = activeInstrumentRunService.getInstrument();
-    log.info("instrument.name=" + instrument.getName());
+    InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
+    String codebase = instrumentService.getInstrumentInstallPath(instrumentType);
 
     // general instructions and launcher
-    add(new Label("general", new StringResourceModel("StartMeasurementWithInstrument", this, new Model(new ValueMap("name=" + instrument.getName())))));
-    String instrumentCodeBase = instrumentDescriptorService.getCodeBase(instrument.getBarcode());
+    add(new Label("general", new StringResourceModel("StartMeasurementWithInstrument", this, new Model(new ValueMap("name=" + instrumentType.getName())))));
 
-    if(instrumentCodeBase == null) {
-      log.info("No code base for instrument {}", instrument.getName());
-      throw new IllegalArgumentException("No code base found for instrument " + instrument.getName());
-    }
-
-    final InstrumentLauncher launcher = new InstrumentLauncher(instrument, instrumentCodeBase);
+    final InstrumentLauncher launcher = new InstrumentLauncher(instrumentType, codebase);
 
     add(new Link("start") {
 
@@ -100,7 +90,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
     });
 
     // get the data from not read-only input parameters sources
-    for(InstrumentInputParameter param : instrumentService.getInstrumentInputParameter(instrument, true)) {
+    for(InstrumentInputParameter param : instrumentService.getInstrumentInputParameter(instrumentType, true)) {
       final InstrumentRunValue runValue = activeInstrumentRunService.getInputInstrumentRunValue(param.getName());
       Data data = inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param);
       if(data != null) {
@@ -124,7 +114,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
     // get all the input run values that requires manual capture
     InstrumentInputParameter template = new InstrumentInputParameter();
     template.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
-    template.setInstrument(instrument);
+    template.setInstrumentType(instrumentType);
 
     boolean manualCaptureRequired = false;
     for(final InstrumentInputParameter param : queryService.match(template)) {

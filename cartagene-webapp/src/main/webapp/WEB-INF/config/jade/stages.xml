@@ -1,6 +1,6 @@
 <stages>
   <stage>
-    <name>STA</name>
+    <name>StandingHeight</name>
     <module>jade</module>
     <stageDependencyCondition class="variableCondition">
       <stageName>CON</stageName>
@@ -9,7 +9,7 @@
   </stage>
 
   <stage>
-    <name>SIT</name>
+    <name>SittingHeight</name>
     <module>jade</module>
     <stageDependencyCondition class="variableCondition">
       <stageName>CON</stageName>
@@ -18,7 +18,7 @@
   </stage>
 
   <stage>
-    <name>HWC</name>
+    <name>HipsWaist</name>
     <module>jade</module>
     <stageDependencyCondition class="variableCondition">
       <stageName>CON</stageName>
@@ -27,7 +27,7 @@
   </stage>
 
   <stage>
-    <name>MUS</name>
+    <name>GripStrength</name>
     <module>jade</module>
     <stageDependencyCondition class="variableCondition">
       <stageName>CON</stageName>
@@ -36,7 +36,7 @@
   </stage>
 
   <stage>
-    <name>BLP</name>
+    <name>BloodPressure</name>
     <module>jade</module>
     <stageDependencyCondition class="variableCondition">
       <stageName>CON</stageName>
@@ -45,7 +45,7 @@
   </stage>
 
   <stage>
-    <name>BIM_TBF310</name>
+    <name>Impedence310</name>
     <module>jade</module>
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
@@ -55,7 +55,7 @@
           <variableName>consent</variableName>
         </variableCondition>
         <variableCondition>
-          <stageName>STA</stageName>
+          <stageName>StandingHeight</stageName>
           <variableName>height</variableName>
         </variableCondition>
       </conditions>
@@ -63,7 +63,7 @@
   </stage>
 
   <stage>
-    <name>WEI</name>
+    <name>Weight</name>
     <module>jade</module>
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
@@ -74,7 +74,7 @@
         </variableCondition>
         <inverseCondition>
           <stageDependencyCondition class="variableCondition">
-            <stageName>BIM_TBF310</stageName>
+            <stageName>Impedence310</stageName>
             <variableName>weight</variableName>
           </stageDependencyCondition>
         </inverseCondition>
@@ -83,7 +83,7 @@
   </stage>
 
   <stage>
-    <name>SPI</name>
+    <name>Spirometry</name>
     <module>jade</module>
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
@@ -93,18 +93,18 @@
           <variableName>consent</variableName>
         </variableCondition>
         <variableCondition>
-          <stageName>STA</stageName>
+          <stageName>StandingHeight</stageName>
           <variableName>height</variableName>
         </variableCondition>
         <multipleCondition>
           <operator>OR</operator>
           <conditions>
             <variableCondition>
-              <stageName>BIM_TBF310</stageName>
+              <stageName>Impedence310</stageName>
               <variableName>weight</variableName>
             </variableCondition>
             <variableCondition>
-              <stageName>WEI</stageName>
+              <stageName>Weight</stageName>
               <variableName>weight</variableName>
             </variableCondition>
           </conditions>
@@ -123,7 +123,7 @@
   </stage>
 
   <stage>
-    <name>BON</name>
+    <name>BoneDensity</name>
     <module>jade</module>
     <stageDependencyCondition class="variableCondition">
       <stageName>CON</stageName>
@@ -132,7 +132,7 @@
   </stage>
 
   <stage>
-    <name>ART</name>
+    <name>ArtStiffness</name>
     <module>jade</module>
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
@@ -142,7 +142,7 @@
           <variableName>consent</variableName>
         </variableCondition>
         <variableCondition>
-          <stageName>BLP</stageName>
+          <stageName>BloodPressure</stageName>
           <variableName>Systolic_Blood_Pressure</variableName>
         </variableCondition>
       </conditions>
