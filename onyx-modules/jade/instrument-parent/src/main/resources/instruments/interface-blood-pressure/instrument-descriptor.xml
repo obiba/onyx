@@ -67,7 +67,13 @@
         <integerMaxValueMale>103</integerMaxValueMale>
         <integerMinValueFemale>57</integerMinValueFemale>
         <integerMaxValueFemale>103</integerMaxValueFemale>
-      </rangeCheck>       
+      </rangeCheck>    
+      <equalsParameterCheck>
+        <targetParameter reference="blp1_diastolic1" />
+        <parameter reference="blp1_systolic1" />
+        <operator>LESSER</operator>
+        <customizedDescription>EqualsParameterCheck_SystolicGreaterThanDiastolic1</customizedDescription>
+      </equalsParameterCheck>          
     </integrityChecks>
   </output>
   <output id="blp1_pulse1">
@@ -143,7 +149,13 @@
         <integerMaxValueMale>103</integerMaxValueMale>
         <integerMinValueFemale>57</integerMinValueFemale>
         <integerMaxValueFemale>103</integerMaxValueFemale>
-      </rangeCheck>        
+      </rangeCheck>  
+      <equalsParameterCheck>
+        <targetParameter reference="blp1_diastolic2" />
+        <parameter reference="blp1_systolic2" />
+        <operator>LESSER</operator>
+        <customizedDescription>EqualsParameterCheck_SystolicGreaterThanDiastolic2</customizedDescription>
+      </equalsParameterCheck>             
     </integrityChecks>
   </output>
   <output id="blp1_pulse2">
@@ -219,7 +231,13 @@
         <integerMaxValueMale>103</integerMaxValueMale>
         <integerMinValueFemale>57</integerMinValueFemale>
         <integerMaxValueFemale>103</integerMaxValueFemale>
-      </rangeCheck>        
+      </rangeCheck>   
+      <equalsParameterCheck>
+        <targetParameter reference="blp1_diastolic3" />
+        <parameter reference="blp1_systolic3" />
+        <operator>LESSER</operator>
+        <customizedDescription>EqualsParameterCheck_SystolicGreaterThanDiastolic3</customizedDescription>
+      </equalsParameterCheck>             
     </integrityChecks>
   </output>
   <output id="blp1_pulse3">
