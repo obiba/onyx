@@ -9,95 +9,125 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.tube;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
-import org.obiba.onyx.wicket.wizard.WizardForm;
+import org.obiba.onyx.wicket.behavior.EnterOnKeyPressBehaviour;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CommentPanel extends Panel {
+  //
+  // Constants
+  //
 
   private static final long serialVersionUID = 3243362200850374728L;
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(CommentPanel.class);
+
+  //
+  // Instance Variables
+  //
 
   @SpringBean(name = "activeTubeRegistrationService")
   private ActiveTubeRegistrationService activeTubeRegistrationService;
 
-  private String selectedComment;
+  private TextField commentField;
 
-  /**
-   * Panel for the comment input
-   * @param id
-   * @param rowModel
-   */
+  private AjaxSubmitLink submitLink;
+
+  //
+  // Constructors
+  //
+
   public CommentPanel(String id, IModel rowModel) {
     super(id, rowModel);
     setOutputMarkupId(true);
 
-    RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) rowModel.getObject();
+    add(new CommentForm("commentForm"));
+  }
 
-    if(registeredParticipantTube.getComment() != null) selectedComment = registeredParticipantTube.getComment();
+  //
+  // Inner Classes
+  //
 
-    TextField commentField = new TextField("comment", new PropertyModel(this, "selectedComment"));
-    commentField.add(new StringValidator.MaximumLengthValidator(2000));
+  private class CommentForm extends Form {
+    //
+    // Constants
+    //
 
-    commentField.add(new AjaxFormComponentUpdatingBehavior("onblur") {
-      private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-      @Override
-      protected void onUpdate(final AjaxRequestTarget target) {
-        RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) getModelObject();
-        activeTubeRegistrationService.setTubeComment(registeredParticipantTube.getBarcode(), selectedComment);
+    //
+    // Constructors
+    //
 
-        // refresh feeback to clean a previous error message
-        visitParents(WizardForm.class, new Component.IVisitor() {
+    public CommentForm(String id) {
+      super(id);
 
-          public Object component(Component component) {
-            WizardForm form = (WizardForm) component;
-            if(form.getFeedbackPanel() != null) {
-              target.addComponent(form.getFeedbackPanel());
-            }
-            return component;
-          }
-        });
+      addSubmitLink();
+      addCommentField();
+    }
 
-        // Update component
-        target.addComponent(CommentPanel.this);
+    //
+    // Methods
+    //
+
+    private void addSubmitLink() {
+      submitLink = new AjaxSubmitLink("submitTubeComment") {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        protected void onSubmit(AjaxRequestTarget target, Form form) {
+          submitComment();
+        }
+      };
+
+      submitLink.setOutputMarkupId(true);
+
+      add(submitLink);
+    }
+
+    private void addCommentField() {
+      RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) CommentPanel.this.getModelObject();
+
+      commentField = new TextField("comment", new Model(registeredParticipantTube.getComment()));
+
+      commentField.add(new StringValidator.MaximumLengthValidator(2000));
+
+      commentField.add(new EnterOnKeyPressBehaviour(submitLink));
+
+      commentField.add(new AjaxFormComponentUpdatingBehavior("onblur") {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        protected void onUpdate(final AjaxRequestTarget target) {
+          submitComment();
+        }
+      });
+
+      add(commentField);
+    }
+
+    private void submitComment() {
+      String comment = commentField.getModelObjectAsString();
+
+      if(comment != null && comment.trim().length() == 0) {
+        comment = null;
       }
 
-      @Override
-      protected void onError(final AjaxRequestTarget target, RuntimeException e) {
-        // refesh feedback panel to display error messages
-        visitParents(WizardForm.class, new Component.IVisitor() {
-
-          public Object component(Component component) {
-            WizardForm form = (WizardForm) component;
-            if(form.getFeedbackPanel() != null) {
-              target.addComponent(form.getFeedbackPanel());
-            }
-            return component;
-          }
-        });
-        super.onError(target, e);
-      }
-
-    });
-
-    add(commentField);
+      RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) CommentPanel.this.getModelObject();
+      activeTubeRegistrationService.setTubeComment(registeredParticipantTube.getBarcode(), comment);
+    }
   }
-
-  public String getSelectedComment() {
-    return selectedComment;
-  }
-
-  public void setSelectedComment(String comment) {
-    this.selectedComment = comment;
-  }
-
 }

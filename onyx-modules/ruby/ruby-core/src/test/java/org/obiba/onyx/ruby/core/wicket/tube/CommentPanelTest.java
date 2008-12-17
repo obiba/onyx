@@ -66,7 +66,7 @@ public class CommentPanelTest {
     FormTester formTester = tester.newFormTester("panel:form");
     formTester.setValue("", "");
 
-    tester.executeAjaxEvent("panel:form:content:comment", "onblur");
+    tester.executeAjaxEvent("panel:form:content:commentForm:comment", "onblur");
     tester.assertNoErrorMessage();
 
     EasyMock.verify(activeTubeRegistrationServiceMock);
