@@ -1137,7 +1137,7 @@
                           <category reference="502"/>
                         </questionCategory>
                       </questionCategories>
-                      <condition class="dataCondition" id="562" name="WORK_VIGOROUS_ACTIVITY_TIME_DAY_DCONDITION" comparisionOperator="gt">
+                      <condition class="dataCondition" id="562" name="WORK_VIGOROUS_ACTIVITY_TIME_DAY_DCONDITION" comparisonOperator="gt">
                         <questions id="563">
                           <question reference="544"/>
                         </questions>
@@ -1748,7 +1748,7 @@
                       <category reference="502"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="dataCondition" id="812" name="MEDICATION1_TYPE_DCONDITION" comparisionOperator="gt">
+                  <condition class="dataCondition" id="812" name="MEDICATION1_TYPE_DCONDITION" comparisonOperator="gt">
                     <questions id="813">
                       <question reference="804"/>
                     </questions>
@@ -1785,7 +1785,7 @@
                       <category reference="502"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="dataCondition" id="827" name="MED1_TYPE_INFO_SOURCE_DCONDITION" comparisionOperator="gt">
+                  <condition class="dataCondition" id="827" name="MED1_TYPE_INFO_SOURCE_DCONDITION" comparisonOperator="gt">
                     <questions id="828">
                       <question reference="818"/>
                     </questions>
@@ -1823,7 +1823,7 @@
                       <category reference="502"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="dataCondition" id="840" name="MEDICATION2_TYPE_DCONDITION" comparisionOperator="gt">
+                  <condition class="dataCondition" id="840" name="MEDICATION2_TYPE_DCONDITION" comparisonOperator="gt">
                     <questions id="841">
                       <question reference="835"/>
                     </questions>
@@ -1860,7 +1860,7 @@
                       <category reference="502"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="dataCondition" id="852" name="MED2_TYPE_INFO_SOURCE_DCONDITION" comparisionOperator="gt">
+                  <condition class="dataCondition" id="852" name="MED2_TYPE_INFO_SOURCE_DCONDITION" comparisonOperator="gt">
                     <questions id="853">
                       <question reference="846"/>
                     </questions>
@@ -1898,7 +1898,7 @@
                       <category reference="502"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="dataCondition" id="865" name="MEDICATION3_TYPE_DCONDITION" comparisionOperator="gt">
+                  <condition class="dataCondition" id="865" name="MEDICATION3_TYPE_DCONDITION" comparisonOperator="gt">
                     <questions id="866">
                       <question reference="860"/>
                     </questions>
@@ -1935,7 +1935,7 @@
                       <category reference="502"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="dataCondition" id="877" name="MED3_TYPE_INFO_SOURCE_DCONDITION" comparisionOperator="gt">
+                  <condition class="dataCondition" id="877" name="MED3_TYPE_INFO_SOURCE_DCONDITION" comparisonOperator="gt">
                     <questions id="878">
                       <question reference="871"/>
                     </questions>
@@ -2057,7 +2057,7 @@
                       <category reference="502"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="dataCondition" id="928" name="NUMBER_LIVE_BIRTHS_DCONDITION" comparisionOperator="gt">
+                  <condition class="dataCondition" id="928" name="NUMBER_LIVE_BIRTHS_DCONDITION" comparisonOperator="gt">
                     <questions id="929">
                       <question reference="923"/>
                     </questions>
@@ -2144,7 +2144,7 @@
                       <question reference="947"/>
                     </questions>
                     <conditions id="960">
-                      <dataCondition id="961" name="NEO_FIRST_DEG_REL_NUMBER_DCONDITION_0" comparisionOperator="gt">
+                      <dataCondition id="961" name="NEO_FIRST_DEG_REL_NUMBER_DCONDITION_0" comparisonOperator="gt">
                         <dataSource1 class="externalOpenAnswerSource" id="962" questionnaireName="HealthQuestionnaireSelfAdministered" questionName="NUMBER_SIBLINGS_ALL" categoryName="OPEN_N" openAnswerDefinitionName="OPEN_N"/>
                         <dataSource2 class="fixedSource" id="963">
                           <data id="964" type="INTEGER">
@@ -2152,7 +2152,7 @@
                           </data>
                         </dataSource2>
                       </dataCondition>
-                      <dataCondition id="965" name="NEO_FIRST_DEG_REL_NUMBER_DCONDITION_1" comparisionOperator="gt">
+                      <dataCondition id="965" name="NEO_FIRST_DEG_REL_NUMBER_DCONDITION_1" comparisonOperator="gt">
                         <dataSource1 class="openAnswerSource" id="966">
                           <question reference="923"/>
                           <category reference="910"/>
@@ -2164,7 +2164,7 @@
                           </data>
                         </dataSource2>
                       </dataCondition>
-                      <dataCondition id="969" name="NEO_FIRST_DEG_REL_NUMBER_DCONDITION_2" comparisionOperator="gt">
+                      <dataCondition id="969" name="NEO_FIRST_DEG_REL_NUMBER_DCONDITION_2" comparisonOperator="gt">
                         <dataSource1 class="openAnswerSource" id="970">
                           <question reference="939"/>
                           <category reference="910"/>
@@ -2181,7 +2181,7 @@
                   <questions id="973">
                     <question id="974" name="NEOPLASM_NUMBER_SIBLINGS" number="1.3" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                       <questionCategories id="975"/>
-                      <condition class="dataCondition" id="976" name="NEOPLASM_NUMBER_SIBLINGS_DCONDITION" comparisionOperator="gt">
+                      <condition class="dataCondition" id="976" name="NEOPLASM_NUMBER_SIBLINGS_DCONDITION" comparisonOperator="gt">
                         <questions id="977">
                           <question reference="974"/>
                         </questions>
@@ -2202,7 +2202,7 @@
                           <question reference="982"/>
                         </questions>
                         <conditions id="986">
-                          <dataCondition id="987" name="NEOPLASM_NUMBER_CHILDREN_DCONDITION_0" comparisionOperator="gt">
+                          <dataCondition id="987" name="NEOPLASM_NUMBER_CHILDREN_DCONDITION_0" comparisonOperator="gt">
                             <dataSource1 class="openAnswerSource" id="988">
                               <question reference="923"/>
                               <category reference="910"/>
@@ -2214,7 +2214,7 @@
                               </data>
                             </dataSource2>
                           </dataCondition>
-                          <dataCondition id="991" name="NEOPLASM_NUMBER_CHILDREN_DCONDITION_1" comparisionOperator="gt">
+                          <dataCondition id="991" name="NEOPLASM_NUMBER_CHILDREN_DCONDITION_1" comparisonOperator="gt">
                             <dataSource1 class="openAnswerSource" id="992">
                               <question reference="939"/>
                               <category reference="910"/>
@@ -2481,7 +2481,7 @@
                                               <category reference="502"/>
                                             </questionCategory>
                                           </questionCategories>
-                                          <condition class="dataCondition" id="1096" name="NEOPLASM_TYPE_SIB1_DCONDITION" comparisionOperator="gt">
+                                          <condition class="dataCondition" id="1096" name="NEOPLASM_TYPE_SIB1_DCONDITION" comparisonOperator="gt">
                                             <questions id="1097">
                                               <question reference="1067"/>
                                             </questions>
@@ -2550,7 +2550,7 @@
                                               <category reference="502"/>
                                             </questionCategory>
                                           </questionCategories>
-                                          <condition class="dataCondition" id="1121" name="NEOPLASM_AGE_SIB1_DCONDITION" comparisionOperator="gt">
+                                          <condition class="dataCondition" id="1121" name="NEOPLASM_AGE_SIB1_DCONDITION" comparisonOperator="gt">
                                             <questions id="1122">
                                               <question reference="1110"/>
                                             </questions>
@@ -2594,7 +2594,7 @@
                                               <category reference="502"/>
                                             </questionCategory>
                                           </questionCategories>
-                                          <condition class="dataCondition" id="1138" name="BIRTH_RANK_SIB1_DCONDITION" comparisionOperator="gt">
+                                          <condition class="dataCondition" id="1138" name="BIRTH_RANK_SIB1_DCONDITION" comparisonOperator="gt">
                                             <questions id="1139">
                                               <question reference="1127"/>
                                             </questions>
@@ -2711,7 +2711,7 @@
                                               <category reference="502"/>
                                             </questionCategory>
                                           </questionCategories>
-                                          <condition class="dataCondition" id="1170" name="NEOPLASM_TYPE_SIB2_DCONDITION" comparisionOperator="gt">
+                                          <condition class="dataCondition" id="1170" name="NEOPLASM_TYPE_SIB2_DCONDITION" comparisonOperator="gt">
                                             <questions id="1171">
                                               <question reference="1144"/>
                                             </questions>
@@ -2769,7 +2769,7 @@
                                               <category reference="502"/>
                                             </questionCategory>
                                           </questionCategories>
-                                          <condition class="dataCondition" id="1189" name="NEOPLASM_AGE_SIB2_DCONDITION" comparisionOperator="gt">
+                                          <condition class="dataCondition" id="1189" name="NEOPLASM_AGE_SIB2_DCONDITION" comparisonOperator="gt">
                                             <questions id="1190">
                                               <question reference="1184"/>
                                             </questions>
@@ -2802,7 +2802,7 @@
                                               <category reference="502"/>
                                             </questionCategory>
                                           </questionCategories>
-                                          <condition class="dataCondition" id="1200" name="BIRTH_RANK_SIB2_DCONDITION" comparisionOperator="gt">
+                                          <condition class="dataCondition" id="1200" name="BIRTH_RANK_SIB2_DCONDITION" comparisonOperator="gt">
                                             <questions id="1201">
                                               <question reference="1195"/>
                                             </questions>
@@ -2945,7 +2945,7 @@
                                     <category reference="502"/>
                                   </questionCategory>
                                 </questionCategories>
-                                <condition class="dataCondition" id="1239" name="NEOPLASM_TYPE_CHILD1_DCONDITION" comparisionOperator="gt">
+                                <condition class="dataCondition" id="1239" name="NEOPLASM_TYPE_CHILD1_DCONDITION" comparisonOperator="gt">
                                   <questions id="1240">
                                     <question reference="1213"/>
                                   </questions>
@@ -3003,7 +3003,7 @@
                                     <category reference="502"/>
                                   </questionCategory>
                                 </questionCategories>
-                                <condition class="dataCondition" id="1258" name="NEOPLASM_AGE_CHILD1_DCONDITION" comparisionOperator="gt">
+                                <condition class="dataCondition" id="1258" name="NEOPLASM_AGE_CHILD1_DCONDITION" comparisonOperator="gt">
                                   <questions id="1259">
                                     <question reference="1253"/>
                                   </questions>
@@ -3036,7 +3036,7 @@
                                     <category reference="502"/>
                                   </questionCategory>
                                 </questionCategories>
-                                <condition class="dataCondition" id="1269" name="BIRTH_RANK_CHILD1_DCONDITION" comparisionOperator="gt">
+                                <condition class="dataCondition" id="1269" name="BIRTH_RANK_CHILD1_DCONDITION" comparisonOperator="gt">
                                   <questions id="1270">
                                     <question reference="1264"/>
                                   </questions>
@@ -3153,7 +3153,7 @@
                                     <category reference="502"/>
                                   </questionCategory>
                                 </questionCategories>
-                                <condition class="dataCondition" id="1301" name="NEOPLASM_TYPE_CHILD2_DCONDITION" comparisionOperator="gt">
+                                <condition class="dataCondition" id="1301" name="NEOPLASM_TYPE_CHILD2_DCONDITION" comparisonOperator="gt">
                                   <questions id="1302">
                                     <question reference="1275"/>
                                   </questions>
@@ -3211,7 +3211,7 @@
                                     <category reference="502"/>
                                   </questionCategory>
                                 </questionCategories>
-                                <condition class="dataCondition" id="1320" name="NEOPLASM_AGE_CHILD2_DCONDITION" comparisionOperator="gt">
+                                <condition class="dataCondition" id="1320" name="NEOPLASM_AGE_CHILD2_DCONDITION" comparisonOperator="gt">
                                   <questions id="1321">
                                     <question reference="1315"/>
                                   </questions>
@@ -3244,7 +3244,7 @@
                                     <category reference="502"/>
                                   </questionCategory>
                                 </questionCategories>
-                                <condition class="dataCondition" id="1331" name="BIRTH_RANK_CHILD2_DCONDITION" comparisionOperator="gt">
+                                <condition class="dataCondition" id="1331" name="BIRTH_RANK_CHILD2_DCONDITION" comparisonOperator="gt">
                                   <questions id="1332">
                                     <question reference="1326"/>
                                   </questions>
@@ -3287,7 +3287,7 @@
                               <question id="1346" name="FHD03" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                 <page reference="1344"/>
                                 <questionCategories id="1347"/>
-                                <condition class="dataCondition" id="1348" name="FHD03_ACONDITION" comparisionOperator="gt">
+                                <condition class="dataCondition" id="1348" name="FHD03_ACONDITION" comparisonOperator="gt">
                                   <questions id="1349">
                                     <question reference="1346"/>
                                   </questions>
@@ -3312,7 +3312,7 @@
                               <question id="1356" name="FHD04" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                                 <page reference="1354"/>
                                 <questionCategories id="1357"/>
-                                <condition class="dataCondition" id="1358" name="FHD04_DCONDITION" comparisionOperator="gt">
+                                <condition class="dataCondition" id="1358" name="FHD04_DCONDITION" comparisonOperator="gt">
                                   <questions id="1359">
                                     <question reference="1356"/>
                                   </questions>

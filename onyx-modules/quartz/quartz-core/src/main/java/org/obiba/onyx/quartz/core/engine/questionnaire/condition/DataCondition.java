@@ -10,6 +10,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.condition;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
 
 /**
@@ -23,13 +24,13 @@ public class DataCondition extends Condition {
 
   private DataSource dataSource2;
 
-  private ComparisionOperator comparisionOperator;
+  private ComparisonOperator comparisonOperator;
 
-  public DataCondition(String name, DataSource dataSource1, ComparisionOperator comparisionOperator, DataSource dataSource2) {
+  public DataCondition(String name, DataSource dataSource1, ComparisonOperator comparisonOperator, DataSource dataSource2) {
     super(name);
     this.dataSource1 = dataSource1;
     this.dataSource2 = dataSource2;
-    this.comparisionOperator = comparisionOperator;
+    this.comparisonOperator = comparisonOperator;
   }
 
   public boolean isToBeAnswered(ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService) {
@@ -47,7 +48,7 @@ public class DataCondition extends Condition {
 
   protected boolean isComparisonValid(int result) {
 
-    switch(comparisionOperator) {
+    switch(comparisonOperator) {
     case eq:
       return result == 0;
     case ne:

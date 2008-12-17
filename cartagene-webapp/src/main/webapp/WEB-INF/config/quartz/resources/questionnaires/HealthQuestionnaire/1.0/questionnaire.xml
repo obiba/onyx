@@ -110,7 +110,7 @@
                   <category reference="36"/>
                 </questionCategory>
               </questionCategories>
-              <condition class="dataCondition" id="51" name="INNER_DATA_CONDITION" comparisionOperator="gt">
+              <condition class="dataCondition" id="51" name="INNER_DATA_CONDITION" comparisonOperator="gt">
                 <questions id="52">
                   <question reference="47"/>
                 </questions>

@@ -26,11 +26,11 @@ import org.junit.Test;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.core.domain.participant.Gender;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.DataSourceBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
+import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -61,7 +61,7 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
 
     builder.inSection("S1").withSection("S1_2").withPage("P3");
     builder.inPage("P3").withQuestion("Q4").withSharedCategories(YES, NO, DONT_KNOW);
-    builder.inQuestion("Q4").setDataCondition("Q4_GENDER", ComparisionOperator.eq, Gender.MALE);
+    builder.inQuestion("Q4").setDataCondition("Q4_GENDER", ComparisonOperator.eq, Gender.MALE);
 
     builder.withSection("S2").withSection("S2_1").withPage("P4");
     builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));
@@ -70,9 +70,9 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
     builder.inPage("P4").withQuestion("Q6").withCategory("DATE").withOpenAnswerDefinition("DATE", DataType.DATE).withOpenAnswerDefinition("YEAR", DataType.INTEGER).addValidator(new DataValidator(new PatternValidator("\\d{4}"), DataType.TEXT));
     builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("MONTH", DataType.INTEGER).addValidator(new DataValidator(new NumberValidator.RangeValidator(1, 12), DataType.INTEGER));
     builder.inOpenAnswerDefinition("DATE").withOpenAnswerDefinition("DAY", DataType.INTEGER).addValidator(new DataValidator(new NumberValidator.RangeValidator(1, 31), DataType.INTEGER));
-    builder.inQuestion("Q6").setDataCondition("C1", "Q5", OTHER_SPECIFY, "SPECIFY", ComparisionOperator.gt, DataSourceBuilder.createDateSource(Calendar.DAY_OF_MONTH, -1).getDataSource());
+    builder.inQuestion("Q6").setDataCondition("C1", "Q5", OTHER_SPECIFY, "SPECIFY", ComparisonOperator.gt, DataSourceBuilder.createDateSource(Calendar.DAY_OF_MONTH, -1).getDataSource());
 
-    System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
+    // System.out.println(QuestionnaireStreamer.toXML(builder.getQuestionnaire()));
 
     // try {
     // File original = new File("target", "original.xml");

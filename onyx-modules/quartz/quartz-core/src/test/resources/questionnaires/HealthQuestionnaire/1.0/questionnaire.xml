@@ -258,7 +258,7 @@
                       <category reference="24"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="dataCondition" id="117" name="AC4" comparisionOperator="gt">
+                  <condition class="dataCondition" id="117" name="AC4" comparisonOperator="gt">
                     <questions id="118">
                       <question reference="103"/>
                     </questions>

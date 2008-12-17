@@ -10,6 +10,7 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.answer;
 
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.util.data.ArithmeticOperator;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
@@ -62,7 +63,7 @@ public class ArithmeticOperationSource extends DataSource {
 
     Data data = operator.resolve(left, right, dataType);
 
-    log.info("result={}", data);
+    log.debug("result={}", data);
     return data;
   }
 

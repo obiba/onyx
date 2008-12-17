@@ -96,7 +96,7 @@
                           <category id="55" name="DOB_YEAR" escape="false">
                             <openAnswerDefinition id="56" name="DOB_YEAR" dataType="INTEGER" required="true">
                               <validators id="57">
-                                <dataSourceValidator id="58" comparisionOperator="le">
+                                <dataSourceValidator id="58" comparisonOperator="le">
                                   <dataSource class="arithmeticOperationSource" id="59" operator="minus">
                                     <dataSourceLeft class="currentYearSource" id="60"/>
                                     <dataSourceRight class="fixedSource" id="61">
@@ -106,7 +106,7 @@
                                     </dataSourceRight>
                                   </dataSource>
                                 </dataSourceValidator>
-                                <dataSourceValidator id="63" comparisionOperator="ge">
+                                <dataSourceValidator id="63" comparisonOperator="ge">
                                   <dataSource class="arithmeticOperationSource" id="64" operator="minus">
                                     <dataSourceLeft class="currentYearSource" id="65"/>
                                     <dataSourceRight class="fixedSource" id="66">
@@ -555,7 +555,7 @@
                                 <minimum>0</minimum>
                               </validator>
                             </dataValidator>
-                            <dataSourceValidator id="268" comparisionOperator="le">
+                            <dataSourceValidator id="268" comparisonOperator="le">
                               <dataSource class="openAnswerSource" id="269">
                                 <question reference="168"/>
                                 <category reference="171"/>
@@ -572,14 +572,14 @@
                       <category id="272" name="YEAR" escape="false">
                         <openAnswerDefinition id="273" name="YEAR" dataType="INTEGER" required="true">
                           <validators id="274">
-                            <dataSourceValidator id="275" comparisionOperator="ge">
+                            <dataSourceValidator id="275" comparisonOperator="ge">
                               <dataSource class="openAnswerSource" id="276">
                                 <question reference="52"/>
                                 <category reference="55"/>
                                 <openAnswerDefinition reference="56"/>
                               </dataSource>
                             </dataSourceValidator>
-                            <dataSourceValidator id="277" comparisionOperator="le">
+                            <dataSourceValidator id="277" comparisonOperator="le">
                               <dataSource class="currentYearSource" id="278"/>
                             </dataSourceValidator>
                           </validators>

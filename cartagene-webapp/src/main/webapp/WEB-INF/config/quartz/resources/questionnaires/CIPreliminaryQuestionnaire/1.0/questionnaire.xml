@@ -33,7 +33,7 @@
                       <category id="22" name="DNK" escape="false"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="dataCondition" id="23" name="CURRENTLY_PREGNANT_DCONDITION" comparisionOperator="eq">
+                  <condition class="dataCondition" id="23" name="CURRENTLY_PREGNANT_DCONDITION" comparisonOperator="eq">
                     <questions id="24">
                       <question reference="13"/>
                     </questions>
@@ -117,7 +117,7 @@
                       <question reference="53"/>
                     </questions>
                     <conditions id="57">
-                      <dataCondition id="58" name="HW_CI_BP_DCONDITION" comparisionOperator="ge">
+                      <dataCondition id="58" name="HW_CI_BP_DCONDITION" comparisonOperator="ge">
                         <dataSource1 class="openAnswerSource" id="59">
                           <question reference="37"/>
                           <category reference="40"/>
@@ -572,14 +572,14 @@
                       <category id="233" name="DATE" escape="false">
                         <openAnswerDefinition id="234" name="DATE" dataType="DATE" required="true">
                           <validators id="235">
-                            <dataSourceValidator id="236" comparisionOperator="ge">
+                            <dataSourceValidator id="236" comparisonOperator="ge">
                               <dataSource class="dateSource" id="237">
                                 <dateModifiers id="238">
                                   <dateModifier id="239" field="6" amount="-7"/>
                                 </dateModifiers>
                               </dataSource>
                             </dataSourceValidator>
-                            <dataSourceValidator id="240" comparisionOperator="le">
+                            <dataSourceValidator id="240" comparisonOperator="le">
                               <dataSource class="dateSource" id="241"/>
                             </dataSourceValidator>
                           </validators>
@@ -1539,7 +1539,7 @@
                         <question reference="13"/>
                         <category reference="16"/>
                       </answerCondition>
-                      <dataCondition id="603" name="WH_OBS_CI_DCONDITION" comparisionOperator="le">
+                      <dataCondition id="603" name="WH_OBS_CI_DCONDITION" comparisonOperator="le">
                         <dataSource1 class="openAnswerSource" id="604">
                           <question reference="37"/>
                           <category reference="40"/>
@@ -1923,7 +1923,7 @@
                             <question reference="13"/>
                             <category reference="18"/>
                           </answerCondition>
-                          <dataCondition id="752" name="BW_OBS_CI_WEIGHT_DCONDITION" comparisionOperator="le">
+                          <dataCondition id="752" name="BW_OBS_CI_WEIGHT_DCONDITION" comparisonOperator="le">
                             <dataSource1 class="openAnswerSource" id="753">
                               <question reference="37"/>
                               <category reference="40"/>

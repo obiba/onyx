@@ -30,6 +30,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
@@ -174,16 +175,16 @@ public class ConditionTest {
 
   @Test
   public void testDataCondition() {
-    DataCondition condition = new DataCondition("condition", new FixedSource(DataBuilder.buildInteger(1)), ComparisionOperator.lt, new FixedSource(DataBuilder.buildInteger(2)));
+    DataCondition condition = new DataCondition("condition", new FixedSource(DataBuilder.buildInteger(1)), ComparisonOperator.lt, new FixedSource(DataBuilder.buildInteger(2)));
     Assert.assertTrue(condition.isToBeAnswered(activeQuestionnaireAdministrationServiceMock));
   }
 
   @Test
   public void testNullDataCondition() {
-    DataCondition condition = new DataCondition("condition", new FixedSource(null), ComparisionOperator.lt, new FixedSource(null));
+    DataCondition condition = new DataCondition("condition", new FixedSource(null), ComparisonOperator.lt, new FixedSource(null));
     Assert.assertFalse(condition.isToBeAnswered(activeQuestionnaireAdministrationServiceMock));
 
-    condition = new DataCondition("condition", new FixedSource(null), ComparisionOperator.eq, new FixedSource(null));
+    condition = new DataCondition("condition", new FixedSource(null), ComparisonOperator.eq, new FixedSource(null));
     Assert.assertTrue(condition.isToBeAnswered(activeQuestionnaireAdministrationServiceMock));
   }
 

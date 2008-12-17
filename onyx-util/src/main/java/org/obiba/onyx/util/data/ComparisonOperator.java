@@ -7,14 +7,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.core.engine.questionnaire.condition;
-
-import org.obiba.onyx.util.data.Data;
+package org.obiba.onyx.util.data;
 
 /**
- * Comparision result between two Data.
+ * Comparison result between two Data.
  */
-public enum ComparisionOperator {
+public enum ComparisonOperator {
   eq {
     @Override
     public boolean compare(Data left, Data right) {

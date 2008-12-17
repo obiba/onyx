@@ -100,12 +100,12 @@ public class QuestionnaireStreamer {
     xstream.alias("dataValidator", DataValidator.class);
     xstream.useAttributeFor(DataValidator.class, "dataType");
     xstream.alias("dataSourceValidator", DataSourceValidator.class);
-    xstream.useAttributeFor(DataSourceValidator.class, "comparisionOperator");
+    xstream.useAttributeFor(DataSourceValidator.class, "comparisonOperator");
 
     xstream.useAttributeFor(Condition.class, "name");
     xstream.alias("answerCondition", AnswerCondition.class);
     xstream.alias("dataCondition", DataCondition.class);
-    xstream.useAttributeFor(DataCondition.class, "comparisionOperator");
+    xstream.useAttributeFor(DataCondition.class, "comparisonOperator");
     xstream.alias("notCondition", NotCondition.class);
     xstream.alias("multipleCondition", MultipleCondition.class);
     xstream.useAttributeFor(MultipleCondition.class, "conditionOperator");

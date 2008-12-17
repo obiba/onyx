@@ -11,7 +11,6 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
 import java.util.Date;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ArithmeticOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ArithmeticOperationSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.CurrentYearSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
@@ -26,6 +25,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
+import org.obiba.onyx.util.data.ArithmeticOperator;
 import org.obiba.onyx.util.data.Data;
 
 /**

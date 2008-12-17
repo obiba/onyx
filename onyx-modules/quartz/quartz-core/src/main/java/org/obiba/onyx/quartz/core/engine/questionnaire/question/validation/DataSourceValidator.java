@@ -15,8 +15,8 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOperator;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.IDataUnitProvider;
 import org.slf4j.Logger;
@@ -35,13 +35,13 @@ public class DataSourceValidator implements IDataValidator {
 
   private DataSource dataSource;
 
-  private ComparisionOperator comparisionOperator;
+  private ComparisonOperator comparisonOperator;
 
   private IDataUnitProvider dataUnitProvider;
 
-  public DataSourceValidator(ComparisionOperator comparisionOperator, DataSource dataSource) {
+  public DataSourceValidator(ComparisonOperator comparisonOperator, DataSource dataSource) {
     this.dataSource = dataSource;
-    this.comparisionOperator = comparisionOperator;
+    this.comparisonOperator = comparisonOperator;
   }
 
   public void setDataUnitProvider(IDataUnitProvider dataUnitProvider) {
@@ -69,12 +69,12 @@ public class DataSourceValidator implements IDataValidator {
       // TODO deal with units
       // String sourceUnit = dataSource.getUnit();
       // String validatableUnit = getUnit();
-      log.info("comparing: {} {} {}", new Object[] { dataToCompare, comparisionOperator, data });
+      log.debug("comparing: {} {} {}", new Object[] { dataToCompare, comparisonOperator, data });
 
-      if(!comparisionOperator.compare(dataToCompare, data)) {
+      if(!comparisonOperator.compare(dataToCompare, data)) {
         ValidationError error = null;
 
-        switch(comparisionOperator) {
+        switch(comparisonOperator) {
         case eq:
           error = newValidationError("ExpectedToBeEqual", data, dataToCompare);
           break;

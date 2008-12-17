@@ -7,11 +7,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.core.engine.questionnaire.answer;
-
-import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataBuilder;
-import org.obiba.onyx.util.data.DataType;
+package org.obiba.onyx.util.data;
 
 /**
  * Arithmetic operands, resolved with Doubles.

@@ -19,7 +19,6 @@ import org.apache.wicket.validation.validator.PatternValidator;
 import org.junit.Test;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.AnswerCondition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.DataCondition;
@@ -32,6 +31,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
+import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -192,7 +192,7 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     builder.inQuestion("Q6").setNotCondition("NAC1").withAnswerCondition("AC3", "Q2", "2");
     builder.inQuestion("Q7").setMultipleCondition("MC1", ConditionOperator.AND).withAnswerCondition("AC4", "Q2", "2");
     builder.inCondition("MC1").withNoAnswerCondition("NAC2").withMultipleCondition("MC2", ConditionOperator.OR).withAnswerCondition("AC5", "Q2", DONT_KNOW);
-    builder.inCondition("MC2").withDataCondition("AC6", "Q5", OTHER_SPECIFY, "SPECIFY", ComparisionOperator.ne, DataBuilder.buildText("toto"));
+    builder.inCondition("MC2").withDataCondition("AC6", "Q5", OTHER_SPECIFY, "SPECIFY", ComparisonOperator.ne, DataBuilder.buildText("toto"));
 
     Condition condition_1 = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCondition("AC6");
     Condition condition_2 = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCondition("NAC1");
