@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -84,6 +85,8 @@ public class EditParticipantPanel extends Panel {
   private static String GENDER = "gender";
 
   private static String BIRTH_DATE = "birthDate";
+
+  private static final int TEXTFIELD_SIZE = 40;
 
   @SpringBean
   private ParticipantMetadata participantMetadata;
@@ -396,6 +399,10 @@ public class EditParticipantPanel extends Panel {
             if(!attribute.isMandatoryAtReception()) ((DropDownChoice) field.getField()).setNullValid(true);
           } else {
             field = new DataField("field", new PropertyModel(attributeValueModel, "data"), attribute.getType());
+
+            if(field.getField() instanceof TextField) {
+              field.getField().add(new AttributeModifier("size", true, new Model(TEXTFIELD_SIZE)));
+            }
           }
 
           if(attribute.isMandatoryAtReception()) field.setRequired(true);
