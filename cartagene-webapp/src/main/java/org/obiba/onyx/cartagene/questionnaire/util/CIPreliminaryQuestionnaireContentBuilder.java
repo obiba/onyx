@@ -13,10 +13,10 @@ import java.util.Calendar;
 
 import org.apache.wicket.validation.validator.NumberValidator;
 import org.obiba.onyx.core.domain.participant.Gender;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.DataSourceBuilder;
+import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
@@ -63,7 +63,7 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inQuestion("CURRENTLY_PREGNANT").withSharedCategory(Y, "1");
     builder.inQuestion("CURRENTLY_PREGNANT").withSharedCategory(PNA, "8");
     builder.inQuestion("CURRENTLY_PREGNANT").withSharedCategory(DNK, "9");
-    builder.inQuestion("CURRENTLY_PREGNANT").setDataCondition("CURRENTLY_PREGNANT_DCONDITION", ComparisionOperator.eq, Gender.FEMALE);
+    builder.inQuestion("CURRENTLY_PREGNANT").setDataCondition("CURRENTLY_PREGNANT_DCONDITION", ComparisonOperator.eq, Gender.FEMALE);
 
     builder.inPage("1").withQuestion("BIOIMPEDANCE_CI_PREGNANT");
     builder.inQuestion("BIOIMPEDANCE_CI_PREGNANT").setMultipleCondition("BIOIMPEDANCE_CI_PREGNANT_MCONDITION", ConditionOperator.OR).withAnswerCondition("BIOIMPEDANCE_CI_PREGNANT_ACONDITION_0", "CURRENTLY_PREGNANT", Y);
@@ -72,7 +72,7 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inQuestion("CURRENT_PREGNANCY_WEEKS").withSharedCategory(PNA, "8");
     builder.inQuestion("CURRENT_PREGNANCY_WEEKS").withSharedCategory(DNK, "9");
     builder.inQuestion("CURRENT_PREGNANCY_WEEKS").setAnswerCondition("CURRENT_PREGNANCY_WEEKS_ACONDITION", "CURRENTLY_PREGNANT", Y);
-    builder.inPage("1").withQuestion("HW_CI_BP").setMultipleCondition("HW_CI_BP_MCONDITION", ConditionOperator.OR).withDataCondition("HW_CI_BP_DCONDITION", "CURRENT_PREGNANCY_WEEKS", OPEN_N, OPEN_N, ComparisionOperator.ge, DataBuilder.buildInteger(12l));
+    builder.inPage("1").withQuestion("HW_CI_BP").setMultipleCondition("HW_CI_BP_MCONDITION", ConditionOperator.OR).withDataCondition("HW_CI_BP_DCONDITION", "CURRENT_PREGNANCY_WEEKS", OPEN_N, OPEN_N, ComparisonOperator.ge, DataBuilder.buildInteger(12l));
     builder.inCondition("HW_CI_BP_MCONDITION").withAnswerCondition("HW_CI_BP_ACONDITION_0", "CURRENT_PREGNANCY_WEEKS", DNK);
     builder.inCondition("HW_CI_BP_MCONDITION").withAnswerCondition("HW_CI_BP_ACONDITION_1", "CURRENT_PREGNANCY_WEEKS", PNA);
 
@@ -124,7 +124,7 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inQuestion("BLOOD_DRAWN_LAST_7_DAYS").withSharedCategory(Y, "1");
     builder.inQuestion("BLOOD_DRAWN_LAST_7_DAYS").setMultipleCondition("BLOOD_DRAWN_LAST_7_DAYS_MCONDITION", ConditionOperator.OR).withAnswerCondition("BLOOD_DRAWN_LAST_7_DAYS_ACONDITION_0", "LEFT_ARM_SURGERY_SHUNT", N);
     builder.inCondition("BLOOD_DRAWN_LAST_7_DAYS_MCONDITION").withAnswerCondition("BLOOD_DRAWN_LAST_7_DAYS_ACONDITION_1", "RIGHT_ARM_SURGERY_SHUNT", N);
-    builder.inPage("8").withQuestion("BLOOD_DRAWN_WHEN", "16").withCategory("DATE").withOpenAnswerDefinition("DATE", DataType.DATE).addValidator(ComparisionOperator.ge, DataSourceBuilder.createDateSource(Calendar.DAY_OF_YEAR, -7).getDataSource()).addValidator(ComparisionOperator.le, DataSourceBuilder.createDateSource().getDataSource());
+    builder.inPage("8").withQuestion("BLOOD_DRAWN_WHEN", "16").withCategory("DATE").withOpenAnswerDefinition("DATE", DataType.DATE).addValidator(ComparisonOperator.ge, DataSourceBuilder.createDateSource(Calendar.DAY_OF_YEAR, -7).getDataSource()).addValidator(ComparisonOperator.le, DataSourceBuilder.createDateSource().getDataSource());
     builder.inQuestion("BLOOD_DRAWN_WHEN").withCategory("OPEN_N7").withOpenAnswerDefinition("OPEN_N7", DataType.INTEGER).addValidator(new NumberValidator.MaximumValidator(7));
     builder.inQuestion("BLOOD_DRAWN_WHEN").setAnswerCondition("BLOOD_DRAWN_WHEN_ACONDITION", "BLOOD_DRAWN_LAST_7_DAYS", Y);
 
@@ -267,7 +267,7 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     // section S7_WAIST_HIPS
     builder.withSection("S7_WAIST_HIPS").withSection("S7_EC_OBS").withPage("33").withQuestion("WH_OBS_CI", "43").withSharedCategories(N, Y);
     builder.inQuestion("WH_OBS_CI").setMultipleCondition("WH_OBS_CI_MCONDITION", ConditionOperator.OR).withAnswerCondition("WH_OBS_CI_ACONDITION", "CURRENTLY_PREGNANT", N);
-    builder.inCondition("WH_OBS_CI_MCONDITION").withDataCondition("WH_OBS_CI_DCONDITION", "CURRENT_PREGNANCY_WEEKS", OPEN_N, OPEN_N, ComparisionOperator.le, DataBuilder.buildInteger(12l));
+    builder.inCondition("WH_OBS_CI_MCONDITION").withDataCondition("WH_OBS_CI_DCONDITION", "CURRENT_PREGNANCY_WEEKS", OPEN_N, OPEN_N, ComparisonOperator.le, DataBuilder.buildInteger(12l));
 
     // section S8_SPIROMETRY
     builder.withSection("S8_SPIROMETRY").withSection("S8_EC_OBS").withPage("34").withQuestion("SP_OBS_CI", "45").withSharedCategories(N, Y);
@@ -310,7 +310,7 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inSection("S9_EC_OBS").withPage("41").withQuestion("BW_OBS_CI_WEIGHT", "57").withSharedCategories(N, Y);
     builder.inQuestion("BW_OBS_CI_WEIGHT").setMultipleCondition("BW_OBS_CI_WEIGHT_MCONDITION_0", ConditionOperator.OR).withAnswerCondition("BW_OBS_CI_WEIGHT_ACONDITION_0", "BW_OBS_CI_BIOIMPEDANCE", Y);
     builder.inCondition("BW_OBS_CI_WEIGHT_MCONDITION_0").withMultipleCondition("BW_OBS_CI_WEIGHT_MCONDITION_1", ConditionOperator.AND).withAnswerCondition("BW_OBS_CI_WEIGHT_ACONDITION_1", "CURRENTLY_PREGNANT", Y);
-    builder.inCondition("BW_OBS_CI_WEIGHT_MCONDITION_1").withDataCondition("BW_OBS_CI_WEIGHT_DCONDITION", "CURRENT_PREGNANCY_WEEKS", OPEN_N, OPEN_N, ComparisionOperator.le, DataBuilder.buildInteger(12l));
+    builder.inCondition("BW_OBS_CI_WEIGHT_MCONDITION_1").withDataCondition("BW_OBS_CI_WEIGHT_DCONDITION", "CURRENT_PREGNANCY_WEEKS", OPEN_N, OPEN_N, ComparisonOperator.le, DataBuilder.buildInteger(12l));
 
     builder.inSection("S9_BIOIMPEDANCE_WEIGHT").withSection("S9_EC_ASKED").withPage("42").withQuestion("BW_PACEMAKER_CI", "60").withSharedCategories(N, Y, DNK);
     builder.inQuestion("BW_PACEMAKER_CI").setAnswerCondition("BW_PACEMAKER_CI_ACONDITION", "BW_OBS_CI_BIOIMPEDANCE");

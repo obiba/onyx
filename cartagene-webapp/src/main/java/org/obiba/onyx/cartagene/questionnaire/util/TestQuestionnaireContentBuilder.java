@@ -13,11 +13,11 @@ import java.util.List;
 
 import org.apache.wicket.validation.validator.NumberValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ComparisionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.DropDownQuestionPanelFactory;
+import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
@@ -60,7 +60,7 @@ public class TestQuestionnaireContentBuilder {
     builder.inQuestion("INNER_CASCADING_CONDITION_QUESTION").setAnswerCondition("INNER_CASCADING_CONDITION", "INNER_CONDITION_QUESTION", NO);
 
     builder.inPage("P_MULTIPLE_OPEN").withQuestion("INNER_DATA_CONDITION_QUESTION").withSharedCategories(YES, NO);
-    builder.inQuestion("INNER_DATA_CONDITION_QUESTION").setDataCondition("INNER_DATA_CONDITION", "MULTIPLE_OPEN", "DURATION", "DURATION_OPEN_HOURS", ComparisionOperator.gt, DataBuilder.buildInteger(5));
+    builder.inQuestion("INNER_DATA_CONDITION_QUESTION").setDataCondition("INNER_DATA_CONDITION", "MULTIPLE_OPEN", "DURATION", "DURATION_OPEN_HOURS", ComparisonOperator.gt, DataBuilder.buildInteger(5));
 
     builder.withSection("S_MULTIPLE").withPage("P_MULTIPLE").withQuestion("MULTIPLE_1", true).setAnswerCount(1, 2).withCategories("1", "2", "3");
 
