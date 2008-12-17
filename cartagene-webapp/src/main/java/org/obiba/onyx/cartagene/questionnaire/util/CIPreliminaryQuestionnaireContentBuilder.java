@@ -142,17 +142,17 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inSection("S3_EC_IC_ASKED").withPage("18").withQuestion("BD_SAMPLES_CI_BP").setMultipleCondition("BD_SAMPLES_CI_BP_MCONDITION", ConditionOperator.OR).withAnswerCondition("BD_SAMPLES_CI_BP_ACONDITION_0", "ISOPROPYL_ALCOHOL_ALLERGY", Y);
     builder.inCondition("BD_SAMPLES_CI_BP_MCONDITION").withAnswerCondition("BD_SAMPLES_CI_BP_ACONDITION_1", "ISOPROPYL_ALCOHOL_ALLERGY", DNK);
 
-    builder.inSection("S3_EC_IC_ASKED").withPage("19").withQuestion("LEFT_LOWER_EXTREMITY_FRACTURE_5_YEARS", "23").withSharedCategories(N, Y, NOT_APP, DNK);
+    builder.inSection("S3_EC_IC_ASKED").withPage("19").withQuestion("LEFT_LOWER_EXTREMITY_FRACTURE_5_YEARS", "23").withSharedCategories(N, Y, DNK);
     builder.inQuestion("LEFT_LOWER_EXTREMITY_FRACTURE_5_YEARS").setAnswerCondition("LEFT_LOWER_EXTREMITY_FRACTURE_5_YEARS_ACONDITION", "ISOPROPYL_ALCOHOL_ALLERGY", N);
-    builder.inPage("19").withQuestion("RIGHT_LOWER_EXTREMITY_FRACTURE_5_YEARS", "24").withSharedCategories(N, Y, NOT_APP, DNK);
+    builder.inPage("19").withQuestion("RIGHT_LOWER_EXTREMITY_FRACTURE_5_YEARS", "24").withSharedCategories(N, Y, DNK);
     builder.inQuestion("RIGHT_LOWER_EXTREMITY_FRACTURE_5_YEARS").setAnswerCondition("RIGHT_LOWER_EXTREMITY_FRACTURE_5_YEARS_ACONDITION", "ISOPROPYL_ALCOHOL_ALLERGY", N);
-    builder.inPage("19").withQuestion("LEFT_LOWER_EXTREMITY_IMPLANT_5_YEARS", "25").withSharedCategories(N, Y, NOT_APP, DNK);
+    builder.inPage("19").withQuestion("LEFT_LOWER_EXTREMITY_IMPLANT_5_YEARS", "25").withSharedCategories(N, Y, DNK);
     builder.inQuestion("LEFT_LOWER_EXTREMITY_IMPLANT_5_YEARS").setAnswerCondition("LEFT_LOWER_EXTREMITY_IMPLANT_5_YEARS_ACONDITION", "ISOPROPYL_ALCOHOL_ALLERGY", N);
-    builder.inPage("19").withQuestion("RIGHT_LOWER_EXTREMITY_IMPLANT_5_YEARS", "26").withSharedCategories(N, Y, NOT_APP, DNK);
+    builder.inPage("19").withQuestion("RIGHT_LOWER_EXTREMITY_IMPLANT_5_YEARS", "26").withSharedCategories(N, Y, DNK);
     builder.inQuestion("RIGHT_LOWER_EXTREMITY_IMPLANT_5_YEARS").setAnswerCondition("RIGHT_LOWER_EXTREMITY_IMPLANT_5_YEARS_ACONDITION", "ISOPROPYL_ALCOHOL_ALLERGY", N);
-    builder.inPage("19").withQuestion("LEFT_LOWER_EXTREMITY_INJURY_1_MONTH", "27").withSharedCategories(N, Y, NOT_APP, DNK);
+    builder.inPage("19").withQuestion("LEFT_LOWER_EXTREMITY_INJURY_1_MONTH", "27").withSharedCategories(N, Y, DNK);
     builder.inQuestion("LEFT_LOWER_EXTREMITY_INJURY_1_MONTH").setAnswerCondition("LEFT_LOWER_EXTREMITY_INJURY_1_MONTH_ACONDITION", "ISOPROPYL_ALCOHOL_ALLERGY", N);
-    builder.inPage("19").withQuestion("RIGHT_LOWER_EXTREMITY_INJURY_1_MONTH", "28").withSharedCategories(N, Y, NOT_APP, DNK);
+    builder.inPage("19").withQuestion("RIGHT_LOWER_EXTREMITY_INJURY_1_MONTH", "28").withSharedCategories(N, Y, DNK);
     builder.inQuestion("RIGHT_LOWER_EXTREMITY_INJURY_1_MONTH").setAnswerCondition("RIGHT_LOWER_EXTREMITY_INJURY_1_MONTH_ACONDITION", "ISOPROPYL_ALCOHOL_ALLERGY", N);
 
     builder.inSection("S3_EC_IC_ASKED").withPage("20").withQuestion("BD_HANDEDNESS", "29").withCategory("LEFT_HANDED");
