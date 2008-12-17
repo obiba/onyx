@@ -12,13 +12,17 @@
 
 		function toggleDisplay(toggler, id) {
 			var elem = document.getElementById(id);
-			if (elem.style.display == 'none') {
-				elem.style.display = 'inline';
+			if (elem.style.display == "none") {
+				elem.style.display = "inline";
 				toggler.src="images/icons/16X16/bullet_triangle_blue.gif";
+				$("#" + id).fadeTo("slow", 1);
 			}
 			else {
-				elem.style.display = 'none';
-				toggler.src="images/icons/16X16/bullet_triangle_blue2.gif";
+				$("#" + id).fadeTo("slow", 0, function () {
+  						this.style.display = "none";
+						toggler.src="images/icons/16X16/bullet_triangle_blue2.gif";
+					}
+				);
 			}
 		}
 
@@ -33,7 +37,7 @@
 			<input type="button" wicket:id="nextLink"/>
 			<input type="submit" wicket:id="finish" style="display:none;"/>
 			<img src="images/icons/16X16/bullet_triangle_blue2.gif" class="toggler" onclick="toggleDisplay(this, 'togglable');"/>
-			<span style="display: none;" id="togglable"> 
+			<span style="display: none; opacity: 0;" id="togglable"> 
 				<input type="button" wicket:id="interrupt"/>
 				<input type="button" wicket:id="cancelLink"/>
 			</span>
