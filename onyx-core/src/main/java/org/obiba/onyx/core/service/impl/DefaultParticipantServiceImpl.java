@@ -14,15 +14,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.core.validation.exception.ValidationRuntimeException;
@@ -38,8 +33,6 @@ import org.obiba.onyx.core.etl.participant.IParticipantReader;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
-import org.obiba.onyx.engine.Stage;
-import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,9 +51,6 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
   @SuppressWarnings("unused")
   private static final Logger appointmentListUpdatelog = LoggerFactory.getLogger("appointmentListUpdate");
-
-  // Map of Participant.Interview.id to Map of Stage.id to StageExecutionContext
-  private Map<Serializable, Map<Serializable, StageExecutionContext>> interviewStageContexts = new HashMap<Serializable, Map<Serializable, StageExecutionContext>>();
 
   private IParticipantReader participantReader;
 
@@ -289,24 +279,4 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
    */
   protected abstract List<Participant> getNotReceivedParticipants();
 
-  public void storeStageExecutionContext(Participant participant, StageExecutionContext exec) {
-    getInterviewStageExecutionContexts(participant).put(exec.getStage().getName(), exec);
-  }
-
-  public StageExecutionContext retrieveStageExecutionContext(Participant participant, Stage stage) {
-    return getInterviewStageExecutionContexts(participant).get(stage.getName());
-  }
-
-  private Map<Serializable, StageExecutionContext> getInterviewStageExecutionContexts(Participant participant) {
-    Map<Serializable, StageExecutionContext> contexts = interviewStageContexts.get(participant.getInterview().getId());
-    if(contexts == null) {
-      contexts = new HashMap<Serializable, StageExecutionContext>();
-      interviewStageContexts.put(participant.getInterview().getId(), contexts);
-    }
-    return contexts;
-  }
-
-  public Collection<StageExecutionContext> getStageExecutionContexts(Participant participant) {
-    return Collections.unmodifiableCollection(getInterviewStageExecutionContexts(participant).values());
-  }
 }

@@ -10,7 +10,6 @@
 package org.obiba.onyx.core.service;
 
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -20,8 +19,6 @@ import org.obiba.core.validation.exception.ValidationRuntimeException;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
-import org.obiba.onyx.engine.Stage;
-import org.obiba.onyx.engine.state.StageExecutionContext;
 
 public interface ParticipantService {
 
@@ -116,27 +113,5 @@ public interface ParticipantService {
    * @param participantsList
    */
   public void updateParticipants(InputStream participantsListStream) throws ValidationRuntimeException;
-
-  /**
-   * Store the participant given stage execution context.
-   * @param participant
-   * @param exec
-   */
-  public void storeStageExecutionContext(Participant participant, StageExecutionContext exec);
-
-  /**
-   * Get the participant stage execution context.
-   * @param participant
-   * @param stage
-   * @return
-   */
-  public StageExecutionContext retrieveStageExecutionContext(Participant participant, Stage stage);
-
-  /**
-   * Get the stage execution contexts of the participant.
-   * @param participant
-   * @return
-   */
-  public Collection<StageExecutionContext> getStageExecutionContexts(Participant participant);
 
 }
