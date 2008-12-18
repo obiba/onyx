@@ -53,6 +53,10 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
 
   private final Logger log = LoggerFactory.getLogger(OnyxApplication.class);
 
+  private final String DEFAULT_VERSION_QUALIFIER = "SNAPSHOT";
+
+  private final String UNKNOWN_VERSION_QUALIFIER = "SNAPSHOT-UNKNOWN";
+
   /**
    * Singleton instance of spring application context locator
    */
@@ -85,7 +89,14 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
   }
 
   public void setVersion(Version version) {
-    this.version = version;
+    String qualifier = version.getQualifier();
+
+    String buildNumber = DEFAULT_VERSION_QUALIFIER;
+    if(qualifier != null && !qualifier.equals(UNKNOWN_VERSION_QUALIFIER)) {
+      buildNumber = "b" + qualifier;
+    }
+
+    this.version = new Version(version.getMajor(), version.getMinor(), version.getMicro(), buildNumber);
   }
 
   @Override

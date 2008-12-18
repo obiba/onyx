@@ -711,6 +711,16 @@
     <jetty.version>6.1.4</jetty.version>
     <poi.version>3.2-FINAL</poi.version>
     <itext.version>2.1.3</itext.version>
+    
+    <!-- 
+      Default build number. We need to provide this otherwise the Spring propertyConfigurer
+      will complain that it cannot resolve the ${buildNumber} property.
+      
+      NOTE: The actual build number is known, and provided, only when the ci-build profile
+      is activated. 
+    -->
+    <buildNumber>UNKNOWN</buildNumber>
+    
   </properties>
 
   <profiles>
