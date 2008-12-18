@@ -23,6 +23,8 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Integrity check to verify that an instrument run value is equal to the value of another parameter.
@@ -37,6 +39,8 @@ import org.obiba.onyx.util.data.Data;
 public class EqualsParameterCheck extends AbstractIntegrityCheck implements IntegrityCheck {
 
   private static final long serialVersionUID = 1L;
+
+  private static final Logger log = LoggerFactory.getLogger(EqualsParameterCheck.class);
 
   @Transient
   private EqualsValueCheck equalsValueCheck;
@@ -84,13 +88,18 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
     Data otherData = null;
 
     if(parameter instanceof InstrumentInputParameter) {
+      log.debug("Retrieving input parameter value : {}", parameter.getName());
       otherRunValue = activeRunService.getInputInstrumentRunValue(parameter.getName());
     } else if(parameter instanceof InstrumentOutputParameter) {
+      log.debug("Retrieving output parameter value : {}", parameter.getName());
       otherRunValue = activeRunService.getOutputInstrumentRunValue(parameter.getName());
     }
 
     if(otherRunValue != null) {
       otherData = otherRunValue.getData();
+      log.debug("Value is : {}", otherRunValue.getData());
+    } else {
+      log.debug("Value is : null");
     }
 
     // Update the equalsValueCheck accordingly.
