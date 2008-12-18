@@ -14,8 +14,8 @@ import java.util.Arrays;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
@@ -116,8 +116,6 @@ public class ObservedContraIndicationPanel extends Panel {
     });
     add(contraIndicationDropDownChoice);
 
-    add(new Label("otherLabel", new StringResourceModel("IfOtherPleaseSpecify", this, null)));
-
     otherContraIndication = new TextArea("otherCi", new PropertyModel(getModel(), "otherContraindication")) {
 
       @Override
@@ -139,6 +137,8 @@ public class ObservedContraIndicationPanel extends Panel {
     otherContraIndication.setLabel(new StringResourceModel("OtherContraIndication", this, null));
     add(otherContraIndication);
 
+    FormComponentLabel otherContraIndicationLabel = new FormComponentLabel("otherLabel", otherContraIndication);
+    add(otherContraIndicationLabel);
   }
 
   private IContraindicatable getContraindicatable() {
