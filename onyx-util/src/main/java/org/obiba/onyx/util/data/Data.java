@@ -140,7 +140,7 @@ public class Data implements Serializable, Comparable<Data> {
 
     if(data != null) {
       if(value != null && data.getValue() != null) {
-        if(data.getType().isNumberType() & type.isNumberType()) {
+        if(data.getType().isNumberType() && type.isNumberType()) {
           // compare as numbers
           Number numberValue = (Number) value;
           Number dataValue = data.getValue();

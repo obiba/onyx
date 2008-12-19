@@ -138,16 +138,9 @@ public class DataBuilder {
     FileInputStream inputStream = null;
     try {
       inputStream = new FileInputStream(file);
-    } catch(FileNotFoundException fileNotFound) {
-      log.error("The file specified was not found", fileNotFound);
-
-      try {
-        if(inputStream != null) inputStream.close();
-      } catch(IOException e) {
-        log.warn("Could not close inputStream", e);
-      }
-
-      throw new RuntimeException(fileNotFound);
+    } catch(FileNotFoundException e) {
+      log.error("The file specified was not found", e);
+      throw new RuntimeException(e);
     }
     return buildBinary(inputStream);
 
