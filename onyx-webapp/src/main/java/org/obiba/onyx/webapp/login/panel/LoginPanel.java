@@ -9,9 +9,14 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.login.panel;
 
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.authentication.panel.SignInPanel;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.wicket.util.JavascriptEventAlert;
 
@@ -19,11 +24,14 @@ public class LoginPanel extends SignInPanel {
 
   private static final long serialVersionUID = 1L;
 
+  @SpringBean
+  private EntityQueryService queryService;
+
   public LoginPanel(String id) {
     super(id, false);
     remove("feedback");
 
-    Link link = new Link("forgotPassword"){
+    Link link = new Link("forgotPassword") {
 
       private static final long serialVersionUID = 1L;
 
@@ -32,11 +40,11 @@ public class LoginPanel extends SignInPanel {
         // TODO Auto-generated method stub
         return;
       }
-      
+
     };
     link.add(new JavascriptEventAlert("onclick", new StringResourceModel("ForgotPasswordMessage", LoginPanel.this, null)));
     add(link);
-    
+
   }
 
   /**
@@ -50,7 +58,19 @@ public class LoginPanel extends SignInPanel {
   }
 
   public void onSignInSucceeded() {
+    setSessionTimeout();
     setResponsePage(getApplication().getHomePage());
   }
 
+  private void setSessionTimeout() {
+    ApplicationConfiguration appConfig = queryService.matchOne(new ApplicationConfiguration());
+
+    if(appConfig != null) {
+      Integer sessionTimeoutInMinutes = appConfig.getSessionTimeout();
+
+      if(sessionTimeoutInMinutes != null) {
+        ((WebRequest) RequestCycle.get().getRequest()).getHttpServletRequest().getSession().setMaxInactiveInterval(sessionTimeoutInMinutes * 60);
+      }
+    }
+  }
 }

@@ -26,6 +26,11 @@ public class ApplicationConfiguration extends AbstractEntity {
 
   private String participantDirectoryPath;
 
+  /**
+   * Session timeout (in minutes).
+   */
+  private Integer sessionTimeout;
+
   public String getStudyName() {
     return studyName;
   }
@@ -58,4 +63,21 @@ public class ApplicationConfiguration extends AbstractEntity {
     this.participantDirectoryPath = participantDirectoryPath;
   }
 
+  /**
+   * Sets the session timeout.
+   * 
+   * @param sessionTimeout session timeout (in minutes)
+   */
+  public void setSessionTimeout(Integer sessionTimeout) {
+    this.sessionTimeout = sessionTimeout;
+  }
+
+  /**
+   * Returns the session timeout
+   * 
+   * @return session timeout (in minutes)
+   */
+  public Integer getSessionTimeout() {
+    return sessionTimeout;
+  }
 }

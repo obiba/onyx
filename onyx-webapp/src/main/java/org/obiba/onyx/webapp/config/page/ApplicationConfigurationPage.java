@@ -31,6 +31,7 @@ import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.validation.IErrorMessageSource;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.apache.wicket.validation.validator.NumberValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.user.Role;
@@ -107,6 +108,10 @@ public class ApplicationConfigurationPage extends BasePage {
 
       TextField administratorEmail = new TextField("email", new PropertyModel(model, "user.email"));
       add(administratorEmail.add(EmailAddressValidator.getInstance()));
+
+      TextField sessionTimeout = new TextField("sessionTimeout", new PropertyModel(model, "config.sessionTimeout"));
+      sessionTimeout.add(new RequiredFormFieldBehavior());
+      add(sessionTimeout.add(NumberValidator.range(0, 60 * 24)));
 
       studyLogo = new FileUploadField("studyLogo");
 
