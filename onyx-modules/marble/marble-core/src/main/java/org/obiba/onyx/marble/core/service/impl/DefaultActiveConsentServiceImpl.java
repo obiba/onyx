@@ -12,7 +12,6 @@ package org.obiba.onyx.marble.core.service.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.wicket.util.string.Strings;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
@@ -88,6 +87,7 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
       for(String fieldName : fieldNameList) {
         if(isMandatoryField(form, fieldName)) {
           if(Strings.isEmpty(form.getField(fieldName))) {
+            log.debug("The following mandatory field was not filled in : {}", fieldName);
             return false;
           }
         }
@@ -96,6 +96,9 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
       // Make sure all signature fields have been signed.
       ArrayList list = form.getBlankSignatureNames();
       if(!list.isEmpty()) {
+        for(Object blankSignatureName : list) {
+          log.debug("The following signature field has not been signed : {}", blankSignatureName);
+        }
         return false;
       }
 
