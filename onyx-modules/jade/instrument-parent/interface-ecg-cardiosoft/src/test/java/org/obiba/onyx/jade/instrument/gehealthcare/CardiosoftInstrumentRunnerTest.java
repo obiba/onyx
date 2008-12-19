@@ -9,7 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.gehealthcare;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -55,6 +59,7 @@ public class CardiosoftInstrumentRunnerTest {
     databasePath.mkdir();
     cardiosoftInstrumentRunner.setDatabasePath(databasePath.getPath() + "\\");
     cardiosoftInstrumentRunner.setBtrRecordFileName("btr-record.dat");
+    cardiosoftInstrumentRunner.setBtrDatabaseFileName("PATIENT.BTR");
 
     // Cardiosoft output path.
     File exportPath = new File(cardioSoftSimulatedPath, "EXPORT");
