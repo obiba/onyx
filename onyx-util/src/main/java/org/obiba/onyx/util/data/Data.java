@@ -165,7 +165,7 @@ public class Data implements Serializable, Comparable<Data> {
             break;
           }
         }
-      } else if(value == null & data.getValue() == null) {
+      } else if(value == null && data.getValue() == null) {
         result = 0;
       }
     }
