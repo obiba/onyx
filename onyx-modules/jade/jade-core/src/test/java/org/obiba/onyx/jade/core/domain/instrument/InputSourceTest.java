@@ -12,6 +12,7 @@ package org.obiba.onyx.jade.core.domain.instrument;
 import java.util.Date;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
@@ -24,17 +25,38 @@ import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpSession;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.context.request.SessionScope;
 
 public class InputSourceTest extends BaseDefaultSpringContextTestCase {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(InputSourceTest.class);
 
-  @Autowired(required = true)
+  // @Autowired(required = true)
   InputDataSourceVisitor inputDataSourceVisitor;
 
   @Autowired(required = true)
   EntityQueryService queryService;
+
+  @Before
+  public void setUp() {
+    ConfigurableApplicationContext applicationContext = new ClassPathXmlApplicationContext("test-spring-context.xml");
+    applicationContext.getBeanFactory().registerScope("session", new SessionScope());
+
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    MockHttpSession session = new MockHttpSession();
+    request.setSession(session);
+    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+    inputDataSourceVisitor = (InputDataSourceVisitor) applicationContext.getBean("inputDataSourceVisitor");
+
+  }
 
   @Test
   @Dataset

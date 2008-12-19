@@ -20,6 +20,133 @@
   </contraindications>
 
   <instrumentParameters>
+    <input id="id">
+      <name>ID</name>
+      <description>Participant_Barcode</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <inputSource class="participantPropertySource">
+        <property>barcode</property>
+      </inputSource>
+
+    </input>
+
+    <input id="last_name_in">
+      <name>LastName</name>
+      <description>Participant_Last_Name</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <inputSource class="participantPropertySource">
+        <property>lastName</property>
+      </inputSource>
+    </input>
+
+    <input id="first_name_in">
+      <name>FirstName</name>
+      <description>Participant_First_Name</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <inputSource class="participantPropertySource">
+        <property>firstName</property>
+      </inputSource>
+    </input>
+    
+    <input id="birth_year_in">
+      <name>BirthYear</name>
+      <description>Participant_Year_of_Birth</description>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <inputSource class="participantPropertySource">
+        <property>birthYear</property>
+      </inputSource>
+    </input>
+    
+    <input id="birth_month_in">
+      <name>BirthMonth</name>
+      <description>Participant_Month_of_Birth</description>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <inputSource class="participantPropertySource">
+        <property>birthMonth</property>
+      </inputSource>
+    </input>
+    
+    <input id="birth_day_in">
+      <name>BirthDay</name>
+      <description>Participant_Day_of_Birth</description>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <inputSource class="participantPropertySource">
+        <property>birthDay</property>
+      </inputSource>
+    </input>
+
+    <input id="gender_in">
+      <name>Gender</name>
+      <description>Participant_Gender</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <inputSource class="participantPropertySource">
+        <property>gender</property>
+      </inputSource>
+    </input>
+  
+    <input id="ethnic_group">
+      <name>EthnicGroup</name>
+      <description>Participant_Ethnic_Group</description>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <inputSource class="fixedSource">
+        <value>1</value>
+      </inputSource>
+    </input>
+    
+    <input id="pacemaker">
+      <name>Pacemaker</name>
+      <description>Participant_Pacemaker</description>
+      <dataType>BOOLEAN</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <inputSource class="fixedSource">
+        <value>0</value>
+      </inputSource>
+    </input>
+    
+    <input id="height">
+      <name>Height</name>
+      <description>Participant_Height</description>
+      <measurementUnit>cm</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <inputSource class="outputParameterSource">
+        <instrumentType>StandingHeight</instrumentType>
+        <parameterName>Height</parameterName>
+      </inputSource>
+    </input>
+  
+    <input id="weight">
+      <name>Weight</name>
+      <description>Participant_Weight</description>
+      <measurementUnit>hg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <inputSource class="multipleOutputParameterSource">
+        <outputParameterSourceList>
+          <outputParameterSource>
+            <instrumentType>Impendence310</instrumentType>
+            <parameterName>Weight</parameterName>
+          </outputParameterSource>
+          <outputParameterSource>
+            <instrumentType>Impendence418</instrumentType>
+            <parameterName>Weight</parameterName>
+          </outputParameterSource>
+          <outputParameterSource>
+            <instrumentType>Weight</instrumentType>
+            <parameterName>Weight</parameterName>
+          </outputParameterSource>
+        </outputParameterSourceList>
+      </inputSource>
+    </input>
+    
     <output id="time">
       <name>time</name>
       <description>Time_of_measurement</description>

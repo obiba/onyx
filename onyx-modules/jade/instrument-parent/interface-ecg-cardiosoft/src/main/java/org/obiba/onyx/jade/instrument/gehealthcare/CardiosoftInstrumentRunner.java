@@ -14,10 +14,15 @@ import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.swing.JOptionPane;
 
 import org.obiba.onyx.jade.client.JnlpClient;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
@@ -52,6 +57,12 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
   private String exportPath;
 
   private String settingsFileName;
+
+  private String btrRecordFileName;
+
+  private String btrDatabaseFileName;
+
+  private String executableForParticipantInfo;
 
   private String xmlFileName;
 
@@ -111,6 +122,30 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
 
   public void setSettingsFileName(String settingsFileName) {
     this.settingsFileName = settingsFileName;
+  }
+
+  public String getBtrRecordFileName() {
+    return btrRecordFileName;
+  }
+
+  public void setBtrRecordFileName(String btrRecordFileName) {
+    this.btrRecordFileName = btrRecordFileName;
+  }
+
+  public String getBtrDatabaseFileName() {
+    return btrDatabaseFileName;
+  }
+
+  public void setBtrDatabaseFileName(String btrDatabaseFileName) {
+    this.btrDatabaseFileName = btrDatabaseFileName;
+  }
+
+  public String getExecutableForParticipantInfo() {
+    return executableForParticipantInfo;
+  }
+
+  public void setExecutableForParticipantInfo(String executableForParticipantInfo) {
+    this.executableForParticipantInfo = executableForParticipantInfo;
   }
 
   public String getXmlFileName() {
@@ -219,11 +254,52 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
     }
   }
 
+  private void initParticipantData() {
+    File participantDataFile = new File(getDatabasePath() + getBtrRecordFileName());
+    try {
+      Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue("ID", "LastName", "FirstName", "Gender", "Height", "Weight", "EthnicGroup", "BirthYear", "BirthMonth", "BirthDay", "Pacemaker");
+
+      FileOutputStream participantDataOuputStream = new FileOutputStream(participantDataFile);
+      BtrInputGenerator inputGenerator = new BtrInputGenerator();
+      participantDataOuputStream.write((inputGenerator.generateByteBuffer(inputData)).array());
+      participantDataOuputStream.close();
+
+    } catch(Exception ex) {
+      throw new RuntimeException("Error writing ecg participant data file: ", ex);
+    }
+
+    List<String> command = new ArrayList<String>();
+    command.add("cmd");
+    command.add("/c");
+    command.add(getExecutableForParticipantInfo() + " " + getBtrRecordFileName() + " " + getBtrDatabaseFileName());
+
+    ProcessBuilder builder = new ProcessBuilder(command);
+    builder.directory(new File(getDatabasePath()));
+
+    Process wProcess = null;
+    try {
+      wProcess = builder.start();
+    } catch(IOException wCouldNotCreateProcess) {
+      JOptionPane.showMessageDialog(null, wCouldNotCreateProcess.getStackTrace());
+      JOptionPane.showMessageDialog(null, wCouldNotCreateProcess.getMessage());
+      log.error("CardioSoftIntrumentRunner: Could not create external process for: " + command, wCouldNotCreateProcess.getStackTrace());
+      System.exit(1);
+    }
+
+    try {
+      wProcess.waitFor();
+    } catch(InterruptedException wThreadInterrupted) {
+      wThreadInterrupted.printStackTrace();
+      System.exit(1);
+    }
+  }
+
   /**
    * Implements parent method initialize from InstrumentRunner Delete results from previous measurement
    */
   public void initialize() {
     deleteDeviceData();
+    initParticipantData();
   }
 
   /**
@@ -257,4 +333,5 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
     deleteDeviceData();
 
   }
+
 }

@@ -53,6 +53,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     scope="prototype">
     <property name="instrumentRunService" ref="instrumentRunService" />
     <property name="instrumentService" ref="instrumentService" />
+    <property name="activeInstrumentRunService" ref="activeInstrumentRunService" />
   </bean>
 
   <bean id="jadeDatabaseSeed" class="org.obiba.onyx.jade.core.wicket.seed.JadeDatabaseSeed" scope="singleton">

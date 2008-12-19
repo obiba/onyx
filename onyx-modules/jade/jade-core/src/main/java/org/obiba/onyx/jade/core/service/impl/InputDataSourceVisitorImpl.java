@@ -23,7 +23,9 @@ import org.obiba.onyx.jade.core.domain.instrument.MultipleOutputParameterSource;
 import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.instrument.OutputParameterSource;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantPropertySource;
+import org.obiba.onyx.jade.core.domain.instrument.UnitParameterValueConverter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
@@ -39,6 +41,8 @@ public class InputDataSourceVisitorImpl implements InputDataSourceVisitor {
 
   private InstrumentService instrumentService;
 
+  private ActiveInstrumentRunService activeInstrumentRunService;
+
   private Data data;
 
   private Participant participant;
@@ -51,6 +55,10 @@ public class InputDataSourceVisitorImpl implements InputDataSourceVisitor {
 
   public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
     this.instrumentRunService = instrumentRunService;
+  }
+
+  public void setActiveInstrumentRunService(ActiveInstrumentRunService activeInstrumentRunService) {
+    this.activeInstrumentRunService = activeInstrumentRunService;
   }
 
   public Data getData(Participant participant, InstrumentInputParameter parameter) {
@@ -126,9 +134,16 @@ public class InputDataSourceVisitorImpl implements InputDataSourceVisitor {
       InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, source.getParameterName());
       System.out.println(runValue);
       if(runValue != null) {
-        // TODO unit conversion when necessary
+        // Unit conversion when necessary
+        if(runValue.getInstrumentParameter().getMeasurementUnit() != null && parameter.getMeasurementUnit() != null && !parameter.getMeasurementUnit().equals(runValue.getInstrumentParameter().getMeasurementUnit())) {
+          InstrumentRunValue targetRunValue = activeInstrumentRunService.getInputInstrumentRunValue(parameter.getName());
+          UnitParameterValueConverter converter = new UnitParameterValueConverter();
+          converter.convert(targetRunValue, runValue);
+          data = targetRunValue.getData();
+        } else {
+          data = runValue.getData();
+        }
         // TODO type conversion when possible (INTEGER->DECIMAL->TEXT...)
-        data = runValue.getData();
       }
     }
   }

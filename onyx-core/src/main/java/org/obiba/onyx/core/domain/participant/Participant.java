@@ -130,6 +130,27 @@ public class Participant extends AbstractEntity {
     return (age);
   }
 
+  @Transient
+  public long getBirthYear() {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(birthDate);
+    return (long) cal.get(Calendar.YEAR);
+  }
+
+  @Transient
+  public long getBirthMonth() {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(birthDate);
+    return (long) cal.get(Calendar.MONTH);
+  }
+
+  @Transient
+  public long getBirthDay() {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(birthDate);
+    return (long) cal.get(Calendar.DAY_OF_MONTH);
+  }
+
   public String getBarcode() {
     return barcode;
   }

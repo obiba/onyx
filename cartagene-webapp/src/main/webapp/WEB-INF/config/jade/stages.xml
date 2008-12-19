@@ -116,9 +116,31 @@
   <stage>
     <name>ECG</name>
     <module>jade</module>
-    <stageDependencyCondition class="variableCondition">
-      <stageName>CON</stageName>
-      <variableName>consent</variableName>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>CON</stageName>
+          <variableName>consent</variableName>
+        </variableCondition>
+        <variableCondition>
+          <stageName>StandingHeight</stageName>
+          <variableName>height</variableName>
+        </variableCondition>
+        <multipleCondition>
+          <operator>OR</operator>
+          <conditions>
+            <variableCondition>
+              <stageName>Impedence310</stageName>
+              <variableName>weight</variableName>
+            </variableCondition>
+            <variableCondition>
+              <stageName>Weight</stageName>
+              <variableName>weight</variableName>
+            </variableCondition>
+          </conditions>
+        </multipleCondition>
+      </conditions>
     </stageDependencyCondition>
   </stage>
 
