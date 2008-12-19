@@ -57,7 +57,7 @@ public class CardiosoftInstrumentRunnerTest {
     // Cardiosoft database path.
     File databasePath = new File(cardioSoftSimulatedPath, "DATABASE");
     databasePath.mkdir();
-    cardiosoftInstrumentRunner.setDatabasePath(databasePath.getPath() + "\\");
+    cardiosoftInstrumentRunner.setDatabasePath(databasePath.getPath());
     cardiosoftInstrumentRunner.setBtrRecordFileName("btr-record.dat");
     cardiosoftInstrumentRunner.setBtrDatabaseFileName("PATIENT.BTR");
 
