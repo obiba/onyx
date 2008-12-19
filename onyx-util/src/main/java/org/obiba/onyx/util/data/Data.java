@@ -10,6 +10,7 @@
 package org.obiba.onyx.util.data;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 
 public class Data implements Serializable, Comparable<Data> {
@@ -122,7 +123,7 @@ public class Data implements Serializable, Comparable<Data> {
             isEqual = value.equals(otherData.getValue());
             break;
           case DATA:
-            isEqual = byteArraysEqual((byte[]) value, (byte[]) otherData.getValue());
+            isEqual = Arrays.equals((byte[]) value, (byte[]) otherData.getValue());
             break;
           }
         } else {
@@ -134,39 +135,16 @@ public class Data implements Serializable, Comparable<Data> {
     return isEqual;
   }
 
-  private boolean byteArraysEqual(byte[] firstArray, byte[] secondArray) {
-    boolean arraysEqual = false;
-
-    if(firstArray != null && secondArray != null) {
-      if(firstArray.length == secondArray.length) {
-        boolean mismatch = false;
-
-        for(int i = 0; i < firstArray.length; i++) {
-          if(firstArray[i] != secondArray[i]) {
-            mismatch = true;
-            break;
-          }
-        }
-
-        arraysEqual = !mismatch;
-      }
-    } else {
-      arraysEqual = (firstArray == null && secondArray == null);
-    }
-
-    return arraysEqual;
-  }
-
   public int compareTo(Data data) {
     int result = -1;
 
     if(data != null) {
-      if(value != null & data.getValue() != null) {
+      if(value != null && data.getValue() != null) {
         if(data.getType().isNumberType() & type.isNumberType()) {
           // compare as numbers
           Number numberValue = (Number) value;
           Number dataValue = data.getValue();
-          result = Double.valueOf(numberValue.doubleValue()).compareTo(Double.valueOf(dataValue.doubleValue()));
+          result = Double.compare(numberValue.doubleValue(), dataValue.doubleValue());
         } else if(data.getType().equals(type)) {
           switch(type) {
           case BOOLEAN:
@@ -179,7 +157,7 @@ public class Data implements Serializable, Comparable<Data> {
             result = ((String) value).compareTo((String) data.getValue());
             break;
           case DATA:
-            if(byteArraysEqual((byte[]) value, (byte[]) data.getValue())) {
+            if(Arrays.equals((byte[]) value, (byte[]) data.getValue())) {
               result = 0;
             } else {
               result = 1;
