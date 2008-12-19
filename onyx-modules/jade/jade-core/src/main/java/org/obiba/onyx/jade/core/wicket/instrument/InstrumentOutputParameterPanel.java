@@ -16,6 +16,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -69,9 +70,6 @@ public class InstrumentOutputParameterPanel extends Panel {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
-        Label label = new Label("label", new SpringStringResourceModel(new PropertyModel(param, "description")));
-        item.add(label);
-
         InstrumentRunValue runValue = activeInstrumentRunService.getOutputInstrumentRunValue(param.getName());
         final IModel runValueModel = new DetachableEntityModel(queryService, runValue);
         outputRunValueModels.add(runValueModel);
@@ -86,6 +84,12 @@ public class InstrumentOutputParameterPanel extends Panel {
         });
         IntegrityCheckValidator.addChecks(field, param.getIntegrityChecks());
         item.add(field);
+
+        FormComponentLabel label = new FormComponentLabel("label", field.getField());
+        item.add(label);
+
+        Label labelText = new Label("labelText", new SpringStringResourceModel(new PropertyModel(param, "description")));
+        label.add(labelText);
       }
     }
   }

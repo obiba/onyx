@@ -197,7 +197,7 @@ public class InstrumentInputParameterPanel extends Panel {
   }
 
   @SuppressWarnings("serial")
-  private class InterpretativeSelection implements Serializable {
+  private static class InterpretativeSelection implements Serializable {
 
     private String selectionKey;
 
@@ -244,9 +244,6 @@ public class InstrumentInputParameterPanel extends Panel {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
-        Label label = new Label("label", new SpringStringResourceModel(new PropertyModel(param, "description")));
-        item.add(label);
-
         InstrumentRunValue runValue = activeInstrumentRunService.getInputInstrumentRunValue(param.getName());
         final IModel runValueModel = new DetachableEntityModel(queryService, runValue);
         inputRunValueModels.add(runValueModel);
@@ -289,6 +286,12 @@ public class InstrumentInputParameterPanel extends Panel {
         });
         IntegrityCheckValidator.addChecks(field, param.getIntegrityChecks());
         item.add(field);
+
+        FormComponentLabel label = new FormComponentLabel("label", field.getField());
+        item.add(label);
+
+        Label labelText = new Label("labelText", new SpringStringResourceModel(new PropertyModel(param, "description")));
+        label.add(labelText);
       }
     }
   }
