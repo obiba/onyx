@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JOptionPane;
-
 import org.obiba.onyx.jade.client.JnlpClient;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
@@ -280,8 +278,6 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
     try {
       wProcess = builder.start();
     } catch(IOException wCouldNotCreateProcess) {
-      JOptionPane.showMessageDialog(null, wCouldNotCreateProcess.getStackTrace());
-      JOptionPane.showMessageDialog(null, wCouldNotCreateProcess.getMessage());
       log.error("CardioSoftIntrumentRunner: Could not create external process for: " + command, wCouldNotCreateProcess.getStackTrace());
       System.exit(1);
     }
