@@ -50,7 +50,7 @@ public class JadeCompletedState extends AbstractJadeStageState {
 
   @Override
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
-    if(transitionEvent.equals(TransitionEvent.NOTAPPLICABLE)) {
+    if(transitionEvent.equals(TransitionEvent.NOTAPPLICABLE) || transitionEvent.equals(TransitionEvent.INVALID)) {
       cancelInstrumentRun();
     }
     return super.wantTransitionEvent(transitionEvent);
