@@ -71,13 +71,19 @@ public class JadeInProgressState extends AbstractJadeStageState {
     log.info("Jade Stage {} is completing", super.getStage().getName());
     // Finish current instrument run
     InstrumentRunStatus runStatus = activeInstrumentRunService.getInstrumentRunStatus();
+    if(!runStatus.equals(InstrumentRunStatus.CONTRA_INDICATED)) {
+      activeInstrumentRunService.setInstrumentRunStatus(InstrumentRunStatus.COMPLETED);
+      runStatus = activeInstrumentRunService.getInstrumentRunStatus();
+    }
+
     activeInstrumentRunService.end();
     activeInstrumentRunService.reset();
 
     if(runStatus.equals(InstrumentRunStatus.CONTRA_INDICATED)) {
       castEvent(TransitionEvent.CONTRAINDICATED);
-    } else
+    } else {
       castEvent(TransitionEvent.COMPLETE);
+    }
   }
 
   @Override

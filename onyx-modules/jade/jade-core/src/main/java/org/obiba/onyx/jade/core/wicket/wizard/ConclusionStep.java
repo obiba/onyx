@@ -13,7 +13,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.instrument.ConclusionPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -25,7 +24,7 @@ public class ConclusionStep extends WizardStepPanel {
 
   @SpringBean
   protected ActiveInstrumentRunService activeInstrumentRunService;
-  
+
   public ConclusionStep(String id) {
     super(id);
 
@@ -46,7 +45,6 @@ public class ConclusionStep extends WizardStepPanel {
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
-    activeInstrumentRunService.setInstrumentRunStatus(InstrumentRunStatus.COMPLETED);
     setContent(target, new ConclusionPanel(getContentId()));
   }
 
