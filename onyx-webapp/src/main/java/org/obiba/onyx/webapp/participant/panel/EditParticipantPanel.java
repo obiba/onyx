@@ -265,6 +265,8 @@ public class EditParticipantPanel extends Panel {
       super(id, "textFieldFragment", EditParticipantPanel.this);
       add(new Label("label", new ResourceModel(label)));
       add(component);
+
+      addNoFocusCssClassInReceptionMode(component);
     }
   }
 
@@ -275,6 +277,8 @@ public class EditParticipantPanel extends Panel {
       super(id, "genderFragment", EditParticipantPanel.this);
       add(new Label("label", new ResourceModel(label)));
       add(component);
+
+      addNoFocusCssClassInReceptionMode(component);
     }
   }
 
@@ -285,6 +289,8 @@ public class EditParticipantPanel extends Panel {
       super(id, "dateFragment", EditParticipantPanel.this);
       add(new Label("label", new ResourceModel(label)));
       add(component);
+
+      addNoFocusCssClassInReceptionMode(component);
     }
   }
 
@@ -414,6 +420,18 @@ public class EditParticipantPanel extends Panel {
           item.add(new Label("field", new Model(participant.getConfiguredAttributeValue(attribute.getName()))));
         }
       }
+    }
+  }
+
+  /**
+   * Adds the CSS "nofocus" class to the specified form component if the the current edit mode is <code>RECEPTION</code>
+   * (i.e., when the participant is being received).
+   * 
+   * @param component form component
+   */
+  private void addNoFocusCssClassInReceptionMode(FormComponent component) {
+    if(mode.equals(RECEPTION)) {
+      component.add(new AttributeAppender("class", true, new Model("nofocus"), " "));
     }
   }
 }
