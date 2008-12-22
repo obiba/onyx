@@ -12,45 +12,57 @@ package org.obiba.onyx.engine.variable;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.obiba.onyx.util.data.Data;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * 
  */
+@XStreamAlias("variableData")
 public class VariableData implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   public static final String ENCODING = "ISO-8859-1";
 
-  public static final String QUERY = "?";
+  public static final String QUERY = "/data?";
 
   public static final String QUERY_ELEMENT_SEPARATOR = "=";
 
   public static final String QUERY_SEPARATOR = "&";
 
-  private Variable variable;
+  @XStreamAsAttribute
+  private String variablePath;
 
   private Data data;
 
-  public VariableData() {
+  @XStreamImplicit
+  private List<VariableData> references;
+
+  public VariableData(String variablePath) {
     super();
   }
 
-  public VariableData(Data data) {
+  public VariableData(String variablePath, Data data) {
     super();
+    this.variablePath = variablePath;
     this.data = data;
   }
 
   public String getPath() {
     String path = "";
-    if(variable != null) {
-      path = variable.getPath();
+    if(variablePath != null) {
+      path = variablePath;
     }
     if(data != null) {
       if(path.length() > 0) {
-        path += QUERY + "data" + QUERY_ELEMENT_SEPARATOR;
+        path += QUERY + "value" + QUERY_ELEMENT_SEPARATOR;
       }
       try {
         path += URLEncoder.encode(data.getValueAsString(), ENCODING);
@@ -62,12 +74,12 @@ public class VariableData implements Serializable {
     return path;
   }
 
-  public Variable getVariable() {
-    return variable;
+  public String getVariablePath() {
+    return variablePath;
   }
 
-  public void setVariable(Variable variable) {
-    this.variable = variable;
+  public void setVariablePath(String variablePath) {
+    this.variablePath = variablePath;
   }
 
   public Data getData() {
@@ -76,6 +88,26 @@ public class VariableData implements Serializable {
 
   public void setData(Data data) {
     this.data = data;
+  }
+
+  public List<VariableData> getReferences() {
+    return references != null ? references : (references = new ArrayList<VariableData>());
+  }
+
+  public VariableData addReference(VariableData reference) {
+    if(reference != null) {
+      getReferences().add(reference);
+    }
+    return this;
+  }
+
+  public VariableData addReferences(VariableData... reference) {
+    if(reference != null) {
+      for(VariableData ref : reference) {
+        addReference(ref);
+      }
+    }
+    return this;
   }
 
 }

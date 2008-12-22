@@ -14,18 +14,26 @@ import java.util.List;
 
 import org.obiba.onyx.util.data.DataType;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
 /**
  * 
  */
+@XStreamAlias("variable")
 public class Variable extends Entity {
 
   private static final long serialVersionUID = 1L;
 
-  private DataType type;
+  @XStreamAsAttribute
+  private DataType dataType;
 
+  @XStreamAsAttribute
   private String unit;
 
-  private List<VariableData> variableDatas;
+  @XStreamImplicit(itemFieldName = "category")
+  private List<String> categories;
 
   public Variable(String name) {
     super(name);
@@ -39,12 +47,12 @@ public class Variable extends Entity {
     super(name, parent);
   }
 
-  public DataType getType() {
-    return type;
+  public DataType getDataType() {
+    return dataType;
   }
 
-  public Variable setType(DataType type) {
-    this.type = type;
+  public Variable setDataType(DataType type) {
+    this.dataType = type;
     return this;
   }
 
@@ -57,16 +65,23 @@ public class Variable extends Entity {
     return this;
   }
 
-  public List<VariableData> getVariableDatas() {
-    return variableDatas != null ? variableDatas : (variableDatas = new ArrayList<VariableData>());
+  public List<String> getCategories() {
+    return categories != null ? categories : (categories = new ArrayList<String>());
   }
 
-  public VariableData addVariableData(VariableData variableData) {
-    if(variableData != null) {
-      getVariableDatas().add(variableData);
-      variableData.setVariable(this);
+  public Variable addCategory(String category) {
+    if(category != null && category.length() != 0) {
+      getCategories().add(category);
     }
-    return variableData;
+    return this;
   }
 
+  public Variable addCategories(String... categories) {
+    if(categories != null) {
+      for(String category : categories) {
+        addCategory(category);
+      }
+    }
+    return this;
+  }
 }

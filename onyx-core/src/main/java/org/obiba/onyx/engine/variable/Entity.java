@@ -13,21 +13,28 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
+
 /**
  * 
  */
+@XStreamAlias("entity")
 public class Entity implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   public static final String SCHEME = "onyx";
 
-  public static final String PATH_SEPARATOR = "/";
-
+  @XStreamAsAttribute
   private String name;
 
+  @XStreamOmitField
   private Entity parent;
 
+  @XStreamImplicit
   private List<Entity> entities;
 
   public Entity(String name) {
@@ -38,15 +45,6 @@ public class Entity implements Serializable {
     super();
     this.name = name;
     this.parent = parent;
-  }
-
-  public String getPath() {
-    if(parent != null) {
-      return parent.getPath() + PATH_SEPARATOR + name;
-    } else {
-      // return SCHEME + "://" + name;
-      return name;
-    }
   }
 
   public List<Entity> getEntities() {
@@ -61,8 +59,8 @@ public class Entity implements Serializable {
     return child;
   }
 
-  public Entity addEntity(String path) {
-    String[] names = path.split(PATH_SEPARATOR);
+  public Entity addEntity(String path, String separator) {
+    String[] names = path.split(separator);
     Entity current = this;
     for(String name : names) {
       boolean found = false;
