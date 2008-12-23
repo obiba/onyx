@@ -33,9 +33,9 @@ public class VariableData implements Serializable {
 
   public static final String QUERY = "/data?";
 
-  public static final String QUERY_ELEMENT_SEPARATOR = "=";
+  public static final String QUERY_KEY_VALUE_SEPARATOR = "=";
 
-  public static final String QUERY_SEPARATOR = "&";
+  public static final String QUERY_STATEMENT_SEPARATOR = "&";
 
   @XStreamAsAttribute
   private String variablePath;
@@ -62,7 +62,7 @@ public class VariableData implements Serializable {
     }
     if(data != null) {
       if(path.length() > 0) {
-        path += QUERY + "value" + QUERY_ELEMENT_SEPARATOR;
+        path += QUERY + "value" + QUERY_KEY_VALUE_SEPARATOR;
       }
       try {
         path += URLEncoder.encode(data.getValueAsString(), ENCODING);
@@ -94,9 +94,15 @@ public class VariableData implements Serializable {
     return references != null ? references : (references = new ArrayList<VariableData>());
   }
 
+  /**
+   * Cross referring variable data.
+   * @param reference
+   * @return this for chaining
+   */
   public VariableData addReference(VariableData reference) {
     if(reference != null) {
       getReferences().add(reference);
+      reference.getReferences().add(this);
     }
     return this;
   }

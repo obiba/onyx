@@ -36,4 +36,17 @@ public interface IEntityPathNamingStrategy {
    */
   public String getPath(Node entityNode);
 
+  /**
+   * Get the separator of entity names.
+   * @return
+   */
+  public String getPathSeparator();
+
+  /**
+   * Normalize the name.
+   * @param name
+   * @return
+   */
+  public String normalizeName(String name);
+
 }

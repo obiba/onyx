@@ -61,11 +61,11 @@ public class DefaultEntityPathNamingStrategy implements IEntityPathNamingStrateg
     return strategy;
   }
 
-  protected String getPathSeparator() {
+  public String getPathSeparator() {
     return PATH_SEPARATOR;
   }
 
-  protected String normalizeName(String name) {
+  public String normalizeName(String name) {
     return name;
   }
 

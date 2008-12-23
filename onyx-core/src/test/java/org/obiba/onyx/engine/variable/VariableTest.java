@@ -50,9 +50,20 @@ public class VariableTest {
 
     VariableDataSet dataSet = new VariableDataSet();
 
+    // users
+
+    parent = root.addEntity("ADMIN/USER", pathNamingStrategy.getPathSeparator());
+
+    variable = new Variable("LOGIN").setDataType(DataType.TEXT);
+    parent.addEntity(variable);
+
+    VariableData[] userLogins = new VariableData[2];
+    userLogins[0] = dataSet.addVariableData(new VariableData(pathNamingStrategy.getPath(variable), DataBuilder.buildText("gina")));
+    userLogins[1] = dataSet.addVariableData(new VariableData(pathNamingStrategy.getPath(variable), DataBuilder.buildText("alexander")));
+
     // participants
 
-    parent = root.addEntity("ADMIN/PARTICIPANT", DefaultEntityPathNamingStrategy.PATH_SEPARATOR);
+    parent = root.addEntity("ADMIN/PARTICIPANT", pathNamingStrategy.getPathSeparator());
 
     variable = new Variable("BARCODE").setDataType(DataType.TEXT);
     parent.addEntity(variable);
@@ -65,12 +76,12 @@ public class VariableTest {
     subvariable = new Variable("NAME").setDataType(DataType.TEXT);
     parent.addEntity(subvariable);
     for(int i = 0; i < participantBarcodes.length; i++) {
-      dataSet.addVariableData(new VariableData(pathNamingStrategy.getPath(variable), DataBuilder.buildText("Name " + (i + 1))).addReference(participantBarcodes[i]));
+      participantBarcodes[i].addReference(new VariableData(pathNamingStrategy.getPath(subvariable), DataBuilder.buildText("Name " + (i + 1))));
     }
 
     // questionnaire
 
-    parent = root.addEntity("HealthQuestionnaire", DefaultEntityPathNamingStrategy.PATH_SEPARATOR);
+    parent = root.addEntity("HealthQuestionnaire", pathNamingStrategy.getPathSeparator());
 
     variable = new Variable("PARTICIPANT_AGE").addCategories("PARTICIPANT_AGE", "PNA", "DK");
     parent.addEntity(variable);
@@ -79,16 +90,52 @@ public class VariableTest {
     variable.addEntity(subvariable);
 
     for(int i = 0; i < participantBarcodes.length; i++) {
-      dataSet.addVariableData(new VariableData(pathNamingStrategy.getPath(variable), DataBuilder.buildInteger(45 + i)).addReference(participantBarcodes[i]));
+      participantBarcodes[i].addReference(new VariableData(pathNamingStrategy.getPath(subvariable), DataBuilder.buildInteger(45 + i)));
     }
 
-    parent = root.addEntity("HealthQuestionnaire/DATE_OF_BIRTH", DefaultEntityPathNamingStrategy.PATH_SEPARATOR);
+    parent = root.addEntity("HealthQuestionnaire/DATE_OF_BIRTH", pathNamingStrategy.getPathSeparator());
 
     variable = new Variable("DOB_YEAR").addCategories("DOB_YEAR", "PNA", "DK");
     parent.addEntity(variable);
 
-    subvariable = new Variable("OPEN_YEAR").setDataType(DataType.INTEGER).setUnit("year");
+    subvariable = new Variable("OPEN_YEAR").setDataType(DataType.INTEGER);
     variable.addEntity(subvariable);
+
+    variable = new Variable("DOB_MONTH").addCategories("DOB_MONTH", "PNA", "DK");
+    parent.addEntity(variable);
+
+    subvariable = new Variable("OPEN_MONTH").setDataType(DataType.INTEGER);
+    variable.addEntity(subvariable);
+
+    variable = new Variable("DOB_DAY").addCategories("DOB_DAY", "PNA", "DK");
+    parent.addEntity(variable);
+
+    subvariable = new Variable("OPEN_DAY").setDataType(DataType.INTEGER);
+    variable.addEntity(subvariable);
+
+    // instruments
+
+    parent = root.addEntity("StandingHeight", pathNamingStrategy.getPathSeparator());
+
+    variable = new Variable("First_Height_Measurement").setDataType(DataType.DECIMAL);
+    parent.addEntity(variable);
+
+    for(int i = 0; i < participantBarcodes.length; i++) {
+      VariableData data = new VariableData(pathNamingStrategy.getPath(variable), DataBuilder.buildDecimal(170.5 + i));
+      participantBarcodes[i].addReference(data);
+      userLogins[0].addReference(data);
+    }
+
+    variable = new Variable("Second_Height_Measurement").setDataType(DataType.DECIMAL);
+    parent.addEntity(variable);
+
+    for(int i = 0; i < participantBarcodes.length; i++) {
+      VariableData data = new VariableData(pathNamingStrategy.getPath(variable), DataBuilder.buildDecimal(170.0 + i));
+      participantBarcodes[i].addReference(data);
+      userLogins[0].addReference(data);
+    }
+
+    // dumps
 
     System.out.println("\n**** Variables directory ****\n");
     System.out.println(xstream.toXML(root));
