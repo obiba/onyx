@@ -59,7 +59,7 @@ public interface ActiveTubeRegistrationService {
    * @param remark the remark to record (<code>null</code> to remove a previously recorded remark)
    * @throws IllegalArgumentException if no tube with the specified barcode is registered
    */
-  public void setTubeRemark(String barcode, Remark remark);
+  public void setTubeRemark(String barcode, List<Remark> remarks);
 
   /**
    * Records a comment related to the specified tube registration.

@@ -25,6 +25,7 @@ import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.Remark;
+import org.obiba.onyx.ruby.core.domain.RemarkCode;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.slf4j.Logger;
@@ -214,14 +215,21 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     getPersistenceManager().save(tube);
   }
 
-  public void setTubeRemark(String barcode, Remark remark) {
+  public void setTubeRemark(String barcode, List<Remark> remarks) {
     RegisteredParticipantTube tube = findTubeByBarcode(barcode);
-
     checkBarcodeExists(barcode, tube);
 
-    if(remark != null) tube.setRemarkCode(remark.getCode());
-    else
-      tube.setRemarkCode(null);
+    for(RemarkCode remarkCode : findRemarkCodeForTube(tube)) {
+      tube.getRemarkCode().remove(remarkCode);
+      getPersistenceManager().delete(remarkCode);
+    }
+
+    for(Remark remark : remarks) {
+      RemarkCode remarkCode = new RemarkCode(remark.getCode());
+      tube.addRemarkCode(remarkCode);
+      getPersistenceManager().save(remarkCode);
+    }
+
     getPersistenceManager().save(tube);
   }
 
@@ -314,6 +322,12 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     tube = getPersistenceManager().matchOne(tube);
 
     return tube;
+  }
+
+  private List<RemarkCode> findRemarkCodeForTube(RegisteredParticipantTube tube) {
+    RemarkCode remarkCode = new RemarkCode();
+    remarkCode.setRegisteredParticipantTube(tube);
+    return getPersistenceManager().match(remarkCode);
   }
 
   private boolean isDuplicateBarcode(String barcode) {

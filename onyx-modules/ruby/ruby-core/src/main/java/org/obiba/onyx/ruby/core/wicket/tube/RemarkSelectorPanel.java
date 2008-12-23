@@ -9,12 +9,13 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.tube;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
-import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
@@ -32,7 +33,7 @@ public class RemarkSelectorPanel extends Panel {
   @SpringBean(name = "activeTubeRegistrationService")
   private ActiveTubeRegistrationService activeTubeRegistrationService;
 
-  private Remark selectedRemark;
+  private List<Remark> selectedRemark = new ArrayList<Remark>();
 
   /**
    * Panel for the remark dropdown list
@@ -47,17 +48,13 @@ public class RemarkSelectorPanel extends Panel {
     List<Remark> remarks = tubeRegistrationConfiguration.getAvailableRemarks();
 
     RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) rowModel.getObject();
+    List<String> tubeRemarks = registeredParticipantTube.getRemarkCodeString();
 
-    if(registeredParticipantTube.getRemarkCode() != null) {
-      for(Remark remark : remarks) {
-        if(remark.getCode().equals(registeredParticipantTube.getRemarkCode())) {
-          selectedRemark = remark;
-          break;
-        }
-      }
+    for(Remark remark : remarks) {
+      if(tubeRemarks.contains(remark.getCode())) selectedRemark.add(remark);
     }
 
-    DropDownChoice ddcRemarks = new DropDownChoice("remarkSelect", new PropertyModel(this, "selectedRemark"), remarks, new IChoiceRenderer() {
+    ListMultipleChoice listRemarks = new ListMultipleChoice("remarkSelect", new PropertyModel(this, "selectedRemark"), remarks, new IChoiceRenderer() {
       private static final long serialVersionUID = 1L;
 
       public Object getDisplayValue(Object object) {
@@ -71,7 +68,7 @@ public class RemarkSelectorPanel extends Panel {
       }
     });
 
-    ddcRemarks.add(new OnChangeAjaxBehavior() {
+    listRemarks.add(new AjaxFormComponentUpdatingBehavior("onblur") {
 
       private static final long serialVersionUID = 1L;
 
@@ -86,16 +83,16 @@ public class RemarkSelectorPanel extends Panel {
 
     });
 
-    ddcRemarks.setNullValid(true);
+    listRemarks.setMaxRows(3);
 
-    add(ddcRemarks);
+    add(listRemarks);
   }
 
-  public Remark getSelectedRemark() {
+  public List<Remark> getSelectedRemark() {
     return selectedRemark;
   }
 
-  public void setSelectedRemark(Remark selectedRemark) {
+  public void setSelectedRemark(List<Remark> selectedRemark) {
     this.selectedRemark = selectedRemark;
   }
 }

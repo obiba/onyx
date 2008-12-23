@@ -11,6 +11,7 @@ package org.obiba.onyx.ruby.core.wicket.tube;
 
 import static org.easymock.EasyMock.createMock;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.Session;
@@ -62,7 +63,7 @@ public class RemarkSelectorPanelTest {
     final RegisteredParticipantTube registeredParticipantTube = new RegisteredParticipantTube();
     registeredParticipantTube.setBarcode("tubeBarcode001");
 
-    activeTubeRegistrationServiceMock.setTubeRemark((String) EasyMock.anyObject(), (Remark) EasyMock.anyObject());
+    activeTubeRegistrationServiceMock.setTubeRemark((String) EasyMock.anyObject(), (List<Remark>) EasyMock.anyObject());
 
     EasyMock.replay(activeTubeRegistrationServiceMock);
 
@@ -77,7 +78,7 @@ public class RemarkSelectorPanelTest {
     FormTester formTester = tester.newFormTester("panel:form");
     formTester.select("content:remarkSelect", 1);
 
-    tester.executeAjaxEvent("panel:form:content:remarkSelect", "onchange");
+    tester.executeAjaxEvent("panel:form:content:remarkSelect", "onblur");
     tester.assertNoErrorMessage();
 
     EasyMock.verify(activeTubeRegistrationServiceMock);
