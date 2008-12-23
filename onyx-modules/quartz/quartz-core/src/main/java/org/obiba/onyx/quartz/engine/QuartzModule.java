@@ -22,14 +22,12 @@ import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.engine.variable.Entity;
 import org.obiba.onyx.engine.variable.IVariableProvider;
-import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.engine.variable.IQuestionToVariableMappingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -47,6 +45,8 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
   private List<Stage> stages;
 
   private QuestionnaireBundleManager questionnaireBundleManager;
+
+  private IQuestionToVariableMappingStrategy questionToVariableMappingStrategy;
 
   public String getName() {
     return "quartz";
@@ -88,6 +88,10 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
 
   public void setQuestionnaireBundleManager(QuestionnaireBundleManager questionnaireBundleManager) {
     this.questionnaireBundleManager = questionnaireBundleManager;
+  }
+
+  public void setQuestionToVariableMappingStrategy(IQuestionToVariableMappingStrategy questionToVariableMappingStrategy) {
+    this.questionToVariableMappingStrategy = questionToVariableMappingStrategy;
   }
 
   public IStageExecution createStageExecution(Interview interview, Stage stage) {
@@ -151,8 +155,6 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
   }
 
   public List<Entity> getVariables() {
-    log.info("initialize");
-
     List<Entity> entities = new ArrayList<Entity>();
 
     for(Iterator<Stage> iter = stages.iterator(); iter.hasNext();) {
@@ -160,40 +162,14 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
       QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(stage.getName());
       if(bundle != null) {
         Questionnaire questionnaire = bundle.getQuestionnaire();
-
-        Entity questionnaireEntity = new Entity(questionnaire.getName());
+        log.info("getVariables from questionnaire {}", questionnaire.getName());
+        Entity questionnaireEntity = questionToVariableMappingStrategy.getEntity(questionnaire);
+        entities.add(questionnaireEntity);
         // TODO strategy for questionnaire to variable mapping
         for(Page page : questionnaire.getPages()) {
           for(Question question : page.getQuestions()) {
             if(!question.isBoilerPlate()) {
-              // simple question
-              if(question.getQuestions().size() == 0) {
-                Variable variable = (Variable) questionnaireEntity.addEntity(new Variable(question.getName()));
-                for(Category category : question.getCategories()) {
-                  variable.addCategory(category.getName());
-                  if(category.getOpenAnswerDefinition() != null) {
-                    OpenAnswerDefinition open = category.getOpenAnswerDefinition();
-                    variable.addEntity(new Variable(open.getName()).setDataType(open.getDataType()).setUnit(open.getUnit()));
-                  }
-                }
-              } else if(question.getQuestionCategories().size() == 0) {
-                // sub questions
-              } else {
-                boolean shared = true;
-                for(Question child : question.getQuestions()) {
-                  if(child.getCategories().size() > 0) {
-                    shared = false;
-                    break;
-                  }
-                }
-                if(shared) {
-                  // shared categories question
-
-                } else {
-                  // joined categories question
-                  // TODO
-                }
-              }
+              questionnaireEntity.addEntity(questionToVariableMappingStrategy.getEntity(question));
             }
           }
         }
