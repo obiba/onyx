@@ -39,6 +39,14 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="moduleRegistrationListener" class="org.obiba.onyx.engine.ModuleRegistrationListener">
     <property name="moduleRegistry" ref="moduleRegistry" />
   </bean>
+  
+  <bean id="variableDirectory" class="org.obiba.onyx.engine.variable.VariableDirectory">
+    <property name="entityPathNamingStrategy" ref="entityPathNamingStrategy" />
+  </bean>
+  
+  <bean id="variableRegistrationListener" class="org.obiba.onyx.engine.variable.VariableRegistrationListener">
+    <property name="variableDirectory" ref="variableDirectory" />
+  </bean>
 
   <bean id="baseStageState" class="org.obiba.onyx.engine.state.AbstractStageState" abstract="true">
     <property name="activeInterviewService" ref="activeInterviewService" />

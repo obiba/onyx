@@ -14,7 +14,13 @@ import org.w3c.dom.Node;
 /**
  * 
  */
-public interface EntityPathNamingStrategy {
+public interface IEntityPathNamingStrategy {
+
+  /**
+   * Get the name of entity root.
+   * @return
+   */
+  public String getRootName();
 
   /**
    * Get the path to the entity.

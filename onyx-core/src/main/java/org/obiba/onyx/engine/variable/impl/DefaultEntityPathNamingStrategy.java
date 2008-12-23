@@ -10,28 +10,30 @@
 package org.obiba.onyx.engine.variable.impl;
 
 import org.obiba.onyx.engine.variable.Entity;
-import org.obiba.onyx.engine.variable.EntityPathNamingStrategy;
+import org.obiba.onyx.engine.variable.IEntityPathNamingStrategy;
 import org.w3c.dom.Node;
 
 /**
  * 
  */
-public class DefaultPathEntityNamingStrategy implements EntityPathNamingStrategy {
+public class DefaultEntityPathNamingStrategy implements IEntityPathNamingStrategy {
 
   public static final String PATH_SEPARATOR = "/";
 
+  private String rootName;
+
   public String getPath(Entity entity) {
     if(entity.getParent() != null) {
-      return getPath(entity.getParent()) + PATH_SEPARATOR + entity.getName();
+      return getPath(entity.getParent()) + getPathSeparator() + entity.getName();
     } else {
-      return PATH_SEPARATOR + entity.getName();
+      return getPathSeparator() + entity.getName();
     }
   }
 
   public String getPath(Node entityNode) {
     String name = getEntityName(entityNode);
     if(name != null) {
-      String path = PATH_SEPARATOR + name;
+      String path = getPathSeparator() + name;
       if(entityNode.getParentNode() != null) {
         String parentPath = getPath(entityNode.getParentNode());
         if(parentPath != null) {
@@ -53,8 +55,26 @@ public class DefaultPathEntityNamingStrategy implements EntityPathNamingStrategy
     return null;
   }
 
-  public static DefaultPathEntityNamingStrategy getInstance() {
-    return new DefaultPathEntityNamingStrategy();
+  public static DefaultEntityPathNamingStrategy getInstance(String rootName) {
+    DefaultEntityPathNamingStrategy strategy = new DefaultEntityPathNamingStrategy();
+    strategy.rootName = rootName;
+    return strategy;
+  }
+
+  protected String getPathSeparator() {
+    return PATH_SEPARATOR;
+  }
+
+  protected String normalizeName(String name) {
+    return name;
+  }
+
+  public void setRootName(String rootName) {
+    this.rootName = rootName;
+  }
+
+  public String getRootName() {
+    return rootName;
   }
 
 }

@@ -16,7 +16,6 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * 
@@ -31,7 +30,6 @@ public class Entity implements Serializable {
   @XStreamAsAttribute
   private String name;
 
-  @XStreamOmitField
   private Entity parent;
 
   @XStreamImplicit
@@ -92,6 +90,11 @@ public class Entity implements Serializable {
 
   public void setParent(Entity parent) {
     this.parent = parent;
+  }
+
+  @Override
+  public String toString() {
+    return name;
   }
 
 }

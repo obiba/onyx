@@ -20,7 +20,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.junit.Test;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.engine.variable.impl.DefaultPathEntityNamingStrategy;
+import org.obiba.onyx.engine.variable.impl.DefaultEntityPathNamingStrategy;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -37,13 +37,13 @@ public class VariableTest {
 
   private XStream xstream;
 
-  private EntityPathNamingStrategy pathNamingStrategy = DefaultPathEntityNamingStrategy.getInstance();
+  private IEntityPathNamingStrategy pathNamingStrategy = DefaultEntityPathNamingStrategy.getInstance("STUDY_NAME");
 
   @Test
   public void testXStream() {
     initializeXStream();
 
-    Entity root = new Entity("CARTAGENE");
+    Entity root = new Entity(pathNamingStrategy.getRootName());
     Entity parent;
     Variable variable;
     Variable subvariable;
@@ -52,7 +52,7 @@ public class VariableTest {
 
     // participants
 
-    parent = root.addEntity("ADMIN/PARTICIPANT", DefaultPathEntityNamingStrategy.PATH_SEPARATOR);
+    parent = root.addEntity("ADMIN/PARTICIPANT", DefaultEntityPathNamingStrategy.PATH_SEPARATOR);
 
     variable = new Variable("BARCODE").setDataType(DataType.TEXT);
     parent.addEntity(variable);
@@ -70,7 +70,7 @@ public class VariableTest {
 
     // questionnaire
 
-    parent = root.addEntity("HealthQuestionnaire", DefaultPathEntityNamingStrategy.PATH_SEPARATOR);
+    parent = root.addEntity("HealthQuestionnaire", DefaultEntityPathNamingStrategy.PATH_SEPARATOR);
 
     variable = new Variable("PARTICIPANT_AGE").addCategories("PARTICIPANT_AGE", "PNA", "DK");
     parent.addEntity(variable);
@@ -82,7 +82,7 @@ public class VariableTest {
       dataSet.addVariableData(new VariableData(pathNamingStrategy.getPath(variable), DataBuilder.buildInteger(45 + i)).addReference(participantBarcodes[i]));
     }
 
-    parent = root.addEntity("HealthQuestionnaire/DATE_OF_BIRTH", DefaultPathEntityNamingStrategy.PATH_SEPARATOR);
+    parent = root.addEntity("HealthQuestionnaire/DATE_OF_BIRTH", DefaultEntityPathNamingStrategy.PATH_SEPARATOR);
 
     variable = new Variable("DOB_YEAR").addCategories("DOB_YEAR", "PNA", "DK");
     parent.addEntity(variable);
@@ -95,7 +95,10 @@ public class VariableTest {
 
     System.out.println("\n**** Variables XPath ****\n");
     xquery(root, "//variable");
-    // xquery(root, "//entity[@name='PARTICIPANT']/variable[@name='ID']");
+    System.out.println();
+    xquery(root, "//entity[@name='PARTICIPANT']/variable[@name='BARCODE']");
+    System.out.println();
+    xquery(root, "//entity[@name='PARTICIPANT']/variable[@name='BARCODE'] | //entity[not(@name='PARTICIPANT')]/variable");
 
     System.out.println("\n**** Variables paths ****\n");
     writeVariables(root);

@@ -30,6 +30,10 @@
     <property name="stageOrdering" value="" />
   </bean>
 
+  <bean id="entityPathNamingStrategy" class="org.obiba.onyx.engine.variable.impl.DefaultEntityPathNamingStrategy">
+    <property name="rootName" value="STUDY_NAME" />
+  </bean>
+
   <import resource="test-hibernate-config.xml" />
   <import resource="test-db-config.xml" />
   <import resource="classpath:META-INF/spring/onyx-core/context.xml" />
