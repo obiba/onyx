@@ -31,6 +31,11 @@
   <bean id="stageOrderingStrategy" class="org.obiba.onyx.engine.StaticStageOrderingStrategy">
     <property name="stageOrdering" value="${org.obiba.onyx.engine.staticStageOrder}" />
   </bean>
+  
+  <!-- Converts a entity to a path representing its unique identification -->
+  <bean id="entityPathNamingStrategy" class="org.obiba.onyx.engine.variable.impl.DefaultEntityPathNamingStrategy">
+    <property name="rootName" value="CARTAGENE" />
+  </bean>
 
   <!-- The class that reads the participant Excel sheet. Override to fit your needs. -->
   <bean id="participantReader" class="org.obiba.onyx.core.etl.participant.impl.DefaultParticipantExcelReader"

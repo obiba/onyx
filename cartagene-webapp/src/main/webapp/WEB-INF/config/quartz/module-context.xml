@@ -11,7 +11,10 @@
         <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/quartz/stages.xml" />
       </bean>
     </property>
+    <property name="questionToVariableMappingStrategy" ref="questionToVariableMappingStrategy" />
   </bean>
+
+  <bean id="questionToVariableMappingStrategy" class="org.obiba.onyx.quartz.engine.variable.impl.DefaultQuestionToVariableMappingStrategy" />
 
   <bean id="propertyKeyProvider" class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl"
     scope="prototype" />
