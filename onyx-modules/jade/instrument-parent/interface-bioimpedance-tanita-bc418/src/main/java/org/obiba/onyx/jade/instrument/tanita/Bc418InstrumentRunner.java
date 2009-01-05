@@ -215,6 +215,7 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
    * Reset the Tanita settings before a measurement.
    */
   private void resetTanita() {
+    log.info("Resetting Tanita");
     sendReceive(new byte[] { (byte) 0x1F, (byte) 0x0D, (byte) 0x0A });
   }
 
@@ -314,8 +315,7 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
   public void initialize() {
     super.initialize();
 
-    // TODO Reset not working, instrument not responding to reset code...
-    // resetTanita();
+    resetTanita();
     initParticipantData();
   }
 
