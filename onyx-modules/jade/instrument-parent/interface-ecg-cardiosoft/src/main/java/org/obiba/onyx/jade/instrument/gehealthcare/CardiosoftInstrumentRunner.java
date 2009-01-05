@@ -311,20 +311,28 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
   public void run() {
     externalAppHelper.launch();
     FileInputStream resultInputStream = null;
+    File cardioSoftXmlOutput = new File(getExportPath(), getXmlFileName());
 
     // Get data from external app
-    try {
-      resultInputStream = new FileInputStream(new File(getExportPath(), getXmlFileName()));
+    if(cardioSoftXmlOutput.exists()) {
+
+      try {
+        resultInputStream = new FileInputStream(cardioSoftXmlOutput);
+      } catch(FileNotFoundException ex) {
+        throw new RuntimeException("Cardiosoft output data file not found", ex);
+      }
+
       CardiosoftInstrumentResultParser resultParser = new CardiosoftInstrumentResultParser(resultInputStream);
       sendDataToServer(resultParser);
-    } catch(FileNotFoundException fnfEx) {
-      log.error("Cardiosoft output data file not found");
-    } finally {
+
       try {
         resultInputStream.close();
-      } catch(IOException e) {
+      } catch(Exception e) {
         log.warn("Could not close the inputStream", e);
       }
+
+    } else {
+      log.error("Cardiosoft output data file not found.  This usually happens if the application is closed before completing the ECG measurement.");
     }
 
   }
