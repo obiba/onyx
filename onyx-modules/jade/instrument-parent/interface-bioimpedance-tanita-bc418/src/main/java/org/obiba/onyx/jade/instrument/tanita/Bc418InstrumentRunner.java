@@ -51,7 +51,10 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
       try {
         if(bufferedReader.ready()) {
           // Parse and sets the data in the GUI.
-          String wResponse = bufferedReader.readLine().trim();
+          String wResponse = bufferedReader.readLine();
+          if(wResponse != null) {
+            wResponse = wResponse.trim();
+          }
           setTanitaData(parseTanitaData(wResponse));
 
           // Enable save button, so data can be saved.
@@ -96,7 +99,11 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
 
     // Read response
     try {
-      wResponse = bufferedReader.readLine().trim();
+      wResponse = bufferedReader.readLine();
+      if(wResponse != null) {
+        wResponse = wResponse.trim();
+      }
+
       log.info("Receiving response:{}", wResponse);
     } catch(IOException e) {
       throw new RuntimeException("Error when receiving data from device", e);
