@@ -14,7 +14,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -179,11 +178,8 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
           if(persistedParticipant == null) {
             if(!isNewAppointmentDateValid(participant, line)) {
-              SimpleDateFormat formater = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-              String newAppointmentDate = formater.format(participant.getAppointment().getDate());
-              appointmentListUpdatelog.error("Abort updating appointments: Error at line {}: Appointment date {} is passed", line, newAppointmentDate);
-              vex.reject(participant, "AppointmentDatePassed", new String[] { Integer.toString(line), participant.getEnrollmentId(), newAppointmentDate }, "Participant's appointment date is in the past.");
-              return;
+              // log a warning for appointments scheduled in the past but add them to the system anyway
+              appointmentListUpdatelog.warn("Line {}: Appointment date/time is in the past => adding appointment anyway", line);
             }
 
             log.debug("adding participant={}", participant.getEnrollmentId());

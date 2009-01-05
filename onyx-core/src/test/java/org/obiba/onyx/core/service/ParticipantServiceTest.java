@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.ObjectError;
 
 @Transactional
 public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
@@ -174,27 +173,6 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
       Assert.assertNotNull("Cannot find participant appointment date", p.getAppointment().getDate());
       Assert.assertNotNull("Cannot find participant interview", p.getInterview());
       Assert.assertEquals("Cannot find participant completed interview", InterviewStatus.COMPLETED, p.getInterview().getStatus());
-
-      try {
-        participantService.updateParticipants(getClass().getResourceAsStream("rendez-vous-corrupted.xls"));
-        Assert.fail("ValidationRuntimeException not thrown");
-      } catch(ValidationRuntimeException ve) {
-        List<ObjectError> oes = ve.getAllObjectErrors();
-        // only errors for appointment date passed are reported
-        Assert.assertEquals("Not the right count of errors", 6, oes.size());
-        ObjectError oe = oes.get(0);
-        Assert.assertEquals("Not the right error code", "AppointmentDatePassed", oe.getCode());
-        Assert.assertEquals("Not the right error arguments count", 3, oe.getArguments().length);
-        Assert.assertEquals("Not the right error argument line", "4", oe.getArguments()[0]);
-        Assert.assertEquals("Not the right error argument id", "100002", oe.getArguments()[1]);
-        oe = oes.get(5);
-        Assert.assertEquals("Not the right error code", "AppointmentDatePassed", oe.getCode());
-        Assert.assertEquals("Not the right error arguments count", 3, oe.getArguments().length);
-        Assert.assertEquals("Not the right error argument line", "9", oe.getArguments()[0]);
-        Assert.assertEquals("Not the right error argument id", "100007", oe.getArguments()[1]);
-        log.info(ve.toString());
-        // wrong site records are only warned in log file and ignored
-      }
 
     } catch(ValidationRuntimeException e) {
       Assert.fail(e.getMessage());
