@@ -12,6 +12,8 @@ package org.obiba.onyx.engine;
 import java.util.Map;
 
 import org.apache.wicket.protocol.http.WebApplication;
+import org.obiba.onyx.engine.variable.IVariableProvider;
+import org.obiba.onyx.engine.variable.VariableDirectory;
 import org.obiba.wicket.application.WebApplicationStartupListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,8 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
 
   private ModuleRegistry registry;
 
+  private VariableDirectory variableDirectory;
+
   @SuppressWarnings("unchecked")
   public void shutdown(WebApplication application) {
     Map<String, Module> modules = applicationContext.getBeansOfType(Module.class);
@@ -49,7 +53,7 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
         // Shutdown the module
         try {
           log.info("Shuting down module '{}'", module.getName());
-          module.shutdown();
+          module.shutdown(application);
         } catch(RuntimeException e) {
           log.error("Could not shutdown module '{}'", module.getName());
           log.error("Module shutdown failed due to the following exception.", e);
@@ -66,7 +70,7 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
 
         try {
           log.info("Initializing module '{}' of type {}", module.getName(), module.getClass().getSimpleName());
-          module.initialize();
+          module.initialize(application);
         } catch(RuntimeException e) {
           log.error("Could not initialize module '{}'", module.getName());
           log.error("Module initialisation failed due to the following exception.", e);
@@ -79,16 +83,28 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
           registry.registerModule(module);
         } catch(RuntimeException e) {
           try {
-            module.shutdown();
+            module.shutdown(application);
           } catch(RuntimeException ignored) {
           }
         }
+      }
+    }
+
+    // get the variables after module registration
+    Map<String, IVariableProvider> providers = applicationContext.getBeansOfType(IVariableProvider.class);
+    if(providers != null) {
+      for(IVariableProvider provider : providers.values()) {
+        variableDirectory.registerVariables(provider);
       }
     }
   }
 
   public void setModuleRegistry(ModuleRegistry registry) {
     this.registry = registry;
+  }
+
+  public void setVariableDirectory(VariableDirectory variableDirectory) {
+    this.variableDirectory = variableDirectory;
   }
 
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

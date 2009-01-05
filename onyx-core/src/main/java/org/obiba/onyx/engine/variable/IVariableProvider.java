@@ -11,6 +11,8 @@ package org.obiba.onyx.engine.variable;
 
 import java.util.List;
 
+import org.obiba.onyx.core.domain.participant.Participant;
+
 /**
  * 
  */
@@ -21,5 +23,7 @@ public interface IVariableProvider {
    * @return
    */
   public List<Entity> getVariables();
+
+  public List<VariableData> getVariableData(Participant participant, Variable variable);
 
 }

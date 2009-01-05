@@ -18,12 +18,17 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import junit.framework.Assert;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.variable.impl.DefaultEntityPathNamingStrategy;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -35,20 +40,26 @@ import com.thoughtworks.xstream.XStream;
  */
 public class VariableTest {
 
+  private static final Logger log = LoggerFactory.getLogger(VariableTest.class);
+
   private XStream xstream;
 
   private IEntityPathNamingStrategy pathNamingStrategy = DefaultEntityPathNamingStrategy.getInstance("STUDY_NAME");
 
-  @Test
-  public void testXStream() {
+  private Entity root;
+
+  private VariableDataSet dataSet;
+
+  @Before
+  public void setUp() {
     initializeXStream();
 
-    Entity root = new Entity(pathNamingStrategy.getRootName());
+    root = new Entity(pathNamingStrategy.getRootName());
     Entity parent;
     Variable variable;
     Variable subvariable;
 
-    VariableDataSet dataSet = new VariableDataSet();
+    dataSet = new VariableDataSet();
 
     // users
 
@@ -135,6 +146,11 @@ public class VariableTest {
       userLogins[0].addReference(data);
     }
 
+  }
+
+  @Test
+  public void testXStream() {
+
     // dumps
 
     System.out.println("\n**** Variables directory ****\n");
@@ -145,10 +161,21 @@ public class VariableTest {
     System.out.println();
     xquery(root, "//entity[@name='PARTICIPANT']/variable[@name='BARCODE']");
     System.out.println();
-    xquery(root, "//entity[@name='PARTICIPANT']/variable[@name='BARCODE'] | //entity[not(@name='PARTICIPANT')]/variable");
+    xquery(root, "//entity[@name='PARTICIPANT']/variable[@name='BARCODE'] | //entity[not(@name='PARTICIPANT')]//variable");
 
     System.out.println("\n**** Variables paths ****\n");
     writeVariables(root);
+
+    // search
+    Entity searchedEntity = pathNamingStrategy.getEntity(root, "/STUDY_NAME/HealthQuestionnaire/DATE_OF_BIRTH/DOB_MONTH/OPEN_MONTH");
+    Assert.assertNotNull(searchedEntity);
+    Assert.assertEquals("OPEN_MONTH", searchedEntity.getName());
+
+    searchedEntity = pathNamingStrategy.getEntity(root, "/STUDY_NAME/HealthQuestionnaire/DATE_OF_BIRTH/OPEN_MONTH");
+    Assert.assertNull(searchedEntity);
+
+    searchedEntity = pathNamingStrategy.getEntity(root, "/ANOTHER_STUDY_NAME/HealthQuestionnaire/DATE_OF_BIRTH/DOB_MONTH/OPEN_MONTH");
+    Assert.assertNull(searchedEntity);
 
     System.out.println("\n**** Variables dataSet ****\n");
     System.out.println(xstream.toXML(dataSet));
@@ -198,7 +225,7 @@ public class VariableTest {
 
   private void initializeXStream() {
     xstream = new XStream();
-    xstream.setMode(XStream.ID_REFERENCES);
+    xstream.setMode(XStream.XPATH_ABSOLUTE_REFERENCES);
     xstream.autodetectAnnotations(true);
 
     xstream.alias("participant", Participant.class);

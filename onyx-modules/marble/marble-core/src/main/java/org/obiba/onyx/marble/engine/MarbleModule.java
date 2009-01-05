@@ -11,7 +11,6 @@ package org.obiba.onyx.marble.engine;
 
 import java.util.List;
 
-import org.apache.wicket.Application;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.engine.Module;
@@ -54,12 +53,12 @@ public class MarbleModule implements Module, ApplicationContextAware {
     return "marble";
   }
 
-  public void initialize() {
+  public void initialize(WebApplication application) {
     // Mount page to specific URL so it can be called from <embed> tag (submit form button).
-    ((WebApplication) Application.get()).mountBookmarkablePage("/uploadConsent", ElectronicConsentUploadPage.class);
+    application.mountBookmarkablePage("/uploadConsent", ElectronicConsentUploadPage.class);
   }
 
-  public void shutdown() {
+  public void shutdown(WebApplication application) {
   }
 
   public List<Stage> getStages() {

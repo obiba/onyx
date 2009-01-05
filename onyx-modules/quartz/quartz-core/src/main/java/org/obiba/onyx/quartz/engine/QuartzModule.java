@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;
@@ -22,6 +24,8 @@ import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.engine.variable.Entity;
 import org.obiba.onyx.engine.variable.IVariableProvider;
+import org.obiba.onyx.engine.variable.Variable;
+import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -52,7 +56,7 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
     return "quartz";
   }
 
-  public void initialize() {
+  public void initialize(WebApplication application) {
     log.info("initialize");
     for(Iterator<Stage> iter = stages.iterator(); iter.hasNext();) {
       Stage stage = iter.next();
@@ -66,7 +70,7 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
     }
   }
 
-  public void shutdown() {
+  public void shutdown(WebApplication application) {
     log.info("shutdown");
   }
 
@@ -177,6 +181,11 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
     }
 
     return entities;
+  }
+
+  public List<VariableData> getVariableData(Participant participant, Variable variable) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

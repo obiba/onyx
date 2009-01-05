@@ -11,7 +11,9 @@ package org.obiba.onyx.jade.engine;
 
 import java.util.List;
 
+import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;
@@ -19,13 +21,18 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
+import org.obiba.onyx.engine.variable.Entity;
+import org.obiba.onyx.engine.variable.IVariableProvider;
+import org.obiba.onyx.engine.variable.Variable;
+import org.obiba.onyx.engine.variable.VariableData;
+import org.obiba.wicket.util.seed.DatabaseSeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-public class JadeModule implements Module, ApplicationContextAware {
+public class JadeModule implements Module, IVariableProvider, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(JadeModule.class);
 
@@ -33,17 +40,22 @@ public class JadeModule implements Module, ApplicationContextAware {
 
   private ActiveInterviewService activeInterviewService;
 
+  private DatabaseSeed databaseSeed;
+
   private List<Stage> stages;
 
   public String getName() {
     return "jade";
   }
 
-  public void initialize() {
+  public void initialize(WebApplication application) {
     log.info("initialize");
+    if(databaseSeed != null) {
+      databaseSeed.seedDatabase(application);
+    }
   }
 
-  public void shutdown() {
+  public void shutdown(WebApplication application) {
     log.info("shutdown");
   }
 
@@ -114,7 +126,21 @@ public class JadeModule implements Module, ApplicationContextAware {
     this.applicationContext = applicationContext;
   }
 
+  public void setDatabaseSeed(DatabaseSeed databaseSeed) {
+    this.databaseSeed = databaseSeed;
+  }
+
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
     this.activeInterviewService = activeInterviewService;
+  }
+
+  public List<VariableData> getVariableData(Participant participant, Variable variable) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public List<Entity> getVariables() {
+    // TODO Auto-generated method stub
+    return null;
   }
 }

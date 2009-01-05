@@ -43,10 +43,18 @@ public interface IEntityPathNamingStrategy {
   public String getPathSeparator();
 
   /**
-   * Normalize the name.
+   * Normalize the name: for instance change spaces to underscores, capitalize letters etc.
    * @param name
    * @return
    */
   public String normalizeName(String name);
+
+  /**
+   * Get the entity from the path and a parent entity (can be itself).
+   * @param entity
+   * @param path
+   * @return
+   */
+  public Entity getEntity(Entity entity, String path);
 
 }

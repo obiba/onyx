@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,16 +50,19 @@ public class VariableDirectory implements IVariableProvider {
     if(!providers.contains(provider)) {
       log.info("registerVariables({})", provider.getClass().getSimpleName());
       providers.add(provider);
-      for(Entity entity : provider.getVariables()) {
-        root.addEntity(entity);
-        for(Variable variable : getVariables(entity, new ArrayList<Variable>())) {
-          String path = entityPathNamingStrategy.getPath(variable);
-          if(variablePathToProvidersMap.containsKey(path)) {
-            throw new IllegalArgumentException("Variable path " + path + "already registered by " + variablePathToProvidersMap.get(path).getClass().getSimpleName());
+      List<Entity> entities = provider.getVariables();
+      if(entities != null) {
+        for(Entity entity : entities) {
+          root.addEntity(entity);
+          for(Variable variable : getVariables(entity, new ArrayList<Variable>())) {
+            String path = entityPathNamingStrategy.getPath(variable);
+            if(variablePathToProvidersMap.containsKey(path)) {
+              throw new IllegalArgumentException("Variable path " + path + "already registered by " + variablePathToProvidersMap.get(path).getClass().getSimpleName());
+            }
+            log.info("Registering variable {} from provider {}", path, provider.getClass().getSimpleName());
+            variablePathToProvidersMap.put(path, provider);
+            variablePathToVariableMap.put(path, variable);
           }
-          log.info("Registering variable {} from provider {}", path, provider.getClass().getSimpleName());
-          variablePathToProvidersMap.put(path, provider);
-          variablePathToVariableMap.put(path, variable);
         }
       }
     }
@@ -85,6 +89,25 @@ public class VariableDirectory implements IVariableProvider {
       entities.addAll(provider.getVariables());
     }
     return entities;
+  }
+
+  public Variable getVariable(String path) {
+    return variablePathToVariableMap.get(path);
+  }
+
+  public List<VariableData> getVariableData(Participant participant, String path) {
+    Variable variable = getVariable(path);
+    IVariableProvider provider = variablePathToProvidersMap.get(path);
+    if(provider == null) return null;
+
+    return provider.getVariableData(participant, variable);
+  }
+
+  public List<VariableData> getVariableData(Participant participant, Variable variable) {
+    IVariableProvider provider = variablePathToProvidersMap.get(entityPathNamingStrategy.getPath(variable));
+    if(provider == null) return null;
+
+    return provider.getVariableData(participant, variable);
   }
 
 }

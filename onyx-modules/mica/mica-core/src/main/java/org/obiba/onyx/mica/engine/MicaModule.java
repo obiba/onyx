@@ -11,6 +11,7 @@ package org.obiba.onyx.mica.engine;
 
 import java.util.List;
 
+import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Module;
@@ -39,11 +40,11 @@ public class MicaModule implements Module, ApplicationContextAware {
     return "mica";
   }
 
-  public void initialize() {
+  public void initialize(WebApplication application) {
     log.info("initialize");
   }
 
-  public void shutdown() {
+  public void shutdown(WebApplication application) {
     log.info("shutdown");
   }
 

@@ -11,6 +11,7 @@ package org.obiba.onyx.engine;
 
 import java.util.List;
 
+import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.engine.state.IStageExecution;
 
@@ -44,16 +45,18 @@ public interface Module {
   /**
    * Called at module registration.
    * 
+   * @param application
    * @see ModuleRegistry
    */
-  public void initialize();
+  public void initialize(WebApplication application);
 
   /**
    * Called at module unregistration.
    * 
+   * @param application
    * @see ModuleRegistry
    */
-  public void shutdown();
+  public void shutdown(WebApplication application);
 
   /**
    * Returns the list of {@link Stage}s that are contributed by this <code>Module</code>.

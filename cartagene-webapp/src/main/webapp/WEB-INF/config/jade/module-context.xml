@@ -6,17 +6,9 @@
   <!-- Import the remote API service declaration -->
   <import resource="classpath:/META-INF/spring/remote-api-server.xml" />
 
-  <bean id="jadeSeedStartupListener" class="org.obiba.wicket.util.seed.DatabaseSeedWebApplicationStartupListener"
-    scope="singleton">
-    <property name="databaseSeeds">
-      <list>
-        <ref bean="jadeDatabaseSeed" />
-      </list>
-    </property>
-  </bean>
-
   <bean class="org.obiba.onyx.jade.engine.JadeModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
+    <property name="databaseSeed" ref="jadeDatabaseSeed" />
     <property name="stages">
       <bean class="org.obiba.onyx.engine.StageDescriptorFactoryBean">
         <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/jade/stages.xml" />

@@ -9,8 +9,13 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.obiba.onyx.engine.variable.Entity;
 import org.obiba.onyx.engine.variable.IEntityPathNamingStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
 /**
@@ -18,15 +23,18 @@ import org.w3c.dom.Node;
  */
 public class DefaultEntityPathNamingStrategy implements IEntityPathNamingStrategy {
 
+  private static final Logger log = LoggerFactory.getLogger(DefaultEntityPathNamingStrategy.class);
+
   public static final String PATH_SEPARATOR = "/";
 
   private String rootName;
 
   public String getPath(Entity entity) {
+    String name = normalizeName(entity.getName());
     if(entity.getParent() != null) {
-      return getPath(entity.getParent()) + getPathSeparator() + entity.getName();
+      return getPath(entity.getParent()) + getPathSeparator() + name;
     } else {
-      return getPathSeparator() + entity.getName();
+      return getPathSeparator() + name;
     }
   }
 
@@ -66,7 +74,7 @@ public class DefaultEntityPathNamingStrategy implements IEntityPathNamingStrateg
   }
 
   public String normalizeName(String name) {
-    return name;
+    return name.replace(' ', '_');
   }
 
   public void setRootName(String rootName) {
@@ -75,6 +83,51 @@ public class DefaultEntityPathNamingStrategy implements IEntityPathNamingStrateg
 
   public String getRootName() {
     return rootName;
+  }
+
+  public Entity getEntity(Entity entity, String path) {
+    if(entity == null) return null;
+    // find the root
+    Entity root = entity;
+    while(root.getParent() != null) {
+      root = root.getParent();
+    }
+    log.debug("root.name={}", root);
+
+    // split the path
+    List<String> entityNames = new ArrayList<String>();
+    for(String str : path.split(getPathSeparator())) {
+      if(str.length() > 0) {
+        entityNames.add(str);
+      }
+    }
+    log.debug("entityNames={}", entityNames);
+    if(entityNames.size() == 0) return null;
+    if(!normalizeName(root.getName()).equals(entityNames.get(0))) return null;
+
+    Entity current = root;
+    for(int i = 1; i < entityNames.size(); i++) {
+      String entityName = entityNames.get(i);
+      log.debug("entityName={}", entityName);
+      log.debug("current.name={}", current);
+      boolean found = false;
+      for(Entity child : current.getEntities()) {
+        log.debug("  child.name={}", child);
+        if(normalizeName(child.getName()).equals(entityName)) {
+          current = child;
+          found = true;
+          break;
+        }
+      }
+      if(!found) {
+        current = null;
+        break;
+      }
+    }
+
+    log.debug(">>> current.name={}", current);
+
+    return current;
   }
 
 }
