@@ -168,7 +168,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
    */
   protected void deleteDeviceData() {
 
-    // Overwrite the CardioSoft configuration file (cardio.ini)
+    // Overwrite the CardioSoft configuration file
     File backupSettingsFile = new File(getInitPath(), getSettingsFileName());
     File currentSettingsFile = new File(getCardioPath(), getSettingsFileName());
     try {
@@ -185,29 +185,31 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
     // Initialize the CardioSoft database
     FilenameFilter filter = new FilenameFilter() {
       public boolean accept(File dir, String name) {
-        return (name.endsWith(".BTR") || name.equalsIgnoreCase("btr-record.dat"));
+        return (name.endsWith(".BTR"));
       }
     };
 
-    File[] backupDatabaseFiles = new File(getDatabasePath()).listFiles(filter);
-    ArrayList<File> fileNotDeleted = new ArrayList<File>();
-    if(backupDatabaseFiles.length > 0) {
-      for(File file : backupDatabaseFiles) {
-        if(!file.delete()) {
-          fileNotDeleted.add(file);
+    try {
+      File[] backupDatabaseFiles = new File(getInitPath()).listFiles(filter);
+      if(backupDatabaseFiles.length > 0) {
+        for(int i = 0; i < backupDatabaseFiles.length; i++) {
+          FileUtil.copyFile(backupDatabaseFiles[i], new File(getDatabasePath(), backupDatabaseFiles[i].getName()));
+        }
+      } else {
+        File[] databaseFiles = new File(getDatabasePath()).listFiles(filter);
+        for(int i = 0; i < databaseFiles.length; i++) {
+          FileUtil.copyFile(databaseFiles[i], new File(getInitPath(), databaseFiles[i].getName()));
         }
       }
+
+    } catch(Exception couldNotInitDbs) {
+      throw new RuntimeException("Error initializing ECG database files", couldNotInitDbs);
     }
 
-    // In case some file did not get deleted...
-    if(!fileNotDeleted.isEmpty()) {
-
-      StringBuilder fileNotDeletedPaths = new StringBuilder();
-      for(File file : fileNotDeleted) {
-        fileNotDeletedPaths.append(file.getPath() + ", ");
-      }
-
-      throw new RuntimeException("Error initializing ECG database files, could not delete the following files : " + fileNotDeletedPaths.toString());
+    // Delete BTrieve record file.
+    File btrRecordFile = new File(getDatabasePath(), getBtrRecordFileName());
+    if(!btrRecordFile.delete()) {
+      log.warn("Could not delete BTrieve record file.");
     }
 
     File reportFile = new File(getExportPath(), getXmlFileName());

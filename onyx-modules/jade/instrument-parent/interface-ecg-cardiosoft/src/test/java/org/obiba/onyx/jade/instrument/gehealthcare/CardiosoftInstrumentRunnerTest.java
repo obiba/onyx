@@ -172,24 +172,15 @@ public class CardiosoftInstrumentRunnerTest {
 
   private void simulateResults() throws FileNotFoundException, IOException, URISyntaxException {
 
-    // Write some arbitrary data to simulate database access by Cardiosoft.
-    FileOutputStream ouputStream;
-    (ouputStream = new FileOutputStream(new File(cardiosoftInstrumentRunner.getDatabasePath(), "EXAMINA.BTR"))).write((byte) 234432141);
-    ouputStream.close();
-    (ouputStream = new FileOutputStream(new File(cardiosoftInstrumentRunner.getDatabasePath(), "NETWORK.BTR"))).write((byte) 234432141);
-    ouputStream.close();
-    (ouputStream = new FileOutputStream(new File(cardiosoftInstrumentRunner.getDatabasePath(), "STATION.BTR"))).write((byte) 234432141);
-    ouputStream.close();
-    (ouputStream = new FileOutputStream(new File(cardiosoftInstrumentRunner.getDatabasePath(), "USERS.BTR"))).write((byte) 234432141);
-    ouputStream.close();
-    (ouputStream = new FileOutputStream(new File(cardiosoftInstrumentRunner.getDatabasePath(), cardiosoftInstrumentRunner.getBtrDatabaseFileName()))).write((byte) 234432141);
-    ouputStream.close();
-    (ouputStream = new FileOutputStream(new File(cardiosoftInstrumentRunner.getDatabasePath(), cardiosoftInstrumentRunner.getBtrRecordFileName()))).write((byte) 234432141);
-    ouputStream.close();
+    // Create dummy BTrieve data file.
+    FileOutputStream output = new FileOutputStream(new File(cardiosoftInstrumentRunner.getDatabasePath(), "btr-record.dat"));
+    output.write((byte) 234432141);
+    output.close();
 
-    // Generate dummy cardio.ini file
-    (ouputStream = new FileOutputStream(new File(cardiosoftInstrumentRunner.getCardioPath(), cardiosoftInstrumentRunner.getSettingsFileName()))).write((byte) 234432141);
-    ouputStream.close();
+    // Write some arbitrary data to simulate database access by Cardiosoft.
+    (new FileOutputStream(new File(cardiosoftInstrumentRunner.getDatabasePath(), "PATIENT.BTR"))).write((byte) 234432141);
+    (new FileOutputStream(new File(cardiosoftInstrumentRunner.getDatabasePath(), "EXAMINA.BTR"))).write((byte) 234432141);
+    (new FileOutputStream(new File(cardiosoftInstrumentRunner.getCardioPath(), cardiosoftInstrumentRunner.getSettingsFileName()))).write((byte) 234432141);
 
     // Copy the results file + PDF file to test directory.
     FileUtil.copyFile(new File(getClass().getResource("/Cartagene.pdf").toURI()), new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getPdfFileName()));
@@ -200,12 +191,9 @@ public class CardiosoftInstrumentRunnerTest {
   private void verifyInitialization() {
 
     // Verify that the Cardiosoft database content has been cleared successfully.
-    Assert.assertFalse(new File(cardiosoftInstrumentRunner.getDatabasePath(), "EXAMINA.BTR").exists());
-    Assert.assertFalse(new File(cardiosoftInstrumentRunner.getDatabasePath(), "NETWORK.BTR").exists());
-    Assert.assertFalse(new File(cardiosoftInstrumentRunner.getDatabasePath(), "STATION.BTR").exists());
-    Assert.assertFalse(new File(cardiosoftInstrumentRunner.getDatabasePath(), "USERS.BTR").exists());
-    Assert.assertFalse(new File(cardiosoftInstrumentRunner.getDatabasePath(), cardiosoftInstrumentRunner.getBtrDatabaseFileName()).exists());
-    Assert.assertFalse(new File(cardiosoftInstrumentRunner.getDatabasePath(), cardiosoftInstrumentRunner.getBtrRecordFileName()).exists());
+    Assert.assertEquals(new File(cardiosoftInstrumentRunner.getInitPath(), "PATIENT.BTR").length(), new File(cardiosoftInstrumentRunner.getDatabasePath(), "PATIENT.BTR").length());
+    Assert.assertEquals(new File(cardiosoftInstrumentRunner.getInitPath(), "EXAMINA.BTR").length(), new File(cardiosoftInstrumentRunner.getDatabasePath(), "EXAMINA.BTR").length());
+    Assert.assertFalse(new File(cardiosoftInstrumentRunner.getDatabasePath(), "btr-record.dat").exists());
 
     // Make sure that Cardiosoft settings have been overwritten (cardio.ini).
     Assert.assertEquals(new File(cardiosoftInstrumentRunner.getInitPath(), cardiosoftInstrumentRunner.getSettingsFileName()).length(), new File(cardiosoftInstrumentRunner.getCardioPath(), "CARDIO.INI").length());
@@ -215,5 +203,4 @@ public class CardiosoftInstrumentRunnerTest {
     Assert.assertFalse(new File(cardiosoftInstrumentRunner.getExportPath(), cardiosoftInstrumentRunner.getPdfFileName()).exists());
 
   }
-
 }
