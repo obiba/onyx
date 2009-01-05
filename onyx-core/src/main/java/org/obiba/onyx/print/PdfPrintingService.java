@@ -58,26 +58,28 @@ public class PdfPrintingService implements InitializingBean {
   public void afterPropertiesSet() throws Exception {
     // Try to find a PrintService instance with the specified name if any
     if(printerName != null && printerName.length() > 0) {
-      log.info("Looking for a printer named {}", printerName);
+      log.info("Looking for a printer named '{}'", printerName);
       // Lookup all services
       PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
       for(PrintService ps : printServices) {
         if(ps.getName().equalsIgnoreCase(printerName)) {
-          log.info("Using printer {}", ps.getName());
+          log.info("Using printer '{}'", ps.getName());
           this.printService = ps;
           break;
         }
       }
       if(printService == null) {
-        log.warn("Could not find printer with name {}. Will try default printer.", printerName);
+        log.warn("Could not find printer with name '{}'. Will try default printer.", printerName);
       }
     }
 
     // If the printService is null, we weren't configured with a printerName or we couldn't
     // find one with the specified name
     if(printService == null) {
-      log.info("Using default printer.");
       printService = PrintServiceLookup.lookupDefaultPrintService();
+      if(printService != null) {
+        log.info("Using default printer '{}'.", printService.getName());
+      }
     }
 
     // If the printService is null, there is no default printer installed.
@@ -93,9 +95,9 @@ public class PdfPrintingService implements InitializingBean {
       }
 
       if(supportedHandler != null) {
-        log.info("Printer {} supports PDF printing through handler {}. PDF printing will be available.", printService.getName(), supportedHandler.getClass().getSimpleName());
+        log.info("Printer '{}' supports PDF printing through handler {}. PDF printing will be available.", printService.getName(), supportedHandler.getClass().getSimpleName());
       } else {
-        log.warn("Printer {} does not support printing PDF files directly. PDF printing will not be available.", printService.getName());
+        log.warn("Printer '{}' does not support printing PDF files directly. PDF printing will not be available.", printService.getName());
         printService = null;
       }
     }
