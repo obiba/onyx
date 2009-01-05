@@ -227,8 +227,6 @@ public class ActiveTubeRegistrationServiceImplTest {
 
     verify(persistenceManagerMock);
 
-    // The remark code should be set
-    // Assert.assertEquals("123", tube.getRemarkCode());
   }
 
   /**
