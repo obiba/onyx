@@ -6,7 +6,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TooManyListenersException;
 
@@ -77,9 +79,16 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
       if(pCommand != null) {
 
         outputStream = serialPort.getOutputStream();
+
         // Send parameter
         outputStream.write(pCommand);
-        log.info("Sending data:{}", pCommand.toString());
+
+        List<Byte> pCommandList = new ArrayList<Byte>();
+        for(int i = 0; i < pCommand.length; i++) {
+          pCommandList.add(pCommand[i]);
+        }
+
+        log.info("Sending data:{}", (pCommandList));
       }
     } catch(IOException e) {
       throw new RuntimeException("Error when sending data to device", e);
