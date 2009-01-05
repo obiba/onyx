@@ -225,8 +225,9 @@ public class Participant extends AbstractEntity {
   public Map<String, Object> getAttributes() {
     Map<String, Object> attributesMap = new HashMap<String, Object>();
 
-    for(ParticipantAttributeValue participantAttribute : configuredAttributeValues) {
-      attributesMap.put(participantAttribute.getAttributeName(), participantAttribute.getData().getValue());
+    for(ParticipantAttributeValue participantAttribute : getConfiguredAttributeValues()) {
+      Object attributeValue = (participantAttribute.getData() != null) ? participantAttribute.getData().getValue() : null;
+      attributesMap.put(participantAttribute.getAttributeName(), attributeValue);
     }
     return attributesMap;
   }
