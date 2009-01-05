@@ -57,7 +57,7 @@ public class VariableDirectory implements IVariableProvider {
           for(Variable variable : getVariables(entity, new ArrayList<Variable>())) {
             String path = entityPathNamingStrategy.getPath(variable);
             if(variablePathToProvidersMap.containsKey(path)) {
-              throw new IllegalArgumentException("Variable path " + path + "already registered by " + variablePathToProvidersMap.get(path).getClass().getSimpleName());
+              throw new IllegalArgumentException("Variable path " + path + " already registered by " + variablePathToProvidersMap.get(path).getClass().getSimpleName());
             }
             log.info("Registering variable {} from provider {}", path, provider.getClass().getSimpleName());
             variablePathToProvidersMap.put(path, provider);

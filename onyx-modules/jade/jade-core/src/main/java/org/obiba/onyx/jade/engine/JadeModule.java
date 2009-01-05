@@ -9,9 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.engine;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.protocol.http.WebApplication;
+import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -25,6 +27,8 @@ import org.obiba.onyx.engine.variable.Entity;
 import org.obiba.onyx.engine.variable.IVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.engine.variable.IInstrumentTypeToVariableMappingStrategy;
 import org.obiba.wicket.util.seed.DatabaseSeed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +43,10 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
   private ApplicationContext applicationContext;
 
   private ActiveInterviewService activeInterviewService;
+
+  private EntityQueryService queryService;
+
+  private IInstrumentTypeToVariableMappingStrategy instrumentTypeToVariableMappingStrategy;
 
   private DatabaseSeed databaseSeed;
 
@@ -134,13 +142,26 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
     this.activeInterviewService = activeInterviewService;
   }
 
+  public void setQueryService(EntityQueryService queryService) {
+    this.queryService = queryService;
+  }
+
+  public void setInstrumentTypeToVariableMappingStrategy(IInstrumentTypeToVariableMappingStrategy instrumentTypeToVariableMappingStrategy) {
+    this.instrumentTypeToVariableMappingStrategy = instrumentTypeToVariableMappingStrategy;
+  }
+
   public List<VariableData> getVariableData(Participant participant, Variable variable) {
     // TODO Auto-generated method stub
     return null;
   }
 
   public List<Entity> getVariables() {
-    // TODO Auto-generated method stub
-    return null;
+    List<Entity> entities = new ArrayList<Entity>();
+
+    for(InstrumentType type : queryService.list(InstrumentType.class)) {
+      entities.add(instrumentTypeToVariableMappingStrategy.getEntity(queryService, type));
+    }
+
+    return entities;
   }
 }
