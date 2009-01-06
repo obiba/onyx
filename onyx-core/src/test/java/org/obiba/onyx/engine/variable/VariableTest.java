@@ -183,8 +183,8 @@ public class VariableTest {
     System.out.println("\n**** Variables dataSet ****\n");
     System.out.println(xstream.toXML(dataSet));
 
-    System.out.println("\n**** Variables data paths ****\n");
-    writeVariablesData(dataSet);
+    // System.out.println("\n**** Variables data paths ****\n");
+    // writeVariablesData(dataSet);
 
   }
 
@@ -218,11 +218,11 @@ public class VariableTest {
     }
   }
 
-  private void writeVariablesData(VariableDataSet dataSet) {
-    for(VariableData data : dataSet.getVariableDatas()) {
-      System.out.println(data.getPath());
-    }
-  }
+  // private void writeVariablesData(VariableDataSet dataSet) {
+  // for(VariableData data : dataSet.getVariableDatas()) {
+  // System.out.println(data.getPath());
+  // }
+  // }
 
   private void initializeXStream() {
     xstream = new XStream();

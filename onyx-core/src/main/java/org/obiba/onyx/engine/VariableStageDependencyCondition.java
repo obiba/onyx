@@ -15,6 +15,7 @@ import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.VariableDirectory;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,9 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
 
   /**
    * Returns a Boolean depending on the fact that the step is completed and also on its result. Returns null if
-   * dependent stage is not completed, other the method returns the value of the dependent stage's data.
+   * dependent stage is not completed, otherwise the method returns the result of the comparison with a reference data
+   * if a comparison operator is provided, else the value of the dependent stage's data if it is a boolean, or simply
+   * the fact that the data is not null.
    */
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
     // if stage is defined, check it is completed first
@@ -67,12 +70,14 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
     VariableData variableData = variableDirectory.getVariableData(activeInterviewService.getParticipant(), variablePath);
     if(variableData != null) {
       Data varData = variableData.getData();
-      log.debug("varData op data={} {} {}", new Object[] { varData, operator, data });
+      log.info("varData op data={} {} {}", new Object[] { varData, operator, data });
       if(varData != null) {
         if(operator != null) {
           return operator.compare(varData, data);
-        } else {
+        } else if(varData.getType().equals(DataType.BOOLEAN)) {
           return varData.getValue();
+        } else {
+          return varData.getValue() != null;
         }
       }
     }

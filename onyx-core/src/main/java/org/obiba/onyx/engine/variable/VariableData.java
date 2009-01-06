@@ -10,8 +10,6 @@
 package org.obiba.onyx.engine.variable;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,13 +27,13 @@ public class VariableData implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  public static final String ENCODING = "ISO-8859-1";
-
-  public static final String QUERY = "/data?";
-
-  public static final String QUERY_KEY_VALUE_SEPARATOR = "=";
-
-  public static final String QUERY_STATEMENT_SEPARATOR = "&";
+  // public static final String ENCODING = "ISO-8859-1";
+  //
+  // public static final String QUERY = "/data?";
+  //
+  // public static final String QUERY_KEY_VALUE_SEPARATOR = "=";
+  //
+  // public static final String QUERY_STATEMENT_SEPARATOR = "&";
 
   @XStreamAsAttribute
   private String variablePath;
@@ -55,24 +53,24 @@ public class VariableData implements Serializable {
     this.data = data;
   }
 
-  public String getPath() {
-    String path = "";
-    if(variablePath != null) {
-      path = variablePath;
-    }
-    if(data != null) {
-      if(path.length() > 0) {
-        path += QUERY + "value" + QUERY_KEY_VALUE_SEPARATOR;
-      }
-      try {
-        path += URLEncoder.encode(data.getValueAsString(), ENCODING);
-      } catch(UnsupportedEncodingException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    }
-    return path;
-  }
+  // public String getPath() {
+  // String path = "";
+  // if(variablePath != null) {
+  // path = variablePath;
+  // }
+  // if(data != null) {
+  // if(path.length() > 0) {
+  // path += QUERY + "value" + QUERY_KEY_VALUE_SEPARATOR;
+  // }
+  // try {
+  // path += URLEncoder.encode(data.getValueAsString(), ENCODING);
+  // } catch(UnsupportedEncodingException e) {
+  // // TODO Auto-generated catch block
+  // e.printStackTrace();
+  // }
+  // }
+  // return path;
+  // }
 
   public String getVariablePath() {
     return variablePath;

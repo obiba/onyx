@@ -24,10 +24,14 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.impl.DefaultInstrumentRunServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServiceImpl {
+
+  private static final Logger log = LoggerFactory.getLogger(InstrumentRunServiceHibernateImpl.class);
 
   private SessionFactory factory;
 
@@ -62,11 +66,10 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
     InstrumentRun run = getLastCompletedInstrumentRun(participant, instrumentType);
 
     if(run != null) {
-      System.out.println("Run id=" + run.getId());
-      System.out.println("Param name=" + parameterName);
+      log.info("Run.id={} Param.name={}", run.getId(), parameterName);
       runValue = (InstrumentRunValue) AssociationCriteria.create(InstrumentRunValue.class, getSession()).add("instrumentRun", Operation.eq, run).add("instrumentParameter.name", Operation.eq, parameterName).getCriteria().uniqueResult();
-
     }
+
     return runValue;
   }
 

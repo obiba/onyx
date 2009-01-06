@@ -11,6 +11,7 @@
   <bean class="org.obiba.onyx.jade.engine.JadeModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="queryService" ref="persistenceManager" />
+    <property name="instrumentRunService" ref="instrumentRunService" />
     <property name="instrumentTypeToVariableMappingStrategy" ref="instrumentTypeToVariableMappingStrategy" />
     <property name="databaseSeed" ref="jadeDatabaseSeed" />
     <property name="stages">

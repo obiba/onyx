@@ -28,6 +28,7 @@ import org.obiba.onyx.engine.variable.IVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.engine.variable.IInstrumentTypeToVariableMappingStrategy;
 import org.obiba.wicket.util.seed.DatabaseSeed;
 import org.slf4j.Logger;
@@ -45,6 +46,8 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
   private ActiveInterviewService activeInterviewService;
 
   private EntityQueryService queryService;
+
+  private InstrumentRunService instrumentRunService;
 
   private IInstrumentTypeToVariableMappingStrategy instrumentTypeToVariableMappingStrategy;
 
@@ -146,13 +149,20 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
     this.queryService = queryService;
   }
 
+  public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
+    this.instrumentRunService = instrumentRunService;
+  }
+
   public void setInstrumentTypeToVariableMappingStrategy(IInstrumentTypeToVariableMappingStrategy instrumentTypeToVariableMappingStrategy) {
     this.instrumentTypeToVariableMappingStrategy = instrumentTypeToVariableMappingStrategy;
   }
 
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
-    // TODO Auto-generated method stub
-    return null;
+
+    VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
+    varData.setData(instrumentTypeToVariableMappingStrategy.getData(queryService, instrumentRunService, participant, variable));
+
+    return varData;
   }
 
   public List<Variable> getVariables() {
