@@ -281,12 +281,15 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
   }
 
   public Date getStartTime() {
-    // Find the last action of type EXECUTE for this stage
-    Action lastExecuteAction = null;
+    // Find the last action of type EXECUTE or SKIP for this stage
+    Action lastExecuteOrSkipAction = null;
     for(Action action : getStageActionList()) {
-      if(action.getActionType() == ActionType.EXECUTE) lastExecuteAction = action;
+      if(action.getActionType() == ActionType.EXECUTE || action.getActionType() == ActionType.SKIP) {
+        lastExecuteOrSkipAction = action;
+      }
     }
-    return (lastExecuteAction != null) ? lastExecuteAction.getDateTime() : null;
+
+    return (lastExecuteOrSkipAction != null) ? lastExecuteOrSkipAction.getDateTime() : null;
   }
 
   public Date getEndTime() {

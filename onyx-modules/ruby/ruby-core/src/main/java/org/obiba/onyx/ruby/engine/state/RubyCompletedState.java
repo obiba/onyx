@@ -57,4 +57,9 @@ public class RubyCompletedState extends AbstractRubyStageState {
   public boolean isCompleted() {
     return true;
   }
+
+  @Override
+  public ActionType getStartingActionType() {
+    return ActionType.EXECUTE;
+  }
 }

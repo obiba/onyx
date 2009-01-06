@@ -44,7 +44,7 @@ public class StageStartEndTimePanel extends Panel {
   @Override
   public boolean isVisible() {
     IStageExecution exec = getStageExecution();
-    return exec.isCompleted() && (exec.getStartingActionType() == ActionType.EXECUTE);
+    return exec.isCompleted() && (exec.getStartingActionType() == ActionType.EXECUTE || exec.getStartingActionType() == ActionType.SKIP);
   }
 
   public IStageExecution getStageExecution() {
