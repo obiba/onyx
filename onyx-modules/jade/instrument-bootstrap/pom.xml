@@ -19,6 +19,11 @@
   </parent>
 
   <dependencies>
+
+    <!-- NOTE: Please think twice or thrice before adding a dependency here.
+      Whatever is listed here becomes a dependency for EVERY instrument deployed in Onyx. 
+      As such, we must keep them to a minimal. -->
+
     <dependency>
       <groupId>org.obiba.jade</groupId>
       <artifactId>jade-remote-api</artifactId>
