@@ -2,7 +2,7 @@
   <stage>
     <name>StandingHeight</name>
     <module>jade</module>
-    <stageDependencyCondition class="stageVariableCondition">
+    <stageDependencyCondition class="variableCondition">
       <stageName>CON</stageName>
       <variablePath>/CARTAGENE/Consent/accepted</variablePath>
       <!--operator>eq</operator>
@@ -15,7 +15,7 @@
   <stage>
     <name>SittingHeight</name>
     <module>jade</module>
-    <stageDependencyCondition class="stageVariableCondition">
+    <stageDependencyCondition class="variableCondition">
       <stageName>CON</stageName>
       <variablePath>/CARTAGENE/Consent/accepted</variablePath>
     </stageDependencyCondition>
@@ -24,7 +24,7 @@
   <stage>
     <name>HipsWaist</name>
     <module>jade</module>
-    <stageDependencyCondition class="stageVariableCondition">
+    <stageDependencyCondition class="variableCondition">
       <stageName>CON</stageName>
       <variablePath>/CARTAGENE/Consent/accepted</variablePath>
     </stageDependencyCondition>
@@ -33,7 +33,7 @@
   <stage>
     <name>GripStrength</name>
     <module>jade</module>
-    <stageDependencyCondition class="stageVariableCondition">
+    <stageDependencyCondition class="variableCondition">
       <stageName>CON</stageName>
       <variablePath>/CARTAGENE/Consent/accepted</variablePath>
     </stageDependencyCondition>
@@ -42,7 +42,7 @@
   <stage>
     <name>BloodPressure</name>
     <module>jade</module>
-    <stageDependencyCondition class="stageVariableCondition">
+    <stageDependencyCondition class="variableCondition">
       <stageName>CON</stageName>
       <variablePath>/CARTAGENE/Consent/accepted</variablePath>
     </stageDependencyCondition>
@@ -54,14 +54,14 @@
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
       <conditions>
-        <stageVariableCondition>
+        <variableCondition>
           <stageName>CON</stageName>
           <variablePath>/CARTAGENE/Consent/accepted</variablePath>
-        </stageVariableCondition>
-        <stageVariableCondition>
+        </variableCondition>
+        <variableCondition>
           <stageName>StandingHeight</stageName>
           <variablePath>/CARTAGENE/StandingHeight/Out/Height</variablePath>
-        </stageVariableCondition>
+        </variableCondition>
       </conditions>
     </stageDependencyCondition>
   </stage>
@@ -72,12 +72,12 @@
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
       <conditions>
-        <stageVariableCondition>
+        <variableCondition>
           <stageName>CON</stageName>
           <variablePath>/CARTAGENE/Consent/accepted</variablePath>
-        </stageVariableCondition>
+        </variableCondition>
         <inverseCondition>
-          <stageDependencyCondition class="stageVariableCondition">
+          <stageDependencyCondition class="variableCondition">
             <stageName>Impedence310</stageName>
             <variablePath>/CARTAGENE/Impedence310/Out/Weight</variablePath>
           </stageDependencyCondition>
@@ -92,25 +92,25 @@
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
       <conditions>
-        <stageVariableCondition>
+        <variableCondition>
           <stageName>CON</stageName>
           <variablePath>/CARTAGENE/Consent/accepted</variablePath>
-        </stageVariableCondition>
-        <stageVariableCondition>
+        </variableCondition>
+        <variableCondition>
           <stageName>StandingHeight</stageName>
           <variablePath>/CARTAGENE/StandingHeight/Out/Height</variablePath>
-        </stageVariableCondition>
+        </variableCondition>
         <multipleCondition>
           <operator>OR</operator>
           <conditions>
-            <stageVariableCondition>
+            <variableCondition>
               <stageName>Impedence310</stageName>
               <variablePath>/CARTAGENE/Impedence310/Out/Weight</variablePath>
-            </stageVariableCondition>
-            <stageVariableCondition>
+            </variableCondition>
+            <variableCondition>
               <stageName>Weight</stageName>
               <variablePath>/CARTAGENE/Weight/Out/Weight</variablePath>
-            </stageVariableCondition>
+            </variableCondition>
           </conditions>
         </multipleCondition>
       </conditions>
@@ -123,25 +123,25 @@
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
       <conditions>
-        <stageVariableCondition>
+        <variableCondition>
           <stageName>CON</stageName>
           <variablePath>/CARTAGENE/Consent/accepted</variablePath>
-        </stageVariableCondition>
-        <stageVariableCondition>
+        </variableCondition>
+        <variableCondition>
           <stageName>StandingHeight</stageName>
           <variablePath>/CARTAGENE/StandingHeight/Out/Height</variablePath>
-        </stageVariableCondition>
+        </variableCondition>
         <multipleCondition>
           <operator>OR</operator>
           <conditions>
-            <stageVariableCondition>
+            <variableCondition>
               <stageName>Impedence310</stageName>
               <variablePath>/CARTAGENE/Impedence310/Out/Weight</variablePath>
-            </stageVariableCondition>
-            <stageVariableCondition>
+            </variableCondition>
+            <variableCondition>
               <stageName>Weight</stageName>
               <variablePath>/CARTAGENE/Weight/Out/Weight</variablePath>
-            </stageVariableCondition>
+            </variableCondition>
           </conditions>
         </multipleCondition>
       </conditions>
@@ -151,7 +151,7 @@
   <stage>
     <name>BoneDensity</name>
     <module>jade</module>
-    <stageDependencyCondition class="stageVariableCondition">
+    <stageDependencyCondition class="variableCondition">
       <stageName>CON</stageName>
       <variablePath>/CARTAGENE/Consent/accepted</variablePath>
     </stageDependencyCondition>
@@ -163,14 +163,14 @@
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
       <conditions>
-        <stageVariableCondition>
+        <variableCondition>
           <stageName>CON</stageName>
           <variablePath>/CARTAGENE/Consent/accepted</variablePath>
-        </stageVariableCondition>
-        <stageVariableCondition>
+        </variableCondition>
+        <variableCondition>
           <stageName>BloodPressure</stageName>
           <variablePath>/CARTAGENE/BloodPressure/Out/Systolic_Blood_Pressure</variablePath>
-        </stageVariableCondition>
+        </variableCondition>
       </conditions>
     </stageDependencyCondition>
   </stage>

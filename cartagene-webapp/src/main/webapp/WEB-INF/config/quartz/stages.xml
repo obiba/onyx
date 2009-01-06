@@ -12,7 +12,7 @@
   <stage>
     <name>CIPreliminaryQuestionnaire</name>
     <module>quartz</module>
-    <stageDependencyCondition class="stageVariableCondition">
+    <stageDependencyCondition class="variableCondition">
       <stageName>CON</stageName>
       <variablePath>/CARTAGENE/Consent/accepted</variablePath>
     </stageDependencyCondition>
@@ -21,7 +21,7 @@
   <stage>
     <name>HealthQuestionnaireSelfAdministered</name>
     <module>quartz</module>
-    <stageDependencyCondition class="stageVariableCondition">
+    <stageDependencyCondition class="variableCondition">
       <stageName>CON</stageName>
       <variablePath>/CARTAGENE/Consent/accepted</variablePath>
     </stageDependencyCondition>
@@ -33,10 +33,10 @@
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
       <conditions>
-        <stageVariableCondition>
+        <variableCondition>
           <stageName>CON</stageName>
           <variablePath>/CARTAGENE/Consent/accepted</variablePath>
-        </stageVariableCondition>
+        </variableCondition>
         <stageCondition>
           <stageName>HealthQuestionnaireSelfAdministered</stageName>
         </stageCondition>

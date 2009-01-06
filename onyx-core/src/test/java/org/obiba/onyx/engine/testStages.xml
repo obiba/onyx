@@ -15,7 +15,7 @@
   <stage>
     <name>Stage3</name>
     <module>Module1</module>
-    <stageDependencyCondition class="stageVariableCondition">
+    <stageDependencyCondition class="variableCondition">
       <stageName>Stage2</stageName>
       <variablePath>VAR2</variablePath>
     </stageDependencyCondition>
@@ -25,7 +25,7 @@
     <name>Stage4</name>
     <module>Module1</module>
     <stageDependencyCondition class="inverseCondition">
-      <stageDependencyCondition class="stageVariableCondition">
+      <stageDependencyCondition class="variableCondition">
         <stageName>Stage2</stageName>
         <variablePath>VAR2</variablePath>
       </stageDependencyCondition>
@@ -49,10 +49,10 @@
         <stageCondition>
           <stageName>Stage1</stageName>
         </stageCondition>
-        <stageVariableCondition>
+        <variableCondition>
           <stageName>Stage2</stageName>
           <variablePath>VAR2</variablePath>
-        </stageVariableCondition>
+        </variableCondition>
         <inverseCondition>
           <stageCondition>
             <stageName>Stage3</stageName>
