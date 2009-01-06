@@ -17,6 +17,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="xmlFileName" value="cartagene.xml"/>
     <property name="pdfFileName" value="cartagene.pdf"/>
     <property name="executableForParticipantInfo" value="butil.exe -LOAD"/>
+    <property name="locale" ref="locale"/>     
   </bean>
   
   <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">

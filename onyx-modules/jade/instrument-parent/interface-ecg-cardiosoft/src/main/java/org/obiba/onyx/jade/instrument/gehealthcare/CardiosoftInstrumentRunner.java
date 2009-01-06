@@ -9,6 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.instrument.gehealthcare;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Toolkit;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.File;
@@ -20,7 +25,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
+
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import org.obiba.onyx.jade.client.JnlpClient;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
@@ -31,13 +43,14 @@ import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Specified instrument runner for the ECG
  * @author acarey
  */
 
-public class CardiosoftInstrumentRunner implements InstrumentRunner {
+public class CardiosoftInstrumentRunner implements InstrumentRunner, InitializingBean {
 
   private static final Logger log = LoggerFactory.getLogger(JnlpClient.class);
 
@@ -65,6 +78,14 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
   private String xmlFileName;
 
   private String pdfFileName;
+
+  private ResourceBundle ecgResourceBundle;
+
+  private Locale locale;
+
+  public void afterPropertiesSet() throws Exception {
+    setEcgResourceBundle(ResourceBundle.getBundle("ecg-instrument", getLocale()));
+  }
 
   public InstrumentExecutionService getInstrumentExecutionService() {
     return instrumentExecutionService;
@@ -296,9 +317,45 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
   }
 
   /**
+   * Create an information dialog that tells the user to wait while the data is being processed.
+   */
+  private void showProcessingDialog() {
+
+    JPanel messagePanel = new JPanel();
+    messagePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
+
+    JLabel message = new JLabel(ecgResourceBundle.getString("Message.ProcessingEcgMeasurement"));
+    message.setFont(new Font(Font.DIALOG, Font.PLAIN, 20));
+    messagePanel.add(message);
+
+    JLabel subMessage = new JLabel(ecgResourceBundle.getString("Message.ProcessingEcgMeasurementInstructions"));
+    subMessage.setFont(new Font(Font.DIALOG, Font.PLAIN, 14));
+    subMessage.setForeground(Color.RED);
+    messagePanel.add(subMessage);
+
+    JFrame window = new JFrame();
+    window.add(messagePanel);
+    window.pack();
+
+    // Make sure dialog stays on top of all other application windows.
+    window.setAlwaysOnTop(true);
+    window.setLocationByPlatform(true);
+
+    // Center dialog horizontally at the bottom of the screen.
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    window.setLocation((screenSize.width - window.getWidth()) / 2, screenSize.height - window.getHeight() - 70);
+
+    window.setEnabled(false);
+    window.setVisible(true);
+
+  }
+
+  /**
    * Implements parent method initialize from InstrumentRunner Delete results from previous measurement
    */
   public void initialize() {
+    showProcessingDialog();
     deleteDeviceData();
     initParticipantData();
   }
@@ -341,6 +398,18 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
   public void shutdown() {
     deleteDeviceData();
 
+  }
+
+  public Locale getLocale() {
+    return locale;
+  }
+
+  public void setLocale(Locale locale) {
+    this.locale = locale;
+  }
+
+  public void setEcgResourceBundle(ResourceBundle ecgResourceBundle) {
+    this.ecgResourceBundle = ecgResourceBundle;
   }
 
 }

@@ -24,8 +24,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import org.junit.Assert;
 import org.junit.Assume;
@@ -73,6 +75,7 @@ public class CardiosoftInstrumentRunnerTest {
     cardiosoftInstrumentRunner.setPdfFileName("Cartagene.pdf");
     cardiosoftInstrumentRunner.setSettingsFileName("CARDIO.INI");
     cardiosoftInstrumentRunner.setXmlFileName("Cartagene.XML");
+    cardiosoftInstrumentRunner.setEcgResourceBundle(ResourceBundle.getBundle("ecg-instrument", Locale.getDefault()));
 
     String resourcesParentDir = new File(getClass().getResource("/initecg/CARDIO.INI").toURI().getPath()).getParent();
     cardiosoftInstrumentRunner.setInitPath(new File(resourcesParentDir).getPath());
