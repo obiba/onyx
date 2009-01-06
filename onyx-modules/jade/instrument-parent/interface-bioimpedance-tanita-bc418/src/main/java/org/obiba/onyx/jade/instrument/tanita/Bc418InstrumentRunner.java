@@ -322,7 +322,7 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
   public void initialize() {
     super.initialize();
 
-    resetTanita();
+    // resetTanita();
     initParticipantData();
   }
 
