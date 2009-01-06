@@ -7,13 +7,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.util.testconfig;
+package org.obiba.onyx.quartz;
 
 import org.springframework.beans.factory.config.Scope;
 import org.springframework.beans.factory.ObjectFactory;
 
 
-public class CustomScope implements Scope {
+public class MockSessionScope implements Scope {
 
   public String getConversationId() {
     return null;

@@ -43,7 +43,6 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.instrument.validation.IntegrityCheckValidator;
-import org.obiba.onyx.util.StringUtil;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -250,11 +249,15 @@ public class InstrumentInputParameterPanel extends Panel {
 
         List<Data> choices = null;
         if(param.getInputSource() instanceof OperatorSource) {
-          List<String> strChoices = StringUtil.parseCSVString(((OperatorSource) param.getInputSource()).getChoices());
-          if(strChoices.size() > 0) {
-            choices = new ArrayList<Data>();
-            for(String str : strChoices) {
-              choices.add(DataBuilder.build(param.getDataType(), str));
+          String choiceString = ((OperatorSource) param.getInputSource()).getChoices();
+          if(choiceString != null) {
+            // Choices are in a comma separated string
+            String parts[] = choiceString.split(",");
+            if(parts != null && parts.length > 0) {
+              choices = new ArrayList<Data>(parts.length);
+              for(String choice : parts) {
+                choices.add(DataBuilder.build(param.getDataType(), choice));
+              }
             }
           }
         }

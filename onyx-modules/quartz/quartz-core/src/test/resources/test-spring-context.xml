@@ -30,7 +30,7 @@
     <property name="scopes">
       <map>
         <entry key="session">
-          <bean class="org.obiba.onyx.util.testconfig.CustomScope" />
+          <bean class="org.obiba.onyx.quartz.MockSessionScope" />
         </entry>
       </map>
     </property>

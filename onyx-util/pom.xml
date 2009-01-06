@@ -19,16 +19,7 @@
   </parent>
 
   <dependencies>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-beans</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>net.sf.opencsv</groupId>
-      <artifactId>opencsv</artifactId>
-      <version>1.8</version>
-    </dependency>
+    <!-- DO NOT ADD DEPENDENCIES. This project should have no dependencies. -->
   </dependencies>
 
 </project>
