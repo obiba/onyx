@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,14 +18,24 @@ import org.obiba.onyx.util.data.DataType;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * 
  */
 @XStreamAlias("variable")
-public class Variable extends Entity {
+public class Variable implements Serializable {
 
   private static final long serialVersionUID = 1L;
+
+  @XStreamAsAttribute
+  private String name;
+
+  @XStreamOmitField
+  private Variable parent;
+
+  @XStreamImplicit
+  private List<Variable> variables;
 
   @XStreamAsAttribute
   private DataType dataType;
@@ -36,15 +47,18 @@ public class Variable extends Entity {
   private List<String> categories;
 
   public Variable(String name) {
-    super(name);
+    super();
+    this.name = name;
   }
 
   /**
    * @param name
    * @param parent
    */
-  public Variable(String name, Entity parent) {
-    super(name, parent);
+  public Variable(String name, Variable parent) {
+    super();
+    this.name = name;
+    this.parent = parent;
   }
 
   public DataType getDataType() {
@@ -63,6 +77,53 @@ public class Variable extends Entity {
   public Variable setUnit(String unit) {
     this.unit = unit;
     return this;
+  }
+
+  public List<Variable> getVariables() {
+    return variables != null ? variables : (variables = new ArrayList<Variable>());
+  }
+
+  public Variable addVariable(Variable child) {
+    if(child != null) {
+      getVariables().add(child);
+      child.setParent(this);
+    }
+    return child;
+  }
+
+  public Variable addVariable(String path, String separator) {
+    String[] names = path.split(separator);
+    Variable current = this;
+    for(String name : names) {
+      boolean found = false;
+      for(Variable child : current.getVariables()) {
+        if(child.getName().equals(name)) {
+          current = child;
+          found = true;
+          break;
+        }
+      }
+      if(!found) {
+        current = current.addVariable(new Variable(name));
+      }
+    }
+    return current;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Variable getParent() {
+    return parent;
+  }
+
+  public void setParent(Variable parent) {
+    this.parent = parent;
   }
 
   public List<String> getCategories() {

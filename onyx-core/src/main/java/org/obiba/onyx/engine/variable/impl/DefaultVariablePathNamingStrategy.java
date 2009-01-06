@@ -12,8 +12,8 @@ package org.obiba.onyx.engine.variable.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.obiba.onyx.engine.variable.Entity;
-import org.obiba.onyx.engine.variable.IEntityPathNamingStrategy;
+import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
+import org.obiba.onyx.engine.variable.Variable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -21,15 +21,15 @@ import org.w3c.dom.Node;
 /**
  * 
  */
-public class DefaultEntityPathNamingStrategy implements IEntityPathNamingStrategy {
+public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStrategy {
 
-  private static final Logger log = LoggerFactory.getLogger(DefaultEntityPathNamingStrategy.class);
+  private static final Logger log = LoggerFactory.getLogger(DefaultVariablePathNamingStrategy.class);
 
   public static final String PATH_SEPARATOR = "/";
 
   private String rootName;
 
-  public String getPath(Entity entity) {
+  public String getPath(Variable entity) {
     String name = normalizeName(entity.getName());
     if(entity.getParent() != null) {
       return getPath(entity.getParent()) + getPathSeparator() + name;
@@ -63,8 +63,8 @@ public class DefaultEntityPathNamingStrategy implements IEntityPathNamingStrateg
     return null;
   }
 
-  public static DefaultEntityPathNamingStrategy getInstance(String rootName) {
-    DefaultEntityPathNamingStrategy strategy = new DefaultEntityPathNamingStrategy();
+  public static DefaultVariablePathNamingStrategy getInstance(String rootName) {
+    DefaultVariablePathNamingStrategy strategy = new DefaultVariablePathNamingStrategy();
     strategy.rootName = rootName;
     return strategy;
   }
@@ -85,10 +85,10 @@ public class DefaultEntityPathNamingStrategy implements IEntityPathNamingStrateg
     return rootName;
   }
 
-  public Entity getEntity(Entity entity, String path) {
+  public Variable getVariable(Variable entity, String path) {
     if(entity == null) return null;
     // find the root
-    Entity root = entity;
+    Variable root = entity;
     while(root.getParent() != null) {
       root = root.getParent();
     }
@@ -105,13 +105,13 @@ public class DefaultEntityPathNamingStrategy implements IEntityPathNamingStrateg
     if(entityNames.size() == 0) return null;
     if(!normalizeName(root.getName()).equals(entityNames.get(0))) return null;
 
-    Entity current = root;
+    Variable current = root;
     for(int i = 1; i < entityNames.size(); i++) {
       String entityName = entityNames.get(i);
       log.debug("entityName={}", entityName);
       log.debug("current.name={}", current);
       boolean found = false;
-      for(Entity child : current.getEntities()) {
+      for(Variable child : current.getVariables()) {
         log.debug("  child.name={}", child);
         if(normalizeName(child.getName()).equals(entityName)) {
           current = child;

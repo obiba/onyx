@@ -8,6 +8,7 @@
         <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/marble/stages.xml" />
       </bean>
     </property>
+    <property name="consentService" ref="consentService" />
   </bean>
 
 </beans>

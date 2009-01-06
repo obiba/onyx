@@ -23,7 +23,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.engine.variable.impl.DefaultEntityPathNamingStrategy;
+import org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -44,9 +44,9 @@ public class VariableTest {
 
   private XStream xstream;
 
-  private IEntityPathNamingStrategy pathNamingStrategy = DefaultEntityPathNamingStrategy.getInstance("STUDY_NAME");
+  private IVariablePathNamingStrategy pathNamingStrategy = DefaultVariablePathNamingStrategy.getInstance("STUDY_NAME");
 
-  private Entity root;
+  private Variable root;
 
   private VariableDataSet dataSet;
 
@@ -54,8 +54,8 @@ public class VariableTest {
   public void setUp() {
     initializeXStream();
 
-    root = new Entity(pathNamingStrategy.getRootName());
-    Entity parent;
+    root = new Variable(pathNamingStrategy.getRootName());
+    Variable parent;
     Variable variable;
     Variable subvariable;
 
@@ -63,10 +63,10 @@ public class VariableTest {
 
     // users
 
-    parent = root.addEntity("ADMIN/USER", pathNamingStrategy.getPathSeparator());
+    parent = root.addVariable("ADMIN/USER", pathNamingStrategy.getPathSeparator());
 
     variable = new Variable("LOGIN").setDataType(DataType.TEXT);
-    parent.addEntity(variable);
+    parent.addVariable(variable);
 
     VariableData[] userLogins = new VariableData[2];
     userLogins[0] = dataSet.addVariableData(new VariableData(pathNamingStrategy.getPath(variable), DataBuilder.buildText("gina")));
@@ -74,10 +74,10 @@ public class VariableTest {
 
     // participants
 
-    parent = root.addEntity("ADMIN/PARTICIPANT", pathNamingStrategy.getPathSeparator());
+    parent = root.addVariable("ADMIN/PARTICIPANT", pathNamingStrategy.getPathSeparator());
 
     variable = new Variable("BARCODE").setDataType(DataType.TEXT);
-    parent.addEntity(variable);
+    parent.addVariable(variable);
 
     VariableData[] participantBarcodes = new VariableData[3];
     for(int i = 1; i <= participantBarcodes.length; i++) {
@@ -85,51 +85,54 @@ public class VariableTest {
     }
 
     subvariable = new Variable("NAME").setDataType(DataType.TEXT);
-    parent.addEntity(subvariable);
+    Variable subvariable2 = new Variable("CONSENT").setDataType(DataType.BOOLEAN);
+    parent.addVariable(subvariable);
+    parent.addVariable(subvariable2);
     for(int i = 0; i < participantBarcodes.length; i++) {
       participantBarcodes[i].addReference(new VariableData(pathNamingStrategy.getPath(subvariable), DataBuilder.buildText("Name " + (i + 1))));
+      participantBarcodes[i].addReference(new VariableData(pathNamingStrategy.getPath(subvariable2), DataBuilder.buildBoolean(Boolean.TRUE)));
     }
 
     // questionnaire
 
-    parent = root.addEntity("HealthQuestionnaire", pathNamingStrategy.getPathSeparator());
+    parent = root.addVariable("HealthQuestionnaire", pathNamingStrategy.getPathSeparator());
 
     variable = new Variable("PARTICIPANT_AGE").addCategories("PARTICIPANT_AGE", "PNA", "DK");
-    parent.addEntity(variable);
+    parent.addVariable(variable);
 
     subvariable = new Variable("OPEN_AGE").setDataType(DataType.INTEGER).setUnit("year");
-    variable.addEntity(subvariable);
+    variable.addVariable(subvariable);
 
     for(int i = 0; i < participantBarcodes.length; i++) {
       participantBarcodes[i].addReference(new VariableData(pathNamingStrategy.getPath(subvariable), DataBuilder.buildInteger(45 + i)));
     }
 
-    parent = root.addEntity("HealthQuestionnaire/DATE_OF_BIRTH", pathNamingStrategy.getPathSeparator());
+    parent = root.addVariable("HealthQuestionnaire/DATE_OF_BIRTH", pathNamingStrategy.getPathSeparator());
 
     variable = new Variable("DOB_YEAR").addCategories("DOB_YEAR", "PNA", "DK");
-    parent.addEntity(variable);
+    parent.addVariable(variable);
 
     subvariable = new Variable("OPEN_YEAR").setDataType(DataType.INTEGER);
-    variable.addEntity(subvariable);
+    variable.addVariable(subvariable);
 
     variable = new Variable("DOB_MONTH").addCategories("DOB_MONTH", "PNA", "DK");
-    parent.addEntity(variable);
+    parent.addVariable(variable);
 
     subvariable = new Variable("OPEN_MONTH").setDataType(DataType.INTEGER);
-    variable.addEntity(subvariable);
+    variable.addVariable(subvariable);
 
     variable = new Variable("DOB_DAY").addCategories("DOB_DAY", "PNA", "DK");
-    parent.addEntity(variable);
+    parent.addVariable(variable);
 
     subvariable = new Variable("OPEN_DAY").setDataType(DataType.INTEGER);
-    variable.addEntity(subvariable);
+    variable.addVariable(subvariable);
 
     // instruments
 
-    parent = root.addEntity("StandingHeight", pathNamingStrategy.getPathSeparator());
+    parent = root.addVariable("StandingHeight", pathNamingStrategy.getPathSeparator());
 
     variable = new Variable("First_Height_Measurement").setDataType(DataType.DECIMAL);
-    parent.addEntity(variable);
+    parent.addVariable(variable);
 
     for(int i = 0; i < participantBarcodes.length; i++) {
       VariableData data = new VariableData(pathNamingStrategy.getPath(variable), DataBuilder.buildDecimal(170.5 + i));
@@ -138,7 +141,7 @@ public class VariableTest {
     }
 
     variable = new Variable("Second_Height_Measurement").setDataType(DataType.DECIMAL);
-    parent.addEntity(variable);
+    parent.addVariable(variable);
 
     for(int i = 0; i < participantBarcodes.length; i++) {
       VariableData data = new VariableData(pathNamingStrategy.getPath(variable), DataBuilder.buildDecimal(170.0 + i));
@@ -159,22 +162,22 @@ public class VariableTest {
     System.out.println("\n**** Variables XPath ****\n");
     xquery(root, "//variable");
     System.out.println();
-    xquery(root, "//entity[@name='PARTICIPANT']/variable[@name='BARCODE']");
+    xquery(root, "//variable[@name='PARTICIPANT']/variable[@name='BARCODE']");
     System.out.println();
-    xquery(root, "//entity[@name='PARTICIPANT']/variable[@name='BARCODE'] | //entity[not(@name='PARTICIPANT')]//variable");
+    xquery(root, "//variable[@name='PARTICIPANT']/variable[@name='BARCODE'] | //variable[not(@name='PARTICIPANT')]//variable");
 
     System.out.println("\n**** Variables paths ****\n");
     writeVariables(root);
 
     // search
-    Entity searchedEntity = pathNamingStrategy.getEntity(root, "/STUDY_NAME/HealthQuestionnaire/DATE_OF_BIRTH/DOB_MONTH/OPEN_MONTH");
+    Variable searchedEntity = pathNamingStrategy.getVariable(root, "/STUDY_NAME/HealthQuestionnaire/DATE_OF_BIRTH/DOB_MONTH/OPEN_MONTH");
     Assert.assertNotNull(searchedEntity);
     Assert.assertEquals("OPEN_MONTH", searchedEntity.getName());
 
-    searchedEntity = pathNamingStrategy.getEntity(root, "/STUDY_NAME/HealthQuestionnaire/DATE_OF_BIRTH/OPEN_MONTH");
+    searchedEntity = pathNamingStrategy.getVariable(root, "/STUDY_NAME/HealthQuestionnaire/DATE_OF_BIRTH/OPEN_MONTH");
     Assert.assertNull(searchedEntity);
 
-    searchedEntity = pathNamingStrategy.getEntity(root, "/ANOTHER_STUDY_NAME/HealthQuestionnaire/DATE_OF_BIRTH/DOB_MONTH/OPEN_MONTH");
+    searchedEntity = pathNamingStrategy.getVariable(root, "/ANOTHER_STUDY_NAME/HealthQuestionnaire/DATE_OF_BIRTH/DOB_MONTH/OPEN_MONTH");
     Assert.assertNull(searchedEntity);
 
     System.out.println("\n**** Variables dataSet ****\n");
@@ -185,7 +188,7 @@ public class VariableTest {
 
   }
 
-  private void xquery(Entity parent, String query) {
+  private void xquery(Variable parent, String query) {
     DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
     documentBuilderFactory.setNamespaceAware(true); // never forget this!
     try {
@@ -208,11 +211,9 @@ public class VariableTest {
 
   }
 
-  private void writeVariables(Entity parent) {
-    for(Entity child : parent.getEntities()) {
-      if(child instanceof Variable) {
-        System.out.println(pathNamingStrategy.getPath(child));
-      }
+  private void writeVariables(Variable parent) {
+    for(Variable child : parent.getVariables()) {
+      System.out.println(pathNamingStrategy.getPath(child));
       writeVariables(child);
     }
   }

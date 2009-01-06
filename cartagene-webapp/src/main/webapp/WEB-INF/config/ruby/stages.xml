@@ -3,9 +3,9 @@
   <stage>
     <name>SamplesCollection</name>
     <module>ruby</module>
-    <stageDependencyCondition class="variableCondition">
+    <stageDependencyCondition class="stageVariableCondition">
       <stageName>CON</stageName>
-      <variableName>consent</variableName>
+      <variablePath>/CARTAGENE/Consent/accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 

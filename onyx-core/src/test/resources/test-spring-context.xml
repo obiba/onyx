@@ -30,7 +30,7 @@
     <property name="stageOrdering" value="" />
   </bean>
 
-  <bean id="entityPathNamingStrategy" class="org.obiba.onyx.engine.variable.impl.DefaultEntityPathNamingStrategy">
+  <bean id="variablePathNamingStrategy" class="org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy">
     <property name="rootName" value="STUDY_NAME" />
   </bean>
 

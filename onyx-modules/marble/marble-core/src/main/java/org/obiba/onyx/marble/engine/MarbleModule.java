@@ -9,24 +9,36 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.engine;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
+import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
+import org.obiba.onyx.engine.variable.IVariableProvider;
+import org.obiba.onyx.engine.variable.Variable;
+import org.obiba.onyx.engine.variable.VariableData;
+import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.core.wicket.consent.ElectronicConsentUploadPage;
+import org.obiba.onyx.marble.domain.consent.Consent;
+import org.obiba.onyx.util.data.DataBuilder;
+import org.obiba.onyx.util.data.DataType;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-public class MarbleModule implements Module, ApplicationContextAware {
+public class MarbleModule implements Module, IVariableProvider, ApplicationContextAware {
 
   private ApplicationContext applicationContext;
+
+  private ConsentService consentService;
 
   private List<Stage> stages;
 
@@ -71,6 +83,38 @@ public class MarbleModule implements Module, ApplicationContextAware {
 
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
+  }
+
+  public void setConsentService(ConsentService consentService) {
+    this.consentService = consentService;
+  }
+
+  public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    // get participant's consent
+    Consent consent = consentService.getConsent(participant.getInterview());
+
+    if(consent != null) {
+      String varName = variable.getName();
+      if(varName.equals("accepted")) {
+        return new VariableData(variablePathNamingStrategy.getPath(variable), DataBuilder.buildBoolean(consent.isAccepted()));
+      }
+    }
+
+    return null;
+  }
+
+  public List<Variable> getVariables() {
+    List<Variable> variables = new ArrayList<Variable>();
+
+    Variable consent = new Variable("Consent");
+    variables.add(consent);
+
+    consent.addVariable(new Variable("mode").setDataType(DataType.TEXT));
+    consent.addVariable(new Variable("locale").setDataType(DataType.TEXT));
+    consent.addVariable(new Variable("accepted").setDataType(DataType.BOOLEAN));
+    consent.addVariable(new Variable("deleted").setDataType(DataType.BOOLEAN));
+
+    return variables;
   }
 
 }

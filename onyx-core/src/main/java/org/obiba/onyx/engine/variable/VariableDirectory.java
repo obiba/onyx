@@ -32,30 +32,30 @@ public class VariableDirectory implements IVariableProvider {
 
   private List<IVariableProvider> providers = new ArrayList<IVariableProvider>();
 
-  private IEntityPathNamingStrategy entityPathNamingStrategy;
+  private IVariablePathNamingStrategy variablePathNamingStrategy;
 
-  private Entity root;
+  private Variable root;
 
-  public void setEntityPathNamingStrategy(IEntityPathNamingStrategy entityPathNamingStrategy) {
-    this.entityPathNamingStrategy = entityPathNamingStrategy;
+  public void setVariablePathNamingStrategy(IVariablePathNamingStrategy variablePathNamingStrategy) {
+    this.variablePathNamingStrategy = variablePathNamingStrategy;
   }
 
   public void registerVariables(IVariableProvider provider) {
     if(provider == this) return;
 
     if(root == null) {
-      root = new Entity(entityPathNamingStrategy.getRootName());
+      root = new Variable(variablePathNamingStrategy.getRootName());
     }
 
     if(!providers.contains(provider)) {
       log.info("registerVariables({})", provider.getClass().getSimpleName());
       providers.add(provider);
-      List<Entity> entities = provider.getVariables();
+      List<Variable> entities = provider.getVariables();
       if(entities != null) {
-        for(Entity entity : entities) {
-          root.addEntity(entity);
+        for(Variable entity : entities) {
+          root.addVariable(entity);
           for(Variable variable : getVariables(entity, new ArrayList<Variable>())) {
-            String path = entityPathNamingStrategy.getPath(variable);
+            String path = variablePathNamingStrategy.getPath(variable);
             if(variablePathToProvidersMap.containsKey(path)) {
               throw new IllegalArgumentException("Variable path " + path + " already registered by " + variablePathToProvidersMap.get(path).getClass().getSimpleName());
             }
@@ -73,18 +73,18 @@ public class VariableDirectory implements IVariableProvider {
     variablePathToVariableMap.remove(variablePath);
   }
 
-  private List<Variable> getVariables(Entity parent, List<Variable> variables) {
+  private List<Variable> getVariables(Variable parent, List<Variable> variables) {
     if(parent instanceof Variable) {
       variables.add((Variable) parent);
     }
-    for(Entity child : parent.getEntities()) {
+    for(Variable child : parent.getVariables()) {
       getVariables(child, variables);
     }
     return variables;
   }
 
-  public List<Entity> getVariables() {
-    List<Entity> entities = new ArrayList<Entity>();
+  public List<Variable> getVariables() {
+    List<Variable> entities = new ArrayList<Variable>();
     for(IVariableProvider provider : providers) {
       entities.addAll(provider.getVariables());
     }
@@ -95,19 +95,19 @@ public class VariableDirectory implements IVariableProvider {
     return variablePathToVariableMap.get(path);
   }
 
-  public List<VariableData> getVariableData(Participant participant, String path) {
+  public VariableData getVariableData(Participant participant, String path) {
     Variable variable = getVariable(path);
     IVariableProvider provider = variablePathToProvidersMap.get(path);
     if(provider == null) return null;
 
-    return provider.getVariableData(participant, variable);
+    return provider.getVariableData(participant, variable, variablePathNamingStrategy);
   }
 
-  public List<VariableData> getVariableData(Participant participant, Variable variable) {
-    IVariableProvider provider = variablePathToProvidersMap.get(entityPathNamingStrategy.getPath(variable));
+  public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    IVariableProvider provider = variablePathToProvidersMap.get(variablePathNamingStrategy.getPath(variable));
     if(provider == null) return null;
 
-    return provider.getVariableData(participant, variable);
+    return provider.getVariableData(participant, variable, variablePathNamingStrategy);
   }
 
 }

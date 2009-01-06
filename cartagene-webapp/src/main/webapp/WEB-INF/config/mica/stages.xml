@@ -5,10 +5,10 @@
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
       <conditions>
-        <variableCondition>
+        <stageVariableCondition>
           <stageName>CON</stageName>
-          <variableName>consent</variableName>
-        </variableCondition>
+          <variablePath>/CARTAGENE/Consent/accepted</variablePath>
+        </stageVariableCondition>
         <moduleCondition>
           <moduleName>jade</moduleName>
         </moduleCondition>

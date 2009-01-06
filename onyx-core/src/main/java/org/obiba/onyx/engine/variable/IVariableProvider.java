@@ -22,8 +22,15 @@ public interface IVariableProvider {
    * Get the list of entity/variables.
    * @return
    */
-  public List<Entity> getVariables();
+  public List<Variable> getVariables();
 
-  public List<VariableData> getVariableData(Participant participant, Variable variable);
+  /**
+   * Get the participant's variable data for the given variable.
+   * @param participant
+   * @param variable
+   * @param variablePathNamingStrategy
+   * @return null if none
+   */
+  public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy);
 
 }

@@ -33,7 +33,7 @@
   </bean>
   
   <!-- Converts a entity to a path representing its unique identification -->
-  <bean id="entityPathNamingStrategy" class="org.obiba.onyx.engine.variable.impl.DefaultEntityPathNamingStrategy">
+  <bean id="variablePathNamingStrategy" class="org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy">
     <property name="rootName" value="CARTAGENE" />
   </bean>
 
@@ -108,6 +108,9 @@
   <bean id="participantMetadata" class="org.obiba.onyx.core.domain.participant.ParticipantMetadata">
     <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
     <property name="supportedRecruitmentTypesString" value="${org.obiba.onyx.supportedRecruitmentTypes}"/>
+  </bean>
+  
+  <bean id="onyxVariableProvider" class="org.obiba.onyx.engine.variable.OnyxVariableProvider">
   </bean>
 
 </beans>

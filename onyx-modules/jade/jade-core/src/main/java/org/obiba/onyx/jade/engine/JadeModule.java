@@ -23,7 +23,7 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.engine.variable.Entity;
+import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.IVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
@@ -150,16 +150,16 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
     this.instrumentTypeToVariableMappingStrategy = instrumentTypeToVariableMappingStrategy;
   }
 
-  public List<VariableData> getVariableData(Participant participant, Variable variable) {
+  public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
     // TODO Auto-generated method stub
     return null;
   }
 
-  public List<Entity> getVariables() {
-    List<Entity> entities = new ArrayList<Entity>();
+  public List<Variable> getVariables() {
+    List<Variable> entities = new ArrayList<Variable>();
 
     for(InstrumentType type : queryService.list(InstrumentType.class)) {
-      entities.add(instrumentTypeToVariableMappingStrategy.getEntity(queryService, type));
+      entities.add(instrumentTypeToVariableMappingStrategy.getVariable(queryService, type));
     }
 
     return entities;

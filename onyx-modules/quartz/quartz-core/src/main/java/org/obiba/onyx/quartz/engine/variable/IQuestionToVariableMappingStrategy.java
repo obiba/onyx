@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.engine.variable;
 
-import org.obiba.onyx.engine.variable.Entity;
+import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -24,20 +24,20 @@ public interface IQuestionToVariableMappingStrategy {
    * @param questionnaire
    * @return
    */
-  public Entity getEntity(Questionnaire questionnaire);
+  public Variable getVariable(Questionnaire questionnaire);
 
   /**
    * Build an entity from a question, that will be added to questionnaire's entity.
    * @param question
    * @return
    */
-  public Entity getEntity(Question question);
+  public Variable getVariable(Question question);
 
   /**
    * Get the question (if any) from the questionnaire corresponding to the given entity.
    * @param entity
    * @return null if not found
    */
-  public ILocalizable getQuestionnaireElement(Questionnaire questionnaire, Entity entity);
+  public ILocalizable getQuestionnaireElement(Questionnaire questionnaire, Variable entity);
 
 }

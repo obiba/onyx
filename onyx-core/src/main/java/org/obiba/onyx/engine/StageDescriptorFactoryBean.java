@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.obiba.onyx.util.data.Data;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -43,9 +44,12 @@ public class StageDescriptorFactoryBean implements FactoryBean, ApplicationConte
     xstream.alias("stage", Stage.class);
     xstream.alias("stageCondition", PreviousStageDependencyCondition.class);
     xstream.alias("variableCondition", StageVariableStageDependencyCondition.class);
+    xstream.alias("stageVariableCondition", VariableStageDependencyCondition.class);
     xstream.alias("multipleCondition", MultipleStageDependencyCondition.class);
     xstream.alias("inverseCondition", InverseStageDependencyCondition.class);
     xstream.alias("moduleCondition", ModuleDependencyCondition.class);
+    xstream.alias("data", Data.class);
+    xstream.useAttributeFor(Data.class, "type");
   }
 
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

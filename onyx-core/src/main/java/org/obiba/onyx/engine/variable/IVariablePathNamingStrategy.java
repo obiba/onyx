@@ -14,7 +14,7 @@ import org.w3c.dom.Node;
 /**
  * 
  */
-public interface IEntityPathNamingStrategy {
+public interface IVariablePathNamingStrategy {
 
   /**
    * Get the name of entity root.
@@ -27,7 +27,7 @@ public interface IEntityPathNamingStrategy {
    * @param entity
    * @return
    */
-  public String getPath(Entity entity);
+  public String getPath(Variable entity);
 
   /**
    * Get the path from DOM representation of the entity (assuming 'name' attribute).
@@ -55,6 +55,6 @@ public interface IEntityPathNamingStrategy {
    * @param path
    * @return
    */
-  public Entity getEntity(Entity entity, String path);
+  public Variable getVariable(Variable entity, String path);
 
 }

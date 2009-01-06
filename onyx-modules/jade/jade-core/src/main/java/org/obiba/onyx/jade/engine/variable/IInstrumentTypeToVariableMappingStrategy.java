@@ -10,7 +10,7 @@
 package org.obiba.onyx.jade.engine.variable;
 
 import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.engine.variable.Entity;
+import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 
 /**
@@ -18,6 +18,6 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
  */
 public interface IInstrumentTypeToVariableMappingStrategy {
 
-  public Entity getEntity(EntityQueryService queryService, InstrumentType type);
+  public Variable getVariable(EntityQueryService queryService, InstrumentType type);
 
 }

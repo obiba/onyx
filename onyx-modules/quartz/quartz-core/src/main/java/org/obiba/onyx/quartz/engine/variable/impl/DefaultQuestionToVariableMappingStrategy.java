@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.engine.variable.impl;
 
-import org.obiba.onyx.engine.variable.Entity;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -27,13 +26,13 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
 
   private static final Logger log = LoggerFactory.getLogger(DefaultQuestionToVariableMappingStrategy.class);
 
-  public Entity getEntity(Questionnaire questionnaire) {
+  public Variable getVariable(Questionnaire questionnaire) {
     // another possibility is to add the questionnaire version as a sub entity
-    return new Entity(questionnaire.getName());
+    return new Variable(questionnaire.getName());
   }
 
-  public Entity getEntity(Question question) {
-    Entity entity = null;
+  public Variable getVariable(Question question) {
+    Variable entity = null;
 
     // simple question
     if(question.getQuestions().size() == 0) {
@@ -43,14 +42,14 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
         variable.addCategory(category.getName());
         if(category.getOpenAnswerDefinition() != null) {
           OpenAnswerDefinition open = category.getOpenAnswerDefinition();
-          variable.addEntity(new Variable(open.getName()).setDataType(open.getDataType()).setUnit(open.getUnit()));
+          variable.addVariable(new Variable(open.getName()).setDataType(open.getDataType()).setUnit(open.getUnit()));
         }
       }
     } else if(question.getQuestionCategories().size() == 0) {
       // sub questions
-      entity = new Entity(question.getName());
+      entity = new Variable(question.getName());
       for(Question subQuestion : question.getQuestions()) {
-        entity.addEntity(getEntity(subQuestion));
+        entity.addVariable(getVariable(subQuestion));
       }
     } else {
       boolean shared = true;
@@ -62,17 +61,17 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
       }
       if(shared) {
         // shared categories question
-        entity = new Entity(question.getName());
+        entity = new Variable(question.getName());
         for(Question subQuestion : question.getQuestions()) {
           Variable variable = new Variable(subQuestion.getName());
           for(Category category : question.getCategories()) {
             variable.addCategory(category.getName());
             if(category.getOpenAnswerDefinition() != null) {
               OpenAnswerDefinition open = category.getOpenAnswerDefinition();
-              variable.addEntity(new Variable(open.getName()).setDataType(open.getDataType()).setUnit(open.getUnit()));
+              variable.addVariable(new Variable(open.getName()).setDataType(open.getDataType()).setUnit(open.getUnit()));
             }
           }
-          entity.addEntity(variable);
+          entity.addVariable(variable);
         }
       } else {
         // joined categories question
@@ -85,7 +84,7 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     return entity;
   }
 
-  public ILocalizable getQuestionnaireElement(Questionnaire questionnaire, Entity entity) {
+  public ILocalizable getQuestionnaireElement(Questionnaire questionnaire, Variable entity) {
     // TODO Auto-generated method stub
     return null;
   }

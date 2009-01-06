@@ -22,7 +22,7 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
-import org.obiba.onyx.engine.variable.Entity;
+import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.IVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
@@ -158,8 +158,8 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
     return exec;
   }
 
-  public List<Entity> getVariables() {
-    List<Entity> entities = new ArrayList<Entity>();
+  public List<Variable> getVariables() {
+    List<Variable> entities = new ArrayList<Variable>();
 
     for(Iterator<Stage> iter = stages.iterator(); iter.hasNext();) {
       Stage stage = iter.next();
@@ -167,13 +167,13 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
       if(bundle != null) {
         Questionnaire questionnaire = bundle.getQuestionnaire();
         log.info("getVariables from questionnaire {}", questionnaire.getName());
-        Entity questionnaireEntity = questionToVariableMappingStrategy.getEntity(questionnaire);
+        Variable questionnaireEntity = questionToVariableMappingStrategy.getVariable(questionnaire);
         entities.add(questionnaireEntity);
         // TODO strategy for questionnaire to variable mapping
         for(Page page : questionnaire.getPages()) {
           for(Question question : page.getQuestions()) {
             if(!question.isBoilerPlate()) {
-              questionnaireEntity.addEntity(questionToVariableMappingStrategy.getEntity(question));
+              questionnaireEntity.addVariable(questionToVariableMappingStrategy.getVariable(question));
             }
           }
         }
@@ -183,7 +183,7 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
     return entities;
   }
 
-  public List<VariableData> getVariableData(Participant participant, Variable variable) {
+  public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
     // TODO Auto-generated method stub
     return null;
   }

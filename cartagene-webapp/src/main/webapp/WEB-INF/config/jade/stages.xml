@@ -2,45 +2,49 @@
   <stage>
     <name>StandingHeight</name>
     <module>jade</module>
-    <stageDependencyCondition class="variableCondition">
+    <stageDependencyCondition class="stageVariableCondition">
       <stageName>CON</stageName>
-      <variableName>consent</variableName>
+      <variablePath>/CARTAGENE/Consent/accepted</variablePath>
+      <operator>eq</operator>
+      <data type="BOOLEAN">
+        <value class="boolean">true</value>
+      </data>
     </stageDependencyCondition>
   </stage>
 
   <stage>
     <name>SittingHeight</name>
     <module>jade</module>
-    <stageDependencyCondition class="variableCondition">
+    <stageDependencyCondition class="stageVariableCondition">
       <stageName>CON</stageName>
-      <variableName>consent</variableName>
+      <variablePath>/CARTAGENE/Consent/accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 
   <stage>
     <name>HipsWaist</name>
     <module>jade</module>
-    <stageDependencyCondition class="variableCondition">
+    <stageDependencyCondition class="stageVariableCondition">
       <stageName>CON</stageName>
-      <variableName>consent</variableName>
+      <variablePath>/CARTAGENE/Consent/accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 
   <stage>
     <name>GripStrength</name>
     <module>jade</module>
-    <stageDependencyCondition class="variableCondition">
+    <stageDependencyCondition class="stageVariableCondition">
       <stageName>CON</stageName>
-      <variableName>consent</variableName>
+      <variablePath>/CARTAGENE/Consent/accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 
   <stage>
     <name>BloodPressure</name>
     <module>jade</module>
-    <stageDependencyCondition class="variableCondition">
+    <stageDependencyCondition class="stageVariableCondition">
       <stageName>CON</stageName>
-      <variableName>consent</variableName>
+      <variablePath>/CARTAGENE/Consent/accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 
@@ -50,10 +54,10 @@
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
       <conditions>
-        <variableCondition>
+        <stageVariableCondition>
           <stageName>CON</stageName>
-          <variableName>consent</variableName>
-        </variableCondition>
+          <variablePath>/CARTAGENE/Consent/accepted</variablePath>
+        </stageVariableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
           <variableName>height</variableName>
@@ -68,10 +72,10 @@
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
       <conditions>
-        <variableCondition>
+        <stageVariableCondition>
           <stageName>CON</stageName>
-          <variableName>consent</variableName>
-        </variableCondition>
+          <variablePath>/CARTAGENE/Consent/accepted</variablePath>
+        </stageVariableCondition>
         <inverseCondition>
           <stageDependencyCondition class="variableCondition">
             <stageName>Impedence310</stageName>
@@ -88,10 +92,10 @@
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
       <conditions>
-        <variableCondition>
+        <stageVariableCondition>
           <stageName>CON</stageName>
-          <variableName>consent</variableName>
-        </variableCondition>
+          <variablePath>/CARTAGENE/Consent/accepted</variablePath>
+        </stageVariableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
           <variableName>height</variableName>
@@ -119,10 +123,10 @@
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
       <conditions>
-        <variableCondition>
+        <stageVariableCondition>
           <stageName>CON</stageName>
-          <variableName>consent</variableName>
-        </variableCondition>
+          <variablePath>/CARTAGENE/Consent/accepted</variablePath>
+        </stageVariableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
           <variableName>height</variableName>
@@ -147,9 +151,9 @@
   <stage>
     <name>BoneDensity</name>
     <module>jade</module>
-    <stageDependencyCondition class="variableCondition">
+    <stageDependencyCondition class="stageVariableCondition">
       <stageName>CON</stageName>
-      <variableName>consent</variableName>
+      <variablePath>/CARTAGENE/Consent/accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 
@@ -159,10 +163,10 @@
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
       <conditions>
-        <variableCondition>
+        <stageVariableCondition>
           <stageName>CON</stageName>
-          <variableName>consent</variableName>
-        </variableCondition>
+          <variablePath>/CARTAGENE/Consent/accepted</variablePath>
+        </stageVariableCondition>
         <variableCondition>
           <stageName>BloodPressure</stageName>
           <variableName>Systolic_Blood_Pressure</variableName>
