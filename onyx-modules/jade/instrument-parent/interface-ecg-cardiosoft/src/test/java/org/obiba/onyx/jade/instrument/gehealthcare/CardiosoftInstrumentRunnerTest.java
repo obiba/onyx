@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
@@ -46,6 +47,9 @@ public class CardiosoftInstrumentRunnerTest {
 
   @Before
   public void setUp() throws URISyntaxException {
+
+    // Skip tests when were not on Windows.
+    Assume.assumeTrue(System.getProperty("os.name").toLowerCase().contains("windows"));
 
     cardiosoftInstrumentRunner = new CardiosoftInstrumentRunner();
 

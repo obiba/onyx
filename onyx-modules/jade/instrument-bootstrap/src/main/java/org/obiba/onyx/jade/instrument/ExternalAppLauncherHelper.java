@@ -23,10 +23,6 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import org.obiba.onyx.jade.client.JnlpClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class ExternalAppLauncherHelper {
 
   // Working directory for external software.
@@ -37,7 +33,7 @@ public class ExternalAppLauncherHelper {
 
   // Parameters of external software command
   protected String parameterStr;
-  
+
   public void launchExternalSoftware() {
 
     class OuputPurger extends Thread {
@@ -64,21 +60,20 @@ public class ExternalAppLauncherHelper {
     List<String> command = new ArrayList<String>();
     command.add("cmd");
     command.add("/c");
-    
-    if (getParameterStr() == null)
-      command.add(getExecutable());
+
+    if(getParameterStr() == null) command.add(getExecutable());
     else
       command.add(getExecutable() + " " + getParameterStr());
-    
+
     ProcessBuilder builder = new ProcessBuilder(command);
     builder.directory(new File(getWorkDir()));
 
     Process wProcess = null;
     try {
       wProcess = builder.start();
-    } catch(IOException wCouldNotCreateProcess) {
+    } catch(IOException e) {
       JOptionPane.showMessageDialog(null, "Could not create external process for: " + getWorkDir() + getExecutable(), "Cannot start application!", JOptionPane.ERROR_MESSAGE);
-      System.exit(1);
+      throw new RuntimeException(e);
     }
 
     OuputPurger wOutputErrorPurger = new OuputPurger(wProcess.getErrorStream());
@@ -89,9 +84,8 @@ public class ExternalAppLauncherHelper {
 
     try {
       wProcess.waitFor();
-    } catch(InterruptedException wThreadInterrupted) {
-      wThreadInterrupted.printStackTrace();
-      System.exit(1);
+    } catch(InterruptedException e) {
+      throw new RuntimeException(e);
     }
 
   }
@@ -151,7 +145,7 @@ public class ExternalAppLauncherHelper {
   public void setParameterStr(String parameterStr) {
     this.parameterStr = parameterStr;
   }
-  
+
   public String getWorkDir() {
     return workDir;
   }

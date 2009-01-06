@@ -281,19 +281,17 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner {
     ProcessBuilder builder = new ProcessBuilder(command);
     builder.directory(new File(getDatabasePath()));
 
-    Process wProcess = null;
     try {
-      wProcess = builder.start();
-    } catch(IOException wCouldNotCreateProcess) {
-      log.error("CardioSoftIntrumentRunner: Could not create external process for: " + command, wCouldNotCreateProcess.getStackTrace());
-      System.exit(1);
-    }
-
-    try {
-      wProcess.waitFor();
-    } catch(InterruptedException wThreadInterrupted) {
-      wThreadInterrupted.printStackTrace();
-      System.exit(1);
+      log.info("Executing command '{}'", command);
+      Process process = builder.start();
+      log.info("Waiting for process '{}'", process);
+      process.waitFor();
+    } catch(IOException e) {
+      log.error("Could not create external process.", e);
+      throw new RuntimeException(e);
+    } catch(InterruptedException e) {
+      log.error("Error waiting for process to end.", e);
+      throw new RuntimeException(e);
     }
   }
 
