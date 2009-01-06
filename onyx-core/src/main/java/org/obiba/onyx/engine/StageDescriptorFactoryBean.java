@@ -43,7 +43,6 @@ public class StageDescriptorFactoryBean implements FactoryBean, ApplicationConte
     xstream.alias("stages", LinkedList.class);
     xstream.alias("stage", Stage.class);
     xstream.alias("stageCondition", PreviousStageDependencyCondition.class);
-    xstream.alias("variableCondition", StageVariableStageDependencyCondition.class);
     xstream.alias("stageVariableCondition", VariableStageDependencyCondition.class);
     xstream.alias("multipleCondition", MultipleStageDependencyCondition.class);
     xstream.alias("inverseCondition", InverseStageDependencyCondition.class);

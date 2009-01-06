@@ -16,7 +16,6 @@ import org.apache.wicket.Component;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
-import org.obiba.onyx.util.data.Data;
 import org.springframework.context.MessageSourceResolvable;
 
 /**
@@ -139,13 +138,6 @@ public interface IStageExecution {
    * @return
    */
   public MessageSourceResolvable getMessage();
-
-  /**
-   * Get the {@link Data} corresponding to the given for stage execution dependency resolution.
-   * @param key
-   * @return the Data or null if not applicable
-   */
-  public Data getData(String key);
 
   /**
    * Sets the reason for the state (i.e., the action that caused the transition to the current state).

@@ -26,7 +26,6 @@ import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
-import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSourceResolvable;
@@ -192,12 +191,6 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
 
   public MessageSourceResolvable getMessage() {
     return currentState.getMessage();
-  }
-
-  public Data getData(String key) {
-    Data data = currentState.getData(key);
-    log.info(getName() + ":" + currentState.getName() + ".data." + key + "=" + data);
-    return data;
   }
 
   public Stage getStage() {

@@ -22,7 +22,6 @@ import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionDefinitionConfiguration;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
-import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -164,10 +163,6 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
   public MessageSourceResolvable getMessage() {
     // Codes are: <fullname>, State.<name>, <name>
     return new DefaultMessageSourceResolvable(new String[] { getFullName(), "State." + getName(), getName() }, getName());
-  }
-
-  public Data getData(String key) {
-    return null;
   }
 
   public void setReason(Action reason) {
