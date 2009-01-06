@@ -22,7 +22,6 @@ import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -40,6 +39,7 @@ import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
+import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
@@ -91,6 +91,7 @@ public class EditParticipantPanelTest implements Serializable {
 
     // We expect the updateParticipant method to be called once
     expect(mockUserSessionService.getDateFormat()).andReturn(new SimpleDateFormat("yyyy-MM-dd")).anyTimes();
+    expect(mockUserSessionService.getUser()).andReturn(new User()).anyTimes();
     mockParticipantService.updateParticipant(p);
     expect(mockQueryService.matchOne((ApplicationConfiguration) EasyMock.anyObject())).andReturn(new ApplicationConfiguration());
 
@@ -101,9 +102,10 @@ public class EditParticipantPanelTest implements Serializable {
     tester.startPanel(new TestPanelSource() {
       public Panel getTestPanel(String panelId) {
         DummyHomePage dummyHomePage = new DummyHomePage();
-        return new EditParticipantPanel(panelId, new Model(p), dummyHomePage, "edit", new ModalWindow("windowMock"));
+        return new EditParticipantPanel(panelId, new Model(p), dummyHomePage, new ModalWindow("windowMock"));
       }
     });
+    tester.dumpPage();
 
     FormTester formTester = tester.newFormTester("panel:editParticipantForm");
     formTester.select("metadata:repeat:1:field:input:select", 3);
@@ -112,12 +114,12 @@ public class EditParticipantPanelTest implements Serializable {
     tester.executeAjaxEvent("panel:editParticipantForm:saveAction", "onclick");
     tester.assertNoErrorMessage();
 
-    // test EditParticipantPanel en mode EDIT => aucun champ n'est éditable
+    // test EditParticipantPanel in EDIT mode => no editable field
     tester.assertComponent("panel:editParticipantForm:firstName:value", Label.class);
     tester.assertComponent("panel:editParticipantForm:lastName:value", Label.class);
     tester.assertComponent("panel:editParticipantForm:gender:value", Label.class);
     tester.assertComponent("panel:editParticipantForm:birthDate:value", Label.class);
-    tester.assertComponent("panel:editParticipantForm:assignCodeToParticipantPanel", EmptyPanel.class);
+    tester.assertInvisible("panel:editParticipantForm:assignCodeToParticipantPanel");
 
     tester.assertComponent("panel:editParticipantForm:metadata:repeat:1:field:input:select", DropDownChoice.class);
     tester.assertComponent("panel:editParticipantForm:metadata:repeat:2:field:input:field", TextField.class);
@@ -149,14 +151,13 @@ public class EditParticipantPanelTest implements Serializable {
     tester.startPanel(new TestPanelSource() {
       public Panel getTestPanel(String panelId) {
         DummyHomePage dummyHomePage = new DummyHomePage();
-        EditParticipantPanel panel = new EditParticipantPanel(panelId, new Model(p), dummyHomePage, "reception");
+        EditParticipantPanel panel = new EditParticipantPanel(panelId, new Model(p), dummyHomePage);
         panel.get("editParticipantForm:assignCodeToParticipantPanel").replaceWith(new AssignCodeToParticipantPanelMock("assignCodeToParticipantPanel", new Model(p)));
         return panel;
       }
     });
 
-    // test EditParticipantPanel en mode RECEPTION => enrollementId et assignCodeToParticipantPanel apparaissent, tous
-    // champs éditables
+    // test EditParticipantPanel RECEPTION mode => enrollementId and assignCodeToParticipantPanel are shown, all fields are editable
 
     FormTester formTester = tester.newFormTester("panel:editParticipantForm");
     formTester.setValue("firstName:value", "Martine");
@@ -207,14 +208,14 @@ public class EditParticipantPanelTest implements Serializable {
     tester.startPanel(new TestPanelSource() {
       public Panel getTestPanel(String panelId) {
         DummyHomePage dummyHomePage = new DummyHomePage();
-        EditParticipantPanel panel = new EditParticipantPanel(panelId, new Model(p), dummyHomePage, "enrollment");
+        EditParticipantPanel panel = new EditParticipantPanel(panelId, new Model(p), dummyHomePage);
         panel.get("editParticipantForm:assignCodeToParticipantPanel").replaceWith(new AssignCodeToParticipantPanelMock("assignCodeToParticipantPanel", new Model(p)));
         return panel;
       }
     });
 
-    // test EditParticipantPanel en mode ENROLLMENT => enrollementId n'apparaît pas, tous champs éditables,
-    // assignCodeToParticipantPanel apparaît
+    // test EditParticipantPanel in ENROLLMENT mode => enrollementId not shown, all fields editable
+    // assignCodeToParticipantPanel should be shown
 
     FormTester formTester = tester.newFormTester("panel:editParticipantForm");
     formTester.setValue("firstName:value", "Martin");
@@ -230,6 +231,7 @@ public class EditParticipantPanelTest implements Serializable {
     tester.assertComponent("panel:editParticipantForm:gender:gender", DropDownChoice.class);
     tester.assertComponent("panel:editParticipantForm:birthDate:value", DateTextField.class);
     tester.assertComponent("panel:editParticipantForm:assignCodeToParticipantPanel", AssignCodeToParticipantPanel.class);
+    tester.assertVisible("panel:editParticipantForm:assignCodeToParticipantPanel");
 
     tester.assertComponent("panel:editParticipantForm:metadata:repeat:1:field:input:select", DropDownChoice.class);
     tester.assertComponent("panel:editParticipantForm:metadata:repeat:2:field:input:field", TextField.class);

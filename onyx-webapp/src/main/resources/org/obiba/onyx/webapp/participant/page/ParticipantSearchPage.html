@@ -1,71 +1,96 @@
 <html>
   <body>
     <wicket:extend>
-    	<div wicket:id="participantDetailsModalWindow" />
-    	<div wicket:id="editParticipantDetailsModalWindow" />
-    	<div wicket:id="updateParticipantListWindow" />
-    	
-    	<table style="width: 100%">
-    		<tr>
-    			<td style="width: 50%">
-    				<fieldset>
-    					<legend><wicket:message key="ParticipantSearch" /></legend>
-    					<form wicket:id="searchForm">
-    						<table class="keyValueTable">
-    							<tr>
-    								<td class="keyValueTableKey"><wicket:message key="Code" /></td>
-    								<td class="keyValueTableValueOdd"><input wicket:id="barcode" type="text" size="20"/></td>
-    								<td>
-    								    <input type="submit" wicket:message="value:Go" wicket:id="searchByCode"/>
-    								</td>
-    							</tr>
-    							<tr>
-    								<td class="keyValueTableKey"><wicket:message key="Name" /></td>
-    								<td class="keyValueTableValueEven"><input wicket:id="lastName" type="text" size="20"/></td>
-    								<td>
-    								    <input type="submit" wicket:message="value:Go" wicket:id="searchByLastName"/>
-    								</td>
-    							</tr>
-    							<tr>
-    								<td colspan="3">
-    									<input type="submit" wicket:message="value:Search" wicket:id="submit"/>
-    									<input type="submit" wicket:message="value:AppointmentsOfTheDay" wicket:id="appointments"/>
-    									<input type="submit" wicket:message="value:CurrentInterviews" wicket:id="interviews"/>
-    								</td>
-    							</tr>
-    						</table>
-						</form>
-					</fieldset>
-    			</td>
-    			<td valign="top">
-    				<span wicket:id="actions"/>
-    			</td>
-    		</tr>
-    		<tr>
-    			<td colspan="2">
-    				<fieldset>
-    					<legend><wicket:message key="Participants" /></legend>
-    					<div style="text-align: right;">
-    						<a wicket:id="excel">Excel</a>
-    					</div>
-    					<span wicket:id="participant-list" />
-					</fieldset>
-    				
-    			</td>
-    		</tr>
-    	</table>
-    	
-    	<wicket:fragment wicket:id="actionFragment">
-		  <fieldset>
-			<legend><wicket:message key="Action" /></legend>
-			<div style="margin-bottom:10px;">
-				<a wicket:id="volunteer"><wicket:message key="EnrollVolunteer" /></a>
-			</div>
-			<div>
-				<a wicket:id="update"><wicket:message key="UpdateParticipantsList" /></a>
-			</div>
-		  </fieldset>
-		</wicket:fragment>
+      <div wicket:id="participantDetailsModalWindow" />
+      <div wicket:id="editParticipantDetailsModalWindow" />
+      <div wicket:id="updateParticipantListWindow" />
+
+      <table style="width: 100%">
+        <tr>
+          <td style="width: 50%">
+            <fieldset>
+              <legend>
+                <wicket:message key="ParticipantSearch" />
+              </legend>
+              <form wicket:id="searchForm">
+                <table class="keyValueTable">
+                  <tr>
+                    <td class="keyValueTableKey">
+                      <wicket:message key="Code" />
+                    </td>
+                    <td class="keyValueTableValueOdd">
+                      <input wicket:id="barcode" type="text" size="20" />
+                    </td>
+                    <td>
+                      <input type="submit" wicket:message="value:Go" wicket:id="searchByCode" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="keyValueTableKey">
+                      <wicket:message key="Name" />
+                    </td>
+                    <td class="keyValueTableValueEven">
+                      <input wicket:id="lastName" type="text" size="20" />
+                    </td>
+                    <td>
+                      <input type="submit" wicket:message="value:Go" wicket:id="searchByLastName" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="3">
+                      <input type="submit" wicket:message="value:Search" wicket:id="submit" />
+                      <input type="submit" wicket:message="value:AppointmentsOfTheDay" wicket:id="appointments" />
+                      <input type="submit" wicket:message="value:CurrentInterviews" wicket:id="interviews" />
+                    </td>
+                  </tr>
+                </table>
+              </form>
+            </fieldset>
+          </td>
+          <td valign="top">
+            <span wicket:id="actions" />
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <fieldset>
+              <legend>
+                <wicket:message key="Participants" />
+              </legend>
+              <div style="text-align: right;">
+                <a wicket:id="excel">Excel</a>
+              </div>
+              <span wicket:id="participant-list" />
+            </fieldset>
+
+          </td>
+        </tr>
+      </table>
+
+      <wicket:fragment wicket:id="actionFragment">
+        <fieldset>
+          <legend>
+            <wicket:message key="Action" />
+          </legend>
+          <div style="margin-bottom:10px;">
+            <a wicket:id="volunteer">
+              <wicket:message key="EnrollVolunteer" />
+            </a>
+          </div>
+          <div>
+            <a wicket:id="update">
+              <wicket:message key="UpdateParticipantsList" />
+            </a>
+          </div>
+        </fieldset>
+      </wicket:fragment>
+
+      <wicket:fragment wicket:id="actionList">
+        <a wicket:id="link">
+          <span wicket:id="label" />
+        </a>
+      </wicket:fragment>
+
     </wicket:extend>
   </body>
 </html>

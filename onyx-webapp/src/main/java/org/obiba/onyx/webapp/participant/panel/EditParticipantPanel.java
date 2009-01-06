@@ -66,15 +66,6 @@ public class EditParticipantPanel extends Panel {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(EditParticipantPanel.class);
 
-  // reception step for previously enrolled participants
-  private static final String RECEPTION = "reception";
-
-  // reception step for volunteer participants
-  private static final String ENROLLMENT = "enrollment";
-
-  // edit step for participants
-  private static final String EDIT = "edit";
-
   // constant for fixed attributes
   private static String BARCODE = "barcode";
 
@@ -104,7 +95,11 @@ public class EditParticipantPanel extends Panel {
 
   private Page sourcePage;
 
-  private String mode;
+  private PanelMode mode;
+
+  private static enum PanelMode {
+    RECEPTION, ENROLLMENT, EDIT
+  }
 
   /**
    * Constructor in another panel
@@ -114,10 +109,10 @@ public class EditParticipantPanel extends Panel {
    * @param sourcePage
    * @param mode
    */
-  public EditParticipantPanel(String id, IModel participantModel, Page sourcePage, String mode) {
+  public EditParticipantPanel(String id, IModel participantModel, Page sourcePage) {
     super(id, participantModel);
-    this.mode = mode;
     this.sourcePage = sourcePage;
+    initMode();
 
     Form editParticipantForm = new EditParticipantForm("editParticipantForm", participantModel, null);
     add(editParticipantForm);
@@ -136,10 +131,10 @@ public class EditParticipantPanel extends Panel {
    * @param mode
    * @param modalWindow
    */
-  public EditParticipantPanel(String id, IModel participantModel, Page sourcePage, String mode, ModalWindow modalWindow) {
+  public EditParticipantPanel(String id, IModel participantModel, Page sourcePage, ModalWindow modalWindow) {
     super(id, participantModel);
-    this.mode = mode;
     this.sourcePage = sourcePage;
+    initMode();
 
     Form editParticipantForm = new EditParticipantForm("editParticipantForm", participantModel, modalWindow);
     add(editParticipantForm);
@@ -147,6 +142,21 @@ public class EditParticipantPanel extends Panel {
     feedbackPanel = new FeedbackPanel("feedback");
     feedbackPanel.setOutputMarkupId(true);
     add(feedbackPanel);
+  }
+
+  /**
+   * Initializes the Panel's {@code mode} attribute. The mode is determined by examining the participant's attributes.
+   */
+  private void initMode() {
+    Participant participant = (Participant) getModelObject();
+    if(participant.getBarcode() != null) {
+      // The participant has already been received/enrolled. Obviously, we are editing
+      mode = PanelMode.EDIT;
+    } else {
+      // Mode is ENROLLMENT if the participant is a volunteer
+      // Mode is RECEPTION if the participant has been enrolled
+      mode = participant.getRecruitmentType() == RecruitmentType.VOLUNTEER ? PanelMode.ENROLLMENT : PanelMode.RECEPTION;
+    }
   }
 
   private class EditParticipantForm extends Form {
@@ -172,7 +182,7 @@ public class EditParticipantPanel extends Panel {
         participant.setSiteNo(appConfig.getSiteNo());
       }
 
-      if(mode.equals(EDIT)) {
+      if(mode == PanelMode.EDIT) {
         add(new RowFragment(BARCODE, getModel(), "ParticipantCode", BARCODE));
         add(new RowFragment(FIRST_NAME, getModel(), "FirstName", FIRST_NAME));
         add(new RowFragment(LAST_NAME, getModel(), "LastName", LAST_NAME));
@@ -186,13 +196,17 @@ public class EditParticipantPanel extends Panel {
         add(new DateFragment(BIRTH_DATE, getModel(), "BirthDate*", createBirthDateField()));
       }
 
-      if(participantMetadata.getConfiguredAttributes().size() == 0) add(new EmptyPanel("metadata"));
-      else
-        add(new MetadataFragment("metadata", getModel(), participantMetadata.getConfiguredAttributes()));
+      add(new MetadataFragment("metadata", getModel()));
 
-      if(mode.equals(RECEPTION) || mode.equals(ENROLLMENT)) add(new AssignCodeToParticipantPanel("assignCodeToParticipantPanel", participantModel));
-      else
-        add(new EmptyPanel("assignCodeToParticipantPanel"));
+      add(new AssignCodeToParticipantPanel("assignCodeToParticipantPanel", participantModel) {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public boolean isVisible() {
+          return mode == PanelMode.RECEPTION || mode == PanelMode.ENROLLMENT;
+        }
+      });
 
       @SuppressWarnings("serial")
       AjaxSubmitLink submitLink = new AjaxSubmitLink("saveAction") {
@@ -200,12 +214,17 @@ public class EditParticipantPanel extends Panel {
           Participant participant = (Participant) EditParticipantForm.this.getModelObject();
           participantService.updateParticipant(participant);
 
-          // submitting child form if exists
-          if(form.get("assignCodeToParticipantPanel:assignCodeToParticipantForm") != null) ((AssignCodeToParticipantForm) form.get("assignCodeToParticipantPanel:assignCodeToParticipantForm")).onSubmit(participant);
+          // submitting child form if it's visible
+          AssignCodeToParticipantPanel panel = (AssignCodeToParticipantPanel) form.get("assignCodeToParticipantPanel");
+          if(panel.isVisible()) {
+            ((AssignCodeToParticipantForm) panel.get("assignCodeToParticipantForm")).onSubmit(participant);
+          }
 
-          if(mode.equals(EDIT)) modalWindow.close(target);
-          else
+          if(mode == PanelMode.EDIT) {
+            modalWindow.close(target);
+          } else {
             setResponsePage(sourcePage);
+          }
         }
 
         protected void onError(AjaxRequestTarget target, Form form) {
@@ -218,9 +237,11 @@ public class EditParticipantPanel extends Panel {
       AjaxLink cancelLink = new AjaxLink("cancelAction") {
         @Override
         public void onClick(AjaxRequestTarget target) {
-          if(mode.equals(EDIT)) modalWindow.close(target);
-          else
+          if(mode == PanelMode.EDIT) {
+            modalWindow.close(target);
+          } else {
             setResponsePage(sourcePage);
+          }
         }
       };
       add(cancelLink);
@@ -351,7 +372,7 @@ public class EditParticipantPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    public MetadataFragment(String id, IModel participantModel, List<ParticipantAttribute> attributes) {
+    public MetadataFragment(String id, IModel participantModel) {
       super(id, "metadataFragment", EditParticipantPanel.this);
 
       RepeatingView repeat = new RepeatingView("repeat");
@@ -359,16 +380,18 @@ public class EditParticipantPanel extends Panel {
 
       Participant participant = (Participant) participantModel.getObject();
 
-      for(final ParticipantAttribute attribute : attributes) {
+      for(final ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
         Label label = new Label("label", new SpringStringResourceModel(new PropertyModel(attribute, "name")));
         item.add(label);
 
-        if(attribute.isMandatoryAtReception()) item.add(new Label("mandatory", " *"));
-        else
+        if(attribute.isMandatoryAtReception()) {
+          item.add(new Label("mandatory", " *"));
+        } else {
           item.add(new Label("mandatory", ""));
+        }
 
         IModel attributeValueModel;
         if(participant.getParticipantAttributeValue(attribute.getName()) == null) {
@@ -378,7 +401,16 @@ public class EditParticipantPanel extends Panel {
           attributeValueModel = new DetachableEntityModel(queryService, participant.getParticipantAttributeValue(attribute.getName()));
         }
 
-        if((mode.equals(EDIT) && attribute.isEditableAfterReception() == true) || (!mode.equals(EDIT) && attribute.isEditableAtReception())) {
+        // Field is editable if the Panel's mode is EDIT and the attribute allows edition AFTER reception
+        // OR the panel's mode is NOT EDIT and the attribute allows edition AT reception.
+        boolean editable = false;
+        if(mode == PanelMode.EDIT) {
+          editable = attribute.isEditableAfterReception();
+        } else if(mode == PanelMode.RECEPTION || mode == PanelMode.ENROLLMENT) {
+          editable = attribute.isEditableAtReception();
+        }
+
+        if(editable) {
           DataField field;
           if(attribute.getAllowedValues() != null && attribute.getAllowedValues().size() > 0) {
             List<Data> allowedValues = new ArrayList<Data>();
@@ -430,7 +462,7 @@ public class EditParticipantPanel extends Panel {
    * @param component form component
    */
   private void addNoFocusCssClassInReceptionMode(FormComponent component) {
-    if(mode.equals(RECEPTION)) {
+    if(mode == PanelMode.RECEPTION) {
       component.add(new AttributeAppender("class", true, new Model("nofocus"), " "));
     }
   }

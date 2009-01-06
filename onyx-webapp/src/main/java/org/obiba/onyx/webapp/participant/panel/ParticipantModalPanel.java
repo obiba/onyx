@@ -16,12 +16,19 @@ import org.apache.wicket.markup.html.panel.Panel;
 
 public class ParticipantModalPanel extends Panel {
 
+  private static final long serialVersionUID = 1L;
+
+  public static final String CONTENT_PANEL_ID = "content";
+
   public ParticipantModalPanel(String id, Panel contentPanel, final ModalWindow modalWindow) {
     super(id);
 
     add(contentPanel);
 
     AjaxLink link = new AjaxLink("closeAction") {
+
+      private static final long serialVersionUID = 1L;
+
       @Override
       public void onClick(AjaxRequestTarget target) {
         modalWindow.close(target);

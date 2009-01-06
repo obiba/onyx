@@ -16,29 +16,31 @@ import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class ParticipantReceptionPage extends BasePage {
 
-  private static final String RECEPTION = "reception";
-
-  private static final String ENROLLMENT = "enrollment";
-
   @SuppressWarnings("serial")
-  public ParticipantReceptionPage(IModel participantModel, Page sourcePage, String mode) {
+  public ParticipantReceptionPage(IModel participantModel, Page sourcePage) {
     super();
 
-    if(mode.equals(RECEPTION)) {
+    Participant participant = (Participant) participantModel.getObject();
+
+    switch(participant.getRecruitmentType()) {
+    case ENROLLED:
       add(new TitleFragment("title", "participantReception"));
       add(new InstructionFragment("instruction", "receiveParticipantInstructions"));
-    } else if(mode.equals(ENROLLMENT)) {
+      break;
+    case VOLUNTEER:
       add(new TitleFragment("title", "volunteerRegistration"));
       add(new InstructionFragment("instruction", "enrollParticipantInstructions"));
+      break;
     }
 
-    add(new EditParticipantPanel("editParticipantPanel", participantModel, sourcePage, mode));
+    add(new EditParticipantPanel("editParticipantPanel", participantModel, sourcePage));
   }
 
   @SuppressWarnings("serial")

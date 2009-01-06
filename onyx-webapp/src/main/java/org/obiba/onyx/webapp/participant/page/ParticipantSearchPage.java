@@ -20,6 +20,9 @@ import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.authorization.Action;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeAction;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeActions;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -33,10 +36,12 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.target.resource.ResourceStreamRequestTarget;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -51,7 +56,6 @@ import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
-import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
@@ -60,7 +64,6 @@ import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.wicket.behavior.EnterOnKeyPressBehaviour;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.util.DateModelUtils;
-import org.obiba.wicket.markup.html.link.AjaxLinkList;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
 import org.obiba.wicket.util.resource.CsvResourceStream;
@@ -218,9 +221,7 @@ public class ParticipantSearchPage extends BasePage {
 
     });
 
-    final ActionFragment actionFrag;
-    add(actionFrag = new ActionFragment("actions"));
-    MetaDataRoleAuthorizationStrategy.authorize(actionFrag, RENDER, "PARTICIPANT_MANAGER");
+    add(new ActionFragment("actions"));
 
     add(new Link("excel") {
 
@@ -247,33 +248,10 @@ public class ParticipantSearchPage extends BasePage {
     add(updateParticipantListWindow);
   }
 
-  @SuppressWarnings("serial")
-  private class ActionFragment extends Fragment {
-
-    public ActionFragment(String id) {
-      super(id, "actionFragment", ParticipantSearchPage.this);
-
-      AjaxLink volunteerLink = new AjaxLink("volunteer") {
-        public void onClick(AjaxRequestTarget target) {
-          // TODO enroll volunteer
-          // target.addComponent(getFeedbackPanel());
-          setResponsePage(new ParticipantReceptionPage(new Model(new Participant()), ParticipantSearchPage.this, "enrollment"));
-        }
-      };
-      volunteerLink.setVisible(participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.VOLUNTEER));
-      add(volunteerLink);
-
-      AjaxLink updateParticipantsLink = new AjaxLink("update") {
-        public void onClick(AjaxRequestTarget target) {
-          updateParticipantListWindow.showConfirmation();
-          updateParticipantListWindow.show(target);
-
-          target.addComponent(updateParticipantListWindow.get("content"));
-        }
-      };
-      updateParticipantsLink.setVisible(participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.ENROLLED));
-      add(updateParticipantsLink);
-    }
+  @Override
+  protected void onModelChanged() {
+    super.onModelChanged();
+    this.participantList.modelChanged();
   }
 
   private OnyxEntityList<Participant> getAllParticipantsList() {
@@ -423,16 +401,14 @@ public class ParticipantSearchPage extends BasePage {
       columns.add(new AbstractColumn(new StringResourceModel("Gender", ParticipantSearchPage.this, null), "gender") {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Participant p = (Participant) rowModel.getObject();
-          cellItem.add(new Label(componentId, new StringResourceModel("Gender." + p.getGender(), ParticipantSearchPage.this, null)));
+          cellItem.add(new Label(componentId, new StringResourceModel("Gender.${gender}", ParticipantSearchPage.this, rowModel)));
         }
 
       });
       columns.add(new AbstractColumn(new StringResourceModel("BirthDate", ParticipantSearchPage.this, null), "birthDate") {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Participant p = (Participant) rowModel.getObject();
-          cellItem.add(new Label(componentId, DateModelUtils.getDateModel(new PropertyModel(ParticipantListColumnProvider.this, "dateFormat"), new Model(p.getBirthDate()))));
+          cellItem.add(new Label(componentId, DateModelUtils.getDateModel(new PropertyModel(ParticipantListColumnProvider.this, "dateFormat"), new PropertyModel(rowModel, "birthDate"))));
         }
 
       });
@@ -440,10 +416,7 @@ public class ParticipantSearchPage extends BasePage {
       columns.add(new AbstractColumn(new StringResourceModel("Appointment", ParticipantSearchPage.this, null), "appointment.date") {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Participant p = (Participant) rowModel.getObject();
-          if(p.getAppointment() != null) cellItem.add(new Label(componentId, DateModelUtils.getDateTimeModel(new PropertyModel(ParticipantListColumnProvider.this, "dateTimeFormat"), new Model(p.getAppointment().getDate()))));
-          else
-            cellItem.add(new Label(componentId, ""));
+          cellItem.add(new Label(componentId, DateModelUtils.getDateTimeModel(new PropertyModel(ParticipantListColumnProvider.this, "dateTimeFormat"), new PropertyModel(rowModel, "appointment.date"))));
         }
 
       });
@@ -451,48 +424,15 @@ public class ParticipantSearchPage extends BasePage {
       columns.add(new AbstractColumn(new StringResourceModel("Status", ParticipantSearchPage.this, null)) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          Participant p = (Participant) rowModel.getObject();
-          if(p.getInterview() != null) cellItem.add(new Label(componentId, new StringResourceModel("InterviewStatus." + p.getInterview().getStatus(), ParticipantSearchPage.this, null)));
-          else
-            cellItem.add(new Label(componentId));
+          cellItem.add(new Label(componentId, new StringResourceModel("InterviewStatus.${status}", ParticipantSearchPage.this, new PropertyModel(rowModel, "interview"), "")));
         }
 
       });
 
-      final boolean isParticipantEditable = participantMetadata.hasEditableAfterReceptionConfiguredAttribute();
-
       columns.add(new AbstractColumn(new StringResourceModel("Actions", ParticipantSearchPage.this, null)) {
 
         public void populateItem(final Item cellItem, String componentId, final IModel rowModel) {
-          final List<IModel> actions = new ArrayList<IModel>();
-          final Participant p = (Participant) rowModel.getObject();
-          actions.add(new StringResourceModel("View", ParticipantSearchPage.this, null));
-          if(p.getBarcode() != null) {
-            actions.add(new StringResourceModel("Interview", ParticipantSearchPage.this, null));
-            if(isParticipantEditable == true && OnyxAuthenticatedSession.get().getRoles().hasRole("PARTICIPANT_MANAGER")) actions.add(new StringResourceModel("Edit", ParticipantSearchPage.this, null));
-          } else if(OnyxAuthenticatedSession.get().getRoles().hasRole("PARTICIPANT_MANAGER")) actions.add(new StringResourceModel("Receive", ParticipantSearchPage.this, null));
-
-          cellItem.add(new AjaxLinkList(componentId, actions, "") {
-
-            @Override
-            public void onClick(IModel model, AjaxRequestTarget target) {
-              if(actions.indexOf(model) == 0) {
-                participantDetailsModalWindow.setContent(new ParticipantModalPanel("content", new ParticipantPanel("content", rowModel), participantDetailsModalWindow));
-                participantDetailsModalWindow.show(target);
-              } else if(actions.indexOf(model) == 1) {
-                if(p.getBarcode() != null) {
-                  activeInterviewService.setParticipant(p);
-                  setResponsePage(InterviewPage.class);
-                } else {
-                  setResponsePage(new ParticipantReceptionPage(rowModel, ParticipantSearchPage.this, "reception"));
-                }
-              } else if(actions.indexOf(model) == 2) {
-                editParticipantDetailsModalWindow.setContent(new EditParticipantModalPanel("content", new EditParticipantPanel("content", rowModel, ParticipantSearchPage.this, "edit", editParticipantDetailsModalWindow)));
-                editParticipantDetailsModalWindow.show(target);
-              }
-            }
-
-          });
+          cellItem.add(new ActionListFragment(componentId, rowModel));
         }
 
       });
@@ -520,6 +460,140 @@ public class ParticipantSearchPage extends BasePage {
 
     public DateFormat getDateTimeFormat() {
       return userSessionService.getDateTimeFormat();
+    }
+  }
+
+  @AuthorizeActions(actions = { @AuthorizeAction(action = Action.RENDER, roles = "PARTICIPANT_MANAGER") })
+  private class ActionFragment extends Fragment {
+
+    private static final long serialVersionUID = 1L;
+
+    public ActionFragment(String id) {
+      super(id, "actionFragment", ParticipantSearchPage.this);
+
+      AjaxLink volunteerLink = new AjaxLink("volunteer") {
+        private static final long serialVersionUID = 1L;
+
+        public void onClick(AjaxRequestTarget target) {
+          Participant volunteer = new Participant();
+          volunteer.setRecruitmentType(RecruitmentType.VOLUNTEER);
+          setResponsePage(new ParticipantReceptionPage(new Model(volunteer), ParticipantSearchPage.this));
+        }
+
+        @Override
+        public boolean isVisible() {
+          return participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.VOLUNTEER);
+        }
+      };
+      add(volunteerLink);
+
+      AjaxLink updateParticipantsLink = new AjaxLink("update") {
+        private static final long serialVersionUID = 1L;
+
+        public void onClick(AjaxRequestTarget target) {
+          updateParticipantListWindow.showConfirmation();
+          updateParticipantListWindow.show(target);
+
+          target.addComponent(updateParticipantListWindow.get("content"));
+        }
+      };
+      updateParticipantsLink.setVisible(participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.ENROLLED));
+      add(updateParticipantsLink);
+    }
+  }
+
+  /**
+   * This fragment uses link visibility in order to hide/display links within the list of available links. It replaces
+   * the previous use of AjaxLinkList which would add/not add a component to the list in order to hide/display it. The
+   * problem with this approach is that when the model changes, a component that should now be displayed cannot since it
+   * isn't present in the list.
+   * @see ONYX-169
+   */
+  private class ActionListFragment extends Fragment {
+
+    private static final long serialVersionUID = 1L;
+
+    public ActionListFragment(String id, IModel participantModel) {
+      super(id, "actionList", ParticipantSearchPage.this, participantModel);
+
+      RepeatingView repeater = new RepeatingView("link");
+
+      // View
+      AjaxLink link = new AjaxLink(repeater.newChildId(), participantModel) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          participantDetailsModalWindow.setContent(new ParticipantModalPanel("content", new ParticipantPanel(ParticipantModalPanel.CONTENT_PANEL_ID, getModel()), participantDetailsModalWindow));
+          participantDetailsModalWindow.show(target);
+        }
+      };
+      link.add(new Label("label", new ResourceModel("View")));
+      repeater.add(link);
+
+      // Interview
+      link = new AjaxLink(repeater.newChildId(), participantModel) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          activeInterviewService.setParticipant(getParticipant());
+          setResponsePage(InterviewPage.class);
+        }
+
+        @Override
+        public boolean isVisible() {
+          // Visible when participant has been assigned a barcode
+          return getParticipant().getBarcode() != null;
+        }
+      };
+      link.add(new Label("label", new ResourceModel("Interview")));
+      repeater.add(link);
+
+      // Receive
+      link = new AjaxLink(repeater.newChildId(), participantModel) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          setResponsePage(new ParticipantReceptionPage(getModel(), ParticipantSearchPage.this));
+        }
+
+        @Override
+        public boolean isVisible() {
+          // Reception allowed when participant has no barcode associated
+          return getParticipant().getBarcode() == null;
+        }
+      };
+      link.add(new Label("label", new ResourceModel("Receive")));
+      MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER");
+      repeater.add(link);
+
+      // Edit
+      link = new AjaxLink(repeater.newChildId(), participantModel) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          editParticipantDetailsModalWindow.setContent(new EditParticipantModalPanel("content", new EditParticipantPanel("content", getModel(), ParticipantSearchPage.this, editParticipantDetailsModalWindow)));
+          editParticipantDetailsModalWindow.show(target);
+        }
+
+        @Override
+        public boolean isVisible() {
+          // Visible if participant has been received and some attributes are editable.
+          return getParticipant().getBarcode() != null && participantMetadata.hasEditableAfterReceptionConfiguredAttribute();
+        }
+      };
+      link.add(new Label("label", new ResourceModel("Edit")));
+      MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER");
+      repeater.add(link);
+
+      add(repeater);
+    }
+
+    Participant getParticipant() {
+      return (Participant) getModelObject();
     }
   }
 }

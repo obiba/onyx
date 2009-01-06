@@ -28,10 +28,13 @@ import org.apache.wicket.validation.IValidator;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ParticipantService;
-import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
 public class AssignCodeToParticipantPanel extends Panel {
+
+  @SpringBean
+  private UserSessionService userSessionService;
 
   @SpringBean
   private ParticipantService participantService;
@@ -43,7 +46,11 @@ public class AssignCodeToParticipantPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  public AssignCodeToParticipantPanel(String id) {
+  /**
+   * Required by Unit Tests
+   * @param id
+   */
+  protected AssignCodeToParticipantPanel(String id) {
     super(id);
   }
 
@@ -84,7 +91,7 @@ public class AssignCodeToParticipantPanel extends Panel {
     }
 
     public void onSubmit(Participant participant) {
-      participantService.assignCodeToParticipant(participant, participant.getBarcode(), (String) receptionCommentModel.getObject(), OnyxAuthenticatedSession.get().getUser());
+      participantService.assignCodeToParticipant(participant, participant.getBarcode(), (String) receptionCommentModel.getObject(), userSessionService.getUser());
     }
   }
 
