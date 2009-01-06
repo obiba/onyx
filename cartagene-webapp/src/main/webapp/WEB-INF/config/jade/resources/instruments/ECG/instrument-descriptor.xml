@@ -94,17 +94,17 @@
     <input id="ethnic_group">
       <name>EthnicGroup</name>
       <description>Participant_Ethnic_Group</description>
-      <dataType>INTEGER</dataType>
+      <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="fixedSource">
-        <value>1</value>
+        <value>CAUCASIAN</value>
       </inputSource>
     </input>
     
     <input id="pacemaker">
       <name>Pacemaker</name>
       <description>Participant_Pacemaker</description>
-      <dataType>BOOLEAN</dataType>
+      <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="fixedSource">
         <value>0</value>

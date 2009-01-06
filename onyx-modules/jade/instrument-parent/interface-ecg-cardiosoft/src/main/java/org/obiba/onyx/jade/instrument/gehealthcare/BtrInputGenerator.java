@@ -51,11 +51,27 @@ public class BtrInputGenerator {
     }
   }
 
+  private enum Gender {
+    OTHER, MALE, FEMALE;
+    public void put(ByteBuffer bb) {
+      bb.put((byte) ordinal());
+    }
+  }
+
+  private enum Ethnicity {
+    NONE, CAUCASIAN, BLACK, ASIAN, ORIENTAL, HISPANIC, NATIVE, INUIT, POLYNESIAN, PACIFIC_ISLAND, MOGOLIAN, IDIAN;
+
+    public void put(ByteBuffer bb) {
+      bb.putShort((short) ordinal());
+    }
+  }
+
   public BtrInputGenerator() {
     // constructor
   }
 
   public ByteBuffer generateByteBuffer(Map<String, Data> inputData) {
+
     // Create a buffer that will hold the record, its header, its separator, and the eof
     ByteBuffer bb = ByteBuffer.allocate(RECORD_SIZE + recordHeader.length + recordEnd.length + fileEnd.length);
     bb.order(ByteOrder.LITTLE_ENDIAN);
@@ -72,8 +88,11 @@ public class BtrInputGenerator {
     WeightUnits.KG.put(bb); // 105-106
     bb.putShort(Short.valueOf(inputData.get("Height").getValueAsString()));
     HeightUnits.CM.put(bb); // 109-110
-    putString(bb, inputData.get("Gender").getValueAsString()); // 111
-    bb.putShort(Short.valueOf(inputData.get("EthnicGroup").getValueAsString())); // 114
+    Gender gender = Gender.valueOf(inputData.get("Gender").getValueAsString());
+    gender.put(bb); // 111
+    Ethnicity ethnicity = Ethnicity.valueOf(inputData.get("EthnicGroup").getValueAsString());
+    ethnicity.put(bb); // 112-113
+    bb.put(Byte.valueOf(inputData.get("Pacemaker").getValueAsString()));
 
     // The rest is unknown. Either it is unused or its use for internal purposes. Filling it with zeroes is ok.
     fillWithZeroes(bb);
