@@ -50,6 +50,11 @@ public class JadeCompletedState extends AbstractJadeStageState {
 
   @Override
   protected boolean wantTransitionEvent(TransitionEvent transitionEvent) {
+    // We don't need this event since we're already done. This can happen when our stage depends on multiple stages but
+    // not exclusively.
+    if(transitionEvent == TransitionEvent.VALID) {
+      return false;
+    }
     if(transitionEvent.equals(TransitionEvent.NOTAPPLICABLE) || transitionEvent.equals(TransitionEvent.INVALID)) {
       cancelInstrumentRun();
     }
