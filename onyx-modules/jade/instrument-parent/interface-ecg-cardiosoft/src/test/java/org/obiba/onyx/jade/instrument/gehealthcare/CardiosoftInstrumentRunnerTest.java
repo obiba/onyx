@@ -110,11 +110,11 @@ public class CardiosoftInstrumentRunnerTest {
     inputData.put("Gender", DataBuilder.buildText("FEMALE"));
     inputData.put("Height", DataBuilder.buildInteger(178));
     inputData.put("Weight", DataBuilder.buildInteger(764));
-    inputData.put("EthnicGroup", DataBuilder.buildInteger(1));
+    inputData.put("EthnicGroup", DataBuilder.buildText("CAUCASIAN"));
     inputData.put("BirthYear", DataBuilder.buildInteger(1978));
     inputData.put("BirthMonth", DataBuilder.buildInteger(02));
     inputData.put("BirthDay", DataBuilder.buildInteger(25));
-    inputData.put("Pacemaker", DataBuilder.buildBoolean(false));
+    inputData.put("Pacemaker", DataBuilder.buildInteger(0));
 
     expect(instrumentExecutionServiceMock.getInputParametersValue("ID", "LastName", "FirstName", "Gender", "Height", "Weight", "EthnicGroup", "BirthYear", "BirthMonth", "BirthDay", "Pacemaker")).andReturn(inputData);
     replay(instrumentExecutionServiceMock);
