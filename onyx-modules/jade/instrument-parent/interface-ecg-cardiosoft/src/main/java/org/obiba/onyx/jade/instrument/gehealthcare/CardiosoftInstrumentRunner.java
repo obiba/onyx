@@ -260,6 +260,8 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
           if(value == null) continue;
           if(value instanceof Long) {
             ouputToSend.put(pd.getName(), DataBuilder.buildInteger((Long) value));
+          } else if(value instanceof Double) {
+            ouputToSend.put(pd.getName(), DataBuilder.buildDecimal((Double) value));
           } else {
             ouputToSend.put(pd.getName(), DataBuilder.buildText(value.toString()));
           }

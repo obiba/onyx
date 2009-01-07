@@ -45,6 +45,29 @@ public class CardiosoftInstrumentResultParser {
 
   private String filterSetting;
 
+  // Patient Information
+  private String participantID;
+
+  private String participantLastName;
+
+  private String participantFirstName;
+
+  private Long participantBirthDay;
+
+  private Long participantBirthMonth;
+
+  private Long participantBirthYear;
+
+  private String participantGender;
+
+  private String participantRace;
+
+  private Long participantHeight;
+
+  private Double participantWeight;
+
+  private Long participantPacemaker;
+
   // Resting ECG Measurements
   private String diagnosisVersion;
 
@@ -115,6 +138,7 @@ public class CardiosoftInstrumentResultParser {
       XPathFactory factory = XPathFactory.newInstance();
       xpath = factory.newXPath();
 
+      extractParticipantInfo();
       extractDateTime();
       extractInterpretation();
       extractFilterSetting();
@@ -272,6 +296,43 @@ public class CardiosoftInstrumentResultParser {
   }
 
   /**
+   * Extracts participant information data
+   */
+  private void extractParticipantInfo() throws XPathExpressionException {
+    participantID = xpath.evaluate("//PatientInfo/PID/text()", doc, XPathConstants.STRING).toString();
+    participantLastName = xpath.evaluate("//PatientInfo/Name/FamilyName/text()", doc, XPathConstants.STRING).toString();
+    participantFirstName = xpath.evaluate("//PatientInfo/Name/GivenName/text()", doc, XPathConstants.STRING).toString();
+    participantBirthDay = extractLongValue("//PatientInfo/BirthDateTime/Day/text()");
+    participantBirthMonth = extractLongValue("//PatientInfo/BirthDateTime/Month/text()");
+    participantBirthYear = extractLongValue("//PatientInfo/BirthDateTime/Year/text()");
+    participantGender = xpath.evaluate("//PatientInfo/Gender/text()", doc, XPathConstants.STRING).toString();
+    participantRace = xpath.evaluate("//PatientInfo/Race/text()", doc, XPathConstants.STRING).toString();
+    participantHeight = extractLongValue("//PatientInfo/Height/text()");
+    participantWeight = extractDoubleValue("//PatientInfo/Weight/text()");
+    participantPacemaker = extractLongValue("//PatientInfo/PaceMaker/text()");
+  }
+
+  private Long extractLongValue(String tag) throws XPathExpressionException {
+    String value = xpath.evaluate(tag, doc, XPathConstants.STRING).toString();
+    if(value.equalsIgnoreCase("yes")) {
+      return 1l;
+    } else if(value.equalsIgnoreCase("no")) {
+      return 0l;
+    } else if(!value.equals("")) {
+      return Long.valueOf(value);
+    }
+    return null;
+  }
+
+  private Double extractDoubleValue(String tag) throws XPathExpressionException {
+    String value = xpath.evaluate(tag, doc, XPathConstants.STRING).toString();
+    if(!value.equals("")) {
+      return Double.valueOf(value);
+    }
+    return null;
+  }
+
+  /**
    * Extract all data located under the RestingEcgMeasurements tag.
    * @throws XPathExpressionException
    */
@@ -311,4 +372,49 @@ public class CardiosoftInstrumentResultParser {
       return Long.valueOf(measurement);
     }
   }
+
+  public String getParticipantID() {
+    return participantID;
+  }
+
+  public String getParticipantLastName() {
+    return participantLastName;
+  }
+
+  public String getParticipantFirstName() {
+    return participantFirstName;
+  }
+
+  public Long getParticipantBirthDay() {
+    return participantBirthDay;
+  }
+
+  public Long getParticipantBirthMonth() {
+    return participantBirthMonth;
+  }
+
+  public Long getParticipantBirthYear() {
+    return participantBirthYear;
+  }
+
+  public String getParticipantGender() {
+    return participantGender;
+  }
+
+  public String getParticipantRace() {
+    return participantRace;
+  }
+
+  public Long getParticipantHeight() {
+    return participantHeight;
+  }
+
+  public Double getParticipantWeight() {
+    return participantWeight;
+  }
+
+  public Long getParticipantPacemaker() {
+    return participantPacemaker;
+  }
+
 }

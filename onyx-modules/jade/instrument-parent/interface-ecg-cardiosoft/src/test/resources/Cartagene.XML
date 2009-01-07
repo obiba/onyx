@@ -72,10 +72,10 @@
 		</ExtraQuestions>
 	</PatientVisit>
 	<PatientInfo>
-		<PID>TEST DEMO 000000</PID>
+		<PID>123456789</PID>
 		<Name>
-			<FamilyName>TEST-DEMO</FamilyName>
-			<GivenName>TEST-DEMO</GivenName>
+			<FamilyName>Tremblay</FamilyName>
+			<GivenName>Michel</GivenName>
 		</Name>
 		<Age units="YEARS">40</Age>
 		<BirthDateTime>
@@ -84,9 +84,9 @@
 			<Year>1968</Year>
 		</BirthDateTime>
 		<Gender>MALE</Gender>
-		<Race>UNKNOWN</Race>
-		<Height units="INCHES">80</Height>
-		<Weight units="POUNDS">156.0</Weight>
+		<Race>CAUCASIAN</Race>
+		<Height units="CENTIMETERS">180</Height>
+		<Weight units="KILOGRAMS">78.0</Weight>
 		<PaceMaker>no</PaceMaker>
 	</PatientInfo>
 	<FilterSetting>

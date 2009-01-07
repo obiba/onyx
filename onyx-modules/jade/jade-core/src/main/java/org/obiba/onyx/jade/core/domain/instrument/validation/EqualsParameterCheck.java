@@ -19,6 +19,7 @@ import javax.persistence.Transient;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
+import org.obiba.onyx.jade.core.domain.instrument.UnitParameterValueConverter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
@@ -96,8 +97,17 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
     }
 
     if(otherRunValue != null) {
-      otherData = otherRunValue.getData();
-      log.debug("Value is : {}", otherRunValue.getData());
+
+      if(!otherRunValue.getDataType().equals(paramData.getType())) {
+        InstrumentRunValue targetRunValue = new InstrumentRunValue();
+        targetRunValue.setInstrumentParameter(getTargetParameter());
+        UnitParameterValueConverter converter = new UnitParameterValueConverter();
+        converter.convert(targetRunValue, otherRunValue);
+        otherData = targetRunValue.getData();
+      } else {
+        otherData = otherRunValue.getData();
+        log.debug("Value is : {}", otherRunValue.getData());
+      }
     } else {
       log.debug("Value is : null");
     }

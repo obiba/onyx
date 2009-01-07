@@ -91,7 +91,7 @@
       </inputSource>
     </input>
   
-    <input id="ethnic_group">
+    <input id="ethnic_group_in">
       <name>EthnicGroup</name>
       <description>Participant_Ethnic_Group</description>
       <dataType>TEXT</dataType>
@@ -101,7 +101,7 @@
       </inputSource>
     </input>
     
-    <input id="pacemaker">
+    <input id="pacemaker_in">
       <name>Pacemaker</name>
       <description>Participant_Pacemaker</description>
       <dataType>INTEGER</dataType>
@@ -111,7 +111,7 @@
       </inputSource>
     </input>
     
-    <input id="height">
+    <input id="height_in">
       <name>Height</name>
       <description>Participant_Height</description>
       <measurementUnit>cm</measurementUnit>
@@ -123,7 +123,7 @@
       </inputSource>
     </input>
   
-    <input id="weight">
+    <input id="weight_in">
       <name>Weight</name>
       <description>Participant_Weight</description>
       <measurementUnit>hg</measurementUnit>
@@ -146,6 +146,171 @@
         </outputParameterSourceList>
       </inputSource>
     </input>
+    
+    <output id="participantID">
+      <name>participantID</name>
+      <description>Participant_Barcode</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit></measurementUnit>
+      <integrityChecks>
+        <equalsParameterCheck>
+          <targetParameter reference="participantID" />
+          <parameter reference="id" />
+          <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>    
+    
+    <output id="participantLastName">
+      <name>participantLastName</name>
+      <description>Participant_Last_Name</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit></measurementUnit>
+      <integrityChecks>
+        <equalsParameterCheck>
+          <targetParameter reference="participantLastName" />
+          <parameter reference="last_name_in" />
+          <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+    
+    <output id="Participant_First_Name">
+      <name>participantFirstName</name>
+      <description>Participant_First_Name</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit></measurementUnit>
+      <integrityChecks>
+        <equalsParameterCheck>
+          <targetParameter reference="Participant_First_Name" />
+          <parameter reference="first_name_in" />
+          <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+    
+    <output id="Participant_Birth_Day">
+      <name>participantBirthDay</name>
+      <description>Participant_Birth_Day</description>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit></measurementUnit>
+      <integrityChecks>
+        <equalsParameterCheck>
+          <targetParameter reference="Participant_Birth_Day" />
+          <parameter reference="birth_day_in" />
+          <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+    
+    <output id="participantBirthMonth">
+      <name>participantBirthMonth</name>
+      <description>Participant_Birth_Month</description>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit></measurementUnit>
+      <integrityChecks>
+        <equalsParameterCheck>
+          <targetParameter reference="participantBirthMonth" />
+          <parameter reference="birth_month_in" />
+          <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+    
+    <output id="participantBirthYear">
+      <name>participantBirthYear</name>
+      <description>Participant_Birth_Year</description>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit></measurementUnit>
+      <integrityChecks>
+        <equalsParameterCheck>
+          <targetParameter reference="participantBirthYear" />
+          <parameter reference="birth_year_in" />
+          <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+    
+    <output id="participantGender">
+      <name>participantGender</name>
+      <description>Participant_Gender</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit></measurementUnit>
+      <integrityChecks>
+        <equalsParameterCheck>
+          <targetParameter reference="participantGender" />
+          <parameter reference="gender_in" />
+          <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+    
+    <output id="participantRace">
+      <name>participantRace</name>
+      <description>Participant_Race</description>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit></measurementUnit>
+      <integrityChecks>
+        <equalsParameterCheck>
+          <targetParameter reference="participantRace" />
+          <parameter reference="ethnic_group_in" />
+          <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+    
+    <output id="participantHeight">
+      <name>participantHeight</name>
+      <description>Participant_Height</description>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>cm</measurementUnit>
+      <integrityChecks>
+        <equalsParameterCheck>
+          <targetParameter reference="participantHeight" />
+          <parameter reference="height_in" />
+          <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+    
+    <output id="participantWeight">
+      <name>participantWeight</name>
+      <description>Participant_Weight</description>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit>kg</measurementUnit>
+      <integrityChecks>
+        <equalsParameterCheck>
+          <targetParameter reference="participantWeight" />
+          <parameter reference="weight_in" />
+          <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
+    
+    <output id="participantPacemaker">
+      <name>participantPacemaker</name>
+      <description>Participant_PaceMaker</description>
+      <dataType>INTEGER</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit></measurementUnit>
+      <integrityChecks>
+        <equalsParameterCheck>
+          <targetParameter reference="participantPacemaker" />
+          <parameter reference="pacemaker_in" />
+          <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
+        </equalsParameterCheck>
+      </integrityChecks>
+    </output>
     
     <output id="time">
       <name>time</name>
