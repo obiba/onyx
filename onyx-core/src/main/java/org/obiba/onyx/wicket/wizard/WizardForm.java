@@ -67,6 +67,7 @@ public abstract class WizardForm extends Form {
         log.debug("finish.onError");
         if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
         WizardForm.this.onError(target, form);
+        target.appendJavascript("resizeWizardContent();");
       }
 
     };
@@ -119,6 +120,7 @@ public abstract class WizardForm extends Form {
         WizardForm.this.onError(target, form);
         WizardStepPanel currentStep = (WizardStepPanel) WizardForm.this.get("step");
         currentStep.onStepOutNextError(WizardForm.this, target);
+        target.appendJavascript("resizeWizardContent();");
       }
 
     };

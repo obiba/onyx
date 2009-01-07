@@ -70,6 +70,10 @@ Resizer.resize  = function(id, offsetBottom) {
 	document.getElementById(id).style.height=parseInt(height-offsetBottom-document.getElementById(id).offsetTop)+"px";
 }
 
+function resizeWizardContent() {
+	Resizer.resize('wizardFormData',160);
+}
+
 //////////////////////////////////////////////////////////////////////
 // JQuery Layout
 //////////////////////////////////////////////////////////////////////
