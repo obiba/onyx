@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.engine.variable.impl;
 
+import java.util.List;
+
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.variable.Variable;
@@ -35,18 +37,24 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
 
     InstrumentParameter template = new InstrumentInputParameter();
     template.setInstrumentType(type);
-    Variable entity = new Variable(IN);
-    typeEntity.addVariable(entity);
-    for(InstrumentParameter parameter : queryService.match(template)) {
-      entity.addVariable(new Variable(parameter.getName()).setDataType(parameter.getDataType()));
+    List<InstrumentParameter> parameters = queryService.match(template);
+    if(parameters.size() > 0) {
+      Variable entity = new Variable(IN);
+      typeEntity.addVariable(entity);
+      for(InstrumentParameter parameter : parameters) {
+        entity.addVariable(new Variable(parameter.getName()).setDataType(parameter.getDataType()));
+      }
     }
 
     template = new InstrumentOutputParameter();
     template.setInstrumentType(type);
-    entity = new Variable(OUT);
-    typeEntity.addVariable(entity);
-    for(InstrumentParameter parameter : queryService.match(template)) {
-      entity.addVariable(new Variable(parameter.getName()).setDataType(parameter.getDataType()));
+    parameters = queryService.match(template);
+    if(parameters.size() > 0) {
+      Variable entity = new Variable(OUT);
+      typeEntity.addVariable(entity);
+      for(InstrumentParameter parameter : queryService.match(template)) {
+        entity.addVariable(new Variable(parameter.getName()).setDataType(parameter.getDataType()));
+      }
     }
 
     return typeEntity;
