@@ -88,12 +88,14 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
             // Consent not submitted, inform the user that the submit button (PDF form) has to be clicked.
             if(!consentIsSubmitted) {
               error(getString("MissingConsentForm"));
+              target.appendJavascript("resizeWizardContent();");
 
               // Invalid electronic consent.
             } else if(consentIsAccepted && consentIsElectronic && !activeConsentService.validateElectronicConsent()) {
               error(getString("InvalidConsentForm"));
               getElectronicConsentStep().setNextStep(null);
               gotoNext(target);
+              target.appendJavascript("resizeWizardContent();");
 
               // Valid electronic consent, refused electronic consent, or manual consent.
             } else {
