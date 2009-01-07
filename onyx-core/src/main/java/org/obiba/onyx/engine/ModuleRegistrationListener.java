@@ -14,6 +14,7 @@ import java.util.Map;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.onyx.engine.variable.IVariableProvider;
 import org.obiba.onyx.engine.variable.VariableDirectory;
+import org.obiba.onyx.engine.variable.util.VariableStreamer;
 import org.obiba.wicket.application.WebApplicationStartupListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,6 +98,7 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
         variableDirectory.registerVariables(provider);
       }
     }
+    log.info(VariableStreamer.toXML(variableDirectory.getVariableRoot()));
   }
 
   public void setModuleRegistry(ModuleRegistry registry) {

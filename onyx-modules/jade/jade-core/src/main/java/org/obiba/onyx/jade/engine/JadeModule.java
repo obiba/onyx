@@ -160,7 +160,7 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
 
     VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
-    varData.setData(instrumentTypeToVariableMappingStrategy.getData(queryService, instrumentRunService, participant, variable));
+    varData.addData(instrumentTypeToVariableMappingStrategy.getData(queryService, instrumentRunService, participant, variable));
 
     return varData;
   }

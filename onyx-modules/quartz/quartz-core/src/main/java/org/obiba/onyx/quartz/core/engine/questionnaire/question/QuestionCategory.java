@@ -11,10 +11,10 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.question;
 
 import java.io.Serializable;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 
-public class QuestionCategory implements Serializable, ILocalizable {
+public class QuestionCategory implements Serializable, IQuestionnaireElement {
 
   private static final long serialVersionUID = 5244745063169629959L;
 

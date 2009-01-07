@@ -15,7 +15,7 @@ import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,7 @@ public class ComponentTesterUtils {
    * @param localizable
    * @return
    */
-  public static Component findChild(WebMarkupContainer parent, final Class clazz, final ILocalizable localizable) {
+  public static Component findChild(WebMarkupContainer parent, final Class clazz, final IQuestionnaireElement localizable) {
     if(parent == null) {
       throw new IllegalArgumentException("parent cannot be null.");
     }
@@ -68,7 +68,7 @@ public class ComponentTesterUtils {
 
       public Object component(Component component) {
         if(clazz.isAssignableFrom(component.getClass())) {
-          if(component.getModelObject() != null && localizable.getClass().isAssignableFrom(component.getModelObject().getClass()) && localizable.getName().equals(((ILocalizable) component.getModelObject()).getName())) {
+          if(component.getModelObject() != null && localizable.getClass().isAssignableFrom(component.getModelObject().getClass()) && localizable.getName().equals(((IQuestionnaireElement) component.getModelObject()).getName())) {
             log.info("child.{}.path: {}", localizable.getName(), component.getPath());
             return component;
           }

@@ -31,6 +31,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
 import org.obiba.onyx.quartz.engine.variable.IQuestionToVariableMappingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,8 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
   private ApplicationContext applicationContext;
 
   private ActiveInterviewService activeInterviewService;
+
+  private QuestionnaireParticipantService questionnaireParticipantService;
 
   private List<Stage> stages;
 
@@ -96,6 +99,10 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
 
   public void setQuestionToVariableMappingStrategy(IQuestionToVariableMappingStrategy questionToVariableMappingStrategy) {
     this.questionToVariableMappingStrategy = questionToVariableMappingStrategy;
+  }
+
+  public void setQuestionnaireParticipantService(QuestionnaireParticipantService questionnaireParticipantService) {
+    this.questionnaireParticipantService = questionnaireParticipantService;
   }
 
   public IStageExecution createStageExecution(Interview interview, Stage stage) {
@@ -169,7 +176,6 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
         log.info("getVariables from questionnaire {}", questionnaire.getName());
         Variable questionnaireEntity = questionToVariableMappingStrategy.getVariable(questionnaire);
         entities.add(questionnaireEntity);
-        // TODO strategy for questionnaire to variable mapping
         for(Page page : questionnaire.getPages()) {
           for(Question question : page.getQuestions()) {
             if(!question.isBoilerPlate()) {
@@ -184,8 +190,17 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
   }
 
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
-    // TODO Auto-generated method stub
-    return null;
-  }
+    VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
 
+    // get the questionnaire
+    Variable questionnaireVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
+    QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(questionnaireVariable.getName());
+    if(bundle != null) {
+      Questionnaire questionnaire = bundle.getQuestionnaire();
+      varData = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantService, participant, variable, varData, questionnaire);
+
+    }
+
+    return varData;
+  }
 }

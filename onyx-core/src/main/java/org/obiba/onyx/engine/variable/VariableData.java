@@ -38,19 +38,20 @@ public class VariableData implements Serializable {
   @XStreamAsAttribute
   private String variablePath;
 
-  private Data data;
-
   @XStreamImplicit
+  private List<Data> datas;
+
   private List<VariableData> references;
 
   public VariableData(String variablePath) {
     super();
+    this.variablePath = variablePath;
   }
 
   public VariableData(String variablePath, Data data) {
     super();
     this.variablePath = variablePath;
-    this.data = data;
+    addData(data);
   }
 
   // public String getPath() {
@@ -80,12 +81,15 @@ public class VariableData implements Serializable {
     this.variablePath = variablePath;
   }
 
-  public Data getData() {
-    return data;
+  public List<Data> getDatas() {
+    return datas != null ? datas : (datas = new ArrayList<Data>());
   }
 
-  public void setData(Data data) {
-    this.data = data;
+  public VariableData addData(Data child) {
+    if(child != null) {
+      getDatas().add(child);
+    }
+    return this;
   }
 
   public List<VariableData> getReferences() {

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.springframework.context.MessageSource;
 
@@ -92,5 +92,5 @@ public interface QuestionnaireBundle {
    * @param property property name
    * @return property key
    */
-  public String getPropertyKey(ILocalizable localizable, String property);
+  public String getPropertyKey(IQuestionnaireElement localizable, String property);
 }

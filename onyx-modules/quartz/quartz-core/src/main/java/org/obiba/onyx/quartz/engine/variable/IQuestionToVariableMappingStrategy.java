@@ -9,10 +9,12 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.engine.variable;
 
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.variable.Variable;
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
 
 /**
  * Defines the way questionnaire elements is transformed to variable/entities.
@@ -34,10 +36,19 @@ public interface IQuestionToVariableMappingStrategy {
   public Variable getVariable(Question question);
 
   /**
-   * Get the question (if any) from the questionnaire corresponding to the given entity.
-   * @param entity
-   * @return null if not found
+   * Given a questionnaire element variable, find the variable corresponding to the questionnaire.
+   * @param variable
+   * @return
    */
-  public ILocalizable getQuestionnaireElement(Questionnaire questionnaire, Variable entity);
+  public Variable getQuestionnaireVariable(Variable variable);
+
+  /**
+   * @param questionnaireParticipantService
+   * @param participant
+   * @param variable
+   * @param questionnaire
+   * @return
+   */
+  public VariableData getVariableData(QuestionnaireParticipantService questionnaireParticipantService, Participant participant, Variable variable, VariableData variableData, Questionnaire questionnaire);
 
 }

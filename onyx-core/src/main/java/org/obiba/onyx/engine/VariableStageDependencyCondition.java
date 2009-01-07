@@ -66,23 +66,28 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
       }
     }
 
+    Boolean rval = false;
+
     // ask variable directory
     VariableData variableData = variableDirectory.getVariableData(activeInterviewService.getParticipant(), variablePath);
     if(variableData != null) {
-      Data varData = variableData.getData();
-      log.info("varData op data={} {} {}", new Object[] { varData, operator, data });
-      if(varData != null) {
+      // apply a OR among the data of the variable
+      for(Data varData : variableData.getDatas()) {
+        log.info("varData op data={} {} {}", new Object[] { varData, operator, data });
         if(operator != null) {
-          return operator.compare(varData, data);
+          rval = operator.compare(varData, data);
         } else if(varData.getType().equals(DataType.BOOLEAN)) {
-          return varData.getValue();
+          rval = varData.getValue();
         } else {
-          return varData.getValue() != null;
+          rval = (varData.getValue() != null);
+        }
+        if(rval) {
+          break;
         }
       }
     }
 
-    return false;
+    return rval;
   }
 
   public boolean isDependentOn(String stageName) {

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -101,18 +101,18 @@ public class PropertyKeyWriterVisitor implements IWalkerVisitor {
    * @param localizable
    * @param properties
    */
-  private void writePropertyKey(ILocalizable localizable) {
+  private void writePropertyKey(IQuestionnaireElement localizable) {
     writePropertyKey(localizable, null);
   }
 
   /**
-   * For each of the localization keys declared by the {@link ILocalizable} add it to the properties object. Set the
+   * For each of the localization keys declared by the {@link IQuestionnaireElement} add it to the properties object. Set the
    * value to null by default or to the localization interpolation key.
    * @param localizable
    * @param interpolationLocalizable
    * @param writer
    */
-  private void writePropertyKey(ILocalizable localizable, ILocalizable interpolationLocalizable) {
+  private void writePropertyKey(IQuestionnaireElement localizable, IQuestionnaireElement interpolationLocalizable) {
     boolean written = false;
     for(String property : propertyKeyProvider.getProperties(localizable)) {
       String key = propertyKeyProvider.getPropertyKey(localizable, property);

@@ -10,7 +10,7 @@
 package org.obiba.onyx.quartz.core.wicket.model;
 
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
@@ -44,7 +44,7 @@ public class QuestionnaireModel extends SpringDetachableModel implements IVisito
 
   private String questionnaireName;
 
-  private ILocalizable element;
+  private IQuestionnaireElement element;
 
   /**
    * Constructor for a questionnaire.
@@ -61,7 +61,7 @@ public class QuestionnaireModel extends SpringDetachableModel implements IVisito
    * @param questionnaire
    * @param element
    */
-  public QuestionnaireModel(Questionnaire questionnaire, ILocalizable element) {
+  public QuestionnaireModel(Questionnaire questionnaire, IQuestionnaireElement element) {
     this(questionnaire.getName(), element);
   }
 
@@ -70,7 +70,7 @@ public class QuestionnaireModel extends SpringDetachableModel implements IVisito
    * @param questionnaireName
    * @param element
    */
-  public QuestionnaireModel(String questionnaireName, ILocalizable element) {
+  public QuestionnaireModel(String questionnaireName, IQuestionnaireElement element) {
     super();
     this.questionnaireName = questionnaireName;
     this.element = element;
@@ -81,7 +81,7 @@ public class QuestionnaireModel extends SpringDetachableModel implements IVisito
    * @param element
    * @see ActiveQuestionnaireAdministrationService
    */
-  public QuestionnaireModel(ILocalizable element) {
+  public QuestionnaireModel(IQuestionnaireElement element) {
     super();
     this.questionnaireName = activeQuestionnaireAdministrationService.getQuestionnaire().getName();
     this.element = element;

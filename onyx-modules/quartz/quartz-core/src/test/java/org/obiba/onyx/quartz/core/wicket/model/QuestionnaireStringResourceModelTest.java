@@ -22,7 +22,7 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -97,7 +97,7 @@ public class QuestionnaireStringResourceModelTest {
 
   @Test
   public void testResolveStringWithNoArgs() {
-    ILocalizable localizable = questionnaire;
+    IQuestionnaireElement localizable = questionnaire;
     String property = "label";
 
     // Expect that methods are called on activeQuestionnaireAdministrationServiceMock to
@@ -129,7 +129,7 @@ public class QuestionnaireStringResourceModelTest {
 
   @Test
   public void testResolveStringWithArgs() {
-    ILocalizable localizable = questionnaire;
+    IQuestionnaireElement localizable = questionnaire;
     String property = "description";
 
     // Expect that methods are called on activeQuestionnaireAdministrationServiceMock to
@@ -161,7 +161,7 @@ public class QuestionnaireStringResourceModelTest {
 
   @Test
   public void testResolveStringWithReferences() {
-    ILocalizable localizable = questionCategory;
+    IQuestionnaireElement localizable = questionCategory;
     String property = "label";
 
     // Expect that methods are called on activeQuestionnaireAdministrationServiceMock to

@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.util.value.ValueMap;
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 
-public class Question implements Serializable, ILocalizable {
+public class Question implements Serializable, IQuestionnaireElement {
 
   private static final long serialVersionUID = -7795909448581432466L;
 

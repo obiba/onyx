@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.util.value.ValueMap;
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.IDataValidator;
@@ -23,7 +23,7 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.util.data.IDataUnitProvider;
 
-public class OpenAnswerDefinition implements Serializable, ILocalizable, IDataUnitProvider {
+public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement, IDataUnitProvider {
 
   private static final long serialVersionUID = -7756577128502621726L;
 

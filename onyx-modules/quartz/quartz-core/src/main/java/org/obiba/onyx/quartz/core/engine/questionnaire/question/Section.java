@@ -13,10 +13,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 
-public class Section implements Serializable, ILocalizable {
+public class Section implements Serializable, IQuestionnaireElement {
 
   private static final long serialVersionUID = -1624223156473292196L;
 

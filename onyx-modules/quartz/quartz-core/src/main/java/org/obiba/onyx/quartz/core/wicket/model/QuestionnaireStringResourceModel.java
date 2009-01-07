@@ -13,7 +13,7 @@ import java.util.Locale;
 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
@@ -41,7 +41,7 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel {
   @SpringBean
   private QuestionnaireBundleManager bundleManager;
 
-  private ILocalizable localizable;
+  private IQuestionnaireElement localizable;
 
   private IModel localizableModel;
 
@@ -54,7 +54,7 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel {
   //
 
   /**
-   * Constructor using a model for providing the {@link ILocalizable}.
+   * Constructor using a model for providing the {@link IQuestionnaireElement}.
    * @param localizableModel
    * @param property
    * @param stringArgs
@@ -66,12 +66,12 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel {
   }
 
   /**
-   * Constructor using directly the {@link ILocalizable}.
+   * Constructor using directly the {@link IQuestionnaireElement}.
    * @param localizable
    * @param property
    * @param stringArgs
    */
-  public QuestionnaireStringResourceModel(ILocalizable localizable, String property, Object... stringArgs) {
+  public QuestionnaireStringResourceModel(IQuestionnaireElement localizable, String property, Object... stringArgs) {
     super();
     if(localizable == null) throw new IllegalArgumentException("Localizable element cannot be null.");
     this.localizable = localizable;
@@ -134,11 +134,11 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel {
   /**
    * Get the localizable element directly or from a model.
    */
-  private ILocalizable getLocalizable() {
+  private IQuestionnaireElement getLocalizable() {
     if(localizable != null) return localizable;
-    ILocalizable loc = null;
+    IQuestionnaireElement loc = null;
     if(localizableModel != null) {
-      loc = (ILocalizable) localizableModel.getObject();
+      loc = (IQuestionnaireElement) localizableModel.getObject();
     }
     if(loc == null) throw new IllegalArgumentException("Localizable element cannot be null.");
 

@@ -19,7 +19,7 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
@@ -97,7 +97,7 @@ public class QuestionnaireModelTest {
     replay(questionnaireBundleManagerMock);
     replay(questionnaireBundleMock);
 
-    ILocalizable localizable = questionnaire.getPages().get(1);
+    IQuestionnaireElement localizable = questionnaire.getPages().get(1);
     QuestionnaireModel model = new QuestionnaireModel(localizable);
     Object result = model.getObject();
 
@@ -122,7 +122,7 @@ public class QuestionnaireModelTest {
     replay(questionnaireBundleManagerMock);
     replay(questionnaireBundleMock);
 
-    ILocalizable localizable = questionnaire.getSections().get(1);
+    IQuestionnaireElement localizable = questionnaire.getSections().get(1);
     QuestionnaireModel model = new QuestionnaireModel(localizable);
     Object result = model.getObject();
 
@@ -147,7 +147,7 @@ public class QuestionnaireModelTest {
     replay(questionnaireBundleManagerMock);
     replay(questionnaireBundleMock);
 
-    ILocalizable localizable = questionnaire.getPages().get(1).getQuestions().get(0);
+    IQuestionnaireElement localizable = questionnaire.getPages().get(1).getQuestions().get(0);
     QuestionnaireModel model = new QuestionnaireModel(localizable);
     Object result = model.getObject();
 
@@ -167,7 +167,7 @@ public class QuestionnaireModelTest {
     replay(questionnaireBundleManagerMock);
     replay(questionnaireBundleMock);
 
-    ILocalizable localizable = questionnaire.getPages().get(1).getQuestions().get(0);
+    IQuestionnaireElement localizable = questionnaire.getPages().get(1).getQuestions().get(0);
     QuestionnaireModel model = new QuestionnaireModel(questionnaire, localizable);
     Object result = model.getObject();
 
@@ -191,7 +191,7 @@ public class QuestionnaireModelTest {
     replay(questionnaireBundleManagerMock);
     replay(questionnaireBundleMock);
 
-    ILocalizable localizable = questionnaire.getPages().get(1).getQuestions().get(0).getQuestionCategories().get(0);
+    IQuestionnaireElement localizable = questionnaire.getPages().get(1).getQuestions().get(0).getQuestionCategories().get(0);
     QuestionnaireModel model = new QuestionnaireModel(localizable);
     Object result = model.getObject();
 
@@ -216,11 +216,11 @@ public class QuestionnaireModelTest {
     replay(questionnaireBundleManagerMock);
     replay(questionnaireBundleMock);
 
-    ILocalizable localizable = questionnaire.getPages().get(1).getQuestions().get(0).getQuestionCategories().get(0).getCategory().getOpenAnswerDefinition();
+    IQuestionnaireElement localizable = questionnaire.getPages().get(1).getQuestions().get(0).getQuestionCategories().get(0).getCategory().getOpenAnswerDefinition();
     QuestionnaireModel model = new QuestionnaireModel(localizable);
     Object result = model.getObject();
 
-    ILocalizable multipleLocalizable = questionnaire.getPages().get(3).getQuestions().get(0).getQuestionCategories().get(0).getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().get(0);
+    IQuestionnaireElement multipleLocalizable = questionnaire.getPages().get(3).getQuestions().get(0).getQuestionCategories().get(0).getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().get(0);
     QuestionnaireModel multipleModel = new QuestionnaireModel(multipleLocalizable);
     Object multipleResult = multipleModel.getObject();
 
@@ -246,7 +246,7 @@ public class QuestionnaireModelTest {
     replay(questionnaireBundleManagerMock);
     replay(questionnaireBundleMock);
 
-    ILocalizable localizable = questionnaire.getPages().get(1).getQuestions().get(0).getQuestionCategories().get(0).getCategory();
+    IQuestionnaireElement localizable = questionnaire.getPages().get(1).getQuestions().get(0).getQuestionCategories().get(0).getCategory();
     QuestionnaireModel model = new QuestionnaireModel(localizable);
     Object result = model.getObject();
 
@@ -270,11 +270,11 @@ public class QuestionnaireModelTest {
     replay(questionnaireBundleManagerMock);
     replay(questionnaireBundleMock);
 
-    ILocalizable localizable = questionnaire.getPages().get(1).getQuestions().get(0).getCondition();
+    IQuestionnaireElement localizable = questionnaire.getPages().get(1).getQuestions().get(0).getCondition();
     QuestionnaireModel model = new QuestionnaireModel(localizable);
     Object result = model.getObject();
 
-    ILocalizable multipleLocalizable = questionnaire.getPages().get(1).getQuestions().get(0).getCondition();
+    IQuestionnaireElement multipleLocalizable = questionnaire.getPages().get(1).getQuestions().get(0).getCondition();
     QuestionnaireModel multipleModel = new QuestionnaireModel(multipleLocalizable);
     Object multipleResult = multipleModel.getObject();
 

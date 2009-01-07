@@ -103,8 +103,13 @@ public class QuestionnaireFinder {
     Question question = findQuestion(questionName);
     if(question == null) return null;
 
+    String categoryName = name;
+    if(!categoryName.startsWith(questionName + ".")) {
+      categoryName = questionName + "." + name;
+    }
+
     for(QuestionCategory questionCategory : question.getQuestionCategories()) {
-      if(questionCategory.getName().equals(name)) {
+      if(questionCategory.getName().equals(categoryName)) {
         return questionCategory;
       }
     }

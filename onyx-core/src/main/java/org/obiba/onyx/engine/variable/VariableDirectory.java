@@ -55,13 +55,15 @@ public class VariableDirectory implements IVariableProvider {
         for(Variable entity : entities) {
           root.addVariable(entity);
           for(Variable variable : getVariables(entity, new ArrayList<Variable>())) {
-            String path = variablePathNamingStrategy.getPath(variable);
-            if(variablePathToProvidersMap.containsKey(path)) {
-              throw new IllegalArgumentException("Variable path " + path + " already registered by " + variablePathToProvidersMap.get(path).getClass().getSimpleName());
+            if(variable.getDataType() != null) {
+              String path = variablePathNamingStrategy.getPath(variable);
+              if(variablePathToProvidersMap.containsKey(path)) {
+                throw new IllegalArgumentException("Variable path " + path + " already registered by " + variablePathToProvidersMap.get(path).getClass().getSimpleName());
+              }
+              log.info("Registering variable {} from provider {}", path, provider.getClass().getSimpleName());
+              variablePathToProvidersMap.put(path, provider);
+              variablePathToVariableMap.put(path, variable);
             }
-            log.info("Registering variable {} from provider {}", path, provider.getClass().getSimpleName());
-            variablePathToProvidersMap.put(path, provider);
-            variablePathToVariableMap.put(path, variable);
           }
         }
       }
@@ -71,6 +73,10 @@ public class VariableDirectory implements IVariableProvider {
   public void unregisterVariable(String variablePath) {
     variablePathToProvidersMap.remove(variablePath);
     variablePathToVariableMap.remove(variablePath);
+  }
+
+  public Variable getVariableRoot() {
+    return root;
   }
 
   private List<Variable> getVariables(Variable parent, List<Variable> variables) {

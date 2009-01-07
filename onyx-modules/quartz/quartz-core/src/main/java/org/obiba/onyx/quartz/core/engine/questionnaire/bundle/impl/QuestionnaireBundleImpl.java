@@ -19,7 +19,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
@@ -178,7 +178,7 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
     return messageSource;
   }
 
-  public String getPropertyKey(ILocalizable localizable, String property) {
+  public String getPropertyKey(IQuestionnaireElement localizable, String property) {
     return propertyKeyProvider.getPropertyKey(localizable, property);
   }
 

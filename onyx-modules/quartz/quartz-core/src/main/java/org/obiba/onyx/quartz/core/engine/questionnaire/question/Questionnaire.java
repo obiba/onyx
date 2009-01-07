@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.runtime.Version;
 
-public class Questionnaire implements Serializable, ILocalizable {
+public class Questionnaire implements Serializable, IQuestionnaireElement {
 
   private static final long serialVersionUID = -9079010396321478385L;
 

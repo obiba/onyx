@@ -12,7 +12,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.finder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.IWalkerVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireWalker;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * @see QuestionnaireWalker
  * @param <T> questionnaire elements are search by their name
  */
-public abstract class AbstractFinderVisitor<T extends ILocalizable> implements IWalkerVisitor {
+public abstract class AbstractFinderVisitor<T extends IQuestionnaireElement> implements IWalkerVisitor {
 
   @SuppressWarnings("unused")
   private final Logger log = LoggerFactory.getLogger(getClass());

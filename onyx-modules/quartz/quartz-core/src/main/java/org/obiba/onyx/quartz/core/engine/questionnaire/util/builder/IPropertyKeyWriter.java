@@ -11,12 +11,12 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
 import java.util.Properties;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 
 /**
  * Interface for writing the {@link Questionnaire} localization properties to different kind of medias.
  * @author Yannick Marcon
- * @see ILocalizable
+ * @see IQuestionnaireElement
  *
  */
 public interface IPropertyKeyWriter {

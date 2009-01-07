@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.ILocalizable;
+import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -53,13 +53,13 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
    */
   private List<String> properties;
 
-  public List<String> getProperties(ILocalizable localizable) {
+  public List<String> getProperties(IQuestionnaireElement localizable) {
     this.property = null;
     localizable.accept(this);
     return properties;
   }
 
-  public String getPropertyKey(ILocalizable localizable, String property) {
+  public String getPropertyKey(IQuestionnaireElement localizable, String property) {
     this.property = property;
     localizable.accept(this);
     return localizable.getClass().getSimpleName() + "." + localizable.getName() + "." + property;
@@ -183,7 +183,7 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
    * @param localizable
    * @return
    */
-  private IllegalArgumentException invalidPropertyException(ILocalizable localizable) {
+  private IllegalArgumentException invalidPropertyException(IQuestionnaireElement localizable) {
     return new IllegalArgumentException("Invalid property for class " + localizable.getClass().getName() + ": " + property);
   }
 

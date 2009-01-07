@@ -9,7 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.service;
 
+import java.util.List;
+
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 
 public interface QuestionnaireParticipantService {
@@ -27,4 +31,10 @@ public interface QuestionnaireParticipantService {
    * @param questionnaireParticipantId
    */
   public void deleteQuestionnaireParticipant(QuestionnaireParticipant questionnaireParticipant);
+
+  public List<CategoryAnswer> getCategoryAnswers(Participant participant, String questionnaireName, String questionName);
+
+  public List<OpenAnswer> getOpenAnswers(Participant participant, String questionnaireName, String questionName, String categoryName);
+
+  public OpenAnswer getOpenAnswer(Participant participant, String questionnaireName, String questionName, String categoryName, String openAnswerName);
 }
