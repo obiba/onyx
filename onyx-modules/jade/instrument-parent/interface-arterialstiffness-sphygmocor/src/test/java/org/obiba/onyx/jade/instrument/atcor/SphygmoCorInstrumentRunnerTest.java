@@ -254,7 +254,7 @@ public class SphygmoCorInstrumentRunnerTest {
       if(value instanceof Float) {
         dataObj = new Data(DataType.DECIMAL, new Double((Float) value));
       } else if(value instanceof Integer) {
-        value = new Data(DataType.INTEGER, new Long((Integer) value));
+        dataObj = new Data(DataType.INTEGER, new Long((Integer) value));
       }
 
       outputToSend.put((String) dataEntry.getKey(), dataObj);
