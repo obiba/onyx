@@ -29,6 +29,7 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IErrorMessageSource;
@@ -110,7 +111,7 @@ public abstract class ActionDefinitionPanel extends Panel {
 
     action.setEventReason(definition.getDefaultReason());
     if(definition.getReasons().size() > 0) {
-      form.add(new ReasonsFragment("reasons", definition.getReasons()));
+      form.add(new ReasonsFragment("reasons", definition.getReasons(), definition.isReasonMandatory()));
     } else {
       form.add(new EmptyPanel("reasons").setVisible(false));
     }
@@ -183,9 +184,10 @@ public abstract class ActionDefinitionPanel extends Panel {
   @SuppressWarnings("serial")
   private class ReasonsFragment extends Fragment {
 
-    public ReasonsFragment(String id, List<String> reasons) {
+    public ReasonsFragment(String id, List<String> reasons, boolean mandatory) {
       super(id, "reasonsFragment", ActionDefinitionPanel.this);
-      add(new DropDownChoice("reasonsSelect", new PropertyModel(ActionDefinitionPanel.this, "action.eventReason"), reasons, new IChoiceRenderer() {
+
+      DropDownChoice reasonsDropDown = new DropDownChoice("reasonsSelect", new PropertyModel(ActionDefinitionPanel.this, "action.eventReason"), reasons, new IChoiceRenderer() {
         public Object getDisplayValue(Object object) {
           return new SpringStringResourceModel(object.toString()).getString();
         }
@@ -193,7 +195,11 @@ public abstract class ActionDefinitionPanel extends Panel {
         public String getIdValue(Object object, int index) {
           return object.toString();
         }
-      }));
+      });
+      reasonsDropDown.setLabel(new ResourceModel("Reasons"));
+      reasonsDropDown.setRequired(mandatory);
+
+      add(reasonsDropDown);
     }
 
   }
