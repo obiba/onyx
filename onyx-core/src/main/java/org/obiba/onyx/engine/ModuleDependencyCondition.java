@@ -36,6 +36,10 @@ public class ModuleDependencyCondition implements StageDependencyCondition {
   public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
 
     Module module = moduleRegistry.getModule(moduleName);
+    if(module == null) {
+      log.error("Invalid ModuleDependencyCondition configuration: module '{}' does not exist or failed to start. Dependency will be satisfied.", moduleName);
+      return true;
+    }
 
     List<Stage> moduleStage = module.getStages();
 
@@ -56,6 +60,10 @@ public class ModuleDependencyCondition implements StageDependencyCondition {
   public boolean isDependentOn(String stageName) {
 
     Module module = moduleRegistry.getModule(moduleName);
+    if(module == null) {
+      log.error("Invalid ModuleDependencyCondition configuration: module '{}' does not exist or failed to start. Dependency will be satisfied.", moduleName);
+      return true;
+    }
 
     List<Stage> moduleStage = module.getStages();
 
