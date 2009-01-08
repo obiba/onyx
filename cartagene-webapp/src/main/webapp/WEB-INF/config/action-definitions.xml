@@ -31,8 +31,13 @@
   <actionDefinition>
     <code>action.STOP.Interview</code>
     <type>STOP</type>
-    <askPassword>false</askPassword>
-    <commentMandatory>false</commentMandatory>
-    <reasonMandatory>false</reasonMandatory>
+    <askPassword>true</askPassword>
+    <commentMandatory>true</commentMandatory>
+    <reasonMandatory>true</reasonMandatory>
+    <reasons>
+      <string>Stop.Interview.Reason.ParticipantRefusedStudy</string>
+      <string>Stop.Interview.Reason.ParticipantRefusedStage</string>
+      <string>Stop.Interview.Reason.Other</string>
+    </reasons>     
   </actionDefinition>
 </actionDefinitions>
