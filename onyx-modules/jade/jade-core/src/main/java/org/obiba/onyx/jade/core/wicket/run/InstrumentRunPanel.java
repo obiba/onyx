@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.run;
 
+import java.text.DateFormat;
 import java.util.List;
 
 import org.apache.wicket.Component;
@@ -21,6 +22,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
@@ -56,6 +58,9 @@ public class InstrumentRunPanel extends Panel {
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
+
+  @SpringBean(name = "userSessionService")
+  private UserSessionService userSessionService;
 
   /**
    * Build the panel with the current instrument run.
@@ -98,7 +103,8 @@ public class InstrumentRunPanel extends Panel {
     KeyValueDataPanel kvPanel = new KeyValueDataPanel("run", new StringResourceModel("RunInfo", this, null));
     add(kvPanel);
     kvPanel.addRow(new StringResourceModel("Operator", this, null), new PropertyModel(run, "user.fullName"));
-    kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateModelUtils.getShortDateTimeModel(new PropertyModel(run, "timeStart")));
+    kvPanel.addRow(new StringResourceModel("StartDate", this, null), DateModelUtils.getDateTimeModel(new PropertyModel(this, "dateTimeFormat"), new PropertyModel(run, "timeStart")));
+
     if(run.getTimeEnd() != null) {
       kvPanel.addRow(new StringResourceModel("EndDate", this, null), DateModelUtils.getShortDateTimeModel(new PropertyModel(run, "timeEnd")));
     }
@@ -133,6 +139,10 @@ public class InstrumentRunPanel extends Panel {
     } else {
       add(new EmptyPanel("outputs"));
     }
+  }
+
+  public DateFormat getDateTimeFormat() {
+    return userSessionService.getDateTimeFormat();
   }
 
   @SuppressWarnings("unchecked")
