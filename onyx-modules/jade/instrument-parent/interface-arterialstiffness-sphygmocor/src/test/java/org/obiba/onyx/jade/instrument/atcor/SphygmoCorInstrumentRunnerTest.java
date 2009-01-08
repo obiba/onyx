@@ -13,9 +13,7 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -33,19 +31,19 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
 public class SphygmoCorInstrumentRunnerTest {
-  
+
   private ExternalAppLauncherHelper externalAppHelper;
-  
+
   private SphygmoCorInstrumentRunner sphygmoCorInstrumentRunner;
-  
+
   private SphygmoCorDao sphygmoCorDaoMock;
-  
+
   private InstrumentExecutionService instrumentExecutionServiceMock;
-  
+
   @Before
   public void setUp() {
     sphygmoCorInstrumentRunner = new SphygmoCorInstrumentRunner();
-    
+
     // Cannot mock ExternalAppLauncherHelper (without EasyMock extension!),
     // so for now, use the class itself with the launch method overridden to
     // do nothing.
@@ -55,31 +53,31 @@ public class SphygmoCorInstrumentRunnerTest {
       }
     };
     externalAppHelper.setWorkDir("target");
-    
+
     sphygmoCorInstrumentRunner.setExternalAppHelper(externalAppHelper);
-    
+
     sphygmoCorDaoMock = createMock(SphygmoCorDao.class);
     sphygmoCorInstrumentRunner.setSphygmoCorDao(sphygmoCorDaoMock);
-    
+
     instrumentExecutionServiceMock = createMock(InstrumentExecutionService.class);
     sphygmoCorInstrumentRunner.setInstrumentExecutionService(instrumentExecutionServiceMock);
   }
-    
+
   /**
    * Test that the <code>initialize</code> method does the following:
    * 
    * <ul>
-   *   <li>Deletes all instrument data (measurements and patients)</li>
-   *   <li>Fetches the current participant</li>
-   *   <li>Adds the current participant as a patient</li> 
+   * <li>Deletes all instrument data (measurements and patients)</li>
+   * <li>Fetches the current participant</li>
+   * <li>Adds the current participant as a patient</li>
    * </ul>
    */
   @Test
-  public void testInitialize() {        
+  public void testInitialize() {
     // Expect that all instrument data are deleted.
     sphygmoCorDaoMock.deleteAllOutput();
     sphygmoCorDaoMock.deleteAllPatients();
-    
+
     // Expect that the current participant is retrieved...
     String participantId = "123456789";
     String participantLastName = "Tremblay";
@@ -88,110 +86,107 @@ public class SphygmoCorInstrumentRunnerTest {
     String participantGender = "FEMALE";
     long systolicPressure = 123;
     long diastolicPressure = 65;
-  
+
     expect(instrumentExecutionServiceMock.getParticipantID()).andReturn(participantId);
     expect(instrumentExecutionServiceMock.getParticipantLastName()).andReturn(participantLastName);
     expect(instrumentExecutionServiceMock.getParticipantFirstName()).andReturn(participantFirstName);
     expect(instrumentExecutionServiceMock.getParticipantBirthDate()).andReturn(participantBirthDate);
-    expect(instrumentExecutionServiceMock.getParticipantGender()).andReturn(participantGender);    
-    
-    expect(instrumentExecutionServiceMock.getInputParameterValue("SystolicPressure")).andReturn(DataBuilder.buildInteger(systolicPressure)); 
-    expect(instrumentExecutionServiceMock.getInputParameterValue("DiastolicPressure")).andReturn(DataBuilder.buildInteger(diastolicPressure));     
-    
+    expect(instrumentExecutionServiceMock.getParticipantGender()).andReturn(participantGender);
+
+    expect(instrumentExecutionServiceMock.getInputParameterValue("SystolicPressure")).andReturn(DataBuilder.buildInteger(systolicPressure));
+    expect(instrumentExecutionServiceMock.getInputParameterValue("DiastolicPressure")).andReturn(DataBuilder.buildInteger(diastolicPressure));
+
     // ...and added as a patient.
-    //sphygmoCorDaoMock.addPatient(SYSTEM_ID, STUDY_ID, participantId, 1, participantLastName, participantFirstName, new java.sql.Date(participantBirthDate.getTime()), participantGender);
+    // sphygmoCorDaoMock.addPatient(SYSTEM_ID, STUDY_ID, participantId, 1, participantLastName, participantFirstName,
+    // new java.sql.Date(participantBirthDate.getTime()), participantGender);
 
     replay(sphygmoCorDaoMock);
     replay(instrumentExecutionServiceMock);
-    
+
     sphygmoCorInstrumentRunner.initialize();
-    
+
     verify(sphygmoCorDaoMock);
     verify(instrumentExecutionServiceMock);
   }
-  
+
   /**
-   * Test the behaviour of the <code>run</code> method, when the instrument's output is
-   * successfully retrieved (normal case).
+   * Test the behaviour of the <code>run</code> method, when the instrument's output is successfully retrieved (normal
+   * case).
    */
-  //@Test
-  public void testRunOutputNotNull() {    
-    expect(instrumentExecutionServiceMock.getParticipantID()).andReturn("1");  
-    
+  // @Test
+  public void testRunOutputNotNull() {
+    expect(instrumentExecutionServiceMock.getParticipantID()).andReturn("1");
+
     // Expect that the measurements taken for the current participant are retrieved,
     // with a non-null return value.
-    expect(sphygmoCorDaoMock.getOutput(1)).andReturn(getOutput());  
-        
+    expect(sphygmoCorDaoMock.getOutput(1)).andReturn(getOutput());
+
     // Expect that the measurements are sent to the server.
     instrumentExecutionServiceMock.addOutputParameterValues(formatOutputForServer(getOutput().get(0)));
-    
+
     replay(instrumentExecutionServiceMock);
     replay(sphygmoCorDaoMock);
-    
+
     sphygmoCorInstrumentRunner.run();
-    
+
     verify(instrumentExecutionServiceMock);
     verify(sphygmoCorDaoMock);
   }
-  
+
   /**
-   * Test the behaviour of the <code>run</code> method, when the instrument's output is 
-   * <code>null</code> (error case).
+   * Test the behaviour of the <code>run</code> method, when the instrument's output is <code>null</code> (error
+   * case).
    */
   @Test
-  public void testRunOutputIsNull() {    
-    
-    expect(instrumentExecutionServiceMock.getParticipantID()).andReturn("1");      
-    
+  public void testRunOutputIsNull() {
+
+    expect(instrumentExecutionServiceMock.getParticipantID()).andReturn("1");
+
     // Expect that the measurements taken for the current participant are retrieved,
-    // with a null return value, and that this results in a RuntimeException.
-    expect(sphygmoCorDaoMock.getOutput(1)).andReturn(null); 
-    
+    // with a null return value. This could happen if the SphygmoCor application is
+    // closed prematurely.
+    expect(sphygmoCorDaoMock.getOutput(1)).andReturn(null);
+
     replay(instrumentExecutionServiceMock);
     replay(sphygmoCorDaoMock);
-    
-    try {
-      sphygmoCorInstrumentRunner.run();
-      fail("Expected RuntimeException");
-    }
-    catch(RuntimeException ex) {
-      // expected
-    }
-    
-    verify(sphygmoCorDaoMock);  
-    verify(instrumentExecutionServiceMock);  
+
+    // The run method should NOT throw an exception in this case. It simply
+    // logs an error message.
+    sphygmoCorInstrumentRunner.run();
+
+    verify(sphygmoCorDaoMock);
+    verify(instrumentExecutionServiceMock);
   }
-  
+
   /**
-   * Test that the <code>shutdown</code> method deletes all instrument data (measurements
-   * and patients). 
+   * Test that the <code>shutdown</code> method deletes all instrument data (measurements and patients).
    */
-  @Test 
-  public void testShutdown() {    
+  @Test
+  public void testShutdown() {
     sphygmoCorDaoMock.deleteAllOutput();
     sphygmoCorDaoMock.deleteAllPatients();
-    
+
     replay(sphygmoCorDaoMock);
-    
+
     sphygmoCorInstrumentRunner.shutdown();
-    
+
     verify(sphygmoCorDaoMock);
   }
-  
+
   private java.util.Date getBirthDate() {
     Calendar c = Calendar.getInstance();
     c.set(Calendar.YEAR, 1964);
     c.set(Calendar.MONTH, 2);
     c.set(Calendar.DAY_OF_MONTH, 12);
-    
+
     return c.getTime();
   }
-  
+
   private List<Map> getOutput() {
     List<Map> output = new ArrayList<Map>();
-    
+
     Map outputMap = new HashMap();
-    
+
     outputMap.put("P_QC_PH", new Float(1.0f));
     outputMap.put("P_QC_PHV", new Float(1.0f));
     outputMap.put("P_QC_PLV", new Float(1.0f));
@@ -236,36 +231,35 @@ public class SphygmoCorInstrumentRunnerTest {
     outputMap.put("C_T1ED", new Float(1.0f));
     outputMap.put("C_T2ED", new Float(1.0f));
     outputMap.put("C_QUALITY_T1", new Integer(1));
-    outputMap.put("C_QUALITY_T2", new Integer(1));    
-    outputMap.put("P_QC_OTHER4", new Float(1.0f));       
-    
+    outputMap.put("C_QUALITY_T2", new Integer(1));
+    outputMap.put("P_QC_OTHER4", new Float(1.0f));
+
     output.add(outputMap);
-    
-    return output; 
+
+    return output;
   }
-  
+
   private Map<String, Data> formatOutputForServer(Map data) {
     Map<String, Data> outputToSend = new HashMap<String, Data>();
 
     Iterator dataIter = data.entrySet().iterator();
-    
-    while (dataIter.hasNext()) {
-      Map.Entry dataEntry = (Map.Entry)dataIter.next();
-      
+
+    while(dataIter.hasNext()) {
+      Map.Entry dataEntry = (Map.Entry) dataIter.next();
+
       Data dataObj = null;
-      
+
       Object value = dataEntry.getValue();
-      
-      if (value instanceof Float) {
-        dataObj = new Data(DataType.DECIMAL, new Double((Float)value));
+
+      if(value instanceof Float) {
+        dataObj = new Data(DataType.DECIMAL, new Double((Float) value));
+      } else if(value instanceof Integer) {
+        value = new Data(DataType.INTEGER, new Long((Integer) value));
       }
-      else if (value instanceof Integer) {
-        value = new Data(DataType.INTEGER, new Long((Integer)value)); 
-      }
-      
-      outputToSend.put((String)dataEntry.getKey(), dataObj);
-    }  
-    
+
+      outputToSend.put((String) dataEntry.getKey(), dataObj);
+    }
+
     return outputToSend;
   }
 }

@@ -127,10 +127,8 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
       sendDataToServer((Map) output.get(0));
 
     } else {
-      String errMsg = "No device output found";
+      String errMsg = "No device output found. This usually happens if the SphygmoCor application is closed before completing the measurement.";
       log.error(errMsg);
-
-      throw new RuntimeException(errMsg);
     }
   }
 
