@@ -69,7 +69,7 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
     Boolean rval = false;
 
     // ask variable directory
-    log.info("Testing variable: {}{}{}", new Object[] { variablePath, operator != null ? operator : "=", data != null ? data : "true" });
+    log.info("Testing variable: {} {} {}", new Object[] { variablePath, operator != null ? operator : ComparisonOperator.eq, data != null ? data : "true" });
     VariableData variableData = variableDirectory.getVariableData(activeInterviewService.getParticipant(), variablePath);
     if(variableData != null) {
       // apply a OR among the data of the variable
