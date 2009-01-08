@@ -36,6 +36,12 @@ import org.springframework.context.ApplicationContextAware;
 
 public class MarbleModule implements Module, IVariableProvider, ApplicationContextAware {
 
+  private static final String MODE_ATTRIBUTE = "mode";
+
+  private static final String ACCEPTED_ATTRIBUTE = "accepted";
+
+  private static final String LOCALE_ATTRIBUTE = "locale";
+
   private ApplicationContext applicationContext;
 
   private ConsentService consentService;
@@ -95,8 +101,12 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
 
     if(consent != null) {
       String varName = variable.getName();
-      if(varName.equals("accepted")) {
+      if(varName.equals(ACCEPTED_ATTRIBUTE)) {
         return new VariableData(variablePathNamingStrategy.getPath(variable), DataBuilder.buildBoolean(consent.isAccepted()));
+      } else if(varName.equals(LOCALE_ATTRIBUTE) && consent.getLocale() != null) {
+        return new VariableData(variablePathNamingStrategy.getPath(variable), DataBuilder.buildText(consent.getLocale().toString()));
+      } else if(varName.equals(MODE_ATTRIBUTE) && consent.getMode() != null) {
+        return new VariableData(variablePathNamingStrategy.getPath(variable), DataBuilder.buildText(consent.getMode().toString()));
       }
     }
 
@@ -109,10 +119,9 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
     Variable consent = new Variable("Consent");
     variables.add(consent);
 
-    consent.addVariable(new Variable("mode").setDataType(DataType.TEXT));
-    consent.addVariable(new Variable("locale").setDataType(DataType.TEXT));
-    consent.addVariable(new Variable("accepted").setDataType(DataType.BOOLEAN));
-    consent.addVariable(new Variable("deleted").setDataType(DataType.BOOLEAN));
+    consent.addVariable(new Variable(MODE_ATTRIBUTE).setDataType(DataType.TEXT));
+    consent.addVariable(new Variable(LOCALE_ATTRIBUTE).setDataType(DataType.TEXT));
+    consent.addVariable(new Variable(ACCEPTED_ATTRIBUTE).setDataType(DataType.BOOLEAN));
 
     return variables;
   }
