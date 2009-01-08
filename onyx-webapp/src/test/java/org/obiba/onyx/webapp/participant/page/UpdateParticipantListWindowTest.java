@@ -40,7 +40,7 @@ public class UpdateParticipantListWindowTest {
 
   @Test
   public void testShowConfirmationOnCreation() {
-    UpdateParticipantListWindow window = new UpdateParticipantListWindow("window", null);
+    UpdateParticipantListWindow window = new UpdateParticipantListWindow("window");
 
     Component confirmationFragment = window.get("content:contentFragment");
     Assert.assertTrue(confirmationFragment instanceof UpdateParticipantListWindow.ConfirmationFragment);
@@ -48,7 +48,7 @@ public class UpdateParticipantListWindowTest {
 
   @Test
   public void testShowConfirmation() {
-    UpdateParticipantListWindow window = new UpdateParticipantListWindow("window", null);
+    UpdateParticipantListWindow window = new UpdateParticipantListWindow("window");
     window.showConfirmation();
 
     Component confirmationFragment = getContentFragment(window);
@@ -57,7 +57,7 @@ public class UpdateParticipantListWindowTest {
 
   @Test
   public void testShowProgress() {
-    UpdateParticipantListWindow window = new UpdateParticipantListWindow("window", null);
+    UpdateParticipantListWindow window = new UpdateParticipantListWindow("window");
     window.showProgress();
 
     Component progressFragment = getContentFragment(window);
@@ -66,7 +66,7 @@ public class UpdateParticipantListWindowTest {
 
   @Test
   public void testShowResultSucceeded() {
-    UpdateParticipantListWindow window = new UpdateParticipantListWindow("window", null);
+    UpdateParticipantListWindow window = new UpdateParticipantListWindow("window");
     window.showResult(true);
 
     Fragment resultFragment = getContentFragment(window);
@@ -78,7 +78,7 @@ public class UpdateParticipantListWindowTest {
 
   @Test
   public void testShowResultFailed() {
-    UpdateParticipantListWindow window = new UpdateParticipantListWindow("window", null);
+    UpdateParticipantListWindow window = new UpdateParticipantListWindow("window");
     window.showResult(false);
 
     Fragment resultFragment = getContentFragment(window);

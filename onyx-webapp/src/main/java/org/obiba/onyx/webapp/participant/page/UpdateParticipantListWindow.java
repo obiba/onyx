@@ -11,7 +11,6 @@ package org.obiba.onyx.webapp.participant.page;
 
 import java.io.Serializable;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -57,16 +56,12 @@ public class UpdateParticipantListWindow extends ModalWindow {
 
   private ResultFragment resultFragment;
 
-  private Component participantList;
-
   //
   // Constructors
   //
 
-  public UpdateParticipantListWindow(String id, Component participantList) {
+  public UpdateParticipantListWindow(String id) {
     super(id);
-
-    this.participantList = participantList;
 
     setTitle((new ResourceModel("UpdateParticipantList")));
     setInitialHeight(DEFAULT_INITIAL_HEIGHT);
@@ -235,8 +230,6 @@ public class UpdateParticipantListWindow extends ModalWindow {
       // Show the result fragment.
       UpdateParticipantListWindow.this.showResult(updateSucceeded);
 
-      // Refresh participant list.
-      target.addComponent(participantList);
       target.addComponent(UpdateParticipantListWindow.this.get("content"));
     }
 

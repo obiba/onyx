@@ -244,7 +244,12 @@ public class ParticipantSearchPage extends BasePage {
     participantList.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
     add(participantList);
 
-    updateParticipantListWindow = new UpdateParticipantListWindow("updateParticipantListWindow", participantList);
+    updateParticipantListWindow = new UpdateParticipantListWindow("updateParticipantListWindow");
+    updateParticipantListWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+      public void onClose(AjaxRequestTarget target) {
+        target.addComponent(participantList);
+      }
+    });
     add(updateParticipantListWindow);
   }
 
