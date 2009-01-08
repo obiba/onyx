@@ -24,6 +24,26 @@
       <stageName>CON</stageName>
       <variablePath>/CARTAGENE/Consent/accepted</variablePath>
     </stageDependencyCondition>
+    <!-- PL: this is not working since question HW_CI_BP is a boilerplate and does no produce a variable.
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>CON</stageName>
+          <variablePath>/CARTAGENE/Consent/accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/CARTAGENE/CIPreliminaryQuestionnaire/HW_CI_BP</variablePath>
+          <operator>ne</operator>
+          <data>
+            <type>BOOLEAN</type>
+            <value class="boolean">true</value>
+          </data>
+        </variableCondition>
+      </conditions>
+    </stageDependencyCondition>
+     -->
   </stage>
 
   <stage>
@@ -165,7 +185,11 @@
         </variableCondition>
         <variableCondition>
           <stageName>BloodPressure</stageName>
-          <variablePath>/CARTAGENE/BloodPressure/Output/Systolic_Blood_Pressure</variablePath>
+          <variablePath>/CARTAGENE/BloodPressure/Output/Average_Systolic_Blood_Pressure_Measurement</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>BloodPressure</stageName>
+          <variablePath>/CARTAGENE/BloodPressure/Output/Average_Diastolic_Blood_Pressure_Measurement</variablePath>
         </variableCondition>
       </conditions>
     </stageDependencyCondition>
