@@ -43,8 +43,8 @@ public class Variable implements Serializable {
   @XStreamAsAttribute
   private String unit;
 
-  @XStreamImplicit(itemFieldName = "category")
-  private List<String> categories;
+  @XStreamImplicit
+  private List<Category> categories;
 
   public Variable(String name) {
     super();
@@ -126,13 +126,23 @@ public class Variable implements Serializable {
     this.parent = parent;
   }
 
-  public List<String> getCategories() {
-    return categories != null ? categories : (categories = new ArrayList<String>());
+  public List<Category> getCategories() {
+    return categories != null ? categories : (categories = new ArrayList<Category>());
   }
 
-  public Variable addCategory(String category) {
-    if(category != null && category.length() != 0) {
+  public Variable addCategory(Category category) {
+    if(category != null) {
       getCategories().add(category);
+      category.setVariable(this);
+    }
+    return this;
+  }
+
+  public Variable addCategory(String categoryName) {
+    if(categoryName != null && categoryName.length() != 0) {
+      Category category = new Category(categoryName);
+      getCategories().add(category);
+      category.setVariable(this);
     }
     return this;
   }

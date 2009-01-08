@@ -18,6 +18,7 @@ import org.obiba.core.service.impl.hibernate.AssociationCriteria.Operation;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.service.impl.DefaultQuestionnaireParticipantServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +42,7 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
     return (QuestionnaireParticipant) criteria.setMaxResults(1).uniqueResult();
   }
 
+  @SuppressWarnings("unchecked")
   public List<CategoryAnswer> getCategoryAnswers(Participant participant, String questionnaireName, String questionName) {
     QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant(participant, questionnaireName);
 
@@ -50,12 +52,26 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
   }
 
   public OpenAnswer getOpenAnswer(Participant participant, String questionnaireName, String questionName, String categoryName, String openAnswerName) {
-    // TODO Auto-generated method stub
-    return null;
+    QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant(participant, questionnaireName);
+
+    Criteria criteria = AssociationCriteria.create(OpenAnswer.class, getSession()).add("categoryAnswer.questionAnswer.questionnaireParticipant", Operation.eq, questionnaireParticipant).add("categoryAnswer.questionAnswer.questionName", Operation.eq, questionName).add("categoryAnswer.active", Operation.eq, true).add("categoryAnswer.categoryName", Operation.eq, categoryName).add("openAnswerDefinitionName", Operation.eq, openAnswerName).getCriteria();
+
+    return (OpenAnswer) criteria.uniqueResult();
   }
 
-  public List<OpenAnswer> getOpenAnswers(Participant participant, String questionnaireName, String questionName, String categoryName) {
-    // TODO Auto-generated method stub
+  public String getQuestionComment(Participant participant, String questionnaireName, String questionName) {
+    QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant(participant, questionnaireName);
+
+    QuestionAnswer answer = new QuestionAnswer();
+    answer.setQuestionName(questionName);
+    answer.setQuestionnaireParticipant(questionnaireParticipant);
+
+    answer = getPersistenceManager().matchOne(answer);
+
+    if(answer != null) {
+      return answer.getComment();
+    }
+
     return null;
   }
 

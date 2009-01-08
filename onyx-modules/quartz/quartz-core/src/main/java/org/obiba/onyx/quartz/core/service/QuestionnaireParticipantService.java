@@ -32,9 +32,9 @@ public interface QuestionnaireParticipantService {
    */
   public void deleteQuestionnaireParticipant(QuestionnaireParticipant questionnaireParticipant);
 
-  public List<CategoryAnswer> getCategoryAnswers(Participant participant, String questionnaireName, String questionName);
+  public String getQuestionComment(Participant participant, String questionnaireName, String questionName);
 
-  public List<OpenAnswer> getOpenAnswers(Participant participant, String questionnaireName, String questionName, String categoryName);
+  public List<CategoryAnswer> getCategoryAnswers(Participant participant, String questionnaireName, String questionName);
 
   public OpenAnswer getOpenAnswer(Participant participant, String questionnaireName, String questionName, String categoryName, String openAnswerName);
 }

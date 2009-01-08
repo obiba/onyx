@@ -12,16 +12,16 @@ package org.obiba.onyx.quartz.engine.variable.impl;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.engine.variable.Category;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
+import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
 import org.obiba.onyx.quartz.engine.variable.IQuestionToVariableMappingStrategy;
 import org.obiba.onyx.util.data.DataBuilder;
@@ -36,9 +36,11 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
 
   private static final Logger log = LoggerFactory.getLogger(DefaultQuestionToVariableMappingStrategy.class);
 
-  private static final String QUESTIONNAIRE_LOCALE = "locale";
+  public static final String QUESTIONNAIRE_LOCALE = "locale";
 
-  private static final String QUESTIONNAIRE_VERSION = "version";
+  public static final String QUESTIONNAIRE_VERSION = "version";
+
+  public static final String QUESTION_COMMENT = "comment";
 
   public Variable getVariable(Questionnaire questionnaire) {
     Variable questionnaireVariable = new Variable(questionnaire.getName());
@@ -54,18 +56,11 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
 
     // simple question
     if(question.getQuestions().size() == 0) {
-      Variable variable = new Variable(question.getName());
+      Variable variable = getQuestionVariable(question, question.getQuestionCategories());
       entity = variable;
-      for(Category category : question.getCategories()) {
-        variable.addCategory(category.getName());
-        variable.addVariable(getVariable(category));
-      }
-      if(variable.getCategories().size() > 0) {
-        variable.setDataType(DataType.TEXT);
-      }
     } else if(question.getQuestionCategories().size() == 0) {
       // sub questions
-      entity = new Variable(question.getName());
+      entity = getQuestionVariable(question, null);
       for(Question subQuestion : question.getQuestions()) {
         entity.addVariable(getVariable(subQuestion));
       }
@@ -79,16 +74,10 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
       }
       if(shared) {
         // shared categories question
-        entity = new Variable(question.getName());
+        entity = getQuestionVariable(question, null);
         for(Question subQuestion : question.getQuestions()) {
-          Variable variable = new Variable(subQuestion.getName());
-          for(Category category : question.getCategories()) {
-            variable.addCategory(category.getName());
-            variable.addVariable(getVariable(category));
-          }
-          if(variable.getCategories().size() > 0) {
-            variable.setDataType(DataType.TEXT);
-          }
+          Variable variable = getQuestionVariable(subQuestion, question.getQuestionCategories());
+
           entity.addVariable(variable);
         }
       } else {
@@ -102,23 +91,57 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     return entity;
   }
 
-  private Variable getVariable(Category category) {
+  /**
+   * Question variable, with always a sub variable for the attached comment.
+   * @param question
+   * @return
+   */
+  private Variable getQuestionVariable(Question question, List<QuestionCategory> questionCategories) {
+    Variable variable = new Variable(question.getName());
+
+    variable.addVariable(new Variable(QUESTION_COMMENT).setDataType(DataType.TEXT));
+
+    // log.info("question.name={} questionCategories={}", question.getName(), questionCategories);
+    if(questionCategories != null) {
+      for(QuestionCategory questionCategory : questionCategories) {
+        variable.addCategory(new Category(questionCategory.getCategory().getName(), questionCategory.getExportName(), questionCategory.getCategory().isEscape()));
+        variable.addVariable(getCategoryVariable(questionCategory));
+      }
+      if(variable.getCategories().size() > 0) {
+        variable.setDataType(DataType.TEXT);
+      }
+    }
+
+    return variable;
+  }
+
+  /**
+   * Category variable which is a container of open answer variables.
+   * @param category
+   * @return null if no open answer variables
+   */
+  private Variable getCategoryVariable(QuestionCategory questionCategory) {
     Variable categoryVariable = null;
 
-    OpenAnswerDefinition open = category.getOpenAnswerDefinition();
+    OpenAnswerDefinition open = questionCategory.getCategory().getOpenAnswerDefinition();
     if(open != null) {
-      categoryVariable = new Variable(category.getName());
+      categoryVariable = new Variable(questionCategory.getCategory().getName());
 
-      categoryVariable.addVariable(getVariable(open));
+      categoryVariable.addVariable(getOpenAnswerVariable(open));
       for(OpenAnswerDefinition openChild : open.getOpenAnswerDefinitions()) {
-        categoryVariable.addVariable(getVariable(openChild));
+        categoryVariable.addVariable(getOpenAnswerVariable(openChild));
       }
     }
 
     return categoryVariable;
   }
 
-  private Variable getVariable(OpenAnswerDefinition openAnswerDefinition) {
+  /**
+   * Open answer variable.
+   * @param openAnswerDefinition
+   * @return
+   */
+  private Variable getOpenAnswerVariable(OpenAnswerDefinition openAnswerDefinition) {
     Variable variable = null;
 
     variable = new Variable(openAnswerDefinition.getName()).setDataType(openAnswerDefinition.getDataType()).setUnit(openAnswerDefinition.getUnit());
@@ -128,31 +151,37 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
 
   public VariableData getVariableData(QuestionnaireParticipantService questionnaireParticipantService, Participant participant, Variable variable, VariableData variableData, Questionnaire questionnaire) {
 
-    QuestionnaireFinder finder = QuestionnaireFinder.getInstance(questionnaire);
-
     // variable is a question
     if(variable.getCategories().size() > 0) {
-      Question question = finder.findQuestion(variable.getName());
-      if(question != null) {
-        List<CategoryAnswer> answers = questionnaireParticipantService.getCategoryAnswers(participant, questionnaire.getName(), question.getName());
-        for(CategoryAnswer answer : answers) {
-          variableData.addData(DataBuilder.buildText(answer.getCategoryName()));
-        }
+      List<CategoryAnswer> answers = questionnaireParticipantService.getCategoryAnswers(participant, questionnaire.getName(), variable.getName());
+      for(CategoryAnswer answer : answers) {
+        variableData.addData(DataBuilder.buildText(answer.getCategoryName()));
       }
     }
 
-    // variable is an open answer
+    // variable is about an open answer or the question comment or the questionnaire
     else if(variable.getDataType() != null) {
-      Question question = finder.findQuestion(variable.getParent().getParent().getName());
-      log.debug("question={}", question);
-      if(question != null) {
-        QuestionCategory questionCategory = finder.findQuestionCategory(question.getName(), variable.getParent().getName());
-        log.debug("questionCategory={}", questionCategory);
-        if(questionCategory != null) {
-          OpenAnswer answer = questionnaireParticipantService.getOpenAnswer(participant, questionnaire.getName(), question.getName(), questionCategory.getCategory().getName(), variable.getName());
-          if(answer != null) {
-            variableData.addData(answer.getData());
-          }
+      if(variable.getName().equals(QUESTIONNAIRE_LOCALE)) {
+        QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getQuestionnaireParticipant(participant, questionnaire.getName());
+        if(questionnaireParticipant != null && questionnaireParticipant.getLocale() != null) {
+          variableData.addData(DataBuilder.buildText(questionnaireParticipant.getLocale().toString()));
+        }
+      } else if(variable.getName().equals(QUESTIONNAIRE_VERSION)) {
+        QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getQuestionnaireParticipant(participant, questionnaire.getName());
+        if(questionnaireParticipant != null && questionnaireParticipant.getQuestionnaireVersion() != null) {
+          variableData.addData(DataBuilder.buildText(questionnaireParticipant.getQuestionnaireVersion()));
+        }
+      } else if(variable.getName().equals(QUESTION_COMMENT)) {
+        // question comment variable
+        String comment = questionnaireParticipantService.getQuestionComment(participant, questionnaire.getName(), variable.getParent().getName());
+        if(comment != null) {
+          variableData.addData(DataBuilder.buildText(comment));
+        }
+      } else {
+        // get the open answer
+        OpenAnswer answer = questionnaireParticipantService.getOpenAnswer(participant, questionnaire.getName(), variable.getParent().getParent().getName(), variable.getParent().getName(), variable.getName());
+        if(answer != null) {
+          variableData.addData(answer.getData());
         }
       }
     }

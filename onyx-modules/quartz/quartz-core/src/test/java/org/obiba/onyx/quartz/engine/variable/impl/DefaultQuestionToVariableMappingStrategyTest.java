@@ -32,6 +32,7 @@ import org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.util.VariableStreamer;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
@@ -40,11 +41,15 @@ import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
 import org.obiba.onyx.quartz.engine.variable.IQuestionToVariableMappingStrategy;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  */
 public class DefaultQuestionToVariableMappingStrategyTest {
+
+  private static final Logger log = LoggerFactory.getLogger(DefaultQuestionToVariableMappingStrategyTest.class);
 
   private QuestionnaireParticipantService questionnaireParticipantServiceMock;
 
@@ -70,31 +75,106 @@ public class DefaultQuestionToVariableMappingStrategyTest {
   @Test
   public void testVariable() {
     Variable questionnaireVariable = createQuestionnaireVariable();
-    System.out.println(VariableStreamer.toXML(questionnaireVariable));
+    log.debug("\n" + VariableStreamer.toXML(questionnaireVariable));
 
     Assert.assertEquals(questionnaire.getName(), questionnaireVariable.getName());
-    Assert.assertEquals(4, questionnaireVariable.getVariables().size());
+    Assert.assertEquals(6, questionnaireVariable.getVariables().size());
     Assert.assertEquals(0, questionnaireVariable.getCategories().size());
 
     Variable questionVariable = questionnaireVariable.getVariables().get(2);
     Assert.assertEquals("Q1", questionVariable.getName());
     Assert.assertEquals(3, questionVariable.getCategories().size());
-    Assert.assertEquals("1", questionVariable.getCategories().get(0));
-    Assert.assertEquals("2", questionVariable.getCategories().get(1));
-    Assert.assertEquals("3", questionVariable.getCategories().get(2));
-    Assert.assertEquals(0, questionVariable.getVariables().size());
+    Assert.assertEquals("1", questionVariable.getCategories().get(0).getName());
+    Assert.assertEquals("2", questionVariable.getCategories().get(1).getName());
+    Assert.assertEquals("3", questionVariable.getCategories().get(2).getName());
+    Assert.assertEquals(1, questionVariable.getVariables().size());
+    Assert.assertEquals(DefaultQuestionToVariableMappingStrategy.QUESTION_COMMENT, questionVariable.getVariables().get(0).getName());
 
     questionVariable = questionnaireVariable.getVariables().get(3);
     Assert.assertEquals("Q2", questionVariable.getName());
     Assert.assertEquals(4, questionVariable.getCategories().size());
-    Assert.assertEquals(4, questionVariable.getVariables().size());
-    Assert.assertEquals("1", questionVariable.getVariables().get(0).getName());
-    Assert.assertEquals(1, questionVariable.getVariables().get(0).getVariables().size());
-    Assert.assertEquals("OPEN_INT", questionVariable.getVariables().get(0).getVariables().get(0).getName());
-    Assert.assertEquals("3", questionVariable.getVariables().get(2).getName());
-    Assert.assertEquals(2, questionVariable.getVariables().get(2).getVariables().size());
-    Assert.assertEquals("OPEN_DATE", questionVariable.getVariables().get(2).getVariables().get(0).getName());
-    Assert.assertEquals("OPEN_YEAR", questionVariable.getVariables().get(2).getVariables().get(1).getName());
+    Assert.assertEquals(5, questionVariable.getVariables().size());
+
+    Variable categoryVariable = questionVariable.getVariables().get(1);
+    Assert.assertEquals("1", categoryVariable.getName());
+    Assert.assertEquals(1, categoryVariable.getVariables().size());
+    Assert.assertEquals("OPEN_INT", categoryVariable.getVariables().get(0).getName());
+
+    categoryVariable = questionVariable.getVariables().get(3);
+    Assert.assertEquals("3", categoryVariable.getName());
+    Assert.assertEquals(2, categoryVariable.getVariables().size());
+    Assert.assertEquals("OPEN_DATE", categoryVariable.getVariables().get(0).getName());
+    Assert.assertEquals("OPEN_YEAR", categoryVariable.getVariables().get(1).getName());
+
+    questionVariable = questionnaireVariable.getVariables().get(4);
+    Assert.assertEquals("Q3", questionVariable.getName());
+    Assert.assertEquals(0, questionVariable.getCategories().size());
+    Assert.assertEquals(3, questionVariable.getVariables().size());
+
+    Variable subQuestionVariable = questionVariable.getVariables().get(1);
+    Assert.assertEquals("Q3_1", subQuestionVariable.getName());
+    Assert.assertEquals(2, subQuestionVariable.getCategories().size());
+    Assert.assertEquals("Y", subQuestionVariable.getCategories().get(0).getName());
+    Assert.assertEquals("N", subQuestionVariable.getCategories().get(1).getName());
+    Assert.assertEquals(1, subQuestionVariable.getVariables().size());
+
+    subQuestionVariable = questionVariable.getVariables().get(2);
+    Assert.assertEquals("Q3_2", subQuestionVariable.getName());
+    Assert.assertEquals(2, subQuestionVariable.getCategories().size());
+    Assert.assertEquals("Y", subQuestionVariable.getCategories().get(0).getName());
+    Assert.assertEquals("N", subQuestionVariable.getCategories().get(1).getName());
+    Assert.assertEquals(1, subQuestionVariable.getVariables().size());
+
+    questionVariable = questionnaireVariable.getVariables().get(5);
+    Assert.assertEquals("Q4", questionVariable.getName());
+    Assert.assertEquals(0, questionVariable.getCategories().size());
+    Assert.assertEquals(3, questionVariable.getVariables().size());
+
+    subQuestionVariable = questionVariable.getVariables().get(1);
+    Assert.assertEquals("Q4_1", subQuestionVariable.getName());
+    Assert.assertEquals(2, subQuestionVariable.getCategories().size());
+    Assert.assertEquals("1", subQuestionVariable.getCategories().get(0).getName());
+    Assert.assertEquals("2", subQuestionVariable.getCategories().get(1).getName());
+    Assert.assertEquals(1, subQuestionVariable.getVariables().size());
+
+    subQuestionVariable = questionVariable.getVariables().get(2);
+    Assert.assertEquals("Q4_2", subQuestionVariable.getName());
+    Assert.assertEquals(2, subQuestionVariable.getCategories().size());
+    Assert.assertEquals("Y", subQuestionVariable.getCategories().get(0).getName());
+    Assert.assertEquals("N", subQuestionVariable.getCategories().get(1).getName());
+    Assert.assertEquals(1, subQuestionVariable.getVariables().size());
+
+  }
+
+  @Test
+  public void testVariableDataQuestionnaire() {
+    Variable questionnaireVariable = createQuestionnaireVariable();
+
+    Variable studyVariable = new Variable("ROOT");
+    studyVariable.addVariable(questionnaireVariable);
+
+    Participant participant = new Participant();
+    QuestionnaireParticipant questionnaireParticipant = new QuestionnaireParticipant();
+    questionnaireParticipant.setLocale(Locale.CANADA_FRENCH);
+    questionnaireParticipant.setQuestionnaireVersion("1.0");
+
+    expect(questionnaireParticipantServiceMock.getQuestionnaireParticipant(participant, questionnaire.getName())).andReturn(questionnaireParticipant).atLeastOnce();
+    replay(questionnaireParticipantServiceMock);
+
+    Variable variable = questionnaireVariable.getVariables().get(0);
+    VariableData data = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantServiceMock, participant, variable, new VariableData(variablePathNamingStrategy.getPath(variable)), questionnaire);
+    log.debug("\n" + VariableStreamer.toXML(data));
+    Assert.assertEquals(1, data.getDatas().size());
+    Assert.assertEquals("1.0", data.getDatas().get(0).getValue());
+
+    variable = questionnaireVariable.getVariables().get(1);
+    data = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantServiceMock, participant, variable, new VariableData(variablePathNamingStrategy.getPath(variable)), questionnaire);
+    log.debug("\n" + VariableStreamer.toXML(data));
+
+    Assert.assertEquals(1, data.getDatas().size());
+    Assert.assertEquals("fr_CA", data.getDatas().get(0).getValue());
+
+    verify(questionnaireParticipantServiceMock);
 
   }
 
@@ -104,7 +184,35 @@ public class DefaultQuestionToVariableMappingStrategyTest {
 
     Variable studyVariable = new Variable("ROOT");
     studyVariable.addVariable(questionnaireVariable);
-    // System.out.println(VariableStreamer.toXML(studyVariable));
+    // log.debug("\n"+VariableStreamer.toXML(studyVariable));
+
+    Variable variable = questionnaireVariable.getVariables().get(2).getVariables().get(0);
+    Assert.assertEquals(DefaultQuestionToVariableMappingStrategy.QUESTION_COMMENT, variable.getName());
+
+    Variable testVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
+    Assert.assertEquals(questionnaire.getName(), testVariable.getName());
+
+    Participant participant = new Participant();
+
+    expect(questionnaireParticipantServiceMock.getQuestionComment(participant, questionnaire.getName(), variable.getParent().getName())).andReturn("This is a comment.").atLeastOnce();
+    replay(questionnaireParticipantServiceMock);
+
+    VariableData data = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantServiceMock, participant, variable, new VariableData(variablePathNamingStrategy.getPath(variable)), questionnaire);
+    log.debug("\n" + VariableStreamer.toXML(data));
+
+    verify(questionnaireParticipantServiceMock);
+
+    Assert.assertEquals(1, data.getDatas().size());
+    Assert.assertEquals("This is a comment.", data.getDatas().get(0).getValue());
+  }
+
+  @Test
+  public void testVariableDataCategory() {
+    Variable questionnaireVariable = createQuestionnaireVariable();
+
+    Variable studyVariable = new Variable("ROOT");
+    studyVariable.addVariable(questionnaireVariable);
+    // log.debug("\n"+VariableStreamer.toXML(studyVariable));
 
     Variable variable = questionnaireVariable.getVariables().get(2);
 
@@ -124,7 +232,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     replay(questionnaireParticipantServiceMock);
 
     VariableData data = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantServiceMock, participant, variable, new VariableData(variablePathNamingStrategy.getPath(variable)), questionnaire);
-    System.out.println(VariableStreamer.toXML(data));
+    log.debug("\n" + VariableStreamer.toXML(data));
 
     verify(questionnaireParticipantServiceMock);
 
@@ -138,10 +246,10 @@ public class DefaultQuestionToVariableMappingStrategyTest {
 
     Variable studyVariable = new Variable("ROOT");
     studyVariable.addVariable(questionnaireVariable);
-    // System.out.println(VariableStreamer.toXML(studyVariable));
+    // log.debug("\n"+VariableStreamer.toXML(studyVariable));
 
     // open_int variable
-    Variable variable = questionnaireVariable.getVariables().get(3).getVariables().get(0).getVariables().get(0);
+    Variable variable = questionnaireVariable.getVariables().get(3).getVariables().get(1).getVariables().get(0);
 
     Variable testVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
     Assert.assertEquals(questionnaire.getName(), testVariable.getName());
@@ -168,13 +276,75 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     replay(questionnaireParticipantServiceMock);
 
     VariableData data = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantServiceMock, participant, variable, new VariableData(variablePathNamingStrategy.getPath(variable)), questionnaire);
-    System.out.println(VariableStreamer.toXML(data));
+    log.debug("\n" + VariableStreamer.toXML(data));
 
     verify(questionnaireParticipantServiceMock);
 
     Assert.assertEquals(1, data.getDatas().size());
     Assert.assertEquals(DataType.INTEGER, data.getDatas().get(0).getType());
     Assert.assertEquals("123", data.getDatas().get(0).getValueAsString());
+  }
+
+  @Test
+  public void testVariableDataSharedCategory() {
+    Variable questionnaireVariable = createQuestionnaireVariable();
+
+    Variable studyVariable = new Variable("ROOT");
+    studyVariable.addVariable(questionnaireVariable);
+    // log.debug("\n"+VariableStreamer.toXML(studyVariable));
+
+    Variable variable = questionnaireVariable.getVariables().get(4).getVariables().get(1);
+
+    Variable testVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
+    Assert.assertEquals(questionnaire.getName(), testVariable.getName());
+
+    Participant participant = new Participant();
+    List<CategoryAnswer> answers = new ArrayList<CategoryAnswer>();
+    CategoryAnswer answer = new CategoryAnswer();
+    answer.setCategoryName("Y");
+    answers.add(answer);
+
+    expect(questionnaireParticipantServiceMock.getCategoryAnswers(participant, questionnaire.getName(), variable.getName())).andReturn(answers).atLeastOnce();
+    replay(questionnaireParticipantServiceMock);
+
+    VariableData data = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantServiceMock, participant, variable, new VariableData(variablePathNamingStrategy.getPath(variable)), questionnaire);
+    log.debug("\n" + VariableStreamer.toXML(data));
+
+    verify(questionnaireParticipantServiceMock);
+
+    Assert.assertEquals(1, data.getDatas().size());
+    Assert.assertEquals("Y", data.getDatas().get(0).getValue());
+  }
+
+  @Test
+  public void testVariableDataSubQuestionCategory() {
+    Variable questionnaireVariable = createQuestionnaireVariable();
+
+    Variable studyVariable = new Variable("ROOT");
+    studyVariable.addVariable(questionnaireVariable);
+    // log.debug("\n"+VariableStreamer.toXML(studyVariable));
+
+    Variable variable = questionnaireVariable.getVariables().get(5).getVariables().get(2);
+
+    Variable testVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
+    Assert.assertEquals(questionnaire.getName(), testVariable.getName());
+
+    Participant participant = new Participant();
+    List<CategoryAnswer> answers = new ArrayList<CategoryAnswer>();
+    CategoryAnswer answer = new CategoryAnswer();
+    answer.setCategoryName("Y");
+    answers.add(answer);
+
+    expect(questionnaireParticipantServiceMock.getCategoryAnswers(participant, questionnaire.getName(), variable.getName())).andReturn(answers).atLeastOnce();
+    replay(questionnaireParticipantServiceMock);
+
+    VariableData data = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantServiceMock, participant, variable, new VariableData(variablePathNamingStrategy.getPath(variable)), questionnaire);
+    log.debug("\n" + VariableStreamer.toXML(data));
+
+    verify(questionnaireParticipantServiceMock);
+
+    Assert.assertEquals(1, data.getDatas().size());
+    Assert.assertEquals("Y", data.getDatas().get(0).getValue());
   }
 
   public Variable createQuestionnaireVariable() {
@@ -199,6 +369,12 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     builder.inQuestion("Q2").withCategory("2").withOpenAnswerDefinition("OPEN_TEXT", DataType.TEXT);
     builder.inQuestion("Q2").withCategory("3").withOpenAnswerDefinition("OPEN_DATE", DataType.DATE).withOpenAnswerDefinition("OPEN_YEAR", DataType.INTEGER);
     builder.inQuestion("Q2").withCategory("4").withOpenAnswerDefinition("OPEN_TEXT_DEFAULT_VALUES", DataType.TEXT).setDefaultData("a", "b", "c");
+    builder.inPage("P2").withQuestion("Q3").withCategories("Y", "N");
+    builder.inQuestion("Q3").withQuestion("Q3_1");
+    builder.inQuestion("Q3").withQuestion("Q3_2");
+    builder.inPage("P2").withQuestion("Q4");
+    builder.inQuestion("Q4").withQuestion("Q4_1").withCategories("1", "2");
+    builder.inQuestion("Q4").withQuestion("Q4_2").withCategories("Y", "N");
 
     Questionnaire q = builder.getQuestionnaire();
     q.addLocale(Locale.FRENCH);
