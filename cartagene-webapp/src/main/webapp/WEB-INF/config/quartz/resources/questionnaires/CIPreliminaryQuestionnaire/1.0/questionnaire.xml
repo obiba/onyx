@@ -987,22 +987,23 @@
                                         <question reference="341"/>
                                         <category reference="17"/>
                                       </answerCondition>
-                                      <answerCondition id="395" name="BD_LEFT_POSSIBLE_ACONDITION_8">
+                                    </conditions>
+                                  </multipleCondition>
+                                  <multipleCondition id="395" name="BD_LEFT_POSSIBLE_MCONDITION_1_2_2_2" conditionOperator="OR">
+                                    <conditions id="396">
+                                      <answerCondition id="397" name="BD_LEFT_POSSIBLE_ACONDITION_8">
                                         <question reference="317"/>
                                         <category reference="17"/>
                                       </answerCondition>
-                                      <answerCondition id="396" name="BD_LEFT_POSSIBLE_ACONDITION_9">
+                                      <answerCondition id="398" name="BD_LEFT_POSSIBLE_ACONDITION_9">
                                         <question reference="333"/>
                                         <category reference="17"/>
                                       </answerCondition>
-                                      <answerCondition id="397" name="BD_LEFT_POSSIBLE_ACONDITION_10">
+                                      <answerCondition id="399" name="BD_LEFT_POSSIBLE_ACONDITION_10">
                                         <question reference="349"/>
                                         <category reference="17"/>
                                       </answerCondition>
                                     </conditions>
-                                  </multipleCondition>
-                                  <multipleCondition id="398" name="BD_LEFT_POSSIBLE_MCONDITION_1_2_2_2" conditionOperator="OR">
-                                    <conditions id="399"/>
                                   </multipleCondition>
                                 </conditions>
                               </multipleCondition>
