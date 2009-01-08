@@ -95,6 +95,7 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
               error(getString("InvalidConsentForm"));
               getElectronicConsentStep().setNextStep(null);
               gotoNext(target);
+              this.changeWizardFormStyle("wizard-consent");
               target.appendJavascript("resizeWizardContent();");
 
               // Valid electronic consent, refused electronic consent, or manual consent.
@@ -102,6 +103,7 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
               IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
               ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
               consentService.saveConsent(activeConsentService.getConsent());
+              target.appendJavascript("resizeWizardContent();");
               if(actionDef != null) {
                 actionWindow.show(target, model.getStageModel(), actionDef);
               }
