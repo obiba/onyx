@@ -19,8 +19,8 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
   </bean>
   
   <bean id="cookieRequestExecutor" class="org.obiba.onyx.spring.remoting.CookieRequestExecutor">
-    <property name="name" value="jsessionid"/>
-    <property name="value" value="${jSessionId}"/>
+    <property name="name" value="JSESSIONID"/>
+    <property name="value" value="${JSESSIONID}"/>
   </bean>
   
 </beans>

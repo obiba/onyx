@@ -60,7 +60,7 @@ public class InstrumentLauncher implements Serializable {
       final Properties props = new Properties();
       props.setProperty("org.obiba.onyx.remoting.url", makeUrl("remoting"));
       props.setProperty("codebaseUrl", makeUrl(instrumentCodeBase));
-      props.setProperty("jSessionId", Session.get().getId());
+      props.setProperty("JSESSIONID", Session.get().getId());
       props.setProperty("jnlpPath", context.getRealPath(File.separatorChar + instrumentCodeBase + File.separatorChar + "launch.jnlp"));
 
       log.info("Current language is = {} getDisplayLanguage()", Session.get().getLocale().getDisplayLanguage());
