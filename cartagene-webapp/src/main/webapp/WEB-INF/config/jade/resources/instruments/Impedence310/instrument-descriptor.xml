@@ -43,16 +43,14 @@
 
   <instrumentParameters>
     <interpretative>
-      <name>PhysicalActivityLast24Hours</name>
-      <description>PhysicalActivityLast24Hours</description>
+      <code>PhysicalActivityLast24Hours</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>OBSERVED</type>
     </interpretative>
 
     <input id="clothes_weight">
-      <name>ClothesWeight</name>
-      <description>Clothes_weight</description>
+      <code>ClothesWeight</code>
       <dataType>DECIMAL</dataType>
       <measurementUnit>kg</measurementUnit>
       <captureMethod>MANUAL</captureMethod>
@@ -62,8 +60,7 @@
     </input>
 
     <input id="gender_in">
-      <name>Gender</name>
-      <description>Participant_Gender</description>
+      <code>Gender</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="participantPropertySource">
@@ -72,8 +69,7 @@
     </input>
 
     <input id="body_type_in">
-      <name>BodyType</name>
-      <description>Body_type</description>
+      <code>BodyType</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="fixedSource">
@@ -82,8 +78,7 @@
     </input>
 
     <input id="age_in">
-      <name>Age</name>
-      <description>Participant_Age</description>
+      <code>Age</code>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="participantPropertySource">
@@ -92,133 +87,132 @@
     </input>
 
     <input id="height_in">
-      <name>Height</name>
-      <description>Measured_height</description>
+      <code>Height</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="outputParameterSource">
         <instrumentType>StandingHeight</instrumentType>
-        <parameterName>Height</parameterName>
+        <parameterName>Average_Height_Measurement</parameterName>
       </inputSource>
     </input>
 
     <output id="body_type">
-      <name>BodyType</name>
-      <description>Body_type</description>
+      <vendorName>BodyType</vendorName>
+      <code>Body_type</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="body_type" />
-          <parameter reference="body_type_in" />
+          <targetParameter reference="body_type"/>
+          <parameter reference="body_type_in"/>
           <customizedDescription>EqualsParameterCheck_BodyType</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
 
     <output id="gender">
-      <name>Gender</name>
-      <description>Output_gender</description>
+      <vendorName>Gender</vendorName>
+      <code>Output_gender</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="gender" />
-          <parameter reference="gender_in" />
+          <targetParameter reference="gender"/>
+          <parameter reference="gender_in"/>
           <customizedDescription>EqualsParameterCheck_Gender</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
 
     <output id="age">
-      <name>Age</name>
-      <description>Output_age</description>
+      <vendorName>Age</vendorName>
+      <code>Output_age</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="age" />
-          <parameter reference="age_in" />
+          <targetParameter reference="age"/>
+          <parameter reference="age_in"/>
           <customizedDescription>EqualsParameterCheck_Age</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
 
     <output id="height">
-      <name>Height</name>
-      <description>Output_height</description>
+      <vendorName>Height</vendorName>
+      <code>Output_height</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="height" />
-          <parameter reference="height_in" />
+          <targetParameter reference="height"/>
+          <parameter reference="height_in"/>
           <customizedDescription>EqualsParameterCheck_Height</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
 
     <output id="weight">
-      <name>Weight</name>
-      <description>Measured_weight</description>
+      <vendorName>Weight</vendorName>
+      <code>Measured_weight</code>
       <measurementUnit>kg</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="bmi">
-      <name>BMI</name>
-      <description>Body_mass_index_calculated</description>
+      <vendorName>BMI</vendorName>
+      <code>Body_mass_index_calculated</code>
       <measurementUnit>kg/m²</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="bmr">
-      <name>BMR</name>
-      <description>Basal_metabolic_rate_calculated</description>
+      <vendorName>BMR</vendorName>
+      <code>Basal_metabolic_rate_calculated</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kJ</measurementUnit>
     </output>
 
     <output id="impedance">
-      <name>Impedance</name>
-      <description>Measured_body_impedance</description>
+      <vendorName>Impedance</vendorName>
+      <code>Measured_body_impedance</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ohm</measurementUnit>
     </output>
 
     <output id="fat_percentage">
-      <name>FatPercentage</name>
-      <description>Fat_percentage_calculated</description>
+      <vendorName>FatPercentage</vendorName>
+      <code>Fat_percentage_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
     </output>
 
     <output id="fat_mass">
-      <name>FatMass</name>
-      <description>Fat_mass_calculated</description>
+      <vendorName>FatMass</vendorName>
+      <code>Fat_mass_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="ffm">
-      <name>FatFreeMass</name>
-      <description>Fat_free_mass_calculated</description>
+      <vendorName>FatFreeMass</vendorName>
+      <code>Fat_free_mass_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="tbw">
-      <name>TotalBodyWater</name>
-      <description>Total_Body_Water_calculated</description>
+      <vendorName>TotalBodyWater</vendorName>
+      <code>Total_Body_Water_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>

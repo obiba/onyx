@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <instrumentType>
-  <description>Bonjour</description>
-
   <name>StandingHeight</name>
 
   <instruments>
@@ -40,16 +38,14 @@
 
   <instrumentParameters>
     <interpretative>
-      <name>Kyphosis</name>
-      <description>Kyphosis</description>
+      <code>Kyphosis</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>OBSERVED</type>
     </interpretative>
 
     <output id="sta1_height1">
-      <name>Height 1</name>
-      <description>First_Height_Measurement</description>
+      <code>First_Height_Measurement</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -73,8 +69,7 @@
     </output>
 
     <output id="sta1_height2">
-      <name>Height 2</name>
-      <description>Second_Height_Measurement</description>
+      <code>Second_Height_Measurement</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -103,8 +98,7 @@
     </output>
 
     <computedOutput>
-      <name>Height</name>
-      <description>Average_Height_Measurement</description>
+      <code>Average_Height_Measurement</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <algorithm>AVERAGE</algorithm>

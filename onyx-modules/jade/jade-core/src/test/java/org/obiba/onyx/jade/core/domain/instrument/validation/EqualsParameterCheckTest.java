@@ -65,10 +65,10 @@ public class EqualsParameterCheckTest {
     instrumentRun.setInstrumentType(instrumentType);
 
     checkedParameter = new InstrumentOutputParameter();
-    checkedParameter.setName("checkedParamName");
+    checkedParameter.setCode("checkedParamName");
 
     otherParameter = new InstrumentInputParameter();
-    otherParameter.setName("otherParamName");
+    otherParameter.setCode("otherParamName");
 
     equalsParameterCheck.setTargetParameter(checkedParameter);
     equalsParameterCheck.setParameter(otherParameter);
@@ -96,7 +96,7 @@ public class EqualsParameterCheckTest {
     otherRunValue.setInstrumentParameter(otherParameter);
     otherRunValue.setData(otherData);
 
-    expect(activeInstrumentRunServiceMock.getInputInstrumentRunValue(otherParameter.getName())).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
 
     replay(activeInstrumentRunServiceMock);
 
@@ -123,7 +123,7 @@ public class EqualsParameterCheckTest {
     otherRunValue.setInstrumentParameter(otherParameter);
     otherRunValue.setData(otherData);
 
-    expect(activeInstrumentRunServiceMock.getInputInstrumentRunValue(otherParameter.getName())).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
 
     replay(activeInstrumentRunServiceMock);
 
@@ -147,7 +147,7 @@ public class EqualsParameterCheckTest {
     otherRunValue.setInstrumentParameter(otherParameter);
     otherRunValue.setData(otherData);
 
-    expect(activeInstrumentRunServiceMock.getInputInstrumentRunValue(otherParameter.getName())).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
     replay(activeInstrumentRunServiceMock);
     equalsParameterCheck.setOperator(ComparisonOperator.LESSER);
     Assert.assertTrue(equalsParameterCheck.checkParameterValue(checkedData, instrumentRunServiceMock, activeInstrumentRunServiceMock));

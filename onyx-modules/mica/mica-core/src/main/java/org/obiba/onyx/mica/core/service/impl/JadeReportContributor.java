@@ -154,7 +154,7 @@ public class JadeReportContributor implements ModuleReportContributor {
                 // If runValue is not null, get parameter value and measurement unit
                 InstrumentParameter instrumentParameter = runValue.getInstrumentParameter();
 
-                log.info("Getting instrument parameter {}", instrumentParameter.getName());
+                log.info("Getting instrument parameter {}", instrumentParameter.getCode());
 
                 String parameterUnit = instrumentParameter.getMeasurementUnit();
 

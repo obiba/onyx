@@ -10,6 +10,7 @@
     <barcode>sphygmoCor1</barcode>
     <status>ACTIVE</status>
   </instrument>
+
   <contraindications>
     <contraIndication>
       <code>Other</code>
@@ -20,8 +21,7 @@
 
   <instrumentParameters>
     <input id="id">
-      <name>ID</name>
-      <description>Participant_Barcode</description>
+      <code>ID</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -30,8 +30,7 @@
     </input>
 
     <input id="last_name">
-      <name>LastName</name>
-      <description>Participant_Last_Name</description>
+      <code>LastName</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -40,8 +39,7 @@
     </input>
 
     <input id="first_name_in">
-      <name>FirstName</name>
-      <description>Participant_First_Name</description>
+      <code>FirstName</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -50,8 +48,7 @@
     </input>
 
     <input id="birth_date">
-      <name>BirthDate</name>
-      <description>Participant_Date_of_Birth</description>
+      <code>BirthDate</code>
       <dataType>DATE</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -60,8 +57,7 @@
     </input>
 
     <input id="gender">
-      <name>Gender</name>
-      <description>Participant_Gender</description>
+      <code>Gender</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -70,477 +66,423 @@
     </input>
 
     <input id="systolic_pressure">
-      <name>SystolicPressure</name>
-      <description>Systolic_Pressure</description>
+      <code>SystolicPressure</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="outputParameterSource">
         <instrumentType>BloodPressure</instrumentType>
-        <parameterName>Systolic_Blood_Pressure</parameterName>
+        <parameterName>Average_Systolic_Blood_Pressure_Measurement</parameterName>
       </inputSource>
     </input>
 
     <input id="diastolic_pressure">
-      <name>DiastolicPressure</name>
-      <description>Diastolic_Pressure</description>
+      <code>DiastolicPressure</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="outputParameterSource">
         <instrumentType>BloodPressure</instrumentType>
-        <parameterName>Diastolic_Blood_Pressure</parameterName>
+        <parameterName>Average_Diastolic_Blood_Pressure_Measurement</parameterName>
       </inputSource>
     </input>
 
     <output id="PATIENT_ID">
-      <name>Participant Barcode</name>
-      <description>Participant_Barcode</description>
+      <code>Participant_Barcode</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="PATIENT_ID" />
-          <parameter reference="id" />
+          <targetParameter reference="PATIENT_ID"/>
+          <parameter reference="id"/>
           <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
 
     <output id="FAM_NAME">
-      <name>Participant Last Name</name>
-      <description>Participant_Last_Name</description>
+      <code>Participant_Last_Name</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="FAM_NAME" />
-          <parameter reference="last_name" />
+          <targetParameter reference="FAM_NAME"/>
+          <parameter reference="last_name"/>
           <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
+
     <output id="FIRST_NAME">
-      <name>Participant First Name</name>
-      <description>Participant_First_Name</description>
+      <code>Participant_First_Name</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="FIRST_NAME" />
-          <parameter reference="first_name_in" />
+          <targetParameter reference="FIRST_NAME"/>
+          <parameter reference="first_name_in"/>
           <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
 
     <output id="DOB">
-      <name>Participant Date of Birth</name>
-      <description>Participant_Date_of_Birth</description>
+      <code>Participant_Date_of_Birth</code>
       <dataType>DATE</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="DOB" />
-          <parameter reference="birth_date" />
+          <targetParameter reference="DOB"/>
+          <parameter reference="birth_date"/>
           <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
 
     <output id="SEX">
-      <name>Participant Gender</name>
-      <description>Participant_Gender</description>
+      <code>Participant_Gender</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="SEX" />
-          <parameter reference="gender" />
+          <targetParameter reference="SEX"/>
+          <parameter reference="gender"/>
           <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
 
     <output id="SP">
-      <name>Systolic Pressure</name>
-      <description>Systolic_Pressure</description>
+      <code>Systolic_Pressure</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="SP" />
-          <parameter reference="systolic_pressure" />
+          <targetParameter reference="SP"/>
+          <parameter reference="systolic_pressure"/>
           <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
 
     <output id="DP">
-      <name>Diastolic Pressure</name>
-      <description>Diastolic_Pressure</description>
+      <code>Diastolic_Pressure</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="DP" />
-          <parameter reference="diastolic_pressure" />
+          <targetParameter reference="DP"/>
+          <parameter reference="diastolic_pressure"/>
           <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
 
     <output id="Peripheral_Pulse_Quality_Control_Pulse_Height">
-      <name>Peripheral_Pulse_Quality_Control_Pulse_Height</name>
-      <description>Peripheral Pulse Quality Control Pulse Height</description>
+      <code>Peripheral_Pulse_Quality_Control_Pulse_Height</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Peripheral_Pulse_Quality_Control_Pulse_Height_Variation">
-      <name>Peripheral_Pulse_Quality_Control_Pulse_Height_Variation</name>
-      <description>Peripheral_Pulse_Quality_Control_Pulse_Height_Variation</description>
+      <code>Peripheral_Pulse_Quality_Control_Pulse_Height_Variation</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Peripheral_Pulse_Quality_Control_Pulse_Length_Variation">
-      <name>Peripheral_Pulse_Quality_Control_Pulse_Length_Variation</name>
-      <description>Peripheral_Pulse_Quality_Control_Pulse_Length_Variation</description>
+      <code>Peripheral_Pulse_Quality_Control_Pulse_Length_Variation</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Peripheral_Pulse_Quality_Control_Diastolic_Variation">
-      <name>Peripheral_Pulse_Quality_Control_Diastolic_Variation</name>
-      <description>Peripheral_Pulse_Quality_Control_Diastolic_Variation</description>
+      <code>Peripheral_Pulse_Quality_Control_Diastolic_Variation</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Peripheral_Systolic_Pressure">
-      <name>Peripheral_Systolic_Pressure</name>
-      <description>Peripheral_Systolic_Pressure</description>
+      <code>Peripheral_Systolic_Pressure</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
     <output id="Peripheral_Diastolic_Pressure">
-      <name>Peripheral_Diastolic_Pressure</name>
-      <description>Peripheral_Diastolic_Pressure</description>
+      <code>Peripheral_Diastolic_Pressure</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
     <output id="Peripheral_Mean_Pressure">
-      <name>Peripheral_Mean_Pressure</name>
-      <description>Peripheral_Mean_Pressure</description>
+      <code>Peripheral_Mean_Pressure</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
     <output id="Peripheral_T1">
-      <name>Peripheral_T1</name>
-      <description>Peripheral_T1</description>
+      <code>Peripheral_T1</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ms</measurementUnit>
     </output>
 
     <output id="Peripheral_T2">
-      <name>Peripheral_T2</name>
-      <description>Peripheral_T2</description>
+      <code>Peripheral_T2</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ms</measurementUnit>
     </output>
 
     <output id="Peripheral_Augmentation_Index">
-      <name>Peripheral_Augmentation_Index</name>
-      <description>Peripheral_Augmentation_Index</description>
+      <code>Peripheral_Augmentation_Index</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
     </output>
 
     <output id="End_Systolic_Pressure">
-      <name>End_Systolic_Pressure</name>
-      <description>End_Systolic_Pressure</description>
+      <code>End_Systolic_Pressure</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Peripheral_P1">
-      <name>Peripheral_P1</name>
-      <description>Peripheral_P1</description>
+      <code>Peripheral_P1</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Peripheral_P2">
-      <name>Peripheral_P2</name>
-      <description>Peripheral_P2</description>
+      <code>Peripheral_P2</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Peripheral_Confidence_Level_of_T1">
-      <name>Peripheral_Confidence_Level_of_T1</name>
-      <description>Peripheral_Confidence_Level_of_T1</description>
+      <code>Peripheral_Confidence_Level_of_T1</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Peripheral_Confidence_Level_of_T2">
-      <name>Peripheral_Confidence_Level_of_T2</name>
-      <description>Peripheral_Confidence_Level_of_T2</description>
+      <code>Peripheral_Confidence_Level_of_T2</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Central_Augmented_Pressure">
-      <name>Central_Augmented_Pressure</name>
-      <description>Central_Augmented_Pressure</description>
+      <code>Central_Augmented_Pressure</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
     <output id="Central_Mean_Pressure_of_Systole">
-      <name>Central_Mean_Pressure_of_Systole</name>
-      <description>Central_Mean_Pressure_of_Systole</description>
+      <code>Central_Mean_Pressure_of_Systole</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
     <output id="Central_Mean_Pressure_of_Diastole">
-      <name>Central_Mean_Pressure_of_Diastole</name>
-      <description>Central_Mean_Pressure_of_Diastole</description>
+      <code>Central_Mean_Pressure_of_Diastole</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
     <output id="Central_Tension_Time_Index">
-      <name>Central_Tension_Time_Index</name>
-      <description>Central_Tension_Time_Index</description>
+      <code>Central_Tension_Time_Index</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Central_Diastolic_Time_Index">
-      <name>Central_Diastolic_Time_Index</name>
-      <description>Central_Diastolic_Time_Index</description>
+      <code>Central_Diastolic_Time_Index</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Central_Buckberg_SubEndocardial_Viability_Ratio">
-      <name>Central_Buckberg_SubEndocardial_Viability_Ratio</name>
-      <description>Central_Buckberg_SubEndocardial_Viability_Ratio</description>
+      <code>Central_Buckberg_SubEndocardial_Viability_Ratio</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
     </output>
 
     <output id="Augmentation_Load">
-      <name>Augmentation_Load</name>
-      <description>Augmentation_Load</description>
+      <code>Augmentation_Load</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Augmentation_Time_Index">
-      <name>Augmentation_Time_Index</name>
-      <description>Augmentation_Time_Index</description>
+      <code>Augmentation_Time_Index</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Heart_Rate">
-      <name>Heart_Rate</name>
-      <description>Heart_Rate</description>
+      <code>Heart_Rate</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>bmp</measurementUnit>
     </output>
 
     <output id="Central_Pulse_Period">
-      <name>Central_Pulse_Period</name>
-      <description>Central_Pulse_Period</description>
+      <code>Central_Pulse_Period</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ms</measurementUnit>
     </output>
 
     <output id="Central_Diastolic_Duration">
-      <name>Central_Diastolic_Duration</name>
-      <description>Central_Diastolic_Duration</description>
+      <code>Central_Diastolic_Duration</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Central_ED_Period_Percent_Ejection_duration">
-      <name>Central_ED_Period_Percent_Ejection_duration</name>
-      <description>Central_ED_Period_Percent_Ejection_duration</description>
+      <code>Central_ED_Period_Percent_Ejection_duration</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
     </output>
 
     <output id="Period_ED_Period_Percent">
-      <name>Period_ED_Period_Percent</name>
-      <description>Period_ED_Period_Percent</description>
+      <code>Period_ED_Period_Percent</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Central_Pulse_Height">
-      <name>Central_Pulse_Height</name>
-      <description>Central_Pulse_Height</description>
+      <code>Central_Pulse_Height</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
     <output id="Central_Aug_PH_Percent">
-      <name>Central_Aug_PH_Percent</name>
-      <description>Central_Aug_PH_Percent</description>
+      <code>Central_Aug_PH_Percent</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
     </output>
 
     <output id="Central_Pressure_at_T1_Dp">
-      <name>Central_Pressure_at_T1_Dp</name>
-      <description>Central_Pressure_at_T1_Dp</description>
+      <code>Central_Pressure_at_T1_Dp</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
     </output>
 
     <output id="Time_of_the_Start_of_the_Reflected_Wave">
-      <name>Time_of_the_Start_of_the_Reflected_Wave</name>
-      <description>Time_of_the_Start_of_the_Reflected_Wave</description>
+      <code>Time_of_the_Start_of_the_Reflected_Wave</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ms</measurementUnit>
     </output>
 
     <output id="Central_Systolic_Pressure">
-      <name>Central_Systolic_Pressure</name>
-      <description>Central_Systolic_Pressure</description>
+      <code>Central_Systolic_Pressure</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
     <output id="Central_Diastolic_Pressure">
-      <name>Central_Diastolic_Pressure</name>
-      <description>Central_Diastolic_Pressure</description>
+      <code>Central_Diastolic_Pressure</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
     <output id="Central_Mean_Pressure">
-      <name>Central_Mean_Pressure</name>
-      <description>Central_Mean_Pressure</description>
+      <code>Central_Mean_Pressure</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Central_T1">
-      <name>Central_T1</name>
-      <description>Central_T1</description>
+      <code>Central_T1</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ms</measurementUnit>
     </output>
 
     <output id="Central_T2">
-      <name>Central_T2</name>
-      <description>Central_T2</description>
+      <code>Central_T2</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ms</measurementUnit>
     </output>
 
     <output id="Central_Augmentation_Index">
-      <name>Central_Augmentation_Index</name>
-      <description>Central_Augmentation_Index</description>
+      <code>Central_Augmentation_Index</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Central_End_Systolic_Pressure">
-      <name>Central_End_Systolic_Pressure</name>
-      <description>Central_End_Systolic_Pressure</description>
+      <code>Central_End_Systolic_Pressure</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
     <output id="Central_Pressure_at_T1">
-      <name>Central_Pressure_at_T1</name>
-      <description>Central_Pressure_at_T1</description>
+      <code>Central_Pressure_at_T1</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
     <output id="Central_Pressure_at_T2">
-      <name>Central_Pressure_at_T2</name>
-      <description>Central_Pressure_at_T2</description>
+      <code>Central_Pressure_at_T2</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
     <output id="Central_T1_ED_Percent">
-      <name>Central_T1_ED_Percent</name>
-      <description>Central_T1_ED_Percent</description>
+      <code>Central_T1_ED_Percent</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
     <output id="Central_T2_ED_Percent">
-      <name>Central_T2_ED_Percent</name>
-      <description>Central_T2_ED_Percent</description>
+      <code>Central_T2_ED_Percent</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
     <output id="Central_Confidence_Level_of_T1">
-      <name>Central_Confidence_Level_of_T1</name>
-      <description>Central_Confidence_Level_of_T1</description>
+      <code>Central_Confidence_Level_of_T1</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Central_Confidence_Level_of_T2">
-      <name>Central_Confidence_Level_of_T2</name>
-      <description>Central_Confidence_Level_of_T2</description>
+      <code>Central_Confidence_Level_of_T2</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="Operator_Index">
-      <name>Operator_Index</name>
-      <description>Operator_Index</description>
+      <code>Operator_Index</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>

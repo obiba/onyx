@@ -47,10 +47,10 @@ public interface InstrumentRunService {
    * Find the value from the last completed run of the instrument of the given type for given participant.
    * @param participant
    * @param instrumentType
-   * @param parameterName
+   * @param parameterCode
    * @return
    */
-  public InstrumentRunValue findInstrumentRunValue(Participant participant, InstrumentType instrumentType, String parameterName);
+  public InstrumentRunValue findInstrumentRunValue(Participant participant, InstrumentType instrumentType, String parameterCode);
 
   /**
    * Update the {@link InstrumentRun} with the given {@link InstrumentRunStatus}.

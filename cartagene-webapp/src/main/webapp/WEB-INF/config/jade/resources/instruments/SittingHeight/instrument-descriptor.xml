@@ -27,24 +27,21 @@
 
   <instrumentParameters>
     <interpretative>
-      <name>Kyphosis</name>
-      <description>Kyphosis</description>
+      <code>Kyphosis</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>OBSERVED</type>
     </interpretative>
 
     <output id="sit1_stool_height">
-      <name>Stool Height</name>
-      <description>Stool_Height</description>
+      <code>Stool_Height</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
     </output>
 
     <output id="sit1_height1">
-      <name>Sitting Height 1</name>
-      <description>First_Sitting_Height_Measurement</description>
+      <code>First_Sitting_Height_Measurement</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -60,8 +57,7 @@
     </output>
 
     <output id="sit1_height2">
-      <name>Sitting Height 2</name>
-      <description>Second_Sitting_Height_Measurement</description>
+      <code>Second_Sitting_Height_Measurement</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -82,8 +78,7 @@
     </output>
 
     <computedOutput>
-      <name>Sitting_Height</name>
-      <description>Average_Sitting_Height_Measurement</description>
+      <code>Average_Sitting_Height_Measurement</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <algorithm>AVERAGE</algorithm>

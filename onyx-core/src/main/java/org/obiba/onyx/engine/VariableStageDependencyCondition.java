@@ -69,11 +69,12 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
     Boolean rval = false;
 
     // ask variable directory
+    log.info("Testing variable: {}{}{}", new Object[] { variablePath, operator != null ? operator : "=", data != null ? data : "true" });
     VariableData variableData = variableDirectory.getVariableData(activeInterviewService.getParticipant(), variablePath);
     if(variableData != null) {
       // apply a OR among the data of the variable
       for(Data varData : variableData.getDatas()) {
-        log.info("varData op data={} {} {}", new Object[] { varData, operator, data });
+        log.info("varData={}", varData);
         if(operator != null) {
           rval = operator.compare(varData, data);
         } else if(varData.getType().equals(DataType.BOOLEAN)) {
@@ -86,7 +87,7 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
         }
       }
     }
-
+    log.info("Test return value={}", rval);
     return rval;
   }
 

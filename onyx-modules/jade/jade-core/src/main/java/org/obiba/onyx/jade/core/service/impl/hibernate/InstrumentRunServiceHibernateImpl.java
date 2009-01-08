@@ -61,13 +61,13 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
     return (InstrumentRun) criteria.setMaxResults(1).uniqueResult();
   }
 
-  public InstrumentRunValue findInstrumentRunValue(Participant participant, InstrumentType instrumentType, String parameterName) {
+  public InstrumentRunValue findInstrumentRunValue(Participant participant, InstrumentType instrumentType, String parameterCode) {
     InstrumentRunValue runValue = null;
     InstrumentRun run = getLastCompletedInstrumentRun(participant, instrumentType);
 
     if(run != null) {
-      log.info("Run.id={} Param.name={}", run.getId(), parameterName);
-      runValue = (InstrumentRunValue) AssociationCriteria.create(InstrumentRunValue.class, getSession()).add("instrumentRun", Operation.eq, run).add("instrumentParameter.name", Operation.eq, parameterName).getCriteria().uniqueResult();
+      log.info("Run.id={} Param.code={}", run.getId(), parameterCode);
+      runValue = (InstrumentRunValue) AssociationCriteria.create(InstrumentRunValue.class, getSession()).add("instrumentRun", Operation.eq, run).add("instrumentParameter.code", Operation.eq, parameterCode).getCriteria().uniqueResult();
     }
 
     return runValue;

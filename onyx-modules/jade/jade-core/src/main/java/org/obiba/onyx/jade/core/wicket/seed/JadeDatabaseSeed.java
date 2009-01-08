@@ -9,7 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.seed;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.core.service.PersistenceManager;
@@ -56,6 +58,13 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
       InstrumentType type = (InstrumentType) result;
       List<InstrumentParameter> parameters = type.getInstrumentParameters();
       log.info("Loaded instrument type {} with {} parameters.", type.getName(), (parameters != null ? parameters.size() : -1));
+      Set<String> parameterCodes = new HashSet<String>();
+      for(InstrumentParameter parameter : parameters) {
+        if(parameterCodes.add(parameter.getCode()) == false) {
+          log.error("Instrument descriptor for type {} is invalid. Multiple parameters with the same code '{}' are defined. Parameter codes must be unique for an instrument type.", type.getName(), parameter.getCode());
+          throw new IllegalStateException("Duplicate parameter code for type '" + type.getName() + "': " + parameter.getCode());
+        }
+      }
       if(toPersist) {
         persistenceManager.save(type);
       }

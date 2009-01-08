@@ -49,13 +49,12 @@ import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Get the input parameters that requires operator provisionning.
- * @author Yannick Marcon
- * 
  */
 public class InstrumentInputParameterPanel extends Panel {
 
@@ -153,15 +152,15 @@ public class InstrumentInputParameterPanel extends Panel {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
-        item.add(new Label("label", new SpringStringResourceModel(new PropertyModel(param, "description"))));
+        item.add(new Label("label", new MessageSourceResolvableStringModel(param.getLabel())));
 
-        Data data = activeInstrumentRunService.getInterpretativeInstrumentRunValue(param.getName()).getData();
+        Data data = activeInstrumentRunService.getInstrumentRunValue(param).getData();
         final String defaultDataValue = data != null ? data.getValueAsString() : null;
 
         // radio group without default selection
         final RadioGroup radioGroup = new RadioGroup("radioGroup", new Model());
         interpretativeRadioGroups.add(radioGroup);
-        radioGroup.setLabel(new SpringStringResourceModel(new PropertyModel(param, "description")));
+        radioGroup.setLabel(new MessageSourceResolvableStringModel(param.getLabel()));
         item.add(radioGroup);
         ListView radioList = new ListView("radioItem", Arrays.asList(new String[] { YES, NO })) {
 
@@ -170,7 +169,7 @@ public class InstrumentInputParameterPanel extends Panel {
             final String key = listItem.getModelObjectAsString();
             InterpretativeSelection selection = new InterpretativeSelection();
             selection.setSelectionKey(key);
-            selection.setParameterName(param.getName());
+            selection.setParameterName(param.getCode());
 
             Model selectionModel = new Model(selection);
 
@@ -243,7 +242,7 @@ public class InstrumentInputParameterPanel extends Panel {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
-        InstrumentRunValue runValue = activeInstrumentRunService.getInputInstrumentRunValue(param.getName());
+        InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
         final IModel runValueModel = new DetachableEntityModel(queryService, runValue);
         inputRunValueModels.add(runValueModel);
 
@@ -281,7 +280,7 @@ public class InstrumentInputParameterPanel extends Panel {
           field = new DataField("field", new PropertyModel(runValueModel, "data"), runValue.getDataType(), param.getMeasurementUnit());
         }
         field.setRequired(true);
-        field.setLabel(new SpringStringResourceModel(new PropertyModel(param, "description")));
+        field.setLabel(new MessageSourceResolvableStringModel(param.getLabel()));
         field.add(new AjaxFormComponentUpdatingBehavior("onblur") {
           protected void onUpdate(AjaxRequestTarget target) {
             activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
@@ -293,7 +292,7 @@ public class InstrumentInputParameterPanel extends Panel {
         FormComponentLabel label = new FormComponentLabel("label", field.getField());
         item.add(label);
 
-        Label labelText = new Label("labelText", new SpringStringResourceModel(new PropertyModel(param, "description")));
+        Label labelText = new Label("labelText", new MessageSourceResolvableStringModel(param.getLabel()));
         label.add(labelText);
       }
     }

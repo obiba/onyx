@@ -36,8 +36,7 @@
 
   <instrumentParameters>
     <output id="waist_size1">
-      <name>Waist Size 1</name>
-      <description>First_Waist_Size_Measurement</description>
+      <code>First_Waist_Size_Measurement</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -59,9 +58,9 @@
         </rangeCheck>
       </integrityChecks>
     </output>
+
     <output id="waist_size2">
-      <name>Waist Size 2</name>
-      <description>Second_Waist_Size_Measurement</description>
+      <code>Second_Waist_Size_Measurement</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -89,9 +88,9 @@
         </parameterSpreadCheck>
       </integrityChecks>
     </output>
+
     <computedOutput id="waist_size_avg">
-      <name>Waist Size</name>
-      <description>Average_Waist_Size_Measurement</description>
+      <code>Average_Waist_Size_Measurement</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <algorithm>AVERAGE</algorithm>
@@ -103,8 +102,7 @@
     </computedOutput>
 
     <output id="hips_size1">
-      <name>Hips Size 1</name>
-      <description>First_Hips_Size_Measurement</description>
+      <code>First_Hips_Size_Measurement</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -126,9 +124,9 @@
         </rangeCheck>
       </integrityChecks>
     </output>
+
     <output id="hips_size2">
-      <name>Hips Size 2</name>
-      <description>Second_Hips_Size_Measurement</description>
+      <code>Second_Hips_Size_Measurement</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -158,8 +156,7 @@
     </output>
 
     <computedOutput id="hips_size_avg">
-      <name>Hips Size</name>
-      <description>Average_Hips_Size_Measurement</description>
+      <code>Average_Hips_Size_Measurement</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <algorithm>AVERAGE</algorithm>
@@ -171,9 +168,8 @@
     </computedOutput>
 
     <computedOutput>
-      <name>Waist_Hip</name>
-      <description>Waist_To_Hip_Ratio_Measurement</description>
-      <measurementUnit></measurementUnit>
+      <code>Waist_To_Hip_Ratio_Measurement</code>
+      <measurementUnit />
       <dataType>DECIMAL</dataType>
       <algorithm>RATIO</algorithm>
       <captureMethod>COMPUTED</captureMethod>

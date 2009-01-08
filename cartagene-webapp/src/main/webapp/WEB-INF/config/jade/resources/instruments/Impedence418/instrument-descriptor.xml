@@ -44,16 +44,14 @@
 
   <instrumentParameters>
     <interpretative>
-      <name>PhysicalActivityLast24Hours</name>
-      <description>PhysicalActivityLast24Hours</description>
+      <code>PhysicalActivityLast24Hours</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>OBSERVED</type>
     </interpretative>
 
     <input id="clothes_weight">
-      <name>ClothesWeight</name>
-      <description>Clothes_weight</description>
+      <code>ClothesWeight</code>
       <dataType>DECIMAL</dataType>
       <measurementUnit>kg</measurementUnit>
       <captureMethod>MANUAL</captureMethod>
@@ -63,8 +61,7 @@
     </input>
 
     <input id="gender_in">
-      <name>Gender</name>
-      <description>Participant_Gender</description>
+      <code>Gender</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="participantPropertySource">
@@ -73,8 +70,7 @@
     </input>
 
     <input id="body_type_in">
-      <name>BodyType</name>
-      <description>Body_type</description>
+      <code>BodyType</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="fixedSource">
@@ -83,8 +79,7 @@
     </input>
 
     <input id="age_in">
-      <name>Age</name>
-      <description>Participant_Age</description>
+      <code>Age</code>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="participantPropertySource">
@@ -93,336 +88,335 @@
     </input>
 
     <input id="height_in">
-      <name>Height</name>
-      <description>Measured_height</description>
+      <code>Height</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="outputParameterSource">
         <instrumentType>StandingHeight</instrumentType>
-        <parameterName>Height</parameterName>
+        <parameterName>Average_Height_Measurement</parameterName>
       </inputSource>
     </input>
 
     <output id="date">
-      <name>Date</name>
-      <description>Measurement_date</description>
+      <vendorName>Date</vendorName>
+      <code>Measurement_date</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="time">
-      <name>Time</name>
-      <description>Measurement_time</description>
+      <vendorName>Time</vendorName>
+      <code>Measurement_time</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="body_type">
-      <name>BodyType</name>
-      <description>Body_type</description>
+      <vendorName>BodyType</vendorName>
+      <code>Body_type</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
 
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="body_type" />
-          <parameter reference="body_type_in" />
+          <targetParameter reference="body_type"/>
+          <parameter reference="body_type_in"/>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
 
     <output id="gender">
-      <name>Gender</name>
-      <description>Output_gender</description>
+      <vendorName>Gender</vendorName>
+      <code>Output_gender</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="gender" />
-          <parameter reference="gender_in" />
+          <targetParameter reference="gender"/>
+          <parameter reference="gender_in"/>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
 
     <output id="age">
-      <name>Age</name>
-      <description>Output_age</description>
+      <vendorName>Age</vendorName>
+      <code>Output_age</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="age" />
-          <parameter reference="age_in" />
+          <targetParameter reference="age"/>
+          <parameter reference="age_in"/>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
 
     <output id="height">
-      <name>Height</name>
-      <description>Output_height</description>
+      <vendorName>Height</vendorName>
+      <code>Output_height</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="height" />
-          <parameter reference="height_in" />
+          <targetParameter reference="height"/>
+          <parameter reference="height_in"/>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
 
     <output id="weight">
-      <name>Weight</name>
-      <description>Measured_weight</description>
+      <vendorName>Weight</vendorName>
+      <code>Measured_weight</code>
       <measurementUnit>kg</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="fat_percentage">
-      <name>FatPercentage</name>
-      <description>Fat_percentage_calculated</description>
+      <vendorName>FatPercentage</vendorName>
+      <code>Fat_percentage_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
     </output>
 
     <output id="fat_mass">
-      <name>FatMass</name>
-      <description>Fat_mass_calculated</description>
+      <vendorName>FatMass</vendorName>
+      <code>Fat_mass_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="ffm">
-      <name>FatFreeMass</name>
-      <description>Fat_free_mass_calculated</description>
+      <vendorName>FatFreeMass</vendorName>
+      <code>Fat_free_mass_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="tbw">
-      <name>TotalBodyWater</name>
-      <description>Total_Body_Water_calculated</description>
+      <vendorName>TotalBodyWater</vendorName>
+      <code>Total_Body_Water_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="bmi">
-      <name>BMI</name>
-      <description>Body_mass_index_calculated</description>
+      <vendorName>BMI</vendorName>
+      <code>Body_mass_index_calculated</code>
       <measurementUnit>kg/m²</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="bmr">
-      <name>BMR</name>
-      <description>Basal_metabolic_rate_calculated</description>
+      <vendorName>BMR</vendorName>
+      <code>Basal_metabolic_rate_calculated</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kJ</measurementUnit>
     </output>
 
     <output id="impedance">
-      <name>Impedance</name>
-      <description>Measured_body_impedance</description>
+      <vendorName>Impedance</vendorName>
+      <code>Measured_body_impedance</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ohm</measurementUnit>
     </output>
 
     <output id="right_leg_impedance">
-      <name>RightLegImpedance</name>
-      <description>Measured_right_leg_impedance</description>
+      <vendorName>RightLegImpedance</vendorName>
+      <code>Measured_right_leg_impedance</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ohm</measurementUnit>
     </output>
 
     <output id="left_leg_impedance">
-      <name>LeftLegImpedance</name>
-      <description>Measured_left_leg_impedance</description>
+      <vendorName>LeftLegImpedance</vendorName>
+      <code>Measured_left_leg_impedance</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ohm</measurementUnit>
     </output>
 
     <output id="right_arm_impedance">
-      <name>RightArmImpedance</name>
-      <description>Measured_right_arm_impedance</description>
+      <vendorName>RightArmImpedance</vendorName>
+      <code>Measured_right_arm_impedance</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ohm</measurementUnit>
     </output>
 
     <output id="left_arm_impedance">
-      <name>LeftArmImpedance</name>
-      <description>Measured_left_arm_impedance</description>
+      <vendorName>LeftArmImpedance</vendorName>
+      <code>Measured_left_arm_impedance</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ohm</measurementUnit>
     </output>
 
     <output id="right_leg_fat_percentage">
-      <name>RightLegFatPercentage</name>
-      <description>Right_leg_fat_percentage_calculated</description>
+      <vendorName>RightLegFatPercentage</vendorName>
+      <code>Right_leg_fat_percentage_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
     </output>
 
     <output id="right_leg_fat_mass">
-      <name>RightLegFatMass</name>
-      <description>Right_leg_fat_mass_calculated</description>
+      <vendorName>RightLegFatMass</vendorName>
+      <code>Right_leg_fat_mass_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="Right_leg_ffm">
-      <name>RightLegFatFreeMass</name>
-      <description>Right_Leg_fat_free_mass_calculated</description>
+      <vendorName>RightLegFatFreeMass</vendorName>
+      <code>Right_Leg_fat_free_mass_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="right_leg_pms">
-      <name>RightLegPredictedMuscleMass</name>
-      <description>Right_leg_predicted_muscle_mass</description>
+      <vendorName>RightLegPredictedMuscleMass</vendorName>
+      <code>Right_leg_predicted_muscle_mass</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="left_leg_fat_percentage">
-      <name>LeftLegFatPercentage</name>
-      <description>Left_leg_fat_percentage_calculated</description>
+      <vendorName>LeftLegFatPercentage</vendorName>
+      <code>Left_leg_fat_percentage_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
     </output>
 
     <output id="left_leg_fat_mass">
-      <name>LeftLegFatMass</name>
-      <description>Left_leg_fat_mass_calculated</description>
+      <vendorName>LeftLegFatMass</vendorName>
+      <code>Left_leg_fat_mass_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="left_leg_ffm">
-      <name>LeftLegFatFreeMass</name>
-      <description>Left_Leg_fat_free_mass_calculated</description>
+      <vendorName>LeftLegFatFreeMass</vendorName>
+      <code>Left_Leg_fat_free_mass_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="left_leg_pms">
-      <name>LeftLegPredictedMuscleMass</name>
-      <description>Left_leg_predicted_muscle_mass</description>
+      <vendorName>LeftLegPredictedMuscleMass</vendorName>
+      <code>Left_leg_predicted_muscle_mass</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="right_arm_fat_percentage">
-      <name>RightArmFatPercentage</name>
-      <description>Right_arm_fat_percentage_calculated</description>
+      <vendorName>RightArmFatPercentage</vendorName>
+      <code>Right_arm_fat_percentage_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
     </output>
 
     <output id="right_arm_fat_mass">
-      <name>RightArmFatMass</name>
-      <description>Right_Arm_fat_mass_calculated</description>
+      <vendorName>RightArmFatMass</vendorName>
+      <code>Right_Arm_fat_mass_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="Right_arm_ffm">
-      <name>RightArmFatFreeMass</name>
-      <description>Right_Arm_fat_free_mass_calculated</description>
+      <vendorName>RightArmFatFreeMass</vendorName>
+      <code>Right_Arm_fat_free_mass_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="right_arm_pms">
-      <name>RightArmPredictedMuscleMass</name>
-      <description>Right_arm_predicted_muscle_mass</description>
+      <vendorName>RightArmPredictedMuscleMass</vendorName>
+      <code>Right_arm_predicted_muscle_mass</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="left_arm_fat_percentage">
-      <name>LeftArmFatPercentage</name>
-      <description>Left_arm_fat_percentage_calculated</description>
+      <vendorName>LeftArmFatPercentage</vendorName>
+      <code>Left_arm_fat_percentage_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
     </output>
 
     <output id="left_arm_fat_mass">
-      <name>LeftArmFatMass</name>
-      <description>Left_arm_fat_mass_calculated</description>
+      <vendorName>LeftArmFatMass</vendorName>
+      <code>Left_arm_fat_mass_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="Left_arm_ffm">
-      <name>LeftArmFatFreeMass</name>
-      <description>Left_Arm_fat_free_mass_calculated</description>
+      <vendorName>LeftArmFatFreeMass</vendorName>
+      <code>Left_Arm_fat_free_mass_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="left_arm_pms">
-      <name>LeftArmPredictedMuscleMass</name>
-      <description>Left_arm_predicted_muscle_mass</description>
+      <vendorName>LeftArmPredictedMuscleMass</vendorName>
+      <code>Left_arm_predicted_muscle_mass</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="trunk_fat_percentage">
-      <name>TrunkFatPercentage</name>
-      <description>Trunk_fat_percentage_calculated</description>
+      <vendorName>TrunkFatPercentage</vendorName>
+      <code>Trunk_fat_percentage_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
     </output>
 
     <output id="trunk_fat_mass">
-      <name>TrunkFatMass</name>
-      <description>Trunk_fat_mass_calculated</description>
+      <vendorName>TrunkFatMass</vendorName>
+      <code>Trunk_fat_mass_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="trunk_ffm">
-      <name>TrunkFatFreeMass</name>
-      <description>Trunk_fat_free_mass_calculated</description>
+      <vendorName>TrunkFatFreeMass</vendorName>
+      <code>Trunk_fat_free_mass_calculated</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
     </output>
 
     <output id="trunk_pms">
-      <name>TrunkPredictedMuscleMass</name>
-      <description>Trunk_predicted_muscle_mass</description>
+      <vendorName>TrunkPredictedMuscleMass</vendorName>
+      <code>Trunk_predicted_muscle_mass</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>

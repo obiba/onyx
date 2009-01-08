@@ -21,12 +21,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Finds all {@link Module} instances in the Spring {@code ApplicationContext} and registers them in the
  * {@link ModuleRegistry}. The method {@link Module#initialize()} is called before registration. The method
  * {@link Module#shutdown()} is called after un-registration.
  */
+/* This annotation is necessary for having a valid Hibernate session throughout the startup of the modules */
+@Transactional
 public class ModuleRegistrationListener implements WebApplicationStartupListener, ApplicationContextAware {
 
   private static final Logger log = LoggerFactory.getLogger(ModuleRegistrationListener.class);
@@ -98,7 +101,7 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
         variableDirectory.registerVariables(provider);
       }
     }
-    log.info(VariableStreamer.toXML(variableDirectory.getVariableRoot()));
+    log.debug(VariableStreamer.toXML(variableDirectory.getVariableRoot()));
   }
 
   public void setModuleRegistry(ModuleRegistry registry) {

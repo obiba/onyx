@@ -37,8 +37,7 @@
 
   <instrumentParameters>
     <output id="wei1_weight">
-      <name>Weight</name>
-      <description>Weight_Measurement</description>
+      <code>Measured_weight</code>
       <measurementUnit>kg</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>

@@ -25,16 +25,14 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Index;
 import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.validation.AbstractIntegrityCheck;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.util.data.DataType;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.NoSuchMessageException;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -43,11 +41,12 @@ import org.springframework.context.NoSuchMessageException;
 public abstract class InstrumentParameter extends AbstractEntity {
 
   @Column(length = 200)
-  @Index(name = "name_index")
-  private String name;
+  @Index(name = "code_idx")
+  private String code;
 
   @Column(length = 200)
-  private String description;
+  @Index(name = "vendor_name_idx")
+  private String vendorName;
 
   @Column(length = 20)
   private String measurementUnit;
@@ -70,44 +69,24 @@ public abstract class InstrumentParameter extends AbstractEntity {
   @OneToMany(mappedBy = "targetParameter", cascade = CascadeType.ALL)
   private List<AbstractIntegrityCheck> integrityChecks;
 
-  @Transient
-  private transient ApplicationContext context;
-
-  @Transient
-  private transient UserSessionService userSessionService;
-
-  public void setApplicationContext(ApplicationContext context) {
-    this.context = context;
+  public String getCode() {
+    return code;
   }
 
-  public void setUserSessionService(UserSessionService userSessionService) {
-    this.userSessionService = userSessionService;
+  public void setCode(String code) {
+    this.code = code;
   }
 
-  public String getName() {
-    return name;
+  public String getVendorName() {
+    return vendorName;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setVendorName(String vendorName) {
+    this.vendorName = vendorName;
   }
 
-  public String getDescription() {
-    String retVal = description;
-
-    if(context != null && userSessionService != null) {
-      try {
-        retVal = context.getMessage(description, null, userSessionService.getLocale());
-      } catch(NoSuchMessageException ex) {
-        ; // return non-localized description
-      }
-    }
-
-    return retVal;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
+  public MessageSourceResolvable getLabel() {
+    return new DefaultMessageSourceResolvable(new String[] { code }, code);
   }
 
   public String getMeasurementUnit() {

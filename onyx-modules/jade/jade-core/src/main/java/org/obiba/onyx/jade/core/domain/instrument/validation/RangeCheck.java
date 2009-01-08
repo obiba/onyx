@@ -113,15 +113,15 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
 
     if(getValueType().equals(DataType.INTEGER)) {
       if(participant.getGender().equals(Gender.MALE)) {
-        args = new Object[] { getTargetParameter().getDescription(), integerMinValueMale, integerMaxValueMale };
+        args = new Object[] { getTargetParameter().getLabel(), integerMinValueMale, integerMaxValueMale };
       } else if(participant.getGender().equals(Gender.FEMALE)) {
-        args = new Object[] { getTargetParameter().getDescription(), integerMinValueFemale, integerMaxValueFemale };
+        args = new Object[] { getTargetParameter().getLabel(), integerMinValueFemale, integerMaxValueFemale };
       }
     } else if(getValueType().equals(DataType.DECIMAL)) {
       if(participant.getGender().equals(Gender.MALE)) {
-        args = new Object[] { getTargetParameter().getDescription(), decimalMinValueMale, decimalMaxValueMale };
+        args = new Object[] { getTargetParameter().getLabel(), decimalMinValueMale, decimalMaxValueMale };
       } else if(participant.getGender().equals(Gender.FEMALE)) {
-        args = new Object[] { getTargetParameter().getDescription(), decimalMinValueFemale, decimalMaxValueFemale };
+        args = new Object[] { getTargetParameter().getLabel(), decimalMinValueFemale, decimalMaxValueFemale };
       }
     }
 

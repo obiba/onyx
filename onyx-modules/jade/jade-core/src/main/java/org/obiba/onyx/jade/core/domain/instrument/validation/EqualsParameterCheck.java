@@ -16,8 +16,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.UnitParameterValueConverter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
@@ -85,16 +83,9 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
     //
     // Get the other parameter's value.
     //
-    InstrumentRunValue otherRunValue = null;
+    log.debug("Retrieving parameter value : {}", parameter.getCode());
+    InstrumentRunValue otherRunValue = activeRunService.getInstrumentRunValue(parameter);
     Data otherData = null;
-
-    if(parameter instanceof InstrumentInputParameter) {
-      log.debug("Retrieving input parameter value : {}", parameter.getName());
-      otherRunValue = activeRunService.getInputInstrumentRunValue(parameter.getName());
-    } else if(parameter instanceof InstrumentOutputParameter) {
-      log.debug("Retrieving output parameter value : {}", parameter.getName());
-      otherRunValue = activeRunService.getOutputInstrumentRunValue(parameter.getName());
-    }
 
     if(otherRunValue != null) {
 
@@ -121,12 +112,7 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
   }
 
   protected Object[] getDescriptionArgs(ActiveInstrumentRunService activeRunService) {
-    // Set the parameter's context and user session service to ensure
-    // proper localization.
-    parameter.setApplicationContext(context);
-    parameter.setUserSessionService(userSessionService);
-
-    return new Object[] { getTargetParameter().getDescription(), parameter.getDescription() };
+    return new Object[] { getTargetParameter().getLabel(), parameter.getLabel() };
   }
 
   public ComparisonOperator getOperator() {

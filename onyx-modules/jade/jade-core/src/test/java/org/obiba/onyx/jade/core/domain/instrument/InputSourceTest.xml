@@ -9,16 +9,16 @@
   <instrument id="3" instrument_type_id="2" name="BioImp 1" vendor="Tanita" model="TBF 310" status="ACTIVE" />
 
   <!-- BIM Parameters -->
-  <instrument_parameter id="1" name="height" data_type="INTEGER" instrument_type_id="2" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="cm"/>
-  <instrument_parameter id="2" name="weigth" data_type="INTEGER" instrument_type_id="2" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="kg"/>
-  <instrument_parameter id="3" name="heigth_in_meter" data_type="DECIMAL" instrument_type_id="2" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="m"/>
-  <instrument_parameter id="4" name="weigth_in_gram" data_type="INTEGER" instrument_type_id="2" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="g"/>
-  <instrument_parameter id="7" name="weigth_in_pound" data_type="INTEGER" instrument_type_id="2" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="lb"/>
+  <instrument_parameter id="1" code="height" data_type="INTEGER" instrument_type_id="2" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="cm"/>
+  <instrument_parameter id="2" code="weigth" data_type="INTEGER" instrument_type_id="2" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="kg"/>
+  <instrument_parameter id="3" code="heigth_in_meter" data_type="DECIMAL" instrument_type_id="2" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="m"/>
+  <instrument_parameter id="4" code="weigth_in_gram" data_type="INTEGER" instrument_type_id="2" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="g"/>
+  <instrument_parameter id="7" code="weigth_in_pound" data_type="INTEGER" instrument_type_id="2" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="lb"/>
 
   <!-- STA Parameters -->
-  <instrument_parameter id="5" name="birth" data_type="DATE" instrument_type_id="1" instrument_parameter_type="InstrumentInputParameter"/>
-  <instrument_parameter id="6" name="age_in_ms" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="ms"/>
-  <instrument_parameter id="8" name="age" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="year"/>
+  <instrument_parameter id="5" code="birth" data_type="DATE" instrument_type_id="1" instrument_parameter_type="InstrumentInputParameter"/>
+  <instrument_parameter id="6" code="age_in_ms" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="ms"/>
+  <instrument_parameter id="8" code="age" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InstrumentOutputParameter" measurement_unit="year"/>
 
   <participant id="1" barcode="1" last_name="Dupont" first_name="Laura" gender="FEMALE" birth_date="1979-09-04 00:00:00"/>
   <interview id="1" participant_id="1"/>

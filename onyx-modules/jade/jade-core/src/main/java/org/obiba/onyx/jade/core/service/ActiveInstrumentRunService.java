@@ -13,8 +13,7 @@ import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
@@ -106,23 +105,61 @@ public interface ActiveInstrumentRunService {
   public void computeOutputParameters();
 
   /**
-   * Get (or create it if needed) the {@link InstrumentRunValue} for the named {@link InstrumentOutputParameter} of the
-   * current {@link InstrumentRun}.
-   * @param parameterName
-   * @return null if current instrument run is null
-   * @throws IllegalArgumentException if parameter name is not applicable to the {@link Instrument}
+   * Returns the instance of {@InstrumentParameter} for the specified {@code code} or null if none exist.
+   * @param code
+   * @return
    */
-  public InstrumentRunValue getOutputInstrumentRunValue(String parameterName);
+  public InstrumentParameter getParameterByCode(String code);
 
   /**
-   * Get (or create it if needed) the {@link InstrumentRunValue} for the named {@link InstrumentInputParameter} of the
-   * current {@link InstrumentRun}.
-   * @param parameterName
-   * @return null if current instrument run is null
-   * @throws IllegalArgumentException if parameter name is not applicable to the {@link Instrument}
+   * Returns the instance of {@InstrumentParameter} for the specified {@code vendorName} or null if none exist.
+   * @param vendorName
+   * @return
    */
-  public InstrumentRunValue getInputInstrumentRunValue(String parameterName);
+  public InstrumentParameter getParameterByVendorName(String vendorName);
 
+  /**
+   * Get (or create it if needed) the {@code InstrumentRunValue} for the named {@code InstrumentOutputParameter} of the
+   * current {@code InstrumentRun}.
+   * @param parameterCode
+   * @return null if current instrument run is null
+   * @throws IllegalArgumentException if parameter name is not applicable to the {@code Instrument}
+   */
+  public InstrumentRunValue getOutputInstrumentRunValue(String parameterCode);
+
+  /**
+   * Get (or create it if needed) the {@code InstrumentRunValue} for the {@code InstrumentOutputParameter} with the
+   * specified {@code vendorName} attribute of the current {@code InstrumentRun}.
+   * @param parameterVendorName the {@code vendorName} of the parameter to lookup
+   * @return null if current instrument run is null
+   * @throws IllegalArgumentException if parameter name is not applicable to the {@code Instrument}
+   */
+  public InstrumentRunValue getOutputInstrumentRunValueByVendorName(String parameterVendorName);
+
+  /**
+   * Get (or create it if needed) the {@code InstrumentRunValue} for the named {@code InstrumentInputParameter} of the
+   * current {@code InstrumentRun}.
+   * @param parameterCode
+   * @return null if current instrument run is null
+   * @throws IllegalArgumentException if parameter name is not applicable to the {@code Instrument}
+   */
+  public InstrumentRunValue getInputInstrumentRunValue(String parameterCode);
+
+  /**
+   * Get (or create it if needed) the {@code InstrumentRunValue} for the named {@code InstrumentInterpretativeParameter}
+   * of the current {@code InstrumentRun}.
+   * @param parameterCode
+   * @return null if current instrument run is null
+   * @throws IllegalArgumentException if parameter name is not applicable to the {@code Instrument}
+   */
   public InstrumentRunValue getInterpretativeInstrumentRunValue(String parameterName);
 
+  /**
+   * Get (or create it if needed) the {@code InstrumentRunValue} for the specified {@code InstrumentParameter} of the
+   * current {@code InstrumentRun}.
+   * 
+   * @param parameter the {@code InstrumentParameter} for which to obtain the value of the current run
+   * @return the {@code InstrumentRunValue}
+   */
+  public InstrumentRunValue getInstrumentRunValue(InstrumentParameter parameter);
 }

@@ -41,6 +41,10 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     return getPersistenceManager().matchOne(template);
   }
 
+  public List<InstrumentType> getInstrumentTypes() {
+    return getPersistenceManager().list(InstrumentType.class);
+  }
+
   public List<Instrument> getInstruments(String typeName) {
     return getInstruments(getInstrumentType(typeName));
   }

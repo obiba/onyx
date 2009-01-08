@@ -30,8 +30,8 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.instrument.validation.IntegrityCheckValidator;
 import org.obiba.onyx.wicket.data.DataField;
-import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,17 +66,17 @@ public class InstrumentOutputParameterPanel extends Panel {
       RepeatingView repeat = new RepeatingView("repeat");
       add(repeat);
 
-      for(final InstrumentOutputParameter param : queryService.match(template)) {
+      for(InstrumentOutputParameter param : queryService.match(template)) {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
-        InstrumentRunValue runValue = activeInstrumentRunService.getOutputInstrumentRunValue(param.getName());
+        InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
         final IModel runValueModel = new DetachableEntityModel(queryService, runValue);
         outputRunValueModels.add(runValueModel);
 
         DataField field = new DataField("field", new PropertyModel(runValueModel, "data"), runValue.getDataType(), param.getMeasurementUnit());
         field.setRequired(true);
-        field.setLabel(new SpringStringResourceModel(new PropertyModel(param, "description")));
+        field.setLabel(new MessageSourceResolvableStringModel(new PropertyModel(param, "label")));
         field.add(new AjaxFormComponentUpdatingBehavior("onblur") {
           protected void onUpdate(AjaxRequestTarget target) {
             activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
@@ -88,7 +88,7 @@ public class InstrumentOutputParameterPanel extends Panel {
         FormComponentLabel label = new FormComponentLabel("label", field.getField());
         item.add(label);
 
-        Label labelText = new Label("labelText", new SpringStringResourceModel(new PropertyModel(param, "description")));
+        Label labelText = new Label("labelText", new MessageSourceResolvableStringModel(new PropertyModel(param, "label")));
         label.add(labelText);
       }
     }

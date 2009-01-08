@@ -14,16 +14,17 @@ import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
-import org.obiba.wicket.application.ISpringWebApplication;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 
 public class WarningsStep extends WizardStepPanel {
 
@@ -31,9 +32,6 @@ public class WarningsStep extends WizardStepPanel {
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
-
-  @SpringBean(name = "userSessionService")
-  private UserSessionService userSessionService;
 
   private List<InstrumentOutputParameter> paramsWithWarnings;
 
@@ -68,20 +66,17 @@ public class WarningsStep extends WizardStepPanel {
     warningsPanel.setOutputMarkupId(true);
 
     for(InstrumentOutputParameter param : paramsWithWarnings) {
-      // Inject the Spring application context and the user session service
-      // into the instrument parameter. NOTE: These are dependencies of
-      // InstrumentParameter.getDescription().
-      param.setApplicationContext(((ISpringWebApplication) getApplication()).getSpringContextLocator().getSpringContext());
-      param.setUserSessionService(userSessionService);
-
       // Get the parameter's run value.
-      InstrumentRunValue runValue = activeInstrumentRunService.getOutputInstrumentRunValue(param.getName());
+      InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
+
       String valueAsString = runValue.getData().getValueAsString();
       if(valueAsString == null) {
         valueAsString = "";
       }
 
-      warningsPanel.addRow(new Label(KeyValueDataPanel.getRowKeyId(), param.getDescription()), new Label(KeyValueDataPanel.getRowValueId(), valueAsString + " " + param.getMeasurementUnit()));
+      IModel key = new MessageSourceResolvableStringModel(param.getLabel());
+      IModel value = new Model(valueAsString + " " + param.getMeasurementUnit());
+      warningsPanel.addRow(key, value);
     }
 
     setContent(target, warningsPanel);

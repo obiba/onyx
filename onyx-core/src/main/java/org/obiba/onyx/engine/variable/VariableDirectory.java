@@ -48,8 +48,9 @@ public class VariableDirectory implements IVariableProvider {
     }
 
     if(!providers.contains(provider)) {
-      log.info("registerVariables({})", provider.getClass().getSimpleName());
+      log.info("Registering variables from provider {}", provider.getClass().getSimpleName());
       providers.add(provider);
+      int variableCount = 0;
       List<Variable> entities = provider.getVariables();
       if(entities != null) {
         for(Variable entity : entities) {
@@ -60,13 +61,15 @@ public class VariableDirectory implements IVariableProvider {
               if(variablePathToProvidersMap.containsKey(path)) {
                 throw new IllegalArgumentException("Variable path " + path + " already registered by " + variablePathToProvidersMap.get(path).getClass().getSimpleName());
               }
-              log.info("Registering variable {} from provider {}", path, provider.getClass().getSimpleName());
+              log.debug("Registering variable {} from provider {}", path, provider.getClass().getSimpleName());
+              variableCount++;
               variablePathToProvidersMap.put(path, provider);
               variablePathToVariableMap.put(path, variable);
             }
           }
         }
       }
+      log.info("Provider {} registered {} variables", provider.getClass().getSimpleName(), variableCount);
     }
   }
 

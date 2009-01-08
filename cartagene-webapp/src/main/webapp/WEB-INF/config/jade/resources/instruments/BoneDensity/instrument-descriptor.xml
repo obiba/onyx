@@ -33,40 +33,35 @@
 
   <instrumentParameters>
     <interpretative>
-      <name>FractureLeftFoot</name>
-      <description>FractureLeftFoot</description>
+      <code>FractureLeftFoot</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>ASKED</type>
     </interpretative>
 
     <interpretative>
-      <name>FractureRightFoot</name>
-      <description>FractureRightFoot</description>
+      <code>FractureRightFoot</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>ASKED</type>
     </interpretative>
 
     <interpretative>
-      <name>MetalWorkLeftHeel</name>
-      <description>MetalWorkLeftHeel</description>
+      <code>MetalWorkLeftHeel</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>ASKED</type>
     </interpretative>
 
     <interpretative>
-      <name>MetalWorkRightHeel</name>
-      <description>MetalWorkRightHeel</description>
+      <code>MetalWorkRightHeel</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>ASKED</type>
     </interpretative>
 
     <input id="id">
-      <name>id</name>
-      <description>Participant_Barcode</description>
+      <code>id</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -75,8 +70,7 @@
     </input>
 
     <input id="last_name">
-      <name>last_name</name>
-      <description>Participant_Last_Name</description>
+      <code>last_name</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -85,8 +79,7 @@
     </input>
 
     <input id="first_name">
-      <name>first_name</name>
-      <description>Participant_First_Name</description>
+      <code>first_name</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -95,8 +88,7 @@
     </input>
 
     <input id="birth_date">
-      <name>birth_date</name>
-      <description>Participant_Date_of_Birth</description>
+      <code>birth_date</code>
       <dataType>DATE</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -105,8 +97,7 @@
     </input>
 
     <input id="gender">
-      <name>gender</name>
-      <description>Participant_Gender</description>
+      <code>gender</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -115,8 +106,7 @@
     </input>
 
     <input id="foot_scanned">
-      <name>foot_scanned</name>
-      <description>Foot_Scanned</description>
+      <code>foot_scanned</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="operatorSource">
@@ -125,8 +115,8 @@
     </input>
 
     <output id="Chart_Num">
-      <name>Participant Barcode</name>
-      <description>Participant_Barcode</description>
+      <vendorName>Chart_Num</vendorName>
+      <code>Participant_Barcode</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
@@ -140,8 +130,8 @@
     </output>
 
     <output id="LName">
-      <name>Participant Last Name</name>
-      <description>Participant_Last_Name</description>
+      <vendorName>LName</vendorName>
+      <code>Participant_Last_Name</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
@@ -155,8 +145,8 @@
     </output>
 
     <output id="FName">
-      <name>Participant First Name</name>
-      <description>Participant_First_Name</description>
+      <vendorName>FName</vendorName>
+      <code>Participant_First_Name</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
@@ -170,8 +160,8 @@
     </output>
 
     <output id="DOB">
-      <name>Participant Date of Birth</name>
-      <description>Participant_Date_of_Birth</description>
+      <vendorName>DOB</vendorName>
+      <code>Participant_Date_of_Birth</code>
       <dataType>DATE</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
@@ -184,8 +174,8 @@
     </output>
 
     <output id="Sex">
-      <name>Participant Gender</name>
-      <description>Participant_Gender</description>
+      <vendorName>Sex</vendorName>
+      <code>Participant_Gender</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
@@ -199,8 +189,8 @@
     </output>
 
     <output id="sidescanned">
-      <name>Foot Scanned</name>
-      <description>Foot_Scanned</description>
+      <vendorName>sidescanned</vendorName>
+      <code>Foot_Scanned</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
@@ -214,127 +204,128 @@
     </output>
 
     <output id="assessment">
-      <name>Assessment</name>
-      <description>Assessment</description>
+      <vendorName>assessment</vendorName>
+      <code>Assessment</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
     </output>
 
     <output id="fxrisk">
-      <name>Fracture Risk</name>
-      <description>Fracture_Risk</description>
+      <vendorName>fxrisk</vendorName>
+      <code>Fracture_Risk</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
     </output>
 
     <output id="total">
-      <name>Stiffness Index Result</name>
-      <description>Stiffness_Index_Result</description>
+      <vendorName>total</vendorName>
+      <code>Stiffness_Index_Result</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
     </output>
 
     <output id="tscore">
-      <name>T-Score</name>
-      <description>T-Score</description>
+      <vendorName>tscore</vendorName>
+      <code>T-Score</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
     </output>
 
     <output id="zscore">
-      <name>Z-Score</name>
-      <description>Z-Score</description>
+      <vendorName>zscore</vendorName>
+      <code>Z-Score</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
     </output>
 
     <output id="percentnormal">
-      <name>% Young Adult</name>
-      <description>%_Young_Adult</description>
+      <vendorName>percentnormal</vendorName>
+      <code>%_Young_Adult</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
     </output>
 
     <output id="agematched">
-      <name>% Age Matched</name>
-      <description>%_Age_Matched</description>
+      <vendorName>agematched</vendorName>
+      <code>%_Age_Matched</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
     </output>
 
     <output id="achillesbitmap">
-      <name>Stiffness Index graph</name>
-      <description>Stiffness_Index_graph</description>
+      <vendorName>achillesbitmap</vendorName>
+      <code>Stiffness_Index_graph</code>
       <dataType>DATA</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
     </output>
+
     <output id="stiffnessindex">
-      <name>Stiffness_Index</name>
-      <description>Stiffness_Index</description>
+      <vendorName>stiffnessindex</vendorName>
+      <code>Stiffness_Index</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
     </output>
 
     <output id="achillesbitmap2">
-      <name>Ultrasound Graphic</name>
-      <description>Ultrasound_Graphic</description>
+      <vendorName>achillesbitmap2</vendorName>
+      <code>Ultrasound_Graphic</code>
       <dataType>DATA</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
     </output>
 
     <output id="SOS">
-      <name>Speed of Ultrasound</name>
-      <description>Speed_of_Ultrasound</description>
+      <vendorName>SOS</vendorName>
+      <code>Speed_of_Ultrasound</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
     </output>
 
     <output id="BUA">
-      <name>Broadband Ultrasound Attenuation</name>
-      <description>Broadband_Ultrasound_Attenuation</description>
+      <vendorName>BUA</vendorName>
+      <code>Broadband_Ultrasound_Attenuation</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
     </output>
 
     <output id="appversion">
-      <name>Achilles Software Version</name>
-      <description>Achilles_Software_Version</description>
+      <vendorName>appversion</vendorName>
+      <code>Achilles_Software_Version</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
     </output>
 
     <output id="roi_x">
-      <name>Region of Intersection X coordinate</name>
-      <description>Region_of_Intersection_X_coordinate</description>
+      <vendorName>roi_x</vendorName>
+      <code>Region_of_Intersection_X_coordinate</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
     </output>
 
     <output id="roi_y">
-      <name>Region of Intersection Y coordinate</name>
-      <description>Region_of_Intersection_Y_coordinate</description>
+      <vendorName>roi_y</vendorName>
+      <code>Region_of_Intersection_Y_coordinate</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
     </output>
 
     <output id="roi_z">
-      <name>Region of Intersection Z coordinate</name>
-      <description>Region_of_Intersection_Z_coordinate</description>
+      <vendorName>roi_z</vendorName>
+      <code>Region_of_Intersection_Z_coordinate</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>

@@ -6,12 +6,15 @@
   <!-- Import the remote API service declaration -->
   <import resource="classpath:/META-INF/spring/remote-api-server.xml" />
 
-  <bean id="instrumentTypeToVariableMappingStrategy" class="org.obiba.onyx.jade.engine.variable.impl.DefaultInstrumentTypeToVariableMappingStrategy" />
+  <bean id="instrumentTypeToVariableMappingStrategy"
+    class="org.obiba.onyx.jade.engine.variable.impl.DefaultInstrumentTypeToVariableMappingStrategy">
+    <property name="instrumentRunService" ref="instrumentRunService" />
+    <property name="instrumentService" ref="instrumentService" />
+  </bean>
 
   <bean class="org.obiba.onyx.jade.engine.JadeModule">
     <property name="activeInterviewService" ref="activeInterviewService" />
-    <property name="queryService" ref="persistenceManager" />
-    <property name="instrumentRunService" ref="instrumentRunService" />
+    <property name="instrumentService" ref="instrumentService" />
     <property name="instrumentTypeToVariableMappingStrategy" ref="instrumentTypeToVariableMappingStrategy" />
     <property name="databaseSeed" ref="jadeDatabaseSeed" />
     <property name="stages">

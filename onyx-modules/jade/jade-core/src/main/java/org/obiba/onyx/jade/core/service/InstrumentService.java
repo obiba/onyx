@@ -34,6 +34,12 @@ public interface InstrumentService {
   public InstrumentType getInstrumentType(String name);
 
   /**
+   * Returns the list of all {@code InstrumentType}s
+   * @return all {@code InstrumentType}s
+   */
+  public List<InstrumentType> getInstrumentTypes();
+
+  /**
    * Get the instruments for the given instrument type name.
    * @param typeName
    * @return

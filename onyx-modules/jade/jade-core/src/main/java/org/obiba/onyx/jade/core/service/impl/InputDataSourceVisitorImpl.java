@@ -136,7 +136,7 @@ public class InputDataSourceVisitorImpl implements InputDataSourceVisitor {
       if(runValue != null) {
         // Unit conversion when necessary
         if(runValue.getInstrumentParameter().getMeasurementUnit() != null && parameter.getMeasurementUnit() != null && !parameter.getMeasurementUnit().equals(runValue.getInstrumentParameter().getMeasurementUnit())) {
-          InstrumentRunValue targetRunValue = activeInstrumentRunService.getInputInstrumentRunValue(parameter.getName());
+          InstrumentRunValue targetRunValue = activeInstrumentRunService.getInputInstrumentRunValue(parameter.getCode());
           UnitParameterValueConverter converter = new UnitParameterValueConverter();
           converter.convert(targetRunValue, runValue);
           data = targetRunValue.getData();

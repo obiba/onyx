@@ -101,7 +101,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
         boolean completed = true;
 
         for(InstrumentOutputParameter param : outputParams) {
-          InstrumentRunValue runValue = activeInstrumentRunService.getOutputInstrumentRunValue(param.getName());
+          InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
           Data data = runValue.getData();
           if(data == null || data.getValue() == null) {
             error(getString("NoInstrumentDataSaveThem"));
@@ -156,7 +156,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
           continue;
         }
 
-        InstrumentRunValue runValue = activeInstrumentRunService.getOutputInstrumentRunValue(param.getName());
+        InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
         Data paramData = (runValue != null) ? runValue.getData() : null;
 
         if(!integrityCheck.checkParameterValue(paramData, null, activeInstrumentRunService)) {

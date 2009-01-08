@@ -20,20 +20,17 @@
   </contraindications>
 
   <instrumentParameters>
-    <input id="id">
-      <name>ID</name>
-      <description>Participant_Barcode</description>
+    <input>
+      <code>ID</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
         <property>barcode</property>
       </inputSource>
-
     </input>
 
-    <input id="last_name_in">
-      <name>LastName</name>
-      <description>Participant_Last_Name</description>
+    <input>
+      <code>LastName</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -41,39 +38,35 @@
       </inputSource>
     </input>
 
-    <input id="first_name_in">
-      <name>FirstName</name>
-      <description>Participant_First_Name</description>
+    <input>
+      <code>FirstName</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
         <property>firstName</property>
       </inputSource>
     </input>
-    
-    <input id="birth_year_in">
-      <name>BirthYear</name>
-      <description>Participant_Year_of_Birth</description>
+
+    <input>
+      <code>BirthYear</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
         <property>birthYear</property>
       </inputSource>
     </input>
-    
-    <input id="birth_month_in">
-      <name>BirthMonth</name>
-      <description>Participant_Month_of_Birth</description>
+
+    <input>
+      <code>BirthMonth</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
         <property>birthMonth</property>
       </inputSource>
     </input>
-    
-    <input id="birth_day_in">
-      <name>BirthDay</name>
-      <description>Participant_Day_of_Birth</description>
+
+    <input>
+      <code>BirthDay</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -82,50 +75,45 @@
     </input>
 
     <input id="gender_in">
-      <name>Gender</name>
-      <description>Participant_Gender</description>
+      <code>Gender</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
         <property>gender</property>
       </inputSource>
     </input>
-  
+
     <input id="ethnic_group_in">
-      <name>EthnicGroup</name>
-      <description>Participant_Ethnic_Group</description>
+      <code>EthnicGroup</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="fixedSource">
         <value>CAUCASIAN</value>
       </inputSource>
     </input>
-    
+
     <input id="pacemaker_in">
-      <name>Pacemaker</name>
-      <description>Participant_Pacemaker</description>
+      <code>Pacemaker</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="fixedSource">
         <value>0</value>
       </inputSource>
     </input>
-    
+
     <input id="height_in">
-      <name>Height</name>
-      <description>Participant_Height</description>
+      <code>Height</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="outputParameterSource">
         <instrumentType>StandingHeight</instrumentType>
-        <parameterName>Height</parameterName>
+        <parameterName>Average_Height_Measurement</parameterName>
       </inputSource>
     </input>
-  
+
     <input id="weight_in">
-      <name>Weight</name>
-      <description>Participant_Weight</description>
+      <code>Weight</code>
       <measurementUnit>hg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -133,26 +121,26 @@
         <outputParameterSourceList>
           <outputParameterSource>
             <instrumentType>Impendence310</instrumentType>
-            <parameterName>Weight</parameterName>
+            <parameterName>Measured_weight</parameterName>
           </outputParameterSource>
           <outputParameterSource>
             <instrumentType>Impendence418</instrumentType>
-            <parameterName>Weight</parameterName>
+            <parameterName>Measured_weight</parameterName>
           </outputParameterSource>
           <outputParameterSource>
             <instrumentType>Weight</instrumentType>
-            <parameterName>Weight</parameterName>
+            <parameterName>Measured_weight</parameterName>
           </outputParameterSource>
         </outputParameterSourceList>
       </inputSource>
     </input>
-    
+
     <output id="participantID">
-      <name>participantID</name>
-      <description>Participant_Barcode</description>
+      <vendorName>participantID</vendorName>
+      <code>Participant_Barcode</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit />
       <integrityChecks>
         <equalsParameterCheck>
           <targetParameter reference="participantID" />
@@ -160,14 +148,14 @@
           <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
-    </output>    
-    
+    </output>
+
     <output id="participantLastName">
-      <name>participantLastName</name>
-      <description>Participant_Last_Name</description>
+      <vendorName>participantLastName</vendorName>
+      <code>Participant_Last_Name</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit />
       <integrityChecks>
         <equalsParameterCheck>
           <targetParameter reference="participantLastName" />
@@ -176,13 +164,13 @@
         </equalsParameterCheck>
       </integrityChecks>
     </output>
-    
+
     <output id="Participant_First_Name">
-      <name>participantFirstName</name>
-      <description>Participant_First_Name</description>
+      <vendorName>participantFirstName</vendorName>
+      <code>Participant_First_Name</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit />
       <integrityChecks>
         <equalsParameterCheck>
           <targetParameter reference="Participant_First_Name" />
@@ -191,13 +179,13 @@
         </equalsParameterCheck>
       </integrityChecks>
     </output>
-    
+
     <output id="Participant_Birth_Day">
-      <name>participantBirthDay</name>
-      <description>Participant_Birth_Day</description>
+      <vendorName>participantBirthDay</vendorName>
+      <code>Participant_Birth_Day</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit />
       <integrityChecks>
         <equalsParameterCheck>
           <targetParameter reference="Participant_Birth_Day" />
@@ -206,13 +194,13 @@
         </equalsParameterCheck>
       </integrityChecks>
     </output>
-    
+
     <output id="participantBirthMonth">
-      <name>participantBirthMonth</name>
-      <description>Participant_Birth_Month</description>
+      <vendorName>participantBirthMonth</vendorName>
+      <code>Participant_Birth_Month</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit />
       <integrityChecks>
         <equalsParameterCheck>
           <targetParameter reference="participantBirthMonth" />
@@ -221,13 +209,13 @@
         </equalsParameterCheck>
       </integrityChecks>
     </output>
-    
+
     <output id="participantBirthYear">
-      <name>participantBirthYear</name>
-      <description>Participant_Birth_Year</description>
+      <vendorName>participantBirthYear</vendorName>
+      <code>Participant_Birth_Year</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit />
       <integrityChecks>
         <equalsParameterCheck>
           <targetParameter reference="participantBirthYear" />
@@ -236,13 +224,13 @@
         </equalsParameterCheck>
       </integrityChecks>
     </output>
-    
+
     <output id="participantGender">
-      <name>participantGender</name>
-      <description>Participant_Gender</description>
+      <vendorName>participantGender</vendorName>
+      <code>Participant_Gender</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit />
       <integrityChecks>
         <equalsParameterCheck>
           <targetParameter reference="participantGender" />
@@ -251,13 +239,13 @@
         </equalsParameterCheck>
       </integrityChecks>
     </output>
-    
+
     <output id="participantRace">
-      <name>participantRace</name>
-      <description>Participant_Race</description>
+      <vendorName>participantRace</vendorName>
+      <code>Participant_Race</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit />
       <integrityChecks>
         <equalsParameterCheck>
           <targetParameter reference="participantRace" />
@@ -266,10 +254,10 @@
         </equalsParameterCheck>
       </integrityChecks>
     </output>
-    
+
     <output id="participantHeight">
-      <name>participantHeight</name>
-      <description>Participant_Height</description>
+      <vendorName>participantHeight</vendorName>
+      <code>Participant_Height</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>cm</measurementUnit>
@@ -281,10 +269,10 @@
         </equalsParameterCheck>
       </integrityChecks>
     </output>
-    
+
     <output id="participantWeight">
-      <name>participantWeight</name>
-      <description>Participant_Weight</description>
+      <vendorName>participantWeight</vendorName>
+      <code>Participant_Weight</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -296,13 +284,13 @@
         </equalsParameterCheck>
       </integrityChecks>
     </output>
-    
+
     <output id="participantPacemaker">
-      <name>participantPacemaker</name>
-      <description>Participant_PaceMaker</description>
+      <vendorName>participantPacemaker</vendorName>
+      <code>Participant_PaceMaker</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit />
       <integrityChecks>
         <equalsParameterCheck>
           <targetParameter reference="participantPacemaker" />
@@ -311,187 +299,187 @@
         </equalsParameterCheck>
       </integrityChecks>
     </output>
-    
-    <output id="time">
-      <name>time</name>
-      <description>Time_of_measurement</description>
+
+    <output>
+      <vendorName>time</vendorName>
+      <code>Time_of_measurement</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="date">
-      <name>date</name>
-      <description>Date_of_measurement</description>
+    <output>
+      <vendorName>date</vendorName>
+      <code>Date_of_measurement</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="diagnosis">
-      <name>diagnosis</name>
-      <description>Diagnosis_of_measurement</description>
+    <output>
+      <vendorName>diagnosis</vendorName>
+      <code>Diagnosis_of_measurement</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="filterSetting">
-      <name>filterSetting</name>
-      <description>Filter_Settings_of_measurement</description>
+    <output>
+      <vendorName>filterSetting</vendorName>
+      <code>Filter_Settings_of_measurement</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="diagnosisVersion">
-      <name>diagnosisVersion</name>
-      <description>Diagnosis_Version_of_measurement</description>
+    <output>
+      <vendorName>diagnosisVersion</vendorName>
+      <code>Diagnosis_Version_of_measurement</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="ventricularRate">
-      <name>ventricularRate</name>
-      <description>Ventricular_Rate</description>
+    <output>
+      <vendorName>ventricularRate</vendorName>
+      <code>Ventricular_Rate</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>BPM</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="pQInterval">
-      <name>PQInterval</name>
-      <description>PQ_Interval</description>
+    <output>
+      <vendorName>PQInterval</vendorName>
+      <code>PQ_Interval</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="pDuration">
-      <name>PDuration</name>
-      <description>P_Duration</description>
+    <output>
+      <vendorName>PDuration</vendorName>
+      <code>P_Duration</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="qRsDuration">
-      <name>QRsDuration</name>
-      <description>QRS_Duration</description>
+    <output>
+      <vendorName>QRsDuration</vendorName>
+      <code>QRS_Duration</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="qTInterval">
-      <name>QTInterval</name>
-      <description>QT_Interval</description>
+    <output>
+      <vendorName>QTInterval</vendorName>
+      <code>QT_Interval</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="qTCInterval">
-      <name>QTCInterval</name>
-      <description>QTC_Interval</description>
+    <output>
+      <vendorName>QTCInterval</vendorName>
+      <code>QTC_Interval</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="rRInterval">
-      <name>RRInterval</name>
-      <description>RR_Interval</description>
+    <output>
+      <vendorName>RRInterval</vendorName>
+      <code>RR_Interval</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="pPInterval">
-      <name>PPInterval</name>
-      <description>PP_Interval</description>
+    <output>
+      <vendorName>PPInterval</vendorName>
+      <code>PP_Interval</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="pAxis">
-      <name>PAxis</name>
-      <description>P_Axis</description>
+    <output>
+      <vendorName>PAxis</vendorName>
+      <code>P_Axis</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>degree</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="rAxis">
-      <name>RAxis</name>
-      <description>R_Axis</description>
+    <output>
+      <vendorName>RAxis</vendorName>
+      <code>R_Axis</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>degree</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="tAxis">
-      <name>TAxis</name>
-      <description>T_Axis</description>
+    <output>
+      <vendorName>TAxis</vendorName>
+      <code>T_Axis</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>degree</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="qRSNum">
-      <name>QRSNum</name>
-      <description>QRS_Number</description>
+    <output>
+      <vendorName>QRSNum</vendorName>
+      <code>QRS_Number</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="pOnset">
-      <name>POnset</name>
-      <description>P_Onset</description>
-      <dataType>INTEGER</dataType>
-      <measurementUnit>ms</measurementUnit>
-      <captureMethod>AUTOMATIC</captureMethod>
-    </output>
-
-    <output id="pOffset">
-      <name>POffset</name>
-      <description>P_Offset</description>
+    <output>
+      <vendorName>POnset</vendorName>
+      <code>P_Onset</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="qOnset">
-      <name>QOnset</name>
-      <description>Q_Onset</description>
+    <output>
+      <vendorName>POffset</vendorName>
+      <code>P_Offset</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="qOffset">
-      <name>QOffset</name>
-      <description>Q_Offset</description>
+    <output>
+      <vendorName>QOnset</vendorName>
+      <code>Q_Onset</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="tOffset">
-      <name>TOffset</name>
-      <description>T_Offset</description>
+    <output>
+      <vendorName>QOffset</vendorName>
+      <code>Q_Offset</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="xmlFile">
-      <name>xmlFile</name>
-      <description>Xml_File</description>
+    <output>
+      <vendorName>TOffset</vendorName>
+      <code>T_Offset</code>
+      <dataType>INTEGER</dataType>
+      <measurementUnit>ms</measurementUnit>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+
+    <output>
+      <vendorName>xmlFile</vendorName>
+      <code>Xml_File</code>
       <dataType>DATA</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="pdfFile">
-      <name>pdfFile</name>
-      <description>Pdf_File</description>
+    <output>
+      <vendorName>pdfFile</vendorName>
+      <code>Pdf_File</code>
       <dataType>DATA</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>

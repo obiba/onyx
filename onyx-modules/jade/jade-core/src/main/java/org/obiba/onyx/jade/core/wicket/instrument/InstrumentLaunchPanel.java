@@ -12,7 +12,6 @@ package org.obiba.onyx.jade.core.wicket.instrument;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
@@ -32,6 +31,7 @@ import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,8 +41,6 @@ import org.slf4j.LoggerFactory;
  * <li>General information with instrument launcher (if available)</li>
  * <li>instructions to enter manually captured input parameters (if needed)</li>
  * </ul>
- * @author Yannick Marcon
- * 
  */
 public abstract class InstrumentLaunchPanel extends Panel {
 
@@ -91,7 +89,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     // get the data from not read-only input parameters sources
     for(InstrumentInputParameter param : instrumentService.getInstrumentInputParameter(instrumentType, true)) {
-      final InstrumentRunValue runValue = activeInstrumentRunService.getInputInstrumentRunValue(param.getName());
+      final InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
       Data data = inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param);
       if(data != null) {
         if(!data.getType().equals(runValue.getDataType())) {
@@ -102,7 +100,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
         }
         activeInstrumentRunService.update(runValue);
       } else {
-        log.error("The value for instrument parameter {} comes from an InputSource, but this source has not produced a value. Please correct stage dependencies or your instrument-descriptor.xml file for this instrument.", param.getDescription());
+        log.error("The value for instrument parameter {} comes from an InputSource, but this source has not produced a value. Please correct stage dependencies or your instrument-descriptor.xml file for this instrument.", param.getCode());
         error("An unexpected problem occurred while setting up this instrument's run. Please contact support.");
       }
 
@@ -137,8 +135,9 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
         item.add(new Label("instruction", new StringResourceModel("TypeTheValueInTheInstrument", InstrumentLaunchPanel.this, new Model() {
           public Object getObject() {
-            InstrumentRunValue runValue = activeInstrumentRunService.getInputInstrumentRunValue(param.getName());
-            ValueMap map = new ValueMap("description=" + new SpringStringResourceModel(param.getDescription()).getString());
+            InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
+            ValueMap map = new ValueMap();
+            map.put("description", new MessageSourceResolvableStringModel(param.getLabel()).getObject());
             if(runValue.getData() != null && runValue.getData().getValue() != null) {
               map.put("value", new SpringStringResourceModel(runValue.getData().getValueAsString()).getString());
               String unit = param.getMeasurementUnit();
@@ -154,12 +153,9 @@ public abstract class InstrumentLaunchPanel extends Panel {
       }
     }
 
-    if(manualCaptureRequired) {
-      add(new Label("instructions", new StringResourceModel("Instructions", InstrumentLaunchPanel.this, null)));
-    } else {
-      add(new EmptyPanel("instructions"));
-    }
-
+    Label instructions = new Label("instructions", new StringResourceModel("Instructions", InstrumentLaunchPanel.this, null));
+    instructions.setVisible(manualCaptureRequired);
+    add(instructions);
   }
 
   /**

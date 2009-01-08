@@ -100,7 +100,7 @@ public class OutputParametersStep extends WizardStepPanel {
     List<InstrumentOutputParameter> outputParams = queryService.match(template);
 
     for(InstrumentOutputParameter param : outputParams) {
-      InstrumentRunValue runValue = activeInstrumentRunService.getOutputInstrumentRunValue(param.getName());
+      InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
 
       // Don't check parameters that haven't been assigned a value.
       if(runValue == null || runValue.getData() == null || runValue.getData().getValue() == null) {

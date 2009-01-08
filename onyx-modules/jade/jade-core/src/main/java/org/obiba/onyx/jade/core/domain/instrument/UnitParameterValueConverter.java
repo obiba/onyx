@@ -35,7 +35,7 @@ public class UnitParameterValueConverter implements InstrumentParameterValueConv
   @SuppressWarnings("unchecked")
   public void convert(InstrumentRunValue targetInstrumentRunValue, InstrumentRunValue sourceInstrumentRunValue) {
 
-    log.debug("Converting parameters from source {} to target {}", sourceInstrumentRunValue.getInstrumentParameter().getName(), targetInstrumentRunValue.getInstrumentParameter().getName());
+    log.debug("Converting parameters from source {} to target {}", sourceInstrumentRunValue.getInstrumentParameter().getCode(), targetInstrumentRunValue.getInstrumentParameter().getCode());
 
     Unit sourceUnit = Unit.valueOf(sourceInstrumentRunValue.getInstrumentParameter().getMeasurementUnit());
     Unit targetUnit = Unit.valueOf(targetInstrumentRunValue.getInstrumentParameter().getMeasurementUnit());

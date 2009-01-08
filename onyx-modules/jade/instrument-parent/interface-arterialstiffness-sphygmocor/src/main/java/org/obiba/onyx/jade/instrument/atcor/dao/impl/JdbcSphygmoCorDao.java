@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.obiba.onyx.jade.instrument.atcor.dao.SphygmoCorDao;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 
 public class JdbcSphygmoCorDao extends NamedParameterJdbcDaoSupport implements SphygmoCorDao {
@@ -91,31 +89,5 @@ public class JdbcSphygmoCorDao extends NamedParameterJdbcDaoSupport implements S
     List matches = getNamedParameterJdbcTemplate().queryForList(GET_OUTPUT_SQL, paramMap);
 
     return matches.size() > 0 ? matches : null;
-  }
-
-  public static void main(String[] args) throws Exception {
-
-    ApplicationContext appContext = new FileSystemXmlApplicationContext("C:\\eclipse-SDK-3.3.2-win32\\eclipse-workspaces\\onyx\\trunk\\onyx-modules\\jade\\instrument-parent\\interface-arterialstiffness\\src\\main\\resources\\META-INF\\spring\\instrument-context.xml");
-
-    SphygmoCorDao sphygmoCorDao = (SphygmoCorDao) appContext.getBean("sphygmoCorDao");
-
-    // sphygmoCorDao.deleteAllOutput();
-    // sphygmoCorDao.deleteAllPatients();
-
-    // sphygmoCorDao.addPatient("01400", "DATA", "4AAA", 1, "Spathis", "Dennis", new java.sql.Date(new
-    // java.util.Date().getTime()), "MALE".toString());
-    // sphygmoCorDao.addPatient("01400", "DATA", "4AAA", 1, "Spathis", "Stella", new java.sql.Date(new
-    // java.util.Date().getTime()), "FEMALE".toString());
-
-    List output = sphygmoCorDao.getOutput(1);
-
-    if(output != null) {
-      System.out.println("Got output!");
-      System.out.println("Rows: " + output.size());
-
-      System.out.println("Row 0...");
-      Map firstRow = (Map) output.get(0);
-      System.out.println("P_QC_PH: " + firstRow.get("P_QC_PH"));
-    }
   }
 }

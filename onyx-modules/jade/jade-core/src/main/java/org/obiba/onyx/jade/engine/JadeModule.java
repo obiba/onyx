@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.protocol.http.WebApplication;
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -28,7 +27,7 @@ import org.obiba.onyx.engine.variable.IVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
-import org.obiba.onyx.jade.core.service.InstrumentRunService;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.engine.variable.IInstrumentTypeToVariableMappingStrategy;
 import org.obiba.wicket.util.seed.DatabaseSeed;
 import org.slf4j.Logger;
@@ -45,9 +44,7 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
 
   private ActiveInterviewService activeInterviewService;
 
-  private EntityQueryService queryService;
-
-  private InstrumentRunService instrumentRunService;
+  private InstrumentService instrumentService;
 
   private IInstrumentTypeToVariableMappingStrategy instrumentTypeToVariableMappingStrategy;
 
@@ -145,12 +142,8 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
     this.activeInterviewService = activeInterviewService;
   }
 
-  public void setQueryService(EntityQueryService queryService) {
-    this.queryService = queryService;
-  }
-
-  public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
-    this.instrumentRunService = instrumentRunService;
+  public void setInstrumentService(InstrumentService instrumentService) {
+    this.instrumentService = instrumentService;
   }
 
   public void setInstrumentTypeToVariableMappingStrategy(IInstrumentTypeToVariableMappingStrategy instrumentTypeToVariableMappingStrategy) {
@@ -160,7 +153,7 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
 
     VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
-    varData.addData(instrumentTypeToVariableMappingStrategy.getData(queryService, instrumentRunService, participant, variable));
+    varData.addData(instrumentTypeToVariableMappingStrategy.getData(variable, participant));
 
     return varData;
   }
@@ -168,8 +161,8 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
   public List<Variable> getVariables() {
     List<Variable> entities = new ArrayList<Variable>();
 
-    for(InstrumentType type : queryService.list(InstrumentType.class)) {
-      entities.add(instrumentTypeToVariableMappingStrategy.getVariable(queryService, type));
+    for(InstrumentType type : instrumentService.getInstrumentTypes()) {
+      entities.add(instrumentTypeToVariableMappingStrategy.getVariable(type));
     }
 
     return entities;

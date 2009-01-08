@@ -146,13 +146,13 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
 
     Map<String, Data> outputToSend = new HashMap<String, Data>();
 
-    outputToSend.put("Participant Barcode", DataBuilder.buildText((String) data.get("PATIENT_ID")));
-    outputToSend.put("Participant First Name", DataBuilder.buildText((String) data.get("FIRST_NAME")));
-    outputToSend.put("Participant Last Name", DataBuilder.buildText((String) data.get("FAM_NAME")));
-    outputToSend.put("Participant Date of Birth", DataBuilder.buildDate((Date)data.get("DOB")));
-    outputToSend.put("Participant Gender", DataBuilder.buildText((String) data.get("SEX")));
-    outputToSend.put("Systolic Pressure", DataBuilder.buildInteger(((Float)data.get("SP")).longValue()));
-    outputToSend.put("Diastolic Pressure", DataBuilder.buildInteger(((Float) data.get("DP")).longValue()));
+    outputToSend.put("Participant_Barcode", DataBuilder.buildText((String) data.get("PATIENT_ID")));
+    outputToSend.put("Participant_First_Name", DataBuilder.buildText((String) data.get("FIRST_NAME")));
+    outputToSend.put("Participant_Last_Name", DataBuilder.buildText((String) data.get("FAM_NAME")));
+    outputToSend.put("Participant_Date_of_Birth", DataBuilder.buildDate((Date) data.get("DOB")));
+    outputToSend.put("Participant_Gender", DataBuilder.buildText((String) data.get("SEX")));
+    outputToSend.put("Systolic_Pressure", DataBuilder.buildInteger(((Float) data.get("SP")).longValue()));
+    outputToSend.put("Diastolic_Pressure", DataBuilder.buildInteger(((Float) data.get("DP")).longValue()));
 
     outputToSend.put("Peripheral_Pulse_Quality_Control_Pulse_Height", new Data(DataType.DECIMAL, new Double((Float) data.get("P_QC_PH"))));
     outputToSend.put("Peripheral_Pulse_Quality_Control_Pulse_Height_Variation", new Data(DataType.DECIMAL, new Double((Float) data.get("P_QC_PHV"))));

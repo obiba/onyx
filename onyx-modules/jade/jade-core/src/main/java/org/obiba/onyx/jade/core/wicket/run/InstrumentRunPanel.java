@@ -39,6 +39,7 @@ import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 
 public class InstrumentRunPanel extends Panel {
 
@@ -159,7 +160,7 @@ public class InstrumentRunPanel extends Panel {
       // do not show COMPUTED values or misssing values
       if(runValue != null && !runValue.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED)) {
 
-        Label label = new Label(KeyValueDataPanel.getRowKeyId(), new SpringStringResourceModel(new PropertyModel(param, "description")));
+        Label label = new Label(KeyValueDataPanel.getRowKeyId(), new MessageSourceResolvableStringModel(param.getLabel()));
 
         Data data = runValue.getData();
         Label value;

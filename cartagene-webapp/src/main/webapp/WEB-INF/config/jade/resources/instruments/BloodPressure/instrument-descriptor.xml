@@ -31,8 +31,7 @@
 
   <instrumentParameters>
     <output id="blp1_systolic1">
-      <name>Systolic Blood Pressure 1</name>
-      <description>First_Systolic_Blood_Pressure_Measurement</description>
+      <code>First_Systolic_Blood_Pressure_Measurement</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -56,8 +55,7 @@
     </output>
 
     <output id="blp1_diastolic1">
-      <name>Diastolic Blood Pressure 1</name>
-      <description>First_Diastolic_Blood_Pressure_Measurement</description>
+      <code>First_Diastolic_Blood_Pressure_Measurement</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -87,8 +85,7 @@
     </output>
 
     <output id="blp1_pulse1">
-      <name>Pulse Rate 1</name>
-      <description>First_Pulse_Rate_Measurement</description>
+      <code>First_Pulse_Rate_Measurement</code>
       <measurementUnit>BPM</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -112,8 +109,7 @@
     </output>
 
     <output id="blp1_systolic2">
-      <name>Systolic Blood Pressure 2</name>
-      <description>Second_Systolic_Blood_Pressure_Measurement</description>
+      <code>Second_Systolic_Blood_Pressure_Measurement</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -137,8 +133,7 @@
     </output>
 
     <output id="blp1_diastolic2">
-      <name>Diastolic Blood Pressure 2</name>
-      <description>Second_Diastolic_Blood_Pressure_Measurement</description>
+      <code>Second_Diastolic_Blood_Pressure_Measurement</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -168,8 +163,7 @@
     </output>
 
     <output id="blp1_pulse2">
-      <name>Pulse Rate 2</name>
-      <description>Second_Pulse_Rate_Measurement</description>
+      <code>Second_Pulse_Rate_Measurement</code>
       <measurementUnit>BPM</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -193,8 +187,7 @@
     </output>
 
     <output id="blp1_systolic3">
-      <name>Systolic Blood Pressure 3</name>
-      <description>Third_Systolic_Blood_Pressure_Measurement</description>
+      <code>Third_Systolic_Blood_Pressure_Measurement</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -218,8 +211,7 @@
     </output>
 
     <output id="blp1_diastolic3">
-      <name>Diastolic Blood Pressure 3</name>
-      <description>Third_Diastolic_Blood_Pressure_Measurement</description>
+      <code>Third_Diastolic_Blood_Pressure_Measurement</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -249,8 +241,7 @@
     </output>
 
     <output id="blp1_pulse3">
-      <name>Pulse Rate 3</name>
-      <description>Third_Pulse_Rate_Measurement</description>
+      <code>Third_Pulse_Rate_Measurement</code>
       <measurementUnit>BPM</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -274,8 +265,7 @@
     </output>
 
     <computedOutput>
-      <name>Systolic_Blood_Pressure</name>
-      <description>Average_Systolic_Blood_Pressure_Measurement</description>
+      <code>Average_Systolic_Blood_Pressure_Measurement</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <algorithm>AVERAGE</algorithm>
@@ -288,8 +278,7 @@
     </computedOutput>
 
     <computedOutput>
-      <name>Diastolic_Blood_Pressure</name>
-      <description>Average_Diastolic_Blood_Pressure_Measurement</description>
+      <code>Average_Diastolic_Blood_Pressure_Measurement</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <algorithm>AVERAGE</algorithm>
@@ -302,8 +291,7 @@
     </computedOutput>
 
     <computedOutput>
-      <name>Pulse Rate</name>
-      <description>Average_Pulse_Rate_Measurement</description>
+      <code>Average_Pulse_Rate_Measurement</code>
       <measurementUnit>BPM</measurementUnit>
       <dataType>INTEGER</dataType>
       <algorithm>AVERAGE</algorithm>

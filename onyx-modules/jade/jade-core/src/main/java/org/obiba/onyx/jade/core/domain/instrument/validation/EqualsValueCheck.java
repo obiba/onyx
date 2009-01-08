@@ -195,7 +195,7 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
   }
 
   protected Object[] getDescriptionArgs(ActiveInstrumentRunService activeRunService) {
-    return new Object[] { getTargetParameter().getDescription(), getData().getValue() };
+    return new Object[] { getTargetParameter().getLabel(), getData().getValue() };
   }
 
 }

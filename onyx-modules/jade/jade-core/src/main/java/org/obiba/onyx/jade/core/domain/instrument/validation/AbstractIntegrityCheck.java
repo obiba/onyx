@@ -35,39 +35,39 @@ public abstract class AbstractIntegrityCheck extends AbstractEntity implements I
 
   @Enumerated(EnumType.STRING)
   private IntegrityCheckType type;
- 
+
   @ManyToOne
   @JoinColumn(name = "instrument_parameter_id")
   private InstrumentParameter targetParameter;
 
   private String customizedDescription;
-  
+
   @Transient
   protected transient ApplicationContext context;
-  
+
   @Transient
   protected transient UserSessionService userSessionService;
-  
+
   public void setApplicationContext(ApplicationContext context) {
     this.context = context;
   }
-  
+
   public void setUserSessionService(UserSessionService userSessionService) {
     this.userSessionService = userSessionService;
   }
-  
+
   public void setType(IntegrityCheckType type) {
     this.type = type;
   }
-  
+
   public IntegrityCheckType getType() {
-    if (type == null) {
-      type = IntegrityCheckType.ERROR;  
+    if(type == null) {
+      type = IntegrityCheckType.ERROR;
     }
-    
+
     return type;
   }
-  
+
   public void setTargetParameter(InstrumentParameter targetParameter) {
     this.targetParameter = targetParameter;
   }
@@ -77,43 +77,38 @@ public abstract class AbstractIntegrityCheck extends AbstractEntity implements I
   }
 
   public void setCustomizedDescription(String customizedDescription) {
-    this.customizedDescription = customizedDescription;  
+    this.customizedDescription = customizedDescription;
   }
-  
+
   public String getCustomizedDescription() {
     return customizedDescription;
   }
-  
+
   //
   // IntegrityCheck Methods
   //
 
   public abstract boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService);
-  
+
   public String getDescription(ActiveInstrumentRunService activeRunService) {
     String retVal = getClass().getSimpleName();
 
     if(context != null && userSessionService != null) {
-      // Set the target parameter's context and user session service to ensure
-      // proper localization.
-      targetParameter.setApplicationContext(context);
-      targetParameter.setUserSessionService(userSessionService);
-      
       retVal = context.getMessage(getDescriptionKey(activeRunService), getDescriptionArgs(activeRunService), userSessionService.getLocale());
     }
 
-    return retVal;    
+    return retVal;
   }
-  
+
   protected String getDescriptionKey(ActiveInstrumentRunService activeRunService) {
     String descriptionKey = getCustomizedDescription();
-    
-    if (descriptionKey == null) {
+
+    if(descriptionKey == null) {
       descriptionKey = getClass().getSimpleName();
     }
-    
+
     return descriptionKey;
   }
-  
+
   protected abstract Object[] getDescriptionArgs(ActiveInstrumentRunService activeRunService);
 }
