@@ -149,6 +149,9 @@ public class VariableTest {
       userLogins[0].addReference(data);
     }
 
+    String str = "Hello World !";
+    dataSet.addVariableData(new VariableData("Binary_Data", DataBuilder.buildBinary(new ByteArrayInputStream(str.getBytes()))));
+
   }
 
   @Test

@@ -19,6 +19,8 @@ import org.obiba.core.validation.exception.ValidationRuntimeException;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.engine.Action;
+import org.obiba.onyx.util.data.Data;
 
 public interface ParticipantService {
 
@@ -113,5 +115,28 @@ public interface ParticipantService {
    * @param participantsList
    */
   public void updateParticipants(InputStream participantsListStream) throws ValidationRuntimeException;
+
+  /**
+   * Get Participant actions.
+   * @param participant
+   * @return
+   */
+  public List<Action> getActions(Participant participant);
+
+  /**
+   * Get Participant actions on a stage.
+   * @param participant
+   * @param stage
+   * @return
+   */
+  public List<Action> getActions(Participant participant, String stage);
+
+  /**
+   * Get the data for the participant configured attribute.
+   * @param participant
+   * @param attributeName
+   * @return null if no attribute with the given name
+   */
+  public Data getConfiguredAttributeValue(Participant participant, String attributeName);
 
 }

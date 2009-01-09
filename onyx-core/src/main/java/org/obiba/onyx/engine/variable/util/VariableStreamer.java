@@ -11,6 +11,7 @@ package org.obiba.onyx.engine.variable.util;
 
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
+import org.obiba.onyx.engine.variable.VariableDataSet;
 import org.obiba.onyx.util.data.Data;
 
 import com.thoughtworks.xstream.XStream;
@@ -37,6 +38,11 @@ public class VariableStreamer {
   public static String toXML(VariableData variableData) {
     VariableStreamer streamer = new VariableStreamer();
     return streamer.xstream.toXML(variableData);
+  }
+
+  public static String toXML(VariableDataSet variableDataSet) {
+    VariableStreamer streamer = new VariableStreamer();
+    return streamer.xstream.toXML(variableDataSet);
   }
 
   private void initializeXStream() {

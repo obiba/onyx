@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +35,16 @@ public class VariableDirectory implements IVariableProvider {
 
   private IVariablePathNamingStrategy variablePathNamingStrategy;
 
+  private EntityQueryService queryService;
+
   private Variable root;
 
   public void setVariablePathNamingStrategy(IVariablePathNamingStrategy variablePathNamingStrategy) {
     this.variablePathNamingStrategy = variablePathNamingStrategy;
+  }
+
+  public void setQueryService(EntityQueryService queryService) {
+    this.queryService = queryService;
   }
 
   public void registerVariables(IVariableProvider provider) {
@@ -78,8 +85,35 @@ public class VariableDirectory implements IVariableProvider {
     variablePathToVariableMap.remove(variablePath);
   }
 
+  /**
+   * Get the root of the whole set of variables.
+   * @return
+   */
   public Variable getVariableRoot() {
     return root;
+  }
+
+  public List<VariableDataSet> getParticipantData() {
+    List<VariableDataSet> dataSets = new ArrayList<VariableDataSet>();
+
+    Participant template = new Participant();
+    template.setExported(false);
+    for(Participant participant : queryService.match(template)) {
+      log.info("participant.name={}", participant.getFullName());
+      VariableDataSet dataSet = new VariableDataSet();
+      for(String path : variablePathToVariableMap.keySet()) {
+        // log.info("path={}", path);
+        VariableData varData = getVariableData(participant, path);
+        if(varData != null && varData.getDatas().size() > 0) {
+          dataSet.addVariableData(varData);
+        }
+      }
+      if(dataSet.getVariableDatas().size() > 0) {
+        dataSets.add(dataSet);
+      }
+    }
+
+    return dataSets;
   }
 
   private List<Variable> getVariables(Variable parent, List<Variable> variables) {

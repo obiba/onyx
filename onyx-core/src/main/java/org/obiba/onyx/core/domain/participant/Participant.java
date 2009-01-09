@@ -76,6 +76,8 @@ public class Participant extends AbstractEntity {
   @OneToOne(mappedBy = "participant")
   private Interview interview;
 
+  private Boolean exported;
+
   //
   // Methods
   //
@@ -323,6 +325,14 @@ public class Participant extends AbstractEntity {
     }
 
     getConfiguredAttributeValues().add(attributeValue);
+  }
+
+  public Boolean getExported() {
+    return exported;
+  }
+
+  public void setExported(Boolean exported) {
+    this.exported = exported;
   }
 
 }

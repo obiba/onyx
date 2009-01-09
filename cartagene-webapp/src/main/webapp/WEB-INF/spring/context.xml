@@ -111,6 +111,8 @@
   </bean>
   
   <bean id="onyxVariableProvider" class="org.obiba.onyx.engine.variable.OnyxVariableProvider">
+    <property name="participantMetadata" ref="participantMetadata" />
+    <property name="participantService" ref="participantService" />
   </bean>
 
 </beans>

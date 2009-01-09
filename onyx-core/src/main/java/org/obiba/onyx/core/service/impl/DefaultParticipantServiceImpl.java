@@ -32,6 +32,7 @@ import org.obiba.onyx.core.etl.participant.IParticipantReader;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
+import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -183,6 +184,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
             }
 
             log.debug("adding participant={}", participant.getEnrollmentId());
+            participant.setExported(false);
             getPersistenceManager().save(participant);
             getPersistenceManager().save(participant.getAppointment());
 
@@ -274,5 +276,29 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
    * @return
    */
   protected abstract List<Participant> getNotReceivedParticipants();
+
+  public List<Action> getActions(Participant participant) {
+    return getActions(participant, null);
+  }
+
+  public List<Action> getActions(Participant participant, String stage) {
+    Action template = new Action();
+    template.setInterview(participant.getInterview());
+    template.setStage(stage);
+    return getPersistenceManager().match(template);
+  }
+
+  public Data getConfiguredAttributeValue(Participant participant, String attributeName) {
+    ParticipantAttributeValue value = new ParticipantAttributeValue();
+    value.setAttributeName(attributeName);
+    value.setParticipant(participant);
+
+    value = getPersistenceManager().matchOne(value);
+    if(value != null && value.getData() != null && value.getValue() != null) {
+      return value.getData();
+    }
+
+    return null;
+  }
 
 }
