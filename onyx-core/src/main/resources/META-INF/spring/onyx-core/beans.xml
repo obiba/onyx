@@ -28,11 +28,16 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="stageOrderingStrategy" ref="stageOrderingStrategy" />
   </bean>
 
+  <bean id="interviewStageContextsFactoryBean" class="org.obiba.onyx.core.service.impl.InterviewStageContextsFactoryBean" />
+  
   <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl"
     scope="session" destroy-method="shutdown">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="moduleRegistry" ref="moduleRegistry" />
     <property name="participantService" ref="participantService" />
+    
+    <property name="interviewStageContexts" ref="interviewStageContextsFactoryBean" />
+    
     <aop:scoped-proxy proxy-target-class="false" />
   </bean>
 

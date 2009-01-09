@@ -16,6 +16,8 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.wizard.QuestionnaireWizardPanel;
@@ -36,13 +38,21 @@ public class QuartzPanel extends Panel implements IEngineComponentAware {
   @SpringBean
   private ModuleRegistry moduleRegistry;
 
+  @SpringBean
+  private QuestionnaireBundleManager questionnaireBundleManager;
+
   private QuestionnaireWizardPanel wizardPanel;
 
   @SuppressWarnings("serial")
   public QuartzPanel(String id, Stage stage, boolean resuming) {
     super(id);
 
-    // arriving here, current questionnaire is set in the in_progress stage state
+    // ONYX-154: Set the current questionnaire here. Previously, this was done only in
+    // QuartzInProgressState's onEntry method, but in a multiple user session scenario
+    // the questionnaire does not get set in all required sessions leading to a NullPointerException.
+    Questionnaire questionnaire = questionnaireBundleManager.getBundle(stage.getName()).getQuestionnaire();
+    activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
+
     if(activeQuestionnaireAdministrationService.getLanguage() == null) setDefaultLanguage();
 
     add(wizardPanel = new QuestionnaireWizardPanel("content", new QuestionnaireModel(activeQuestionnaireAdministrationService.getQuestionnaire()), new StageModel(moduleRegistry, stage.getName()), resuming));

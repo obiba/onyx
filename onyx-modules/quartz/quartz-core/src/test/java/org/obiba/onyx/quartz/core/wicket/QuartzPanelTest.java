@@ -101,7 +101,6 @@ public class QuartzPanelTest {
     final Questionnaire questionnaire = createQuestionnaire();
     expect(activeInterviewServiceMock.getParticipant()).andReturn(newTestParticipant()).times(2);
     expect(activeInterviewServiceMock.getInterview()).andReturn(newTestInterview());
-    expect((questionnaireBundleManagerMock.getBundle("HealthQuestionnaire"))).andReturn(questionnaireBundleMock).times(3);
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
 
     // calls for the label and description properties in LanguageSelectorPanel
@@ -114,6 +113,7 @@ public class QuartzPanelTest {
     expect(activeQuestionnaireAdministrationServiceMock.startPage()).andReturn(questionnaire.getPages().get(0));
 
     // calls for Panel creation on next link click
+    activeQuestionnaireAdministrationServiceMock.setQuestionnaire(questionnaire);
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
     expect((questionnaireBundleManagerMock.getBundle("HealthQuestionnaire"))).andReturn(questionnaireBundleMock).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(Locale.FRENCH).anyTimes();

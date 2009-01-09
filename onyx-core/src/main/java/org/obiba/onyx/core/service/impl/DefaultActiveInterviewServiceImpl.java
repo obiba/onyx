@@ -46,7 +46,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   /**
    * Map of Participant.Interview.id to Map of Stage.id to StageExecutionContext
    */
-  private Map<Serializable, Map<Serializable, StageExecutionContext>> interviewStageContexts = new HashMap<Serializable, Map<Serializable, StageExecutionContext>>();
+  private Map<Serializable, Map<Serializable, StageExecutionContext>> interviewStageContexts;
 
   private Serializable currentParticipantId = null;
 
@@ -242,4 +242,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     return Collections.unmodifiableCollection(getInterviewStageExecutionContexts(participant).values());
   }
 
+  public void setInterviewStageContexts(Map<Serializable, Map<Serializable, StageExecutionContext>> interviewStageContexts) {
+    this.interviewStageContexts = interviewStageContexts;
+  }
 }
