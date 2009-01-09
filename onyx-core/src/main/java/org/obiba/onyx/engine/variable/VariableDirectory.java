@@ -31,7 +31,9 @@ public class VariableDirectory implements IVariableProvider {
 
   private Map<String, Variable> variablePathToVariableMap = Collections.synchronizedMap(new HashMap<String, Variable>());
 
-  private Map<IVariableProvider, List<Variable>> providersToVariablesMap = Collections.synchronizedMap(new HashMap<IVariableProvider, List<Variable>>());// new
+  private Map<IVariableProvider, List<Variable>> providersToVariablesMap = Collections.synchronizedMap(new HashMap<IVariableProvider, List<Variable>>());
+
+  private Map<IVariableProvider, List<String>> providersToVariablePathsMap = Collections.synchronizedMap(new HashMap<IVariableProvider, List<String>>());
 
   private IVariablePathNamingStrategy variablePathNamingStrategy;
 
@@ -54,7 +56,6 @@ public class VariableDirectory implements IVariableProvider {
       log.info("Registering variables from provider {}", provider.getClass().getSimpleName());
       List<Variable> entities = provider.getVariables();
       providersToVariablesMap.put(provider, entities);
-      int variableCount = 0;
       if(entities != null) {
         for(Variable entity : entities) {
           getVariableRoot().addVariable(entity);
@@ -65,14 +66,21 @@ public class VariableDirectory implements IVariableProvider {
                 throw new IllegalArgumentException("Variable path " + path + " already registered by " + variablePathToProvidersMap.get(path).getClass().getSimpleName());
               }
               log.debug("Registering variable {} from provider {}", path, provider.getClass().getSimpleName());
-              variableCount++;
+
               variablePathToProvidersMap.put(path, provider);
+
+              if(!providersToVariablePathsMap.containsKey(provider)) {
+                providersToVariablePathsMap.put(provider, new ArrayList<String>());
+              }
+              providersToVariablePathsMap.get(provider).add(path);
+
               variablePathToVariableMap.put(path, variable);
+
             }
           }
         }
       }
-      log.info("Provider {} registered {} variables", provider.getClass().getSimpleName(), variableCount);
+      log.info("Provider {} registered {} variables", provider.getClass().getSimpleName(), variablePathToVariableMap.keySet().size());
     }
   }
 
@@ -139,13 +147,11 @@ public class VariableDirectory implements IVariableProvider {
     VariableDataSet dataSet = new VariableDataSet();
 
     log.info("START participant.name={}", participant.getFullName());
-    for(IVariableProvider provider : providersToVariablesMap.keySet()) {
-      for(Variable variable : providersToVariablesMap.get(provider)) {
-        VariableData varData = provider.getVariableData(participant, variable, variablePathNamingStrategy);
-        if(varData != null) {
-          for(Variable childVariable : variable.getVariables()) {
-            varData.addVariableData(getVariableData(participant, childVariable, provider));
-          }
+
+    for(IVariableProvider provider : providersToVariablePathsMap.keySet()) {
+      for(String path : providersToVariablePathsMap.get(provider)) {
+        VariableData varData = getVariableData(participant, path);
+        if(varData != null && (varData.getDatas().size() > 0 || varData.getVariableDatas().size() > 0)) {
           dataSet.addVariableData(varData);
         }
       }
@@ -156,21 +162,11 @@ public class VariableDirectory implements IVariableProvider {
   }
 
   /**
-   * @param participant
-   * @param variable
-   * @param provider
+   * 
+   * @param parent
+   * @param variables
    * @return
    */
-  private VariableData getVariableData(Participant participant, Variable variable, IVariableProvider provider) {
-    VariableData varData = provider.getVariableData(participant, variable, variablePathNamingStrategy);
-    if(varData != null) {
-      for(Variable childVariable : variable.getVariables()) {
-        varData.addVariableData(getVariableData(participant, childVariable, provider));
-      }
-    }
-    return varData;
-  }
-
   private List<Variable> getVariables(Variable parent, List<Variable> variables) {
     if(parent instanceof Variable) {
       variables.add((Variable) parent);

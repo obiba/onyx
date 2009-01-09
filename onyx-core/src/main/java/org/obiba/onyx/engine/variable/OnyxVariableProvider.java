@@ -46,6 +46,8 @@ public class OnyxVariableProvider implements IVariableProvider {
 
   private static final String ACTION = "Action";
 
+  private static final String ID = "id";
+
   private static final String USER = "user";
 
   private static final String STAGE = "stage";
@@ -95,20 +97,29 @@ public class OnyxVariableProvider implements IVariableProvider {
           varData.addData(data);
         }
       }
-    } else if(variable.getParent().getName().equals(ACTION)) {
+    } else if(variable.getParent().getName().equals(ACTION) && variable.getName().equals(ID)) {
+      varData.setVariablePath(variablePathNamingStrategy.getPath(variable.getParent()));
       for(Action action : participantService.getActions(participant)) {
-        if(variable.getName().equals(USER)) {
-          varData.addData(DataBuilder.buildText(action.getUser().getLogin()));
-        } else if(variable.getName().equals(STAGE)) {
-          varData.addData(DataBuilder.buildText(action.getStage()));
-        } else if(variable.getName().equals(ACTION_TYPE)) {
-          varData.addData(DataBuilder.buildText(action.getActionType().toString()));
-        } else if(variable.getName().equals(DATE_TIME)) {
-          varData.addData(DataBuilder.buildDate(action.getDateTime()));
-        } else if(variable.getName().equals(COMMENT) && action.getComment() != null) {
-          varData.addData(DataBuilder.buildText(action.getComment()));
-        } else if(variable.getName().equals(EVENT_REASON) && action.getEventReason() != null) {
-          varData.addData(DataBuilder.buildText(action.getEventReason()));
+        VariableData actionData = new VariableData(variablePathNamingStrategy.getPath(variable), DataBuilder.build(action.getId()));
+        varData.addVariableData(actionData);
+        for(Variable attributeVariable : variable.getVariables()) {
+          Data data = null;
+          if(attributeVariable.getName().equals(USER)) {
+            data = DataBuilder.buildText(action.getUser().getLogin());
+          } else if(attributeVariable.getName().equals(STAGE)) {
+            data = DataBuilder.buildText(action.getStage());
+          } else if(attributeVariable.getName().equals(ACTION_TYPE)) {
+            data = DataBuilder.buildText(action.getActionType().toString());
+          } else if(attributeVariable.getName().equals(DATE_TIME)) {
+            data = DataBuilder.buildDate(action.getDateTime());
+          } else if(attributeVariable.getName().equals(COMMENT) && action.getComment() != null) {
+            data = DataBuilder.buildText(action.getComment());
+          } else if(attributeVariable.getName().equals(EVENT_REASON) && action.getEventReason() != null) {
+            data = DataBuilder.buildText(action.getEventReason());
+          }
+          if(data != null) {
+            actionData.addVariableData(new VariableData(variablePathNamingStrategy.getPath(attributeVariable), data));
+          }
         }
       }
     }
@@ -137,12 +148,13 @@ public class OnyxVariableProvider implements IVariableProvider {
 
     entity = new Variable(ACTION);
     admin.addVariable(entity);
-    entity.addVariable(new Variable(USER).setDataType(DataType.TEXT));
-    entity.addVariable(new Variable(STAGE).setDataType(DataType.TEXT));
-    entity.addVariable(new Variable(ACTION_TYPE).setDataType(DataType.TEXT));
-    entity.addVariable(new Variable(DATE_TIME).setDataType(DataType.DATE));
-    entity.addVariable(new Variable(COMMENT).setDataType(DataType.TEXT));
-    entity.addVariable(new Variable(EVENT_REASON).setDataType(DataType.TEXT));
+    Variable idVariable = entity.addVariable(new Variable(ID).setDataType(DataType.INTEGER));
+    idVariable.addVariable(new Variable(USER).setDataType(DataType.TEXT));
+    idVariable.addVariable(new Variable(STAGE).setDataType(DataType.TEXT));
+    idVariable.addVariable(new Variable(ACTION_TYPE).setDataType(DataType.TEXT));
+    idVariable.addVariable(new Variable(DATE_TIME).setDataType(DataType.DATE));
+    idVariable.addVariable(new Variable(COMMENT).setDataType(DataType.TEXT));
+    idVariable.addVariable(new Variable(EVENT_REASON).setDataType(DataType.TEXT));
 
     return variables;
   }
