@@ -60,11 +60,11 @@ public class BalsacConfirmationPanel extends Panel {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
         log.info("radioGroup.onUpdate={}", selectedRadio);
-        if(selectedRadio == NO) {
+        if(selectedRadio.equals(NO)) {
           log.info("");
           selectionModel.setAccepted(false);
         } else {
-          if(selectedRadio == YES) {
+          if(selectedRadio.equals(YES)) {
             log.info("");
             selectionModel.setAccepted(true);
           }
@@ -101,7 +101,7 @@ public class BalsacConfirmationPanel extends Panel {
       public boolean isEnabled() {
 
         // The text area is displayed only when "YES" radiobutton is chosen
-        if(selectedRadio == YES) {
+        if(selectedRadio != null && selectedRadio.equals(YES)) {
           return true;
         } else {
           return false;
