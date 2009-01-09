@@ -169,12 +169,18 @@ public class EditParticipantPanel extends Panel {
       Participant participant = (Participant) getModelObject();
 
       // set recruitmentType for participant to volunteer if it is null
-      if(participant.getRecruitmentType() == null) participant.setRecruitmentType(RecruitmentType.VOLUNTEER);
-      if(participant.getRecruitmentType().equals(RecruitmentType.VOLUNTEER)) add(new EmptyPanel("enrollmentId"));
-      else
+      if(participant.getRecruitmentType() == null) {
+        participant.setRecruitmentType(RecruitmentType.VOLUNTEER);
+        participant.setExported(false);
+      }
+      if(participant.getRecruitmentType().equals(RecruitmentType.VOLUNTEER)) {
+        add(new EmptyPanel("enrollmentId"));
+      } else
         add(new RowFragment("enrollmentId", getModel(), "EnrollmentId", "enrollmentId"));
 
-      if(participant.getAppointment() == null) participant.setAppointment(new Appointment(participant, new Date()));
+      if(participant.getAppointment() == null) {
+        participant.setAppointment(new Appointment(participant, new Date()));
+      }
 
       // set Assessment Center Id for participant
       if(participant.getSiteNo() == null) {
