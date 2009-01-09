@@ -28,6 +28,8 @@ public class QuestionAnswer extends AbstractEntity {
 
   private String comment;
 
+  private Boolean active;
+
   @ManyToOne
   @JoinColumn(name = "questionnaire_participant_id")
   private QuestionnaireParticipant questionnaireParticipant;
@@ -49,6 +51,18 @@ public class QuestionAnswer extends AbstractEntity {
 
   public void setComment(String comment) {
     this.comment = comment;
+  }
+
+  public Boolean getActive() {
+    return active;
+  }
+
+  public void setActive(Boolean active) {
+    this.active = active;
+  }
+
+  public boolean isActive() {
+    return this.active;
   }
 
   public QuestionnaireParticipant getQuestionnaireParticipant() {

@@ -32,9 +32,41 @@ public interface QuestionnaireParticipantService {
    */
   public void deleteQuestionnaireParticipant(QuestionnaireParticipant questionnaireParticipant);
 
+  /**
+   * Get the comment on the question.
+   * @param participant
+   * @param questionnaireName
+   * @param questionName
+   * @return
+   */
   public String getQuestionComment(Participant participant, String questionnaireName, String questionName);
 
+  /**
+   * Get the active category answers for the question.
+   * @param participant
+   * @param questionnaireName
+   * @param questionName
+   * @return
+   */
   public List<CategoryAnswer> getCategoryAnswers(Participant participant, String questionnaireName, String questionName);
 
+  /**
+   * Get the active open answer for the question open answer definition.
+   * @param participant
+   * @param questionnaireName
+   * @param questionName
+   * @param categoryName
+   * @param openAnswerName
+   * @return
+   */
   public OpenAnswer getOpenAnswer(Participant participant, String questionnaireName, String questionName, String categoryName, String openAnswerName);
+
+  /**
+   * Get whether the question is flagged to be active.
+   * @param participant
+   * @param questionnaireName
+   * @param questionName
+   * @return false if active flag is false or null
+   */
+  public boolean isQuestionActive(Participant participant, String questionnaireName, String questionName);
 }

@@ -75,4 +75,20 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
     return null;
   }
 
+  public boolean isQuestionActive(Participant participant, String questionnaireName, String questionName) {
+    QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant(participant, questionnaireName);
+
+    QuestionAnswer answer = new QuestionAnswer();
+    answer.setQuestionName(questionName);
+    answer.setQuestionnaireParticipant(questionnaireParticipant);
+
+    answer = getPersistenceManager().matchOne(answer);
+
+    if(answer != null) {
+      return answer.isActive();
+    }
+
+    return false;
+  }
+
 }

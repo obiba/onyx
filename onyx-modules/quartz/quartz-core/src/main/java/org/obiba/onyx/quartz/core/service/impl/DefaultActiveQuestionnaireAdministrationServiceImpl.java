@@ -274,11 +274,26 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public void setActiveAnswers(Question question, boolean active) {
+    // question answers are made active (and created if none, in the case of boiler plates)
+    QuestionAnswer template = new QuestionAnswer();
+    template.setQuestionnaireParticipant(getQuestionnaireParticipant());
+    template.setQuestionName(question.getName());
+    QuestionAnswer questionAnswer = getPersistenceManager().matchOne(template);
+
+    if(questionAnswer == null) {
+      questionAnswer = template;
+    }
+
+    questionAnswer.setActive(active);
+    getPersistenceManager().save(questionAnswer);
+
+    // category answers are made active
     for(CategoryAnswer categoryAnswer : findAnswers(question)) {
       categoryAnswer.setActive(active);
       getPersistenceManager().save(categoryAnswer);
     }
 
+    // forward the active to child questions
     for(Question questionChild : question.getQuestions()) {
       setActiveAnswers(questionChild, active);
     }

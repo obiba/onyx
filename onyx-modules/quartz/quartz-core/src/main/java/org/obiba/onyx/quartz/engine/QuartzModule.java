@@ -178,9 +178,7 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
         entities.add(questionnaireEntity);
         for(Page page : questionnaire.getPages()) {
           for(Question question : page.getQuestions()) {
-            if(!question.isBoilerPlate()) {
-              questionnaireEntity.addVariable(questionToVariableMappingStrategy.getVariable(question));
-            }
+            questionnaireEntity.addVariable(questionToVariableMappingStrategy.getVariable(question));
           }
         }
       }

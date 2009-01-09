@@ -42,6 +42,8 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
 
   public static final String QUESTION_COMMENT = "comment";
 
+  public static final String QUESTION_ACTIVE = "active";
+
   public Variable getVariable(Questionnaire questionnaire) {
     Variable questionnaireVariable = new Variable(questionnaire.getName());
     // add participant dependent information
@@ -54,10 +56,9 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
   public Variable getVariable(Question question) {
     Variable entity = null;
 
-    // simple question
+    // simple question or boiler plate
     if(question.getQuestions().size() == 0) {
-      Variable variable = getQuestionVariable(question, question.getQuestionCategories());
-      entity = variable;
+      entity = getQuestionVariable(question, question.getQuestionCategories());
     } else if(question.getQuestionCategories().size() == 0) {
       // sub questions
       entity = getQuestionVariable(question, null);
@@ -99,7 +100,10 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
   private Variable getQuestionVariable(Question question, List<QuestionCategory> questionCategories) {
     Variable variable = new Variable(question.getName());
 
-    variable.addVariable(new Variable(QUESTION_COMMENT).setDataType(DataType.TEXT));
+    if(!question.isBoilerPlate() && !question.hasDataSource()) {
+      variable.addVariable(new Variable(QUESTION_COMMENT).setDataType(DataType.TEXT));
+    }
+    variable.addVariable(new Variable(QUESTION_ACTIVE).setDataType(DataType.BOOLEAN));
 
     // log.info("question.name={} questionCategories={}", question.getName(), questionCategories);
     if(questionCategories != null) {
@@ -176,6 +180,11 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
         String comment = questionnaireParticipantService.getQuestionComment(participant, questionnaire.getName(), variable.getParent().getName());
         if(comment != null) {
           variableData.addData(DataBuilder.buildText(comment));
+        }
+      } else if(variable.getName().equals(QUESTION_ACTIVE)) {
+        // question active data only if it is active
+        if(questionnaireParticipantService.isQuestionActive(participant, questionnaire.getName(), variable.getParent().getName())) {
+          variableData.addData(DataBuilder.buildBoolean(true));
         }
       } else {
         // get the open answer
