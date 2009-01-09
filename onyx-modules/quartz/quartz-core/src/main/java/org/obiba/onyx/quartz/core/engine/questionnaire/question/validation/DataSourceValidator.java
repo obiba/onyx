@@ -70,8 +70,7 @@ public class DataSourceValidator implements IDataValidator {
       // String sourceUnit = dataSource.getUnit();
       // String validatableUnit = getUnit();
       log.debug("comparing: {} {} {}", new Object[] { dataToCompare, comparisonOperator, data });
-
-      if(!comparisonOperator.compare(dataToCompare, data)) {
+      if(data != null && !comparisonOperator.compare(dataToCompare, data)) {
         ValidationError error = null;
 
         switch(comparisonOperator) {

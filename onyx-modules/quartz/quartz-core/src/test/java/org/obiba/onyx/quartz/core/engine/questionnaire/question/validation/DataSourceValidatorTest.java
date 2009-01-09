@@ -88,7 +88,7 @@ public class DataSourceValidatorTest {
     DataSourceValidator validator = new DataSourceValidator(ComparisonOperator.eq, DataSourceBuilder.createFixedSource(null).getDataSource());
     Validatable validatable = new Validatable(DataBuilder.buildInteger(0));
     validator.validate(validatable);
-    Assert.assertEquals(1, validatable.getErrors().size());
+    Assert.assertEquals(0, validatable.getErrors().size());
   }
 
   @Test
