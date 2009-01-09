@@ -22,6 +22,7 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
+import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.wicket.markup.html.border.SeparatorMarkupComponentBorder;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
@@ -68,7 +69,7 @@ public class ActionsPanel extends Panel {
             modal.show(target, ActionsPanel.this.getModel(), actionDefinition);
           } else {
             log.warn("Concurrent interview administration. Session {} tried to execute ActionDefinition {} on stage {}, yet that ActionDefinition is not available for the current stage's state.", new Object[] { WebSession.get().getId(), getModelObject(), getStage() });
-            setResponsePage(getPage());
+            setResponsePage(InterviewPage.class);
           }
         }
 
