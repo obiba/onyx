@@ -35,7 +35,6 @@ import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionDefinitionConfiguration;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
-import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.CommentsModalPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
@@ -71,7 +70,7 @@ public class InterviewPage extends BasePage {
     if(activeInterviewService.getParticipant() == null || activeInterviewService.getInterview() == null) {
       setResponsePage(WebApplication.get().getHomePage());
     } else {
-      final Interview interview = activeInterviewService.setInterviewOperator(OnyxAuthenticatedSession.get().getUser());
+      final Interview interview = activeInterviewService.setInterviewOperator(userSessionService.getUser());
       Participant participant = activeInterviewService.getParticipant();
 
       add(new ParticipantPanel("participant", new DetachableEntityModel(queryService, participant), true));

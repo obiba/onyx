@@ -22,9 +22,12 @@ import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
+import org.obiba.onyx.engine.ActionDefinitionConfiguration;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
@@ -33,6 +36,8 @@ import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
 import org.obiba.wicket.test.MockSpringApplication;
 
 public class ActionsPanelTest {
+
+  ExtendedApplicationContextMock mockApplicationContext;
 
   MockSpringApplication application;
 
@@ -49,15 +54,20 @@ public class ActionsPanelTest {
     mockActiveInterviewService = EasyMock.createMock(ActiveInterviewService.class);
     mockStageExecution = EasyMock.createMock(IStageExecution.class);
 
-    ExtendedApplicationContextMock mockAppCtx = new ExtendedApplicationContextMock();
-    mockAppCtx.putBean("activeInterviewService", mockActiveInterviewService);
+    mockApplicationContext = new ExtendedApplicationContextMock();
+    mockApplicationContext.putBean("activeInterviewService", mockActiveInterviewService);
 
     application = new MockSpringApplication();
-    application.setApplicationContext(mockAppCtx);
+    application.setApplicationContext(mockApplicationContext);
 
     actionDefinitionList = new LinkedList<ActionDefinition>();
     actionDefinitionList.add(new ActionDefinition(ActionType.EXECUTE, "mock.EXECUTE"));
     actionDefinitionList.add(new ActionDefinition(ActionType.STOP, "mock.STOP"));
+
+    // InterviewPage Mocks.
+    mockApplicationContext.putBean("userSessionService", EasyMock.createMock(UserSessionService.class));
+    mockApplicationContext.putBean(new ActionDefinitionConfiguration());
+    mockApplicationContext.putBean(EasyMock.createMock(EntityQueryService.class));
   }
 
   @Test
@@ -102,8 +112,10 @@ public class ActionsPanelTest {
    */
   @Test
   public void testClickActionNoLongerAvailable() {
-
     EasyMock.expect(mockActiveInterviewService.getStageExecution((Stage) EasyMock.anyObject())).andReturn(mockStageExecution).anyTimes();
+
+    // This is called by the InterviewPage upon redirect. Returning null will redirect to the HomePage.
+    EasyMock.expect(mockActiveInterviewService.getParticipant()).andReturn(null).anyTimes();
     // This should be called twice: first for displaying the links, second for validating the clicked actionDefinition
     EasyMock.expect(mockStageExecution.getActionDefinitions()).andReturn(actionDefinitionList).times(2);
     EasyMock.replay(mockActiveInterviewService, mockStageExecution);
@@ -132,6 +144,10 @@ public class ActionsPanelTest {
     tester.executeAjaxEvent("panel:link:1", "onclick");
     // Result is that we should NOT have a modal window event
     Assert.assertNull(window.getClickedDefinition());
+
+    // It should have redirected to the interview page, but we didn't Mock the services properly, so the InterviewPage
+    // itself then redirected to the HomePage.
+    tester.assertRenderedPage(application.getHomePage());
 
     EasyMock.verify(mockActiveInterviewService, mockStageExecution);
   }

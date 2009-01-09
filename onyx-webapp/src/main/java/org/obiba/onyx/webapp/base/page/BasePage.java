@@ -11,6 +11,7 @@ package org.obiba.onyx.webapp.base.page;
 
 import java.util.Locale;
 
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.html.IHeaderContributor;
@@ -19,6 +20,7 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.html.resources.JavascriptResourceReference;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.webapp.OnyxApplication;
@@ -38,14 +40,25 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware, I
     feedbackPanel.setOutputMarkupId(true);
     add(feedbackPanel);
 
-    if(((OnyxAuthenticatedSession) getSession()).isSignedIn()) {
-      add(new HeaderPanel("header"));
-    } else {
-      add(new EmptyPanel("header"));
+    Panel headerPanel = new EmptyPanel("header");
+    Panel menuBar = new EmptyPanel("menuBar");
+    Session session = getSession();
+    // Tests the session type for unit testing
+    if(session instanceof OnyxAuthenticatedSession) {
+      if(((OnyxAuthenticatedSession) getSession()).isSignedIn()) {
+        headerPanel = new HeaderPanel("header");
+        menuBar = new MenuBar("menuBar");
+      }
     }
+    add(headerPanel);
+    add(menuBar);
 
-    add(new MenuBar("menuBar"));
-    add(new Label("version", ((OnyxApplication) getApplication()).getVersion().toString()));
+    // Tests the application type for unit testing
+    if(getApplication() instanceof OnyxApplication) {
+      add(new Label("version", ((OnyxApplication) getApplication()).getVersion().toString()));
+    } else {
+      add(new EmptyPanel("version"));
+    }
 
     add(new Label("baseAjaxIndicator", new StringResourceModel("Processing", this, null)));
   }
