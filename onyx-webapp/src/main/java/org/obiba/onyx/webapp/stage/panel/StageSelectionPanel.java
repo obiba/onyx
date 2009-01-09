@@ -191,12 +191,10 @@ public abstract class StageSelectionPanel extends Panel {
 
           public void populateItem(Item cellItem, String componentId, IModel rowModel) {
             Stage stage = (Stage) rowModel.getObject();
-            IStageExecution exec = activeInterviewService.getStageExecution(stage);
-
             if(interactiveStage != null && !(interactiveStage.isValidForAction(stage))) {
               cellItem.add(new EmptyPanel(componentId));
             } else {
-              cellItem.add(new ActionsPanel(componentId, rowModel, exec, modal));
+              cellItem.add(new ActionsPanel(componentId, rowModel, modal));
             }
           }
 
