@@ -13,16 +13,19 @@ import java.util.List;
 
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.variable.Variable;
+import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.engine.variable.IInstrumentTypeToVariableMappingStrategy;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 
 /**
@@ -33,6 +36,22 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
   private static final String INSTRUMENT_RUN = "Run";
 
   private static final String INSTRUMENT = "Instrument";
+
+  private static final String NAME = "name";
+
+  private static final String VENDOR = "vendor";
+
+  private static final String MODEL = "model";
+
+  private static final String SERIAL_NUMBER = "serialNumber";
+
+  private static final String BARCODE = "barcode";
+
+  private static final String USER = "user";
+
+  private static final String TIMESTART = "timeStart";
+
+  private static final String TIMEEND = "timeEnd";
 
   private static final String INPUT = "Input";
 
@@ -56,16 +75,16 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
     Variable typeVariable = new Variable(type.getName());
 
     // instrument run
-    Variable runVariable = new Variable(INSTRUMENT_RUN);
-    Variable subVariable = runVariable.addVariable(new Variable(INSTRUMENT));
-    subVariable.addVariable(new Variable("name").setDataType(DataType.TEXT));
-    subVariable.addVariable(new Variable("vendor").setDataType(DataType.TEXT));
-    subVariable.addVariable(new Variable("model").setDataType(DataType.TEXT));
-    subVariable.addVariable(new Variable("serialNumber").setDataType(DataType.TEXT));
-    subVariable.addVariable(new Variable("barcode").setDataType(DataType.TEXT));
-    runVariable.addVariable(new Variable("user").setDataType(DataType.TEXT));
-    runVariable.addVariable(new Variable("timeStart").setDataType(DataType.DATE));
-    runVariable.addVariable(new Variable("timeEnd").setDataType(DataType.DATE));
+    Variable runVariable = typeVariable.addVariable(new Variable(INSTRUMENT_RUN));
+    Variable instrumentVariable = runVariable.addVariable(new Variable(INSTRUMENT));
+    instrumentVariable.addVariable(new Variable(NAME).setDataType(DataType.TEXT));
+    instrumentVariable.addVariable(new Variable(VENDOR).setDataType(DataType.TEXT));
+    instrumentVariable.addVariable(new Variable(MODEL).setDataType(DataType.TEXT));
+    instrumentVariable.addVariable(new Variable(SERIAL_NUMBER).setDataType(DataType.TEXT));
+    instrumentVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT));
+    runVariable.addVariable(new Variable(USER).setDataType(DataType.TEXT));
+    runVariable.addVariable(new Variable(TIMESTART).setDataType(DataType.DATE));
+    runVariable.addVariable(new Variable(TIMEEND).setDataType(DataType.DATE));
 
     // instrument parameters
     List<InstrumentParameter> parameters = type.getInstrumentParameters();
@@ -94,15 +113,54 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
       return null;// throw new IllegalArgumentException("Invalid variable hierarchy: " + variable);
     }
 
-    String parameterCode = variable.getName();
-    String instrumentTypeName = variable.getParent().getParent().getName();
+    Data rval = null;
 
-    InstrumentType type = instrumentService.getInstrumentType(instrumentTypeName);
-    if(type == null) return null;
+    if(variable.getParent().getName().equals(INSTRUMENT)) {
+      InstrumentRun run = getInstrumentRun(participant, variable.getParent().getParent().getParent().getName());
+      if(run != null && run.getInstrument() != null) {
+        Instrument instrument = run.getInstrument();
+        if(variable.getName().equals(NAME) && instrument.getName() != null) {
+          rval = DataBuilder.buildText(instrument.getName());
+        } else if(variable.getName().equals(VENDOR) && instrument.getVendor() != null) {
+          rval = DataBuilder.buildText(instrument.getVendor());
+        } else if(variable.getName().equals(MODEL) && instrument.getModel() != null) {
+          rval = DataBuilder.buildText(instrument.getModel());
+        } else if(variable.getName().equals(SERIAL_NUMBER) && instrument.getSerialNumber() != null) {
+          rval = DataBuilder.buildText(instrument.getSerialNumber());
+        } else if(variable.getName().equals(BARCODE) && instrument.getBarcode() != null) {
+          rval = DataBuilder.buildText(instrument.getBarcode());
+        }
+      }
+    } else if(variable.getParent().getName().equals(INSTRUMENT_RUN)) {
+      InstrumentRun run = getInstrumentRun(participant, variable.getParent().getParent().getName());
+      if(run != null) {
+        if(variable.getName().equals(USER) && run.getUser() != null) {
+          rval = DataBuilder.buildText(run.getUser().getLogin());
+        } else if(variable.getName().equals(TIMESTART) && run.getTimeStart() != null) {
+          rval = DataBuilder.buildDate(run.getTimeStart());
+        } else if(variable.getName().equals(TIMEEND) && run.getTimeEnd() != null) {
+          rval = DataBuilder.buildDate(run.getTimeEnd());
+        }
+      }
+    } else if(variable.getParent().getName().equals(INPUT) || variable.getParent().getName().equals(OUTPUT) || variable.getParent().getName().equals(INTERPRETIVE)) {
+      String parameterCode = variable.getName();
+      String instrumentTypeName = variable.getParent().getParent().getName();
 
-    InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, parameterCode);
+      InstrumentType type = instrumentService.getInstrumentType(instrumentTypeName);
+      if(type == null) return null;
 
-    return (runValue != null) ? runValue.getData() : null;
+      InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, parameterCode);
+
+      if(runValue != null) {
+        rval = runValue.getData();
+      }
+    }
+
+    return rval;
+  }
+
+  private InstrumentRun getInstrumentRun(Participant participant, String instrumentTypeName) {
+    return null;
   }
 
 }
