@@ -109,8 +109,8 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
 
   public Data getData(Variable variable, Participant participant) {
     // variable is expected to be a terminal one
-    if(variable == null || variable.getParent() == null || variable.getParent().getParent() == null) {
-      return null;// throw new IllegalArgumentException("Invalid variable hierarchy: " + variable);
+    if(variable == null || variable.getDataType() == null) {
+      return null;
     }
 
     Data rval = null;
