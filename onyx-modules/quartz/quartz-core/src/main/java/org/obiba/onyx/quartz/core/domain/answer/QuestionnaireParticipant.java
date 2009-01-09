@@ -10,16 +10,21 @@
 package org.obiba.onyx.quartz.core.domain.answer;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.user.User;
 
 @Entity
 public class QuestionnaireParticipant extends AbstractEntity {
@@ -37,6 +42,16 @@ public class QuestionnaireParticipant extends AbstractEntity {
   private Locale locale;
 
   private String resumePage;
+
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
+
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date timeStart;
+
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date timeEnd;
 
   @OneToMany(mappedBy = "questionnaireParticipant")
   private List<QuestionAnswer> questionAnswers;
@@ -79,6 +94,30 @@ public class QuestionnaireParticipant extends AbstractEntity {
 
   public String getResumePage() {
     return resumePage;
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
+  }
+
+  public Date getTimeStart() {
+    return timeStart;
+  }
+
+  public void setTimeStart(Date timeStart) {
+    this.timeStart = timeStart;
+  }
+
+  public Date getTimeEnd() {
+    return timeEnd;
+  }
+
+  public void setTimeEnd(Date timeEnd) {
+    this.timeEnd = timeEnd;
   }
 
   public List<QuestionAnswer> getParticipantAnswers() {

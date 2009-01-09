@@ -36,9 +36,17 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
 
   private static final Logger log = LoggerFactory.getLogger(DefaultQuestionToVariableMappingStrategy.class);
 
+  public static final String QUESTIONNAIRE_RUN = "Run";
+
   public static final String QUESTIONNAIRE_LOCALE = "locale";
 
   public static final String QUESTIONNAIRE_VERSION = "version";
+
+  public static final String QUESTIONNAIRE_TIMESTART = "timeStart";
+
+  public static final String QUESTIONNAIRE_TIMEEND = "timeEnd";
+
+  public static final String QUESTIONNAIRE_USER = "user";
 
   public static final String QUESTION_COMMENT = "comment";
 
@@ -47,8 +55,12 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
   public Variable getVariable(Questionnaire questionnaire) {
     Variable questionnaireVariable = new Variable(questionnaire.getName());
     // add participant dependent information
-    questionnaireVariable.addVariable(new Variable(QUESTIONNAIRE_VERSION).setDataType(DataType.TEXT));
-    questionnaireVariable.addVariable(new Variable(QUESTIONNAIRE_LOCALE).setDataType(DataType.TEXT));
+    Variable questionnaireRunVariable = questionnaireVariable.addVariable(new Variable(QUESTIONNAIRE_RUN));
+    questionnaireRunVariable.addVariable(new Variable(QUESTIONNAIRE_VERSION).setDataType(DataType.TEXT));
+    questionnaireRunVariable.addVariable(new Variable(QUESTIONNAIRE_LOCALE).setDataType(DataType.TEXT));
+    questionnaireRunVariable.addVariable(new Variable(QUESTIONNAIRE_USER).setDataType(DataType.TEXT));
+    questionnaireRunVariable.addVariable(new Variable(QUESTIONNAIRE_TIMESTART).setDataType(DataType.DATE));
+    questionnaireRunVariable.addVariable(new Variable(QUESTIONNAIRE_TIMEEND).setDataType(DataType.DATE));
 
     return questionnaireVariable;
   }
@@ -165,15 +177,20 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
 
     // variable is about an open answer or the question comment or the questionnaire
     else if(variable.getDataType() != null) {
-      if(variable.getName().equals(QUESTIONNAIRE_LOCALE)) {
+      if(variable.getParent().getName().equals(QUESTIONNAIRE_RUN)) {
         QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getQuestionnaireParticipant(participant, questionnaire.getName());
-        if(questionnaireParticipant != null && questionnaireParticipant.getLocale() != null) {
-          variableData.addData(DataBuilder.buildText(questionnaireParticipant.getLocale().toString()));
-        }
-      } else if(variable.getName().equals(QUESTIONNAIRE_VERSION)) {
-        QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getQuestionnaireParticipant(participant, questionnaire.getName());
-        if(questionnaireParticipant != null && questionnaireParticipant.getQuestionnaireVersion() != null) {
-          variableData.addData(DataBuilder.buildText(questionnaireParticipant.getQuestionnaireVersion()));
+        if(questionnaireParticipant != null) {
+          if(variable.getName().equals(QUESTIONNAIRE_LOCALE) && questionnaireParticipant.getLocale() != null) {
+            variableData.addData(DataBuilder.buildText(questionnaireParticipant.getLocale().toString()));
+          } else if(variable.getName().equals(QUESTIONNAIRE_VERSION) && questionnaireParticipant.getQuestionnaireVersion() != null) {
+            variableData.addData(DataBuilder.buildText(questionnaireParticipant.getQuestionnaireVersion()));
+          } else if(variable.getName().equals(QUESTIONNAIRE_USER) && questionnaireParticipant.getUser() != null) {
+            variableData.addData(DataBuilder.buildText(questionnaireParticipant.getUser().getLogin()));
+          } else if(variable.getName().equals(QUESTIONNAIRE_TIMESTART) && questionnaireParticipant.getTimeStart() != null) {
+            variableData.addData(DataBuilder.buildDate(questionnaireParticipant.getTimeStart()));
+          } else if(variable.getName().equals(QUESTIONNAIRE_TIMEEND) && questionnaireParticipant.getTimeEnd() != null) {
+            variableData.addData(DataBuilder.buildDate(questionnaireParticipant.getTimeEnd()));
+          }
         }
       } else if(variable.getName().equals(QUESTION_COMMENT)) {
         // question comment variable

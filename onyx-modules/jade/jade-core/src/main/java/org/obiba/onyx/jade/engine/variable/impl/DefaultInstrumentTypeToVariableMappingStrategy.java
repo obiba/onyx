@@ -23,11 +23,16 @@ import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.engine.variable.IInstrumentTypeToVariableMappingStrategy;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 
 /**
  * 
  */
 public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrumentTypeToVariableMappingStrategy {
+
+  private static final String INSTRUMENT_RUN = "Run";
+
+  private static final String INSTRUMENT = "Instrument";
 
   private static final String INPUT = "Input";
 
@@ -49,6 +54,20 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
 
   public Variable getVariable(InstrumentType type) {
     Variable typeVariable = new Variable(type.getName());
+
+    // instrument run
+    Variable runVariable = new Variable(INSTRUMENT_RUN);
+    Variable subVariable = runVariable.addVariable(new Variable(INSTRUMENT));
+    subVariable.addVariable(new Variable("name").setDataType(DataType.TEXT));
+    subVariable.addVariable(new Variable("vendor").setDataType(DataType.TEXT));
+    subVariable.addVariable(new Variable("model").setDataType(DataType.TEXT));
+    subVariable.addVariable(new Variable("serialNumber").setDataType(DataType.TEXT));
+    subVariable.addVariable(new Variable("barcode").setDataType(DataType.TEXT));
+    runVariable.addVariable(new Variable("user").setDataType(DataType.TEXT));
+    runVariable.addVariable(new Variable("timeStart").setDataType(DataType.DATE));
+    runVariable.addVariable(new Variable("timeEnd").setDataType(DataType.DATE));
+
+    // instrument parameters
     List<InstrumentParameter> parameters = type.getInstrumentParameters();
     if(parameters.size() > 0) {
       for(InstrumentParameter parameter : parameters) {
@@ -72,7 +91,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
   public Data getData(Variable variable, Participant participant) {
     // variable is expected to be a terminal one
     if(variable == null || variable.getParent() == null || variable.getParent().getParent() == null) {
-      throw new IllegalArgumentException("Invalid variable hierarchy: " + variable);
+      return null;// throw new IllegalArgumentException("Invalid variable hierarchy: " + variable);
     }
 
     String parameterCode = variable.getName();

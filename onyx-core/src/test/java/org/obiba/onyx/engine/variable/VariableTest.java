@@ -89,8 +89,8 @@ public class VariableTest {
     parent.addVariable(subvariable);
     parent.addVariable(subvariable2);
     for(int i = 0; i < participantBarcodes.length; i++) {
-      participantBarcodes[i].addReference(new VariableData(pathNamingStrategy.getPath(subvariable), DataBuilder.buildText("Name " + (i + 1))));
-      participantBarcodes[i].addReference(new VariableData(pathNamingStrategy.getPath(subvariable2), DataBuilder.buildBoolean(Boolean.TRUE)));
+      participantBarcodes[i].addVariableData(new VariableData(pathNamingStrategy.getPath(subvariable), DataBuilder.buildText("Name " + (i + 1))));
+      participantBarcodes[i].addVariableData(new VariableData(pathNamingStrategy.getPath(subvariable2), DataBuilder.buildBoolean(Boolean.TRUE)));
     }
 
     // questionnaire
@@ -104,7 +104,7 @@ public class VariableTest {
     variable.addVariable(subvariable);
 
     for(int i = 0; i < participantBarcodes.length; i++) {
-      participantBarcodes[i].addReference(new VariableData(pathNamingStrategy.getPath(subvariable), DataBuilder.buildInteger(45 + i)));
+      participantBarcodes[i].addVariableData(new VariableData(pathNamingStrategy.getPath(subvariable), DataBuilder.buildInteger(45 + i)));
     }
 
     parent = root.addVariable("HealthQuestionnaire/DATE_OF_BIRTH", pathNamingStrategy.getPathSeparator());
@@ -136,8 +136,8 @@ public class VariableTest {
 
     for(int i = 0; i < participantBarcodes.length; i++) {
       VariableData data = new VariableData(pathNamingStrategy.getPath(variable), DataBuilder.buildDecimal(170.5 + i));
-      participantBarcodes[i].addReference(data);
-      userLogins[0].addReference(data);
+      participantBarcodes[i].addVariableData(data);
+      userLogins[0].addVariableData(data);
     }
 
     variable = new Variable("Second_Height_Measurement").setDataType(DataType.DECIMAL);
@@ -145,8 +145,8 @@ public class VariableTest {
 
     for(int i = 0; i < participantBarcodes.length; i++) {
       VariableData data = new VariableData(pathNamingStrategy.getPath(variable), DataBuilder.buildDecimal(170.0 + i));
-      participantBarcodes[i].addReference(data);
-      userLogins[0].addReference(data);
+      participantBarcodes[i].addVariableData(data);
+      userLogins[0].addVariableData(data);
     }
 
     String str = "Hello World !";

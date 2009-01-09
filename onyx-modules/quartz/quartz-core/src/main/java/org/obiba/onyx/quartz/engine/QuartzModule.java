@@ -196,7 +196,6 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
     if(bundle != null) {
       Questionnaire questionnaire = bundle.getQuestionnaire();
       varData = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantService, participant, variable, varData, questionnaire);
-
     }
 
     return varData;

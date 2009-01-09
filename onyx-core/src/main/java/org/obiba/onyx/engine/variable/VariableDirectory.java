@@ -31,7 +31,7 @@ public class VariableDirectory implements IVariableProvider {
 
   private Map<String, Variable> variablePathToVariableMap = Collections.synchronizedMap(new HashMap<String, Variable>());
 
-  private List<IVariableProvider> providers = new ArrayList<IVariableProvider>();
+  private Map<IVariableProvider, List<Variable>> providersToVariablesMap = Collections.synchronizedMap(new HashMap<IVariableProvider, List<Variable>>());// new
 
   private IVariablePathNamingStrategy variablePathNamingStrategy;
 
@@ -50,18 +50,14 @@ public class VariableDirectory implements IVariableProvider {
   public void registerVariables(IVariableProvider provider) {
     if(provider == this) return;
 
-    if(root == null) {
-      root = new Variable(variablePathNamingStrategy.getRootName());
-    }
-
-    if(!providers.contains(provider)) {
+    if(!providersToVariablesMap.containsKey(provider)) {
       log.info("Registering variables from provider {}", provider.getClass().getSimpleName());
-      providers.add(provider);
-      int variableCount = 0;
       List<Variable> entities = provider.getVariables();
+      providersToVariablesMap.put(provider, entities);
+      int variableCount = 0;
       if(entities != null) {
         for(Variable entity : entities) {
-          root.addVariable(entity);
+          getVariableRoot().addVariable(entity);
           for(Variable variable : getVariables(entity, new ArrayList<Variable>())) {
             if(variable.getDataType() != null) {
               String path = variablePathNamingStrategy.getPath(variable);
@@ -90,30 +86,89 @@ public class VariableDirectory implements IVariableProvider {
    * @return
    */
   public Variable getVariableRoot() {
+    if(root == null) {
+      root = new Variable(variablePathNamingStrategy.getRootName());
+    }
     return root;
   }
 
-  public List<VariableDataSet> getParticipantData() {
+  /**
+   * Get all data set from all participants not being exported yet.
+   * @return
+   */
+  public List<VariableDataSet> getParticipantsData() {
     List<VariableDataSet> dataSets = new ArrayList<VariableDataSet>();
 
     Participant template = new Participant();
     template.setExported(false);
     for(Participant participant : queryService.match(template)) {
-      log.info("participant.name={}", participant.getFullName());
-      VariableDataSet dataSet = new VariableDataSet();
-      for(String path : variablePathToVariableMap.keySet()) {
-        // log.info("path={}", path);
-        VariableData varData = getVariableData(participant, path);
-        if(varData != null && varData.getDatas().size() > 0) {
-          dataSet.addVariableData(varData);
-        }
-      }
+      VariableDataSet dataSet = getParticipantData(participant);
       if(dataSet.getVariableDatas().size() > 0) {
         dataSets.add(dataSet);
       }
     }
 
     return dataSets;
+  }
+
+  /**
+   * Fetch the participant with the barcode and not being exported yet.
+   * @param barcode
+   * @return null if no participant found
+   */
+  public VariableDataSet getParticipantData(String barcode, Boolean exported) {
+    Participant template = new Participant();
+    template.setBarcode(barcode);
+    template.setExported(exported);
+
+    Participant participant = queryService.matchOne(template);
+
+    if(participant != null) {
+      return getParticipantData(participant);
+    }
+
+    return null;
+  }
+
+  /**
+   * Get data set from the given participant.
+   * @param participant
+   * @return
+   */
+  public VariableDataSet getParticipantData(Participant participant) {
+    VariableDataSet dataSet = new VariableDataSet();
+
+    log.info("START participant.name={}", participant.getFullName());
+    for(IVariableProvider provider : providersToVariablesMap.keySet()) {
+      for(Variable variable : providersToVariablesMap.get(provider)) {
+        VariableData varData = provider.getVariableData(participant, variable, variablePathNamingStrategy);
+        if(varData != null) {
+          for(Variable childVariable : variable.getVariables()) {
+            varData.addVariableData(getVariableData(participant, childVariable, provider));
+          }
+          dataSet.addVariableData(varData);
+        }
+      }
+    }
+    log.info("END participant.name={}", participant.getFullName());
+
+    return dataSet;
+  }
+
+  /**
+   * @param participant
+   * @param variable
+   * @param provider
+   * @return
+   */
+  private VariableData getVariableData(Participant participant, Variable variable, IVariableProvider provider) {
+    VariableData varData = provider.getVariableData(participant, variable, variablePathNamingStrategy);
+    if(varData != null) {
+      for(Variable childVariable : variable.getVariables()) {
+        varData.addVariableData(getVariableData(participant, childVariable, provider));
+      }
+    }
+    return varData;
   }
 
   private List<Variable> getVariables(Variable parent, List<Variable> variables) {
@@ -128,8 +183,8 @@ public class VariableDirectory implements IVariableProvider {
 
   public List<Variable> getVariables() {
     List<Variable> entities = new ArrayList<Variable>();
-    for(IVariableProvider provider : providers) {
-      entities.addAll(provider.getVariables());
+    for(IVariableProvider provider : providersToVariablesMap.keySet()) {
+      entities.addAll(providersToVariablesMap.get(provider));
     }
     return entities;
   }

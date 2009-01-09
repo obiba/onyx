@@ -36,21 +36,22 @@ public class VariableData implements Serializable {
   // public static final String QUERY_STATEMENT_SEPARATOR = "&";
 
   @XStreamAsAttribute
-  private String variablePath;
+  private String path;
 
   @XStreamImplicit
   private List<Data> datas;
 
-  private List<VariableData> references;
+  @XStreamImplicit
+  private List<VariableData> variableDatas;
 
   public VariableData(String variablePath) {
     super();
-    this.variablePath = variablePath;
+    this.path = variablePath;
   }
 
   public VariableData(String variablePath, Data data) {
     super();
-    this.variablePath = variablePath;
+    this.path = variablePath;
     addData(data);
   }
 
@@ -74,11 +75,11 @@ public class VariableData implements Serializable {
   // }
 
   public String getVariablePath() {
-    return variablePath;
+    return path;
   }
 
   public void setVariablePath(String variablePath) {
-    this.variablePath = variablePath;
+    this.path = variablePath;
   }
 
   public List<Data> getDatas() {
@@ -92,27 +93,26 @@ public class VariableData implements Serializable {
     return this;
   }
 
-  public List<VariableData> getReferences() {
-    return references != null ? references : (references = new ArrayList<VariableData>());
+  public List<VariableData> getVariableDatas() {
+    return variableDatas != null ? variableDatas : (variableDatas = new ArrayList<VariableData>());
   }
 
   /**
    * Cross referring variable data.
-   * @param reference
+   * @param child
    * @return this for chaining
    */
-  public VariableData addReference(VariableData reference) {
-    if(reference != null) {
-      getReferences().add(reference);
-      reference.getReferences().add(this);
+  public VariableData addVariableData(VariableData child) {
+    if(child != null) {
+      getVariableDatas().add(child);
     }
     return this;
   }
 
-  public VariableData addReferences(VariableData... reference) {
-    if(reference != null) {
-      for(VariableData ref : reference) {
-        addReference(ref);
+  public VariableData addVariableDatas(VariableData... variableDatas) {
+    if(variableDatas != null) {
+      for(VariableData ref : variableDatas) {
+        addVariableData(ref);
       }
     }
     return this;

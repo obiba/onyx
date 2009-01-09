@@ -78,10 +78,10 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     log.info("\n" + VariableStreamer.toXML(questionnaireVariable));
 
     Assert.assertEquals(questionnaire.getName(), questionnaireVariable.getName());
-    Assert.assertEquals(7, questionnaireVariable.getVariables().size());
+    Assert.assertEquals(6, questionnaireVariable.getVariables().size());
     Assert.assertEquals(0, questionnaireVariable.getCategories().size());
 
-    Variable questionVariable = questionnaireVariable.getVariables().get(2);
+    Variable questionVariable = questionnaireVariable.getVariables().get(1);
     Assert.assertEquals("Q1", questionVariable.getName());
     Assert.assertEquals(3, questionVariable.getCategories().size());
     Assert.assertEquals("1", questionVariable.getCategories().get(0).getName());
@@ -91,7 +91,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     Assert.assertEquals(DefaultQuestionToVariableMappingStrategy.QUESTION_COMMENT, questionVariable.getVariables().get(0).getName());
     Assert.assertEquals(DefaultQuestionToVariableMappingStrategy.QUESTION_ACTIVE, questionVariable.getVariables().get(1).getName());
 
-    questionVariable = questionnaireVariable.getVariables().get(3);
+    questionVariable = questionnaireVariable.getVariables().get(2);
     Assert.assertEquals("Q2", questionVariable.getName());
     Assert.assertEquals(4, questionVariable.getCategories().size());
     Assert.assertEquals(6, questionVariable.getVariables().size());
@@ -107,7 +107,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     Assert.assertEquals("OPEN_DATE", categoryVariable.getVariables().get(0).getName());
     Assert.assertEquals("OPEN_YEAR", categoryVariable.getVariables().get(1).getName());
 
-    questionVariable = questionnaireVariable.getVariables().get(4);
+    questionVariable = questionnaireVariable.getVariables().get(3);
     Assert.assertEquals("Q3", questionVariable.getName());
     Assert.assertEquals(0, questionVariable.getCategories().size());
     Assert.assertEquals(4, questionVariable.getVariables().size());
@@ -126,7 +126,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     Assert.assertEquals("N", subQuestionVariable.getCategories().get(1).getName());
     Assert.assertEquals(1, subQuestionVariable.getVariables().size());
 
-    questionVariable = questionnaireVariable.getVariables().get(5);
+    questionVariable = questionnaireVariable.getVariables().get(4);
     Assert.assertEquals("Q4", questionVariable.getName());
     Assert.assertEquals(0, questionVariable.getCategories().size());
     Assert.assertEquals(4, questionVariable.getVariables().size());
@@ -162,13 +162,13 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     expect(questionnaireParticipantServiceMock.getQuestionnaireParticipant(participant, questionnaire.getName())).andReturn(questionnaireParticipant).atLeastOnce();
     replay(questionnaireParticipantServiceMock);
 
-    Variable variable = questionnaireVariable.getVariables().get(0);
+    Variable variable = questionnaireVariable.getVariables().get(0).getVariables().get(0);
     VariableData data = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantServiceMock, participant, variable, new VariableData(variablePathNamingStrategy.getPath(variable)), questionnaire);
     log.info("\n" + VariableStreamer.toXML(data));
     Assert.assertEquals(1, data.getDatas().size());
     Assert.assertEquals("1.0", data.getDatas().get(0).getValue());
 
-    variable = questionnaireVariable.getVariables().get(1);
+    variable = questionnaireVariable.getVariables().get(0).getVariables().get(1);
     data = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantServiceMock, participant, variable, new VariableData(variablePathNamingStrategy.getPath(variable)), questionnaire);
     log.info("\n" + VariableStreamer.toXML(data));
 
@@ -215,7 +215,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     studyVariable.addVariable(questionnaireVariable);
     // log.info("\n"+VariableStreamer.toXML(studyVariable));
 
-    Variable variable = questionnaireVariable.getVariables().get(6).getVariables().get(0);
+    Variable variable = questionnaireVariable.getVariables().get(5).getVariables().get(0);
     Assert.assertEquals("BOILER_PLATE", variable.getParent().getName());
     Assert.assertEquals(DefaultQuestionToVariableMappingStrategy.QUESTION_ACTIVE, variable.getName());
 
@@ -244,7 +244,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     studyVariable.addVariable(questionnaireVariable);
     // log.info("\n"+VariableStreamer.toXML(studyVariable));
 
-    Variable variable = questionnaireVariable.getVariables().get(6).getVariables().get(0);
+    Variable variable = questionnaireVariable.getVariables().get(5).getVariables().get(0);
     Assert.assertEquals("BOILER_PLATE", variable.getParent().getName());
     Assert.assertEquals(DefaultQuestionToVariableMappingStrategy.QUESTION_ACTIVE, variable.getName());
 
@@ -307,7 +307,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     // log.info("\n"+VariableStreamer.toXML(studyVariable));
 
     // open_int variable
-    Variable variable = questionnaireVariable.getVariables().get(3).getVariables().get(2).getVariables().get(0);
+    Variable variable = questionnaireVariable.getVariables().get(2).getVariables().get(2).getVariables().get(0);
 
     Variable testVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
     Assert.assertEquals(questionnaire.getName(), testVariable.getName());
@@ -382,7 +382,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     studyVariable.addVariable(questionnaireVariable);
     // log.info("\n"+VariableStreamer.toXML(studyVariable));
 
-    Variable variable = questionnaireVariable.getVariables().get(5).getVariables().get(2);
+    Variable variable = questionnaireVariable.getVariables().get(4).getVariables().get(2);
 
     Variable testVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
     Assert.assertEquals(questionnaire.getName(), testVariable.getName());
