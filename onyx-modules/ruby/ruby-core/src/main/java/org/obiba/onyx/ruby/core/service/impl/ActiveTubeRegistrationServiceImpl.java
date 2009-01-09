@@ -249,14 +249,7 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     ParticipantTubeRegistration participantTubeRegistration = getParticipantTubeRegistration();
 
     if(participantTubeRegistration != null) {
-      List<RegisteredParticipantTube> registeredParticipantTubes = participantTubeRegistration.getRegisteredParticipantTubes();
-
-      for(RegisteredParticipantTube registeredParticipantTube : registeredParticipantTubes) {
-        getPersistenceManager().delete(registeredParticipantTube);
-      }
-
       getPersistenceManager().delete(participantTubeRegistration);
-
       currentTubeRegistrationId = null;
     }
   }

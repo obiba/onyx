@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -36,8 +37,7 @@ public class RegisteredParticipantTube extends AbstractEntity {
   @Temporal(TemporalType.TIMESTAMP)
   private Date registrationTime;
 
-  // private String remarkCode;
-  @OneToMany(mappedBy = "registeredParticipantTube")
+  @OneToMany(mappedBy = "registeredParticipantTube", cascade = CascadeType.ALL)
   private List<RemarkCode> remarkCode;
 
   @Column(length = 2000)

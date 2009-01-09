@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -40,7 +41,7 @@ public class ParticipantTubeRegistration extends AbstractEntity implements ICont
   @JoinColumn(name = "interview_id")
   private Interview interview;
 
-  @OneToMany(mappedBy = "participantTubeRegistration")
+  @OneToMany(mappedBy = "participantTubeRegistration", cascade = CascadeType.ALL)
   private List<RegisteredParticipantTube> registeredParticipantTubes;
 
   @Temporal(TemporalType.TIMESTAMP)
