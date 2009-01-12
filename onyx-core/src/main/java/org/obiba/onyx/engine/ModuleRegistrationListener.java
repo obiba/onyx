@@ -101,8 +101,7 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
         variableDirectory.registerVariables(provider);
       }
     }
-    log.debug(VariableStreamer.toXML(variableDirectory.getVariableRoot()));
-    // log.info(VariableStreamer.toXML(variableDirectory.getParticipantData("1", null)));
+    log.info(VariableStreamer.toXML(variableDirectory.getVariableRoot()));
   }
 
   public void setModuleRegistry(ModuleRegistry registry) {

@@ -30,6 +30,24 @@ public interface IVariablePathNamingStrategy {
   public String getPath(Variable entity);
 
   /**
+   * Get the path to the entity, with parameters.
+   * @param entity
+   * @param key
+   * @param value
+   * @return
+   */
+  public String getPath(Variable entity, String key, String value);
+
+  /**
+   * Add parameters to path.
+   * @param path
+   * @param key
+   * @param value
+   * @return
+   */
+  public String addParameters(String path, String key, String value);
+
+  /**
    * Get the path from DOM representation of the entity (assuming 'name' attribute).
    * @param entityNode
    * @return

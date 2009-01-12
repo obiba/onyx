@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
@@ -38,8 +39,11 @@ public class VariableData implements Serializable {
   @XStreamAsAttribute
   private String path;
 
+  @XStreamAsAttribute
+  private DataType type;
+
   @XStreamImplicit
-  private List<Data> datas;
+  private List<Serializable> values;
 
   @XStreamImplicit
   private List<VariableData> variableDatas;
@@ -82,13 +86,29 @@ public class VariableData implements Serializable {
     this.path = variablePath;
   }
 
+  public List<Serializable> getValues() {
+    return values != null ? values : (values = new ArrayList<Serializable>());
+  }
+
   public List<Data> getDatas() {
-    return datas != null ? datas : (datas = new ArrayList<Data>());
+    List<Data> datas = new ArrayList<Data>();
+
+    for(Serializable value : getValues()) {
+      datas.add(new Data(type, value));
+    }
+
+    return datas;
   }
 
   public VariableData addData(Data child) {
     if(child != null) {
       getDatas().add(child);
+      Serializable value = child.getValue();
+      getValues().add(value);
+      if(type != null && !type.equals(child.getType())) {
+        throw new IllegalArgumentException("Cannot mix values from different data types: " + type + " is current, " + child.getType() + " is added.");
+      }
+      type = child.getType();
     }
     return this;
   }

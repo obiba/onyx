@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,11 +27,19 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
 
   private static final Logger log = LoggerFactory.getLogger(DefaultVariablePathNamingStrategy.class);
 
+  public static final String ENCODING = "ISO-8859-1";
+
   public static final String DEFAULT_PATH_SEPARATOR = "/";
 
   private String rootName;
 
   private String pathSeparator = DEFAULT_PATH_SEPARATOR;
+
+  public static final String QUERY_STARTER = "?";
+
+  public static final String QUERY_KEY_VALUE_SEPARATOR = "=";
+
+  public static final String QUERY_STATEMENT_SEPARATOR = "&";
 
   private boolean startWithPathSeparator = true;
 
@@ -40,6 +50,25 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
     } else {
       return startWithPathSeparator ? getPathSeparator() + name : name;
     }
+  }
+
+  public String getPath(Variable entity, String key, String value) {
+    return addParameters(getPath(entity), key, value);
+  }
+
+  public String addParameters(String path, String key, String value) {
+    if(path.contains("?")) {
+      path += QUERY_STATEMENT_SEPARATOR;
+    } else {
+      path += QUERY_STARTER;
+    }
+    try {
+      path += key + QUERY_KEY_VALUE_SEPARATOR + URLEncoder.encode(value, ENCODING);
+    } catch(UnsupportedEncodingException e) {
+      throw new IllegalArgumentException("Value cannot be encoded in " + ENCODING + ": " + value, e);
+    }
+
+    return path;
   }
 
   public String getPath(Node entityNode) {
@@ -111,7 +140,11 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
 
     // split the path
     List<String> entityNames = new ArrayList<String>();
-    for(String str : path.split(getPathSeparator())) {
+    String noParamsPath = path;
+    if(path.contains(QUERY_STARTER)) {
+      noParamsPath = path.split(QUERY_STARTER)[0];
+    }
+    for(String str : noParamsPath.split(getPathSeparator())) {
       if(str.length() > 0) {
         entityNames.add(str);
       }

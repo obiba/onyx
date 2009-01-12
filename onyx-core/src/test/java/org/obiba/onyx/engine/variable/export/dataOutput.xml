@@ -1,52 +1,32 @@
 <variableDataSet>
-  <variableData path="LOGIN">
-    <data type="TEXT">
-      <value class="string">2Jy4GW8O+2iS+U1o/MwsNfC4Rgnl8SxV3YWrqNXZvvdoCPO1</value>
-    </data>
+  <variableData path="LOGIN" type="TEXT">
+    <string>2Jy4GW8O+2iS+U1o/MwsNfC4Rgnl8SxV3YWrqNXZvvdoCPO1</string>
   </variableData>
-  <variableData path="BARCODE">
-    <data type="TEXT">
-      <value class="string">ErgZJ7pbtfZ+G9ootASb8OSu140=</value>
-    </data>
+  <variableData path="BARCODE" type="TEXT">
+    <string>ErgZJ7pbtfZ+G9ootASb8OSu140=</string>
   </variableData>
-  <variableData path="NAME">
-    <data type="TEXT">
-      <value class="string">/Aw06amd5O87wrF8gTetZZh4+ek98fZYNnrKKGRSR0ue83ZeJOmogXNyTQ==</value>
-    </data>
+  <variableData path="NAME" type="TEXT">
+    <string>/Aw06amd5O87wrF8gTetZZh4+ek98fZYNnrKKGRSR0ue83ZeJOmogXNyTQ==</string>
   </variableData>
-  <variableData path="CONSENT">
-    <data type="BOOLEAN">
-      <value class="boolean">false</value>
-    </data>
+  <variableData path="CONSENT" type="BOOLEAN">
+    <boolean>false</boolean>
   </variableData>
-  <variableData path="OPEN_AGE">
-    <data type="INTEGER">
-      <value class="long">-8499159136334653718</value>
-    </data>
+  <variableData path="OPEN_AGE" type="INTEGER">
+    <long>-8499159136334653718</long>
   </variableData>
-  <variableData path="OPEN_YEAR">
-    <data type="INTEGER">
-      <value class="long">-7685764894419928447</value>
-    </data>
+  <variableData path="OPEN_YEAR" type="INTEGER">
+    <long>-7685764894419928447</long>
   </variableData>
-  <variableData path="OPEN_MONTH">
-    <data type="INTEGER">
-      <value class="long">780266760877150279</value>
-    </data>
+  <variableData path="OPEN_MONTH" type="INTEGER">
+    <long>780266760877150279</long>
   </variableData>
-  <variableData path="OPEN_DAY">
-    <data type="INTEGER">
-      <value class="long">-4396325885451314877</value>
-    </data>
+  <variableData path="OPEN_DAY" type="INTEGER">
+    <long>-4396325885451314877</long>
   </variableData>
-  <variableData path="First_Height_Measurement">
-    <data type="DECIMAL">
-      <value class="double">0.623972537215988</value>
-    </data>
+  <variableData path="First_Height_Measurement" type="DECIMAL">
+    <double>0.623972537215988</double>
   </variableData>
-  <variableData path="Second_Height_Measurement">
-    <data type="DECIMAL">
-      <value class="double">0.8792629643521901</value>
-    </data>
+  <variableData path="Second_Height_Measurement" type="DECIMAL">
+    <double>0.8792629643521901</double>
   </variableData>
 </variableDataSet>
