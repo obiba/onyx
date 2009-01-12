@@ -30,7 +30,7 @@
     </contraIndication>
 
     <contraIndication>
-      <code>Other</code>
+      <code>Other_CI</code>
       <requiresDescription>true</requiresDescription>
       <type>OBSERVED</type>
     </contraIndication>
