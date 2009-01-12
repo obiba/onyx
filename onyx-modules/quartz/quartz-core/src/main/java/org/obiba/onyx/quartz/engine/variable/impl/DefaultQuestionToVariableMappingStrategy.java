@@ -36,7 +36,7 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
 
   private static final Logger log = LoggerFactory.getLogger(DefaultQuestionToVariableMappingStrategy.class);
 
-  public static final String QUESTIONNAIRE_RUN = "Run";
+  public static final String QUESTIONNAIRE_RUN = "QuestionnaireRun";
 
   public static final String QUESTIONNAIRE_LOCALE = "locale";
 
