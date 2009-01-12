@@ -1,0 +1,45 @@
+<variable name="STUDY_NAME">
+  <variable name="ADMIN">
+    <variable name="USER">
+      <variable name="LOGIN" dataType="TEXT"/>
+    </variable>
+    <variable name="PARTICIPANT">
+      <variable name="BARCODE" dataType="TEXT"/>
+      <variable name="NAME" dataType="TEXT"/>
+      <variable name="CONSENT" dataType="BOOLEAN"/>
+    </variable>
+  </variable>
+  <variable name="HealthQuestionnaire">
+    <variable name="PARTICIPANT_AGE">
+      <variable name="OPEN_AGE" dataType="INTEGER" unit="year"/>
+      <category name="PARTICIPANT_AGE"/>
+      <category name="PNA"/>
+      <category name="DK"/>
+    </variable>
+    <variable name="DATE_OF_BIRTH">
+      <variable name="DOB_YEAR">
+        <variable name="OPEN_YEAR" dataType="INTEGER"/>
+        <category name="DOB_YEAR"/>
+        <category name="PNA"/>
+        <category name="DK"/>
+      </variable>
+      <variable name="DOB_MONTH">
+        <variable name="OPEN_MONTH" dataType="INTEGER"/>
+        <category name="DOB_MONTH"/>
+        <category name="PNA"/>
+        <category name="DK"/>
+      </variable>
+      <variable name="DOB_DAY">
+        <variable name="OPEN_DAY" dataType="INTEGER"/>
+        <category name="DOB_DAY"/>
+        <category name="PNA"/>
+        <category name="DK"/>
+      </variable>
+    </variable>
+  </variable>
+  <variable name="StandingHeight">
+    <variable name="First_Height_Measurement" dataType="DECIMAL"/>
+    <variable name="Second_Height_Measurement" dataType="DECIMAL"/>
+  </variable>
+</variable>
+        

@@ -9,6 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.util;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.VariableDataSet;
@@ -35,9 +38,24 @@ public class VariableStreamer {
     return streamer.xstream.toXML(variable);
   }
 
+  public static Variable fromXML(InputStream is) {
+    VariableStreamer streamer = new VariableStreamer();
+    return (Variable) streamer.xstream.fromXML(is);
+  }
+
+  public static void toXML(Variable variable, OutputStream os) {
+    VariableStreamer streamer = new VariableStreamer();
+    streamer.xstream.toXML(variable, os);
+  }
+
   public static String toXML(VariableData variableData) {
     VariableStreamer streamer = new VariableStreamer();
     return streamer.xstream.toXML(variableData);
+  }
+
+  public static void toXML(VariableData variableData, OutputStream os) {
+    VariableStreamer streamer = new VariableStreamer();
+    streamer.xstream.toXML(variableData, os);
   }
 
   public static String toXML(VariableDataSet variableDataSet) {
@@ -45,9 +63,15 @@ public class VariableStreamer {
     return streamer.xstream.toXML(variableDataSet);
   }
 
+  public static void toXML(VariableDataSet variableDataSet, OutputStream os) {
+    VariableStreamer streamer = new VariableStreamer();
+    streamer.xstream.toXML(variableDataSet, os);
+  }
+
   private void initializeXStream() {
     xstream = new XStream();
     xstream.setMode(XStream.XPATH_ABSOLUTE_REFERENCES);
+    xstream.processAnnotations(Variable.class);
     xstream.autodetectAnnotations(true);
 
     xstream.alias("data", Data.class);
