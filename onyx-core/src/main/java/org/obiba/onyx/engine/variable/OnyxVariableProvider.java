@@ -97,31 +97,8 @@ public class OnyxVariableProvider implements IVariableProvider {
           varData.addData(data);
         }
       }
-    } else if(variable.getParent().getName().equals(ACTION)) {
-      for(Action action : participantService.getActions(participant)) {
-        Data data = null;
-        if(variable.getName().equals(ACTION_ID)) {
-          varData.addData(DataBuilder.build(action.getId()));
-        } else if(variable.getName().equals(ACTION_USER) && action.getUser() != null) {
-          data = DataBuilder.buildText(action.getUser().getLogin());
-        } else if(variable.getName().equals(ACTION_STAGE) && action.getStage() != null) {
-          data = DataBuilder.buildText(action.getStage());
-        } else if(variable.getName().equals(ACTION_TYPE) && action.getActionType() != null) {
-          data = DataBuilder.buildText(action.getActionType().toString());
-        } else if(variable.getName().equals(ACTION_DATE_TIME) && action.getDateTime() != null) {
-          data = DataBuilder.buildDate(action.getDateTime());
-        } else if(variable.getName().equals(ACTION_COMMENT) && action.getComment() != null) {
-          data = DataBuilder.buildText(action.getComment());
-        } else if(variable.getName().equals(ACTION_EVENT_REASON) && action.getEventReason() != null) {
-          data = DataBuilder.buildText(action.getEventReason());
-        }
-
-        if(data != null) {
-          VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, ACTION_ID, action.getId().toString()));
-          varData.addVariableData(childVarData);
-          childVarData.addData(data);
-        }
-      }
+    } else if(isActionVariable(variable)) {
+      varData = getActionVariableData(participant, variable, variablePathNamingStrategy, varData, null);
     }
 
     return varData;
@@ -145,12 +122,61 @@ public class OnyxVariableProvider implements IVariableProvider {
       entity.addVariable(new Variable(attribute.getName()).setDataType(attribute.getType()));
     }
 
-    admin.addVariable(getActionVariable());
+    admin.addVariable(createActionVariable());
 
     return variables;
   }
 
-  public static Variable getActionVariable() {
+  public boolean isActionVariable(Variable variable) {
+    return (variable.getParent().getName().equals(ACTION));
+  }
+
+  /**
+   * Get the action variable data, restricted to a stage or not.
+   * @param participant
+   * @param variable
+   * @param variablePathNamingStrategy
+   * @param varData
+   * @param stage if null, get all actions
+   * @return
+   */
+  public VariableData getActionVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy, VariableData varData, String stage) {
+    List<Action> actions;
+    if(stage == null) {
+      actions = participantService.getActions(participant);
+    } else {
+      actions = participantService.getActions(participant, stage);
+    }
+
+    for(Action action : actions) {
+      Data data = null;
+      if(variable.getName().equals(ACTION_ID)) {
+        varData.addData(DataBuilder.build(action.getId()));
+      } else if(variable.getName().equals(ACTION_USER) && action.getUser() != null) {
+        data = DataBuilder.buildText(action.getUser().getLogin());
+      } else if(variable.getName().equals(ACTION_STAGE) && action.getStage() != null) {
+        data = DataBuilder.buildText(action.getStage());
+      } else if(variable.getName().equals(ACTION_TYPE) && action.getActionType() != null) {
+        data = DataBuilder.buildText(action.getActionType().toString());
+      } else if(variable.getName().equals(ACTION_DATE_TIME) && action.getDateTime() != null) {
+        data = DataBuilder.buildDate(action.getDateTime());
+      } else if(variable.getName().equals(ACTION_COMMENT) && action.getComment() != null) {
+        data = DataBuilder.buildText(action.getComment());
+      } else if(variable.getName().equals(ACTION_EVENT_REASON) && action.getEventReason() != null) {
+        data = DataBuilder.buildText(action.getEventReason());
+      }
+
+      if(data != null) {
+        VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, ACTION_ID, action.getId().toString()));
+        varData.addVariableData(childVarData);
+        childVarData.addData(data);
+      }
+    }
+
+    return varData;
+  }
+
+  public Variable createActionVariable() {
     Variable actionVariable = new Variable(OnyxVariableProvider.ACTION);
     actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_ID).setDataType(DataType.INTEGER));
     actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_USER).setDataType(DataType.TEXT)).addReference(ACTION_ID);

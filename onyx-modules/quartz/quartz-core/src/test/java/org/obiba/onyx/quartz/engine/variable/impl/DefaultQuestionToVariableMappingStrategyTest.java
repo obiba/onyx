@@ -72,6 +72,15 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     questionnaire = createQuestionnaire();
   }
 
+  private Variable getChildVariable(Variable parentVariable, String name) {
+    for(Variable child : parentVariable.getVariables()) {
+      if(child.getName().equals(name)) {
+        return child;
+      }
+    }
+    return null;
+  }
+
   @Test
   public void testVariable() {
     Variable questionnaireVariable = createQuestionnaireVariable();
@@ -81,7 +90,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     Assert.assertEquals(6, questionnaireVariable.getVariables().size());
     Assert.assertEquals(0, questionnaireVariable.getCategories().size());
 
-    Variable questionVariable = questionnaireVariable.getVariables().get(1);
+    Variable questionVariable = getChildVariable(questionnaireVariable, "Q1");
     Assert.assertEquals("Q1", questionVariable.getName());
     Assert.assertEquals(3, questionVariable.getCategories().size());
     Assert.assertEquals("1", questionVariable.getCategories().get(0).getName());
@@ -91,7 +100,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     Assert.assertEquals(DefaultQuestionToVariableMappingStrategy.QUESTION_COMMENT, questionVariable.getVariables().get(0).getName());
     Assert.assertEquals(DefaultQuestionToVariableMappingStrategy.QUESTION_ACTIVE, questionVariable.getVariables().get(1).getName());
 
-    questionVariable = questionnaireVariable.getVariables().get(2);
+    questionVariable = getChildVariable(questionnaireVariable, "Q2");
     Assert.assertEquals("Q2", questionVariable.getName());
     Assert.assertEquals(4, questionVariable.getCategories().size());
     Assert.assertEquals(6, questionVariable.getVariables().size());
@@ -107,7 +116,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     Assert.assertEquals("OPEN_DATE", categoryVariable.getVariables().get(0).getName());
     Assert.assertEquals("OPEN_YEAR", categoryVariable.getVariables().get(1).getName());
 
-    questionVariable = questionnaireVariable.getVariables().get(3);
+    questionVariable = getChildVariable(questionnaireVariable, "Q3");
     Assert.assertEquals("Q3", questionVariable.getName());
     Assert.assertEquals(0, questionVariable.getCategories().size());
     Assert.assertEquals(4, questionVariable.getVariables().size());
@@ -126,7 +135,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     Assert.assertEquals("N", subQuestionVariable.getCategories().get(1).getName());
     Assert.assertEquals(1, subQuestionVariable.getVariables().size());
 
-    questionVariable = questionnaireVariable.getVariables().get(4);
+    questionVariable = getChildVariable(questionnaireVariable, "Q4");
     Assert.assertEquals("Q4", questionVariable.getName());
     Assert.assertEquals(0, questionVariable.getCategories().size());
     Assert.assertEquals(4, questionVariable.getVariables().size());
@@ -187,7 +196,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     studyVariable.addVariable(questionnaireVariable);
     // log.info("\n"+VariableStreamer.toXML(studyVariable));
 
-    Variable variable = questionnaireVariable.getVariables().get(2).getVariables().get(0);
+    Variable variable = getChildVariable(questionnaireVariable, "Q1").getVariables().get(0);
     Assert.assertEquals(DefaultQuestionToVariableMappingStrategy.QUESTION_COMMENT, variable.getName());
 
     Variable testVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
@@ -215,7 +224,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     studyVariable.addVariable(questionnaireVariable);
     // log.info("\n"+VariableStreamer.toXML(studyVariable));
 
-    Variable variable = questionnaireVariable.getVariables().get(5).getVariables().get(0);
+    Variable variable = getChildVariable(questionnaireVariable, "BOILER_PLATE").getVariables().get(0);
     Assert.assertEquals("BOILER_PLATE", variable.getParent().getName());
     Assert.assertEquals(DefaultQuestionToVariableMappingStrategy.QUESTION_ACTIVE, variable.getName());
 
@@ -244,7 +253,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     studyVariable.addVariable(questionnaireVariable);
     // log.info("\n"+VariableStreamer.toXML(studyVariable));
 
-    Variable variable = questionnaireVariable.getVariables().get(5).getVariables().get(0);
+    Variable variable = getChildVariable(questionnaireVariable, "BOILER_PLATE").getVariables().get(0);
     Assert.assertEquals("BOILER_PLATE", variable.getParent().getName());
     Assert.assertEquals(DefaultQuestionToVariableMappingStrategy.QUESTION_ACTIVE, variable.getName());
 
@@ -272,7 +281,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     studyVariable.addVariable(questionnaireVariable);
     // log.info("\n"+VariableStreamer.toXML(studyVariable));
 
-    Variable variable = questionnaireVariable.getVariables().get(2);
+    Variable variable = getChildVariable(questionnaireVariable, "Q1");
 
     Variable testVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
     Assert.assertEquals(questionnaire.getName(), testVariable.getName());
@@ -307,7 +316,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     // log.info("\n"+VariableStreamer.toXML(studyVariable));
 
     // open_int variable
-    Variable variable = questionnaireVariable.getVariables().get(2).getVariables().get(2).getVariables().get(0);
+    Variable variable = getChildVariable(questionnaireVariable, "Q2").getVariables().get(2).getVariables().get(0);
 
     Variable testVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
     Assert.assertEquals(questionnaire.getName(), testVariable.getName());
@@ -351,7 +360,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     studyVariable.addVariable(questionnaireVariable);
     // log.info("\n"+VariableStreamer.toXML(studyVariable));
 
-    Variable variable = questionnaireVariable.getVariables().get(4).getVariables().get(2);
+    Variable variable = getChildVariable(questionnaireVariable, "Q3").getVariables().get(2);
 
     Variable testVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
     Assert.assertEquals(questionnaire.getName(), testVariable.getName());
@@ -382,7 +391,7 @@ public class DefaultQuestionToVariableMappingStrategyTest {
     studyVariable.addVariable(questionnaireVariable);
     // log.info("\n"+VariableStreamer.toXML(studyVariable));
 
-    Variable variable = questionnaireVariable.getVariables().get(4).getVariables().get(2);
+    Variable variable = getChildVariable(questionnaireVariable, "Q4").getVariables().get(2);
 
     Variable testVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
     Assert.assertEquals(questionnaire.getName(), testVariable.getName());

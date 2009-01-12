@@ -19,6 +19,8 @@ import org.obiba.onyx.util.data.Data;
  */
 public interface IInstrumentTypeToVariableMappingStrategy {
 
+  public Variable getInstrumentTypeVariable(Variable variable);
+
   public Variable getVariable(InstrumentType type);
 
   public Data getData(Variable variable, Participant participant);

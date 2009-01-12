@@ -24,6 +24,7 @@ import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.IVariableProvider;
+import org.obiba.onyx.engine.variable.OnyxVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
@@ -54,6 +55,8 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
   private QuestionnaireBundleManager questionnaireBundleManager;
 
   private IQuestionToVariableMappingStrategy questionToVariableMappingStrategy;
+
+  private OnyxVariableProvider onyxVariableProvider;
 
   public String getName() {
     return "quartz";
@@ -103,6 +106,10 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
 
   public void setQuestionnaireParticipantService(QuestionnaireParticipantService questionnaireParticipantService) {
     this.questionnaireParticipantService = questionnaireParticipantService;
+  }
+
+  public void setOnyxVariableProvider(OnyxVariableProvider onyxVariableProvider) {
+    this.onyxVariableProvider = onyxVariableProvider;
   }
 
   public IStageExecution createStageExecution(Interview interview, Stage stage) {
@@ -174,11 +181,15 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
       if(bundle != null) {
         Questionnaire questionnaire = bundle.getQuestionnaire();
         log.info("getVariables from questionnaire {}", questionnaire.getName());
-        Variable questionnaireEntity = questionToVariableMappingStrategy.getVariable(questionnaire);
-        entities.add(questionnaireEntity);
+        Variable questionnaireVariable = questionToVariableMappingStrategy.getVariable(questionnaire);
+
+        // always add action variables, cannot be changed as it is onyx specific
+        questionnaireVariable.addVariable(onyxVariableProvider.createActionVariable());
+
+        entities.add(questionnaireVariable);
         for(Page page : questionnaire.getPages()) {
           for(Question question : page.getQuestions()) {
-            questionnaireEntity.addVariable(questionToVariableMappingStrategy.getVariable(question));
+            questionnaireVariable.addVariable(questionToVariableMappingStrategy.getVariable(question));
           }
         }
       }
@@ -195,7 +206,12 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
     QuestionnaireBundle bundle = questionnaireBundleManager.getBundle(questionnaireVariable.getName());
     if(bundle != null) {
       Questionnaire questionnaire = bundle.getQuestionnaire();
-      varData = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantService, participant, variable, varData, questionnaire);
+
+      if(onyxVariableProvider.isActionVariable(variable)) {
+        varData = onyxVariableProvider.getActionVariableData(participant, variable, variablePathNamingStrategy, varData, questionnaire.getName());
+      } else {
+        varData = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantService, participant, variable, varData, questionnaire);
+      }
     }
 
     return varData;

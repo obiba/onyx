@@ -189,4 +189,14 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
     return null;
   }
 
+  public Variable getInstrumentTypeVariable(Variable variable) {
+    Variable instrumentTypeVariable = variable;
+
+    while(instrumentTypeVariable.getParent() != null && instrumentTypeVariable.getParent().getParent() != null) {
+      instrumentTypeVariable = instrumentTypeVariable.getParent();
+    }
+
+    return instrumentTypeVariable;
+  }
+
 }

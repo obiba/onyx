@@ -22,6 +22,7 @@
         <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/jade/stages.xml" />
       </bean>
     </property>
+    <property name="onyxVariableProvider" ref="onyxVariableProvider" />
   </bean>
 
 </beans>

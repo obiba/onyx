@@ -63,4 +63,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="pdfPrintingService" class="org.obiba.onyx.print.PdfPrintingService">
     <property name="printerName" value="${org.obiba.onyx.pdfPrinterName}" />  
   </bean>  
+  
+  <bean id="onyxVariableProvider" class="org.obiba.onyx.engine.variable.OnyxVariableProvider">
+    <property name="participantMetadata" ref="participantMetadata" />
+    <property name="participantService" ref="participantService" />
+  </bean>
+  
 </beans>

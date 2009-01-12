@@ -24,6 +24,7 @@ import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.IVariableProvider;
+import org.obiba.onyx.engine.variable.OnyxVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
@@ -47,6 +48,8 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
   private InstrumentService instrumentService;
 
   private IInstrumentTypeToVariableMappingStrategy instrumentTypeToVariableMappingStrategy;
+
+  private OnyxVariableProvider onyxVariableProvider;
 
   private DatabaseSeed databaseSeed;
 
@@ -138,6 +141,10 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
     this.databaseSeed = databaseSeed;
   }
 
+  public void setOnyxVariableProvider(OnyxVariableProvider onyxVariableProvider) {
+    this.onyxVariableProvider = onyxVariableProvider;
+  }
+
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
     this.activeInterviewService = activeInterviewService;
   }
@@ -151,9 +158,14 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
   }
 
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
-
     VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
-    varData.addData(instrumentTypeToVariableMappingStrategy.getData(variable, participant));
+    if(onyxVariableProvider.isActionVariable(variable)) {
+      Variable typeVariable = instrumentTypeToVariableMappingStrategy.getInstrumentTypeVariable(variable);
+      // stage name is the instrument type name
+      varData = onyxVariableProvider.getActionVariableData(participant, variable, variablePathNamingStrategy, varData, typeVariable.getName());
+    } else {
+      varData.addData(instrumentTypeToVariableMappingStrategy.getData(variable, participant));
+    }
 
     return varData;
   }
@@ -162,7 +174,9 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
     List<Variable> entities = new ArrayList<Variable>();
 
     for(InstrumentType type : instrumentService.getInstrumentTypes()) {
-      entities.add(instrumentTypeToVariableMappingStrategy.getVariable(type));
+      Variable typeVariable = instrumentTypeToVariableMappingStrategy.getVariable(type);
+      typeVariable.addVariable(onyxVariableProvider.createActionVariable());
+      entities.add(typeVariable);
     }
 
     return entities;
