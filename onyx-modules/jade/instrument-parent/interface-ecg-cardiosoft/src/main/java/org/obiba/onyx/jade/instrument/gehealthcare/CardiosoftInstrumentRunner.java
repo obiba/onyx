@@ -285,7 +285,7 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
   private void initParticipantData() {
     File participantDataFile = new File(getDatabasePath() + getBtrRecordFileName());
     try {
-      Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue("ID", "LastName", "FirstName", "Gender", "Height", "Weight", "EthnicGroup", "BirthYear", "BirthMonth", "BirthDay", "Pacemaker");
+      Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue("INPUT_PARTICIPANT_BARCODE", "INPUT_PARTICIPANT_LAST_NAME", "INPUT_PARTICIPANT_FIRST_NAME", "INPUT_PARTICIPANT_GENDER", "INPUT_PARTICIPANT_HEIGHT", "INPUT_PARTICIPANT_WEIGHT", "INPUT_PARTICIPANT_ETHNIC_GROUP", "INPUT_PARTICIPANT_BIRTH_YEAR", "INPUT_PARTICIPANT_BIRTH_MONTH", "INPUT_PARTICIPANT_BIRTH_DAY", "INPUT_PARTICIPANT_PACEMAKER");
 
       FileOutputStream participantDataOuputStream = new FileOutputStream(participantDataFile);
       BtrInputGenerator inputGenerator = new BtrInputGenerator();

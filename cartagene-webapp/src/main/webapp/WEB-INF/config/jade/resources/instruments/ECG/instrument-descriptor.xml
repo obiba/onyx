@@ -20,8 +20,8 @@
   </contraindications>
 
   <instrumentParameters>
-    <input>
-      <code>ID</code>
+    <input id="id_in">
+      <code>INPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -29,8 +29,8 @@
       </inputSource>
     </input>
 
-    <input>
-      <code>LastName</code>
+    <input id="last_name_in">
+      <code>INPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -38,8 +38,8 @@
       </inputSource>
     </input>
 
-    <input>
-      <code>FirstName</code>
+    <input id="first_name_in">
+      <code>INPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -47,8 +47,8 @@
       </inputSource>
     </input>
 
-    <input>
-      <code>BirthYear</code>
+    <input id="birth_year_in">
+      <code>INPUT_PARTICIPANT_BIRTH_YEAR</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -56,8 +56,8 @@
       </inputSource>
     </input>
 
-    <input>
-      <code>BirthMonth</code>
+    <input id="birth_month_in">
+      <code>INPUT_PARTICIPANT_BIRTH_MONTH</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -65,8 +65,8 @@
       </inputSource>
     </input>
 
-    <input>
-      <code>BirthDay</code>
+    <input id="birth_day_in">
+      <code>INPUT_PARTICIPANT_BIRTH_DAY</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -75,7 +75,7 @@
     </input>
 
     <input id="gender_in">
-      <code>Gender</code>
+      <code>INPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
@@ -84,7 +84,7 @@
     </input>
 
     <input id="ethnic_group_in">
-      <code>EthnicGroup</code>
+      <code>INPUT_PARTICIPANT_ETHNIC_GROUP</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="fixedSource">
@@ -93,7 +93,7 @@
     </input>
 
     <input id="pacemaker_in">
-      <code>Pacemaker</code>
+      <code>INPUT_PARTICIPANT_PACEMAKER</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="fixedSource">
@@ -102,18 +102,18 @@
     </input>
 
     <input id="height_in">
-      <code>Height</code>
+      <code>INPUT_PARTICIPANT_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="outputParameterSource">
         <instrumentType>StandingHeight</instrumentType>
-        <parameterName>Average_Height_Measurement</parameterName>
+        <parameterName>CALC_AVG_HEIGHT</parameterName>
       </inputSource>
     </input>
 
     <input id="weight_in">
-      <code>Weight</code>
+      <code>INPUT_PARTICIPANT_WEIGHT</code>
       <measurementUnit>hg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -121,15 +121,15 @@
         <outputParameterSourceList>
           <outputParameterSource>
             <instrumentType>Impendence310</instrumentType>
-            <parameterName>Measured_weight</parameterName>
+            <parameterName>RES_WEIGHT</parameterName>
           </outputParameterSource>
           <outputParameterSource>
             <instrumentType>Impendence418</instrumentType>
-            <parameterName>Measured_weight</parameterName>
+            <parameterName>RES_WEIGHT</parameterName>
           </outputParameterSource>
           <outputParameterSource>
             <instrumentType>Weight</instrumentType>
-            <parameterName>Measured_weight</parameterName>
+            <parameterName>RES_WEIGHT</parameterName>
           </outputParameterSource>
         </outputParameterSourceList>
       </inputSource>
@@ -137,14 +137,14 @@
 
     <output id="participantID">
       <vendorName>participantID</vendorName>
-      <code>Participant_Barcode</code>
+      <code>OUTPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit />
       <integrityChecks>
         <equalsParameterCheck>
           <targetParameter reference="participantID" />
-          <parameter reference="id" />
+          <parameter reference="id_in" />
           <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
@@ -152,7 +152,7 @@
 
     <output id="participantLastName">
       <vendorName>participantLastName</vendorName>
-      <code>Participant_Last_Name</code>
+      <code>OUTPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit />
@@ -167,7 +167,7 @@
 
     <output id="Participant_First_Name">
       <vendorName>participantFirstName</vendorName>
-      <code>Participant_First_Name</code>
+      <code>OUTPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit />
@@ -182,7 +182,7 @@
 
     <output id="Participant_Birth_Day">
       <vendorName>participantBirthDay</vendorName>
-      <code>Participant_Birth_Day</code>
+      <code>OUTPUT_PARTICIPANT_BIRTH_DAY</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit />
@@ -197,7 +197,7 @@
 
     <output id="participantBirthMonth">
       <vendorName>participantBirthMonth</vendorName>
-      <code>Participant_Birth_Month</code>
+      <code>OUTPUT_PARTICIPANT_BIRTH_MONTH</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit />
@@ -212,7 +212,7 @@
 
     <output id="participantBirthYear">
       <vendorName>participantBirthYear</vendorName>
-      <code>Participant_Birth_Year</code>
+      <code>OUTPUT_PARTICIPANT_BIRTH_YEAR</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit />
@@ -227,7 +227,7 @@
 
     <output id="participantGender">
       <vendorName>participantGender</vendorName>
-      <code>Participant_Gender</code>
+      <code>OUTPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit />
@@ -242,7 +242,7 @@
 
     <output id="participantRace">
       <vendorName>participantRace</vendorName>
-      <code>Participant_Race</code>
+      <code>OUTPUT_PARTICIPANT_ETHNIC_GROUP</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit />
@@ -257,7 +257,7 @@
 
     <output id="participantHeight">
       <vendorName>participantHeight</vendorName>
-      <code>Participant_Height</code>
+      <code>OUTPUT_PARTICIPANT_HEIGHT</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>cm</measurementUnit>
@@ -272,7 +272,7 @@
 
     <output id="participantWeight">
       <vendorName>participantWeight</vendorName>
-      <code>Participant_Weight</code>
+      <code>OUTPUT_PARTICIPANT_WEIGHT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -287,7 +287,7 @@
 
     <output id="participantPacemaker">
       <vendorName>participantPacemaker</vendorName>
-      <code>Participant_PaceMaker</code>
+      <code>OUTPUT_PARTICIPANT_PACEMAKER</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit />
@@ -302,42 +302,42 @@
 
     <output>
       <vendorName>time</vendorName>
-      <code>Time_of_measurement</code>
+      <code>RES_MEASUREMENT_TIME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output>
       <vendorName>date</vendorName>
-      <code>Date_of_measurement</code>
+      <code>RES_MEASUREMENT_DATE</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output>
       <vendorName>diagnosis</vendorName>
-      <code>Diagnosis_of_measurement</code>
+      <code>RES_DIAGNOSIS</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output>
       <vendorName>filterSetting</vendorName>
-      <code>Filter_Settings_of_measurement</code>
+      <code>RES_FILTER_SETTINGS</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output>
       <vendorName>diagnosisVersion</vendorName>
-      <code>Diagnosis_Version_of_measurement</code>
+      <code>RES_DIAGNOSIS_VERSION</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output>
       <vendorName>ventricularRate</vendorName>
-      <code>Ventricular_Rate</code>
+      <code>RES_VENTRICULAR_RATE</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>BPM</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -345,7 +345,7 @@
 
     <output>
       <vendorName>PQInterval</vendorName>
-      <code>PQ_Interval</code>
+      <code>RES_PQ_INTERVAL</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -353,7 +353,7 @@
 
     <output>
       <vendorName>PDuration</vendorName>
-      <code>P_Duration</code>
+      <code>RES_P_DURATION</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -361,7 +361,7 @@
 
     <output>
       <vendorName>QRsDuration</vendorName>
-      <code>QRS_Duration</code>
+      <code>RES_QRS_DURATION</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -369,7 +369,7 @@
 
     <output>
       <vendorName>QTInterval</vendorName>
-      <code>QT_Interval</code>
+      <code>RES_QT_INTERVAL</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -377,7 +377,7 @@
 
     <output>
       <vendorName>QTCInterval</vendorName>
-      <code>QTC_Interval</code>
+      <code>RES_QTC_INTERVAL</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -385,7 +385,7 @@
 
     <output>
       <vendorName>RRInterval</vendorName>
-      <code>RR_Interval</code>
+      <code>RES_RR_INTERVAL</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -393,7 +393,7 @@
 
     <output>
       <vendorName>PPInterval</vendorName>
-      <code>PP_Interval</code>
+      <code>RES_PP_INTERVAL</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -401,7 +401,7 @@
 
     <output>
       <vendorName>PAxis</vendorName>
-      <code>P_Axis</code>
+      <code>RES_P_AXIS</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>degree</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -409,7 +409,7 @@
 
     <output>
       <vendorName>RAxis</vendorName>
-      <code>R_Axis</code>
+      <code>RES_R_AXIS</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>degree</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -417,7 +417,7 @@
 
     <output>
       <vendorName>TAxis</vendorName>
-      <code>T_Axis</code>
+      <code>RES_T_AXIS</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>degree</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -425,14 +425,14 @@
 
     <output>
       <vendorName>QRSNum</vendorName>
-      <code>QRS_Number</code>
+      <code>RES_QRS_NUMBER</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output>
       <vendorName>POnset</vendorName>
-      <code>P_Onset</code>
+      <code>RES_P_ONSET</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -440,7 +440,7 @@
 
     <output>
       <vendorName>POffset</vendorName>
-      <code>P_Offset</code>
+      <code>RES_P_OFFSET</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -448,7 +448,7 @@
 
     <output>
       <vendorName>QOnset</vendorName>
-      <code>Q_Onset</code>
+      <code>RES_Q_ONSET</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -456,7 +456,7 @@
 
     <output>
       <vendorName>QOffset</vendorName>
-      <code>Q_Offset</code>
+      <code>RES_Q_OFFSET</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -464,7 +464,7 @@
 
     <output>
       <vendorName>TOffset</vendorName>
-      <code>T_Offset</code>
+      <code>RES_T_OFFSET</code>
       <dataType>INTEGER</dataType>
       <measurementUnit>ms</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -472,14 +472,14 @@
 
     <output>
       <vendorName>xmlFile</vendorName>
-      <code>Xml_File</code>
+      <code>RES_XML_FILE</code>
       <dataType>DATA</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output>
       <vendorName>pdfFile</vendorName>
-      <code>Pdf_File</code>
+      <code>RES_PDF_FILE</code>
       <dataType>DATA</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>

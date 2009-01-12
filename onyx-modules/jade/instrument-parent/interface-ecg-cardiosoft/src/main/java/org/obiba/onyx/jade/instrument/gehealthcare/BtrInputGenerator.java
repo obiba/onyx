@@ -77,22 +77,22 @@ public class BtrInputGenerator {
     bb.order(ByteOrder.LITTLE_ENDIAN);
 
     bb.put(recordHeader);
-    putString(bb, inputData.get("LastName").getValueAsString()); // 0-30
-    putString(bb, inputData.get("FirstName").getValueAsString()); // 31-61
+    putString(bb, inputData.get("INPUT_PARTICIPANT_LAST_NAME").getValueAsString()); // 0-30
+    putString(bb, inputData.get("INPUT_PARTICIPANT_FIRST_NAME").getValueAsString()); // 31-61
 
-    bb.putShort(Short.valueOf(inputData.get("BirthYear").getValueAsString())).putShort(Short.valueOf(inputData.get("BirthMonth").getValueAsString())).putShort(Short.valueOf(inputData.get("BirthDay").getValueAsString())); // 62-63,64-65,66-67
+    bb.putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_BIRTH_YEAR").getValueAsString())).putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_BIRTH_MONTH").getValueAsString())).putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_BIRTH_DAY").getValueAsString())); // 62-63,64-65,66-67
 
-    putString(bb, inputData.get("ID").getValueAsString()); // 68-98
-    bb.putInt(Integer.valueOf(inputData.get("ID").getValueAsString())); // 99-102
-    bb.putShort(Short.valueOf(inputData.get("Weight").getValueAsString()));
+    putString(bb, inputData.get("INPUT_PARTICIPANT_BARCODE").getValueAsString()); // 68-98
+    bb.putInt(Integer.valueOf(inputData.get("INPUT_PARTICIPANT_BARCODE").getValueAsString())); // 99-102
+    bb.putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_WEIGHT").getValueAsString()));
     WeightUnits.KG.put(bb); // 105-106
-    bb.putShort(Short.valueOf(inputData.get("Height").getValueAsString()));
+    bb.putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_HEIGHT").getValueAsString()));
     HeightUnits.CM.put(bb); // 109-110
-    Gender gender = Gender.valueOf(inputData.get("Gender").getValueAsString());
+    Gender gender = Gender.valueOf(inputData.get("INPUT_PARTICIPANT_GENDER").getValueAsString());
     gender.put(bb); // 111
-    Ethnicity ethnicity = Ethnicity.valueOf(inputData.get("EthnicGroup").getValueAsString());
+    Ethnicity ethnicity = Ethnicity.valueOf(inputData.get("INPUT_PARTICIPANT_ETHNIC_GROUP").getValueAsString());
     ethnicity.put(bb); // 112-113
-    bb.put(Byte.valueOf(inputData.get("Pacemaker").getValueAsString()));
+    bb.put(Byte.valueOf(inputData.get("INPUT_PARTICIPANT_PACEMAKER").getValueAsString()));
 
     // The rest is unknown. Either it is unused or its use for internal purposes. Filling it with zeroes is ok.
     fillWithZeroes(bb);

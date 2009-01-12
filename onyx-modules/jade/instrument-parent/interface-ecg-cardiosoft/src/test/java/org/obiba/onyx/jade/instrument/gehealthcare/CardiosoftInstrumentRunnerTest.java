@@ -104,19 +104,19 @@ public class CardiosoftInstrumentRunnerTest {
 
     // Set arbitrary inputs for testing.
     Map<String, Data> inputData = new HashMap<String, Data>();
-    inputData.put("ID", DataBuilder.buildText("123456789"));
-    inputData.put("LastName", DataBuilder.buildText("Tremblay"));
-    inputData.put("FirstName", DataBuilder.buildText("Chantal"));
-    inputData.put("Gender", DataBuilder.buildText("FEMALE"));
-    inputData.put("Height", DataBuilder.buildInteger(178));
-    inputData.put("Weight", DataBuilder.buildInteger(764));
-    inputData.put("EthnicGroup", DataBuilder.buildText("CAUCASIAN"));
-    inputData.put("BirthYear", DataBuilder.buildInteger(1978));
-    inputData.put("BirthMonth", DataBuilder.buildInteger(02));
-    inputData.put("BirthDay", DataBuilder.buildInteger(25));
-    inputData.put("Pacemaker", DataBuilder.buildInteger(0));
+    inputData.put("INPUT_PARTICIPANT_BARCODE", DataBuilder.buildText("123456789"));
+    inputData.put("INPUT_PARTICIPANT_LAST_NAME", DataBuilder.buildText("Tremblay"));
+    inputData.put("INPUT_PARTICIPANT_FIRST_NAME", DataBuilder.buildText("Chantal"));
+    inputData.put("INPUT_PARTICIPANT_GENDER", DataBuilder.buildText("FEMALE"));
+    inputData.put("INPUT_PARTICIPANT_HEIGHT", DataBuilder.buildInteger(178));
+    inputData.put("INPUT_PARTICIPANT_WEIGHT", DataBuilder.buildInteger(764));
+    inputData.put("INPUT_PARTICIPANT_ETHNIC_GROUP", DataBuilder.buildText("CAUCASIAN"));
+    inputData.put("INPUT_PARTICIPANT_BIRTH_YEAR", DataBuilder.buildInteger(1978));
+    inputData.put("INPUT_PARTICIPANT_BIRTH_MONTH", DataBuilder.buildInteger(02));
+    inputData.put("INPUT_PARTICIPANT_BIRTH_DAY", DataBuilder.buildInteger(25));
+    inputData.put("INPUT_PARTICIPANT_PACEMAKER", DataBuilder.buildInteger(0));
 
-    expect(instrumentExecutionServiceMock.getInputParametersValue("ID", "LastName", "FirstName", "Gender", "Height", "Weight", "EthnicGroup", "BirthYear", "BirthMonth", "BirthDay", "Pacemaker")).andReturn(inputData);
+    expect(instrumentExecutionServiceMock.getInputParametersValue("INPUT_PARTICIPANT_BARCODE", "INPUT_PARTICIPANT_LAST_NAME", "INPUT_PARTICIPANT_FIRST_NAME", "INPUT_PARTICIPANT_GENDER", "INPUT_PARTICIPANT_HEIGHT", "INPUT_PARTICIPANT_WEIGHT", "INPUT_PARTICIPANT_ETHNIC_GROUP", "INPUT_PARTICIPANT_BIRTH_YEAR", "INPUT_PARTICIPANT_BIRTH_MONTH", "INPUT_PARTICIPANT_BIRTH_DAY", "INPUT_PARTICIPANT_PACEMAKER")).andReturn(inputData);
     replay(instrumentExecutionServiceMock);
 
     cardiosoftInstrumentRunner.initialize();
