@@ -83,7 +83,6 @@
         <parameterSpreadCheck>
           <targetParameter reference="waist_size1" />
           <parameter reference="waist_size2" />
-          <percent>5</percent>
           <offset>1</offset>
         </parameterSpreadCheck>
       </integrityChecks>
@@ -149,7 +148,6 @@
         <parameterSpreadCheck>
           <targetParameter reference="hips_size2" />
           <parameter reference="hips_size1" />
-          <percent>5</percent>
           <offset>1</offset>
         </parameterSpreadCheck>
       </integrityChecks>
