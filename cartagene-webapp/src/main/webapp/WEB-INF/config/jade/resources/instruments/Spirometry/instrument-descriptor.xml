@@ -93,6 +93,7 @@
     </interpretative>
 
     <input id="id">
+      <vendorName>ID</vendorName>
       <code>INPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -103,6 +104,7 @@
     </input>
 
     <input id="last_name_in">
+      <vendorName>LastName</vendorName>
       <code>INPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -112,6 +114,7 @@
     </input>
 
     <input id="first_name_in">
+      <vendorName>FirstName</vendorName>
       <code>INPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -121,6 +124,7 @@
     </input>
 
     <input id="birth_date_in">
+      <vendorName>BirthDate</vendorName>
       <code>INPUT_PARTICIPANT_DATE_BIRTH</code>
       <dataType>DATE</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -130,6 +134,7 @@
     </input>
 
     <input id="gender_in">
+      <vendorName>Gender</vendorName>
       <code>INPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -139,6 +144,7 @@
     </input>
 
     <input id="ethnic_group">
+      <vendorName>EthnicGroup</vendorName>
       <code>INPUT_PARTICIPANT_ETHNIC_GROUP</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -148,6 +154,7 @@
     </input>
 
     <input id="height">
+      <vendorName>Height</vendorName>
       <code>INPUT_PARTICIPANT_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
@@ -159,6 +166,7 @@
     </input>
 
     <input id="weight">
+      <vendorName>Weight</vendorName>
       <code>INPUT_PARTICIPANT_WEIGHT</code>
       <measurementUnit>kg</measurementUnit>
       <dataType>DECIMAL</dataType>

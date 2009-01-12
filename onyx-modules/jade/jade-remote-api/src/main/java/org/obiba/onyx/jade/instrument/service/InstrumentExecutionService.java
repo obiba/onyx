@@ -41,6 +41,8 @@ public interface InstrumentExecutionService {
 
   public Map<String, Data> getInputParametersValue(String... parameters);
 
+  public Map<String, String> getInputParametersVendorNames(String... parameters);
+
   public Data getInputParameterValue(String parameter);
 
   public void addOutputParameterValues(Map<String, Data> values);

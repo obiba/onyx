@@ -73,6 +73,16 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
     return (inputParametersValue);
   }
 
+  public Map<String, String> getInputParametersVendorNames(String... parameters) {
+    Map<String, String> inputParametersVendorName = new HashMap<String, String>();
+    for(String parameterCode : parameters) {
+      InstrumentRunValue inputParameterValue = activeInstrumentRunService.getInputInstrumentRunValue(parameterCode);
+      inputParametersVendorName.put(inputParameterValue.getInstrumentParameter().getCode(), inputParameterValue.getInstrumentParameter().getVendorName());
+    }
+    log.info("getInputParametersVendorNames({})={}", parameters, inputParametersVendorName);
+    return (inputParametersVendorName);
+  }
+
   public Data getInputParameterValue(String parameterCode) {
     return activeInstrumentRunService.getInputInstrumentRunValue(parameterCode).getData();
   }

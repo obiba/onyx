@@ -108,13 +108,24 @@ public class MiniSpirInstrumentRunnerTest {
     inputData.put("INPUT_PARTICIPANT_BARCODE", DataBuilder.buildText("123456789"));
     inputData.put("INPUT_PARTICIPANT_LAST_NAME", DataBuilder.buildText("Tremblay"));
     inputData.put("INPUT_PARTICIPANT_FIRST_NAME", DataBuilder.buildText("Chantal"));
-    inputData.put("INPUT_PARTICIPANT_GENDER", DataBuilder.buildText("Chantal"));
+    inputData.put("INPUT_PARTICIPANT_GENDER", DataBuilder.buildText("FEMALE"));
     inputData.put("INPUT_PARTICIPANT_HEIGHT", DataBuilder.buildInteger(178));
     inputData.put("INPUT_PARTICIPANT_WEIGHT", DataBuilder.buildDecimal(76.4));
     inputData.put("INPUT_PARTICIPANT_ETHNIC_GROUP", DataBuilder.buildInteger(1));
     inputData.put("INPUT_PARTICIPANT_BIORTH_DATE", DataBuilder.buildDate(getBirthDate()));
 
+    Map<String, String> inputKeyTranslation = new HashMap<String, String>();
+    inputKeyTranslation.put("INPUT_PARTICIPANT_BARCODE", "ID");
+    inputKeyTranslation.put("INPUT_PARTICIPANT_LAST_NAME", "LastName");
+    inputKeyTranslation.put("INPUT_PARTICIPANT_FIRST_NAME", "FirstName");
+    inputKeyTranslation.put("INPUT_PARTICIPANT_GENDER", "Gender");
+    inputKeyTranslation.put("INPUT_PARTICIPANT_HEIGHT", "Height");
+    inputKeyTranslation.put("INPUT_PARTICIPANT_WEIGHT", "Weight");
+    inputKeyTranslation.put("INPUT_PARTICIPANT_ETHNIC_GROUP", "EthnicGroup");
+    inputKeyTranslation.put("INPUT_PARTICIPANT_BIORTH_DATE", "BirthDate");
+
     expect(instrumentExecutionServiceMock.getInputParametersValue("INPUT_PARTICIPANT_BARCODE", "INPUT_PARTICIPANT_LAST_NAME", "INPUT_PARTICIPANT_FIRST_NAME", "INPUT_PARTICIPANT_GENDER", "INPUT_PARTICIPANT_HEIGHT", "INPUT_PARTICIPANT_WEIGHT", "INPUT_PARTICIPANT_ETHNIC_GROUP", "INPUT_PARTICIPANT_DATE_BIRTH")).andReturn(inputData);
+    expect(instrumentExecutionServiceMock.getInputParametersVendorNames("INPUT_PARTICIPANT_BARCODE", "INPUT_PARTICIPANT_LAST_NAME", "INPUT_PARTICIPANT_FIRST_NAME", "INPUT_PARTICIPANT_GENDER", "INPUT_PARTICIPANT_HEIGHT", "INPUT_PARTICIPANT_WEIGHT", "INPUT_PARTICIPANT_ETHNIC_GROUP", "INPUT_PARTICIPANT_DATE_BIRTH")).andReturn(inputKeyTranslation);
     replay(instrumentExecutionServiceMock);
 
     // Generate the input file for WinSpiro.

@@ -138,15 +138,18 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
   public void initParticipantData() {
     File externalAppInputFile = new File(getMirPath() + getExternalInputName());
     try {
-      Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue("INPUT_PARTICIPANT_BARCODE", "INPUT_PARTICIPANT_LAST_NAME", "INPUT_PARTICIPANT_FIRST_NAME", "INPUT_PARTICIPANT_GENDER", "INPUT_PARTICIPANT_HEIGHT", "INPUT_PARTICIPANT_WEIGHT", "INPUT_PARTICIPANT_ETHNIC_GROUP", "INPUT_PARTICIPANT_DATE_BIRTH");
+      String[] inputParameterCodes = new String[] { "INPUT_PARTICIPANT_BARCODE", "INPUT_PARTICIPANT_LAST_NAME", "INPUT_PARTICIPANT_FIRST_NAME", "INPUT_PARTICIPANT_GENDER", "INPUT_PARTICIPANT_HEIGHT", "INPUT_PARTICIPANT_WEIGHT", "INPUT_PARTICIPANT_ETHNIC_GROUP", "INPUT_PARTICIPANT_DATE_BIRTH" };
+      Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue(inputParameterCodes);
+      Map<String, String> inputKeyTranslation = instrumentExecutionService.getInputParametersVendorNames(inputParameterCodes);
+
       BufferedWriter inputFileWriter = new BufferedWriter(new FileWriter(externalAppInputFile));
       inputFileWriter.write("[Identification]\n");
       for(Map.Entry<String, Data> entry : inputData.entrySet()) {
         if(entry.getKey().equals("INPUT_PARTICIPANT_DATE_BIRTH")) {
           SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-          inputFileWriter.write(entry.getKey() + "=" + formatter.format(entry.getValue().getValue()) + "\n");
+          inputFileWriter.write(inputKeyTranslation.get(entry.getKey()) + "=" + formatter.format(entry.getValue().getValue()) + "\n");
         } else
-          inputFileWriter.write(entry.getKey() + "=" + ((entry.getKey().equals("INPUT_PARTICIPANT_GENDER")) ? getGenderConverter(entry.getValue()) : entry.getValue().getValueAsString()) + "\n");
+          inputFileWriter.write(inputKeyTranslation.get(entry.getKey()) + "=" + ((entry.getKey().equals("INPUT_PARTICIPANT_GENDER")) ? getGenderConverter(entry.getValue()) : entry.getValue().getValueAsString()) + "\n");
       }
       inputFileWriter.close();
     } catch(Exception ex) {
