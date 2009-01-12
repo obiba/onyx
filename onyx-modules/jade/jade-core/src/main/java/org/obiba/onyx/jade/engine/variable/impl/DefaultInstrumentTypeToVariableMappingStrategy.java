@@ -33,7 +33,7 @@ import org.obiba.onyx.util.data.DataType;
  */
 public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrumentTypeToVariableMappingStrategy {
 
-  private static final String INSTRUMENT_RUN = "Run";
+  private static final String INSTRUMENT_RUN = "InstrumentRun";
 
   private static final String INSTRUMENT = "Instrument";
 
@@ -52,6 +52,14 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
   private static final String TIMESTART = "timeStart";
 
   private static final String TIMEEND = "timeEnd";
+
+  private static final String CONTRAINDICATION = "Contraindication";
+
+  private static final String CONTRAINDICATION_CODE = "code";
+
+  private static final String CONTRAINDICATION_TYPE = "type";
+
+  private static final String OTHER_CONTRAINDICATION = "otherContraindication";
 
   private static final String INPUT = "Input";
 
@@ -76,15 +84,22 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
 
     // instrument run
     Variable runVariable = typeVariable.addVariable(new Variable(INSTRUMENT_RUN));
+
+    runVariable.addVariable(new Variable(USER).setDataType(DataType.TEXT));
+    runVariable.addVariable(new Variable(TIMESTART).setDataType(DataType.DATE));
+    runVariable.addVariable(new Variable(TIMEEND).setDataType(DataType.DATE));
+    runVariable.addVariable(new Variable(OTHER_CONTRAINDICATION).setDataType(DataType.TEXT));
+
+    Variable ciVariable = runVariable.addVariable(new Variable(CONTRAINDICATION));
+    ciVariable.addVariable(new Variable(CONTRAINDICATION_CODE).setDataType(DataType.TEXT));
+    ciVariable.addVariable(new Variable(CONTRAINDICATION_TYPE).setDataType(DataType.TEXT));
+
     Variable instrumentVariable = runVariable.addVariable(new Variable(INSTRUMENT));
     instrumentVariable.addVariable(new Variable(NAME).setDataType(DataType.TEXT));
     instrumentVariable.addVariable(new Variable(VENDOR).setDataType(DataType.TEXT));
     instrumentVariable.addVariable(new Variable(MODEL).setDataType(DataType.TEXT));
     instrumentVariable.addVariable(new Variable(SERIAL_NUMBER).setDataType(DataType.TEXT));
     instrumentVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT));
-    runVariable.addVariable(new Variable(USER).setDataType(DataType.TEXT));
-    runVariable.addVariable(new Variable(TIMESTART).setDataType(DataType.DATE));
-    runVariable.addVariable(new Variable(TIMEEND).setDataType(DataType.DATE));
 
     // instrument parameters
     List<InstrumentParameter> parameters = type.getInstrumentParameters();
@@ -131,6 +146,15 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
           rval = DataBuilder.buildText(instrument.getBarcode());
         }
       }
+    } else if(variable.getParent().getName().equals(CONTRAINDICATION)) {
+      InstrumentRun run = getInstrumentRun(participant, variable.getParent().getParent().getParent().getName());
+      if(run != null) {
+        if(variable.getName().equals(CONTRAINDICATION_CODE) && run.getContraindication() != null) {
+          rval = DataBuilder.buildText(run.getContraindication().getCode());
+        } else if(variable.getName().equals(CONTRAINDICATION_TYPE) && run.getContraindication() != null) {
+          rval = DataBuilder.buildText(run.getContraindication().getType().toString());
+        }
+      }
     } else if(variable.getParent().getName().equals(INSTRUMENT_RUN)) {
       InstrumentRun run = getInstrumentRun(participant, variable.getParent().getParent().getName());
       if(run != null) {
@@ -140,6 +164,8 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
           rval = DataBuilder.buildDate(run.getTimeStart());
         } else if(variable.getName().equals(TIMEEND) && run.getTimeEnd() != null) {
           rval = DataBuilder.buildDate(run.getTimeEnd());
+        } else if(variable.getName().equals(OTHER_CONTRAINDICATION) && run.getOtherContraindication() != null) {
+          rval = DataBuilder.buildText(run.getOtherContraindication());
         }
       }
     } else if(variable.getParent().getName().equals(INPUT) || variable.getParent().getName().equals(OUTPUT) || variable.getParent().getName().equals(INTERPRETIVE)) {
