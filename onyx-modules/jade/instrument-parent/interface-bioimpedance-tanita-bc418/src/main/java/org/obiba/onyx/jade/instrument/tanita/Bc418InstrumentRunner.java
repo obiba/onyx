@@ -123,7 +123,7 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
    */
   private void initParticipantData() {
 
-    Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue("ClothesWeight", "Gender", "BodyType", "Height", "Age");
+    Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue("INPUT_CLOTHES_WEIGHT", "Gender", "BodyType", "Height", "Age");
 
     try {
       bufferedReader = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));

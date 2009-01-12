@@ -44,14 +44,14 @@
 
   <instrumentParameters>
     <interpretative>
-      <code>PhysicalActivityLast24Hours</code>
+      <code>IV_PHYSICAL_ACTIVITY_LAST24HOURS</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>OBSERVED</type>
     </interpretative>
 
     <input id="clothes_weight">
-      <code>ClothesWeight</code>
+      <code>INPUT_CLOTHES_WEIGHT</code>
       <dataType>DECIMAL</dataType>
       <measurementUnit>kg</measurementUnit>
       <captureMethod>MANUAL</captureMethod>
@@ -61,7 +61,7 @@
     </input>
 
     <input id="gender_in">
-      <code>Gender</code>
+      <code>INPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="participantPropertySource">
@@ -70,7 +70,7 @@
     </input>
 
     <input id="body_type_in">
-      <code>BodyType</code>
+      <code>INPUT_BODY_TYPE</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="fixedSource">
@@ -79,7 +79,7 @@
     </input>
 
     <input id="age_in">
-      <code>Age</code>
+      <code>INPUT_PARTICIPANT_AGE</code>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="participantPropertySource">
@@ -88,33 +88,33 @@
     </input>
 
     <input id="height_in">
-      <code>Height</code>
+      <code>INPUT_PARTICIPANT_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="outputParameterSource">
         <instrumentType>StandingHeight</instrumentType>
-        <parameterName>Average_Height_Measurement</parameterName>
+        <parameterName>CALC_AVG_HEIGHT</parameterName>
       </inputSource>
     </input>
 
     <output id="date">
       <vendorName>Date</vendorName>
-      <code>Measurement_date</code>
+      <code>RES_MEASUREMENT_DATE</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="time">
       <vendorName>Time</vendorName>
-      <code>Measurement_time</code>
+      <code>RES_MEASUREMENT_TIME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
     <output id="body_type">
       <vendorName>BodyType</vendorName>
-      <code>Body_type</code>
+      <code>OUTPUT_BODY_TYPE</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
 
@@ -128,7 +128,7 @@
 
     <output id="gender">
       <vendorName>Gender</vendorName>
-      <code>Output_gender</code>
+      <code>OUTPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <integrityChecks>
@@ -141,7 +141,7 @@
 
     <output id="age">
       <vendorName>Age</vendorName>
-      <code>Output_age</code>
+      <code>OUTPUT_PARTICIPANT_AGE</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <integrityChecks>
@@ -154,7 +154,7 @@
 
     <output id="height">
       <vendorName>Height</vendorName>
-      <code>Output_height</code>
+      <code>OUTPUT_PARTICIPANT_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -168,7 +168,7 @@
 
     <output id="weight">
       <vendorName>Weight</vendorName>
-      <code>Measured_weight</code>
+      <code>RES_WEIGHT</code>
       <measurementUnit>kg</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -176,7 +176,7 @@
 
     <output id="fat_percentage">
       <vendorName>FatPercentage</vendorName>
-      <code>Fat_percentage_calculated</code>
+      <code>RES_FAT_PERCENT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
@@ -184,7 +184,7 @@
 
     <output id="fat_mass">
       <vendorName>FatMass</vendorName>
-      <code>Fat_mass_calculated</code>
+      <code>RES_FAT_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -192,7 +192,7 @@
 
     <output id="ffm">
       <vendorName>FatFreeMass</vendorName>
-      <code>Fat_free_mass_calculated</code>
+      <code>RES_FAT_FREE_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -200,7 +200,7 @@
 
     <output id="tbw">
       <vendorName>TotalBodyWater</vendorName>
-      <code>Total_Body_Water_calculated</code>
+      <code>RES_TOTAL_BODY_WATER_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -208,7 +208,7 @@
 
     <output id="bmi">
       <vendorName>BMI</vendorName>
-      <code>Body_mass_index_calculated</code>
+      <code>RES_BODY_MASS_INDEX</code>
       <measurementUnit>kg/m²</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -216,7 +216,7 @@
 
     <output id="bmr">
       <vendorName>BMR</vendorName>
-      <code>Basal_metabolic_rate_calculated</code>
+      <code>RES_BASAL_METABOLIC_RATE</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kJ</measurementUnit>
@@ -224,7 +224,7 @@
 
     <output id="impedance">
       <vendorName>Impedance</vendorName>
-      <code>Measured_body_impedance</code>
+      <code>RES_BODY_IMPEDANCE</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ohm</measurementUnit>
@@ -232,7 +232,7 @@
 
     <output id="right_leg_impedance">
       <vendorName>RightLegImpedance</vendorName>
-      <code>Measured_right_leg_impedance</code>
+      <code>RES_RIGHT_LEG_IMPEDANCE</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ohm</measurementUnit>
@@ -240,7 +240,7 @@
 
     <output id="left_leg_impedance">
       <vendorName>LeftLegImpedance</vendorName>
-      <code>Measured_left_leg_impedance</code>
+      <code>RES_LEFT_LEG_IMPEDANCE</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ohm</measurementUnit>
@@ -248,7 +248,7 @@
 
     <output id="right_arm_impedance">
       <vendorName>RightArmImpedance</vendorName>
-      <code>Measured_right_arm_impedance</code>
+      <code>RES_RIGHT_ARM_IMPEDANCE</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ohm</measurementUnit>
@@ -256,7 +256,7 @@
 
     <output id="left_arm_impedance">
       <vendorName>LeftArmImpedance</vendorName>
-      <code>Measured_left_arm_impedance</code>
+      <code>RES_LEFT_ARM_IMPEDANCE</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>ohm</measurementUnit>
@@ -264,7 +264,7 @@
 
     <output id="right_leg_fat_percentage">
       <vendorName>RightLegFatPercentage</vendorName>
-      <code>Right_leg_fat_percentage_calculated</code>
+      <code>RES_RIGHT_LEG_FAT_PERCENT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
@@ -272,7 +272,7 @@
 
     <output id="right_leg_fat_mass">
       <vendorName>RightLegFatMass</vendorName>
-      <code>Right_leg_fat_mass_calculated</code>
+      <code>RES_RIGHT_LEG_FAT_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -280,7 +280,7 @@
 
     <output id="Right_leg_ffm">
       <vendorName>RightLegFatFreeMass</vendorName>
-      <code>Right_Leg_fat_free_mass_calculated</code>
+      <code>RES_RIGHT_LEG_FAT_FREE_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -288,7 +288,7 @@
 
     <output id="right_leg_pms">
       <vendorName>RightLegPredictedMuscleMass</vendorName>
-      <code>Right_leg_predicted_muscle_mass</code>
+      <code>RES_RIGHT_LEG_PRED_MUSCLE_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -296,7 +296,7 @@
 
     <output id="left_leg_fat_percentage">
       <vendorName>LeftLegFatPercentage</vendorName>
-      <code>Left_leg_fat_percentage_calculated</code>
+      <code>RES_LEFT_LEG_FAT_PERCENT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
@@ -304,7 +304,7 @@
 
     <output id="left_leg_fat_mass">
       <vendorName>LeftLegFatMass</vendorName>
-      <code>Left_leg_fat_mass_calculated</code>
+      <code>RES_LEFT_LEG_FAT_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -312,7 +312,7 @@
 
     <output id="left_leg_ffm">
       <vendorName>LeftLegFatFreeMass</vendorName>
-      <code>Left_Leg_fat_free_mass_calculated</code>
+      <code>RES_LEFT_LEG_FAT_FREE_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -320,7 +320,7 @@
 
     <output id="left_leg_pms">
       <vendorName>LeftLegPredictedMuscleMass</vendorName>
-      <code>Left_leg_predicted_muscle_mass</code>
+      <code>RES_LEFT_LEG_PRED_MUSCLE_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -328,7 +328,7 @@
 
     <output id="right_arm_fat_percentage">
       <vendorName>RightArmFatPercentage</vendorName>
-      <code>Right_arm_fat_percentage_calculated</code>
+      <code>RES_RIGHT_ARM_FAT_PERCENT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
@@ -336,7 +336,7 @@
 
     <output id="right_arm_fat_mass">
       <vendorName>RightArmFatMass</vendorName>
-      <code>Right_Arm_fat_mass_calculated</code>
+      <code>RES_RIGHT_ARM_FAT_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -344,7 +344,7 @@
 
     <output id="Right_arm_ffm">
       <vendorName>RightArmFatFreeMass</vendorName>
-      <code>Right_Arm_fat_free_mass_calculated</code>
+      <code>RES_RIGHT_ARM_FAT_FREE_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -352,7 +352,7 @@
 
     <output id="right_arm_pms">
       <vendorName>RightArmPredictedMuscleMass</vendorName>
-      <code>Right_arm_predicted_muscle_mass</code>
+      <code>RES_RIGHT_ARM_PRED_MUSCLE_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -360,7 +360,7 @@
 
     <output id="left_arm_fat_percentage">
       <vendorName>LeftArmFatPercentage</vendorName>
-      <code>Left_arm_fat_percentage_calculated</code>
+      <code>RES_LEFT_ARM_FAT_PERCENT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
@@ -368,7 +368,7 @@
 
     <output id="left_arm_fat_mass">
       <vendorName>LeftArmFatMass</vendorName>
-      <code>Left_arm_fat_mass_calculated</code>
+      <code>RES_LEFT_ARM_FAT_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -376,7 +376,7 @@
 
     <output id="Left_arm_ffm">
       <vendorName>LeftArmFatFreeMass</vendorName>
-      <code>Left_Arm_fat_free_mass_calculated</code>
+      <code>RES_LEFT_ARM_FAT_FREE_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -384,7 +384,7 @@
 
     <output id="left_arm_pms">
       <vendorName>LeftArmPredictedMuscleMass</vendorName>
-      <code>Left_arm_predicted_muscle_mass</code>
+      <code>RES_LEFT_ARM_PRED_MUSCLE_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -392,7 +392,7 @@
 
     <output id="trunk_fat_percentage">
       <vendorName>TrunkFatPercentage</vendorName>
-      <code>Trunk_fat_percentage_calculated</code>
+      <code>RES_TRUNK_FAT_PERCENT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
@@ -400,7 +400,7 @@
 
     <output id="trunk_fat_mass">
       <vendorName>TrunkFatMass</vendorName>
-      <code>Trunk_fat_mass_calculated</code>
+      <code>RES_TRUNK_FAT_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -408,7 +408,7 @@
 
     <output id="trunk_ffm">
       <vendorName>TrunkFatFreeMass</vendorName>
-      <code>Trunk_fat_free_mass_calculated</code>
+      <code>RES_TRUNK_FAT_FREE_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>
@@ -416,7 +416,7 @@
 
     <output id="trunk_pms">
       <vendorName>TrunkPredictedMuscleMass</vendorName>
-      <code>Trunk_predicted_muscle_mass</code>
+      <code>RES_TRUNK_PRED_MUSCLE_MASS</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>kg</measurementUnit>

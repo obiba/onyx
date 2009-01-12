@@ -184,6 +184,11 @@ abstract public class TanitaInstrument implements InstrumentRunner, Initializing
 
     // Initialize serial port.
     portOwnerName = "TANITA Body Composition Analyzer";
+
+    // Test string
+    // setTanitaData(parseTanitaData("0,2,185,110.6,431,28.4,31.4,79.2,58.0,27,32.3,9771"));
+    // saveDataBtn.setEnabled(true);
+    // End Test string
   }
 
   public void afterPropertiesSet() throws Exception {
