@@ -54,7 +54,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
   protected ExternalAppLauncherHelper externalAppHelper;
 
   private Set<String> expectedOutputParameterNames;
-  
+
   private String mirPath;
 
   private String initdbPath;
@@ -138,15 +138,15 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
   public void initParticipantData() {
     File externalAppInputFile = new File(getMirPath() + getExternalInputName());
     try {
-      Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue("ID", "LastName", "FirstName", "Gender", "Height", "Weight", "EthnicGroup", "BirthDate");
+      Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue("INPUT_PARTICIPANT_BARCODE", "INPUT_PARTICIPANT_LAST_NAME", "INPUT_PARTICIPANT_FIRST_NAME", "INPUT_PARTICIPANT_GENDER", "INPUT_PARTICIPANT_HEIGHT", "INPUT_PARTICIPANT_WEIGHT", "INPUT_PARTICIPANT_ETHNIC_GROUP", "INPUT_PARTICIPANT_DATE_BIRTH");
       BufferedWriter inputFileWriter = new BufferedWriter(new FileWriter(externalAppInputFile));
       inputFileWriter.write("[Identification]\n");
       for(Map.Entry<String, Data> entry : inputData.entrySet()) {
-        if(entry.getKey().equals("BirthDate")) {
+        if(entry.getKey().equals("INPUT_PARTICIPANT_DATE_BIRTH")) {
           SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
           inputFileWriter.write(entry.getKey() + "=" + formatter.format(entry.getValue().getValue()) + "\n");
         } else
-          inputFileWriter.write(entry.getKey() + "=" + ((entry.getKey().equals("Gender")) ? getGenderConverter(entry.getValue()) : entry.getValue().getValueAsString()) + "\n");
+          inputFileWriter.write(entry.getKey() + "=" + ((entry.getKey().equals("INPUT_PARTICIPANT_GENDER")) ? getGenderConverter(entry.getValue()) : entry.getValue().getValueAsString()) + "\n");
       }
       inputFileWriter.close();
     } catch(Exception ex) {
@@ -220,7 +220,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
 
     } catch(FileNotFoundException fnfEx) {
       log.warn("No device output found");
-      
+
     } catch(IOException ioEx) {
       throw new RuntimeException("Error: retrieve spirometry data IOException", ioEx);
     } catch(Exception ex) {
@@ -239,7 +239,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     Map<String, Data> ouputToSend = new HashMap<String, Data>();
 
     for(Map.Entry<String, Double[]> entry : results.entrySet()) {
-      if (!expectedOutputParameterNames.contains(entry.getKey())) {
+      if(!expectedOutputParameterNames.contains(entry.getKey())) {
         log.info("Output parameter {} is not expected but has an entry in result file.", entry.getKey());
         continue;
       }
@@ -253,11 +253,10 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     }
 
     // Save the FVC image
-    try{
+    try {
       File FVCFile = new File(getMirPath() + getExternalImageName());
       ouputToSend.put("FVCImage", DataBuilder.buildBinary(FVCFile));
-    }
-    catch (Exception e){
+    } catch(Exception e) {
       log.warn("No device output image found");
     }
     instrumentExecutionService.addOutputParameterValues(ouputToSend);

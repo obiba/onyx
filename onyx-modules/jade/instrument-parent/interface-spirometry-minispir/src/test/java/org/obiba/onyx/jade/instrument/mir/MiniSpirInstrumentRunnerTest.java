@@ -44,7 +44,7 @@ public class MiniSpirInstrumentRunnerTest {
   private MiniSpirInstrumentRunner minispirInstrumentRunner;
 
   private InstrumentExecutionService instrumentExecutionServiceMock;
-  
+
   private Set<String> expectedOutputParameterNamesSet = new HashSet<String>();
 
   File initDbFile;
@@ -81,11 +81,11 @@ public class MiniSpirInstrumentRunnerTest {
     // Create a mock instrumentExecutionService for testing.
     instrumentExecutionServiceMock = createMock(InstrumentExecutionService.class);
     minispirInstrumentRunner.setInstrumentExecutionService(instrumentExecutionServiceMock);
-    
+
     // Create the outputParameterNamesExpected set
     setExpectedOutputParameterNames();
     minispirInstrumentRunner.setExpectedOutputParameterNames(expectedOutputParameterNamesSet);
-    
+
     initDbFile = new File(minispirInstrumentRunner.getInitdbPath(), minispirInstrumentRunner.getExternalDbName());
     miniSpirDbFile = new File(minispirInstrumentRunner.getMirPath(), minispirInstrumentRunner.getExternalDbName());
 
@@ -96,7 +96,7 @@ public class MiniSpirInstrumentRunnerTest {
 
     // Write some arbitrary data to simulate database access by external software.
     (new FileOutputStream(miniSpirDbFile)).write((byte) 234432141);
-    
+
     // Insure that the previous participant data is deleted.
     minispirInstrumentRunner.deleteDeviceData();
 
@@ -105,16 +105,16 @@ public class MiniSpirInstrumentRunnerTest {
 
     // Set arbitrary inputs for testing.
     Map<String, Data> inputData = new HashMap<String, Data>();
-    inputData.put("ID", DataBuilder.buildText("123456789"));
-    inputData.put("LastName", DataBuilder.buildText("Tremblay"));
-    inputData.put("FirstName", DataBuilder.buildText("Chantal"));
-    inputData.put("Gender", DataBuilder.buildText("Chantal"));
-    inputData.put("Height", DataBuilder.buildInteger(178));
-    inputData.put("Weight", DataBuilder.buildDecimal(76.4));
-    inputData.put("EthnicGroup", DataBuilder.buildInteger(1));
-    inputData.put("BirthDate", DataBuilder.buildDate(getBirthDate()));
+    inputData.put("INPUT_PARTICIPANT_BARCODE", DataBuilder.buildText("123456789"));
+    inputData.put("INPUT_PARTICIPANT_LAST_NAME", DataBuilder.buildText("Tremblay"));
+    inputData.put("INPUT_PARTICIPANT_FIRST_NAME", DataBuilder.buildText("Chantal"));
+    inputData.put("INPUT_PARTICIPANT_GENDER", DataBuilder.buildText("Chantal"));
+    inputData.put("INPUT_PARTICIPANT_HEIGHT", DataBuilder.buildInteger(178));
+    inputData.put("INPUT_PARTICIPANT_WEIGHT", DataBuilder.buildDecimal(76.4));
+    inputData.put("INPUT_PARTICIPANT_ETHNIC_GROUP", DataBuilder.buildInteger(1));
+    inputData.put("INPUT_PARTICIPANT_BIORTH_DATE", DataBuilder.buildDate(getBirthDate()));
 
-    expect(instrumentExecutionServiceMock.getInputParametersValue("ID", "LastName", "FirstName", "Gender", "Height", "Weight", "EthnicGroup", "BirthDate")).andReturn(inputData);
+    expect(instrumentExecutionServiceMock.getInputParametersValue("INPUT_PARTICIPANT_BARCODE", "INPUT_PARTICIPANT_LAST_NAME", "INPUT_PARTICIPANT_FIRST_NAME", "INPUT_PARTICIPANT_GENDER", "INPUT_PARTICIPANT_HEIGHT", "INPUT_PARTICIPANT_WEIGHT", "INPUT_PARTICIPANT_ETHNIC_GROUP", "INPUT_PARTICIPANT_DATE_BIRTH")).andReturn(inputData);
     replay(instrumentExecutionServiceMock);
 
     // Generate the input file for WinSpiro.
@@ -198,59 +198,16 @@ public class MiniSpirInstrumentRunnerTest {
 
     // Write some arbitrary data to simulate database access by external software.
     (new FileOutputStream(miniSpirDbFile)).write((byte) 234432141);
-    
+
     minispirInstrumentRunner.shutdown();
 
     // Verify that the WinSpiro database content has been cleared successfully.
     Assert.assertEquals(initDbFile.length(), miniSpirDbFile.length());
 
   }
-  
+
   private void setExpectedOutputParameterNames() {
-    String elements[] = { "last_name",
-        "first_name",
-        "birth_date",
-        "gender",
-        "fvc",
-        "fev1",
-        "fev1_fvc",
-        "fev6",
-        "fev1_fev6",
-        "pef",
-        "fef2575",
-        "fev3",
-        "fev3_fvc",
-        "ela",
-        "fet",
-        "fef25",
-        "fef50",
-        "fef75",
-        "evol",
-        "fivc",
-        "fiv1",
-        "fiv1_fivc",
-        "pif",
-        "fvc_pred",
-        "fev1_pred",
-        "fev1_fvc_pred",
-        "fev6_pred",
-        "fev1_fev6_pred",
-        "pef_pred",
-        "fef2575_pred",
-        "fev3_pred",
-        "fev3_fvc_pred",
-        "ela_pred",
-        "fet_pred",
-        "fef25_pred",
-        "fef50_pred",
-        "fef75_pred",
-        "evol_pred",
-        "fivc_pred",
-        "fiv1_pred",
-        "fiv1_fivc_pred",
-        "pif_pred",
-        "fvc_image"};
-    
+    String elements[] = { "OUTPUT_PARTICIPANT_LAST_NAME", "OUTPUT_PARTICIPANT_FIRST_NAME", "OUTPUT_PARTICIPANT_BIRTH_DATE", "OUTPUT_PARTICIPANT_GENDER", "RES_MEASURED_FVC", "RES_MEASURED_FEV1", "RES_MEASURED_FEV1/FVC", "RES_MEASURED_FEV6", "RES_MEASURED_FEV1/FEV6", "RES_MEASURED_PEF", "RES_MEASURED_FEF2575", "RES_MEASURED_FEV3", "RES_MEASURED_FEV3/FVC", "RES_MEASURED_ELA", "RES_MEASURED_FET", "RES_MEASURED_FEF25", "RES_MEASURED_FEF50", "RES_MEASURED_FEF75", "RES_MEASURED_EVOL", "RES_MEASURED_FIVC", "RES_MEASURED_FIV1", "RES_MEASURED_FIV1/FIVC", "RES_MEASURED_PIF", "RES_PRED_FVC", "RES_PRED_FEV1", "RES_PRED_FEV1/FVC", "RES_PRED_FEV6", "RES_PRED_FEV1/FEV6", "RES_PRED_PEF", "RES_PRED_FEF2575", "RES_PRED_FEV3", "RES_PRED_FEV3/FVC", "RES_PRED_ELA", "RES_PRED_FET", "RES_PRED_FEF25", "RES_PRED_FEF50", "RES_PRED_FEF75", "RES_PRED_EVOL", "RES_PRED_FIVC", "RES_PRED_FIV1", "RES_PRED_FIV1/FIVC", "RES_PRED_PIF", "RES_FVC_IMAGE" };
     expectedOutputParameterNamesSet.addAll(new HashSet<String>(Arrays.asList(elements)));
   }
 }
