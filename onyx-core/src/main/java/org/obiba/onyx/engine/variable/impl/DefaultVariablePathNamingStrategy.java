@@ -25,28 +25,35 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
 
   private static final Logger log = LoggerFactory.getLogger(DefaultVariablePathNamingStrategy.class);
 
-  public static final String PATH_SEPARATOR = "/";
+  public static final String DEFAULT_PATH_SEPARATOR = "/";
 
   private String rootName;
+
+  private String pathSeparator = DEFAULT_PATH_SEPARATOR;
+
+  private boolean startWithPathSeparator = true;
 
   public String getPath(Variable entity) {
     String name = normalizeName(entity.getName());
     if(entity.getParent() != null) {
       return getPath(entity.getParent()) + getPathSeparator() + name;
     } else {
-      return getPathSeparator() + name;
+      return startWithPathSeparator ? getPathSeparator() + name : name;
     }
   }
 
   public String getPath(Node entityNode) {
     String name = getEntityName(entityNode);
     if(name != null) {
-      String path = getPathSeparator() + name;
+      String path = name;
       if(entityNode.getParentNode() != null) {
+        path = getPathSeparator() + name;
         String parentPath = getPath(entityNode.getParentNode());
         if(parentPath != null) {
           return parentPath + path;
         }
+      } else if(startWithPathSeparator) {
+        path = getPathSeparator() + name;
       }
       return path;
     }
@@ -70,7 +77,15 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
   }
 
   public String getPathSeparator() {
-    return PATH_SEPARATOR;
+    return pathSeparator;
+  }
+
+  public void setPathSeparator(String pathSeparator) {
+    this.pathSeparator = pathSeparator;
+  }
+
+  public void setStartWithPathSeparator(boolean startWithPathSeparator) {
+    this.startWithPathSeparator = startWithPathSeparator;
   }
 
   public String normalizeName(String name) {

@@ -35,6 +35,8 @@
   <!-- Converts a entity to a path representing its unique identification -->
   <bean id="variablePathNamingStrategy" class="org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy">
     <property name="rootName" value="CARTAGENE" />
+    <property name="pathSeparator" value="/" />
+    <property name="startWithPathSeparator" value="true" />
   </bean>
 
   <!-- The class that reads the participant Excel sheet. Override to fit your needs. -->
