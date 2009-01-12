@@ -38,14 +38,14 @@
 
   <instrumentParameters>
     <interpretative>
-      <code>Kyphosis</code>
+      <code>IV_KYPHOSIS</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>OBSERVED</type>
     </interpretative>
 
     <output id="sta1_height1">
-      <code>First_Height_Measurement</code>
+      <code>RES_FIRST_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -69,7 +69,7 @@
     </output>
 
     <output id="sta1_height2">
-      <code>Second_Height_Measurement</code>
+      <code>RES_SEC_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -98,7 +98,7 @@
     </output>
 
     <computedOutput>
-      <code>Average_Height_Measurement</code>
+      <code>CALC_AVG_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <algorithm>AVERAGE</algorithm>

@@ -34,14 +34,14 @@
     </interpretative>
 
     <output id="sit1_stool_height">
-      <code>Stool_Height</code>
+      <code>RES_STOOL_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
     </output>
 
     <output id="sit1_height1">
-      <code>First_Sitting_Height_Measurement</code>
+      <code>RES_FIRST_SITTING_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -57,7 +57,7 @@
     </output>
 
     <output id="sit1_height2">
-      <code>Second_Sitting_Height_Measurement</code>
+      <code>RES_SEC_SITTING_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -78,7 +78,7 @@
     </output>
 
     <computedOutput>
-      <code>Average_Sitting_Height_Measurement</code>
+      <code>CALC_AVG_SITTING_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <algorithm>AVERAGE</algorithm>

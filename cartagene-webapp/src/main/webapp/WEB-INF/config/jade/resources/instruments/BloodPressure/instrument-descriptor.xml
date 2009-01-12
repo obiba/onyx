@@ -31,7 +31,7 @@
 
   <instrumentParameters>
     <output id="blp1_systolic1">
-      <code>First_Systolic_Blood_Pressure_Measurement</code>
+      <code>RES_FIRST_SYSTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -55,7 +55,7 @@
     </output>
 
     <output id="blp1_diastolic1">
-      <code>First_Diastolic_Blood_Pressure_Measurement</code>
+      <code>RES_FIRST_DIASTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -85,7 +85,7 @@
     </output>
 
     <output id="blp1_pulse1">
-      <code>First_Pulse_Rate_Measurement</code>
+      <code>RES_FIRST_PULSE_RATE</code>
       <measurementUnit>BPM</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -109,7 +109,7 @@
     </output>
 
     <output id="blp1_systolic2">
-      <code>Second_Systolic_Blood_Pressure_Measurement</code>
+      <code>RES_SEC_SYSTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -133,7 +133,7 @@
     </output>
 
     <output id="blp1_diastolic2">
-      <code>Second_Diastolic_Blood_Pressure_Measurement</code>
+      <code>RES_SEC_DIASTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -163,7 +163,7 @@
     </output>
 
     <output id="blp1_pulse2">
-      <code>Second_Pulse_Rate_Measurement</code>
+      <code>RES_SEC_PULSE_RATE</code>
       <measurementUnit>BPM</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -187,7 +187,7 @@
     </output>
 
     <output id="blp1_systolic3">
-      <code>Third_Systolic_Blood_Pressure_Measurement</code>
+      <code>RES_THIRD_SYSTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -211,7 +211,7 @@
     </output>
 
     <output id="blp1_diastolic3">
-      <code>Third_Diastolic_Blood_Pressure_Measurement</code>
+      <code>RES_THIRD_DIASTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -241,7 +241,7 @@
     </output>
 
     <output id="blp1_pulse3">
-      <code>Third_Pulse_Rate_Measurement</code>
+      <code>RES_THIRD_PULSE_RATE</code>
       <measurementUnit>BPM</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -265,7 +265,7 @@
     </output>
 
     <computedOutput>
-      <code>Average_Systolic_Blood_Pressure_Measurement</code>
+      <code>CALC_AVG_SYSTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <algorithm>AVERAGE</algorithm>
@@ -278,7 +278,7 @@
     </computedOutput>
 
     <computedOutput>
-      <code>Average_Diastolic_Blood_Pressure_Measurement</code>
+      <code>CALC_AVG_DIASTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <algorithm>AVERAGE</algorithm>
@@ -291,7 +291,7 @@
     </computedOutput>
 
     <computedOutput>
-      <code>Average_Pulse_Rate_Measurement</code>
+      <code>CALC_AVG_PULSE_RATE</code>
       <measurementUnit>BPM</measurementUnit>
       <dataType>INTEGER</dataType>
       <algorithm>AVERAGE</algorithm>

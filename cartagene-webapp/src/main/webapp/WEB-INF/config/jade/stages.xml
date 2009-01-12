@@ -76,7 +76,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
-          <variablePath>/CARTAGENE/StandingHeight/Output/Average_Height_Measurement</variablePath>
+          <variablePath>/CARTAGENE/StandingHeight/Output/CALC_AVG_HEIGHT</variablePath>
         </variableCondition>
       </conditions>
     </stageDependencyCondition>
@@ -95,7 +95,7 @@
         <inverseCondition>
           <stageDependencyCondition class="variableCondition">
             <stageName>Impedence310</stageName>
-            <variablePath>/CARTAGENE/Impedence310/Output/Measured_weight</variablePath>
+            <variablePath>/CARTAGENE/Impedence310/Output/RES_WEIGHT</variablePath>
           </stageDependencyCondition>
         </inverseCondition>
       </conditions>
@@ -114,18 +114,18 @@
         </variableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
-          <variablePath>/CARTAGENE/StandingHeight/Output/Average_Height_Measurement</variablePath>
+          <variablePath>/CARTAGENE/StandingHeight/Output/CALC_AVG_HEIGHT</variablePath>
         </variableCondition>
         <multipleCondition>
           <operator>OR</operator>
           <conditions>
             <variableCondition>
               <stageName>Impedence310</stageName>
-              <variablePath>/CARTAGENE/Impedence310/Output/Measured_weight</variablePath>
+              <variablePath>/CARTAGENE/Impedence310/Output/RES_WEIGHT</variablePath>
             </variableCondition>
             <variableCondition>
               <stageName>Weight</stageName>
-              <variablePath>/CARTAGENE/Weight/Output/Measured_weight</variablePath>
+              <variablePath>/CARTAGENE/Weight/Output/RES_WEIGHT</variablePath>
             </variableCondition>
           </conditions>
         </multipleCondition>
@@ -145,18 +145,18 @@
         </variableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
-          <variablePath>/CARTAGENE/StandingHeight/Output/Average_Height_Measurement</variablePath>
+          <variablePath>/CARTAGENE/StandingHeight/Output/CALC_AVG_HEIGHT</variablePath>
         </variableCondition>
         <multipleCondition>
           <operator>OR</operator>
           <conditions>
             <variableCondition>
               <stageName>Impedence310</stageName>
-              <variablePath>/CARTAGENE/Impedence310/Output/Measured_weight</variablePath>
+              <variablePath>/CARTAGENE/Impedence310/Output/RES_WEIGHT</variablePath>
             </variableCondition>
             <variableCondition>
               <stageName>Weight</stageName>
-              <variablePath>/CARTAGENE/Weight/Output/Measured_weight</variablePath>
+              <variablePath>/CARTAGENE/Weight/Output/RES_WEIGHT</variablePath>
             </variableCondition>
           </conditions>
         </multipleCondition>
@@ -185,11 +185,11 @@
         </variableCondition>
         <variableCondition>
           <stageName>BloodPressure</stageName>
-          <variablePath>/CARTAGENE/BloodPressure/Output/Average_Systolic_Blood_Pressure_Measurement</variablePath>
+          <variablePath>/CARTAGENE/BloodPressure/Output/CALC_AVG_SYSTOLIC_BP</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>BloodPressure</stageName>
-          <variablePath>/CARTAGENE/BloodPressure/Output/Average_Diastolic_Blood_Pressure_Measurement</variablePath>
+          <variablePath>/CARTAGENE/BloodPressure/Output/CALC_AVG_DIASTOLIC_BP</variablePath>
         </variableCondition>
       </conditions>
     </stageDependencyCondition>
