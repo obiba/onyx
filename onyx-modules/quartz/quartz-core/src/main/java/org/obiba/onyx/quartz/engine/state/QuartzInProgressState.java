@@ -73,6 +73,7 @@ public class QuartzInProgressState extends AbstractQuartzStageState {
   @Override
   public void complete(Action action) {
     log.info("Quartz Stage {} is completing", super.getStage().getName());
+    getActiveQuestionnaireAdministrationService().end();
     castEvent(TransitionEvent.COMPLETE);
   }
 

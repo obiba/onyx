@@ -93,6 +93,13 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     currentQuestionnaireParticipant = getPersistenceManager().matchOne(questionnaireParticipantTemplate);
   }
 
+  public void end() {
+    // refresh it
+    currentQuestionnaireParticipant = getQuestionnaireParticipant();
+    currentQuestionnaireParticipant.setTimeEnd(new Date());
+    getPersistenceManager().save(currentQuestionnaireParticipant);
+  }
+
   public Page getCurrentPage() {
     return currentPage;
   }
