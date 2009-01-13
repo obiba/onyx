@@ -1,7 +1,7 @@
 <stages>
 
   <stage>
-    <name>CON</name>
+    <name>Consent</name>
     <module>marble</module>
   </stage>
 

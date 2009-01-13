@@ -14,7 +14,7 @@ import java.util.List;
 import org.obiba.onyx.core.domain.participant.Participant;
 
 /**
- * 
+ * Provider of {@link Variable} and {@link VariableData} for a given {@link Participant}.
  */
 public interface IVariableProvider {
 

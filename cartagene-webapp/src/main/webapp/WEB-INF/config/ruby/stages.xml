@@ -4,8 +4,8 @@
     <name>SamplesCollection</name>
     <module>ruby</module>
     <stageDependencyCondition class="variableCondition">
-      <stageName>CON</stageName>
-      <variablePath>/CARTAGENE/Consent/accepted</variablePath>
+      <stageName>Consent</stageName>
+      <variablePath>/Cartagene/Consent/accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 

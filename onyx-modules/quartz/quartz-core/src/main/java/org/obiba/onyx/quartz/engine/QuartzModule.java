@@ -22,9 +22,9 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
+import org.obiba.onyx.engine.variable.IActionVariableProvider;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.IVariableProvider;
-import org.obiba.onyx.engine.variable.OnyxVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
@@ -56,7 +56,7 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
 
   private IQuestionToVariableMappingStrategy questionToVariableMappingStrategy;
 
-  private OnyxVariableProvider onyxVariableProvider;
+  private IActionVariableProvider actionVariableProvider;
 
   public String getName() {
     return "quartz";
@@ -108,8 +108,8 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
     this.questionnaireParticipantService = questionnaireParticipantService;
   }
 
-  public void setOnyxVariableProvider(OnyxVariableProvider onyxVariableProvider) {
-    this.onyxVariableProvider = onyxVariableProvider;
+  public void setActionVariableProvider(IActionVariableProvider actionVariableProvider) {
+    this.actionVariableProvider = actionVariableProvider;
   }
 
   public IStageExecution createStageExecution(Interview interview, Stage stage) {
@@ -184,7 +184,7 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
         Variable questionnaireVariable = questionToVariableMappingStrategy.getVariable(questionnaire);
 
         // always add action variables, cannot be changed as it is onyx specific
-        questionnaireVariable.addVariable(onyxVariableProvider.createActionVariable());
+        questionnaireVariable.addVariable(actionVariableProvider.createActionVariable());
 
         entities.add(questionnaireVariable);
         for(Page page : questionnaire.getPages()) {
@@ -207,8 +207,8 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
     if(bundle != null) {
       Questionnaire questionnaire = bundle.getQuestionnaire();
 
-      if(onyxVariableProvider.isActionVariable(variable)) {
-        varData = onyxVariableProvider.getActionVariableData(participant, variable, variablePathNamingStrategy, varData, questionnaire.getName());
+      if(actionVariableProvider.isActionVariable(variable)) {
+        varData = actionVariableProvider.getActionVariableData(participant, variable, variablePathNamingStrategy, varData, questionnaire.getName());
       } else {
         varData = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantService, participant, variable, varData, questionnaire);
       }

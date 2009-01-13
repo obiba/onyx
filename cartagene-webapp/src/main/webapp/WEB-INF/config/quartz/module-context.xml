@@ -13,7 +13,7 @@
     </property>
     <property name="questionToVariableMappingStrategy" ref="questionToVariableMappingStrategy" />
     <property name="questionnaireParticipantService" ref="questionnaireParticipantService" />
-    <property name="onyxVariableProvider" ref="onyxVariableProvider" />
+    <property name="actionVariableProvider" ref="onyxVariableProvider" />
   </bean>
 
   <bean id="questionToVariableMappingStrategy" class="org.obiba.onyx.quartz.engine.variable.impl.DefaultQuestionToVariableMappingStrategy" />

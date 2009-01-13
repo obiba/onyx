@@ -10,6 +10,7 @@
 package org.obiba.onyx.engine.variable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -24,7 +25,7 @@ import org.obiba.onyx.util.data.DataType;
 /**
  * 
  */
-public class OnyxVariableProvider implements IVariableProvider {
+public class OnyxVariableProvider implements IVariableProvider, IActionVariableProvider {
 
   private static final String ADMIN = "Admin";
 
@@ -141,6 +142,10 @@ public class OnyxVariableProvider implements IVariableProvider {
    * @return
    */
   public VariableData getActionVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy, VariableData varData, String stage) {
+    if(!isActionVariable(variable)) {
+      throw new IllegalArgumentException("Not a Action variable: " + variablePathNamingStrategy.getPath(variable));
+    }
+
     List<Action> actions;
     if(stage == null) {
       actions = participantService.getActions(participant);
@@ -159,7 +164,8 @@ public class OnyxVariableProvider implements IVariableProvider {
       } else if(variable.getName().equals(ACTION_TYPE) && action.getActionType() != null) {
         data = DataBuilder.buildText(action.getActionType().toString());
       } else if(variable.getName().equals(ACTION_DATE_TIME) && action.getDateTime() != null) {
-        data = DataBuilder.buildDate(action.getDateTime());
+        // make a copy of the date as it will be dump several times and we do not want reference to it
+        data = DataBuilder.buildDate((Date) action.getDateTime().clone());
       } else if(variable.getName().equals(ACTION_COMMENT) && action.getComment() != null) {
         data = DataBuilder.buildText(action.getComment());
       } else if(variable.getName().equals(ACTION_EVENT_REASON) && action.getEventReason() != null) {

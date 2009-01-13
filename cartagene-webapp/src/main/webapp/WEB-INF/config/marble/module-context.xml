@@ -9,6 +9,7 @@
       </bean>
     </property>
     <property name="consentService" ref="consentService" />
+    <property name="actionVariableProvider" ref="onyxVariableProvider" />
   </bean>
 
 </beans>

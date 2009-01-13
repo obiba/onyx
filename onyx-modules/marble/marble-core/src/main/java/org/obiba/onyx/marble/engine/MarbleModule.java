@@ -21,6 +21,7 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
+import org.obiba.onyx.engine.variable.IActionVariableProvider;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.IVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
@@ -45,6 +46,8 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
   private ApplicationContext applicationContext;
 
   private ConsentService consentService;
+
+  private IActionVariableProvider actionVariableProvider;
 
   private List<Stage> stages;
 
@@ -91,37 +94,52 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
     this.applicationContext = applicationContext;
   }
 
+  public void setActionVariableProvider(IActionVariableProvider actionVariableProvider) {
+    this.actionVariableProvider = actionVariableProvider;
+  }
+
   public void setConsentService(ConsentService consentService) {
     this.consentService = consentService;
   }
 
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
-    // get participant's consent
-    Consent consent = consentService.getConsent(participant.getInterview());
 
-    if(consent != null) {
-      String varName = variable.getName();
-      if(varName.equals(ACCEPTED_ATTRIBUTE)) {
-        return new VariableData(variablePathNamingStrategy.getPath(variable), DataBuilder.buildBoolean(consent.isAccepted()));
-      } else if(varName.equals(LOCALE_ATTRIBUTE) && consent.getLocale() != null) {
-        return new VariableData(variablePathNamingStrategy.getPath(variable), DataBuilder.buildText(consent.getLocale().toString()));
-      } else if(varName.equals(MODE_ATTRIBUTE) && consent.getMode() != null) {
-        return new VariableData(variablePathNamingStrategy.getPath(variable), DataBuilder.buildText(consent.getMode().toString()));
+    VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
+
+    if(actionVariableProvider.isActionVariable(variable)) {
+      varData = actionVariableProvider.getActionVariableData(participant, variable, variablePathNamingStrategy, varData, variable.getParent().getParent().getName());
+    } else {
+      // get participant's consent
+      Consent consent = consentService.getConsent(participant.getInterview());
+
+      if(consent != null) {
+        String varName = variable.getName();
+        if(varName.equals(ACCEPTED_ATTRIBUTE)) {
+          varData.addData(DataBuilder.buildBoolean(consent.isAccepted()));
+        } else if(varName.equals(LOCALE_ATTRIBUTE) && consent.getLocale() != null) {
+          varData.addData(DataBuilder.buildText(consent.getLocale().toString()));
+        } else if(varName.equals(MODE_ATTRIBUTE) && consent.getMode() != null) {
+          varData.addData(DataBuilder.buildText(consent.getMode().toString()));
+        }
       }
     }
 
-    return null;
+    return varData;
   }
 
   public List<Variable> getVariables() {
     List<Variable> variables = new ArrayList<Variable>();
 
-    Variable consent = new Variable("Consent");
-    variables.add(consent);
+    for(Stage stage : stages) {
+      Variable stageVariable = new Variable(stage.getName());
+      variables.add(stageVariable);
 
-    consent.addVariable(new Variable(MODE_ATTRIBUTE).setDataType(DataType.TEXT));
-    consent.addVariable(new Variable(LOCALE_ATTRIBUTE).setDataType(DataType.TEXT));
-    consent.addVariable(new Variable(ACCEPTED_ATTRIBUTE).setDataType(DataType.BOOLEAN));
+      stageVariable.addVariable(new Variable(MODE_ATTRIBUTE).setDataType(DataType.TEXT));
+      stageVariable.addVariable(new Variable(LOCALE_ATTRIBUTE).setDataType(DataType.TEXT));
+      stageVariable.addVariable(new Variable(ACCEPTED_ATTRIBUTE).setDataType(DataType.BOOLEAN));
+
+      stageVariable.addVariable(actionVariableProvider.createActionVariable());
+    }
 
     return variables;
   }

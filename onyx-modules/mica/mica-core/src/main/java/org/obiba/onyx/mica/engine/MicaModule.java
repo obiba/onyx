@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.protocol.http.WebApplication;
+import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -22,10 +23,13 @@ import org.obiba.onyx.engine.state.AbstractStageState;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.engine.state.StageExecutionContext;
 import org.obiba.onyx.engine.state.TransitionEvent;
+import org.obiba.onyx.engine.variable.IActionVariableProvider;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.IVariableProvider;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
+import org.obiba.onyx.mica.domain.conclusion.Conclusion;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,9 +41,17 @@ public class MicaModule implements Module, IVariableProvider, ApplicationContext
 
   private static final Logger log = LoggerFactory.getLogger(MicaModule.class);
 
+  private static final String ACCEPTED_ATTRIBUTE = "accepted";
+
+  private static final String BARCODE_ATTRIBUTE = "barcode";
+
   private ApplicationContext applicationContext;
 
   private ActiveInterviewService activeInterviewService;
+
+  private IActionVariableProvider actionVariableProvider;
+
+  private EntityQueryService queryService;
 
   private List<Stage> stages;
 
@@ -113,20 +125,48 @@ public class MicaModule implements Module, IVariableProvider, ApplicationContext
     this.activeInterviewService = activeInterviewService;
   }
 
+  public void setActionVariableProvider(IActionVariableProvider actionVariableProvider) {
+    this.actionVariableProvider = actionVariableProvider;
+  }
+
+  public void setQueryService(EntityQueryService queryService) {
+    this.queryService = queryService;
+  }
+
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
-    // TODO Auto-generated method stub
-    return null;
+    VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
+
+    if(actionVariableProvider.isActionVariable(variable)) {
+      varData = actionVariableProvider.getActionVariableData(participant, variable, variablePathNamingStrategy, varData, variable.getParent().getParent().getName());
+    } else {
+      Conclusion conclusion = new Conclusion();
+      conclusion.setInterview(participant.getInterview());
+      conclusion = queryService.matchOne(conclusion);
+
+      if(conclusion != null) {
+        if(variable.getName().equals(ACCEPTED_ATTRIBUTE)) {
+          varData.addData(DataBuilder.buildBoolean(conclusion.isAccepted()));
+        } else if(variable.getName().equals(BARCODE_ATTRIBUTE)) {
+          varData.addData(DataBuilder.buildBoolean(conclusion.getBarcode()));
+        }
+      }
+    }
+
+    return varData;
   }
 
   public List<Variable> getVariables() {
     List<Variable> variables = new ArrayList<Variable>();
 
-    Variable conclusion = new Variable("Conclusion");
-    variables.add(conclusion);
+    for(Stage stage : stages) {
+      Variable stageVariable = new Variable(stage.getName());
+      variables.add(stageVariable);
 
-    conclusion.addVariable(new Variable("accepted").setDataType(DataType.BOOLEAN));
-    conclusion.addVariable(new Variable("barcode").setDataType(DataType.TEXT));
+      stageVariable.addVariable(new Variable(ACCEPTED_ATTRIBUTE).setDataType(DataType.BOOLEAN));
+      stageVariable.addVariable(new Variable(BARCODE_ATTRIBUTE).setDataType(DataType.TEXT));
 
+      stageVariable.addVariable(actionVariableProvider.createActionVariable());
+    }
     return variables;
   }
 }

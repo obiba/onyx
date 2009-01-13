@@ -1,13 +1,13 @@
 <stages>
   <stage>
-    <name>SUM</name>
+    <name>Conclusion</name>
     <module>mica</module>
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
       <conditions>
         <variableCondition>
-          <stageName>CON</stageName>
-          <variablePath>/CARTAGENE/Consent/accepted</variablePath>
+          <stageName>Consent</stageName>
+          <variablePath>/Cartagene/Consent/accepted</variablePath>
         </variableCondition>
         <moduleCondition>
           <moduleName>jade</moduleName>
