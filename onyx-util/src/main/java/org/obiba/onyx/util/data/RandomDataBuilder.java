@@ -12,7 +12,7 @@ package org.obiba.onyx.util.data;
 import java.util.Date;
 import java.util.Random;
 
-import sun.misc.BASE64Encoder;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 /**
  * 
@@ -20,8 +20,6 @@ import sun.misc.BASE64Encoder;
 public class RandomDataBuilder {
 
   static final private Random random = new Random();
-
-  static final private BASE64Encoder encoder = new BASE64Encoder();
 
   static public void setRandomSeed(long seed) {
     random.setSeed(seed);
@@ -38,7 +36,7 @@ public class RandomDataBuilder {
       byte[] randomBytes = new byte[random.nextInt(50) + 1];
       random.nextBytes(randomBytes);
       // Encode the bytes in base 64 so we get "readable" characters.
-      return DataBuilder.buildText(encoder.encode(randomBytes));
+      return DataBuilder.buildText(Base64.encode(randomBytes));
     case DATE:
       return DataBuilder.buildDate(new Date(random.nextLong()));
     case DECIMAL:
