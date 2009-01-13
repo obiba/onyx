@@ -58,11 +58,20 @@ public class OnyxDataExportContext {
   }
 
   public int getExportMonth() {
-    return getCalendarPart(Calendar.MONTH);
+    // Calendar.MONTH is zero based
+    return getCalendarPart(Calendar.MONTH) + 1;
   }
 
   public int getExportDay() {
     return getCalendarPart(Calendar.DAY_OF_MONTH);
+  }
+
+  public int getExportHour() {
+    return getCalendarPart(Calendar.HOUR_OF_DAY);
+  }
+
+  public int getExportMinute() {
+    return getCalendarPart(Calendar.MINUTE);
   }
 
   protected int getCalendarPart(int part) {
