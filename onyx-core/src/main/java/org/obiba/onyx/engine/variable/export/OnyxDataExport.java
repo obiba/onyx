@@ -13,8 +13,8 @@ import java.io.OutputStream;
 import java.util.List;
 
 import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.variable.VariableDataSet;
 import org.obiba.onyx.engine.variable.VariableDirectory;
@@ -49,22 +49,22 @@ public class OnyxDataExport {
     this.variableDirectory = variableDirectory;
   }
 
-  public void exportCompletedInterviews() throws Exception {
+  public void exportCompletedInterviews(OnyxDataExportDestination destination) throws Exception {
 
-    OnyxDataExportContext context = new OnyxDataExportContext("MyDestination", userSessionService.getUser());
+    OnyxDataExportContext context = new OnyxDataExportContext(destination.getName(), userSessionService.getUser());
 
-    Interview template = new Interview();
-    template.setStatus(InterviewStatus.COMPLETED);
-
-    List<Interview> completedInterviews = queryService.match(template);
-
-    if(completedInterviews != null && completedInterviews.size() > 0) {
+    Participant template = new Participant();
+    template.setExported(false);
+    List<Participant> participants = queryService.match(template);
+    if(participants.size() > 0) {
       exportStrategy.prepare(context);
-      for(Interview interview : completedInterviews) {
-        String entryName = interview.getParticipant().getBarcode() + ".xml";
-        OutputStream os = exportStrategy.newEntry(entryName);
-        VariableDataSet participantData = variableDirectory.getParticipantData(interview.getParticipant());
-        VariableStreamer.toXML(participantData, os);
+      for(Participant participant : participants) {
+        if(participant.getInterview().getStatus() == InterviewStatus.COMPLETED) {
+          String entryName = participant.getBarcode() + ".xml";
+          OutputStream os = exportStrategy.newEntry(entryName);
+          VariableDataSet participantData = variableDirectory.getParticipantData(participant, destination);
+          VariableStreamer.toXML(participantData, os);
+        }
       }
       context.endExport();
       exportStrategy.terminate(context);

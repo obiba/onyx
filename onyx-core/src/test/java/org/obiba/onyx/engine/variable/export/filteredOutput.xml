@@ -1,0 +1,14 @@
+<variableDataSet>
+  <variableData path="/STUDY_NAME/STUDY_NAME/ADMIN/USER/LOGIN" type="TEXT">
+    <string>2Jy4GW8O+2iS+U1o/MwsNfC4Rgnl8SxV3YWrqNXZvvdoCPO1</string>
+  </variableData>
+  <variableData path="/STUDY_NAME/STUDY_NAME/ADMIN/PARTICIPANT/BARCODE" type="TEXT">
+    <string>ErgZJ7pbtfZ+G9ootASb8OSu140=</string>
+  </variableData>
+  <variableData path="/STUDY_NAME/STUDY_NAME/ADMIN/PARTICIPANT/NAME" type="TEXT">
+    <string>/Aw06amd5O87wrF8gTetZZh4+ek98fZYNnrKKGRSR0ue83ZeJOmogXNyTQ==</string>
+  </variableData>
+  <variableData path="/STUDY_NAME/STUDY_NAME/ADMIN/PARTICIPANT/CONSENT" type="BOOLEAN">
+    <boolean>false</boolean>
+  </variableData>
+</variableDataSet>

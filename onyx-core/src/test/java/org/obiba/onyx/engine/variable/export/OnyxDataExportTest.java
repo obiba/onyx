@@ -14,8 +14,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -23,9 +25,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
+import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.VariableDirectory;
 import org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.test.TestVariableProvider;
@@ -47,11 +51,14 @@ public class OnyxDataExportTest {
 
   TestVariableProvider variableProvider;
 
+  OnyxDataExportDestination destination;
+
   @Before
   public void setup() {
-    mockDirectory.setVariablePathNamingStrategy(new DefaultVariablePathNamingStrategy());
+    IVariablePathNamingStrategy strategy = DefaultVariablePathNamingStrategy.getInstance("STUDY_NAME");
+    mockDirectory.setVariablePathNamingStrategy(strategy);
 
-    variableProvider = new TestVariableProvider();
+    variableProvider = new TestVariableProvider(strategy);
     variableProvider.addVariables(getClass().getResourceAsStream("testVariables.xml"));
     mockDirectory.registerVariables(variableProvider);
 
@@ -64,6 +71,9 @@ public class OnyxDataExportTest {
     ode.setQueryService(mockEntityQueryService);
     ode.setExportStrategy(mockExportStrategy);
     ode.setVariableDirectory(mockDirectory);
+
+    destination = new OnyxDataExportDestination();
+    destination.setName("TestDestination");
   }
 
   @Test
@@ -73,7 +83,7 @@ public class OnyxDataExportTest {
     EasyMock.expect(mockUserSessionService.getUser()).andReturn(exportUser);
     EasyMock.expect(mockEntityQueryService.match((Interview) EasyMock.anyObject())).andReturn(testInterviews);
     EasyMock.replay(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
-    ode.exportCompletedInterviews();
+    ode.exportCompletedInterviews(destination);
     EasyMock.verify(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
   }
 
@@ -84,38 +94,85 @@ public class OnyxDataExportTest {
     Interview interview = new Interview();
     Participant participant = new Participant();
     participant.setBarcode("testbarcode");
+    participant.setExported(false);
     interview.setParticipant(participant);
+    participant.setInterview(interview);
+    interview.setStatus(InterviewStatus.COMPLETED);
+
     variableProvider.createRandomData(participant);
-    List<Interview> testInterviews = new LinkedList<Interview>();
-    testInterviews.add(interview);
+    List<Participant> testParticipants = new LinkedList<Participant>();
+    testParticipants.add(participant);
 
     EasyMock.expect(mockUserSessionService.getUser()).andReturn(exportUser);
-    EasyMock.expect(mockEntityQueryService.match((Interview) EasyMock.anyObject())).andReturn(testInterviews);
+    EasyMock.expect(mockEntityQueryService.match((Participant) EasyMock.anyObject())).andReturn(testParticipants);
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     mockExportStrategy.prepare((OnyxDataExportContext) EasyMock.anyObject());
     EasyMock.expect(mockExportStrategy.newEntry(participant.getBarcode() + ".xml")).andReturn(baos);
     mockExportStrategy.terminate((OnyxDataExportContext) EasyMock.anyObject());
 
     EasyMock.replay(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
-    ode.exportCompletedInterviews();
+    ode.exportCompletedInterviews(destination);
     EasyMock.verify(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
 
     byte data[] = baos.toByteArray();
     Assert.assertNotNull(data);
     String xml = new String(data);
-    String expectedData = getExpectedOutput();
+
+    // System.out.println("-----------------------------------------------------------------------");
+    // System.out.println(xml);
+    // System.out.println("-----------------------------------------------------------------------");
+
+    String expectedData = getExpectedOutput("dataOutput.xml");
+    Assert.assertEquals(expectedData, xml);
+  }
+
+  @Test
+  public void testFilteredExport() throws Exception {
+
+    Set<String> includedVariables = new HashSet<String>();
+    includedVariables.add("/STUDY_NAME/STUDY_NAME/ADMIN");
+
+    destination.setIncludedVariables(includedVariables);
+    User exportUser = new User();
+
+    Interview interview = new Interview();
+    Participant participant = new Participant();
+    participant.setBarcode("testbarcode");
+    interview.setParticipant(participant);
+    participant.setInterview(interview);
+    interview.setStatus(InterviewStatus.COMPLETED);
+
+    variableProvider.createRandomData(participant);
+    List<Participant> testParticipants = new LinkedList<Participant>();
+    testParticipants.add(participant);
+
+    EasyMock.expect(mockUserSessionService.getUser()).andReturn(exportUser);
+    EasyMock.expect(mockEntityQueryService.match((Participant) EasyMock.anyObject())).andReturn(testParticipants);
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    mockExportStrategy.prepare((OnyxDataExportContext) EasyMock.anyObject());
+    EasyMock.expect(mockExportStrategy.newEntry(participant.getBarcode() + ".xml")).andReturn(baos);
+    mockExportStrategy.terminate((OnyxDataExportContext) EasyMock.anyObject());
+
+    EasyMock.replay(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
+    ode.exportCompletedInterviews(destination);
+    EasyMock.verify(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
+
+    byte data[] = baos.toByteArray();
+    Assert.assertNotNull(data);
+    String xml = new String(data);
+    String expectedData = getExpectedOutput("filteredOutput.xml");
     Assert.assertEquals(expectedData, xml);
   }
 
   /**
    * @return
    */
-  private String getExpectedOutput() {
+  private String getExpectedOutput(String outputName) {
     // The expected output contains random data. The data is always the same across test execution, because the
     // TestVariableProvider uses the same seed for every invocation. The data will be different if the number or
     // ordering of the variables differs.
     try {
-      InputStream is = getClass().getResourceAsStream("dataOutput.xml");
+      InputStream is = getClass().getResourceAsStream(outputName);
 
       StringBuilder sb = new StringBuilder();
       char[] buffer = new char[1024 * 1024];

@@ -40,7 +40,23 @@ public class VariableStreamer {
 
   public static Variable fromXML(InputStream is) {
     VariableStreamer streamer = new VariableStreamer();
-    return (Variable) streamer.xstream.fromXML(is);
+    return setParentInstance((Variable) streamer.xstream.fromXML(is));
+  }
+
+  /**
+   * Reconstructs the parent instance from a list of children.
+   * @param parent
+   * @return
+   */
+  private static Variable setParentInstance(Variable parent) {
+    // Relink the parent instance
+    if(parent.getVariables() != null) {
+      for(Variable child : parent.getVariables()) {
+        child.setParent(parent);
+        setParentInstance(child);
+      }
+    }
+    return parent;
   }
 
   public static void toXML(Variable variable, OutputStream os) {

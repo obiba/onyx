@@ -28,14 +28,16 @@ import org.obiba.onyx.util.data.RandomDataBuilder;
  * 
  */
 public class TestVariableProvider implements IVariableProvider {
+  private IVariablePathNamingStrategy strategy;
 
   private List<Variable> testVariables = new LinkedList<Variable>();
 
   private Map<Participant, VariableDataSet> dataSets = new HashMap<Participant, VariableDataSet>();
 
-  public TestVariableProvider() {
+  public TestVariableProvider(IVariablePathNamingStrategy strategy) {
     // Doing this will always generate the same random data.
     RandomDataBuilder.setRandomSeed(1);
+    this.strategy = strategy;
   }
 
   public void addVariables(InputStream is) {
@@ -43,15 +45,13 @@ public class TestVariableProvider implements IVariableProvider {
     testVariables.add(rootVar);
   }
 
-  public void addVariableData(InputStream is) {
-  }
-
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
     VariableDataSet dataSet = dataSets.get(participant);
     if(dataSet != null) {
       List<VariableData> datas = dataSet.getVariableDatas();
       for(VariableData variableData : datas) {
-        if(variableData.getVariablePath().equals(variable.getName())) {
+        String varPath = variablePathNamingStrategy.getPath(variable);
+        if(variableData.getVariablePath().equals(varPath)) {
           return variableData;
         }
       }
@@ -79,7 +79,7 @@ public class TestVariableProvider implements IVariableProvider {
   public void createRandomData(Variable variable, Participant participant) {
     if(variable != null) {
       if(variable.getDataType() != null) {
-        VariableData data = new VariableData(variable.getName());
+        VariableData data = new VariableData(strategy.getPath(variable));
         data.addData(RandomDataBuilder.buildRandom(variable.getDataType()));
         addToDataset(participant, data);
       }
