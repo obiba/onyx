@@ -98,7 +98,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public Page getResumePage() {
-    return navigationStrategy.getPageOnResume(this, currentQuestionnaireParticipant);
+    return navigationStrategy.getPageOnResume(this, getQuestionnaireParticipant());
   }
 
   public Page startPage() {

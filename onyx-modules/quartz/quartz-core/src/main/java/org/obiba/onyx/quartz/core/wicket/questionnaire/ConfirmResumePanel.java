@@ -52,6 +52,7 @@ public class ConfirmResumePanel extends Panel {
     add(new Label("user", activeInterviewService.getInterview().getUser().getFullName()));
     add(new Label("interviewInProgress", new StringResourceModel("InterviewInProgress", this, null)));
 
+    activeQuestionnaireAdministrationService.resume(activeInterviewService.getParticipant());
     String questionNumberToResumeAt = getQuestionNumberToResumeAt();
 
     if(questionNumberToResumeAt != null) {
