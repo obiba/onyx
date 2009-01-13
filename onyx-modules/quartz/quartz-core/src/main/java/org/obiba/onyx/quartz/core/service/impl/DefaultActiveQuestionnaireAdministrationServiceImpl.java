@@ -8,6 +8,7 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.service.impl;
 
+import java.util.Date;
 import java.util.Locale;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
@@ -76,6 +77,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     }
 
     currentQuestionnaireParticipant.setLocale(language);
+    currentQuestionnaireParticipant.setTimeStart(new Date());
 
     currentQuestionnaireParticipant = getPersistenceManager().save(currentQuestionnaireParticipant);
 
