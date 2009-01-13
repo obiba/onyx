@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -56,6 +57,9 @@ import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.engine.variable.export.OnyxDataExport;
+import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination;
+import org.obiba.onyx.webapp.OnyxApplication;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
@@ -90,6 +94,9 @@ public class ParticipantSearchPage extends BasePage {
 
   @SpringBean
   private ParticipantMetadata participantMetadata;
+
+  @SpringBean
+  private OnyxDataExport onyxDataExport;
 
   private OnyxEntityList<Participant> participantList;
 
@@ -504,6 +511,28 @@ public class ParticipantSearchPage extends BasePage {
       };
       updateParticipantsLink.setVisible(participantMetadata.getSupportedRecruitmentTypes().contains(RecruitmentType.ENROLLED));
       add(updateParticipantsLink);
+
+      AjaxLink exportLink = new AjaxLink("export") {
+        private static final long serialVersionUID = 1L;
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          Map<String, OnyxDataExportDestination> destinations = ((OnyxApplication) OnyxApplication.get()).getBeansOfType(OnyxDataExportDestination.class);
+          if(destinations != null) {
+            for(OnyxDataExportDestination destination : destinations.values()) {
+              try {
+                onyxDataExport.exportCompletedInterviews(destination);
+              } catch(Exception e) {
+                log.error("Error on data export.", e);
+              }
+            }
+          }
+        }
+
+      };
+      exportLink.setVisible(((OnyxApplication) OnyxApplication.get()).isDevelopmentMode());
+      add(exportLink);
     }
   }
 

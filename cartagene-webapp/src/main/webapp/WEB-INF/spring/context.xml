@@ -111,5 +111,34 @@
     <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
     <property name="supportedRecruitmentTypesString" value="${org.obiba.onyx.supportedRecruitmentTypes}"/>
   </bean>
+  
+  <bean id="onyxDataExport" class="org.obiba.onyx.engine.variable.export.OnyxDataExport">
+    <property name="queryService" ref="persistenceManager" />
+    <property name="variableDirectory" ref="variableDirectory" />
+    <property name="userSessionService" ref="userSessionService" />
+    <property name="exportStrategy">
+      <bean class="org.obiba.onyx.engine.variable.export.ChainedOnyxDataExportStrategy">
+        <property name="zipStrategy">
+          <bean class="org.obiba.onyx.engine.variable.export.ZipExportStrategy" />
+        </property>
+        <property name="firstDigestStrategy">
+          <bean class="org.obiba.onyx.engine.variable.export.DigestingOnyxDataExportStrategy" />
+        </property>
+        <property name="secondDigestStrategy">
+          <bean class="org.obiba.onyx.engine.variable.export.DigestingOnyxDataExportStrategy" />
+        </property>
+        <property name="directoryStrategy">
+          <bean class="org.obiba.onyx.engine.variable.export.DirectoryDataExportStrategy">
+            <property name="applicationConfigurationService" ref="appConfigService" />
+            <property name="outputRootDirectory" value="target"/>
+          </bean>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="dcc" class="org.obiba.onyx.engine.variable.export.OnyxDataExportDestination">
+    <property name="name" value="DCC" />
+  </bean>
 
 </beans>

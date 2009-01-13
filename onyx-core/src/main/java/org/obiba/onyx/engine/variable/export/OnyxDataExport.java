@@ -19,19 +19,24 @@ import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.variable.VariableDataSet;
 import org.obiba.onyx.engine.variable.VariableDirectory;
 import org.obiba.onyx.engine.variable.util.VariableStreamer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  */
 public class OnyxDataExport {
 
-  EntityQueryService queryService;
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(OnyxDataExport.class);
 
-  VariableDirectory variableDirectory;
+  private EntityQueryService queryService;
 
-  UserSessionService userSessionService;
+  private VariableDirectory variableDirectory;
 
-  IOnyxDataExportStrategy exportStrategy;
+  private UserSessionService userSessionService;
+
+  private IOnyxDataExportStrategy exportStrategy;
 
   public void setExportStrategy(IOnyxDataExportStrategy exportStrategy) {
     this.exportStrategy = exportStrategy;

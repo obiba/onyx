@@ -41,6 +41,7 @@ import org.obiba.wicket.application.ISpringWebApplication;
 import org.obiba.wicket.application.WebApplicationStartupListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
@@ -157,6 +158,10 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
 
   public boolean isDevelopmentMode() {
     return Application.DEVELOPMENT.equalsIgnoreCase(getConfigurationType());
+  }
+
+  public Map getBeansOfType(Class type) throws BeansException {
+    return applicationContext.getBeansOfType(type);
   }
 
   protected final ApplicationContext internalGetApplicationContext() {
