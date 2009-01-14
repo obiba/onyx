@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.util;
 
-import java.util.List;
-
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -30,7 +28,7 @@ public class VariableFinderTest {
 
   private static final Logger log = LoggerFactory.getLogger(VariableFinderTest.class);
 
-  private IVariablePathNamingStrategy variablePathNamingStrategy = DefaultVariablePathNamingStrategy.getInstance("STUDY_NAME");
+  private IVariablePathNamingStrategy variablePathNamingStrategy = DefaultVariablePathNamingStrategy.getInstance("Study");
 
   private Variable root;
 
@@ -44,30 +42,28 @@ public class VariableFinderTest {
 
     // users
 
-    parent = root.addVariable("ADMIN/USER", variablePathNamingStrategy.getPathSeparator());
+    parent = root.addVariable("Admin/User", variablePathNamingStrategy.getPathSeparator());
 
-    variable = new Variable("LOGIN").setDataType(DataType.TEXT);
-    parent.addVariable(variable);
+    parent.addVariable(new Variable("login").setDataType(DataType.TEXT).setKey("user"));
+    parent.addVariable(new Variable("name").setDataType(DataType.TEXT)).addReference("user");
 
     VariableData[] userLogins = new VariableData[2];
 
     // participants
 
-    parent = root.addVariable("ADMIN/PARTICIPANT", variablePathNamingStrategy.getPathSeparator());
+    parent = root.addVariable("Admin/Participant", variablePathNamingStrategy.getPathSeparator());
 
-    variable = new Variable("BARCODE").setDataType(DataType.TEXT);
+    variable = new Variable("barcode").setDataType(DataType.TEXT);
     parent.addVariable(variable);
 
-    subvariable = new Variable("NAME").setDataType(DataType.TEXT);
-    Variable subvariable2 = new Variable("CONSENT").setDataType(DataType.BOOLEAN);
-    parent.addVariable(subvariable);
-    parent.addVariable(subvariable2);
+    subvariable = parent.addVariable(new Variable("name").setDataType(DataType.TEXT));
+    parent.addVariable(new Variable("gender").setDataType(DataType.TEXT));
 
     // questionnaire
 
     parent = root.addVariable("HealthQuestionnaire", variablePathNamingStrategy.getPathSeparator());
 
-    variable = new Variable("PARTICIPANT_AGE").addCategories("PARTICIPANT_AGE", "PNA", "DK");
+    variable = new Variable("Participant_AGE").addCategories("Participant_AGE", "PNA", "DK");
     parent.addVariable(variable);
 
     subvariable = new Variable("OPEN_AGE").setDataType(DataType.INTEGER).setUnit("year");
@@ -97,11 +93,9 @@ public class VariableFinderTest {
 
     parent = root.addVariable("StandingHeight", variablePathNamingStrategy.getPathSeparator());
 
-    variable = new Variable("First_Height_Measurement").setDataType(DataType.DECIMAL);
-    parent.addVariable(variable);
-
-    variable = new Variable("Second_Height_Measurement").setDataType(DataType.DECIMAL);
-    parent.addVariable(variable);
+    parent.addVariable(new Variable("InstrumentRun")).addVariable(new Variable("user").setDataType(DataType.TEXT).setKey("user"));
+    parent.addVariable(new Variable("First_Height_Measurement").setDataType(DataType.DECIMAL));
+    parent.addVariable(new Variable("Second_Height_Measurement").setDataType(DataType.DECIMAL));
   }
 
   @Test
@@ -111,27 +105,30 @@ public class VariableFinderTest {
 
     log.info("\n" + VariableStreamer.toXML(root));
 
-    Assert.assertEquals(10, xquery(root, VariableFinder.ALL_VARIABLES_XPATH).size());
+    VariableFinder finder = VariableFinder.getInstance(root, variablePathNamingStrategy);
+    Assert.assertEquals(12, finder.filter(VariableFinder.ALL_VARIABLES_XPATH).size());
     log.info("===============");
-    xquery(root, "//variable[@name='PARTICIPANT']/descendant::*");// | " + VariableFinder.ALL_VARIABLES_XPATH);
+    Assert.assertEquals(5, finder.filter(VariableFinder.ALL_ADMIN_VARIABLES_XPATH).size());
     log.info("===============");
-    xquery(root, "//variable[@name='PARTICIPANT']/variable[@name='BARCODE'] | //variable[not(@name='PARTICIPANT')]//variable");
+    Assert.assertEquals(2, finder.filterKey("user").size());
+    log.info("===============");
+    Assert.assertEquals(1, finder.filterReference("user").size());
+    log.info("===============");
+    Assert.assertEquals(1, finder.filterReference("name", "user").size());
+    log.info("===============");
+    Assert.assertEquals(0, finder.filterReference("email", "user").size());
 
     // search
-    Variable searchedEntity = VariableFinder.getInstance(root, variablePathNamingStrategy).findVariable("/STUDY_NAME/HealthQuestionnaire/DATE_OF_BIRTH/DOB_MONTH/OPEN_MONTH");
+    Variable searchedEntity = VariableFinder.getInstance(root, variablePathNamingStrategy).findVariable("/Study/HealthQuestionnaire/DATE_OF_BIRTH/DOB_MONTH/OPEN_MONTH");
     Assert.assertNotNull(searchedEntity);
     Assert.assertEquals("OPEN_MONTH", searchedEntity.getName());
 
-    searchedEntity = VariableFinder.getInstance(root, variablePathNamingStrategy).findVariable("/STUDY_NAME/HealthQuestionnaire/DATE_OF_BIRTH/OPEN_MONTH");
+    searchedEntity = VariableFinder.getInstance(root, variablePathNamingStrategy).findVariable("/Study/HealthQuestionnaire/DATE_OF_BIRTH/OPEN_MONTH");
     Assert.assertNull(searchedEntity);
 
-    searchedEntity = VariableFinder.getInstance(root, variablePathNamingStrategy).findVariable("/ANOTHER_STUDY_NAME/HealthQuestionnaire/DATE_OF_BIRTH/DOB_MONTH/OPEN_MONTH");
+    searchedEntity = VariableFinder.getInstance(root, variablePathNamingStrategy).findVariable("/AnotherStudy/HealthQuestionnaire/DATE_OF_BIRTH/DOB_MONTH/OPEN_MONTH");
     Assert.assertNull(searchedEntity);
 
-  }
-
-  private List<Variable> xquery(Variable parent, String query) {
-    return VariableFinder.getInstance(parent, variablePathNamingStrategy).filter(query);
   }
 
 }

@@ -37,6 +37,8 @@ public class VariableFinder {
 
   public static final String ALL_VARIABLES_XPATH = "//variable[@dataType]";
 
+  public static final String ALL_ADMIN_VARIABLES_XPATH = "//variable[@name='Admin']/descendant::variable[@dataType]";
+
   private Variable parent;
 
   private IVariablePathNamingStrategy variablePathNamingStrategy;
@@ -79,6 +81,51 @@ public class VariableFinder {
     return current;
   }
 
+  /**
+   * Get all the variables having the attribute key.
+   * @param key
+   * @return
+   */
+  public List<Variable> filterKey(String key) {
+    return filter("//variable[@key='" + key + "']");
+  }
+
+  /**
+   * Get all the variables having the key as a reference.
+   * @param key
+   * @return
+   */
+  public List<Variable> filterReference(String key) {
+    return filterReference(null, key);
+  }
+
+  /**
+   * Get the variables with the given name, having the key as a reference.
+   * @param name
+   * @param key
+   * @return
+   */
+  public List<Variable> filterReference(String name, String key) {
+    List<Variable> variables = new ArrayList<Variable>();
+
+    String query = "//reference/parent::variable";
+    if(name != null) {
+      query += "[@name='" + name + "']";
+    }
+    for(Variable refering : filter(query)) {
+      if(refering.getReferences().contains(key)) {
+        variables.add(refering);
+      }
+    }
+
+    return variables;
+  }
+
+  /**
+   * Get all the variables matching the XPath query.
+   * @param xpathQuery
+   * @return
+   */
   public List<Variable> filter(String xpathQuery) {
     List<Variable> variables = new ArrayList<Variable>();
 
