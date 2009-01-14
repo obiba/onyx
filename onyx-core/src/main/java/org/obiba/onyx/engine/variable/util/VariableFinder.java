@@ -98,7 +98,16 @@ public class VariableFinder {
    * @param key
    * @return
    */
-  public List<Variable> filterKey(String key) {
+  public List<Variable> filterKeyVariables(String key) {
+    return filterVariables("//variable[@key='" + key + "']");
+  }
+
+  /**
+   * Get all the variables having the attribute key.
+   * @param key
+   * @return
+   */
+  public List<String> filterKey(String key) {
     return filter("//variable[@key='" + key + "']");
   }
 
@@ -107,7 +116,16 @@ public class VariableFinder {
    * @param key
    * @return
    */
-  public List<Variable> filterReference(String key) {
+  public List<Variable> filterReferenceVariables(String key) {
+    return filterReferenceVariables(null, key);
+  }
+
+  /**
+   * Get the paths of all the variables having the key as a reference.
+   * @param key
+   * @return
+   */
+  public List<String> filterReference(String key) {
     return filterReference(null, key);
   }
 
@@ -117,14 +135,14 @@ public class VariableFinder {
    * @param key
    * @return
    */
-  public List<Variable> filterReference(String name, String key) {
+  public List<Variable> filterReferenceVariables(String name, String key) {
     List<Variable> variables = new ArrayList<Variable>();
 
     String query = "//reference/parent::variable";
     if(name != null) {
       query += "[@name='" + name + "']";
     }
-    for(Variable refering : filter(query)) {
+    for(Variable refering : filterVariables(query)) {
       if(refering.getReferences().contains(key)) {
         variables.add(refering);
       }
@@ -134,12 +152,35 @@ public class VariableFinder {
   }
 
   /**
-   * Get all the variables matching the XPath query.
+   * Get the paths to variables with the given name, having the key as a reference.
+   * @param name
+   * @param key
+   * @return
+   */
+  public List<String> filterReference(String name, String key) {
+    List<String> variablePaths = new ArrayList<String>();
+
+    String query = "//reference/parent::variable";
+    if(name != null) {
+      query += "[@name='" + name + "']";
+    }
+    for(String path : filter(query)) {
+      Variable refering = findVariable(path);
+      if(refering.getReferences().contains(key)) {
+        variablePaths.add(path);
+      }
+    }
+
+    return variablePaths;
+  }
+
+  /**
+   * Get all the variable paths matching the XPath query.
    * @param xpathQuery
    * @return
    */
-  public List<Variable> filter(String xpathQuery) {
-    List<Variable> variables = new ArrayList<Variable>();
+  public List<String> filter(String xpathQuery) {
+    List<String> variablePaths = new ArrayList<String>();
 
     DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
     documentBuilderFactory.setNamespaceAware(true); // never forget this!
@@ -156,20 +197,51 @@ public class VariableFinder {
         Node node = nodes.item(i);
         String path = variablePathNamingStrategy.getPath(node);
         log.debug("filter.path={}", path);
-
-        Variable variable = findVariable(path);
-        if(variable != null) {
-          variables.add(variable);
-        }
+        variablePaths.add(path);
       }
 
     } catch(Exception e) {
       e.printStackTrace();
     }
 
+    return variablePaths;
+  }
+
+  /**
+   * Get all the variables matching the XPath query.
+   * @param xpathQuery
+   * @return
+   */
+  public List<Variable> filterVariables(String xpathQuery) {
+    List<Variable> variables = new ArrayList<Variable>();
+
+    for(String path : filter(xpathQuery)) {
+      Variable variable = findVariable(path);
+      if(variable != null) {
+        variables.add(variable);
+      }
+    }
     log.debug("filter.variables={}", variables);
 
     return variables;
+  }
+
+  /**
+   * Get the variable paths not matching the XPath query.
+   * @param xpathQuery
+   * @return
+   */
+  public List<String> filterExcluding(String xpathQuery) {
+    List<String> excluded = filter(xpathQuery);
+    List<String> included = new ArrayList<String>();
+
+    for(String path : filter(ALL_VARIABLES_XPATH)) {
+      if(!excluded.contains(path)) {
+        included.add(path);
+      }
+    }
+
+    return included;
   }
 
   /**
@@ -177,12 +249,12 @@ public class VariableFinder {
    * @param xpathQuery
    * @return
    */
-  public List<Variable> filterExcluding(String xpathQuery) {
-    List<Variable> excluded = filter(xpathQuery);
+  public List<Variable> filterExcludingVariables(String xpathQuery) {
     List<Variable> included = new ArrayList<Variable>();
 
-    for(Variable variable : filter(ALL_VARIABLES_XPATH)) {
-      if(!excluded.contains(variable)) {
+    for(String path : filterExcluding(xpathQuery)) {
+      Variable variable = findVariable(path);
+      if(variable != null) {
         included.add(variable);
       }
     }

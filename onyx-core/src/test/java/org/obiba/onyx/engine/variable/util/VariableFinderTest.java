@@ -100,22 +100,22 @@ public class VariableFinderTest {
 
     // dumps
 
-    log.info("\n" + VariableStreamer.toXML(root));
+    log.debug("\n" + VariableStreamer.toXML(root));
 
     VariableFinder finder = VariableFinder.getInstance(root, variablePathNamingStrategy);
-    Assert.assertEquals(12, finder.filter(VariableFinder.ALL_VARIABLES_XPATH).size());
+    Assert.assertEquals(12, finder.filterVariables(VariableFinder.ALL_VARIABLES_XPATH).size());
     log.debug("===============");
-    Assert.assertEquals(5, finder.filter(VariableFinder.ALL_ADMIN_VARIABLES_XPATH).size());
+    Assert.assertEquals(5, finder.filterVariables(VariableFinder.ALL_ADMIN_VARIABLES_XPATH).size());
     log.debug("===============");
-    Assert.assertEquals(2, finder.filterKey("user").size());
+    Assert.assertEquals(2, finder.filterKeyVariables("user").size());
     log.debug("===============");
-    Assert.assertEquals(1, finder.filterReference("user").size());
+    Assert.assertEquals(1, finder.filterReferenceVariables("user").size());
     log.debug("===============");
-    Assert.assertEquals(1, finder.filterReference("name", "user").size());
+    Assert.assertEquals(1, finder.filterReferenceVariables("name", "user").size());
     log.debug("===============");
-    Assert.assertEquals(0, finder.filterReference("email", "user").size());
+    Assert.assertEquals(0, finder.filterReferenceVariables("email", "user").size());
     log.debug("===============");
-    Assert.assertEquals(7, finder.filterExcluding(VariableFinder.ALL_ADMIN_VARIABLES_XPATH).size());
+    Assert.assertEquals(7, finder.filterExcludingVariables(VariableFinder.ALL_ADMIN_VARIABLES_XPATH).size());
 
     // search
     Variable searchedEntity = VariableFinder.getInstance(root, variablePathNamingStrategy).findVariable("/Study/HealthQuestionnaire/DATE_OF_BIRTH/DOB_MONTH/OPEN_MONTH");
