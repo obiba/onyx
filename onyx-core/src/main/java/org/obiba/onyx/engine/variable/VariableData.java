@@ -28,14 +28,6 @@ public class VariableData implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  // public static final String ENCODING = "ISO-8859-1";
-  //
-  // public static final String QUERY = "/data?";
-  //
-  // public static final String QUERY_KEY_VALUE_SEPARATOR = "=";
-  //
-  // public static final String QUERY_STATEMENT_SEPARATOR = "&";
-
   @XStreamAsAttribute
   private String path;
 
@@ -59,37 +51,32 @@ public class VariableData implements Serializable {
     addData(data);
   }
 
-  // public String getPath() {
-  // String path = "";
-  // if(variablePath != null) {
-  // path = variablePath;
-  // }
-  // if(data != null) {
-  // if(path.length() > 0) {
-  // path += QUERY + "value" + QUERY_KEY_VALUE_SEPARATOR;
-  // }
-  // try {
-  // path += URLEncoder.encode(data.getValueAsString(), ENCODING);
-  // } catch(UnsupportedEncodingException e) {
-  // // TODO Auto-generated catch block
-  // e.printStackTrace();
-  // }
-  // }
-  // return path;
-  // }
-
+  /**
+   * Get the path to the associated {@link Variable}.
+   * @return
+   * @see IVariablePathNamingStrategy
+   */
   public String getVariablePath() {
     return path;
   }
 
+  /**
+   * Set the path to the associated {@link Variable}.
+   * @param variablePath
+   * @see IVariablePathNamingStrategy
+   */
   public void setVariablePath(String variablePath) {
     this.path = variablePath;
   }
 
-  public List<Serializable> getValues() {
+  private List<Serializable> getValues() {
     return values != null ? values : (values = new ArrayList<Serializable>());
   }
 
+  /**
+   * Get the datas.
+   * @return
+   */
   public List<Data> getDatas() {
     List<Data> datas = new ArrayList<Data>();
 
@@ -100,6 +87,11 @@ public class VariableData implements Serializable {
     return datas;
   }
 
+  /**
+   * Add a data to this variable data.
+   * @param child
+   * @return this for chaining
+   */
   public VariableData addData(Data child) {
     if(child != null) {
       getDatas().add(child);
@@ -113,12 +105,16 @@ public class VariableData implements Serializable {
     return this;
   }
 
+  /**
+   * Get the children variable data.
+   * @return
+   */
   public List<VariableData> getVariableDatas() {
     return variableDatas != null ? variableDatas : (variableDatas = new ArrayList<VariableData>());
   }
 
   /**
-   * Cross referring variable data.
+   * Add a child variable data.
    * @param child
    * @return this for chaining
    */
@@ -129,6 +125,11 @@ public class VariableData implements Serializable {
     return this;
   }
 
+  /**
+   * Add children variable data.
+   * @param variableDatas
+   * @return
+   */
   public VariableData addVariableDatas(VariableData... variableDatas) {
     if(variableDatas != null) {
       for(VariableData ref : variableDatas) {

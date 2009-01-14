@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable;
 
+import java.util.List;
+
 import org.w3c.dom.Node;
 
 /**
@@ -68,11 +70,10 @@ public interface IVariablePathNamingStrategy {
   public String normalizeName(String name);
 
   /**
-   * Get the entity from the path and a parent entity (can be itself).
-   * @param entity
+   * 
    * @param path
    * @return
    */
-  public Variable getVariable(Variable entity, String path);
+  public List<String> getNormalizedNames(String path);
 
 }

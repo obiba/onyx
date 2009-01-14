@@ -129,53 +129,23 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
     return rootName;
   }
 
-  public Variable getVariable(Variable entity, String path) {
-    if(entity == null) return null;
-    // find the root
-    Variable root = entity;
-    while(root.getParent() != null) {
-      root = root.getParent();
-    }
-    log.debug("root.name={}", root);
-
-    // split the path
+  public List<String> getNormalizedNames(String path) {
     List<String> entityNames = new ArrayList<String>();
     String noParamsPath = path;
+
+    // remove query
     if(path.contains(QUERY_STARTER)) {
       noParamsPath = path.split(QUERY_STARTER)[0];
     }
+
+    // split the path
     for(String str : noParamsPath.split(getPathSeparator())) {
       if(str.length() > 0) {
         entityNames.add(str);
       }
     }
-    log.debug("entityNames={}", entityNames);
-    if(entityNames.size() == 0) return null;
-    if(!normalizeName(root.getName()).equals(entityNames.get(0))) return null;
 
-    Variable current = root;
-    for(int i = 1; i < entityNames.size(); i++) {
-      String entityName = entityNames.get(i);
-      log.debug("entityName={}", entityName);
-      log.debug("current.name={}", current);
-      boolean found = false;
-      for(Variable child : current.getVariables()) {
-        log.debug("  child.name={}", child);
-        if(normalizeName(child.getName()).equals(entityName)) {
-          current = child;
-          found = true;
-          break;
-        }
-      }
-      if(!found) {
-        current = null;
-        break;
-      }
-    }
-
-    log.debug(">>> current.name={}", current);
-
-    return current;
+    return entityNames;
   }
 
 }
