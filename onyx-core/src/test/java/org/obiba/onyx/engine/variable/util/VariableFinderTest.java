@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
-import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
@@ -46,8 +45,6 @@ public class VariableFinderTest {
 
     parent.addVariable(new Variable("login").setDataType(DataType.TEXT).setKey("user"));
     parent.addVariable(new Variable("name").setDataType(DataType.TEXT)).addReference("user");
-
-    VariableData[] userLogins = new VariableData[2];
 
     // participants
 
