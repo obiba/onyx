@@ -188,7 +188,8 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
   }
 
   private InstrumentRun getInstrumentRun(Participant participant, String instrumentTypeName) {
-    return null;
+    InstrumentType type = instrumentService.getInstrumentType(instrumentTypeName);
+    return instrumentRunService.getLastCompletedInstrumentRun(participant, type);
   }
 
   public Variable getInstrumentTypeVariable(Variable variable) {
