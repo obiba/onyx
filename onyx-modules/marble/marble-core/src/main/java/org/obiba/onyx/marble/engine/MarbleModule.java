@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.engine;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +43,8 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
   private static final String ACCEPTED_ATTRIBUTE = "accepted";
 
   private static final String LOCALE_ATTRIBUTE = "locale";
+
+  private static final String PDF_ATTRIBUTE = "pdfForm";
 
   private ApplicationContext applicationContext;
 
@@ -120,6 +123,8 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
           varData.addData(DataBuilder.buildText(consent.getLocale().toString()));
         } else if(varName.equals(MODE_ATTRIBUTE) && consent.getMode() != null) {
           varData.addData(DataBuilder.buildText(consent.getMode().toString()));
+        } else if(varName.equals(PDF_ATTRIBUTE) && consent.getPdfForm() != null) {
+          varData.addData(DataBuilder.buildBinary(new ByteArrayInputStream(consent.getPdfForm())));
         }
       }
     }
@@ -137,6 +142,7 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
       stageVariable.addVariable(new Variable(MODE_ATTRIBUTE).setDataType(DataType.TEXT));
       stageVariable.addVariable(new Variable(LOCALE_ATTRIBUTE).setDataType(DataType.TEXT));
       stageVariable.addVariable(new Variable(ACCEPTED_ATTRIBUTE).setDataType(DataType.BOOLEAN));
+      stageVariable.addVariable(new Variable(PDF_ATTRIBUTE).setDataType(DataType.DATA));
 
       stageVariable.addVariable(actionVariableProvider.createActionVariable(true));
     }
