@@ -43,6 +43,13 @@ public class VariableFinder {
 
   private IVariablePathNamingStrategy variablePathNamingStrategy;
 
+  /**
+   * Build a variable finder, from the given variable (search will be done from its root) and a variable naming startegy
+   * (to solve variable path based queries).
+   * @param parent
+   * @param variablePathNamingStrategy
+   * @return
+   */
   public static VariableFinder getInstance(Variable parent, IVariablePathNamingStrategy variablePathNamingStrategy) {
     VariableFinder finder = new VariableFinder();
     finder.parent = parent;
@@ -51,6 +58,11 @@ public class VariableFinder {
     return finder;
   }
 
+  /**
+   * Find the variable having the given path.
+   * @param path
+   * @return null if not found
+   */
   public Variable findVariable(String path) {
     if(path == null) return null;
 
@@ -143,7 +155,7 @@ public class VariableFinder {
       for(int i = 0; i < nodes.getLength(); i++) {
         Node node = nodes.item(i);
         String path = variablePathNamingStrategy.getPath(node);
-        log.info("filter.path={}", path);
+        log.debug("filter.path={}", path);
 
         Variable variable = findVariable(path);
         if(variable != null) {
@@ -155,11 +167,28 @@ public class VariableFinder {
       e.printStackTrace();
     }
 
-    log.info("filter.variables={}", variables);
+    log.debug("filter.variables={}", variables);
 
     return variables;
   }
 
+  public List<Variable> filterExcluding(String xpathQuery) {
+    List<Variable> excluded = filter(xpathQuery);
+    List<Variable> included = new ArrayList<Variable>();
+
+    for(Variable variable : filter(ALL_VARIABLES_XPATH)) {
+      if(!excluded.contains(variable)) {
+        included.add(variable);
+      }
+    }
+
+    return included;
+  }
+
+  /**
+   * Get the variable root.
+   * @return
+   */
   public Variable getVariableRoot() {
     Variable root = parent;
 

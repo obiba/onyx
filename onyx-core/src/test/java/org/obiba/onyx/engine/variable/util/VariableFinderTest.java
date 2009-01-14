@@ -99,7 +99,7 @@ public class VariableFinderTest {
   }
 
   @Test
-  public void testXStream() {
+  public void testFilterAndFind() {
 
     // dumps
 
@@ -107,16 +107,18 @@ public class VariableFinderTest {
 
     VariableFinder finder = VariableFinder.getInstance(root, variablePathNamingStrategy);
     Assert.assertEquals(12, finder.filter(VariableFinder.ALL_VARIABLES_XPATH).size());
-    log.info("===============");
+    log.debug("===============");
     Assert.assertEquals(5, finder.filter(VariableFinder.ALL_ADMIN_VARIABLES_XPATH).size());
-    log.info("===============");
+    log.debug("===============");
     Assert.assertEquals(2, finder.filterKey("user").size());
-    log.info("===============");
+    log.debug("===============");
     Assert.assertEquals(1, finder.filterReference("user").size());
-    log.info("===============");
+    log.debug("===============");
     Assert.assertEquals(1, finder.filterReference("name", "user").size());
-    log.info("===============");
+    log.debug("===============");
     Assert.assertEquals(0, finder.filterReference("email", "user").size());
+    log.debug("===============");
+    Assert.assertEquals(7, finder.filterExcluding(VariableFinder.ALL_ADMIN_VARIABLES_XPATH).size());
 
     // search
     Variable searchedEntity = VariableFinder.getInstance(root, variablePathNamingStrategy).findVariable("/Study/HealthQuestionnaire/DATE_OF_BIRTH/DOB_MONTH/OPEN_MONTH");
