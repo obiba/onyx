@@ -43,6 +43,9 @@ public class Variable implements Serializable {
   @XStreamAsAttribute
   private String unit;
 
+  @XStreamAsAttribute
+  private String key;
+
   @XStreamImplicit
   private List<Category> categories;
 
@@ -101,6 +104,24 @@ public class Variable implements Serializable {
    */
   public Variable setUnit(String unit) {
     this.unit = unit;
+    return this;
+  }
+
+  /**
+   * Get the associated key, for use in key/values parameters of variable path.
+   * @return
+   */
+  public String getKey() {
+    return key;
+  }
+
+  /**
+   * Set the associated key, for use in key/values parameters of variable path.
+   * @param key
+   * @return this for chaining
+   */
+  public Variable setKey(String key) {
+    this.key = key;
     return this;
   }
 
@@ -231,5 +252,10 @@ public class Variable implements Serializable {
       }
     }
     return this;
+  }
+
+  @Override
+  public String toString() {
+    return parent != null ? parent + "." + name : name;
   }
 }

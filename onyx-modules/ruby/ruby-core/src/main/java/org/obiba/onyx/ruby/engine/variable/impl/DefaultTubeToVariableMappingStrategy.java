@@ -48,6 +48,8 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
 
   private static final String REGISTERED_PARTICIPANT_TUBE = "RegisteredParticipantTube";
 
+  private static final String TUBE_KEY = "tube";
+
   private static final String BARCODE = "barcode";
 
   private static final String REGISTRATION_TIME = "registrationTime";
@@ -87,10 +89,10 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
 
     Variable tubeVariable = new Variable(REGISTERED_PARTICIPANT_TUBE);
 
-    tubeVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT));
-    tubeVariable.addVariable(new Variable(REGISTRATION_TIME).setDataType(DataType.DATE));
-    tubeVariable.addVariable(new Variable(COMMENT).setDataType(DataType.TEXT));
-    tubeVariable.addVariable(new Variable(REMARK_CODE).setDataType(DataType.TEXT));
+    tubeVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT).setKey(TUBE_KEY));
+    tubeVariable.addVariable(new Variable(REGISTRATION_TIME).setDataType(DataType.DATE)).addReference(TUBE_KEY);
+    tubeVariable.addVariable(new Variable(COMMENT).setDataType(DataType.TEXT)).addReference(TUBE_KEY);
+    tubeVariable.addVariable(new Variable(REMARK_CODE).setDataType(DataType.TEXT)).addReference(TUBE_KEY);
 
     return tubeVariable;
   }
@@ -145,7 +147,8 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
         }
 
         if(datas.size() > 0) {
-          VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, BARCODE, registeredTube.getBarcode()));
+
+          VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, TUBE_KEY, registeredTube.getBarcode()));
           varData.addVariableData(childVarData);
           for(Data data : datas) {
             childVarData.addData(data);

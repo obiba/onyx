@@ -13,23 +13,33 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
+import org.obiba.onyx.core.domain.user.Role;
+import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  */
 public class OnyxVariableProvider implements IVariableProvider, IActionVariableProvider {
 
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(OnyxVariableProvider.class);
+
   private static final String ADMIN = "Admin";
 
   private static final String PARTICIPANT = "Participant";
+
+  private static final String PARTICIPANT_KEY = "participant";
 
   private static final String BARCODE = "barcode";
 
@@ -47,7 +57,9 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
   public static final String ACTION = "Action";
 
-  public static final String ACTION_ID = "id";
+  public static final String ACTION_KEY = "action";
+
+  public static final String ACTIONS = "actions";
 
   public static final String ACTION_USER = "user";
 
@@ -61,9 +73,25 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
   public static final String ACTION_EVENT_REASON = "eventReason";
 
+  public static final String USER = "User";
+
+  public static final String USER_KEY = "user";
+
+  public static final String USER_LOGIN = "login";
+
+  public static final String USER_EMAIL = "email";
+
+  public static final String USER_STATUS = "status";
+
+  public static final String USER_LANGUAGE = "language";
+
+  public static final String USER_ROLES = "roles";
+
   private ParticipantMetadata participantMetadata;
 
   private ParticipantService participantService;
+
+  private EntityQueryService queryService;
 
   public void setParticipantMetadata(ParticipantMetadata participantMetadata) {
     this.participantMetadata = participantMetadata;
@@ -71,6 +99,10 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
   public void setParticipantService(ParticipantService participantService) {
     this.participantService = participantService;
+  }
+
+  public void setQueryService(EntityQueryService queryService) {
+    this.queryService = queryService;
   }
 
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
@@ -100,6 +132,41 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
       }
     } else if(isActionVariable(variable)) {
       varData = getActionVariableData(participant, variable, variablePathNamingStrategy, varData, null);
+    } else if(variable.getParent().getName().equals(USER)) {
+
+      User template = new User();
+      template.setDeleted(false);
+
+      for(User user : queryService.match(template)) {
+        List<Data> datas = new ArrayList<Data>();
+
+        if(variable.getName().equals(USER_LOGIN)) {
+          varData.addData(DataBuilder.buildText(user.getLogin()));
+        } else if(variable.getName().equals(FIRST_NAME)) {
+          datas.add(DataBuilder.buildText(user.getFirstName()));
+        } else if(variable.getName().equals(LAST_NAME)) {
+          datas.add(DataBuilder.buildText(user.getLastName()));
+        } else if(variable.getName().equals(USER_EMAIL) && user.getEmail() != null) {
+          datas.add(DataBuilder.buildText(user.getEmail()));
+        } else if(variable.getName().equals(USER_LANGUAGE) && user.getLanguage() != null) {
+          datas.add(DataBuilder.buildText(user.getLanguage().toString()));
+        } else if(variable.getName().equals(USER_STATUS) && user.getStatus() != null) {
+          datas.add(DataBuilder.buildText(user.getStatus().toString()));
+        } else if(variable.getName().equals(USER_ROLES) && user.getRoles().size() > 0) {
+          for(Role role : user.getRoles()) {
+            datas.add(DataBuilder.buildText(role.getName()));
+          }
+        }
+
+        if(datas.size() > 0) {
+          VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, USER_KEY, user.getLogin()));
+          varData.addVariableData(childVarData);
+          for(Data data : datas) {
+            childVarData.addData(data);
+          }
+        }
+      }
+
     }
 
     return varData;
@@ -112,24 +179,33 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
     variables.add(admin);
 
     Variable entity = admin.addVariable(new Variable(PARTICIPANT));
-    entity.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT));
-    entity.addVariable(new Variable(GENDER).setDataType(DataType.TEXT));
-    entity.addVariable(new Variable(FIRST_NAME).setDataType(DataType.TEXT));
-    entity.addVariable(new Variable(LAST_NAME).setDataType(DataType.TEXT));
-    entity.addVariable(new Variable(BIRTH_DATE).setDataType(DataType.DATE));
-    entity.addVariable(new Variable(SITENO).setDataType(DataType.TEXT));
-    entity.addVariable(new Variable(RECRUITMENT_TYPE).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT).setKey(PARTICIPANT_KEY));
+    entity.addVariable(new Variable(GENDER).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
+    entity.addVariable(new Variable(FIRST_NAME).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
+    entity.addVariable(new Variable(LAST_NAME).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
+    entity.addVariable(new Variable(BIRTH_DATE).setDataType(DataType.DATE)).addReference(PARTICIPANT_KEY);
+    entity.addVariable(new Variable(SITENO).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
+    entity.addVariable(new Variable(RECRUITMENT_TYPE).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
     for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
-      entity.addVariable(new Variable(attribute.getName()).setDataType(attribute.getType()));
+      entity.addVariable(new Variable(attribute.getName()).setDataType(attribute.getType())).addReference(PARTICIPANT_KEY);
     }
 
-    admin.addVariable(createActionVariable());
+    admin.addVariable(createActionVariable(false));
+
+    entity = admin.addVariable(new Variable(USER));
+    entity.addVariable(new Variable(USER_LOGIN).setDataType(DataType.TEXT).setKey(USER_KEY));
+    entity.addVariable(new Variable(FIRST_NAME).setDataType(DataType.TEXT)).addReference(USER_KEY);
+    entity.addVariable(new Variable(LAST_NAME).setDataType(DataType.TEXT)).addReference(USER_KEY);
+    entity.addVariable(new Variable(USER_EMAIL).setDataType(DataType.TEXT)).addReference(USER_KEY);
+    entity.addVariable(new Variable(USER_LANGUAGE).setDataType(DataType.TEXT)).addReference(USER_KEY);
+    entity.addVariable(new Variable(USER_STATUS).setDataType(DataType.TEXT)).addReference(USER_KEY);
+    entity.addVariable(new Variable(USER_ROLES).setDataType(DataType.TEXT)).addReference(USER_KEY);
 
     return variables;
   }
 
   public boolean isActionVariable(Variable variable) {
-    return (variable.getParent().getName().equals(ACTION));
+    return variable.getName().equals(ACTIONS) || variable.getParent().getName().equals(ACTION);
   }
 
   /**
@@ -155,7 +231,7 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
     for(Action action : actions) {
       Data data = null;
-      if(variable.getName().equals(ACTION_ID)) {
+      if(variable.getName().equals(ACTIONS)) {
         varData.addData(DataBuilder.build(action.getId()));
       } else if(variable.getName().equals(ACTION_USER) && action.getUser() != null) {
         data = DataBuilder.buildText(action.getUser().getLogin());
@@ -164,7 +240,7 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
       } else if(variable.getName().equals(ACTION_TYPE) && action.getActionType() != null) {
         data = DataBuilder.buildText(action.getActionType().toString());
       } else if(variable.getName().equals(ACTION_DATE_TIME) && action.getDateTime() != null) {
-        // make a copy of the date as it will be dump several times and we do not want reference to it
+        // make a copy of the date as it will be dumped several times and we do not want xstream to reference it
         data = DataBuilder.buildDate((Date) action.getDateTime().clone());
       } else if(variable.getName().equals(ACTION_COMMENT) && action.getComment() != null) {
         data = DataBuilder.buildText(action.getComment());
@@ -173,7 +249,7 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
       }
 
       if(data != null) {
-        VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, ACTION_ID, action.getId().toString()));
+        VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, ACTION_KEY, action.getId().toString()));
         varData.addVariableData(childVarData);
         childVarData.addData(data);
       }
@@ -182,15 +258,21 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
     return varData;
   }
 
-  public Variable createActionVariable() {
-    Variable actionVariable = new Variable(OnyxVariableProvider.ACTION);
-    actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_ID).setDataType(DataType.INTEGER));
-    actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_USER).setDataType(DataType.TEXT)).addReference(ACTION_ID);
-    actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_STAGE).setDataType(DataType.TEXT)).addReference(ACTION_ID);
-    actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_TYPE).setDataType(DataType.TEXT)).addReference(ACTION_ID);
-    actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_DATE_TIME).setDataType(DataType.DATE)).addReference(ACTION_ID);
-    actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_COMMENT).setDataType(DataType.TEXT)).addReference(ACTION_ID);
-    actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_EVENT_REASON).setDataType(DataType.TEXT)).addReference(ACTION_ID);
+  public Variable createActionVariable(boolean primaryKeyOnly) {
+    Variable actionVariable;
+
+    if(primaryKeyOnly) {
+      actionVariable = new Variable(OnyxVariableProvider.ACTIONS).setDataType(DataType.INTEGER).setKey(ACTION_KEY);
+    } else {
+      actionVariable = new Variable(OnyxVariableProvider.ACTION);
+      actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTIONS).setDataType(DataType.INTEGER).setKey(ACTION_KEY));
+      actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_USER).setDataType(DataType.TEXT)).addReference(ACTION_KEY);
+      actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_STAGE).setDataType(DataType.TEXT)).addReference(ACTION_KEY);
+      actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_TYPE).setDataType(DataType.TEXT)).addReference(ACTION_KEY);
+      actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_DATE_TIME).setDataType(DataType.DATE)).addReference(ACTION_KEY);
+      actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_COMMENT).setDataType(DataType.TEXT)).addReference(ACTION_KEY);
+      actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_EVENT_REASON).setDataType(DataType.TEXT)).addReference(ACTION_KEY);
+    }
 
     return actionVariable;
   }

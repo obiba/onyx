@@ -184,7 +184,7 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
         Variable questionnaireVariable = questionToVariableMappingStrategy.getVariable(questionnaire);
 
         // always add action variables, cannot be changed as it is onyx specific
-        questionnaireVariable.addVariable(actionVariableProvider.createActionVariable());
+        questionnaireVariable.addVariable(actionVariableProvider.createActionVariable(true));
 
         entities.add(questionnaireVariable);
         for(Page page : questionnaire.getPages()) {

@@ -48,6 +48,8 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
 
   public static final String QUESTIONNAIRE_USER = "user";
 
+  public static final String USER_KEY = "user";
+
   public static final String QUESTION_COMMENT = "comment";
 
   public static final String QUESTION_ACTIVE = "active";
@@ -58,7 +60,7 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     Variable questionnaireRunVariable = questionnaireVariable.addVariable(new Variable(QUESTIONNAIRE_RUN));
     questionnaireRunVariable.addVariable(new Variable(QUESTIONNAIRE_VERSION).setDataType(DataType.TEXT));
     questionnaireRunVariable.addVariable(new Variable(QUESTIONNAIRE_LOCALE).setDataType(DataType.TEXT));
-    questionnaireRunVariable.addVariable(new Variable(QUESTIONNAIRE_USER).setDataType(DataType.TEXT));
+    questionnaireRunVariable.addVariable(new Variable(QUESTIONNAIRE_USER).setDataType(DataType.TEXT).setKey(USER_KEY));
     questionnaireRunVariable.addVariable(new Variable(QUESTIONNAIRE_TIMESTART).setDataType(DataType.DATE));
     questionnaireRunVariable.addVariable(new Variable(QUESTIONNAIRE_TIMEEND).setDataType(DataType.DATE));
 

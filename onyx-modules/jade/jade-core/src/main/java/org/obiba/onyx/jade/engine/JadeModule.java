@@ -175,7 +175,7 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
 
     for(InstrumentType type : instrumentService.getInstrumentTypes()) {
       Variable typeVariable = instrumentTypeToVariableMappingStrategy.getVariable(type);
-      typeVariable.addVariable(actionVariableProvider.createActionVariable());
+      typeVariable.addVariable(actionVariableProvider.createActionVariable(true));
       entities.add(typeVariable);
     }
 

@@ -49,6 +49,8 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
 
   private static final String USER = "user";
 
+  private static final String USER_KEY = "user";
+
   private static final String TIMESTART = "timeStart";
 
   private static final String TIMEEND = "timeEnd";
@@ -85,7 +87,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
     // instrument run
     Variable runVariable = typeVariable.addVariable(new Variable(INSTRUMENT_RUN));
 
-    runVariable.addVariable(new Variable(USER).setDataType(DataType.TEXT));
+    runVariable.addVariable(new Variable(USER).setDataType(DataType.TEXT).setKey(USER_KEY));
     runVariable.addVariable(new Variable(TIMESTART).setDataType(DataType.DATE));
     runVariable.addVariable(new Variable(TIMEEND).setDataType(DataType.DATE));
     runVariable.addVariable(new Variable(OTHER_CONTRAINDICATION).setDataType(DataType.TEXT));

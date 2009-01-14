@@ -107,7 +107,7 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
     VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
 
     if(actionVariableProvider.isActionVariable(variable)) {
-      varData = actionVariableProvider.getActionVariableData(participant, variable, variablePathNamingStrategy, varData, variable.getParent().getParent().getName());
+      varData = actionVariableProvider.getActionVariableData(participant, variable, variablePathNamingStrategy, varData, variable.getParent().getName());
     } else {
       // get participant's consent
       Consent consent = consentService.getConsent(participant.getInterview());
@@ -138,7 +138,7 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
       stageVariable.addVariable(new Variable(LOCALE_ATTRIBUTE).setDataType(DataType.TEXT));
       stageVariable.addVariable(new Variable(ACCEPTED_ATTRIBUTE).setDataType(DataType.BOOLEAN));
 
-      stageVariable.addVariable(actionVariableProvider.createActionVariable());
+      stageVariable.addVariable(actionVariableProvider.createActionVariable(true));
     }
 
     return variables;

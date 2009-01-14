@@ -288,7 +288,7 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
     VariableData varData = new VariableData(variablePathNamingStrategy.getPath(variable));
 
     if(actionVariableProvider.isActionVariable(variable)) {
-      varData = actionVariableProvider.getActionVariableData(participant, variable, variablePathNamingStrategy, varData, variable.getParent().getParent().getName());
+      varData = actionVariableProvider.getActionVariableData(participant, variable, variablePathNamingStrategy, varData, variable.getParent().getName());
     } else {
       varData = tubeToVariableMappingStrategy.getVariableData(participant, variable, variablePathNamingStrategy, varData);
     }
@@ -306,7 +306,7 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
       entity.addVariable(tubeToVariableMappingStrategy.getParticipantTubeRegistrationVariable());
       entity.addVariable(tubeToVariableMappingStrategy.getRegisteredParticipantTubeVariable());
 
-      entity.addVariable(actionVariableProvider.createActionVariable());
+      entity.addVariable(actionVariableProvider.createActionVariable(true));
     }
 
     return variables;

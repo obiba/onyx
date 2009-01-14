@@ -13,7 +13,6 @@ import java.io.OutputStream;
 import java.util.List;
 
 import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.variable.VariableDataSet;
@@ -59,17 +58,17 @@ public class OnyxDataExport {
     OnyxDataExportContext context = new OnyxDataExportContext(destination.getName(), userSessionService.getUser());
 
     Participant template = new Participant();
-    template.setExported(false);
+    // template.setExported(false);
     List<Participant> participants = queryService.match(template);
     if(participants.size() > 0) {
       exportStrategy.prepare(context);
       for(Participant participant : participants) {
-        if(participant.getInterview().getStatus() == InterviewStatus.COMPLETED) {
-          String entryName = participant.getBarcode() + ".xml";
-          OutputStream os = exportStrategy.newEntry(entryName);
-          VariableDataSet participantData = variableDirectory.getParticipantData(participant, destination);
-          VariableStreamer.toXML(participantData, os);
-        }
+        // if(participant.getInterview().getStatus() == InterviewStatus.COMPLETED) {
+        String entryName = participant.getBarcode() + ".xml";
+        OutputStream os = exportStrategy.newEntry(entryName);
+        VariableDataSet participantData = variableDirectory.getParticipantData(participant, destination);
+        VariableStreamer.toXML(participantData, os);
+        // }
       }
       context.endExport();
       exportStrategy.terminate(context);

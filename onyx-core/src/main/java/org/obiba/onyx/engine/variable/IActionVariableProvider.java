@@ -38,7 +38,8 @@ public interface IActionVariableProvider {
 
   /**
    * Create a the {@link Action} variable, without parent {@link Variable}.
+   * @param primaryKeyOnly TODO
    * @return
    */
-  public Variable createActionVariable();
+  public Variable createActionVariable(boolean primaryKeyOnly);
 }
