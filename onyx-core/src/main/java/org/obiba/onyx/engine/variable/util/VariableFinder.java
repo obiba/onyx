@@ -172,6 +172,11 @@ public class VariableFinder {
     return variables;
   }
 
+  /**
+   * Get the variables not matching the XPath query.
+   * @param xpathQuery
+   * @return
+   */
   public List<Variable> filterExcluding(String xpathQuery) {
     List<Variable> excluded = filter(xpathQuery);
     List<Variable> included = new ArrayList<Variable>();
