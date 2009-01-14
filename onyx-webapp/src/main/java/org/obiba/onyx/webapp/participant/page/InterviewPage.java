@@ -229,7 +229,8 @@ public class InterviewPage extends BasePage {
     public String getStatus() {
       Action act = activeInterviewService.getStatusAction();
 
-      if(act != null && act.getEventReason() != null) {
+      // act.getStage() == null => action is on interview and not on a stage
+      if(act != null && act.getStage() == null && act.getEventReason() != null) {
         String reason = (new SpringStringResourceModel(act.getEventReason())).getString();
         ValueMap map = new ValueMap("reason=" + reason);
         return (new StringResourceModel("InterviewStatus." + activeInterviewService.getInterview().getStatus() + ".WithReason", InterviewPage.this, new Model(map))).getString();
