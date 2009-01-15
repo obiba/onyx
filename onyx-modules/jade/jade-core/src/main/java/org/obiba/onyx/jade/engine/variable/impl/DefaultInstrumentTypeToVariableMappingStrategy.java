@@ -109,15 +109,26 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
       for(InstrumentParameter parameter : parameters) {
         Variable parameterType;
         if(parameter instanceof InstrumentInputParameter) {
-          parameterType = new Variable(INPUT);
+          parameterType = typeVariable.getVariable(INPUT);
+          if(parameterType == null) {
+            parameterType = new Variable(INPUT);
+            typeVariable.addVariable(parameterType);
+          }
         } else if(parameter instanceof InstrumentOutputParameter) {
-          parameterType = new Variable(OUTPUT);
+          parameterType = typeVariable.getVariable(OUTPUT);
+          if(parameterType == null) {
+            parameterType = new Variable(OUTPUT);
+            typeVariable.addVariable(parameterType);
+          }
         } else if(parameter instanceof InterpretativeParameter) {
-          parameterType = new Variable(INTERPRETIVE);
+          parameterType = typeVariable.getVariable(INTERPRETIVE);
+          if(parameterType == null) {
+            parameterType = new Variable(INTERPRETIVE);
+            typeVariable.addVariable(parameterType);
+          }
         } else {
           throw new IllegalStateException("Unknown instrument parameter type: " + parameter.getClass().getSimpleName());
         }
-        typeVariable.addVariable(parameterType);
         parameterType.addVariable(new Variable(parameter.getCode()).setDataType(parameter.getDataType()));
       }
     }

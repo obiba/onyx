@@ -165,6 +165,20 @@ public class Variable implements Serializable {
   }
 
   /**
+   * Get the child variable with the given name.
+   * @param name
+   * @return null if not found
+   */
+  public Variable getVariable(String name) {
+    for(Variable child : getVariables()) {
+      if(child.getName().equals(name)) {
+        return child;
+      }
+    }
+    return null;
+  }
+
+  /**
    * Add recursively simple variables, splitting the path with the given separator to retrieve the names.
    * @param path
    * @param separator

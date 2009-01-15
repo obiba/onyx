@@ -70,8 +70,14 @@ public class VariableFinder {
 
     List<String> normalizedNames = variablePathNamingStrategy.getNormalizedNames(path);
 
-    if(normalizedNames.size() == 0) return null;
-    if(!variablePathNamingStrategy.normalizeName(root.getName()).equals(normalizedNames.get(0))) return null;
+    if(normalizedNames.size() == 0) {
+      log.warn("Cannot extract normalized names from path: {}", path);
+      return null;
+    }
+    if(!variablePathNamingStrategy.normalizeName(root.getName()).equals(normalizedNames.get(0))) {
+      log.warn("Root name differs from root path name: {} expected, {} found.", variablePathNamingStrategy.normalizeName(root.getName()), normalizedNames.get(0));
+      return null;
+    }
 
     Variable current = root;
     for(int i = 1; i < normalizedNames.size(); i++) {

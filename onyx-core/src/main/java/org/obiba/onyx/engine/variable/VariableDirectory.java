@@ -134,11 +134,18 @@ public class VariableDirectory implements IVariableProvider {
    * @return null if variable or variable provider not found
    */
   public VariableData getVariableData(Participant participant, String path) {
+    log.info("getVariableData={}", path);
     Variable variable = VariableFinder.getInstance(getVariableRoot(), variablePathNamingStrategy).findVariable(path);
-    if(variable == null) return null;
+    if(variable == null) {
+      log.warn("Variable not found at path: {}", path);
+      return null;
+    }
 
     IVariableProvider provider = variablePathToProvidersMap.get(path);
-    if(provider == null) return null;
+    if(provider == null) {
+      log.warn("Variable provider not found for path: {}", path);
+      return null;
+    }
 
     return provider.getVariableData(participant, variable, variablePathNamingStrategy);
   }
