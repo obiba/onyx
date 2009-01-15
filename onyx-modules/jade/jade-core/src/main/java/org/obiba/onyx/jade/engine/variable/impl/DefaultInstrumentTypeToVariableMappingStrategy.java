@@ -133,7 +133,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
     Data rval = null;
 
     if(variable.getParent().getName().equals(INSTRUMENT)) {
-      InstrumentRun run = getInstrumentRun(participant, variable.getParent().getParent().getParent().getName());
+      InstrumentRun run = getInstrumentRun(participant, getInstrumentTypeVariable(variable).getName());
       if(run != null && run.getInstrument() != null) {
         Instrument instrument = run.getInstrument();
         if(variable.getName().equals(NAME) && instrument.getName() != null) {
@@ -149,7 +149,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
         }
       }
     } else if(variable.getParent().getName().equals(CONTRAINDICATION)) {
-      InstrumentRun run = getInstrumentRun(participant, variable.getParent().getParent().getParent().getName());
+      InstrumentRun run = getInstrumentRun(participant, getInstrumentTypeVariable(variable).getName());
       if(run != null) {
         if(variable.getName().equals(CONTRAINDICATION_CODE) && run.getContraindication() != null) {
           rval = DataBuilder.buildText(run.getContraindication().getCode());
@@ -158,7 +158,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
         }
       }
     } else if(variable.getParent().getName().equals(INSTRUMENT_RUN)) {
-      InstrumentRun run = getInstrumentRun(participant, variable.getParent().getParent().getName());
+      InstrumentRun run = getInstrumentRun(participant, getInstrumentTypeVariable(variable).getName());
       if(run != null) {
         if(variable.getName().equals(USER) && run.getUser() != null) {
           rval = DataBuilder.buildText(run.getUser().getLogin());
@@ -172,7 +172,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
       }
     } else if(variable.getParent().getName().equals(INPUT) || variable.getParent().getName().equals(OUTPUT) || variable.getParent().getName().equals(INTERPRETIVE)) {
       String parameterCode = variable.getName();
-      String instrumentTypeName = variable.getParent().getParent().getName();
+      String instrumentTypeName = getInstrumentTypeVariable(variable).getName();
 
       InstrumentType type = instrumentService.getInstrumentType(instrumentTypeName);
       if(type == null) return null;

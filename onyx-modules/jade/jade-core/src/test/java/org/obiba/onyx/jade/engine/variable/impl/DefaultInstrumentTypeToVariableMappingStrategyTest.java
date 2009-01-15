@@ -220,6 +220,33 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
   }
 
   @Test
+  public void testInstrument() {
+    Variable root = createInstrumentTypeVariable();
+    log.info(VariableStreamer.toXML(root));
+
+    Variable variable = getChildVariable(getChildVariable(getChildVariable(getChildVariable(root, instrumentType.getName()), DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN), DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT), DefaultInstrumentTypeToVariableMappingStrategy.BARCODE);
+    Assert.assertNotNull(variable);
+
+    Participant participant = new Participant();
+    InstrumentRun run = new InstrumentRun();
+    run.setInstrument(instrumentType.getInstruments().get(0));
+
+    expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
+    expect(instrumentRunServiceMock.getLastCompletedInstrumentRun(participant, instrumentType)).andReturn(run);
+    replay(instrumentServiceMock);
+    replay(instrumentRunServiceMock);
+
+    Data data = instrumentTypeToVariableMappingStrategy.getData(participant, variable);
+
+    verify(instrumentServiceMock);
+    verify(instrumentRunServiceMock);
+
+    Assert.assertNotNull(data);
+    Assert.assertEquals(DataType.TEXT, data.getType());
+    Assert.assertEquals("123", data.getValue());
+  }
+
+  @Test
   public void testContraindication() {
     Variable root = createInstrumentTypeVariable();
     log.info(VariableStreamer.toXML(root));
