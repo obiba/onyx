@@ -98,10 +98,18 @@ public class DirectoryDataExportStrategyTest {
   private File getExportDir() {
     File destinationDir = new File(this.outputDir, context.getDestination());
     File yearDir = new File(destinationDir, Integer.toString(context.getExportYear()));
-    File monthDir = new File(yearDir, Integer.toString(context.getExportMonth()));
-    File dayDir = new File(monthDir, Integer.toString(context.getExportDay()));
+    File monthDir = new File(yearDir, zeroPad(Integer.toString(context.getExportMonth()), 2));
+    File dayDir = new File(monthDir, zeroPad(Integer.toString(context.getExportDay()), 2));
     File siteDir = new File(dayDir, testSiteCode);
     return siteDir;
+  }
+
+  private String zeroPad(String value, int size) {
+    StringBuilder sb = new StringBuilder(value);
+    while(sb.length() < size) {
+      sb.insert(0, '0');
+    }
+    return sb.toString();
   }
 
   private class TestEntry {
