@@ -115,7 +115,9 @@ public class VariableFinderTest {
     log.debug("===============");
     Assert.assertEquals(0, finder.filterReferenceVariables("email", "user").size());
     log.debug("===============");
-    Assert.assertEquals(7, finder.filterExcludingVariables(VariableFinder.ALL_ADMIN_VARIABLES_XPATH).size());
+    Assert.assertEquals(7, finder.filterComplementVariables(VariableFinder.ALL_ADMIN_VARIABLES_XPATH).size());
+    log.info("===============");
+    Assert.assertEquals(0, finder.filterIntersection(finder.filter(VariableFinder.ALL_ADMIN_VARIABLES_XPATH), finder.filterComplement(VariableFinder.ALL_ADMIN_VARIABLES_XPATH)).size());
 
     // search
     Variable searchedEntity = VariableFinder.getInstance(root, variablePathNamingStrategy).findVariable("/Study/HealthQuestionnaire/DATE_OF_BIRTH/DOB_MONTH/OPEN_MONTH");

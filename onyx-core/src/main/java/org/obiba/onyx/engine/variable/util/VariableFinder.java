@@ -231,7 +231,7 @@ public class VariableFinder {
    * @param xpathQuery
    * @return
    */
-  public List<String> filterExcluding(String xpathQuery) {
+  public List<String> filterComplement(String xpathQuery) {
     List<String> excluded = filter(xpathQuery);
     List<String> included = new ArrayList<String>();
 
@@ -249,10 +249,10 @@ public class VariableFinder {
    * @param xpathQuery
    * @return
    */
-  public List<Variable> filterExcludingVariables(String xpathQuery) {
+  public List<Variable> filterComplementVariables(String xpathQuery) {
     List<Variable> included = new ArrayList<Variable>();
 
-    for(String path : filterExcluding(xpathQuery)) {
+    for(String path : filterComplement(xpathQuery)) {
       Variable variable = findVariable(path);
       if(variable != null) {
         included.add(variable);
@@ -260,6 +260,42 @@ public class VariableFinder {
     }
 
     return included;
+  }
+
+  /**
+   * Get the variable paths that are in the two sets (for intersecting result of two filtering queries).
+   * @param set1
+   * @param set2
+   * @return
+   */
+  public List<String> filterIntersection(List<String> set1, List<String> set2) {
+    List<String> intersect = new ArrayList<String>();
+
+    for(String path : set1) {
+      if(set2.contains(path)) {
+        intersect.add(path);
+      }
+    }
+
+    return intersect;
+  }
+
+  /**
+   * Get the variable that are in the two sets (for intersecting result of two filtering queries).
+   * @param set1
+   * @param set2
+   * @return
+   */
+  public List<Variable> filterIntersectionVariables(List<Variable> set1, List<Variable> set2) {
+    List<Variable> intersect = new ArrayList<Variable>();
+
+    for(Variable variable : set1) {
+      if(set2.contains(variable)) {
+        intersect.add(variable);
+      }
+    }
+
+    return intersect;
   }
 
   /**
