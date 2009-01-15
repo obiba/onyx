@@ -99,7 +99,7 @@ public class VariableFinder {
    * @return
    */
   public List<Variable> filterKeyVariables(String key) {
-    return filterVariables("//variable[@key='" + key + "']");
+    return filterVariables(getKeyQuery(key));
   }
 
   /**
@@ -108,7 +108,11 @@ public class VariableFinder {
    * @return
    */
   public List<String> filterKey(String key) {
-    return filter("//variable[@key='" + key + "']");
+    return filter(getKeyQuery(key));
+  }
+
+  private String getKeyQuery(String key) {
+    return "//variable[@key='" + key + "']";
   }
 
   /**
@@ -138,11 +142,7 @@ public class VariableFinder {
   public List<Variable> filterReferenceVariables(String name, String key) {
     List<Variable> variables = new ArrayList<Variable>();
 
-    String query = "//reference/parent::variable";
-    if(name != null) {
-      query += "[@name='" + name + "']";
-    }
-    for(Variable refering : filterVariables(query)) {
+    for(Variable refering : filterVariables(getReferenceNameQuery(name))) {
       if(refering.getReferences().contains(key)) {
         variables.add(refering);
       }
@@ -160,11 +160,7 @@ public class VariableFinder {
   public List<String> filterReference(String name, String key) {
     List<String> variablePaths = new ArrayList<String>();
 
-    String query = "//reference/parent::variable";
-    if(name != null) {
-      query += "[@name='" + name + "']";
-    }
-    for(String path : filter(query)) {
+    for(String path : filter(getReferenceNameQuery(name))) {
       Variable refering = findVariable(path);
       if(refering.getReferences().contains(key)) {
         variablePaths.add(path);
@@ -172,6 +168,14 @@ public class VariableFinder {
     }
 
     return variablePaths;
+  }
+
+  private String getReferenceNameQuery(String name) {
+    String query = "//reference/parent::variable";
+    if(name != null) {
+      query += "[@name='" + name + "']";
+    }
+    return query;
   }
 
   /**
