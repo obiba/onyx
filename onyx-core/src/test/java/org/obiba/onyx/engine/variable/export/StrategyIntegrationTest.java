@@ -78,7 +78,7 @@ public class StrategyIntegrationTest {
     ByteArrayOutputStream zipStream = new ByteArrayOutputStream();
 
     StringBuilder outputName = new StringBuilder();
-    outputName.append(context.getExportYear()).append('-').append(context.getExportMonth()).append('-').append(context.getExportDay()).append("T").append(context.getExportHour()).append('h').append(context.getExportMinute()).append(".zip");
+    outputName.append(context.getExportYear()).append('-').append(zeroPad(context.getExportMonth(), 2)).append('-').append(zeroPad(context.getExportDay(), 2)).append("T").append(zeroPad(context.getExportHour(), 2)).append('h').append(zeroPad(context.getExportMinute(), 2)).append('m').append(zeroPad(context.getExportSecond(), 2)).append('.').append(zeroPad(context.getExportMillisecond(), 3)).append(".zip");
 
     mockDelegate.prepare(context);
     EasyMock.expect(mockDelegate.newEntry(outputName.toString())).andReturn(zipStream);
@@ -118,7 +118,7 @@ public class StrategyIntegrationTest {
     ByteArrayOutputStream zipStream = new ByteArrayOutputStream();
 
     StringBuilder outputName = new StringBuilder();
-    outputName.append(context.getExportYear()).append('-').append(context.getExportMonth()).append('-').append(context.getExportDay()).append("T").append(context.getExportHour()).append('h').append(context.getExportMinute()).append(".zip");
+    outputName.append(context.getExportYear()).append('-').append(zeroPad(context.getExportMonth(), 2)).append('-').append(zeroPad(context.getExportDay(), 2)).append("T").append(zeroPad(context.getExportHour(), 2)).append('h').append(zeroPad(context.getExportMinute(), 2)).append('m').append(zeroPad(context.getExportSecond(), 2)).append('.').append(zeroPad(context.getExportMillisecond(), 3)).append(".zip");
 
     mockDelegate.prepare(context);
     EasyMock.expect(mockDelegate.newEntry(outputName.toString())).andReturn(zipStream);
@@ -177,6 +177,18 @@ public class StrategyIntegrationTest {
     Cipher cipher = Cipher.getInstance("AES/CFB/PKCS5PADDING");
     cipher.init(Cipher.DECRYPT_MODE, sk, parameters);
     return cipher;
+  }
+
+  private String zeroPad(int value, int size) {
+    return zeroPad(Integer.toString(value), size);
+  }
+
+  private String zeroPad(String value, int size) {
+    StringBuilder sb = new StringBuilder(value);
+    while(sb.length() < size) {
+      sb.insert(0, '0');
+    }
+    return sb.toString();
   }
 
   private class TestDigestAndZipEntry {

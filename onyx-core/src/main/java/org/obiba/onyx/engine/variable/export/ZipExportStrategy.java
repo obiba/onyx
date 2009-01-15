@@ -17,7 +17,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * 
  */
-public class ZipExportStrategy implements IOnyxDataExportStrategy {
+public class ZipExportStrategy implements IChainingOnyxDataExportStrategy {
 
   private IOnyxDataExportStrategy delegate;
 
@@ -32,7 +32,7 @@ public class ZipExportStrategy implements IOnyxDataExportStrategy {
   public void prepare(OnyxDataExportContext context) {
     delegate.prepare(context);
     StringBuilder outputName = new StringBuilder();
-    outputName.append(context.getExportYear()).append('-').append(context.getExportMonth()).append('-').append(context.getExportDay()).append("T").append(context.getExportHour()).append('h').append(context.getExportMinute()).append(".zip");
+    outputName.append(context.getExportYear()).append('-').append(zeroPad(context.getExportMonth(), 2)).append('-').append(zeroPad(context.getExportDay(), 2)).append("T").append(zeroPad(context.getExportHour(), 2)).append('h').append(zeroPad(context.getExportMinute(), 2)).append('m').append(zeroPad(context.getExportSecond(), 2)).append('.').append(zeroPad(context.getExportMillisecond(), 3)).append(".zip");
     zipOutputStream = new ZipOutputStream(delegate.newEntry(outputName.toString()));
   }
 
@@ -49,7 +49,9 @@ public class ZipExportStrategy implements IOnyxDataExportStrategy {
 
   public void terminate(OnyxDataExportContext context) {
     try {
-      zipOutputStream.finish();
+      if(context.isFailed() == false) {
+        zipOutputStream.finish();
+      }
     } catch(IOException e) {
       throw new RuntimeException(e);
     } finally {
@@ -58,4 +60,15 @@ public class ZipExportStrategy implements IOnyxDataExportStrategy {
     delegate.terminate(context);
   }
 
+  private String zeroPad(int value, int size) {
+    return zeroPad(Integer.toString(value), size);
+  }
+
+  private String zeroPad(String value, int size) {
+    StringBuilder sb = new StringBuilder(value);
+    while(sb.length() < size) {
+      sb.insert(0, '0');
+    }
+    return sb.toString();
+  }
 }

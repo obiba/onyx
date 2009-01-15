@@ -19,7 +19,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * 
  */
-public class DigestingOnyxDataExportStrategy implements IOnyxDataExportStrategy {
+public class DigestingOnyxDataExportStrategy implements IChainingOnyxDataExportStrategy {
 
   private IOnyxDataExportStrategy delegate;
 
@@ -61,7 +61,12 @@ public class DigestingOnyxDataExportStrategy implements IOnyxDataExportStrategy 
 
   public void terminate(OnyxDataExportContext context) {
     if(digestStream != null) {
-      addDigest();
+      if(context.isFailed() == false) {
+        addDigest();
+      } else {
+        currentEntryName = null;
+        digestStream = null;
+      }
     }
     delegate.terminate(context);
   }
@@ -74,10 +79,13 @@ public class DigestingOnyxDataExportStrategy implements IOnyxDataExportStrategy 
       os.flush();
     } catch(IOException e) {
       throw new RuntimeException(e);
+    } finally {
+      currentEntryName = null;
+      digestStream = null;
     }
   }
 
-  MessageDigest getDigest() {
+  protected MessageDigest getDigest() {
     if(digest == null) {
       try {
         digest = MessageDigest.getInstance(digestType);

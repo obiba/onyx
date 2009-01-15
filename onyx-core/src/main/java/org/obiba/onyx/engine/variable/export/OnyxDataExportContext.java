@@ -27,14 +27,25 @@ public class OnyxDataExportContext {
 
   private Date timeEnd;
 
+  private boolean failed;
+
   public OnyxDataExportContext(String destination, User user) {
     this.destination = destination;
     this.exportingUserLogin = user.getLogin();
     this.timeStart = new Date();
+    this.failed = false;
   }
 
   public void endExport() {
     timeEnd = new Date();
+  }
+
+  public void fail() {
+    this.failed = true;
+  }
+
+  public boolean isFailed() {
+    return failed;
   }
 
   public String getExportingUserLogin() {
@@ -72,6 +83,14 @@ public class OnyxDataExportContext {
 
   public int getExportMinute() {
     return getCalendarPart(Calendar.MINUTE);
+  }
+
+  public int getExportSecond() {
+    return getCalendarPart(Calendar.SECOND);
+  }
+
+  public int getExportMillisecond() {
+    return getCalendarPart(Calendar.MILLISECOND);
   }
 
   protected int getCalendarPart(int part) {

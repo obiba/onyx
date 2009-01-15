@@ -31,7 +31,7 @@
   <bean id="stageOrderingStrategy" class="org.obiba.onyx.engine.StaticStageOrderingStrategy">
     <property name="stageOrdering" value="${org.obiba.onyx.engine.staticStageOrder}" />
   </bean>
-  
+
   <!-- Converts a entity to a path representing its unique identification -->
   <bean id="variablePathNamingStrategy" class="org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy">
     <property name="rootName" value="Cartagene" />
@@ -76,7 +76,7 @@
   <bean id="userSessionService" class="org.obiba.onyx.webapp.service.impl.UserSessionServiceImpl">
     <!-- NOTE: Uncomment declaration below if this service is injected into a singleton bean. -->
     <!-- <aop:scoped-proxy /> -->
-    
+
     <property name="datePattern" value="${org.obiba.onyx.dateFormat}" />
     <property name="dateTimePattern" value="${org.obiba.onyx.dateTimeFormat}" />
   </bean>
@@ -106,37 +106,33 @@
       </list>
     </property>
   </bean>
-  
+
   <bean id="participantMetadata" class="org.obiba.onyx.core.domain.participant.ParticipantMetadata">
     <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
-    <property name="supportedRecruitmentTypesString" value="${org.obiba.onyx.supportedRecruitmentTypes}"/>
+    <property name="supportedRecruitmentTypesString" value="${org.obiba.onyx.supportedRecruitmentTypes}" />
   </bean>
-  
+
   <bean id="onyxDataExport" class="org.obiba.onyx.engine.variable.export.OnyxDataExport">
     <property name="queryService" ref="persistenceManager" />
     <property name="variableDirectory" ref="variableDirectory" />
     <property name="userSessionService" ref="userSessionService" />
     <property name="exportStrategy">
-      <bean class="org.obiba.onyx.engine.variable.export.ChainedOnyxDataExportStrategy">
-        <property name="zipStrategy">
-          <bean class="org.obiba.onyx.engine.variable.export.ZipExportStrategy" />
-        </property>
-        <property name="firstDigestStrategy">
-          <bean class="org.obiba.onyx.engine.variable.export.DigestingOnyxDataExportStrategy" />
-        </property>
-        <property name="secondDigestStrategy">
-          <bean class="org.obiba.onyx.engine.variable.export.DigestingOnyxDataExportStrategy" />
-        </property>
-        <property name="directoryStrategy">
-          <bean class="org.obiba.onyx.engine.variable.export.DirectoryDataExportStrategy">
-            <property name="applicationConfigurationService" ref="appConfigService" />
-            <property name="outputRootDirectory" value="target"/>
-          </bean>
-        </property>
+      <bean class="org.obiba.onyx.engine.variable.export.ChainingDataExportStrategyWiringFactoryBean">
+        <property name="chainedStrategies">
+          <list>
+            <bean class="org.obiba.onyx.engine.variable.export.DigestingOnyxDataExportStrategy" />
+            <bean class="org.obiba.onyx.engine.variable.export.ZipExportStrategy" />
+            <bean class="org.obiba.onyx.engine.variable.export.DigestingOnyxDataExportStrategy" />
+            <bean class="org.obiba.onyx.engine.variable.export.DirectoryDataExportStrategy">
+              <property name="applicationConfigurationService" ref="appConfigService" />
+              <property name="outputRootDirectory" value="target" />
+            </bean>
+          </list>
+          </property>
       </bean>
     </property>
   </bean>
-  
+
   <bean id="dcc" class="org.obiba.onyx.engine.variable.export.OnyxDataExportDestination">
     <property name="name" value="DCC" />
   </bean>

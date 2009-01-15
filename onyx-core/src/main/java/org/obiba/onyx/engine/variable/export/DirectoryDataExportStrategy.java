@@ -44,8 +44,8 @@ public class DirectoryDataExportStrategy implements IOnyxDataExportStrategy {
 
     File destinationDir = new File(this.outputRootDirectory, context.getDestination());
     File yearDir = new File(destinationDir, Integer.toString(context.getExportYear()));
-    File monthDir = new File(yearDir, Integer.toString(context.getExportMonth()));
-    File dayDir = new File(monthDir, Integer.toString(context.getExportDay()));
+    File monthDir = new File(yearDir, zeroPad(Integer.toString(context.getExportMonth()), 2));
+    File dayDir = new File(monthDir, zeroPad(Integer.toString(context.getExportDay()), 2));
     File siteDir = new File(dayDir, siteCode);
 
     if(siteDir.exists() == false) {
@@ -83,6 +83,14 @@ public class DirectoryDataExportStrategy implements IOnyxDataExportStrategy {
         currentOutputStream = null;
       }
     }
+  }
+
+  private String zeroPad(String value, int size) {
+    StringBuilder sb = new StringBuilder(value);
+    while(sb.length() < size) {
+      sb.insert(0, '0');
+    }
+    return sb.toString();
   }
 
 }

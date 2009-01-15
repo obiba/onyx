@@ -25,7 +25,7 @@ import org.obiba.onyx.crypt.IPublicKeyFactory;
 /**
  * 
  */
-public class EncryptingOnyxDataExportStrategy implements IOnyxDataExportStrategy {
+public class EncryptingOnyxDataExportStrategy implements IChainingOnyxDataExportStrategy {
 
   private IOnyxDataExportStrategy delegate;
 
@@ -83,7 +83,10 @@ public class EncryptingOnyxDataExportStrategy implements IOnyxDataExportStrategy
   }
 
   public void terminate(OnyxDataExportContext context) {
-    endCurrentEntry();
+    if(context.isFailed() == false) {
+      endCurrentEntry();
+    }
+    currentEntryStream = null;
     delegate.terminate(context);
   }
 

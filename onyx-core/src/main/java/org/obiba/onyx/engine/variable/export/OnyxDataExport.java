@@ -10,9 +10,11 @@
 package org.obiba.onyx.engine.variable.export;
 
 import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.List;
 
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -61,18 +63,31 @@ public class OnyxDataExport {
     Participant template = new Participant();
     template.setExported(false);
     List<Participant> participants = queryService.match(template);
+    for(Iterator<Participant> iterator = participants.iterator(); iterator.hasNext();) {
+      Participant participant = iterator.next();
+      // Export completed interviews only
+      Interview interview = participant.getInterview();
+      if(interview == null || interview.getStatus() != InterviewStatus.COMPLETED) {
+        iterator.remove();
+      }
+    }
+
     if(participants.size() > 0) {
-      exportStrategy.prepare(context);
-      for(Participant participant : participants) {
-        if(participant.getInterview().getStatus() == InterviewStatus.COMPLETED) {
+      try {
+        exportStrategy.prepare(context);
+        for(Participant participant : participants) {
           String entryName = participant.getBarcode() + ".xml";
           OutputStream os = exportStrategy.newEntry(entryName);
           VariableDataSet participantData = variableDirectory.getParticipantData(participant, destination);
           VariableStreamer.toXML(participantData, os);
+          os.flush();
         }
+      } catch(RuntimeException e) {
+        context.fail();
+      } finally {
+        context.endExport();
+        exportStrategy.terminate(context);
       }
-      context.endExport();
-      exportStrategy.terminate(context);
     }
   }
 
