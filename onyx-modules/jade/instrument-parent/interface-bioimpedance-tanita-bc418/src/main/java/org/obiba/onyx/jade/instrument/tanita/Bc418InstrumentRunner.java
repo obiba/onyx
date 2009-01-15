@@ -123,7 +123,7 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
    */
   private void initParticipantData() {
 
-    Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue("INPUT_CLOTHES_WEIGHT", "Gender", "BodyType", "Height", "Age");
+    Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue("INPUT_CLOTHES_WEIGHT", "INPUT_PARTICIPANT_GENDER", "INPUT_BODY_TYPE", "INPUT_PARTICIPANT_HEIGHT", "INPUT_PARTICIPANT_AGE");
 
     try {
       bufferedReader = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
@@ -137,25 +137,25 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
       String wClothesWeight = "D0001.0\r\n";
 
       String wGender = null;
-      if(inputData.get("Gender").getValueAsString().equals("MALE")) {
+      if(inputData.get("INPUT_PARTICIPANT_GENDER").getValueAsString().equals("MALE")) {
         wGender = "D11\r\n";
       } else {
-        if(inputData.get("Gender").getValueAsString().equals("FEMALE")) {
+        if(inputData.get("INPUT_PARTICIPANT_GENDER").getValueAsString().equals("FEMALE")) {
           wGender = "D12\r\n";
         }
       }
 
       String wBodyType = null;
-      if(inputData.get("BodyType").getValueAsString().equals("STANDARD")) {
+      if(inputData.get("INPUT_BODY_TYPE").getValueAsString().equals("STANDARD")) {
         wBodyType = "D20\r\n";
       } else {
-        if(inputData.get("BodyType").getValueAsString().equals("ATHLETIC")) {
+        if(inputData.get("INPUT_BODY_TYPE").getValueAsString().equals("ATHLETIC")) {
           wBodyType = "D22\r\n";
         }
       }
 
       String wHeight = null;
-      Float inputHeight = Float.parseFloat(inputData.get("Height").getValueAsString());
+      Float inputHeight = Float.parseFloat(inputData.get("INPUT_PARTICIPANT_HEIGHT").getValueAsString());
 
       if(inputHeight.intValue() < 100) {
         wHeight = "D3000" + inputData.get("Height") + "\r\n";
@@ -166,7 +166,7 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
       }
 
       String wAge;
-      wAge = "D4" + inputData.get("Age").getValueAsString() + "\r\n";
+      wAge = "D4" + inputData.get("INPUT_PARTICIPANT_AGE").getValueAsString() + "\r\n";
 
       // Send commands and receives response
 
