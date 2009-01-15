@@ -142,7 +142,7 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
         boneDensityData.put("OUTPUT_PARTICIPANT_BARCODE", DataBuilder.buildText(rs.getString("Chart_Num")));
         boneDensityData.put("OUTPUT_PARTICIPANT_FIRST_NAME", DataBuilder.buildText(rs.getString("FName")));
         boneDensityData.put("OUTPUT_PARTICIPANT_LAST_NAME", DataBuilder.buildText(rs.getString("LName")));
-        boneDensityData.put("OUTPUT_PARTICIPANT_BIRTH_DATE", DataBuilder.buildDate(rs.getDate("DOB")));
+        boneDensityData.put("OUTPUT_PARTICIPANT_DATE_BIRTH", DataBuilder.buildDate(rs.getDate("DOB")));
 
         String gender = rs.getString("Sex").equals("M") ? "MALE" : "FEMALE";
         boneDensityData.put("OUTPUT_PARTICIPANT_GENDER", DataBuilder.buildText(gender));
