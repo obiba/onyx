@@ -9,6 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -18,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * Default variable path is for instance:
  */
 public class DefaultVariablePathNamingStrategyTest {
 
@@ -45,8 +48,25 @@ public class DefaultVariablePathNamingStrategyTest {
     log.info(path = strategy.getPath(variable, "id", "1"));
     Assert.assertEquals("/Root/Test/Toto?id=1", path);
 
-    log.info(path = strategy.addParameters(strategy.getPath(variable, "id", "1"), "name", "Vincent Ferreti"));
-    Assert.assertEquals("/Root/Test/Toto?id=1&name=Vincent+Ferreti", path);
-  }
+    log.info(path = strategy.addParameters(strategy.addParameters(strategy.getPath(variable, "id", "1"), "name", "Vincent Ferreti"), "path", "/tutu/tata"));
+    Assert.assertEquals("/Root/Test/Toto?id=1&name=Vincent+Ferreti&path=%2Ftutu%2Ftata", path);
 
+    List<String> names = strategy.getNormalizedNames(path);
+    log.info("names={}", names);
+    Assert.assertEquals(3, names.size());
+    Assert.assertEquals("Root", names.get(0));
+    Assert.assertEquals("Test", names.get(1));
+    Assert.assertEquals("Toto", names.get(2));
+
+    Assert.assertEquals(0, strategy.getParameters("/Root/Test/Toto?").size());
+
+    Map<String, String> map = strategy.getParameters(path);
+    Assert.assertEquals(3, map.size());
+    Assert.assertTrue(map.containsKey("id"));
+    Assert.assertEquals("1", map.get("id"));
+    Assert.assertTrue(map.containsKey("name"));
+    Assert.assertEquals("Vincent Ferreti", map.get("name"));
+    Assert.assertTrue(map.containsKey("path"));
+    Assert.assertEquals("/tutu/tata", map.get("path"));
+  }
 }

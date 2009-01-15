@@ -10,35 +10,36 @@
 package org.obiba.onyx.engine.variable;
 
 import java.util.List;
+import java.util.Map;
 
 import org.w3c.dom.Node;
 
 /**
- * 
+ * Strategy for naming the path to the variables, their root and parameters.
  */
 public interface IVariablePathNamingStrategy {
 
   /**
-   * Get the name of entity root.
+   * Get the name of variable root.
    * @return
    */
   public String getRootName();
 
   /**
-   * Get the path to the entity.
-   * @param entity
+   * Get the path to the variable.
+   * @param variable
    * @return
    */
-  public String getPath(Variable entity);
+  public String getPath(Variable variable);
 
   /**
-   * Get the path to the entity, with parameters.
-   * @param entity
+   * Get the path to the variable, with parameters.
+   * @param variable
    * @param key
    * @param value
    * @return
    */
-  public String getPath(Variable entity, String key, String value);
+  public String getPath(Variable variable, String key, String value);
 
   /**
    * Add parameters to path.
@@ -50,11 +51,11 @@ public interface IVariablePathNamingStrategy {
   public String addParameters(String path, String key, String value);
 
   /**
-   * Get the path from DOM representation of the entity (assuming 'name' attribute).
-   * @param entityNode
+   * Get the path from DOM representation of the variable (assuming 'name' attribute).
+   * @param variableNode
    * @return
    */
-  public String getPath(Node entityNode);
+  public String getPath(Node variableNode);
 
   /**
    * Get the separator of entity names.
@@ -70,10 +71,18 @@ public interface IVariablePathNamingStrategy {
   public String normalizeName(String name);
 
   /**
-   * 
+   * Split the path, remove the parameters and return the path elements which are the normalized names of the variable
+   * path.
    * @param path
    * @return
    */
   public List<String> getNormalizedNames(String path);
+
+  /**
+   * Get the parameters from the path.
+   * @param path
+   * @return
+   */
+  public Map<String, String> getParameters(String path);
 
 }

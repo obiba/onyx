@@ -10,9 +10,12 @@
 package org.obiba.onyx.engine.variable.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
@@ -21,10 +24,11 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 
 /**
- * 
+ * Default variable path is for instance : /Root/Test/Toto?id=1&name=Vincent+Ferreti&path=%2Ftutu%2Ftata
  */
 public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStrategy {
 
+  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultVariablePathNamingStrategy.class);
 
   public static final String ENCODING = "ISO-8859-1";
@@ -109,10 +113,18 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
     return pathSeparator;
   }
 
+  /**
+   * Set the separator string that separates the path elements.
+   * @param pathSeparator
+   */
   public void setPathSeparator(String pathSeparator) {
     this.pathSeparator = pathSeparator;
   }
 
+  /**
+   * Set if the path should start with a path separator (before the root element).
+   * @param startWithPathSeparator
+   */
   public void setStartWithPathSeparator(boolean startWithPathSeparator) {
     this.startWithPathSeparator = startWithPathSeparator;
   }
@@ -134,8 +146,9 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
     String noParamsPath = path;
 
     // remove query
-    if(path.contains(QUERY_STARTER)) {
-      noParamsPath = path.split(QUERY_STARTER)[0];
+    int pos = path.indexOf(QUERY_STARTER);
+    if(pos >= 0) {
+      noParamsPath = path.substring(0, pos);
     }
 
     // split the path
@@ -146,6 +159,28 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
     }
 
     return entityNames;
+  }
+
+  public Map<String, String> getParameters(String path) {
+    Map<String, String> map = new HashMap<String, String>();
+
+    int pos = path.indexOf(QUERY_STARTER);
+    if(pos >= 0 && path.length() - 1 > pos) {
+      String paramPath = path.substring(pos + 1, path.length());
+      log.info("params={}", paramPath);
+      for(String pair : paramPath.split(QUERY_STATEMENT_SEPARATOR)) {
+        if(pair.contains(QUERY_KEY_VALUE_SEPARATOR)) {
+          String[] entry = pair.split(QUERY_KEY_VALUE_SEPARATOR);
+          try {
+            map.put(entry[0], URLDecoder.decode(entry[1], ENCODING));
+          } catch(UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("Value cannot be decoded in " + ENCODING + ": " + entry[1], e);
+          }
+        }
+      }
+    }
+
+    return map;
   }
 
 }
