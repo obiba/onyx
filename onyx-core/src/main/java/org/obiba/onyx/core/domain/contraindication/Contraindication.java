@@ -44,6 +44,16 @@ public class Contraindication extends AbstractEntity implements MessageSourceRes
   @Enumerated(EnumType.STRING)
   private Type type;
 
+  public Contraindication() {
+    super();
+  }
+
+  public Contraindication(String code, Type type) {
+    super();
+    this.code = code;
+    this.type = type;
+  }
+
   public String getCode() {
     return code;
   }

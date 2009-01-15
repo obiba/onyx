@@ -114,8 +114,8 @@ public class InstrumentRun extends AbstractEntity implements IContraindicatable 
     return instrumentType;
   }
 
-  public void setInstrumentType(InstrumentType instrument) {
-    this.instrumentType = instrument;
+  public void setInstrumentType(InstrumentType instrumentType) {
+    this.instrumentType = instrumentType;
   }
 
   public InstrumentRunStatus getStatus() {

@@ -84,11 +84,36 @@ public class InstrumentType extends AbstractEntity {
   }
 
   public List<Contraindication> getContraindications() {
-    return contraindications;
+    return contraindications != null ? contraindications : (contraindications = new ArrayList<Contraindication>());
+  }
+
+  /**
+   * 
+   * @param ci
+   * @return this for chaining
+   */
+  public InstrumentType addContraindication(Contraindication ci) {
+    if(ci != null) {
+      getContraindications().add(ci);
+    }
+    return this;
   }
 
   public List<InstrumentParameter> getInstrumentParameters() {
-    return instrumentParameters;
+    return instrumentParameters != null ? instrumentParameters : (instrumentParameters = new ArrayList<InstrumentParameter>());
+  }
+
+  /**
+   * 
+   * @param parameter
+   * @return this for chaining
+   */
+  public InstrumentType addInstrumentParameter(InstrumentParameter parameter) {
+    if(parameter != null) {
+      getInstrumentParameters().add(parameter);
+      parameter.setInstrumentType(this);
+    }
+    return this;
   }
 
   @Override

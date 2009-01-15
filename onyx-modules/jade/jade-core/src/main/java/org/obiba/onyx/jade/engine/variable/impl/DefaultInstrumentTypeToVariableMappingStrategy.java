@@ -33,41 +33,41 @@ import org.obiba.onyx.util.data.DataType;
  */
 public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrumentTypeToVariableMappingStrategy {
 
-  private static final String INSTRUMENT_RUN = "InstrumentRun";
+  public static final String INSTRUMENT_RUN = "InstrumentRun";
 
-  private static final String INSTRUMENT = "Instrument";
+  public static final String INSTRUMENT = "Instrument";
 
-  private static final String NAME = "name";
+  public static final String NAME = "name";
 
-  private static final String VENDOR = "vendor";
+  public static final String VENDOR = "vendor";
 
-  private static final String MODEL = "model";
+  public static final String MODEL = "model";
 
-  private static final String SERIAL_NUMBER = "serialNumber";
+  public static final String SERIAL_NUMBER = "serialNumber";
 
-  private static final String BARCODE = "barcode";
+  public static final String BARCODE = "barcode";
 
-  private static final String USER = "user";
+  public static final String USER = "user";
 
-  private static final String USER_KEY = "user";
+  public static final String USER_KEY = "user";
 
-  private static final String TIMESTART = "timeStart";
+  public static final String TIMESTART = "timeStart";
 
-  private static final String TIMEEND = "timeEnd";
+  public static final String TIMEEND = "timeEnd";
 
-  private static final String CONTRAINDICATION = "Contraindication";
+  public static final String CONTRAINDICATION = "Contraindication";
 
-  private static final String CONTRAINDICATION_CODE = "code";
+  public static final String CONTRAINDICATION_CODE = "code";
 
-  private static final String CONTRAINDICATION_TYPE = "type";
+  public static final String CONTRAINDICATION_TYPE = "type";
 
-  private static final String OTHER_CONTRAINDICATION = "otherContraindication";
+  public static final String OTHER_CONTRAINDICATION = "otherContraindication";
 
-  private static final String INPUT = "Input";
+  public static final String INPUT = "Input";
 
-  private static final String OUTPUT = "Output";
+  public static final String OUTPUT = "Output";
 
-  private static final String INTERPRETIVE = "Interpretive";
+  public static final String INTERPRETIVE = "Interpretive";
 
   private InstrumentRunService instrumentRunService;
 
@@ -124,7 +124,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
     return typeVariable;
   }
 
-  public Data getData(Variable variable, Participant participant) {
+  public Data getData(Participant participant, Variable variable) {
     // variable is expected to be a terminal one
     if(variable == null || variable.getDataType() == null) {
       return null;

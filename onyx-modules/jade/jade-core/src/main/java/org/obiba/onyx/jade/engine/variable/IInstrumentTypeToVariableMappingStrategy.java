@@ -23,5 +23,5 @@ public interface IInstrumentTypeToVariableMappingStrategy {
 
   public Variable getVariable(InstrumentType type);
 
-  public Data getData(Variable variable, Participant participant);
+  public Data getData(Participant participant, Variable variable);
 }

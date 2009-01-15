@@ -164,7 +164,7 @@ public class JadeModule implements Module, IVariableProvider, ApplicationContext
       // stage name is the instrument type name
       varData = actionVariableProvider.getActionVariableData(participant, variable, variablePathNamingStrategy, varData, typeVariable.getName());
     } else {
-      varData.addData(instrumentTypeToVariableMappingStrategy.getData(variable, participant));
+      varData.addData(instrumentTypeToVariableMappingStrategy.getData(participant, variable));
     }
 
     return varData;
