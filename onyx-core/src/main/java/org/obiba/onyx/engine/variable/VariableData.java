@@ -11,6 +11,8 @@ package org.obiba.onyx.engine.variable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.obiba.onyx.util.data.Data;
@@ -94,12 +96,17 @@ public class VariableData implements Serializable {
    */
   public VariableData addData(Data child) {
     if(child != null) {
-      getDatas().add(child);
-      Serializable value = child.getValue();
-      getValues().add(value);
       if(type != null && !type.equals(child.getType())) {
         throw new IllegalArgumentException("Cannot mix values from different data types: " + type + " is current, " + child.getType() + " is added.");
       }
+      Serializable value = child.getValue();
+      // make sure we do not export java.sql objects
+      if(value instanceof Date && (value instanceof java.sql.Date || value instanceof java.sql.Timestamp || value instanceof java.sql.Time)) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime((Date) value);
+        value = cal.getTime();
+      }
+      getValues().add(value);
       type = child.getType();
     }
     return this;
