@@ -270,6 +270,35 @@ public class DefaultQuestionToVariableMappingStrategyTest {
 
     verify(questionnaireParticipantServiceMock);
 
+    Assert.assertEquals(1, data.getDatas().size());
+    Assert.assertEquals(Boolean.FALSE, data.getDatas().get(0).getValue());
+  }
+
+  @Test
+  public void testVariableDataQuestionActivityUnknown() {
+    Variable questionnaireVariable = createQuestionnaireVariable();
+
+    Variable studyVariable = new Variable("ROOT");
+    studyVariable.addVariable(questionnaireVariable);
+    // log.info("\n"+VariableStreamer.toXML(studyVariable));
+
+    Variable variable = getChildVariable(questionnaireVariable, "BOILER_PLATE").getVariables().get(0);
+    Assert.assertEquals("BOILER_PLATE", variable.getParent().getName());
+    Assert.assertEquals(DefaultQuestionToVariableMappingStrategy.QUESTION_ACTIVE, variable.getName());
+
+    Variable testVariable = questionToVariableMappingStrategy.getQuestionnaireVariable(variable);
+    Assert.assertEquals(questionnaire.getName(), testVariable.getName());
+
+    Participant participant = new Participant();
+
+    expect(questionnaireParticipantServiceMock.isQuestionActive(participant, questionnaire.getName(), variable.getParent().getName())).andReturn(null).atLeastOnce();
+    replay(questionnaireParticipantServiceMock);
+
+    VariableData data = questionToVariableMappingStrategy.getVariableData(questionnaireParticipantServiceMock, participant, variable, new VariableData(variablePathNamingStrategy.getPath(variable)), questionnaire);
+    log.info("\n" + VariableStreamer.toXML(data));
+
+    verify(questionnaireParticipantServiceMock);
+
     Assert.assertEquals(0, data.getDatas().size());
   }
 

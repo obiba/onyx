@@ -75,7 +75,7 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
     return null;
   }
 
-  public boolean isQuestionActive(Participant participant, String questionnaireName, String questionName) {
+  public Boolean isQuestionActive(Participant participant, String questionnaireName, String questionName) {
     QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant(participant, questionnaireName);
 
     QuestionAnswer answer = new QuestionAnswer();
@@ -85,10 +85,10 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
     answer = getPersistenceManager().matchOne(answer);
 
     if(answer != null) {
-      return answer.isActive();
+      return answer.getActive();
     }
 
-    return false;
+    return null;
   }
 
 }

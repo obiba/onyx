@@ -202,8 +202,9 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
         }
       } else if(variable.getName().equals(QUESTION_ACTIVE)) {
         // question active data only if it is active
-        if(questionnaireParticipantService.isQuestionActive(participant, questionnaire.getName(), variable.getParent().getName())) {
-          variableData.addData(DataBuilder.buildBoolean(true));
+        Boolean active = questionnaireParticipantService.isQuestionActive(participant, questionnaire.getName(), variable.getParent().getName());
+        if(active != null) {
+          variableData.addData(DataBuilder.buildBoolean(active));
         }
       } else {
         // get the open answer

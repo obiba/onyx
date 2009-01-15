@@ -68,5 +68,5 @@ public interface QuestionnaireParticipantService {
    * @param questionName
    * @return false if active flag is false or null
    */
-  public boolean isQuestionActive(Participant participant, String questionnaireName, String questionName);
+  public Boolean isQuestionActive(Participant participant, String questionnaireName, String questionName);
 }
