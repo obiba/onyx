@@ -2,11 +2,19 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
   default-autowire="no">
 
-  <bean id="participantMetadata" class="org.obiba.onyx.core.domain.participant.ParticipantMetadata">
-    <property name="onyxConfigPath" value="classpath:" />
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="properties">
+      <value>
+      <![CDATA[
+      org.obiba.onyx.supportedRecruitmentTypes=
+      ]]>
+      </value>
+    </property>
+    <property name="ignoreUnresolvablePlaceholders" value="true" />
   </bean>
 
-  <bean id="participantReader" class="org.obiba.onyx.core.etl.participant.impl.DefaultParticipantExcelReader" scope="prototype">
+  <bean id="participantReader" class="org.obiba.onyx.core.etl.participant.impl.DefaultParticipantExcelReader"
+    scope="prototype">
     <property name="participantMetadata" ref="participantMetadata" />
     <property name="sheetNumber" value="1" />
     <property name="headerRowNumber" value="2" />
@@ -25,7 +33,7 @@
       </map>
     </property>
   </bean>
-  
+
   <bean id="stageOrderingStrategy" class="org.obiba.onyx.engine.StaticStageOrderingStrategy">
     <property name="stageOrdering" value="" />
   </bean>

@@ -1,71 +1,177 @@
 <html>
   <header>
-  	<link wicket:id="pageCSS" rel="Stylesheet" type="text/css" href="style.css"/>
+    <link wicket:id="pageCSS" rel="Stylesheet" type="text/css" href="style.css" />
   </header>
   <body>
-    <wicket:extend>    	
-    	<form wicket:id="configurationForm">
-			<p><wicket:message key="InitConfigFormMsg" /></p>
-			
-			<fieldset style="width: 400px;">
-	        	<legend><wicket:message key="CreateAppConfigurationLegend" /></legend>
-	        	
-				<table>
-					<tr>
-		        		<td><label for="studyName"><wicket:message key="studyName" /></label></td>
-		        		<td><input wicket:id="studyName" id="studyName" type="text" size="20"/><br/></td>
-		        	</tr>
-					<tr>
-		        		<td><label for="siteName"><wicket:message key="siteName" /></label></td>
-		        		<td><input wicket:id="siteName" id="siteName" type="text" size="20"/><br/></td>
-		        	</tr>
-		        	<tr>
-		        		<td><label for="siteNo"><wicket:message key="siteNo" /></label></td>
-		        		<td><input wicket:id="siteNo" id="siteNo" type="text" size="20"/><br/></td>
-		        	</tr>		        	
-		        </table>
-		    </fieldset>
-	        	
-	        <br/>
-	        	
-	        <fieldset style="width: 400px;">
-	        	<legend><wicket:message key="CreateAdminLegend" /></legend>
-	        		
-				<table>
-					<tr>
-			       		<td><label for="lastName"><wicket:message key="lastName" /></label></td>
-			       		<td><input wicket:id="lastName" id="lastName" type="text" size="20"/><br/> </td>
-			       	</tr>
-			       	<tr>
-			       		<td><label for="firstName"><wicket:message key="firstName" /></label></td>
-			       		<td><input wicket:id="firstName" id="firstName" type="text" size="20"/><br/> </td>
-			       	</tr>
-					<tr>
-			       		<td><label for="login"><wicket:message key="login" /></label></td>
-			       		<td><input wicket:id="login" id="login" type="text" size="20"/><br/> </td>
-			       	</tr>	
-					<tr>
-			       		<td><label for="password"><wicket:message key="password" /></label></td>
-			       		<td><input wicket:id="password" id="password" type="password" size="20"/><br/> </td>
-			       	</tr>
-					<tr>
-			       		<td><label for="confirmPassword"><wicket:message key="confirmPassword" /></label></td>
-			       		<td><input wicket:id="confirmPassword" id="confirmPassword" type="password" size="20"/><br/></td>
-			       	</tr>
-					<tr>
-			       		<td><label for="email"><wicket:message key="email" /></label></td>
-			       		<td><input wicket:id="email" id="email" type="text" size="20"/><br/> </td>
-			       	</tr>
-			       	<tr>
-			       		<td><label for="sessionTimeout"><wicket:message key="sessionTimeout" /></label></td>
-			       		<td><input wicket:id="sessionTimeout" id="sessionTimeout" type="text" size="20"/><br/> </td>
-			       	</tr>			        				        				        	        		
-				</table>
-		    </fieldset>
-		        
-		    <p><input type="submit" wicket:id="saveButton" wicket:message="value:Save" /></p>
-		    
-    	</form>
+    <wicket:extend>
+      <form wicket:id="configurationForm">
+        <p>
+          <wicket:message key="InitConfigFormMsg" />
+        </p>
+
+        <fieldset style="width: 400px;">
+          <legend>
+            <wicket:message key="CreateAppConfigurationLegend" />
+          </legend>
+
+          <table>
+            <tr>
+              <td>
+                <label for="studyName">
+                  <wicket:message key="studyName" />
+                </label>
+              </td>
+              <td>
+                <input wicket:id="studyName" id="studyName" type="text" size="20" />
+                <br />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="siteName">
+                  <wicket:message key="siteName" />
+                </label>
+              </td>
+              <td>
+                <input wicket:id="siteName" id="siteName" type="text" size="20" />
+                <br />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="siteNo">
+                  <wicket:message key="siteNo" />
+                </label>
+              </td>
+              <td>
+                <input wicket:id="siteNo" id="siteNo" type="text" size="20" />
+                <br />
+              </td>
+            </tr>
+          </table>
+        </fieldset>
+
+        <br />
+
+        <fieldset style="width: 400px;">
+          <legend>
+            <wicket:message key="CreateAdminLegend" />
+          </legend>
+
+          <table>
+            <tr>
+              <td>
+                <label for="lastName">
+                  <wicket:message key="lastName" />
+                </label>
+              </td>
+              <td>
+                <input wicket:id="lastName" id="lastName" type="text" size="20" />
+                <br />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="firstName">
+                  <wicket:message key="firstName" />
+                </label>
+              </td>
+              <td>
+                <input wicket:id="firstName" id="firstName" type="text" size="20" />
+                <br />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="login">
+                  <wicket:message key="login" />
+                </label>
+              </td>
+              <td>
+                <input wicket:id="login" id="login" type="text" size="20" />
+                <br />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="password">
+                  <wicket:message key="password" />
+                </label>
+              </td>
+              <td>
+                <input wicket:id="password" id="password" type="password" size="20" />
+                <br />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="confirmPassword">
+                  <wicket:message key="confirmPassword" />
+                </label>
+              </td>
+              <td>
+                <input wicket:id="confirmPassword" id="confirmPassword" type="password" size="20" />
+                <br />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="email">
+                  <wicket:message key="email" />
+                </label>
+              </td>
+              <td>
+                <input wicket:id="email" id="email" type="text" size="20" />
+                <br />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="sessionTimeout">
+                  <wicket:message key="sessionTimeout" />
+                </label>
+              </td>
+              <td>
+                <input wicket:id="sessionTimeout" id="sessionTimeout" type="text" size="20" />
+                <br />
+              </td>
+            </tr>
+          </table>
+        </fieldset>
+
+        <fieldset style="width: 400px;">
+          <legend>
+            <wicket:message key="ExportDestinationCertificates" />
+          </legend>
+          <table>
+            <thead>
+              <tr>
+                <th>
+                  <wicket:message key="Destination" />
+                </th>
+                <th>
+                  <wicket:message key="DestinationCertificate" />
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr wicket:id="destinations">
+                <td>
+                  <span wicket:id="destinationName" />
+                </td>
+                <td>
+                  <textarea wicket:id="destinationCert" rows="18" cols="76">This should be the content</textarea>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </fieldset>
+
+        <p>
+          <input type="submit" wicket:id="saveButton" wicket:message="value:Save" />
+        </p>
+
+      </form>
     </wicket:extend>
   </body>
 </html>

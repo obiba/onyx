@@ -41,11 +41,12 @@ public class OnyxDataExportDestination implements IVariableFilter {
   }
 
   public boolean includeVariable(String path) {
+    boolean include = false;
     if(filteredVariables != null) {
-      return !containsPath(filteredVariables, path);
+      include = !containsPath(filteredVariables, path);
     }
 
-    if(includedVariables != null) {
+    if(include == false && includedVariables != null) {
       return containsPath(includedVariables, path);
     }
 

@@ -45,8 +45,6 @@ public class Interview extends AbstractEntity {
   @JoinColumn(name = "user_id")
   private User user;
 
-  private Boolean closed;
-
   public Interview() {
   }
 
@@ -95,15 +93,4 @@ public class Interview extends AbstractEntity {
     this.user = user;
   }
 
-  public void setClosed(Boolean closed) {
-    this.closed = closed;
-  }
-
-  public Boolean getClosed() {
-    return closed;
-  }
-
-  public boolean isClosed() {
-    return closed != null ? closed : (closed = false);
-  }
 }

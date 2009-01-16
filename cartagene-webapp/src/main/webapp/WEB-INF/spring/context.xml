@@ -107,12 +107,8 @@
     </property>
   </bean>
 
-  <bean id="participantMetadata" class="org.obiba.onyx.core.domain.participant.ParticipantMetadata">
-    <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
-    <property name="supportedRecruitmentTypesString" value="${org.obiba.onyx.supportedRecruitmentTypes}" />
-  </bean>
-
   <bean id="onyxDataExport" class="org.obiba.onyx.engine.variable.export.OnyxDataExport">
+    <property name="exportDestinations" ref="onyxDataExportDestinations"/>
     <property name="queryService" ref="persistenceManager" />
     <property name="variableDirectory" ref="variableDirectory" />
     <property name="userSessionService" ref="userSessionService" />
@@ -120,6 +116,9 @@
       <bean class="org.obiba.onyx.engine.variable.export.ChainingDataExportStrategyWiringFactoryBean">
         <property name="chainedStrategies">
           <list>
+            <bean class="org.obiba.onyx.engine.variable.export.EncryptingOnyxDataExportStrategy">
+              <property name="publicKeyFactory" ref="onyxKeyStore" />
+            </bean>
             <bean class="org.obiba.onyx.engine.variable.export.DigestingOnyxDataExportStrategy" />
             <bean class="org.obiba.onyx.engine.variable.export.ZipExportStrategy" />
             <bean class="org.obiba.onyx.engine.variable.export.DigestingOnyxDataExportStrategy" />
@@ -128,13 +127,9 @@
               <property name="outputRootDirectory" value="target" />
             </bean>
           </list>
-          </property>
+        </property>
       </bean>
     </property>
-  </bean>
-
-  <bean id="dcc" class="org.obiba.onyx.engine.variable.export.OnyxDataExportDestination">
-    <property name="name" value="DCC" />
   </bean>
 
 </beans>

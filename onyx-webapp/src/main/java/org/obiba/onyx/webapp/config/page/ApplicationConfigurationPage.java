@@ -11,25 +11,29 @@ package org.obiba.onyx.webapp.config.page;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import org.apache.wicket.RequestCycle;
+import org.apache.wicket.Application;
 import org.apache.wicket.Session;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
-import org.apache.wicket.validation.IErrorMessageSource;
-import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.NumberValidator;
 import org.apache.wicket.validation.validator.StringValidator;
@@ -39,7 +43,10 @@ import org.obiba.onyx.core.domain.user.Status;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.obiba.onyx.core.service.UserService;
+import org.obiba.onyx.crypt.IPublicKeyStore;
+import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination;
 import org.obiba.onyx.webapp.base.page.BasePage;
+import org.obiba.onyx.webapp.crypt.X509CertificateValidator;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +61,14 @@ public class ApplicationConfigurationPage extends BasePage {
 
   @SpringBean
   private UserService userService;
+
+  @SpringBean
+  private IPublicKeyStore publicKeyStore;
+
+  @SpringBean(name = "onyxDataExportDestinations")
+  private List<OnyxDataExportDestination> exportDestinations;
+
+  private List<ExportDestinationCertificateModel> certificateModels = new LinkedList<ExportDestinationCertificateModel>();
 
   public ApplicationConfigurationPage() {
     add(new ConfigurationForm("configurationForm"));
@@ -123,13 +138,36 @@ public class ApplicationConfigurationPage extends BasePage {
       setMaxSize(Bytes.megabytes(2));
       setMultiPart(true);
 
+      RepeatingView destinations = new RepeatingView("destinations");
+      for(OnyxDataExportDestination destination : exportDestinations) {
+        WebMarkupContainer container = new WebMarkupContainer(destinations.newChildId());
+        container.add(new Label("destinationName", destination.getName()));
+        TextArea destinationCert = new TextArea("destinationCert", new ExportDestinationCertificateModel(destination.getName()));
+        destinationCert.setLabel(new Model(destination.getName()));
+        destinationCert.add(new RequiredFormFieldBehavior());
+        destinationCert.add(new X509CertificateValidator());
+        container.add(destinationCert);
+
+        destinations.add(container);
+      }
+      add(destinations);
+
       add(new Button("saveButton"));
     }
 
     public void onSubmit() {
       saveConfiguration();
       uploadStudyLogo();
+      saveExportDestinationCertificates();
       setResponsePage(getApplication().getHomePage());
+    }
+
+    private void saveExportDestinationCertificates() {
+      for(ExportDestinationCertificateModel certificateModel : certificateModels) {
+        String destination = certificateModel.getDestinationName();
+        String cert = (String) certificateModel.getObject();
+        publicKeyStore.setCertificate(destination, cert);
+      }
     }
 
     private void uploadStudyLogo() {
@@ -141,7 +179,7 @@ public class ApplicationConfigurationPage extends BasePage {
       if(upload != null) {
 
         // Save the logo in the "images" folder of the web application.
-        ServletContext context = ((WebApplication) RequestCycle.get().getApplication()).getServletContext();
+        ServletContext context = ((WebApplication) Application.get()).getServletContext();
         File newFile = new File(context.getRealPath("/images"), "studyLogo.jpg");
 
         try {
@@ -211,19 +249,32 @@ public class ApplicationConfigurationPage extends BasePage {
     }
   }
 
-  @SuppressWarnings("serial")
-  private class ParticipantsListDirectoryValidationError implements IValidationError, Serializable {
+  private class ExportDestinationCertificateModel extends Model {
 
-    private String key;
+    private static final long serialVersionUID = 1L;
 
-    public ParticipantsListDirectoryValidationError(String key) {
-      this.key = key;
+    public String destinationName;
+
+    public String certificate;
+
+    ExportDestinationCertificateModel(String destinationName) {
+      this.destinationName = destinationName;
+      certificateModels.add(this);
     }
 
-    public String getErrorMessage(IErrorMessageSource messageSource) {
-      return ApplicationConfigurationPage.this.getString(key);
+    public String getDestinationName() {
+      return destinationName;
     }
 
+    @Override
+    public void setObject(Object object) {
+      certificate = (String) object;
+    }
+
+    @Override
+    public Object getObject() {
+      return certificate;
+    }
   }
 
 }

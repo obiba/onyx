@@ -28,16 +28,17 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="stageOrderingStrategy" ref="stageOrderingStrategy" />
   </bean>
 
-  <bean id="interviewStageContextsFactoryBean" class="org.obiba.onyx.core.service.impl.InterviewStageContextsFactoryBean" />
-  
+  <bean id="interviewStageContextsFactoryBean"
+    class="org.obiba.onyx.core.service.impl.InterviewStageContextsFactoryBean" />
+
   <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl"
     scope="session" destroy-method="shutdown">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="moduleRegistry" ref="moduleRegistry" />
     <property name="participantService" ref="participantService" />
-    
+
     <property name="interviewStageContexts" ref="interviewStageContextsFactoryBean" />
-    
+
     <aop:scoped-proxy proxy-target-class="false" />
   </bean>
 
@@ -45,28 +46,38 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="moduleRegistry" ref="moduleRegistry" />
     <property name="variableDirectory" ref="variableDirectory" />
   </bean>
-  
+
   <bean id="variableDirectory" class="org.obiba.onyx.engine.variable.VariableDirectory">
     <property name="variablePathNamingStrategy" ref="variablePathNamingStrategy" />
   </bean>
-  
+
   <bean id="baseStageState" class="org.obiba.onyx.engine.state.AbstractStageState" abstract="true">
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="actionDefinitionConfiguration" ref="actionDefinitionConfiguration" />
   </bean>
-  
+
   <bean id="participantMetadata" class="org.obiba.onyx.core.domain.participant.ParticipantMetadata">
-    <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}"/>
+    <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
+    <property name="supportedRecruitmentTypesString" value="${org.obiba.onyx.supportedRecruitmentTypes}" />
   </bean>
-  
+
   <bean id="pdfPrintingService" class="org.obiba.onyx.print.PdfPrintingService">
-    <property name="printerName" value="${org.obiba.onyx.pdfPrinterName}" />  
-  </bean>  
-  
+    <property name="printerName" value="${org.obiba.onyx.pdfPrinterName}" />
+  </bean>
+
   <bean id="onyxVariableProvider" class="org.obiba.onyx.engine.variable.OnyxVariableProvider">
     <property name="participantMetadata" ref="participantMetadata" />
     <property name="participantService" ref="participantService" />
     <property name="queryService" ref="persistenceManager" />
   </bean>
-  
+
+  <bean id="onyxKeyStore" class="org.obiba.onyx.crypt.OnyxKeyStore" init-method="open" destroy-method="close">
+    <property name="keyStoreResource" value="${org.obiba.onyx.keystore.file}" />
+    <property name="keyStorePassword" value="${org.obiba.onyx.keystore.password}" />
+  </bean>
+
+  <bean id="onyxDataExportDestinations" class="org.obiba.onyx.engine.variable.export.OnyxDataExportFactoryBean">
+    <property name="destinationsResource" value="${org.obiba.onyx.config.path}/exportDestinations.xml" />
+  </bean>
+
 </beans>

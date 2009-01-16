@@ -1,0 +1,19 @@
+<destinations>
+  <destination>
+    <name>DCC</name>
+    <filteredVariables>
+      <string>/Cartagene/Consent/pdfForm</string>
+      <string>/Cartagene/Admin/Participant</string>
+    </filteredVariables>
+    <includedVariables>
+      <string>/Cartagene/Admin/Participant/barcode</string>
+    </includedVariables>
+  </destination>
+
+  <destination>
+    <name>Appointment Unit</name>
+    <includedVariables>
+      <string>/Cartagene/Consent/pdfForm</string>
+    </includedVariables>
+  </destination>
+</destinations>

@@ -76,12 +76,14 @@ public class EncryptingOnyxDataExportStrategyTest {
 
     ByteArrayOutputStream entryStream = new ByteArrayOutputStream();
     ByteArrayOutputStream keyStream = new ByteArrayOutputStream();
+    ByteArrayOutputStream ivStream = new ByteArrayOutputStream();
     ByteArrayOutputStream parametersStream = new ByteArrayOutputStream();
 
     // The digesting strategy should delegate all the calls but also call an extra "newEntry" on the delegate to add the
     // digest
     mockDelegate.prepare(context);
     EasyMock.expect(mockDelegate.newEntry("encryption.key")).andReturn(keyStream);
+    EasyMock.expect(mockDelegate.newEntry("encryption.iv")).andReturn(ivStream);
     EasyMock.expect(mockDelegate.newEntry("encryption.parameters")).andReturn(parametersStream);
     EasyMock.expect(mockDelegate.newEntry("testEntry.dat")).andReturn(entryStream);
     mockDelegate.terminate(context);
@@ -96,6 +98,7 @@ public class EncryptingOnyxDataExportStrategyTest {
     EasyMock.verify(mockDelegate);
 
     Cipher cipher = createCipher(keyStream.toByteArray(), parametersStream.toByteArray());
+    Assert.assertArrayEquals(cipher.getIV(), ivStream.toByteArray());
     // Make sure we find the data we wrote after decrypting it
     Assert.assertArrayEquals(testData, cipher.doFinal(entryStream.toByteArray()));
   }
@@ -106,10 +109,12 @@ public class EncryptingOnyxDataExportStrategyTest {
     TestEntry entries[] = { new TestEntry("First Entry"), new TestEntry("Second Entry"), new TestEntry("Third Entry") };
 
     ByteArrayOutputStream keyStream = new ByteArrayOutputStream();
+    ByteArrayOutputStream ivStream = new ByteArrayOutputStream();
     ByteArrayOutputStream parametersStream = new ByteArrayOutputStream();
 
     mockDelegate.prepare(context);
     EasyMock.expect(mockDelegate.newEntry("encryption.key")).andReturn(keyStream);
+    EasyMock.expect(mockDelegate.newEntry("encryption.iv")).andReturn(ivStream);
     EasyMock.expect(mockDelegate.newEntry("encryption.parameters")).andReturn(parametersStream);
     for(TestEntry entry : entries) {
       entry.expect();
@@ -125,6 +130,7 @@ public class EncryptingOnyxDataExportStrategyTest {
     EasyMock.verify(mockDelegate);
 
     Cipher cipher = createCipher(keyStream.toByteArray(), parametersStream.toByteArray());
+    Assert.assertArrayEquals(cipher.getIV(), ivStream.toByteArray());
     for(TestEntry entry : entries) {
       entry.verify(cipher);
     }
