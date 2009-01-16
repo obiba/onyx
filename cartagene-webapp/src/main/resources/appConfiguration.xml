@@ -26,9 +26,9 @@
   </user>
 
   <config>
-    <siteName>CHUM</siteName>
+    <siteName>MyClinic</siteName>
     <siteNo>cag001</siteNo>
-    <studyName>CARTaGENE</studyName>
+    <studyName>MyBioBank</studyName>
     <!-- can be absolute or relative to webapp root -->
     <participantDirectoryPath>/participants</participantDirectoryPath>
   </config>
