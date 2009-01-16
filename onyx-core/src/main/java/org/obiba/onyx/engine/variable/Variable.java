@@ -143,6 +143,14 @@ public class Variable implements Serializable {
     }
   }
 
+  public void addReferences(String... paths) {
+    if(paths != null) {
+      for(String path : paths) {
+        getReferences().add(path);
+      }
+    }
+  }
+
   /**
    * Get the children variables.
    * @return

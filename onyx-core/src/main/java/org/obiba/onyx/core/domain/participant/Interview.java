@@ -99,6 +99,10 @@ public class Interview extends AbstractEntity {
     this.closed = closed;
   }
 
+  public Boolean getClosed() {
+    return closed;
+  }
+
   public boolean isClosed() {
     return closed != null ? closed : (closed = false);
   }
