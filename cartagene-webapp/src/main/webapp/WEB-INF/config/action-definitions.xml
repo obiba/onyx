@@ -28,7 +28,7 @@
     <code>action.SKIP.Waiting.Jade</code>
     <type>SKIP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>true</commentMandatory>
     <reasonMandatory>true</reasonMandatory>    
     <reasons>
@@ -43,7 +43,7 @@
     <code>action.STOP.Contraindicated.Jade</code>
     <type>STOP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>true</commentMandatory>
     <reasonMandatory>false</reasonMandatory>   
   </actionDefinition>  
@@ -51,7 +51,7 @@
     <code>action.EXECUTE.Ready.Jade</code>
     <type>EXECUTE</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>false</commentMandatory>
     <reasonMandatory>false</reasonMandatory>   
   </actionDefinition>
@@ -59,7 +59,7 @@
     <code>action.SKIP.Ready.Jade</code>
     <type>SKIP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>true</commentMandatory>
     <reasonMandatory>true</reasonMandatory>    
     <reasons>
@@ -74,7 +74,7 @@
     <code>action.STOP.InProgress.Jade</code>
     <type>STOP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>true</commentMandatory>
     <reasonMandatory>true</reasonMandatory>    
     <reasons>
@@ -97,7 +97,7 @@
     <code>action.STOP.Skipped.Jade</code>
     <type>STOP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>false</commentMandatory>
     <reasonMandatory>false</reasonMandatory>     
   </actionDefinition>   
@@ -105,7 +105,7 @@
     <code>action.STOP.Completed.Jade</code>
     <type>STOP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>true</commentMandatory>
     <reasonMandatory>false</reasonMandatory>     
   </actionDefinition>   
@@ -115,7 +115,7 @@
     <code>action.EXECUTE.Ready.Quartz</code>
     <type>EXECUTE</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>false</commentMandatory>
     <reasonMandatory>false</reasonMandatory>     
   </actionDefinition>  
@@ -123,7 +123,7 @@
     <code>action.SKIP.Ready.Quartz</code>
     <type>SKIP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>true</commentMandatory>
     <reasonMandatory>true</reasonMandatory>    
     <reasons>
@@ -137,7 +137,7 @@
     <code>action.STOP.InProgress.Quartz</code>
     <type>STOP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>true</commentMandatory>
     <reasonMandatory>true</reasonMandatory>    
     <reasons>
@@ -167,7 +167,7 @@
     <code>action.STOP.Skipped.Quartz</code>
     <type>STOP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>false</commentMandatory>
     <reasonMandatory>false</reasonMandatory>     
   </actionDefinition>   
@@ -175,7 +175,7 @@
     <code>action.STOP.Completed.Quartz</code>
     <type>STOP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>true</commentMandatory>
     <reasonMandatory>false</reasonMandatory>     
   </actionDefinition>   
@@ -183,7 +183,7 @@
     <code>action.EXECUTE.Completed.Quartz</code>
     <type>EXECUTE</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>false</commentMandatory>
     <reasonMandatory>false</reasonMandatory>     
   </actionDefinition>  
@@ -191,7 +191,7 @@
     <code>action.STOP.Interrupted.Quartz</code>
     <type>STOP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>true</commentMandatory>
     <reasonMandatory>true</reasonMandatory>     
     <reasons>
@@ -205,7 +205,7 @@
     <code>action.EXECUTE.Interrupted.Quartz</code>
     <type>EXECUTE</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>false</commentMandatory>
     <reasonMandatory>false</reasonMandatory>         
   </actionDefinition>         
@@ -215,7 +215,7 @@
     <code>action.SKIP.Waiting.Ruby</code>
     <type>SKIP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>true</commentMandatory>
     <reasonMandatory>true</reasonMandatory>  
     <reasons>
@@ -228,7 +228,7 @@
     <code>action.EXECUTE.Ready.Ruby</code>
     <type>EXECUTE</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>false</commentMandatory>
     <reasonMandatory>false</reasonMandatory>           
   </actionDefinition>   
@@ -236,7 +236,7 @@
     <code>action.SKIP.Ready.Ruby</code>
     <type>SKIP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>true</commentMandatory>
     <reasonMandatory>true</reasonMandatory>  
     <reasons>
@@ -249,7 +249,7 @@
     <code>action.STOP.InProgress.Ruby</code>
     <type>STOP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>true</commentMandatory>
     <reasonMandatory>true</reasonMandatory>  
     <reasons>
@@ -270,7 +270,7 @@
     <code>action.INTERRUPT.InProgress.Ruby</code>
     <type>INTERRUPT</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>false</commentMandatory>
     <reasonMandatory>false</reasonMandatory>  
   </actionDefinition>    
@@ -278,7 +278,7 @@
     <code>action.STOP.Skipped.Ruby</code>
     <type>STOP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>false</commentMandatory>
     <reasonMandatory>false</reasonMandatory>  
   </actionDefinition>  
@@ -286,7 +286,7 @@
     <code>action.STOP.Completed.Ruby</code>
     <type>STOP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>true</commentMandatory>
     <reasonMandatory>false</reasonMandatory>  
   </actionDefinition>   
@@ -294,7 +294,7 @@
     <code>action.STOP.Interrupted.Ruby</code>
     <type>STOP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>true</commentMandatory>
     <reasonMandatory>true</reasonMandatory>  
     <reasons>
@@ -307,7 +307,7 @@
     <code>action.STOP.Interrupted.Ruby</code>
     <type>STOP</type>
     <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>false</commentMandatory>
     <reasonMandatory>false</reasonMandatory>      
   </actionDefinition>   
@@ -321,7 +321,7 @@
     <code>action.STOP.Interview</code>
     <type>STOP</type>
     <askParticipantId>true</askParticipantId>     
-    <askPassword>true</askPassword>
+    <askPassword>false</askPassword>
     <commentMandatory>true</commentMandatory>
     <reasonMandatory>true</reasonMandatory>
     <reasons>
