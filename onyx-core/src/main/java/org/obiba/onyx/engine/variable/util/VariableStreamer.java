@@ -31,6 +31,7 @@ import com.thoughtworks.xstream.XStream;
  */
 public class VariableStreamer {
 
+  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(VariableStreamer.class);
 
   /**
@@ -106,7 +107,6 @@ public class VariableStreamer {
   private static void csvWrite(CSVWriter writer, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
     if(variable.getDataType() != null) {
       String[] nextLine = new String[7];
-      log.info(variable.toString());
       nextLine[0] = variablePathNamingStrategy.getPath(variable);
       nextLine[1] = variable.getName();
       nextLine[2] = variable.getKey();
