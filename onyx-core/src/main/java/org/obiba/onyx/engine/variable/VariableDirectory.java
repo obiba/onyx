@@ -39,6 +39,10 @@ public class VariableDirectory implements IVariableProvider {
     this.variablePathNamingStrategy = variablePathNamingStrategy;
   }
 
+  public IVariablePathNamingStrategy getVariablePathNamingStrategy() {
+    return variablePathNamingStrategy;
+  }
+
   /**
    * Register all the variables from the provider and the provider itself.
    * @param provider
