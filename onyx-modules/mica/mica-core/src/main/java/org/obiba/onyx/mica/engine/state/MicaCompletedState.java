@@ -13,7 +13,7 @@ package org.obiba.onyx.mica.engine.state;
 
 import java.util.Set;
 
-import org.obiba.onyx.engine.Action;
+import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
@@ -23,20 +23,20 @@ public class MicaCompletedState extends AbstractMicaStageState {
 
   private static final Logger log = LoggerFactory.getLogger(MicaCompletedState.class);
 
-  // public void afterPropertiesSet() throws Exception {
-  // addAction(ActionDefinitionBuilder.CANCEL_ACTION);
-  // }
-
   @Override
   protected void addUserActions(Set<ActionType> types) {
-    types.add(ActionType.STOP);
+    // Don't allow any action since we complete the interview when we enter this state.
+    // If the rule of completing the interview changes (is put somewhere else) we could
+    // allow user actions.
+
+    // Another solution is to set the Interview to IN_PROGRESS when we exit this state.
   }
 
   @Override
-  public void stop(Action action) {
-    super.execute(action);
-    log.info("Mica Stage {} is cancelling", super.getStage().getName());
-    castEvent(TransitionEvent.CANCEL);
+  public void onEntry(TransitionEvent event) {
+    super.onEntry(event);
+    log.info("Setting interview state to {}", InterviewStatus.COMPLETED);
+    super.activeInterviewService.setStatus(InterviewStatus.COMPLETED);
   }
 
   @Override
