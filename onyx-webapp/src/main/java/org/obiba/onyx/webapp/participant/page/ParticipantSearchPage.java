@@ -247,7 +247,10 @@ public class ParticipantSearchPage extends BasePage {
 
     });
 
-    participantList = new OnyxEntityList<Participant>("participant-list", new AppointedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
+    // participantList = new OnyxEntityList<Participant>("participant-list", new AppointedParticipantProvider(template),
+    // new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this,
+    // null));
+    participantList = getAllParticipantsList();
     participantList.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
     add(participantList);
 
