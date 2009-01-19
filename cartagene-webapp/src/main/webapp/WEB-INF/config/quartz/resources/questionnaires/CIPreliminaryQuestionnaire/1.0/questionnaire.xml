@@ -133,76 +133,76 @@
                             <open id="65" name="HOUR_24" dataType="INTEGER" required="false">
                               <defaultValues id="66">
                                 <data id="67" type="INTEGER">
-                                  <value class="int">0</value>
+                                  <value class="long">0</value>
                                 </data>
                                 <data id="68" type="INTEGER">
-                                  <value class="int">1</value>
+                                  <value class="long">1</value>
                                 </data>
                                 <data id="69" type="INTEGER">
-                                  <value class="int">2</value>
+                                  <value class="long">2</value>
                                 </data>
                                 <data id="70" type="INTEGER">
-                                  <value class="int">3</value>
+                                  <value class="long">3</value>
                                 </data>
                                 <data id="71" type="INTEGER">
-                                  <value class="int">4</value>
+                                  <value class="long">4</value>
                                 </data>
                                 <data id="72" type="INTEGER">
-                                  <value class="int">5</value>
+                                  <value class="long">5</value>
                                 </data>
                                 <data id="73" type="INTEGER">
-                                  <value class="int">6</value>
+                                  <value class="long">6</value>
                                 </data>
                                 <data id="74" type="INTEGER">
-                                  <value class="int">7</value>
+                                  <value class="long">7</value>
                                 </data>
                                 <data id="75" type="INTEGER">
-                                  <value class="int">8</value>
+                                  <value class="long">8</value>
                                 </data>
                                 <data id="76" type="INTEGER">
-                                  <value class="int">9</value>
+                                  <value class="long">9</value>
                                 </data>
                                 <data id="77" type="INTEGER">
-                                  <value class="int">10</value>
+                                  <value class="long">10</value>
                                 </data>
                                 <data id="78" type="INTEGER">
-                                  <value class="int">11</value>
+                                  <value class="long">11</value>
                                 </data>
                                 <data id="79" type="INTEGER">
-                                  <value class="int">12</value>
+                                  <value class="long">12</value>
                                 </data>
                                 <data id="80" type="INTEGER">
-                                  <value class="int">13</value>
+                                  <value class="long">13</value>
                                 </data>
                                 <data id="81" type="INTEGER">
-                                  <value class="int">14</value>
+                                  <value class="long">14</value>
                                 </data>
                                 <data id="82" type="INTEGER">
-                                  <value class="int">15</value>
+                                  <value class="long">15</value>
                                 </data>
                                 <data id="83" type="INTEGER">
-                                  <value class="int">16</value>
+                                  <value class="long">16</value>
                                 </data>
                                 <data id="84" type="INTEGER">
-                                  <value class="int">17</value>
+                                  <value class="long">17</value>
                                 </data>
                                 <data id="85" type="INTEGER">
-                                  <value class="int">18</value>
+                                  <value class="long">18</value>
                                 </data>
                                 <data id="86" type="INTEGER">
-                                  <value class="int">19</value>
+                                  <value class="long">19</value>
                                 </data>
                                 <data id="87" type="INTEGER">
-                                  <value class="int">20</value>
+                                  <value class="long">20</value>
                                 </data>
                                 <data id="88" type="INTEGER">
-                                  <value class="int">21</value>
+                                  <value class="long">21</value>
                                 </data>
                                 <data id="89" type="INTEGER">
-                                  <value class="int">22</value>
+                                  <value class="long">22</value>
                                 </data>
                                 <data id="90" type="INTEGER">
-                                  <value class="int">23</value>
+                                  <value class="long">23</value>
                                 </data>
                               </defaultValues>
                               <parentOpenAnswerDefinition reference="63"/>
@@ -211,16 +211,16 @@
                             <open id="92" name="MINUTE_15" dataType="INTEGER" required="false">
                               <defaultValues id="93">
                                 <data id="94" type="INTEGER">
-                                  <value class="int">0</value>
+                                  <value class="long">0</value>
                                 </data>
                                 <data id="95" type="INTEGER">
-                                  <value class="int">15</value>
+                                  <value class="long">15</value>
                                 </data>
                                 <data id="96" type="INTEGER">
-                                  <value class="int">30</value>
+                                  <value class="long">30</value>
                                 </data>
                                 <data id="97" type="INTEGER">
-                                  <value class="int">45</value>
+                                  <value class="long">45</value>
                                 </data>
                               </defaultValues>
                               <parentOpenAnswerDefinition reference="63"/>
