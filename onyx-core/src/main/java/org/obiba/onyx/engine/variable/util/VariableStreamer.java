@@ -11,11 +11,18 @@ package org.obiba.onyx.engine.variable.util;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 
+import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.VariableDataSet;
 import org.obiba.onyx.util.data.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -23,6 +30,9 @@ import com.thoughtworks.xstream.XStream;
  * 
  */
 public class VariableStreamer {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(VariableStreamer.class);
 
   /**
    * The de-serializer.
@@ -82,6 +92,33 @@ public class VariableStreamer {
   public static void toXML(VariableDataSet variableDataSet, OutputStream os) {
     VariableStreamer streamer = new VariableStreamer();
     streamer.xstream.toXML(variableDataSet, os);
+  }
+
+  public static void toCSV(Variable variable, OutputStream os, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    csvWrite(new CSVWriter(new OutputStreamWriter(os)), variable, variablePathNamingStrategy);
+  }
+
+  public static String toCSV(Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    StringWriter writer = new StringWriter();
+    csvWrite(new CSVWriter(writer), variable, variablePathNamingStrategy);
+    return writer.toString();
+  }
+
+  private static void csvWrite(CSVWriter writer, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    if(variable.getDataType() != null) {
+      String[] nextLine = new String[7];
+      nextLine[0] = variablePathNamingStrategy.getPath(variable);
+      nextLine[1] = variable.getName();
+      nextLine[2] = variable.getKey();
+      nextLine[3] = variable.getReferences().toString();
+      nextLine[4] = variable.getCategories().toString();
+      nextLine[5] = variable.getDataType().toString();
+      nextLine[6] = variable.getUnit();
+      writer.writeNext(nextLine);
+    }
+    for(Variable child : variable.getVariables()) {
+      csvWrite(writer, child, variablePathNamingStrategy);
+    }
   }
 
   private void initializeXStream() {

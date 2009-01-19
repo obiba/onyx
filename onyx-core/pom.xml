@@ -88,6 +88,11 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>net.sf.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+    </dependency>
 
     <!-- Even though we don't use it, the JTA jar is required due because the Spring class hierarchy and hibernate references javax.transaction.TransactionManager -->
     <dependency>

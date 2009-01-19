@@ -134,6 +134,7 @@ public class StrategyIntegrationTest {
 
     ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(zipStream.toByteArray()));
     byte[] keyData = readDigestedZipEntryData("encryption.key", zis);
+    byte[] ivData = readDigestedZipEntryData("encryption.iv", zis);
     byte[] paramData = readDigestedZipEntryData("encryption.parameters", zis);
 
     for(TestEncryptAndDigestAndZipEntry entry : entries) {

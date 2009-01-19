@@ -39,6 +39,10 @@ public class VariableDirectory implements IVariableProvider {
     this.variablePathNamingStrategy = variablePathNamingStrategy;
   }
 
+  public IVariablePathNamingStrategy getVariablePathNamingStrategy() {
+    return variablePathNamingStrategy;
+  }
+
   /**
    * Register all the variables from the provider and the provider itself.
    * @param provider
@@ -135,10 +139,16 @@ public class VariableDirectory implements IVariableProvider {
    */
   public VariableData getVariableData(Participant participant, String path) {
     Variable variable = VariableFinder.getInstance(getVariableRoot(), variablePathNamingStrategy).findVariable(path);
-    if(variable == null) return null;
+    if(variable == null) {
+      log.warn("Variable not found at path: {}", path);
+      return null;
+    }
 
     IVariableProvider provider = variablePathToProvidersMap.get(path);
-    if(provider == null) return null;
+    if(provider == null) {
+      log.warn("Variable provider not found for path: {}", path);
+      return null;
+    }
 
     return provider.getVariableData(participant, variable, variablePathNamingStrategy);
   }

@@ -15,6 +15,7 @@ import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.engine.variable.VariableDirectory;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +67,7 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
       }
     }
 
-    Boolean rval = false;
+    Boolean rval = null;
 
     // ask variable directory
     log.info("Testing variable: {} {} {}", new Object[] { variablePath, operator != null ? operator : ComparisonOperator.eq, data != null ? data : "true" });
@@ -75,19 +76,33 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
       // apply a OR among the data of the variable
       for(Data varData : variableData.getDatas()) {
         log.info("varData={}", varData);
-        if(operator != null) {
-          rval = operator.compare(varData, data);
-        } else if(varData.getType().equals(DataType.BOOLEAN)) {
-          rval = varData.getValue();
-        } else {
-          rval = (varData.getValue() != null);
-        }
+        rval = compare(varData);
         if(rval) {
           break;
         }
       }
     }
+
+    // we need a comparison, by default variable data is false
+    if(rval == null) {
+      rval = compare(DataBuilder.buildBoolean(false));
+    }
+
     log.info("Test return value={}", rval);
+    return rval;
+  }
+
+  private Boolean compare(Data varData) {
+    Boolean rval;
+
+    if(operator != null && data != null) {
+      rval = operator.compare(varData, data);
+    } else if(varData.getType().equals(DataType.BOOLEAN)) {
+      rval = varData.getValue();
+    } else {
+      rval = (varData.getValue() != null);
+    }
+
     return rval;
   }
 

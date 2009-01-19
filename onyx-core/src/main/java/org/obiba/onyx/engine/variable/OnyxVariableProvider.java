@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
@@ -35,25 +36,35 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(OnyxVariableProvider.class);
 
-  private static final String ADMIN = "Admin";
+  public static final String ADMIN = "Admin";
 
-  private static final String PARTICIPANT = "Participant";
+  public static final String PARTICIPANT = "Participant";
 
-  private static final String PARTICIPANT_KEY = "participant";
+  public static final String PARTICIPANT_KEY = "participant";
 
-  private static final String BARCODE = "barcode";
+  public static final String BARCODE = "barcode";
 
-  private static final String GENDER = "gender";
+  public static final String GENDER = "gender";
 
-  private static final String FIRST_NAME = "firstName";
+  public static final String FIRST_NAME = "firstName";
 
-  private static final String LAST_NAME = "lastName";
+  public static final String LAST_NAME = "lastName";
 
-  private static final String BIRTH_DATE = "birthDate";
+  public static final String BIRTH_DATE = "birthDate";
 
-  private static final String SITENO = "siteNo";
+  public static final String SITENO = "siteNo";
 
-  private static final String RECRUITMENT_TYPE = "recruitementType";
+  public static final String RECRUITMENT_TYPE = "recruitementType";
+
+  public static final String INTERVIEW = "Interview";
+
+  public static final String START_DATE = "startDate";
+
+  public static final String END_DATE = "endDate";
+
+  public static final String INTERVIEW_USER = "user";
+
+  public static final String INTERVIEW_STATUS = "status";
 
   public static final String ACTION = "Action";
 
@@ -130,6 +141,19 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
           varData.addData(data);
         }
       }
+    } else if(variable.getParent().getName().equals(INTERVIEW)) {
+      if(participant.getInterview() != null) {
+        Interview interview = participant.getInterview();
+        if(variable.getName().equals(START_DATE) && interview.getStartDate() != null) {
+          varData.addData(DataBuilder.buildDate(interview.getStartDate()));
+        } else if(variable.getName().equals(END_DATE) && interview.getEndDate() != null) {
+          varData.addData(DataBuilder.buildDate(interview.getEndDate()));
+        } else if(variable.getName().equals(INTERVIEW_USER) && interview.getUser() != null) {
+          varData.addData(DataBuilder.buildText(interview.getUser().getLogin()));
+        } else if(variable.getName().equals(INTERVIEW_STATUS) && interview.getStatus() != null) {
+          varData.addData(DataBuilder.buildText(interview.getStatus().toString()));
+        }
+      }
     } else if(isActionVariable(variable)) {
       varData = getActionVariableData(participant, variable, variablePathNamingStrategy, varData, null);
     } else if(variable.getParent().getName().equals(USER)) {
@@ -189,6 +213,12 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
     for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
       entity.addVariable(new Variable(attribute.getName()).setDataType(attribute.getType())).addReference(PARTICIPANT_KEY);
     }
+
+    entity = admin.addVariable(new Variable(INTERVIEW));
+    entity.addVariable(new Variable(START_DATE).setDataType(DataType.DATE));
+    entity.addVariable(new Variable(END_DATE).setDataType(DataType.DATE));
+    entity.addVariable(new Variable(INTERVIEW_USER).setDataType(DataType.TEXT)).setKey(USER_KEY);
+    entity.addVariable(new Variable(INTERVIEW_STATUS).setDataType(DataType.TEXT));
 
     admin.addVariable(createActionVariable(false));
 
@@ -266,7 +296,7 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
     } else {
       actionVariable = new Variable(OnyxVariableProvider.ACTION);
       actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTIONS).setDataType(DataType.INTEGER).setKey(ACTION_KEY));
-      actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_USER).setDataType(DataType.TEXT)).addReference(ACTION_KEY);
+      actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_USER).setDataType(DataType.TEXT)).setKey(USER_KEY).addReference(ACTION_KEY);
       actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_STAGE).setDataType(DataType.TEXT)).addReference(ACTION_KEY);
       actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_TYPE).setDataType(DataType.TEXT)).addReference(ACTION_KEY);
       actionVariable.addVariable(new Variable(OnyxVariableProvider.ACTION_DATE_TIME).setDataType(DataType.DATE)).addReference(ACTION_KEY);

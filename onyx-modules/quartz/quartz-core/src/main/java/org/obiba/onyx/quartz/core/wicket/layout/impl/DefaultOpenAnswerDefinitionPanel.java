@@ -80,7 +80,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
         public Object getDisplayValue(Object object) {
           Data data = (Data) object;
-          return (String) new QuestionnaireStringResourceModel(new PropertyModel(DefaultOpenAnswerDefinitionPanel.this.getModel(), "category.openAnswerDefinition"), data.getValueAsString()).getObject();
+          return (String) new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), data.getValueAsString()).getObject();
         }
 
         public String getIdValue(Object object, int index) {

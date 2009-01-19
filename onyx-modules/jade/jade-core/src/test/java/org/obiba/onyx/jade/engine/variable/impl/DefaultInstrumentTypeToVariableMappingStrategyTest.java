@@ -82,27 +82,27 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     Variable root = createInstrumentTypeVariable();
 
     Assert.assertEquals(1, root.getVariables().size());
-    Variable var = getChildVariable(root, instrumentType.getName());
+    Variable var = root.getVariable(instrumentType.getName());
     Assert.assertNotNull(var);
     Assert.assertEquals(4, var.getVariables().size());
 
-    Variable subVar = getChildVariable(var, DefaultInstrumentTypeToVariableMappingStrategy.INPUT);
+    Variable subVar = var.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INPUT);
     Assert.assertNotNull(subVar);
 
-    subVar = getChildVariable(var, DefaultInstrumentTypeToVariableMappingStrategy.OUTPUT);
+    subVar = var.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.OUTPUT);
     Assert.assertNotNull(subVar);
 
-    subVar = getChildVariable(var, DefaultInstrumentTypeToVariableMappingStrategy.INTERPRETIVE);
+    subVar = var.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INTERPRETIVE);
     Assert.assertNotNull(subVar);
 
-    subVar = getChildVariable(var, DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN);
+    subVar = var.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN);
     Assert.assertNotNull(subVar);
     Assert.assertEquals(6, subVar.getVariables().size());
 
-    Variable subSubVar = getChildVariable(subVar, DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION);
+    Variable subSubVar = subVar.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION);
     Assert.assertNotNull(subSubVar);
 
-    subSubVar = getChildVariable(subVar, DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT);
+    subSubVar = subVar.getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT);
     Assert.assertNotNull(subSubVar);
   }
 
@@ -111,7 +111,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     Variable root = createInstrumentTypeVariable();
     log.info(VariableStreamer.toXML(root));
 
-    Variable variable = getChildVariable(getChildVariable(getChildVariable(root, instrumentType.getName()), DefaultInstrumentTypeToVariableMappingStrategy.INPUT), "INPUT_PARAM");
+    Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INPUT).getVariable("INPUT_PARAM");
     Assert.assertNotNull(variable);
 
     Participant participant = new Participant();
@@ -139,7 +139,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     Variable root = createInstrumentTypeVariable();
     log.info(VariableStreamer.toXML(root));
 
-    Variable variable = getChildVariable(getChildVariable(getChildVariable(root, instrumentType.getName()), DefaultInstrumentTypeToVariableMappingStrategy.OUTPUT), "OUTPUT_PARAM");
+    Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.OUTPUT).getVariable("OUTPUT_PARAM");
     Assert.assertNotNull(variable);
 
     Participant participant = new Participant();
@@ -167,7 +167,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     Variable root = createInstrumentTypeVariable();
     log.info(VariableStreamer.toXML(root));
 
-    Variable variable = getChildVariable(getChildVariable(getChildVariable(root, instrumentType.getName()), DefaultInstrumentTypeToVariableMappingStrategy.INTERPRETIVE), "INTERPRETIVE_PARAM");
+    Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INTERPRETIVE).getVariable("INTERPRETIVE_PARAM");
     Assert.assertNotNull(variable);
 
     Participant participant = new Participant();
@@ -195,7 +195,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     Variable root = createInstrumentTypeVariable();
     log.info(VariableStreamer.toXML(root));
 
-    Variable variable = getChildVariable(getChildVariable(getChildVariable(root, instrumentType.getName()), DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN), DefaultInstrumentTypeToVariableMappingStrategy.USER);
+    Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.USER);
     Assert.assertNotNull(variable);
 
     Participant participant = new Participant();
@@ -224,7 +224,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     Variable root = createInstrumentTypeVariable();
     log.info(VariableStreamer.toXML(root));
 
-    Variable variable = getChildVariable(getChildVariable(getChildVariable(getChildVariable(root, instrumentType.getName()), DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN), DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT), DefaultInstrumentTypeToVariableMappingStrategy.BARCODE);
+    Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.BARCODE);
     Assert.assertNotNull(variable);
 
     Participant participant = new Participant();
@@ -251,7 +251,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     Variable root = createInstrumentTypeVariable();
     log.info(VariableStreamer.toXML(root));
 
-    Variable variable = getChildVariable(getChildVariable(getChildVariable(getChildVariable(root, instrumentType.getName()), DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN), DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION), DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION_CODE);
+    Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION_CODE);
     Assert.assertNotNull(variable);
 
     Participant participant = new Participant();
@@ -279,7 +279,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     Variable root = createInstrumentTypeVariable();
     log.info(VariableStreamer.toXML(root));
 
-    Variable variable = getChildVariable(getChildVariable(getChildVariable(getChildVariable(root, instrumentType.getName()), DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN), DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION), DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION_CODE);
+    Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.CONTRAINDICATION_CODE);
     Assert.assertNotNull(variable);
 
     Participant participant = new Participant();
@@ -297,15 +297,6 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     verify(instrumentRunServiceMock);
 
     Assert.assertNull(data);
-  }
-
-  private Variable getChildVariable(Variable parentVariable, String name) {
-    for(Variable child : parentVariable.getVariables()) {
-      if(child.getName().equals(name)) {
-        return child;
-      }
-    }
-    return null;
   }
 
   private Variable createInstrumentTypeVariable() {
@@ -335,6 +326,11 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     inputParam.setCode("INPUT_PARAM");
     inputParam.setDataType(DataType.TEXT);
     type.addInstrumentParameter(inputParam);
+
+    InstrumentParameter anotherInputParam = new InstrumentInputParameter();
+    anotherInputParam.setCode("INPUT_PARAM2");
+    anotherInputParam.setDataType(DataType.TEXT);
+    type.addInstrumentParameter(anotherInputParam);
 
     outputParam = new InstrumentOutputParameter();
     outputParam.setCode("OUTPUT_PARAM");

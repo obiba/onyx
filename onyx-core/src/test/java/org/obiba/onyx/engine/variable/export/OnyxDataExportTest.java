@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,24 +67,24 @@ public class OnyxDataExportTest {
     mockEntityQueryService = EasyMock.createMock(EntityQueryService.class);
     mockExportStrategy = EasyMock.createMock(IOnyxDataExportStrategy.class);
 
+    destination = new OnyxDataExportDestination();
+    destination.setName("TestDestination");
+
     ode = new OnyxDataExport();
     ode.setUserSessionService(mockUserSessionService);
     ode.setQueryService(mockEntityQueryService);
     ode.setExportStrategy(mockExportStrategy);
     ode.setVariableDirectory(mockDirectory);
+    ode.setExportDestinations(Collections.singletonList(destination));
 
-    destination = new OnyxDataExportDestination();
-    destination.setName("TestDestination");
   }
 
   @Test
   public void testNoDataToExport() throws Exception {
-    User exportUser = new User();
     List<Interview> testInterviews = new LinkedList<Interview>();
-    EasyMock.expect(mockUserSessionService.getUser()).andReturn(exportUser);
     EasyMock.expect(mockEntityQueryService.match((Interview) EasyMock.anyObject())).andReturn(testInterviews);
     EasyMock.replay(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
-    ode.exportCompletedInterviews(destination);
+    ode.exportCompletedInterviews();
     EasyMock.verify(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
   }
 
@@ -111,7 +112,7 @@ public class OnyxDataExportTest {
     mockExportStrategy.terminate((OnyxDataExportContext) EasyMock.anyObject());
 
     EasyMock.replay(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
-    ode.exportCompletedInterviews(destination);
+    ode.exportCompletedInterviews();
     EasyMock.verify(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
 
     byte data[] = baos.toByteArray();
@@ -154,7 +155,7 @@ public class OnyxDataExportTest {
     mockExportStrategy.terminate((OnyxDataExportContext) EasyMock.anyObject());
 
     EasyMock.replay(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
-    ode.exportCompletedInterviews(destination);
+    ode.exportCompletedInterviews();
     EasyMock.verify(mockUserSessionService, mockEntityQueryService, mockExportStrategy);
 
     byte data[] = baos.toByteArray();

@@ -143,6 +143,14 @@ public class Variable implements Serializable {
     }
   }
 
+  public void addReferences(String... paths) {
+    if(paths != null) {
+      for(String path : paths) {
+        getReferences().add(path);
+      }
+    }
+  }
+
   /**
    * Get the children variables.
    * @return
@@ -162,6 +170,20 @@ public class Variable implements Serializable {
       child.setParent(this);
     }
     return child;
+  }
+
+  /**
+   * Get the child variable with the given name.
+   * @param name
+   * @return null if not found
+   */
+  public Variable getVariable(String name) {
+    for(Variable child : getVariables()) {
+      if(child.getName().equals(name)) {
+        return child;
+      }
+    }
+    return null;
   }
 
   /**

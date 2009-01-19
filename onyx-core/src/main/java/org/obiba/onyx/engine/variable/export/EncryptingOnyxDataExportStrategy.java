@@ -157,12 +157,23 @@ public class EncryptingOnyxDataExportStrategy implements IChainingOnyxDataExport
       cipher = Cipher.getInstance(transformation.toString());
       cipher.init(Cipher.ENCRYPT_MODE, sk);
 
+      byte[] iv = cipher.getIV();
+
+      // Write the IV (useful for using something else than Java to decrypt)
+      if(iv != null) {
+        OutputStream os = delegate.newEntry("encryption.iv");
+        os.write(iv);
+        os.flush();
+      }
+
+      // Write the AlgorithmParameters (useful for using Java to decrypt)
       AlgorithmParameters parameters = cipher.getParameters();
       if(parameters != null) {
         OutputStream os = delegate.newEntry("encryption.parameters");
         os.write(parameters.getEncoded());
         os.flush();
       }
+
     } catch(GeneralSecurityException e) {
       throw new RuntimeException(e);
     } catch(IOException e) {

@@ -221,7 +221,7 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
    * @param supportedRecruitmentTypes.
    */
   public void setSupportedRecruitmentTypesString(String supportedRecruitmentTypes) {
-    if(supportedRecruitmentTypes != null) {
+    if(supportedRecruitmentTypes != null && supportedRecruitmentTypes.length() > 0) {
 
       List<RecruitmentType> recruitmentTypeList = new ArrayList<RecruitmentType>();
 

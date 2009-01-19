@@ -40,6 +40,12 @@ public class OnyxDataExport {
 
   private IOnyxDataExportStrategy exportStrategy;
 
+  private List<OnyxDataExportDestination> exportDestinations;
+
+  public void setExportDestinations(List<OnyxDataExportDestination> exportDestinations) {
+    this.exportDestinations = exportDestinations;
+  }
+
   public void setExportStrategy(IOnyxDataExportStrategy exportStrategy) {
     this.exportStrategy = exportStrategy;
   }
@@ -56,9 +62,7 @@ public class OnyxDataExport {
     this.variableDirectory = variableDirectory;
   }
 
-  public void exportCompletedInterviews(OnyxDataExportDestination destination) throws Exception {
-
-    OnyxDataExportContext context = new OnyxDataExportContext(destination.getName(), userSessionService.getUser());
+  public void exportCompletedInterviews() throws Exception {
 
     Participant template = new Participant();
     template.setExported(false);
@@ -73,20 +77,24 @@ public class OnyxDataExport {
     }
 
     if(participants.size() > 0) {
-      try {
-        exportStrategy.prepare(context);
-        for(Participant participant : participants) {
-          String entryName = participant.getBarcode() + ".xml";
-          OutputStream os = exportStrategy.newEntry(entryName);
-          VariableDataSet participantData = variableDirectory.getParticipantData(participant, destination);
-          VariableStreamer.toXML(participantData, os);
-          os.flush();
+      for(OnyxDataExportDestination destination : this.exportDestinations) {
+        OnyxDataExportContext context = new OnyxDataExportContext(destination.getName(), userSessionService.getUser());
+        try {
+          exportStrategy.prepare(context);
+          for(Participant participant : participants) {
+            String entryName = participant.getBarcode() + ".xml";
+            OutputStream os = exportStrategy.newEntry(entryName);
+            VariableDataSet participantData = variableDirectory.getParticipantData(participant, destination);
+            VariableStreamer.toXML(participantData, os);
+            os.flush();
+          }
+        } catch(RuntimeException e) {
+          context.fail();
+          log.error("Error exporting data to destination {}:" + e.getMessage(), destination.getName());
+        } finally {
+          context.endExport();
+          exportStrategy.terminate(context);
         }
-      } catch(RuntimeException e) {
-        context.fail();
-      } finally {
-        context.endExport();
-        exportStrategy.terminate(context);
       }
     }
   }

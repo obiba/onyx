@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
 
@@ -28,6 +30,8 @@ public class DirectoryDataExportStrategy implements IOnyxDataExportStrategy {
   private File currentOutputDirectory;
 
   private OutputStream currentOutputStream;
+
+  private Set<String> createdFiles;
 
   public void setOutputRootDirectory(File outputDir) {
     this.outputRootDirectory = outputDir;
@@ -54,6 +58,7 @@ public class DirectoryDataExportStrategy implements IOnyxDataExportStrategy {
       }
     }
     currentOutputDirectory = siteDir;
+    createdFiles = new HashSet<String>();
   }
 
   public OutputStream newEntry(String filename) {
@@ -67,6 +72,7 @@ public class DirectoryDataExportStrategy implements IOnyxDataExportStrategy {
     File newFile = new File(this.currentOutputDirectory, filename);
     try {
       newFile.createNewFile();
+      createdFiles.add(filename);
       return currentOutputStream = new FileOutputStream(newFile);
     } catch(IOException e) {
       throw new RuntimeException(e);
@@ -83,6 +89,19 @@ public class DirectoryDataExportStrategy implements IOnyxDataExportStrategy {
         currentOutputStream = null;
       }
     }
+
+    if(context.isFailed()) {
+      // Delete failed export files
+      for(String filename : createdFiles) {
+        File file = new File(this.currentOutputDirectory, filename);
+        try {
+          file.delete();
+        } catch(RuntimeException e) {
+          // Ignore
+        }
+      }
+    }
+    createdFiles = null;
   }
 
   private String zeroPad(String value, int size) {
