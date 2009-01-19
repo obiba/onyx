@@ -2466,21 +2466,8 @@
         </section>
       </sections>
     </section>
-    <section id="970" name="THANKS">
-      <pages id="971">
-        <page id="972" name="38" uIFactoryName="quartz.DefaultPageLayoutFactory">
-          <section reference="970"/>
-          <questions id="973">
-            <question id="974" name="THANKS" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-              <page reference="972"/>
-            </question>
-          </questions>
-        </page>
-      </pages>
-      <sections id="975"/>
-    </section>
   </sections>
-  <pages id="976">
+  <pages id="970">
     <page reference="7"/>
     <page reference="18"/>
     <page reference="42"/>
@@ -2518,6 +2505,5 @@
     <page reference="894"/>
     <page reference="922"/>
     <page reference="950"/>
-    <page reference="972"/>
   </pages>
 </questionnaire>

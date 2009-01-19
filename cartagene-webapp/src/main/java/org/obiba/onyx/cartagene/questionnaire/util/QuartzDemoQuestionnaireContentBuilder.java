@@ -442,8 +442,6 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("MAJOR_OPERATION5AGE").withSharedCategory(PNA, "8888");
     builder.inQuestion("MAJOR_OPERATION5AGE").withSharedCategory(DNK, "9999");
 
-    builder.withSection("THANKS").withPage("38").withQuestion("THANKS");
-
     return builder;
   }
 }
