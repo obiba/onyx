@@ -14,7 +14,6 @@ import java.util.Map;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.onyx.engine.variable.IVariableProvider;
 import org.obiba.onyx.engine.variable.VariableDirectory;
-import org.obiba.onyx.engine.variable.util.VariableStreamer;
 import org.obiba.wicket.application.WebApplicationStartupListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,7 +100,13 @@ public class ModuleRegistrationListener implements WebApplicationStartupListener
         variableDirectory.registerVariables(provider);
       }
     }
-    log.debug(VariableStreamer.toXML(variableDirectory.getVariableRoot()));
+    // try {
+    // VariableStreamer.toXLS(variableDirectory.getVariableRoot(), new FileOutputStream("variables.xls"),
+    // variableDirectory.getVariablePathNamingStrategy());
+    // } catch(FileNotFoundException e) {
+    // // TODO Auto-generated catch block
+    // e.printStackTrace();
+    // }
   }
 
   public void setModuleRegistry(ModuleRegistry registry) {
