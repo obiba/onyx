@@ -76,8 +76,8 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("MARITAL_STATUS").withCategory("SEPARATED").setExportName("3");
     builder.inQuestion("MARITAL_STATUS").withCategory("WIDOWED").setExportName("4");
     builder.inQuestion("MARITAL_STATUS").withCategory("SINGLE").setExportName("5");
-    builder.inQuestion("MARITAL_STATUS").withSharedCategory(PNA, "88");
-    builder.inQuestion("MARITAL_STATUS").withSharedCategory(DNK, "99");
+    builder.inQuestion("MARITAL_STATUS").withSharedCategory(PNA, "88").setEscape(true);
+    builder.inQuestion("MARITAL_STATUS").withSharedCategory(DNK, "99").setEscape(true);
 
     builder.inSection("QUESTION_TYPES").withSection("OPT_INST_SPEC").withPage("3").withQuestion("INCOME_LAST_YEAR").withCategory("LESS_10000").setExportName("1");
     builder.inQuestion("INCOME_LAST_YEAR").withCategory("_10000_24999").setExportName("2");
