@@ -129,7 +129,7 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
         } else {
           throw new IllegalStateException("Unknown instrument parameter type: " + parameter.getClass().getSimpleName());
         }
-        parameterType.addVariable(new Variable(parameter.getCode()).setDataType(parameter.getDataType()));
+        parameterType.addVariable(new Variable(parameter.getCode()).setDataType(parameter.getDataType()).setUnit(parameter.getMeasurementUnit()));
       }
     }
     return typeVariable;

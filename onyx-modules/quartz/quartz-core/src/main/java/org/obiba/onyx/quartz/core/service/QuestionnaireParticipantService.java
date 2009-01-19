@@ -27,10 +27,16 @@ public interface QuestionnaireParticipantService {
   public QuestionnaireParticipant getQuestionnaireParticipant(Participant participant, String questionnaireName);
 
   /**
-   * Delete specified questionnaireParticipany
+   * Delete specified questionnaire participant.
    * @param questionnaireParticipantId
    */
   public void deleteQuestionnaireParticipant(QuestionnaireParticipant questionnaireParticipant);
+
+  /**
+   * Set the answers of given questionnaire participant as being inactive.
+   * @param questionnaireParticipant
+   */
+  public void inactivateQuestionnaireParticipant(QuestionnaireParticipant questionnaireParticipant);
 
   /**
    * Get the comment on the question.
@@ -69,4 +75,5 @@ public interface QuestionnaireParticipantService {
    * @return false if active flag is false or null
    */
   public Boolean isQuestionActive(Participant participant, String questionnaireName, String questionName);
+
 }

@@ -166,6 +166,9 @@ public class Variable implements Serializable {
    */
   public Variable addVariable(Variable child) {
     if(child != null) {
+      if(getVariable(child.getName()) != null) {
+        throw new IllegalArgumentException("There is already a child variable in " + toString() + " with name " + child.getName() + ".");
+      }
       getVariables().add(child);
       child.setParent(this);
     }
@@ -196,16 +199,11 @@ public class Variable implements Serializable {
     String[] names = path.split(separator);
     Variable current = this;
     for(String name : names) {
-      boolean found = false;
-      for(Variable child : current.getVariables()) {
-        if(child.getName().equals(name)) {
-          current = child;
-          found = true;
-          break;
-        }
-      }
-      if(!found) {
+      Variable found = getVariable(name);
+      if(found == null) {
         current = current.addVariable(new Variable(name));
+      } else {
+        current = found;
       }
     }
     return current;

@@ -322,17 +322,21 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
   public void initialize() {
     super.initialize();
 
-    // resetTanita();
-    initParticipantData();
+    if(!shutdown) {
+      // resetTanita();
+      initParticipantData();
+    }
   }
 
   public void run() {
-    try {
-      serialPort.addEventListener(this);
-    } catch(TooManyListenersException e) {
-      throw new RuntimeException(e);
+    if(!shutdown) {
+      try {
+        serialPort.addEventListener(this);
+      } catch(TooManyListenersException e) {
+        throw new RuntimeException(e);
+      }
+      serialPort.notifyOnDataAvailable(true);
     }
-    serialPort.notifyOnDataAvailable(true);
 
     super.run();
   }

@@ -124,7 +124,7 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
 
     log.info("retrieveDeviceData");
 
-    return (Map<String, Data>) achillesExpressDb.query("select assessment, fxrisk, total, tscore, zscore, agematched, percentnormal, sidescanned, stiffnessindex, patients.chart_num, results.SOS, results.BUA, achillesbitmap, achillesbitmap2, appversion, roi_x, roi_y, roi_s, patients.Chart_Num, patients.FName, patients.LName, patients.Sex, patients.DOB from results, patients where results.chart_num = patients.chart_num and patients.chart_num = ?", new PreparedStatementSetter() {
+    return (Map<String, Data>) achillesExpressDb.query("select assessment, fxrisk, total, tscore, zscore, agematched, percentnormal, sidescanned, stiffnessindex, patients.chart_num, results.SOS, results.BUA, achillesbitmap, appversion, roi_x, roi_y, roi_s, patients.Chart_Num, patients.FName, patients.LName, patients.Sex, patients.DOB from results, patients where results.chart_num = patients.chart_num and patients.chart_num = ?", new PreparedStatementSetter() {
 
       public void setValues(PreparedStatement ps) throws SQLException {
         ps.setString(1, participantID);
@@ -163,7 +163,6 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
         boneDensityData.put("RES_REGION_INTERSECTION_Y_COOR", DataBuilder.buildInteger(rs.getLong("roi_y")));
         boneDensityData.put("RES_REGION_INTERSECTION_Z_COOR", DataBuilder.buildInteger(rs.getLong("roi_s")));
         boneDensityData.put("RES_STIFFNESS_INDEX_GRAPH", DataBuilder.buildBinary(rs.getBinaryStream("achillesbitmap")));
-        boneDensityData.put("RES_ULTRASOUND_GRAPHIC", DataBuilder.buildBinary(rs.getBinaryStream("achillesbitmap2")));
 
         return boneDensityData;
       }

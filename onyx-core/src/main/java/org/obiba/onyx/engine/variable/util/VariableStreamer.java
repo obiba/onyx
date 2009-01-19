@@ -9,11 +9,19 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.util;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.obiba.onyx.engine.variable.Category;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
@@ -27,12 +35,26 @@ import au.com.bytecode.opencsv.CSVWriter;
 import com.thoughtworks.xstream.XStream;
 
 /**
- * 
+ * Dump the variables into XML, CSV or XLS streams.
  */
 public class VariableStreamer {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(VariableStreamer.class);
+
+  private static final String PATH = "Path";
+
+  private static final String NAME = "Name";
+
+  private static final String KEY = "Key";
+
+  private static final String REFERENCES = "References";
+
+  private static final String CATEGORIES = "Categories";
+
+  private static final String TYPE = "Type";
+
+  private static final String UNIT = "Unit";
 
   /**
    * The de-serializer.
@@ -69,6 +91,10 @@ public class VariableStreamer {
     return parent;
   }
 
+  //
+  // XML
+  //
+
   public static void toXML(Variable variable, OutputStream os) {
     VariableStreamer streamer = new VariableStreamer();
     streamer.xstream.toXML(variable, os);
@@ -94,8 +120,30 @@ public class VariableStreamer {
     streamer.xstream.toXML(variableDataSet, os);
   }
 
+  private void initializeXStream() {
+    xstream = new XStream();
+    xstream.setMode(XStream.XPATH_ABSOLUTE_REFERENCES);
+    xstream.processAnnotations(Variable.class);
+    xstream.autodetectAnnotations(true);
+
+    xstream.alias("data", Data.class);
+    xstream.useAttributeFor(Data.class, "type");
+  }
+
+  //
+  // CSV
+  //
+
   public static void toCSV(Variable variable, OutputStream os, IVariablePathNamingStrategy variablePathNamingStrategy) {
-    csvWrite(new CSVWriter(new OutputStreamWriter(os)), variable, variablePathNamingStrategy);
+    CSVWriter writer = new CSVWriter(new OutputStreamWriter(os));
+    writer.writeNext(new String[] { PATH, NAME, KEY, REFERENCES, CATEGORIES, TYPE, UNIT });
+    csvWrite(writer, variable, variablePathNamingStrategy);
+    try {
+      writer.close();
+    } catch(IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   public static String toCSV(Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
@@ -110,8 +158,8 @@ public class VariableStreamer {
       nextLine[0] = variablePathNamingStrategy.getPath(variable);
       nextLine[1] = variable.getName();
       nextLine[2] = variable.getKey();
-      nextLine[3] = variable.getReferences().toString();
-      nextLine[4] = variable.getCategories().toString();
+      nextLine[3] = getReferences(variable);
+      nextLine[4] = getCategories(variable, "\n");
       nextLine[5] = variable.getDataType().toString();
       nextLine[6] = variable.getUnit();
       writer.writeNext(nextLine);
@@ -121,13 +169,102 @@ public class VariableStreamer {
     }
   }
 
-  private void initializeXStream() {
-    xstream = new XStream();
-    xstream.setMode(XStream.XPATH_ABSOLUTE_REFERENCES);
-    xstream.processAnnotations(Variable.class);
-    xstream.autodetectAnnotations(true);
+  private static String getReferences(Variable variable) {
+    String value = "";
+    for(String reference : variable.getReferences()) {
+      if(value.length() != 0) {
+        value += "," + reference;
+      } else {
+        value = reference;
+      }
+    }
+    return value;
+  }
 
-    xstream.alias("data", Data.class);
-    xstream.useAttributeFor(Data.class, "type");
+  private static String getCategories(Variable variable, String separator) {
+    String value = "";
+    for(Category category : variable.getCategories()) {
+      String str = category.getName();
+      if(category.getAlternateName() != null) {
+        str = category.getAlternateName() + "=" + str;
+      }
+      if(value.length() != 0) {
+        value += separator + str;
+      } else {
+        value = str;
+      }
+    }
+    return value;
+  }
+
+  //
+  // Excel
+  //
+
+  public static void toXLS(Variable variable, OutputStream os, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    // create a new workbook
+    HSSFWorkbook wb = new HSSFWorkbook();
+    // create a new sheet
+    HSSFSheet sheet = wb.createSheet("Variables");
+
+    HSSFRow row = sheet.createRow(0);
+
+    HSSFCell cell = row.createCell(0);
+    cell.setCellValue(new HSSFRichTextString(PATH));
+    cell = row.createCell(1);
+    cell.setCellValue(new HSSFRichTextString(NAME));
+    cell = row.createCell(2);
+    cell.setCellValue(new HSSFRichTextString(KEY));
+    cell = row.createCell(3);
+    cell.setCellValue(new HSSFRichTextString(REFERENCES));
+    cell = row.createCell(4);
+    cell.setCellValue(new HSSFRichTextString(CATEGORIES));
+    cell = row.createCell(5);
+    cell.setCellValue(new HSSFRichTextString(TYPE));
+    cell = row.createCell(6);
+    cell.setCellValue(new HSSFRichTextString(UNIT));
+
+    HSSFRichTextString str = new HSSFRichTextString();
+    str.clearFormatting();
+
+    xlsWrite(wb, sheet, 1, variable, variablePathNamingStrategy);
+
+    // write the workbook to the output stream
+    // close our file (don't blow out our file handles
+    try {
+      wb.write(os);
+      os.close();
+    } catch(IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  private static int xlsWrite(HSSFWorkbook wb, HSSFSheet sheet, int rowCount, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
+    if(variable.getDataType() != null) {
+      HSSFRow row = sheet.createRow(rowCount);
+      HSSFCell cell = row.createCell(0);
+      cell.setCellValue(new HSSFRichTextString(variablePathNamingStrategy.getPath(variable)));
+      cell = row.createCell(1);
+      cell.setCellValue(new HSSFRichTextString(variable.getName()));
+      cell = row.createCell(2);
+      cell.setCellValue(new HSSFRichTextString(variable.getKey()));
+      cell = row.createCell(3);
+      cell.setCellValue(new HSSFRichTextString(getReferences(variable)));
+      cell = row.createCell(4);
+      HSSFCellStyle cs = wb.createCellStyle();
+      cs.setWrapText(true);
+      cell.setCellStyle(cs);
+      cell.setCellValue(new HSSFRichTextString(getCategories(variable, "\n")));
+      cell = row.createCell(5);
+      cell.setCellValue(new HSSFRichTextString(variable.getDataType().toString()));
+      cell = row.createCell(6);
+      cell.setCellValue(new HSSFRichTextString(variable.getUnit()));
+      rowCount++;
+    }
+    for(Variable child : variable.getVariables()) {
+      rowCount = xlsWrite(wb, sheet, rowCount, child, variablePathNamingStrategy);
+    }
+    return rowCount;
   }
 }
