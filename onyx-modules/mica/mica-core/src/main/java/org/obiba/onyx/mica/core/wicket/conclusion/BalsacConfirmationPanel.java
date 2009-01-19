@@ -105,6 +105,7 @@ public class BalsacConfirmationPanel extends Panel {
         if(selectedRadio != null && selectedRadio.equals(YES)) {
           return true;
         } else {
+          balsacBarcode.clearInput();
           return false;
         }
       }
