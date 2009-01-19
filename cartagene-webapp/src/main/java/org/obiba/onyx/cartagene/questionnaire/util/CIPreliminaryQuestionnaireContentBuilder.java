@@ -170,12 +170,14 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.withSection("S7_WAIST_HIPS").withSection("S7_EC_OBS").withPage("33").withQuestion("WH_OBS_CI"/* , "43" */).withSharedCategory(NC);
     builder.inQuestion("WH_OBS_CI").withSharedCategory(YES_SPECIFY).withOpenAnswerDefinition(YES_SPECIFY, DataType.TEXT);
     builder.inQuestion("WH_OBS_CI").setMultipleCondition("WH_OBS_CI_MCONDITION_0", ConditionOperator.AND).withAnswerCondition("WH_OBS_CI_ACONDITION_0", "ABLE_TO_STAND", Y);
-    builder.inCondition("WH_OBS_CI_MCONDITION_0").withMultipleCondition("WH_OBS_CI_MCONDITION_1", ConditionOperator.OR).withAnswerCondition("WH_OBS_CI_ACONDITION_1", "CURRENTLY_PREGNANT", N);
+    builder.inCondition("WH_OBS_CI_MCONDITION_0").withMultipleCondition("WH_OBS_CI_MCONDITION_1", ConditionOperator.OR).withNoAnswerCondition("WH_OBS_CI_NCONDITION").withAnswerCondition("WH_OBS_CI_ACONDITION_2", "CURRENTLY_PREGNANT");
+    builder.inCondition("WH_OBS_CI_MCONDITION_1").withAnswerCondition("WH_OBS_CI_ACONDITION_1", "CURRENTLY_PREGNANT", N);
     builder.inCondition("WH_OBS_CI_MCONDITION_1").withDataCondition("WH_OBS_CI_DCONDITION", "CURRENT_PREGNANCY_WEEKS", OPEN_N40, OPEN_N40, ComparisonOperator.le, DataBuilder.buildInteger(12));
 
     // section S8_SPIROMETRY
     builder.withSection("S8_SPIROMETRY").withSection("S8_EC_OBS").withPage("34").withQuestion("SP_OBS_CI"/* , "45" */).withSharedCategories(NC, YES_SPECIFY);
-    builder.inQuestion("SP_OBS_CI").setAnswerCondition("SP_OBS_CI_ACONDITION", "CURRENTLY_PREGNANT", N);
+    builder.inQuestion("SP_OBS_CI").setMultipleCondition("SP_OBS_CI_MCONDITION", ConditionOperator.OR).withNoAnswerCondition("SP_OBS_CI_NCONDITION").withAnswerCondition("SP_OBS_CI_ACONDITION_0", "CURRENTLY_PREGNANT");
+    builder.inCondition("SP_OBS_CI_MCONDITION").withAnswerCondition("SP_OBS_CI_ACONDITION_1", "CURRENTLY_PREGNANT", N);
 
     builder.inSection("S8_SPIROMETRY").withSection("S8_EC_ASKED").withPage("35").withQuestion("S8_BP1").setAnswerCondition("S8_BP1_ACONDITION", "SP_OBS_CI", NC);
     builder.inPage("35").withQuestion("SP_CI_CURRENT"/* , "47" */).withSharedCategories(N, Y, DNK);
@@ -211,8 +213,9 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.withSection("S9_BIOIMPEDANCE_WEIGHT").withSection("S9_EC_OBS").withPage("40").withQuestion("BW_OBS_CI_BIOIMPEDANCE"/* ,"54" */).withSharedCategory(NC);
     builder.inQuestion("BW_OBS_CI_BIOIMPEDANCE").withCategories("CAST", "LIMB_AMPUTATION");
     builder.inQuestion("BW_OBS_CI_BIOIMPEDANCE").withSharedCategory(OTHER);
-    builder.inQuestion("BW_OBS_CI_BIOIMPEDANCE").setMultipleCondition("BW_OBS_CI_BIOIMPEDANCE_MCONDITION", ConditionOperator.AND).withAnswerCondition("BW_OBS_CI_BIOIMPEDANCE_ACONDITION_0", "CURRENTLY_PREGNANT", N);
-    builder.inCondition("BW_OBS_CI_BIOIMPEDANCE_MCONDITION").withAnswerCondition("BW_OBS_CI_BIOIMPEDANCE_ACONDITION_1", "ABLE_TO_STAND", Y);
+    builder.inQuestion("BW_OBS_CI_BIOIMPEDANCE").setMultipleCondition("BW_OBS_CI_BIOIMPEDANCE_MCONDITION_0", ConditionOperator.AND).withMultipleCondition("BW_OBS_CI_BIOIMPEDANCE_MCONDITION_1", ConditionOperator.OR).withNoAnswerCondition("BW_OBS_CI_BIOIMPEDANCE_NCONDITION").withAnswerCondition("BW_OBS_CI_BIOIMPEDANCE_ACONDITION_0", "CURRENTLY_PREGNANT");
+    builder.inCondition("BW_OBS_CI_BIOIMPEDANCE_MCONDITION_1").withAnswerCondition("BW_OBS_CI_BIOIMPEDANCE_ACONDITION_1", "CURRENTLY_PREGNANT", N);
+    builder.inCondition("BW_OBS_CI_BIOIMPEDANCE_MCONDITION_0").withAnswerCondition("BW_OBS_CI_BIOIMPEDANCE_ACONDITION_2", "ABLE_TO_STAND", Y);
 
     builder.inSection("S9_EC_OBS").withPage("41").withQuestion("BW_OBS_CI_WEIGHT"/* , "57" */).withSharedCategories(NC, YES_SPECIFY);
     builder.inQuestion("BW_OBS_CI_WEIGHT").setMultipleCondition("BW_OBS_CI_WEIGHT_MCONDITION_0", ConditionOperator.OR).withAnswerCondition("BW_OBS_CI_WEIGHT_ACONDITION_0", "BW_OBS_CI_BIOIMPEDANCE", "CAST");
@@ -233,7 +236,8 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inQuestion("AS_STENOSIS_GRADIENT").setAnswerCondition("AS_STENOSIS_GRADIENT_ACONDITION", "AS_STENOSIS_CI", Y);
 
     // section S11_SAMPLES
-    builder.withSection("S11_SAMPLES").withSection("S11_EC_OBS").withPage("44").withQuestion("SC_OBS_CI"/* , "61" */).withSharedCategory(NC);
+    builder.withSection("S11_SAMPLES").withSection("S11_EC_OBS").withPage("44").withQuestion("SC_OBS_CI"/* , "61" */).setRowCount(6);
+    builder.inQuestion("SC_OBS_CI").withSharedCategory(NC);
     builder.inQuestion("SC_OBS_CI").withCategories("RASHES_BOTH_ARMS", "CAST_BOTH_ARMS", "PARALYSIS_AMPUTATION_WITHERED", "OCCLUDED_VEINS_BOTH_ARMS");
     builder.inQuestion("SC_OBS_CI").withSharedCategory(OTHER);
     builder.inQuestion("SC_OBS_CI").setMultipleCondition("SC_OBS_CI_MCONDITION", ConditionOperator.OR).withAnswerCondition("SC_OBS_CI_ACONDITION_0", "ISOPROPYL_ALCOHOL_ALLERGY", N);
