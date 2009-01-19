@@ -12,9 +12,12 @@ package org.obiba.onyx.quartz.core.wicket.wizard;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 
 public class ConclusionStep extends QuestionnaireWizardStepPanel {
@@ -23,6 +26,9 @@ public class ConclusionStep extends QuestionnaireWizardStepPanel {
   //
 
   private static final long serialVersionUID = 1L;
+
+  @SpringBean
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   //
   // Constructors
@@ -33,9 +39,11 @@ public class ConclusionStep extends QuestionnaireWizardStepPanel {
 
     setOutputMarkupId(true);
 
+    Questionnaire questionnaire = activeQuestionnaireAdministrationService.getQuestionnaire();
+
     add(new Label(getTitleId(), new StringResourceModel("Conclusion", ConclusionStep.this, null)));
 
-    add(new EmptyPanel(getContentId()));
+    add(new Label(getContentId(), new QuestionnaireStringResourceModel(questionnaire, "conclusion")).setEscapeModelStrings(false));
   }
 
   //
