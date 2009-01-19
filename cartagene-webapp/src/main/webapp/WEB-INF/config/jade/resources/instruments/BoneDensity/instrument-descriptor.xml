@@ -275,14 +275,6 @@
       <measurementUnit></measurementUnit>
     </output>
 
-    <output id="achillesbitmap2">
-      <vendorName>achillesbitmap2</vendorName>
-      <code>RES_ULTRASOUND_GRAPHIC</code>
-      <dataType>DATA</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
-    </output>
-
     <output id="SOS">
       <vendorName>SOS</vendorName>
       <code>RES_SPEED_ULTRASOUND</code>
