@@ -57,7 +57,7 @@ public class LanguageSelectorPanel extends Panel {
 
     add(new Label("participant", activeInterviewService.getParticipant().getFullName()));
     add(new Label("user", activeInterviewService.getInterview().getUser().getFullName()));
-    add(new Label("description", new QuestionnaireStringResourceModel(questionnaire, "description")));
+    add(new Label("description", new QuestionnaireStringResourceModel(questionnaire, "description")).setEscapeModelStrings(false));
 
     DropDownChoice ddcLocale = new DropDownChoice("localeSelect", new PropertyModel(LanguageSelectorPanel.this, "language"), questionnaire.getLocales(), new IChoiceRenderer() {
 
