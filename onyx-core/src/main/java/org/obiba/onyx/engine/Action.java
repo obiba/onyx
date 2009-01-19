@@ -11,6 +11,7 @@ package org.obiba.onyx.engine;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -51,6 +52,7 @@ public class Action extends AbstractEntity {
   @Temporal(TemporalType.TIMESTAMP)
   private Date dateTime;
 
+  @Column(length = 2000)
   private String comment;
 
   private String eventReason;
