@@ -85,4 +85,9 @@ public class Category implements Serializable {
     this.variable = variable;
   }
 
+  @Override
+  public String toString() {
+    return getName();
+  }
+
 }

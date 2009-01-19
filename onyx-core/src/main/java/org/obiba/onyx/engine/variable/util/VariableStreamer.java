@@ -9,11 +9,13 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.util;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 
+import org.obiba.onyx.engine.variable.Category;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
@@ -95,7 +97,15 @@ public class VariableStreamer {
   }
 
   public static void toCSV(Variable variable, OutputStream os, IVariablePathNamingStrategy variablePathNamingStrategy) {
-    csvWrite(new CSVWriter(new OutputStreamWriter(os)), variable, variablePathNamingStrategy);
+    CSVWriter writer = new CSVWriter(new OutputStreamWriter(os));
+    writer.writeNext(new String[] { "Path", "Name", "Key", "References", "Categories", "Type", "Unit" });
+    csvWrite(writer, variable, variablePathNamingStrategy);
+    try {
+      writer.close();
+    } catch(IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   public static String toCSV(Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
@@ -110,8 +120,24 @@ public class VariableStreamer {
       nextLine[0] = variablePathNamingStrategy.getPath(variable);
       nextLine[1] = variable.getName();
       nextLine[2] = variable.getKey();
-      nextLine[3] = variable.getReferences().toString();
-      nextLine[4] = variable.getCategories().toString();
+      for(String reference : variable.getReferences()) {
+        if(nextLine[3] != null) {
+          nextLine[3] += "," + reference;
+        } else {
+          nextLine[3] = reference;
+        }
+      }
+      for(Category category : variable.getCategories()) {
+        String str = category.getName();
+        if(category.getAlternateName() != null) {
+          str = category.getAlternateName() + "=" + str;
+        }
+        if(nextLine[4] != null) {
+          nextLine[4] += "\n" + str;
+        } else {
+          nextLine[4] = str;
+        }
+      }
       nextLine[5] = variable.getDataType().toString();
       nextLine[6] = variable.getUnit();
       writer.writeNext(nextLine);
