@@ -70,7 +70,8 @@ public class QuartzDemoQuestionnaireContentBuilder {
 
     builder.withSection("SECTION_GEN").withPage("1").withQuestion("S1_BP1");
 
-    builder.withSection("QUESTION_TYPES").withSection("RADIO_BUTTONS").withPage("2").withQuestion("MARITAL_STATUS").withCategory("MARRIED").setExportName("1");
+    builder.withSection("QUESTION_TYPES").withSection("RADIO_BUTTONS").withPage("2").withQuestion("MARITAL_STATUS").setRowCount(7);
+    builder.inQuestion("MARITAL_STATUS").withCategory("MARRIED").setExportName("1");
     builder.inQuestion("MARITAL_STATUS").withCategory("DIVORCED").setExportName("2");
     builder.inQuestion("MARITAL_STATUS").withCategory("SEPARATED").setExportName("3");
     builder.inQuestion("MARITAL_STATUS").withCategory("WIDOWED").setExportName("4");
@@ -89,16 +90,18 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("INCOME_LAST_YEAR").withSharedCategory(PNA, "88");
     builder.inQuestion("INCOME_LAST_YEAR").withSharedCategory(DNK, "99");
 
-    builder.inSection("QUESTION_TYPES").withSection("MANY_Q_PER_SCREEN").withPage("4").withQuestion("STRESS_WORK_PAST_YEAR").withSharedCategory(NEVER, "1");
-    builder.inQuestion("STRESS_WORK_PAST_YEAR").withSharedCategory(SOMETIMES, "1");
-    builder.inQuestion("STRESS_WORK_PAST_YEAR").withSharedCategory(OFTEN, "1");
-    builder.inQuestion("STRESS_WORK_PAST_YEAR").withSharedCategory(ALWAYS, "1");
+    builder.inSection("QUESTION_TYPES").withSection("MANY_Q_PER_SCREEN").withPage("4").withQuestion("STRESS_WORK_PAST_YEAR").setRowCount(6);
+    builder.inQuestion("STRESS_WORK_PAST_YEAR").withSharedCategory(NEVER, "1");
+    builder.inQuestion("STRESS_WORK_PAST_YEAR").withSharedCategory(SOMETIMES, "2");
+    builder.inQuestion("STRESS_WORK_PAST_YEAR").withSharedCategory(OFTEN, "3");
+    builder.inQuestion("STRESS_WORK_PAST_YEAR").withSharedCategory(ALWAYS, "4");
     builder.inQuestion("STRESS_WORK_PAST_YEAR").withSharedCategory(PNA, "88");
     builder.inQuestion("STRESS_WORK_PAST_YEAR").withSharedCategory(DNK, "99");
-    builder.inPage("4").withQuestion("STRESS_HOME_PAST_YEAR").withSharedCategory(NEVER, "1");
-    builder.inQuestion("STRESS_HOME_PAST_YEAR").withSharedCategory(SOMETIMES, "1");
-    builder.inQuestion("STRESS_HOME_PAST_YEAR").withSharedCategory(OFTEN, "1");
-    builder.inQuestion("STRESS_HOME_PAST_YEAR").withSharedCategory(ALWAYS, "1");
+    builder.inPage("4").withQuestion("STRESS_HOME_PAST_YEAR").setRowCount(6);
+    builder.inQuestion("STRESS_HOME_PAST_YEAR").withSharedCategory(NEVER, "1");
+    builder.inQuestion("STRESS_HOME_PAST_YEAR").withSharedCategory(SOMETIMES, "2");
+    builder.inQuestion("STRESS_HOME_PAST_YEAR").withSharedCategory(OFTEN, "3");
+    builder.inQuestion("STRESS_HOME_PAST_YEAR").withSharedCategory(ALWAYS, "4");
     builder.inQuestion("STRESS_HOME_PAST_YEAR").withSharedCategory(PNA, "88");
     builder.inQuestion("STRESS_HOME_PAST_YEAR").withSharedCategory(DNK, "99");
 
@@ -273,7 +276,8 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("CURRENTLY_USE").withQuestion("OTHER_NICOTIN_PRODUCT_CURRENT", "8");
     builder.inQuestion("OTHER_NICOTIN_PRODUCT_CURRENT").setAnswerCondition("OTHER_NICOTIN_PRODUCT_CURRENT_ACONDITION", "OTHER_NICOTIN_PRODUCT_EVER", Y);
 
-    builder.inSection("SKIP_PATTERNS").withSection("SK_MULTI_SEL").withPage("21").withQuestion("CARDIOVASCULAR_CONDITIONS", true).withCategories("HIGH_BP", "HIGH_BLOOD_CHOL", "HEART_ATTACK", "ANGINA");
+    builder.inSection("SKIP_PATTERNS").withSection("SK_MULTI_SEL").withPage("21").withQuestion("CARDIOVASCULAR_CONDITIONS", true).setRowCount(6);
+    builder.inQuestion("CARDIOVASCULAR_CONDITIONS").withCategories("HIGH_BP", "HIGH_BLOOD_CHOL", "HEART_ATTACK", "ANGINA");
     builder.inQuestion("CARDIOVASCULAR_CONDITIONS").withSharedCategory(PNA, "88");
     builder.inQuestion("CARDIOVASCULAR_CONDITIONS").withSharedCategory(DNK, "99");
 
