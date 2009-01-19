@@ -185,6 +185,8 @@ abstract public class TanitaInstrument implements InstrumentRunner, Initializing
     // Initialize serial port.
     portOwnerName = "TANITA Body Composition Analyzer";
 
+    tanitaLocalSettings = new Properties();
+
     // Test string
     // setTanitaData(parseTanitaData("0,2,185,110.6,431,28.4,31.4,79.2,58.0,27,32.3,9771"));
     // saveDataBtn.setEnabled(true);
@@ -201,6 +203,7 @@ abstract public class TanitaInstrument implements InstrumentRunner, Initializing
     log.info("Setting bioimpedance-locale to {}", getLocale().getDisplayLanguage());
 
     tanitaResourceBundle = ResourceBundle.getBundle("bioimpedance-instrument", getLocale());
+    appWindow = new JFrame(tanitaResourceBundle.getString("Title.Tanita"));
     saveDataBtn.setToolTipText(tanitaResourceBundle.getString("ToolTip.Save_and_return"));
     saveDataBtn.setText(tanitaResourceBundle.getString("Save"));
   }
@@ -234,9 +237,6 @@ abstract public class TanitaInstrument implements InstrumentRunner, Initializing
   }
 
   public void setTanitaCommPort(String tanitaCommPort) {
-    if(tanitaLocalSettings == null) {
-      tanitaLocalSettings = new Properties();
-    }
     tanitaLocalSettings.setProperty("commPort", tanitaCommPort);
   }
 
@@ -422,8 +422,6 @@ abstract public class TanitaInstrument implements InstrumentRunner, Initializing
    */
   protected void buildGUI() {
 
-    appWindow = new JFrame(tanitaResourceBundle.getString("Title.Tanita"));
-
     appWindow.setAlwaysOnTop(true);
     appWindow.setUndecorated(true);
     appWindow.setResizable(false);
@@ -457,7 +455,7 @@ abstract public class TanitaInstrument implements InstrumentRunner, Initializing
     synchronized(uiLock) {
       uiLock.notify();
     }
-    setTanitaCommPort(null);
+    shutdown = true;
   }
 
   /**
@@ -620,8 +618,8 @@ abstract public class TanitaInstrument implements InstrumentRunner, Initializing
         // Cancel option selected.
       } else if(selectedOption == 1) {
 
-        // Temporary fix, need to find another solution...
         exitUI();
+        break;
 
         // Configuration option selected.
       } else if(selectedOption == 2) {
@@ -737,25 +735,28 @@ abstract public class TanitaInstrument implements InstrumentRunner, Initializing
 
   public void run() {
 
-    if(!externalAppHelper.isSotfwareAlreadyStarted("tanitaInstrumentRunner")) {
+    if(!shutdown) {
+      if(!externalAppHelper.isSotfwareAlreadyStarted("tanitaInstrumentRunner")) {
 
-      log.info("Starting Tanita GUI");
-      buildGUI();
+        log.info("Starting Tanita GUI");
+        buildGUI();
 
-      // Obtain the lock outside the UI thread. This will block until the UI releases the lock, at which point it
-      // should
-      // be safe to exit the main thread.
-      synchronized(uiLock) {
-        try {
-          uiLock.wait();
-        } catch(InterruptedException e) {
-          throw new RuntimeException(e);
+        // Obtain the lock outside the UI thread. This will block until the UI releases the lock, at which point it
+        // should
+        // be safe to exit the main thread.
+        synchronized(uiLock) {
+          try {
+            uiLock.wait();
+          } catch(InterruptedException e) {
+            throw new RuntimeException(e);
+          }
         }
+        log.info("Lock obtained. Exiting software.");
+      } else {
+        JOptionPane.showMessageDialog(null, tanitaResourceBundle.getString("Err.Application_lock"), tanitaResourceBundle.getString("Title.Cannot_start_application"), JOptionPane.ERROR_MESSAGE);
       }
-      log.info("Lock obtained. Exiting software.");
-    } else {
-      JOptionPane.showMessageDialog(null, tanitaResourceBundle.getString("Err.Application_lock"), tanitaResourceBundle.getString("Title.Cannot_start_application"), JOptionPane.ERROR_MESSAGE);
     }
+
   }
 
   public void shutdown() {
