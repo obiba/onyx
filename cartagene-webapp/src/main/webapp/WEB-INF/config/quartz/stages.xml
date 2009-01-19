@@ -18,7 +18,16 @@
     </stageDependencyCondition>
   </stage>
 
-  <stage>
+	<stage>
+    <name>QuartzDemoQuestionnaire</name>
+    <module>quartz</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>Consent</stageName>
+      <variablePath>/Cartagene/Consent/accepted</variablePath>
+    </stageDependencyCondition>
+  </stage>
+
+  <!--<stage>
     <name>HealthQuestionnaireSelfAdministered</name>
     <module>quartz</module>
     <stageDependencyCondition class="variableCondition">
@@ -42,6 +51,6 @@
         </stageCondition>
       </conditions>
     </stageDependencyCondition>
-  </stage>
+  </stage>-->
 
 </stages>

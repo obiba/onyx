@@ -44,6 +44,7 @@ public class CreateQuestionnaire {
     c.createQuestionnaire(TestQuestionnaireContentBuilder.buildTestQuestionnaire(), false);
     c.createQuestionnaire(SelfAdminHealthQuestionnaireContentBuilder.buildHealthQuestionnaire(), false);
     c.createQuestionnaire(AssistedHealthQuestionnaireContentBuilder.buildHealthQuestionnaire(), false);
+    c.createQuestionnaire(QuartzDemoQuestionnaireContentBuilder.buildHealthQuestionnaire(), true);
     c.createQuestionnaire(CIPreliminaryQuestionnaireContentBuilder.buildCIPreliminaryQuestionnaire(), true);
   }
 
