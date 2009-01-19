@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.mica.core.service.ActiveConclusionService;
 import org.slf4j.Logger;
@@ -113,6 +114,7 @@ public class BalsacConfirmationPanel extends Panel {
         return isVisible();
       }
     };
+    balsacBarcode.add(new PatternValidator("B[0-9]{8}"));
     balsacBarcode.setOutputMarkupId(true);
     add(balsacBarcode);
   }
