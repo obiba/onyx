@@ -162,4 +162,11 @@ public interface ActiveInstrumentRunService {
    * @return the {@code InstrumentRunValue}
    */
   public InstrumentRunValue getInstrumentRunValue(InstrumentParameter parameter);
+
+  /**
+   * Sets the current instrument run (ONYX-181).
+   * 
+   * @param instrumentRun current instrument run
+   */
+  public void setCurrentInstrumentRun(InstrumentRun instrumentRun);
 }

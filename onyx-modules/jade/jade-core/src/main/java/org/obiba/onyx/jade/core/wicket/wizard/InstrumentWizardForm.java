@@ -13,13 +13,16 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
+import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
@@ -33,8 +36,14 @@ public abstract class InstrumentWizardForm extends WizardForm {
   @SpringBean
   private EntityQueryService queryService;
 
+  @SpringBean(name = "activeInterviewService")
+  private ActiveInterviewService activeInterviewService;
+
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
+
+  @SpringBean
+  private InstrumentRunService instrumentRunService;
 
   @SpringBean
   private InstrumentService instrumentService;
@@ -57,6 +66,15 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
   public InstrumentWizardForm(String id, IModel instrumentTypeModel) {
     super(id);
+
+    // ONYX-181: Set the current InstrumentRun on the ActiveInstrumentRunService. This particular
+    // instance of the service may not have had its start method called, in which case it will have
+    // a null InstrumentRun.
+    if(activeInstrumentRunService.getInstrumentRun() == null) {
+      InstrumentRun instrumentRun = instrumentRunService.getLastInstrumentRun(activeInterviewService.getParticipant(), (InstrumentType) instrumentTypeModel.getObject());
+      activeInstrumentRunService.setCurrentInstrumentRun(instrumentRun);
+    }
+
     WizardStepPanel startStep = null;
 
     observedContraIndicationStep = new ObservedContraIndicationStep(getStepId());

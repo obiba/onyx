@@ -434,4 +434,9 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return getInstrumentRun().getInstrument();
   }
 
+  public void setCurrentInstrumentRun(InstrumentRun instrumentRun) {
+    if(instrumentRun != null) {
+      currentRunId = instrumentRun.getId();
+    }
+  }
 }
