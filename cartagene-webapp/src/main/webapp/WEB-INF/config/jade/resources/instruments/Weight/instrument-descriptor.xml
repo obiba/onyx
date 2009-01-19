@@ -12,7 +12,7 @@
     <status>ACTIVE</status>
   </instrument>
 
-  <contraindications>
+ <!-- <contraindications>  commented out
     <contraIndication>
       <code>UnableToStandUnassistedHandicap</code>
       <type>OBSERVED</type>
@@ -33,7 +33,7 @@
       <requiresDescription>true</requiresDescription>
       <type>OBSERVED</type>
     </contraIndication>
-  </contraindications>
+  </contraindications>   -->
 
   <instrumentParameters>
     <output id="wei1_weight">

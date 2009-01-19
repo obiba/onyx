@@ -27,18 +27,28 @@
 
   <instrumentParameters>
     <interpretative>
-      <code>Kyphosis</code>
+      <code>IV_KYPHOSIS</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>OBSERVED</type>
     </interpretative>
 
-    <output id="sit1_stool_height">
+  	<input id="sit_stool_height">
+      <code>INPUT_STOOL_HEIGHT</code>
+      <dataType>DECIMAL</dataType>
+      <measurementUnit>cm</measurementUnit>
+      <captureMethod>MANUAL</captureMethod>
+      <inputSource class="fixedSource">
+        <value>39.5</value>
+      </inputSource>
+    </input>
+    
+    <!--  <output id="sit1_stool_height">  form used if stool height must be entered
       <code>RES_STOOL_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
-    </output>
+    </output>   -->
 
     <output id="sit1_height1">
       <code>RES_FIRST_SITTING_HEIGHT</code>

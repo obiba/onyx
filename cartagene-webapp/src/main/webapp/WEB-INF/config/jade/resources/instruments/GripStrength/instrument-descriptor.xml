@@ -10,7 +10,8 @@
     <barcode>mus01</barcode>
     <status>ACTIVE</status>
   </instrument>
-  <contraindications>
+
+  <!-- <contraindications> commented out
     <contraIndication>
       <code>UnableToStandUnassistedHandicap</code>
       <type>OBSERVED</type>
@@ -41,7 +42,7 @@
       <code>HandOrWristSurgery</code>
       <type>ASKED</type>
     </contraIndication>
-  </contraindications>
+  </contraindications>    -->
 
   <instrumentParameters>
     <output id="mus1_right_strength1">
@@ -53,9 +54,9 @@
         <rangeCheck>
           <targetParameter reference="mus1_right_strength1"/>
           <integerMinValueMale>0</integerMinValueMale>
-          <integerMaxValueMale>90</integerMaxValueMale>
+          <integerMaxValueMale>130</integerMaxValueMale>
           <integerMinValueFemale>0</integerMinValueFemale>
-          <integerMaxValueFemale>90</integerMaxValueFemale>
+          <integerMaxValueFemale>130</integerMaxValueFemale>
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
@@ -77,9 +78,9 @@
         <rangeCheck>
           <targetParameter reference="mus1_left_strength1"/>
           <integerMinValueMale>0</integerMinValueMale>
-          <integerMaxValueMale>90</integerMaxValueMale>
+          <integerMaxValueMale>130</integerMaxValueMale>
           <integerMinValueFemale>0</integerMinValueFemale>
-          <integerMaxValueFemale>90</integerMaxValueFemale>
+          <integerMaxValueFemale>130</integerMaxValueFemale>
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
@@ -101,9 +102,9 @@
         <rangeCheck>
           <targetParameter reference="mus1_right_strength2"/>
           <integerMinValueMale>0</integerMinValueMale>
-          <integerMaxValueMale>90</integerMaxValueMale>
+          <integerMaxValueMale>130</integerMaxValueMale>
           <integerMinValueFemale>0</integerMinValueFemale>
-          <integerMaxValueFemale>90</integerMaxValueFemale>
+          <integerMaxValueFemale>130</integerMaxValueFemale>
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
@@ -130,9 +131,9 @@
         <rangeCheck>
           <targetParameter reference="mus1_left_strength2"/>
           <integerMinValueMale>0</integerMinValueMale>
-          <integerMaxValueMale>90</integerMaxValueMale>
+          <integerMaxValueMale>130</integerMaxValueMale>
           <integerMinValueFemale>0</integerMinValueFemale>
-          <integerMaxValueFemale>90</integerMaxValueFemale>
+          <integerMaxValueFemale>130</integerMaxValueFemale>
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>

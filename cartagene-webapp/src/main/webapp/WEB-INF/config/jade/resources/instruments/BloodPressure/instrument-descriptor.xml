@@ -21,15 +21,50 @@
     </instrument>
   </instruments>
 
-  <contraindications>
+  <!--<contraindications> removed for now
     <contraIndication>
       <code>Other_CI</code>
       <requiresDescription>true</requiresDescription>
       <type>OBSERVED</type>
     </contraIndication>
-  </contraindications>
+  </contraindications>-->
 
   <instrumentParameters>
+        
+    <input id="arm_used">  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
+      <code>IV_ARM_USED</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <inputSource class="operatorSource">
+        <choices>L,R</choices>  <!-- OBTAIN DEFAULT FROM CI QUEST.-->
+      </inputSource>
+    </input>
+    
+    <input id="upper_arm_length">  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
+      <code>IV_UPPER_ARM_LN</code>
+      <measurementUnit>cm</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <inputSource class="operatorSource"></inputSource>
+    </input>
+    
+    <input id="mid_upper_arm_circ">  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
+      <code>IV_UPPER_ARM_CIRC</code>
+      <measurementUnit>cm</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <inputSource class="operatorSource"></inputSource>
+    </input>
+    
+    <input id="arm_used">  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
+      <code>IV_ARMBAND_SIZE_USED</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <inputSource class="operatorSource">
+        <choices>IV_S,IV_M,IV_LG,IV_XL</choices>  
+      </inputSource>
+    </input>
+    
     <output id="blp1_systolic1">
       <code>RES_FIRST_SYSTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>

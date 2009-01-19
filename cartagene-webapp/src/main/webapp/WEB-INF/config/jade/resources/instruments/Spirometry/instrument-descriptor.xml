@@ -12,7 +12,7 @@
     <status>ACTIVE</status>
   </instrument>
 
-  <contraindications>
+ <!-- <contraindications>  commented out
     <contraIndication>
       <code>Other_CI</code>
       <requiresDescription>true</requiresDescription>
@@ -54,10 +54,10 @@
       <type>ASKED</type>
     </contraIndication>
 
-  </contraindications>
+  </contraindications>  -->
 
   <instrumentParameters>
-    <interpretative>
+  <!--  <interpretative>   commented out
       <code>IV_BRONCHODILATOR</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -90,7 +90,7 @@
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>OBSERVED</type>
-    </interpretative>
+    </interpretative> -->
 
     <input id="id">
       <vendorName>ID</vendorName>
@@ -207,7 +207,7 @@
 
     <output id="fev1_fvc">
       <vendorName>FEV1_FVC</vendorName>
-      <code>RES_MEASURED_FEV1_FVC</code>
+      <code>RES_MEASURED_FEV1/FVC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
@@ -223,7 +223,7 @@
 
     <output id="fev1_fev6">
       <vendorName>FEV1_FEV6</vendorName>
-      <code>RES_MEASURED_FEV1_FEV6</code>
+      <code>RES_MEASURED_FEV1/FEV6</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
@@ -255,7 +255,7 @@
 
     <output id="fev3_fvc">
       <vendorName>FEV3_FVC</vendorName>
-      <code>RES_MEASURED_FEV3_FVC</code>
+      <code>RES_MEASURED_FEV3/FVC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
@@ -327,7 +327,7 @@
 
     <output id="fiv1_fivc">
       <vendorName>FIV1_FIVC</vendorName>
-      <code>RES_MEASURED_FIV1_FIVC</code>
+      <code>RES_MEASURED_FIV1/FIVC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
@@ -359,7 +359,7 @@
 
     <output id="fev1_fvc_pred">
       <vendorName>FEV1_FVC_pred</vendorName>
-      <code>RES_PRED_FEV1_FVC</code>
+      <code>RES_PRED_FEV1/FVC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
@@ -375,7 +375,7 @@
 
     <output id="fev1_fev6_pred">
       <vendorName>FEV1_FEV6_pred</vendorName>
-      <code>RES_PRED_FEV1_FEV6</code>
+      <code>RES_PRED_FEV1/FEV6</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
@@ -407,7 +407,7 @@
 
     <output id="fev3_fvc_pred">
       <vendorName>FEV3_FVC_pred</vendorName>
-      <code>RES_PRED_FEV3_FVC</code>
+      <code>RES_PRED_FEV3/FVC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
@@ -479,7 +479,7 @@
 
     <output id="fiv1_fivc_pred">
       <vendorName>FIV1_FIVC_pred</vendorName>
-      <code>RES_PRED_FIV1_FIVC</code>
+      <code>RES_PRED_FIV1/FIVC</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit>%</measurementUnit>
