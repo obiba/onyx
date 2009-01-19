@@ -29,4 +29,9 @@ public abstract class AbstractQuartzStageState extends AbstractStageState {
     QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getQuestionnaireParticipant(activeInterviewService.getParticipant(), super.getStage().getName());
     questionnaireParticipantService.deleteQuestionnaireParticipant(questionnaireParticipant);
   }
+
+  protected void inactivateQuestionnaireParticipant() {
+    QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getQuestionnaireParticipant(activeInterviewService.getParticipant(), super.getStage().getName());
+    questionnaireParticipantService.inactivateQuestionnaireParticipant(questionnaireParticipant);
+  }
 }

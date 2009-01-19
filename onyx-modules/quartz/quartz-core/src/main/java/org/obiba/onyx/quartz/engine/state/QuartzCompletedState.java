@@ -68,6 +68,7 @@ public class QuartzCompletedState extends AbstractQuartzStageState {
   @Override
   public void execute(Action action) {
     log.info("Quartz Stage {} is resuming", super.getStage().getName());
+    inactivateQuestionnaireParticipant();
     castEvent(TransitionEvent.RESUME);
   }
 }
