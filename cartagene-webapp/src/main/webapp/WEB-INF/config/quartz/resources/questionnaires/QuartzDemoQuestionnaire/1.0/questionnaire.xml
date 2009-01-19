@@ -58,11 +58,11 @@
                     </questionCategory>
                     <questionCategory id="34" reselectable="false" selected="false" exportName="88">
                       <question reference="20"/>
-                      <category id="35" name="PNA" escape="false"/>
+                      <category id="35" name="PNA" escape="true"/>
                     </questionCategory>
                     <questionCategory id="36" reselectable="false" selected="false" exportName="99">
                       <question reference="20"/>
-                      <category id="37" name="DNK" escape="false"/>
+                      <category id="37" name="DNK" escape="true"/>
                     </questionCategory>
                   </questionCategories>
                   <questions id="38"/>
