@@ -136,35 +136,37 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
 
       public Object extractData(ResultSet rs) throws SQLException {
 
-        rs.next();
-
         Map<String, Data> boneDensityData = new HashMap<String, Data>();
-        boneDensityData.put("OUTPUT_PARTICIPANT_BARCODE", DataBuilder.buildText(rs.getString("Chart_Num")));
-        boneDensityData.put("OUTPUT_PARTICIPANT_FIRST_NAME", DataBuilder.buildText(rs.getString("FName")));
-        boneDensityData.put("OUTPUT_PARTICIPANT_LAST_NAME", DataBuilder.buildText(rs.getString("LName")));
-        boneDensityData.put("OUTPUT_PARTICIPANT_DATE_BIRTH", DataBuilder.buildDate(rs.getDate("DOB")));
 
-        String gender = rs.getString("Sex").equals("M") ? "MALE" : "FEMALE";
-        boneDensityData.put("OUTPUT_PARTICIPANT_GENDER", DataBuilder.buildText(gender));
+        if(rs.next()) {
+          boneDensityData.put("OUTPUT_PARTICIPANT_BARCODE", DataBuilder.buildText(rs.getString("Chart_Num")));
+          boneDensityData.put("OUTPUT_PARTICIPANT_FIRST_NAME", DataBuilder.buildText(rs.getString("FName")));
+          boneDensityData.put("OUTPUT_PARTICIPANT_LAST_NAME", DataBuilder.buildText(rs.getString("LName")));
+          boneDensityData.put("OUTPUT_PARTICIPANT_DATE_BIRTH", DataBuilder.buildDate(rs.getDate("DOB")));
 
-        boneDensityData.put("RES_ASSESSMENT", DataBuilder.buildDecimal(rs.getDouble("assessment")));
-        boneDensityData.put("RES_FRACTURE_RISK", DataBuilder.buildDecimal(rs.getDouble("fxrisk")));
-        boneDensityData.put("RES_STIFFNESS_INDEX_RES", DataBuilder.buildDecimal(rs.getDouble("total")));
-        boneDensityData.put("RES_T-SCORE", DataBuilder.buildDecimal(rs.getDouble("tscore")));
-        boneDensityData.put("RES_Z-SCORE", DataBuilder.buildDecimal(rs.getDouble("zscore")));
-        boneDensityData.put("RES_PERCENT_AGE_MATCHED", DataBuilder.buildDecimal(rs.getDouble("agematched")));
-        boneDensityData.put("RES_PERCENT_YOUNG_ADULT", DataBuilder.buildDecimal(rs.getDouble("percentnormal")));
-        boneDensityData.put("OUTPUT_FOOT_SCANNED", DataBuilder.buildText(rs.getString("sidescanned")));
-        boneDensityData.put("RES_STIFFNESS_INDEX", DataBuilder.buildDecimal(rs.getDouble("stiffnessindex")));
-        boneDensityData.put("RES_SPEED_ULTRASOUND", DataBuilder.buildDecimal(rs.getDouble("SOS")));
-        boneDensityData.put("RES_BROADBAND_ULTRASOUND_ATT", DataBuilder.buildDecimal(rs.getDouble("BUA")));
-        boneDensityData.put("RES_SOFTWARE_VERSION", DataBuilder.buildText(rs.getString("appversion")));
-        boneDensityData.put("RES_REGION_INTERSECTION_X_COOR", DataBuilder.buildInteger(rs.getLong("roi_x")));
-        boneDensityData.put("RES_REGION_INTERSECTION_Y_COOR", DataBuilder.buildInteger(rs.getLong("roi_y")));
-        boneDensityData.put("RES_REGION_INTERSECTION_Z_COOR", DataBuilder.buildInteger(rs.getLong("roi_s")));
-        boneDensityData.put("RES_STIFFNESS_INDEX_GRAPH", DataBuilder.buildBinary(rs.getBinaryStream("achillesbitmap")));
+          String gender = rs.getString("Sex").equals("M") ? "MALE" : "FEMALE";
+          boneDensityData.put("OUTPUT_PARTICIPANT_GENDER", DataBuilder.buildText(gender));
+
+          boneDensityData.put("RES_ASSESSMENT", DataBuilder.buildDecimal(rs.getDouble("assessment")));
+          boneDensityData.put("RES_FRACTURE_RISK", DataBuilder.buildDecimal(rs.getDouble("fxrisk")));
+          boneDensityData.put("RES_STIFFNESS_INDEX_RES", DataBuilder.buildDecimal(rs.getDouble("total")));
+          boneDensityData.put("RES_T-SCORE", DataBuilder.buildDecimal(rs.getDouble("tscore")));
+          boneDensityData.put("RES_Z-SCORE", DataBuilder.buildDecimal(rs.getDouble("zscore")));
+          boneDensityData.put("RES_PERCENT_AGE_MATCHED", DataBuilder.buildDecimal(rs.getDouble("agematched")));
+          boneDensityData.put("RES_PERCENT_YOUNG_ADULT", DataBuilder.buildDecimal(rs.getDouble("percentnormal")));
+          boneDensityData.put("OUTPUT_FOOT_SCANNED", DataBuilder.buildText(rs.getString("sidescanned")));
+          boneDensityData.put("RES_STIFFNESS_INDEX", DataBuilder.buildDecimal(rs.getDouble("stiffnessindex")));
+          boneDensityData.put("RES_SPEED_ULTRASOUND", DataBuilder.buildDecimal(rs.getDouble("SOS")));
+          boneDensityData.put("RES_BROADBAND_ULTRASOUND_ATT", DataBuilder.buildDecimal(rs.getDouble("BUA")));
+          boneDensityData.put("RES_SOFTWARE_VERSION", DataBuilder.buildText(rs.getString("appversion")));
+          boneDensityData.put("RES_REGION_INTERSECTION_X_COOR", DataBuilder.buildInteger(rs.getLong("roi_x")));
+          boneDensityData.put("RES_REGION_INTERSECTION_Y_COOR", DataBuilder.buildInteger(rs.getLong("roi_y")));
+          boneDensityData.put("RES_REGION_INTERSECTION_Z_COOR", DataBuilder.buildInteger(rs.getLong("roi_s")));
+          boneDensityData.put("RES_STIFFNESS_INDEX_GRAPH", DataBuilder.buildBinary(rs.getBinaryStream("achillesbitmap")));
+        }
 
         return boneDensityData;
+
       }
 
     });
