@@ -102,7 +102,6 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
             } else {
               IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
               ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
-              consentService.saveConsent(activeConsentService.getConsent());
               target.appendJavascript("resizeWizardContent();");
               if(actionDef != null) {
                 actionWindow.show(target, model.getStageModel(), actionDef);

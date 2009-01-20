@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.core.service.impl;
 
-import java.util.List;
-
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.marble.core.service.ConsentService;
@@ -29,11 +27,11 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
     Consent template = new Consent();
     template.setInterview(interview);
     template.setDeleted(false);
-    List<Consent> previousConsents = getPersistenceManager().match(template);
-    for(Consent consent : previousConsents) {
-      consent.setDeleted(true);
-      getPersistenceManager().save(consent);
-    }
+
+    // Mark existing consent as deleted
+    Consent previousConsent = getPersistenceManager().matchOne(template);
+    previousConsent.setDeleted(true);
+    getPersistenceManager().save(previousConsent);
   }
 
   public void saveConsent(Consent consent) {
