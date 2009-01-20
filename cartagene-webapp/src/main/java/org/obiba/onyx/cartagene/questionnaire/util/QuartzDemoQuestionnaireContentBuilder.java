@@ -148,20 +148,20 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(PNA, "8888");
     builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(DNK, "9999");
 
-    builder.inSection("QUESTION_TYPES").withSection("OPEN_ANSWER").withPage("7").withQuestion("AGE_PRESENT_ADRESS").withSharedCategory(OPEN_N).withOpenAnswerDefinition(OPEN_N, DataType.INTEGER);
+    builder.inSection("QUESTION_TYPES").withSection("OPEN_ANSWER").withPage("7").withQuestion("AGE_PRESENT_ADRESS").withSharedCategory(OPEN_N).withOpenAnswerDefinition(OPEN_N, DataType.INTEGER).setSize(2);
     builder.inQuestion("AGE_PRESENT_ADRESS").withSharedCategory(PNA, "88");
     builder.inQuestion("AGE_PRESENT_ADRESS").withSharedCategory(DNK, "99");
 
-    builder.inSection("QUESTION_TYPES").withSection("EXCL_COMPOUND").withPage("8").withQuestion("TOOTH_BRUSHING_FREQ").withCategory("FREQ_DAY").withOpenAnswerDefinition("FREQ_DAY", DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0));
-    builder.inQuestion("TOOTH_BRUSHING_FREQ").withCategory("FREQ_WEEK").withOpenAnswerDefinition("FREQ_WEEK", DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0));
+    builder.inSection("QUESTION_TYPES").withSection("EXCL_COMPOUND").withPage("8").withQuestion("TOOTH_BRUSHING_FREQ").withCategory("FREQ_DAY").withOpenAnswerDefinition("FREQ_DAY", DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).setSize(1);
+    builder.inQuestion("TOOTH_BRUSHING_FREQ").withCategory("FREQ_WEEK").withOpenAnswerDefinition("FREQ_WEEK", DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).setSize(2);
     builder.inQuestion("TOOTH_BRUSHING_FREQ").withSharedCategory(PNA, "88");
     builder.inQuestion("TOOTH_BRUSHING_FREQ").withSharedCategory(DNK, "99");
-    builder.inPage("8").withQuestion("WEIGHT_BIRTH").withCategory("WEIGHT_BIRTH").withOpenAnswerDefinition("WEIGHT_BIRTH", DataType.INTEGER).withOpenAnswerDefinition("WEIGHT_BIRTH_LBS", DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0));
-    builder.inOpenAnswerDefinition("WEIGHT_BIRTH").withOpenAnswerDefinition("WEIGHT_BIRTH_OUNCES", DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0));
+    builder.inPage("8").withQuestion("WEIGHT_BIRTH").withCategory("WEIGHT_BIRTH").withOpenAnswerDefinition("WEIGHT_BIRTH", DataType.INTEGER).withOpenAnswerDefinition("WEIGHT_BIRTH_LBS", DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).setSize(2);
+    builder.inOpenAnswerDefinition("WEIGHT_BIRTH").withOpenAnswerDefinition("WEIGHT_BIRTH_OUNCES", DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).setSize(2);
     builder.inQuestion("WEIGHT_BIRTH").withSharedCategory(PNA, "88");
     builder.inQuestion("WEIGHT_BIRTH").withSharedCategory(DNK, "99");
 
-    builder.inSection("QUESTION_TYPES").withSection("MULTI_PARTS").withPage("9").withQuestion("DATE_OF_BIRTH").withQuestion("DOB_YEAR").withCategory("DOB_YEAR").withOpenAnswerDefinition("DOB_YEAR", DataType.INTEGER).addValidator(ComparisonOperator.le, new ArithmeticOperationSource(new CurrentYearSource(), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(40)))).addValidator(ComparisonOperator.ge, new ArithmeticOperationSource(new CurrentYearSource(), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(70))));
+    builder.inSection("QUESTION_TYPES").withSection("MULTI_PARTS").withPage("9").withQuestion("DATE_OF_BIRTH").withQuestion("DOB_YEAR").withCategory("DOB_YEAR").withOpenAnswerDefinition("DOB_YEAR", DataType.INTEGER).addValidator(ComparisonOperator.le, new ArithmeticOperationSource(new CurrentYearSource(), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(40)))).addValidator(ComparisonOperator.ge, new ArithmeticOperationSource(new CurrentYearSource(), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(70)))).setSize(4);
     builder.inQuestion("DOB_YEAR").withSharedCategory(PNA, "88");
     builder.inQuestion("DOB_YEAR").withSharedCategory(DNK, "99");
     builder.inQuestion("DATE_OF_BIRTH").withQuestion("DOB_MONTH", DropDownQuestionPanelFactory.class).withCategory("01").setExportName("1");
@@ -193,18 +193,18 @@ public class QuartzDemoQuestionnaireContentBuilder {
 
     builder.withSection("ANS_VALIDATION").withPage("11").withQuestion("VAL_BP");
 
-    builder.inSection("ANS_VALIDATION").withSection("VALUES_RANGE").withPage("12").withQuestion("TRAVEL_WALK_DAYS_WEEK").withCategory("DAYS_WEEK").withOpenAnswerDefinition("DAYS_WEEK", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 7));
+    builder.inSection("ANS_VALIDATION").withSection("VALUES_RANGE").withPage("12").withQuestion("TRAVEL_WALK_DAYS_WEEK").withCategory("DAYS_WEEK").withOpenAnswerDefinition("DAYS_WEEK", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 7)).setSize(2);
     builder.inQuestion("TRAVEL_WALK_DAYS_WEEK").withSharedCategory(PNA, "8");
     builder.inQuestion("TRAVEL_WALK_DAYS_WEEK").withSharedCategory(DNK, "9");
 
-    builder.inSection("ANS_VALIDATION").withSection("VALUES_FORMAT").withPage("13").withQuestion("POSTAL_CODE").withCategory("POSTAL_CODE3").withOpenAnswerDefinition("POSTAL_CODE3", DataType.TEXT).addValidator(new PatternValidator("[a-zA-Z]\\d[a-zA-Z]"));
+    builder.inSection("ANS_VALIDATION").withSection("VALUES_FORMAT").withPage("13").withQuestion("POSTAL_CODE").withCategory("POSTAL_CODE3").withOpenAnswerDefinition("POSTAL_CODE3", DataType.TEXT).addValidator(new PatternValidator("[a-zA-Z]\\d[a-zA-Z]")).setSize(3);
     builder.inQuestion("POSTAL_CODE").withSharedCategory(PNA, "888");
     builder.inQuestion("POSTAL_CODE").withSharedCategory(DNK, "999");
 
-    builder.inSection("ANS_VALIDATION").withSection("X_VAL").withPage("14").withQuestion("PARTICIPANT_AGE").withCategory("PARTICIPANT_AGE").withOpenAnswerDefinition("PARTICIPANT_AGE", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(40, 70));
+    builder.inSection("ANS_VALIDATION").withSection("X_VAL").withPage("14").withQuestion("PARTICIPANT_AGE").withCategory("PARTICIPANT_AGE").withOpenAnswerDefinition("PARTICIPANT_AGE", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(40, 70)).setSize(2);
     builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(PNA, "88");
     builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(DNK, "99");
-    builder.inPage("14").withQuestion("STARTED_SMOKING_AGE").withSharedCategory(OPEN_0_PARTICIPANT).withOpenAnswerDefinition(OPEN_0_PARTICIPANT, DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).addValidator(ComparisonOperator.le, "PARTICIPANT_AGE", "PARTICIPANT_AGE", "PARTICIPANT_AGE");
+    builder.inPage("14").withQuestion("STARTED_SMOKING_AGE").withSharedCategory(OPEN_0_PARTICIPANT).withOpenAnswerDefinition(OPEN_0_PARTICIPANT, DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).addValidator(ComparisonOperator.le, "PARTICIPANT_AGE", "PARTICIPANT_AGE", "PARTICIPANT_AGE").setSize(2);
     builder.inQuestion("STARTED_SMOKING_AGE").withSharedCategory(PNA, "88");
     builder.inQuestion("STARTED_SMOKING_AGE").withSharedCategory(DNK, "99");
 
@@ -213,7 +213,7 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("PREGNANT").withSharedCategory(Y, "1");
     builder.inQuestion("PREGNANT").withSharedCategory(PNA, "8");
     builder.inQuestion("PREGNANT").withSharedCategory(DNK, "9");
-    builder.inPage("16").withQuestion("WEEK_PREGNANCY").withCategory("OPEN_40").withOpenAnswerDefinition("OPEN_40", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 40));
+    builder.inPage("16").withQuestion("WEEK_PREGNANCY").withCategory("OPEN_40").withOpenAnswerDefinition("OPEN_40", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 40)).setSize(2);
     builder.inQuestion("WEEK_PREGNANCY").setAnswerCondition("WEEK_PREGNANCY_ACONDITION", "PREGNANT", Y);
 
     builder.inSection("SKIP_PATTERNS").withSection("DIFF_SCREENS").withPage("17").withQuestion("EVER_DRUNK_ALCOHOL").withSharedCategory(N, "0");
@@ -326,12 +326,12 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("TAKING_RX_MED_OCCURENCE").withSharedCategory(PNA, "8");
     builder.inQuestion("TAKING_RX_MED_OCCURENCE").withSharedCategory(DNK, "9");
 
-    builder.inSection("A_PRIORI_VALUE").withPage("27").withQuestion("RX_MEDICATION").withCategory("MED_NUMBER").withOpenAnswerDefinition("MED_NUMBER", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 4));
+    builder.inSection("A_PRIORI_VALUE").withPage("27").withQuestion("RX_MEDICATION").withCategory("MED_NUMBER").withOpenAnswerDefinition("MED_NUMBER", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 4)).setSize(2);
     builder.inQuestion("RX_MEDICATION").withSharedCategory(PNA, "88");
     builder.inQuestion("RX_MEDICATION").withSharedCategory(DNK, "99");
     builder.inQuestion("RX_MEDICATION").setAnswerCondition("RX_MEDICATION_ACONDITION", "TAKING_RX_MED_OCCURENCE", Y);
 
-    builder.inSection("A_PRIORI_VALUE").withPage("28").withQuestion("MEDICATION1_TYPE").withSharedCategory(TYPE).withOpenAnswerDefinition(TYPE, DataType.TEXT);
+    builder.inSection("A_PRIORI_VALUE").withPage("28").withQuestion("MEDICATION1_TYPE").withSharedCategory(TYPE).withOpenAnswerDefinition(TYPE, DataType.TEXT).setSize(50);
     builder.inQuestion("MEDICATION1_TYPE").withSharedCategory(PNA, "88");
     builder.inQuestion("MEDICATION1_TYPE").withSharedCategory(DNK, "99");
     builder.inQuestion("MEDICATION1_TYPE").setDataCondition("MEDICATION1_TYPE_DCONDITION", "RX_MEDICATION", "MED_NUMBER", "MED_NUMBER", ComparisonOperator.gt, DataBuilder.buildInteger(0l));
@@ -381,8 +381,8 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("MAJOR_OPERATION1TYPE").withSharedCategory(PNA, "8");
     builder.inQuestion("MAJOR_OPERATION1TYPE").withSharedCategory(DNK, "9");
     builder.inPage("33").withQuestion("MAJOR_OPERATION1AGE").setAnswerCondition("MAJOR_OPERATION1AGE_ACONDITION", "MAJOR_OPERATION1OCC", Y);
-    builder.inQuestion("MAJOR_OPERATION1AGE").withSharedCategory(AGE).withOpenAnswerDefinition(AGE, DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).addValidator(ComparisonOperator.le, "PARTICIPANT_AGE", "PARTICIPANT_AGE", "PARTICIPANT_AGE");
-    builder.inQuestion("MAJOR_OPERATION1AGE").withSharedCategory(YEAR).withOpenAnswerDefinition(YEAR, DataType.INTEGER).addValidator(ComparisonOperator.ge, "DOB_YEAR", "DOB_YEAR", "DOB_YEAR").addCurrentYearValidator(ComparisonOperator.le);
+    builder.inQuestion("MAJOR_OPERATION1AGE").withSharedCategory(AGE).withOpenAnswerDefinition(AGE, DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).addValidator(ComparisonOperator.le, "PARTICIPANT_AGE", "PARTICIPANT_AGE", "PARTICIPANT_AGE").setSize(2);
+    builder.inQuestion("MAJOR_OPERATION1AGE").withSharedCategory(YEAR).withOpenAnswerDefinition(YEAR, DataType.INTEGER).addValidator(ComparisonOperator.ge, "DOB_YEAR", "DOB_YEAR", "DOB_YEAR").addCurrentYearValidator(ComparisonOperator.le).setSize(4);
     builder.inQuestion("MAJOR_OPERATION1AGE").withSharedCategory(PNA, "8888");
     builder.inQuestion("MAJOR_OPERATION1AGE").withSharedCategory(DNK, "9999");
     builder.inPage("33").withQuestion("MAJOR_OPERATION2OCC").setAnswerCondition("MAJOR_OPERATION2OCC_ACONDITION", "MAJOR_OPERATION1OCC", Y);

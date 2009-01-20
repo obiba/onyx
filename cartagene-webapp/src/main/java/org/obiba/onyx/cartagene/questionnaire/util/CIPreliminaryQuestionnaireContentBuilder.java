@@ -56,7 +56,7 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inSection("S1_PARTICIPANT").withPage("2").withQuestion("S1_BP2").setDataCondition("CURRENTLY_PREGNANT_DCONDITION", ComparisonOperator.eq, Gender.FEMALE);
     builder.inPage("2").withQuestion("CURRENTLY_PREGNANT"/* , "1" */).withSharedCategories(N, Y, PNA, DNK);
     builder.inQuestion("CURRENTLY_PREGNANT").setDataCondition("CURRENTLY_PREGNANT_DCONDITION", ComparisonOperator.eq, Gender.FEMALE);
-    builder.inPage("2").withQuestion("CURRENT_PREGNANCY_WEEKS"/* , "2" */).withSharedCategory(OPEN_N40).withOpenAnswerDefinition(OPEN_N40, DataType.INTEGER).setSize(2).addValidator(new NumberValidator.RangeValidator(0, 40));
+    builder.inPage("2").withQuestion("CURRENT_PREGNANCY_WEEKS"/* , "2" */).withSharedCategory(OPEN_N40).withOpenAnswerDefinition(OPEN_N40, DataType.INTEGER).setSize(2).addValidator(new NumberValidator.RangeValidator(0, 40)).setSize(2);
     builder.inQuestion("CURRENT_PREGNANCY_WEEKS").withSharedCategories(PNA, DNK);
     builder.inQuestion("CURRENT_PREGNANCY_WEEKS").setAnswerCondition("CURRENT_PREGNANCY_WEEKS_ACONDITION", "CURRENTLY_PREGNANT", Y);
 
@@ -90,9 +90,9 @@ public class CIPreliminaryQuestionnaireContentBuilder {
 
     builder.inSection("S3_EC_IC_ASKED").withPage("19").withQuestion("LEFT_LOWER_EXTREMITY_EVENT"/* , "23" */).withSharedCategories(N, Y, DNK);
     builder.inQuestion("LEFT_LOWER_EXTREMITY_EVENT").setAnswerCondition("LEFT_LOWER_EXTREMITY_EVENT_ACONDITION", "ISOPROPYL_ALCOHOL_ALLERGY", N);
-    builder.inPage("19").withQuestion("LEFT_LOWER_EXTREMITY_EVENT_WHEN"/* , "23a" */).withSharedCategory(YEAR_MONTH).withOpenAnswerDefinition(YEAR_MONTH, DataType.INTEGER).withOpenAnswerDefinition("YEAR", DataType.INTEGER).addCurrentYearValidator(ComparisonOperator.le);
-    builder.inOpenAnswerDefinition(YEAR_MONTH).withOpenAnswerDefinition("MONTH", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 12));
-    builder.inQuestion("LEFT_LOWER_EXTREMITY_EVENT_WHEN").withSharedCategory(AGE).withOpenAnswerDefinition(AGE, DataType.INTEGER);
+    builder.inPage("19").withQuestion("LEFT_LOWER_EXTREMITY_EVENT_WHEN"/* , "23a" */).withSharedCategory(YEAR_MONTH).withOpenAnswerDefinition(YEAR_MONTH, DataType.INTEGER).withOpenAnswerDefinition("YEAR", DataType.INTEGER).addCurrentYearValidator(ComparisonOperator.le).setSize(4);
+    builder.inOpenAnswerDefinition(YEAR_MONTH).withOpenAnswerDefinition("MONTH", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 12)).setSize(2);
+    builder.inQuestion("LEFT_LOWER_EXTREMITY_EVENT_WHEN").withSharedCategory(AGE).withOpenAnswerDefinition(AGE, DataType.INTEGER).setSize(2);
     builder.inQuestion("LEFT_LOWER_EXTREMITY_EVENT_WHEN").withSharedCategory(DNK);
     builder.inQuestion("LEFT_LOWER_EXTREMITY_EVENT_WHEN").setAnswerCondition("LEFT_LOWER_EXTREMITY_EVENT_WHEN_ACONDITION", "LEFT_LOWER_EXTREMITY_EVENT", Y);
 
@@ -168,7 +168,7 @@ public class CIPreliminaryQuestionnaireContentBuilder {
 
     // section S7_WAIST_HIPS
     builder.withSection("S7_WAIST_HIPS").withSection("S7_EC_OBS").withPage("33").withQuestion("WH_OBS_CI"/* , "43" */).withSharedCategory(NC);
-    builder.inQuestion("WH_OBS_CI").withSharedCategory(YES_SPECIFY).withOpenAnswerDefinition(YES_SPECIFY, DataType.TEXT);
+    builder.inQuestion("WH_OBS_CI").withSharedCategory(YES_SPECIFY).withOpenAnswerDefinition(YES_SPECIFY, DataType.TEXT).setSize(60);
     builder.inQuestion("WH_OBS_CI").setMultipleCondition("WH_OBS_CI_MCONDITION_0", ConditionOperator.AND).withAnswerCondition("WH_OBS_CI_ACONDITION_0", "ABLE_TO_STAND", Y);
     builder.inCondition("WH_OBS_CI_MCONDITION_0").withMultipleCondition("WH_OBS_CI_MCONDITION_1", ConditionOperator.OR).withNoAnswerCondition("WH_OBS_CI_NCONDITION").withAnswerCondition("WH_OBS_CI_ACONDITION_2", "CURRENTLY_PREGNANT");
     builder.inCondition("WH_OBS_CI_MCONDITION_1").withAnswerCondition("WH_OBS_CI_ACONDITION_1", "CURRENTLY_PREGNANT", N);
@@ -231,7 +231,7 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     // section S10_ARTERIAL_STIFFNESS
     builder.withSection("S10_ARTERIAL_STIFFNESS").withSection("S10_EC_ASKED").withPage("43").withQuestion("S10_BP1");
     builder.inPage("43").withQuestion("AS_STENOSIS_CI"/* , "60a" */).withSharedCategories(N, Y, DNK);
-    builder.inPage("43").withQuestion("AS_STENOSIS_GRADIENT"/* , "60b" */).withCategory("GRADIENT").withOpenAnswerDefinition("GRADIENT", DataType.INTEGER).setUnit("PERCENT");
+    builder.inPage("43").withQuestion("AS_STENOSIS_GRADIENT"/* , "60b" */).withCategory("GRADIENT").withOpenAnswerDefinition("GRADIENT", DataType.INTEGER).setUnit("PERCENT").setSize(2);
     builder.inQuestion("AS_STENOSIS_GRADIENT").withSharedCategory(DNK);
     builder.inQuestion("AS_STENOSIS_GRADIENT").setAnswerCondition("AS_STENOSIS_GRADIENT_ACONDITION", "AS_STENOSIS_CI", Y);
 
@@ -273,9 +273,8 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inQuestion("RADIOTHERAPY_LAST_12_WEEKS").setAnswerCondition("RADIOTHERAPY_LAST_12_WEEKS_ACONDITION", "BLOOD_COLLECTION_SAFE", Y);
 
     // section S12_CONCLUSION
-    builder.withSection("S12_CONCLUSION").withPage("50").withQuestion("S12_BP1"/* , "100" */);
 
-    builder.inSection("S12_CONCLUSION").withPage("51").withQuestion("STAGE_STATUS"/* , "110" */).setMultipleCondition("STAGE_STATUS_MCONDITION", ConditionOperator.OR);
+    builder.withSection("S12_CONCLUSION").withPage("51").withQuestion("STAGE_STATUS"/* , "110" */).setMultipleCondition("STAGE_STATUS_MCONDITION", ConditionOperator.OR);
     builder.inCondition("STAGE_STATUS_MCONDITION").withNoAnswerCondition("STAGE_STATUS_NCONDITION_0").withAnswerCondition("STAGE_STATUS_ACONDITION_0", "BLOOD_PRESSURE_MEASURE_SAFE", Y);
     builder.inCondition("STAGE_STATUS_MCONDITION").withNoAnswerCondition("STAGE_STATUS_NCONDITION_1").withAnswerCondition("STAGE_STATUS_ACONDITION_1", "ISOPROPYL_ALCOHOL_ALLERGY", N);
     builder.inCondition("STAGE_STATUS_MCONDITION").withNoAnswerCondition("STAGE_STATUS_NCONDITION_2").withAnswerCondition("STAGE_STATUS_ACONDITION_2", "GS_PAIN_BOTH_HANDS", N);
