@@ -45,7 +45,11 @@ public class QuestionListProvider extends AbstractDataListProvider<Question> {
   public List<Question> getDataList() {
     List<Question> questionToAnswer = new ArrayList<Question>();
     for(Question question : parentQuestion.getQuestions()) {
-      if(question.isToBeAnswered(activeQuestionnaireAdministrationService)) questionToAnswer.add(question);
+      if(question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
+        questionToAnswer.add(question);
+      } else {
+        activeQuestionnaireAdministrationService.setActiveAnswers(question, false);
+      }
     }
     return questionToAnswer;
   }

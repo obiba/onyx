@@ -54,6 +54,11 @@ public class QuestionPanel extends Panel {
     Question question = (Question) getModelObject();
     log.info("setActiveAnswers.{}.active={}", question.getName(), active);
     activeQuestionnaireAdministrationService.setActiveAnswers(question, active);
+    for(Question subQuestion : question.getQuestions()) {
+      if(!subQuestion.isToBeAnswered(activeQuestionnaireAdministrationService)) {
+        activeQuestionnaireAdministrationService.setActiveAnswers(subQuestion, false);
+      }
+    }
   }
 
 }
