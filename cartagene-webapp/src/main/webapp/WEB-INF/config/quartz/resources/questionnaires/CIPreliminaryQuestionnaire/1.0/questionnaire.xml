@@ -2215,161 +2215,157 @@
                 </question>
                 <question id="869" name="WT_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <questionCategories id="870"/>
-                  <condition class="answerCondition" id="871" name="WT_CI_ACONDITION">
+                  <condition class="multipleCondition" id="871" name="WT_CI_MCONDITION" conditionOperator="OR">
                     <questions id="872">
                       <question reference="869"/>
                     </questions>
-                    <question reference="590"/>
-                    <category reference="431"/>
+                    <conditions id="873">
+                      <answerCondition id="874" name="WT_CI_ACONDITION">
+                        <question reference="590"/>
+                        <category reference="431"/>
+                      </answerCondition>
+                      <answerCondition id="875" name="WT_SH_CI_ACONDITION">
+                        <question reference="15"/>
+                        <category reference="18"/>
+                      </answerCondition>
+                    </conditions>
                   </condition>
                   <parentQuestion reference="802"/>
-                  <questions id="873"/>
+                  <questions id="876"/>
                 </question>
-                <question id="874" name="AS_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <questionCategories id="875"/>
-                  <condition class="notCondition" id="876" name="AS_CI_NCONDITION">
-                    <questions id="877">
-                      <question reference="874"/>
+                <question id="877" name="AS_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="878"/>
+                  <condition class="notCondition" id="879" name="AS_CI_NCONDITION">
+                    <questions id="880">
+                      <question reference="877"/>
                     </questions>
-                    <condition class="answerCondition" id="878" name="AS_CI_ACONDITION">
+                    <condition class="answerCondition" id="881" name="AS_CI_ACONDITION">
                       <question reference="637"/>
                       <category reference="18"/>
                     </condition>
                   </condition>
                   <parentQuestion reference="802"/>
-                  <questions id="879"/>
+                  <questions id="882"/>
                 </question>
-                <question id="880" name="BSC_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <questionCategories id="881"/>
-                  <condition class="notCondition" id="882" name="BSC_CI_NCONDITION">
-                    <questions id="883">
-                      <question reference="880"/>
+                <question id="883" name="BSC_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="884"/>
+                  <condition class="notCondition" id="885" name="BSC_CI_NCONDITION">
+                    <questions id="886">
+                      <question reference="883"/>
                     </questions>
-                    <condition class="answerCondition" id="884" name="BSC_CI_ACONDITION">
+                    <condition class="answerCondition" id="887" name="BSC_CI_ACONDITION">
                       <question reference="756"/>
                       <category reference="20"/>
                     </condition>
                   </condition>
                   <parentQuestion reference="802"/>
-                  <questions id="885"/>
+                  <questions id="888"/>
                 </question>
               </questions>
             </question>
-            <question id="886" name="NO_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="889" name="NO_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="800"/>
-              <questionCategories id="887"/>
-              <condition class="multipleCondition" id="888" name="NO_CI_MCONDITION" conditionOperator="AND">
-                <questions id="889">
-                  <question reference="886"/>
+              <questionCategories id="890"/>
+              <condition class="multipleCondition" id="891" name="NO_CI_MCONDITION" conditionOperator="AND">
+                <questions id="892">
+                  <question reference="889"/>
                 </questions>
-                <conditions id="890">
-                  <answerCondition id="891" name="NO_CI_ACONDITION_0">
+                <conditions id="893">
+                  <answerCondition id="894" name="NO_CI_ACONDITION_0">
                     <question reference="190"/>
                     <category reference="20"/>
                   </answerCondition>
-                  <answerCondition id="892" name="NO_CI_ACONDITION_1">
+                  <answerCondition id="895" name="NO_CI_ACONDITION_1">
                     <question reference="217"/>
                     <category reference="18"/>
                   </answerCondition>
-                  <answerCondition id="893" name="NO_CI_ACONDITION_2">
+                  <answerCondition id="896" name="NO_CI_ACONDITION_2">
                     <question reference="394"/>
                     <category reference="18"/>
                   </answerCondition>
-                  <answerCondition id="894" name="NO_CI_ACONDITION_3">
+                  <answerCondition id="897" name="NO_CI_ACONDITION_3">
                     <question reference="410"/>
                     <category reference="140"/>
                   </answerCondition>
-                  <answerCondition id="895" name="NO_CI_ACONDITION_4">
+                  <answerCondition id="898" name="NO_CI_ACONDITION_4">
                     <question reference="427"/>
                     <category reference="140"/>
                   </answerCondition>
-                  <answerCondition id="896" name="NO_CI_ACONDITION_5">
+                  <answerCondition id="899" name="NO_CI_ACONDITION_5">
                     <question reference="545"/>
                     <category reference="18"/>
                   </answerCondition>
-                  <answerCondition id="897" name="NO_CI_ACONDITION_6">
+                  <answerCondition id="900" name="NO_CI_ACONDITION_6">
                     <question reference="570"/>
                     <category reference="140"/>
                   </answerCondition>
-                  <answerCondition id="898" name="NO_CI_ACONDITION_7">
+                  <answerCondition id="901" name="NO_CI_ACONDITION_7">
                     <question reference="637"/>
                     <category reference="18"/>
                   </answerCondition>
-                  <answerCondition id="899" name="NO_CI_ACONDITION_8">
+                  <answerCondition id="902" name="NO_CI_ACONDITION_8">
                     <question reference="756"/>
                     <category reference="20"/>
                   </answerCondition>
                 </conditions>
               </condition>
-              <questions id="900"/>
+              <questions id="903"/>
             </question>
-            <question id="901" name="WT_NA" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="904" name="BP_ARM_CHOSEN_LEFT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="800"/>
-              <questionCategories id="902"/>
-              <condition class="answerCondition" id="903" name="WT_NA_ACONDITION">
-                <questions id="904">
-                  <question reference="901"/>
-                </questions>
-                <question reference="570"/>
-                <category reference="140"/>
-              </condition>
-              <questions id="905"/>
-            </question>
-            <question id="906" name="BP_ARM_CHOSEN_LEFT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-              <page reference="800"/>
-              <questionCategories id="907"/>
-              <condition class="answerCondition" id="908" name="BP_ARM_CHOSEN_LEFT_ACONDITION">
-                <questions id="909">
-                  <question reference="906"/>
+              <questionCategories id="905"/>
+              <condition class="answerCondition" id="906" name="BP_ARM_CHOSEN_LEFT_ACONDITION">
+                <questions id="907">
+                  <question reference="904"/>
                 </questions>
                 <question reference="197"/>
                 <category reference="202"/>
               </condition>
-              <questions id="910"/>
+              <questions id="908"/>
             </question>
-            <question id="911" name="BP_ARM_CHOSEN_RIGHT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="909" name="BP_ARM_CHOSEN_RIGHT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="800"/>
-              <questionCategories id="912"/>
-              <condition class="answerCondition" id="913" name="BP_ARM_CHOSEN_RIGHT_ACONDITION">
-                <questions id="914">
-                  <question reference="911"/>
+              <questionCategories id="910"/>
+              <condition class="answerCondition" id="911" name="BP_ARM_CHOSEN_RIGHT_ACONDITION">
+                <questions id="912">
+                  <question reference="909"/>
                 </questions>
                 <question reference="197"/>
                 <category reference="200"/>
               </condition>
-              <questions id="915"/>
+              <questions id="913"/>
             </question>
-            <question id="916" name="BD_FOOT_CHOSEN_LEFT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="914" name="BD_FOOT_CHOSEN_LEFT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="800"/>
-              <questionCategories id="917"/>
-              <condition class="answerCondition" id="918" name="BD_FOOT_CHOSEN_LEFT_ACONDITION">
-                <questions id="919">
-                  <question reference="916"/>
+              <questionCategories id="915"/>
+              <condition class="answerCondition" id="916" name="BD_FOOT_CHOSEN_LEFT_ACONDITION">
+                <questions id="917">
+                  <question reference="914"/>
                 </questions>
                 <question reference="350"/>
                 <category reference="355"/>
               </condition>
-              <questions id="920"/>
+              <questions id="918"/>
             </question>
-            <question id="921" name="BD_FOOT_CHOSEN_RIGHT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="919" name="BD_FOOT_CHOSEN_RIGHT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="800"/>
-              <questionCategories id="922"/>
-              <condition class="answerCondition" id="923" name="BD_FOOT_CHOSEN_RIGHT_ACONDITION">
-                <questions id="924">
-                  <question reference="921"/>
+              <questionCategories id="920"/>
+              <condition class="answerCondition" id="921" name="BD_FOOT_CHOSEN_RIGHT_ACONDITION">
+                <questions id="922">
+                  <question reference="919"/>
                 </questions>
                 <question reference="350"/>
                 <category reference="353"/>
               </condition>
-              <questions id="925"/>
+              <questions id="923"/>
             </question>
           </questions>
         </page>
       </pages>
-      <sections id="926"/>
+      <sections id="924"/>
     </section>
   </sections>
-  <pages id="927">
+  <pages id="925">
     <page reference="10"/>
     <page reference="22"/>
     <page reference="63"/>

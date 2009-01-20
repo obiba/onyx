@@ -293,7 +293,9 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inQuestion("STAGE_STATUS").withQuestion("WH_CI"/* , "110f" */).setNotCondition("WH_CI_NCONDITION").withAnswerCondition("WH_CI_ACONDITION", "WH_OBS_CI", NC);
     builder.inQuestion("STAGE_STATUS").withQuestion("SP_CI"/* , "110g" */).setNotCondition("SP_CI_NCONDITION").withAnswerCondition("SP_CI_ACONDITION", "SP_BRONCHODILATATOR_USE_24_HOURS", N);
     builder.inQuestion("STAGE_STATUS").withQuestion("BI_CI"/* , "110h" */).setNotCondition("BI_CI_NCONDITION").withAnswerCondition("BI_CI_ACONDITION", "BW_OBS_CI_BIOIMPEDANCE", NC);
-    builder.inQuestion("STAGE_STATUS").withQuestion("WT_CI"/* , "110i" */).setAnswerCondition("WT_CI_ACONDITION", "BW_OBS_CI_WEIGHT", YES_SPECIFY);
+    builder.inQuestion("STAGE_STATUS").withQuestion("WT_CI"/* , "110i" */).setMultipleCondition("WT_CI_MCONDITION", ConditionOperator.OR);
+    builder.inCondition("WT_CI_MCONDITION").withAnswerCondition("WT_CI_ACONDITION", "BW_OBS_CI_WEIGHT", YES_SPECIFY);
+    builder.inCondition("WT_CI_MCONDITION").withAnswerCondition("WT_SH_CI_ACONDITION", "ABLE_TO_STAND", N);
     builder.inQuestion("STAGE_STATUS").withQuestion("AS_CI"/* , "110j" */).setNotCondition("AS_CI_NCONDITION").withAnswerCondition("AS_CI_ACONDITION", "AS_STENOSIS_CI", N);
     builder.inQuestion("STAGE_STATUS").withQuestion("BSC_CI"/* , "110k" */).setNotCondition("BSC_CI_NCONDITION").withAnswerCondition("BSC_CI_ACONDITION", "BLOOD_COLLECTION_SAFE", Y);
 
@@ -308,7 +310,6 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inCondition("NO_CI_MCONDITION").withAnswerCondition("NO_CI_ACONDITION_7", "AS_STENOSIS_CI", N);
     builder.inCondition("NO_CI_MCONDITION").withAnswerCondition("NO_CI_ACONDITION_8", "BLOOD_COLLECTION_SAFE", Y);
 
-    builder.inPage("51").withQuestion("WT_NA"/* , "112" */).setAnswerCondition("WT_NA_ACONDITION", "BW_OBS_CI_BIOIMPEDANCE", NC);
     builder.inPage("51").withQuestion("BP_ARM_CHOSEN_LEFT"/* , "104" */).setAnswerCondition("BP_ARM_CHOSEN_LEFT_ACONDITION", "BP_ARM_CHOSEN", "LEFT_ARM");
     builder.inPage("51").withQuestion("BP_ARM_CHOSEN_RIGHT"/* , "105" */).setAnswerCondition("BP_ARM_CHOSEN_RIGHT_ACONDITION", "BP_ARM_CHOSEN", "RIGHT_ARM");
     builder.inPage("51").withQuestion("BD_FOOT_CHOSEN_LEFT"/* , "108" */).setAnswerCondition("BD_FOOT_CHOSEN_LEFT_ACONDITION", "BD_FOOT_CHOSEN", "LEFT_FOOT");
