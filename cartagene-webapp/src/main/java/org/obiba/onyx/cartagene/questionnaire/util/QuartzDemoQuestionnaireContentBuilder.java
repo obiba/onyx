@@ -277,7 +277,7 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("OTHER_NICOTIN_PRODUCT_CURRENT").setAnswerCondition("OTHER_NICOTIN_PRODUCT_CURRENT_ACONDITION", "OTHER_NICOTIN_PRODUCT_EVER", Y);
 
     builder.inSection("SKIP_PATTERNS").withSection("SK_MULTI_SEL").withPage("21").withQuestion("CARDIOVASCULAR_CONDITIONS", true).setRowCount(6);
-    builder.inQuestion("CARDIOVASCULAR_CONDITIONS").withCategories("HIGH_BP", "HIGH_BLOOD_CHOL", "HEART_ATTACK", "ANGINA");
+    builder.inQuestion("CARDIOVASCULAR_CONDITIONS").withCategories("HIGH_BP", "HIGH_BLOOD_CHOL", "HEART_ATTACK", "ANGINA", "NONE");
     builder.inQuestion("CARDIOVASCULAR_CONDITIONS").withSharedCategory(PNA, "88");
     builder.inQuestion("CARDIOVASCULAR_CONDITIONS").withSharedCategory(DNK, "99");
 
@@ -321,15 +321,9 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("MED_ANGINA").withSharedCategory(PNA, "8");
     builder.inQuestion("MED_ANGINA").withSharedCategory(DNK, "9");
 
-    builder.inSection("SKIP_PATTERNS").withSection("A_PRIORI_VALUE").withPage("26").withQuestion("TAKING_RX_MED_OCCURENCE").withSharedCategory(N, "0");
-    builder.inQuestion("TAKING_RX_MED_OCCURENCE").withSharedCategory(Y, "1");
-    builder.inQuestion("TAKING_RX_MED_OCCURENCE").withSharedCategory(PNA, "8");
-    builder.inQuestion("TAKING_RX_MED_OCCURENCE").withSharedCategory(DNK, "9");
-
-    builder.inSection("A_PRIORI_VALUE").withPage("27").withQuestion("RX_MEDICATION").withCategory("MED_NUMBER").withOpenAnswerDefinition("MED_NUMBER", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 4)).setSize(2);
+    builder.inSection("SKIP_PATTERNS").withSection("A_PRIORI_VALUE").withPage("27").withQuestion("RX_MEDICATION").withCategory("MED_NUMBER").withOpenAnswerDefinition("MED_NUMBER", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(0, 4)).setSize(2);
     builder.inQuestion("RX_MEDICATION").withSharedCategory(PNA, "88");
     builder.inQuestion("RX_MEDICATION").withSharedCategory(DNK, "99");
-    builder.inQuestion("RX_MEDICATION").setAnswerCondition("RX_MEDICATION_ACONDITION", "TAKING_RX_MED_OCCURENCE", Y);
 
     builder.inSection("A_PRIORI_VALUE").withPage("28").withQuestion("MEDICATION1_TYPE").withSharedCategory(TYPE).withOpenAnswerDefinition(TYPE, DataType.TEXT).setSize(50);
     builder.inQuestion("MEDICATION1_TYPE").withSharedCategory(PNA, "88");
