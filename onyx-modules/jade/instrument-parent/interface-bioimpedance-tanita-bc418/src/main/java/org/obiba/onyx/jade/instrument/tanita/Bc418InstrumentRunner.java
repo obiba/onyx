@@ -6,7 +6,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -281,8 +283,14 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
     output.put("Height", getIntegerValue(heightTxt.getText()));
     output.put("Age", getIntegerValue(ageTxt.getText()));
 
-    output.put("Date", new Data(DataType.TEXT, outputData[0]));
-    output.put("Time", new Data(DataType.TEXT, outputData[1]));
+    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy hh:mm");
+    Date timestamp = null;
+    try {
+      timestamp = format.parse(outputData[0].replace("\"", "") + " " + outputData[1].replace("\"", ""));
+    } catch(ParseException e) {
+      throw new RuntimeException("The timestamp extracted for BC418 output could not be parsed", e);
+    }
+    output.put("Timestamp", new Data(DataType.DATE, timestamp));
 
     output.put("RightLegImpedance", getIntegerValue(outputData[14]));
     output.put("LeftLegImpedance", getIntegerValue(outputData[15]));

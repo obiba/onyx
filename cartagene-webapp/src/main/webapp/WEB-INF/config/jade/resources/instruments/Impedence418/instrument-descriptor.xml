@@ -98,17 +98,10 @@
       </inputSource>
     </input>
 
-    <output id="date">
-      <vendorName>Date</vendorName>
-      <code>RES_MEASUREMENT_DATE</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-    </output>
-
-    <output id="time">
-      <vendorName>Time</vendorName>
-      <code>RES_MEASUREMENT_TIME</code>
-      <dataType>TEXT</dataType>
+    <output id="timestamp">
+      <vendorName>Timestamp</vendorName>
+      <code>RES_MEASUREMENT_TIMESTAMP</code>
+      <dataType>DATE</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 

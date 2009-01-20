@@ -165,12 +165,12 @@
       <dataType>DATE</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <measurementUnit></measurementUnit>
-      <!-- <integrityChecks>
+      <integrityChecks>
         <equalsParameterCheck>
-        <targetParameter reference="DOB" />
-        <parameter reference="birth_date" />
+          <targetParameter reference="DOB" />
+          <parameter reference="birth_date" />
         </equalsParameterCheck>
-        </integrityChecks>  -->
+      </integrityChecks> 
     </output>
 
     <output id="Sex">
