@@ -70,7 +70,7 @@ public class CIPreliminaryQuestionnaireContentBuilder {
 
     // section S2_BP_HR
     builder.withSection("S2_BP_HR").withSection("S2_EC_OBS").withPage("6").withQuestion("BP_OBSERVED_CI"/* , "10" */).withCategories(NC, "RASHES_BOTH_ARMS", "CAST_BOTH_ARMS", "PARALYSIS_AMPUTATION_WITHERED");
-    builder.inQuestion("BP_OBSERVED_CI").withSharedCategory(OTHER).withOpenAnswerDefinition(OTHER, DataType.TEXT);
+    builder.inQuestion("BP_OBSERVED_CI").withSharedCategory(OTHER).withOpenAnswerDefinition(OTHER, DataType.TEXT).setSize(60);
 
     builder.inSection("S2_BP_HR").withSection("S2_EC_IC_ASKED").withPage("7").withQuestion("S2_BP1").setAnswerCondition("S2_BP1_ACONDITION", "BP_OBSERVED_CI", NC);
     builder.inPage("7").withQuestion("LEFT_ARM_SURGERY_SHUNT"/* , "13" */).withSharedCategories(N, Y, DNK);
