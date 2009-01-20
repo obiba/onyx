@@ -94,7 +94,7 @@
         <value>classpath:/appConfiguration.xml</value>
       </list>
     </property>
-    <property name="developmentSeed" value="true" />
+    <property name="developmentSeed" value="false" />
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 
