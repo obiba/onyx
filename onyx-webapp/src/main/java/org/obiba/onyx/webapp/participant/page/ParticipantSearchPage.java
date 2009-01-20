@@ -57,6 +57,7 @@ import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.variable.export.OnyxDataExport;
+import org.obiba.onyx.webapp.OnyxApplication;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
@@ -244,10 +245,7 @@ public class ParticipantSearchPage extends BasePage {
 
     });
 
-    // participantList = new OnyxEntityList<Participant>("participant-list", new AppointedParticipantProvider(template),
-    // new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this,
-    // null));
-    participantList = getAllParticipantsList();
+    participantList = new OnyxEntityList<Participant>("participant-list", new AppointedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
     participantList.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
     add(participantList);
 
@@ -526,7 +524,7 @@ public class ParticipantSearchPage extends BasePage {
         }
 
       };
-      // exportLink.setVisible(((OnyxApplication) OnyxApplication.get()).isDevelopmentMode());
+      exportLink.setVisible(((OnyxApplication) OnyxApplication.get()).isDevelopmentMode());
       add(exportLink);
     }
   }
