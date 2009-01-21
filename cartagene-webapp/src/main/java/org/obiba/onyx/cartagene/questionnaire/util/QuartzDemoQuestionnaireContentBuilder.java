@@ -152,7 +152,7 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("AGE_PRESENT_ADRESS").withSharedCategory(PNA, "88");
     builder.inQuestion("AGE_PRESENT_ADRESS").withSharedCategory(DNK, "99");
 
-    builder.inSection("QUESTION_TYPES").withSection("EXCL_COMPOUND").withPage("8").withQuestion("TOOTH_BRUSHING_FREQ").withCategory("FREQ_DAY").withOpenAnswerDefinition("FREQ_DAY", DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).setSize(1);
+    builder.inSection("QUESTION_TYPES").withSection("EXCL_COMPOUND").withPage("8").withQuestion("TOOTH_BRUSHING_FREQ").withCategory("FREQ_DAY").withOpenAnswerDefinition("FREQ_DAY", DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).setSize(2);
     builder.inQuestion("TOOTH_BRUSHING_FREQ").withCategory("FREQ_WEEK").withOpenAnswerDefinition("FREQ_WEEK", DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0)).setSize(2);
     builder.inQuestion("TOOTH_BRUSHING_FREQ").withSharedCategory(PNA, "88");
     builder.inQuestion("TOOTH_BRUSHING_FREQ").withSharedCategory(DNK, "99");
