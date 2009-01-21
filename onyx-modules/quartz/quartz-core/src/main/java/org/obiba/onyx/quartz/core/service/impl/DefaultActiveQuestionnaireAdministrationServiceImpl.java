@@ -96,8 +96,10 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   public void end() {
     // refresh it
     currentQuestionnaireParticipant = getQuestionnaireParticipant();
-    currentQuestionnaireParticipant.setTimeEnd(new Date());
-    getPersistenceManager().save(currentQuestionnaireParticipant);
+    if(currentQuestionnaireParticipant != null) {
+      currentQuestionnaireParticipant.setTimeEnd(new Date());
+      getPersistenceManager().save(currentQuestionnaireParticipant);
+    }
   }
 
   public Page getCurrentPage() {
@@ -316,7 +318,11 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public QuestionnaireParticipant getQuestionnaireParticipant() {
-    return (getPersistenceManager().refresh(currentQuestionnaireParticipant));
+    if(currentQuestionnaireParticipant != null && currentQuestionnaireParticipant.getId() != null) {
+      return (getPersistenceManager().refresh(currentQuestionnaireParticipant));
+    } else {
+      return currentQuestionnaireParticipant;
+    }
   }
 
   private void updateResumePage(Page resumePage) {
