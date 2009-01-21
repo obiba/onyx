@@ -315,16 +315,18 @@ public class Participant extends AbstractEntity {
 
     // The list of configured attribute values does NOT contain a value for the specified
     // attribute. So create a new ParticipantAttributeValue and append it to the list.
-    ParticipantAttributeValue attributeValue = new ParticipantAttributeValue();
-    attributeValue.setParticipant(this);
-    attributeValue.setAttributeName(attributeName);
-
+    //
+    // ONYX-186: Don't add a new ParticipantAttributeValue in the case where the data argument
+    // is null.
     if(data != null) {
+      ParticipantAttributeValue attributeValue = new ParticipantAttributeValue();
+      attributeValue.setParticipant(this);
+      attributeValue.setAttributeName(attributeName);
       attributeValue.setAttributeType(data.getType());
       attributeValue.setData(data);
-    }
 
-    getConfiguredAttributeValues().add(attributeValue);
+      getConfiguredAttributeValues().add(attributeValue);
+    }
   }
 
   public Boolean getExported() {
