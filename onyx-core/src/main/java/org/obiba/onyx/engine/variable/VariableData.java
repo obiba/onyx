@@ -23,7 +23,10 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
- * 
+ * Variable data are container of data values and type related to a {@link Variable} definition. The {@link Variable} is
+ * identified by its path. Dependencies between variables are solved by using key/reference variable links, expressed as
+ * parameters in the variable path to ensure unique identification of a data.
+ * @see IVariablePathNamingStrategy
  */
 @XStreamAlias("variableData")
 public class VariableData implements Serializable {
@@ -135,7 +138,7 @@ public class VariableData implements Serializable {
   /**
    * Add children variable data.
    * @param variableDatas
-   * @return
+   * @return this for chaining
    */
   public VariableData addVariableDatas(VariableData... variableDatas) {
     if(variableDatas != null) {

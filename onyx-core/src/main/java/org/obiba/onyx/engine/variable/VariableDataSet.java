@@ -13,11 +13,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.obiba.onyx.core.domain.participant.Participant;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
- * 
+ * A set of {@link VariableData}, usually associated to one {@link Participant}.
  */
 @XStreamAlias("variableDataSet")
 public class VariableDataSet implements Serializable {

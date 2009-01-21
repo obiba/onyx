@@ -21,7 +21,9 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
- * 
+ * A variable is either simply a variable container, or a concrete variable (meaning it defines a data type). Other
+ * information such as categories or unit can be provided. Variables can be link to each other in a soft way using key
+ * and references.
  */
 @XStreamAlias("variable")
 public class Variable implements Serializable {
@@ -126,7 +128,7 @@ public class Variable implements Serializable {
   }
 
   /**
-   * Get the paths (absolute or relative) to the variables the current variable is depending on.
+   * Get the variables keys the current variable is depending on.
    * @return
    */
   public List<String> getReferences() {
@@ -134,19 +136,23 @@ public class Variable implements Serializable {
   }
 
   /**
-   * Add a path (absolute or relative) to a variable the current variable is depending on.
-   * @param path
+   * Add a variable key as a reference for the current variable.
+   * @param key
    */
-  public void addReference(String path) {
-    if(path != null) {
-      getReferences().add(path);
+  public void addReference(String key) {
+    if(key != null) {
+      getReferences().add(key);
     }
   }
 
-  public void addReferences(String... paths) {
-    if(paths != null) {
-      for(String path : paths) {
-        getReferences().add(path);
+  /**
+   * Add a list of variable keys as references for the current variable.
+   * @param keys
+   */
+  public void addReferences(String... keys) {
+    if(keys != null) {
+      for(String key : keys) {
+        getReferences().add(key);
       }
     }
   }
@@ -209,10 +215,18 @@ public class Variable implements Serializable {
     return current;
   }
 
+  /**
+   * Get variable name.
+   * @return
+   */
   public String getName() {
     return name;
   }
 
+  /**
+   * Set the variable name.
+   * @param name
+   */
   public void setName(String name) {
     this.name = name;
   }
