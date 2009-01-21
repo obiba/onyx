@@ -120,11 +120,11 @@
       <inputSource class="multipleOutputParameterSource">
         <outputParameterSourceList>
           <outputParameterSource>
-            <instrumentType>Impendence310</instrumentType>
+            <instrumentType>Impedence310</instrumentType>
             <parameterName>RES_WEIGHT</parameterName>
           </outputParameterSource>
           <outputParameterSource>
-            <instrumentType>Impendence418</instrumentType>
+            <instrumentType>Impedence418</instrumentType>
             <parameterName>RES_WEIGHT</parameterName>
           </outputParameterSource>
           <outputParameterSource>
