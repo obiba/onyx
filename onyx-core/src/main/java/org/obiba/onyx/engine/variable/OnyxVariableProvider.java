@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ * Onyx system variable provider: participant, user, action, interview related variables.
  */
 public class OnyxVariableProvider implements IVariableProvider, IActionVariableProvider {
 
