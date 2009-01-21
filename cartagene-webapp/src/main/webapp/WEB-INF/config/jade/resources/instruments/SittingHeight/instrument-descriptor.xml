@@ -37,7 +37,7 @@
       <code>INPUT_STOOL_HEIGHT</code>
       <dataType>DECIMAL</dataType>
       <measurementUnit>cm</measurementUnit>
-      <captureMethod>MANUAL</captureMethod>
+      <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="fixedSource">
         <value>39.5</value>
       </inputSource>

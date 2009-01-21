@@ -123,6 +123,7 @@ public class InstrumentRunPanel extends Panel {
 
     InstrumentInputParameter input = new InstrumentInputParameter();
     input.setInstrumentType(run.getInstrumentType());
+    if(!isInteractive) input.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
 
     if(queryService.count(input) > 0) {
       String key = isInteractive ? "InstrumentInputs" : "OperatorInputs";
