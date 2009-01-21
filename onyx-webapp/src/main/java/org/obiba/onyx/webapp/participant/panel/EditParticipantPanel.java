@@ -402,7 +402,14 @@ public class EditParticipantPanel extends Panel {
         IModel attributeValueModel;
         if(participant.getParticipantAttributeValue(attribute.getName()) == null) {
           participant.setConfiguredAttributeValue(attribute.getName(), new Data(attribute.getType()));
-          attributeValueModel = new Model(participant.getParticipantAttributeValue(attribute.getName()));
+
+          // ONYX-186
+          if(participant.getId() != null) {
+            participantService.updateParticipant(participant);
+            attributeValueModel = new DetachableEntityModel(queryService, participant.getParticipantAttributeValue(attribute.getName()));
+          } else {
+            attributeValueModel = new Model(participant.getParticipantAttributeValue(attribute.getName()));
+          }
         } else {
           attributeValueModel = new DetachableEntityModel(queryService, participant.getParticipantAttributeValue(attribute.getName()));
         }
