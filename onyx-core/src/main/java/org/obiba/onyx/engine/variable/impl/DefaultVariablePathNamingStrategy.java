@@ -50,10 +50,31 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
   public String getPath(Variable entity) {
     String name = normalizeName(entity.getName());
     if(entity.getParent() != null) {
-      return getPath(entity.getParent()) + getPathSeparator() + name;
+      StringBuffer buffer = new StringBuffer();
+      return getPath(entity.getParent(), buffer).append(getPathSeparator()).append(name).toString();
+    } else if(startWithPathSeparator) {
+      return getPathSeparator() + name;
     } else {
-      return startWithPathSeparator ? getPathSeparator() + name : name;
+      return name;
     }
+  }
+
+  /**
+   * Recursive path building using string buffer.
+   * @param entity
+   * @param buffer
+   * @return
+   */
+  private StringBuffer getPath(Variable entity, StringBuffer buffer) {
+    String name = normalizeName(entity.getName());
+    if(entity.getParent() != null) {
+      getPath(entity.getParent(), buffer).append(getPathSeparator()).append(name);
+    } else if(startWithPathSeparator) {
+      buffer.append(getPathSeparator()).append(name);
+    } else {
+      buffer.append(name);
+    }
+    return buffer;
   }
 
   public String getPath(Variable entity, String key, String value) {
