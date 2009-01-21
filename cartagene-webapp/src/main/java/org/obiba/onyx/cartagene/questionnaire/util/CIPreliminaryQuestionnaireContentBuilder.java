@@ -307,10 +307,11 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inCondition("NO_CI_MCONDITION").withAnswerCondition("NO_CI_ACONDITION_2", "GS_PAIN_BOTH_HANDS", N);
     builder.inCondition("NO_CI_MCONDITION").withAnswerCondition("NO_CI_ACONDITION_3", "SH_OBS_CI", NC);
     builder.inCondition("NO_CI_MCONDITION").withAnswerCondition("NO_CI_ACONDITION_4", "WH_OBS_CI", NC);
-    builder.inCondition("NO_CI_MCONDITION").withAnswerCondition("NO_CI_ACONDITION_5", "SP_BRONCHODILATATOR_USE_24_HOURS", N);
-    builder.inCondition("NO_CI_MCONDITION").withAnswerCondition("NO_CI_ACONDITION_6", "BW_OBS_CI_BIOIMPEDANCE", NC);
-    builder.inCondition("NO_CI_MCONDITION").withAnswerCondition("NO_CI_ACONDITION_7", "AS_STENOSIS_CI", N);
-    builder.inCondition("NO_CI_MCONDITION").withAnswerCondition("NO_CI_ACONDITION_8", "BLOOD_COLLECTION_SAFE", Y);
+    builder.inCondition("NO_CI_MCONDITION").withAnswerCondition("NO_CI_ACONDITION_5", "SP_COLLAPSED_LUNG", N);
+    builder.inCondition("NO_CI_MCONDITION").withAnswerCondition("NO_CI_ACONDITION_6", "SP_DETACHED_RETINA", N);
+    builder.inCondition("NO_CI_MCONDITION").withAnswerCondition("NO_CI_ACONDITION_7", "BW_OBS_CI_BIOIMPEDANCE", NC);
+    builder.inCondition("NO_CI_MCONDITION").withAnswerCondition("NO_CI_ACONDITION_8", "AS_STENOSIS_CI", N);
+    builder.inCondition("NO_CI_MCONDITION").withAnswerCondition("NO_CI_ACONDITION_9", "BLOOD_COLLECTION_SAFE", Y);
 
     builder.inPage("51").withQuestion("BP_ARM_CHOSEN_LEFT"/* , "104" */).setAnswerCondition("BP_ARM_CHOSEN_LEFT_ACONDITION", "BP_ARM_CHOSEN", "LEFT_ARM");
     builder.inPage("51").withQuestion("BP_ARM_CHOSEN_RIGHT"/* , "105" */).setAnswerCondition("BP_ARM_CHOSEN_RIGHT_ACONDITION", "BP_ARM_CHOSEN", "RIGHT_ARM");
