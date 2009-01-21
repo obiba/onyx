@@ -118,7 +118,7 @@ public class VariableDirectory implements IVariableProvider {
 
     for(IVariableProvider provider : providerToVariablePathsMap.keySet()) {
       for(String path : providerToVariablePathsMap.get(provider)) {
-        if(filter == null || filter.includeVariable(path)) {
+        if(filter == null || filter.accept(path)) {
           VariableData varData = getVariableData(participant, path);
           if(varData != null && (varData.getDatas().size() > 0 || varData.getVariableDatas().size() > 0)) {
             dataSet.addVariableData(varData);

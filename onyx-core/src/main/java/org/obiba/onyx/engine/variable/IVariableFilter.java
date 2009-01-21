@@ -10,8 +10,15 @@
 package org.obiba.onyx.engine.variable;
 
 /**
- * 
+ * Interface for filtering variables from their path.
  */
 public interface IVariableFilter {
-  public boolean includeVariable(String path);
+
+  /**
+   * Whether or not a variable is acceptable given its path.
+   * @param path
+   * @return
+   */
+  public boolean accept(String path);
+
 }
