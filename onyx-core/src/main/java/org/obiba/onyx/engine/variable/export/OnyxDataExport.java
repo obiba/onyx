@@ -104,7 +104,7 @@ public class OnyxDataExport {
           if(configDirectory != null) {
             File configDir = configDirectory.getFile();
             if(configDir != null && configDir.exists() && configDir.isDirectory()) {
-              OutputStream osConfigZip = exportStrategy.newEntry("config.zip");
+              OutputStream osConfigZip = exportStrategy.newEntry(configDir.getName() + ".zip");
               zipDir(configDir, osConfigZip);
             }
           }
