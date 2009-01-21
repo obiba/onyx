@@ -1419,7 +1419,7 @@
                     </questionCategory>
                     <questionCategory id="616" reselectable="false" selected="false">
                       <question reference="604"/>
-                      <category id="617" name="NONE" escape="false"/>
+                      <category id="617" name="NONE" escape="true"/>
                     </questionCategory>
                     <questionCategory id="618" reselectable="false" selected="false" exportName="88">
                       <question reference="604"/>

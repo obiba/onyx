@@ -277,7 +277,8 @@ public class QuartzDemoQuestionnaireContentBuilder {
     builder.inQuestion("OTHER_NICOTIN_PRODUCT_CURRENT").setAnswerCondition("OTHER_NICOTIN_PRODUCT_CURRENT_ACONDITION", "OTHER_NICOTIN_PRODUCT_EVER", Y);
 
     builder.inSection("SKIP_PATTERNS").withSection("SK_MULTI_SEL").withPage("21").withQuestion("CARDIOVASCULAR_CONDITIONS", true).setRowCount(6);
-    builder.inQuestion("CARDIOVASCULAR_CONDITIONS").withCategories("HIGH_BP", "HIGH_BLOOD_CHOL", "HEART_ATTACK", "ANGINA", "NONE");
+    builder.inQuestion("CARDIOVASCULAR_CONDITIONS").withCategories("HIGH_BP", "HIGH_BLOOD_CHOL", "HEART_ATTACK", "ANGINA");
+    builder.inQuestion("CARDIOVASCULAR_CONDITIONS").withCategory("NONE").setEscape(true);
     builder.inQuestion("CARDIOVASCULAR_CONDITIONS").withSharedCategory(PNA, "88");
     builder.inQuestion("CARDIOVASCULAR_CONDITIONS").withSharedCategory(DNK, "99");
 
