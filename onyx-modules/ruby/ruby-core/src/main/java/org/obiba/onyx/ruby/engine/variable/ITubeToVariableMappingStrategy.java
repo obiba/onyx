@@ -13,16 +13,34 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.variable.IVariablePathNamingStrategy;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
+import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
+import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 
 /**
- * 
+ * Defines the way tubes will be expressed in terms of variables.
  */
 public interface ITubeToVariableMappingStrategy {
 
+  /**
+   * Get the {@link ParticipantTubeRegistration} variable.
+   * @return
+   */
   public Variable getParticipantTubeRegistrationVariable();
 
+  /**
+   * Get the {@link RegisteredParticipantTube} variable.
+   * @return
+   */
   public Variable getRegisteredParticipantTubeVariable();
 
+  /**
+   * Get the registered data for the variable.
+   * @param participant
+   * @param variable
+   * @param variablePathNamingStrategy
+   * @param varData
+   * @return
+   */
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy, VariableData varData);
 
 }
