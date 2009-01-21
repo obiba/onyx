@@ -108,6 +108,7 @@ public class OnyxDataExportTest {
     EasyMock.expect(mockEntityQueryService.match((Participant) EasyMock.anyObject())).andReturn(testParticipants);
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     mockExportStrategy.prepare((OnyxDataExportContext) EasyMock.anyObject());
+    EasyMock.expect(mockExportStrategy.newEntry("variables.xml")).andReturn(new ByteArrayOutputStream());
     EasyMock.expect(mockExportStrategy.newEntry(participant.getBarcode() + ".xml")).andReturn(baos);
     mockExportStrategy.terminate((OnyxDataExportContext) EasyMock.anyObject());
 
@@ -149,8 +150,9 @@ public class OnyxDataExportTest {
 
     EasyMock.expect(mockUserSessionService.getUser()).andReturn(exportUser);
     EasyMock.expect(mockEntityQueryService.match((Participant) EasyMock.anyObject())).andReturn(testParticipants);
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
     mockExportStrategy.prepare((OnyxDataExportContext) EasyMock.anyObject());
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    EasyMock.expect(mockExportStrategy.newEntry("variables.xml")).andReturn(new ByteArrayOutputStream());
     EasyMock.expect(mockExportStrategy.newEntry(participant.getBarcode() + ".xml")).andReturn(baos);
     mockExportStrategy.terminate((OnyxDataExportContext) EasyMock.anyObject());
 

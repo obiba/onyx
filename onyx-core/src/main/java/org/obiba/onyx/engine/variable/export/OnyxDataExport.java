@@ -9,9 +9,14 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable.export;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
@@ -23,6 +28,7 @@ import org.obiba.onyx.engine.variable.VariableDirectory;
 import org.obiba.onyx.engine.variable.util.VariableStreamer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 /**
  * 
@@ -39,6 +45,8 @@ public class OnyxDataExport {
   private UserSessionService userSessionService;
 
   private IOnyxDataExportStrategy exportStrategy;
+
+  private Resource configDirectory;
 
   private List<OnyxDataExportDestination> exportDestinations;
 
@@ -62,6 +70,10 @@ public class OnyxDataExport {
     this.variableDirectory = variableDirectory;
   }
 
+  public void setConfigDirectory(Resource configDirectory) {
+    this.configDirectory = configDirectory;
+  }
+
   public void exportCompletedInterviews() throws Exception {
 
     Participant template = new Participant();
@@ -78,9 +90,26 @@ public class OnyxDataExport {
 
     if(participants.size() > 0) {
       for(OnyxDataExportDestination destination : this.exportDestinations) {
+        log.info("Exporting to destination {}", destination.getName());
         OnyxDataExportContext context = new OnyxDataExportContext(destination.getName(), userSessionService.getUser());
         try {
           exportStrategy.prepare(context);
+
+          // variables file
+          OutputStream osVariables = exportStrategy.newEntry("variables.xml");
+          VariableStreamer.toXML(variableDirectory.getVariableRoot(), osVariables);
+          osVariables.flush();
+
+          // system configuration in a zip file
+          if(configDirectory != null) {
+            File configDir = configDirectory.getFile();
+            if(configDir != null && configDir.exists() && configDir.isDirectory()) {
+              OutputStream osConfigZip = exportStrategy.newEntry("config.zip");
+              zipDir(configDir, osConfigZip);
+            }
+          }
+
+          // participants files
           for(Participant participant : participants) {
             String entryName = participant.getBarcode() + ".xml";
             OutputStream os = exportStrategy.newEntry(entryName);
@@ -97,6 +126,74 @@ public class OnyxDataExport {
         }
       }
     }
+  }
+
+  /**
+   * Zip recursively the directory into the given output stream.
+   * @param dir
+   * @param os
+   */
+  private void zipDir(File dir, OutputStream os) {
+    try {
+      ZipOutputStream out = new ZipOutputStream(os);
+      addDir(dir, out, dir);
+      // Complete the ZIP file
+      os.flush();
+      out.finish();
+    } catch(IOException e) {
+      log.error("Failed zipping directory " + dir.getAbsolutePath(), e);
+    }
+  }
+
+  /**
+   * Add a directory content to zip output stream.
+   * @param dir
+   * @param out
+   * @throws IOException
+   */
+  private void addDir(File dir, ZipOutputStream out, File sourceDir) throws IOException {
+    File[] files = dir.listFiles();
+
+    if(files != null) {
+      byte[] tmpBuf = new byte[2048];
+      for(File file : files) {
+        if(file.isDirectory()) {
+          addDir(file, out, sourceDir);
+          continue;
+        }
+
+        // get a relative path for the zip
+        String path = getFileRelativePath(file, sourceDir);
+        FileInputStream in = new FileInputStream(file);
+        log.debug("adding={}", path);
+        out.putNextEntry(new ZipEntry(path));
+
+        // Transfer from the file to the ZIP file
+        int len;
+        while((len = in.read(tmpBuf)) > 0) {
+          out.write(tmpBuf, 0, len);
+        }
+
+        // Complete the entry
+        out.closeEntry();
+        in.close();
+      }
+    }
+  }
+
+  /**
+   * Get the file path relative to the given source directory file.
+   * @param f
+   * @param sourceDir
+   * @return
+   */
+  private String getFileRelativePath(File f, File sourceDir) {
+    String path = f.getName();
+    while(!f.getParentFile().equals(sourceDir)) {
+      f = f.getParentFile();
+      path = f.getName() + File.separator + path;
+    }
+    return path;
   }
 
 }
