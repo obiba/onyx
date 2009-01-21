@@ -30,7 +30,7 @@ public class Category implements Serializable {
   private String alt;
 
   @XStreamAsAttribute
-  private Boolean escape;
+  private Boolean missing;
 
   @XStreamOmitField
   private Variable variable;
@@ -40,12 +40,12 @@ public class Category implements Serializable {
     this.name = name;
   }
 
-  public Category(String name, String alternateName, Boolean escape) {
+  public Category(String name, String alternateName, Boolean missing) {
     super();
     this.name = name;
     this.alt = alternateName;
-    if(escape) {
-      this.escape = escape;
+    if(missing) {
+      this.missing = missing;
     }
   }
 
@@ -65,15 +65,15 @@ public class Category implements Serializable {
     this.alt = alternateName;
   }
 
-  public Boolean getEscape() {
-    return escape;
+  public Boolean getMissing() {
+    return missing;
   }
 
-  public void setEscape(Boolean escape) {
-    if(escape == null || !escape) {
-      this.escape = null;
+  public void setMissing(Boolean missing) {
+    if(missing == null || !missing) {
+      this.missing = null;
     } else {
-      this.escape = escape;
+      this.missing = missing;
     }
   }
 
