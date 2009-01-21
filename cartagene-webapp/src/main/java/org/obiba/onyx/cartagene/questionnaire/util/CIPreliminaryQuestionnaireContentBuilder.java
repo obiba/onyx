@@ -280,18 +280,20 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inCondition("STAGE_STATUS_MCONDITION").withNoAnswerCondition("STAGE_STATUS_NCONDITION_2").withAnswerCondition("STAGE_STATUS_ACONDITION_2", "GS_PAIN_BOTH_HANDS", N);
     builder.inCondition("STAGE_STATUS_MCONDITION").withNoAnswerCondition("STAGE_STATUS_NCONDITION_3").withAnswerCondition("STAGE_STATUS_ACONDITION_3", "SH_OBS_CI", NC);
     builder.inCondition("STAGE_STATUS_MCONDITION").withNoAnswerCondition("STAGE_STATUS_NCONDITION_4").withAnswerCondition("STAGE_STATUS_ACONDITION_4", "WH_OBS_CI", NC);
-    builder.inCondition("STAGE_STATUS_MCONDITION").withNoAnswerCondition("STAGE_STATUS_NCONDITION_5").withAnswerCondition("STAGE_STATUS_ACONDITION_5", "SP_BRONCHODILATATOR_USE_24_HOURS", N);
+    builder.inCondition("STAGE_STATUS_MCONDITION").withMultipleCondition("STAGE_STATUS_MCONDITION_0", ConditionOperator.AND).withNoAnswerCondition("STAGE_STATUS_NCONDITION_0_1").withAnswerCondition("STATGE_STATUS_ACONDITION_0_1", "SP_COLLAPSED_LUNG", N);
+    builder.inCondition("STAGE_STATUS_MCONDITION_0").withNoAnswerCondition("STAGE_STATUS_NCONDITION_0_2").withAnswerCondition("STATGE_STATUS_ACONDITION_0_2", "SP_DETACHED_RETINA", N);
     builder.inCondition("STAGE_STATUS_MCONDITION").withNoAnswerCondition("STAGE_STATUS_NCONDITION_6").withAnswerCondition("STAGE_STATUS_ACONDITION_6", "BW_OBS_CI_BIOIMPEDANCE", NC);
     builder.inCondition("STAGE_STATUS_MCONDITION").withAnswerCondition("STAGE_STATUS_ACONDITION_7", "BW_OBS_CI_WEIGHT", YES_SPECIFY);
     builder.inCondition("STAGE_STATUS_MCONDITION").withNoAnswerCondition("STAGE_STATUS_NCONDITION_7").withAnswerCondition("STAGE_STATUS_ACONDITION_8", "AS_STENOSIS_CI", N);
     builder.inCondition("STAGE_STATUS_MCONDITION").withNoAnswerCondition("STAGE_STATUS_NCONDITION_8").withAnswerCondition("STAGE_STATUS_ACONDITION_9", "BLOOD_COLLECTION_SAFE", Y);
 
     builder.inQuestion("STAGE_STATUS").withQuestion("BP_CI"/* , "110a" */).setNotCondition("BP_CI_NCONDITION").withAnswerCondition("BP_CI_ACONDITION", "BLOOD_PRESSURE_MEASURE_SAFE", Y);
-    builder.inQuestion("STAGE_STATUS").withQuestion("BD_CI"/* , "110b" */).setNotCondition("BD_CI_NCONDITION").withAnswerCondition("BD_CI_ACONDITION", "ISOPROPYL_ALCOHOL_ALLERGY", Y);
+    builder.inQuestion("STAGE_STATUS").withQuestion("BD_CI"/* , "110b" */).setNotCondition("BD_CI_NCONDITION").withAnswerCondition("BD_CI_ACONDITION", "ISOPROPYL_ALCOHOL_ALLERGY", N);
     builder.inQuestion("STAGE_STATUS").withQuestion("GS_CI"/* , "110c" */).setNotCondition("GS_CI_NCONDITION").withAnswerCondition("GS_CI_ACONDITION", "GS_PAIN_BOTH_HANDS", N);
     builder.inQuestion("STAGE_STATUS").withQuestion("SH_CI"/* , "110d" */).setNotCondition("SH_CI_NCONDITION").withAnswerCondition("SH_CI_ACONDITION", "SH_OBS_CI", NC);
     builder.inQuestion("STAGE_STATUS").withQuestion("WH_CI"/* , "110f" */).setNotCondition("WH_CI_NCONDITION").withAnswerCondition("WH_CI_ACONDITION", "WH_OBS_CI", NC);
-    builder.inQuestion("STAGE_STATUS").withQuestion("SP_CI"/* , "110g" */).setNotCondition("SP_CI_NCONDITION").withAnswerCondition("SP_CI_ACONDITION", "SP_BRONCHODILATATOR_USE_24_HOURS", N);
+    builder.inQuestion("STAGE_STATUS").withQuestion("SP_CI"/* , "110g" */).setMultipleCondition("SP_CI_MCONDITION", ConditionOperator.AND).withNoAnswerCondition("SP_CI_NCONDITION_0").withAnswerCondition("SP_CI_ACONDITION_0", "SP_COLLAPSED_LUNG", N);
+    builder.inCondition("SP_CI_MCONDITION").withNoAnswerCondition("SP_CI_NCONDITION_1").withAnswerCondition("SP_CI_ACONDITION_2", "SP_DETACHED_RETINA", N);
     builder.inQuestion("STAGE_STATUS").withQuestion("BI_CI"/* , "110h" */).setNotCondition("BI_CI_NCONDITION").withAnswerCondition("BI_CI_ACONDITION", "BW_OBS_CI_BIOIMPEDANCE", NC);
     builder.inQuestion("STAGE_STATUS").withQuestion("WT_CI"/* , "110i" */).setMultipleCondition("WT_CI_MCONDITION", ConditionOperator.OR);
     builder.inCondition("WT_CI_MCONDITION").withAnswerCondition("WT_CI_ACONDITION", "BW_OBS_CI_WEIGHT", YES_SPECIFY);
