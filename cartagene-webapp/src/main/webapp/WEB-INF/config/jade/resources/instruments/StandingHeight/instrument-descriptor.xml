@@ -13,7 +13,7 @@
     </instrument>
   </instruments>
 
-  <contraindications>
+ <!-- <contraindications>
     <contraIndication>
       <code>UnableToStandUnassistedHandicap</code>
       <type>OBSERVED</type>
@@ -34,7 +34,7 @@
       <requiresDescription>true</requiresDescription>
       <type>OBSERVED</type>
     </contraIndication>
-  </contraindications>
+  </contraindications>  -->
 
   <instrumentParameters>
     <interpretative>

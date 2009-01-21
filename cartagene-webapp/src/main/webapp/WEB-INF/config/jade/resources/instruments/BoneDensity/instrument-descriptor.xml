@@ -24,41 +24,36 @@
       <type>OBSERVED</type>
     </contraIndication>
 
-    <contraIndication>
-      <code>OpenWoundsBreaksSoresOnFeet</code>
-      <type>ASKED</type>
-    </contraIndication>
-
   </contraindications>
 
   <instrumentParameters>
-    <interpretative>
+    <!-- <interpretative>(remove)
       <code>IV_FRACTURE_LEFT_FOOT</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>ASKED</type>
     </interpretative>
 
-    <interpretative>
+    <interpretative>(remove)
       <code>IV_FRACTURE_RIGHT_FOOT</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>ASKED</type>
     </interpretative>
 
-    <interpretative>
+    <interpretative>(remove)
       <code>IV_METAL_WORK_LEFT_HEEL</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>ASKED</type>
     </interpretative>
 
-    <interpretative>
+    <interpretative>(remove)
       <code>IV_METAL_WORK_RIGHT_HEEL</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>ASKED</type>
-    </interpretative>
+    </interpretative>    -->
 
     <input id="id">
       <code>INPUT_PARTICIPANT_BARCODE</code>
@@ -105,7 +100,7 @@
       </inputSource>
     </input>
 
-    <input id="foot_scanned">
+    <input id="foot_scanned">*OBTAIN DEFAULT FROM CI QUEST.
       <code>INPUT_FOOT_SCANNED</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>

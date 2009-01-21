@@ -2,9 +2,23 @@
   <stage>
     <name>StandingHeight</name>
     <module>jade</module>
-    <stageDependencyCondition class="variableCondition">
-      <stageName>Consent</stageName>
-      <variablePath>/Cartagene/Consent/accepted</variablePath>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>Consent</stageName>
+          <variablePath>/Cartagene/Consent/accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/SH_CI/active</variablePath>
+          <operator>ne</operator>
+          <data>
+            <type>BOOLEAN</type>
+            <value class="boolean">true</value>
+          </data>
+        </variableCondition>
+      </conditions>
     </stageDependencyCondition>
   </stage>
 
@@ -20,11 +34,11 @@
   <stage>
     <name>HipsWaist</name>
     <module>jade</module>
-    <stageDependencyCondition class="variableCondition">
+    <!-- <stageDependencyCondition class="variableCondition">
       <stageName>Consent</stageName>
       <variablePath>/Cartagene/Consent/accepted</variablePath>
-    </stageDependencyCondition>
-    <!-- PL: this is not working since question HW_CI_BP is a boilerplate and does no produce a variable.
+    </stageDependencyCondition> -->
+    <!-- PL: this is not working since question HW_CI_BP is a boilerplate and does no produce a variable. -->
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
       <conditions>
@@ -34,7 +48,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/HW_CI_BP</variablePath>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/WH_CI/active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -43,24 +57,51 @@
         </variableCondition>
       </conditions>
     </stageDependencyCondition>
-     -->
   </stage>
 
   <stage>
     <name>GripStrength</name>
     <module>jade</module>
-    <stageDependencyCondition class="variableCondition">
-      <stageName>Consent</stageName>
-      <variablePath>/Cartagene/Consent/accepted</variablePath>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>Consent</stageName>
+          <variablePath>/Cartagene/Consent/accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/GS_CI/active</variablePath>
+          <operator>ne</operator>
+          <data>
+            <type>BOOLEAN</type>
+            <value class="boolean">true</value>
+          </data>
+        </variableCondition>
+      </conditions>
     </stageDependencyCondition>
   </stage>
 
   <stage>
     <name>BloodPressure</name>
     <module>jade</module>
-    <stageDependencyCondition class="variableCondition">
-      <stageName>Consent</stageName>
-      <variablePath>/Cartagene/Consent/accepted</variablePath>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>Consent</stageName>
+          <variablePath>/Cartagene/Consent/accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/BP_CI/active</variablePath>
+          <operator>ne</operator>
+          <data>
+            <type>BOOLEAN</type>
+            <value class="boolean">true</value>
+          </data>
+        </variableCondition>
+      </conditions>
     </stageDependencyCondition>
   </stage>
 
@@ -73,6 +114,15 @@
         <variableCondition>
           <stageName>Consent</stageName>
           <variablePath>/Cartagene/Consent/accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/BI_CI/active</variablePath>
+          <operator>ne</operator>
+          <data>
+            <type>BOOLEAN</type>
+            <value class="boolean">true</value>
+          </data>
         </variableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
@@ -91,6 +141,15 @@
         <variableCondition>
           <stageName>Consent</stageName>
           <variablePath>/Cartagene/Consent/accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/WT_CI/active</variablePath>
+          <operator>ne</operator>
+          <data>
+            <type>BOOLEAN</type>
+            <value class="boolean">true</value>
+          </data>
         </variableCondition>
         <inverseCondition>
           <stageDependencyCondition class="variableCondition">
@@ -111,6 +170,15 @@
         <variableCondition>
           <stageName>Consent</stageName>
           <variablePath>/Cartagene/Consent/accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/SP_CI/active</variablePath>
+          <operator>ne</operator>
+          <data>
+            <type>BOOLEAN</type>
+            <value class="boolean">true</value>
+          </data>
         </variableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
@@ -167,9 +235,23 @@
   <stage>
     <name>BoneDensity</name>
     <module>jade</module>
-    <stageDependencyCondition class="variableCondition">
-      <stageName>Consent</stageName>
-      <variablePath>/Cartagene/Consent/accepted</variablePath>
+    <stageDependencyCondition class="multipleCondition">
+      <operator>AND</operator>
+      <conditions>
+        <variableCondition>
+          <stageName>Consent</stageName>
+          <variablePath>/Cartagene/Consent/accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/BD_CI/active</variablePath>
+          <operator>ne</operator>
+          <data>
+            <type>BOOLEAN</type>
+            <value class="boolean">true</value>
+          </data>
+        </variableCondition>
+      </conditions>
     </stageDependencyCondition>
   </stage>
 
@@ -182,6 +264,15 @@
         <variableCondition>
           <stageName>Consent</stageName>
           <variablePath>/Cartagene/Consent/accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/AS_CI/active</variablePath>
+          <operator>ne</operator>
+          <data>
+            <type>BOOLEAN</type>
+            <value class="boolean">true</value>
+          </data>
         </variableCondition>
         <variableCondition>
           <stageName>BloodPressure</stageName>

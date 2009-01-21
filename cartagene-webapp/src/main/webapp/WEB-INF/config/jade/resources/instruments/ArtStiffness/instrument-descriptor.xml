@@ -11,13 +11,13 @@
     <status>ACTIVE</status>
   </instrument>
 
-  <contraindications>
+  <!-- <contraindications>(remove)
     <contraIndication>
       <code>Other_CI</code>
       <requiresDescription>true</requiresDescription>
       <type>OBSERVED</type>
     </contraIndication>
-  </contraindications>
+  </contraindications> -->
 
   <instrumentParameters>
     <input id="id">

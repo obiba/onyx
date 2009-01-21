@@ -14,7 +14,7 @@
     </instrument>
   </instruments>
 
-  <contraindications>
+ <!-- <contraindications>  commented out
     <contraIndication>
       <code>UnableToStandUnassistedHandicap</code>
       <type>OBSERVED</type>
@@ -40,15 +40,15 @@
       <code>IrremovableMetallicDevice</code>
       <type>ASKED</type>
     </contraIndication>
-  </contraindications>
+  </contraindications>  -->
 
   <instrumentParameters>
-    <interpretative>
+  <!--  <interpretative>    commented out
       <code>IV_PHYSICAL_ACTIVITY_LAST24HOURS</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>OBSERVED</type>
-    </interpretative>
+    </interpretative>  -->
 
     <input id="clothes_weight">
       <code>INPUT_CLOTHES_WEIGHT</code>
@@ -56,7 +56,7 @@
       <measurementUnit>kg</measurementUnit>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="fixedSource">
-        <value>1</value>
+        <value>0</value>
       </inputSource>
     </input>
 

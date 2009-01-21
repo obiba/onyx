@@ -44,7 +44,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
     } else {
       add(new Label("number"));
     }
-    add(new Label("label", new QuestionnaireStringResourceModel(question, "label")));
+    add(new Label("label", new QuestionnaireStringResourceModel(question, "label")).setEscapeModelStrings(false));
 
     addCommentModalWindow(question);
 

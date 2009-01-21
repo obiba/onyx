@@ -12,7 +12,7 @@
     <status>ACTIVE</status>
   </instrument>
 
-  <contraindications>
+ <!-- <contraindications>  commented out
     <contraIndication>
       <code>Other_CI</code>
       <requiresDescription>true</requiresDescription>
@@ -54,10 +54,10 @@
       <type>ASKED</type>
     </contraIndication>
 
-  </contraindications>
+  </contraindications>  -->
 
   <instrumentParameters>
-    <interpretative>
+  <!--  <interpretative>   commented out
       <code>IV_BRONCHODILATOR</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -90,7 +90,7 @@
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
       <type>OBSERVED</type>
-    </interpretative>
+    </interpretative> -->
 
     <input id="id">
       <vendorName>ID</vendorName>
