@@ -210,7 +210,7 @@ public abstract class CommentsModalPanel extends Panel {
       Action comment = (Action) item.getModelObject();
 
       KeyValueDataPanel kvPanel = new KeyValueDataPanel("comment-panel");
-      kvPanel.addRow(new StringResourceModel("CommentTime", this, null), DateModelUtils.getDateTimeModel(new PropertyModel(comment, "dateTime")));
+      kvPanel.addRow(new StringResourceModel("CommentDate", this, null), DateModelUtils.getDateTimeModel(new PropertyModel(comment, "dateTime")));
       IModel stageModel;
       if(comment.getStage() != null) {
         stageModel = new MessageSourceResolvableStringModel(new PropertyModel(new StageModel(moduleRegistry, comment.getStage()), "description"));
@@ -218,13 +218,22 @@ public abstract class CommentsModalPanel extends Panel {
         stageModel = new StringResourceModel("GeneralComment", this, null);
       }
       kvPanel.addRow(new StringResourceModel("Stage", this, null), stageModel);
+
+      IModel actionModel;
+      if(comment.getActionType() != null) {
+        actionModel = new StringResourceModel("action." + comment.getActionType(), this, null);
+      } else {
+        actionModel = new StringResourceModel("GeneralComment", this, null);
+      }
+      kvPanel.addRow(new StringResourceModel("Action", this, null), actionModel);
+
       User currentUser = comment.getUser();
-      kvPanel.addRow(new StringResourceModel("MadeBy", this, null), new Label(KeyValueDataPanel.getRowValueId(), currentUser.getFirstName() + " " + currentUser.getLastName()));
+      kvPanel.addRow(new StringResourceModel("WrittenBy", this, null), new Label(KeyValueDataPanel.getRowValueId(), currentUser.getFirstName() + " " + currentUser.getLastName()));
+      if(comment.getEventReason() != null) kvPanel.addRow(new StringResourceModel("Reason", this, null), new StringResourceModel(comment.getEventReason(), this, null));
       kvPanel.addRow(new StringResourceModel("Comment", this, null), new MultiLineLabel(KeyValueDataPanel.getRowValueId(), new PropertyModel(comment, "comment")));
       item.add(kvPanel);
 
     }
-
   }
 
   private class CommentsDataProvider implements IDataProvider {

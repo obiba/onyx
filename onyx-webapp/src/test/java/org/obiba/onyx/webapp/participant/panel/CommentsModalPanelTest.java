@@ -179,7 +179,7 @@ public class CommentsModalPanelTest implements Serializable {
     KeyValueDataPanel commentPanel = (KeyValueDataPanel) commentsModalPanel.get("previousComments:comment-list:1:comment-panel");
     Assert.assertNotNull(commentPanel);
 
-    MultiLineLabel commentLabel = (MultiLineLabel) commentPanel.get("repeating:4:" + KeyValueDataPanel.getRowValueId());
+    MultiLineLabel commentLabel = (MultiLineLabel) commentPanel.get("repeating:5:" + KeyValueDataPanel.getRowValueId());
     Assert.assertNotNull(commentLabel);
     Assert.assertEquals(stageComment, commentLabel.getModelObjectAsString());
 
@@ -190,7 +190,7 @@ public class CommentsModalPanelTest implements Serializable {
     commentPanel = (KeyValueDataPanel) commentsModalPanel.get("previousComments:comment-list:2:comment-panel");
     Assert.assertNotNull(commentPanel);
 
-    commentLabel = (MultiLineLabel) commentPanel.get("repeating:4:" + KeyValueDataPanel.getRowValueId());
+    commentLabel = (MultiLineLabel) commentPanel.get("repeating:5:" + KeyValueDataPanel.getRowValueId());
     Assert.assertNotNull(commentLabel);
     Assert.assertEquals(generalComment, commentLabel.getModelObjectAsString());
   }
