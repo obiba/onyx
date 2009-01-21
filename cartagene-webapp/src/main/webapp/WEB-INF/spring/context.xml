@@ -112,6 +112,7 @@
     <property name="queryService" ref="persistenceManager" />
     <property name="variableDirectory" ref="variableDirectory" />
     <property name="userSessionService" ref="userSessionService" />
+    <property name="configDirectory" value="${org.obiba.onyx.config.path}" />
     <property name="exportStrategy">
       <bean class="org.obiba.onyx.engine.variable.export.ChainingDataExportStrategyWiringFactoryBean">
         <property name="chainedStrategies">
