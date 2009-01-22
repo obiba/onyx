@@ -22,7 +22,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
@@ -85,15 +84,12 @@ public class DefaultQuestionCategoriesPanel extends Panel {
   }
 
   /**
-   * Escape categories are presented in an additionnal radio grid view if any.
+   * Escape categories are presented in an additional radio grid view if any.
    * @return
    * @see DefaultEscapeQuestionCategoriesPanel
    */
   private boolean hasEscapeQuestionCategories() {
-    for(Category category : ((Question) getModelObject()).getCategories()) {
-      if(category.isEscape()) return true;
-    }
-    return false;
+    return ((Question) getModelObject()).hasEscapeCategories();
   }
 
   private IModel getQuestionModel() {

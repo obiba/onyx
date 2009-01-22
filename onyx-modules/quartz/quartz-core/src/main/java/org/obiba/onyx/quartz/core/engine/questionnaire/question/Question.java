@@ -146,6 +146,17 @@ public class Question implements Serializable, IQuestionnaireElement {
     }
   }
 
+  /**
+   * Does the question has an escape category.
+   * @return
+   */
+  public boolean hasEscapeCategories() {
+    for(Category category : getCategories()) {
+      if(category.isEscape()) return true;
+    }
+    return false;
+  }
+
   public Condition getCondition() {
     return condition;
   }
