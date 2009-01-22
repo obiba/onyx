@@ -14,7 +14,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
@@ -52,9 +51,10 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
    * 
    * @param id
    * @param questionCategoryModel
+   * @param selectionsModel check group selections model
    */
-  public QuestionCategoryCheckBoxPanel(String id, IModel questionCategoryModel, CheckGroup checkGroup) {
-    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, checkGroup, true);
+  public QuestionCategoryCheckBoxPanel(String id, IModel questionCategoryModel, IModel selectionsModel) {
+    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, selectionsModel, true);
   }
 
   /**
@@ -63,10 +63,11 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
    * @param id
    * @param questionModel
    * @param questionCategoryModel
+   * @param selectionsModel check group selections model
    * @param radioLabelVisible
    */
   @SuppressWarnings("serial")
-  public QuestionCategoryCheckBoxPanel(String id, IModel questionModel, IModel questionCategoryModel, final CheckGroup checkGroup, boolean radioLabelVisible) {
+  public QuestionCategoryCheckBoxPanel(String id, IModel questionModel, IModel questionCategoryModel, IModel selectionsModel, boolean radioLabelVisible) {
     super(id, questionModel, questionCategoryModel);
     setOutputMarkupId(true);
 
@@ -74,7 +75,7 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
     QuestionCategory questionCategory = (QuestionCategory) getModelObject();
     CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer((Question) questionModel.getObject(), questionCategory);
 
-    QuestionCategoryCheckBoxModel selectionModel = new QuestionCategoryCheckBoxModel(checkGroup.getModel(), questionCategoryModel);
+    QuestionCategoryCheckBoxModel selectionModel = new QuestionCategoryCheckBoxModel(selectionsModel, questionCategoryModel);
     if(previousAnswer != null) selectionModel.select();
 
     checkbox = new CheckBox("checkbox", selectionModel);

@@ -50,7 +50,7 @@ public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColu
     checkGroup.setLabel(new Model(label));
 
     AbstractQuestionCategorySelectionPanel qCategoryPanel;
-    cellItem.add(qCategoryPanel = new QuestionCategoryCheckBoxPanel(componentId, rowModel, cellItem.getModel(), checkGroup, false) {
+    cellItem.add(qCategoryPanel = new QuestionCategoryCheckBoxPanel(componentId, rowModel, cellItem.getModel(), checkGroup.getModel(), false) {
 
       @Override
       public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {

@@ -11,7 +11,9 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -156,7 +158,7 @@ public class DefaultQuestionCategoriesPanel extends Panel {
         if(item.getModel() == null) {
           item.add(new EmptyPanel("input").setVisible(false));
         } else {
-          item.add(new QuestionCategoryCheckBoxPanel("input", item.getModel(), checkGroup) {
+          item.add(new QuestionCategoryCheckBoxPanel("input", item.getModel(), checkGroup.getModel()) {
 
             @Override
             public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
@@ -194,6 +196,16 @@ public class DefaultQuestionCategoriesPanel extends Panel {
         @Override
         public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
           ((Collection<IModel>) checkGroup.getModelObject()).clear();
+          // QUA-108 need to do this otherwise check box inputs are not cleared following a validation error
+          checkGroup.visitChildren(CheckBox.class, new Component.IVisitor() {
+
+            public Object component(Component component) {
+              CheckBox cb = (CheckBox) component;
+              cb.clearInput();
+              return null;
+            }
+
+          });
           target.addComponent(DefaultQuestionCategoriesPanel.this);
         }
 
