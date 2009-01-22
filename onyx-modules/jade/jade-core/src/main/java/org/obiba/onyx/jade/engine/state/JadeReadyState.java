@@ -14,12 +14,10 @@ package org.obiba.onyx.jade.engine.state;
 
 import java.util.Set;
 
-import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
-import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,12 +27,6 @@ import org.slf4j.LoggerFactory;
 public class JadeReadyState extends AbstractJadeStageState {
 
   private static final Logger log = LoggerFactory.getLogger(JadeReadyState.class);
-
-  private ActiveInstrumentRunService activeInstrumentRunService;
-
-  public void setActiveInstrumentRunService(ActiveInstrumentRunService activeInstrumentRunService) {
-    this.activeInstrumentRunService = activeInstrumentRunService;
-  }
 
   @Override
   protected void addUserActions(Set<ActionType> types) {
@@ -51,8 +43,6 @@ public class JadeReadyState extends AbstractJadeStageState {
       log.error("Jade Stage {} has no associated Instrument Type. Make sure a matching instrument type is created using the instrument-descriptor.xml files.", getStage().getName());
       castEvent(TransitionEvent.SKIP);
     } else {
-      Participant participant = super.activeInterviewService.getParticipant();
-      activeInstrumentRunService.start(participant, type);
       castEvent(TransitionEvent.START);
     }
   }

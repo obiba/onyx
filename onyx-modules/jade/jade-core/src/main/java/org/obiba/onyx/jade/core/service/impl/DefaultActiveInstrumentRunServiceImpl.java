@@ -48,16 +48,8 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   private Serializable currentRunId = null;
 
   public InstrumentRun start(Participant participant, InstrumentType instrumentType) {
-    if(participant == null) throw new IllegalArgumentException("participant cannot be null");
-    if(instrumentType == null) throw new IllegalArgumentException("instrumentType cannot be null");
-
-    if(currentRunId != null) {
-      InstrumentRun currentRun = getInstrumentRun();
-      if(currentRun.getStatus() == InstrumentRunStatus.IN_PROGRESS) {
-        cancel();
-      }
-      currentRun = null;
-    }
+    if(participant == null) throw new IllegalArgumentException("Participant cannot be null.");
+    if(instrumentType == null) throw new IllegalArgumentException("Instrument type cannot be null.");
 
     InstrumentRun currentRun = new InstrumentRun();
     currentRun.setParticipant(participant);
@@ -106,6 +98,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public InstrumentRun getInstrumentRun() {
+    log.info("currentRunId={}", currentRunId);
     if(currentRunId == null) return null;
 
     return getPersistenceManager().get(InstrumentRun.class, currentRunId);
@@ -366,9 +359,13 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public InstrumentRunValue getInstrumentRunValue(InstrumentParameter parameter) {
+    if(parameter == null) throw new IllegalArgumentException("Cannot retrieve a run value from a null instrument parameter.");
+    InstrumentRun instrumentRun = getInstrumentRun();
+    if(instrumentRun == null) throw new IllegalArgumentException("Cannot retrieve a run value from a null instrument run.");
+
     InstrumentRunValue valueTemplate = new InstrumentRunValue();
     valueTemplate.setInstrumentParameter(parameter);
-    valueTemplate.setInstrumentRun(getInstrumentRun());
+    valueTemplate.setInstrumentRun(instrumentRun);
 
     InstrumentRunValue parameterValue = getPersistenceManager().matchOne(valueTemplate);
 

@@ -44,17 +44,27 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
   }
 
   public InstrumentRun getLastInstrumentRun(Participant participant, InstrumentType instrumentType) {
+    if(instrumentType == null) throw new IllegalArgumentException("Cannot retrieve the last instrument run for a null instrument type.");
     InstrumentRun template = new InstrumentRun();
     template.setInstrumentType(instrumentType);
     template.setParticipant(participant);
-    List<InstrumentRun> runs = getPersistenceManager().match(template, SortingClause.create("timeEnd", false));
+    List<InstrumentRun> runs = getPersistenceManager().match(template, SortingClause.create("id", false));
     if(runs != null && runs.size() > 0) {
       return runs.get(0);
     }
     return null;
   }
 
+  public InstrumentRun getLastInstrumentRun(Participant participant, String instrumentTypeName) {
+    InstrumentType type = new InstrumentType();
+    type.setName(instrumentTypeName);
+
+    return getLastInstrumentRun(participant, getPersistenceManager().matchOne(type));
+  }
+
   public InstrumentRun getLastCompletedInstrumentRun(Participant participant, InstrumentType instrumentType) {
+    if(instrumentType == null) throw new IllegalArgumentException("Cannot retrieve the last completed instrument run for a null instrument type.");
+
     Criteria criteria = AssociationCriteria.create(InstrumentRun.class, getSession()).add("instrumentType", Operation.eq, instrumentType).add("participant", Operation.eq, participant).addSortingClauses(new SortingClause("timeEnd", false)).getCriteria();
     criteria.add(Restrictions.or(Restrictions.eq("status", InstrumentRunStatus.COMPLETED), Restrictions.eq("status", InstrumentRunStatus.CONTRA_INDICATED)));
 
@@ -62,6 +72,9 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
   }
 
   public InstrumentRunValue findInstrumentRunValue(Participant participant, InstrumentType instrumentType, String parameterCode) {
+    if(instrumentType == null) throw new IllegalArgumentException("Cannot retrieve the last completed instrument run for a null instrument type.");
+    if(parameterCode == null) throw new IllegalArgumentException("Cannot retrieve the last completed instrument run for a null parameter.");
+
     InstrumentRunValue runValue = null;
     InstrumentRun run = getLastCompletedInstrumentRun(participant, instrumentType);
 
@@ -71,11 +84,6 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
     }
 
     return runValue;
-  }
-
-  public void setInstrumentRunStatus(InstrumentRun run, InstrumentRunStatus status) {
-    run.setStatus(status);
-    getPersistenceManager().save(run);
   }
 
 }

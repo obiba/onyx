@@ -20,9 +20,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMeth
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
-import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
@@ -41,9 +39,6 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
-
-  @SpringBean
-  private InstrumentRunService instrumentRunService;
 
   @SpringBean
   private InstrumentService instrumentService;
@@ -67,14 +62,12 @@ public abstract class InstrumentWizardForm extends WizardForm {
   public InstrumentWizardForm(String id, IModel instrumentTypeModel) {
     super(id);
 
-    log.info("instrumentType={}", ((InstrumentType) instrumentTypeModel.getObject()).getName());
+    InstrumentType type = (InstrumentType) instrumentTypeModel.getObject();
+    log.info("instrumentType={}", type.getName());
     // ONYX-181: Set the current InstrumentRun on the ActiveInstrumentRunService. This particular
     // instance of the service may not have had its start method called, in which case it will have
     // a null InstrumentRun.
-    if(activeInstrumentRunService.getInstrumentRun() == null) {
-      InstrumentRun instrumentRun = instrumentRunService.getLastInstrumentRun(activeInterviewService.getParticipant(), (InstrumentType) instrumentTypeModel.getObject());
-      activeInstrumentRunService.setCurrentInstrumentRun(instrumentRun);
-    }
+    activeInstrumentRunService.start(activeInterviewService.getParticipant(), type);
 
     WizardStepPanel startStep = null;
 

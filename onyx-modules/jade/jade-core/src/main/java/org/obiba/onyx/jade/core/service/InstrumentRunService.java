@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.service;
 
-import java.util.List;
-
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
@@ -18,14 +16,6 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 
 public interface InstrumentRunService {
-
-  /**
-   * Get the completed instrument runs for given participant.
-   * @param participant
-   * @param instrument
-   * @return
-   */
-  public List<InstrumentRun> getCompletedInstrumentRuns(Participant participant, InstrumentType instrument);
 
   /**
    * Get the last instrument whatever is its status for participant and instrument type.
@@ -36,12 +26,26 @@ public interface InstrumentRunService {
   public InstrumentRun getLastInstrumentRun(Participant participant, InstrumentType instrumentType);
 
   /**
+   * Get the last instrument whatever is its status for participant and instrument type name.
+   * @param participant
+   * @param instrumentTypeName
+   * @return
+   */
+  public InstrumentRun getLastInstrumentRun(Participant participant, String instrumentTypeName);
+
+  /**
    * Get the last completed run for participant and instrument type.
    * @param participant
    * @param instrumentType
    * @return
    */
   public InstrumentRun getLastCompletedInstrumentRun(Participant participant, InstrumentType instrumentType);
+
+  /**
+   * Set the end date, and make sure it is not done twice.
+   * @param run
+   */
+  public void end(InstrumentRun run);
 
   /**
    * Find the value from the last completed run of the instrument of the given type for given participant.

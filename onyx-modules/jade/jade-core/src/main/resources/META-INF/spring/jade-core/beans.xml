@@ -18,7 +18,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="jadeReadyState" parent="baseJadeState" class="org.obiba.onyx.jade.engine.state.JadeReadyState"
     scope="prototype">
-    <property name="activeInstrumentRunService" ref="activeInstrumentRunService" />
   </bean>
 
   <bean id="jadeNotApplicableState" parent="baseJadeState"
@@ -29,7 +28,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="jadeInProgressState" parent="baseJadeState" class="org.obiba.onyx.jade.engine.state.JadeInProgressState"
     scope="prototype">
-    <property name="activeInstrumentRunService" ref="activeInstrumentRunService" />
   </bean>
 
   <bean id="jadeSkippedState" parent="baseJadeState" class="org.obiba.onyx.jade.engine.state.JadeSkippedState"

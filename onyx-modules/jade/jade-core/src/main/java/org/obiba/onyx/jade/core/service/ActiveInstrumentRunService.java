@@ -65,10 +65,10 @@ public interface ActiveInstrumentRunService {
   /**
    * Create the current {@link InstrumentRun} without persisting it.
    * @param participant
-   * @param instrument
+   * @param instrumentType
    * @return
    */
-  public InstrumentRun start(Participant participant, InstrumentType instrument);
+  public InstrumentRun start(Participant participant, InstrumentType instrumentType);
 
   /**
    * Get the associated {@link Participant}

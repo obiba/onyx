@@ -9,29 +9,30 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.service.impl;
 
-import java.util.List;
+import java.util.Date;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
-import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class DefaultInstrumentRunServiceImpl extends PersistenceManagerAwareService implements InstrumentRunService {
 
-  private List<InstrumentRun> getInstrumentRuns(InstrumentType instrument, Participant participant, InstrumentRunStatus status) {
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(DefaultInstrumentRunServiceImpl.class);
 
-    InstrumentRun template = new InstrumentRun();
-    template.setInstrumentType(instrument);
-    template.setParticipant(participant);
-    template.setStatus(status);
-
-    return getPersistenceManager().match(template);
+  public void setInstrumentRunStatus(InstrumentRun run, InstrumentRunStatus status) {
+    run.setStatus(status);
+    getPersistenceManager().save(run);
   }
 
-  public List<InstrumentRun> getCompletedInstrumentRuns(Participant participant, InstrumentType instrumentType) {
-    return getInstrumentRuns(instrumentType, participant, InstrumentRunStatus.COMPLETED);
+  public void end(InstrumentRun run) {
+    if(run.getTimeEnd() != null) throw new IllegalArgumentException("Instrument run already ended the " + run.getTimeEnd());
+
+    run.setTimeEnd(new Date());
+    getPersistenceManager().save(run);
   }
 
 }

@@ -20,7 +20,6 @@ import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
-import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.JadePanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +27,6 @@ import org.slf4j.LoggerFactory;
 public class JadeInProgressState extends AbstractJadeStageState {
 
   private static final Logger log = LoggerFactory.getLogger(JadeInProgressState.class);
-
-  private ActiveInstrumentRunService activeInstrumentRunService;
-
-  public void setActiveInstrumentRunService(ActiveInstrumentRunService activeInstrumentRunService) {
-    this.activeInstrumentRunService = activeInstrumentRunService;
-  }
 
   @Override
   protected void addUserActions(Set<ActionType> types) {
@@ -53,11 +46,9 @@ public class JadeInProgressState extends AbstractJadeStageState {
   public void stop(Action action) {
     log.info("Jade Stage {} is stopping", super.getStage().getName());
     // Invalidate current instrument run
-    InstrumentRun run = activeInstrumentRunService.getInstrumentRun();
+    InstrumentRun run = getLastInstrumentRun();
     if(run != null) {
-      activeInstrumentRunService.setInstrumentRunStatus(InstrumentRunStatus.CANCELED);
-      activeInstrumentRunService.end();
-      activeInstrumentRunService.reset();
+      instrumentRunService.setInstrumentRunStatus(run, InstrumentRunStatus.CANCELED);
     }
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
@@ -70,20 +61,24 @@ public class JadeInProgressState extends AbstractJadeStageState {
   public void complete(Action action) {
     log.info("Jade Stage {} is completing", super.getStage().getName());
     // Finish current instrument run
-    InstrumentRunStatus runStatus = activeInstrumentRunService.getInstrumentRunStatus();
-    if(!runStatus.equals(InstrumentRunStatus.CONTRA_INDICATED)) {
-      activeInstrumentRunService.setInstrumentRunStatus(InstrumentRunStatus.COMPLETED);
-      runStatus = activeInstrumentRunService.getInstrumentRunStatus();
-    }
+    InstrumentRun run = getLastInstrumentRun();
 
-    activeInstrumentRunService.end();
-    activeInstrumentRunService.reset();
+    InstrumentRunStatus runStatus = run.getStatus();
+    if(!runStatus.equals(InstrumentRunStatus.CONTRA_INDICATED)) {
+      instrumentRunService.setInstrumentRunStatus(run, InstrumentRunStatus.COMPLETED);
+      runStatus = InstrumentRunStatus.COMPLETED;
+    }
+    instrumentRunService.end(run);
 
     if(runStatus.equals(InstrumentRunStatus.CONTRA_INDICATED)) {
       castEvent(TransitionEvent.CONTRAINDICATED);
     } else {
       castEvent(TransitionEvent.COMPLETE);
     }
+  }
+
+  private InstrumentRun getLastInstrumentRun() {
+    return instrumentRunService.getLastInstrumentRun(activeInterviewService.getParticipant(), getStage().getName());
   }
 
   @Override
