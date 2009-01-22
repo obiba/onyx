@@ -2,15 +2,17 @@
 <instrumentType>
 
   <name>BoneDensity</name>
-
-  <instrument>
-    <name>Bone Density 1</name>
-    <vendor>GE Healthcare</vendor>
-    <model>Achilles Express</model>
-    <serialNumber>1234567890</serialNumber>
-    <barcode>CAG0210</barcode>
-    <status>ACTIVE</status>
-  </instrument>
+  
+  <instruments>
+    <instrument>
+      <name>Bone Density 1</name>
+      <vendor>GE Healthcare</vendor>
+      <model>Achilles Express</model>
+      <serialNumber>1234567890</serialNumber>
+      <barcode>CAG0210</barcode>
+      <status>ACTIVE</status>
+    </instrument>
+  </instruments>
 
   <contraindications>
     <contraIndication>

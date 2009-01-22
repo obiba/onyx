@@ -3,14 +3,16 @@
 
   <name>Impedence310</name>
 
-  <instrument>
-    <name>Tanita TBF-310</name>
-    <vendor>Tanita</vendor>
-    <model>TBF-310</model>
-    <status>ACTIVE</status>
-    <serialNumber>1234567890</serialNumber>
-    <barcode>CAG1001</barcode>
-  </instrument>
+  <instruments>
+    <instrument>
+      <name>Tanita TBF-310</name>
+      <vendor>Tanita</vendor>
+      <model>TBF-310</model>
+      <status>ACTIVE</status>
+      <serialNumber>1234567890</serialNumber>
+      <barcode>CAG1001</barcode>
+    </instrument>
+  </instruments>
 
   <!-- <contraindications>   commented out
     <contraIndication>

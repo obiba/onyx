@@ -3,14 +3,16 @@
 
   <name>Weight</name>
 
-  <instrument>
-    <name>Tanita TBF 310</name>
-    <vendor>Tanita</vendor>
-    <model>TBF 310</model>
-    <serialNumber>1234567890</serialNumber>
-    <barcode>wei01</barcode>
-    <status>ACTIVE</status>
-  </instrument>
+  <instruments>
+    <instrument>
+      <name>Tanita TBF 310</name>
+      <vendor>Tanita</vendor>
+      <model>TBF 310</model>
+      <serialNumber>1234567890</serialNumber>
+      <barcode>wei01</barcode>
+      <status>ACTIVE</status>
+    </instrument>
+  </instruments>
 
  <!-- <contraindications>  commented out
     <contraIndication>

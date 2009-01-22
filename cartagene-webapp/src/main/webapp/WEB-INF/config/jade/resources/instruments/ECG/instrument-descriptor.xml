@@ -2,14 +2,16 @@
 <instrumentType>
   <name>ECG</name>
 
-  <instrument>
-    <name>ECG 1</name>
-    <vendor>GE</vendor>
-    <model>CardioSoft</model>
-    <serialNumber>1234567890</serialNumber>
-    <barcode>ecg1</barcode>
-    <status>ACTIVE</status>
-  </instrument>
+  <instruments>
+    <instrument>
+      <name>ECG 1</name>
+      <vendor>GE</vendor>
+      <model>CardioSoft</model>
+      <serialNumber>1234567890</serialNumber>
+      <barcode>ecg1</barcode>
+      <status>ACTIVE</status>
+    </instrument>
+  </instruments>
 
   <!-- <contraindications>(removed)
    <contraIndication>

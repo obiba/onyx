@@ -3,13 +3,15 @@
 
   <name>GripStrength</name>
 
-  <instrument>
-    <name>Dynamometer 1</name>
-    <vendor>Baseline</vendor>
-    <model>Hydraulic Hand Dynamometer</model>
-    <barcode>mus01</barcode>
-    <status>ACTIVE</status>
-  </instrument>
+  <instruments>
+    <instrument>
+      <name>Dynamometer 1</name>
+      <vendor>Baseline</vendor>
+      <model>Hydraulic Hand Dynamometer</model>
+      <barcode>mus01</barcode>
+      <status>ACTIVE</status>
+    </instrument>
+  </instruments>
 
   <!-- <contraindications> commented out
     <contraIndication>

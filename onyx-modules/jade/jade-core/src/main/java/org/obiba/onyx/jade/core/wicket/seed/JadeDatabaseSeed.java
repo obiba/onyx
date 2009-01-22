@@ -65,6 +65,12 @@ public class JadeDatabaseSeed extends XstreamResourceDatabaseSeed {
           throw new IllegalStateException("Duplicate parameter code for type '" + type.getName() + "': " + parameter.getCode());
         }
       }
+
+      if(type.getInstruments().size() == 0) {
+        log.error("Instruments list for type {} is empty.", type.getName());
+        throw new IllegalStateException("Instruments list for type " + type.getName() + " is empty.");
+      }
+
       if(toPersist) {
         persistenceManager.save(type);
       }
