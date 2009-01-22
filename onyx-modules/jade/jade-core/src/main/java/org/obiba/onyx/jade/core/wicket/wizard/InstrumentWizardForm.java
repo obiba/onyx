@@ -67,6 +67,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
   public InstrumentWizardForm(String id, IModel instrumentTypeModel) {
     super(id);
 
+    log.info("instrumentType={}", ((InstrumentType) instrumentTypeModel.getObject()).getName());
     // ONYX-181: Set the current InstrumentRun on the ActiveInstrumentRunService. This particular
     // instance of the service may not have had its start method called, in which case it will have
     // a null InstrumentRun.
