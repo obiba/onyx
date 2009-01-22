@@ -57,6 +57,8 @@ public abstract class InstrumentParameter extends AbstractEntity {
   @Enumerated(EnumType.STRING)
   private InstrumentParameterCaptureMethod captureMethod;
 
+  private String displayFormat;
+
   // insertable and updatable are set to false so that the bi-directional relation
   // is managed by the parent instead of this class
   @ManyToOne
@@ -141,5 +143,13 @@ public abstract class InstrumentParameter extends AbstractEntity {
       getIntegrityChecks().add(integrityCheck);
       integrityCheck.setTargetParameter(this);
     }
+  }
+
+  public String getDisplayFormat() {
+    return displayFormat;
+  }
+
+  public void setDisplayFormat(String displayFormat) {
+    this.displayFormat = displayFormat;
   }
 }

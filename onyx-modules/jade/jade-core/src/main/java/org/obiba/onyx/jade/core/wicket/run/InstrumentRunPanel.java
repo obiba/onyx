@@ -40,8 +40,12 @@ import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InstrumentRunPanel extends Panel {
+
+  private static final Logger log = LoggerFactory.getLogger(InstrumentRunPanel.class);
 
   private static final long serialVersionUID = -3652647014649095945L;
 
@@ -166,14 +170,24 @@ public class InstrumentRunPanel extends Panel {
         Data data = runValue.getData();
         Label value;
         if(data != null && data.getValue() != null) {
+
+          // Apply formatter on output if one has been defined.
+          String formatStr = param.getDisplayFormat();
+          String formattedOutput;
+          if(formatStr != null) {
+            formattedOutput = formatOutput(param, runValue, formatStr);
+          } else {
+            formattedOutput = data.getValueAsString();
+          }
+
           if(param instanceof InterpretativeParameter) {
-            value = new Label(KeyValueDataPanel.getRowValueId(), new StringResourceModel(data.getValueAsString(), this, null));
+            value = new Label(KeyValueDataPanel.getRowValueId(), new StringResourceModel(formattedOutput, this, null));
           } else {
             String unit = param.getMeasurementUnit();
             if(unit == null) {
               unit = "";
             }
-            value = new Label(KeyValueDataPanel.getRowValueId(), new SpringStringResourceModel(data.getValueAsString()).getString() + " " + unit);
+            value = new Label(KeyValueDataPanel.getRowValueId(), new SpringStringResourceModel(formattedOutput).getString() + " " + unit);
           }
         } else {
           value = new Label(KeyValueDataPanel.getRowValueId());
@@ -185,4 +199,22 @@ public class InstrumentRunPanel extends Panel {
 
     return kvPanel;
   }
+
+  private String formatOutput(InstrumentParameter param, InstrumentRunValue runValue, String formatStr) {
+
+    log.debug("Display format for {} is {}", param.getCode(), formatStr);
+    Object value = runValue.getData().getValue();
+    String valueStr = runValue.getData().getValueAsString();
+    String formattedValue;
+    try {
+      formattedValue = String.format(formatStr, value);
+      log.debug("Applied format \"{}\" to parameter {} (value={}).  Result is {}", new Object[] { formatStr, param.getCode(), valueStr, formattedValue });
+    } catch(Exception ex) {
+      log.error("Cannot apply the following formatting \"{}\" to parameter {} (value={})", new Object[] { formatStr, param.getCode(), valueStr });
+      throw new RuntimeException(ex);
+    }
+
+    return formattedValue;
+  }
+
 }

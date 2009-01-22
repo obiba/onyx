@@ -129,6 +129,7 @@
       <vendorName>BirthDate</vendorName>
       <code>INPUT_PARTICIPANT_DATE_BIRTH</code>
       <dataType>DATE</dataType>
+      <displayFormat>%1$tY/%1$tm/%1$td</displayFormat>          
       <captureMethod>AUTOMATIC</captureMethod>
       <inputSource class="participantPropertySource">
         <property>birthDate</property>
