@@ -11,13 +11,14 @@ package org.obiba.onyx.webapp.config.page;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.ServletContext;
 
 import org.apache.wicket.Application;
-import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -48,6 +49,7 @@ import org.obiba.onyx.engine.variable.export.OnyxDataExportDestination;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.crypt.X509CertificateValidator;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
+import org.obiba.wicket.markup.html.form.LocaleDropDownChoice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,6 +125,10 @@ public class ApplicationConfigurationPage extends BasePage {
 
       TextField administratorEmail = new TextField("email", new PropertyModel(model, "user.email"));
       add(administratorEmail.add(EmailAddressValidator.getInstance()));
+
+      LocaleDropDownChoice ddc = new LocaleDropDownChoice("language", new PropertyModel(model, "user.language"), Arrays.asList(new Locale[] { Locale.FRENCH, Locale.ENGLISH }));
+      ddc.add(new RequiredFormFieldBehavior());
+      add(ddc);
 
       TextField sessionTimeout = new TextField("sessionTimeout", new PropertyModel(model, "config.sessionTimeout"));
       sessionTimeout.add(new RequiredFormFieldBehavior());
@@ -211,7 +217,7 @@ public class ApplicationConfigurationPage extends BasePage {
       User user = model.getUser();
       user.setPassword(User.digest(user.getPassword()));
       user.addRole(adminRole);
-      user.setLanguage(Session.get().getLocale());
+      // user.setLanguage(Session.get().getLocale());
       user.setDeleted(false);
       user.setStatus(Status.ACTIVE);
       userService.createUser(user);

@@ -18,6 +18,7 @@
     <email>test@obiba.org</email>
     <status>ACTIVE</status>
     <deleted>false</deleted>
+    <language>en</language>
     <roles>
       <role reference="sysAdmin" />
       <role reference="partManager" />
