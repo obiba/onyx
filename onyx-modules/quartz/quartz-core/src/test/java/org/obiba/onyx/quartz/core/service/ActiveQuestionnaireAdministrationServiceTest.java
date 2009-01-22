@@ -21,6 +21,7 @@ import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.test.spring.Dataset;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
@@ -47,6 +48,8 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
 
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
+  private ActiveInterviewService activeInterviewService;
+
   private Questionnaire questionnaire;
 
   @Before
@@ -60,6 +63,7 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
     activeQuestionnaireAdministrationService = (ActiveQuestionnaireAdministrationService) applicationContext.getBean("activeQuestionnaireAdministrationService");
+    activeInterviewService = (ActiveInterviewService) applicationContext.getBean("activeInterviewService");
 
     questionnaire = createQuestionnaire();
   }
@@ -72,7 +76,10 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
   @Dataset
   public void testQuestionnaire() {
     activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
+
     Participant participant = persistenceManager.get(Participant.class, Long.valueOf("1"));
+    activeInterviewService.setParticipant(participant);
+
     QuestionnaireParticipant questionnaireParticipant = activeQuestionnaireAdministrationService.start(participant, Locale.FRENCH);
     Assert.assertEquals(questionnaireParticipant.getLocale(), Locale.FRENCH);
     Assert.assertEquals(questionnaireParticipant.getQuestionnaireName(), "HealthQuestionnaire");
@@ -109,7 +116,9 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     activeQuestionnaireAdministrationService.addComment(q2, "comment question 2");
 
     Assert.assertEquals("1", catAnswer_1.getCategoryName());
-    Assert.assertEquals(questionnaireParticipant, catAnswer_1.getQuestionAnswer().getQuestionnaireParticipant());
+    Assert.assertEquals(questionnaireParticipant.getParticipant().getId(), catAnswer_1.getQuestionAnswer().getQuestionnaireParticipant().getParticipant().getId());
+    Assert.assertEquals(questionnaireParticipant.getQuestionnaireName(), catAnswer_1.getQuestionAnswer().getQuestionnaireParticipant().getQuestionnaireName());
+    Assert.assertEquals(questionnaireParticipant.getQuestionnaireVersion(), catAnswer_1.getQuestionAnswer().getQuestionnaireParticipant().getQuestionnaireVersion());
     Assert.assertEquals("Q1", catAnswer_1.getQuestionAnswer().getQuestionName());
     Assert.assertNotNull(year.getOpenAnswers().get(0));
     Assert.assertEquals("1979", year.getOpenAnswers().get(0).getData().getValueAsString());

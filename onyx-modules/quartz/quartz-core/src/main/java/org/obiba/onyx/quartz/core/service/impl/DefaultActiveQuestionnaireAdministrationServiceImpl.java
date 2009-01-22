@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
@@ -30,9 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extends PersistenceManagerAwareService implements ActiveQuestionnaireAdministrationService {
 
-  private Questionnaire currentQuestionnaire;
+  private ActiveInterviewService activeInterviewService;
 
-  private QuestionnaireParticipant currentQuestionnaireParticipant;
+  private Questionnaire currentQuestionnaire;
 
   private Locale defaultLanguage;
 
@@ -44,12 +45,16 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return currentQuestionnaire;
   }
 
+  public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
+    this.activeInterviewService = activeInterviewService;
+  }
+
   public void setQuestionnaire(Questionnaire questionnaire) {
     this.currentQuestionnaire = questionnaire;
-    this.currentQuestionnaireParticipant = null;
   }
 
   public Locale getLanguage() {
+    QuestionnaireParticipant currentQuestionnaireParticipant = getQuestionnaireParticipant();
     if(currentQuestionnaireParticipant == null) return defaultLanguage;
     return currentQuestionnaireParticipant.getLocale();
   }
@@ -59,23 +64,16 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public QuestionnaireParticipant start(Participant participant, Locale language) {
+    QuestionnaireParticipant currentQuestionnaireParticipant = getQuestionnaireParticipant();
 
-    if(currentQuestionnaireParticipant != null) {
-      // refresh it
-      currentQuestionnaireParticipant = getQuestionnaireParticipant();
-    } else {
-      QuestionnaireParticipant questionnaireParticipantTemplate = new QuestionnaireParticipant();
-      questionnaireParticipantTemplate.setParticipant(participant);
-      questionnaireParticipantTemplate.setQuestionnaireName(currentQuestionnaire.getName());
-      questionnaireParticipantTemplate.setQuestionnaireVersion(currentQuestionnaire.getVersion());
-
-      // find an old questionnaire participant if any
-      currentQuestionnaireParticipant = getPersistenceManager().matchOne(questionnaireParticipantTemplate);
-      if(currentQuestionnaireParticipant == null) {
-        currentQuestionnaireParticipant = questionnaireParticipantTemplate;
-      }
+    if(currentQuestionnaireParticipant == null) {
+      currentQuestionnaireParticipant = new QuestionnaireParticipant();
+      currentQuestionnaireParticipant.setParticipant(participant);
+      currentQuestionnaireParticipant.setQuestionnaireName(currentQuestionnaire.getName());
     }
 
+    currentQuestionnaireParticipant.setQuestionnaireVersion(currentQuestionnaire.getVersion());
+    currentQuestionnaireParticipant.setUser(activeInterviewService.getInterview().getUser());
     currentQuestionnaireParticipant.setLocale(language);
     currentQuestionnaireParticipant.setTimeStart(new Date());
 
@@ -85,21 +83,18 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public void resume(Participant participant) {
-    QuestionnaireParticipant questionnaireParticipantTemplate = new QuestionnaireParticipant();
-    questionnaireParticipantTemplate.setParticipant(participant);
-    questionnaireParticipantTemplate.setQuestionnaireName(currentQuestionnaire.getName());
-    questionnaireParticipantTemplate.setQuestionnaireVersion(currentQuestionnaire.getVersion());
-
-    currentQuestionnaireParticipant = getPersistenceManager().matchOne(questionnaireParticipantTemplate);
+    // nothing to do
   }
 
   public void end() {
-    // refresh it
-    currentQuestionnaireParticipant = getQuestionnaireParticipant();
-    if(currentQuestionnaireParticipant != null) {
-      currentQuestionnaireParticipant.setTimeEnd(new Date());
-      getPersistenceManager().save(currentQuestionnaireParticipant);
+    QuestionnaireParticipant currentQuestionnaireParticipant = getQuestionnaireParticipant();
+
+    if(currentQuestionnaireParticipant == null) {
+      throw new IllegalArgumentException("Null QuestionnaireParticipant");
     }
+
+    currentQuestionnaireParticipant.setTimeEnd(new Date());
+    getPersistenceManager().save(currentQuestionnaireParticipant);
   }
 
   public Page getCurrentPage() {
@@ -150,7 +145,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public Page resumePage() {
-    currentPage = navigationStrategy.getPageOnResume(this, currentQuestionnaireParticipant);
+    currentPage = navigationStrategy.getPageOnResume(this, getQuestionnaireParticipant());
     return currentPage;
   }
 
@@ -180,7 +175,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
 
   public String getComment(Question question) {
     QuestionAnswer template = new QuestionAnswer();
-    template.setQuestionnaireParticipant(currentQuestionnaireParticipant);
+    template.setQuestionnaireParticipant(getQuestionnaireParticipant());
     template.setQuestionName(question.getName());
     QuestionAnswer questionAnswer = getPersistenceManager().matchOne(template);
     if(questionAnswer != null) {
@@ -192,7 +187,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
 
   public QuestionAnswer addComment(Question question, String comment) {
     QuestionAnswer template = new QuestionAnswer();
-    template.setQuestionnaireParticipant(currentQuestionnaireParticipant);
+    template.setQuestionnaireParticipant(getQuestionnaireParticipant());
     template.setQuestionName(question.getName());
     QuestionAnswer questionAnswer = getPersistenceManager().matchOne(template);
 
@@ -208,7 +203,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
 
   public CategoryAnswer answer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value) {
     QuestionAnswer template = new QuestionAnswer();
-    template.setQuestionnaireParticipant(currentQuestionnaireParticipant);
+    template.setQuestionnaireParticipant(getQuestionnaireParticipant());
     template.setQuestionName(question.getName());
 
     QuestionAnswer questionAnswer = getPersistenceManager().matchOne(template);
@@ -311,22 +306,24 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public void stopCurrentQuestionnaire() {
+    QuestionnaireParticipant currentQuestionnaireParticipant = getQuestionnaireParticipant();
     if(currentQuestionnaireParticipant != null) {
-      currentQuestionnaireParticipant = null;
       currentQuestionnaire = null;
     }
   }
 
   public QuestionnaireParticipant getQuestionnaireParticipant() {
-    if(currentQuestionnaireParticipant != null && currentQuestionnaireParticipant.getId() != null) {
-      return (getPersistenceManager().refresh(currentQuestionnaireParticipant));
-    } else {
-      return currentQuestionnaireParticipant;
-    }
+    // Note: Don't include questionnaire version in the template. This is in case the version
+    // of the questionnaire changes between canceling and re-starting the questionnaire stage.
+    QuestionnaireParticipant questionnaireParticipantTemplate = new QuestionnaireParticipant();
+    questionnaireParticipantTemplate.setParticipant(activeInterviewService.getParticipant());
+    questionnaireParticipantTemplate.setQuestionnaireName(currentQuestionnaire.getName());
+
+    return getPersistenceManager().matchOne(questionnaireParticipantTemplate);
   }
 
   private void updateResumePage(Page resumePage) {
-    currentQuestionnaireParticipant = getQuestionnaireParticipant();
+    QuestionnaireParticipant currentQuestionnaireParticipant = getQuestionnaireParticipant();
 
     if(currentQuestionnaireParticipant != null) {
       currentQuestionnaireParticipant.setResumePage(resumePage.getName());

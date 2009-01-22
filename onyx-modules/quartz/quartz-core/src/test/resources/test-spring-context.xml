@@ -56,6 +56,7 @@
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="sessionFactory" ref="sessionFactory" />
     <property name="navigationStrategy" ref="navigationStrategy" />
+    <property name="activeInterviewService" ref="activeInterviewService" />
   </bean>
 
   <bean id="questionnaireBundleManager"
