@@ -22,6 +22,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.wicket.behavior.EnterOnKeyPressBehaviour;
+import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,6 +114,14 @@ public class CommentPanel extends Panel {
         @Override
         protected void onUpdate(final AjaxRequestTarget target) {
           submitComment();
+        }
+
+        @Override
+        protected void onError(AjaxRequestTarget target, RuntimeException e) {
+          WizardForm wizard = (WizardForm) findParent(WizardForm.class);
+          if(wizard != null && wizard.getFeedbackPanel() != null) {
+            target.addComponent(wizard.getFeedbackPanel());
+          }
         }
       });
 
