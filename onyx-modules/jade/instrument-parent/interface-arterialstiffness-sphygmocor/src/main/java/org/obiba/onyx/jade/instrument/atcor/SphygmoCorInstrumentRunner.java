@@ -11,6 +11,7 @@ package org.obiba.onyx.jade.instrument.atcor;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -67,6 +68,9 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     // First, remove any data (patients and measurements) currently in the AtCor database.
     sphygmoCorDao.deleteAllOutput();
     sphygmoCorDao.deleteAllPatients();
+
+    // Also, remove all export files.
+    deleteExportFiles();
 
     // Fetch the current participant's data.
     participantLastName = instrumentExecutionService.getParticipantLastName();
@@ -138,6 +142,7 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     // Delete locally stored participant data.
     sphygmoCorDao.deleteAllOutput();
     sphygmoCorDao.deleteAllPatients();
+    deleteExportFiles();
   }
 
   private void sendDataToServer(Map data) {
@@ -199,7 +204,68 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     outputToSend.put("C_QUALITY_T2", new Data(DataType.INTEGER, new Long((Integer) data.get("C_QUALITY_T2"))));
     outputToSend.put("P_QC_OTHER4", new Data(DataType.DECIMAL, new Double((Float) data.get("P_QC_OTHER4"))));
 
+    // Add export files to output.
+    addExportFileToOutput(outputToSend, "PIC_CLINIC");
+    addExportFileToOutput(outputToSend, "PIC_DETAIL");
+    addExportFileToOutput(outputToSend, "PIC_CLASSIFICATION");
+
     instrumentExecutionService.addOutputParameterValues(outputToSend);
+  }
+
+  /**
+   * Adds the specified export file to the output to send.
+   * 
+   * @param outputToSend output to send to the server
+   * @param exportFilenamePrefix export file name prefix
+   */
+  private void addExportFileToOutput(Map<String, Data> outputToSend, String exportFilenamePrefix) {
+    File exportFile = getExportFile(exportFilenamePrefix);
+
+    if(exportFile != null) {
+      outputToSend.put(exportFilenamePrefix, DataBuilder.buildBinary(exportFile));
+    } else {
+
+    }
+  }
+
+  /**
+   * Returns the export file with the specified file name prefix.
+   * 
+   * @param exportFilenamePrefix export file name prefix
+   * @return export file (or <code>null</code> if no such file exists)
+   */
+  private File getExportFile(final String exportFilenamePrefix) {
+    FileFilter filter = new FileFilter() {
+      public boolean accept(File file) {
+        String fileName = file.getName();
+        return file.isFile() && fileName.startsWith(exportFilenamePrefix) && fileName.endsWith(".jpg");
+      }
+    };
+
+    File exportDir = getExportDir();
+    File[] matches = exportDir.listFiles(filter);
+
+    return (matches.length != 0) ? matches[0] : null;
+  }
+
+  /**
+   * Deletes all export files.
+   */
+  private void deleteExportFiles() {
+    File exportDir = getExportDir();
+
+    if(exportDir.exists()) {
+      File[] exportFiles = exportDir.listFiles();
+      for(File f : exportFiles) {
+        if(f.isFile()) {
+          f.delete();
+        }
+      }
+    }
+  }
+
+  private File getExportDir() {
+    return new File(externalAppHelper.getWorkDir() + File.separator + "export");
   }
 
   public ExternalAppLauncherHelper getExternalAppHelper() {

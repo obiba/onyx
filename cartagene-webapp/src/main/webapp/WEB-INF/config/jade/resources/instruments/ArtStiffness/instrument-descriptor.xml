@@ -543,6 +543,28 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
+    
+    <output id="Export_PIC_CLINIC">
+      <vendorName>PIC_CLINIC</vendorName>
+      <code>RES_PIC_CLINIC</code>
+      <dataType>DATA</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    
+    <output id="Export_PIC_DETAIL">
+      <vendorName>PIC_DETAIL</vendorName>
+      <code>RES_PIC_DETAIL</code>
+      <dataType>DATA</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    
+    <output id="Export_PIC_CLASSIFICATION">
+      <vendorName>PIC_CLASSIFICATION</vendorName>
+      <code>RES_PIC_CLASSIFICATION</code>
+      <dataType>DATA</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+    </output>
+    
   </instrumentParameters>
   
 </instrumentType>
