@@ -723,38 +723,41 @@ abstract public class TanitaInstrument implements InstrumentRunner, Initializing
   }
 
   public void initialize() {
-    log.info("Refresh serial port list");
-    refreshSerialPortList();
-    log.info("Setup serial port");
-    setupSerialPort();
-    // If serial port is not available display error message
-    if(!portIsAvailable) {
-      reestablishConnection();
+
+    if(!externalAppHelper.isSotfwareAlreadyStarted("tanitaInstrumentRunner")) {
+      log.info("Refresh serial port list");
+      refreshSerialPortList();
+      log.info("Setup serial port");
+      setupSerialPort();
+      // If serial port is not available display error message
+      if(!portIsAvailable) {
+        reestablishConnection();
+      }
+    } else {
+      JOptionPane.showMessageDialog(null, tanitaResourceBundle.getString("Err.Application_lock"), tanitaResourceBundle.getString("Title.Cannot_start_application"), JOptionPane.ERROR_MESSAGE);
+      shutdown = true;
     }
   }
 
   public void run() {
 
     if(!shutdown) {
-      if(!externalAppHelper.isSotfwareAlreadyStarted("tanitaInstrumentRunner")) {
 
-        log.info("Starting Tanita GUI");
-        buildGUI();
+      log.info("Starting Tanita GUI");
+      buildGUI();
 
-        // Obtain the lock outside the UI thread. This will block until the UI releases the lock, at which point it
-        // should
-        // be safe to exit the main thread.
-        synchronized(uiLock) {
-          try {
-            uiLock.wait();
-          } catch(InterruptedException e) {
-            throw new RuntimeException(e);
-          }
+      // Obtain the lock outside the UI thread. This will block until the UI releases the lock, at which point it
+      // should
+      // be safe to exit the main thread.
+      synchronized(uiLock) {
+        try {
+          uiLock.wait();
+        } catch(InterruptedException e) {
+          throw new RuntimeException(e);
         }
-        log.info("Lock obtained. Exiting software.");
-      } else {
-        JOptionPane.showMessageDialog(null, tanitaResourceBundle.getString("Err.Application_lock"), tanitaResourceBundle.getString("Title.Cannot_start_application"), JOptionPane.ERROR_MESSAGE);
       }
+      log.info("Lock obtained. Exiting software.");
+
     }
 
   }
