@@ -145,7 +145,7 @@
                       <category id="68" name="TIME_24" escape="false">
                         <openAnswerDefinition id="69" name="TIME_24" dataType="DATE" required="true">
                           <openAnswerDefinitions id="70">
-                            <open id="71" name="HOUR_24" dataType="INTEGER" required="false">
+                            <open id="71" name="HOUR_24" dataType="INTEGER" required="true">
                               <defaultValues id="72">
                                 <data id="73" type="INTEGER">
                                   <value class="long">0</value>
@@ -223,7 +223,7 @@
                               <parentOpenAnswerDefinition reference="69"/>
                               <openAnswerDefinitions id="97"/>
                             </open>
-                            <open id="98" name="MINUTE_15" dataType="INTEGER" required="false">
+                            <open id="98" name="MINUTE_15" dataType="INTEGER" required="true">
                               <defaultValues id="99">
                                 <data id="100" type="INTEGER">
                                   <value class="long">0</value>
@@ -241,7 +241,7 @@
                               <parentOpenAnswerDefinition reference="69"/>
                               <openAnswerDefinitions id="104"/>
                             </open>
-                            <open id="105" name="TODAY_YESTERDAY" dataType="TEXT" required="false">
+                            <open id="105" name="TODAY_YESTERDAY" dataType="TEXT" required="true">
                               <defaultValues id="106">
                                 <data id="107" type="TEXT">
                                   <value class="string">TODAY</value>
