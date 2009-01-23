@@ -73,7 +73,7 @@ public class BarcodePartColumnTest {
     barcodePartColumn.populateItem(cellItem, "componentId", new Model(registeredParticipantTube));
 
     // Verify that the cell item contains a label with the expected text (<partTitle>.<partLabel>),
-    // where <partLabel> is the first seven characters of the bar code.
+    // where <partLabel> is the first seven characters of the barcode.
     Label label = (Label) cellItem.get("componentId");
     Assert.assertNotNull(label);
     MessageSourceResolvableStringModel model = (MessageSourceResolvableStringModel) label.getModel();

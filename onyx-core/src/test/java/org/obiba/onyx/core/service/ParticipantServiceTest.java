@@ -94,7 +94,7 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
 
     participantService.assignCodeToParticipant(participant, barcode, null, user);
 
-    // Verify that the bar code was persisted.
+    // Verify that the barcode was persisted.
     participant = persistenceManager.get(Participant.class, 4l);
     Assert.assertEquals(barcode, participant.getBarcode());
   }
@@ -115,7 +115,7 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
 
     participantService.assignCodeToParticipant(participant, barcode, receptionComment, user);
 
-    // Verify that the bar code was persisted.
+    // Verify that the barcode was persisted.
     participant = persistenceManager.get(Participant.class, participantId);
     Assert.assertEquals(barcode, participant.getBarcode());
 

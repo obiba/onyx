@@ -71,8 +71,8 @@ public class BarcodePartColumn extends AbstractColumn {
 
     List<BarcodePart> barcodePartList = barcodeStructure.parseBarcode(barcode, errors);
 
-    // From barcodePartList, extract the list of DISPLAYED bar code parts
-    // (i.e., those with a title). Only these bar code parts have corresponding
+    // From barcodePartList, extract the list of DISPLAYED barcode parts
+    // (i.e., those with a title). Only these barcode parts have corresponding
     // columns.
     List<BarcodePart> displayedBarcodePartList = new ArrayList<BarcodePart>();
 
@@ -82,7 +82,7 @@ public class BarcodePartColumn extends AbstractColumn {
       }
     }
 
-    // From displayedBarcodePartList, get the bar code part to be rendered the current
+    // From displayedBarcodePartList, get the barcode part to be rendered the current
     // cell. Need to subtract firstBarcodePartColumnIndex from the cell item index, because
     // there are additional columns in the table (the Delete column and the Barcode column).
     int barcodePartIndex = cellItem.getIndex() - firstBarcodePartColumnIndex;
