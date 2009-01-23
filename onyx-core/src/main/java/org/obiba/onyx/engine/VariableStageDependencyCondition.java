@@ -70,12 +70,12 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
     Boolean rval = null;
 
     // ask variable directory
-    log.info("Testing variable: {} {} {}", new Object[] { variablePath, operator != null ? operator : ComparisonOperator.eq, data != null ? data : "true" });
+    log.debug("Testing variable: {} {} {}", new Object[] { variablePath, operator != null ? operator : ComparisonOperator.eq, data != null ? data : "true" });
     VariableData variableData = variableDirectory.getVariableData(activeInterviewService.getParticipant(), variablePath);
     if(variableData != null) {
       // apply a OR among the data of the variable
       for(Data varData : variableData.getDatas()) {
-        log.info("varData={}", varData);
+        log.debug("varData={}", varData);
         rval = compare(varData);
         if(rval) {
           break;
@@ -88,7 +88,7 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
       rval = compare(DataBuilder.buildBoolean(false));
     }
 
-    log.info("Test return value={}", rval);
+    log.debug("Test return value={}", rval);
     return rval;
   }
 
