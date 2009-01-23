@@ -98,7 +98,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public InstrumentRun getInstrumentRun() {
-    log.info("currentRunId={}", currentRunId);
+    log.debug("currentRunId={}", currentRunId);
     if(currentRunId == null) return null;
 
     return getPersistenceManager().get(InstrumentRun.class, currentRunId);
@@ -115,7 +115,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public void persistRun() {
-    log.info("ActiveInstrumentRunService is persisting InstrumentRun");
+    log.debug("ActiveInstrumentRunService is persisting InstrumentRun");
     getPersistenceManager().save(getInstrumentRun());
   }
 

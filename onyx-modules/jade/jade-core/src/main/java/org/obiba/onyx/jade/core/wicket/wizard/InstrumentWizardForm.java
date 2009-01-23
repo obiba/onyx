@@ -63,7 +63,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
     super(id);
 
     InstrumentType type = (InstrumentType) instrumentTypeModel.getObject();
-    log.info("instrumentType={}", type.getName());
+    log.debug("instrumentType={}", type.getName());
     // ONYX-181: Set the current InstrumentRun on the ActiveInstrumentRunService. This particular
     // instance of the service may not have had its start method called, in which case it will have
     // a null InstrumentRun.
@@ -126,7 +126,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
     Instrument instrumentTemplate = new Instrument();
     instrumentTemplate.setInstrumentType(instrumentType);
     instrumentTemplate.setStatus(InstrumentStatus.ACTIVE);
-    log.info("instruments.count={}", queryService.count(instrumentTemplate));
+    log.debug("instruments.count={}", queryService.count(instrumentTemplate));
     if(queryService.count(instrumentTemplate) > 1) {
       if(startStep == null) {
         startStep = instrumentSelectionStep;
@@ -145,8 +145,8 @@ public abstract class InstrumentWizardForm extends WizardForm {
     // or interpretative questions
     InterpretativeParameter template = new InterpretativeParameter();
     template.setInstrumentType(instrumentType);
-    log.info("instrumentInterpretativeParameters.count={}", queryService.count(template));
-    log.info("instrumentInputParameters.count={}", instrumentService.countInstrumentInputParameter(instrumentType, false));
+    log.debug("instrumentInterpretativeParameters.count={}", queryService.count(template));
+    log.debug("instrumentInputParameters.count={}", instrumentService.countInstrumentInputParameter(instrumentType, false));
     if(queryService.count(template) > 0 || instrumentService.countInstrumentInputParameter(instrumentType, false) > 0) {
       if(startStep == null) {
         startStep = inputParametersStep;
@@ -160,7 +160,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
     // are there output parameters that are to be captured automatically from instrument (i.e. requires instrument
     // launch) ?
-    log.info("instrument.isInteractive={}", instrumentService.isInteractiveInstrument(instrumentType));
+    log.debug("instrument.isInteractive={}", instrumentService.isInteractiveInstrument(instrumentType));
     if(instrumentService.isInteractiveInstrument(instrumentType)) {
       if(startStep == null) {
         startStep = instrumentLaunchStep;
@@ -176,7 +176,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
     InstrumentOutputParameter opTemplate = new InstrumentOutputParameter();
     opTemplate.setInstrumentType(instrumentType);
     opTemplate.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
-    log.info("instrumentOutputParameters.MANUAL.count={}", queryService.count(opTemplate));
+    log.debug("instrumentOutputParameters.MANUAL.count={}", queryService.count(opTemplate));
     if(queryService.count(opTemplate) > 0) {
       if(startStep == null) {
         startStep = outputParametersStep;
