@@ -39,7 +39,7 @@ public class QuartzSkippedState extends AbstractQuartzStageState {
 
   @Override
   public void stop(Action action) {
-    log.info("Quartz Stage {} is cancelling", super.getStage().getName());
+    log.debug("Quartz Stage {} is cancelling", super.getStage().getName());
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
     } else {

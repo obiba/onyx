@@ -61,7 +61,7 @@ public class QuartzInProgressState extends AbstractQuartzStageState {
 
   @Override
   public void stop(Action action) {
-    log.info("Quartz Stage {} is stopping", super.getStage().getName());
+    log.debug("Quartz Stage {} is stopping", super.getStage().getName());
     cancelQuestionnaireParticipant();
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
@@ -72,7 +72,7 @@ public class QuartzInProgressState extends AbstractQuartzStageState {
 
   @Override
   public void complete(Action action) {
-    log.info("Quartz Stage {} is completing", super.getStage().getName());
+    log.debug("Quartz Stage {} is completing", super.getStage().getName());
     questionnaireParticipantService.endQuestionnaireParticipant(activeInterviewService.getParticipant(), getStage().getName());
     castEvent(TransitionEvent.COMPLETE);
   }
@@ -84,7 +84,7 @@ public class QuartzInProgressState extends AbstractQuartzStageState {
 
   @Override
   public void interrupt(Action action) {
-    log.info("Quartz Stage {} is interrupting", super.getStage().getName());
+    log.debug("Quartz Stage {} is interrupting", super.getStage().getName());
     castEvent(TransitionEvent.INTERRUPT);
   }
 

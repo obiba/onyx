@@ -41,14 +41,14 @@ public class QuartzReadyState extends AbstractQuartzStageState {
   @Override
   public void execute(Action action) {
     super.execute(action);
-    log.info("Quartz Stage {} is starting", super.getStage().getName());
+    log.debug("Quartz Stage {} is starting", super.getStage().getName());
     castEvent(TransitionEvent.START);
   }
 
   @Override
   public void skip(Action action) {
     super.skip(action);
-    log.info("Quartz Stage {} is skipping", super.getStage().getName());
+    log.debug("Quartz Stage {} is skipping", super.getStage().getName());
     castEvent(TransitionEvent.SKIP);
   }
 
