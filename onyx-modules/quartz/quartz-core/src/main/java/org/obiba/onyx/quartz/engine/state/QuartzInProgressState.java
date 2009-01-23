@@ -73,7 +73,7 @@ public class QuartzInProgressState extends AbstractQuartzStageState {
   @Override
   public void complete(Action action) {
     log.info("Quartz Stage {} is completing", super.getStage().getName());
-    getActiveQuestionnaireAdministrationService().end();
+    questionnaireParticipantService.endQuestionnaireParticipant(activeInterviewService.getParticipant(), getStage().getName());
     castEvent(TransitionEvent.COMPLETE);
   }
 
@@ -85,26 +85,14 @@ public class QuartzInProgressState extends AbstractQuartzStageState {
   @Override
   public void interrupt(Action action) {
     log.info("Quartz Stage {} is interrupting", super.getStage().getName());
-    getActiveQuestionnaireAdministrationService().stopCurrentQuestionnaire();
     castEvent(TransitionEvent.INTERRUPT);
-  }
-
-  @Override
-  public void onEntry(TransitionEvent event) {
-    Questionnaire questionnaire = questionnaireBundleManager.getBundle(getStage().getName()).getQuestionnaire();
-    activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
-
-    if(isResumingQuestionnaire()) {
-      Participant participant = activeInterviewService.getParticipant();
-      activeQuestionnaireAdministrationService.resume(participant);
-    }
   }
 
   private boolean isResumingQuestionnaire() {
     boolean resumingQuestionnaire = false;
 
     Participant participant = activeInterviewService.getParticipant();
-    Questionnaire questionnaire = getActiveQuestionnaireAdministrationService().getQuestionnaire();
+    Questionnaire questionnaire = questionnaireBundleManager.getBundle(getStage().getName()).getQuestionnaire();
 
     if(participant != null && questionnaire != null) {
       QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getQuestionnaireParticipant(participant, questionnaire.getName());

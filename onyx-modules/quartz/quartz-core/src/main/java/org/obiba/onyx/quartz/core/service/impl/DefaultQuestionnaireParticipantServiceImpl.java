@@ -9,9 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
@@ -72,6 +74,14 @@ public abstract class DefaultQuestionnaireParticipantServiceImpl extends Persist
       questionAnswer.setActive(false);
       getPersistenceManager().save(questionAnswer);
     }
+  }
+
+  public void endQuestionnaireParticipant(Participant participant, String questionnaireName) {
+    QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant(participant, questionnaireName);
+    if(questionnaireParticipant == null) throw new IllegalArgumentException("Cannot find participant " + participant + " for questionnaire " + questionnaireName);
+
+    questionnaireParticipant.setTimeEnd(new Date());
+    getPersistenceManager().save(questionnaireParticipant);
   }
 
 }

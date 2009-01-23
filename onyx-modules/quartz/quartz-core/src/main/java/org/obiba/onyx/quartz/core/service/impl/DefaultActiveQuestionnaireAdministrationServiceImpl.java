@@ -82,10 +82,6 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return currentQuestionnaireParticipant;
   }
 
-  public void resume(Participant participant) {
-    // nothing to do
-  }
-
   public void end() {
     QuestionnaireParticipant currentQuestionnaireParticipant = getQuestionnaireParticipant();
 
@@ -302,13 +298,6 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     // forward the active to child questions
     for(Question questionChild : question.getQuestions()) {
       setActiveAnswers(questionChild, active);
-    }
-  }
-
-  public void stopCurrentQuestionnaire() {
-    QuestionnaireParticipant currentQuestionnaireParticipant = getQuestionnaireParticipant();
-    if(currentQuestionnaireParticipant != null) {
-      currentQuestionnaire = null;
     }
   }
 

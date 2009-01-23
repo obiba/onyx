@@ -122,8 +122,6 @@ public interface ActiveQuestionnaireAdministrationService {
    */
   public QuestionnaireParticipant start(Participant participant, Locale language);
 
-  public void resume(Participant participant);
-
   public void end();
 
   /**
@@ -275,11 +273,6 @@ public interface ActiveQuestionnaireAdministrationService {
    * @param questionCategory
    */
   public void deleteAnswer(Question question, QuestionCategory questionCategory);
-
-  /**
-   * Clean active service when questionnaire is interrupted or canceled
-   */
-  public void stopCurrentQuestionnaire();
 
   /**
    * Add a comment to a question answer.

@@ -33,7 +33,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="baseQuartzStageState" parent="baseStageState" class="org.obiba.onyx.quartz.engine.state.AbstractQuartzStageState" abstract="true">
     <property name="activeInterviewService" ref="activeInterviewService" />
     <property name="questionnaireParticipantService" ref="questionnaireParticipantService" />
-    <property name="activeQuestionnaireAdministrationService" ref="activeQuestionnaireAdministrationService" />
   </bean>
   
   <bean id="navigationStrategy"

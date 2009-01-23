@@ -63,7 +63,6 @@ public class QuartzCompletedStateTest {
     setCompletedState();
 
     expect(activeInterviewServiceMock.getParticipant()).andReturn(new Participant());
-    activeQuestionnaireAdministrationServiceMock.stopCurrentQuestionnaire();
     expect(questionnaireParticipantServiceMock.getQuestionnaireParticipant((Participant) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new QuestionnaireParticipant());
     questionnaireParticipantServiceMock.deleteQuestionnaireParticipant((QuestionnaireParticipant) EasyMock.anyObject());
     eventSinkMock.castEvent(TransitionEvent.CANCEL);
@@ -96,7 +95,6 @@ public class QuartzCompletedStateTest {
     setCompletedState();
 
     expect(activeInterviewServiceMock.getParticipant()).andReturn(new Participant());
-    activeQuestionnaireAdministrationServiceMock.stopCurrentQuestionnaire();
     expect(questionnaireParticipantServiceMock.getQuestionnaireParticipant((Participant) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new QuestionnaireParticipant());
     questionnaireParticipantServiceMock.deleteQuestionnaireParticipant((QuestionnaireParticipant) EasyMock.anyObject());
     eventSinkMock.castEvent(TransitionEvent.INVALID);
@@ -123,7 +121,6 @@ public class QuartzCompletedStateTest {
     setCompletedState();
 
     expect(activeInterviewServiceMock.getParticipant()).andReturn(new Participant());
-    activeQuestionnaireAdministrationServiceMock.stopCurrentQuestionnaire();
     expect(questionnaireParticipantServiceMock.getQuestionnaireParticipant((Participant) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new QuestionnaireParticipant());
     questionnaireParticipantServiceMock.deleteQuestionnaireParticipant((QuestionnaireParticipant) EasyMock.anyObject());
 
@@ -147,7 +144,6 @@ public class QuartzCompletedStateTest {
     completedState.setEventSink(eventSinkMock);
     completedState.setQuestionnaireParticipantService(questionnaireParticipantServiceMock);
     completedState.setActiveInterviewService(activeInterviewServiceMock);
-    completedState.setActiveQuestionnaireAdministrationService(activeQuestionnaireAdministrationServiceMock);
   }
 
   private Stage newTestStage() {

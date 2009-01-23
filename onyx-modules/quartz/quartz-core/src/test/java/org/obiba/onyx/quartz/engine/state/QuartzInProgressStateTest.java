@@ -63,7 +63,6 @@ public class QuartzInProgressStateTest {
     setInProgressState();
 
     expect(activeInterviewServiceMock.getParticipant()).andReturn(new Participant());
-    activeQuestionnaireAdministrationServiceMock.stopCurrentQuestionnaire();
     expect(questionnaireParticipantServiceMock.getQuestionnaireParticipant((Participant) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new QuestionnaireParticipant());
     questionnaireParticipantServiceMock.deleteQuestionnaireParticipant((QuestionnaireParticipant) EasyMock.anyObject());
     eventSinkMock.castEvent(TransitionEvent.CANCEL);
@@ -96,7 +95,6 @@ public class QuartzInProgressStateTest {
     setInProgressState();
 
     expect(activeInterviewServiceMock.getParticipant()).andReturn(new Participant());
-    activeQuestionnaireAdministrationServiceMock.stopCurrentQuestionnaire();
     expect(questionnaireParticipantServiceMock.getQuestionnaireParticipant((Participant) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new QuestionnaireParticipant());
     questionnaireParticipantServiceMock.deleteQuestionnaireParticipant((QuestionnaireParticipant) EasyMock.anyObject());
     eventSinkMock.castEvent(TransitionEvent.INVALID);
@@ -121,7 +119,6 @@ public class QuartzInProgressStateTest {
     inProgressState.setEventSink(eventSinkMock);
     inProgressState.setQuestionnaireParticipantService(questionnaireParticipantServiceMock);
     inProgressState.setActiveInterviewService(activeInterviewServiceMock);
-    inProgressState.setActiveQuestionnaireAdministrationService(activeQuestionnaireAdministrationServiceMock);
   }
 
   private Stage newTestStage() {

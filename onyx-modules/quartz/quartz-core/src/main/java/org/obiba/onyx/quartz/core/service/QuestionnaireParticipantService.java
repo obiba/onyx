@@ -39,6 +39,12 @@ public interface QuestionnaireParticipantService {
   public void inactivateQuestionnaireParticipant(QuestionnaireParticipant questionnaireParticipant);
 
   /**
+   * End the questionnaire participant by setting the end date.
+   * @param questionnaireParticipant
+   */
+  public void endQuestionnaireParticipant(Participant participant, String questionnaireName);
+
+  /**
    * Get the comment on the question.
    * @param participant
    * @param questionnaireName

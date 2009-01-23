@@ -11,7 +11,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
-import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -125,7 +124,6 @@ public class QuestionnaireWizardFormTest {
     expect(activeInterviewServiceMock.getInterview()).andReturn(interview).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(new Locale("en")).anyTimes();
-    if(resuming == true) activeQuestionnaireAdministrationServiceMock.resume((Participant) EasyMock.anyObject());
     expect(activeQuestionnaireAdministrationServiceMock.getResumePage()).andReturn(new Page("p2")).anyTimes();
     expect(questionnaireBundleManagerMock.getBundle(questionnaire.getName())).andReturn(questionnaireBundleMock).anyTimes();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).anyTimes();
