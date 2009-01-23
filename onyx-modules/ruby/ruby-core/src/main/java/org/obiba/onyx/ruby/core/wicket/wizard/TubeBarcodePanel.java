@@ -21,6 +21,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
+import org.obiba.onyx.wicket.behavior.TabOnKeyPressBehaviour;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,8 @@ public class TubeBarcodePanel extends Panel {
   private ActiveTubeRegistrationService activeTubeRegistrationService;
 
   private TextField tubeBarcode;
+
+  private AjaxSubmitLink submitLink;
 
   //
   // Constructors
@@ -96,7 +99,7 @@ public class TubeBarcodePanel extends Panel {
     //
 
     private void addSubmitLink() {
-      add(new AjaxSubmitLink("submit") {
+      submitLink = new AjaxSubmitLink("submit") {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -118,12 +121,19 @@ public class TubeBarcodePanel extends Panel {
 
           target.addComponent(TubeBarcodePanel.this.getParent());
         }
-      });
+      };
+
+      submitLink.setOutputMarkupId(true);
+
+      add(submitLink);
+
     }
 
     private void addTubeBarcodeLabelAndField() {
       add(new Label("tubeBarcodeLabel", new SpringStringResourceModel("Ruby.TubeBarcode")));
       tubeBarcode = new TextField("tubeBarcode", new Model(""));
+
+      tubeBarcode.add(new TabOnKeyPressBehaviour(submitLink));
 
       add(tubeBarcode);
     }
