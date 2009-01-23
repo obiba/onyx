@@ -41,7 +41,6 @@ import org.obiba.wicket.application.ISpringWebApplication;
 import org.obiba.wicket.application.WebApplicationStartupListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
@@ -53,10 +52,6 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 public class OnyxApplication extends WebApplication implements ISpringWebApplication, IUnauthorizedComponentInstantiationListener {
 
   private final Logger log = LoggerFactory.getLogger(OnyxApplication.class);
-
-  private final String DEFAULT_BUILD_NUMBER = "SNAPSHOT";
-
-  private final String UNKNOWN_BUILD_NUMBER = "UNKNOWN";
 
   /**
    * Singleton instance of spring application context locator
@@ -90,27 +85,7 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
   }
 
   public void setVersion(Version version) {
-    String qualifier = version.getQualifier();
-
-    String buildNumber = DEFAULT_BUILD_NUMBER;
-
-    if(qualifier != null) {
-      int separatorIndex = qualifier.lastIndexOf('-');
-
-      if(separatorIndex != -1) {
-        buildNumber = qualifier.substring(separatorIndex + 1);
-      } else {
-        buildNumber = qualifier;
-      }
-
-      if(buildNumber.equals(UNKNOWN_BUILD_NUMBER)) {
-        buildNumber = DEFAULT_BUILD_NUMBER;
-      } else {
-        buildNumber = "b" + buildNumber;
-      }
-    }
-
-    this.version = new Version(version.getMajor(), version.getMinor(), version.getMicro(), buildNumber);
+    this.version = version;
   }
 
   @Override
@@ -158,10 +133,6 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
 
   public boolean isDevelopmentMode() {
     return Application.DEVELOPMENT.equalsIgnoreCase(getConfigurationType());
-  }
-
-  public Map getBeansOfType(Class type) throws BeansException {
-    return applicationContext.getBeansOfType(type);
   }
 
   protected final ApplicationContext internalGetApplicationContext() {
