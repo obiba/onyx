@@ -107,7 +107,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
       }
     }
     // at least this validator for textual input
-    if(getOpenAnswerDefinition().getDataType().equals(DataType.TEXT)) {
+    if(getOpenAnswerDefinition().getDataType().equals(DataType.TEXT) && getOpenAnswerDefinition().getDefaultValues().size() == 0) {
       // see OpenAnswer.textValue column length
       openField.add(new StringValidator.MaximumLengthValidator(2000));
     }
