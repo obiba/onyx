@@ -149,7 +149,7 @@ public class QuestionnaireStringResourceModelHelperTest {
 
     messageSource.addMessage("Question.QUESTION.label", locale, "question");
     messageSource.addMessage("QuestionCategory.QUESTION.CATEGORY.label", locale, "question_category");
-    messageSource.addMessage("OpenAnswerDefinition.OPEN.label", locale, ":");
+    messageSource.addMessage("OpenAnswerDefinition.OPEN.label", locale, ": toto");
     messageSource.addMessage("OpenAnswerDefinition.OPEN.unitLabel", locale, "open_unit_label");
 
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).atLeastOnce();

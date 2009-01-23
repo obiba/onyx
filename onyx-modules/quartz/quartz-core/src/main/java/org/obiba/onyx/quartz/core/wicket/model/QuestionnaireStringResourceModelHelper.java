@@ -65,7 +65,7 @@ public class QuestionnaireStringResourceModelHelper {
    */
   private static boolean isValidString(String str) {
     if(str != null && str.trim().length() > 0) {
-      Pattern pattern = Pattern.compile("\\w+");
+      Pattern pattern = Pattern.compile("[\\w\\s]+");
       return pattern.matcher(str).matches();
     }
     return false;
