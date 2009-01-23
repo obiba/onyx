@@ -12,6 +12,10 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
           <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/BSC_CI/active</variablePath>
           <operator>ne</operator>
           <data>

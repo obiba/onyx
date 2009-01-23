@@ -11,6 +11,10 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
           <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/SH_CI/active</variablePath>
           <operator>ne</operator>
           <data>
@@ -48,6 +52,10 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
           <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/WH_CI/active</variablePath>
           <operator>ne</operator>
           <data>
@@ -68,6 +76,10 @@
         <variableCondition>
           <stageName>Consent</stageName>
           <variablePath>/Cartagene/Consent/accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
@@ -94,6 +106,10 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
           <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/BP_CI/active</variablePath>
           <operator>ne</operator>
           <data>
@@ -114,6 +130,10 @@
         <variableCondition>
           <stageName>Consent</stageName>
           <variablePath>/Cartagene/Consent/accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
@@ -144,6 +164,10 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
           <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/WT_CI/active</variablePath>
           <operator>ne</operator>
           <data>
@@ -170,6 +194,10 @@
         <variableCondition>
           <stageName>Consent</stageName>
           <variablePath>/Cartagene/Consent/accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
@@ -244,6 +272,10 @@
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
           <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/BD_CI/active</variablePath>
           <operator>ne</operator>
           <data>
@@ -264,6 +296,10 @@
         <variableCondition>
           <stageName>Consent</stageName>
           <variablePath>/Cartagene/Consent/accepted</variablePath>
+        </variableCondition>
+        <variableCondition>
+          <stageName>CIPreliminaryQuestionnaire</stageName>
+          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
