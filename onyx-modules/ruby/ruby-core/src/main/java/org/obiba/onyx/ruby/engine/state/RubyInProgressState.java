@@ -62,7 +62,7 @@ public class RubyInProgressState extends AbstractRubyStageState {
 
   @Override
   public void stop(Action action) {
-    log.info("Ruby Stage {} is stopping", super.getStage().getName());
+    log.debug("Ruby Stage {} is stopping", super.getStage().getName());
 
     activeTubeRegistrationService.deleteParticipantTubeRegistration();
 
@@ -75,7 +75,7 @@ public class RubyInProgressState extends AbstractRubyStageState {
 
   @Override
   public void complete(Action action) {
-    log.info("Ruby Stage {} is completing", super.getStage().getName());
+    log.debug("Ruby Stage {} is completing", super.getStage().getName());
 
     ParticipantTubeRegistration participantTubeRegistration = activeTubeRegistrationService.getParticipantTubeRegistration();
     boolean contraIndicated = (participantTubeRegistration.getContraindication() != null);
@@ -96,7 +96,7 @@ public class RubyInProgressState extends AbstractRubyStageState {
 
   @Override
   public void interrupt(Action action) {
-    log.info("Ruby Stage {} is interrupting", super.getStage().getName());
+    log.debug("Ruby Stage {} is interrupting", super.getStage().getName());
     castEvent(TransitionEvent.INTERRUPT);
   }
 

@@ -49,7 +49,7 @@ public class RubySkippedState extends AbstractRubyStageState {
 
   @Override
   public void stop(Action action) {
-    log.info("Ruby Stage {} is cancelling", super.getStage().getName());
+    log.debug("Ruby Stage {} is cancelling", super.getStage().getName());
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
     } else {

@@ -43,7 +43,7 @@ public class RubyInterruptedState extends AbstractRubyStageState {
 
   @Override
   public void stop(Action action) {
-    log.info("Ruby Stage {} is canceling", super.getStage().getName());
+    log.debug("Ruby Stage {} is canceling", super.getStage().getName());
 
     activeTubeRegistrationService.deleteParticipantTubeRegistration();
 
@@ -56,7 +56,7 @@ public class RubyInterruptedState extends AbstractRubyStageState {
 
   @Override
   public void execute(Action action) {
-    log.info("Ruby Stage {} is resuming", super.getStage().getName());
+    log.debug("Ruby Stage {} is resuming", super.getStage().getName());
     castEvent(TransitionEvent.RESUME);
   }
 }

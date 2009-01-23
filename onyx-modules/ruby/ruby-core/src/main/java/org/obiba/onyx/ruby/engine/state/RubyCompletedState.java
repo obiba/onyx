@@ -42,7 +42,7 @@ public class RubyCompletedState extends AbstractRubyStageState {
 
   @Override
   public void stop(Action action) {
-    log.info("Ruby Stage {} is cancelling", super.getStage().getName());
+    log.debug("Ruby Stage {} is cancelling", super.getStage().getName());
 
     activeTubeRegistrationService.deleteParticipantTubeRegistration();
 

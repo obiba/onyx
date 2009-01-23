@@ -34,7 +34,7 @@ public class RubyContraIndicatedState extends AbstractRubyStageState {
   @Override
   public void stop(Action action) {
     super.execute(action);
-    log.info("Ruby Stage {} is canceling", super.getStage().getName());
+    log.debug("Ruby Stage {} is canceling", super.getStage().getName());
 
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);

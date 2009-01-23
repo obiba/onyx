@@ -43,7 +43,7 @@ public class RubyWaitingState extends AbstractRubyStageState {
   @Override
   public void skip(Action action) {
     super.skip(action);
-    log.info("Ruby Stage {} is skipping", super.getStage().getName());
+    log.debug("Ruby Stage {} is skipping", super.getStage().getName());
     castEvent(TransitionEvent.SKIP);
   }
 

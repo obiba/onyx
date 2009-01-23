@@ -44,14 +44,14 @@ public class RubyReadyState extends AbstractRubyStageState {
   @Override
   public void execute(Action action) {
     super.execute(action);
-    log.info("Ruby Stage {} is starting", super.getStage().getName());
+    log.debug("Ruby Stage {} is starting", super.getStage().getName());
     castEvent(TransitionEvent.START);
   }
 
   @Override
   public void skip(Action action) {
     super.skip(action);
-    log.info("Ruby Stage {} is skipping", super.getStage().getName());
+    log.debug("Ruby Stage {} is skipping", super.getStage().getName());
     castEvent(TransitionEvent.SKIP);
   }
 
