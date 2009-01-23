@@ -20,11 +20,13 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.behavior.InvalidFormFieldBehavior;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -103,6 +105,11 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
       for(IValidator validator : getOpenAnswerDefinition().getValidators()) {
         openField.add(validator);
       }
+    }
+    // at least this validator for textual input
+    if(getOpenAnswerDefinition().getDataType().equals(DataType.TEXT)) {
+      // see OpenAnswer.textValue column length
+      openField.add(new StringValidator.MaximumLengthValidator(2000));
     }
 
     // UI arguments as attributes

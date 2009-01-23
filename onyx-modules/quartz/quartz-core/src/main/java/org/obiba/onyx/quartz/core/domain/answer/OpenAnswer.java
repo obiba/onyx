@@ -11,11 +11,14 @@ package org.obiba.onyx.quartz.core.domain.answer;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.util.data.Data;
@@ -30,12 +33,14 @@ public class OpenAnswer extends AbstractEntity {
   @Enumerated(EnumType.STRING)
   private DataType dataType;
 
+  @Column(length = 2000)
   private String textValue;
 
   private Long integerValue;
 
   private Double decimalValue;
 
+  @Temporal(TemporalType.TIMESTAMP)
   private Date dateValue;
 
   private String openAnswerDefinitionName;

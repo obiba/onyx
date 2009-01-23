@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.core.domain.answer;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -26,6 +27,7 @@ public class QuestionAnswer extends AbstractEntity {
 
   private String questionName;
 
+  @Column(length = 2000)
   private String comment;
 
   private Boolean active;
