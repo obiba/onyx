@@ -16,11 +16,16 @@ import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  */
 public class QuestionnaireStringResourceModelHelper {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(QuestionnaireStringResourceModelHelper.class);
 
   /**
    * Get {@link OpenAnswerDefinition} string resource model.
@@ -38,7 +43,7 @@ public class QuestionnaireStringResourceModelHelper {
     QuestionnaireStringResourceModel questionLabel = new QuestionnaireStringResourceModel(question, "label");
 
     if(!questionCategory.getQuestion().getName().equals(question.getName())) {
-      model = new Model(questionLabel.getString() + " / " + questionCategoryLabel.getString());
+      model = new Model(questionLabel.getString() + " / " + getStringResourceModel(questionCategory.getQuestion(), questionCategory, openAnswerDefinition).getObject());
     } else if(isValidString(openLabel.getString())) {
       model = openLabel;
     } else if(isValidString(unitLabel.getString())) {
@@ -59,8 +64,9 @@ public class QuestionnaireStringResourceModelHelper {
    * @return
    */
   private static boolean isValidString(String str) {
-    if(str == null || str.trim().length() == 0) {
-      Pattern pattern = Pattern.compile("[a-zA-Z0-9]+");
+    log.info(str);
+    if(str != null && str.trim().length() > 0) {
+      Pattern pattern = Pattern.compile("\\w+");
       return pattern.matcher(str).matches();
     }
     return false;

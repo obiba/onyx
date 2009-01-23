@@ -106,7 +106,7 @@ public class AnswerCountValidator implements INullAcceptingValidator, IClusterab
                     if(!found) {
                       ValidationError error = new ValidationError();
                       error.addMessageKey(KEY_PREFIX + ".OpenRequired");
-                      error.setVariable("open", (String) QuestionnaireStringResourceModelHelper.getStringResourceModel(question, questionCategory, openAnswerDefinition).getObject());
+                      error.setVariable("open", (String) QuestionnaireStringResourceModelHelper.getStringResourceModel(question, questionCategory, childOpenAnswerDefinition).getObject());
                       validatable.error(error);
                     }
                   }
