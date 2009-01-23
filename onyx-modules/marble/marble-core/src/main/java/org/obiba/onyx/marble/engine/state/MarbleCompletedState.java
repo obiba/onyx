@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.engine.state;
 
-import java.util.Arrays;
 import java.util.Set;
 
 import org.obiba.onyx.engine.Action;
@@ -29,13 +28,12 @@ public class MarbleCompletedState extends AbstractMarbleStageState {
   @Override
   protected void addUserActions(Set<ActionType> types) {
     types.add(ActionType.STOP);
-    log.info("Marble Completed state has these actions {}", Arrays.toString(types.toArray()));
   }
 
   @Override
   public void stop(Action action) {
     super.execute(action);
-    log.info("Marble Stage {} is cancelling", super.getStage().getName());
+    log.debug("Marble Stage {} is cancelling", super.getStage().getName());
     consentService.deletePreviousConsent(activeInterviewService.getInterview());
     castEvent(TransitionEvent.CANCEL);
   }

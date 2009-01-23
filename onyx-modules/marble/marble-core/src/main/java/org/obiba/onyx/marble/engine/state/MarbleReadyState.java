@@ -32,7 +32,7 @@ public class MarbleReadyState extends AbstractMarbleStageState {
   @Override
   public void execute(Action action) {
     super.execute(action);
-    log.info("Marble Stage {} is starting", super.getStage().getName());
+    log.debug("Marble Stage {} is starting", super.getStage().getName());
     castEvent(TransitionEvent.START);
   }
 
