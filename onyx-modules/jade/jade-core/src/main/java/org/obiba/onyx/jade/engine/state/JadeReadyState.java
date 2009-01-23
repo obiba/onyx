@@ -37,7 +37,7 @@ public class JadeReadyState extends AbstractJadeStageState {
   @Override
   public void execute(Action action) {
     super.execute(action);
-    log.info("Jade Stage {} is starting", super.getStage().getName());
+    log.debug("Jade Stage {} is starting", super.getStage().getName());
     InstrumentType type = super.instrumentService.getInstrumentType(getStage().getName());
     if(type == null) {
       log.error("Jade Stage {} has no associated Instrument Type. Make sure a matching instrument type is created using the instrument-descriptor.xml files.", getStage().getName());
@@ -50,7 +50,7 @@ public class JadeReadyState extends AbstractJadeStageState {
   @Override
   public void skip(Action action) {
     super.skip(action);
-    log.info("Jade Stage {} is skipping", super.getStage().getName());
+    log.debug("Jade Stage {} is skipping", super.getStage().getName());
     castEvent(TransitionEvent.SKIP);
   }
 

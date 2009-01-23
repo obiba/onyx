@@ -37,7 +37,7 @@ public class JadeSkippedState extends AbstractJadeStageState {
   @Override
   public void stop(Action action) {
     super.execute(action);
-    log.info("Jade Stage {} is cancelling", super.getStage().getName());
+    log.debug("Jade Stage {} is cancelling", super.getStage().getName());
 
     // If our dependencies aren't complete, cast INVALID, otherwise cast CANCEL
     // This changes the destination state

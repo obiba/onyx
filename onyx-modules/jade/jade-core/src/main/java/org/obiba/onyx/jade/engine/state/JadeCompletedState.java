@@ -39,7 +39,7 @@ public class JadeCompletedState extends AbstractJadeStageState {
   @Override
   public void stop(Action action) {
     super.execute(action);
-    log.info("Jade Stage {} is cancelling", super.getStage().getName());
+    log.debug("Jade Stage {} is cancelling", super.getStage().getName());
     cancelInstrumentRun();
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);

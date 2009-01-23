@@ -36,7 +36,7 @@ public class JadeWaitingState extends AbstractJadeStageState {
   @Override
   public void skip(Action action) {
     super.skip(action);
-    log.info("Jade Stage {} is skipping", super.getStage().getName());
+    log.debug("Jade Stage {} is skipping", super.getStage().getName());
     castEvent(TransitionEvent.SKIP);
   }
 
