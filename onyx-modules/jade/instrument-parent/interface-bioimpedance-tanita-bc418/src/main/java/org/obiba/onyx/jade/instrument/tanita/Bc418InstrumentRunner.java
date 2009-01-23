@@ -87,6 +87,7 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
 
         // Send parameter
         outputStream.write(pCommand);
+        outputStream.flush();
 
         List<Byte> pCommandList = new ArrayList<Byte>();
         for(int i = 0; i < pCommand.length; i++) {
@@ -105,10 +106,19 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
       if(wResponse != null) {
         wResponse = wResponse.trim();
       }
-
       log.info("Receiving response:{}", wResponse);
     } catch(IOException e) {
-      throw new RuntimeException("Error when receiving data from device", e);
+
+	  // In case of communication failure, wait for 5 secs and try again...
+      try {
+        Thread.sleep(5000);
+        wResponse = bufferedReader.readLine();
+        log.info("Receiving response:{}", wResponse);
+      } catch(Exception ex) {
+        JOptionPane.showMessageDialog(appWindow, tanitaResourceBundle.getString("Err.Communication_error_BC418"));
+        throw new RuntimeException("Communication error with the Tanita BC418, exiting runner...");
+      }
+
     }
 
     return wResponse;
@@ -126,12 +136,6 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
   private void initParticipantData() {
 
     Map<String, Data> inputData = instrumentExecutionService.getInputParametersValue("INPUT_CLOTHES_WEIGHT", "INPUT_PARTICIPANT_GENDER", "INPUT_BODY_TYPE", "INPUT_PARTICIPANT_HEIGHT", "INPUT_PARTICIPANT_AGE");
-
-    try {
-      bufferedReader = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
-    } catch(IOException e) {
-      throw new RuntimeException("Cannot open serial port on BC-418", e);
-    }
 
     try {
       String wUnitsOfMeasure = "U0\r\n";
@@ -331,7 +335,14 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
     super.initialize();
 
     if(!shutdown) {
-      // resetTanita();
+
+      try {
+        bufferedReader = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
+      } catch(IOException e) {
+        throw new RuntimeException("Cannot open serial port on BC-418", e);
+      }
+
+      resetTanita();
       initParticipantData();
     }
   }
