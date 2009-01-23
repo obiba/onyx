@@ -51,7 +51,7 @@ public abstract class ActionWindow extends Panel {
         ActionDefinitionPanel pane = (ActionDefinitionPanel) modal.get(modal.getContentId());
         if(!pane.isCancelled()) {
           Action action = pane.getAction();
-          log.info("action=" + action);
+          log.debug("action=" + action);
           Stage stage = null;
           if(getModel() != null && getModelObject() != null) {
             stage = (Stage) getModelObject();
