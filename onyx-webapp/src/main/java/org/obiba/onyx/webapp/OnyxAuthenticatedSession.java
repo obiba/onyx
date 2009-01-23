@@ -39,7 +39,7 @@ public final class OnyxAuthenticatedSession extends WebSession {
    * @param password the password
    * @return true if the user was authenticated
    */
-  public final boolean authenticate(final String login, final String password) {
+  public final AuthenticateErrorCode authenticate(final String login, final String password) {
     if(user == null) {
       // Try to authenticate user with database.
       User template = new User();
@@ -57,9 +57,13 @@ public final class OnyxAuthenticatedSession extends WebSession {
         if(user.getLanguage() != null) {
           setLocale(user.getLanguage());
         }
+
+        if(!user.isActive()) {
+          return AuthenticateErrorCode.INACTIVE_ACCOUNT;
+        }
       }
     }
-    return user != null;
+    return (user != null) ? null : AuthenticateErrorCode.SIGNIN_ERROR;
   }
 
   /**
@@ -117,6 +121,10 @@ public final class OnyxAuthenticatedSession extends WebSession {
       return userRoles;
     }
     return null;
+  }
+
+  public enum AuthenticateErrorCode {
+    SIGNIN_ERROR, INACTIVE_ACCOUNT
   }
 
 }

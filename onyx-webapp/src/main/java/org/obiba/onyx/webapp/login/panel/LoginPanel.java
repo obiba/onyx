@@ -18,6 +18,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
+import org.obiba.onyx.webapp.OnyxAuthenticatedSession.AuthenticateErrorCode;
 import org.obiba.onyx.wicket.util.JavascriptEventAlert;
 
 public class LoginPanel extends SignInPanel {
@@ -26,6 +27,8 @@ public class LoginPanel extends SignInPanel {
 
   @SpringBean
   private EntityQueryService queryService;
+
+  private AuthenticateErrorCode errCode = null;
 
   public LoginPanel(String id) {
     super(id, false);
@@ -53,10 +56,20 @@ public class LoginPanel extends SignInPanel {
   public boolean signIn(java.lang.String username, java.lang.String password) {
     // Get session info
     OnyxAuthenticatedSession session = (OnyxAuthenticatedSession) getSession();
-    return session.authenticate(username, password);
+    errCode = session.authenticate(username, password);
+    return (errCode != null) ? false : true;
 
   }
 
+  @Override
+  protected void onSignInFailed() {
+
+    if(errCode.equals(AuthenticateErrorCode.INACTIVE_ACCOUNT)) error(getLocalizer().getString("inactiveAccount", this, "Sign in failed"));
+    if(errCode.equals(AuthenticateErrorCode.SIGNIN_ERROR)) error(getLocalizer().getString("signInFailed", this, "Sign in failed"));
+
+  }
+
+  @Override
   public void onSignInSucceeded() {
     setSessionTimeout();
     setResponsePage(getApplication().getHomePage());

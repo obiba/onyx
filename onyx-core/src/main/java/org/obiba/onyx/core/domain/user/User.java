@@ -181,4 +181,8 @@ public class User extends AbstractEntity {
     }
     return buf.toString();
   }
+  
+  public boolean isActive() {
+    return (this.getStatus().equals(Status.ACTIVE));
+  }
 }
