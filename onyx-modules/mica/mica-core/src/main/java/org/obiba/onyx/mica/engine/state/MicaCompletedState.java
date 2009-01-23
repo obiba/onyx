@@ -35,7 +35,7 @@ public class MicaCompletedState extends AbstractMicaStageState {
   @Override
   public void onEntry(TransitionEvent event) {
     super.onEntry(event);
-    log.info("Setting interview state to {}", InterviewStatus.COMPLETED);
+    log.debug("Setting interview state to {}", InterviewStatus.COMPLETED);
     super.activeInterviewService.setStatus(InterviewStatus.COMPLETED);
   }
 

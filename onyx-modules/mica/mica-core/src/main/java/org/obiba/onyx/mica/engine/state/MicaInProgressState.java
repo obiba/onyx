@@ -51,14 +51,14 @@ public class MicaInProgressState extends AbstractMicaStageState {
 
   @Override
   public void complete(Action action) {
-    log.info("Mica Stage {} is completing", super.getStage().getName());
+    log.debug("Mica Stage {} is completing", super.getStage().getName());
     // Finish current conclusion
     castEvent(TransitionEvent.COMPLETE);
   }
 
   @Override
   public void stop(Action action) {
-    log.info("Mica Stage {} is canceling", super.getStage().getName());
+    log.debug("Mica Stage {} is canceling", super.getStage().getName());
     castEvent(TransitionEvent.CANCEL);
   }
 

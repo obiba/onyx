@@ -50,7 +50,7 @@ public class MicaReadyState extends AbstractMicaStageState {
   @Override
   public void execute(Action action) {
     super.execute(action);
-    log.info("Mica Stage {} is starting", super.getStage().getName());
+    log.debug("Mica Stage {} is starting", super.getStage().getName());
     castEvent(TransitionEvent.START);
   }
 
