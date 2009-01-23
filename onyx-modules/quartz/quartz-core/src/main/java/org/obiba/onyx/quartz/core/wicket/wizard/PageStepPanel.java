@@ -60,7 +60,7 @@ public class PageStepPanel extends QuestionnaireWizardStepPanel {
 
     // Get the configured page layout factory.
     Page page = (Page) getModelObject();
-    log.info("page={}", page);
+    log.debug("page={}", page);
     IPageLayoutFactory pageLayoutFactory = pageLayoutFactoryRegistry.get(page.getUIFactoryName());
 
     // Create the page layout component, using the configured factory.

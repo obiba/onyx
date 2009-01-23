@@ -111,7 +111,6 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
         columns.add(new QuestionCategoryRadioColumn(new QuestionnaireModel(questionCategory), new PropertyModel(this, "radioGroupView.groups")) {
           @Override
           public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-            log.info("radioColumn.onEvent()");
             target.addComponent(array);
             fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
           }
@@ -131,7 +130,6 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
         columns.add(new QuestionCategoryCheckBoxColumn(new QuestionnaireModel(questionCategory), new PropertyModel(this, "checkGroupView.groups")) {
           @Override
           public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-            log.info("checkboxColumn.onEvent()");
             target.addComponent(array);
             fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
           }

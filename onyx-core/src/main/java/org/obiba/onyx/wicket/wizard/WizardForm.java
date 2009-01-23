@@ -182,7 +182,7 @@ public abstract class WizardForm extends Form {
 
   protected void gotoNext(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
-    log.info("gotoNext.currentStep={}", currentStep.getClass().getName());
+    log.debug("gotoNext.currentStep={}", currentStep.getClass().getName());
     currentStep.onStepOutNext(WizardForm.this, target);
 
     WizardStepPanel next = currentStep.getNextStep();
@@ -196,7 +196,7 @@ public abstract class WizardForm extends Form {
 
   protected void gotoPrevious(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
-    log.info("gotoPrevious.currentStep={}", currentStep.getClass().getName());
+    log.debug("gotoPrevious.currentStep={}", currentStep.getClass().getName());
     currentStep.onStepOutPrevious(WizardForm.this, target);
 
     WizardStepPanel previous = currentStep.getPreviousStep();
