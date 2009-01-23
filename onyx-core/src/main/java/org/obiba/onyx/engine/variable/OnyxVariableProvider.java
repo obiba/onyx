@@ -19,6 +19,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.user.Role;
+import org.obiba.onyx.core.domain.user.Status;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.Action;
@@ -159,34 +160,36 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
     } else if(variable.getParent().getName().equals(USER)) {
 
       User template = new User();
-      template.setDeleted(false);
+      template.setStatus(Status.ACTIVE);
 
       for(User user : queryService.match(template)) {
-        List<Data> datas = new ArrayList<Data>();
+        if(!user.isDeleted()) {
+          List<Data> datas = new ArrayList<Data>();
 
-        if(variable.getName().equals(USER_LOGIN)) {
-          varData.addData(DataBuilder.buildText(user.getLogin()));
-        } else if(variable.getName().equals(FIRST_NAME)) {
-          datas.add(DataBuilder.buildText(user.getFirstName()));
-        } else if(variable.getName().equals(LAST_NAME)) {
-          datas.add(DataBuilder.buildText(user.getLastName()));
-        } else if(variable.getName().equals(USER_EMAIL) && user.getEmail() != null) {
-          datas.add(DataBuilder.buildText(user.getEmail()));
-        } else if(variable.getName().equals(USER_LANGUAGE) && user.getLanguage() != null) {
-          datas.add(DataBuilder.buildText(user.getLanguage().toString()));
-        } else if(variable.getName().equals(USER_STATUS) && user.getStatus() != null) {
-          datas.add(DataBuilder.buildText(user.getStatus().toString()));
-        } else if(variable.getName().equals(USER_ROLES) && user.getRoles().size() > 0) {
-          for(Role role : user.getRoles()) {
-            datas.add(DataBuilder.buildText(role.getName()));
+          if(variable.getName().equals(USER_LOGIN)) {
+            varData.addData(DataBuilder.buildText(user.getLogin()));
+          } else if(variable.getName().equals(FIRST_NAME)) {
+            datas.add(DataBuilder.buildText(user.getFirstName()));
+          } else if(variable.getName().equals(LAST_NAME)) {
+            datas.add(DataBuilder.buildText(user.getLastName()));
+          } else if(variable.getName().equals(USER_EMAIL) && user.getEmail() != null) {
+            datas.add(DataBuilder.buildText(user.getEmail()));
+          } else if(variable.getName().equals(USER_LANGUAGE) && user.getLanguage() != null) {
+            datas.add(DataBuilder.buildText(user.getLanguage().toString()));
+          } else if(variable.getName().equals(USER_STATUS) && user.getStatus() != null) {
+            datas.add(DataBuilder.buildText(user.getStatus().toString()));
+          } else if(variable.getName().equals(USER_ROLES) && user.getRoles().size() > 0) {
+            for(Role role : user.getRoles()) {
+              datas.add(DataBuilder.buildText(role.getName()));
+            }
           }
-        }
 
-        if(datas.size() > 0) {
-          VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, USER_KEY, user.getLogin()));
-          varData.addVariableData(childVarData);
-          for(Data data : datas) {
-            childVarData.addData(data);
+          if(datas.size() > 0) {
+            VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, USER_KEY, user.getLogin()));
+            varData.addVariableData(childVarData);
+            for(Data data : datas) {
+              childVarData.addData(data);
+            }
           }
         }
       }
