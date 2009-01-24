@@ -170,7 +170,6 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
       throw new RuntimeException(e);
     }
 
-    super.internalInit();
   }
 
   protected void init() {
