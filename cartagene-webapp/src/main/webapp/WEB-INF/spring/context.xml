@@ -125,7 +125,7 @@
             <bean class="org.obiba.onyx.engine.variable.export.DigestingOnyxDataExportStrategy" />
             <bean class="org.obiba.onyx.engine.variable.export.DirectoryDataExportStrategy">
               <property name="applicationConfigurationService" ref="appConfigService" />
-              <property name="outputRootDirectory" value="target" />
+              <property name="outputRootDirectory" value="${org.obiba.onyx.export.path}" />
             </bean>
           </list>
         </property>
