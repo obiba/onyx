@@ -77,7 +77,7 @@ public class VariableStageDependencyCondition implements StageDependencyConditio
       for(Data varData : variableData.getDatas()) {
         log.debug("varData={}", varData);
         rval = compare(varData);
-        if(rval) {
+        if(rval != null && rval) {
           break;
         }
       }
