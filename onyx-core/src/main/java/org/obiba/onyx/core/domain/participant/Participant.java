@@ -337,4 +337,9 @@ public class Participant extends AbstractEntity {
     this.exported = exported;
   }
 
+  @Override
+  public String toString() {
+    return "Participant[" + barcode + "]";
+  }
+
 }
