@@ -30,8 +30,10 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
 
     // Mark existing consent as deleted
     Consent previousConsent = getPersistenceManager().matchOne(template);
-    previousConsent.setDeleted(true);
-    getPersistenceManager().save(previousConsent);
+    if(previousConsent != null) {
+      previousConsent.setDeleted(true);
+      getPersistenceManager().save(previousConsent);
+    }
   }
 
   public void saveConsent(Consent consent) {
