@@ -21,13 +21,9 @@
   <dependencies>
     <dependency>
       <groupId>org.obiba.onyx</groupId>
-      <artifactId>onyx-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.obiba.onyx</groupId>
       <artifactId>onyx-webapp</artifactId>
       <version>${project.version}</version>
+      <type>war</type>
     </dependency>
     <dependency>
       <groupId>org.obiba.jade</groupId>
@@ -72,7 +68,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <scope>runtime</scope>
     </dependency>
 
     <dependency>
@@ -191,6 +186,22 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <overlays>
+            <overlay>
+              <groupId>org.obiba.onyx</groupId>
+              <artifactId>onyx-webapp</artifactId>
+            </overlay>
+            <overlay>
+              <!-- empty groupId/artifactId detected as the current build -->
+            </overlay>
+          </overlays>
+        </configuration>
+      </plugin>
+
+      <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
@@ -286,6 +297,23 @@
           <url>http://192.168.111.9:8080/manager</url>
         </configuration>
       </plugin>
+      
+      <!--plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <mainClass>org.obiba.onyx.cartagene.questionnaire.util.CreateQuestionnaire</mainClass>
+        </configuration>
+      </plugin-->
 
     </plugins>
 

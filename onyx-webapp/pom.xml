@@ -9,7 +9,7 @@
 
   <groupId>org.obiba.onyx</groupId>
   <artifactId>onyx-webapp</artifactId>
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
 
   <parent>
     <groupId>org.obiba.onyx</groupId>

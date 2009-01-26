@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
@@ -195,6 +196,23 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
       while(mapIter.hasNext()) {
         Map.Entry<String, String> mapEntry = mapIter.next();
         this.columnNameToAttributeNameMap.put(mapEntry.getKey().toUpperCase(), mapEntry.getValue());
+      }
+    }
+  }
+
+  /**
+   * Set he column name to attribute name map with a configuration string.
+   * 
+   * @param keyValuePairs list of key/value pairs separated by a comma. For example, "<code>param1=foo,param2=bar</code>".
+   */
+  public void setColumnToAttribute(String keyValuePairs) {
+    if(columnNameToAttributeNameMap != null) {
+      // Get list of strings separated by the delimiter
+      StringTokenizer tokenizer = new StringTokenizer(keyValuePairs, ",");
+      while(tokenizer.hasMoreElements()) {
+        String[] entry = tokenizer.nextToken().split("=");
+        log.info("entry={} {}", entry[0], entry[1]);
+        columnNameToAttributeNameMap.put(entry[0].toUpperCase(), entry[1]);
       }
     }
   }
