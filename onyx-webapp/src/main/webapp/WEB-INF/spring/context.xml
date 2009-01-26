@@ -1,0 +1,108 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <!-- Loads the configuration properties. These are used throughout the spring context files to configure the deployment -->
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations">
+      <list>
+        <!-- Load the onyx.properties file in order to replace the org.obiba.onyx.config.path property
+          within the other properties files -->
+        <value>WEB-INF/onyx.properties</value>
+
+        <value>${org.obiba.onyx.config.path}/onyx-config.properties</value>
+        <value>${org.obiba.onyx.config.path}/*/module-config.properties</value>
+      </list>
+    </property>
+  </bean>
+
+  <!-- Load Hibernate's configuration file -->
+  <import resource="hibernate.xml" />
+
+  <!-- Import Onyx's context -->
+  <import resource="classpath:META-INF/spring/onyx-core/context.xml" />
+
+  <!-- A static stage ordering strategy. Override this by implementing Comparable<Stage> 
+    and defining the stageOrderingStrategy bean to point to your implementation -->
+  <bean id="stageOrderingStrategy" class="org.obiba.onyx.engine.StaticStageOrderingStrategy">
+    <property name="stageOrdering" value="${org.obiba.onyx.engine.staticStageOrder}" />
+  </bean>
+
+  <!-- Converts a entity to a path representing its unique identification -->
+  <bean id="variablePathNamingStrategy" class="org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy">
+    <property name="rootName" value="${org.obiba.onyx.variablePathNamingStrategy.rootName}" />
+    <property name="pathSeparator" value="${org.obiba.onyx.variablePathNamingStrategy.pathSeparator}" />
+    <property name="startWithPathSeparator" value="${org.obiba.onyx.variablePathNamingStrategy.startWithPathSeparator}" />
+  </bean>
+
+  <!-- The class that reads the participant Excel sheet. Override to fit your needs. -->
+  <bean id="participantReader" class="org.obiba.onyx.core.etl.participant.impl.DefaultParticipantExcelReader"
+    scope="prototype">
+    <property name="participantMetadata" ref="participantMetadata" />
+    <property name="sheetNumber" value="${org.obiba.onyx.participantReader.sheetNumber}" />
+    <property name="headerRowNumber" value="${org.obiba.onyx.participantReader.headerRowNumber}" />
+    <property name="firstDataRowNumber" value="${org.obiba.onyx.participantReader.firstDataRowNumber}" />
+    <property name="columnToAttribute" value="${org.obiba.onyx.participantReader.columnToAttribute}" />
+  </bean>
+
+  <!-- Implementation of UserService. Should not need to be overriden. -->
+  <bean id="userSessionService" class="org.obiba.onyx.webapp.service.impl.UserSessionServiceImpl">
+    <!-- NOTE: Uncomment declaration below if this service is injected into a singleton bean. -->
+    <!-- <aop:scoped-proxy /> -->
+
+    <property name="datePattern" value="${org.obiba.onyx.dateFormat}" />
+    <property name="dateTimePattern" value="${org.obiba.onyx.dateTimeFormat}" />
+  </bean>
+
+  <!-- Defines Onyx's MessageSource bean. extraBasenames can be used to load other ResourceBundles as required.
+    Currently, this is used to load the instrument's resource bundles until this is refactored -->
+  <bean name="messageSource" class="org.obiba.onyx.spring.context.OnyxMessageSourceFactoryBean">
+    <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
+  </bean>
+
+  <!-- Used only during development -->
+  <bean id="testDatabaseSeed" class="org.obiba.onyx.webapp.seed.TestDatabaseSeed" scope="singleton">
+    <property name="resourcePatterns">
+      <list>
+        <value>classpath:/appConfiguration.xml</value>
+      </list>
+    </property>
+    <property name="developmentSeed" value="true" />
+    <property name="persistenceManager" ref="persistenceManager" />
+  </bean>
+
+  <bean id="onyxApplicationStartupListener" class="org.obiba.wicket.util.seed.DatabaseSeedWebApplicationStartupListener"
+    scope="singleton">
+    <property name="databaseSeeds">
+      <list>
+        <ref bean="testDatabaseSeed" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="onyxDataExport" class="org.obiba.onyx.engine.variable.export.OnyxDataExport">
+    <property name="exportDestinations" ref="onyxDataExportDestinations"/>
+    <property name="queryService" ref="persistenceManager" />
+    <property name="variableDirectory" ref="variableDirectory" />
+    <property name="userSessionService" ref="userSessionService" />
+    <property name="configDirectory" value="${org.obiba.onyx.config.path}" />
+    <property name="exportStrategy">
+      <bean class="org.obiba.onyx.engine.variable.export.ChainingDataExportStrategyWiringFactoryBean">
+        <property name="chainedStrategies">
+          <list>
+            <bean class="org.obiba.onyx.engine.variable.export.EncryptingOnyxDataExportStrategy">
+              <property name="publicKeyFactory" ref="onyxKeyStore" />
+            </bean>
+            <bean class="org.obiba.onyx.engine.variable.export.DigestingOnyxDataExportStrategy" />
+            <bean class="org.obiba.onyx.engine.variable.export.ZipExportStrategy" />
+            <bean class="org.obiba.onyx.engine.variable.export.DigestingOnyxDataExportStrategy" />
+            <bean class="org.obiba.onyx.engine.variable.export.DirectoryDataExportStrategy">
+              <property name="applicationConfigurationService" ref="appConfigService" />
+              <property name="outputRootDirectory" value="${org.obiba.onyx.export.path}" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+</beans>
