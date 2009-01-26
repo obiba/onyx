@@ -222,6 +222,12 @@
         <artifactId>jta</artifactId>
         <version>${jta.version}</version>
       </dependency>
+      
+      <dependency>
+        <groupId>org.jasypt</groupId>
+        <artifactId>jasypt</artifactId>
+        <version>${jasypt.version}</version>
+      </dependency>
 
       <!-- Wicket -->
       <dependency>
@@ -724,6 +730,7 @@
     <slf4j.version>1.4.3</slf4j.version>
     <obiba.commons.version>1.0.2-SNAPSHOT</obiba.commons.version>
     <jta.version>1.0.1B</jta.version>
+    <jasypt.version>1.5</jasypt.version>
     <hsqldb.version>1.8.0.7</hsqldb.version>
     <dbunit.version>2.2.2</dbunit.version>
     <junit.version>4.4</junit.version>
