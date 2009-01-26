@@ -20,7 +20,6 @@ import java.util.zip.ZipOutputStream;
 
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
-import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.variable.VariableDataSet;
@@ -77,13 +76,13 @@ public class OnyxDataExport {
   public void exportCompletedInterviews() throws Exception {
 
     Participant template = new Participant();
-    template.setExported(false);
+    // template.setExported(false);
     List<Participant> participants = queryService.match(template);
     for(Iterator<Participant> iterator = participants.iterator(); iterator.hasNext();) {
       Participant participant = iterator.next();
       // Export completed interviews only
       Interview interview = participant.getInterview();
-      if(interview == null || interview.getStatus() != InterviewStatus.COMPLETED) {
+      if(interview == null /* || interview.getStatus() != InterviewStatus.COMPLETED */) {
         iterator.remove();
       }
     }

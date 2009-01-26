@@ -24,7 +24,8 @@
     <module>onyx-core</module>
     <module>onyx-modules</module>
     <module>onyx-webapp</module>
-    <module>cartagene-webapp</module>
+    <module>onyx-deploy-parent</module>
+    <module>onyx-example</module>
   </modules>
 
   <dependencyManagement>
