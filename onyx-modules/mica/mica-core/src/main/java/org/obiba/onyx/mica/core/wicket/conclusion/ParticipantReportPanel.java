@@ -1,17 +1,10 @@
 package org.obiba.onyx.mica.core.wicket.conclusion;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import javax.print.PrintException;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.wicket.Resource;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.markup.html.DynamicWebResource;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.DynamicWebResource.ResourceState;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
@@ -76,17 +69,10 @@ public class ParticipantReportPanel extends Panel {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        byte[] reportPdf;
         try {
-          reportPdf = IOUtils.toByteArray(jadeReportContributor.getReport(participantConsent.getLocale()));
-          try {
-            pdfPrintingService.printPdf(reportPdf);
-          } catch(PrintException e) {
-            log.error("Participant Report cannot be printed", e);
-          }
-        } catch(IOException e) {
-          log.error("Cannot read the Participant Report");
-          throw new RuntimeException(e);
+          pdfPrintingService.printPdf(jadeReportContributor.getReport(participantConsent.getLocale()));
+        } catch(PrintException e) {
+          log.error("Participant Report cannot be printed", e);
         }
 
       }
@@ -97,57 +83,6 @@ public class ParticipantReportPanel extends Panel {
     CheckBox printCheckBox = new CheckBox("printCheckBox", new Model());
     printCheckBox.setRequired(true);
     add(printCheckBox);
-  }
-
-  private class PdfResourceState extends ResourceState {
-    private byte[] stream;
-
-    public PdfResourceState(byte[] data) {
-      stream = data;
-    }
-
-    public byte[] getData() {
-      return stream;
-    }
-
-    public int getLength() {
-      return stream.length;
-    }
-
-    public String getContentType() {
-      return "application/pdf";
-    }
-  }
-
-  // Download consent form from server and open it
-  private Resource createConsentFormResource() {
-    Resource r = new DynamicWebResource() {
-
-      protected ResourceState getResourceState() {
-
-        return new PdfResourceState(participantConsent.getPdfForm());
-      }
-    };
-    return r;
-  }
-
-  // Create participant report form
-  private Resource createParticipantReportResource() {
-    Resource r = new DynamicWebResource() {
-
-      protected ResourceState getResourceState() {
-
-        InputStream in = jadeReportContributor.getReport(participantConsent.getLocale());
-
-        try {
-          return new PdfResourceState(IOUtils.toByteArray(in));
-        } catch(IOException e) {
-          throw new RuntimeException(e);
-        }
-
-      }
-    };
-    return r;
   }
 
   public void finish() {
