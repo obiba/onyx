@@ -198,6 +198,8 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
     getSecuritySettings().setAuthorizationStrategy(new RoleAuthorizationStrategy(new UserRolesAuthorizer()));
     getSecuritySettings().setUnauthorizedComponentInstantiationListener(this);
 
+    getApplicationSettings().setPageExpiredErrorPage(HomePage.class);
+
     log.info("Onyx Web Application has been started");
   }
 
