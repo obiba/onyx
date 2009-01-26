@@ -99,6 +99,11 @@
       <groupId>javax.transaction</groupId>
       <artifactId>jta</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.jasypt</groupId>
+      <artifactId>jasypt</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>javax.annotation</groupId>
