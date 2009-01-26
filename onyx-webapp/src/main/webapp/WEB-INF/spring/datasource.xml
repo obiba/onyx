@@ -1,0 +1,24 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="${org.obiba.onyx.datasource.driver}" />
+    <property name="url" value="${org.obiba.onyx.datasource.url}"/>
+    <property name="username" value="${org.obiba.onyx.datasource.username}" />
+    <property name="password" value="${org.obiba.onyx.datasource.password}" />
+
+    <!-- Settings required for handling stale connections -->
+    <property name="validationQuery" value="${org.obiba.onyx.datasource.validationQuery}" />
+    <!-- Tests the connection before it is passed on -->
+    <property name="testOnBorrow" value="${org.obiba.onyx.datasource.testOnBorrow}" />
+  </bean>
+
+  <bean id="hibernateDbConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="properties">
+      <props>
+        <prop key="hibernate.dialect">${org.obiba.onyx.datasource.dialect}</prop>
+      </props>
+    </property>
+  </bean>
+
+</beans>

@@ -4,23 +4,22 @@
   <!-- Load the datasource configuration file. -->
   <import resource="datasource.xml" />
 
-  <bean id="hibernateCacheConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+  <bean id="hibernatePropertiesConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
     <property name="properties">
-      <value>
-        <![CDATA[
-          hibernate.generate_statistics true
-          hibernate.cache.use_structured_entries true
-          hibernate.cache.use_query_cache=true
-          hibernate.cache.provider_class=org.hibernate.cache.EhCacheProvider
-        ]]>
-      </value>
+      <props>
+        <prop key="hibernate.generate_statistics">true</prop>
+        <prop key="hibernate.cache.use_structured_entries">true</prop>
+        <prop key="hibernate.cache.use_query_cache">true</prop>
+        <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+        <prop key="hibernate.hbm2ddl.auto">create</prop>
+      </props>
     </property>
   </bean>
 
   <bean id="hibernateConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
     <property name="propertiesArray">
       <list>
-        <ref bean="hibernateCacheConfig" />
+        <ref bean="hibernatePropertiesConfig" />
         <ref bean="hibernateDbConfig" />
       </list>
     </property>
