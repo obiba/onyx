@@ -9,15 +9,18 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.tube;
 
+import java.util.Map;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
@@ -43,7 +46,7 @@ public class CommentPanel extends Panel {
   @SpringBean(name = "activeTubeRegistrationService")
   private ActiveTubeRegistrationService activeTubeRegistrationService;
 
-  private TextField commentField;
+  private TextArea commentField;
 
   private AjaxSubmitLink submitLink;
 
@@ -102,9 +105,20 @@ public class CommentPanel extends Panel {
     private void addCommentField() {
       RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) CommentPanel.this.getModelObject();
 
-      commentField = new TextField("comment", new Model(registeredParticipantTube.getComment()));
+      // commentField = new TextField("comment", new Model(registeredParticipantTube.getComment()));
 
-      commentField.add(new StringValidator.MaximumLengthValidator(2000));
+      commentField = new TextArea("comment", new Model(registeredParticipantTube.getComment()));
+
+      commentField.add(new StringValidator.MaximumLengthValidator(2000) {
+
+        @Override
+        protected Map variablesMap(IValidatable validatable) {
+          Map map = super.variablesMap(validatable);
+          map.put("barcode", ((RegisteredParticipantTube) CommentPanel.this.getModelObject()).getBarcode());
+          return map;
+        }
+
+      });
 
       commentField.add(new EnterOnKeyPressBehaviour(submitLink));
 
