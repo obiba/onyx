@@ -210,9 +210,13 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
       // Get list of strings separated by the delimiter
       StringTokenizer tokenizer = new StringTokenizer(keyValuePairs, ",");
       while(tokenizer.hasMoreElements()) {
-        String[] entry = tokenizer.nextToken().split("=");
-        log.info("entry={} {}", entry[0], entry[1]);
-        columnNameToAttributeNameMap.put(entry[0].toUpperCase(), entry[1]);
+        String token = tokenizer.nextToken();
+        String[] entry = token.split("=");
+        if(entry.length == 2) {
+          columnNameToAttributeNameMap.put(entry[0].toUpperCase().trim(), entry[1].trim());
+        } else {
+          log.error("Could not identify Participant column to attribute mapping: " + token);
+        }
       }
     }
   }
