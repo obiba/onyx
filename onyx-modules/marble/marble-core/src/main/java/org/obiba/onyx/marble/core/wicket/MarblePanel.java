@@ -9,14 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.core.wicket;
 
-import java.io.Serializable;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ActionDefinition;
@@ -25,9 +21,7 @@ import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
-import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.core.wicket.wizard.ConsentWizardForm;
-import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
 import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.StageModel;
@@ -46,24 +40,21 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
   private ActiveConsentService activeConsentService;
 
   @SpringBean
-  private ConsentService consentService;
-
-  @SpringBean
   private ModuleRegistry moduleRegistry;
 
   private ActionWindow actionWindow;
 
   private FeedbackPanel feedbackPanel;
 
-  private MarbleModel model;
-
   @SuppressWarnings("serial")
   public MarblePanel(String id, Stage stage) {
     super(id);
 
-    model = new MarbleModel(new StageModel(moduleRegistry, stage.getName()), new Model(activeConsentService.getConsent(true)));
+    setModel(new StageModel(moduleRegistry, stage.getName()));
 
-    add(new WizardPanel("content", model.getConsentModel()) {
+    activeConsentService.getConsent(true);
+
+    add(new WizardPanel("content", getModel()) {
 
       @Override
       public WizardForm createForm(String componentId) {
@@ -71,10 +62,10 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
 
           @Override
           public void onCancel(AjaxRequestTarget target) {
-            IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
+            IStageExecution exec = activeInterviewService.getStageExecution(getStage());
             ActionDefinition actionDef = exec.getActionDefinition(ActionType.STOP);
             if(actionDef != null) {
-              actionWindow.show(target, model.getStageModel(), actionDef);
+              actionWindow.show(target, MarblePanel.this.getModel(), actionDef);
             }
           }
 
@@ -100,11 +91,11 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
 
               // Valid electronic consent, refused electronic consent, or manual consent.
             } else {
-              IStageExecution exec = activeInterviewService.getStageExecution(model.getStage());
+              IStageExecution exec = activeInterviewService.getStageExecution(getStage());
               ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
               target.appendJavascript("resizeWizardContent();");
               if(actionDef != null) {
-                actionWindow.show(target, model.getStageModel(), actionDef);
+                actionWindow.show(target, MarblePanel.this.getModel(), actionDef);
               }
             }
           }
@@ -125,35 +116,6 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
     });
   }
 
-  @SuppressWarnings("serial")
-  private class MarbleModel implements Serializable {
-    private IModel consentModel;
-
-    private IModel stageModel;
-
-    public MarbleModel(IModel stageModel, IModel consentModel) {
-      this.consentModel = consentModel;
-      this.stageModel = stageModel;
-    }
-
-    public Consent getConsent() {
-      return (Consent) consentModel.getObject();
-    }
-
-    public IModel getConsentModel() {
-      return consentModel;
-    }
-
-    public Stage getStage() {
-      return (Stage) stageModel.getObject();
-    }
-
-    public IModel getStageModel() {
-      return stageModel;
-    }
-
-  }
-
   public void setActionWindow(ActionWindow window) {
     this.actionWindow = window;
   }
@@ -164,6 +126,10 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
 
   public FeedbackPanel getFeedbackPanel() {
     return feedbackPanel;
+  }
+
+  protected Stage getStage() {
+    return (Stage) getModelObject();
   }
 
 }
