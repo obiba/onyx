@@ -117,7 +117,7 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
 
       if(consent != null) {
         String varName = variable.getName();
-        if(varName.equals(ACCEPTED_ATTRIBUTE)) {
+        if(varName.equals(ACCEPTED_ATTRIBUTE) && consent.isAccepted() != null) {
           varData.addData(DataBuilder.buildBoolean(consent.isAccepted()));
         } else if(varName.equals(LOCALE_ATTRIBUTE) && consent.getLocale() != null) {
           varData.addData(DataBuilder.buildText(consent.getLocale().toString()));
