@@ -11,7 +11,6 @@ package org.obiba.onyx.webapp.participant.page;
 
 import java.io.Serializable;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,7 +32,6 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -43,7 +41,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.request.target.resource.ResourceStreamRequestTarget;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.core.service.EntityQueryService;
@@ -67,7 +64,6 @@ import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
-import org.obiba.wicket.util.resource.CsvResourceStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -227,22 +223,18 @@ public class ParticipantSearchPage extends BasePage {
 
     add(new ActionFragment("actions"));
 
-    add(new Link("excel") {
-
-      @Override
-      public void onClick() {
-        getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(participantList.getReportStream()) {
-          @Override
-          public String getFileName() {
-            SimpleDateFormat formater = new SimpleDateFormat("yyyyMMdd_HHmm");
-            String name = formater.format(new Date()) + "_participants";
-
-            return name + "." + CsvResourceStream.FILE_SUFFIX;
-          }
-        });
-      }
-
-    });
+    /*
+     * add(new Link("excel") {
+     * 
+     * @Override public void onClick() { getRequestCycle().setRequestTarget(new
+     * ResourceStreamRequestTarget(participantList.getReportStream()) { @Override public String getFileName() {
+     * SimpleDateFormat formater = new SimpleDateFormat("yyyyMMdd_HHmm"); String name = formater.format(new Date()) +
+     * "_participants";
+     * 
+     * return name + "." + CsvResourceStream.FILE_SUFFIX; } }); }
+     * 
+     * });
+     */
 
     participantList = new OnyxEntityList<Participant>("participant-list", new AppointedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
     participantList.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
