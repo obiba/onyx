@@ -71,7 +71,15 @@ Resizer.resize  = function(id, offsetBottom) {
 }
 
 function resizeWizardContent() {
-	Resizer.resize('wizardFormData',160);
+	var table = $('#wizardFormData .wizard-content table:first-child');
+	var wizardContent = $('#wizardFormData .wizard-content');
+	var resizeHeight = parseInt(document.body.clientHeight-170-wizardContent.get()[0].offsetTop);
+	
+	if ( table == null || table.height() < resizeHeight ) {
+		wizardContent.height(resizeHeight + 'px');
+	} else {
+		wizardContent.removeAttr('style');
+	}
 }
 
 //////////////////////////////////////////////////////////////////////
