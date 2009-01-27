@@ -13,6 +13,9 @@ import java.text.DateFormat;
 import java.util.List;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -71,7 +74,7 @@ public class InstrumentRunPanel extends Panel {
    * Build the panel with the current instrument run.
    * @param id
    */
-  public InstrumentRunPanel(String id) {
+  public InstrumentRunPanel(String id, final ModalWindow modal) {
     super(id);
 
     InstrumentRun run = activeInstrumentRunService.getInstrumentRun();
@@ -82,6 +85,16 @@ public class InstrumentRunPanel extends Panel {
     setModel(new DetachableEntityModel(queryService, run));
 
     build();
+
+    add(new AjaxLink("closeAction") {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        modal.close(target);
+      }
+    });
   }
 
   /**

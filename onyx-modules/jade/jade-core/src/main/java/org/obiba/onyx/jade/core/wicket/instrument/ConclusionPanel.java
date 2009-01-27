@@ -23,20 +23,19 @@ public class ConclusionPanel extends Panel {
   public ConclusionPanel(String id) {
     super(id);
     setOutputMarkupId(true);
-    
+
     final ModalWindow modal;
     add(modal = new ModalWindow("modal"));
     modal.setCookieName("instrument-run-modal");
-    
+
     add(new AjaxLink("show") {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        modal.setContent(new InstrumentRunPanel(modal.getContentId()));
+        modal.setContent(new InstrumentRunPanel(modal.getContentId(), modal));
         modal.show(target);
       }
-      
+
     });
   }
-
 }
