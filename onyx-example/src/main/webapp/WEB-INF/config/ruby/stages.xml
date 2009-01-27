@@ -8,15 +8,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>/Cartagene/Consent/accepted</variablePath>
+          <variablePath>/Onyx/Consent/accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/BSC_CI/active</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/STAGE_STATUS/BSC_CI/active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>

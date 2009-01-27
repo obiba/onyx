@@ -7,15 +7,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>/Cartagene/Consent/accepted</variablePath>
+          <variablePath>/Onyx/Consent/accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/SH_CI/active</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/STAGE_STATUS/SH_CI/active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -31,7 +31,7 @@
     <module>jade</module>
     <stageDependencyCondition class="variableCondition">
       <stageName>Consent</stageName>
-      <variablePath>/Cartagene/Consent/accepted</variablePath>
+      <variablePath>/Onyx/Consent/accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 
@@ -40,7 +40,7 @@
     <module>jade</module>
     <!-- <stageDependencyCondition class="variableCondition">
       <stageName>Consent</stageName>
-      <variablePath>/Cartagene/Consent/accepted</variablePath>
+      <variablePath>/Onyx/Consent/accepted</variablePath>
     </stageDependencyCondition> -->
     <!-- PL: this is not working since question HW_CI_BP is a boilerplate and does no produce a variable. -->
     <stageDependencyCondition class="multipleCondition">
@@ -48,15 +48,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>/Cartagene/Consent/accepted</variablePath>
+          <variablePath>/Onyx/Consent/accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/WH_CI/active</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/STAGE_STATUS/WH_CI/active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -75,15 +75,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>/Cartagene/Consent/accepted</variablePath>
+          <variablePath>/Onyx/Consent/accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/GS_CI/active</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/STAGE_STATUS/GS_CI/active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -102,15 +102,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>/Cartagene/Consent/accepted</variablePath>
+          <variablePath>/Onyx/Consent/accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/BP_CI/active</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/STAGE_STATUS/BP_CI/active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -129,15 +129,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>/Cartagene/Consent/accepted</variablePath>
+          <variablePath>/Onyx/Consent/accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/BI_CI/active</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/STAGE_STATUS/BI_CI/active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -146,7 +146,7 @@
         </variableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
-          <variablePath>/Cartagene/StandingHeight/Output/CALC_AVG_HEIGHT</variablePath>
+          <variablePath>/Onyx/StandingHeight/Output/CALC_AVG_HEIGHT</variablePath>
         </variableCondition>
       </conditions>
     </stageDependencyCondition>
@@ -160,15 +160,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>/Cartagene/Consent/accepted</variablePath>
+          <variablePath>/Onyx/Consent/accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/WT_CI/active</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/STAGE_STATUS/WT_CI/active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -178,7 +178,7 @@
         <inverseCondition>
           <stageDependencyCondition class="variableCondition">
             <stageName>Impedence310</stageName>
-            <variablePath>/Cartagene/Impedence310/Output/RES_WEIGHT</variablePath>
+            <variablePath>/Onyx/Impedence310/Output/RES_WEIGHT</variablePath>
           </stageDependencyCondition>
         </inverseCondition>
       </conditions>
@@ -193,15 +193,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>/Cartagene/Consent/accepted</variablePath>
+          <variablePath>/Onyx/Consent/accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/SP_CI/active</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/STAGE_STATUS/SP_CI/active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -210,18 +210,18 @@
         </variableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
-          <variablePath>/Cartagene/StandingHeight/Output/CALC_AVG_HEIGHT</variablePath>
+          <variablePath>/Onyx/StandingHeight/Output/CALC_AVG_HEIGHT</variablePath>
         </variableCondition>
         <multipleCondition>
           <operator>OR</operator>
           <conditions>
             <variableCondition>
               <stageName>Impedence310</stageName>
-              <variablePath>/Cartagene/Impedence310/Output/RES_WEIGHT</variablePath>
+              <variablePath>/Onyx/Impedence310/Output/RES_WEIGHT</variablePath>
             </variableCondition>
             <variableCondition>
               <stageName>Weight</stageName>
-              <variablePath>/Cartagene/Weight/Output/RES_WEIGHT</variablePath>
+              <variablePath>/Onyx/Weight/Output/RES_WEIGHT</variablePath>
             </variableCondition>
           </conditions>
         </multipleCondition>
@@ -237,22 +237,22 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>/Cartagene/Consent/accepted</variablePath>
+          <variablePath>/Onyx/Consent/accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>StandingHeight</stageName>
-          <variablePath>/Cartagene/StandingHeight/Output/CALC_AVG_HEIGHT</variablePath>
+          <variablePath>/Onyx/StandingHeight/Output/CALC_AVG_HEIGHT</variablePath>
         </variableCondition>
         <multipleCondition>
           <operator>OR</operator>
           <conditions>
             <variableCondition>
               <stageName>Impedence310</stageName>
-              <variablePath>/Cartagene/Impedence310/Output/RES_WEIGHT</variablePath>
+              <variablePath>/Onyx/Impedence310/Output/RES_WEIGHT</variablePath>
             </variableCondition>
             <variableCondition>
               <stageName>Weight</stageName>
-              <variablePath>/Cartagene/Weight/Output/RES_WEIGHT</variablePath>
+              <variablePath>/Onyx/Weight/Output/RES_WEIGHT</variablePath>
             </variableCondition>
           </conditions>
         </multipleCondition>
@@ -268,15 +268,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>/Cartagene/Consent/accepted</variablePath>
+          <variablePath>/Onyx/Consent/accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/BD_CI/active</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/STAGE_STATUS/BD_CI/active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -295,15 +295,15 @@
       <conditions>
         <variableCondition>
           <stageName>Consent</stageName>
-          <variablePath>/Cartagene/Consent/accepted</variablePath>
+          <variablePath>/Onyx/Consent/accepted</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/QuestionnaireRun/timeEnd</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>CIPreliminaryQuestionnaire</stageName>
-          <variablePath>/Cartagene/CIPreliminaryQuestionnaire/STAGE_STATUS/AS_CI/active</variablePath>
+          <variablePath>/Onyx/CIPreliminaryQuestionnaire/STAGE_STATUS/AS_CI/active</variablePath>
           <operator>ne</operator>
           <data>
             <type>BOOLEAN</type>
@@ -312,11 +312,11 @@
         </variableCondition>
         <variableCondition>
           <stageName>BloodPressure</stageName>
-          <variablePath>/Cartagene/BloodPressure/Output/CALC_AVG_SYSTOLIC_BP</variablePath>
+          <variablePath>/Onyx/BloodPressure/Output/CALC_AVG_SYSTOLIC_BP</variablePath>
         </variableCondition>
         <variableCondition>
           <stageName>BloodPressure</stageName>
-          <variablePath>/Cartagene/BloodPressure/Output/CALC_AVG_DIASTOLIC_BP</variablePath>
+          <variablePath>/Onyx/BloodPressure/Output/CALC_AVG_DIASTOLIC_BP</variablePath>
         </variableCondition>
       </conditions>
     </stageDependencyCondition>

@@ -2,18 +2,18 @@
   <destination>
     <name>DCC</name>
     <filteredVariables>
-      <string>/Cartagene/Consent/pdfForm</string>
-      <string>/Cartagene/Admin/Participant</string>
+      <string>/Onyx/Consent/pdfForm</string>
+      <string>/Onyx/Admin/Participant</string>
     </filteredVariables>
     <includedVariables>
-      <string>/Cartagene/Admin/Participant/barcode</string>
+      <string>/Onyx/Admin/Participant/barcode</string>
     </includedVariables>
   </destination>
 
   <destination>
     <name>Appointment Unit</name>
     <includedVariables>
-      <string>/Cartagene/Consent/pdfForm</string>
+      <string>/Onyx/Consent/pdfForm</string>
     </includedVariables>
   </destination>
 </destinations>
