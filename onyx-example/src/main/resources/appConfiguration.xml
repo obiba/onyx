@@ -28,7 +28,7 @@
 
   <config>
     <siteName>CHUM</siteName>
-    <siteNo>cag001</siteNo>
+    <siteNo>onyx001</siteNo>
     <studyName>Onyx</studyName>
     <!-- can be absolute or relative to webapp root -->
     <participantDirectoryPath>/participants</participantDirectoryPath>
