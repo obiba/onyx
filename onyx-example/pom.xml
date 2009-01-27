@@ -4,8 +4,8 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Onyx Example Web Application</name>
-  <description>Assessment Center Web Application for Example</description>
+  <name>Example Onyx Deployment</name>
+  <description>Example Assessment Center Web Application Deployment</description>
 
   <groupId>org.obiba.onyx</groupId>
   <artifactId>onyx-example</artifactId>
@@ -181,7 +181,7 @@
             <configuration>
               <tasks>
 
-                <signjar alias="jade" keystore="${basedir}/cartagene.jks" lazy="true" storepass="onyxadmin">
+                <signjar alias="jade" keystore="${basedir}/exampleKeystore.jks" lazy="true" storepass="onyxadmin">
                   <fileset dir="${project.build.directory}/${project.build.finalName}/instruments" includes="**/*.jar" />
                 </signjar>
 

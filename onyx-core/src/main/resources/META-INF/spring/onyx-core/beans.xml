@@ -77,7 +77,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   </bean>
 
   <bean id="onyxDataExportDestinations" class="org.obiba.onyx.engine.variable.export.OnyxDataExportFactoryBean">
-    <property name="destinationsResource" value="${org.obiba.onyx.config.path}/exportDestinations.xml" />
+    <property name="destinationsResource" value="${org.obiba.onyx.config.path}/export-destinations.xml" />
   </bean>
 
 </beans>
