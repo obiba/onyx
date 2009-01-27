@@ -11,7 +11,7 @@
     <name>DATA_COLLECTION_OPERATOR</name>
   </role>
   <user>
-    <lastName>ONYX Administrator</lastName>
+    <lastName>Onyx Administrator</lastName>
     <firstName>The</firstName>
     <login>administrator</login>
     <password>password</password>
@@ -29,7 +29,7 @@
   <config>
     <siteName>CHUM</siteName>
     <siteNo>cag001</siteNo>
-    <studyName>CARTaGENE</studyName>
+    <studyName>Onyx</studyName>
     <!-- can be absolute or relative to webapp root -->
     <participantDirectoryPath>/participants</participantDirectoryPath>
   </config>
