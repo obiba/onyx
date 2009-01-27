@@ -28,6 +28,8 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.instrument.validation.IntegrityCheckValidator;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
@@ -48,6 +50,12 @@ public class InstrumentOutputParameterPanel extends Panel {
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
+  @SpringBean
+  private InputDataSourceVisitor inputDataSourceVisitor;
+
+  @SpringBean
+  private InstrumentService instrumentService;
+
   private List<IModel> outputRunValueModels = new ArrayList<IModel>();
 
   @SuppressWarnings("serial")
@@ -62,6 +70,9 @@ public class InstrumentOutputParameterPanel extends Panel {
     if(queryService.count(template) == 0) {
       add(new EmptyPanel("manualOutputs"));
     } else {
+
+      String errMessage = activeInstrumentRunService.updateReadOnlyInputParameterRunValue(inputDataSourceVisitor, activeInstrumentRunService.getParticipant(), instrumentService.getInstrumentInputParameter(activeInstrumentRunService.getInstrumentType(), true));
+      if(errMessage != null) error(errMessage);
 
       RepeatingView repeat = new RepeatingView("repeat");
       add(repeat);

@@ -27,8 +27,8 @@ public class InstrumentComputedOutputParameter extends InstrumentOutputParameter
   private static final long serialVersionUID = -4217317349036043214L;
 
   @ManyToMany
-  @JoinTable(name = "instrument_computed_output", joinColumns = @JoinColumn(name = "instrument_computed_output_parameter_id"), inverseJoinColumns = @JoinColumn(name = "instrument_output_parameter_id"))
-  private List<InstrumentOutputParameter> outputs;
+  @JoinTable(name = "instrument_computed_output", joinColumns = @JoinColumn(name = "instrument_computed_output_parameter_id"), inverseJoinColumns = @JoinColumn(name = "instrument_parameter_id"))
+  private List<InstrumentParameter> outputs;
 
   @Enumerated(EnumType.STRING)
   private InstrumentOutputParameterAlgorithm algorithm;
@@ -37,13 +37,13 @@ public class InstrumentComputedOutputParameter extends InstrumentOutputParameter
     super();
   }
 
-  public List<InstrumentOutputParameter> getInstrumentOutputParameters() {
-    return outputs != null ? outputs : (outputs = new ArrayList<InstrumentOutputParameter>());
+  public List<InstrumentParameter> getInstrumentParameters() {
+    return outputs != null ? outputs : (outputs = new ArrayList<InstrumentParameter>());
   }
 
-  public void addInstrumentOutputParameter(InstrumentOutputParameter instrumentOutputParameter) {
-    if(instrumentOutputParameter != null) {
-      getInstrumentOutputParameters().add(instrumentOutputParameter);
+  public void addInstrumentParameter(InstrumentParameter instrumentParameter) {
+    if(instrumentParameter != null) {
+      getInstrumentParameters().add(instrumentParameter);
     }
   }
 

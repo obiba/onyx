@@ -9,10 +9,13 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.service;
 
+import java.util.List;
+
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
@@ -169,4 +172,13 @@ public interface ActiveInstrumentRunService {
    * @param instrumentRun current instrument run
    */
   public void setCurrentInstrumentRun(InstrumentRun instrumentRun);
+
+  /**
+   * Sets the InstrumentRunValue for input parameters list (used for readonly input parameters)
+   * @param inputDataSourceVisitor
+   * @param activeInterviewService
+   * @param instrumentInputParameters
+   * @return
+   */
+  public String updateReadOnlyInputParameterRunValue(InputDataSourceVisitor inputDataSourceVisitor, Participant participant, List<InstrumentInputParameter> instrumentInputParameters);
 }

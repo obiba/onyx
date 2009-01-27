@@ -28,10 +28,12 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
+import org.obiba.onyx.jade.core.domain.instrument.UnitParameterValueConverter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
@@ -176,7 +178,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
    * @return
    */
   private boolean isReadyToCompute(InstrumentRun currentRun, InstrumentComputedOutputParameter computedParam) {
-    for(InstrumentOutputParameter p : computedParam.getInstrumentOutputParameters()) {
+    for(InstrumentParameter p : computedParam.getInstrumentParameters()) {
       if(p.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED) && currentRun.getInstrumentRunValue(p) == null) {
         return false;
       }
@@ -196,6 +198,8 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
       computedRunValue = calculateAverageValue(currentRun, computedParam);
     } else if(computedParam.getAlgorithm().equals(InstrumentOutputParameterAlgorithm.RATIO)) {
       computedRunValue = calculateRatioValue(currentRun, computedParam);
+    } else if(computedParam.getAlgorithm().equals(InstrumentOutputParameterAlgorithm.DIFFERENCE)) {
+      computedRunValue = calculateDifferenceValue(currentRun, computedParam);
     }
     if(computedRunValue != null) {
       getPersistenceManager().save(computedRunValue);
@@ -212,7 +216,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     double sum = 0;
     int count = 0;
-    for(InstrumentOutputParameter p : computedParam.getInstrumentOutputParameters()) {
+    for(InstrumentParameter p : computedParam.getInstrumentParameters()) {
       count++;
       InstrumentRunValue runValue = currentRun.getInstrumentRunValue(p);
       if(runValue.getDataType().equals(DataType.DECIMAL)) {
@@ -244,10 +248,57 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
    * @param currentRun
    * @param computedParam
    */
+  private InstrumentRunValue calculateDifferenceValue(InstrumentRun currentRun, InstrumentComputedOutputParameter computedParam) {
+    InstrumentRunValue computedRunValue = getOutputInstrumentRunValue(computedParam.getCode());
+
+    List<InstrumentParameter> parameters = computedParam.getInstrumentParameters();
+
+    if(parameters == null || parameters.size() != 2) {
+      throw new IllegalArgumentException("The number of parameters provided is invalid, two parameters are needed.");
+    }
+
+    InstrumentRunValue runValue0 = currentRun.getInstrumentRunValue(parameters.get(0));
+    InstrumentRunValue runValue1 = currentRun.getInstrumentRunValue(parameters.get(1));
+    Double value0 = 0.0;
+    Double value1 = 0.0;
+
+    if(runValue0.getDataType().equals(DataType.DECIMAL)) {
+      value0 = runValue0.getValue();
+    } else if(runValue0.getDataType().equals(DataType.INTEGER)) {
+      Long valueInt = runValue0.getValue();
+      value0 = Double.valueOf(valueInt);
+    }
+    if(runValue1.getDataType().equals(DataType.DECIMAL)) {
+      value1 = runValue1.getValue();
+    } else if(runValue1.getDataType().equals(DataType.INTEGER)) {
+      Long valueInt = runValue1.getValue();
+      value1 = Double.valueOf(valueInt);
+    }
+    double diff = value0 - value1;
+
+    Serializable diffValue = null;
+    if(computedRunValue.getDataType().equals(DataType.DECIMAL)) {
+      long diffInt = Math.round(diff * 100);
+      diffValue = (double) diffInt / 100;
+    } else if(computedRunValue.getDataType().equals(DataType.INTEGER)) {
+      diffValue = Math.round(diff);
+    }
+
+    if(diffValue != null) {
+      computedRunValue.setData(new Data(computedRunValue.getDataType(), diffValue));
+    }
+
+    return computedRunValue;
+  }
+
+  /**
+   * @param currentRun
+   * @param computedParam
+   */
   private InstrumentRunValue calculateRatioValue(InstrumentRun currentRun, InstrumentComputedOutputParameter computedParam) {
     InstrumentRunValue computedRunValue = getOutputInstrumentRunValue(computedParam.getCode());
 
-    List<InstrumentOutputParameter> parameters = computedParam.getInstrumentOutputParameters();
+    List<InstrumentParameter> parameters = computedParam.getInstrumentParameters();
     if(parameters == null || parameters.size() != 2) {
       throw new IllegalArgumentException("The number of parameters provided is invalid, two parameters are needed.");
     }
@@ -435,5 +486,28 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     if(instrumentRun != null) {
       currentRunId = instrumentRun.getId();
     }
+  }
+
+  public String updateReadOnlyInputParameterRunValue(InputDataSourceVisitor inputDataSourceVisitor, Participant participant, List<InstrumentInputParameter> instrumentInputParameters) {
+
+    // get the data from not read-only input parameters sources
+    for(InstrumentInputParameter param : instrumentInputParameters) {
+      final InstrumentRunValue runValue = getInstrumentRunValue(param);
+      Data data = inputDataSourceVisitor.getData(participant, param);
+      if(data != null) {
+        if(!data.getType().equals(runValue.getDataType())) {
+          UnitParameterValueConverter converter = new UnitParameterValueConverter();
+          converter.convert(runValue, data);
+        } else {
+          runValue.setData(data);
+        }
+        update(runValue);
+      } else {
+        log.error("The value for instrument parameter {} comes from an InputSource, but this source has not produced a value. Please correct stage dependencies or your instrument-descriptor.xml file for this instrument.", param.getCode());
+        return ("An unexpected problem occurred while setting up this instrument's run. Please contact support.");
+      }
+    }
+    return null;
+
   }
 }

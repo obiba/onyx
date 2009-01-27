@@ -24,12 +24,10 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
-import org.obiba.onyx.jade.core.domain.instrument.UnitParameterValueConverter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.jade.core.service.InstrumentService;
-import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
@@ -87,24 +85,8 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     });
 
-    // get the data from not read-only input parameters sources
-    for(InstrumentInputParameter param : instrumentService.getInstrumentInputParameter(instrumentType, true)) {
-      final InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
-      Data data = inputDataSourceVisitor.getData(activeInterviewService.getParticipant(), param);
-      if(data != null) {
-        if(!data.getType().equals(runValue.getDataType())) {
-          UnitParameterValueConverter converter = new UnitParameterValueConverter();
-          converter.convert(runValue, data);
-        } else {
-          runValue.setData(data);
-        }
-        activeInstrumentRunService.update(runValue);
-      } else {
-        log.error("The value for instrument parameter {} comes from an InputSource, but this source has not produced a value. Please correct stage dependencies or your instrument-descriptor.xml file for this instrument.", param.getCode());
-        error("An unexpected problem occurred while setting up this instrument's run. Please contact support.");
-      }
-
-    }
+    String errMessage = activeInstrumentRunService.updateReadOnlyInputParameterRunValue(inputDataSourceVisitor, activeInterviewService.getParticipant(), instrumentService.getInstrumentInputParameter(instrumentType, true));
+    if(errMessage != null) error(errMessage);
 
     RepeatingView repeat = new RepeatingView("repeat");
     add(repeat);

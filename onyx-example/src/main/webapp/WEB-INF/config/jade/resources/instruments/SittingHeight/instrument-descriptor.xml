@@ -45,12 +45,12 @@
       </inputSource>
     </input>
     
-    <!--  <output id="sit1_stool_height">  form used if stool height must be entered
+    <!-- <output id="sit_stool_height">  form used if stool height must be entered
       <code>RES_STOOL_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
-      <captureMethod>MANUAL</captureMethod>
-    </output>   -->
+      <captureMethod>AUTOMATIQUE</captureMethod>
+    </output> -->
 
     <output id="sit1_height1">
       <code>RES_FIRST_SITTING_HEIGHT</code>
@@ -89,7 +89,7 @@
       </integrityChecks>
     </output>
 
-    <computedOutput>
+    <computedOutput id="avg_sit_height">
       <code>CALC_AVG_SITTING_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
@@ -98,6 +98,18 @@
       <outputs>
         <output reference="sit1_height1" />
         <output reference="sit1_height2" />
+      </outputs>
+    </computedOutput>
+    
+    <computedOutput>
+      <code>CALC_DIFF_SITTING_HEIGHT</code>
+      <measurementUnit>cm</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <algorithm>DIFFERENCE</algorithm>
+      <captureMethod>COMPUTED</captureMethod>
+      <outputs>
+        <output reference="avg_sit_height" />
+        <input reference="sit_stool_height"/>
       </outputs>
     </computedOutput>
   </instrumentParameters>

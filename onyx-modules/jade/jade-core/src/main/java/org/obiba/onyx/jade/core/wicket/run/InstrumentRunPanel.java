@@ -127,13 +127,30 @@ public class InstrumentRunPanel extends Panel {
 
     InstrumentInputParameter input = new InstrumentInputParameter();
     input.setInstrumentType(run.getInstrumentType());
-    if(!isInteractive) input.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
 
-    if(queryService.count(input) > 0) {
-      String key = isInteractive ? "InstrumentInputs" : "OperatorInputs";
-      add(getKeyValueDataPanel("inputs", new StringResourceModel(key, this, null), queryService.match(input)));
+    if(isInteractive) {
+      if(queryService.count(input) > 0) {
+        add(getKeyValueDataPanel("inputs", new StringResourceModel("InstrumentInputs", this, null), queryService.match(input)));
+      } else {
+        add(new EmptyPanel("inputs"));
+      }
+      add(new EmptyPanel("operatorAutoInputs"));
     } else {
-      add(new EmptyPanel("inputs"));
+      // Manual Inputs
+      input.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
+      if(queryService.count(input) > 0) {
+        add(getKeyValueDataPanel("inputs", new StringResourceModel("OperatorInputs", this, null), queryService.match(input)));
+      } else {
+        add(new EmptyPanel("inputs"));
+      }
+
+      // Automatic Inputs
+      input.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
+      if(queryService.count(input) > 0) {
+        add(getKeyValueDataPanel("operatorAutoInputs", new StringResourceModel("StandardInputs", this, null), queryService.match(input)));
+      } else {
+        add(new EmptyPanel("operatorAutoInputs"));
+      }
     }
 
     InstrumentOutputParameter output = new InstrumentOutputParameter();
