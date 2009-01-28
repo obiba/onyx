@@ -70,7 +70,7 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
 
   private UserService userService;
 
-  private Version version;
+  private OnyxApplicationConfiguration onyxApplicationConfiguration;
 
   public UserService getUserService() {
     return userService;
@@ -80,12 +80,25 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
     this.userService = userService;
   }
 
-  public Version getVersion() {
-    return version;
+  public void setOnyxApplicationConfiguration(OnyxApplicationConfiguration onyxApplicationConfiguration) {
+    this.onyxApplicationConfiguration = onyxApplicationConfiguration;
   }
 
-  public void setVersion(Version version) {
-    this.version = version;
+  public Version getVersion() {
+    return onyxApplicationConfiguration.getVersion();
+  }
+
+  /**
+   * Get the configured type or falls back to wicket style configuration.
+   * @see OnyxApplicationConfiguration
+   */
+  @Override
+  public String getConfigurationType() {
+    if(onyxApplicationConfiguration != null && onyxApplicationConfiguration.getConfigurationType() != null) {
+      return onyxApplicationConfiguration.getConfigurationType();
+    } else {
+      return super.getConfigurationType();
+    }
   }
 
   @Override

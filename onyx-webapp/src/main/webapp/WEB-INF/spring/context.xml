@@ -14,6 +14,11 @@
       </list>
     </property>
   </bean>
+  
+  <bean name="onyxApplicationConfiguration" class="org.obiba.onyx.webapp.OnyxApplicationConfiguration" primary="true">
+    <property name="configurationType" value="${org.obiba.onyx.webapp.configurationType}" />
+    <property name="version" ref="version"/>
+  </bean>
 
   <!-- Load Hibernate's configuration file -->
   <import resource="hibernate.xml" />
