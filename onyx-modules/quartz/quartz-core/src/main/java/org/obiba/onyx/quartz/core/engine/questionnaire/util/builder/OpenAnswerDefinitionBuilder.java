@@ -22,13 +22,13 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataSourceValidator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataValidator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.IDataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.wicket.data.DataValidator;
+import org.obiba.onyx.wicket.data.IDataValidator;
 
 /**
  * {@link OpenAnswerDefinition} builder, given a {@link Questionnaire} and a current {@link Category}.

@@ -37,11 +37,11 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataSourceValidator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IPropertyKeyWriter;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.OutputStreamPropertyKeyWriterImpl;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.wicket.data.DataValidator;
 
 import com.thoughtworks.xstream.XStream;
 

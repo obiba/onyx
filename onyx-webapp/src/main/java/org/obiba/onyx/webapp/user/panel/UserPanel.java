@@ -30,6 +30,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.Status;
@@ -82,24 +83,29 @@ public class UserPanel extends Panel {
 
       TextField lastName = new TextField("lastName", new PropertyModel(getModel(), "lastName"));
       lastName.add(new RequiredFormFieldBehavior());
+      lastName.add(new StringValidator.MaximumLengthValidator(250));
       add(lastName);
 
       TextField firstName = new TextField("firstName", new PropertyModel(getModel(), "firstName"));
       firstName.add(new RequiredFormFieldBehavior());
+      firstName.add(new StringValidator.MaximumLengthValidator(250));
       add(firstName);
 
       TextField login = new TextField("login", new PropertyModel(getModel(), "login"));
       login.add(new RequiredFormFieldBehavior());
+      login.add(new StringValidator.MaximumLengthValidator(250));
       login.setEnabled(false);
       add(login);
 
       password = new PasswordTextField("password", new Model(new String()));
       password.setRequired(getUser().getLogin() == null);
+      password.add(new StringValidator.MaximumLengthValidator(250));
       if(getUser().getLogin() != null) password.add(new PasswordValidator());
       add(password);
 
       TextField email = new TextField("email", new PropertyModel(getModel(), "email"));
       email.add(new RequiredFormFieldBehavior());
+      email.add(new StringValidator.MaximumLengthValidator(250));
       email.add(EmailAddressValidator.getInstance());
       add(email);
 

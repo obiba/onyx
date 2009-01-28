@@ -19,6 +19,7 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.IDataUnitProvider;
+import org.obiba.onyx.wicket.data.IDataValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

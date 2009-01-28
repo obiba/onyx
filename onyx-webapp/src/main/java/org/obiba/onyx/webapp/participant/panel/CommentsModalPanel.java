@@ -31,8 +31,10 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -143,7 +145,9 @@ public abstract class CommentsModalPanel extends Panel {
       setModel(new Model(new Action()));
 
       final TextArea newComment = new TextArea("newComment", new PropertyModel(getModel(), "comment"));
+      newComment.setLabel(new ResourceModel("Comment"));
       newComment.add(new RequiredFormFieldBehavior());
+      newComment.add(new StringValidator.MaximumLengthValidator(2000));
       newComment.setOutputMarkupId(true);
       add(newComment);
 

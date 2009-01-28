@@ -36,6 +36,7 @@ import org.apache.wicket.validation.IErrorMessageSource;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -95,7 +96,9 @@ public abstract class ActionDefinitionPanel extends Panel {
     form.add(barcodeFragment.setVisible(definition.isAskParticipantId()));
 
     TextArea commentArea = new TextArea("comment", new PropertyModel(this, "action.comment"));
-    form.add(commentArea.setRequired(definition.isCommentMandatory()));
+    commentArea.setRequired(definition.isCommentMandatory());
+    commentArea.add(new StringValidator.MaximumLengthValidator(2000));
+    form.add(commentArea);
 
     // request for focus on first field
     if(pwdFragment.isVisible()) {

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -27,38 +28,38 @@ import javax.persistence.OneToMany;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.participant.Interview;
-import org.obiba.onyx.core.domain.user.Role;
 
 @Entity
 public class User extends AbstractEntity {
 
   private static final long serialVersionUID = -2200053643926715563L;
 
+  @Column(length = 250)
   private String lastName;
-  
+
+  @Column(length = 250)
   private String firstName;
 
+  @Column(length = 250)
   private String login;
 
+  @Column(length = 250)
   private String password;
 
+  @Column(length = 250)
   private String email;
-  
+
   private Locale language;
 
   private Boolean deleted;
 
   @Enumerated(EnumType.STRING)
   private Status status;
-  
+
   @ManyToMany
-  @JoinTable(
-          name="user_roles",
-          joinColumns = { @JoinColumn(name="user_id") },
-          inverseJoinColumns = @JoinColumn(name="role_id")
-  )
+  @JoinTable(name = "user_roles", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = @JoinColumn(name = "role_id"))
   private Set<Role> roles;
-  
+
   @OneToMany(mappedBy = "user")
   private List<Interview> interviews;
 
@@ -77,11 +78,11 @@ public class User extends AbstractEntity {
   public void setFirstName(String firstName) {
     this.firstName = firstName;
   }
-  
+
   public String getFullName() {
     return getFirstName() + " " + getLastName();
   }
-  
+
   public String getLogin() {
     return login;
   }
@@ -97,17 +98,19 @@ public class User extends AbstractEntity {
   public void setPassword(String password) {
     this.password = password;
   }
-  
+
   public Set<Role> getRoles() {
     return (roles != null) ? roles : (roles = new HashSet<Role>());
   }
-  
-  public void setRoles(Set<Role> roles) { this.roles = roles; }
-  
+
+  public void setRoles(Set<Role> roles) {
+    this.roles = roles;
+  }
+
   public void addRole(Role role) {
     getRoles().add(role);
   }
-  
+
   public Status getStatus() {
     return status;
   }
@@ -115,7 +118,7 @@ public class User extends AbstractEntity {
   public void setStatus(Status status) {
     this.status = status;
   }
-  
+
   public List<Interview> getInterviews() {
     return interviews != null ? interviews : (interviews = new ArrayList<Interview>());
   }
@@ -144,7 +147,7 @@ public class User extends AbstractEntity {
   public void setDeleted(Boolean deleted) {
     this.deleted = deleted;
   }
-  
+
   public Locale getLanguage() {
     return language;
   }
@@ -152,7 +155,7 @@ public class User extends AbstractEntity {
   public void setLanguage(Locale language) {
     this.language = language;
   }
-  
+
   /**
    * Digest the password into a predefined algorithm.
    * @param password
@@ -181,7 +184,7 @@ public class User extends AbstractEntity {
     }
     return buf.toString();
   }
-  
+
   public boolean isActive() {
     return (this.getStatus().equals(Status.ACTIVE));
   }

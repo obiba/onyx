@@ -27,11 +27,11 @@ import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.DataSourceBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.wicket.data.DataValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase {

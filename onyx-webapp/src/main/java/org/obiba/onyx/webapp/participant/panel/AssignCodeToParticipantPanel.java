@@ -25,6 +25,7 @@ import org.apache.wicket.validation.IErrorMessageSource;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ParticipantService;
@@ -69,6 +70,7 @@ public class AssignCodeToParticipantPanel extends Panel {
 
       TextField participantCode = new TextField("participantCode", new PropertyModel(getModel(), "barcode"));
       participantCode.add(new RequiredFormFieldBehavior());
+      participantCode.add(new StringValidator.MaximumLengthValidator(250));
       participantCode.add(new IValidator() {
 
         public void validate(final IValidatable validatable) {

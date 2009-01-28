@@ -41,6 +41,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.participant.Appointment;
@@ -52,8 +53,10 @@ import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.webapp.participant.panel.AssignCodeToParticipantPanel.AssignCodeToParticipantForm;
 import org.obiba.onyx.wicket.data.DataField;
+import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.slf4j.Logger;
@@ -196,8 +199,8 @@ public class EditParticipantPanel extends Panel {
         add(new RowFragment(BIRTH_DATE, getModel(), "BirthDate", BIRTH_DATE));
       } else {
         add(new EmptyPanel(BARCODE));
-        add(new TextFieldFragment(FIRST_NAME, getModel(), "FirstName*", new TextField("value", new PropertyModel(getModel(), FIRST_NAME)).setRequired(true).setLabel(new ResourceModel("FirstName"))));
-        add(new TextFieldFragment(LAST_NAME, getModel(), "LastName*", new TextField("value", new PropertyModel(getModel(), LAST_NAME)).setRequired(true).setLabel(new ResourceModel("LastName"))));
+        add(new TextFieldFragment(FIRST_NAME, getModel(), "FirstName*", new TextField("value", new PropertyModel(getModel(), FIRST_NAME)).setRequired(true).setLabel(new ResourceModel("FirstName")).add(new StringValidator.MaximumLengthValidator(250))));
+        add(new TextFieldFragment(LAST_NAME, getModel(), "LastName*", new TextField("value", new PropertyModel(getModel(), LAST_NAME)).setRequired(true).setLabel(new ResourceModel("LastName")).add(new StringValidator.MaximumLengthValidator(250))));
         add(new DropDownFragment(GENDER, getModel(), "Gender*", createGenderDropDown()));
         add(new DateFragment(BIRTH_DATE, getModel(), "BirthDate*", createBirthDateField()));
       }
@@ -424,7 +427,7 @@ public class EditParticipantPanel extends Panel {
         }
 
         if(editable) {
-          DataField field;
+          final DataField field;
           if(attribute.getAllowedValues() != null && attribute.getAllowedValues().size() > 0) {
             List<Data> allowedValues = new ArrayList<Data>();
             for(String value : attribute.getAllowedValues()) {
@@ -452,6 +455,11 @@ public class EditParticipantPanel extends Panel {
             field = new DataField("field", new PropertyModel(attributeValueModel, "data"), attribute.getType());
 
             if(field.getField() instanceof TextField) {
+              // ONYX-203: Although participant metadata do not currently indicate the maximum length
+              // of configured text attributes, for now impose a maximum (250 characters should be safe)
+              // to avoid persistence errors when the values are longer than the data source permits.
+              field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(250), DataType.TEXT));
+
               field.getField().add(new AttributeModifier("size", true, new Model(TEXTFIELD_SIZE)));
             }
           }

@@ -17,6 +17,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.junit.Test;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.wicket.data.DataValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

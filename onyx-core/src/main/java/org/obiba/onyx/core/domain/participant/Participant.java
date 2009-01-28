@@ -18,6 +18,7 @@ import java.util.Map;
 
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -45,8 +46,10 @@ public class Participant extends AbstractEntity {
   // Instance Variables
   //
 
+  @Column(length = 250)
   private String firstName;
 
+  @Column(length = 250)
   private String lastName;
 
   @Enumerated(EnumType.STRING)
@@ -55,6 +58,7 @@ public class Participant extends AbstractEntity {
   @Temporal(TemporalType.DATE)
   private Date birthDate;
 
+  @Column(length = 250)
   private String barcode;
 
   private String enrollmentId;
