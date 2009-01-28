@@ -41,7 +41,6 @@ public class CreateQuestionnaire {
     }
 
     // Select the questionnaire you wish to create
-    c.createQuestionnaire(TestQuestionnaireContentBuilder.buildTestQuestionnaire(), false);
     c.createQuestionnaire(SelfAdminHealthQuestionnaireContentBuilder.buildHealthQuestionnaire(), false);
     c.createQuestionnaire(AssistedHealthQuestionnaireContentBuilder.buildHealthQuestionnaire(), false);
     c.createQuestionnaire(CIPreliminaryQuestionnaireContentBuilder.buildCIPreliminaryQuestionnaire(), true);

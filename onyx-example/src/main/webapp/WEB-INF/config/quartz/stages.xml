@@ -1,14 +1,5 @@
 <stages>
 
-  <!--stage>
-    <name>HealthQuestionnaire</name>
-    <module>quartz</module>
-    <stageDependencyCondition class="variableCondition">
-      <stageName>Consent</stageName>
-      <variableName>consent</variableName>
-    </stageDependencyCondition>
-  </stage-->
-
   <stage>
     <name>CIPreliminaryQuestionnaire</name>
     <module>quartz</module>
