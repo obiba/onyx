@@ -76,6 +76,14 @@
       <plugin>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>maven-jetty-plugin</artifactId>
+        <configuration>
+          <systemProperties>
+            <systemProperty>
+              <name>ONYX_PASSWORD</name>
+              <value>MASTER_PASSWORD</value>
+            </systemProperty>
+          </systemProperties>
+        </configuration>
       </plugin>
 
       <plugin>
