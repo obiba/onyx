@@ -200,13 +200,13 @@
         <version>1.0-beta-1</version>
       </plugin>
       
-      <!--plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.1</version>
         <executions>
           <execution>
-            <phase>process-resources</phase>
+            <phase>process-classes</phase>
             <goals>
               <goal>java</goal>
             </goals>
@@ -214,8 +214,9 @@
         </executions>
         <configuration>
           <mainClass>org.obiba.onyx.example.questionnaire.util.CreateQuestionnaire</mainClass>
+          <classpathScope>test</classpathScope>
         </configuration>
-      </plugin-->
+      </plugin>
 
     </plugins>
 
