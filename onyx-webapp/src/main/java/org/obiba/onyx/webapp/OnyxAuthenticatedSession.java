@@ -59,6 +59,7 @@ public final class OnyxAuthenticatedSession extends WebSession {
         }
 
         if(!user.isActive()) {
+          user = null;
           return AuthenticateErrorCode.INACTIVE_ACCOUNT;
         }
       }
