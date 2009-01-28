@@ -94,7 +94,7 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
   }
 
   public void castEvent(TransitionEvent event) {
-    log.info("castEvent({}) from stage '{}' in state '{}'", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
+    log.debug("castEvent({}) from stage '{}' in state '{}'", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
     Map<TransitionEvent, IStageExecution> stateEdges = edges.get(currentState);
     if(stateEdges != null) {
       IStageExecution newState = stateEdges.get(event);
@@ -116,7 +116,7 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
         listener.onTransition(this, event);
       }
     }
-    log.info("castEvent({}) from stage {} now in state {}", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
+    log.debug("castEvent({}) from stage {} now in state {}", new Object[] { event, stage.getName(), currentState.getClass().getSimpleName() });
 
     saveState();
   }
@@ -214,7 +214,7 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
   }
 
   public void onTransition(IStageExecution execution, TransitionEvent event) {
-    log.info("Stage {} in state {} receiving onTransition({}, {})", new Object[] { stage.getName(), currentState.getClass().getSimpleName(), execution.getName(), event });
+    log.debug("Stage {} in state {} receiving onTransition({}, {})", new Object[] { stage.getName(), currentState.getClass().getSimpleName(), execution.getName(), event });
     if(currentState instanceof ITransitionListener) {
       ((ITransitionListener) currentState).onTransition(execution, event);
     }
