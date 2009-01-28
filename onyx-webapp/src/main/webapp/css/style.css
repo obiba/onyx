@@ -1022,4 +1022,8 @@ text-decoration:none;
 div.tab-row a:hover span{ /*onMouseover style*/
 background-position:100% -82px; /*Shift background image up to start of 2nd tab image*/
 }
+
+.maxWidthTextArea {
+width: 100%;
+}
 /******************* End Tab Layout ************************************************/
