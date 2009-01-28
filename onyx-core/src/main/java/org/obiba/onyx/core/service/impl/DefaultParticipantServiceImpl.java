@@ -195,9 +195,10 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
           } else if(persistedParticipant != null) {
             log.debug("persistedParticipant.interview={}", persistedParticipant.getInterview());
-            if(persistedParticipant.getInterview() != null && persistedParticipant.getInterview().getStatus().equals(InterviewStatus.COMPLETED)) {
+            if(persistedParticipant.getInterview() != null && (persistedParticipant.getInterview().getStatus().equals(InterviewStatus.COMPLETED) || persistedParticipant.getInterview().getStatus().equals(InterviewStatus.CANCELLED))) {
               // note and ignored
-              appointmentListUpdatelog.warn("Line {}: Interview completed => participant update ignored", line);
+              String message = (persistedParticipant.getInterview().getStatus().equals(InterviewStatus.COMPLETED)) ? "completed" : "cancelled";
+              appointmentListUpdatelog.warn("Line {}: Interview {} => participant update ignored", line, message);
             } else {
               // not completed
               if(!isNewAppointmentDateValid(participant, line)) {
