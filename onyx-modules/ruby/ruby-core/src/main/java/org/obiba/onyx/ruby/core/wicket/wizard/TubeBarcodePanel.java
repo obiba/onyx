@@ -113,6 +113,7 @@ public class TubeBarcodePanel extends Panel {
               for(MessageSourceResolvable error : errors) {
                 error((new SpringStringResourceModel(error.getCodes()[0], error.getArguments(), error.getCodes()[0]).getString()));
               }
+              tubeBarcode.getModel().setObject("");
             } else {
               info((new SpringStringResourceModel("Ruby.SuccessfullyRegisteredTube")).getString());
               tubeBarcode.getModel().setObject("");
