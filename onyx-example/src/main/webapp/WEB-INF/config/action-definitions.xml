@@ -107,7 +107,13 @@
     <askParticipantId>true</askParticipantId>    
     <askPassword>true</askPassword>
     <commentMandatory>true</commentMandatory>
-    <reasonMandatory>false</reasonMandatory>     
+    <reasonMandatory>true</reasonMandatory>
+    <reasons>
+      <string>Action.Reason.TechnicalProblem</string>
+      <string>Action.Reason.ParticipantDecision</string>
+      <string>Action.Reason.InterviewerDecision</string>      
+      <string>Action.Reason.SeeComment</string>      
+    </reasons>
   </actionDefinition>   
 
   <!-- Quartz -->
@@ -177,7 +183,13 @@
     <askParticipantId>true</askParticipantId>    
     <askPassword>true</askPassword>
     <commentMandatory>true</commentMandatory>
-    <reasonMandatory>false</reasonMandatory>     
+    <reasonMandatory>true</reasonMandatory>
+    <reasons>
+      <string>Action.Reason.TechnicalProblem</string>
+      <string>Action.Reason.ParticipantDecision</string>
+      <string>Action.Reason.InterviewerDecision</string>      
+      <string>Action.Reason.SeeComment</string>      
+    </reasons>   
   </actionDefinition>   
   <actionDefinition>
     <code>action.EXECUTE.Completed.Quartz</code>
@@ -193,13 +205,13 @@
     <askParticipantId>true</askParticipantId>    
     <askPassword>true</askPassword>
     <commentMandatory>true</commentMandatory>
-    <reasonMandatory>true</reasonMandatory>     
+    <reasonMandatory>true</reasonMandatory>
     <reasons>
       <string>Action.Reason.TechnicalProblem</string>
       <string>Action.Reason.ParticipantDecision</string>
       <string>Action.Reason.InterviewerDecision</string>      
       <string>Action.Reason.SeeComment</string>      
-    </reasons>      
+    </reasons>     
   </actionDefinition>  
   <actionDefinition>
     <code>action.EXECUTE.Interrupted.Quartz</code>
@@ -288,7 +300,12 @@
     <askParticipantId>true</askParticipantId>    
     <askPassword>true</askPassword>
     <commentMandatory>true</commentMandatory>
-    <reasonMandatory>false</reasonMandatory>  
+    <reasonMandatory>true</reasonMandatory>
+    <reasons>
+      <string>Action.Reason.ParticipantDecision</string>
+      <string>Action.Reason.InterviewerDecision</string>      
+      <string>Action.Reason.SeeComment</string>      
+    </reasons> 
   </actionDefinition>   
   <actionDefinition>
     <code>action.STOP.Interrupted.Ruby</code>
@@ -296,22 +313,14 @@
     <askParticipantId>true</askParticipantId>    
     <askPassword>true</askPassword>
     <commentMandatory>true</commentMandatory>
-    <reasonMandatory>true</reasonMandatory>  
+    <reasonMandatory>true</reasonMandatory>
     <reasons>
       <string>Action.Reason.ParticipantDecision</string>
       <string>Action.Reason.InterviewerDecision</string>      
       <string>Action.Reason.SeeComment</string>      
-    </reasons>     
+    </reasons>
   </actionDefinition>    
-  <actionDefinition>
-    <code>action.STOP.Interrupted.Ruby</code>
-    <type>STOP</type>
-    <askParticipantId>true</askParticipantId>    
-    <askPassword>true</askPassword>
-    <commentMandatory>false</commentMandatory>
-    <reasonMandatory>false</reasonMandatory>      
-  </actionDefinition>   
-
+  
   <!-- 
     Providing a reason and/or comment is optional when cancelling an interview.
     There are no configured reasons (i.e., no dropdown list of reasons) from which
