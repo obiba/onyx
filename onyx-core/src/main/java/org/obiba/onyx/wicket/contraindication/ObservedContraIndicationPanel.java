@@ -27,6 +27,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.contraindication.IContraindicatable;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
@@ -137,6 +138,7 @@ public class ObservedContraIndicationPanel extends Panel {
     };
     otherContraIndication.setOutputMarkupId(true);
     otherContraIndication.setLabel(new StringResourceModel("OtherContraIndication", this, null));
+    otherContraIndication.add(new StringValidator.MaximumLengthValidator(2000));
     add(otherContraIndication);
 
     FormComponentLabel otherContraIndicationLabel = new FormComponentLabel("otherLabel", otherContraIndication);

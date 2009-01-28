@@ -30,6 +30,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
@@ -266,6 +267,7 @@ public class DataField extends Panel {
             return new DataConverter(dataType);
           }
         };
+        field.add(new StringValidator.MaximumLengthValidator(2000));
         break;
       case BOOLEAN:
         field = new CheckBox("field", model) {
