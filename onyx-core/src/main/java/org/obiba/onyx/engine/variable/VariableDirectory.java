@@ -132,6 +132,15 @@ public class VariableDirectory implements IVariableProvider {
   }
 
   /**
+   * Get the variable for the given path.
+   * @param path
+   * @return null if not found
+   */
+  public Variable getVariable(String path) {
+    return VariableFinder.getInstance(getVariableRoot(), variablePathNamingStrategy).findVariable(path);
+  }
+  
+  /**
    * Get the participant's variable data for the variable at the given path.
    * @param participant
    * @param path
@@ -191,4 +200,5 @@ public class VariableDirectory implements IVariableProvider {
 
     return variables;
   }
+  
 }
