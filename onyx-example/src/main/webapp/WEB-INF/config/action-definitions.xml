@@ -23,6 +23,52 @@
     <commentMandatory>true</commentMandatory>
   </actionDefinition>  
 
+  <!-- Marble -->
+  <actionDefinition>
+    <code>action.EXECUTE.Ready.Marble</code>
+    <type>EXECUTE</type>
+    <askParticipantId>true</askParticipantId>    
+    <askPassword>true</askPassword>
+    <commentMandatory>false</commentMandatory>
+    <reasonMandatory>false</reasonMandatory>    
+  </actionDefinition>
+  <actionDefinition>
+    <code>action.STOP.InProgress.Marble</code>
+    <type>STOP</type>
+    <askParticipantId>true</askParticipantId>
+    <askPassword>true</askPassword>
+    <commentMandatory>true</commentMandatory>
+    <reasonMandatory>true</reasonMandatory>
+    <reasons>
+      <string>Action.Reason.TechnicalProblem</string>
+      <string>Action.Reason.ParticipantDecision</string>
+      <string>Action.Reason.InterviewerDecision</string>      
+      <string>Action.Reason.SeeComment</string>      
+    </reasons>      
+  </actionDefinition>
+  <actionDefinition>
+    <code>action.COMPLETE.InProgress.Marble</code>
+    <type>COMPLETE</type>
+    <askParticipantId>true</askParticipantId>    
+    <askPassword>false</askPassword>
+    <commentMandatory>false</commentMandatory>
+    <reasonMandatory>false</reasonMandatory>    
+  </actionDefinition>
+  <actionDefinition>
+    <code>action.STOP.Completed.Marble</code>
+    <type>STOP</type>
+    <askParticipantId>true</askParticipantId>
+    <askPassword>true</askPassword>
+    <commentMandatory>true</commentMandatory>
+    <reasonMandatory>true</reasonMandatory>
+    <reasons>
+      <string>Action.Reason.TechnicalProblem</string>
+      <string>Action.Reason.ParticipantDecision</string>
+      <string>Action.Reason.InterviewerDecision</string>      
+      <string>Action.Reason.SeeComment</string>      
+    </reasons> 
+  </actionDefinition>
+
   <!-- Jade -->
   <actionDefinition>
     <code>action.SKIP.Waiting.Jade</code>
