@@ -13,6 +13,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ActionDefinition;
@@ -52,9 +53,7 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
 
     setModel(new StageModel(moduleRegistry, stage.getName()));
 
-    activeConsentService.getConsent(true);
-
-    add(new WizardPanel("content", getModel()) {
+    add(new WizardPanel("content", new Model(activeConsentService.getConsent(true))) {
 
       @Override
       public WizardForm createForm(String componentId) {
