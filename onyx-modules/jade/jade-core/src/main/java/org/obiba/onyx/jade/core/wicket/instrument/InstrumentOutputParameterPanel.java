@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.instrument;
 
+import java.awt.TextField;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,12 +18,14 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
@@ -31,7 +34,9 @@ import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.instrument.validation.IntegrityCheckValidator;
+import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
+import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
@@ -93,6 +98,11 @@ public class InstrumentOutputParameterPanel extends Panel {
             activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
           }
         });
+
+        if(runValue.getDataType().equals(DataType.TEXT) && (field.getField().getClass().equals(TextField.class) || field.getField().getClass().equals(TextArea.class))) {
+          field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(2000), runValue.getDataType()));
+        }
+
         IntegrityCheckValidator.addChecks(field, param.getIntegrityChecks());
         item.add(field);
 

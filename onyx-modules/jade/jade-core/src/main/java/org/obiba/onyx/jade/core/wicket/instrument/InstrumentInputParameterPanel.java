@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.instrument;
 
+import java.awt.TextField;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +23,7 @@ import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.form.RadioGroup;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -33,6 +35,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
@@ -47,6 +50,7 @@ import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
+import org.obiba.onyx.wicket.data.DataValidator;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
@@ -286,6 +290,11 @@ public class InstrumentInputParameterPanel extends Panel {
             activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
           }
         });
+
+        if(runValue.getDataType().equals(DataType.TEXT) && (field.getField().getClass().equals(TextField.class) || field.getField().getClass().equals(TextArea.class))) {
+          field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(2000), runValue.getDataType()));
+        }
+
         IntegrityCheckValidator.addChecks(field, param.getIntegrityChecks());
         item.add(field);
 
