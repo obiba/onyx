@@ -71,6 +71,7 @@ public class BalsacConfirmationPanel extends Panel {
           }
         }
         target.addComponent(BalsacConfirmationPanel.this);
+        target.appendJavascript("resizeWizardContent();");
       }
     });
 
