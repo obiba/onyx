@@ -24,7 +24,6 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
-import org.obiba.onyx.wicket.behavior.EnterOnKeyPressBehaviour;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,28 +78,12 @@ public class CommentPanel extends Panel {
     public CommentForm(String id) {
       super(id);
 
-      addSubmitLink();
       addCommentField();
     }
 
     //
     // Methods
     //
-
-    private void addSubmitLink() {
-      submitLink = new AjaxSubmitLink("submitTubeComment") {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        protected void onSubmit(AjaxRequestTarget target, Form form) {
-          submitComment();
-        }
-      };
-
-      submitLink.setOutputMarkupId(true);
-
-      add(submitLink);
-    }
 
     private void addCommentField() {
       RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) CommentPanel.this.getModelObject();
@@ -119,8 +102,6 @@ public class CommentPanel extends Panel {
         }
 
       });
-
-      commentField.add(new EnterOnKeyPressBehaviour(submitLink));
 
       commentField.add(new AjaxFormComponentUpdatingBehavior("onblur") {
         private static final long serialVersionUID = 1L;
