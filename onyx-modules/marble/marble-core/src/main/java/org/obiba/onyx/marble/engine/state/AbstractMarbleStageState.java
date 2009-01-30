@@ -10,12 +10,9 @@
 package org.obiba.onyx.marble.engine.state;
 
 import org.obiba.onyx.engine.state.AbstractStageState;
-import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.core.service.ConsentService;
 
 public abstract class AbstractMarbleStageState extends AbstractStageState {
-
-  protected ActiveConsentService activeConsentService;
 
   protected ConsentService consentService;
 
@@ -23,7 +20,4 @@ public abstract class AbstractMarbleStageState extends AbstractStageState {
     this.consentService = consentService;
   }
 
-  public void setActiveConsentService(ActiveConsentService activeConsentService) {
-    this.activeConsentService = activeConsentService;
-  }
 }

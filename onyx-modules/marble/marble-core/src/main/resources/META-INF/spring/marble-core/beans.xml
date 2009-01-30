@@ -8,8 +8,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 
   <bean id="baseMarbleStageState" parent="baseStageState" class="org.obiba.onyx.marble.engine.state.AbstractMarbleStageState"
     abstract="true">
-    <property name="activeInterviewService" ref="activeInterviewService" />
-    <property name="activeConsentService" ref="activeConsentService" />    
+    <property name="activeInterviewService" ref="activeInterviewService" /> 
     <property name="consentService" ref="consentService" />      
   </bean>
 

@@ -22,23 +22,32 @@ import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
+import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.core.wicket.wizard.ConsentWizardForm;
+import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
 import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MarblePanel extends Panel implements IEngineComponentAware {
 
   private static final long serialVersionUID = 1L;
+
+  private static final Logger log = LoggerFactory.getLogger(MarblePanel.class);
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
   @SpringBean
   private ActiveConsentService activeConsentService;
+
+  @SpringBean
+  private ConsentService consentService;
 
   @SpringBean
   private ModuleRegistry moduleRegistry;
@@ -92,6 +101,16 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
             } else {
               IStageExecution exec = activeInterviewService.getStageExecution(getStage());
               ActionDefinition actionDef = exec.getSystemActionDefinition(ActionType.COMPLETE);
+
+              // Delete previous consent (if exist) for that interview
+              Consent existingConsent = consentService.getConsent(activeInterviewService.getInterview());
+              if(existingConsent != null) {
+                consentService.deletePreviousConsent(activeInterviewService.getInterview());
+              }
+
+              // Save the consent
+              consentService.saveConsent(activeConsentService.getConsent());
+
               target.appendJavascript("resizeWizardContent();");
               if(actionDef != null) {
                 actionWindow.show(target, MarblePanel.this.getModel(), actionDef);
@@ -129,6 +148,10 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
 
   protected Stage getStage() {
     return (Stage) getModelObject();
+  }
+
+  public void setConsentService(ConsentService consentService) {
+    this.consentService = consentService;
   }
 
 }

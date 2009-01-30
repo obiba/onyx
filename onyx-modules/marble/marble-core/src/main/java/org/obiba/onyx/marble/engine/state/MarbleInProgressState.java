@@ -44,13 +44,13 @@ public class MarbleInProgressState extends AbstractMarbleStageState {
   @Override
   public void complete(Action action) {
     log.debug("Marble Stage {} is completing", super.getStage().getName());
-    consentService.saveConsent(activeConsentService.getConsent());
     castEvent(TransitionEvent.COMPLETE);
   }
 
   @Override
   public void stop(Action action) {
     log.debug("Marble Stage {} is canceling", super.getStage().getName());
+    consentService.deletePreviousConsent(activeInterviewService.getInterview());
     castEvent(TransitionEvent.CANCEL);
   }
 
