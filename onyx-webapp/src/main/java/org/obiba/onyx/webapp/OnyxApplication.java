@@ -82,6 +82,7 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
 
   public void setOnyxApplicationConfiguration(OnyxApplicationConfiguration onyxApplicationConfiguration) {
     this.onyxApplicationConfiguration = onyxApplicationConfiguration;
+    configure();
   }
 
   public Version getVersion() {
@@ -212,6 +213,7 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
     getSecuritySettings().setUnauthorizedComponentInstantiationListener(this);
 
     getApplicationSettings().setPageExpiredErrorPage(HomePage.class);
+    // getApplicationSettings().setInternalErrorPage(InternalErrorPage.class);
 
     log.info("Onyx Web Application has been started");
   }
