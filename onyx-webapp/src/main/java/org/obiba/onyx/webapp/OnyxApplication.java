@@ -82,7 +82,6 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
 
   public void setOnyxApplicationConfiguration(OnyxApplicationConfiguration onyxApplicationConfiguration) {
     this.onyxApplicationConfiguration = onyxApplicationConfiguration;
-    configure();
   }
 
   public Version getVersion() {
@@ -176,10 +175,17 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
       applicationContext.setConfigLocation("WEB-INF/spring/context.xml," + configPath + "/*/module-context.xml");
       applicationContext.refresh();
 
+      // Required for WebApplicationContext
       getServletContext().setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, applicationContext);
 
+      // Inject our dependencies
       applicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(this, AutowireCapableBeanFactory.AUTOWIRE_BY_NAME, false);
 
+      // Call the configure() method again because we depend on the ApplicationContext for certain
+      // configuration settings (specifically, the Deployment mode)
+      // This method is called by Application#internalInit. Since we shouldn't override that method
+      // we must call configure twice. It works for Wicket 1.3.5, this may break something in the future.
+      configure();
     } catch(Exception e) {
       throw new RuntimeException(e);
     }
@@ -213,9 +219,8 @@ public class OnyxApplication extends WebApplication implements ISpringWebApplica
     getSecuritySettings().setUnauthorizedComponentInstantiationListener(this);
 
     getApplicationSettings().setPageExpiredErrorPage(HomePage.class);
-    // getApplicationSettings().setInternalErrorPage(InternalErrorPage.class);
 
-    log.info("Onyx Web Application has been started");
+    log.info("Onyx Web Application v{} has started", this.getVersion());
   }
 
   @Override
