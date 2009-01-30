@@ -61,9 +61,6 @@ public class InstrumentRunValue extends AbstractEntity {
   @Enumerated(EnumType.STRING)
   private InstrumentParameterCaptureMethod captureMethod;
 
-  @Enumerated(EnumType.STRING)
-  private ValueIntegrity valueIntegrity;
-
   public InstrumentRunValue() {
   }
 
@@ -89,14 +86,6 @@ public class InstrumentRunValue extends AbstractEntity {
 
   public void setCaptureMethod(InstrumentParameterCaptureMethod captureMethod) {
     this.captureMethod = captureMethod;
-  }
-
-  public ValueIntegrity getValueIntegrity() {
-    return valueIntegrity;
-  }
-
-  public void setValueIntegrity(ValueIntegrity valueIntegrity) {
-    this.valueIntegrity = valueIntegrity;
   }
 
   public DataType getDataType() {
@@ -142,7 +131,7 @@ public class InstrumentRunValue extends AbstractEntity {
   @Transient
   @SuppressWarnings("unchecked")
   public <T> T getValue() {
-    return (T)getData().getValue();
+    return (T) getData().getValue();
   }
 
   public Data getData() {
