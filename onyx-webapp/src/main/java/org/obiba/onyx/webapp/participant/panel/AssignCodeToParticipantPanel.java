@@ -89,7 +89,10 @@ public class AssignCodeToParticipantPanel extends Panel {
 
       });
       add(participantCode);
-      add(new TextArea("comment", receptionCommentModel));
+
+      TextArea comment = new TextArea("comment", receptionCommentModel);
+      comment.add(new StringValidator.MaximumLengthValidator(2000));
+      add(comment);
     }
 
     public void onSubmit(Participant participant) {
