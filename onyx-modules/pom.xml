@@ -13,7 +13,7 @@
   <parent>
     <artifactId>onyx</artifactId>
     <groupId>org.obiba.onyx</groupId>
-    <version>1.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -30,12 +30,12 @@
       <dependency>
         <groupId>org.obiba.onyx</groupId>
         <artifactId>onyx-util</artifactId>
-        <version>1.0</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.obiba.onyx</groupId>
         <artifactId>onyx-core</artifactId>
-        <version>1.0</version>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
