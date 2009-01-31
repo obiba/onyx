@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -8,7 +10,7 @@
   <groupId>org.obiba.onyx</groupId>
   <artifactId>onyx</artifactId>
   <packaging>pom</packaging>
-  <version>1.0</version>
+  <version>1.0-SNAPSHOT</version>
 
   <licenses>
     <license>
@@ -490,8 +492,6 @@
           <tagBase>https://svn.obiba.org/onyx/tags/releases</tagBase>
           <!-- Use parent version as modules' version -->
           <autoVersionSubmodules>true</autoVersionSubmodules>
-          <!-- Need to install artifacts due to onyx-example's use of dependency-plugin -->
-          <preparationGoals>clean install</preparationGoals>
         </configuration>
       </plugin>
 
@@ -624,7 +624,7 @@
       <plugin>
         <artifactId>maven-project-info-reports-plugin</artifactId>
         <reportSets>
-          <reportSet />
+          <reportSet></reportSet>
         </reportSets>
       </plugin>
 
@@ -652,7 +652,8 @@
       <!-- Disabled due to Hudson bug: https://hudson.dev.java.net/issues/show_bug.cgi?id=2158 -->
       <!--
         plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>emma-maven-plugin</artifactId>
-        <version>1.0-alpha-2-SNAPSHOT</version> <inherited>true</inherited> </plugin -->
+        <version>1.0-alpha-2-SNAPSHOT</version> <inherited>true</inherited> </plugin
+      -->
     </plugins>
   </reporting>
 
@@ -723,8 +724,8 @@
   </distributionManagement>
 
   <scm>
-    <connection>scm:svn:http://svn.obiba.org/onyx/tags/releases/1.0</connection>
-    <developerConnection>scm:svn:https://svn.obiba.org/onyx/tags/releases/1.0</developerConnection>
+    <connection>scm:svn:http://svn.obiba.org/onyx/trunk</connection>
+    <developerConnection>scm:svn:https://svn.obiba.org/onyx/trunk</developerConnection>
   </scm>
 
   <properties>
