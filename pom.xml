@@ -492,6 +492,8 @@
           <tagBase>https://svn.obiba.org/onyx/tags/releases</tagBase>
           <!-- Use parent version as modules' version -->
           <autoVersionSubmodules>true</autoVersionSubmodules>
+          <!-- Need to install artifacts due to onyx-example's use of dependency-plugin -->
+          <preparationGoals>clean install</preparationGoals>
         </configuration>
       </plugin>
 
