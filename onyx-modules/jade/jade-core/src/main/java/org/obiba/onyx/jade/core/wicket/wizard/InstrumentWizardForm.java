@@ -29,6 +29,8 @@ import org.slf4j.LoggerFactory;
 
 public abstract class InstrumentWizardForm extends WizardForm {
 
+  private static final long serialVersionUID = 1L;
+
   private static final Logger log = LoggerFactory.getLogger(InstrumentWizardForm.class);
 
   @SpringBean
@@ -99,7 +101,9 @@ public abstract class InstrumentWizardForm extends WizardForm {
         startStep = observedContraIndicationStep;
         lastStep = startStep;
       } else {
-        lastStep.setNextStep(observedContraIndicationStep);
+        if(lastStep != null) {
+          lastStep.setNextStep(observedContraIndicationStep);
+        }
         observedContraIndicationStep.setPreviousStep(lastStep);
         lastStep = observedContraIndicationStep;
       }
@@ -113,7 +117,9 @@ public abstract class InstrumentWizardForm extends WizardForm {
         startStep = askedContraIndicationStep;
         lastStep = startStep;
       } else {
-        lastStep.setNextStep(askedContraIndicationStep);
+        if(lastStep != null) {
+          lastStep.setNextStep(askedContraIndicationStep);
+        }
         askedContraIndicationStep.setPreviousStep(lastStep);
         lastStep = askedContraIndicationStep;
       }
@@ -132,7 +138,9 @@ public abstract class InstrumentWizardForm extends WizardForm {
         startStep = instrumentSelectionStep;
         lastStep = startStep;
       } else {
-        lastStep.setNextStep(instrumentSelectionStep);
+        if(lastStep != null) {
+          lastStep.setNextStep(instrumentSelectionStep);
+        }
         instrumentSelectionStep.setPreviousStep(lastStep);
         lastStep = instrumentSelectionStep;
       }
@@ -152,7 +160,9 @@ public abstract class InstrumentWizardForm extends WizardForm {
         startStep = inputParametersStep;
         lastStep = startStep;
       } else {
-        lastStep.setNextStep(inputParametersStep);
+        if(lastStep != null) {
+          lastStep.setNextStep(inputParametersStep);
+        }
         inputParametersStep.setPreviousStep(lastStep);
         lastStep = inputParametersStep;
       }
@@ -166,7 +176,9 @@ public abstract class InstrumentWizardForm extends WizardForm {
         startStep = instrumentLaunchStep;
         lastStep = startStep;
       } else {
-        lastStep.setNextStep(instrumentLaunchStep);
+        if(lastStep != null) {
+          lastStep.setNextStep(instrumentLaunchStep);
+        }
         instrumentLaunchStep.setPreviousStep(lastStep);
         lastStep = instrumentLaunchStep;
       }
@@ -182,7 +194,9 @@ public abstract class InstrumentWizardForm extends WizardForm {
         startStep = outputParametersStep;
         lastStep = startStep;
       } else {
-        lastStep.setNextStep(outputParametersStep);
+        if(lastStep != null) {
+          lastStep.setNextStep(outputParametersStep);
+        }
         outputParametersStep.setPreviousStep(lastStep);
         lastStep = outputParametersStep;
       }
@@ -193,7 +207,9 @@ public abstract class InstrumentWizardForm extends WizardForm {
       startStep = conclusionStep;
       lastStep = startStep;
     } else {
-      lastStep.setNextStep(conclusionStep);
+      if(lastStep != null) {
+        lastStep.setNextStep(conclusionStep);
+      }
       conclusionStep.setPreviousStep(lastStep);
       lastStep = conclusionStep;
     }
