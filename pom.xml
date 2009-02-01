@@ -688,6 +688,12 @@
 
   <pluginRepositories>
     <pluginRepository>
+      <id>obiba.org</id>
+      <name>Obiba Maven 2.x Plugin Repository</name>
+      <url>http://www.obiba.org/maven2</url>
+    </pluginRepository>
+
+    <pluginRepository>
       <id>snapshots.codehaus.org</id>
       <url>http://snapshots.repository.codehaus.org</url>
       <snapshots>
