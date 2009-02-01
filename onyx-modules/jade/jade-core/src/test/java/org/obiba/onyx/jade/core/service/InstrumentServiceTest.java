@@ -17,7 +17,6 @@ import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.test.spring.Dataset;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,13 +32,6 @@ public class InstrumentServiceTest extends BaseDefaultSpringContextTestCase {
   @Test
   @Dataset
   public void testInstrumentType() {
-    InstrumentType type1 = instrumentService.createInstrumentType("BLP", "Blood pressure");
-
-    flushCache();
-
-    type1 = persistenceManager.get(InstrumentType.class, type1.getId());
-    Assert.assertTrue("No type 1", type1 != null);
-
     List<Instrument> instruments = instrumentService.getInstruments("STA");
     Assert.assertEquals("Wrong STA instrument count", 2, instruments.size());
   }

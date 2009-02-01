@@ -19,14 +19,6 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 public interface InstrumentService {
 
   /**
-   * Create an instrument type.
-   * @param name
-   * @param description
-   * @return
-   */
-  public InstrumentType createInstrumentType(String name, String description);
-
-  /**
    * Get the instrument type by its name.
    * @param name
    * @return null if not found
