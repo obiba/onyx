@@ -32,6 +32,12 @@ public class CreateQuestionnaire {
   public static void main(String args[]) {
     CreateQuestionnaire c = new CreateQuestionnaire();
 
+    if(args.length > 0) {
+      File workingDir = new File(args[0]);
+      bundleRootDirectory = new File(workingDir, bundleRootDirectory.getPath());
+      bundleSourceDirectory = new File(workingDir, bundleSourceDirectory.getPath());
+    }
+
     if(bundleSourceDirectory.exists()) {
       try {
         FileUtil.copyDirectory(bundleSourceDirectory, bundleRootDirectory);

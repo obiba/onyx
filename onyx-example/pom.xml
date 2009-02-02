@@ -214,6 +214,10 @@
         <configuration>
           <mainClass>org.obiba.onyx.example.questionnaire.util.CreateQuestionnaire</mainClass>
           <classpathScope>test</classpathScope>
+          <!--workingDirectory>${project.basedir}</workingDirectory-->
+          <arguments>
+            <argument>${project.basedir}</argument>
+          </arguments>
         </configuration>
       </plugin>
 
