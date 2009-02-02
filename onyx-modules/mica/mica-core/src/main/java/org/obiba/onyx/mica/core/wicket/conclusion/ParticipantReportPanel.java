@@ -12,7 +12,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.domain.consent.Consent;
-import org.obiba.onyx.mica.core.service.impl.JadeReportContributor;
+import org.obiba.onyx.mica.core.service.impl.VariableReportContributor;
 import org.obiba.onyx.print.PdfPrintingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ public class ParticipantReportPanel extends Panel {
   private static final Logger log = LoggerFactory.getLogger(BalsacConfirmationPanel.class);
 
   @SpringBean
-  private JadeReportContributor jadeReportContributor;
+  private VariableReportContributor variableReportContributor;
 
   @SpringBean
   private ConsentService consentService;
@@ -70,7 +70,7 @@ public class ParticipantReportPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
         try {
-          pdfPrintingService.printPdf(jadeReportContributor.getReport(participantConsent.getLocale()));
+          pdfPrintingService.printPdf(variableReportContributor.getReport(participantConsent.getLocale()));
         } catch(PrintException e) {
           log.error("Participant Report cannot be printed", e);
         }
