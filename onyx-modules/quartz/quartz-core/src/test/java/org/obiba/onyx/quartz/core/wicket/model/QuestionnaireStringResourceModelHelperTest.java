@@ -47,7 +47,6 @@ import org.springframework.context.support.StaticMessageSource;
  */
 public class QuestionnaireStringResourceModelHelperTest {
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(QuestionnaireStringResourceModelHelperTest.class);
 
   private ApplicationContextMock applicationContextMock;
