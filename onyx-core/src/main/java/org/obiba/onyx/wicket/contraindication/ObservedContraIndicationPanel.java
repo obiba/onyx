@@ -89,7 +89,8 @@ public class ObservedContraIndicationPanel extends Panel {
 
       @Override
       public boolean isEnabled() {
-        return selectedRadio == null || selectedRadio.equals(YES);
+        // return selectedRadio == null || selectedRadio.equals(YES);
+        return (selectedRadio == null) ? false : selectedRadio.equals(YES);
       }
 
       @Override
