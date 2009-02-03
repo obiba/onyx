@@ -19,7 +19,6 @@
 
   <modules>
     <module>quartz-core</module>
-    <!--module>quartz-webapp</module-->
   </modules>
 
 </project>
