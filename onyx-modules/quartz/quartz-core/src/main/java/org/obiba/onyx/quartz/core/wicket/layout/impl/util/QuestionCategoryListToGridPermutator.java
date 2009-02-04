@@ -32,4 +32,9 @@ public class QuestionCategoryListToGridPermutator extends ListToGridPermutator<Q
     }
   }
 
+  public QuestionCategoryListToGridPermutator(IModel questionModel, int rowCount) {
+    super();
+    setRowCount(rowCount);
+  }
+
 }

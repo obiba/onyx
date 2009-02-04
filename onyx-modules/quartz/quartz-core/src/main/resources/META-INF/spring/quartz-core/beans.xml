@@ -45,6 +45,10 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   
   <bean id="quartz.DropDownQuestionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DropDownQuestionPanelFactory" />
   
+  <bean id="quartz.SimplifiedPageLayoutFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedPageLayoutFactory" />
+  
+  <bean id="quartz.SimplifiedQuestionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedQuestionPanelFactory" />
+  
   <bean id="pageLayoutFactoryRegistry" class="org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry" />
   
   <bean id="questionPanelFactoryRegistry" class="org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry" />
