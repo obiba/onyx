@@ -30,6 +30,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.user.Role;
@@ -83,17 +84,18 @@ public class UserPanel extends Panel {
 
       TextField lastName = new TextField("lastName", new PropertyModel(getModel(), "lastName"));
       lastName.add(new RequiredFormFieldBehavior());
-      lastName.add(new StringValidator.MaximumLengthValidator(250));
+      lastName.add(new StringValidator.MaximumLengthValidator(20));
+      lastName.add(new PatternValidator("^[A-Za-z\\-]+$"));
       add(lastName);
 
       TextField firstName = new TextField("firstName", new PropertyModel(getModel(), "firstName"));
       firstName.add(new RequiredFormFieldBehavior());
-      firstName.add(new StringValidator.MaximumLengthValidator(250));
+      firstName.add(new StringValidator.MaximumLengthValidator(20));
+      firstName.add(new PatternValidator("^[A-Za-z\\-]+$"));
       add(firstName);
 
       TextField login = new TextField("login", new PropertyModel(getModel(), "login"));
       login.add(new RequiredFormFieldBehavior());
-      login.add(new StringValidator.MaximumLengthValidator(250));
       login.setEnabled(false);
       add(login);
 
@@ -205,10 +207,10 @@ public class UserPanel extends Panel {
     if(user.getFirstName() != null && user.getFirstName().length() > 0) baseLogin = user.getFirstName().substring(0, 1).toLowerCase();
     if(user.getLastName() != null && user.getLastName().length() > 0) baseLogin += user.getLastName().toLowerCase();
 
-    String login = baseLogin;
+    String login = (baseLogin.length() > 12) ? baseLogin.substring(0, 12) : baseLogin;
     int i = 1;
     while(userService.getUserWithLogin(login) != null) {
-      login = baseLogin + i;
+      login = ((baseLogin.length() > 12) ? baseLogin.substring(0, (12 - (String.valueOf(i)).length())) : baseLogin) + i;
       i++;
     }
 
