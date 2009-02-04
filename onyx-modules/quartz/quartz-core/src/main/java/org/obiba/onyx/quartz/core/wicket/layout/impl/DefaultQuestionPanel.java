@@ -13,7 +13,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionListProvider;
 
 /**
- * Support for question multiple or not, but without child questions.
+ * Support for question multiple or not, with(out) child questions, with shared categories, but not yet with joined
+ * categories.
  */
 public class DefaultQuestionPanel extends BaseQuestionPanel {
 
