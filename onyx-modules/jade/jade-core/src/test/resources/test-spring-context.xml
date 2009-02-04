@@ -1,6 +1,11 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
-  default-autowire="no">
+  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+  
+  <tx:annotation-driven transaction-manager="transactionManager" />
   
   <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl">
     <property name="persistenceManager" ref="persistenceManager" />
@@ -28,9 +33,13 @@
     abstract="true">
     <property name="userSessionService" ref="userSessionService" />
   </bean>
-  
+    
   <import resource="classpath:/test-hibernate-config.xml" />
   <import resource="classpath:/test-db-config.xml" />
-  <import resource="classpath:META-INF/spring/jade-core/context.xml" />
+  
+  <bean id="instrumentService" class="org.obiba.onyx.jade.core.service.impl.DefaultInstrumentServiceImpl">
+    <property name="persistenceManager" ref="persistenceManager" />    
+    <property name="instrumentsPath" value="${org.obiba.onyx.jade.instruments.codebase.path}"/>
+  </bean>
 
 </beans>

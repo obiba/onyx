@@ -20,12 +20,23 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMeth
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService implements InstrumentService {
+public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService implements InstrumentService, InitializingBean {
+
+  private final Logger log = LoggerFactory.getLogger(getClass());
 
   private String instrumentsPath;
+
+  private List<InstrumentType> instrumentTypes;
+
+  public void setInstrumentTypes(List<InstrumentType> instrumentTypes) {
+    this.instrumentTypes = instrumentTypes;
+  }
 
   public void setInstrumentsPath(String instrumentsPath) {
     this.instrumentsPath = instrumentsPath;
@@ -101,6 +112,25 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
 
   public String getInstrumentInstallPath(InstrumentType type) {
     return instrumentsPath + "/" + type.getName();
+  }
+
+  public void afterPropertiesSet() throws Exception {
+
+    if(instrumentTypes != null && persistenceManager.list(InstrumentType.class).size() == 0) {
+
+      log.debug("Persisting InstrumentTypes injected by InstrumentTypeFactory...");
+      for(InstrumentType instrumentType : instrumentTypes) {
+        log.debug(instrumentType.getName());
+
+        persistenceManager.save(instrumentType);
+
+        persistenceManager.list(InstrumentType.class).size();
+
+      }
+      log.debug("Completed persisting InstrumentTypes.");
+
+    }
+
   }
 
 }
