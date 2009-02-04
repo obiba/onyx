@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+
+  <name>GripStrength</name>
+
+  <instruments>
+    <instrument>
+      <name>Dynamometer 1</name>
+      <vendor>Baseline</vendor>
+      <model>Hydraulic Hand Dynamometer</model>
+      <barcode>mus01</barcode>
+      <status>ACTIVE</status>
+    </instrument>
+  </instruments>
+
+  <!-- <contraindications> commented out
+    <contraIndication>
+      <code>UnableToStandUnassistedHandicap</code>
+      <type>OBSERVED</type>
+    </contraIndication>
+
+    <contraIndication>
+      <code>UnableToStandUnassistedWheelchair</code>
+      <type>OBSERVED</type>
+    </contraIndication>
+
+    <contraIndication>
+      <code>UnableToStandUnassistedCast</code>
+      <type>OBSERVED</type>
+    </contraIndication>
+
+    <contraIndication>
+      <code>Other_CI</code>
+      <requiresDescription>true</requiresDescription>
+      <type>OBSERVED</type>
+    </contraIndication>
+
+    <contraIndication>
+      <code>HandOrWristArthritisAndOtherProblem</code>
+      <type>ASKED</type>
+    </contraIndication>
+
+    <contraIndication>
+      <code>HandOrWristSurgery</code>
+      <type>ASKED</type>
+    </contraIndication>
+  </contraindications>    -->
+
+  <instrumentParameters>
+    <output id="mus1_right_strength1">
+      <code>RES_FIRST_RH_MUSCLE_STRENGTH</code>
+      <measurementUnit>kg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          <targetParameter reference="mus1_right_strength1"/>
+          <integerMinValueMale>0</integerMinValueMale>
+          <integerMaxValueMale>130</integerMaxValueMale>
+          <integerMinValueFemale>0</integerMinValueFemale>
+          <integerMaxValueFemale>130</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          <targetParameter reference="mus1_right_strength1"/>
+          <integerMinValueMale>0</integerMinValueMale>
+          <integerMaxValueMale>72</integerMaxValueMale>
+          <integerMinValueFemale>0</integerMinValueFemale>
+          <integerMaxValueFemale>72</integerMaxValueFemale>
+        </rangeCheck>
+      </integrityChecks>
+    </output>
+
+    <output id="mus1_left_strength1">
+      <code>RES_FIRST_LH_MUSCLE_STRENGTH</code>
+      <measurementUnit>kg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          <targetParameter reference="mus1_left_strength1"/>
+          <integerMinValueMale>0</integerMinValueMale>
+          <integerMaxValueMale>130</integerMaxValueMale>
+          <integerMinValueFemale>0</integerMinValueFemale>
+          <integerMaxValueFemale>130</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          <targetParameter reference="mus1_left_strength1"/>
+          <integerMinValueMale>0</integerMinValueMale>
+          <integerMaxValueMale>72</integerMaxValueMale>
+          <integerMinValueFemale>0</integerMinValueFemale>
+          <integerMaxValueFemale>72</integerMaxValueFemale>
+        </rangeCheck>
+      </integrityChecks>
+    </output>
+
+    <output id="mus1_right_strength2">
+      <code>RES_SEC_RH_MUSCLE_STRENGTH</code>
+      <measurementUnit>kg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          <targetParameter reference="mus1_right_strength2"/>
+          <integerMinValueMale>0</integerMinValueMale>
+          <integerMaxValueMale>130</integerMaxValueMale>
+          <integerMinValueFemale>0</integerMinValueFemale>
+          <integerMaxValueFemale>130</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          <targetParameter reference="mus1_right_strength2"/>
+          <integerMinValueMale>0</integerMinValueMale>
+          <integerMaxValueMale>72</integerMaxValueMale>
+          <integerMinValueFemale>0</integerMinValueFemale>
+          <integerMaxValueFemale>72</integerMaxValueFemale>
+        </rangeCheck>
+        <parameterSpreadCheck>
+          <targetParameter reference="mus1_right_strength2"/>
+          <parameter reference="mus1_right_strength1"/>
+          <percent>10</percent>
+        </parameterSpreadCheck>
+      </integrityChecks>
+    </output>
+
+    <output id="mus1_left_strength2">
+      <code>RES_SEC_LH_MUSCLE_STRENGTH</code>
+      <measurementUnit>kg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <integrityChecks>
+        <rangeCheck>
+          <targetParameter reference="mus1_left_strength2"/>
+          <integerMinValueMale>0</integerMinValueMale>
+          <integerMaxValueMale>130</integerMaxValueMale>
+          <integerMinValueFemale>0</integerMinValueFemale>
+          <integerMaxValueFemale>130</integerMaxValueFemale>
+        </rangeCheck>
+        <rangeCheck>
+          <type>WARNING</type>
+          <targetParameter reference="mus1_left_strength2"/>
+          <integerMinValueMale>0</integerMinValueMale>
+          <integerMaxValueMale>72</integerMaxValueMale>
+          <integerMinValueFemale>0</integerMinValueFemale>
+          <integerMaxValueFemale>72</integerMaxValueFemale>
+        </rangeCheck>
+        <parameterSpreadCheck>
+          <targetParameter reference="mus1_left_strength2"/>
+          <parameter reference="mus1_left_strength1"/>
+          <percent>10</percent>
+        </parameterSpreadCheck>
+      </integrityChecks>
+    </output>
+
+    <computedOutput>
+      <code>CALC_AVG_RH_MUSCLE_STRENGTH</code>
+      <measurementUnit>kg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <algorithm>AVERAGE</algorithm>
+      <captureMethod>COMPUTED</captureMethod>
+      <outputs>
+        <output reference="mus1_right_strength1"/>
+        <output reference="mus1_right_strength2"/>
+      </outputs>
+    </computedOutput>
+
+    <computedOutput>
+      <code>CALC_AVG_LH_MUSCLE_STRENGTH</code>
+      <measurementUnit>kg</measurementUnit>
+      <dataType>INTEGER</dataType>
+      <algorithm>AVERAGE</algorithm>
+      <captureMethod>COMPUTED</captureMethod>
+      <outputs>
+        <output reference="mus1_left_strength1"/>
+        <output reference="mus1_left_strength2"/>
+      </outputs>
+    </computedOutput>
+  </instrumentParameters>
+</instrumentType>
