@@ -24,6 +24,7 @@
     <module>interface-spirometry-minispir</module>
     <module>interface-bonedensity-achillesexpress</module>
     <module>interface-arterialstiffness-sphygmocor</module>
+    <module>interface-cognitivetest-noddletest</module>
   </modules>
 
   <dependencies>
