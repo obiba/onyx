@@ -18,6 +18,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParame
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
@@ -82,6 +83,10 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
   public boolean hasInputParameter(boolean readOnly);
 
   public List<InstrumentInputParameter> getInputParameters(boolean readOnly);
+
+  public boolean hasOutputParameter(InstrumentParameterCaptureMethod captureMethod);
+
+  public List<InstrumentOutputParameter> getOutputParameters(InstrumentParameterCaptureMethod captureMethod);
 
   public boolean hasOutputParameter(boolean automatic);
 

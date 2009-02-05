@@ -16,7 +16,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.instrument.InstrumentOutputParameterPanel;
@@ -26,9 +25,6 @@ import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 public class OutputParametersStep extends WizardStepPanel {
 
   private static final long serialVersionUID = 6617334507631332206L;
-
-  @SpringBean
-  private EntityQueryService queryService;
 
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;

@@ -177,11 +177,11 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return inputParameters;
   }
 
-  public boolean hasOutputParameter(boolean automatic) {
-    return !getOutputParameters(automatic).isEmpty();
+  public boolean hasOutputParameter(InstrumentParameterCaptureMethod captureMethod) {
+    return !getOutputParameters(captureMethod).isEmpty();
   }
 
-  public List<InstrumentOutputParameter> getOutputParameters(boolean automatic) {
+  public List<InstrumentOutputParameter> getOutputParameters(InstrumentParameterCaptureMethod captureMethod) {
     List<InstrumentOutputParameter> outputParameters = new ArrayList<InstrumentOutputParameter>();
 
     InstrumentType instrumentType = getInstrumentType();
@@ -189,10 +189,30 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
       if(parameter instanceof InstrumentOutputParameter) {
         InstrumentOutputParameter outputParameter = (InstrumentOutputParameter) parameter;
-        InstrumentParameterCaptureMethod captureMethod = outputParameter.getCaptureMethod();
+        InstrumentParameterCaptureMethod outputParameterCaptureMethod = outputParameter.getCaptureMethod();
 
-        if(!(captureMethod.equals(InstrumentParameterCaptureMethod.AUTOMATIC) ^ automatic)) {
+        if(outputParameterCaptureMethod.equals(captureMethod)) {
           outputParameters.add(outputParameter);
+        }
+      }
+    }
+
+    return outputParameters;
+  }
+
+  public boolean hasOutputParameter(boolean automatic) {
+    return !getOutputParameters(automatic).isEmpty();
+  }
+
+  public List<InstrumentOutputParameter> getOutputParameters(boolean automatic) {
+    List<InstrumentOutputParameter> outputParameters = new ArrayList<InstrumentOutputParameter>();
+
+    if(automatic) {
+      outputParameters = getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC);
+    } else {
+      for(InstrumentParameterCaptureMethod captureMethod : InstrumentParameterCaptureMethod.values()) {
+        if(!captureMethod.equals(InstrumentParameterCaptureMethod.AUTOMATIC)) {
+          outputParameters.addAll(getOutputParameters(captureMethod));
         }
       }
     }
@@ -283,14 +303,10 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     InstrumentRun currentRun = getInstrumentRun();
 
-    InstrumentOutputParameter template = new InstrumentOutputParameter();
-    template.setInstrumentType(currentRun.getInstrumentType());
-    template.setCaptureMethod(InstrumentParameterCaptureMethod.COMPUTED);
-
     List<InstrumentComputedOutputParameter> dependentComputedParameters = new ArrayList<InstrumentComputedOutputParameter>();
 
     // TODO quick and dirty implementation, to be checked
-    for(InstrumentOutputParameter param : getPersistenceManager().match(template)) {
+    for(InstrumentOutputParameter param : getOutputParameters(InstrumentParameterCaptureMethod.COMPUTED)) {
       InstrumentComputedOutputParameter computedParam = (InstrumentComputedOutputParameter) param;
 
       if(isReadyToCompute(currentRun, computedParam)) {
@@ -325,10 +341,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     InstrumentRun currentRun = getInstrumentRun();
 
-    InstrumentOutputParameter instrumentOutputParameter = new InstrumentOutputParameter();
-    instrumentOutputParameter.setCode(parameterCode);
-    instrumentOutputParameter.setInstrumentType(currentRun.getInstrumentType());
-    instrumentOutputParameter = getPersistenceManager().matchOne(instrumentOutputParameter);
+    InstrumentParameter instrumentOutputParameter = getParameterByCode(parameterCode);
 
     if(instrumentOutputParameter == null) {
       throw new IllegalArgumentException("No such output parameter code for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterCode);
@@ -342,10 +355,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     InstrumentRun currentRun = getInstrumentRun();
 
-    InstrumentOutputParameter instrumentOutputParameter = new InstrumentOutputParameter();
-    instrumentOutputParameter.setVendorName(parameterVendorName);
-    instrumentOutputParameter.setInstrumentType(currentRun.getInstrumentType());
-    instrumentOutputParameter = getPersistenceManager().matchOne(instrumentOutputParameter);
+    InstrumentParameter instrumentOutputParameter = getParameterByVendorName(parameterVendorName);
 
     if(instrumentOutputParameter == null) {
       throw new IllegalArgumentException("No such output parameter vendor name for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterVendorName);
@@ -359,10 +369,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     InstrumentRun currentRun = getInstrumentRun();
 
-    InstrumentInputParameter instrumentInputParameter = new InstrumentInputParameter();
-    instrumentInputParameter.setCode(parameterCode);
-    instrumentInputParameter.setInstrumentType(currentRun.getInstrumentType());
-    instrumentInputParameter = getPersistenceManager().matchOne(instrumentInputParameter);
+    InstrumentParameter instrumentInputParameter = getParameterByCode(parameterCode);
 
     if(instrumentInputParameter == null) {
       throw new IllegalArgumentException("No such input parameter code for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterCode);
@@ -376,10 +383,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     InstrumentRun currentRun = getInstrumentRun();
 
-    InterpretativeParameter instrumentInterpretativeParameter = new InterpretativeParameter();
-    instrumentInterpretativeParameter.setCode(parameterCode);
-    instrumentInterpretativeParameter.setInstrumentType(currentRun.getInstrumentType());
-    instrumentInterpretativeParameter = getPersistenceManager().matchOne(instrumentInterpretativeParameter);
+    InstrumentParameter instrumentInterpretativeParameter = getParameterByCode(parameterCode);
 
     if(instrumentInterpretativeParameter == null) {
       throw new IllegalArgumentException("No such interpretative parameter code for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterCode);

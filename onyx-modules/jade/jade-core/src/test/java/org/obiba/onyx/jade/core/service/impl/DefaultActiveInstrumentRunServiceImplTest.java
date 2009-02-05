@@ -25,6 +25,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
@@ -193,19 +194,71 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     Assert.assertEquals(3, activeInstrumentRunService.getInputParameters(false).size());
   }
 
-  public void testHasOutputParameter() {
+  public void testHasOutputParameterWithCaptureMethodArg() {
     user = persistenceManager.get(User.class, 1l);
     participant = persistenceManager.get(Participant.class, 1l);
 
     // First, test the positive case.
-    // Start an InstrumentRun with an InstrumentType that has InstrumentOutputParameters with 2 AUTOMATIC
-    // 3 NON-AUTOMATIC capture methods.
+    // Start an InstrumentRun with an InstrumentType that has 6 InstrumentOutputParameters: 2 with AUTOMATIC
+    // capture method, 3 with MANUAL capture method and 1 with COMPUTED captured method.
     InstrumentType instrumentType = persistenceManager.get(InstrumentType.class, 5l);
     startInstrumentRun(participant, instrumentType);
 
     initInstrumentServiceMock(instrumentType);
 
-    // Verify that the AUTOMATIC and NON-AUTOMATIC InstrumentOutputParameters are detected.
+    // Verify that the AUTOMATIC and MANUAL InstrumentOutputParameters are detected.
+    Assert.assertTrue(activeInstrumentRunService.hasOutputParameter(InstrumentParameterCaptureMethod.AUTOMATIC));
+    Assert.assertTrue(activeInstrumentRunService.hasOutputParameter(InstrumentParameterCaptureMethod.MANUAL));
+    Assert.assertTrue(activeInstrumentRunService.hasOutputParameter(InstrumentParameterCaptureMethod.COMPUTED));
+
+    resetMocks();
+    activeInstrumentRunService.reset();
+
+    // Next, test the negative case.
+    // Start an InstrumentRun with an InstrumentType that does not have any InstrumentOutputParameters.
+    instrumentType = persistenceManager.get(InstrumentType.class, 6l);
+    startInstrumentRun(participant, instrumentType);
+
+    initInstrumentServiceMock(instrumentType);
+
+    // Verify that no InstrumentOutputParameters are detected.
+    Assert.assertFalse(activeInstrumentRunService.hasOutputParameter(InstrumentParameterCaptureMethod.AUTOMATIC));
+    Assert.assertFalse(activeInstrumentRunService.hasOutputParameter(InstrumentParameterCaptureMethod.MANUAL));
+    Assert.assertFalse(activeInstrumentRunService.hasOutputParameter(InstrumentParameterCaptureMethod.COMPUTED));
+  }
+
+  @Test
+  @Dataset
+  public void testGetOutputParametersWithCaptureMethodArg() {
+    user = persistenceManager.get(User.class, 1l);
+    participant = persistenceManager.get(Participant.class, 1l);
+
+    // Start an InstrumentRun with an InstrumentType that has 6 InstrumentOutputParameters: 2 with AUTOMATIC
+    // capture method, 3 with MANUAL capture method and 1 with COMPUTED capture method.
+    InstrumentType instrumentType = persistenceManager.get(InstrumentType.class, 5l);
+    startInstrumentRun(participant, instrumentType);
+
+    initInstrumentServiceMock(instrumentType);
+
+    // Verify the number InstrumentOutputParameters by capture method.
+    Assert.assertEquals(2, activeInstrumentRunService.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC).size());
+    Assert.assertEquals(3, activeInstrumentRunService.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL).size());
+    Assert.assertEquals(1, activeInstrumentRunService.getOutputParameters(InstrumentParameterCaptureMethod.COMPUTED).size());
+  }
+
+  public void testHasOutputParameterWithAutomaticArg() {
+    user = persistenceManager.get(User.class, 1l);
+    participant = persistenceManager.get(Participant.class, 1l);
+
+    // First, test the positive case.
+    // Start an InstrumentRun with an InstrumentType that has 5 InstrumentOutputParameters: 2 with AUTOMATIC
+    // capture method, 3 with MANUAL capture method and 1 with COMPUTED capture method.
+    InstrumentType instrumentType = persistenceManager.get(InstrumentType.class, 5l);
+    startInstrumentRun(participant, instrumentType);
+
+    initInstrumentServiceMock(instrumentType);
+
+    // Verify that the InstrumentOutputParameters are detected.
     Assert.assertTrue(activeInstrumentRunService.hasOutputParameter(true));
     Assert.assertTrue(activeInstrumentRunService.hasOutputParameter(false));
 
@@ -226,20 +279,20 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
 
   @Test
   @Dataset
-  public void testGetOutputParameters() {
+  public void testGetOutputParametersWithAutomaticArg() {
     user = persistenceManager.get(User.class, 1l);
     participant = persistenceManager.get(Participant.class, 1l);
 
-    // Start an InstrumentRun with an InstrumentType that has InstrumentOutputParameters with 2 AUTOMATIC
-    // 3 NON-AUTOMATIC capture methods.
+    // Start an InstrumentRun with an InstrumentType that has 6 InstrumentOutputParameters: 2 with AUTOMATIC
+    // capture method, 3 with MANUAL capture method and 1 with COMPUTED capture method.
     InstrumentType instrumentType = persistenceManager.get(InstrumentType.class, 5l);
     startInstrumentRun(participant, instrumentType);
 
     initInstrumentServiceMock(instrumentType);
 
-    // Verify the number of AUTOMATIC and NON-AUTOMATIC InstrumentOutputParameters.
+    // Verify the number InstrumentOutputParameters by capture method.
     Assert.assertEquals(2, activeInstrumentRunService.getOutputParameters(true).size());
-    Assert.assertEquals(3, activeInstrumentRunService.getOutputParameters(false).size());
+    Assert.assertEquals(4, activeInstrumentRunService.getOutputParameters(false).size());
   }
 
   @Test

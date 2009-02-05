@@ -32,15 +32,16 @@
   <instrument_parameter id="19" code="output_manual_1" data_type="INTEGER" instrument_type_id="5" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
   <instrument_parameter id="20" code="output_manual_2" data_type="INTEGER" instrument_type_id="5" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
   <instrument_parameter id="21" code="output_manual_3" data_type="INTEGER" instrument_type_id="5" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
-  <instrument_parameter id="22" code="output_warn_1" data_type="INTEGER" instrument_type_id="7" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
-  <instrument_parameter id="23" code="output_error_1" data_type="INTEGER" instrument_type_id="7" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
-  <instrument_parameter id="24" code="output_error_2" data_type="INTEGER" instrument_type_id="8" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
-  <instrument_parameter id="25" code="output_error_3" data_type="INTEGER" instrument_type_id="8" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
+  <instrument_parameter id="22" code="output_computed_1" data_type="INTEGER" instrument_type_id="5" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="COMPUTED" />
+  <instrument_parameter id="23" code="output_warn_1" data_type="INTEGER" instrument_type_id="7" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
+  <instrument_parameter id="24" code="output_error_1" data_type="INTEGER" instrument_type_id="7" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
+  <instrument_parameter id="25" code="output_error_2" data_type="INTEGER" instrument_type_id="8" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
+  <instrument_parameter id="26" code="output_error_3" data_type="INTEGER" instrument_type_id="8" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
   
-  <integrity_check id="1" integrity_check_type="RangeCheck" type="WARNING" integer_min_value_female="100" integer_max_value_female="200" integer_min_value_male="100" integer_max_value_male="200" instrument_parameter_id="22" /> 
-  <integrity_check id="2" integrity_check_type="RangeCheck" type="ERROR" integer_min_value_female="100" integer_max_value_female="200" integer_min_value_male="100" integer_max_value_male="200" instrument_parameter_id="23" />
-  <integrity_check id="3" integrity_check_type="RangeCheck" type="ERROR" integer_min_value_female="100" integer_max_value_female="200" integer_min_value_male="100" integer_max_value_male="200" instrument_parameter_id="24" /> 
-  <integrity_check id="4" integrity_check_type="RangeCheck" type="ERROR" integer_min_value_female="100" integer_max_value_female="200" integer_min_value_male="100" integer_max_value_male="200" instrument_parameter_id="25" />
+  <integrity_check id="1" integrity_check_type="RangeCheck" type="WARNING" integer_min_value_female="100" integer_max_value_female="200" integer_min_value_male="100" integer_max_value_male="200" instrument_parameter_id="23" /> 
+  <integrity_check id="2" integrity_check_type="RangeCheck" type="ERROR" integer_min_value_female="100" integer_max_value_female="200" integer_min_value_male="100" integer_max_value_male="200" instrument_parameter_id="24" />
+  <integrity_check id="3" integrity_check_type="RangeCheck" type="ERROR" integer_min_value_female="100" integer_max_value_female="200" integer_min_value_male="100" integer_max_value_male="200" instrument_parameter_id="25" /> 
+  <integrity_check id="4" integrity_check_type="RangeCheck" type="ERROR" integer_min_value_female="100" integer_max_value_female="200" integer_min_value_male="100" integer_max_value_male="200" instrument_parameter_id="26" />
     
   <instrument_run />
   
