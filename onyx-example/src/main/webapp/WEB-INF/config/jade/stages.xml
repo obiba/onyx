@@ -1,5 +1,14 @@
 <stages>
   <stage>
+    <name>CognitiveTest</name>
+    <module>jade</module>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>Consent</stageName>
+      <variablePath>/Onyx/Consent/accepted</variablePath>
+    </stageDependencyCondition>
+  </stage>
+  
+  <stage>
     <name>StandingHeight</name>
     <module>jade</module>
     <stageDependencyCondition class="multipleCondition">

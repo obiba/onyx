@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<instrumentType>
+
+  <name>CognitiveTest</name>
+  
+  <instruments>
+    <instrument>
+      <name>NoddleTest</name>
+      <vendor>Cardiff University</vendor>
+      <model>vC1.3t</model>
+      <status>ACTIVE</status>
+      <serialNumber></serialNumber>
+      <barcode></barcode>
+    </instrument>
+  </instruments>
+
+  <instrumentParameters>
+    <output>
+      <vendorName>RESULT_FILE</vendorName>
+      <code>RES_RESULT_FILE</code>
+      <dataType>DATA</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <measurementUnit></measurementUnit>
+    </output>
+  </instrumentParameters>
+  
+</instrumentType>

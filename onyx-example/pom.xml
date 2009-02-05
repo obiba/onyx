@@ -100,6 +100,14 @@
       <type>zip</type>
       <scope>provided</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>org.obiba.jade.instrument</groupId>
+      <artifactId>interface-noddletest</artifactId>
+      <version>${project.version}</version>
+      <type>zip</type>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -165,6 +173,14 @@
                     ${project.build.directory}/${project.build.finalName}/instruments/Spirometry
                   </outputDirectory>
                 </artifactItem>
+                <artifactItem>
+                  <groupId>org.obiba.jade.instrument</groupId>
+                  <artifactId>interface-noddletest</artifactId>
+                  <type>zip</type>
+                  <outputDirectory>
+                    ${project.build.directory}/${project.build.finalName}/instruments/CognitiveTest
+                  </outputDirectory>
+                </artifactItem>                
               </artifactItems>
             </configuration>
           </execution>
