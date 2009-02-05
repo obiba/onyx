@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.wicket.wizard;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -19,10 +18,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
-import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
-import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheckType;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.instrument.InstrumentOutputParameterPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -78,7 +73,7 @@ public class OutputParametersStep extends WizardStepPanel {
     instrumentOutputParameterPanel.saveOutputInstrumentRunValues();
     activeInstrumentRunService.computeOutputParameters();
 
-    List<InstrumentOutputParameter> paramsWithWarnings = getParametersWithWarnings();
+    List<InstrumentOutputParameter> paramsWithWarnings = activeInstrumentRunService.getParametersWithWarning();
 
     if(!paramsWithWarnings.isEmpty()) {
       warn(getString("ThereAreWarnings"));
@@ -87,39 +82,5 @@ public class OutputParametersStep extends WizardStepPanel {
     } else {
       setNextStep(conclusionStep);
     }
-  }
-
-  private List<InstrumentOutputParameter> getParametersWithWarnings() {
-    List<InstrumentOutputParameter> paramsWithWarnings = new ArrayList<InstrumentOutputParameter>();
-
-    // Query the output parameters.
-    InstrumentOutputParameter template = new InstrumentOutputParameter();
-    template.setInstrumentType(activeInstrumentRunService.getInstrumentType());
-    template.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
-
-    List<InstrumentOutputParameter> outputParams = queryService.match(template);
-
-    for(InstrumentOutputParameter param : outputParams) {
-      InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
-
-      // Don't check parameters that haven't been assigned a value.
-      if(runValue == null || runValue.getData() == null || runValue.getData().getValue() == null) {
-        continue;
-      }
-
-      for(IntegrityCheck check : param.getIntegrityChecks()) {
-        // Skip non-warning checks.
-        if(!check.getType().equals(IntegrityCheckType.WARNING)) {
-          continue;
-        }
-
-        if(!check.checkParameterValue(runValue.getData(), null, activeInstrumentRunService)) {
-          paramsWithWarnings.add(param);
-          break;
-        }
-      }
-    }
-
-    return paramsWithWarnings;
   }
 }

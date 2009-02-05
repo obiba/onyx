@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
-import org.obiba.onyx.core.domain.contraindication.Contraindication.Type;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
@@ -28,12 +27,16 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
+import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.domain.instrument.UnitParameterValueConverter;
+import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
+import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheckType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
@@ -45,9 +48,17 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
   private static final Logger log = LoggerFactory.getLogger(DefaultActiveInstrumentRunServiceImpl.class);
 
+  private InstrumentService instrumentService;
+
   private UserSessionService userSessionService;
 
+  private InputDataSourceVisitor inputDataSourceVisitor;
+
   private Serializable currentRunId = null;
+
+  //
+  // ActiveInstrumentRunService Methods
+  //
 
   public InstrumentRun start(Participant participant, InstrumentType instrumentType) {
     if(participant == null) throw new IllegalArgumentException("Participant cannot be null.");
@@ -65,16 +76,8 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return currentRun;
   }
 
-  public void cancel() {
-    end(InstrumentRunStatus.CANCELED);
-  }
-
-  public void fail() {
-    end(InstrumentRunStatus.IN_ERROR);
-  }
-
-  public void complete() {
-    end(InstrumentRunStatus.COMPLETED);
+  public void reset() {
+    currentRunId = null;
   }
 
   public void end() {
@@ -87,16 +90,161 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     getPersistenceManager().save(currentRun);
   }
 
-  private void end(InstrumentRunStatus status) {
-    if(status == null) throw new IllegalArgumentException("status cannot be null");
-    if(currentRunId == null) return;
+  public Participant getParticipant() {
+    if(currentRunId == null) return null;
 
-    InstrumentRun currentRun = getInstrumentRun();
-    currentRun.setTimeEnd(new Date());
-    currentRun.setStatus(status);
+    return getInstrumentRun().getParticipant();
+  }
 
-    log.debug("InstrumentRun id={} is ending with status {}", getInstrumentRun().getId(), status);
-    getPersistenceManager().save(currentRun);
+  public InstrumentType getInstrumentType() {
+    // NOTE: InstrumentRun will be modified later to store the name of the instrument type
+    // rather than the instrument type itself. At that point, this code should be modified to
+    // to look up instrument type name directly (not via the instrument type which we are looking
+    // for!).
+    String instrumentTypeName = getInstrumentRun().getInstrumentType().getName();
+
+    return instrumentService.getInstrumentType(instrumentTypeName);
+  }
+
+  public void setInstrument(Instrument instrument) {
+    getInstrumentRun().setInstrument(instrument);
+  }
+
+  public Instrument getInstrument() {
+    return getInstrumentRun().getInstrument();
+  }
+
+  public InstrumentParameter getParameterByCode(String code) {
+    for(InstrumentParameter parameter : getInstrumentType().getInstrumentParameters()) {
+      if(parameter.getCode().equals(code)) {
+        return parameter;
+      }
+    }
+    return null;
+  }
+
+  public InstrumentParameter getParameterByVendorName(String vendorName) {
+    if(vendorName == null) throw new IllegalArgumentException("name cannot be null.");
+    for(InstrumentParameter parameter : getInstrumentType().getInstrumentParameters()) {
+      if(vendorName.equals(parameter.getVendorName()) == true) {
+        return parameter;
+      }
+    }
+    return null;
+  }
+
+  public boolean hasInterpretativeParameter(ParticipantInteractionType type) {
+    return !getInterpretativeParameters(type).isEmpty();
+  }
+
+  public List<InterpretativeParameter> getInterpretativeParameters(ParticipantInteractionType type) {
+    List<InterpretativeParameter> interpretativeParameters = new ArrayList<InterpretativeParameter>();
+
+    InstrumentType instrumentType = getInstrumentType();
+
+    for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
+      if(parameter instanceof InterpretativeParameter) {
+        InterpretativeParameter interpretativeParameter = (InterpretativeParameter) parameter;
+
+        if(interpretativeParameter.getType().equals(type)) {
+          interpretativeParameters.add(interpretativeParameter);
+        }
+      }
+    }
+
+    return interpretativeParameters;
+  }
+
+  public boolean hasInputParameter(boolean readOnly) {
+    return !getInputParameters(readOnly).isEmpty();
+  }
+
+  public List<InstrumentInputParameter> getInputParameters(boolean readOnly) {
+    List<InstrumentInputParameter> inputParameters = new ArrayList<InstrumentInputParameter>();
+
+    InstrumentType instrumentType = getInstrumentType();
+
+    for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
+      if(parameter instanceof InstrumentInputParameter) {
+        InstrumentInputParameter inputParameter = (InstrumentInputParameter) parameter;
+
+        if(inputParameter.getInputSource().isReadOnly() == readOnly) {
+          inputParameters.add(inputParameter);
+        }
+      }
+    }
+
+    return inputParameters;
+  }
+
+  public boolean hasOutputParameter(boolean automatic) {
+    return !getOutputParameters(automatic).isEmpty();
+  }
+
+  public List<InstrumentOutputParameter> getOutputParameters(boolean automatic) {
+    List<InstrumentOutputParameter> outputParameters = new ArrayList<InstrumentOutputParameter>();
+
+    InstrumentType instrumentType = getInstrumentType();
+
+    for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
+      if(parameter instanceof InstrumentOutputParameter) {
+        InstrumentOutputParameter outputParameter = (InstrumentOutputParameter) parameter;
+        InstrumentParameterCaptureMethod captureMethod = outputParameter.getCaptureMethod();
+
+        if(!(captureMethod.equals(InstrumentParameterCaptureMethod.AUTOMATIC) ^ automatic)) {
+          outputParameters.add(outputParameter);
+        }
+      }
+    }
+
+    return outputParameters;
+  }
+
+  public boolean hasParameterWithWarning() {
+    return !getParametersWithWarning().isEmpty();
+  }
+
+  public List<InstrumentOutputParameter> getParametersWithWarning() {
+    List<InstrumentOutputParameter> paramsWithWarnings = new ArrayList<InstrumentOutputParameter>();
+
+    InstrumentType instrumentType = getInstrumentType();
+
+    for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
+      if(parameter instanceof InstrumentOutputParameter) {
+        InstrumentOutputParameter outputParameter = (InstrumentOutputParameter) parameter;
+
+        // Don't include parameters with a non-MANUAL capture method.
+        if(!outputParameter.getCaptureMethod().equals(InstrumentParameterCaptureMethod.MANUAL)) {
+          continue;
+        }
+
+        InstrumentRunValue runValue = getInstrumentRunValue(outputParameter);
+
+        // Don't include parameters that haven't been assigned a value.
+        if(runValue == null || runValue.getData() == null || runValue.getData().getValue() == null) {
+          continue;
+        }
+
+        for(IntegrityCheck check : outputParameter.getIntegrityChecks()) {
+          // Skip non-warning checks.
+          if(!check.getType().equals(IntegrityCheckType.WARNING)) {
+            continue;
+          }
+
+          if(!check.checkParameterValue(runValue.getData(), null, this)) {
+            paramsWithWarnings.add(outputParameter);
+          }
+        }
+      }
+    }
+
+    return paramsWithWarnings;
+  }
+
+  public void setInstrumentRun(InstrumentRun instrumentRun) {
+    if(instrumentRun != null) {
+      currentRunId = instrumentRun.getId();
+    }
   }
 
   public InstrumentRun getInstrumentRun() {
@@ -106,19 +254,20 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return getPersistenceManager().get(InstrumentRun.class, currentRunId);
   }
 
-  public Participant getParticipant() {
-    if(currentRunId == null) return null;
-
-    return getInstrumentRun().getParticipant();
-  }
-
-  public void reset() {
-    currentRunId = null;
-  }
-
   public void persistRun() {
     log.debug("ActiveInstrumentRunService is persisting InstrumentRun");
     getPersistenceManager().save(getInstrumentRun());
+  }
+
+  public void setInstrumentRunStatus(InstrumentRunStatus status) {
+    InstrumentRun currentRun = getInstrumentRun();
+
+    currentRun.setStatus(status);
+    getPersistenceManager().save(currentRun);
+  }
+
+  public InstrumentRunStatus getInstrumentRunStatus() {
+    return getInstrumentRun().getStatus();
   }
 
   public void update(InstrumentRunValue currentRunValue) {
@@ -169,6 +318,172 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     if(!dependentComputedParameters.isEmpty()) {
       log.warn("Computed Parameters depend on others not ready to calculate. Instrument: {}", currentRun.getInstrumentType().getName());
     }
+  }
+
+  public InstrumentRunValue getOutputInstrumentRunValue(String parameterCode) {
+    if(currentRunId == null) return null;
+
+    InstrumentRun currentRun = getInstrumentRun();
+
+    InstrumentOutputParameter instrumentOutputParameter = new InstrumentOutputParameter();
+    instrumentOutputParameter.setCode(parameterCode);
+    instrumentOutputParameter.setInstrumentType(currentRun.getInstrumentType());
+    instrumentOutputParameter = getPersistenceManager().matchOne(instrumentOutputParameter);
+
+    if(instrumentOutputParameter == null) {
+      throw new IllegalArgumentException("No such output parameter code for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterCode);
+    }
+
+    return getInstrumentRunValue(instrumentOutputParameter);
+  }
+
+  public InstrumentRunValue getOutputInstrumentRunValueByVendorName(String parameterVendorName) {
+    if(currentRunId == null) return null;
+
+    InstrumentRun currentRun = getInstrumentRun();
+
+    InstrumentOutputParameter instrumentOutputParameter = new InstrumentOutputParameter();
+    instrumentOutputParameter.setVendorName(parameterVendorName);
+    instrumentOutputParameter.setInstrumentType(currentRun.getInstrumentType());
+    instrumentOutputParameter = getPersistenceManager().matchOne(instrumentOutputParameter);
+
+    if(instrumentOutputParameter == null) {
+      throw new IllegalArgumentException("No such output parameter vendor name for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterVendorName);
+    }
+
+    return getInstrumentRunValue(instrumentOutputParameter);
+  }
+
+  public InstrumentRunValue getInputInstrumentRunValue(String parameterCode) {
+    if(currentRunId == null) return null;
+
+    InstrumentRun currentRun = getInstrumentRun();
+
+    InstrumentInputParameter instrumentInputParameter = new InstrumentInputParameter();
+    instrumentInputParameter.setCode(parameterCode);
+    instrumentInputParameter.setInstrumentType(currentRun.getInstrumentType());
+    instrumentInputParameter = getPersistenceManager().matchOne(instrumentInputParameter);
+
+    if(instrumentInputParameter == null) {
+      throw new IllegalArgumentException("No such input parameter code for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterCode);
+    }
+
+    return getInstrumentRunValue(instrumentInputParameter);
+  }
+
+  public InstrumentRunValue getInterpretativeInstrumentRunValue(String parameterCode) {
+    if(currentRunId == null) return null;
+
+    InstrumentRun currentRun = getInstrumentRun();
+
+    InterpretativeParameter instrumentInterpretativeParameter = new InterpretativeParameter();
+    instrumentInterpretativeParameter.setCode(parameterCode);
+    instrumentInterpretativeParameter.setInstrumentType(currentRun.getInstrumentType());
+    instrumentInterpretativeParameter = getPersistenceManager().matchOne(instrumentInterpretativeParameter);
+
+    if(instrumentInterpretativeParameter == null) {
+      throw new IllegalArgumentException("No such interpretative parameter code for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterCode);
+    }
+
+    return getInstrumentRunValue(instrumentInterpretativeParameter);
+  }
+
+  public InstrumentRunValue getInstrumentRunValue(InstrumentParameter parameter) {
+    if(parameter == null) throw new IllegalArgumentException("Cannot retrieve a run value from a null instrument parameter.");
+    InstrumentRun instrumentRun = getInstrumentRun();
+    if(instrumentRun == null) throw new IllegalArgumentException("Cannot retrieve a run value from a null instrument run.");
+
+    InstrumentRunValue valueTemplate = new InstrumentRunValue();
+    valueTemplate.setInstrumentParameter(parameter);
+    valueTemplate.setInstrumentRun(instrumentRun);
+
+    InstrumentRunValue parameterValue = getPersistenceManager().matchOne(valueTemplate);
+
+    if(parameterValue == null) {
+      valueTemplate.setCaptureMethod(parameter.getCaptureMethod());
+      parameterValue = getPersistenceManager().save(valueTemplate);
+    }
+
+    return parameterValue;
+  }
+
+  public String updateReadOnlyInputParameterRunValue() {
+
+    // get the data from not read-only input parameters sources
+    for(InstrumentInputParameter param : getInputParameters(true)) {
+      final InstrumentRunValue runValue = getInstrumentRunValue(param);
+      Data data = inputDataSourceVisitor.getData(getParticipant(), param);
+      if(data != null) {
+        if(!data.getType().equals(runValue.getDataType())) {
+          UnitParameterValueConverter converter = new UnitParameterValueConverter();
+          converter.convert(runValue, data);
+        } else {
+          runValue.setData(data);
+        }
+        update(runValue);
+      } else {
+        log.error("The value for instrument parameter {} comes from an InputSource, but this source has not produced a value. Please correct stage dependencies or your instrument-descriptor.xml file for this instrument.", param.getCode());
+        return ("An unexpected problem occurred while setting up this instrument's run. Please contact support.");
+      }
+    }
+    return null;
+
+  }
+
+  //
+  // IContraindicatable Methods
+  //
+
+  public List<Contraindication> getContraindications(Contraindication.Type type) {
+    List<Contraindication> contraindications = new ArrayList<Contraindication>();
+
+    for(Contraindication contraindication : getInstrumentType().getContraindications()) {
+      if(contraindication.getType().equals(type)) {
+        contraindications.add(contraindication);
+      }
+    }
+
+    return contraindications;
+  }
+
+  public boolean hasContraindications(Contraindication.Type type) {
+    return !getContraindications(type).isEmpty();
+  }
+
+  public Contraindication getContraindication() {
+    return getInstrumentRun().getContraindication();
+  }
+
+  public boolean isContraindicated() {
+    return getInstrumentRun().isContraindicated();
+  }
+
+  public void setContraindication(Contraindication contraindication) {
+    getInstrumentRun().setContraindication(contraindication);
+  }
+
+  public void setOtherContraindication(String other) {
+    getInstrumentRun().setOtherContraindication(other);
+  }
+
+  public String getOtherContraindication() {
+    return getInstrumentRun().getOtherContraindication();
+  }
+
+  //
+  // Methods
+  //
+
+  public void setInstrumentService(InstrumentService instrumentService) {
+    this.instrumentService = instrumentService;
+  }
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
+  }
+
+  public void setInputDataSourceVisitor(InputDataSourceVisitor inputDataSourceVisitor) {
+    this.inputDataSourceVisitor = inputDataSourceVisitor;
   }
 
   /**
@@ -339,175 +654,5 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     }
 
     return computedRunValue;
-  }
-
-  public InstrumentRunValue getOutputInstrumentRunValue(String parameterCode) {
-    if(currentRunId == null) return null;
-
-    InstrumentRun currentRun = getInstrumentRun();
-
-    InstrumentOutputParameter instrumentOutputParameter = new InstrumentOutputParameter();
-    instrumentOutputParameter.setCode(parameterCode);
-    instrumentOutputParameter.setInstrumentType(currentRun.getInstrumentType());
-    instrumentOutputParameter = getPersistenceManager().matchOne(instrumentOutputParameter);
-
-    if(instrumentOutputParameter == null) {
-      throw new IllegalArgumentException("No such output parameter code for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterCode);
-    }
-
-    return getInstrumentRunValue(instrumentOutputParameter);
-  }
-
-  public InstrumentRunValue getOutputInstrumentRunValueByVendorName(String parameterVendorName) {
-    if(currentRunId == null) return null;
-
-    InstrumentRun currentRun = getInstrumentRun();
-
-    InstrumentOutputParameter instrumentOutputParameter = new InstrumentOutputParameter();
-    instrumentOutputParameter.setVendorName(parameterVendorName);
-    instrumentOutputParameter.setInstrumentType(currentRun.getInstrumentType());
-    instrumentOutputParameter = getPersistenceManager().matchOne(instrumentOutputParameter);
-
-    if(instrumentOutputParameter == null) {
-      throw new IllegalArgumentException("No such output parameter vendor name for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterVendorName);
-    }
-
-    return getInstrumentRunValue(instrumentOutputParameter);
-  }
-
-  public InstrumentRunValue getInputInstrumentRunValue(String parameterCode) {
-    if(currentRunId == null) return null;
-
-    InstrumentRun currentRun = getInstrumentRun();
-
-    InstrumentInputParameter instrumentInputParameter = new InstrumentInputParameter();
-    instrumentInputParameter.setCode(parameterCode);
-    instrumentInputParameter.setInstrumentType(currentRun.getInstrumentType());
-    instrumentInputParameter = getPersistenceManager().matchOne(instrumentInputParameter);
-
-    if(instrumentInputParameter == null) {
-      throw new IllegalArgumentException("No such input parameter code for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterCode);
-    }
-
-    return getInstrumentRunValue(instrumentInputParameter);
-  }
-
-  public InstrumentRunValue getInterpretativeInstrumentRunValue(String parameterCode) {
-    if(currentRunId == null) return null;
-
-    InstrumentRun currentRun = getInstrumentRun();
-
-    InterpretativeParameter instrumentInterpretativeParameter = new InterpretativeParameter();
-    instrumentInterpretativeParameter.setCode(parameterCode);
-    instrumentInterpretativeParameter.setInstrumentType(currentRun.getInstrumentType());
-    instrumentInterpretativeParameter = getPersistenceManager().matchOne(instrumentInterpretativeParameter);
-
-    if(instrumentInterpretativeParameter == null) {
-      throw new IllegalArgumentException("No such interpretative parameter code for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterCode);
-    }
-
-    return getInstrumentRunValue(instrumentInterpretativeParameter);
-  }
-
-  public InstrumentRunValue getInstrumentRunValue(InstrumentParameter parameter) {
-    if(parameter == null) throw new IllegalArgumentException("Cannot retrieve a run value from a null instrument parameter.");
-    InstrumentRun instrumentRun = getInstrumentRun();
-    if(instrumentRun == null) throw new IllegalArgumentException("Cannot retrieve a run value from a null instrument run.");
-
-    InstrumentRunValue valueTemplate = new InstrumentRunValue();
-    valueTemplate.setInstrumentParameter(parameter);
-    valueTemplate.setInstrumentRun(instrumentRun);
-
-    InstrumentRunValue parameterValue = getPersistenceManager().matchOne(valueTemplate);
-
-    if(parameterValue == null) {
-      valueTemplate.setCaptureMethod(parameter.getCaptureMethod());
-      parameterValue = getPersistenceManager().save(valueTemplate);
-    }
-
-    return parameterValue;
-  }
-
-  public InstrumentParameter getParameterByCode(String code) {
-    for(InstrumentParameter parameter : getInstrumentType().getInstrumentParameters()) {
-      if(parameter.getCode().equals(code)) {
-        return parameter;
-      }
-    }
-    return null;
-  }
-
-  public InstrumentParameter getParameterByVendorName(String vendorName) {
-    if(vendorName == null) throw new IllegalArgumentException("name cannot be null.");
-    for(InstrumentParameter parameter : getInstrumentType().getInstrumentParameters()) {
-      if(vendorName.equals(parameter.getVendorName()) == true) {
-        return parameter;
-      }
-    }
-    return null;
-  }
-
-  public InstrumentType getInstrumentType() {
-    return getInstrumentRun().getInstrumentType();
-  }
-
-  public void setInstrument(Instrument instrument) {
-    getInstrumentRun().setInstrument(instrument);
-  }
-
-  public Contraindication getContraindication() {
-    return getInstrumentRun().getContraindication();
-  }
-
-  public boolean hasContraindications(Type type) {
-    return getInstrumentRun().hasContraindications(type);
-  }
-
-  public InstrumentRunStatus getInstrumentRunStatus() {
-    return getInstrumentRun().getStatus();
-  }
-
-  public void setInstrumentRunStatus(InstrumentRunStatus status) {
-    InstrumentRun currentRun = getInstrumentRun();
-
-    currentRun.setStatus(status);
-    getPersistenceManager().save(currentRun);
-  }
-
-  public void setUserSessionService(UserSessionService userSessionService) {
-    this.userSessionService = userSessionService;
-  }
-
-  public Instrument getInstrument() {
-    return getInstrumentRun().getInstrument();
-  }
-
-  public void setCurrentInstrumentRun(InstrumentRun instrumentRun) {
-    if(instrumentRun != null) {
-      currentRunId = instrumentRun.getId();
-    }
-  }
-
-  public String updateReadOnlyInputParameterRunValue(InputDataSourceVisitor inputDataSourceVisitor, Participant participant, List<InstrumentInputParameter> instrumentInputParameters) {
-
-    // get the data from not read-only input parameters sources
-    for(InstrumentInputParameter param : instrumentInputParameters) {
-      final InstrumentRunValue runValue = getInstrumentRunValue(param);
-      Data data = inputDataSourceVisitor.getData(participant, param);
-      if(data != null) {
-        if(!data.getType().equals(runValue.getDataType())) {
-          UnitParameterValueConverter converter = new UnitParameterValueConverter();
-          converter.convert(runValue, data);
-        } else {
-          runValue.setData(data);
-        }
-        update(runValue);
-      } else {
-        log.error("The value for instrument parameter {} comes from an InputSource, but this source has not produced a value. Please correct stage dependencies or your instrument-descriptor.xml file for this instrument.", param.getCode());
-        return ("An unexpected problem occurred while setting up this instrument's run. Please contact support.");
-      }
-    }
-    return null;
-
   }
 }

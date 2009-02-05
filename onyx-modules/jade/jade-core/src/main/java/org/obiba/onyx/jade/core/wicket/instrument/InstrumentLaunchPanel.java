@@ -85,7 +85,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     });
 
-    String errMessage = activeInstrumentRunService.updateReadOnlyInputParameterRunValue(inputDataSourceVisitor, activeInterviewService.getParticipant(), instrumentService.getInstrumentInputParameter(instrumentType, true));
+    String errMessage = activeInstrumentRunService.updateReadOnlyInputParameterRunValue();
     if(errMessage != null) error(errMessage);
 
     RepeatingView repeat = new RepeatingView("repeat");

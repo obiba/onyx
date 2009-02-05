@@ -76,7 +76,7 @@ public class InstrumentOutputParameterPanel extends Panel {
       add(new EmptyPanel("manualOutputs"));
     } else {
 
-      String errMessage = activeInstrumentRunService.updateReadOnlyInputParameterRunValue(inputDataSourceVisitor, activeInstrumentRunService.getParticipant(), instrumentService.getInstrumentInputParameter(activeInstrumentRunService.getInstrumentType(), true));
+      String errMessage = activeInstrumentRunService.updateReadOnlyInputParameterRunValue();
       if(errMessage != null) error(errMessage);
 
       RepeatingView repeat = new RepeatingView("repeat");

@@ -14,6 +14,7 @@ import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 
+import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.FixedSource;
@@ -33,7 +34,7 @@ import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InputDataSourceVisitorImpl implements InputDataSourceVisitor {
+public class InputDataSourceVisitorImpl extends PersistenceManagerAwareService implements InputDataSourceVisitor {
 
   private static final Logger log = LoggerFactory.getLogger(InputDataSourceVisitorImpl.class);
 
@@ -136,7 +137,15 @@ public class InputDataSourceVisitorImpl implements InputDataSourceVisitor {
       if(runValue != null) {
         // Unit conversion when necessary
         if(runValue.getInstrumentParameter().getMeasurementUnit() != null && parameter.getMeasurementUnit() != null && !parameter.getMeasurementUnit().equals(runValue.getInstrumentParameter().getMeasurementUnit())) {
-          InstrumentRunValue targetRunValue = activeInstrumentRunService.getInputInstrumentRunValue(parameter.getCode());
+          InstrumentRunValue targetRunValue = instrumentRunService.findInstrumentRunValue(participant, type, parameter.getCode());// activeInstrumentRunService.getInputInstrumentRunValue(parameter.getCode());
+          if(targetRunValue == null) {
+            targetRunValue = new InstrumentRunValue();
+            targetRunValue.setInstrumentParameter(parameter);
+            targetRunValue.setInstrumentRun(instrumentRunService.getLastInstrumentRun(participant, type));
+            targetRunValue.setCaptureMethod(parameter.getCaptureMethod());
+            targetRunValue = getPersistenceManager().save(targetRunValue);
+          }
+
           UnitParameterValueConverter converter = new UnitParameterValueConverter();
           converter.convert(targetRunValue, runValue);
           data = targetRunValue.getData();

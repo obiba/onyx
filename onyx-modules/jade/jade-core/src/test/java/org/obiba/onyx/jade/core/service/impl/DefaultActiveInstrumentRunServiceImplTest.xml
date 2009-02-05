@@ -1,0 +1,49 @@
+<dataset>
+  <role id="1" name="SYSTEM_ADMINISTRATOR"/>
+  <user id="1" last_name="Administrator" first_name="ONYX" login="administrator" password="password" email="test@obiba.org" status="ACTIVE" deleted="false"/>
+  <user_roles user_id="1" role_id="1"/>
+  
+  <participant id="1" barcode="1" last_name="Dupont" first_name="Laura" gender="FEMALE" birth_date="1979-09-04 00:00:00"/>
+   
+  <instrument_type id="1" name="TYPE_INTERPRETATIVE_PARAMS" description="" />
+  <instrument_type id="2" name="TYPE_NO_INTERPRETATIVE_PARAMS" description="" />
+  <instrument_type id="3" name="TYPE_INPUT_PARAMS" description="" />
+  <instrument_type id="4" name="TYPE_NO_INPUT_PARAMS" description="" />
+  <instrument_type id="5" name="TYPE_OUTPUT_PARAMS" description="" />
+  <instrument_type id="6" name="TYPE_NO_OUTPUT_PARAMS" description="" />
+  <instrument_type id="7" name="TYPE_OUTPUT_PARAMS_WITH_WARNING_AND_ERROR" description="" />
+  <instrument_type id="8" name="TYPE_OUTPUT_PARAMS_WITH_ERRORS" description="" />
+
+  <input_source id="1" input_source_type="OutputParameterSource" instrument_type="TYPE_INPUT_PARAMS" parameter_name="input_readOnly_1" /> <!-- READONLY --> 
+  <input_source id="2" input_source_type="OperatorSource" /> <!-- NOT READONLY -->
+       
+  <instrument_parameter id="7" code="interp_asked_1" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InterpretativeParameter" type="ASKED" input_source_id="1" capture_method="AUTOMATIC" />
+  <instrument_parameter id="8" code="interp_asked_2" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InterpretativeParameter" type="ASKED" input_source_id="1" capture_method="AUTOMATIC" />
+  <instrument_parameter id="9" code="interp_observed_1" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InterpretativeParameter" type="OBSERVED" input_source_id="1" capture_method="AUTOMATIC" />
+  <instrument_parameter id="10" code="interp_observed_2" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InterpretativeParameter" type="OBSERVED" input_source_id="1" capture_method="AUTOMATIC" />
+  <instrument_parameter id="11" code="interp_observed_3" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InterpretativeParameter" type="OBSERVED" input_source_id="1" capture_method="AUTOMATIC" />    
+  <instrument_parameter id="12" code="input_readOnly_1" data_type="INTEGER" instrument_type_id="3" instrument_parameter_type="InstrumentInputParameter" input_source_id="1" capture_method="AUTOMATIC" />
+  <instrument_parameter id="13" code="input_readOnly_2" data_type="INTEGER" instrument_type_id="3" instrument_parameter_type="InstrumentInputParameter" input_source_id="1" capture_method="AUTOMATIC" />
+  <instrument_parameter id="14" code="input_notReadOnly_1" data_type="INTEGER" instrument_type_id="3" instrument_parameter_type="InstrumentInputParameter" input_source_id="2" capture_method="AUTOMATIC" />
+  <instrument_parameter id="15" code="input_notReadOnly_2" data_type="INTEGER" instrument_type_id="3" instrument_parameter_type="InstrumentInputParameter" input_source_id="2" capture_method="AUTOMATIC" />
+  <instrument_parameter id="16" code="input_notReadOnly_3" data_type="INTEGER" instrument_type_id="3" instrument_parameter_type="InstrumentInputParameter" input_source_id="2" capture_method="AUTOMATIC" />    
+  <instrument_parameter id="17" code="output_auto_1" data_type="INTEGER" instrument_type_id="5" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="AUTOMATIC" />
+  <instrument_parameter id="18" code="output_auto_2" data_type="INTEGER" instrument_type_id="5" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="AUTOMATIC" />
+  <instrument_parameter id="19" code="output_manual_1" data_type="INTEGER" instrument_type_id="5" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
+  <instrument_parameter id="20" code="output_manual_2" data_type="INTEGER" instrument_type_id="5" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
+  <instrument_parameter id="21" code="output_manual_3" data_type="INTEGER" instrument_type_id="5" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
+  <instrument_parameter id="22" code="output_warn_1" data_type="INTEGER" instrument_type_id="7" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
+  <instrument_parameter id="23" code="output_error_1" data_type="INTEGER" instrument_type_id="7" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
+  <instrument_parameter id="24" code="output_error_2" data_type="INTEGER" instrument_type_id="8" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
+  <instrument_parameter id="25" code="output_error_3" data_type="INTEGER" instrument_type_id="8" instrument_parameter_type="InstrumentOutputParameter" input_source_id="1" capture_method="MANUAL" />
+  
+  <integrity_check id="1" integrity_check_type="RangeCheck" type="WARNING" integer_min_value_female="100" integer_max_value_female="200" integer_min_value_male="100" integer_max_value_male="200" instrument_parameter_id="22" /> 
+  <integrity_check id="2" integrity_check_type="RangeCheck" type="ERROR" integer_min_value_female="100" integer_max_value_female="200" integer_min_value_male="100" integer_max_value_male="200" instrument_parameter_id="23" />
+  <integrity_check id="3" integrity_check_type="RangeCheck" type="ERROR" integer_min_value_female="100" integer_max_value_female="200" integer_min_value_male="100" integer_max_value_male="200" instrument_parameter_id="24" /> 
+  <integrity_check id="4" integrity_check_type="RangeCheck" type="ERROR" integer_min_value_female="100" integer_max_value_female="200" integer_min_value_male="100" integer_max_value_male="200" instrument_parameter_id="25" />
+    
+  <instrument_run />
+  
+  <instrument_run_value />
+  
+</dataset>

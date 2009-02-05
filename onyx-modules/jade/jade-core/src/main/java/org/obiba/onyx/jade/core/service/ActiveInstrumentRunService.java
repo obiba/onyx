@@ -11,31 +11,104 @@ package org.obiba.onyx.jade.core.service;
 
 import java.util.List;
 
-import org.obiba.onyx.core.domain.contraindication.Contraindication;
+import org.obiba.onyx.core.domain.contraindication.IContraindicatable;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
+import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 
-public interface ActiveInstrumentRunService {
+public interface ActiveInstrumentRunService extends IContraindicatable {
 
   /**
-   * Returns true if the the underlying instrument has at least one contraindication of the specified type.
-   * @param type
+   * Create the current {@link InstrumentRun} without persisting it.
+   * @param participant
+   * @param instrumentType
    * @return
    */
-  public boolean hasContraindications(Contraindication.Type type);
+  public InstrumentRun start(Participant participant, InstrumentType type);
 
   /**
-   * Returns the selected contraindication or null if none is set.
+   * Make sure there is no current {@link InstrumentRun}.
+   */
+  public void reset();
+
+  /**
+   * Set the end date to the current {@link InstrumentRun} with its current status.
+   */
+  public void end();
+
+  /**
+   * Get the associated {@link Participant}
    * @return
    */
-  public Contraindication getContraindication();
+  public Participant getParticipant();
+
+  /**
+   * Get the current {@link InstrumentType}.
+   * @return
+   */
+  public InstrumentType getInstrumentType();
+
+  public void setInstrument(Instrument instrument);
+
+  public Instrument getInstrument();
+
+  /**
+   * Returns the instance of {@InstrumentParameter} for the specified {@code code} or null if none exist.
+   * @param code
+   * @return
+   */
+  public InstrumentParameter getParameterByCode(String code);
+
+  /**
+   * Returns the instance of {@InstrumentParameter} for the specified {@code vendorName} or null if none exist.
+   * @param vendorName
+   * @return
+   */
+  public InstrumentParameter getParameterByVendorName(String name);
+
+  public boolean hasInterpretativeParameter(ParticipantInteractionType type);
+
+  public List<InterpretativeParameter> getInterpretativeParameters(ParticipantInteractionType type);
+
+  public boolean hasInputParameter(boolean readOnly);
+
+  public List<InstrumentInputParameter> getInputParameters(boolean readOnly);
+
+  public boolean hasOutputParameter(boolean automatic);
+
+  public List<InstrumentOutputParameter> getOutputParameters(boolean automatic);
+
+  public boolean hasParameterWithWarning();
+
+  public List<InstrumentOutputParameter> getParametersWithWarning();
+
+  /**
+   * Sets the current instrument run (ONYX-181).
+   * 
+   * @param instrumentRun current instrument run
+   */
+  public void setInstrumentRun(InstrumentRun instrumentRun);
+
+  /**
+   * Get the current {@link InstrumentRun}.
+   * @return
+   */
+  public InstrumentRun getInstrumentRun();
+
+  /**
+   * Persist current {@link InstrumentRun}.
+   * @param currentRun
+   */
+  public void persistRun();
 
   /**
    * Set the {@link InstrumentRunStatus} to the current {@link InstrumentRun}.
@@ -50,56 +123,10 @@ public interface ActiveInstrumentRunService {
   public InstrumentRunStatus getInstrumentRunStatus();
 
   /**
-   * Get the current {@link InstrumentType}.
-   * @return
-   */
-  public InstrumentType getInstrumentType();
-
-  public Instrument getInstrument();
-
-  public void setInstrument(Instrument instrument);
-
-  /**
-   * Get the current {@link InstrumentRun}.
-   * @return
-   */
-  public InstrumentRun getInstrumentRun();
-
-  /**
-   * Create the current {@link InstrumentRun} without persisting it.
-   * @param participant
-   * @param instrumentType
-   * @return
-   */
-  public InstrumentRun start(Participant participant, InstrumentType instrumentType);
-
-  /**
-   * Get the associated {@link Participant}
-   * @return
-   */
-  public Participant getParticipant();
-
-  /**
-   * Set the end date to the current {@link InstrumentRun} with its current status.
-   */
-  public void end();
-
-  /**
-   * Make sure there is no current {@link InstrumentRun}.
-   */
-  public void reset();
-
-  /**
-   * Persist current {@link InstrumentRun}.
-   * @param currentRun
-   */
-  public void persistRun();
-
-  /**
    * Persist {@link InstrumentRunValue} current {@link InstrumentRun}.
    * @param currentRunValue
    */
-  public void update(InstrumentRunValue currentRunValue);
+  public void update(InstrumentRunValue value);
 
   /**
    * Compute the output parameters values of {@link InstrumentComputedOutputParameter} for the current
@@ -108,27 +135,13 @@ public interface ActiveInstrumentRunService {
   public void computeOutputParameters();
 
   /**
-   * Returns the instance of {@InstrumentParameter} for the specified {@code code} or null if none exist.
-   * @param code
-   * @return
-   */
-  public InstrumentParameter getParameterByCode(String code);
-
-  /**
-   * Returns the instance of {@InstrumentParameter} for the specified {@code vendorName} or null if none exist.
-   * @param vendorName
-   * @return
-   */
-  public InstrumentParameter getParameterByVendorName(String vendorName);
-
-  /**
    * Get (or create it if needed) the {@code InstrumentRunValue} for the named {@code InstrumentOutputParameter} of the
    * current {@code InstrumentRun}.
    * @param parameterCode
    * @return null if current instrument run is null
    * @throws IllegalArgumentException if parameter name is not applicable to the {@code Instrument}
    */
-  public InstrumentRunValue getOutputInstrumentRunValue(String parameterCode);
+  public InstrumentRunValue getOutputInstrumentRunValue(String code);
 
   /**
    * Get (or create it if needed) the {@code InstrumentRunValue} for the {@code InstrumentOutputParameter} with the
@@ -137,7 +150,7 @@ public interface ActiveInstrumentRunService {
    * @return null if current instrument run is null
    * @throws IllegalArgumentException if parameter name is not applicable to the {@code Instrument}
    */
-  public InstrumentRunValue getOutputInstrumentRunValueByVendorName(String parameterVendorName);
+  public InstrumentRunValue getOutputInstrumentRunValueByVendorName(String name);
 
   /**
    * Get (or create it if needed) the {@code InstrumentRunValue} for the named {@code InstrumentInputParameter} of the
@@ -146,7 +159,7 @@ public interface ActiveInstrumentRunService {
    * @return null if current instrument run is null
    * @throws IllegalArgumentException if parameter name is not applicable to the {@code Instrument}
    */
-  public InstrumentRunValue getInputInstrumentRunValue(String parameterCode);
+  public InstrumentRunValue getInputInstrumentRunValue(String code);
 
   /**
    * Get (or create it if needed) the {@code InstrumentRunValue} for the named {@code InstrumentInterpretativeParameter}
@@ -155,7 +168,7 @@ public interface ActiveInstrumentRunService {
    * @return null if current instrument run is null
    * @throws IllegalArgumentException if parameter name is not applicable to the {@code Instrument}
    */
-  public InstrumentRunValue getInterpretativeInstrumentRunValue(String parameterName);
+  public InstrumentRunValue getInterpretativeInstrumentRunValue(String code);
 
   /**
    * Get (or create it if needed) the {@code InstrumentRunValue} for the specified {@code InstrumentParameter} of the
@@ -167,18 +180,11 @@ public interface ActiveInstrumentRunService {
   public InstrumentRunValue getInstrumentRunValue(InstrumentParameter parameter);
 
   /**
-   * Sets the current instrument run (ONYX-181).
-   * 
-   * @param instrumentRun current instrument run
-   */
-  public void setCurrentInstrumentRun(InstrumentRun instrumentRun);
-
-  /**
    * Sets the InstrumentRunValue for input parameters list (used for readonly input parameters)
    * @param inputDataSourceVisitor
    * @param activeInterviewService
    * @param instrumentInputParameters
    * @return
    */
-  public String updateReadOnlyInputParameterRunValue(InputDataSourceVisitor inputDataSourceVisitor, Participant participant, List<InstrumentInputParameter> instrumentInputParameters);
+  public String updateReadOnlyInputParameterRunValue();
 }
