@@ -48,11 +48,6 @@ public class ParticipantReportStep extends WizardStepPanel {
     setContent(target, participantReportPanel = new ParticipantReportPanel(getContentId()));
   }
 
-  @Override
-  public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
-    participantReportPanel.finish();
-  }
-
   public ParticipantReportPanel getParticipantReportPanel() {
     return participantReportPanel;
   }

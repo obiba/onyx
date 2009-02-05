@@ -2,14 +2,23 @@
 	<p>
 		<wicket:message key="ParticipantReportInstruction" />
 	</p>
+	
+	<br>
+	
 	<p>
 		<p>
 			<button wicket:id="printConsentForm"><wicket:message key="PrintConsentForm"/></button>
-		</p>
+		</p>		
+		<p>
+			<wicket:message key="PrintParticipantReportLanguage" /> : <select wicket:id="reportLanguage"/>
+		</p>		
 		<p>
 			<button wicket:id="printParticipantReport"><wicket:message key="PrintParticipantReport"/></button>
 		</p>		
 	</p>
+	
+	<br>	
+	
 	<p>
 		<input id="confirm" type="checkbox" wicket:id="printCheckBox"/>
 		<label for="confirm"><wicket:message key="CheckBoxMsg" /></label>
