@@ -11,6 +11,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionListProvider;
+import org.obiba.onyx.wicket.behavior.InvalidFormFieldBehavior;
 
 /**
  * Support for question multiple or not, with(out) child questions, with shared categories, but not yet with joined
@@ -47,5 +48,7 @@ public class DefaultQuestionPanel extends BaseQuestionPanel {
         throw new UnsupportedOperationException("Joined categories array questions not supported yet");
       }
     }
+
+    add(new InvalidFormFieldBehavior());
   }
 }
