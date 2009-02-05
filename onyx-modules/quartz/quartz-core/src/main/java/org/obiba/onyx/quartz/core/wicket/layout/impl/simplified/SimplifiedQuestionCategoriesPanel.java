@@ -9,9 +9,7 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -19,11 +17,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.GridView;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
-import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategoriesView;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultEscapeQuestionCategoriesPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
@@ -37,17 +31,12 @@ import org.slf4j.LoggerFactory;
  * Panel containing the question categories in a grid view of image buttons to be selected (multiple selection or not),
  * without open answers.
  */
-public class SimplifiedQuestionCategoriesPanel extends Panel {
+public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestionCategorySelectionListener {
 
   private static final long serialVersionUID = 5144933183339704600L;
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SimplifiedQuestionCategoriesPanel.class);
-
-  @SpringBean
-  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
-
-  private SimplifiedEscapeQuestionCategoriesPanel escapeQuestionCategoriesPanel;
 
   /**
    * Context in which answer are given (case of joined categories question array).
@@ -79,6 +68,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel {
 
     Question question = (Question) getModelObject();
 
+    // seams like ugly but we need a form component to run the answer count validator
     final CheckGroup checkGroup = new CheckGroup("categories", new ArrayList<IModel>());
     checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
     checkGroup.add(new AnswerCountValidator(getQuestionModel()));
@@ -91,25 +81,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel {
         if(item.getModel() == null) {
           item.add(new EmptyPanel("input").setVisible(false));
         } else {
-          item.add(new QuestionCategoryImageSelectorPanel("input", item.getModel()) {
-
-            @Override
-            public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              if(escapeQuestionCategoriesPanel != null) {
-                Question question = getQuestion();
-                for(CategoryAnswer answer : activeQuestionnaireAdministrationService.findAnswers(question)) {
-                  QuestionCategory questionCategory = question.findQuestionCategory(answer.getCategoryName());
-                  if(questionCategory.getCategory().isEscape()) {
-                    activeQuestionnaireAdministrationService.deleteAnswer(question, questionCategory);
-                  }
-                }
-                escapeQuestionCategoriesPanel.setNoSelection();
-              }
-              target.addComponent(SimplifiedQuestionCategoriesPanel.this);
-              fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
-            }
-          });
-
+          item.add(new QuestionCategoryLinkPanel("input", item.getModel()));
         }
       }
 
@@ -117,24 +89,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel {
     checkGroup.add(repeater);
 
     if(hasEscapeQuestionCategories()) {
-      add(escapeQuestionCategoriesPanel = new SimplifiedEscapeQuestionCategoriesPanel("escapeCategories", getQuestionModel()) {
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          ((Collection<IModel>) checkGroup.getModelObject()).clear();
-          checkGroup.visitChildren(QuestionCategoryImageSelectorPanel.class, new Component.IVisitor() {
-
-            public Object component(Component component) {
-              // TODO
-              return null;
-            }
-
-          });
-          target.addComponent(SimplifiedQuestionCategoriesPanel.this);
-        }
-
-      });
+      add(new SimplifiedEscapeQuestionCategoriesPanel("escapeCategories", getQuestionModel()));
     } else {
       add(new EmptyPanel("escapeCategories").setVisible(false));
     }
@@ -151,5 +106,10 @@ public class SimplifiedQuestionCategoriesPanel extends Panel {
 
   private IModel getQuestionModel() {
     return getModel();
+  }
+
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+    log.info("onQuestionCategorySelection({}, {}, {})", new Object[] { questionModel, questionCategoryModel, isSelected });
+    target.addComponent(this);
   }
 }

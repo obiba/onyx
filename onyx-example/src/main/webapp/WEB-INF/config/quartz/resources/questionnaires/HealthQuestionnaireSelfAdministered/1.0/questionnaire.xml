@@ -45,10 +45,10 @@
         <section id="27" name="GENDER">
           <parentSection reference="24"/>
           <pages id="28">
-            <page id="29" name="2" uIFactoryName="quartz.DefaultPageLayoutFactory">
+            <page id="29" name="2" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
               <section reference="27"/>
               <questions id="30">
-                <question id="31" name="SEX" number="1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                <question id="31" name="SEX" number="1" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
                   <page reference="29"/>
                   <questionCategories id="32">
                     <questionCategory id="33" reselectable="false" selected="false" exportName="1">

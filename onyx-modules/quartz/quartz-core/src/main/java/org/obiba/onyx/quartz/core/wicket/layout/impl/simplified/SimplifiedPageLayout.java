@@ -95,7 +95,9 @@ public class SimplifiedPageLayout extends PageLayout {
         questionToAnswer.add(question);
       }
     }
-
+    if(questionToAnswer.size() > 1) {
+      throw new UnsupportedOperationException("Simplified page layout does not support multiple questions to be answered.");
+    }
     return questionToAnswer.size() > 0 ? questionToAnswer.get(0) : null;
   }
 

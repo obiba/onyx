@@ -63,6 +63,10 @@ public class QuestionCategory implements Serializable, IQuestionnaireElement {
     this.selected = selected;
   }
 
+  public boolean isEscape() {
+    return category.isEscape();
+  }
+
   public String getExportName() {
     return exportName;
   }

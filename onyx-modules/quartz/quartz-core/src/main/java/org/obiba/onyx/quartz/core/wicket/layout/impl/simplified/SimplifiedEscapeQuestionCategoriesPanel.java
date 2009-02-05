@@ -8,7 +8,6 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -22,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Escape question categories are a valid way of not answering the normal set of categories (for instance "Prefer not
- * answer" regarding a multiple choice question). The escape categories are presented in a radio group.
+ * answer" regarding a multiple choice question). The escape categories are presented on the same horizontal line.
  */
 public class SimplifiedEscapeQuestionCategoriesPanel extends Panel {
 
@@ -30,12 +29,6 @@ public class SimplifiedEscapeQuestionCategoriesPanel extends Panel {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SimplifiedEscapeQuestionCategoriesPanel.class);
-
-  /**
-   * Question category, usefull for joined categories array questions.
-   */
-  @SuppressWarnings("unused")
-  private IModel parentQuestionCategoryModel;
 
   /**
    * Constructor around given question.
@@ -58,8 +51,7 @@ public class SimplifiedEscapeQuestionCategoriesPanel extends Panel {
     super(id, questionModel);
     setOutputMarkupId(true);
 
-    this.parentQuestionCategoryModel = parentQuestionCategoryModel;
-
+    // escape categories are on the same line by default
     GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), new QuestionCategoryEscapeFilter(true), new QuestionCategoryListToGridPermutator(getModel(), 1)) {
 
       @Override
@@ -67,17 +59,7 @@ public class SimplifiedEscapeQuestionCategoriesPanel extends Panel {
         if(item.getModel() == null) {
           item.add(new EmptyPanel("input").setVisible(false));
         } else {
-          item.add(new QuestionCategoryImageSelectorPanel("input", item.getModel()) {
-
-            @Override
-            public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              // update all
-              target.addComponent(SimplifiedEscapeQuestionCategoriesPanel.this);
-              fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
-              SimplifiedEscapeQuestionCategoriesPanel.this.onSelection(target, questionModel, questionCategoryModel);
-            }
-
-          });
+          item.add(new QuestionCategoryLinkPanel("input", item.getModel()));
         }
       }
 
@@ -85,19 +67,4 @@ public class SimplifiedEscapeQuestionCategoriesPanel extends Panel {
     add(repeater);
   }
 
-  /**
-   * Reset the model of the radio group (no selection).
-   */
-  public void setNoSelection() {
-
-  }
-
-  /**
-   * Called on radio selection.
-   * @param target
-   * @param questionModel
-   * @param questionCategoryModel
-   */
-  public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-  }
 }

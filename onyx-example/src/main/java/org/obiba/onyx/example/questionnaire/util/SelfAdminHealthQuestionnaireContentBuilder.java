@@ -17,6 +17,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.answer.FixedSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.DropDownQuestionPanelFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedPageLayoutFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedQuestionPanelFactory;
 import org.obiba.onyx.util.data.ArithmeticOperator;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataBuilder;
@@ -102,7 +104,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.withSection("A_ADMINISTRATION").withSection("ADMINISTRATIVE_DATA").withPage("1").withQuestion("A0");
     builder.inPage("1").addTimestamp("TS_START");
 
-    builder.withSection("B_DEMOGRAPHY").withSection("GENDER").withPage("2").withQuestion("SEX", "1").withCategory("MALE").setExportName("1");
+    builder.withSection("B_DEMOGRAPHY").withSection("GENDER").withPage("2", SimplifiedPageLayoutFactory.class).withQuestion("SEX", "1", SimplifiedQuestionPanelFactory.class).withCategory("MALE").setExportName("1");
     builder.inQuestion("SEX").withCategory("FEMALE").setExportName("2");
     builder.inQuestion("SEX").withSharedCategory(OTHER, "3");
     builder.inQuestion("SEX").withSharedCategory(PNA, "8").setEscape(true);

@@ -13,24 +13,32 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.BaseQuestionCategorySelectionPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 
 /**
- * 
+ * A link for selecting a question category, without open answers.
  */
-public class QuestionCategoryImageSelectorPanel extends BaseQuestionCategorySelectionPanel {
+public class QuestionCategoryLinkPanel extends BaseQuestionCategorySelectionPanel implements IQuestionCategorySelectionStateHolder {
 
   private static final long serialVersionUID = 1L;
 
+  @SpringBean
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+
   private IModel questionModel;
 
-  public QuestionCategoryImageSelectorPanel(String id, IModel questionCategoryModel) {
+  @SuppressWarnings("serial")
+  public QuestionCategoryLinkPanel(String id, IModel questionCategoryModel) {
     super(id, questionCategoryModel);
     this.questionModel = new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion());
+
+    add(new QuestionCategorySelectionBehavior());
 
     // add the category label css decorated with images
     AjaxLink link = new AjaxLink("link") {
@@ -38,15 +46,23 @@ public class QuestionCategoryImageSelectorPanel extends BaseQuestionCategorySele
       @Override
       public void onClick(AjaxRequestTarget target) {
         // persist (or not)
-
-        // change css style accordingly
-
-        // fire event to other selectors in case of exclusive choice
-        if(!getQuestion().isMultiple()) {
-
+        // if it was selected, deselect it
+        boolean isSelected = isQuestionCategorySelected();
+        if(!getQuestion().isMultiple() || getQuestionCategory().isEscape()) {
+          // exclusive choice, only one answer per question
+          activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
+        } else {
+          activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestionCategory());
+        }
+        if(!isSelected) {
+          activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory());
         }
 
-        onSelection(target, getQuestionModel(), getQuestionCategoryModel());
+        // fire event to other selectors in case of exclusive choice
+        IQuestionCategorySelectionListener listener = (IQuestionCategorySelectionListener) QuestionCategoryLinkPanel.this.findParent(IQuestionCategorySelectionListener.class);
+        if(listener != null) {
+          listener.onQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), !isSelected);
+        }
       }
 
     };
@@ -54,22 +70,23 @@ public class QuestionCategoryImageSelectorPanel extends BaseQuestionCategorySele
     add(link);
   }
 
-  /**
-   * Called when selector is clicked.
-   * @param target
-   */
-  public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+  public boolean isQuestionCategorySelected() {
+    return activeQuestionnaireAdministrationService.findAnswer(getQuestion(), getQuestionCategory()) != null;
   }
 
   protected IModel getQuestionModel() {
     return questionModel;
   }
 
-  protected Question getQuestion() {
+  public Question getQuestion() {
     return (Question) questionModel.getObject();
   }
 
   protected IModel getQuestionCategoryModel() {
     return getModel();
+  }
+
+  public QuestionCategory getQuestionCategory() {
+    return (QuestionCategory) getModel().getObject();
   }
 }
