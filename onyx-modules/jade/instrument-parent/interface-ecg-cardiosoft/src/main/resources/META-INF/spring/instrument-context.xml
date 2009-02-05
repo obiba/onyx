@@ -4,17 +4,25 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-  <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.cardiffuniversity.NoddleTestInstrumentRunner">
+  <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.gehealthcare.CardiosoftInstrumentRunner">
     <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
     <property name="externalAppHelper" ref="externalAppHelper"/>
-    <property name="locale" ref="locale"/>
-    <property name="softwareInstallPath" value="C:\\Program Files\\Cardiff_University\\NoddleTest"/>
-    <property name="resultPath" value="C:\\Program Files\\Cardiff_University\\NoddleTest\\results"/>
+    <property name="cardioPath" value="C:\\CARDIO\\"/>
+    <property name="initPath" value="C:\\CARDIO\\initecg\\"/>
+    <property name="databasePath" value="C:\\CARDIO\\DATABASE\\"/>
+    <property name="exportPath" value="C:\\CARDIO\\Export\\"/>
+    <property name="settingsFileName" value="CARDIO.INI"/>
+    <property name="btrRecordFileName" value="btr-record.dat"/>
+    <property name="btrDatabaseFileName" value="PATIENT.BTR"/>
+    <property name="xmlFileName" value="cartagene.xml"/>
+    <property name="pdfFileName" value="cartagene.pdf"/>
+    <property name="executableForParticipantInfo" value="butil.exe -LOAD"/>
+    <property name="locale" ref="locale"/>     
   </bean>
   
   <bean name="externalAppHelper" class="org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper">
-    <property name="workDir" value="C:\\Program Files\\Cardiff_University\\NoddleTest" />
-    <property name="executable" value="Noddletest.exe" />  
+    <property name="workDir" value="c:\\CARDIO" />
+    <property name="executable" value="Cardio.exe" />  
   </bean>
   
 </beans>
