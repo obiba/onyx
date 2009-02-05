@@ -1,0 +1,88 @@
+# Result file for tests in Noddle Cognitive Test Step
+# This example shows the case in which some keys are missing
+10,Test,Version,Clinic,InterviewerId,UserId,UserStartDateTime,ScreenId,IfCorrect1Else0,ElapsedTime_ms,CorrectAnswer,ResponseStimulusInterval_ms,Empty,Empty,Dummy
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,1357642,2009-01-27 15:15:37,RT08,1,986,Right,350,,,9
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,1357642,2009-01-27 15:15:37,RT09,1,408,Right,650,,,10
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,1357642,2009-01-27 15:15:37,RT10,1,861,Left,150,,,11
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,1357642,2009-01-27 15:15:37,RT11,1,518,Left,450,,,12
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,1357642,2009-01-27 15:15:37,RT12,1,298,Right,750,,,13
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,1357642,2009-01-27 15:15:37,RT13,1,455,Left,250,,,14
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,1357642,2009-01-27 15:15:37,RT14,1,267,Right,550,,,15
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,1357642,2009-01-27 15:15:37,RT15,1,518,Left,50,,,16
+10,Test,Version,Clinic,InterviewerId,UserId,UserStartDateTime,ScreenId,IfCorrect1Else0,ElapsedTime_ms,CorrectAnswer,ResponseStimulusInterval_ms,Empty,Empty,Dummy
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,2468753,2009-01-27 15:16:42,RT08,1,861,Right,350,,,9
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,2468753,2009-01-27 15:16:42,RT09,1,580,Right,650,,,10
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,2468753,2009-01-27 15:16:42,RT10,1,611,Left,150,,,11
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,2468753,2009-01-27 15:16:42,RT11,1,643,Left,450,,,12
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,2468753,2009-01-27 15:16:42,RT12,1,314,Right,750,,,13
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,2468753,2009-01-27 15:16:42,RT13,1,548,Left,250,,,14
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,2468753,2009-01-27 15:16:42,RT14,1,330,Right,550,,,15
+10,Test,Version,Clinic,InterviewerId,UserId,UserStartDateTime,ScreenId,IfCorrect1Else0,ElapsedTime_ms,CorrectAnswer,ResponseStimulusInterval_ms,Empty,Empty,Dummy
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT08,1,3314,Right,350,,,9
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT09,1,362,Right,650,,,10
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT10,1,705,Left,150,,,11
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT11,1,705,Left,450,,,12
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT12,1,345,Right,750,,,13
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT13,1,330,Left,250,,,14
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT14,1,533,Right,550,,,15
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT15,1,564,Left,50,,,16
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT16,0,6205,Left,350,,,17
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT17,1,1533,Right,650,,,18
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT18,1,752,Right,150,,,19
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT19,1,3486,Left,450,,,20
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT20,1,517,Right,750,,,21
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT21,1,658,Right,250,,,22
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT22,1,1033,Right,550,,,23
+11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT23,1,768,Left,50,,,24
+20,Test,Version,Clinic,InterviewerId,UserId,UserStartDateTime,ScreenId,NumberOfGuesses,ElapsedTime_ms,Level,CorrectAnswer,SelectedAnswer,Empty,Dummy
+21,Pairing,vC1.3.4,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,P7A,4,5819,7,RightTop,RightTop,,2
+21,Pairing,vC1.3.4,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,P7B,1,1408,7,LeftBottom,LeftBottom,,3
+21,Pairing,vC1.3.4,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,P7C,1,1252,7,RightBottom,RightBottom,,4
+21,Pairing,vC1.3.4,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,P7D,3,3812,7,BottomLeft,BottomLeft,,5
+21,Pairing,vC1.3.4,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,P7E,1,1205,7,LeftTop,LeftTop,,6
+21,Pairing,vC1.3.4,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,P7F,1,1673,7,TopMiddle,TopMiddle,,7
+21,Pairing,vC1.3.4,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,P7G,1,1767,7,BottomRight,BottomRight,,8
+22,Pairing,vC1.3.4,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,Level,7,EndDateTime,2009-01-27 16:30:54,StartDateTimes,2009-01-27 16:30:07,2009-01-27 16:30:15,8
+40,Test,Version,Clinic,InterviewerId,UserId,UserStartDateTime,ScreenId,IfCorrect1Else0,ElapsedTime_ms,Level,CorrectAnswer,LeftColour,RightColour,Dummy
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STE,1,1860,box,black,black,white,9
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STF,1,953,box,red,black,red,10
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STG,1,1047,box,blue,white,blue,11
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STH,1,1015,box,white,white,red,12
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STI,1,860,box,blue,white,blue,13
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STJ,1,954,box,red,red,black,14
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STK,1,1328,box,white,white,black,15
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STL,1,1063,box,blue,black,blue,16
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STM,1,844,box,black,blue,black,17
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STN,1,953,box,red,red,white,18
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STO,1,1094,box,white,black,white,19
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STP,1,1109,box,black,black,red,20
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STQ,1,1141,box,white,white,blue,21
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STR,1,1016,box,blue,black,blue,22
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STS,1,954,box,red,white,red,23
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STT,1,985,box,white,white,blue,24
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STU,1,937,box,black,red,black,25
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STV,1,1687,box,red,red,white,26
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STW,1,1016,box,black,white,black,27
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,STX,1,1296,box,blue,blue,black,28
+42,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,Level,box,EndDateTime,2009-01-27 16:35:33,StartDateTimes,2009-01-27 16:34:48,2009-01-27 16:35:08,28
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2E,1,1578,ink,red,red,black,37
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2F,1,1265,ink,white,white,black,38
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2G,1,1156,ink,blue,black,blue,39
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2H,1,1781,ink,black,blue,black,40
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2I,1,1829,ink,red,red,white,41
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2J,1,1469,ink,white,white,blue,42
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2K,1,1875,ink,black,red,black,43
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2L,1,1188,ink,red,red,white,44
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2M,1,1297,ink,black,white,black,45
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2N,1,1437,ink,blue,blue,black,46
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2O,1,1625,ink,black,black,white,47
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2P,1,1344,ink,red,black,red,48
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2Q,1,1688,ink,blue,white,blue,49
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2R,1,1359,ink,white,white,red,50
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2S,1,1282,ink,blue,white,blue,51
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2T,1,1281,ink,white,black,white,52
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2U,1,1172,ink,black,black,red,53
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2V,1,1516,ink,white,white,blue,54
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2W,1,1172,ink,blue,black,blue,55
+41,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,ST2X,1,1593,ink,red,white,red,56
+42,Stroop,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,Level,ink,EndDateTime,2009-01-27 16:36:27,StartDateTimes,2009-01-27 16:35:37,2009-01-27 16:35:53,57
