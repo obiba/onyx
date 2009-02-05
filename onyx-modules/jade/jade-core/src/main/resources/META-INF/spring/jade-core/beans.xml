@@ -46,6 +46,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     class="org.obiba.onyx.jade.core.service.impl.DefaultActiveInstrumentRunServiceImpl" scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="userSessionService" ref="userSessionService" />
+    <property name="instrumentService" ref="instrumentService" />
     <property name="inputDataSourceVisitor" ref="inputDataSourceVisitor" />
   </bean>
 
