@@ -17,8 +17,8 @@
   <input_source id="1" input_source_type="OutputParameterSource" instrument_type="TYPE_INPUT_PARAMS" parameter_name="input_readOnly_1" /> <!-- READONLY --> 
   <input_source id="2" input_source_type="OperatorSource" /> <!-- NOT READONLY -->
        
-  <instrument_parameter id="7" code="interp_asked_1" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InterpretativeParameter" type="ASKED" input_source_id="1" capture_method="AUTOMATIC" />
-  <instrument_parameter id="8" code="interp_asked_2" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InterpretativeParameter" type="ASKED" input_source_id="1" capture_method="AUTOMATIC" />
+  <instrument_parameter id="7" code="interp_asked_1" vendor_name="interp_asked_1v" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InterpretativeParameter" type="ASKED" input_source_id="1" capture_method="AUTOMATIC" />
+  <instrument_parameter id="8" code="interp_asked_2" vendor_name="interp_asked_2v" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InterpretativeParameter" type="ASKED" input_source_id="1" capture_method="AUTOMATIC" />
   <instrument_parameter id="9" code="interp_observed_1" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InterpretativeParameter" type="OBSERVED" input_source_id="1" capture_method="AUTOMATIC" />
   <instrument_parameter id="10" code="interp_observed_2" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InterpretativeParameter" type="OBSERVED" input_source_id="1" capture_method="AUTOMATIC" />
   <instrument_parameter id="11" code="interp_observed_3" data_type="INTEGER" instrument_type_id="1" instrument_parameter_type="InterpretativeParameter" type="OBSERVED" input_source_id="1" capture_method="AUTOMATIC" />    

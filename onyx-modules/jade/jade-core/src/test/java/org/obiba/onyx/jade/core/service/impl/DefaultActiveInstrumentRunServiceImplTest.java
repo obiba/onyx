@@ -91,9 +91,86 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     Assert.assertEquals(user.getId(), instrumentRun.getUser().getId());
     Assert.assertEquals(participant.getId(), activeInstrumentRunService.getParticipant().getId());
     Assert.assertEquals(InstrumentRunStatus.IN_PROGRESS, instrumentRun.getStatus());
+    Assert.assertNotNull(instrumentRun.getTimeStart());
+    Assert.assertNull(instrumentRun.getTimeEnd());
 
     // Verify that the new InstrumentRun was persisted.
     Assert.assertNotNull(persistenceManager.get(InstrumentRun.class, instrumentRun.getId()));
+  }
+
+  @Test
+  @Dataset
+  public void testEnd() {
+    user = persistenceManager.get(User.class, 1l);
+    participant = persistenceManager.get(Participant.class, 1l);
+    InstrumentType instrumentType = persistenceManager.get(InstrumentType.class, 1l);
+
+    // Start an InstrumentRun.
+    InstrumentRun instrumentRun = startInstrumentRun(participant, instrumentType);
+
+    // Now end the InstrumentRun.
+    endInstrumentRun();
+
+    // Verify that the InstrumentRun's end time has been saved.
+    instrumentRun = persistenceManager.get(InstrumentRun.class, instrumentRun.getId());
+    Assert.assertNotNull(instrumentRun);
+    Assert.assertNotNull(instrumentRun.getTimeEnd());
+  }
+
+  @Test
+  @Dataset
+  public void testGetParameterByCode() {
+    user = persistenceManager.get(User.class, 1l);
+    participant = persistenceManager.get(Participant.class, 1l);
+    InstrumentType instrumentType = persistenceManager.get(InstrumentType.class, 1l);
+
+    // Start an InstrumentRun.
+    startInstrumentRun(participant, instrumentType);
+
+    initInstrumentServiceMock(instrumentType);
+
+    // Look up a parameter by its code.
+    String parameterCode = "interp_asked_1";
+    InstrumentParameter parameter = activeInstrumentRunService.getParameterByCode(parameterCode);
+    Assert.assertEquals(parameterCode, parameter.getCode());
+
+    // Look up another parameter. (In case query always returns the same parameter...)
+    parameterCode = "interp_asked_2";
+    parameter = activeInstrumentRunService.getParameterByCode(parameterCode);
+    Assert.assertEquals(parameterCode, parameter.getCode());
+
+    // Now look up a bogus parameter.
+    parameterCode = "bogus";
+    parameter = activeInstrumentRunService.getParameterByCode(parameterCode);
+    Assert.assertNull(parameter);
+  }
+
+  @Test
+  @Dataset
+  public void testGetParameterByVendorName() {
+    user = persistenceManager.get(User.class, 1l);
+    participant = persistenceManager.get(Participant.class, 1l);
+    InstrumentType instrumentType = persistenceManager.get(InstrumentType.class, 1l);
+
+    // Start an InstrumentRun.
+    startInstrumentRun(participant, instrumentType);
+
+    initInstrumentServiceMock(instrumentType);
+
+    // Look up a parameter by its code.
+    String vendorName = "interp_asked_1v";
+    InstrumentParameter parameter = activeInstrumentRunService.getParameterByVendorName(vendorName);
+    Assert.assertEquals(vendorName, parameter.getVendorName());
+
+    // Look up another parameter. (In case query always returns the same parameter...)
+    vendorName = "interp_asked_2v";
+    parameter = activeInstrumentRunService.getParameterByVendorName(vendorName);
+    Assert.assertEquals(vendorName, parameter.getVendorName());
+
+    // Now look up a bogus parameter.
+    vendorName = "bogus";
+    parameter = activeInstrumentRunService.getParameterByVendorName(vendorName);
+    Assert.assertNull(parameter);
   }
 
   @Test
@@ -392,6 +469,10 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     verify(userSessionService);
 
     return instrumentRun;
+  }
+
+  private void endInstrumentRun() {
+    activeInstrumentRunService.end();
   }
 
   private void setParameterValue(InstrumentRun instrumentRun, InstrumentParameter parameter, Data value) {
