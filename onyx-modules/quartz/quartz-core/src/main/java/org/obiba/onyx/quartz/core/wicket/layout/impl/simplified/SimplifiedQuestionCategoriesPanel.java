@@ -109,7 +109,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
   }
 
   public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
-    log.info("onQuestionCategorySelection({}, {}, {})", new Object[] { questionModel, questionCategoryModel, isSelected });
+    log.debug("onQuestionCategorySelection({}, {}, {})", new Object[] { questionModel, questionCategoryModel, isSelected });
     target.addComponent(this);
   }
 }

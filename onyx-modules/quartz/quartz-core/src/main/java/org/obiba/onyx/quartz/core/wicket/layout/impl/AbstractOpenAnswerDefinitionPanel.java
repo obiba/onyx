@@ -21,7 +21,7 @@ import org.obiba.onyx.util.data.Data;
 /**
  * Base class the building open answer panels.
  * @see DefaultOpenAnswerDefinitionPanel
- * @see MultipleOpenAnswerDefinitionPanel
+ * @see MultipleDefaultOpenAnswerDefinitionPanel
  */
 public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
 
@@ -134,12 +134,6 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
    */
   public void onError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
   }
-
-  /**
-   * Set the model object data of the open field.
-   * @param data
-   */
-  public abstract void setFieldModelObject(Data data);
 
   /**
    * Call this to reset the open field content.

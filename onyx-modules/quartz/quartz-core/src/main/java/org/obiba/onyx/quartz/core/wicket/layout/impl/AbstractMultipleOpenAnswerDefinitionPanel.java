@@ -12,25 +12,23 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
-import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * UI for OpenAnswer having other open answer children.
  */
-public class MultipleOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinitionPanel {
+public abstract class AbstractMultipleOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinitionPanel {
 
   private static final long serialVersionUID = 1L;
 
   @SuppressWarnings("unused")
-  private static final Logger log = LoggerFactory.getLogger(MultipleOpenAnswerDefinitionPanel.class);
+  private static final Logger log = LoggerFactory.getLogger(AbstractMultipleOpenAnswerDefinitionPanel.class);
 
   private List<AbstractOpenAnswerDefinitionPanel> abstractOpenAnswerDefinitionPanels = new ArrayList<AbstractOpenAnswerDefinitionPanel>();
 
@@ -41,7 +39,7 @@ public class MultipleOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinit
    * @param questionModel
    * @param questionCategoryModel
    */
-  public MultipleOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
+  public AbstractMultipleOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
     super(id, questionModel, questionCategoryModel);
     initialize();
   }
@@ -57,40 +55,24 @@ public class MultipleOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinit
       WebMarkupContainer item = new WebMarkupContainer(repeating.newChildId());
       repeating.add(item);
 
-      DefaultOpenAnswerDefinitionPanel open;
-      item.add(open = new DefaultOpenAnswerDefinitionPanel("open", getQuestionModel(), getQuestionCategoryModel(), new QuestionnaireModel(openAnswerDefinitionChild)) {
-
-        @Override
-        public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
-          MultipleOpenAnswerDefinitionPanel.this.onSelect(target, questionModel, questionCategoryModel, openAnswerDefinitionModel);
-        }
-
-        @Override
-        public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          MultipleOpenAnswerDefinitionPanel.this.onSubmit(target, questionModel, questionCategoryModel);
-        }
-
-        @Override
-        public void onError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          MultipleOpenAnswerDefinitionPanel.this.onError(target, questionModel, questionCategoryModel);
-        }
-
-      });
+      AbstractOpenAnswerDefinitionPanel open;
+      item.add(open = newOpenAnswerDefinitionPanel("open", getQuestionModel(), getQuestionCategoryModel(), new QuestionnaireModel(openAnswerDefinitionChild)));
       abstractOpenAnswerDefinitionPanels.add(open);
     }
 
   }
 
-  @Override
-  public void setFieldModelObject(Data data) {
-    for(AbstractOpenAnswerDefinitionPanel panel : abstractOpenAnswerDefinitionPanels) {
-      panel.setFieldModelObject(data);
-    }
-  }
+  /**
+   * @param string
+   * @param questionModel
+   * @param questionCategoryModel
+   * @param questionnaireModel
+   * @return
+   */
+  protected abstract AbstractOpenAnswerDefinitionPanel newOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel);
 
   @Override
   public void resetField() {
-    setFieldModelObject(null);
     for(AbstractOpenAnswerDefinitionPanel panel : abstractOpenAnswerDefinitionPanels) {
       panel.resetField();
     }

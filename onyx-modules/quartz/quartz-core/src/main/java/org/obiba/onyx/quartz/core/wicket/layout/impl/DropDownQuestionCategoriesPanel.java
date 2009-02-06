@@ -197,7 +197,7 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
         if(openAnswerDefinition.getOpenAnswerDefinitions().size() == 0) {
           openField = new DefaultOpenAnswerDefinitionPanel("open", getQuestionModel(), new QuestionnaireModel(questionCategory));
         } else {
-          openField = new MultipleOpenAnswerDefinitionPanel("open", getQuestionModel(), new QuestionnaireModel(questionCategory));
+          openField = new MultipleDefaultOpenAnswerDefinitionPanel("open", getQuestionModel(), new QuestionnaireModel(questionCategory));
         }
         get("open").replaceWith(openField);
       } else {

@@ -194,11 +194,6 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
   }
 
   @Override
-  public void setFieldModelObject(Data data) {
-    openField.setFieldModelObject(data);
-  }
-
-  @Override
   public void resetField() {
     openField.setFieldModelObject(null);
     openField.getField().clearInput();

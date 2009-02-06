@@ -11,15 +11,21 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.BaseQuestionCategorySelectionPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.pad.OpenAnswerPadFactory;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A link for selecting a question category, without open answers.
@@ -28,17 +34,21 @@ public class QuestionCategoryLinkPanel extends BaseQuestionCategorySelectionPane
 
   private static final long serialVersionUID = 1L;
 
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(QuestionCategoryLinkPanel.class);
+
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   private IModel questionModel;
 
+  private ModalWindow padWindow;
+
   @SuppressWarnings("serial")
   public QuestionCategoryLinkPanel(String id, IModel questionCategoryModel) {
     super(id, questionCategoryModel);
+    setOutputMarkupId(true);
     this.questionModel = new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion());
-
-    add(new QuestionCategorySelectionBehavior());
 
     // add the category label css decorated with images
     AjaxLink link = new AjaxLink("link") {
@@ -56,6 +66,9 @@ public class QuestionCategoryLinkPanel extends BaseQuestionCategorySelectionPane
         }
         if(!isSelected) {
           activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory());
+          if(padWindow != null) {
+            padWindow.show(target);
+          }
         }
 
         // fire event to other selectors in case of exclusive choice
@@ -67,7 +80,39 @@ public class QuestionCategoryLinkPanel extends BaseQuestionCategorySelectionPane
 
     };
     link.add(new Label("label", new QuestionnaireStringResourceModel(questionCategoryModel, "label")));
+    link.add(new QuestionCategorySelectionBehavior());
     add(link);
+
+    if(getQuestionCategory().getOpenAnswerDefinition() != null) {
+      addPadModal();
+    } else {
+      add(new EmptyPanel("padModal").setVisible(false));
+    }
+  }
+
+  @SuppressWarnings("serial")
+  private void addPadModal() {
+    // Create modal window
+    add(padWindow = new ModalWindow("padModal"));
+    padWindow.setCookieName("numeric-pad");
+
+    final AbstractOpenAnswerDefinitionPanel pad = OpenAnswerPadFactory.create(padWindow.getContentId(), getQuestionModel(), getQuestionCategoryModel(), new QuestionnaireModel(getQuestionCategory().getOpenAnswerDefinition()), padWindow);
+    padWindow.setContent(pad);
+
+    // same as cancel
+    padWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
+      public boolean onCloseButtonClicked(AjaxRequestTarget target) {
+        activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestionCategory());
+        return true;
+      }
+    });
+
+    padWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+      public void onClose(AjaxRequestTarget target) {
+        target.addComponent(QuestionCategoryLinkPanel.this);
+      }
+    });
+
   }
 
   public boolean isQuestionCategorySelected() {

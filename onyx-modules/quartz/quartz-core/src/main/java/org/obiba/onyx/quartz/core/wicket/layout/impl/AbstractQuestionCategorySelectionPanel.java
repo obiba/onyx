@@ -137,7 +137,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
       };
     } else {
       // case there are multiple open answers
-      openField = new MultipleOpenAnswerDefinitionPanel(id, getQuestionModel(), getQuestionCategoryModel()) {
+      openField = new MultipleDefaultOpenAnswerDefinitionPanel(id, getQuestionModel(), getQuestionCategoryModel()) {
 
         @Override
         public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
