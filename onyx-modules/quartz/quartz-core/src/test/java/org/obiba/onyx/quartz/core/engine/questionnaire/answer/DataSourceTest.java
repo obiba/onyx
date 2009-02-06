@@ -202,6 +202,19 @@ public class DataSourceTest {
   }
 
   @Test
+  public void testDateFieldSource() {
+    DataSource source = DataSourceBuilder.createDateFieldSource(new Date(), Calendar.YEAR).getDataSource();
+    Data data = source.getData(activeQuestionnaireAdministrationServiceMock);
+
+    Assert.assertEquals(DataType.INTEGER, data.getType());
+
+    Calendar currentCal = Calendar.getInstance();
+    currentCal.setTime(new Date());
+
+    Assert.assertEquals(Integer.valueOf(data.getValueAsString()), Integer.valueOf(currentCal.get(Calendar.YEAR)));
+  }
+
+  @Test
   public void testOpenAnswerSource() {
 
     OpenAnswer openAnswer = new OpenAnswer();
