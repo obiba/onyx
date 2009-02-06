@@ -15,11 +15,9 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
-import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -151,11 +149,9 @@ public abstract class InstrumentWizardForm extends WizardForm {
 
     // are there input parameters with input source that requires user provisionning ?
     // or interpretative questions
-    InterpretativeParameter template = new InterpretativeParameter();
-    template.setInstrumentType(instrumentType);
-    log.debug("instrumentInterpretativeParameters.count={}", queryService.count(template));
-    log.debug("instrumentInputParameters.count={}", instrumentService.countInstrumentInputParameter(instrumentType, false));
-    if(queryService.count(template) > 0 || instrumentService.countInstrumentInputParameter(instrumentType, false) > 0) {
+    log.debug("instrumentInterpretativeParameters.count={}", activeInstrumentRunService.getInterpretativeParameters().size());
+    log.debug("instrumentInputParameters.count={}", activeInstrumentRunService.getInputParameters(false));
+    if(activeInstrumentRunService.hasInterpretativeParameter() || activeInstrumentRunService.hasInputParameter(false)) {
       if(startStep == null) {
         startStep = inputParametersStep;
         lastStep = startStep;
@@ -185,11 +181,8 @@ public abstract class InstrumentWizardForm extends WizardForm {
     }
 
     // are there output parameters that are to be captured manually from instrument ?
-    InstrumentOutputParameter opTemplate = new InstrumentOutputParameter();
-    opTemplate.setInstrumentType(instrumentType);
-    opTemplate.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
-    log.debug("instrumentOutputParameters.MANUAL.count={}", queryService.count(opTemplate));
-    if(queryService.count(opTemplate) > 0) {
+    log.debug("instrumentOutputParameters.MANUAL.count={}", activeInstrumentRunService.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL).size());
+    if(activeInstrumentRunService.hasOutputParameter(InstrumentParameterCaptureMethod.MANUAL)) {
       if(startStep == null) {
         startStep = outputParametersStep;
         lastStep = startStep;

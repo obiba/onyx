@@ -146,13 +146,21 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
       if(parameter instanceof InterpretativeParameter) {
         InterpretativeParameter interpretativeParameter = (InterpretativeParameter) parameter;
 
-        if(interpretativeParameter.getType().equals(type)) {
+        if(type == null || interpretativeParameter.getType().equals(type)) {
           interpretativeParameters.add(interpretativeParameter);
         }
       }
     }
 
     return interpretativeParameters;
+  }
+
+  public boolean hasInterpretativeParameter() {
+    return !getInterpretativeParameters(null).isEmpty();
+  }
+
+  public List<InterpretativeParameter> getInterpretativeParameters() {
+    return getInterpretativeParameters(null);
   }
 
   public boolean hasInputParameter(boolean readOnly) {
@@ -171,6 +179,48 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
         if(inputParameter.getInputSource().isReadOnly() == readOnly) {
           inputParameters.add(inputParameter);
         }
+      }
+    }
+
+    return inputParameters;
+  }
+
+  public boolean hasInputParameter(InstrumentParameterCaptureMethod captureMethod) {
+    return !getInputParameters(captureMethod).isEmpty();
+  }
+
+  public List<InstrumentInputParameter> getInputParameters(InstrumentParameterCaptureMethod captureMethod) {
+    List<InstrumentInputParameter> inputParameters = new ArrayList<InstrumentInputParameter>();
+
+    InstrumentType instrumentType = getInstrumentType();
+
+    for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
+      if(parameter instanceof InstrumentInputParameter) {
+        InstrumentInputParameter inputParameter = (InstrumentInputParameter) parameter;
+        InstrumentParameterCaptureMethod inputParameterCaptureMethod = inputParameter.getCaptureMethod();
+
+        if(inputParameterCaptureMethod.equals(captureMethod)) {
+          inputParameters.add(inputParameter);
+        }
+      }
+    }
+
+    return inputParameters;
+  }
+
+  public boolean hasInputParameter() {
+    return !getInputParameters().isEmpty();
+  }
+
+  public List<InstrumentInputParameter> getInputParameters() {
+    List<InstrumentInputParameter> inputParameters = new ArrayList<InstrumentInputParameter>();
+
+    InstrumentType instrumentType = getInstrumentType();
+
+    for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
+      if(parameter instanceof InstrumentInputParameter) {
+        InstrumentInputParameter inputParameter = (InstrumentInputParameter) parameter;
+        inputParameters.add(inputParameter);
       }
     }
 
@@ -214,6 +264,25 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
         if(!captureMethod.equals(InstrumentParameterCaptureMethod.AUTOMATIC)) {
           outputParameters.addAll(getOutputParameters(captureMethod));
         }
+      }
+    }
+
+    return outputParameters;
+  }
+
+  public boolean hasOutputParameter() {
+    return !getOutputParameters().isEmpty();
+  }
+
+  public List<InstrumentOutputParameter> getOutputParameters() {
+    List<InstrumentOutputParameter> outputParameters = new ArrayList<InstrumentOutputParameter>();
+
+    InstrumentType instrumentType = getInstrumentType();
+
+    for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
+      if(parameter instanceof InstrumentOutputParameter) {
+        InstrumentOutputParameter outputParameter = (InstrumentOutputParameter) parameter;
+        outputParameters.add(outputParameter);
       }
     }
 

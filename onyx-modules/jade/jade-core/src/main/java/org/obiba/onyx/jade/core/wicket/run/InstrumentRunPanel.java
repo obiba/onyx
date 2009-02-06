@@ -26,8 +26,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
@@ -129,49 +127,38 @@ public class InstrumentRunPanel extends Panel {
 
     boolean isInteractive = instrumentService.isInteractiveInstrument(run.getInstrumentType());
 
-    InterpretativeParameter interpretative = new InterpretativeParameter();
-    interpretative.setInstrumentType(run.getInstrumentType());
-
-    if(queryService.count(interpretative) > 0) {
-      add(getKeyValueDataPanel("interpretatives", new StringResourceModel("Interpretatives", this, null), queryService.match(interpretative)));
+    if(activeInstrumentRunService.hasInterpretativeParameter()) {
+      add(getKeyValueDataPanel("interpretatives", new StringResourceModel("Interpretatives", this, null), activeInstrumentRunService.getInterpretativeParameters()));
     } else {
       add(new EmptyPanel("interpretatives"));
     }
 
-    InstrumentInputParameter input = new InstrumentInputParameter();
-    input.setInstrumentType(run.getInstrumentType());
-
     if(isInteractive) {
-      if(queryService.count(input) > 0) {
-        add(getKeyValueDataPanel("inputs", new StringResourceModel("InstrumentInputs", this, null), queryService.match(input)));
+      if(activeInstrumentRunService.hasInputParameter()) {
+        add(getKeyValueDataPanel("inputs", new StringResourceModel("InstrumentInputs", this, null), activeInstrumentRunService.getInputParameters()));
       } else {
         add(new EmptyPanel("inputs"));
       }
       add(new EmptyPanel("operatorAutoInputs"));
     } else {
       // Manual Inputs
-      input.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
-      if(queryService.count(input) > 0) {
-        add(getKeyValueDataPanel("inputs", new StringResourceModel("OperatorInputs", this, null), queryService.match(input)));
+      if(activeInstrumentRunService.hasInputParameter(InstrumentParameterCaptureMethod.MANUAL)) {
+        add(getKeyValueDataPanel("inputs", new StringResourceModel("OperatorInputs", this, null), activeInstrumentRunService.getInputParameters(InstrumentParameterCaptureMethod.MANUAL)));
       } else {
         add(new EmptyPanel("inputs"));
       }
 
       // Automatic Inputs
-      input.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
-      if(queryService.count(input) > 0) {
-        add(getKeyValueDataPanel("operatorAutoInputs", new StringResourceModel("StandardInputs", this, null), queryService.match(input)));
+      if(activeInstrumentRunService.hasInputParameter(InstrumentParameterCaptureMethod.AUTOMATIC)) {
+        add(getKeyValueDataPanel("operatorAutoInputs", new StringResourceModel("StandardInputs", this, null), activeInstrumentRunService.getInputParameters(InstrumentParameterCaptureMethod.AUTOMATIC)));
       } else {
         add(new EmptyPanel("operatorAutoInputs"));
       }
     }
 
-    InstrumentOutputParameter output = new InstrumentOutputParameter();
-    output.setInstrumentType(run.getInstrumentType());
-
-    if(queryService.count(output) > 0) {
+    if(activeInstrumentRunService.hasOutputParameter()) {
       String key = isInteractive ? "InstrumentOutputs" : "OperatorOutputs";
-      add(getKeyValueDataPanel("outputs", new StringResourceModel(key, this, null), queryService.match(output)));
+      add(getKeyValueDataPanel("outputs", new StringResourceModel(key, this, null), activeInstrumentRunService.getOutputParameters()));
     } else {
       add(new EmptyPanel("outputs"));
     }

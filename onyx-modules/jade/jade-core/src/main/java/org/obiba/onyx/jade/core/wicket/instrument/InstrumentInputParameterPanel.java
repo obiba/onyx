@@ -90,26 +90,22 @@ public class InstrumentInputParameterPanel extends Panel {
     super(id);
     setOutputMarkupId(true);
 
-    InterpretativeParameter template = new InterpretativeParameter();
-    template.setInstrumentType(activeInstrumentRunService.getInstrumentType());
-    template.setType(ParticipantInteractionType.ASKED);
-    if(queryService.count(template) == 0) {
+    if(!activeInstrumentRunService.hasInterpretativeParameter(ParticipantInteractionType.ASKED)) {
       add(new EmptyPanel("askedInputs"));
     } else {
-      add(new InterpretativeFragment("askedInputs", queryService.match(template), ParticipantInteractionType.ASKED));
+      add(new InterpretativeFragment("askedInputs", activeInstrumentRunService.getInterpretativeParameters(ParticipantInteractionType.ASKED), ParticipantInteractionType.ASKED));
     }
 
-    template.setType(ParticipantInteractionType.OBSERVED);
-    if(queryService.count(template) == 0) {
+    if(!activeInstrumentRunService.hasInterpretativeParameter(ParticipantInteractionType.OBSERVED)) {
       add(new EmptyPanel("observedInputs"));
     } else {
-      add(new InterpretativeFragment("observedInputs", queryService.match(template), ParticipantInteractionType.OBSERVED));
+      add(new InterpretativeFragment("observedInputs", activeInstrumentRunService.getInterpretativeParameters(ParticipantInteractionType.OBSERVED), ParticipantInteractionType.OBSERVED));
     }
 
     InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
     List<InstrumentInputParameter> instrumentInputParameters = instrumentService.getInstrumentInputParameter(instrumentType, false);
 
-    if(instrumentInputParameters.size() == 0) {
+    if(instrumentInputParameters.isEmpty()) {
       add(new EmptyPanel("inputs"));
     } else {
       add(new InputFragment("inputs", instrumentInputParameters));

@@ -18,15 +18,12 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
-import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
-import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
@@ -48,16 +45,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
   private static final Logger log = LoggerFactory.getLogger(InstrumentLaunchPanel.class);
 
   @SpringBean
-  private EntityQueryService queryService;
-
-  @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
-
-  @SpringBean(name = "activeInterviewService")
-  private ActiveInterviewService activeInterviewService;
-
-  @SpringBean
-  private InputDataSourceVisitor inputDataSourceVisitor;
 
   @SpringBean
   private InstrumentService instrumentService;
@@ -92,12 +80,8 @@ public abstract class InstrumentLaunchPanel extends Panel {
     add(repeat);
 
     // get all the input run values that requires manual capture
-    InstrumentInputParameter template = new InstrumentInputParameter();
-    template.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
-    template.setInstrumentType(instrumentType);
-
     boolean manualCaptureRequired = false;
-    for(final InstrumentInputParameter param : queryService.match(template)) {
+    for(final InstrumentInputParameter param : activeInstrumentRunService.getInputParameters(InstrumentParameterCaptureMethod.MANUAL)) {
 
       // We don't want to display parameters that were manually entered by the user in the previous step.
       // These will be automatically sent to the instrument.

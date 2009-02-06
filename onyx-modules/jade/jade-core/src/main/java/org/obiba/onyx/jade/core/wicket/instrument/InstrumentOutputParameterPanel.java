@@ -31,8 +31,6 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
-import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
-import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.instrument.validation.IntegrityCheckValidator;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
@@ -55,12 +53,6 @@ public class InstrumentOutputParameterPanel extends Panel {
   @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
 
-  @SpringBean
-  private InputDataSourceVisitor inputDataSourceVisitor;
-
-  @SpringBean
-  private InstrumentService instrumentService;
-
   private List<IModel> outputRunValueModels = new ArrayList<IModel>();
 
   @SuppressWarnings("serial")
@@ -68,11 +60,7 @@ public class InstrumentOutputParameterPanel extends Panel {
     super(id);
     setOutputMarkupId(true);
 
-    InstrumentOutputParameter template = new InstrumentOutputParameter();
-    template.setInstrumentType(activeInstrumentRunService.getInstrumentType());
-    template.setCaptureMethod(InstrumentParameterCaptureMethod.MANUAL);
-
-    if(queryService.count(template) == 0) {
+    if(!activeInstrumentRunService.hasOutputParameter(InstrumentParameterCaptureMethod.MANUAL)) {
       add(new EmptyPanel("manualOutputs"));
     } else {
 
@@ -82,7 +70,7 @@ public class InstrumentOutputParameterPanel extends Panel {
       RepeatingView repeat = new RepeatingView("repeat");
       add(repeat);
 
-      for(InstrumentOutputParameter param : queryService.match(template)) {
+      for(InstrumentOutputParameter param : activeInstrumentRunService.getOutputParameters(InstrumentParameterCaptureMethod.MANUAL)) {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 

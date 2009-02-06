@@ -80,9 +80,21 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
 
   public List<InterpretativeParameter> getInterpretativeParameters(ParticipantInteractionType type);
 
+  public boolean hasInterpretativeParameter();
+
+  public List<InterpretativeParameter> getInterpretativeParameters();
+
   public boolean hasInputParameter(boolean readOnly);
 
   public List<InstrumentInputParameter> getInputParameters(boolean readOnly);
+
+  public boolean hasInputParameter(InstrumentParameterCaptureMethod captureMethod);
+
+  public List<InstrumentInputParameter> getInputParameters(InstrumentParameterCaptureMethod captureMethod);
+
+  public boolean hasInputParameter();
+
+  public List<InstrumentInputParameter> getInputParameters();
 
   public boolean hasOutputParameter(InstrumentParameterCaptureMethod captureMethod);
 
@@ -91,6 +103,10 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
   public boolean hasOutputParameter(boolean automatic);
 
   public List<InstrumentOutputParameter> getOutputParameters(boolean automatic);
+
+  public boolean hasOutputParameter();
+
+  public List<InstrumentOutputParameter> getOutputParameters();
 
   public boolean hasParameterWithWarning();
 

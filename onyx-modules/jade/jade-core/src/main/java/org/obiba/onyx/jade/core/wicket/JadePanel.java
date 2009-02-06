@@ -24,6 +24,7 @@ import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.wizard.InstrumentWizardForm;
 import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.StageModel;
@@ -44,6 +45,9 @@ public class JadePanel extends Panel implements IEngineComponentAware {
 
   @SpringBean
   private ModuleRegistry moduleRegistry;
+
+  @SpringBean
+  private InstrumentService instrumentService;
 
   private ActionWindow actionWindow;
 
@@ -98,8 +102,7 @@ public class JadePanel extends Panel implements IEngineComponentAware {
   }
 
   private InstrumentType getInstrumentType(Stage stage) {
-    InstrumentType template = new InstrumentType(stage.getName(), null);
-    return queryService.matchOne(template);
+    return instrumentService.getInstrumentType(stage.getName());
   }
 
   public void setActionWindow(ActionWindow window) {
