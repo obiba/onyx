@@ -10,7 +10,9 @@
 package org.obiba.onyx.jade.core.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
@@ -32,9 +34,9 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
 
   private String instrumentsPath;
 
-  private List<InstrumentType> instrumentTypes;
+  private Map<String, InstrumentType> instrumentTypes;
 
-  public void setInstrumentTypes(List<InstrumentType> instrumentTypes) {
+  public void setInstrumentTypes(Map<String, InstrumentType> instrumentTypes) {
     this.instrumentTypes = instrumentTypes;
   }
 
@@ -42,18 +44,17 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     this.instrumentsPath = instrumentsPath;
   }
 
-  public InstrumentType createInstrumentType(String name, String description) {
-    InstrumentType type = new InstrumentType(name, description);
-    return getPersistenceManager().save(type);
-  }
-
   public InstrumentType getInstrumentType(String name) {
     InstrumentType template = new InstrumentType(name, null);
     return getPersistenceManager().matchOne(template);
   }
 
-  public List<InstrumentType> getInstrumentTypes() {
-    return getPersistenceManager().list(InstrumentType.class);
+  public Map<String,InstrumentType> getInstrumentTypes() {
+    Map<String, InstrumentType> instrumentTypes = new HashMap<String, InstrumentType>();
+    for(InstrumentType instrumentType : getPersistenceManager().list(InstrumentType.class)) {
+      instrumentTypes.put(instrumentType.getName(), instrumentType);
+    }
+    return instrumentTypes;
   }
 
   public List<Instrument> getInstruments(String typeName) {
@@ -75,18 +76,11 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     return getPersistenceManager().match(template);
   }
 
-  public void addInstrument(InstrumentType instrumentType, Instrument instrument) {
-    if(instrumentType != null && instrument != null) {
-      instrumentType.addInstrument(instrument);
-      getPersistenceManager().save(instrumentType);
-    }
-  }
-
-  public boolean isInteractiveInstrument(InstrumentType instrument) {
-    if(instrument == null) return false;
+  public boolean isInteractiveInstrument(InstrumentType instrumentType) {
+    if(instrumentType == null) return false;
 
     InstrumentOutputParameter template = new InstrumentOutputParameter();
-    template.setInstrumentType(instrument);
+    template.setInstrumentType(instrumentType);
     template.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
 
     return getPersistenceManager().count(template) > 0;
@@ -96,10 +90,10 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     return getInstrumentInputParameter(instrument, readOnlySource).size();
   }
 
-  public List<InstrumentInputParameter> getInstrumentInputParameter(InstrumentType instrument, boolean readOnlySource) {
+  public List<InstrumentInputParameter> getInstrumentInputParameter(InstrumentType instrumentType, boolean readOnlySource) {
     List<InstrumentInputParameter> list = new ArrayList<InstrumentInputParameter>();
     InstrumentInputParameter template = new InstrumentInputParameter();
-    template.setInstrumentType(instrument);
+    template.setInstrumentType(instrumentType);
 
     for(InstrumentInputParameter param : getPersistenceManager().match(template)) {
       if(param.getInputSource() != null && param.getInputSource().isReadOnly() == readOnlySource) {
@@ -119,7 +113,7 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     if(instrumentTypes != null && persistenceManager.list(InstrumentType.class).size() == 0) {
 
       log.debug("Persisting InstrumentTypes injected by InstrumentTypeFactory...");
-      for(InstrumentType instrumentType : instrumentTypes) {
+      for(InstrumentType instrumentType : instrumentTypes.values()) {
         log.debug(instrumentType.getName());
 
         persistenceManager.save(instrumentType);

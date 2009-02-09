@@ -12,9 +12,10 @@ package org.obiba.onyx.jade.core.service.impl;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
@@ -55,12 +56,12 @@ public class InstrumentTypeFactoryBean implements FactoryBean, ResourceLoaderAwa
 
   private XStream xstream;
 
-  private List<InstrumentType> instrumentTypes;
+  private Map<String, InstrumentType> instrumentTypes;
 
   private static final String resourceEncoding = "ISO-8859-1";
 
   public InstrumentTypeFactoryBean() {
-    instrumentTypes = new ArrayList<InstrumentType>();
+    instrumentTypes = new HashMap<String, InstrumentType>();
     xstream = new XStream();
     initializeXstream();
   }
@@ -131,7 +132,7 @@ public class InstrumentTypeFactoryBean implements FactoryBean, ResourceLoaderAwa
         throw new IllegalStateException("Instruments list for type " + type.getName() + " is empty.");
       }
 
-      instrumentTypes.add(type);
+      instrumentTypes.put(type.getName(), type);
     }
   }
 

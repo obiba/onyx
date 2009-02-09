@@ -10,6 +10,7 @@
 package org.obiba.onyx.jade.core.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.obiba.onyx.jade.core.domain.instrument.InputSource;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
@@ -29,7 +30,7 @@ public interface InstrumentService {
    * Returns the list of all {@code InstrumentType}s
    * @return all {@code InstrumentType}s
    */
-  public List<InstrumentType> getInstrumentTypes();
+  public Map<String, InstrumentType> getInstrumentTypes();
 
   /**
    * Get the instruments for the given instrument type name.
@@ -51,13 +52,6 @@ public interface InstrumentService {
    * @return
    */
   public List<Instrument> getActiveInstruments(InstrumentType instrumentType);
-
-  /**
-   * Add an instrument to an instrument type.
-   * @param instrumentType
-   * @param instrument
-   */
-  public void addInstrument(InstrumentType instrumentType, Instrument instrument);
 
   /**
    * Shall we expect data from a remote instrument application ?
