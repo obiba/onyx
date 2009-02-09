@@ -10,9 +10,7 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -51,7 +49,7 @@ public class QuestionCategoryLinkPanel extends BaseQuestionCategorySelectionPane
     this.questionModel = new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion());
 
     // add the category label css decorated with images
-    AjaxLink link = new AjaxLink("link") {
+    ImageButton link = new ImageButton("link", new QuestionnaireStringResourceModel(questionCategoryModel, "label")) {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
@@ -79,7 +77,6 @@ public class QuestionCategoryLinkPanel extends BaseQuestionCategorySelectionPane
       }
 
     };
-    link.add(new Label("label", new QuestionnaireStringResourceModel(questionCategoryModel, "label")));
     link.add(new QuestionCategorySelectionBehavior());
     add(link);
 
