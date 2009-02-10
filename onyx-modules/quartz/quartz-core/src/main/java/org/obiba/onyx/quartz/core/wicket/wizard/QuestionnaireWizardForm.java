@@ -130,7 +130,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     if(modalFeedback) {
       log.debug("Modal feedback has been selected.");
       if(!feedbackWindow.isShown()) {
-        feedbackWindow.setContent(new FeedbackModalPanel("content", feedbackWindow));
+        feedbackWindow.setContent(new ModalFeedbackPanel(feedbackWindow));
         feedbackWindow.show(target);
       }
       getFeedbackPanel().setVisible(false);

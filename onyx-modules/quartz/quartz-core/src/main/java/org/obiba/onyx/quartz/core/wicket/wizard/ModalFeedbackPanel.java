@@ -13,14 +13,13 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Panel;
 
 /**
  * This is an alternative feedback panel intended to facilitate error reporting in the context of a touch-screen
  * environment. It is meant to be used in a ModalWindow which is displayed when errors are encountered.
  * 
  */
-public class FeedbackModalPanel extends Panel {
+public class ModalFeedbackPanel extends FeedbackPanel {
 
   private static final long serialVersionUID = 1L;
 
@@ -29,10 +28,8 @@ public class FeedbackModalPanel extends Panel {
    * @param feedbackWindow ModalWindow in which the panel will be displayed.
    */
   @SuppressWarnings("serial")
-  public FeedbackModalPanel(String id, final ModalWindow feedbackWindow) {
-    super(id);
-
-    add(new FeedbackPanel("feedback"));
+  public ModalFeedbackPanel(final ModalWindow feedbackWindow) {
+    super("content");
 
     add(new AjaxLink("close") {
 
