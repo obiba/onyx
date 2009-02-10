@@ -1,0 +1,41 @@
+/*******************************************************************************
+ * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the GNU Public License v3.0.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+package org.obiba.onyx.core.data;
+
+import java.util.Calendar;
+
+/**
+ * Holds the modifiers to be applied to Calendar time.
+ * 
+ * @see Calendar#add(int, int)
+ */
+public class DateModifier {
+
+  private int field;
+
+  private int amount;
+
+  public void modify(Calendar calendar) {
+    calendar.add(field, amount);
+  }
+
+  public DateModifier(int field, int amount) {
+    this.field = field;
+    this.amount = amount;
+  }
+
+  public void setField(int field) {
+    this.field = field;
+  }
+
+  public void setAmount(int amount) {
+    this.amount = amount;
+  }
+}
