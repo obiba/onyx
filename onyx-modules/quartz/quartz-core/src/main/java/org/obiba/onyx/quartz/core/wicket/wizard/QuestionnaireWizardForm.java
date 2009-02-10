@@ -14,6 +14,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
@@ -71,6 +72,10 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   private boolean resuming;
 
+  protected boolean modalFeedback;
+
+  protected ModalWindow feedbackWindow;
+
   //
   // Constructors
   //
@@ -86,6 +91,17 @@ public class QuestionnaireWizardForm extends WizardForm {
 
     // Conclusion step.
     conclusionStep = new ConclusionStep(getStepId());
+
+    createModalFeedbackPanel();
+
+  }
+
+  private void createModalFeedbackPanel() {
+    // Create modal feedback window
+    feedbackWindow = new ModalWindow("feedbackWindow");
+    feedbackWindow.setInitialHeight(200);
+    feedbackWindow.setInitialWidth(400);
+    add(feedbackWindow);
   }
 
   //
@@ -110,7 +126,20 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   public void onError(AjaxRequestTarget target, Form form) {
     log.info("onError={}", Session.get().getFeedbackMessages().iterator().next());
-    target.addComponent(getFeedbackPanel());
+
+    if(modalFeedback) {
+      log.debug("Modal feedback has been selected.");
+      if(!feedbackWindow.isShown()) {
+        feedbackWindow.setContent(new FeedbackModalPanel("content", feedbackWindow));
+        feedbackWindow.show(target);
+      }
+      getFeedbackPanel().setVisible(false);
+    } else {
+      log.debug("Standard feedback has been selected.");
+      getFeedbackPanel().setVisible(true);
+    }
+    getFeedbackPanel().setOutputMarkupPlaceholderTag(true);
+
     target.appendJavascript("resizeWizardContent();");
   }
 
@@ -264,5 +293,13 @@ public class QuestionnaireWizardForm extends WizardForm {
     } else {
       return conclusionStep;
     }
+  }
+
+  public boolean hasModalFeedback() {
+    return modalFeedback;
+  }
+
+  public void setModalFeedback(boolean modalFeedback) {
+    this.modalFeedback = modalFeedback;
   }
 }

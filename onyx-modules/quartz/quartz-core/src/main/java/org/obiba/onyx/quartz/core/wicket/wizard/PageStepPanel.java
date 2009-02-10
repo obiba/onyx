@@ -108,6 +108,16 @@ public class PageStepPanel extends QuestionnaireWizardStepPanel {
     onPageStep(target);
   }
 
+  @Override
+  public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
+    pageLayout.onStepInNext(target);
+  }
+
+  @Override
+  public void onStepInPrevious(WizardForm form, AjaxRequestTarget target) {
+    pageLayout.onStepInPrevious(target);
+  }
+
   //
   // Methods
   //

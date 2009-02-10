@@ -145,4 +145,12 @@ public class DefaultPageLayout extends PageLayout implements IQuestionAnswerChan
     target.appendJavascript("resizeWizardContent();");
   }
 
+  @Override
+  public void onStepInNext(AjaxRequestTarget target) {
+  }
+
+  @Override
+  public void onStepInPrevious(AjaxRequestTarget target) {
+  }
+
 }

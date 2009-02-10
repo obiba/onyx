@@ -34,4 +34,14 @@ public abstract class PageLayout extends Panel {
    */
   public abstract void onPrevious(AjaxRequestTarget target);
 
+  /**
+   * Called when entering this page from a previous page (next link).
+   */
+  public abstract void onStepInNext(AjaxRequestTarget target);
+
+  /**
+   * Called when entering this page from a following page (previous link).
+   */
+  public abstract void onStepInPrevious(AjaxRequestTarget target);
+
 }

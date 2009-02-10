@@ -27,6 +27,9 @@ import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
+import org.obiba.onyx.quartz.core.wicket.wizard.QuestionnaireWizardForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simplified page layout implementation, has a unique question, presented in its self-provided UI, and is NOT able to
@@ -35,6 +38,8 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 public class SimplifiedPageLayout extends PageLayout {
 
   private static final long serialVersionUID = -1757316578083924986L;
+
+  private static final Logger log = LoggerFactory.getLogger(SimplifiedPageLayout.class);
 
   @SpringBean
   private QuestionPanelFactoryRegistry questionPanelFactoryRegistry;
@@ -74,6 +79,7 @@ public class SimplifiedPageLayout extends PageLayout {
   public void onNext(AjaxRequestTarget target) {
     if(questionPanel != null) {
       questionPanel.onNext(target);
+      enableModalFeedback(false);
     }
   }
 
@@ -83,7 +89,28 @@ public class SimplifiedPageLayout extends PageLayout {
   public void onPrevious(AjaxRequestTarget target) {
     if(questionPanel != null) {
       questionPanel.onPrevious(target);
+      enableModalFeedback(false);
     }
+  }
+
+  @Override
+  public void onStepInNext(AjaxRequestTarget target) {
+    if(questionPanel != null) {
+      enableModalFeedback(true);
+    }
+  }
+
+  @Override
+  public void onStepInPrevious(AjaxRequestTarget target) {
+    if(questionPanel != null) {
+      enableModalFeedback(true);
+    }
+  }
+
+  private void enableModalFeedback(boolean isEnable) {
+    log.debug("Modal Feedback is enabled = {}", isEnable);
+    QuestionnaireWizardForm form = (QuestionnaireWizardForm) findParent(QuestionnaireWizardForm.class);
+    form.setModalFeedback(isEnable);
   }
 
   private Question getQuestion(Page page) {
