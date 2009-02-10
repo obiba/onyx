@@ -481,10 +481,9 @@ div.wicket-modal {
 /*************** Wizard ********************/
 
 form.wizard {
-  border-width: 1px;
+  border-width: 2px;
   border-style: solid;
-  border-color: #375FB7;
-  padding:20px;
+  border-color: #c65f02;
 }
 
 form.wizard-consent {
