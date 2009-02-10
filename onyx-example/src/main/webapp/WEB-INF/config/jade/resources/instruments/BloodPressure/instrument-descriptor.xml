@@ -46,6 +46,15 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="operatorSource"></inputSource>
+      <integrityChecks>
+        <rangeCheck>
+          <targetParameter reference="upper_arm_length" />
+          <decimalMinValueMale>20</decimalMinValueMale>
+          <decimalMaxValueMale>60</decimalMaxValueMale>
+          <decimalMinValueFemale>20</decimalMinValueFemale>
+          <decimalMaxValueFemale>60</decimalMaxValueFemale>
+        </rangeCheck>      
+      </integrityChecks>
     </input>
     
     <input id="mid_upper_arm_circ">  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
@@ -54,6 +63,15 @@
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
       <inputSource class="operatorSource"></inputSource>
+      <integrityChecks>
+        <rangeCheck>
+          <targetParameter reference="mid_upper_arm_circ" />
+          <decimalMinValueMale>17</decimalMinValueMale>
+          <decimalMaxValueMale>50</decimalMaxValueMale>
+          <decimalMinValueFemale>17</decimalMinValueFemale>
+          <decimalMaxValueFemale>50</decimalMaxValueFemale>
+        </rangeCheck>    
+      </integrityChecks>  
     </input>
     
     <input id="arm_used">  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
