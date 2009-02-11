@@ -50,7 +50,7 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
    * @param questionCategoryModel
    */
   public AbstractOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
-    this(id, questionModel, questionCategoryModel, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getCategory().getOpenAnswerDefinition()));
+    this(id, questionModel, questionCategoryModel, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getOpenAnswerDefinition()));
   }
 
   /**

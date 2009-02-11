@@ -98,10 +98,13 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
         }
 
         // persist
-        if(getData() != null) {
-          activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
+        if(!getQuestion().isMultiple()) {
+          activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
         } else {
           activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestionCategory());
+        }
+        if(getData() != null) {
+          activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
         }
 
         // close pad modal window
@@ -117,7 +120,11 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
       @Override
       public void onClick(AjaxRequestTarget target) {
         setData(null);
-        activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestionCategory());
+        if(!getQuestion().isMultiple()) {
+          activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
+        } else {
+          activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestionCategory());
+        }
         padWindow.close(target);
       }
 

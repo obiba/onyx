@@ -22,6 +22,7 @@ public class SimplifiedQuestionPanel extends BaseQuestionPanel {
   public SimplifiedQuestionPanel(String id, IModel questionModel) {
     super(id, questionModel);
     setOutputMarkupId(true);
+    setCommentVisible(false);
   }
 
   @Override

@@ -9,11 +9,9 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractMultipleOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.pad.OpenAnswerPadFactory;
 
 /**
  * UI for OpenAnswer having other open answer children.
@@ -22,8 +20,6 @@ public class MultipleSimplifiedOpenAnswerDefinitionPanel extends AbstractMultipl
 
   private static final long serialVersionUID = 1L;
 
-  private ModalWindow padWindow;
-
   /**
    * Constructor.
    * 
@@ -31,14 +27,13 @@ public class MultipleSimplifiedOpenAnswerDefinitionPanel extends AbstractMultipl
    * @param questionModel
    * @param questionCategoryModel
    */
-  public MultipleSimplifiedOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel, ModalWindow padWindow) {
+  public MultipleSimplifiedOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
     super(id, questionModel, questionCategoryModel);
-    this.padWindow = padWindow;
   }
 
   @SuppressWarnings("serial")
   @Override
   protected AbstractOpenAnswerDefinitionPanel newOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
-    return OpenAnswerPadFactory.create(id, questionModel, questionCategoryModel, openAnswerDefinitionModel, padWindow);
+    return new SimplifiedOpenAnswerDefinitionPanel(id, questionModel, questionCategoryModel, openAnswerDefinitionModel);
   }
 }

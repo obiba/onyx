@@ -8,21 +8,22 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 
-import java.util.ArrayList;
-
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.form.CheckGroup;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.form.HiddenField;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.data.GridView;
 import org.apache.wicket.model.IModel;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategoriesView;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultEscapeQuestionCategoriesPanel;
+import org.apache.wicket.model.Model;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListFilter;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListPermutator;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.MultipleDataListFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryOpenAnswerFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,42 +67,39 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
 
     this.parentQuestionCategoryModel = parentQuestionCategoryModel;
 
-    Question question = (Question) getModelObject();
-
     // seams like ugly but we need a form component to run the answer count validator
-    final CheckGroup checkGroup = new CheckGroup("categories", new ArrayList<IModel>());
-    checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
-    checkGroup.add(new AnswerCountValidator(getQuestionModel()));
-    add(checkGroup);
+    HiddenField hidden = new HiddenField("hidden", new Model());
+    hidden.setLabel(new QuestionnaireStringResourceModel(getQuestionModel(), "label"));
+    hidden.add(new AnswerCountValidator(getQuestionModel()));
+    hidden.setRequired(false);
+    add(hidden);
 
-    GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), new QuestionCategoryEscapeFilter(false), new QuestionCategoryListToGridPermutator(getModel())) {
+    // open answers in one row
+    MultipleDataListFilter<QuestionCategory> filter = new MultipleDataListFilter<QuestionCategory>();
+    filter.addFilter(new QuestionCategoryEscapeFilter(false));
+    filter.addFilter(new QuestionCategoryOpenAnswerFilter(true));
+    add(new QuestionCategoryComponentsView("openCategories", getModel(), filter, new QuestionCategoryListToGridPermutator(getModel(), 1)) {
 
       @Override
-      protected void populateItem(Item item) {
-        if(item.getModel() == null) {
-          item.add(new EmptyPanel("input").setVisible(false));
+      protected Component newQuestionCategoryComponent(String id, IModel questionCategoryModel) {
+        OpenAnswerDefinition openAnswerDefinition = ((QuestionCategory) questionCategoryModel.getObject()).getOpenAnswerDefinition();
+        if(openAnswerDefinition.getOpenAnswerDefinitions().size() > 0) {
+          return new MultipleSimplifiedOpenAnswerDefinitionPanel(id, getQuestionModel(), questionCategoryModel);
         } else {
-          item.add(new QuestionCategoryLinkPanel("input", item.getModel()));
+          return new SimplifiedOpenAnswerDefinitionPanel(id, getQuestionModel(), questionCategoryModel, new QuestionnaireModel(openAnswerDefinition));
         }
       }
 
-    };
-    checkGroup.add(repeater);
+    });
 
-    if(hasEscapeQuestionCategories()) {
-      add(new SimplifiedEscapeQuestionCategoriesPanel("escapeCategories", getQuestionModel()));
-    } else {
-      add(new EmptyPanel("escapeCategories").setVisible(false));
-    }
-  }
+    // regular category choice in potentially multiple columns
+    filter = new MultipleDataListFilter<QuestionCategory>();
+    filter.addFilter(new QuestionCategoryEscapeFilter(false));
+    filter.addFilter(new QuestionCategoryOpenAnswerFilter(false));
+    add(new QuestionCategoryLinksView("regularCategories", getModel(), filter, new QuestionCategoryListToGridPermutator(getModel())));
 
-  /**
-   * Escape categories are presented in an additional radio grid view if any.
-   * @return
-   * @see DefaultEscapeQuestionCategoriesPanel
-   */
-  private boolean hasEscapeQuestionCategories() {
-    return ((Question) getModelObject()).hasEscapeCategories();
+    // escape categories in one row
+    add(new QuestionCategoryLinksView("escapeCategories", getQuestionModel(), new QuestionCategoryEscapeFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1)));
   }
 
   private IModel getQuestionModel() {
@@ -109,7 +107,23 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
   }
 
   public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
-    log.debug("onQuestionCategorySelection({}, {}, {})", new Object[] { questionModel, questionCategoryModel, isSelected });
+    log.info("onQuestionCategorySelection({}, {}, {})", new Object[] { questionModel, questionCategoryModel, isSelected });
     target.addComponent(this);
+  }
+
+  /**
+   * Display the category simply as a {@link QuestionCategoryLink}.
+   */
+  @SuppressWarnings("serial")
+  private class QuestionCategoryLinksView extends QuestionCategoryComponentsView {
+
+    public QuestionCategoryLinksView(String id, IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<QuestionCategory> permutator) {
+      super(id, questionModel, filter, permutator);
+    }
+
+    @Override
+    protected Component newQuestionCategoryComponent(String id, IModel questionCategoryModel) {
+      return new QuestionCategoryLink(id, questionCategoryModel);
+    }
   }
 }

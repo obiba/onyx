@@ -41,11 +41,6 @@ public abstract class AbstractMultipleOpenAnswerDefinitionPanel extends Abstract
    */
   public AbstractMultipleOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
     super(id, questionModel, questionCategoryModel);
-    initialize();
-  }
-
-  @SuppressWarnings("serial")
-  private void initialize() {
     setOutputMarkupId(true);
 
     RepeatingView repeating = new RepeatingView("repeating");
@@ -59,7 +54,6 @@ public abstract class AbstractMultipleOpenAnswerDefinitionPanel extends Abstract
       item.add(open = newOpenAnswerDefinitionPanel("open", getQuestionModel(), getQuestionCategoryModel(), new QuestionnaireModel(openAnswerDefinitionChild)));
       abstractOpenAnswerDefinitionPanels.add(open);
     }
-
   }
 
   /**

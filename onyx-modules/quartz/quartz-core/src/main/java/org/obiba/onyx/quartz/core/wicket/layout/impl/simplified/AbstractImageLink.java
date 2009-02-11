@@ -10,19 +10,24 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
 /**
  * 
  */
-public abstract class ImageButton extends Panel {
+public abstract class AbstractImageLink extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  public ImageButton(String id, IModel labelModel) {
+  /**
+   * 
+   * @param id
+   * @param labelModel
+   */
+  public AbstractImageLink(String id, IModel labelModel) {
     this(id, labelModel, null);
   }
 
@@ -31,19 +36,10 @@ public abstract class ImageButton extends Panel {
    * @param labelModel
    * @param descriptionModel
    */
-  public ImageButton(String id, IModel labelModel, IModel descriptionModel) {
+  public AbstractImageLink(String id, IModel labelModel, IModel descriptionModel) {
     super(id, labelModel);
 
-    AjaxLink link = new AjaxLink("link") {
-
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        ImageButton.this.onClick(target);
-      }
-
-    };
+    AbstractLink link = newLink("link");
 
     link.add(new Label("label", labelModel));
     if(descriptionModel != null) {
@@ -55,7 +51,18 @@ public abstract class ImageButton extends Panel {
     add(link);
   }
 
+  protected abstract AbstractLink newLink(String id);
+
   /**
+   * Get the wrapped link.
+   * @return
+   */
+  public AbstractLink getLink() {
+    return (AbstractLink) get("link");
+  }
+
+  /**
+   * Called on link clicked.
    * @param target
    */
   public abstract void onClick(AjaxRequestTarget target);

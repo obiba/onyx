@@ -88,6 +88,10 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
 
   }
 
+  public void setCommentVisible(boolean visible) {
+    get("addCommentModal").setVisible(visible);
+  }
+
   @SuppressWarnings("serial")
   private void addCommentModalWindow(Question question) {
 

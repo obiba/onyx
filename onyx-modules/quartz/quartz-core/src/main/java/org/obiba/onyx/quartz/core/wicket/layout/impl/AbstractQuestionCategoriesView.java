@@ -51,7 +51,10 @@ public abstract class AbstractQuestionCategoriesView extends GridView {
     super(id, new QuestionCategoriesProvider(questionModel, filter, permutator));
 
     QuestionCategoriesProvider provider = ((QuestionCategoriesProvider) getDataProvider());
-    setColumns(provider.getDataListPermutator().getColumnCount());
+    int count = provider.getDataListPermutator().getColumnCount();
+    if(count >= 1) {
+      setColumns(count);
+    }
 
     setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
   }

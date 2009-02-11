@@ -1,12 +1,6 @@
 <wicket:panel>
-	<div class="regular">
-		<span wicket:id="categories">
-			<table style="width:100%">
-				<tr wicket:id="category">
-					<td wicket:id="cols" class="category"><span wicket:id="input"></span></td>
-    			</tr>
-    		</table>
-    	</span>
-	</div>
+	<input type="hidden" wicket:id="hidden" />
+	<div wicket:id="openCategories" class="open" />
+	<div wicket:id="regularCategories" class="regular" />
 	<div wicket:id="escapeCategories" class="escape"/>
 </wicket:panel>
