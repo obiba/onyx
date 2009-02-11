@@ -84,23 +84,10 @@ public class BtrInputGenerator {
 
     putString(bb, inputData.get("INPUT_PARTICIPANT_BARCODE").getValueAsString()); // 68-98
     bb.putInt(Integer.valueOf(inputData.get("INPUT_PARTICIPANT_BARCODE").getValueAsString())); // 99-102
-
-    Data weightData = inputData.get("INPUT_PARTICIPANT_WEIGHT");
-    if(weightData.getValue() != null) {
-      bb.putShort(Short.valueOf(weightData.getValueAsString()));
-    } else {
-      bb.putShort(new Short("0"));
-    }
+    bb.putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_WEIGHT").getValueAsString()));
     WeightUnits.KG.put(bb); // 105-106
-
-    Data heightData = inputData.get("INPUT_PARTICIPANT_HEIGHT");
-    if(heightData.getValue() != null) {
-      bb.putShort(Short.valueOf(heightData.getValueAsString()));
-    } else {
-      bb.putShort(new Short("0"));
-    }
+    bb.putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_HEIGHT").getValueAsString()));
     HeightUnits.CM.put(bb); // 109-110
-
     Gender gender = Gender.valueOf(inputData.get("INPUT_PARTICIPANT_GENDER").getValueAsString());
     gender.put(bb); // 111
     Ethnicity ethnicity = Ethnicity.valueOf(inputData.get("INPUT_PARTICIPANT_ETHNIC_GROUP").getValueAsString());

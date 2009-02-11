@@ -108,9 +108,8 @@
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="outputParameterSource">
-        <instrumentType>StandingHeight</instrumentType>
-        <parameterName>CALC_AVG_HEIGHT</parameterName>
+      <inputSource class="fixedSource">
+        <value>0</value>
       </inputSource>
     </input>
 
@@ -119,21 +118,8 @@
       <measurementUnit>hg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="multipleOutputParameterSource">
-        <outputParameterSourceList>
-          <outputParameterSource>
-            <instrumentType>Impedance310</instrumentType>
-            <parameterName>RES_WEIGHT</parameterName>
-          </outputParameterSource>
-          <outputParameterSource>
-            <instrumentType>Impedance418</instrumentType>
-            <parameterName>RES_WEIGHT</parameterName>
-          </outputParameterSource>
-          <outputParameterSource>
-            <instrumentType>Weight</instrumentType>
-            <parameterName>RES_WEIGHT</parameterName>
-          </outputParameterSource>
-        </outputParameterSourceList>
+      <inputSource class="fixedSource">
+        <value>0</value>
       </inputSource>
     </input>
 
