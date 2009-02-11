@@ -29,6 +29,12 @@ public class FixedDataSource implements IDataSource {
     return unit;
   }
 
+  public FixedDataSource(Data data) {
+    super();
+    this.data = data;
+    this.unit = null;
+  }
+
   public FixedDataSource(Data data, String unit) {
     super();
     this.data = data;

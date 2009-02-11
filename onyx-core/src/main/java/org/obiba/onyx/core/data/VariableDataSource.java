@@ -24,8 +24,6 @@ public class VariableDataSource implements IDataSource {
 
   private String path;
 
-  private String unit = null;
-
   public Data getData(Participant participant) {
 
     if(participant == null) return null;
@@ -33,18 +31,15 @@ public class VariableDataSource implements IDataSource {
     Variable variable = variableDirectory.getVariable(path);
     if(variable != null) {
       VariableData variableData = variableDirectory.getVariableData(participant, path);
-
-      if(variableData != null && variableData.getDatas().size() > 0) {
-        unit = variable.getUnit();
-        return variableData.getDatas().get(0);
-      }
+      if(variableData != null && variableData.getDatas().size() > 0) return variableData.getDatas().get(0);
     }
 
     return null;
   }
 
   public String getUnit() {
-    return unit;
+    Variable variable = variableDirectory.getVariable(path);
+    return (variable != null) ? variable.getUnit() : null;
   }
 
   public VariableDataSource(String path) {

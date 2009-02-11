@@ -54,7 +54,7 @@ public class ModifiedDateSource extends AbstractDataSourceDataModifier {
     return (dateModifiers != null) ? dateModifiers : new ArrayList<DateModifier>();
   }
 
-  public void setDateModifiers(List<DateModifier> dateModifiers) {
-    this.dateModifiers = dateModifiers;
+  public void addDateModifiers(DateModifier dateModifier) {
+    if(dateModifier != null) getDateModifiers().add(dateModifier);
   }
 }

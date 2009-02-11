@@ -9,13 +9,15 @@
  ******************************************************************************/
 package org.obiba.onyx.core.data;
 
+import java.io.Serializable;
+
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.Data;
 
 /**
  * 
  */
-public interface IDataSource {
+public interface IDataSource extends Serializable {
 
   public Data getData(Participant participant);
 

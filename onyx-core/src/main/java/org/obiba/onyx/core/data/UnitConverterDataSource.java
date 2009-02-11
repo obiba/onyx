@@ -21,19 +21,20 @@ import org.obiba.onyx.util.data.DataType;
  */
 public class UnitConverterDataSource extends AbstractDataSourceDataModifier {
 
-  Unit unit;
+  private String unit;
 
   @Override
   protected Data modify(Data data) {
 
     if(data == null) return null;
     if(!data.getType().isNumberType()) throw new IllegalArgumentException("DataType of number kind expected, " + data.getType() + " received.");
-    if(getInnerSource().getUnit() == null) throw new IllegalArgumentException("Unit source cannot be null.");
+    if(getWrapperSource().getUnit() == null) throw new IllegalArgumentException("Unit source cannot be null.");
 
-    Unit sourceUnit = Unit.valueOf(getInnerSource().getUnit());
+    Unit sourceUnit = Unit.valueOf(getWrapperSource().getUnit());
+    Unit targetUnit = Unit.valueOf(unit);
 
-    double newValue = sourceUnit.getConverterTo(unit).convert(Double.parseDouble(data.getValueAsString()));
-    if(unit.getDimension().equals(Dimension.TIME)) return DataBuilder.buildInteger(Math.round(Math.floor(newValue)));
+    double newValue = sourceUnit.getConverterTo(targetUnit).convert(Double.parseDouble(data.getValueAsString()));
+    if(targetUnit.getDimension().equals(Dimension.TIME)) return DataBuilder.buildInteger(Math.round(Math.floor(newValue)));
     if(data.getType().equals(DataType.INTEGER)) return DataBuilder.buildInteger(Math.round(newValue));
 
     return DataBuilder.build(data.getType(), String.valueOf(newValue));
@@ -52,7 +53,7 @@ public class UnitConverterDataSource extends AbstractDataSourceDataModifier {
   public UnitConverterDataSource(IDataSource iDataSource, String unit) {
     super(iDataSource);
     if(unit == null) throw new IllegalArgumentException("Target unit cannot be null.");
-    this.unit = Unit.valueOf(unit);
+    this.unit = unit;
   }
 
 }

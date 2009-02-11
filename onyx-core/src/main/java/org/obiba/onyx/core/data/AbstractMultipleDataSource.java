@@ -23,8 +23,8 @@ public abstract class AbstractMultipleDataSource implements IDataSource {
     return (iDataSources != null) ? iDataSources : new ArrayList<IDataSource>();
   }
 
-  public void setIDataSources(List<IDataSource> iDataSources) {
-    this.iDataSources = iDataSources;
+  public void addIDataSources(IDataSource iDataSource) {
+    if(iDataSource != null) getIDataSources().add(iDataSource);
   }
 
   public AbstractMultipleDataSource(List<IDataSource> iDataSources) {

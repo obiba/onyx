@@ -17,27 +17,17 @@ import org.obiba.onyx.util.data.Data;
  */
 public abstract class AbstractDataSourceDataModifier extends AbstractDataSourceWrapper {
 
-  private IDataSource innerSource;
-
   public Data getData(Participant participant) {
-    Data data = innerSource.getData(participant);
+    Data data = getWrapperSource().getData(participant);
     return modify(data);
   }
 
   public String getUnit() {
-    return innerSource.getUnit();
+    return getWrapperSource().getUnit();
   }
 
   protected AbstractDataSourceDataModifier(IDataSource iDataSource) {
-    this.innerSource = iDataSource;
-  }
-
-  public IDataSource getInnerSource() {
-    return innerSource;
-  }
-
-  public void setInnerSource(IDataSource innerSource) {
-    this.innerSource = innerSource;
+    setWrapperSource(iDataSource);
   }
 
   protected abstract Data modify(Data data);

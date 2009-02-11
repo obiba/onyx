@@ -14,4 +14,14 @@ package org.obiba.onyx.core.data;
  */
 public abstract class AbstractDataSourceWrapper implements IDataSource {
 
+  private IDataSource wrapperSource;
+
+  public IDataSource getWrapperSource() {
+    return wrapperSource;
+  }
+
+  public void setWrapperSource(IDataSource wrapperSource) {
+    this.wrapperSource = wrapperSource;
+  }
+
 }

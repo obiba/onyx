@@ -11,6 +11,8 @@ package org.obiba.onyx.core.data;
 
 import java.util.List;
 
+import javax.persistence.Transient;
+
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.Data;
 
@@ -19,9 +21,15 @@ import org.obiba.onyx.util.data.Data;
  */
 public class FirstNotNullDataSource extends AbstractMultipleDataSource {
 
+  @Transient
   private IDataSource firstDataSource = null;
 
+  @Transient
+  private boolean isGetDataCalled = false;
+
   public Data getData(Participant participant) {
+    isGetDataCalled = true;
+
     for(IDataSource dataSource : getIDataSources()) {
       Data data = dataSource.getData(participant);
       if(data != null && data.getValue() != null) {
@@ -33,6 +41,7 @@ public class FirstNotNullDataSource extends AbstractMultipleDataSource {
   }
 
   public String getUnit() {
+    if(isGetDataCalled == false) throw new IllegalStateException("getUnit() cannot be called before finding the corresponding data by calling getData()");
     return (firstDataSource != null) ? firstDataSource.getUnit() : null;
   }
 
