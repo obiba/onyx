@@ -131,7 +131,7 @@
   </stage>
 
   <stage>
-    <name>Impedence310</name>
+    <name>Impedance310</name>
     <module>jade</module>
     <stageDependencyCondition class="multipleCondition">
       <operator>AND</operator>
@@ -186,8 +186,8 @@
         </variableCondition>
         <inverseCondition>
           <stageDependencyCondition class="variableCondition">
-            <stageName>Impedence310</stageName>
-            <variablePath>/Onyx/Impedence310/Output/RES_WEIGHT</variablePath>
+            <stageName>Impedance310</stageName>
+            <variablePath>/Onyx/Impedance310/Output/RES_WEIGHT</variablePath>
           </stageDependencyCondition>
         </inverseCondition>
       </conditions>
@@ -225,8 +225,8 @@
           <operator>OR</operator>
           <conditions>
             <variableCondition>
-              <stageName>Impedence310</stageName>
-              <variablePath>/Onyx/Impedence310/Output/RES_WEIGHT</variablePath>
+              <stageName>Impedance310</stageName>
+              <variablePath>/Onyx/Impedance310/Output/RES_WEIGHT</variablePath>
             </variableCondition>
             <variableCondition>
               <stageName>Weight</stageName>

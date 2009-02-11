@@ -52,7 +52,7 @@ public class InstrumentTypeFactoryBeanTest {
   public void testInstruments() {
 
     // Testing instruments
-    Assert.assertEquals(1, instrumentTypes.get("Impedence310").getInstruments().size());
+    Assert.assertEquals(1, instrumentTypes.get("Impedance310").getInstruments().size());
     Assert.assertEquals(2, instrumentTypes.get("BloodPressure").getInstruments().size());
     Assert.assertEquals(1, instrumentTypes.get("StandingHeight").getInstruments().size());
     Assert.assertEquals(1, instrumentTypes.get("ECG").getInstruments().size());

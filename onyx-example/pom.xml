@@ -130,7 +130,7 @@
                   <artifactId>interface-bioimpedance-tanita-bc418</artifactId>
                   <type>zip</type>
                   <outputDirectory>
-                    ${project.build.directory}/${project.build.finalName}/instruments/Impedence418
+                    ${project.build.directory}/${project.build.finalName}/instruments/Impedance418
                   </outputDirectory>
                 </artifactItem>
                 <artifactItem>
@@ -138,7 +138,7 @@
                   <artifactId>interface-bioimpedance-tanita-tbf310</artifactId>
                   <type>zip</type>
                   <outputDirectory>
-                    ${project.build.directory}/${project.build.finalName}/instruments/Impedence310
+                    ${project.build.directory}/${project.build.finalName}/instruments/Impedance310
                   </outputDirectory>
                 </artifactItem>
                 <artifactItem>
