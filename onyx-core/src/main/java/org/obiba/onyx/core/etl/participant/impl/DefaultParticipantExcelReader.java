@@ -474,7 +474,7 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
   }
 
   private void checkValueAllowed(ParticipantAttribute attribute, Data data) {
-    List<String> allowedValues = attribute.getAllowedValues();
+    Set<String> allowedValues = attribute.getAllowedValues();
 
     if(!allowedValues.isEmpty()) {
       String textValue = data.getValue();

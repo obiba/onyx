@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.obiba.onyx.wicket.data.validation.converter.DataValidatorConverter;
 import org.springframework.core.io.Resource;
 
 import com.thoughtworks.xstream.XStream;
@@ -36,6 +37,9 @@ public class ParticipantAttributeReader {
 
     // Create an alias for ParticipantAttribute nodes
     xstream.alias("attribute", ParticipantAttribute.class);
+
+    // Use DataValidatorConverter to allow easier aliases for validator nodes
+    xstream.registerConverter(new DataValidatorConverter().createAliases(xstream));
   }
 
   //

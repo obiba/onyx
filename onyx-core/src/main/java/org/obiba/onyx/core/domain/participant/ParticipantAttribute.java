@@ -12,9 +12,12 @@ package org.obiba.onyx.core.domain.participant;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.onyx.wicket.data.IDataValidator;
 
 /**
  * Participant attribute.
@@ -30,7 +33,7 @@ public class ParticipantAttribute implements Serializable {
 
   private DataType type;
 
-  private List<String> allowedValues;
+  private Set<String> allowedValues;
 
   private boolean assignableAtEnrollment;
 
@@ -42,9 +45,19 @@ public class ParticipantAttribute implements Serializable {
 
   private boolean editableAfterReception;
 
+  private List<IDataValidator> iDataValidators;
+
   //
   // Methods
   //
+
+  public List<IDataValidator> getIDataValidators() {
+    return (iDataValidators != null) ? iDataValidators : new ArrayList<IDataValidator>();
+  }
+
+  public void addIDataValidators(IDataValidator dataValidator) {
+    getIDataValidators().add(dataValidator);
+  }
 
   /**
    * Sets the name of the attribute.
@@ -87,9 +100,9 @@ public class ParticipantAttribute implements Serializable {
    * 
    * @param allowedValues allowed values of attribute
    */
-  public void setAllowedValues(List<String> allowedValues) {
+  public void setAllowedValues(Set<String> allowedValues) {
     if(this.allowedValues == null) {
-      this.allowedValues = new ArrayList<String>();
+      this.allowedValues = new LinkedHashSet<String>();
     } else {
       this.allowedValues.clear();
     }
@@ -104,11 +117,11 @@ public class ParticipantAttribute implements Serializable {
    * 
    * @return allowed values of attribute
    */
-  public List<String> getAllowedValues() {
+  public Set<String> getAllowedValues() {
     if(allowedValues == null) {
-      allowedValues = new ArrayList<String>();
+      allowedValues = new LinkedHashSet<String>();
     }
-    return Collections.unmodifiableList(allowedValues);
+    return Collections.unmodifiableSet(allowedValues);
   }
 
   /**

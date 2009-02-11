@@ -17,6 +17,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -99,7 +100,7 @@ public class ParticipantMetadataTest {
     assertEquals(editableAfterReception, attribute.isEditableAfterReception());
 
     // Verify allowed values.
-    List<String> allowedValues = attribute.getAllowedValues();
+    Set<String> allowedValues = attribute.getAllowedValues();
     assertNotNull(allowedValues);
 
     if(expectedAllowedValues != null) {
