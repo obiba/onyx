@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
-import java.util.Map;
+import java.io.Serializable;
 
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
@@ -24,14 +24,14 @@ import org.springframework.context.ApplicationContext;
  * @author cag-dspathis
  * 
  */
-public interface IntegrityCheck {
+public interface IntegrityCheck extends Serializable {
 
   /**
    * Returns the type of check.
    * 
    * @return check type
    */
-  public IntegrityCheckType getType(); 
+  public IntegrityCheckType getType();
 
   /**
    * Sets the parameter to which this check is applied.
@@ -59,22 +59,21 @@ public interface IntegrityCheck {
    * @return <code>true</code> if the value passes the check
    */
   public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService);
-    
+
   /**
    * Returns a (localized) description of the check performed.
    * 
-   * If a check's behaviour varies based on features of the measurement context, the 
-   * check's description may also be different in different contexts. For example, a 
-   * range check that specifies different ranges for male and female participants may
-   * return one description when the current participant is male and another when the 
-   * current participant is female. 
+   * If a check's behaviour varies based on features of the measurement context, the check's description may also be
+   * different in different contexts. For example, a range check that specifies different ranges for male and female
+   * participants may return one description when the current participant is male and another when the current
+   * participant is female.
    * 
    * @param activeRunService service used to query the measurement context
    * @return localized description
    */
   public String getDescription(ActiveInstrumentRunService activeRunService);
-  
+
   public void setApplicationContext(ApplicationContext context);
-  
+
   public void setUserSessionService(UserSessionService userSessionService);
 }

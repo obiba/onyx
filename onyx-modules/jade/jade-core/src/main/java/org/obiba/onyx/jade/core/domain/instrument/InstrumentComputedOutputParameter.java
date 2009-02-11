@@ -12,25 +12,12 @@ package org.obiba.onyx.jade.core.domain.instrument;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-
-@Entity
-@DiscriminatorValue("InstrumentComputedOutputParameter")
 public class InstrumentComputedOutputParameter extends InstrumentOutputParameter {
 
   private static final long serialVersionUID = -4217317349036043214L;
 
-  @ManyToMany
-  @JoinTable(name = "instrument_computed_output", joinColumns = @JoinColumn(name = "instrument_computed_output_parameter_id"), inverseJoinColumns = @JoinColumn(name = "instrument_parameter_id"))
   private List<InstrumentParameter> outputs;
 
-  @Enumerated(EnumType.STRING)
   private InstrumentOutputParameterAlgorithm algorithm;
 
   public InstrumentComputedOutputParameter() {

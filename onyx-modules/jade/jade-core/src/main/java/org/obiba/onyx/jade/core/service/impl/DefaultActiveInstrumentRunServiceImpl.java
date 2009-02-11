@@ -66,7 +66,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     InstrumentRun currentRun = new InstrumentRun();
     currentRun.setParticipant(participant);
-    currentRun.setInstrumentType(instrumentType);
+    currentRun.setInstrumentType(instrumentType.getName());
     currentRun.setStatus(InstrumentRunStatus.IN_PROGRESS);
     currentRun.setTimeStart(new Date());
     currentRun.setUser(userSessionService.getUser());
@@ -97,11 +97,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public InstrumentType getInstrumentType() {
-    // NOTE: InstrumentRun will be modified later to store the name of the instrument type
-    // rather than the instrument type itself. At that point, this code should be modified to
-    // to look up instrument type name directly (not via the instrument type which we are looking
-    // for!).
-    String instrumentTypeName = getInstrumentRun().getInstrumentType().getName();
+    String instrumentTypeName = getInstrumentRun().getInstrumentType();
 
     return instrumentService.getInstrumentType(instrumentTypeName);
   }
@@ -115,12 +111,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public InstrumentParameter getParameterByCode(String code) {
-    for(InstrumentParameter parameter : getInstrumentType().getInstrumentParameters()) {
-      if(parameter.getCode().equals(code)) {
-        return parameter;
-      }
-    }
-    return null;
+    return instrumentService.getParameterByCode(getInstrumentType(), code);
   }
 
   public InstrumentParameter getParameterByVendorName(String vendorName) {
@@ -168,21 +159,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public List<InstrumentInputParameter> getInputParameters(boolean readOnly) {
-    List<InstrumentInputParameter> inputParameters = new ArrayList<InstrumentInputParameter>();
-
-    InstrumentType instrumentType = getInstrumentType();
-
-    for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
-      if(parameter instanceof InstrumentInputParameter) {
-        InstrumentInputParameter inputParameter = (InstrumentInputParameter) parameter;
-
-        if(inputParameter.getInputSource().isReadOnly() == readOnly) {
-          inputParameters.add(inputParameter);
-        }
-      }
-    }
-
-    return inputParameters;
+    return instrumentService.getInstrumentInputParameter(getInstrumentType(), readOnly);
   }
 
   public boolean hasInputParameter(InstrumentParameterCaptureMethod captureMethod) {
@@ -232,22 +209,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public List<InstrumentOutputParameter> getOutputParameters(InstrumentParameterCaptureMethod captureMethod) {
-    List<InstrumentOutputParameter> outputParameters = new ArrayList<InstrumentOutputParameter>();
-
-    InstrumentType instrumentType = getInstrumentType();
-
-    for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
-      if(parameter instanceof InstrumentOutputParameter) {
-        InstrumentOutputParameter outputParameter = (InstrumentOutputParameter) parameter;
-        InstrumentParameterCaptureMethod outputParameterCaptureMethod = outputParameter.getCaptureMethod();
-
-        if(outputParameterCaptureMethod.equals(captureMethod)) {
-          outputParameters.add(outputParameter);
-        }
-      }
-    }
-
-    return outputParameters;
+    return instrumentService.getOutputParameters(getInstrumentType(), captureMethod);
   }
 
   public boolean hasOutputParameter(boolean automatic) {
@@ -310,7 +272,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
         InstrumentRunValue runValue = getInstrumentRunValue(outputParameter);
 
         // Don't include parameters that haven't been assigned a value.
-        if(runValue == null || runValue.getData() == null || runValue.getData().getValue() == null) {
+        if(runValue == null || runValue.getData(outputParameter.getDataType()) == null || runValue.getData(outputParameter.getDataType()).getValue() == null) {
           continue;
         }
 
@@ -320,7 +282,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
             continue;
           }
 
-          if(!check.checkParameterValue(runValue.getData(), null, this)) {
+          if(!check.checkParameterValue(runValue.getData(outputParameter.getDataType()), null, this)) {
             paramsWithWarnings.add(outputParameter);
           }
         }
@@ -401,7 +363,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
       maxRecur--;
     }
     if(!dependentComputedParameters.isEmpty()) {
-      log.warn("Computed Parameters depend on others not ready to calculate. Instrument: {}", currentRun.getInstrumentType().getName());
+      log.warn("Computed Parameters depend on others not ready to calculate. Instrument: {}", currentRun.getInstrumentType());
     }
   }
 
@@ -413,7 +375,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     InstrumentParameter instrumentOutputParameter = getParameterByCode(parameterCode);
 
     if(instrumentOutputParameter == null) {
-      throw new IllegalArgumentException("No such output parameter code for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterCode);
+      throw new IllegalArgumentException("No such output parameter code for instrument " + currentRun.getInstrumentType() + " :" + parameterCode);
     }
 
     return getInstrumentRunValue(instrumentOutputParameter);
@@ -427,7 +389,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     InstrumentParameter instrumentOutputParameter = getParameterByVendorName(parameterVendorName);
 
     if(instrumentOutputParameter == null) {
-      throw new IllegalArgumentException("No such output parameter vendor name for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterVendorName);
+      throw new IllegalArgumentException("No such output parameter vendor name for instrument " + currentRun.getInstrumentType() + " :" + parameterVendorName);
     }
 
     return getInstrumentRunValue(instrumentOutputParameter);
@@ -441,7 +403,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     InstrumentParameter instrumentInputParameter = getParameterByCode(parameterCode);
 
     if(instrumentInputParameter == null) {
-      throw new IllegalArgumentException("No such input parameter code for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterCode);
+      throw new IllegalArgumentException("No such input parameter code for instrument " + currentRun.getInstrumentType() + " :" + parameterCode);
     }
 
     return getInstrumentRunValue(instrumentInputParameter);
@@ -455,7 +417,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     InstrumentParameter instrumentInterpretativeParameter = getParameterByCode(parameterCode);
 
     if(instrumentInterpretativeParameter == null) {
-      throw new IllegalArgumentException("No such interpretative parameter code for instrument " + currentRun.getInstrumentType().getName() + " :" + parameterCode);
+      throw new IllegalArgumentException("No such interpretative parameter code for instrument " + currentRun.getInstrumentType() + " :" + parameterCode);
     }
 
     return getInstrumentRunValue(instrumentInterpretativeParameter);
@@ -467,7 +429,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     if(instrumentRun == null) throw new IllegalArgumentException("Cannot retrieve a run value from a null instrument run.");
 
     InstrumentRunValue valueTemplate = new InstrumentRunValue();
-    valueTemplate.setInstrumentParameter(parameter);
+    valueTemplate.setInstrumentParameter(parameter.getCode());
     valueTemplate.setInstrumentRun(instrumentRun);
 
     InstrumentRunValue parameterValue = getPersistenceManager().matchOne(valueTemplate);
@@ -487,9 +449,9 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
       final InstrumentRunValue runValue = getInstrumentRunValue(param);
       Data data = inputDataSourceVisitor.getData(getParticipant(), param);
       if(data != null) {
-        if(!data.getType().equals(runValue.getDataType())) {
+        if(!data.getType().equals(param.getDataType())) {
           UnitParameterValueConverter converter = new UnitParameterValueConverter();
-          converter.convert(runValue, data);
+          converter.convert(param, runValue, data);
         } else {
           runValue.setData(data);
         }
@@ -524,11 +486,17 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public Contraindication getContraindication() {
-    return getInstrumentRun().getContraindication();
+    InstrumentType instrumentType = getInstrumentType();
+    InstrumentRun instrumentRun = getInstrumentRun();
+
+    for(Contraindication ci : instrumentType.getContraindications()) {
+      if(ci.getCode().equals(instrumentRun.getContraindication())) return ci;
+    }
+    return null;
   }
 
   public boolean isContraindicated() {
-    return getInstrumentRun().isContraindicated();
+    return getInstrumentRun().getContraindication() != null;
   }
 
   public void setContraindication(Contraindication contraindication) {
@@ -607,26 +575,26 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     for(InstrumentParameter p : computedParam.getInstrumentParameters()) {
       count++;
       InstrumentRunValue runValue = currentRun.getInstrumentRunValue(p);
-      if(runValue.getDataType().equals(DataType.DECIMAL)) {
-        Double value = runValue.getValue();
+      if(p.getDataType().equals(DataType.DECIMAL)) {
+        Double value = runValue.getValue(p.getDataType());
         sum += value;
-      } else if(runValue.getDataType().equals(DataType.INTEGER)) {
-        Long value = runValue.getValue();
+      } else if(p.getDataType().equals(DataType.INTEGER)) {
+        Long value = runValue.getValue(p.getDataType());
         sum += value.doubleValue();
       }
     }
     double avg = sum / count;
 
     Serializable avgValue = null;
-    if(computedRunValue.getDataType().equals(DataType.DECIMAL)) {
+    if(computedParam.getDataType().equals(DataType.DECIMAL)) {
       long avgInt = Math.round(avg * 100);
       avgValue = (double) avgInt / 100;
-    } else if(computedRunValue.getDataType().equals(DataType.INTEGER)) {
+    } else if(computedParam.getDataType().equals(DataType.INTEGER)) {
       avgValue = Math.round(avg);
     }
 
     if(avgValue != null) {
-      computedRunValue.setData(new Data(computedRunValue.getDataType(), avgValue));
+      computedRunValue.setData(new Data(computedParam.getDataType(), avgValue));
     }
 
     return computedRunValue;
@@ -650,30 +618,30 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     Double value0 = 0.0;
     Double value1 = 0.0;
 
-    if(runValue0.getDataType().equals(DataType.DECIMAL)) {
-      value0 = runValue0.getValue();
-    } else if(runValue0.getDataType().equals(DataType.INTEGER)) {
-      Long valueInt = runValue0.getValue();
+    if(parameters.get(0).getDataType().equals(DataType.DECIMAL)) {
+      value0 = runValue0.getValue(DataType.DECIMAL);
+    } else if(parameters.get(0).getDataType().equals(DataType.INTEGER)) {
+      Long valueInt = runValue0.getValue(DataType.INTEGER);
       value0 = Double.valueOf(valueInt);
     }
-    if(runValue1.getDataType().equals(DataType.DECIMAL)) {
-      value1 = runValue1.getValue();
-    } else if(runValue1.getDataType().equals(DataType.INTEGER)) {
-      Long valueInt = runValue1.getValue();
+    if(parameters.get(1).getDataType().equals(DataType.DECIMAL)) {
+      value1 = runValue1.getValue(DataType.DECIMAL);
+    } else if(parameters.get(1).getDataType().equals(DataType.INTEGER)) {
+      Long valueInt = runValue1.getValue(DataType.INTEGER);
       value1 = Double.valueOf(valueInt);
     }
     double diff = value0 - value1;
 
     Serializable diffValue = null;
-    if(computedRunValue.getDataType().equals(DataType.DECIMAL)) {
+    if(computedParam.getDataType().equals(DataType.DECIMAL)) {
       long diffInt = Math.round(diff * 100);
       diffValue = (double) diffInt / 100;
-    } else if(computedRunValue.getDataType().equals(DataType.INTEGER)) {
+    } else if(computedParam.getDataType().equals(DataType.INTEGER)) {
       diffValue = Math.round(diff);
     }
 
     if(diffValue != null) {
-      computedRunValue.setData(new Data(computedRunValue.getDataType(), diffValue));
+      computedRunValue.setData(new Data(computedParam.getDataType(), diffValue));
     }
 
     return computedRunValue;
@@ -696,16 +664,16 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     Double value0 = 0.0;
     Double value1 = 0.0;
 
-    if(runValue0.getDataType().equals(DataType.DECIMAL)) {
-      value0 = runValue0.getValue();
-    } else if(runValue0.getDataType().equals(DataType.INTEGER)) {
-      Long valueInt = runValue0.getValue();
+    if(parameters.get(0).getDataType().equals(DataType.DECIMAL)) {
+      value0 = runValue0.getValue(DataType.DECIMAL);
+    } else if(parameters.get(0).getDataType().equals(DataType.INTEGER)) {
+      Long valueInt = runValue0.getValue(DataType.INTEGER);
       value0 = Double.valueOf(valueInt);
     }
-    if(runValue1.getDataType().equals(DataType.DECIMAL)) {
-      value1 = runValue1.getValue();
-    } else if(runValue1.getDataType().equals(DataType.INTEGER)) {
-      Long valueInt = runValue1.getValue();
+    if(parameters.get(1).getDataType().equals(DataType.DECIMAL)) {
+      value1 = runValue1.getValue(DataType.DECIMAL);
+    } else if(parameters.get(1).getDataType().equals(DataType.INTEGER)) {
+      Long valueInt = runValue1.getValue(DataType.INTEGER);
       value1 = Double.valueOf(valueInt);
     }
 
@@ -715,15 +683,15 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     double ratio = value0 / value1;
 
     Serializable ratioValue = null;
-    if(computedRunValue.getDataType().equals(DataType.DECIMAL)) {
+    if(computedParam.getDataType().equals(DataType.DECIMAL)) {
       long ratioInt = Math.round(ratio * 100);
       ratioValue = (double) ratioInt / 100;
-    } else if(computedRunValue.getDataType().equals(DataType.INTEGER)) {
+    } else if(computedParam.getDataType().equals(DataType.INTEGER)) {
       ratioValue = Math.round(ratio);
     }
 
     if(ratioValue != null) {
-      computedRunValue.setData(new Data(computedRunValue.getDataType(), ratioValue));
+      computedRunValue.setData(new Data(computedParam.getDataType(), ratioValue));
     }
 
     return computedRunValue;

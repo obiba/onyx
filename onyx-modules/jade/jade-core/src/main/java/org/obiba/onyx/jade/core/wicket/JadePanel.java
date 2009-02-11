@@ -31,7 +31,6 @@ import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardPanel;
-import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 
 public class JadePanel extends Panel implements IEngineComponentAware {
 
@@ -59,7 +58,7 @@ public class JadePanel extends Panel implements IEngineComponentAware {
   public JadePanel(String id, Stage stage) {
     super(id);
     InstrumentType type = getInstrumentType(stage);
-    setModel(model = new JadeModel(new StageModel(moduleRegistry, stage.getName()), new DetachableEntityModel(queryService, type)));
+    setModel(model = new JadeModel(new StageModel(moduleRegistry, stage.getName()), new InstrumentTypeModel(type)));
 
     add(new WizardPanel("content", model.getIntrumentTypeModel()) {
 

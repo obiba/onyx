@@ -11,6 +11,7 @@ package org.obiba.onyx.jade.engine.variable.impl;
 
 import java.util.List;
 
+import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
@@ -163,9 +164,11 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
       InstrumentRun run = getInstrumentRun(participant, getInstrumentTypeVariable(variable).getName());
       if(run != null) {
         if(variable.getName().equals(CONTRAINDICATION_CODE) && run.getContraindication() != null) {
-          rval = DataBuilder.buildText(run.getContraindication().getCode());
+          rval = DataBuilder.buildText(run.getContraindication());
         } else if(variable.getName().equals(CONTRAINDICATION_TYPE) && run.getContraindication() != null) {
-          rval = DataBuilder.buildText(run.getContraindication().getType().toString());
+          InstrumentType instrumentType = instrumentService.getInstrumentType(getInstrumentTypeVariable(variable).getName());
+          Contraindication contraindication = instrumentService.getContraindication(instrumentType, run.getContraindication());
+          rval = DataBuilder.buildText(contraindication.getType().toString());
         }
       }
     } else if(variable.getParent().getName().equals(INSTRUMENT_RUN)) {
@@ -188,10 +191,11 @@ public class DefaultInstrumentTypeToVariableMappingStrategy implements IInstrume
       InstrumentType type = instrumentService.getInstrumentType(instrumentTypeName);
       if(type == null) return null;
 
+      InstrumentParameter parameter = instrumentService.getParameterByCode(type, parameterCode);
       InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, type, parameterCode);
 
       if(runValue != null) {
-        rval = runValue.getData();
+        rval = runValue.getData(parameter.getDataType());
       }
     }
 

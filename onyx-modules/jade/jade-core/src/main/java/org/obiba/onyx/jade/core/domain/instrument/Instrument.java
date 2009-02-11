@@ -13,8 +13,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -26,6 +24,9 @@ import org.obiba.core.domain.AbstractEntity;
 public class Instrument extends AbstractEntity {
 
   private static final long serialVersionUID = 14533453L;
+
+  @Column(length = 200)
+  private String type;
 
   @Column(length = 200)
   @Index(name = "name_index")
@@ -46,13 +47,15 @@ public class Instrument extends AbstractEntity {
   @Enumerated(EnumType.STRING)
   private InstrumentStatus status;
 
-  // insertable and updatable are set to false so that the bi-directional relation
-  // is managed by the parent instead of this class
-  @ManyToOne
-  @JoinColumn(name = "instrument_type_id", insertable = false, updatable = false)
-  private InstrumentType instrumentType;
-
   public Instrument() {
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
   }
 
   public String getName() {
@@ -102,13 +105,4 @@ public class Instrument extends AbstractEntity {
   public void setStatus(InstrumentStatus status) {
     this.status = status;
   }
-
-  public InstrumentType getInstrumentType() {
-    return instrumentType;
-  }
-
-  public void setInstrumentType(InstrumentType instrumentType) {
-    this.instrumentType = instrumentType;
-  }
-
 }

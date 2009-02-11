@@ -32,7 +32,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
@@ -45,6 +44,7 @@ import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
+import org.obiba.onyx.jade.core.wicket.InstrumentRunValueDataModel;
 import org.obiba.onyx.jade.core.wicket.instrument.validation.IntegrityCheckValidator;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
@@ -154,7 +154,7 @@ public class InstrumentInputParameterPanel extends Panel {
 
         item.add(new Label("label", new MessageSourceResolvableStringModel(param.getLabel())));
 
-        Data data = activeInstrumentRunService.getInstrumentRunValue(param).getData();
+        Data data = activeInstrumentRunService.getInstrumentRunValue(param).getData(param.getDataType());
         final String defaultDataValue = data != null ? data.getValueAsString() : null;
 
         // radio group without default selection
@@ -263,7 +263,7 @@ public class InstrumentInputParameterPanel extends Panel {
 
         DataField field;
         if(choices != null && choices.size() > 0) {
-          field = new DataField("field", new PropertyModel(runValueModel, "data"), runValue.getDataType(), choices, new IChoiceRenderer() {
+          field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), choices, new IChoiceRenderer() {
 
             public Object getDisplayValue(Object object) {
               Data data = (Data) object;
@@ -277,7 +277,7 @@ public class InstrumentInputParameterPanel extends Panel {
 
           }, param.getMeasurementUnit());
         } else {
-          field = new DataField("field", new PropertyModel(runValueModel, "data"), runValue.getDataType(), param.getMeasurementUnit());
+          field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), param.getMeasurementUnit());
         }
         field.setRequired(true);
         field.setLabel(new MessageSourceResolvableStringModel(param.getLabel()));
@@ -287,8 +287,8 @@ public class InstrumentInputParameterPanel extends Panel {
           }
         });
 
-        if(runValue.getDataType().equals(DataType.TEXT) && (field.getField().getClass().equals(TextField.class) || field.getField().getClass().equals(TextArea.class))) {
-          field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(2000), runValue.getDataType()));
+        if(param.getDataType().equals(DataType.TEXT) && (field.getField().getClass().equals(TextField.class) || field.getField().getClass().equals(TextArea.class))) {
+          field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(2000), param.getDataType()));
         }
 
         IntegrityCheckValidator.addChecks(field, param.getIntegrityChecks());

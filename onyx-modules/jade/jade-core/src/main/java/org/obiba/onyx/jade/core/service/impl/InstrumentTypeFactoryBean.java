@@ -20,7 +20,6 @@ import java.util.Set;
 
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.jade.core.domain.instrument.FixedSource;
-import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
@@ -74,10 +73,9 @@ public class InstrumentTypeFactoryBean implements FactoryBean, ResourceLoaderAwa
     this.resolver = (ResourcePatternResolver) resourceLoader;
   }
 
-  protected void initializeXstream() {
+  private void initializeXstream() {
     xstream.setMode(XStream.ID_REFERENCES);
     xstream.alias("instrumentType", InstrumentType.class);
-    xstream.alias("instrument", Instrument.class);
     xstream.alias("contraIndication", Contraindication.class);
     xstream.alias("contraindication", Contraindication.class);
     xstream.alias("interpretative", InterpretativeParameter.class);
@@ -125,11 +123,6 @@ public class InstrumentTypeFactoryBean implements FactoryBean, ResourceLoaderAwa
           log.error("Instrument descriptor for type {} is invalid. Multiple parameters with the same code '{}' are defined. Parameter codes must be unique for an instrument type.", type.getName(), parameter.getCode());
           throw new IllegalStateException("Duplicate parameter code for type '" + type.getName() + "': " + parameter.getCode());
         }
-      }
-
-      if(type.getInstruments().size() == 0) {
-        log.error("Instruments list for type {} is empty.", type.getName());
-        throw new IllegalStateException("Instruments list for type " + type.getName() + " is empty.");
       }
 
       instrumentTypes.put(type.getName(), type);

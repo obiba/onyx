@@ -12,40 +12,18 @@ package org.obiba.onyx.jade.core.domain.instrument;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-import org.hibernate.annotations.Index;
-import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 
-@Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "name" }) })
-public class InstrumentType extends AbstractEntity {
+public class InstrumentType {
 
   private static final long serialVersionUID = 23414234L;
 
-  @Column(length = 200)
-  @Index(name = "name_index")
   private String name;
 
-  @Column(length = 200)
   private String description;
 
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "instrument_type_id")
-  private List<Instrument> instruments;
-
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "instrument_type_id")
   private List<InstrumentParameter> instrumentParameters;
 
-  @OneToMany(cascade = CascadeType.ALL)
   private List<Contraindication> contraindications;
 
   public InstrumentType() {
@@ -70,17 +48,6 @@ public class InstrumentType extends AbstractEntity {
 
   public void setDescription(String description) {
     this.description = description;
-  }
-
-  public List<Instrument> getInstruments() {
-    return instruments != null ? instruments : (instruments = new ArrayList<Instrument>());
-  }
-
-  public void addInstrument(Instrument instrument) {
-    if(instrument != null) {
-      getInstruments().add(instrument);
-      instrument.setInstrumentType(this);
-    }
   }
 
   public List<Contraindication> getContraindications() {
@@ -111,7 +78,6 @@ public class InstrumentType extends AbstractEntity {
   public InstrumentType addInstrumentParameter(InstrumentParameter parameter) {
     if(parameter != null) {
       getInstrumentParameters().add(parameter);
-      parameter.setInstrumentType(this);
     }
     return this;
   }

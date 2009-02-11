@@ -9,13 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.UnitParameterValueConverter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
@@ -33,26 +26,17 @@ import org.slf4j.LoggerFactory;
  * @author cag-dspathis
  * 
  */
-@Entity
-@DiscriminatorValue("EqualsParameterCheck")
 public class EqualsParameterCheck extends AbstractIntegrityCheck implements IntegrityCheck {
 
   private static final long serialVersionUID = 1L;
 
   private static final Logger log = LoggerFactory.getLogger(EqualsParameterCheck.class);
 
-  @Transient
   private EqualsValueCheck equalsValueCheck;
 
-  @ManyToOne
   private InstrumentParameter parameter;
 
-  @Enumerated(EnumType.STRING)
   private ComparisonOperator operator;
-
-  public EqualsParameterCheck() {
-    equalsValueCheck = new EqualsValueCheck();
-  }
 
   public void setParameter(InstrumentParameter param) {
     this.parameter = param;
@@ -88,19 +72,25 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
     Data otherData = null;
 
     if(otherRunValue != null) {
+      InstrumentParameter otherParam = activeRunService.getParameterByCode(otherRunValue.getInstrumentParameter());
 
-      if(!otherRunValue.getDataType().equals(paramData.getType())) {
+      if(!otherParam.getDataType().equals(paramData.getType())) {
         InstrumentRunValue targetRunValue = new InstrumentRunValue();
-        targetRunValue.setInstrumentParameter(getTargetParameter());
+        targetRunValue.setInstrumentParameter(getTargetParameter().getCode());
         UnitParameterValueConverter converter = new UnitParameterValueConverter();
-        converter.convert(targetRunValue, otherRunValue);
-        otherData = targetRunValue.getData();
+        converter.convert(activeRunService, targetRunValue, otherRunValue);
+        otherData = targetRunValue.getData(getTargetParameter().getDataType());
       } else {
-        otherData = otherRunValue.getData();
-        log.debug("Value is : {}", otherRunValue.getData());
+        otherData = otherRunValue.getData(parameter.getDataType());
+        log.debug("Value is : {}", otherRunValue.getData(parameter.getDataType()));
       }
     } else {
       log.debug("Value is : null");
+    }
+
+    // Lazily instantiate the equalsValueCheck.
+    if(equalsValueCheck == null) {
+      equalsValueCheck = new EqualsValueCheck();
     }
 
     // Update the equalsValueCheck accordingly.

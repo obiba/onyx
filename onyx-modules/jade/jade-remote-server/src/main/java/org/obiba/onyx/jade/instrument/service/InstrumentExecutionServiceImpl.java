@@ -66,8 +66,9 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
   public Map<String, Data> getInputParametersValue(String... parameters) {
     Map<String, Data> inputParametersValue = new HashMap<String, Data>();
     for(String parameterCode : parameters) {
+      InstrumentParameter inputParameter = activeInstrumentRunService.getParameterByCode(parameterCode);
       InstrumentRunValue inputParameterValue = activeInstrumentRunService.getInputInstrumentRunValue(parameterCode);
-      inputParametersValue.put(inputParameterValue.getInstrumentParameter().getCode(), inputParameterValue.getData());
+      inputParametersValue.put(parameterCode, inputParameterValue.getData(inputParameter.getDataType()));
     }
     log.info("getInputParametersValue({})={}", parameters, inputParametersValue);
     return (inputParametersValue);
@@ -76,15 +77,16 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
   public Map<String, String> getInputParametersVendorNames(String... parameters) {
     Map<String, String> inputParametersVendorName = new HashMap<String, String>();
     for(String parameterCode : parameters) {
-      InstrumentRunValue inputParameterValue = activeInstrumentRunService.getInputInstrumentRunValue(parameterCode);
-      inputParametersVendorName.put(inputParameterValue.getInstrumentParameter().getCode(), inputParameterValue.getInstrumentParameter().getVendorName());
+      InstrumentParameter parameter = activeInstrumentRunService.getParameterByCode(parameterCode);
+      inputParametersVendorName.put(parameterCode, parameter.getVendorName());
     }
     log.info("getInputParametersVendorNames({})={}", parameters, inputParametersVendorName);
     return (inputParametersVendorName);
   }
 
   public Data getInputParameterValue(String parameterCode) {
-    return activeInstrumentRunService.getInputInstrumentRunValue(parameterCode).getData();
+    InstrumentParameter parameter = activeInstrumentRunService.getParameterByCode(parameterCode);
+    return activeInstrumentRunService.getInputInstrumentRunValue(parameterCode).getData(parameter.getDataType());
   }
 
   public void addOutputParameterValues(Map<String, Data> values) {
@@ -96,7 +98,7 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
   public void addOutputParameterValue(String name, Data value) {
     log.info("addOutputParameterValue({}, {})", name, value);
 
-    // Lookup the paramater using it's code
+    // Lookup the parameter using it's code
     InstrumentParameter parameter = activeInstrumentRunService.getParameterByCode(name);
     if(parameter == null || parameter instanceof InstrumentOutputParameter == false) {
       // Lookup the paramater using it's vendor name

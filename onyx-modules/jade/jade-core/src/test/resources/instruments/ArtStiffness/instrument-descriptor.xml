@@ -2,16 +2,6 @@
 <instrumentType>
 
   <name>ArtStiffness</name>
-  <instruments>
-    <instrument>
-      <name>SphygmoCor 1</name>
-      <vendor>AtCor Medical</vendor>
-      <model>SphygmoCor</model>
-      <serialNumber>01400</serialNumber>
-      <barcode>sphygmoCor1</barcode>
-      <status>ACTIVE</status>
-    </instrument>
-   </instruments>
 
   <!-- <contraindications>(remove)
     <contraIndication>

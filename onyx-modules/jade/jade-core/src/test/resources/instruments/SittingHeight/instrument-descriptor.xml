@@ -3,17 +3,6 @@
 
   <name>SittingHeight</name>
 
-  <instruments>
-    <instrument>
-      <name>Stadiometer 1</name>
-      <vendor>Seca</vendor>
-      <model>Model 214</model>
-      <serialNumber>1234567890</serialNumber>
-      <barcode>sit01</barcode>
-      <status>ACTIVE</status>
-    </instrument>
-  </instruments>
-
   <contraindications>
     <contraIndication>
       <code>UnableToSitUnassistedCast</code>

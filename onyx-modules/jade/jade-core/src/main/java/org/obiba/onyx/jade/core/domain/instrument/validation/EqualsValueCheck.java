@@ -11,13 +11,6 @@ package org.obiba.onyx.jade.core.domain.instrument.validation;
 
 import java.util.Date;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
@@ -34,8 +27,6 @@ import org.slf4j.LoggerFactory;
  * @author cag-dspathis
  * 
  */
-@Entity
-@DiscriminatorValue("EqualsValueCheck")
 public class EqualsValueCheck extends AbstractIntegrityCheck implements IntegrityCheck {
 
   private static final Logger log = LoggerFactory.getLogger(EqualsValueCheck.class);
@@ -50,10 +41,8 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
 
   private String textValue;
 
-  @Enumerated(EnumType.STRING)
   private ComparisonOperator operator;
 
-  @Temporal(TemporalType.TIMESTAMP)
   private Date dateValue;
 
   public EqualsValueCheck() {
@@ -81,7 +70,7 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
   }
 
   public void setDateValue(Date value) {
-    dateValue = value;
+    dateValue = new Date(value.getTime());
   }
 
   public ComparisonOperator getOperator() {

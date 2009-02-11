@@ -23,7 +23,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
@@ -38,9 +37,10 @@ public class InstrumentRunValue extends AbstractEntity {
   @JoinColumn(name = "instrument_run_id")
   private InstrumentRun instrumentRun;
 
-  @ManyToOne
-  @JoinColumn(name = "instrument_parameter_id")
-  private InstrumentParameter instrumentParameter;
+  /**
+   * Instrument parameter code.
+   */
+  private String instrumentParameter;
 
   private Boolean booleanValue;
 
@@ -72,11 +72,21 @@ public class InstrumentRunValue extends AbstractEntity {
     this.instrumentRun = instrumentRun;
   }
 
-  public InstrumentParameter getInstrumentParameter() {
+  /**
+   * Returns the code of the associated instrument parameter.
+   * 
+   * @return instrument parameter code
+   */
+  public String getInstrumentParameter() {
     return instrumentParameter;
   }
 
-  public void setInstrumentParameter(InstrumentParameter instrumentParameter) {
+  /**
+   * Sets the instrument parameter associated with this instrument run value.
+   * 
+   * @param instrumentParameter instrument parameter code
+   */
+  public void setInstrumentParameter(String instrumentParameter) {
     this.instrumentParameter = instrumentParameter;
   }
 
@@ -88,56 +98,47 @@ public class InstrumentRunValue extends AbstractEntity {
     this.captureMethod = captureMethod;
   }
 
-  public DataType getDataType() {
-    return instrumentParameter.getDataType();
-  }
-
   public void setData(Data data) {
 
     if(data != null) {
-      if(data.getType() == getDataType()) {
+      switch(data.getType()) {
+      case BOOLEAN:
+        booleanValue = data.getValue();
+        break;
 
-        switch(getDataType()) {
-        case BOOLEAN:
-          booleanValue = data.getValue();
-          break;
+      case DATE:
+        dateValue = data.getValue();
+        break;
 
-        case DATE:
-          dateValue = data.getValue();
-          break;
+      case DECIMAL:
+        decimalValue = data.getValue();
+        break;
 
-        case DECIMAL:
-          decimalValue = data.getValue();
-          break;
+      case INTEGER:
+        integerValue = data.getValue();
+        break;
 
-        case INTEGER:
-          integerValue = data.getValue();
-          break;
+      case TEXT:
+        textValue = data.getValue();
+        break;
 
-        case TEXT:
-          textValue = data.getValue();
-          break;
-
-        case DATA:
-          dataValue = data.getValue();
-          break;
-        }
-      } else {
-        throw new IllegalArgumentException("DataType " + getDataType() + " expected, " + data.getType() + " received.");
+      case DATA:
+        dataValue = data.getValue();
+        break;
       }
     }
   }
 
   @Transient
   @SuppressWarnings("unchecked")
-  public <T> T getValue() {
-    return (T) getData().getValue();
+  public <T> T getValue(DataType type) {
+    return (T) getData(type).getValue();
   }
 
-  public Data getData() {
+  public Data getData(DataType type) {
     Data data = null;
 
-    switch(getDataType()) {
+    switch(type) {
     case BOOLEAN:
       data = DataBuilder.buildBoolean(booleanValue);
       break;
@@ -159,7 +160,7 @@ public class InstrumentRunValue extends AbstractEntity {
       break;
 
     case DATA:
-      data = new Data(getDataType(), dataValue);
+      data = new Data(type, dataValue);
       break;
     }
 

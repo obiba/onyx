@@ -9,37 +9,28 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Entity
-@DiscriminatorValue("ParameterSpreadCheck")
 public class ParameterSpreadCheck extends AbstractIntegrityCheck implements IntegrityCheck {
 
   private static final long serialVersionUID = 1L;
 
-  @Transient
+  private static final Logger log = LoggerFactory.getLogger(ParameterSpreadCheck.class);
+
   private RangeCheck rangeCheck;
 
-  @ManyToOne
   private InstrumentParameter parameter;
 
   private Integer percent;
 
   private Integer offset;
-
-  public ParameterSpreadCheck() {
-    rangeCheck = new RangeCheck();
-  }
 
   public void setParameter(InstrumentParameter param) {
     this.parameter = param;
@@ -83,10 +74,15 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
 
       Data otherData = null;
       if(otherRunValue != null) {
-        otherData = otherRunValue.getData();
+        otherData = otherRunValue.getData(parameter.getDataType());
       }
 
       if(otherData != null && otherData.getValue() != null) {
+        // Lazily instantiate the rangeCheck.
+        if(rangeCheck == null) {
+          rangeCheck = new RangeCheck();
+        }
+
         // Update the rangeCheck accordingly.
         rangeCheck.setTargetParameter(getTargetParameter());
 

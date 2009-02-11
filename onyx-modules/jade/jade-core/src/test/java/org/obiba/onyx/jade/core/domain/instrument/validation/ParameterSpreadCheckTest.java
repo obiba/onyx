@@ -63,11 +63,11 @@ public class ParameterSpreadCheckTest {
     instrumentType = new InstrumentType();
 
     instrument = new Instrument();
-    instrument.setInstrumentType(instrumentType);
+    instrument.setType(instrumentType.getName());
 
     instrumentRun = new InstrumentRun();
     instrumentRun.setParticipant(participant);
-    instrumentRun.setInstrumentType(instrumentType);
+    instrumentRun.setInstrumentType(instrumentType.getName());
 
     checkedParameter = new InstrumentOutputParameter();
     otherParameter = new InstrumentInputParameter();
@@ -98,7 +98,7 @@ public class ParameterSpreadCheckTest {
     Data otherData = DataBuilder.buildInteger(100l);
 
     InstrumentRunValue otherRunValue = new InstrumentRunValue();
-    otherRunValue.setInstrumentParameter(otherParameter);
+    otherRunValue.setInstrumentParameter(otherParameter.getCode());
     otherRunValue.setData(otherData);
 
     expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
@@ -126,7 +126,7 @@ public class ParameterSpreadCheckTest {
     Data otherData = DataBuilder.buildInteger(100l);
 
     InstrumentRunValue otherRunValue = new InstrumentRunValue();
-    otherRunValue.setInstrumentParameter(otherParameter);
+    otherRunValue.setInstrumentParameter(otherParameter.getCode());
     otherRunValue.setData(otherData);
 
     // Test with checked parameter's run value set to MINIMUM value within spread.
@@ -172,7 +172,7 @@ public class ParameterSpreadCheckTest {
     Data otherData = DataBuilder.buildInteger(100l);
 
     InstrumentRunValue otherRunValue = new InstrumentRunValue();
-    otherRunValue.setInstrumentParameter(otherParameter);
+    otherRunValue.setInstrumentParameter(otherParameter.getCode());
     otherRunValue.setData(otherData);
 
     // Test with checked parameter's run value set to LESS than the minimum value in spread.
@@ -221,7 +221,7 @@ public class ParameterSpreadCheckTest {
     Data otherData = DataBuilder.buildDecimal(100.0);
 
     InstrumentRunValue otherRunValue = new InstrumentRunValue();
-    otherRunValue.setInstrumentParameter(otherParameter);
+    otherRunValue.setInstrumentParameter(otherParameter.getCode());
     otherRunValue.setData(otherData);
 
     expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
@@ -249,7 +249,7 @@ public class ParameterSpreadCheckTest {
     Data otherData = DataBuilder.buildDecimal(100.0);
 
     InstrumentRunValue otherRunValue = new InstrumentRunValue();
-    otherRunValue.setInstrumentParameter(otherParameter);
+    otherRunValue.setInstrumentParameter(otherParameter.getCode());
     otherRunValue.setData(otherData);
 
     // Test with checked parameter's run value set to MINIMUM value within spread.
@@ -295,7 +295,7 @@ public class ParameterSpreadCheckTest {
     Data otherData = DataBuilder.buildDecimal(100.0);
 
     InstrumentRunValue otherRunValue = new InstrumentRunValue();
-    otherRunValue.setInstrumentParameter(otherParameter);
+    otherRunValue.setInstrumentParameter(otherParameter.getCode());
     otherRunValue.setData(otherData);
 
     // Test with checked parameter's run value set to LESS than the minimum value in spread.

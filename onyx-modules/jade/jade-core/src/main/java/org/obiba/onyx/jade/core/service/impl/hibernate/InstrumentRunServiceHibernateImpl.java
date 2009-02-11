@@ -10,6 +10,7 @@
 package org.obiba.onyx.jade.core.service.impl.hibernate;
 
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -35,8 +36,14 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
 
   private SessionFactory factory;
 
+  private Map<String, InstrumentType> instrumentTypes;
+
   public void setSessionFactory(SessionFactory factory) {
     this.factory = factory;
+  }
+
+  public void setInstrumentTypes(Map<String, InstrumentType> instrumentTypes) {
+    this.instrumentTypes = instrumentTypes;
   }
 
   private Session getSession() {
@@ -46,7 +53,7 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
   public InstrumentRun getLastInstrumentRun(Participant participant, InstrumentType instrumentType) {
     if(instrumentType == null) throw new IllegalArgumentException("Cannot retrieve the last instrument run for a null instrument type.");
     InstrumentRun template = new InstrumentRun();
-    template.setInstrumentType(instrumentType);
+    template.setInstrumentType(instrumentType.getName());
     template.setParticipant(participant);
     List<InstrumentRun> runs = getPersistenceManager().match(template, SortingClause.create("id", false));
     if(runs != null && runs.size() > 0) {
@@ -56,16 +63,14 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
   }
 
   public InstrumentRun getLastInstrumentRun(Participant participant, String instrumentTypeName) {
-    InstrumentType type = new InstrumentType();
-    type.setName(instrumentTypeName);
-
-    return getLastInstrumentRun(participant, getPersistenceManager().matchOne(type));
+    InstrumentType type = instrumentTypes.get(instrumentTypeName);
+    return getLastInstrumentRun(participant, type);
   }
 
   public InstrumentRun getLastCompletedInstrumentRun(Participant participant, InstrumentType instrumentType) {
     if(instrumentType == null) throw new IllegalArgumentException("Cannot retrieve the last completed instrument run for a null instrument type.");
 
-    Criteria criteria = AssociationCriteria.create(InstrumentRun.class, getSession()).add("instrumentType", Operation.eq, instrumentType).add("participant", Operation.eq, participant).addSortingClauses(new SortingClause("timeEnd", false)).getCriteria();
+    Criteria criteria = AssociationCriteria.create(InstrumentRun.class, getSession()).add("instrumentType", Operation.eq, instrumentType.getName()).add("participant", Operation.eq, participant).addSortingClauses(new SortingClause("timeEnd", false)).getCriteria();
     criteria.add(Restrictions.or(Restrictions.eq("status", InstrumentRunStatus.COMPLETED), Restrictions.eq("status", InstrumentRunStatus.CONTRA_INDICATED)));
 
     return (InstrumentRun) criteria.setMaxResults(1).uniqueResult();
@@ -80,7 +85,7 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
 
     if(run != null) {
       log.debug("Run.id={} Param.code={}", run.getId(), parameterCode);
-      runValue = (InstrumentRunValue) AssociationCriteria.create(InstrumentRunValue.class, getSession()).add("instrumentRun", Operation.eq, run).add("instrumentParameter.code", Operation.eq, parameterCode).getCriteria().uniqueResult();
+      runValue = (InstrumentRunValue) AssociationCriteria.create(InstrumentRunValue.class, getSession()).add("instrumentRun", Operation.eq, run).add("instrumentParameter", Operation.eq, parameterCode).getCriteria().uniqueResult();
     }
 
     return runValue;

@@ -10,26 +10,27 @@
 package org.obiba.onyx.jade.core.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
+import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService implements InstrumentService, InitializingBean {
+public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService implements InstrumentService {
 
+  @SuppressWarnings("unused")
   private final Logger log = LoggerFactory.getLogger(getClass());
 
   private String instrumentsPath;
@@ -45,16 +46,20 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
   }
 
   public InstrumentType getInstrumentType(String name) {
-    InstrumentType template = new InstrumentType(name, null);
-    return getPersistenceManager().matchOne(template);
+    return instrumentTypes.get(name);
   }
 
   public Map<String, InstrumentType> getInstrumentTypes() {
-    Map<String, InstrumentType> instrumentTypes = new HashMap<String, InstrumentType>();
-    for(InstrumentType instrumentType : getPersistenceManager().list(InstrumentType.class)) {
-      instrumentTypes.put(instrumentType.getName(), instrumentType);
-    }
     return instrumentTypes;
+  }
+
+  public InstrumentParameter getParameterByCode(InstrumentType instrumentType, String parameterCode) {
+    for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
+      if(parameter.getCode().equals(parameterCode)) {
+        return parameter;
+      }
+    }
+    return null;
   }
 
   public List<Instrument> getInstruments(String typeName) {
@@ -63,14 +68,14 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
 
   public List<Instrument> getInstruments(InstrumentType instrumentType) {
     Instrument template = new Instrument();
-    template.setInstrumentType(instrumentType);
+    template.setType(instrumentType.getName());
 
     return getPersistenceManager().match(template);
   }
 
   public List<Instrument> getActiveInstruments(InstrumentType instrumentType) {
     Instrument template = new Instrument();
-    template.setInstrumentType(instrumentType);
+    template.setType(instrumentType.getName());
     template.setStatus(InstrumentStatus.ACTIVE);
 
     return getPersistenceManager().match(template);
@@ -79,11 +84,7 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
   public boolean isInteractiveInstrument(InstrumentType instrumentType) {
     if(instrumentType == null) return false;
 
-    InstrumentOutputParameter template = new InstrumentOutputParameter();
-    template.setInstrumentType(instrumentType);
-    template.setCaptureMethod(InstrumentParameterCaptureMethod.AUTOMATIC);
-
-    return getPersistenceManager().count(template) > 0;
+    return !getOutputParameters(instrumentType, InstrumentParameterCaptureMethod.AUTOMATIC).isEmpty();
   }
 
   public int countInstrumentInputParameter(InstrumentType instrument, boolean readOnlySource) {
@@ -91,48 +92,62 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
   }
 
   public List<InstrumentInputParameter> getInstrumentInputParameter(InstrumentType instrumentType, boolean readOnlySource) {
-    List<InstrumentInputParameter> list = new ArrayList<InstrumentInputParameter>();
-    InstrumentInputParameter template = new InstrumentInputParameter();
-    template.setInstrumentType(instrumentType);
+    List<InstrumentInputParameter> inputParameters = new ArrayList<InstrumentInputParameter>();
 
-    for(InstrumentInputParameter param : getPersistenceManager().match(template)) {
-      if(param.getInputSource() != null && param.getInputSource().isReadOnly() == readOnlySource) {
-        list.add(param);
+    for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
+      if(parameter instanceof InstrumentInputParameter) {
+        InstrumentInputParameter inputParameter = (InstrumentInputParameter) parameter;
+
+        // Q: Is an input parameter with a null input source equivalent to one with an OperatorSource (which
+        // is read-only)? If so, the code block that follows is buggy: Input parameters with a null input
+        // source should be included in the returned list when this method is called with readOnlySource == false.
+        // Leaving this code as is, since there is no (known) Jade issue and anyway the new DataSource interface
+        // will supercede this implementation.
+        if(inputParameter.getInputSource() != null && inputParameter.getInputSource().isReadOnly() == readOnlySource) {
+          inputParameters.add(inputParameter);
+        }
       }
     }
 
-    return list;
+    return inputParameters;
+  }
+
+  public List<InstrumentOutputParameter> getOutputParameters(InstrumentType instrumentType, InstrumentParameterCaptureMethod captureMethod) {
+    List<InstrumentOutputParameter> outputParameters = new ArrayList<InstrumentOutputParameter>();
+
+    for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
+      if(parameter instanceof InstrumentOutputParameter) {
+        InstrumentOutputParameter outputParameter = (InstrumentOutputParameter) parameter;
+        InstrumentParameterCaptureMethod outputParameterCaptureMethod = outputParameter.getCaptureMethod();
+
+        if(outputParameterCaptureMethod.equals(captureMethod)) {
+          outputParameters.add(outputParameter);
+        }
+      }
+    }
+
+    return outputParameters;
+  }
+
+  public InstrumentOutputParameter getInstrumentOutputParameter(InstrumentType instrumentType, String parameterCode) {
+    for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
+      if(parameter instanceof InstrumentOutputParameter) {
+        if(parameter.getCode().equals(parameterCode)) {
+          return (InstrumentOutputParameter) parameter;
+        }
+      }
+    }
+    return null;
+  }
+
+  public Contraindication getContraindication(InstrumentType instrumentType, String contraindicationCode) {
+    for(Contraindication ci : instrumentType.getContraindications()) {
+      if(ci.getCode().equals(contraindicationCode)) return ci;
+    }
+    return null;
   }
 
   public String getInstrumentInstallPath(InstrumentType type) {
     return instrumentsPath + "/" + type.getName();
   }
-
-  public void afterPropertiesSet() throws Exception {
-
-    if(instrumentTypes != null && persistenceManager.list(InstrumentType.class).size() == 0) {
-
-      log.debug("Persisting InstrumentTypes injected by InstrumentTypeFactory...");
-      for(InstrumentType instrumentType : instrumentTypes.values()) {
-        log.debug(instrumentType.getName());
-
-        persistenceManager.save(instrumentType);
-
-        persistenceManager.list(InstrumentType.class).size();
-
-      }
-      log.debug("Completed persisting InstrumentTypes.");
-
-    }
-
-  }
-
-  public InstrumentOutputParameter getInstrumentOutputParameter(InstrumentType instrumentType, String parameterCode) {
-    InstrumentOutputParameter template = new InstrumentOutputParameter();
-    template.setInstrumentType(instrumentType);
-    template.setCode(parameterCode);
-
-    return getPersistenceManager().matchOne(template);
-  }
-
 }

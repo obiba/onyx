@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument;
 
-import java.util.Date;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
@@ -18,6 +16,7 @@ import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
@@ -41,6 +40,9 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
 
   @Autowired(required = true)
   EntityQueryService queryService;
+
+  @Autowired
+  InstrumentService instrumentService;
 
   @Test
   public void test() {
@@ -114,37 +116,33 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
   public void testInstrumentParameterValueConverter() {
     Participant participant = queryService.get(Participant.class, 1l);
 
-    // Testing date data
     InstrumentRunValue sourceInstrumentRunValue = queryService.get(InstrumentRunValue.class, 5l);
     InstrumentParameter targetInstrumentParameter = queryService.get(InstrumentParameter.class, 6l);
 
     InstrumentRunValue targetInstrumentRunValue = new InstrumentRunValue();
-    targetInstrumentRunValue.setInstrumentParameter(targetInstrumentParameter);
+    targetInstrumentRunValue.setInstrumentParameter(targetInstrumentParameter.getCode());
 
-    if(sourceInstrumentRunValue.getData().getValue() == null) {
+    if(sourceInstrumentRunValue.getData(DataType.DATE).getValue() == null) {
       sourceInstrumentRunValue.setData(new Data(DataType.DATE, participant.getBirthDate()));
     }
-    Date date = sourceInstrumentRunValue.getValue();
-    log.info("date=" + date);
-
-    DateParameterValueConverter dateConverter = new DateParameterValueConverter();
-    dateConverter.convert(targetInstrumentRunValue, sourceInstrumentRunValue);
 
     InstrumentParameter finalInstrumentParameter = queryService.get(InstrumentParameter.class, 8l);
     InstrumentRunValue finalInstrumentRunValue = new InstrumentRunValue();
-    finalInstrumentRunValue.setInstrumentParameter(finalInstrumentParameter);
+    finalInstrumentRunValue.setInstrumentParameter(finalInstrumentParameter.getCode());
 
+    // TODO: Fix call to unitConverter.convert.
     UnitParameterValueConverter unitConverter = new UnitParameterValueConverter();
-    unitConverter.convert(finalInstrumentRunValue, targetInstrumentRunValue);
-    Assert.assertEquals(Long.valueOf("29"), finalInstrumentRunValue.getValue());
+    unitConverter.convert(instrumentService, null, finalInstrumentRunValue, targetInstrumentRunValue);
+    Assert.assertEquals(Long.valueOf("29"), finalInstrumentRunValue.getValue(finalInstrumentParameter.getDataType()));
 
     // Testing metric data
     sourceInstrumentRunValue = queryService.get(InstrumentRunValue.class, 1l);
     targetInstrumentParameter = queryService.get(InstrumentParameter.class, 3l);
-    targetInstrumentRunValue.setInstrumentParameter(targetInstrumentParameter);
+    targetInstrumentRunValue.setInstrumentParameter(targetInstrumentParameter.getCode());
 
-    unitConverter.convert(targetInstrumentRunValue, sourceInstrumentRunValue);
-    Assert.assertEquals(Double.valueOf("1.85"), targetInstrumentRunValue.getValue());
+    // TODO: Fix call to unitConverter.convert.
+    unitConverter.convert(instrumentService, null, targetInstrumentRunValue, sourceInstrumentRunValue);
+    Assert.assertEquals(Double.valueOf("1.85"), targetInstrumentRunValue.getValue(targetInstrumentParameter.getDataType()));
   }
 
 }

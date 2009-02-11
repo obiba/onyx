@@ -12,6 +12,8 @@ package org.obiba.onyx.jade.core.domain.instrument;
 import javax.measure.unit.Unit;
 
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.slf4j.Logger;
@@ -29,32 +31,73 @@ public class UnitParameterValueConverter implements InstrumentParameterValueConv
   /**
    * Convert the value from a source unit to a target unit Note: if the value is an age, the method adjusts the value to
    * return the right age
+   * @param activeInstrumentRunService
    * @param targetInstrumentRunValue
    * @param sourceInstrumentRunValue
    */
   @SuppressWarnings("unchecked")
-  public void convert(InstrumentRunValue targetInstrumentRunValue, InstrumentRunValue sourceInstrumentRunValue) {
+  public void convert(ActiveInstrumentRunService activeInstrumentRunService, InstrumentRunValue targetInstrumentRunValue, InstrumentRunValue sourceInstrumentRunValue) {
 
-    log.debug("Converting parameters from source {} to target {}", sourceInstrumentRunValue.getInstrumentParameter().getCode(), targetInstrumentRunValue.getInstrumentParameter().getCode());
+    InstrumentParameter sourceParameter = activeInstrumentRunService.getParameterByCode(sourceInstrumentRunValue.getInstrumentParameter());
+    InstrumentParameter targetParameter = activeInstrumentRunService.getParameterByCode(targetInstrumentRunValue.getInstrumentParameter());
 
-    Unit sourceUnit = Unit.valueOf(sourceInstrumentRunValue.getInstrumentParameter().getMeasurementUnit());
-    Unit targetUnit = Unit.valueOf(targetInstrumentRunValue.getInstrumentParameter().getMeasurementUnit());
+    log.debug("Converting parameters from source {} to target {}", sourceParameter, targetParameter);
+
+    Unit sourceUnit = Unit.valueOf(sourceParameter.getMeasurementUnit());
+    Unit targetUnit = Unit.valueOf(targetParameter.getMeasurementUnit());
 
     log.debug("Converting units from source {} to target {}", sourceUnit.toString(), targetUnit.toString());
 
     double sourceValue;
     // Extract the source value and convert it to a double
     try {
-      sourceValue = Double.parseDouble(sourceInstrumentRunValue.getData().getValueAsString());
+      sourceValue = Double.parseDouble(sourceInstrumentRunValue.getData(sourceParameter.getDataType()).getValueAsString());
     } catch(NumberFormatException e) {
-      Data sourceData = sourceInstrumentRunValue.getData();
+      Data sourceData = sourceInstrumentRunValue.getData(sourceParameter.getDataType());
       log.error("Error converting between measurement units. Original value {} of type {} cannot be converted to a double, which is required to convert between measurement units.", sourceData.getValueAsString(), sourceData.getType());
       throw e;
     }
 
     double newValue = sourceUnit.getConverterTo(targetUnit).convert(sourceValue);
 
-    switch(targetInstrumentRunValue.getInstrumentParameter().getDataType()) {
+    switch(activeInstrumentRunService.getParameterByCode(targetInstrumentRunValue.getInstrumentParameter()).getDataType()) {
+    case DECIMAL:
+      targetInstrumentRunValue.setData(DataBuilder.buildDecimal(newValue));
+      break;
+
+    case INTEGER:
+      if(targetUnit.toString().equalsIgnoreCase("year")) newValue = Math.floor(newValue);
+      targetInstrumentRunValue.setData(DataBuilder.buildInteger(Math.round(newValue)));
+      break;
+    }
+
+  }
+
+  public void convert(InstrumentService instrumentService, InstrumentType instrumentType, InstrumentRunValue targetInstrumentRunValue, InstrumentRunValue sourceInstrumentRunValue) {
+
+    InstrumentParameter sourceParameter = instrumentService.getParameterByCode(instrumentType, sourceInstrumentRunValue.getInstrumentParameter());
+    InstrumentParameter targetParameter = instrumentService.getParameterByCode(instrumentType, targetInstrumentRunValue.getInstrumentParameter());
+
+    log.debug("Converting parameters from source {} to target {}", sourceParameter, targetParameter);
+
+    Unit sourceUnit = Unit.valueOf(sourceParameter.getMeasurementUnit());
+    Unit targetUnit = Unit.valueOf(targetParameter.getMeasurementUnit());
+
+    log.debug("Converting units from source {} to target {}", sourceUnit.toString(), targetUnit.toString());
+
+    double sourceValue;
+    // Extract the source value and convert it to a double
+    try {
+      sourceValue = Double.parseDouble(sourceInstrumentRunValue.getData(sourceParameter.getDataType()).getValueAsString());
+    } catch(NumberFormatException e) {
+      Data sourceData = sourceInstrumentRunValue.getData(sourceParameter.getDataType());
+      log.error("Error converting between measurement units. Original value {} of type {} cannot be converted to a double, which is required to convert between measurement units.", sourceData.getValueAsString(), sourceData.getType());
+      throw e;
+    }
+
+    double newValue = sourceUnit.getConverterTo(targetUnit).convert(sourceValue);
+
+    switch(instrumentService.getParameterByCode(instrumentType, targetInstrumentRunValue.getInstrumentParameter()).getDataType()) {
     case DECIMAL:
       targetInstrumentRunValue.setData(DataBuilder.buildDecimal(newValue));
       break;
@@ -73,13 +116,13 @@ public class UnitParameterValueConverter implements InstrumentParameterValueConv
    * @param sourceData
    */
   @SuppressWarnings("unchecked")
-  public void convert(InstrumentRunValue targetInstrumentRunValue, Data sourceData) {
+  public void convert(InstrumentParameter targetInstrumentParameter, InstrumentRunValue targetInstrumentRunValue, Data sourceData) {
 
-    log.debug("Converting parameters from source {} to target {}", sourceData.getType(), targetInstrumentRunValue.getInstrumentParameter().getDataType());
+    log.debug("Converting parameters from source {} to target {}", sourceData.getType(), targetInstrumentParameter.getDataType());
 
     double newValue = Double.parseDouble(sourceData.getValueAsString());
 
-    switch(targetInstrumentRunValue.getInstrumentParameter().getDataType()) {
+    switch(targetInstrumentParameter.getDataType()) {
     case DECIMAL:
       targetInstrumentRunValue.setData(DataBuilder.buildDecimal(newValue));
       break;

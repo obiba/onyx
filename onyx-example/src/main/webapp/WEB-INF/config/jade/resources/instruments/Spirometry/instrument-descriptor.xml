@@ -3,17 +3,6 @@
 
   <name>Spirometry</name>
 
-  <instruments>
-    <instrument>
-      <name>Spirometer 1</name>
-      <vendor>MIR</vendor>
-      <model>MiniSpir</model>
-      <serialNumber>1234567890</serialNumber>
-      <barcode>CAG0189</barcode>
-      <status>ACTIVE</status>
-    </instrument>
-  </instruments>
-
  <!-- <contraindications>  commented out
     <contraIndication>
       <code>Other_CI</code>

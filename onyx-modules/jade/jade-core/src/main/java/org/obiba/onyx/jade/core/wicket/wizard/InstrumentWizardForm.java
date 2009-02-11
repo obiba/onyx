@@ -128,7 +128,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
     InstrumentType instrumentType = activeInstrumentRunService.getInstrumentType();
     // do we need to select the instrument ?
     Instrument instrumentTemplate = new Instrument();
-    instrumentTemplate.setInstrumentType(instrumentType);
+    instrumentTemplate.setType(instrumentType.getName());
     instrumentTemplate.setStatus(InstrumentStatus.ACTIVE);
     log.debug("instruments.count={}", queryService.count(instrumentTemplate));
     if(queryService.count(instrumentTemplate) > 1) {

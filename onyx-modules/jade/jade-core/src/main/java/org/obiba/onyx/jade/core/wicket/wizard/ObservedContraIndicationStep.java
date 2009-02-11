@@ -35,7 +35,7 @@ public class ObservedContraIndicationStep extends AbstractJadeContraIndicationSt
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
-    setContent(target, new ObservedContraIndicationPanel(getContentId(), new PropertyModel(activeInstrumentRunService, "instrumentRun")));
+    setContent(target, new ObservedContraIndicationPanel(getContentId(), new PropertyModel(this, "activeInstrumentRunService")));
   }
 
   //

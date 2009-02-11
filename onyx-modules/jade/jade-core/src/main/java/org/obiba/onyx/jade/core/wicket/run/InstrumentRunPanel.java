@@ -125,7 +125,7 @@ public class InstrumentRunPanel extends Panel {
       kvPanel.addRow(new StringResourceModel("EndDate", this, null), DateModelUtils.getShortDateTimeModel(new PropertyModel(run, "timeEnd")));
     }
 
-    boolean isInteractive = instrumentService.isInteractiveInstrument(run.getInstrumentType());
+    boolean isInteractive = instrumentService.isInteractiveInstrument(instrumentService.getInstrumentType(run.getInstrumentType()));
 
     if(activeInstrumentRunService.hasInterpretativeParameter()) {
       add(getKeyValueDataPanel("interpretatives", new StringResourceModel("Interpretatives", this, null), activeInstrumentRunService.getInterpretativeParameters()));
@@ -184,7 +184,7 @@ public class InstrumentRunPanel extends Panel {
 
         Label label = new Label(KeyValueDataPanel.getRowKeyId(), new MessageSourceResolvableStringModel(param.getLabel()));
 
-        Data data = runValue.getData();
+        Data data = runValue.getData(param.getDataType());
         Label value;
         if(data != null && data.getValue() != null) {
 
@@ -220,8 +220,8 @@ public class InstrumentRunPanel extends Panel {
   private String formatOutput(InstrumentParameter param, InstrumentRunValue runValue, String formatStr) {
 
     log.debug("Display format for {} is {}", param.getCode(), formatStr);
-    Object value = runValue.getData().getValue();
-    String valueStr = runValue.getData().getValueAsString();
+    Object value = runValue.getData(param.getDataType()).getValue();
+    String valueStr = runValue.getData(param.getDataType()).getValueAsString();
     String formattedValue;
     try {
       formattedValue = String.format(formatStr, value);

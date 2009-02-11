@@ -31,6 +31,7 @@ import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
+import org.obiba.onyx.jade.core.wicket.InstrumentRunValueDataModel;
 import org.obiba.onyx.jade.core.wicket.instrument.validation.IntegrityCheckValidator;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
@@ -78,7 +79,7 @@ public class InstrumentOutputParameterPanel extends Panel {
         final IModel runValueModel = new DetachableEntityModel(queryService, runValue);
         outputRunValueModels.add(runValueModel);
 
-        DataField field = new DataField("field", new PropertyModel(runValueModel, "data"), runValue.getDataType(), param.getMeasurementUnit());
+        DataField field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), param.getMeasurementUnit());
         field.setRequired(true);
         field.setLabel(new MessageSourceResolvableStringModel(new PropertyModel(param, "label")));
         field.add(new AjaxFormComponentUpdatingBehavior("onblur") {
@@ -87,8 +88,8 @@ public class InstrumentOutputParameterPanel extends Panel {
           }
         });
 
-        if(runValue.getDataType().equals(DataType.TEXT) && (field.getField().getClass().equals(TextField.class) || field.getField().getClass().equals(TextArea.class))) {
-          field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(2000), runValue.getDataType()));
+        if(param.getDataType().equals(DataType.TEXT) && (field.getField().getClass().equals(TextField.class) || field.getField().getClass().equals(TextArea.class))) {
+          field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(2000), param.getDataType()));
         }
 
         IntegrityCheckValidator.addChecks(field, param.getIntegrityChecks());

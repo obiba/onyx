@@ -56,8 +56,12 @@ public class OutputParameterDataSourceTest {
     Participant participant = createParticipant();
     OutputParameterDataSource outputParameterDataSource = initOutputParameterDataSource();
 
-    expect(instrumentServiceMock.getInstrumentType(INSTRUMENT_TYPE)).andReturn(new InstrumentType(INSTRUMENT_TYPE, "description"));
-    expect(instrumentRunServiceMock.findInstrumentRunValue((Participant) EasyMock.anyObject(), (InstrumentType) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(null);
+    InstrumentType instrumentType = new InstrumentType(INSTRUMENT_TYPE, "description");
+    InstrumentOutputParameter outputParam = new InstrumentOutputParameter();
+
+    expect(instrumentServiceMock.getInstrumentType(INSTRUMENT_TYPE)).andReturn(instrumentType).anyTimes();
+    expect(instrumentServiceMock.getInstrumentOutputParameter(instrumentType, PARAMETER_CODE)).andReturn(outputParam);
+    expect(instrumentRunServiceMock.findInstrumentRunValue(participant, instrumentType, PARAMETER_CODE)).andReturn(null);
 
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
@@ -73,7 +77,12 @@ public class OutputParameterDataSourceTest {
     Participant participant = createParticipant();
     OutputParameterDataSource outputParameterDataSource = initOutputParameterDataSource();
 
-    expect(instrumentServiceMock.getInstrumentType(INSTRUMENT_TYPE)).andReturn(new InstrumentType(INSTRUMENT_TYPE, "description"));
+    InstrumentType instrumentType = new InstrumentType(INSTRUMENT_TYPE, "description");
+    InstrumentOutputParameter outputParam = new InstrumentOutputParameter();
+    outputParam.setDataType(DataType.INTEGER);
+
+    expect(instrumentServiceMock.getInstrumentType(INSTRUMENT_TYPE)).andReturn(instrumentType).anyTimes();
+    expect(instrumentServiceMock.getInstrumentOutputParameter(instrumentType, PARAMETER_CODE)).andReturn(outputParam);
     expect(instrumentRunServiceMock.findInstrumentRunValue((Participant) EasyMock.anyObject(), (InstrumentType) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(createRunValue());
 
     replay(instrumentServiceMock);
@@ -106,14 +115,13 @@ public class OutputParameterDataSourceTest {
     InstrumentOutputParameter instrumentOutputParameter = new InstrumentOutputParameter();
     instrumentOutputParameter.setCode(PARAMETER_CODE);
     instrumentOutputParameter.setDataType(DataType.INTEGER);
-    instrumentOutputParameter.setInstrumentType(new InstrumentType(INSTRUMENT_TYPE, "description"));
     instrumentOutputParameter.setMeasurementUnit("cm");
     return instrumentOutputParameter;
   }
 
   private InstrumentRunValue createRunValue() {
     InstrumentRunValue instrumentRunValue = new InstrumentRunValue();
-    instrumentRunValue.setInstrumentParameter(createInstrumentOutputParameter());
+    instrumentRunValue.setInstrumentParameter(createInstrumentOutputParameter().getCode());
     instrumentRunValue.setData(DataBuilder.buildInteger(165l));
     return instrumentRunValue;
   }

@@ -22,20 +22,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
-import org.obiba.onyx.core.domain.contraindication.IContraindicatable;
-import org.obiba.onyx.core.domain.contraindication.Contraindication.Type;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 
 @Entity
-public class InstrumentRun extends AbstractEntity implements IContraindicatable {
+public class InstrumentRun extends AbstractEntity {
 
   private static final long serialVersionUID = -2756620040202577411L;
 
@@ -46,9 +42,10 @@ public class InstrumentRun extends AbstractEntity implements IContraindicatable 
   @OneToMany(mappedBy = "instrumentRun")
   private List<InstrumentRunValue> instrumentRunValues;
 
-  @ManyToOne
-  @JoinColumn(name = "instrument_type_id")
-  private InstrumentType instrumentType;
+  /**
+   * Name of the type of instrument used in this instrument run.
+   */
+  private String instrumentType;
 
   @ManyToOne
   @JoinColumn(name = "instrument_id")
@@ -105,16 +102,21 @@ public class InstrumentRun extends AbstractEntity implements IContraindicatable 
 
   public InstrumentRunValue getInstrumentRunValue(InstrumentParameter instrumentParameter) {
     for(InstrumentRunValue runValue : getInstrumentRunValues()) {
-      if(runValue.getInstrumentParameter().getId().equals(instrumentParameter.getId())) return runValue;
+      if(runValue.getInstrumentParameter().equals(instrumentParameter.getCode())) return runValue;
     }
     return null;
   }
 
-  public InstrumentType getInstrumentType() {
+  /**
+   * Returns the name of type of instrument used in this instrument run.
+   * 
+   * @return name of associated instrument type
+   */
+  public String getInstrumentType() {
     return instrumentType;
   }
 
-  public void setInstrumentType(InstrumentType instrumentType) {
+  public void setInstrumentType(String instrumentType) {
     this.instrumentType = instrumentType;
   }
 
@@ -150,11 +152,8 @@ public class InstrumentRun extends AbstractEntity implements IContraindicatable 
     this.user = user;
   }
 
-  public Contraindication getContraindication() {
-    for(Contraindication ci : instrumentType.getContraindications()) {
-      if(ci.getCode().equals(contraindicationCode)) return ci;
-    }
-    return null;
+  public String getContraindication() {
+    return contraindicationCode;
   }
 
   public void setContraindication(Contraindication contraindication) {
@@ -171,23 +170,5 @@ public class InstrumentRun extends AbstractEntity implements IContraindicatable 
 
   public void setOtherContraindication(String reason) {
     otherContraindication = reason;
-  }
-
-  @Transient
-  public List<Contraindication> getContraindications(Contraindication.Type type) {
-    List<Contraindication> ciList = new ArrayList<Contraindication>(5);
-    for(Contraindication ci : this.instrumentType.getContraindications()) {
-      if(ci.getType() == type) ciList.add(ci);
-    }
-    return ciList.size() > 0 ? ciList : null;
-  }
-
-  @Transient
-  public boolean isContraindicated() {
-    return this.contraindicationCode != null;
-  }
-
-  public boolean hasContraindications(Type type) {
-    return getContraindications(type) != null;
   }
 }

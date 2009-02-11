@@ -57,14 +57,14 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="instrumentService" ref="instrumentService" />
   </bean>
 
-  <!-- <bean id="jadeDatabaseSeed" class="org.obiba.onyx.jade.core.wicket.seed.JadeDatabaseSeed" scope="singleton">
+  <bean id="jadeDatabaseSeed" class="org.obiba.onyx.jade.core.wicket.seed.JadeDatabaseSeed" scope="singleton">
     <property name="resourcePatterns">
       <list>
-        <value>${org.obiba.onyx.jade.instruments.path}/**/instrument-descriptor.xml</value>
+        <value>${org.obiba.onyx.jade.instruments.path}/instruments.xml</value>
       </list>
     </property>
     <property name="persistenceManager" ref="persistenceManager" />
-  </bean> -->
+  </bean>
   
   <bean id="instrumentTypeFactory" class="org.obiba.onyx.jade.core.service.impl.InstrumentTypeFactoryBean" scope="singleton">
     <property name="resourcePatterns">

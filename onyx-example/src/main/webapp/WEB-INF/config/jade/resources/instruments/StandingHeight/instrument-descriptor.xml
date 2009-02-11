@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <instrumentType>
-  <name>StandingHeight</name>
 
-  <instruments>
-    <instrument>
-      <name>Tape 1</name>
-      <vendor>Seca</vendor>
-      <model>Model 214</model>
-      <serialNumber>1234567890</serialNumber>
-      <barcode>sta01</barcode>
-      <status>ACTIVE</status>
-    </instrument>
-  </instruments>
+  <name>StandingHeight</name>
 
  <!-- <contraindications>
     <contraIndication>

@@ -2,25 +2,6 @@
 <instrumentType>
   <name>BloodPressure</name>
 
-  <instruments>
-    <instrument>
-      <name>Blood Pressure Monitor 1</name>
-      <vendor>Omron</vendor>
-      <model>Model 907</model>
-      <serialNumber>20080200041AF</serialNumber>
-      <barcode>blp01</barcode>
-      <status>ACTIVE</status>
-    </instrument>
-    <instrument>
-      <name>Blood Pressure Monitor 2</name>
-      <vendor>Omron</vendor>
-      <model>Model 907</model>
-      <serialNumber>20080400041AF</serialNumber>
-      <barcode>blp02</barcode>
-      <status>ACTIVE</status>
-    </instrument>
-  </instruments>
-
   <!--<contraindications> removed for now
     <contraIndication>
       <code>Other_CI</code>

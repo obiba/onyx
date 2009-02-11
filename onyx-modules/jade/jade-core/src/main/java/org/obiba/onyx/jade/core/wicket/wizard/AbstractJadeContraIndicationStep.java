@@ -53,4 +53,13 @@ public abstract class AbstractJadeContraIndicationStep extends AbstractContraInd
   protected void refreshFlow(WizardForm form) {
     ((InstrumentWizardForm) form).setUpWizardFlow();
   }
+
+  //
+  // Methods
+  //
+
+  public ActiveInstrumentRunService getActiveInstrumentRunService() {
+    return activeInstrumentRunService;
+  }
+
 }

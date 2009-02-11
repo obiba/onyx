@@ -2,17 +2,6 @@
 <instrumentType>
 
   <name>CognitiveTest</name>
-  
-  <instruments>
-    <instrument>
-      <name>NoddleTest</name>
-      <vendor>Cardiff University</vendor>
-      <model>vC1.3t</model>
-      <status>ACTIVE</status>
-      <serialNumber></serialNumber>
-      <barcode></barcode>
-    </instrument>
-  </instruments>
 
   <instrumentParameters>
     <output>

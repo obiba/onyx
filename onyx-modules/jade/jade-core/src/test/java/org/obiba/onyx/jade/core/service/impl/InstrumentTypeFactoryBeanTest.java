@@ -16,10 +16,8 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentStatus;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -46,26 +44,6 @@ public class InstrumentTypeFactoryBeanTest {
   @Test
   public void testInstrumentType() {
     Assert.assertEquals("Instrument type count is wrong", 12, instrumentTypes.size());
-  }
-
-  @Test
-  public void testInstruments() {
-
-    // Testing instruments
-    Assert.assertEquals(1, instrumentTypes.get("Impedance310").getInstruments().size());
-    Assert.assertEquals(2, instrumentTypes.get("BloodPressure").getInstruments().size());
-    Assert.assertEquals(1, instrumentTypes.get("StandingHeight").getInstruments().size());
-    Assert.assertEquals(1, instrumentTypes.get("ECG").getInstruments().size());
-
-    // Testing one instrument attributes
-    InstrumentType spirometryInstrumentType = instrumentTypes.get("Spirometry");
-    Instrument spirometryInstrument = spirometryInstrumentType.getInstruments().get(0);
-    Assert.assertEquals("Spirometer 1", spirometryInstrument.getName());
-    Assert.assertEquals("MIR", spirometryInstrument.getVendor());
-    Assert.assertEquals("MiniSpir", spirometryInstrument.getModel());
-    Assert.assertEquals("1234567890", spirometryInstrument.getSerialNumber());
-    Assert.assertEquals("CAG0189", spirometryInstrument.getBarcode());
-    Assert.assertEquals(InstrumentStatus.ACTIVE, spirometryInstrument.getStatus());
   }
 
   @Test

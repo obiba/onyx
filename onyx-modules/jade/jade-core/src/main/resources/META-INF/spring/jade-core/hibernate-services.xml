@@ -10,6 +10,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     class="org.obiba.onyx.jade.core.service.impl.hibernate.InstrumentRunServiceHibernateImpl" scope="singleton">
     <property name="sessionFactory" ref="sessionFactory" />
     <property name="persistenceManager" ref="persistenceManager" />
+    <property name="instrumentTypes" ref="instrumentTypeFactory" />
   </bean>
 
 </beans>

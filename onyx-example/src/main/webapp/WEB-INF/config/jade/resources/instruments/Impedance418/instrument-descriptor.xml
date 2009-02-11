@@ -3,17 +3,6 @@
 
   <name>Impedance418</name>
 
-  <instruments>
-    <instrument>
-      <name>Tanita BC-418</name>
-      <vendor>Tanita</vendor>
-      <model>BC-418</model>
-      <status>ACTIVE</status>
-      <serialNumber>1234567890</serialNumber>
-      <barcode>CAG1002</barcode>
-    </instrument>
-  </instruments>
-
  <!-- <contraindications>  commented out
     <contraIndication>
       <code>UnableToStandUnassistedHandicap</code>

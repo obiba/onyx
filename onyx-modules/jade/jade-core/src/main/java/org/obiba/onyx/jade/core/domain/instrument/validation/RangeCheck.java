@@ -9,9 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
@@ -21,8 +18,6 @@ import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Entity
-@DiscriminatorValue("RangeCheck")
 public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck {
 
   private static final long serialVersionUID = 1L;

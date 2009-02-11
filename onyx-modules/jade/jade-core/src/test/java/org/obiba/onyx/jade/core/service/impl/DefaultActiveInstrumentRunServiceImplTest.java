@@ -15,6 +15,8 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -27,6 +29,8 @@ import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
@@ -139,23 +143,45 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     // Start an InstrumentRun.
     startInstrumentRun(participant, instrumentType);
 
-    initInstrumentServiceMock(instrumentType);
+    // Record common instrumentService expectations.
+    initInstrumentServiceMock(instrumentType, false);
+
+    // Record specific instrumentService expectations.
+    InstrumentParameter parameter = null;
+
+    String parameterCode1 = "OUTPUT_SYSTOLIC_PRESSURE";
+    String vendorName1 = "SP";
+    parameter = new InstrumentOutputParameter();
+    parameter.setCode(parameterCode1);
+    parameter.setVendorName(vendorName1);
+    expect(instrumentService.getParameterByCode(instrumentType, parameterCode1)).andReturn(parameter);
+
+    String parameterCode2 = "OUTPUT_DIASTOLIC_PRESSURE";
+    String vendorName2 = "DP";
+    parameter = new InstrumentOutputParameter();
+    parameter.setCode(parameterCode2);
+    parameter.setVendorName(vendorName2);
+    expect(instrumentService.getParameterByCode(instrumentType, parameterCode2)).andReturn(parameter);
+
+    String parameterCode3 = "bogus";
+    parameter = new InstrumentOutputParameter();
+    parameter.setCode(parameterCode3);
+    expect(instrumentService.getParameterByCode(instrumentType, parameterCode3)).andReturn(null);
+
+    replay(instrumentService);
 
     // Look up a parameter by its code.
-    String parameterCode = "OUTPUT_SYSTOLIC_PRESSURE";
-    InstrumentParameter parameter = activeInstrumentRunService.getParameterByCode(parameterCode);
-    Assert.assertEquals(parameterCode, parameter.getCode());
-    Assert.assertEquals("SP", parameter.getVendorName()); // cross-check vendor name
+    parameter = activeInstrumentRunService.getParameterByCode(parameterCode1);
+    Assert.assertEquals(parameterCode1, parameter.getCode());
+    Assert.assertEquals(vendorName1, parameter.getVendorName()); // cross-check vendor name
 
     // Look up another parameter. (In case query always returns the same parameter...)
-    parameterCode = "OUTPUT_DIASTOLIC_PRESSURE";
-    parameter = activeInstrumentRunService.getParameterByCode(parameterCode);
-    Assert.assertEquals(parameterCode, parameter.getCode());
-    Assert.assertEquals("DP", parameter.getVendorName()); // cross-check vendor name
+    parameter = activeInstrumentRunService.getParameterByCode(parameterCode2);
+    Assert.assertEquals(parameterCode2, parameter.getCode());
+    Assert.assertEquals(vendorName2, parameter.getVendorName()); // cross-check vendor name
 
     // Now look up a bogus parameter.
-    parameterCode = "bogus";
-    parameter = activeInstrumentRunService.getParameterByCode(parameterCode);
+    parameter = activeInstrumentRunService.getParameterByCode(parameterCode3);
     Assert.assertNull(parameter);
   }
 
@@ -250,7 +276,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     InstrumentType instrumentType = instrumentTypes.get("ArtStiffness");
     startInstrumentRun(participant, instrumentType);
 
-    initInstrumentServiceMock(instrumentType);
+    initInstrumentServiceMockForInputParameterTests(instrumentType, 7, 0);
 
     // Verify that the READONLY InstrumentInputParameters are detected.
     Assert.assertTrue(activeInstrumentRunService.hasInputParameter(true));
@@ -264,7 +290,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     instrumentType = instrumentTypes.get("GripStrength");
     startInstrumentRun(participant, instrumentType);
 
-    initInstrumentServiceMock(instrumentType);
+    initInstrumentServiceMockForInputParameterTests(instrumentType, 0, 0);
 
     // Verify that no InstrumentInputParameters are detected.
     Assert.assertFalse(activeInstrumentRunService.hasInputParameter(true));
@@ -282,7 +308,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     InstrumentType instrumentType = instrumentTypes.get("ArtStiffness");
     startInstrumentRun(participant, instrumentType);
 
-    initInstrumentServiceMock(instrumentType);
+    initInstrumentServiceMockForInputParameterTests(instrumentType, 7, 0);
 
     // Verify the number of READONLY and NON-READONLY InputParameters.
     Assert.assertEquals(7, activeInstrumentRunService.getInputParameters(true).size());
@@ -372,7 +398,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     InstrumentType instrumentType = instrumentTypes.get("StandingHeight");
     startInstrumentRun(participant, instrumentType);
 
-    initInstrumentServiceMock(instrumentType);
+    initInstrumentServiceMockForOutputParameterTests(instrumentType);
 
     // Verify that the MANUAL and COMPUTED InstrumentOutputParameters are detected.
     Assert.assertFalse(activeInstrumentRunService.hasOutputParameter(InstrumentParameterCaptureMethod.AUTOMATIC));
@@ -391,7 +417,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     InstrumentType instrumentType = instrumentTypes.get("StandingHeight");
     startInstrumentRun(participant, instrumentType);
 
-    initInstrumentServiceMock(instrumentType);
+    initInstrumentServiceMockForOutputParameterTests(instrumentType);
 
     // Verify the number InstrumentOutputParameters by capture method.
     Assert.assertEquals(0, activeInstrumentRunService.getOutputParameters(InstrumentParameterCaptureMethod.AUTOMATIC).size());
@@ -410,7 +436,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     InstrumentType instrumentType = instrumentTypes.get("StandingHeight");
     startInstrumentRun(participant, instrumentType);
 
-    initInstrumentServiceMock(instrumentType);
+    initInstrumentServiceMockForOutputParameterTests(instrumentType);
 
     // Verify that the InstrumentOutputParameters are detected.
     Assert.assertFalse(activeInstrumentRunService.hasOutputParameter(true));
@@ -428,7 +454,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     InstrumentType instrumentType = instrumentTypes.get("StandingHeight");
     startInstrumentRun(participant, instrumentType);
 
-    initInstrumentServiceMock(instrumentType);
+    initInstrumentServiceMockForOutputParameterTests(instrumentType);
 
     // Verify the number InstrumentOutputParameters by capture method.
     Assert.assertEquals(0, activeInstrumentRunService.getOutputParameters(true).size());
@@ -537,8 +563,55 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     reset(instrumentService);
   }
 
-  private void initInstrumentServiceMock(InstrumentType instrumentType) {
+  private void initInstrumentServiceMock(InstrumentType instrumentType, boolean replay) {
     expect(instrumentService.getInstrumentType(instrumentType.getName())).andReturn(instrumentType).anyTimes();
+
+    if(replay) {
+      replay(instrumentService);
+    }
+  }
+
+  private void initInstrumentServiceMock(InstrumentType instrumentType) {
+    initInstrumentServiceMock(instrumentType, true);
+  }
+
+  private void initInstrumentServiceMockForInputParameterTests(InstrumentType instrumentType, int readOnlyParamCount, int nonReadOnlyParamCount) {
+    // Record common instrumentService expectations.
+    initInstrumentServiceMock(instrumentType, false);
+
+    // Record specific instrumentService expectations.
+    List<InstrumentInputParameter> readOnlyInputParams = new ArrayList<InstrumentInputParameter>();
+    for(int i = 0; i < readOnlyParamCount; i++) {
+      readOnlyInputParams.add(new InstrumentInputParameter());
+    }
+    expect(instrumentService.getInstrumentInputParameter(instrumentType, true)).andReturn(readOnlyInputParams);
+
+    List<InstrumentInputParameter> nonReadOnlyInputParams = new ArrayList<InstrumentInputParameter>();
+    for(int i = 0; i < nonReadOnlyParamCount; i++) {
+      nonReadOnlyInputParams.add(new InstrumentInputParameter());
+    }
+    expect(instrumentService.getInstrumentInputParameter(instrumentType, false)).andReturn(nonReadOnlyInputParams);
+
+    replay(instrumentService);
+  }
+
+  private void initInstrumentServiceMockForOutputParameterTests(InstrumentType instrumentType) {
+    // Record common instrumentService expectations.
+    initInstrumentServiceMock(instrumentType, false);
+
+    // Record/replay specific instrumentService expectations.
+    List<InstrumentOutputParameter> autoOutputParams = new ArrayList<InstrumentOutputParameter>();
+    expect(instrumentService.getOutputParameters(instrumentType, InstrumentParameterCaptureMethod.AUTOMATIC)).andReturn(autoOutputParams);
+
+    List<InstrumentOutputParameter> manualOutputParams = new ArrayList<InstrumentOutputParameter>();
+    manualOutputParams.add(new InstrumentOutputParameter());
+    manualOutputParams.add(new InstrumentOutputParameter());
+    expect(instrumentService.getOutputParameters(instrumentType, InstrumentParameterCaptureMethod.MANUAL)).andReturn(manualOutputParams);
+
+    List<InstrumentOutputParameter> computedOutputParams = new ArrayList<InstrumentOutputParameter>();
+    computedOutputParams.add(new InstrumentOutputParameter());
+    expect(instrumentService.getOutputParameters(instrumentType, InstrumentParameterCaptureMethod.COMPUTED)).andReturn(computedOutputParams);
+
     replay(instrumentService);
   }
 
@@ -581,7 +654,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
   private void setParameterValue(InstrumentRun instrumentRun, InstrumentParameter parameter, Data value) {
     InstrumentRunValue template = new InstrumentRunValue();
     template.setInstrumentRun(instrumentRun);
-    template.setInstrumentParameter(parameter);
+    template.setInstrumentParameter(parameter.getCode());
 
     InstrumentRunValue runValue = persistenceManager.matchOne(template);
     if(runValue == null) {

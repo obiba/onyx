@@ -58,11 +58,11 @@ public class EqualsParameterCheckTest {
     instrumentType = new InstrumentType();
 
     instrument = new Instrument();
-    instrument.setInstrumentType(instrumentType);
+    instrument.setType(instrumentType.getName());
 
     instrumentRun = new InstrumentRun();
     instrumentRun.setParticipant(participant);
-    instrumentRun.setInstrumentType(instrumentType);
+    instrumentRun.setInstrumentType(instrumentType.getName());
 
     checkedParameter = new InstrumentOutputParameter();
     checkedParameter.setCode("checkedParamName");
@@ -93,10 +93,11 @@ public class EqualsParameterCheckTest {
     Data otherData = DataBuilder.buildInteger(100l);
 
     InstrumentRunValue otherRunValue = new InstrumentRunValue();
-    otherRunValue.setInstrumentParameter(otherParameter);
+    otherRunValue.setInstrumentParameter(otherParameter.getCode());
     otherRunValue.setData(otherData);
 
     expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter);
 
     replay(activeInstrumentRunServiceMock);
 
@@ -120,10 +121,11 @@ public class EqualsParameterCheckTest {
     Data otherData = DataBuilder.buildInteger(200l);
 
     InstrumentRunValue otherRunValue = new InstrumentRunValue();
-    otherRunValue.setInstrumentParameter(otherParameter);
+    otherRunValue.setInstrumentParameter(otherParameter.getCode());
     otherRunValue.setData(otherData);
 
     expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter);
 
     replay(activeInstrumentRunServiceMock);
 
@@ -144,10 +146,12 @@ public class EqualsParameterCheckTest {
     Data otherData = DataBuilder.buildInteger(100l);
 
     InstrumentRunValue otherRunValue = new InstrumentRunValue();
-    otherRunValue.setInstrumentParameter(otherParameter);
+    otherRunValue.setInstrumentParameter(otherParameter.getCode());
     otherRunValue.setData(otherData);
 
     expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
+    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter);
+
     replay(activeInstrumentRunServiceMock);
     equalsParameterCheck.setOperator(ComparisonOperator.LESSER);
     Assert.assertTrue(equalsParameterCheck.checkParameterValue(checkedData, instrumentRunServiceMock, activeInstrumentRunServiceMock));

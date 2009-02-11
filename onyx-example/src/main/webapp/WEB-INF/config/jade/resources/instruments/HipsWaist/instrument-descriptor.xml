@@ -3,16 +3,6 @@
 
   <name>HipsWaist</name>
 
-  <instruments>
-    <instrument>
-      <name>Hips Waist Tape 1</name>
-      <vendor>Seca</vendor>
-      <model>Seca Measuring Tape</model>
-      <barcode>hwc01</barcode>
-      <status>ACTIVE</status>
-    </instrument>
-  </instruments>
-
   <!--   <contraindications>  commented out
     <contraIndication>
       <code>UnableToStandUnassistedHandicap</code>

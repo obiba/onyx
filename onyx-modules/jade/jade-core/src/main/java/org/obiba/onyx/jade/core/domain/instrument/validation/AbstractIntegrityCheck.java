@@ -9,18 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-
-import org.obiba.core.domain.AbstractEntity;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
@@ -28,24 +16,16 @@ import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
 import org.springframework.context.ApplicationContext;
 
-@Entity(name = "IntegrityCheck")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "integrity_check_type", discriminatorType = DiscriminatorType.STRING, length = 100)
-public abstract class AbstractIntegrityCheck extends AbstractEntity implements IntegrityCheck {
+public abstract class AbstractIntegrityCheck implements IntegrityCheck {
 
-  @Enumerated(EnumType.STRING)
   private IntegrityCheckType type;
 
-  @ManyToOne
-  @JoinColumn(name = "instrument_parameter_id")
   private InstrumentParameter targetParameter;
 
   private String customizedDescription;
 
-  @Transient
   protected transient ApplicationContext context;
 
-  @Transient
   protected transient UserSessionService userSessionService;
 
   public void setApplicationContext(ApplicationContext context) {

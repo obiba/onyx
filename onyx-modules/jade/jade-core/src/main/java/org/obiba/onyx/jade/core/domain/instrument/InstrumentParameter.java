@@ -9,67 +9,30 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.Index;
-import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.jade.core.domain.instrument.validation.AbstractIntegrityCheck;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
+import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "instrument_parameter_type", discriminatorType = DiscriminatorType.STRING, length = 100)
-@DiscriminatorValue("InstrumentParameter")
-public abstract class InstrumentParameter extends AbstractEntity {
+public abstract class InstrumentParameter implements Serializable {
 
-  @Column(length = 200)
-  @Index(name = "code_idx")
   private String code;
 
-  @Column(length = 200)
-  @Index(name = "vendor_name_idx")
   private String vendorName;
 
-  @Column(length = 20)
   private String measurementUnit;
 
-  @Enumerated(EnumType.STRING)
   private DataType dataType;
 
-  @Enumerated(EnumType.STRING)
   private InstrumentParameterCaptureMethod captureMethod;
 
   private String displayFormat;
 
-  // insertable and updatable are set to false so that the bi-directional relation
-  // is managed by the parent instead of this class
-  @ManyToOne
-  @JoinColumn(name = "instrument_type_id", insertable = false, updatable = false)
-  private InstrumentType instrumentType;
-
-  @OneToMany(mappedBy = "instrumentParameter")
-  private List<InstrumentRunValue> instrumentRunValues;
-
-  @OneToMany(mappedBy = "targetParameter", cascade = CascadeType.ALL)
-  private List<AbstractIntegrityCheck> integrityChecks;
+  private List<IntegrityCheck> integrityChecks;
 
   public String getCode() {
     return code;
@@ -115,30 +78,11 @@ public abstract class InstrumentParameter extends AbstractEntity {
     this.captureMethod = captureMethod;
   }
 
-  public InstrumentType getInstrumentType() {
-    return instrumentType;
+  public List<IntegrityCheck> getIntegrityChecks() {
+    return integrityChecks != null ? integrityChecks : (integrityChecks = new ArrayList<IntegrityCheck>());
   }
 
-  public void setInstrumentType(InstrumentType instrumentType) {
-    this.instrumentType = instrumentType;
-  }
-
-  public List<InstrumentRunValue> getInstrumentRunValues() {
-    return instrumentRunValues != null ? instrumentRunValues : (instrumentRunValues = new ArrayList<InstrumentRunValue>());
-  }
-
-  public void addInstrumentRunValue(InstrumentRunValue value) {
-    if(value != null) {
-      getInstrumentRunValues().add(value);
-      value.setInstrumentParameter(this);
-    }
-  }
-
-  public List<AbstractIntegrityCheck> getIntegrityChecks() {
-    return integrityChecks != null ? integrityChecks : (integrityChecks = new ArrayList<AbstractIntegrityCheck>());
-  }
-
-  public void addIntegrityChecks(AbstractIntegrityCheck integrityCheck) {
+  public void addIntegrityChecks(IntegrityCheck integrityCheck) {
     if(integrityCheck != null) {
       getIntegrityChecks().add(integrityCheck);
       integrityCheck.setTargetParameter(this);

@@ -9,22 +9,14 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-
 import org.obiba.onyx.jade.core.service.InputSourceVisitor;
 
-@Entity
-@DiscriminatorValue("OutputParameterSource")
 public class OutputParameterSource extends InputSource {
 
   private static final long serialVersionUID = 79789789454360982L;
 
-  @Column(length = 200)
   private String instrumentType;
 
-  @Column(length = 200)
   private String parameterName;
 
   public OutputParameterSource() {

@@ -104,8 +104,8 @@ public abstract class InstrumentLaunchPanel extends Panel {
             InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
             ValueMap map = new ValueMap();
             map.put("description", new MessageSourceResolvableStringModel(param.getLabel()).getObject());
-            if(runValue.getData() != null && runValue.getData().getValue() != null) {
-              map.put("value", new SpringStringResourceModel(runValue.getData().getValueAsString()).getString());
+            if(runValue.getData(param.getDataType()) != null && runValue.getData(param.getDataType()).getValue() != null) {
+              map.put("value", new SpringStringResourceModel(runValue.getData(param.getDataType()).getValueAsString()).getString());
               String unit = param.getMeasurementUnit();
               if(unit == null) {
                 unit = "";

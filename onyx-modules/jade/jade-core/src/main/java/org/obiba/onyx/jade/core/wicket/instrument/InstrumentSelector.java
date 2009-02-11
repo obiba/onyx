@@ -42,7 +42,7 @@ public class InstrumentSelector extends Panel {
 
     // get only active instruments in this type.
     Instrument template = new Instrument();
-    template.setInstrumentType((InstrumentType) getModelObject());
+    template.setType(((InstrumentType) getModelObject()).getName());
     template.setStatus(InstrumentStatus.ACTIVE);
 
     KeyValueDataPanel selector = new KeyValueDataPanel("selector");

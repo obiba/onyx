@@ -19,6 +19,7 @@ import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.FixedSource;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.MultipleOutputParameterSource;
 import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
@@ -26,7 +27,6 @@ import org.obiba.onyx.jade.core.domain.instrument.OutputParameterSource;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantPropertySource;
 import org.obiba.onyx.jade.core.domain.instrument.UnitParameterValueConverter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
-import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
@@ -42,8 +42,6 @@ public class InputDataSourceVisitorImpl extends PersistenceManagerAwareService i
 
   private InstrumentService instrumentService;
 
-  private ActiveInstrumentRunService activeInstrumentRunService;
-
   private Data data;
 
   private Participant participant;
@@ -56,10 +54,6 @@ public class InputDataSourceVisitorImpl extends PersistenceManagerAwareService i
 
   public void setInstrumentRunService(InstrumentRunService instrumentRunService) {
     this.instrumentRunService = instrumentRunService;
-  }
-
-  public void setActiveInstrumentRunService(ActiveInstrumentRunService activeInstrumentRunService) {
-    this.activeInstrumentRunService = activeInstrumentRunService;
   }
 
   public Data getData(Participant participant, InstrumentInputParameter parameter) {
@@ -136,21 +130,23 @@ public class InputDataSourceVisitorImpl extends PersistenceManagerAwareService i
       System.out.println(runValue);
       if(runValue != null) {
         // Unit conversion when necessary
-        if(runValue.getInstrumentParameter().getMeasurementUnit() != null && parameter.getMeasurementUnit() != null && !parameter.getMeasurementUnit().equals(runValue.getInstrumentParameter().getMeasurementUnit())) {
+        InstrumentParameter runValueParameter = instrumentService.getParameterByCode(type, runValue.getInstrumentParameter());
+
+        if(runValueParameter.getMeasurementUnit() != null && parameter.getMeasurementUnit() != null && !parameter.getMeasurementUnit().equals(runValueParameter.getMeasurementUnit())) {
           InstrumentRunValue targetRunValue = instrumentRunService.findInstrumentRunValue(participant, type, parameter.getCode());// activeInstrumentRunService.getInputInstrumentRunValue(parameter.getCode());
           if(targetRunValue == null) {
             targetRunValue = new InstrumentRunValue();
-            targetRunValue.setInstrumentParameter(parameter);
+            targetRunValue.setInstrumentParameter(parameter.getCode());
             targetRunValue.setInstrumentRun(instrumentRunService.getLastInstrumentRun(participant, type));
             targetRunValue.setCaptureMethod(parameter.getCaptureMethod());
             targetRunValue = getPersistenceManager().save(targetRunValue);
           }
 
           UnitParameterValueConverter converter = new UnitParameterValueConverter();
-          converter.convert(targetRunValue, runValue);
-          data = targetRunValue.getData();
+          converter.convert(instrumentService, type, targetRunValue, runValue);
+          data = targetRunValue.getData(parameter.getDataType());
         } else {
-          data = runValue.getData();
+          data = runValue.getData(runValueParameter.getDataType());
         }
         // TODO type conversion when possible (INTEGER->DECIMAL->TEXT...)
       }

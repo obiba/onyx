@@ -9,10 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.core.domain.contraindication;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
 import org.obiba.core.domain.AbstractEntity;
 import org.springframework.context.MessageSourceResolvable;
 
@@ -27,8 +23,6 @@ import org.springframework.context.MessageSourceResolvable;
  * fact that Jade persists its model and Contraindications are part of this model. It is not recommended to actually
  * persist these entities.
  */
-@Entity
-@org.hibernate.annotations.AccessType("field")
 public class Contraindication extends AbstractEntity implements MessageSourceResolvable {
 
   private static final long serialVersionUID = 1L;
@@ -41,7 +35,6 @@ public class Contraindication extends AbstractEntity implements MessageSourceRes
 
   private boolean requiresDescription = false;
 
-  @Enumerated(EnumType.STRING)
   private Type type;
 
   public Contraindication() {

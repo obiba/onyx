@@ -33,9 +33,10 @@ public class OutputParameterDataSource implements IDataSource {
   public Data getData(Participant participant) {
     if(participant == null) return null;
 
+    InstrumentOutputParameter outputParam = instrumentService.getInstrumentOutputParameter(instrumentService.getInstrumentType(instrumentType), parameterCode);
     InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValue(participant, instrumentService.getInstrumentType(instrumentType), parameterCode);
 
-    if(runValue != null) return runValue.getData();
+    if(runValue != null) return runValue.getData(outputParam.getDataType());
     return null;
   }
 

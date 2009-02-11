@@ -20,7 +20,6 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.core.service.UserSessionService;
-import org.obiba.onyx.jade.core.domain.instrument.validation.AbstractIntegrityCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheckType;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
@@ -76,7 +75,7 @@ public class IntegrityCheckValidator extends AbstractValidator {
    * @param targetField the field
    * @param integrityChecks the checks
    */
-  public static void addChecks(DataField targetField, List<AbstractIntegrityCheck> integrityChecks) {
+  public static void addChecks(DataField targetField, List<IntegrityCheck> integrityChecks) {
     for(IntegrityCheck check : integrityChecks) {
       if(check.getType().equals(IntegrityCheckType.ERROR)) {
         targetField.add(new IntegrityCheckValidator(check));

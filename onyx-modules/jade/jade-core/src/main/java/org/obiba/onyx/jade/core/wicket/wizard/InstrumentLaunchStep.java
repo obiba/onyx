@@ -21,7 +21,6 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
-import org.obiba.onyx.jade.core.domain.instrument.validation.AbstractIntegrityCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheckType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
@@ -98,7 +97,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
 
         for(InstrumentOutputParameter param : outputParams) {
           InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
-          Data data = runValue.getData();
+          Data data = runValue.getData(param.getDataType());
           if(data == null || data.getValue() == null) {
             error(getString("NoInstrumentDataSaveThem"));
             setNextStep(null);
@@ -144,16 +143,16 @@ public class InstrumentLaunchStep extends WizardStepPanel {
     List<IntegrityCheck> failedChecks = new ArrayList<IntegrityCheck>();
 
     for(InstrumentOutputParameter param : outputParams) {
-      List<AbstractIntegrityCheck> integrityChecks = param.getIntegrityChecks();
+      List<IntegrityCheck> integrityChecks = param.getIntegrityChecks();
 
-      for(AbstractIntegrityCheck integrityCheck : integrityChecks) {
+      for(IntegrityCheck integrityCheck : integrityChecks) {
         // Skip non-ERROR type checks.
         if(!integrityCheck.getType().equals(IntegrityCheckType.ERROR)) {
           continue;
         }
 
         InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
-        Data paramData = (runValue != null) ? runValue.getData() : null;
+        Data paramData = (runValue != null) ? runValue.getData(param.getDataType()) : null;
 
         if(!integrityCheck.checkParameterValue(paramData, null, activeInstrumentRunService)) {
           failedChecks.add(integrityCheck);
