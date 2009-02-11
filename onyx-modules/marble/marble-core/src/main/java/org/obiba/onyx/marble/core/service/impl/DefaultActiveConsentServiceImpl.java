@@ -10,7 +10,6 @@
 package org.obiba.onyx.marble.core.service.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.wicket.util.string.Strings;
@@ -93,15 +92,6 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
         }
       }
 
-      // Make sure all signature fields have been signed.
-      ArrayList list = form.getBlankSignatureNames();
-      if(!list.isEmpty()) {
-        for(Object blankSignatureName : list) {
-          log.debug("The following signature field has not been signed : {}", blankSignatureName);
-        }
-        return false;
-      }
-
       return true;
 
       // Invalid if PDF form does not exist.
@@ -114,7 +104,7 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
     int fieldType = form.getFieldType(fieldName);
 
     // Fields name ending with ".mandatoryFields" are required.
-    return fieldName.contains("_mandatoryField") && fieldType != AcroFields.FIELD_TYPE_SIGNATURE && fieldType != AcroFields.FIELD_TYPE_PUSHBUTTON;
+    return fieldName.contains("_mandatoryField") && fieldType != AcroFields.FIELD_TYPE_PUSHBUTTON;
   }
 
   public boolean isConsentFormSubmitted() {
