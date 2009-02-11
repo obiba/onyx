@@ -21,7 +21,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     scope="prototype">
     <property name="instrumentRunService" ref="instrumentRunService" />
     <property name="instrumentService" ref="instrumentService" />
-    <property name="activeInstrumentRunService" ref="activeInstrumentRunService" />
   </bean>
   
   <bean id="userSessionService" class="org.obiba.onyx.core.service.impl.UserSessionServiceBeanImpl">

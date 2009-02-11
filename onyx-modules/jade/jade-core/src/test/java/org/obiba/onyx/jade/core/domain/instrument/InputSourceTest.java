@@ -10,11 +10,12 @@
 package org.obiba.onyx.jade.core.domain.instrument;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
+import org.obiba.core.test.spring.Dataset;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
@@ -35,7 +36,6 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(InputSourceTest.class);
 
-  // @Autowired(required = true)
   InputDataSourceVisitor inputDataSourceVisitor;
 
   @Autowired(required = true)
@@ -44,11 +44,7 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
   @Autowired
   InstrumentService instrumentService;
 
-  @Test
-  public void test() {
-  }
-
-  // @Before
+  @Before
   public void setUp() {
     ConfigurableApplicationContext applicationContext = new ClassPathXmlApplicationContext("test-spring-context.xml");
     applicationContext.getBeanFactory().registerScope("session", new SessionScope());
@@ -62,8 +58,8 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
 
   }
 
-  // @Test
-  // @Dataset
+  @Test
+  @Dataset
   public void testParticipantPropertyRetriever() {
     Participant participant = queryService.get(Participant.class, 1l);
 
@@ -92,16 +88,16 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
     Assert.assertEquals(DataType.TEXT, resultData.getType());
   }
 
-  // @Test
-  // @Dataset
+  @Test
+  @Dataset
   public void testOutputParameterSource() {
     Participant participant = queryService.get(Participant.class, 1l);
     Assert.assertNotNull(participant);
 
     InstrumentInputParameter param = new InstrumentInputParameter();
     OutputParameterSource outputParameterSource = new OutputParameterSource();
-    outputParameterSource.setParameterName("height");
-    outputParameterSource.setInstrumentType("BIM");
+    outputParameterSource.setParameterName("OUTPUT_PARTICIPANT_HEIGHT");
+    outputParameterSource.setInstrumentType("Impedance310");
     param.setDataType(DataType.INTEGER);
     param.setInputSource(outputParameterSource);
 
@@ -109,40 +105,6 @@ public class InputSourceTest extends BaseDefaultSpringContextTestCase {
     Assert.assertNotNull(resultData);
     Assert.assertEquals(new Long(187), resultData.getValue());
     Assert.assertEquals(DataType.INTEGER, resultData.getType());
-  }
-
-  // @Test
-  // @Dataset
-  public void testInstrumentParameterValueConverter() {
-    Participant participant = queryService.get(Participant.class, 1l);
-
-    InstrumentRunValue sourceInstrumentRunValue = queryService.get(InstrumentRunValue.class, 5l);
-    InstrumentParameter targetInstrumentParameter = queryService.get(InstrumentParameter.class, 6l);
-
-    InstrumentRunValue targetInstrumentRunValue = new InstrumentRunValue();
-    targetInstrumentRunValue.setInstrumentParameter(targetInstrumentParameter.getCode());
-
-    if(sourceInstrumentRunValue.getData(DataType.DATE).getValue() == null) {
-      sourceInstrumentRunValue.setData(new Data(DataType.DATE, participant.getBirthDate()));
-    }
-
-    InstrumentParameter finalInstrumentParameter = queryService.get(InstrumentParameter.class, 8l);
-    InstrumentRunValue finalInstrumentRunValue = new InstrumentRunValue();
-    finalInstrumentRunValue.setInstrumentParameter(finalInstrumentParameter.getCode());
-
-    // TODO: Fix call to unitConverter.convert.
-    UnitParameterValueConverter unitConverter = new UnitParameterValueConverter();
-    unitConverter.convert(instrumentService, null, finalInstrumentRunValue, targetInstrumentRunValue);
-    Assert.assertEquals(Long.valueOf("29"), finalInstrumentRunValue.getValue(finalInstrumentParameter.getDataType()));
-
-    // Testing metric data
-    sourceInstrumentRunValue = queryService.get(InstrumentRunValue.class, 1l);
-    targetInstrumentParameter = queryService.get(InstrumentParameter.class, 3l);
-    targetInstrumentRunValue.setInstrumentParameter(targetInstrumentParameter.getCode());
-
-    // TODO: Fix call to unitConverter.convert.
-    unitConverter.convert(instrumentService, null, targetInstrumentRunValue, sourceInstrumentRunValue);
-    Assert.assertEquals(Double.valueOf("1.85"), targetInstrumentRunValue.getValue(targetInstrumentParameter.getDataType()));
   }
 
 }
