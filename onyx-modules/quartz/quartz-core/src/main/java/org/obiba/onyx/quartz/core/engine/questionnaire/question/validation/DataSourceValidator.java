@@ -18,6 +18,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.util.data.IDataUnitProvider;
 import org.obiba.onyx.wicket.data.IDataValidator;
 import org.slf4j.Logger;
@@ -31,7 +32,6 @@ public class DataSourceValidator implements IDataValidator {
 
   private static final long serialVersionUID = 1L;
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DataSourceValidator.class);
 
   private DataSource dataSource;
@@ -47,6 +47,10 @@ public class DataSourceValidator implements IDataValidator {
 
   public void setDataUnitProvider(IDataUnitProvider dataUnitProvider) {
     this.dataUnitProvider = dataUnitProvider;
+  }
+
+  public DataType getDataType() {
+    return null;
   }
 
   public void validate(IValidatable validatable) {

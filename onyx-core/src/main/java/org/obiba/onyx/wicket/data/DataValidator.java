@@ -13,17 +13,23 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.Validatable;
-import org.apache.wicket.validation.validator.NumberValidator;
-import org.apache.wicket.validation.validator.StringValidator;
+import org.apache.wicket.validation.ValidationError;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
-import org.obiba.onyx.util.data.IDataUnitProvider;
 
 /**
  * Validates a {@link Data} value, given a standard {@link IValidator} and specifying what is the {@link DataType} this
  * validator is capable to validate.
- * @see StringValidator
- * @see NumberValidator
+ * <p>
+ * This validator validates that the validated data's type is compatible with the underlying validator's expected type.
+ * In case of a mismatch, an error is reported using the key DataValidator.incompatibleTypes with the following
+ * attributes:
+ * <ul>
+ * <li><em>expectedType</em>: the expected {@code DataType}</li>
+ * <li><em>actualType</em>: the actual {@code DataType} (the one obtained from the validated value)</li>
+ * <li><em>value</em>: the value being validated</li>
+ * </ul>
+ * @see IValidator
  */
 public class DataValidator implements IDataValidator {
 
@@ -33,15 +39,9 @@ public class DataValidator implements IDataValidator {
 
   private IValidator validator;
 
-  private IDataUnitProvider dataUnitProvider;
-
   public DataValidator(IValidator validator, DataType dataType) {
     this.validator = validator;
     this.dataType = dataType;
-  }
-
-  public void setDataUnitProvider(IDataUnitProvider dataUnitProvider) {
-    this.dataUnitProvider = dataUnitProvider;
   }
 
   public DataType getDataType() {
@@ -49,36 +49,78 @@ public class DataValidator implements IDataValidator {
   }
 
   public void validate(IValidatable validatable) {
-    Validatable tempValidatable = getValidatorCast(validatable);
-    validator.validate(tempValidatable);
-    for(Object error : tempValidatable.getErrors()) {
+    Data value = (Data) validatable.getValue();
+
+    // targetValue should be null if either value or value.getValue is null.
+    Object targetValue = value != null ? value.getValue() : null;
+
+    // Handle the case where there's a value and it needs conversion before being validated
+    if(targetValue != null && dataType != value.getType()) {
+      try {
+        targetValue = convertValue(value);
+      } catch(IllegalArgumentException e) {
+        // Can't convert a String to a number
+        ValidationError error = new ValidationError();
+        error.addMessageKey("DataValidator.incompatibleTypes");
+        error.setVariable("expectedType", dataType);
+        error.setVariable("actualType", value.getType());
+        error.setVariable("value", value.getValue());
+        validatable.error(error);
+        return;
+      }
+    }
+
+    // value may be null here. If so, create the Validatable with null value.
+    Validatable adaptedValidatable = new Validatable(targetValue);
+
+    // Have the underlying validator validate the value
+    validator.validate(adaptedValidatable);
+
+    // Extract any validation errors and report them on the original Validatable.
+    for(Object error : adaptedValidatable.getErrors()) {
       validatable.error((IValidationError) error);
     }
+
   }
 
   public IValidator getValidator() {
     return validator;
   }
 
-  private Validatable getValidatorCast(IValidatable validatable) {
-    String value = ((Data) validatable.getValue()).getValueAsString();
-
+  /**
+   * Converts the input value to a value of the expected {@code DataType}. Throws an {@code IllegalArgumentException}
+   * when it is not possible to convert the value.
+   * 
+   * @param value the value to convert
+   * @return the converted value
+   * @throws IllegalArgumentException when a conversion error occurs or the value cannot be converted to the expected
+   * type safely.
+   */
+  protected Object convertValue(Data value) throws IllegalArgumentException {
+    Object convertedValue = value.getValue();
     switch(dataType) {
-
     case TEXT:
-      return new Validatable(value);
-
+      convertedValue = value.getValueAsString();
+      break;
     case INTEGER:
-      return new Validatable(Long.valueOf(value));
-
+      if(value.getType().isNumberType() == false) {
+        String valueStr = value.getValueAsString();
+        // This throws an IllegalArgumentException
+        convertedValue = Long.valueOf(valueStr);
+      }
+      break;
     case DECIMAL:
-      return new Validatable(Double.valueOf(value));
+      if(value.getType().isNumberType() == false) {
+        String valueStr = value.getValueAsString();
+        // This throws an IllegalArgumentException
+        return Double.valueOf(valueStr);
+      }
+      break;
+    default:
+      // Cannot convert to expected type
+      throw new IllegalArgumentException("Cannot convert type " + value.getType() + " to type " + this.dataType);
     }
-
-    return null;
+    return convertedValue;
   }
 
-  public String getUnit() {
-    return dataUnitProvider != null ? dataUnitProvider.getUnit() : null;
-  }
 }

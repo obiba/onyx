@@ -7,17 +7,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.wicket.data;
+package org.obiba.onyx.wicket.data.validation.converter;
 
 import org.apache.wicket.validation.IValidator;
-import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataType;
 
 /**
- * Marker interface for {@code IValidator} instances that validate {@link Data} values.
+ * A helper implementation of {@code IValidatorNodeConverter}.
  */
-public interface IDataValidator extends IValidator {
+public abstract class AbstractValidatorNodeConverter implements IValidatorNodeConverter {
 
-  public DataType getDataType();
+  @SuppressWarnings("unchecked")
+  public boolean canConvert(Class type) {
+    return type != null && type.equals(IValidator.class);
+  }
 
 }
