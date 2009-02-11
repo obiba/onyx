@@ -15,6 +15,7 @@ import java.util.Map;
 import org.obiba.onyx.jade.core.domain.instrument.InputSource;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 
 public interface InstrumentService {
@@ -83,5 +84,13 @@ public interface InstrumentService {
    * @return the context-relative path to the instrument type's code
    */
   public String getInstrumentInstallPath(InstrumentType type);
+
+  /**
+   * Get the {@link InstrumentOutputParameter} from the parameterCode.
+   * @param instrumentType
+   * @param parameterCode
+   * @return
+   */
+  public InstrumentOutputParameter getInstrumentOutputParameter(InstrumentType instrumentType, String parameterCode);
 
 }

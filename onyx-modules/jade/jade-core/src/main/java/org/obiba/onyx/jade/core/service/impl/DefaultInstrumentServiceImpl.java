@@ -49,7 +49,7 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     return getPersistenceManager().matchOne(template);
   }
 
-  public Map<String,InstrumentType> getInstrumentTypes() {
+  public Map<String, InstrumentType> getInstrumentTypes() {
     Map<String, InstrumentType> instrumentTypes = new HashMap<String, InstrumentType>();
     for(InstrumentType instrumentType : getPersistenceManager().list(InstrumentType.class)) {
       instrumentTypes.put(instrumentType.getName(), instrumentType);
@@ -125,6 +125,14 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
 
     }
 
+  }
+
+  public InstrumentOutputParameter getInstrumentOutputParameter(InstrumentType instrumentType, String parameterCode) {
+    InstrumentOutputParameter template = new InstrumentOutputParameter();
+    template.setInstrumentType(instrumentType);
+    template.setCode(parameterCode);
+
+    return getPersistenceManager().matchOne(template);
   }
 
 }

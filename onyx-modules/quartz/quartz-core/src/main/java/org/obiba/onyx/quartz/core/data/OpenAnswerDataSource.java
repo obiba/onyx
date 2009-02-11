@@ -20,7 +20,7 @@ import org.obiba.onyx.quartz.core.service.QuestionnaireParticipantService;
 import org.obiba.onyx.util.data.Data;
 
 /**
- * 
+ * Used to get open answer data and unit
  */
 public class OpenAnswerDataSource implements IDataSource {
 
@@ -40,9 +40,8 @@ public class OpenAnswerDataSource implements IDataSource {
     if(participant == null) return null;
 
     OpenAnswer openAnswer = questionnaireParticipantService.getOpenAnswer(participant, questionnaire, question, category, openAnswerDefinition);
-    if(openAnswer != null && openAnswer.getCategoryAnswer().getActive()) {
-      return openAnswer.getData();
-    }
+    if(openAnswer != null && openAnswer.getCategoryAnswer().getActive()) return openAnswer.getData();
+
     return null;
   }
 

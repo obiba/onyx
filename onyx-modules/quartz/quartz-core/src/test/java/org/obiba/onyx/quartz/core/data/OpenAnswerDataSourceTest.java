@@ -43,7 +43,7 @@ public class OpenAnswerDataSourceTest {
 
   private static final String CATEGORY = "Cat_01";
 
-  private static final String OPENANSWERDEFINITION = "Oad_01";
+  private static final String OPEN_ANSWER_DEFINITION = "Oad_01";
 
   private QuestionnaireParticipantService questionnaireParticipantServiceMock = createMock(QuestionnaireParticipantService.class);
 
@@ -53,7 +53,7 @@ public class OpenAnswerDataSourceTest {
 
   @Test
   public void testOpenAnswerDataSourceNoParticipant() {
-    OpenAnswerDataSource openAnswerDataSource = new OpenAnswerDataSource(QUESTIONNAIRE, QUESTION, CATEGORY, OPENANSWERDEFINITION);
+    OpenAnswerDataSource openAnswerDataSource = new OpenAnswerDataSource(QUESTIONNAIRE, QUESTION, CATEGORY, OPEN_ANSWER_DEFINITION);
     Data data = openAnswerDataSource.getData(null);
     Assert.assertNull(data);
   }
@@ -63,7 +63,7 @@ public class OpenAnswerDataSourceTest {
     Participant participant = createParticipant();
     OpenAnswerDataSource openAnswerDataSource = initOpenAnswerDataSource();
 
-    expect(questionnaireParticipantServiceMock.getOpenAnswer(participant, QUESTIONNAIRE, QUESTION, CATEGORY, OPENANSWERDEFINITION)).andReturn(null);
+    expect(questionnaireParticipantServiceMock.getOpenAnswer(participant, QUESTIONNAIRE, QUESTION, CATEGORY, OPEN_ANSWER_DEFINITION)).andReturn(null);
     replay(questionnaireParticipantServiceMock);
     Data data = openAnswerDataSource.getData(participant);
     verify(questionnaireParticipantServiceMock);
@@ -76,7 +76,7 @@ public class OpenAnswerDataSourceTest {
     Participant participant = createParticipant();
     OpenAnswerDataSource openAnswerDataSource = initOpenAnswerDataSource();
 
-    expect(questionnaireParticipantServiceMock.getOpenAnswer(participant, QUESTIONNAIRE, QUESTION, CATEGORY, OPENANSWERDEFINITION)).andReturn(createOpenAnswer(false));
+    expect(questionnaireParticipantServiceMock.getOpenAnswer(participant, QUESTIONNAIRE, QUESTION, CATEGORY, OPEN_ANSWER_DEFINITION)).andReturn(createOpenAnswer(false));
     replay(questionnaireParticipantServiceMock);
     Data data = openAnswerDataSource.getData(participant);
     verify(questionnaireParticipantServiceMock);
@@ -89,7 +89,7 @@ public class OpenAnswerDataSourceTest {
     Participant participant = createParticipant();
     OpenAnswerDataSource openAnswerDataSource = initOpenAnswerDataSource();
 
-    expect(questionnaireParticipantServiceMock.getOpenAnswer(participant, QUESTIONNAIRE, QUESTION, CATEGORY, OPENANSWERDEFINITION)).andReturn(createOpenAnswer(true));
+    expect(questionnaireParticipantServiceMock.getOpenAnswer(participant, QUESTIONNAIRE, QUESTION, CATEGORY, OPEN_ANSWER_DEFINITION)).andReturn(createOpenAnswer(true));
     expect(questionnaireBundleManagerMock.getBundle(QUESTIONNAIRE)).andReturn(questionnaireBundleMock);
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(createQuestionnaire(false));
 
@@ -114,7 +114,7 @@ public class OpenAnswerDataSourceTest {
     Participant participant = createParticipant();
     OpenAnswerDataSource openAnswerDataSource = initOpenAnswerDataSource();
 
-    expect(questionnaireParticipantServiceMock.getOpenAnswer(participant, QUESTIONNAIRE, QUESTION, CATEGORY, OPENANSWERDEFINITION)).andReturn(createOpenAnswer(true));
+    expect(questionnaireParticipantServiceMock.getOpenAnswer(participant, QUESTIONNAIRE, QUESTION, CATEGORY, OPEN_ANSWER_DEFINITION)).andReturn(createOpenAnswer(true));
     expect(questionnaireBundleManagerMock.getBundle(QUESTIONNAIRE)).andReturn(questionnaireBundleMock);
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(createQuestionnaire(true));
 
@@ -137,8 +137,8 @@ public class OpenAnswerDataSourceTest {
   private Questionnaire createQuestionnaire(boolean withUnit) {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire(QUESTIONNAIRE, "1.0");
 
-    builder.withSection("SectionS").withPage("P1").withQuestion(QUESTION).withCategory(QUESTION).withOpenAnswerDefinition(OPENANSWERDEFINITION, DataType.INTEGER);
-    if(withUnit == true) builder.inOpenAnswerDefinition(OPENANSWERDEFINITION).setUnit("years");
+    builder.withSection("SectionS").withPage("P1").withQuestion(QUESTION).withCategory(QUESTION).withOpenAnswerDefinition(OPEN_ANSWER_DEFINITION, DataType.INTEGER);
+    if(withUnit == true) builder.inOpenAnswerDefinition(OPEN_ANSWER_DEFINITION).setUnit("years");
 
     Questionnaire q = builder.getQuestionnaire();
     q.addLocale(Locale.FRENCH);
@@ -153,7 +153,7 @@ public class OpenAnswerDataSourceTest {
     categoryAnswer.setActive(true);
 
     OpenAnswer openAnswer = new OpenAnswer();
-    openAnswer.setOpenAnswerDefinitionName(OPENANSWERDEFINITION);
+    openAnswer.setOpenAnswerDefinitionName(OPEN_ANSWER_DEFINITION);
     openAnswer.setCategoryAnswer(categoryAnswer);
     if(withData == true) {
       openAnswer.setIntegerValue(56l);
@@ -163,7 +163,7 @@ public class OpenAnswerDataSourceTest {
   }
 
   private OpenAnswerDataSource initOpenAnswerDataSource() {
-    OpenAnswerDataSource openAnswerDataSource = new OpenAnswerDataSource(QUESTIONNAIRE, QUESTION, CATEGORY, OPENANSWERDEFINITION);
+    OpenAnswerDataSource openAnswerDataSource = new OpenAnswerDataSource(QUESTIONNAIRE, QUESTION, CATEGORY, OPEN_ANSWER_DEFINITION);
     openAnswerDataSource.setQuestionnaireParticipantService(questionnaireParticipantServiceMock);
     openAnswerDataSource.setQuestionnaireBundleManager(questionnaireBundleManagerMock);
     return openAnswerDataSource;
