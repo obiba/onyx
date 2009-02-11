@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -17,7 +17,7 @@ import java.util.Map;
 import org.obiba.onyx.util.data.Data;
 
 /**
- * 
+ *
  */
 public class BtrInputGenerator {
 
@@ -84,10 +84,23 @@ public class BtrInputGenerator {
 
     putString(bb, inputData.get("INPUT_PARTICIPANT_BARCODE").getValueAsString()); // 68-98
     bb.putInt(Integer.valueOf(inputData.get("INPUT_PARTICIPANT_BARCODE").getValueAsString())); // 99-102
-    bb.putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_WEIGHT").getValueAsString()));
+
+    Data weightData = inputData.get("INPUT_PARTICIPANT_WEIGHT");
+    if(weightData.getValue() != null) {
+      bb.putShort(Short.valueOf(weightData.getValueAsString()));
+    } else {
+      bb.putShort(new Short("0"));
+    }
     WeightUnits.KG.put(bb); // 105-106
-    bb.putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_HEIGHT").getValueAsString()));
+
+    Data heightData = inputData.get("INPUT_PARTICIPANT_HEIGHT");
+    if(heightData.getValue() != null) {
+      bb.putShort(Short.valueOf(heightData.getValueAsString()));
+    } else {
+      bb.putShort(new Short("0"));
+    }
     HeightUnits.CM.put(bb); // 109-110
+
     Gender gender = Gender.valueOf(inputData.get("INPUT_PARTICIPANT_GENDER").getValueAsString());
     gender.put(bb); // 111
     Ethnicity ethnicity = Ethnicity.valueOf(inputData.get("INPUT_PARTICIPANT_ETHNIC_GROUP").getValueAsString());
