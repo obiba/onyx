@@ -33,6 +33,7 @@ import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase {
 
@@ -48,6 +49,8 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
   private static final String DONT_KNOW = "DONT_KNOW";
 
   private static final String OTHER_SPECIFY = "OTHER_SPECIFY";
+
+  private ApplicationContext applicationContextMock;
 
   @Test
   public void testQuestionnaireStreamer() {
@@ -155,7 +158,7 @@ public class QuestionnaireStreamerTest extends BaseDefaultSpringContextTestCase 
   public Questionnaire fromBundle(File bundleDirectory) throws FileNotFoundException {
     File questionnaireFile = new File(bundleDirectory, QUESTIONNAIRE_BASE_NAME + ".xml");
 
-    return QuestionnaireStreamer.fromBundle(new FileInputStream(questionnaireFile));
+    return QuestionnaireStreamer.fromBundle(new FileInputStream(questionnaireFile), applicationContextMock);
   }
 
   /**

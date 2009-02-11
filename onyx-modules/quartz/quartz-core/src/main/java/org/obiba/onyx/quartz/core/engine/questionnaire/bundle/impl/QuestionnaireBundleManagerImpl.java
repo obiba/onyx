@@ -25,7 +25,10 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IProper
 import org.obiba.runtime.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 
@@ -35,7 +38,7 @@ import org.springframework.core.io.ResourceLoader;
  * @author cag-dspathis
  * 
  */
-public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManager, ResourceLoaderAware, InitializingBean {
+public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManager, ResourceLoaderAware, InitializingBean, ApplicationContextAware {
   //
   // Constants
   //
@@ -55,6 +58,8 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
   private ResourceLoader resourceLoader;
 
   private IPropertyKeyProvider propertyKeyProvider;
+
+  private ApplicationContext applicationContext;
 
   //
   // Constructors
@@ -105,6 +110,10 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
 
   public void setPropertyKeyProvider(IPropertyKeyProvider propertyKeyProvider) {
     this.propertyKeyProvider = propertyKeyProvider;
+  }
+
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.applicationContext = applicationContext;
   }
 
   //
@@ -273,7 +282,7 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
 
     try {
       fis = new FileInputStream(new File(bundleVersionDir, QUESTIONNAIRE_BASE_NAME + ".xml"));
-      questionnaire = QuestionnaireStreamer.fromBundle(fis);
+      questionnaire = QuestionnaireStreamer.fromBundle(fis, applicationContext);
     } finally {
       if(fis != null) {
         try {
@@ -332,4 +341,5 @@ public class QuestionnaireBundleManagerImpl implements QuestionnaireBundleManage
       return latestVersionFilename;
     }
   }
+
 }

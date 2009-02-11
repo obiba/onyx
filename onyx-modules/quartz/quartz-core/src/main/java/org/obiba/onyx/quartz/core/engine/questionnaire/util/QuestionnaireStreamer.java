@@ -42,6 +42,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.OutputS
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.data.DataValidator;
+import org.obiba.onyx.xstream.InjectingReflectionProviderWrapper;
+import org.springframework.context.ApplicationContext;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -53,11 +55,15 @@ public class QuestionnaireStreamer {
   private XStream xstream;
 
   private QuestionnaireStreamer() {
-    initializeXStream();
+    initializeXStream(null);
   }
 
-  private void initializeXStream() {
-    xstream = new XStream();
+  private QuestionnaireStreamer(ApplicationContext applicationContext) {
+    initializeXStream(applicationContext);
+  }
+
+  private void initializeXStream(ApplicationContext applicationContext) {
+    xstream = (applicationContext == null) ? new XStream() : new XStream(new InjectingReflectionProviderWrapper((new XStream()).getReflectionProvider(), applicationContext));
     xstream.setMode(XStream.ID_REFERENCES);
 
     xstream.alias("questionnaire", Questionnaire.class);
@@ -117,6 +123,7 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(ExternalOpenAnswerSource.class, "questionName");
     xstream.useAttributeFor(ExternalOpenAnswerSource.class, "categoryName");
     xstream.useAttributeFor(ExternalOpenAnswerSource.class, "openAnswerDefinitionName");
+
     xstream.alias("timestampSource", TimestampSource.class);
     xstream.alias("participantPropertySource", ParticipantPropertySource.class);
     xstream.useAttributeFor(ParticipantPropertySource.class, "property");
@@ -137,8 +144,8 @@ public class QuestionnaireStreamer {
    * @param inputStream questionnaire input stream
    * @return questionnaire
    */
-  public static Questionnaire fromBundle(InputStream inputStream) {
-    QuestionnaireStreamer streamer = new QuestionnaireStreamer();
+  public static Questionnaire fromBundle(InputStream inputStream, ApplicationContext applicationContext) {
+    QuestionnaireStreamer streamer = new QuestionnaireStreamer(applicationContext);
     return (Questionnaire) streamer.xstream.fromXML(inputStream);
   }
 
