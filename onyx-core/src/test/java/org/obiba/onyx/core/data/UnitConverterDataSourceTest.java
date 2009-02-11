@@ -66,6 +66,22 @@ public class UnitConverterDataSourceTest {
   }
 
   @Test
+  public void testUnitConverterDataSourceMilliSecondsToYear() {
+    Participant participant = createParticipant();
+    UnitConverterDataSource unitConverterDataSource = new UnitConverterDataSource(iDataSourceMock, "year");
+
+    expect(iDataSourceMock.getData(participant)).andReturn(DataBuilder.buildInteger(1280361600000l));
+    expect(iDataSourceMock.getUnit()).andReturn("ms").times(2);
+    replay(iDataSourceMock);
+    Data data = unitConverterDataSource.getData(participant);
+    String unit = unitConverterDataSource.getUnit();
+    verify(iDataSourceMock);
+
+    Assert.assertEquals("40", data.getValueAsString());
+    Assert.assertEquals("year", unit);
+  }
+
+  @Test
   public void testUnitConverterDataSourceWrongDataType() {
     Participant participant = createParticipant();
     UnitConverterDataSource unitConverterDataSource = new UnitConverterDataSource(iDataSourceMock, "kg");
