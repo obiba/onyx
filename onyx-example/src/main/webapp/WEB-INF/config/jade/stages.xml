@@ -241,31 +241,9 @@
   <stage>
     <name>ECG</name>
     <module>jade</module>
-    <stageDependencyCondition class="multipleCondition">
-      <operator>AND</operator>
-      <conditions>
-        <variableCondition>
-          <stageName>Consent</stageName>
-          <variablePath>/Onyx/Consent/accepted</variablePath>
-        </variableCondition>
-        <variableCondition>
-          <stageName>StandingHeight</stageName>
-          <variablePath>/Onyx/StandingHeight/Output/CALC_AVG_HEIGHT</variablePath>
-        </variableCondition>
-        <multipleCondition>
-          <operator>OR</operator>
-          <conditions>
-            <variableCondition>
-              <stageName>Impedence310</stageName>
-              <variablePath>/Onyx/Impedence310/Output/RES_WEIGHT</variablePath>
-            </variableCondition>
-            <variableCondition>
-              <stageName>Weight</stageName>
-              <variablePath>/Onyx/Weight/Output/RES_WEIGHT</variablePath>
-            </variableCondition>
-          </conditions>
-        </multipleCondition>
-      </conditions>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>Consent</stageName>
+      <variablePath>/Onyx/Consent/accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 
