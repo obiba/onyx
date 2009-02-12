@@ -16,6 +16,8 @@ import org.obiba.onyx.core.domain.participant.Participant;
  */
 public class ParticipantPropertyDataSource extends AbstractBeanPropertyDataSource {
 
+  private static final long serialVersionUID = 1L;
+
   /*
    * Returns participant as bean
    */

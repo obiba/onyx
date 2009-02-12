@@ -23,7 +23,9 @@ import org.obiba.onyx.util.data.DataType;
  */
 public class TypeConverterDataSource extends AbstractDataSourceDataModifier {
 
-  DataType type;
+  private static final long serialVersionUID = 1L;
+
+  private DataType type;
 
   @Override
   protected Data modify(Data data) {

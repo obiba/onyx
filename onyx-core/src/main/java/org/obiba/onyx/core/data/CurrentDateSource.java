@@ -19,9 +19,11 @@ import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 
 /**
- * Get the current date
+ * Get the current date, or one of its field, optionally having modified it.
  */
 public class CurrentDateSource implements IDataSource {
+
+  private static final long serialVersionUID = 1L;
 
   private Integer field;
 

@@ -13,9 +13,11 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.Data;
 
 /**
- * Get a fix data
+ * Get a fix data.
  */
 public class FixedDataSource implements IDataSource {
+
+  private static final long serialVersionUID = 1L;
 
   private Data data;
 

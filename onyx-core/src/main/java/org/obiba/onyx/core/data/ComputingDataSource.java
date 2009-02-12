@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.core.data;
 
-import java.util.List;
-
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
@@ -22,6 +20,8 @@ import org.obiba.onyx.util.data.DataType;
  * release
  */
 public class ComputingDataSource extends AbstractMultipleDataSource {
+
+  private static final long serialVersionUID = 1L;
 
   // TODO maybe it would be a good idea to create an enum class for algorithm
   private String algorithm;
@@ -38,8 +38,8 @@ public class ComputingDataSource extends AbstractMultipleDataSource {
     return null;
   }
 
-  public ComputingDataSource(List<IDataSource> iDataSources, String algorithm, DataType type) {
-    super(iDataSources);
+  public ComputingDataSource(String algorithm, DataType type) {
+    super();
     this.algorithm = algorithm;
     this.type = type;
   }

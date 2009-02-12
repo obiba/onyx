@@ -21,6 +21,8 @@ import org.obiba.onyx.util.data.DataType;
  */
 public class UnitConverterDataSource extends AbstractDataSourceDataModifier {
 
+  private static final long serialVersionUID = 1L;
+
   private String unit;
 
   @Override
@@ -28,9 +30,9 @@ public class UnitConverterDataSource extends AbstractDataSourceDataModifier {
 
     if(data == null) return null;
     if(!data.getType().isNumberType()) throw new IllegalArgumentException("DataType of number kind expected, " + data.getType() + " received.");
-    if(getWrapperSource().getUnit() == null) throw new IllegalArgumentException("Unit source cannot be null.");
+    if(getDataSource().getUnit() == null) throw new IllegalArgumentException("Unit source cannot be null.");
 
-    Unit sourceUnit = Unit.valueOf(getWrapperSource().getUnit());
+    Unit sourceUnit = Unit.valueOf(getDataSource().getUnit());
     Unit targetUnit = Unit.valueOf(unit);
 
     double newValue = sourceUnit.getConverterTo(targetUnit).convert(Double.parseDouble(data.getValueAsString()));

@@ -13,21 +13,21 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.Data;
 
 /**
- * abstract class used to modify the data (type and/or value)
+ * Abstract class used to modify the data (type and/or value).
  */
 public abstract class AbstractDataSourceDataModifier extends AbstractDataSourceWrapper {
 
   public Data getData(Participant participant) {
-    Data data = getWrapperSource().getData(participant);
+    Data data = getDataSource().getData(participant);
     return modify(data);
   }
 
   public String getUnit() {
-    return getWrapperSource().getUnit();
+    return getDataSource().getUnit();
   }
 
   protected AbstractDataSourceDataModifier(IDataSource iDataSource) {
-    setWrapperSource(iDataSource);
+    setDataSource(iDataSource);
   }
 
   protected abstract Data modify(Data data);

@@ -50,7 +50,10 @@ public class FirstNotNullDataSourceTest {
     replay(iDataSourceMock1);
     replay(iDataSourceMock2);
 
-    FirstNotNullDataSource firstNotNullDataSource = new FirstNotNullDataSource(createIDataSourceList());
+    FirstNotNullDataSource firstNotNullDataSource = new FirstNotNullDataSource();
+    for(IDataSource dataSource : createIDataSourceList()) {
+      firstNotNullDataSource.addDataSources(dataSource);
+    }
     Data data = firstNotNullDataSource.getData(participant);
     String unit = firstNotNullDataSource.getUnit();
 
@@ -75,7 +78,10 @@ public class FirstNotNullDataSourceTest {
     replay(iDataSourceMock1);
     replay(iDataSourceMock2);
 
-    FirstNotNullDataSource firstNotNullDataSource = new FirstNotNullDataSource(createIDataSourceList());
+    FirstNotNullDataSource firstNotNullDataSource = new FirstNotNullDataSource();
+    for(IDataSource dataSource : createIDataSourceList()) {
+      firstNotNullDataSource.addDataSources(dataSource);
+    }
     Data data = firstNotNullDataSource.getData(participant);
     String unit = firstNotNullDataSource.getUnit();
 

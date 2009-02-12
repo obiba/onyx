@@ -13,22 +13,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * holds a list of data sources
+ * Holds a list of data sources.
  */
 public abstract class AbstractMultipleDataSource implements IDataSource {
 
-  private List<IDataSource> iDataSources;
+  private List<IDataSource> dataSources;
 
-  public List<IDataSource> getIDataSources() {
-    return (iDataSources != null) ? iDataSources : new ArrayList<IDataSource>();
+  public List<IDataSource> getDataSources() {
+    return (dataSources != null) ? dataSources : new ArrayList<IDataSource>();
   }
 
-  public void addIDataSources(IDataSource iDataSource) {
-    if(iDataSource != null) getIDataSources().add(iDataSource);
+  public AbstractMultipleDataSource addDataSources(IDataSource dataSource) {
+    if(dataSource != null) {
+      getDataSources().add(dataSource);
+    }
+    return this;
   }
 
-  public AbstractMultipleDataSource(List<IDataSource> iDataSources) {
-    this.iDataSources = iDataSources;
+  public AbstractMultipleDataSource() {
   }
 
 }

@@ -20,6 +20,8 @@ import org.obiba.onyx.util.data.Data;
  */
 public class VariableDataSource implements IDataSource {
 
+  private static final long serialVersionUID = 1L;
+
   private VariableDirectory variableDirectory;
 
   private String path;

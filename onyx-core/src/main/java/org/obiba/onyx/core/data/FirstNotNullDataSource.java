@@ -9,17 +9,17 @@
  ******************************************************************************/
 package org.obiba.onyx.core.data;
 
-import java.util.List;
-
 import javax.persistence.Transient;
 
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.Data;
 
 /**
- * 
+ * Get from a list of data sources the first having a not null data.
  */
 public class FirstNotNullDataSource extends AbstractMultipleDataSource {
+
+  private static final long serialVersionUID = 1L;
 
   @Transient
   private IDataSource firstDataSource = null;
@@ -30,7 +30,7 @@ public class FirstNotNullDataSource extends AbstractMultipleDataSource {
   public Data getData(Participant participant) {
     isGetDataCalled = true;
 
-    for(IDataSource dataSource : getIDataSources()) {
+    for(IDataSource dataSource : getDataSources()) {
       Data data = dataSource.getData(participant);
       if(data != null && data.getValue() != null) {
         firstDataSource = dataSource;
@@ -45,7 +45,7 @@ public class FirstNotNullDataSource extends AbstractMultipleDataSource {
     return (firstDataSource != null) ? firstDataSource.getUnit() : null;
   }
 
-  public FirstNotNullDataSource(List<IDataSource> iDataSources) {
-    super(iDataSources);
+  public FirstNotNullDataSource() {
+    super();
   }
 }

@@ -23,6 +23,8 @@ import org.obiba.onyx.util.data.DataType;
  */
 public class DateFieldSource extends AbstractDataSourceDataModifier {
 
+  private static final long serialVersionUID = 1L;
+
   private int field;
 
   /**

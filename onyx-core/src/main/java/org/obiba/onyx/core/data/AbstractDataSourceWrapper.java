@@ -10,18 +10,18 @@
 package org.obiba.onyx.core.data;
 
 /**
- * Abstract class used to chain data sources
+ * Abstract class used to chain data sources.
  */
 public abstract class AbstractDataSourceWrapper implements IDataSource {
 
-  private IDataSource wrapperSource;
+  private IDataSource dataSource;
 
-  public IDataSource getWrapperSource() {
-    return wrapperSource;
+  public IDataSource getDataSource() {
+    return dataSource;
   }
 
-  public void setWrapperSource(IDataSource wrapperSource) {
-    this.wrapperSource = wrapperSource;
+  public void setDataSource(IDataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
 }

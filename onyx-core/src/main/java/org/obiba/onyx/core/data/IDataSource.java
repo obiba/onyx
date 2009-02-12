@@ -15,12 +15,21 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.Data;
 
 /**
- * 
+ * Get a data with its unit associated to a Participant.
  */
 public interface IDataSource extends Serializable {
 
+  /**
+   * 
+   * @param participant
+   * @return null if no data found
+   */
   public Data getData(Participant participant);
 
+  /**
+   * Optional unit to be applied to data value.
+   * @return
+   */
   public String getUnit();
 
 }
