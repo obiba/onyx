@@ -72,7 +72,7 @@ public class CurrentDateSource implements IDataSource {
     return (dateModifiers != null) ? dateModifiers : (dateModifiers = new ArrayList<DateModifier>());
   }
 
-  public CurrentDateSource addDateModifiers(DateModifier dateModifier) {
+  public CurrentDateSource addDateModifier(DateModifier dateModifier) {
     if(dateModifier != null) {
       getDateModifiers().add(dateModifier);
     }
