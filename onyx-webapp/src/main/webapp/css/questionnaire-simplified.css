@@ -103,6 +103,27 @@
     background: transparent url('../icons/button_gray_bottom-left.png') no-repeat;
 }
 
+.category .selected a.button {
+	color: #fff;
+    background: transparent url('../icons/button_orange_full.png') no-repeat scroll top right;
+}
+
+.category .selected a.button .label {
+    background: transparent url('../icons/button_orange_top-left.png') no-repeat;
+}
+
+.category .selected a.button .description {
+    background: transparent url('../icons/button_orange_middle-left.png') no-repeat;
+}
+
+.category .selected a.button .foot {
+    background: transparent url('../icons/button_orange_bottom-right.png') no-repeat scroll top right;
+}
+
+.category .selected a.button .foot-left {
+    background: transparent url('../icons/button_orange_bottom-left.png') no-repeat;
+}
+
 /***************
  Category Open
 ****************/
@@ -128,23 +149,15 @@
  Category Regular
 ******************/
 
-.category .selected a.button {
-	color: #fff;
-    background: transparent url('../icons/button_orange_full.png') no-repeat scroll top right;
+.regular > table {
+	width:100%;
 }
 
-.category .selected a.button .label {
-    background: transparent url('../icons/button_orange_top-left.png') no-repeat;
+/*****************
+ Category Escape
+******************/
+
+.escape > table {
+	width:100%;
 }
 
-.category .selected a.button .description {
-    background: transparent url('../icons/button_orange_middle-left.png') no-repeat;
-}
-
-.category .selected a.button .foot {
-    background: transparent url('../icons/button_orange_bottom-right.png') no-repeat scroll top right;
-}
-
-.category .selected a.button .foot-left {
-    background: transparent url('../icons/button_orange_bottom-left.png') no-repeat;
-}
