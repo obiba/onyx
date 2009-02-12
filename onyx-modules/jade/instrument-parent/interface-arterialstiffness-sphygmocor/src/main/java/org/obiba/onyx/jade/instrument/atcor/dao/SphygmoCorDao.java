@@ -11,6 +11,7 @@ package org.obiba.onyx.jade.instrument.atcor.dao;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface SphygmoCorDao {
 
@@ -24,5 +25,6 @@ public interface SphygmoCorDao {
 
   public void deleteAllOutput();
 
-  public List getOutput(int patientNo);
+  @SuppressWarnings("unchecked")
+  public List<Map> getOutput(int patientNo);
 }
