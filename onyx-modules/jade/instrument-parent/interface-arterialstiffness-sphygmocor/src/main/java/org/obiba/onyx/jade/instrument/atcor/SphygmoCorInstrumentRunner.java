@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright 2008(c) The OBiBa Consortium. All rights reserved.
- * 
+ *
  * This program and the accompanying materials
  * are made available under the terms of the GNU Public License v3.0.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -110,6 +110,7 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void run() {
     log.info("*** Running SphygmoCor Runner ***");
 
@@ -119,16 +120,27 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     // Retrieve the output (measurements taken for the current participant).
     // NOTE: The getOutput method returns the output as a List of Maps. There
     // *should* only be one Map, corresponding to the single run.
-    List output = sphygmoCorDao.getOutput(Integer.parseInt(instrumentExecutionService.getParticipantID()));
+    List<Map> outputList = sphygmoCorDao.getOutput(Integer.parseInt(instrumentExecutionService.getParticipantID()));
 
-    if(output != null) {
+    if(outputList != null) {
       // Send the data to the server.
-      if(output.size() > 1) {
-        log.warn("Multiple device outputs found; sending first one");
-        sendDataToServer((Map) output.get(0));
+      Map highestOperatorIndexOutput = null;
+      if(outputList.size() > 1) {
+        log.warn("Multiple device outputs found; sending the one with highest operator index.");
+        float operatorIndex;
+        float highestOperatorIndex = 0;
+        for(Map output : outputList) {
+          operatorIndex = (Float) output.get("P_QC_OTHER4");
+          if(operatorIndex > highestOperatorIndex) {
+            highestOperatorIndex = operatorIndex;
+            highestOperatorIndexOutput = output;
+          }
+        }
+        log.info("The highest operator index is {}", highestOperatorIndex);
+        sendDataToServer(highestOperatorIndexOutput);
+      } else {
+        sendDataToServer(outputList.get(0));
       }
-
-      sendDataToServer((Map) output.get(0));
 
     } else {
       String errMsg = "No device output found. This usually happens if the SphygmoCor application is closed before completing the measurement.";
@@ -145,6 +157,7 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     deleteExportFiles();
   }
 
+  @SuppressWarnings("unchecked")
   private void sendDataToServer(Map data) {
 
     Map<String, Data> outputToSend = new HashMap<String, Data>();
@@ -214,7 +227,7 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
 
   /**
    * Adds the specified export file to the output to send.
-   * 
+   *
    * @param outputToSend output to send to the server
    * @param exportFilenamePrefix export file name prefix
    */
@@ -230,7 +243,7 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
 
   /**
    * Returns the export file with the specified file name prefix.
-   * 
+   *
    * @param exportFilenamePrefix export file name prefix
    * @return export file (or <code>null</code> if no such file exists)
    */
