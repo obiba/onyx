@@ -22,8 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Escape question categories are a valid way of not answering the normal set of categories (for instance "Prefer not
- * answer" regarding a multiple choice question). The escape categories are presented on the same horizontal line.
+ * Given a question (and therefore its categories) and a rule to filter the categories, place there corresponding
+ * components in a grid.
  */
 public abstract class QuestionCategoryComponentsView extends Panel {
 
@@ -58,6 +58,12 @@ public abstract class QuestionCategoryComponentsView extends Panel {
     add(repeater);
   }
 
+  /**
+   * Builds the component for given question category.
+   * @param id
+   * @param questionCategoryModel
+   * @return
+   */
   protected abstract Component newQuestionCategoryComponent(String id, IModel questionCategoryModel);
 
 }
