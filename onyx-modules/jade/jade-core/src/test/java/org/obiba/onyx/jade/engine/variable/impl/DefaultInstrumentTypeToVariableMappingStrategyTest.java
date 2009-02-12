@@ -222,34 +222,33 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     Assert.assertEquals("toto", data.getValue());
   }
 
-  // DSPATHIS
-  // @Test
-  // public void testInstrument() {
-  // Variable root = createInstrumentTypeVariable();
-  // log.info(VariableStreamer.toXML(root));
-  //
-  // Variable variable =
-  // root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.BARCODE);
-  // Assert.assertNotNull(variable);
-  //
-  // Participant participant = new Participant();
-  // InstrumentRun run = new InstrumentRun();
-  // run.setInstrument(instrumentType.getInstruments().get(0));
-  //
-  // expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
-  // expect(instrumentRunServiceMock.getLastCompletedInstrumentRun(participant, instrumentType)).andReturn(run);
-  // replay(instrumentServiceMock);
-  // replay(instrumentRunServiceMock);
-  //
-  // Data data = instrumentTypeToVariableMappingStrategy.getData(participant, variable);
-  //
-  // verify(instrumentServiceMock);
-  // verify(instrumentRunServiceMock);
-  //
-  // Assert.assertNotNull(data);
-  // Assert.assertEquals(DataType.TEXT, data.getType());
-  // Assert.assertEquals("123", data.getValue());
-  // }
+  @Test
+  public void testInstrument() {
+    Variable root = createInstrumentTypeVariable();
+    log.info(VariableStreamer.toXML(root));
+
+    Variable variable = root.getVariable(instrumentType.getName()).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT_RUN).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.INSTRUMENT).getVariable(DefaultInstrumentTypeToVariableMappingStrategy.BARCODE);
+    Assert.assertNotNull(variable);
+
+    Participant participant = new Participant();
+    InstrumentRun run = new InstrumentRun();
+    Instrument instrument = createInstrument(instrumentType);
+    run.setInstrument(instrument);
+
+    expect(instrumentServiceMock.getInstrumentType(instrumentType.getName())).andReturn(instrumentType);
+    expect(instrumentRunServiceMock.getLastCompletedInstrumentRun(participant, instrumentType)).andReturn(run);
+    replay(instrumentServiceMock);
+    replay(instrumentRunServiceMock);
+
+    Data data = instrumentTypeToVariableMappingStrategy.getData(participant, variable);
+
+    verify(instrumentServiceMock);
+    verify(instrumentRunServiceMock);
+
+    Assert.assertNotNull(data);
+    Assert.assertEquals(DataType.TEXT, data.getType());
+    Assert.assertEquals("123", data.getValue());
+  }
 
   @Test
   public void testContraindication() {
@@ -319,14 +318,6 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
 
     type.addContraindication(new Contraindication("CI", Contraindication.Type.ASKED));
 
-    Instrument instrument = new Instrument();
-    instrument.setBarcode("123");
-    instrument.setName("Instrument");
-    instrument.setSerialNumber("321");
-    instrument.setStatus(InstrumentStatus.ACTIVE);
-    instrument.setVendor("Cag");
-    // DSPATHIS type.addInstrument(instrument);
-
     inputParam = new InstrumentInputParameter();
     inputParam.setCode("INPUT_PARAM");
     inputParam.setDataType(DataType.TEXT);
@@ -350,4 +341,15 @@ public class DefaultInstrumentTypeToVariableMappingStrategyTest {
     return type;
   }
 
+  private Instrument createInstrument(InstrumentType instrumentType) {
+    Instrument instrument = new Instrument();
+    instrument.setType(instrumentType.getName());
+    instrument.setBarcode("123");
+    instrument.setName("Instrument");
+    instrument.setSerialNumber("321");
+    instrument.setStatus(InstrumentStatus.ACTIVE);
+    instrument.setVendor("Cag");
+
+    return instrument;
+  }
 }
