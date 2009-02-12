@@ -52,7 +52,7 @@ public class FirstNotNullDataSourceTest {
 
     FirstNotNullDataSource firstNotNullDataSource = new FirstNotNullDataSource();
     for(IDataSource dataSource : createIDataSourceList()) {
-      firstNotNullDataSource.addDataSources(dataSource);
+      firstNotNullDataSource.addDataSource(dataSource);
     }
     Data data = firstNotNullDataSource.getData(participant);
     String unit = firstNotNullDataSource.getUnit();
@@ -80,7 +80,7 @@ public class FirstNotNullDataSourceTest {
 
     FirstNotNullDataSource firstNotNullDataSource = new FirstNotNullDataSource();
     for(IDataSource dataSource : createIDataSourceList()) {
-      firstNotNullDataSource.addDataSources(dataSource);
+      firstNotNullDataSource.addDataSource(dataSource);
     }
     Data data = firstNotNullDataSource.getData(participant);
     String unit = firstNotNullDataSource.getUnit();
