@@ -30,9 +30,21 @@ public interface IQuestionCategorySelectionStateHolder {
   public QuestionCategory getQuestionCategory();
 
   /**
-   * Is question category selected.
+   * Is question category selected (persisted state).
    * @return
    */
-  public boolean isQuestionCategorySelected();
+  public boolean isSelected();
+
+  /**
+   * Previous state (may differ from the persisted one).
+   * @return
+   */
+  public boolean wasSelected();
+
+  /**
+   * Make the current state as being the persisted one.
+   * @return the persisted state.
+   */
+  public boolean updateState();
 
 }

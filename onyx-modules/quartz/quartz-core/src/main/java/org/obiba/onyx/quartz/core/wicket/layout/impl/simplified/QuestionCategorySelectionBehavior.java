@@ -44,7 +44,9 @@ public class QuestionCategorySelectionBehavior extends AbstractBehavior {
 
     if(selector != null) {
       String cssClass;
-      if(selector.isQuestionCategorySelected()) {
+
+      // synchronize the state
+      if(selector.updateState()) {
         cssClass = SELECTED_CSS_CLASS;
       } else {
         cssClass = NOT_SELECTED_CSS_CLASS;

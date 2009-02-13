@@ -36,11 +36,15 @@ public class QuestionCategoryLink extends BaseQuestionCategorySelectionPanel imp
 
   private IModel questionModel;
 
+  private boolean selected;
+
   @SuppressWarnings("serial")
   public QuestionCategoryLink(String id, IModel questionCategoryModel) {
     super(id, questionCategoryModel);
     setOutputMarkupId(true);
     this.questionModel = new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion());
+
+    updateState();
 
     // add the category label css decorated with images
     AjaxImageLink link = new AjaxImageLink("link", new QuestionnaireStringResourceModel(questionCategoryModel, "label")) {
@@ -49,7 +53,7 @@ public class QuestionCategoryLink extends BaseQuestionCategorySelectionPanel imp
       public void onClick(AjaxRequestTarget target) {
         // persist (or not)
         // if it was selected, deselect it
-        boolean isSelected = isQuestionCategorySelected();
+        boolean isSelected = isSelected();
         if(!getQuestion().isMultiple() || getQuestionCategory().isEscape()) {
           // exclusive choice, only one answer per question
           activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
@@ -73,8 +77,17 @@ public class QuestionCategoryLink extends BaseQuestionCategorySelectionPanel imp
 
   }
 
-  public boolean isQuestionCategorySelected() {
+  public boolean isSelected() {
     return activeQuestionnaireAdministrationService.findAnswer(getQuestion(), getQuestionCategory()) != null;
+  }
+
+  public boolean wasSelected() {
+    return selected;
+  }
+
+  public boolean updateState() {
+    selected = isSelected();
+    return selected;
   }
 
   protected IModel getQuestionModel() {
@@ -92,4 +105,5 @@ public class QuestionCategoryLink extends BaseQuestionCategorySelectionPanel imp
   public QuestionCategory getQuestionCategory() {
     return (QuestionCategory) getModel().getObject();
   }
+
 }

@@ -26,7 +26,7 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelH
 /**
  * 
  */
-public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinitionPanel {
+public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinitionPanel implements IQuestionCategorySelectionStateHolder {
 
   private static final long serialVersionUID = 1L;
 
@@ -34,6 +34,8 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   private ModalWindow padWindow;
+
+  private boolean selected;
 
   /**
    * @param id
@@ -44,8 +46,11 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
   @SuppressWarnings("serial")
   public SimplifiedOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
     super(id, questionModel, questionCategoryModel, openAnswerDefinitionModel);
+    setOutputMarkupId(true);
 
-    add(new Label("value", new PropertyModel(this, "openValue")).setOutputMarkupId(true));
+    updateState();
+
+    add(new Label("value", new PropertyModel(this, "openValue")).setOutputMarkupId(true).add(new QuestionCategorySelectionBehavior()));
     add(new Label("label", QuestionnaireStringResourceModelHelper.getStringResourceModel(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition())));
 
     add(new AjaxImageLink("link", new Model("Click"), new Model("Here")) {
@@ -102,6 +107,19 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
   public void resetField() {
     // TODO Auto-generated method stub
 
+  }
+
+  public boolean isSelected() {
+    return activeQuestionnaireAdministrationService.findAnswer(getQuestion(), getQuestionCategory()) != null;
+  }
+
+  public boolean updateState() {
+    selected = isSelected();
+    return selected;
+  }
+
+  public boolean wasSelected() {
+    return selected;
   }
 
 }

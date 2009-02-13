@@ -67,27 +67,27 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
     this.openAnswerDefinitionModel = openAnswerDefinitionModel;
   }
 
-  protected IModel getQuestionModel() {
+  public IModel getQuestionModel() {
     return questionModel;
   }
 
-  protected Question getQuestion() {
+  public Question getQuestion() {
     return (Question) getQuestionModel().getObject();
   }
 
-  protected IModel getQuestionCategoryModel() {
+  public IModel getQuestionCategoryModel() {
     return getModel();
   }
 
-  protected QuestionCategory getQuestionCategory() {
+  public QuestionCategory getQuestionCategory() {
     return (QuestionCategory) getModel().getObject();
   }
 
-  protected IModel getOpenAnswerDefinitionModel() {
+  public IModel getOpenAnswerDefinitionModel() {
     return openAnswerDefinitionModel;
   }
 
-  protected OpenAnswerDefinition getOpenAnswerDefinition() {
+  public OpenAnswerDefinition getOpenAnswerDefinition() {
     return (OpenAnswerDefinition) getOpenAnswerDefinitionModel().getObject();
   }
 
