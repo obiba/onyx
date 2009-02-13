@@ -22,6 +22,8 @@ import org.obiba.onyx.util.data.Data;
  */
 public class OutputParameterDataSource implements IDataSource {
 
+  private static final long serialVersionUID = 1L;
+
   private String instrumentType;
 
   private String parameterCode;

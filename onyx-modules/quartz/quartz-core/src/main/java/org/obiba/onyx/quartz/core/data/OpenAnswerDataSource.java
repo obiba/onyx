@@ -24,6 +24,8 @@ import org.obiba.onyx.util.data.Data;
  */
 public class OpenAnswerDataSource implements IDataSource {
 
+  private static final long serialVersionUID = 1L;
+
   private QuestionnaireParticipantService questionnaireParticipantService;
 
   private QuestionnaireBundleManager questionnaireBundleManager;
