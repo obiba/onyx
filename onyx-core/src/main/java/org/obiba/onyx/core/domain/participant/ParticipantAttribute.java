@@ -45,18 +45,18 @@ public class ParticipantAttribute implements Serializable {
 
   private boolean editableAfterReception;
 
-  private List<IDataValidator> iDataValidators;
+  private List<IDataValidator> validators;
 
   //
   // Methods
   //
 
-  public List<IDataValidator> getIDataValidators() {
-    return (iDataValidators != null) ? iDataValidators : new ArrayList<IDataValidator>();
+  public List<IDataValidator> getValidators() {
+    return (validators != null) ? validators : (validators = new ArrayList<IDataValidator>());
   }
 
-  public void addIDataValidators(IDataValidator dataValidator) {
-    getIDataValidators().add(dataValidator);
+  public void addValidators(IDataValidator validator) {
+    getValidators().add(validator);
   }
 
   /**
@@ -212,5 +212,9 @@ public class ParticipantAttribute implements Serializable {
    */
   public boolean isEditableAfterReception() {
     return editableAfterReception;
+  }
+
+  public void setValidators(List<IDataValidator> validators) {
+    this.validators = validators;
   }
 }

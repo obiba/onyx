@@ -57,6 +57,7 @@ import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.webapp.participant.panel.AssignCodeToParticipantPanel.AssignCodeToParticipantForm;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.onyx.wicket.data.DataValidator;
+import org.obiba.onyx.wicket.data.IDataValidator;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.slf4j.Logger;
@@ -454,11 +455,19 @@ public class EditParticipantPanel extends Panel {
           } else {
             field = new DataField("field", new PropertyModel(attributeValueModel, "data"), attribute.getType());
 
+            // Add any validator defined by the current ParticipantAttribute.
+            List<IDataValidator> validators = attribute.getValidators();
+            for(IDataValidator validator : validators) {
+              field.add(validator);
+            }
+
             if(field.getField() instanceof TextField) {
               // ONYX-203: Although participant metadata do not currently indicate the maximum length
               // of configured text attributes, for now impose a maximum (250 characters should be safe)
               // to avoid persistence errors when the values are longer than the data source permits.
-              field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(250), DataType.TEXT));
+              if(validators.size() > 0) {
+                field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(250), DataType.TEXT));
+              }
 
               field.getField().add(new AttributeModifier("size", true, new Model(TEXTFIELD_SIZE)));
             }
