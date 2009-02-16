@@ -80,7 +80,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="destinationsResource" value="${org.obiba.onyx.config.path}/export-destinations.xml" />
   </bean>
   
-  <bean id="algorithmEvaluator" class="org.obiba.onyx.core.math.impl.MathEclipseEvaluator">
+  <bean id="algorithmEvaluator" class="org.obiba.onyx.math.impl.MathEclipseEvaluator">
   </bean>
 
 </beans>
