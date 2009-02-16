@@ -91,11 +91,11 @@
         <configuration>
           <overlays>
             <overlay>
-              <groupId>org.obiba.onyx</groupId>
-              <artifactId>onyx-webapp</artifactId>
+              <!-- empty groupId/artifactId detected as the current build -->
             </overlay>
             <overlay>
-              <!-- empty groupId/artifactId detected as the current build -->
+              <groupId>org.obiba.onyx</groupId>
+              <artifactId>onyx-webapp</artifactId>
             </overlay>
           </overlays>
         </configuration>
