@@ -1,0 +1,8 @@
+<stages>
+
+  <stage>
+    <name>HealthQuestionnaireSelfAdministered</name>
+    <module>quartz</module>
+  </stage>
+
+</stages>

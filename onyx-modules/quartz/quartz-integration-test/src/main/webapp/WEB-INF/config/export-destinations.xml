@@ -1,0 +1,19 @@
+<destinations>
+  <destination>
+    <name>DCC</name>
+    <filteredVariables>
+      <string>/Onyx/Consent/pdfForm</string>
+      <string>/Onyx/Admin/Participant</string>
+    </filteredVariables>
+    <includedVariables>
+      <string>/Onyx/Admin/Participant/barcode</string>
+    </includedVariables>
+  </destination>
+
+  <destination>
+    <name>Appointment Unit</name>
+    <includedVariables>
+      <string>/Onyx/Consent/pdfForm</string>
+    </includedVariables>
+  </destination>
+</destinations>

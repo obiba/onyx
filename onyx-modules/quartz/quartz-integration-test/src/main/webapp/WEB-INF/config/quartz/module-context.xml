@@ -1,0 +1,29 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+  <import resource="classpath:META-INF/spring/quartz-core/context.xml" />
+
+  <bean id="quartzOnyxModule" class="org.obiba.onyx.quartz.engine.QuartzModule">
+    <property name="activeInterviewService" ref="activeInterviewService" />
+    <property name="questionnaireBundleManager" ref="questionnaireBundleManager" />
+    <property name="stages">
+      <bean class="org.obiba.onyx.engine.StageDescriptorFactoryBean">
+        <property name="stageDescriptor" value="${org.obiba.onyx.config.path}/quartz/stages.xml" />
+      </bean>
+    </property>
+    <property name="questionToVariableMappingStrategy" ref="questionToVariableMappingStrategy" />
+    <property name="questionnaireParticipantService" ref="questionnaireParticipantService" />
+    <property name="actionVariableProvider" ref="onyxVariableProvider" />
+  </bean>
+
+  <bean id="questionToVariableMappingStrategy" class="org.obiba.onyx.quartz.engine.variable.impl.DefaultQuestionToVariableMappingStrategy" />
+
+  <bean id="propertyKeyProvider" class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl"
+    scope="prototype" />
+
+  <bean id="questionnaireBundleManager" class="org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl">
+    <constructor-arg value="${org.obiba.onyx.quartz.resources.path}/questionnaires" />
+    <property name="propertyKeyProvider" ref="propertyKeyProvider" />
+  </bean>
+
+</beans>

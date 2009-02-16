@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>Quartz Integration Test</name>
+  <description>Quartz Integration for testing</description>
+
+  <groupId>org.obiba.quartz</groupId>
+  <artifactId>quartz-integration-test</artifactId>
+  <packaging>war</packaging>
+
+  <parent>
+    <groupId>org.obiba.onyx</groupId>
+    <artifactId>onyx-deploy-parent</artifactId>
+    <version>1.1-SNAPSHOT</version>
+    <relativePath>../../../onyx-deploy-parent/pom.xml</relativePath>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.obiba.quartz</groupId>
+      <artifactId>quartz-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>quartz-integration-webapp</finalName>
+    <plugins>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>tomcat-maven-plugin</artifactId>
+        <version>1.0-beta-1</version>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <mainClass>org.obiba.onyx.quartz.integration.util.CreateQuestionnaire</mainClass>
+          <classpathScope>test</classpathScope>
+          <!--workingDirectory>${project.basedir}</workingDirectory-->
+          <arguments>
+            <argument>${project.basedir}</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
+  </build>
+
+</project>
