@@ -46,7 +46,7 @@ public class CIPreliminaryQuestionnaireContentBuilder {
 
   private static final String AGE = "AGE";
 
-  public static QuestionnaireBuilder buildCIPreliminaryQuestionnaire() {
+  public static QuestionnaireBuilder buildQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("CIPreliminaryQuestionnaire", "1.0");
 
     // section S1_PARTICIPANT

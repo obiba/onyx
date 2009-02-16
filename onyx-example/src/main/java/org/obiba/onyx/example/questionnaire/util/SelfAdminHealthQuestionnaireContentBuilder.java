@@ -98,7 +98,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
 
   private static final String NEVER = "NEVER";
 
-  public static QuestionnaireBuilder buildHealthQuestionnaire() {
+  public static QuestionnaireBuilder buildQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaireSelfAdministered", "1.0");
 
     builder.withSection("A_ADMINISTRATION").withSection("ADMINISTRATIVE_DATA").withPage("1").withQuestion("A0");
@@ -110,7 +110,11 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("SEX").withSharedCategory(PNA, "8").setEscape(true);
     builder.inQuestion("SEX").withSharedCategory(DNK, "9").setEscape(true);
 
-    builder.inSection("B_DEMOGRAPHY").withSection("AGE_DATE_BIRTH").withPage("3").withQuestion("DATE_OF_BIRTH", "2").withQuestion("DOB_YEAR").withCategory("DOB_YEAR").withOpenAnswerDefinition("DOB_YEAR", DataType.INTEGER).addValidator(ComparisonOperator.le, new ArithmeticOperationSource(new CurrentYearSource(), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(40)))).addValidator(ComparisonOperator.ge, new ArithmeticOperationSource(new CurrentYearSource(), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(70))));
+    builder.inSection("B_DEMOGRAPHY").withSection("AGE_DATE_BIRTH").withPage("3", SimplifiedPageLayoutFactory.class).withQuestion("PARTICIPANT_AGE", "3", SimplifiedQuestionPanelFactory.class).withCategory("PARTICIPANT_AGE").withOpenAnswerDefinition("PARTICIPANT_AGE", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(40, 70));
+    builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(PNA, "88");
+    builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(DNK, "99");
+
+    builder.inSection("AGE_DATE_BIRTH").withPage("3_1").withQuestion("DATE_OF_BIRTH", "2").withQuestion("DOB_YEAR").withCategory("DOB_YEAR").withOpenAnswerDefinition("DOB_YEAR", DataType.INTEGER).addValidator(ComparisonOperator.le, new ArithmeticOperationSource(new CurrentYearSource(), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(40)))).addValidator(ComparisonOperator.ge, new ArithmeticOperationSource(new CurrentYearSource(), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(70))));
     builder.inQuestion("DOB_YEAR").withSharedCategory(PNA, "8888");
     builder.inQuestion("DOB_YEAR").withSharedCategory(DNK, "9999");
     builder.inQuestion("DATE_OF_BIRTH").withQuestion("DOB_MONTH", DropDownQuestionPanelFactory.class).withCategories("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12");
@@ -119,9 +123,6 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("DATE_OF_BIRTH").withQuestion("DOB_DAY", DropDownQuestionPanelFactory.class).withCategories("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31");
     builder.inQuestion("DOB_DAY").withSharedCategory(PNA, "88");
     builder.inQuestion("DOB_DAY").withSharedCategory(DNK, "99");
-    builder.inPage("3").withQuestion("PARTICIPANT_AGE", "3").withCategory("PARTICIPANT_AGE").withOpenAnswerDefinition("PARTICIPANT_AGE", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(40, 70));
-    builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(PNA, "88");
-    builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(DNK, "99");
 
     builder.inSection("B_DEMOGRAPHY").withSection("MARITAL_STATUS").withPage("4").withQuestion("MARITAL_STATUS", "4").withCategory("MARRIED").setExportName("1");
     builder.inQuestion("MARITAL_STATUS").withCategory("DIVORCED").setExportName("2");

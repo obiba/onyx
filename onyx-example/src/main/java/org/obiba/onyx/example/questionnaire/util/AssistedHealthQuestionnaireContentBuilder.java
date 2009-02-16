@@ -54,7 +54,7 @@ public class AssistedHealthQuestionnaireContentBuilder {
 
   private static final String[] LIST_OF_COUNTRY = Locale.getISOCountries();
 
-  public static QuestionnaireBuilder buildHealthQuestionnaire() {
+  public static QuestionnaireBuilder buildQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaireAssisted", "1.0");
 
     builder.withSection("B_DEMOGRAPHY").withSection("BIRTH_LOCATION").withPage("1").withQuestion("COUNTRY_BIRTH_ELSEWHERE", "1", DropDownQuestionPanelFactory.class).withSharedCategories(LIST_OF_COUNTRY);

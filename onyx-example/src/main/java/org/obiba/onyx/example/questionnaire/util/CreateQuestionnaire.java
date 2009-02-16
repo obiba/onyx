@@ -9,76 +9,29 @@
 package org.obiba.onyx.example.questionnaire.util;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Locale;
-import java.util.Properties;
 
-import org.obiba.core.util.FileUtil;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
-import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireCreator;
 
 public class CreateQuestionnaire {
 
-  private static File bundleRootDirectory = new File("target", "questionnaires");
-
-  private static File bundleSourceDirectory = new File("src" + File.separatorChar + "main" + File.separatorChar + "webapp" + File.separatorChar + "WEB-INF" + File.separatorChar + "config" + File.separatorChar + "quartz" + File.separatorChar + "resources", "questionnaires");
-
-  private QuestionnaireBundle bundle;
-
   public static void main(String args[]) {
-    CreateQuestionnaire c = new CreateQuestionnaire();
+    QuestionnaireCreator creator;
 
-    if(args.length > 0) {
-      File workingDir = new File(args[0]);
-      bundleRootDirectory = new File(workingDir, bundleRootDirectory.getPath());
-      bundleSourceDirectory = new File(workingDir, bundleSourceDirectory.getPath());
-    }
-
-    if(bundleSourceDirectory.exists()) {
-      try {
-        FileUtil.copyDirectory(bundleSourceDirectory, bundleRootDirectory);
-      } catch(IOException e) {
-        e.printStackTrace();
-      }
-    }
-
-    // Select the questionnaire you wish to create
-    c.createQuestionnaire(SelfAdminHealthQuestionnaireContentBuilder.buildHealthQuestionnaire(), false);
-    c.createQuestionnaire(AssistedHealthQuestionnaireContentBuilder.buildHealthQuestionnaire(), false);
-    c.createQuestionnaire(CIPreliminaryQuestionnaireContentBuilder.buildCIPreliminaryQuestionnaire(), true);
-  }
-
-  public CreateQuestionnaire() {
-  }
-
-  public void createQuestionnaire(QuestionnaireBuilder builder, boolean englishOnly) {
-    // Create the bundle manager.
-    QuestionnaireBundleManager bundleManager = new QuestionnaireBundleManagerImpl(bundleRootDirectory);
-    ((QuestionnaireBundleManagerImpl) bundleManager).setPropertyKeyProvider(new DefaultPropertyKeyProviderImpl());
-    ((QuestionnaireBundleManagerImpl) bundleManager).setResourceLoader(new PathMatchingResourcePatternResolver());
-
-    // Create the bundle questionnaire.
     try {
-      bundle = bundleManager.createBundle(builder.getQuestionnaire());
-    } catch(IOException e) {
+      if(args.length > 0) {
+        File workingDir = new File(args[0]);
+        creator = new QuestionnaireCreator(workingDir);
+      } else {
+        creator = new QuestionnaireCreator();
+      }
+
+      // Select the questionnaire you wish to create
+      creator.createQuestionnaire(SelfAdminHealthQuestionnaireContentBuilder.buildQuestionnaire(), Locale.FRENCH, Locale.ENGLISH);
+      creator.createQuestionnaire(AssistedHealthQuestionnaireContentBuilder.buildQuestionnaire(), Locale.FRENCH, Locale.ENGLISH);
+      creator.createQuestionnaire(CIPreliminaryQuestionnaireContentBuilder.buildQuestionnaire(), Locale.ENGLISH);
+    } catch(Exception e) {
       e.printStackTrace();
-    }
-
-    if(!englishOnly) setBundleProperties(Locale.FRENCH);
-    setBundleProperties(Locale.ENGLISH);
-  }
-
-  private void setBundleProperties(Locale language) {
-    Properties properties = bundle.getLanguage(language);
-
-    if(properties != null) {
-      bundle.setLanguage(language, properties);
-    } else {
-      bundle.setLanguage(language, new Properties());
     }
   }
 
