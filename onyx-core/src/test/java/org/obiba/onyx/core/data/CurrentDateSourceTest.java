@@ -63,7 +63,13 @@ public class CurrentDateSourceTest {
     current.add(Calendar.MONTH, 6);
 
     Assert.assertEquals(DataType.DATE, data.getType());
-    Assert.assertEquals(current.getTime(), data.getValue());
+    Date date = data.getValue();
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(date);
+
+    Assert.assertEquals(current.get(Calendar.YEAR), cal.get(Calendar.YEAR));
+    Assert.assertEquals(current.get(Calendar.MONTH), cal.get(Calendar.MONTH));
+    Assert.assertEquals(current.get(Calendar.DATE), cal.get(Calendar.DATE));
   }
 
   @Test
