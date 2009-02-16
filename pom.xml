@@ -418,6 +418,12 @@
         <artifactId>jscience</artifactId>
         <version>${jscience.version}</version>
       </dependency>
+      
+      <dependency>
+        <groupId>org.matheclipse</groupId>
+        <artifactId>meparser</artifactId>
+        <version>${meparser.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>com.lowagie</groupId>
@@ -749,6 +755,7 @@
     <!--  Deploy in Tomcat 6 -->
     <servlet-api.version>2.5</servlet-api.version>
     <jscience.version>4.3.1</jscience.version>
+    <meparser.version>0.0.6</meparser.version>
     <jsr250-api.version>1.0</jsr250-api.version>
     <commons-httpclient.version>3.1</commons-httpclient.version>
     <jetty.version>6.1.4</jetty.version>

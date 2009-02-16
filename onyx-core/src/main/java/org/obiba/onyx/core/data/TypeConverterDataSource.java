@@ -12,6 +12,7 @@ package org.obiba.onyx.core.data;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
@@ -28,7 +29,7 @@ public class TypeConverterDataSource extends AbstractDataSourceDataModifier {
   private DataType type;
 
   @Override
-  protected Data modify(Data data) {
+  protected Data modify(Data data, Participant participant) {
 
     if(data == null) return null;
     String value = data.getValueAsString();

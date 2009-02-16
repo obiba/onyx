@@ -12,6 +12,7 @@ package org.obiba.onyx.core.data;
 import javax.measure.unit.Dimension;
 import javax.measure.unit.Unit;
 
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -26,7 +27,7 @@ public class UnitConverterDataSource extends AbstractDataSourceDataModifier {
   private String unit;
 
   @Override
-  protected Data modify(Data data) {
+  protected Data modify(Data data, Participant participant) {
 
     if(data == null) return null;
     if(!data.getType().isNumberType()) throw new IllegalArgumentException("DataType of number kind expected, " + data.getType() + " received.");

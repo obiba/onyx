@@ -19,7 +19,7 @@ public abstract class AbstractDataSourceDataModifier extends AbstractDataSourceW
 
   public Data getData(Participant participant) {
     Data data = getDataSource().getData(participant);
-    return modify(data);
+    return modify(data, participant);
   }
 
   public String getUnit() {
@@ -30,6 +30,6 @@ public abstract class AbstractDataSourceDataModifier extends AbstractDataSourceW
     setDataSource(iDataSource);
   }
 
-  protected abstract Data modify(Data data);
+  protected abstract Data modify(Data data, Participant participant);
 
 }

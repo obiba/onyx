@@ -150,6 +150,11 @@
       <groupId>org.jscience</groupId>
       <artifactId>jscience</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.matheclipse</groupId>
+      <artifactId>meparser</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.poi</groupId>

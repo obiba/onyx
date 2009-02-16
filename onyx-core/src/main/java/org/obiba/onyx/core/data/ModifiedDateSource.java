@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -28,7 +29,7 @@ public class ModifiedDateSource extends AbstractDataSourceDataModifier {
   private List<DateModifier> dateModifiers;
 
   @Override
-  protected Data modify(Data data) {
+  protected Data modify(Data data, Participant participant) {
 
     if(data == null) return null;
     if(!data.getType().equals(DataType.DATE)) throw new IllegalArgumentException("DataType " + DataType.DATE + " expected, " + data.getType() + " received.");
@@ -37,7 +38,7 @@ public class ModifiedDateSource extends AbstractDataSourceDataModifier {
     cal.setTime((Date) data.getValue());
 
     for(DateModifier dateModifier : getDateModifiers()) {
-      dateModifier.modify(cal);
+      dateModifier.modify(cal, participant);
     }
 
     return DataBuilder.buildDate(cal.getTime());

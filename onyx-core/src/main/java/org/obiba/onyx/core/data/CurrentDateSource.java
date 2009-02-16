@@ -39,7 +39,7 @@ public class CurrentDateSource implements IDataSource {
     cal.setTime(new Date());
 
     for(DateModifier dateModifier : getDateModifiers()) {
-      dateModifier.modify(cal);
+      dateModifier.modify(cal, participant);
     }
 
     return (field == null) ? DataBuilder.buildDate(cal.getTime()) : DataBuilder.buildInteger(cal.get(field));
