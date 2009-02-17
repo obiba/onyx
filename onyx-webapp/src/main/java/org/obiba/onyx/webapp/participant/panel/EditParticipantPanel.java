@@ -11,6 +11,7 @@ package org.obiba.onyx.webapp.participant.panel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -42,6 +43,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
@@ -200,10 +202,22 @@ public class EditParticipantPanel extends Panel {
         add(new RowFragment(BIRTH_DATE, getModel(), "BirthDate", BIRTH_DATE));
       } else {
         add(new EmptyPanel(BARCODE));
-        add(new TextFieldFragment(FIRST_NAME, getModel(), "FirstName*", new TextField("value", new PropertyModel(getModel(), FIRST_NAME)).setRequired(true).setLabel(new ResourceModel("FirstName")).add(new StringValidator.MaximumLengthValidator(250))));
-        add(new TextFieldFragment(LAST_NAME, getModel(), "LastName*", new TextField("value", new PropertyModel(getModel(), LAST_NAME)).setRequired(true).setLabel(new ResourceModel("LastName")).add(new StringValidator.MaximumLengthValidator(250))));
+
+        FormComponent firstName = new TextField("value", new PropertyModel(getModel(), FIRST_NAME)).setRequired(true).setLabel(new ResourceModel("FirstName")).add(new StringValidator.MaximumLengthValidator(250));
+        firstName.add(new StringValidator.MaximumLengthValidator(100));
+        add(new TextFieldFragment(FIRST_NAME, getModel(), "FirstName*", firstName));
+
+        FormComponent lastName = new TextField("value", new PropertyModel(getModel(), LAST_NAME)).setRequired(true).setLabel(new ResourceModel("LastName")).add(new StringValidator.MaximumLengthValidator(250));
+        lastName.add(new StringValidator.MaximumLengthValidator(100));
+        add(new TextFieldFragment(LAST_NAME, getModel(), "LastName*", lastName));
         add(new DropDownFragment(GENDER, getModel(), "Gender*", createGenderDropDown()));
-        add(new DateFragment(BIRTH_DATE, getModel(), "BirthDate*", createBirthDateField()));
+
+        // A birthdate is valid only if it is in the following interval -> [currentDate - 130 years, currentDate]
+        FormComponent birthDate = createBirthDateField();
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.YEAR, -130);
+        birthDate.add(DateValidator.range(calendar.getTime(), new Date()));
+        add(new DateFragment(BIRTH_DATE, getModel(), "BirthDate*", birthDate));
       }
 
       add(new MetadataFragment("metadata", getModel()));
