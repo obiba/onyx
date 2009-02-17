@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
@@ -48,6 +49,8 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   private List<RecruitmentType> supportedRecruitmentTypes;
 
+  private String participantIdPattern;
+
   //
   // Constructors
   //
@@ -71,6 +74,13 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   public void afterPropertiesSet() throws Exception {
     initConfig();
+
+    // Add a validator for the participant id.
+    // This validator has to be declared as regular expression in the application configuration.
+    ParticipantAttribute attribute = getEssentialAttribute("Participant ID");
+    PatternValidator participantIdValidator = new PatternValidator(participantIdPattern);
+    attribute.addValidators(participantIdValidator);
+
   }
 
   //
@@ -236,5 +246,9 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
 
   public List<RecruitmentType> getSupportedRecruitmentTypes() {
     return this.supportedRecruitmentTypes;
+  }
+
+  public void setParticipantIdPattern(String participantIdPattern) {
+    this.participantIdPattern = participantIdPattern;
   }
 }

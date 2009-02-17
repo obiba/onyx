@@ -57,6 +57,8 @@ public class EditParticipantPanelTest implements Serializable {
 
   private UserSessionService mockUserSessionService;
 
+  private ParticipantMetadata participantMetadata;
+
   private Participant p = newTestParticipant();
 
   @Before
@@ -72,7 +74,7 @@ public class EditParticipantPanelTest implements Serializable {
     mockCtx.putBean("userSessionService", mockUserSessionService);
 
     ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("test-spring-context.xml");
-    ParticipantMetadata participantMetadata = (ParticipantMetadata) context.getBean("participantMetadata");
+    participantMetadata = (ParticipantMetadata) context.getBean("participantMetadata");
     mockCtx.putBean("participantMetadata", participantMetadata);
 
     MockSpringApplication application = new MockSpringApplication();
@@ -164,7 +166,7 @@ public class EditParticipantPanelTest implements Serializable {
     FormTester formTester = tester.newFormTester("panel:editParticipantForm");
     formTester.setValue("firstName:value", "Martine");
     formTester.select("gender:gender", 0);
-    formTester.setValue("assignCodeToParticipantPanel:assignCodeToParticipantForm:participantCode", "1234");
+    formTester.setValue("assignCodeToParticipantPanel:assignCodeToParticipantForm:participantCode", "B12345678");
     formTester.setValue("metadata:repeat:2:field:input:field", "Peel street");
     formTester.setValue("metadata:repeat:4:field:input:field", "514-398-3311 ext 00721");
 
@@ -224,7 +226,7 @@ public class EditParticipantPanelTest implements Serializable {
     formTester.setValue("lastName:value", "Dupont");
     formTester.select("gender:gender", 1);
     formTester.setValue("birthDate", "05-05-1979");
-    formTester.setValue("assignCodeToParticipantPanel:assignCodeToParticipantForm:participantCode", "1234");
+    formTester.setValue("assignCodeToParticipantPanel:assignCodeToParticipantForm:participantCode", "B12345678");
     formTester.setValue("metadata:repeat:2:field:input:field", "Peel street");
     formTester.setValue("metadata:repeat:4:field:input:field", "514-398-3311 ext 00721");
 
@@ -267,14 +269,14 @@ public class EditParticipantPanelTest implements Serializable {
 
     public AssignCodeToParticipantPanelMock(String id, IModel participantModel) {
       super(id);
-      add(new AssignCodeToParticipantFormMock("assignCodeToParticipantForm", participantModel));
+      add(new AssignCodeToParticipantFormMock("assignCodeToParticipantForm", participantModel, participantMetadata));
     }
 
     private class AssignCodeToParticipantFormMock extends AssignCodeToParticipantForm {
 
       @SuppressWarnings("serial")
-      public AssignCodeToParticipantFormMock(String id, final IModel participantModel) {
-        super(id, participantModel);
+      public AssignCodeToParticipantFormMock(String id, final IModel participantModel, ParticipantMetadata participantMetadata) {
+        super(id, participantModel, participantMetadata);
       }
 
       @Override

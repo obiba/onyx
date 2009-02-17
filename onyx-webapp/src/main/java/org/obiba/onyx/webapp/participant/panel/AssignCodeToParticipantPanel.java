@@ -10,6 +10,7 @@
 package org.obiba.onyx.webapp.participant.panel;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -28,6 +29,8 @@ import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
+import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -57,7 +60,12 @@ public class AssignCodeToParticipantPanel extends Panel {
 
   public AssignCodeToParticipantPanel(String id, IModel participantModel) {
     super(id);
-    add(new AssignCodeToParticipantForm("assignCodeToParticipantForm", participantModel));
+    add(new AssignCodeToParticipantForm("assignCodeToParticipantForm", participantModel, null));
+  }
+
+  public AssignCodeToParticipantPanel(String id, IModel participantModel, ParticipantMetadata participantMetadata) {
+    super(id);
+    add(new AssignCodeToParticipantForm("assignCodeToParticipantForm", participantModel, participantMetadata));
   }
 
   public class AssignCodeToParticipantForm extends Form {
@@ -65,7 +73,7 @@ public class AssignCodeToParticipantPanel extends Panel {
     private static final long serialVersionUID = 1L;
 
     @SuppressWarnings("serial")
-    public AssignCodeToParticipantForm(String id, final IModel participantModel) {
+    public AssignCodeToParticipantForm(String id, final IModel participantModel, ParticipantMetadata participantMetadata) {
       super(id, participantModel);
 
       TextField participantCode = new TextField("participantCode", new PropertyModel(getModel(), "barcode"));
@@ -88,6 +96,14 @@ public class AssignCodeToParticipantPanel extends Panel {
         }
 
       });
+
+	  // Adding validation to Participant Id.
+      ParticipantAttribute participantAttributeId = participantMetadata.getEssentialAttribute("Participant ID");
+      List<IValidator> validators = participantAttributeId.getValidators();
+      for(IValidator validator : validators) {
+        participantCode.add(validator);
+      }
+
       add(participantCode);
 
       TextArea comment = new TextArea("comment", receptionCommentModel);

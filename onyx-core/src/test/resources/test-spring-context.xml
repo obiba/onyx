@@ -45,5 +45,11 @@
   <import resource="test-hibernate-config.xml" />
   <import resource="test-db-config.xml" />
   <import resource="classpath:META-INF/spring/onyx-core/context.xml" />
-
+  
+  <bean id="participantMetadata" class="org.obiba.onyx.core.domain.participant.ParticipantMetadata">
+    <property name="participantIdPattern" value=".*" />
+    <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
+    <property name="supportedRecruitmentTypesString" value="${org.obiba.onyx.supportedRecruitmentTypes}" />
+  </bean>  
+  
 </beans>

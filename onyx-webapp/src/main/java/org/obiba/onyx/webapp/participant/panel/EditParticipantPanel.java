@@ -41,6 +41,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
@@ -57,7 +58,6 @@ import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.webapp.participant.panel.AssignCodeToParticipantPanel.AssignCodeToParticipantForm;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.onyx.wicket.data.DataValidator;
-import org.obiba.onyx.wicket.data.IDataValidator;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.slf4j.Logger;
@@ -208,7 +208,7 @@ public class EditParticipantPanel extends Panel {
 
       add(new MetadataFragment("metadata", getModel()));
 
-      add(new AssignCodeToParticipantPanel("assignCodeToParticipantPanel", participantModel) {
+      add(new AssignCodeToParticipantPanel("assignCodeToParticipantPanel", participantModel, participantMetadata) {
 
         private static final long serialVersionUID = 1L;
 
@@ -456,8 +456,8 @@ public class EditParticipantPanel extends Panel {
             field = new DataField("field", new PropertyModel(attributeValueModel, "data"), attribute.getType());
 
             // Add any validator defined by the current ParticipantAttribute.
-            List<IDataValidator> validators = attribute.getValidators();
-            for(IDataValidator validator : validators) {
+            List<IValidator> validators = attribute.getValidators();
+            for(IValidator validator : validators) {
               field.add(validator);
             }
 
