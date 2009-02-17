@@ -93,8 +93,8 @@
     <type>STOP</type>
     <askParticipantId>false</askParticipantId>    
     <askPassword>false</askPassword>
-    <commentMandatory>true</commentMandatory>
-    <reasonMandatory>true</reasonMandatory>   
+    <commentMandatory>false</commentMandatory>
+    <reasonMandatory>false</reasonMandatory>   
   </actionDefinition>  
   <actionDefinition>
     <code>action.EXECUTE.Interrupted.Quartz</code>
