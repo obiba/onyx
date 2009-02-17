@@ -79,7 +79,6 @@ public class SphygmoCorInstrumentRunnerTest {
     sphygmoCorDaoMock.deleteAllPatients();
 
     // Expect that the current participant is retrieved...
-    String participantId = "123456789";
     String participantLastName = "Tremblay";
     String participantFirstName = "Chantal";
     java.util.Date participantBirthDate = getBirthDate();
@@ -87,7 +86,6 @@ public class SphygmoCorInstrumentRunnerTest {
     long systolicPressure = 123;
     long diastolicPressure = 65;
 
-    expect(instrumentExecutionServiceMock.getParticipantID()).andReturn(participantId);
     expect(instrumentExecutionServiceMock.getParticipantLastName()).andReturn(participantLastName);
     expect(instrumentExecutionServiceMock.getParticipantFirstName()).andReturn(participantFirstName);
     expect(instrumentExecutionServiceMock.getParticipantBirthDate()).andReturn(participantBirthDate);
@@ -115,7 +113,6 @@ public class SphygmoCorInstrumentRunnerTest {
    */
   // @Test
   public void testRunOutputNotNull() {
-    expect(instrumentExecutionServiceMock.getParticipantID()).andReturn("1");
 
     // Expect that the measurements taken for the current participant are retrieved,
     // with a non-null return value.
@@ -140,12 +137,10 @@ public class SphygmoCorInstrumentRunnerTest {
   @Test
   public void testRunOutputIsNull() {
 
-    expect(instrumentExecutionServiceMock.getParticipantID()).andReturn("1");
-
     // Expect that the measurements taken for the current participant are retrieved,
     // with a null return value. This could happen if the SphygmoCor application is
     // closed prematurely.
-    expect(sphygmoCorDaoMock.getOutput(1)).andReturn(null);
+    expect(sphygmoCorDaoMock.getOutput(123)).andReturn(null);
 
     replay(instrumentExecutionServiceMock);
     replay(sphygmoCorDaoMock);

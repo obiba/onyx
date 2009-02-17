@@ -38,6 +38,8 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
 
   private static final Logger log = LoggerFactory.getLogger(SphygmoCorInstrumentRunner.class);
 
+  private static final Integer participantId = 123;
+
   //
   // Instance variables
   //
@@ -96,7 +98,7 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
       localInputFile.write(formatter.format(participantBirthDate) + "\n");
 
       localInputFile.write(participantGender + "\n");
-      localInputFile.write(instrumentExecutionService.getParticipantID() + "\n");
+      localInputFile.write(participantId + "\n");
       localInputFile.write(systolicPressure + "\n");
       localInputFile.write(diastolicPressure + "\n");
     } catch(IOException e) {
@@ -120,7 +122,7 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     // Retrieve the output (measurements taken for the current participant).
     // NOTE: The getOutput method returns the output as a List of Maps. There
     // *should* only be one Map, corresponding to the single run.
-    List<Map> outputList = sphygmoCorDao.getOutput(Integer.parseInt(instrumentExecutionService.getParticipantID()));
+    List<Map> outputList = sphygmoCorDao.getOutput(participantId);
 
     if(outputList != null) {
       // Send the data to the server.
@@ -162,7 +164,6 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
 
     Map<String, Data> outputToSend = new HashMap<String, Data>();
 
-    outputToSend.put("PATIENT_ID", DataBuilder.buildText((String) data.get("PATIENT_ID")));
     outputToSend.put("FIRST_NAME", DataBuilder.buildText((String) data.get("FIRST_NAME")));
     outputToSend.put("FAM_NAME", DataBuilder.buildText((String) data.get("FAM_NAME")));
     outputToSend.put("DOB", DataBuilder.buildDate((Date) data.get("DOB")));

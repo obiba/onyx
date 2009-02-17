@@ -12,14 +12,6 @@
   </contraindications> -->
 
   <instrumentParameters>
-    <input id="id">
-      <code>INPUT_PARTICIPANT_BARCODE</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
-        <property>barcode</property>
-      </inputSource>
-    </input>
 
     <input id="last_name">
       <code>INPUT_PARTICIPANT_LAST_NAME</code>
@@ -79,21 +71,6 @@
         <parameterName>CALC_AVG_DIASTOLIC_BP</parameterName>
       </inputSource>
     </input>
-
-    <output id="PATIENT_ID">
-      <vendorName>PATIENT_ID</vendorName>
-      <code>OUTPUT_PARTICIPANT_BARCODE</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit/>
-      <integrityChecks>
-        <equalsParameterCheck>
-          <targetParameter reference="PATIENT_ID"/>
-          <parameter reference="id"/>
-          <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
-        </equalsParameterCheck>
-      </integrityChecks>
-    </output>
 
     <output id="FAM_NAME">
       <vendorName>FAM_NAME</vendorName>
