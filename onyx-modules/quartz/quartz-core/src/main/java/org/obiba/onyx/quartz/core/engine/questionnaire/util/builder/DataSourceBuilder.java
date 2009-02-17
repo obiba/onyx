@@ -24,7 +24,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.answer.TimestampSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.util.data.ArithmeticOperator;
 import org.obiba.onyx.util.data.Data;
@@ -34,10 +33,10 @@ import org.obiba.onyx.util.data.Data;
  */
 public class DataSourceBuilder extends AbstractQuestionnaireElementBuilder<DataSource> {
 
-  private DataSourceBuilder(Questionnaire questionnaire, String questionName, String categoryName, String openAnswerDefinitionName) {
-    super(questionnaire);
+  private DataSourceBuilder(AbstractQuestionnaireElementBuilder parent, String questionName, String categoryName, String openAnswerDefinitionName) {
+    super(parent);
 
-    QuestionnaireFinder finder = QuestionnaireFinder.getInstance(questionnaire);
+    QuestionnaireFinder finder = QuestionnaireFinder.getInstance(getQuestionnaire());
     Question question = finder.findQuestion(questionName);
     if(question == null) throw invalidElementNameException(Question.class, questionName);
     Category category = finder.findCategory(categoryName);
@@ -48,13 +47,13 @@ public class DataSourceBuilder extends AbstractQuestionnaireElementBuilder<DataS
     this.element = new OpenAnswerSource(question, category, open);
   }
 
-  private DataSourceBuilder(Questionnaire questionnaire, DataSource source) {
-    super(questionnaire);
+  private DataSourceBuilder(AbstractQuestionnaireElementBuilder parent, DataSource source) {
+    super(parent);
     this.element = source;
   }
 
-  public static DataSourceBuilder createOpenAnswerSource(Questionnaire questionnaire, String questionName, String categoryName, String openAnswerDefinitionName) {
-    return new DataSourceBuilder(questionnaire, questionName, categoryName, openAnswerDefinitionName);
+  public static DataSourceBuilder createOpenAnswerSource(AbstractQuestionnaireElementBuilder parent, String questionName, String categoryName, String openAnswerDefinitionName) {
+    return new DataSourceBuilder(parent, questionName, categoryName, openAnswerDefinitionName);
   }
 
   public static DataSourceBuilder createTimestampSource() {

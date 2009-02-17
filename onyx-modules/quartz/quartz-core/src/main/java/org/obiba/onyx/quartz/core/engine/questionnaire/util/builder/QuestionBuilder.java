@@ -19,9 +19,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
@@ -41,7 +41,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
   private QuestionBuilder(PageBuilder parent, String name, String number, boolean multiple, Class<? extends IQuestionPanelFactory> uiFactoryClass) {
-    super(parent.getQuestionnaire());
+    super(parent);
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
@@ -66,8 +66,8 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @param questionnaire
    * @param question
    */
-  private QuestionBuilder(Questionnaire questionnaire, Question question) {
-    super(questionnaire);
+  private QuestionBuilder(QuestionnaireBuilder parent, Question question) {
+    super(parent);
     this.element = question;
   }
 
@@ -80,7 +80,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
   public static QuestionBuilder createQuestion(PageBuilder parent, String name, String number, boolean multiple) {
-    return createQuestion(parent, name, number, multiple, DefaultQuestionPanelFactory.class);
+    return createQuestion(parent, name, number, multiple, parent.getDefaultQuestionUI());
   }
 
   /**
@@ -101,8 +101,8 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @param question
    * @return
    */
-  public static QuestionBuilder inQuestion(Questionnaire questionnaire, Question question) {
-    return new QuestionBuilder(questionnaire, question);
+  public static QuestionBuilder inQuestion(QuestionnaireBuilder parent, Question question) {
+    return new QuestionBuilder(parent, question);
   }
 
   /**
@@ -152,7 +152,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @see #getQuestion()
    */
   public QuestionBuilder withQuestion(String name, boolean multiple) {
-    return withQuestion(name, null, multiple, DefaultQuestionPanelFactory.class);
+    return withQuestion(name, null, multiple, getDefaultQuestionUI());
   }
 
   /**
@@ -163,7 +163,7 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
    * @see #getQuestion()
    */
   public QuestionBuilder withQuestion(String name, String number, boolean multiple) {
-    return withQuestion(name, number, multiple, DefaultQuestionPanelFactory.class);
+    return withQuestion(name, number, multiple, getDefaultQuestionUI());
   }
 
   /**

@@ -36,7 +36,7 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
    * @param category
    */
   private CategoryBuilder(QuestionBuilder parent, Category category) {
-    super(parent.getQuestionnaire());
+    super(parent);
     this.element = category;
     this.questionCategory = createQuestionCategory(parent.getElement());
   }

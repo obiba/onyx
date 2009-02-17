@@ -20,7 +20,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.condition.MultipleConditi
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.NotCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
@@ -30,11 +30,11 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
 
   /**
    * Constructor build around a pre-existing {@link Condition}.
-   * @param questionnaire
+   * @param parent
    * @param condition
    */
-  private ConditionBuilder(Questionnaire questionnaire, Condition condition) {
-    super(questionnaire);
+  private ConditionBuilder(QuestionnaireBuilder parent, Condition condition) {
+    super(parent);
     this.element = condition;
   }
 
@@ -44,7 +44,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @param condition
    */
   private ConditionBuilder(QuestionBuilder parent, Condition condition) {
-    super(parent.getQuestionnaire());
+    super(parent);
     this.element = condition;
     this.element.addQuestion(parent.getElement());
   }
@@ -57,7 +57,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @param categoryName
    */
   private ConditionBuilder(QuestionBuilder parent, String name, String questionName, String categoryName) {
-    super(parent.getQuestionnaire());
+    super(parent);
 
     this.element = getValidAnswerCondition(name, questionName, categoryName);
     this.element.addQuestion(parent.getElement());
@@ -72,7 +72,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @param categoryName
    */
   private ConditionBuilder(QuestionBuilder parent, String name, String questionnaireName, String questionName, String categoryName) {
-    super(parent.getQuestionnaire());
+    super(parent);
 
     if(QuestionnaireFinder.getInstance(questionnaire).findCondition(name) != null) throw invalidNameUnicityException(Condition.class, name);
 
@@ -89,7 +89,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @param dataSource2
    */
   private ConditionBuilder(QuestionBuilder parent, String name, DataSource dataSource1, ComparisonOperator comparisonOperator, DataSource dataSource2) {
-    super(parent.getQuestionnaire());
+    super(parent);
 
     element = new DataCondition(name, dataSource1, comparisonOperator, dataSource2);
     element.addQuestion(parent.getElement());
@@ -102,7 +102,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @param operator
    */
   private ConditionBuilder(QuestionBuilder parent, String name, ConditionOperator operator) {
-    super(parent.getQuestionnaire());
+    super(parent);
 
     MultipleCondition multipleCondition = new MultipleCondition(name, operator);
     multipleCondition.addQuestion(parent.getElement());
@@ -115,7 +115,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @param name
    */
   private ConditionBuilder(QuestionBuilder parent, String name) {
-    super(parent.getQuestionnaire());
+    super(parent);
 
     NotCondition noAnswerCondition = new NotCondition(name);
     noAnswerCondition.addQuestion(parent.getElement());
@@ -173,7 +173,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @return
    */
   public static ConditionBuilder createQuestionCondition(QuestionBuilder questionBuilder, String name, String questionName, String categoryName, String openAnswerDefinitionName, ComparisonOperator comparisonOperator, Data data) {
-    return (new ConditionBuilder(questionBuilder, name, DataSourceBuilder.createOpenAnswerSource(questionBuilder.getQuestionnaire(), questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisonOperator, DataSourceBuilder.createFixedSource(data).getDataSource()));
+    return (new ConditionBuilder(questionBuilder, name, DataSourceBuilder.createOpenAnswerSource(questionBuilder, questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisonOperator, DataSourceBuilder.createFixedSource(data).getDataSource()));
   }
 
   /**
@@ -187,7 +187,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @return
    */
   public static ConditionBuilder createQuestionCondition(QuestionBuilder questionBuilder, String name, String questionName, String categoryName, String openAnswerDefinitionName, ComparisonOperator comparisonOperator, DataSource dataSource) {
-    return (new ConditionBuilder(questionBuilder, name, DataSourceBuilder.createOpenAnswerSource(questionBuilder.getQuestionnaire(), questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisonOperator, dataSource));
+    return (new ConditionBuilder(questionBuilder, name, DataSourceBuilder.createOpenAnswerSource(questionBuilder, questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisonOperator, dataSource));
   }
 
   /**
@@ -204,7 +204,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @return
    */
   public static ConditionBuilder createQuestionCondition(QuestionBuilder questionBuilder, String name, String question, String category, String openAnswerDefinition, ComparisonOperator comparisonOperator, String questionName, String categoryName, String openAnswerDefinitionName) {
-    return (new ConditionBuilder(questionBuilder, name, DataSourceBuilder.createOpenAnswerSource(questionBuilder.getQuestionnaire(), question, category, openAnswerDefinition).getDataSource(), comparisonOperator, DataSourceBuilder.createOpenAnswerSource(questionBuilder.questionnaire, questionName, categoryName, openAnswerDefinitionName).getElement()));
+    return (new ConditionBuilder(questionBuilder, name, DataSourceBuilder.createOpenAnswerSource(questionBuilder, question, category, openAnswerDefinition).getDataSource(), comparisonOperator, DataSourceBuilder.createOpenAnswerSource(questionBuilder, questionName, categoryName, openAnswerDefinitionName).getElement()));
   }
 
   /**
@@ -222,7 +222,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @return
    */
   public static ConditionBuilder createQuestionCondition(QuestionBuilder questionBuilder, String name, String question, String category, String openAnswerDefinition, ComparisonOperator comparisonOperator, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
-    return (new ConditionBuilder(questionBuilder, name, DataSourceBuilder.createOpenAnswerSource(questionBuilder.getQuestionnaire(), question, category, openAnswerDefinition).getDataSource(), comparisonOperator, DataSourceBuilder.createExternalOpenAnswerSource(questionnaireName, questionName, categoryName, openAnswerDefinitionName).getElement()));
+    return (new ConditionBuilder(questionBuilder, name, DataSourceBuilder.createOpenAnswerSource(questionBuilder, question, category, openAnswerDefinition).getDataSource(), comparisonOperator, DataSourceBuilder.createExternalOpenAnswerSource(questionnaireName, questionName, categoryName, openAnswerDefinitionName).getElement()));
   }
 
   /**
@@ -273,8 +273,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @return
    */
   public static ConditionBuilder createQuestionCondition(QuestionBuilder questionBuilder, String name, String participantProperty, ComparisonOperator comparisonOperator, String question, String category, String openAnswerDefinition) {
-    Questionnaire questionnaire = questionBuilder.getQuestionnaire();
-    return new ConditionBuilder(questionBuilder, new DataCondition(name, DataSourceBuilder.createParticipantPropertySource(participantProperty).getDataSource(), comparisonOperator, DataSourceBuilder.createOpenAnswerSource(questionnaire, question, category, openAnswerDefinition).getDataSource()));
+    return new ConditionBuilder(questionBuilder, new DataCondition(name, DataSourceBuilder.createParticipantPropertySource(participantProperty).getDataSource(), comparisonOperator, DataSourceBuilder.createOpenAnswerSource(questionBuilder, question, category, openAnswerDefinition).getDataSource()));
   }
 
   /**
@@ -372,7 +371,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @return
    */
   public ConditionBuilder withDataCondition(String name, String questionName, String categoryName, String openAnswerDefinitionName, ComparisonOperator comparisonOperator, Data data) {
-    addToCurrentCondition(new DataCondition(name, DataSourceBuilder.createOpenAnswerSource(questionnaire, questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisonOperator, DataSourceBuilder.createFixedSource(data).getDataSource()));
+    addToCurrentCondition(new DataCondition(name, DataSourceBuilder.createOpenAnswerSource(this, questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisonOperator, DataSourceBuilder.createFixedSource(data).getDataSource()));
     return this;
   }
 
@@ -389,7 +388,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @return
    */
   public ConditionBuilder withDataCondition(String name, String questionName, String categoryName, String openAnswerDefinitionName, ComparisonOperator comparisonOperator, String questionNameToCompare, String categoryNameToCompare, String openAnswerDefinitionNameToCompare) {
-    addToCurrentCondition(new DataCondition(name, DataSourceBuilder.createOpenAnswerSource(questionnaire, questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisonOperator, DataSourceBuilder.createOpenAnswerSource(questionnaire, questionNameToCompare, categoryNameToCompare, openAnswerDefinitionNameToCompare).getElement()));
+    addToCurrentCondition(new DataCondition(name, DataSourceBuilder.createOpenAnswerSource(this, questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisonOperator, DataSourceBuilder.createOpenAnswerSource(this, questionNameToCompare, categoryNameToCompare, openAnswerDefinitionNameToCompare).getElement()));
     return this;
   }
 
@@ -404,7 +403,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @return
    */
   public ConditionBuilder withDataCondition(String name, String questionName, String categoryName, String openAnswerDefinitionName, ComparisonOperator comparisonOperator, DataSource dataSource) {
-    addToCurrentCondition(new DataCondition(name, DataSourceBuilder.createOpenAnswerSource(questionnaire, questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisonOperator, dataSource));
+    addToCurrentCondition(new DataCondition(name, DataSourceBuilder.createOpenAnswerSource(this, questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisonOperator, dataSource));
     return this;
   }
 
@@ -420,7 +419,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @return
    */
   public ConditionBuilder withDataCondition(String name, String participantProperty, ComparisonOperator comparisonOperator, String questionName, String categoryName, String openAnswerDefinitionName) {
-    addToCurrentCondition(new DataCondition(name, DataSourceBuilder.createParticipantPropertySource(participantProperty).getDataSource(), comparisonOperator, DataSourceBuilder.createOpenAnswerSource(questionnaire, questionName, categoryName, openAnswerDefinitionName).getDataSource()));
+    addToCurrentCondition(new DataCondition(name, DataSourceBuilder.createParticipantPropertySource(participantProperty).getDataSource(), comparisonOperator, DataSourceBuilder.createOpenAnswerSource(this, questionName, categoryName, openAnswerDefinitionName).getDataSource()));
     return this;
   }
 
@@ -507,7 +506,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @return
    */
   public ConditionBuilder withDataCondition(String name, String questionName, String categoryName, String openAnswerDefinitionName, ComparisonOperator comparisonOperator, String questionnaireNameToCompare, String questionNameToCompare, String categoryNameToCompare, String openAnswerDefinitionNameToCompare) {
-    addToCurrentCondition(new DataCondition(name, DataSourceBuilder.createOpenAnswerSource(questionnaire, questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisonOperator, DataSourceBuilder.createExternalOpenAnswerSource(questionnaireNameToCompare, questionNameToCompare, categoryNameToCompare, openAnswerDefinitionNameToCompare).getDataSource()));
+    addToCurrentCondition(new DataCondition(name, DataSourceBuilder.createOpenAnswerSource(this, questionName, categoryName, openAnswerDefinitionName).getDataSource(), comparisonOperator, DataSourceBuilder.createExternalOpenAnswerSource(questionnaireNameToCompare, questionNameToCompare, categoryNameToCompare, openAnswerDefinitionNameToCompare).getDataSource()));
     return this;
   }
 
@@ -602,7 +601,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<Condit
    * @param condition
    * @return
    */
-  public static ConditionBuilder inCondition(Questionnaire questionnaire, Condition condition) {
-    return new ConditionBuilder(questionnaire, condition);
+  public static ConditionBuilder inCondition(QuestionnaireBuilder parent, Condition condition) {
+    return new ConditionBuilder(parent, condition);
   }
 }

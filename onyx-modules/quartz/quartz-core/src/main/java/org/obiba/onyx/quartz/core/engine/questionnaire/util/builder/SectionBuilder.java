@@ -30,7 +30,7 @@ public class SectionBuilder extends AbstractQuestionnaireElementBuilder<Section>
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
   private SectionBuilder(QuestionnaireBuilder parent, String name) {
-    super(parent.getQuestionnaire());
+    super(parent);
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
@@ -46,8 +46,8 @@ public class SectionBuilder extends AbstractQuestionnaireElementBuilder<Section>
    * @param questionnaire
    * @param section
    */
-  private SectionBuilder(Questionnaire questionnaire, Section section) {
-    super(questionnaire);
+  private SectionBuilder(QuestionnaireBuilder parent, Section section) {
+    super(parent);
     this.element = section;
   }
 
@@ -62,8 +62,8 @@ public class SectionBuilder extends AbstractQuestionnaireElementBuilder<Section>
     return new SectionBuilder(parent, name);
   }
 
-  public static SectionBuilder inSection(Questionnaire questionnaire, Section section) {
-    return new SectionBuilder(questionnaire, section);
+  public static SectionBuilder inSection(QuestionnaireBuilder parent, Section section) {
+    return new SectionBuilder(parent, section);
   }
 
   /**
@@ -94,7 +94,7 @@ public class SectionBuilder extends AbstractQuestionnaireElementBuilder<Section>
   public PageBuilder withPage(String name) {
     return PageBuilder.createPage(this, name);
   }
-  
+
   /**
    * Add a {@link Page} to current {@link Section} and make it the current {@link Page}.
    * @param name

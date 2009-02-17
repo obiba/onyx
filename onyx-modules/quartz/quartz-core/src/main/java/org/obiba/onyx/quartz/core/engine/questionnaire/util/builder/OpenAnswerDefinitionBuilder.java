@@ -22,6 +22,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataSourceValidator;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.util.data.ComparisonOperator;
@@ -42,8 +43,8 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @param parent
    * @param condition
    */
-  private OpenAnswerDefinitionBuilder(Questionnaire questionnaire, OpenAnswerDefinition openAnswerDefinition) {
-    super(questionnaire);
+  private OpenAnswerDefinitionBuilder(QuestionnaireBuilder parent, OpenAnswerDefinition openAnswerDefinition) {
+    super(parent);
     this.element = openAnswerDefinition;
   }
 
@@ -54,7 +55,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @param dataType
    */
   private OpenAnswerDefinitionBuilder(CategoryBuilder parent, String name, DataType dataType) {
-    super(parent.getQuestionnaire());
+    super(parent);
     if(!checkUniqueOpenAnswerDefinitionName(name)) {
       throw invalidNameUnicityException(OpenAnswerDefinition.class, name);
     }
@@ -134,7 +135,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String questionName, String categoryName, String openAnswerDefinitionName) {
-    element.addValidator(new DataSourceValidator(comparisonOperator, DataSourceBuilder.createOpenAnswerSource(questionnaire, questionName, categoryName, openAnswerDefinitionName).getElement()));
+    element.addValidator(new DataSourceValidator(comparisonOperator, DataSourceBuilder.createOpenAnswerSource(this, questionName, categoryName, openAnswerDefinitionName).getElement()));
     return this;
   }
 
@@ -249,7 +250,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder setOpenAnswerSource(String questionName, String categoryName, String openAnswerDefinitionName) {
-    element.setDataSource(DataSourceBuilder.createOpenAnswerSource(questionnaire, questionName, categoryName, openAnswerDefinitionName).getElement());
+    element.setDataSource(DataSourceBuilder.createOpenAnswerSource(this, questionName, categoryName, openAnswerDefinitionName).getElement());
     return this;
   }
 
@@ -314,7 +315,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @param condition
    * @return
    */
-  public static OpenAnswerDefinitionBuilder inOpenAnswerDefinition(Questionnaire questionnaire, OpenAnswerDefinition openAnswerDefinition) {
-    return new OpenAnswerDefinitionBuilder(questionnaire, openAnswerDefinition);
+  public static OpenAnswerDefinitionBuilder inOpenAnswerDefinition(QuestionnaireBuilder parent, OpenAnswerDefinition openAnswerDefinition) {
+    return new OpenAnswerDefinitionBuilder(parent, openAnswerDefinition);
   }
 }

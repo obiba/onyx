@@ -27,6 +27,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuil
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.SectionBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.PropertiesPropertyKeyWriterImpl;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanelFactory;
 import org.obiba.runtime.Version;
 
 /**
@@ -40,12 +42,12 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
    * Constructor.
    * @param name
    * @param version
-   * @throws IllegalArgumentException if name does not respect naming pattern and if version does not respect
-   * versionning pattern.
+   * @throws IllegalArgumentException if name does not respect naming pattern and if version does not respect version
+   * pattern.
    * @see Version
    */
   private QuestionnaireBuilder(String name, String version) {
-    super(null);
+    super(null, DefaultPageLayoutFactory.class, DefaultQuestionPanelFactory.class);
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
@@ -54,7 +56,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
   }
 
   private QuestionnaireBuilder(Questionnaire questionnaire) {
-    super(questionnaire);
+    super(questionnaire, DefaultPageLayoutFactory.class, DefaultQuestionPanelFactory.class);
     this.element = questionnaire;
   }
 
@@ -100,7 +102,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     if(section == null) {
       throw invalidElementNameException(Section.class, name);
     }
-    return SectionBuilder.inSection(getQuestionnaire(), section);
+    return SectionBuilder.inSection(this, section);
   }
 
   /**
@@ -114,7 +116,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     if(page == null) {
       throw invalidElementNameException(Page.class, name);
     }
-    return PageBuilder.inPage(getQuestionnaire(), page);
+    return PageBuilder.inPage(this, page);
   }
 
   /**
@@ -128,7 +130,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     if(question == null) {
       throw invalidElementNameException(Question.class, name);
     }
-    return QuestionBuilder.inQuestion(getQuestionnaire(), question);
+    return QuestionBuilder.inQuestion(this, question);
   }
 
   /**
@@ -142,7 +144,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     if(condition == null) {
       throw invalidElementNameException(Condition.class, name);
     }
-    return ConditionBuilder.inCondition(getQuestionnaire(), condition);
+    return ConditionBuilder.inCondition(this, condition);
   }
 
   /**
@@ -156,7 +158,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     if(openAnswerDefinition == null) {
       throw invalidElementNameException(OpenAnswerDefinition.class, name);
     }
-    return OpenAnswerDefinitionBuilder.inOpenAnswerDefinition(getQuestionnaire(), openAnswerDefinition);
+    return OpenAnswerDefinitionBuilder.inOpenAnswerDefinition(this, openAnswerDefinition);
   }
 
   /**

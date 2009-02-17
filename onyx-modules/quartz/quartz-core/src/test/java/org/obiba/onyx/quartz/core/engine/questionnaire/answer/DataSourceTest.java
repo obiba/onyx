@@ -227,7 +227,7 @@ public class DataSourceTest {
     expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer((Question) EasyMock.anyObject(), (Category) EasyMock.anyObject(), (OpenAnswerDefinition) EasyMock.anyObject())).andReturn(openAnswer).anyTimes();
     replay(activeQuestionnaireAdministrationServiceMock);
 
-    DataSource source = DataSourceBuilder.createOpenAnswerSource(questionnaire, "Q2", "2", "OPEN_TEXT").getDataSource();
+    DataSource source = DataSourceBuilder.createOpenAnswerSource(QuestionnaireBuilder.getInstance(questionnaire), "Q2", "2", "OPEN_TEXT").getDataSource();
     Data data = source.getData(activeQuestionnaireAdministrationServiceMock);
 
     log.debug("OpenAnswerSource.data={}", data);
@@ -244,7 +244,7 @@ public class DataSourceTest {
     expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer((Question) EasyMock.anyObject(), (Category) EasyMock.anyObject(), (OpenAnswerDefinition) EasyMock.anyObject())).andReturn(null).anyTimes();
     replay(activeQuestionnaireAdministrationServiceMock);
 
-    DataSource source = DataSourceBuilder.createOpenAnswerSource(questionnaire, "Q2", "2", "OPEN_TEXT").getDataSource();
+    DataSource source = DataSourceBuilder.createOpenAnswerSource(QuestionnaireBuilder.getInstance(questionnaire), "Q2", "2", "OPEN_TEXT").getDataSource();
     Data data = source.getData(activeQuestionnaireAdministrationServiceMock);
 
     log.debug("OpenAnswerSource.data={}", data);
@@ -267,7 +267,7 @@ public class DataSourceTest {
     expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer((Question) EasyMock.anyObject(), (Category) EasyMock.anyObject(), (OpenAnswerDefinition) EasyMock.anyObject())).andReturn(openAnswer).anyTimes();
     replay(activeQuestionnaireAdministrationServiceMock);
 
-    DataSource source = DataSourceBuilder.createOpenAnswerSource(questionnaire, "Q2", "2", "OPEN_TEXT").getDataSource();
+    DataSource source = DataSourceBuilder.createOpenAnswerSource(QuestionnaireBuilder.getInstance(questionnaire), "Q2", "2", "OPEN_TEXT").getDataSource();
     Data data = source.getData(activeQuestionnaireAdministrationServiceMock);
 
     log.debug("OpenAnswerSource.data={}", data);

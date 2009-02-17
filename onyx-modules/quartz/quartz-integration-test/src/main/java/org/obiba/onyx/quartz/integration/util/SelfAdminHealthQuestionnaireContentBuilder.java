@@ -18,7 +18,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperat
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedQuestionPanelFactory;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
 import org.obiba.onyx.util.data.ArithmeticOperator;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataBuilder;
@@ -101,26 +100,31 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
   public static QuestionnaireBuilder buildQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaireSelfAdministered", "1.0");
 
+    builder.setDefaultPageUI(SimplifiedPageLayoutFactory.class);
+    builder.setDefaultQuestionUI(SimplifiedQuestionPanelFactory.class);
+
     builder.withSection("A_ADMINISTRATION").withSection("ADMINISTRATIVE_DATA").withPage("1").withQuestion("A0");
     builder.inPage("1").addTimestamp("TS_START");
 
-    builder.withSection("B_DEMOGRAPHY").withSection("GENDER").withPage("2", SimplifiedPageLayoutFactory.class).withQuestion("SEX", "1", SimplifiedQuestionPanelFactory.class).withCategory("MALE").setExportName("1");
+    builder.withSection("B_DEMOGRAPHY").withSection("GENDER").withPage("2").withQuestion("SEX", "1").withCategory("MALE").setExportName("1");
     builder.inQuestion("SEX").withCategory("FEMALE").setExportName("2");
     builder.inQuestion("SEX").withSharedCategory(OTHER, "3");
     builder.inQuestion("SEX").withSharedCategory(PNA, "8").setEscape(true);
     builder.inQuestion("SEX").withSharedCategory(DNK, "9").setEscape(true);
 
-    builder.inSection("B_DEMOGRAPHY").withSection("AGE_DATE_BIRTH").withPage("3", SimplifiedPageLayoutFactory.class).withQuestion("PARTICIPANT_AGE", "3", SimplifiedQuestionPanelFactory.class).withCategory("PARTICIPANT_AGE").withOpenAnswerDefinition("PARTICIPANT_AGE", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(40, 70));
+    builder.inSection("B_DEMOGRAPHY").withSection("AGE_DATE_BIRTH").withPage("3").withQuestion("PARTICIPANT_AGE", "3").withCategory("PARTICIPANT_AGE").withOpenAnswerDefinition("PARTICIPANT_AGE", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(40, 70));
     builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(PNA, "88");
     builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(DNK, "99");
 
-    builder.inSection("AGE_DATE_BIRTH").withPage("3_1").withQuestion("DATE_OF_BIRTH", "2").withQuestion("DOB_YEAR").withCategory("DOB_YEAR").withOpenAnswerDefinition("DOB_YEAR", DataType.INTEGER).addValidator(ComparisonOperator.le, new ArithmeticOperationSource(new CurrentYearSource(), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(40)))).addValidator(ComparisonOperator.ge, new ArithmeticOperationSource(new CurrentYearSource(), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(70))));
+    builder.inSection("AGE_DATE_BIRTH").withPage("3_1").withQuestion("DOB_YEAR").withCategory("DOB_YEAR").withOpenAnswerDefinition("DOB_YEAR", DataType.INTEGER).addValidator(ComparisonOperator.le, new ArithmeticOperationSource(new CurrentYearSource(), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(40)))).addValidator(ComparisonOperator.ge, new ArithmeticOperationSource(new CurrentYearSource(), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(70))));
     builder.inQuestion("DOB_YEAR").withSharedCategory(PNA, "8888");
     builder.inQuestion("DOB_YEAR").withSharedCategory(DNK, "9999");
-    builder.inQuestion("DATE_OF_BIRTH").withQuestion("DOB_MONTH", DropDownQuestionPanelFactory.class).withCategories("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12");
+
+    builder.inSection("AGE_DATE_BIRTH").withPage("3_2").withQuestion("DOB_MONTH").withCategories("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12");
     builder.inQuestion("DOB_MONTH").withSharedCategory(PNA, "88");
     builder.inQuestion("DOB_MONTH").withSharedCategory(DNK, "99");
-    builder.inQuestion("DATE_OF_BIRTH").withQuestion("DOB_DAY", DropDownQuestionPanelFactory.class).withCategories("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31");
+
+    builder.inSection("AGE_DATE_BIRTH").withPage("3_3").withQuestion("DOB_DAY").withCategories("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31");
     builder.inQuestion("DOB_DAY").withSharedCategory(PNA, "88");
     builder.inQuestion("DOB_DAY").withSharedCategory(DNK, "99");
 
@@ -137,7 +141,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("NUMBER_SIBLINGS_ALL").withSharedCategory(DNK, "99");
 
     builder.inSection("B_DEMOGRAPHY").withSection("BIRTH_LOCATION").withPage("6").withQuestion("BL0");
-    builder.inSection("BIRTH_LOCATION").withPage("7").withQuestion("COUNTRY_BIRTH", "6", DropDownQuestionPanelFactory.class).withSharedCategories(CA, IT, FR, HT, LB, US, CN, VN, PT, GR, MA, GB);
+    builder.inSection("BIRTH_LOCATION").withPage("7").withQuestion("COUNTRY_BIRTH", "6").withSharedCategories(CA, IT, FR, HT, LB, US, CN, VN, PT, GR, MA, GB);
     builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(ELSEWHERE, "77").setEscape(true);
     builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(PNA, "88");
     builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(DNK, "99");
@@ -149,11 +153,11 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inCondition("AGE_IMMIGRATION_MCONDITION").withNoAnswerCondition("AGE_IMMIGRATION_NCONDITION_0").withAnswerCondition("AGE_IMMIGRATION_ACONDITION_1", "COUNTRY_BIRTH", "CA");
     builder.inCondition("AGE_IMMIGRATION_MCONDITION").withNoAnswerCondition("AGE_IMMIGRATION_NCONDITION_1").withAnswerCondition("AGE_IMMIGRATION_ACONDITION_2", "COUNTRY_BIRTH", PNA);
     builder.inCondition("AGE_IMMIGRATION_MCONDITION").withNoAnswerCondition("AGE_IMMIGRATION_NCONDITION_2").withAnswerCondition("AGE_IMMIGRATION_ACONDITION_3", "COUNTRY_BIRTH", DNK);
-    builder.inSection("BIRTH_LOCATION").withPage("9").withQuestion("MOTHER_COUNTRY_BIRTH", "8", DropDownQuestionPanelFactory.class).withSharedCategories(CA, IT, FR, HT, LB, US, CN, VN, PT, GR, MA, GB);
+    builder.inSection("BIRTH_LOCATION").withPage("9").withQuestion("MOTHER_COUNTRY_BIRTH", "8").withSharedCategories(CA, IT, FR, HT, LB, US, CN, VN, PT, GR, MA, GB);
     builder.inQuestion("MOTHER_COUNTRY_BIRTH").withSharedCategory(ELSEWHERE, "77");
     builder.inQuestion("MOTHER_COUNTRY_BIRTH").withSharedCategory(PNA, "88");
     builder.inQuestion("MOTHER_COUNTRY_BIRTH").withSharedCategory(DNK, "99");
-    builder.inSection("BIRTH_LOCATION").withPage("10").withQuestion("FATHER_COUNTRY_BIRTH", "9", DropDownQuestionPanelFactory.class).withSharedCategories(CA, IT, FR, HT, LB, US, CN, VN, PT, GR, MA, GB);
+    builder.inSection("BIRTH_LOCATION").withPage("10").withQuestion("FATHER_COUNTRY_BIRTH", "9").withSharedCategories(CA, IT, FR, HT, LB, US, CN, VN, PT, GR, MA, GB);
     builder.inQuestion("FATHER_COUNTRY_BIRTH").withSharedCategory(ELSEWHERE, "77");
     builder.inQuestion("FATHER_COUNTRY_BIRTH").withSharedCategory(PNA, "88");
     builder.inQuestion("FATHER_COUNTRY_BIRTH").withSharedCategory(DNK, "99");
@@ -174,7 +178,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("CURRENT_IS_LONGEST_TIME_LIVED").withSharedCategory(Y, "1");
     builder.inQuestion("CURRENT_IS_LONGEST_TIME_LIVED").withSharedCategory(PNA, "8");
     builder.inQuestion("CURRENT_IS_LONGEST_TIME_LIVED").withSharedCategory(DNK, "9");
-    builder.inSection("RESIDENCE_HISTORY").withPage("15").withQuestion("LONGEST_TIME_COUNTRY", "14", DropDownQuestionPanelFactory.class).withSharedCategories(CA, IT, FR, HT, LB, US, CN, VN, PT, GR, MA, GB);
+    builder.inSection("RESIDENCE_HISTORY").withPage("15").withQuestion("LONGEST_TIME_COUNTRY", "14").withSharedCategories(CA, IT, FR, HT, LB, US, CN, VN, PT, GR, MA, GB);
     builder.inQuestion("LONGEST_TIME_COUNTRY").withSharedCategory(ELSEWHERE, "77");
     builder.inQuestion("LONGEST_TIME_COUNTRY").withSharedCategory(PNA, "88");
     builder.inQuestion("LONGEST_TIME_COUNTRY").withSharedCategory(DNK, "99");
@@ -267,7 +271,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("SELF_EMPLOYED_FULL_TIME").withSharedCategory(N, "2");
     builder.inQuestion("SELF_EMPLOYED_FULL_TIME").setAnswerCondition("SELF_EMPLOYED_FULL_TIME_ACONDITION", "SELF_EMPLOYED", Y);
 
-    builder.inSection("WORKING_STATUS").withPage("27").withQuestion("CURRENT_WORK_ISIC1", "26", DropDownQuestionPanelFactory.class).withCategory("AGRICULTURE").setExportName("A");
+    builder.inSection("WORKING_STATUS").withPage("27").withQuestion("CURRENT_WORK_ISIC1", "26").withCategory("AGRICULTURE").setExportName("A");
     builder.inQuestion("CURRENT_WORK_ISIC1").withCategory("FISHING").setExportName("B");
     builder.inQuestion("CURRENT_WORK_ISIC1").withCategory("MINING").setExportName("C");
     builder.inQuestion("CURRENT_WORK_ISIC1").withCategory("MANUFACTURING").setExportName("D");

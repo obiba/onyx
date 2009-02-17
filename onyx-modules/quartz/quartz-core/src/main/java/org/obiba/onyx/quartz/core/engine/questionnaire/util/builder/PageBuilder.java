@@ -13,10 +13,10 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.wicket.layout.IPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory;
 import org.obiba.onyx.util.data.DataType;
 
 /**
@@ -28,12 +28,12 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
 
   /**
    * Constructor using {@link SectionBuilder} to get the {@link Section} it is applied to.
-   * @param sectionBuilder
+   * @param parent
    * @param name
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
-  private PageBuilder(SectionBuilder sectionBuilder, String name, Class<? extends IPageLayoutFactory> uiFactoryClass) {
-    super(sectionBuilder.getQuestionnaire());
+  private PageBuilder(SectionBuilder parent, String name, Class<? extends IPageLayoutFactory> uiFactoryClass) {
+    super(parent);
     if(!checkNamePattern(name)) {
       throw invalidNamePatternException(name);
     }
@@ -47,7 +47,7 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
       throw invalidPageLayoutFactoryException(uiFactoryClass, e);
     }
     this.questionnaire.addPage(element);
-    sectionBuilder.getElement().addPage(element);
+    parent.getElement().addPage(element);
   }
 
   /**
@@ -55,8 +55,8 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    * @param questionnaire
    * @param page
    */
-  private PageBuilder(Questionnaire questionnaire, Page page) {
-    super(questionnaire);
+  private PageBuilder(QuestionnaireBuilder parent, Page page) {
+    super(parent);
     this.element = page;
   }
 
@@ -68,7 +68,7 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    * @throws IllegalArgumentException if name does not respect questionnaire element naming pattern.
    */
   public static PageBuilder createPage(SectionBuilder parent, String name) {
-    return new PageBuilder(parent, name, DefaultPageLayoutFactory.class);
+    return new PageBuilder(parent, name, parent.getDefaultPageUI());
   }
 
   /**
@@ -88,8 +88,8 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    * @param page
    * @return
    */
-  public static PageBuilder inPage(Questionnaire questionnaire, Page page) {
-    return new PageBuilder(questionnaire, page);
+  public static PageBuilder inPage(QuestionnaireBuilder parent, Page page) {
+    return new PageBuilder(parent, page);
   }
 
   /**
