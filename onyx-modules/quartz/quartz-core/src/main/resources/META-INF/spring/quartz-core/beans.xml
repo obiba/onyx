@@ -39,11 +39,11 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     class="org.obiba.onyx.quartz.core.service.impl.DefaultNavigationStrategyImpl" />
   
   <!-- Questionnaire UI factories -->
-  <bean id="quartz.DefaultPageLayoutFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultPageLayoutFactory" />
+  <bean id="quartz.DefaultPageLayoutFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory" />
   
-  <bean id="quartz.DefaultQuestionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultQuestionPanelFactory" />
+  <bean id="quartz.DefaultQuestionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanelFactory" />
   
-  <bean id="quartz.DropDownQuestionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.DropDownQuestionPanelFactory" />
+  <bean id="quartz.DropDownQuestionPanelFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory" />
   
   <bean id="quartz.SimplifiedPageLayoutFactory" class="org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedPageLayoutFactory" />
   

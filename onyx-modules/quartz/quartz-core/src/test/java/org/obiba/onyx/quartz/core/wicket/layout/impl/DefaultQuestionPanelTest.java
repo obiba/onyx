@@ -60,6 +60,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.De
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanelFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.QuestionCategoryCheckBoxModel;
 import org.obiba.onyx.quartz.test.ComponentTesterUtils;
 import org.obiba.onyx.util.StringReferenceCompatibleMessageFormat;
 import org.obiba.onyx.util.data.DataType;

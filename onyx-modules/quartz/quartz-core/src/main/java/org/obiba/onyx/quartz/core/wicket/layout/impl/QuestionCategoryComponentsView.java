@@ -6,7 +6,7 @@
  * You should have received a copy of the GNU General Public License along with this program. If not, see
  * <http://www.gnu.org/licenses/>.
  **********************************************************************************************************************/
-package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
+package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -15,7 +15,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.GridView;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategoriesView;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListPermutator;
 import org.slf4j.Logger;

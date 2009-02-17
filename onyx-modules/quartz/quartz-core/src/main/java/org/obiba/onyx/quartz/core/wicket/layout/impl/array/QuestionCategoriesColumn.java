@@ -12,7 +12,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.DefaultQuestionCategoriesPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionCategoriesPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 
 /**

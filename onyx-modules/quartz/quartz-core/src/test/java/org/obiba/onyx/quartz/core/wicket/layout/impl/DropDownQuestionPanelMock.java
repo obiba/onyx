@@ -2,6 +2,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanel;
 
 @SuppressWarnings("serial")
 public class DropDownQuestionPanelMock extends FormMock {

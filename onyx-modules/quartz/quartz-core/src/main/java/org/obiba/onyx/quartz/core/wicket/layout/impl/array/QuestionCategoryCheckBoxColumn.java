@@ -17,7 +17,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategorySelectionPanel;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCategoryCheckBoxPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.QuestionCategoryCheckBoxPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 
