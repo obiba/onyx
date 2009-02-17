@@ -22,6 +22,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitio
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.pad.OpenAnswerPadFactory;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
+import org.obiba.onyx.wicket.link.AjaxImageLink;
 
 /**
  * 
@@ -53,14 +54,16 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
     add(new Label("value", new PropertyModel(this, "openValue")).setOutputMarkupId(true).add(new QuestionCategorySelectionBehavior()));
     add(new Label("label", QuestionnaireStringResourceModelHelper.getStringResourceModel(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition())));
 
-    add(new AjaxImageLink("link", new Model("Click"), new Model("Here")) {
+    AjaxImageLink link = new AjaxImageLink("link", new Model("Click"), new Model("Here")) {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
         padWindow.show(target);
       }
 
-    });
+    };
+    link.getLink().add(new QuestionCategorySelectionBehavior());
+    add(link);
 
     // Create modal window
     add(padWindow = new ModalWindow("padModal"));

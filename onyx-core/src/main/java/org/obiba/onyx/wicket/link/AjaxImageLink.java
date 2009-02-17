@@ -7,18 +7,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
+package org.obiba.onyx.wicket.link;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.link.AbstractLink;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
 /**
  * 
  */
-public abstract class AbstractImageLink extends Panel {
+public abstract class AjaxImageLink extends AbstractImageLink {
 
   private static final long serialVersionUID = 1L;
 
@@ -27,8 +26,8 @@ public abstract class AbstractImageLink extends Panel {
    * @param id
    * @param labelModel
    */
-  public AbstractImageLink(String id, IModel labelModel) {
-    this(id, labelModel, null);
+  public AjaxImageLink(String id, IModel labelModel) {
+    super(id, labelModel, null);
   }
 
   /**
@@ -36,33 +35,26 @@ public abstract class AbstractImageLink extends Panel {
    * @param labelModel
    * @param descriptionModel
    */
-  public AbstractImageLink(String id, IModel labelModel, IModel descriptionModel) {
-    super(id, labelModel);
-
-    AbstractLink link = newLink("link");
-
-    link.add(new Label("label", labelModel));
-    if(descriptionModel != null) {
-      link.add(new Label("description", descriptionModel));
-    } else {
-      link.add(new Label("description"));
-    }
-    link.add(new QuestionCategorySelectionBehavior());
-    add(link);
+  public AjaxImageLink(String id, IModel labelModel, IModel descriptionModel) {
+    super(id, labelModel, descriptionModel);
   }
 
-  protected abstract AbstractLink newLink(String id);
+  @Override
+  protected AbstractLink newLink(String id) {
+    return new AjaxLink(id) {
 
-  /**
-   * Get the wrapped link.
-   * @return
-   */
-  public AbstractLink getLink() {
-    return (AbstractLink) get("link");
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        AjaxImageLink.this.onClick(target);
+      }
+
+    };
+
   }
 
   /**
-   * Called on link clicked.
    * @param target
    */
   public abstract void onClick(AjaxRequestTarget target);

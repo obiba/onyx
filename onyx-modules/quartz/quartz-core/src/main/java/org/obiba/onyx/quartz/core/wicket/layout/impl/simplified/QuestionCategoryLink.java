@@ -18,6 +18,7 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 import org.obiba.onyx.quartz.core.wicket.layout.impl.BaseQuestionCategorySelectionPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
+import org.obiba.onyx.wicket.link.AjaxImageLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
