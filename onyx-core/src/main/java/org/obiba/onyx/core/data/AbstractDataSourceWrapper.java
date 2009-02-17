@@ -14,6 +14,8 @@ package org.obiba.onyx.core.data;
  */
 public abstract class AbstractDataSourceWrapper implements IDataSource {
 
+  private static final long serialVersionUID = 1L;
+
   private IDataSource dataSource;
 
   public IDataSource getDataSource() {

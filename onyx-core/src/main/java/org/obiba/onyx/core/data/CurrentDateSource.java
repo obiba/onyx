@@ -11,7 +11,6 @@ package org.obiba.onyx.core.data;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -25,7 +24,7 @@ public class CurrentDateSource implements IDataSource {
 
   private static final long serialVersionUID = 1L;
 
-  private Integer field;
+  private DateField field;
 
   private List<DateModifier> dateModifiers;
 
@@ -35,14 +34,14 @@ public class CurrentDateSource implements IDataSource {
    * @return
    */
   public Data getData(Participant participant) {
+    // Returns the current time in the current timezone
     Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date());
 
     for(DateModifier dateModifier : getDateModifiers()) {
       dateModifier.modify(cal, participant);
     }
 
-    return (field == null) ? DataBuilder.buildDate(cal.getTime()) : DataBuilder.buildInteger(cal.get(field));
+    return (field == null) ? DataBuilder.buildDate(cal.getTime()) : DataBuilder.buildInteger(cal.get(field.toCalendarField()));
   }
 
   public String getUnit() {
@@ -54,7 +53,11 @@ public class CurrentDateSource implements IDataSource {
     this.field = null;
   }
 
-  public CurrentDateSource(Integer field) {
+  public CurrentDateSource(int field) {
+    this.field = DateField.fromField(field);
+  }
+
+  public CurrentDateSource(DateField field) {
     this.field = field;
   }
 
@@ -63,7 +66,12 @@ public class CurrentDateSource implements IDataSource {
     this.dateModifiers = dateModifiers;
   }
 
-  public CurrentDateSource(Integer field, List<DateModifier> dateModifiers) {
+  public CurrentDateSource(int field, List<DateModifier> dateModifiers) {
+    this.field = DateField.fromField(field);
+    this.dateModifiers = dateModifiers;
+  }
+
+  public CurrentDateSource(DateField field, List<DateModifier> dateModifiers) {
     this.field = field;
     this.dateModifiers = dateModifiers;
   }

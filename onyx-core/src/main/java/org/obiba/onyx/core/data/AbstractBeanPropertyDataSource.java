@@ -22,6 +22,8 @@ import org.obiba.onyx.util.data.DataBuilder;
  */
 public abstract class AbstractBeanPropertyDataSource implements IDataSource {
 
+  private static final long serialVersionUID = 1L;
+
   private String property;
 
   private String unit;

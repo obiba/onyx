@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.core.data;
 
-import javax.persistence.Transient;
-
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.Data;
 
@@ -21,13 +19,11 @@ public class FirstNotNullDataSource extends AbstractMultipleDataSource {
 
   private static final long serialVersionUID = 1L;
 
-  @Transient
   private IDataSource firstDataSource = null;
 
-  @Transient
   private boolean isGetDataCalled = false;
 
-  public Data getData(Participant participant) {
+  synchronized public Data getData(Participant participant) {
     isGetDataCalled = true;
 
     for(IDataSource dataSource : getDataSources()) {
@@ -40,7 +36,7 @@ public class FirstNotNullDataSource extends AbstractMultipleDataSource {
     return null;
   }
 
-  public String getUnit() {
+  synchronized public String getUnit() {
     if(isGetDataCalled == false) throw new IllegalStateException("getUnit() cannot be called before finding the corresponding data by calling getData()");
     return (firstDataSource != null) ? firstDataSource.getUnit() : null;
   }

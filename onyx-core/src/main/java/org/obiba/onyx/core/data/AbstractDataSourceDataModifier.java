@@ -17,6 +17,8 @@ import org.obiba.onyx.util.data.Data;
  */
 public abstract class AbstractDataSourceDataModifier extends AbstractDataSourceWrapper {
 
+  private static final long serialVersionUID = 1L;
+
   public Data getData(Participant participant) {
     Data data = getDataSource().getData(participant);
     return modify(data, participant);

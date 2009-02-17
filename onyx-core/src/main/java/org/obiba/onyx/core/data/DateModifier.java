@@ -21,7 +21,7 @@ import org.obiba.onyx.util.data.Data;
  */
 public class DateModifier {
 
-  private int field;
+  private DateField field;
 
   private int amount;
 
@@ -33,26 +33,26 @@ public class DateModifier {
       if(data != null) {
         Number val = data.getValue();
         if(val != null) {
-          calendar.add(field, val.intValue());
+          calendar.add(field.toCalendarField(), val.intValue());
         }
       }
     } else {
-      calendar.add(field, amount);
+      calendar.add(field.toCalendarField(), amount);
     }
   }
 
   public DateModifier(int field, int amount) {
-    this.field = field;
+    this.field = DateField.fromField(field);
     this.amount = amount;
   }
 
   public DateModifier(int field, IDataSource amountSource) {
-    this.field = field;
+    this.field = DateField.fromField(field);
     this.amountSource = amountSource;
   }
 
   public void setField(int field) {
-    this.field = field;
+    this.field = DateField.fromField(field);
   }
 
   public void setAmount(int amount) {

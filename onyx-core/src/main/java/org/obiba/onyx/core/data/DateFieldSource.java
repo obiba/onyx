@@ -26,7 +26,7 @@ public class DateFieldSource extends AbstractDataSourceDataModifier {
 
   private static final long serialVersionUID = 1L;
 
-  private int field;
+  private DateField field;
 
   /**
    * Constructor, given a field.
@@ -34,6 +34,10 @@ public class DateFieldSource extends AbstractDataSourceDataModifier {
    * @param field
    */
   public DateFieldSource(IDataSource iDataSource, int field) {
+    this(iDataSource, DateField.fromField(field));
+  }
+
+  public DateFieldSource(IDataSource iDataSource, DateField field) {
     super(iDataSource);
     this.field = field;
   }
@@ -47,14 +51,14 @@ public class DateFieldSource extends AbstractDataSourceDataModifier {
     Calendar cal = Calendar.getInstance();
     cal.setTime(date);
 
-    return (DataBuilder.build((Serializable) cal.get(getField())));
+    return (DataBuilder.build((Serializable) cal.get(getField().toCalendarField())));
   }
 
-  public int getField() {
+  public DateField getField() {
     return field;
   }
 
-  public void setField(int field) {
+  public void setField(DateField field) {
     this.field = field;
   }
 

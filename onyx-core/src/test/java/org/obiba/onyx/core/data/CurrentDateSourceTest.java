@@ -35,7 +35,9 @@ public class CurrentDateSourceTest {
 
     Date current = new Date();
     Assert.assertEquals(DataType.DATE, data.getType());
-    Assert.assertEquals(current.toString(), data.getValueAsString());
+
+    // Make sure the times differ by less than a tenth of a second. They should be closer, but it's close enough.
+    Assert.assertTrue((current.getTime() - ((Date) data.getValue()).getTime()) < 100);
   }
 
   @Test
@@ -45,10 +47,85 @@ public class CurrentDateSourceTest {
     Data data = currentDateSource.getData(participant);
 
     Calendar current = Calendar.getInstance();
-    current.setTime(new Date());
 
     Assert.assertEquals(DataType.INTEGER, data.getType());
     Assert.assertEquals(current.get(Calendar.MONTH), data.getValue());
+  }
+
+  @Test
+  public void testCurrentDateSourceUsingAllDateFields() {
+    Participant participant = createParticipant();
+
+    for(DateField dateField : DateField.values()) {
+      CurrentDateSource currentDateSource = new CurrentDateSource(dateField);
+      Data data = currentDateSource.getData(participant);
+      Calendar current = Calendar.getInstance();
+      Assert.assertEquals(DataType.INTEGER, data.getType());
+
+      Integer value = null;
+      // Using a switch/case instead of dateField.toCalendarField() validates the DateField to Calendar field mapping.
+      switch(dateField) {
+      case AM_PM:
+        value = current.get(Calendar.AM_PM);
+        break;
+      case DATE:
+        value = current.get(Calendar.DATE);
+        break;
+      case DAY_OF_MONTH:
+        value = current.get(Calendar.DAY_OF_MONTH);
+        break;
+      case DAY_OF_WEEK:
+        value = current.get(Calendar.DAY_OF_WEEK);
+        break;
+      case DAY_OF_WEEK_IN_MONTH:
+        value = current.get(Calendar.DAY_OF_WEEK_IN_MONTH);
+        break;
+      case DAY_OF_YEAR:
+        value = current.get(Calendar.DAY_OF_YEAR);
+        break;
+      case DST_OFFSET:
+        value = current.get(Calendar.DST_OFFSET);
+        break;
+      case ERA:
+        value = current.get(Calendar.ERA);
+        break;
+      case HOUR:
+        value = current.get(Calendar.HOUR);
+        break;
+      case HOUR_OF_DAY:
+        value = current.get(Calendar.HOUR_OF_DAY);
+        break;
+      case MILLISECOND:
+        // Disabled: tests are not that precise.
+        // value = current.get(Calendar.MILLISECOND);
+        break;
+      case MINUTE:
+        value = current.get(Calendar.MINUTE);
+        break;
+      case MONTH:
+        value = current.get(Calendar.MONTH);
+        break;
+      case SECOND:
+        value = current.get(Calendar.SECOND);
+        break;
+      case WEEK_OF_MONTH:
+        value = current.get(Calendar.WEEK_OF_MONTH);
+        break;
+      case WEEK_OF_YEAR:
+        value = current.get(Calendar.WEEK_OF_YEAR);
+        break;
+      case YEAR:
+        value = current.get(Calendar.YEAR);
+        break;
+      case ZONE_OFFSET:
+        value = current.get(Calendar.ZONE_OFFSET);
+        break;
+      }
+      if(value != null) {
+        Assert.assertEquals(value, data.getValue());
+      }
+    }
+
   }
 
   @Test

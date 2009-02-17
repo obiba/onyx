@@ -17,6 +17,8 @@ import java.util.List;
  */
 public abstract class AbstractMultipleDataSource implements IDataSource {
 
+  private static final long serialVersionUID = 1L;
+
   private List<IDataSource> dataSources;
 
   public List<IDataSource> getDataSources() {

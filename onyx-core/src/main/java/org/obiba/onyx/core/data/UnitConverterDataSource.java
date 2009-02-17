@@ -33,8 +33,8 @@ public class UnitConverterDataSource extends AbstractDataSourceDataModifier {
     if(!data.getType().isNumberType()) throw new IllegalArgumentException("DataType of number kind expected, " + data.getType() + " received.");
     if(getDataSource().getUnit() == null) throw new IllegalArgumentException("Unit source cannot be null.");
 
-    Unit sourceUnit = Unit.valueOf(getDataSource().getUnit());
-    Unit targetUnit = Unit.valueOf(unit);
+    Unit<?> sourceUnit = Unit.valueOf(getDataSource().getUnit());
+    Unit<?> targetUnit = Unit.valueOf(unit);
 
     double newValue = sourceUnit.getConverterTo(targetUnit).convert(Double.parseDouble(data.getValueAsString()));
     if(targetUnit.getDimension().equals(Dimension.TIME)) return DataBuilder.buildInteger(Math.round(Math.floor(newValue)));
