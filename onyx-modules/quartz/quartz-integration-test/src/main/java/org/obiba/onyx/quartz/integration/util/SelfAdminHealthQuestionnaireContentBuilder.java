@@ -10,7 +10,6 @@
 package org.obiba.onyx.quartz.integration.util;
 
 import org.apache.wicket.validation.validator.NumberValidator;
-import org.apache.wicket.validation.validator.PatternValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ArithmeticOperationSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.CurrentYearSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.FixedSource;
@@ -68,11 +67,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
 
   private static final String ELSEWHERE = "ELSEWHERE";
 
-  private static final String POSTAL_CODE3 = "POSTAL_CODE3";
-
   private static final String OPEN_N = "OPEN_N";
-
-  private static final String OPEN_AN = "OPEN_AN";
 
   private static final String ALCOHOL_DAY_QTY = "ALCOHOL_DAY_QTY";
 
@@ -162,62 +157,6 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("FATHER_COUNTRY_BIRTH").withSharedCategory(PNA, "88");
     builder.inQuestion("FATHER_COUNTRY_BIRTH").withSharedCategory(DNK, "99");
 
-    builder.inSection("B_DEMOGRAPHY").withSection("RESIDENCE_HISTORY").withPage("11").withQuestion("CURRENT_RESIDENCE", "10").withSharedCategory(OPEN_AN).withOpenAnswerDefinition(OPEN_AN, DataType.TEXT);
-    builder.inQuestion("CURRENT_RESIDENCE").withSharedCategory(PNA, "88");
-    builder.inQuestion("CURRENT_RESIDENCE").withSharedCategory(DNK, "99");
-    builder.inSection("RESIDENCE_HISTORY").withPage("12").withQuestion("POSTAL_CODE", "11").withSharedCategory(POSTAL_CODE3).withOpenAnswerDefinition(POSTAL_CODE3, DataType.TEXT).addValidator(new PatternValidator("[a-zA-Z]\\d[a-zA-Z]"));
-    builder.inQuestion("POSTAL_CODE").withSharedCategory(PNA, "888");
-    builder.inQuestion("POSTAL_CODE").withSharedCategory(DNK, "999");
-    builder.inQuestion("POSTAL_CODE").setAnswerCondition("POSTAL_CODE_ACONDITION_0", "CURRENT_RESIDENCE", OPEN_AN);
-    builder.inSection("RESIDENCE_HISTORY").withPage("13").withQuestion("AGE_CURRENT_RESIDENCE", "12").withSharedCategory(AGE);
-    builder.inQuestion("AGE_CURRENT_RESIDENCE").withSharedCategory(YEAR);
-    builder.inQuestion("AGE_CURRENT_RESIDENCE").withSharedCategory(PNA, "88");
-    builder.inQuestion("AGE_CURRENT_RESIDENCE").withSharedCategory(DNK, "99");
-    builder.inQuestion("AGE_CURRENT_RESIDENCE").setAnswerCondition("AGE_CURRENT_RESIDENCE_ACONDITION_1", "CURRENT_RESIDENCE", OPEN_AN);
-    builder.inSection("RESIDENCE_HISTORY").withPage("14").withQuestion("CURRENT_IS_LONGEST_TIME_LIVED", "13").withSharedCategory(N, "0");
-    builder.inQuestion("CURRENT_IS_LONGEST_TIME_LIVED").withSharedCategory(Y, "1");
-    builder.inQuestion("CURRENT_IS_LONGEST_TIME_LIVED").withSharedCategory(PNA, "8");
-    builder.inQuestion("CURRENT_IS_LONGEST_TIME_LIVED").withSharedCategory(DNK, "9");
-    builder.inSection("RESIDENCE_HISTORY").withPage("15").withQuestion("LONGEST_TIME_COUNTRY", "14").withSharedCategories(CA, IT, FR, HT, LB, US, CN, VN, PT, GR, MA, GB);
-    builder.inQuestion("LONGEST_TIME_COUNTRY").withSharedCategory(ELSEWHERE, "77");
-    builder.inQuestion("LONGEST_TIME_COUNTRY").withSharedCategory(PNA, "88");
-    builder.inQuestion("LONGEST_TIME_COUNTRY").withSharedCategory(DNK, "99");
-    builder.inQuestion("LONGEST_TIME_COUNTRY").setMultipleCondition("LONGEST_TIME_COUNTRY_MCONDITION", ConditionOperator.OR).withAnswerCondition("LONGEST_TIME_COUNTRY_ACONDITION_0", "CURRENT_IS_LONGEST_TIME_LIVED", N);
-    builder.inCondition("LONGEST_TIME_COUNTRY_MCONDITION").withAnswerCondition("LONGEST_TIME_COUNTRY_ACONDITION_1", "CURRENT_IS_LONGEST_TIME_LIVED", DNK);
-    builder.inSection("RESIDENCE_HISTORY").withPage("16").withQuestion("LONGEST_TIME_REGION", "15").withSharedCategory(OPEN_AN);
-    builder.inQuestion("LONGEST_TIME_REGION").withSharedCategory(PNA, "88");
-    builder.inQuestion("LONGEST_TIME_REGION").withSharedCategory(DNK, "99");
-    builder.inQuestion("LONGEST_TIME_REGION").setMultipleCondition("LONGEST_TIME_REGION_MCONDITION", ConditionOperator.AND).withAnswerCondition("LONGEST_TIME_REGION_ACONDITION_0", "LONGEST_TIME_COUNTRY");
-    builder.inCondition("LONGEST_TIME_REGION_MCONDITION").withNoAnswerCondition("LONGEST_TIME_REGION_NCONDITION_0").withAnswerCondition("LONGEST_TIME_REGION_ACONDITION_1", "LONGEST_TIME_COUNTRY", PNA);
-    builder.inCondition("LONGEST_TIME_REGION_MCONDITION").withNoAnswerCondition("LONGEST_TIME_REGION_NCONDITION_1").withAnswerCondition("LONGEST_TIME_REGION_ACONDITION_2", "LONGEST_TIME_COUNTRY", DNK);
-    builder.inSection("RESIDENCE_HISTORY").withPage("17").withQuestion("LONGEST_TIME_LOCATION", "16").withSharedCategory(OPEN_AN);
-    builder.inQuestion("LONGEST_TIME_LOCATION").withSharedCategory(PNA, "88");
-    builder.inQuestion("LONGEST_TIME_LOCATION").withSharedCategory(DNK, "99");
-    builder.inQuestion("LONGEST_TIME_LOCATION").setAnswerCondition("LONGEST_TIME_LOCATION_ACONDITION", "LONGEST_TIME_REGION", OPEN_AN);
-    builder.inSection("RESIDENCE_HISTORY").withPage("18").withQuestion("LONGEST_TIME_POSTAL_CODE", "17").withSharedCategory(POSTAL_CODE3);
-    builder.inQuestion("LONGEST_TIME_POSTAL_CODE").withSharedCategory(PNA, "888");
-    builder.inQuestion("LONGEST_TIME_POSTAL_CODE").withSharedCategory(DNK, "999");
-    builder.inQuestion("LONGEST_TIME_POSTAL_CODE").setMultipleCondition("LONGEST_TIME_POSTAL_CODE_MCONDITION", ConditionOperator.AND).withAnswerCondition("LONGEST_TIME_POSTAL_CODE_ACONDITION_0", "LONGEST_TIME_LOCATION", OPEN_AN);
-    builder.inCondition("LONGEST_TIME_POSTAL_CODE_MCONDITION").withAnswerCondition("LONGEST_TIMEPOSTAL_CODE_ACONDITION_1", "LONGEST_TIME_COUNTRY", "CA");
-    builder.inSection("RESIDENCE_HISTORY").withPage("19").withQuestion("LONGEST_TIME_STREET", "18").withSharedCategory(OPEN_AN);
-    builder.inQuestion("LONGEST_TIME_STREET").withSharedCategory(PNA, "88");
-    builder.inQuestion("LONGEST_TIME_STREET").withSharedCategory(DNK, "99");
-    builder.inQuestion("LONGEST_TIME_STREET").setMultipleCondition("LONGEST_TIME_STREET_MCONDITION", ConditionOperator.OR).withAnswerCondition("LONGEST_TIME_STREET.ACONDITION_0", "LONGEST_TIME_POSTAL_CODE", PNA);
-    builder.inCondition("LONGEST_TIME_STREET_MCONDITION").withAnswerCondition("LONGEST_TIME_STREET.ACONDITION_1", "LONGEST_TIME_POSTAL_CODE", DNK);
-    builder.inSection("RESIDENCE_HISTORY").withPage("20").withQuestion("LONGEST_TIME_CROSS_STREET", "19").withSharedCategory(OPEN_AN);
-    builder.inQuestion("LONGEST_TIME_CROSS_STREET").withSharedCategory(PNA, "88");
-    builder.inQuestion("LONGEST_TIME_CROSS_STREET").withSharedCategory(DNK, "99");
-    builder.inQuestion("LONGEST_TIME_CROSS_STREET").setAnswerCondition("LONGEST_TIME_CROSS_STREET_ACONDITION", "LONGEST_TIME_STREET", OPEN_AN);
-    builder.inSection("RESIDENCE_HISTORY").withPage("21").withQuestion("LONGEST_TIME_AGE_STARTED_LIVING", "20").withSharedCategory(AGE);
-    builder.inQuestion("LONGEST_TIME_AGE_STARTED_LIVING").withSharedCategory(YEAR);
-    builder.inQuestion("LONGEST_TIME_AGE_STARTED_LIVING").withSharedCategory(PNA, "8888");
-    builder.inQuestion("LONGEST_TIME_AGE_STARTED_LIVING").withSharedCategory(DNK, "9999");
-    builder.inQuestion("LONGEST_TIME_AGE_STARTED_LIVING").setMultipleCondition("LONGEST_TIME_AGE_STARTED_LIVING_MCONDITION", ConditionOperator.AND).withAnswerCondition("LONGEST_TIME_AGE_STARTED_LIVING_ACONDITION_0", "LONGEST_TIME_COUNTRY");
-    builder.inCondition("LONGEST_TIME_AGE_STARTED_LIVING_MCONDITION").withNoAnswerCondition("LONGEST_TIME_AGE_STARTED_LIVING_NCONDITION_0").withAnswerCondition("LONGEST_TIME_AGE_STARTED_LIVING_ACONDITION_1", "COUNTRY_BIRTH", PNA);
-    builder.inCondition("LONGEST_TIME_AGE_STARTED_LIVING_MCONDITION").withNoAnswerCondition("LONGEST_TIME_AGE_STARTED_LIVING_NCONDITION_1").withAnswerCondition("LONGEST_TIME_AGE_STARTED_LIVING_ACONDITION_2", "COUNTRY_BIRTH", DNK);
-
-    builder.inPage("21").addTimestamp("TS_DEM2");
-
     builder.inSection("B_DEMOGRAPHY").withSection("LANGUAGE").withPage("22").withQuestion("FIRST_LANGUAGE_LEARNED", "21", true).setAnswerCount(1, 4).setRowCount(8);
     builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("ENGLISH").setExportName("1");
     builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("FRENCH").setExportName("2");
@@ -293,10 +232,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("CURRENT_WORK_ISIC1").withSharedCategory(DNK, "99");
     builder.inQuestion("CURRENT_WORK_ISIC1").setMultipleCondition("CURRENT_WORK_ISIC1_MCONDITION", ConditionOperator.OR).withAnswerCondition("CURRENT_WORK_ISIC1_ACONDITION_0", "EMPLOYED", Y);
     builder.inCondition("CURRENT_WORK_ISIC1_MCONDITION").withAnswerCondition("CURRENT_WORK_ISIC1_ACONDITION_1", "SELF_EMPLOYED", Y);
-    builder.inSection("WORKING_STATUS").withPage("28").withQuestion("CURRENT_WORK_ISIC1_OTHER", "27").withSharedCategory(OPEN_AN);
-    builder.inQuestion("CURRENT_WORK_ISIC1_OTHER").withSharedCategory(PNA, "8");
-    builder.inQuestion("CURRENT_WORK_ISIC1_OTHER").withSharedCategory(DNK, "9");
-    builder.inQuestion("CURRENT_WORK_ISIC1_OTHER").setAnswerCondition("CURRENT_WORK_ISIC1_OTHER_ACONDITION", "CURRENT_WORK_ISIC1", OTHER);
+
     builder.inSection("WORKING_STATUS").withPage("29").withQuestion("IS_LONGEST_TIME_OCCUPATION", "28").withSharedCategory(N, "0");
     builder.inQuestion("IS_LONGEST_TIME_OCCUPATION").withSharedCategory(Y, "1");
     builder.inQuestion("IS_LONGEST_TIME_OCCUPATION").withSharedCategory(PNA, "8");
@@ -310,16 +246,6 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inCondition("EVER_WORKED_MCONDITION_0").withNoAnswerCondition("EVER_WORKED_NCONDITION_1").withMultipleCondition("EVER_WORKED_MCONDITION_1", ConditionOperator.OR);
     builder.inCondition("EVER_WORKED_MCONDITION_1").withAnswerCondition("EVER_WORKED_ACONDITION_2", "EMPLOYED", Y);
     builder.inCondition("EVER_WORKED_MCONDITION_1").withAnswerCondition("EVER_WORKED_ACONDITION_3", "SELF_EMPLOYED", Y);
-    builder.inSection("WORKING_STATUS").withPage("31").withQuestion("LONGEST_JOB_TITLE", "30").withSharedCategory(OPEN_AN);
-    builder.inQuestion("LONGEST_JOB_TITLE").withSharedCategory(PNA, "8");
-    builder.inQuestion("LONGEST_JOB_TITLE").withSharedCategory(DNK, "9");
-    builder.inQuestion("LONGEST_JOB_TITLE").setMultipleCondition("LONGEST_JOB_TITLE_MCONDITION_0", ConditionOperator.OR);
-    builder.inCondition("LONGEST_JOB_TITLE_MCONDITION_0").withAnswerCondition("LONGEST_JOB_TITLE_ACONDITION0", "EVER_WORKED", Y);
-    builder.inCondition("LONGEST_JOB_TITLE_MCONDITION_0").withMultipleCondition("LONGEST_JOB_TITLE_MCONDITION_1", ConditionOperator.AND);
-    builder.inCondition("LONGEST_JOB_TITLE_MCONDITION_1").withAnswerCondition("LONGEST_JOB_TITLE_ACONDITION1", "IS_LONGEST_TIME_OCCUPATION", N);
-    builder.inCondition("LONGEST_JOB_TITLE_MCONDITION_1").withMultipleCondition("LONGEST_JOB_TITLE_MCONDITION_2", ConditionOperator.OR);
-    builder.inCondition("LONGEST_JOB_TITLE_MCONDITION_2").withAnswerCondition("LONGEST_JOB_TITLE_ACONDITION_1", "EMPLOYED", Y);
-    builder.inCondition("LONGEST_JOB_TITLE_MCONDITION_2").withAnswerCondition("LONGEST_JOB_TITLE_ACONDITION_2", "SELF_EMPLOYED", Y);
 
     builder.withSection("C_LIFE_HABITS").withSection("TOBACCO_USE").withPage("32").withQuestion("EVER_USED", "31").withSharedCategory(N, "0");
     builder.inQuestion("EVER_USED").withSharedCategory(Y, "1");
@@ -404,10 +330,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("OTHER_ALCOHOL_DAY").withSharedCategory(PNA, "8");
     builder.inQuestion("OTHER_ALCOHOL_DAY").withSharedCategory(DNK, "9");
     builder.inQuestion("OTHER_ALCOHOL_DAY").setAnswerCondition("OTHER_ALCOHOL_DAY_ACONDITION", "RED_WINE_DAY_QTY");
-    builder.inSection("ALCOHOL_INTAKE").withPage("42").withQuestion("OTHER_ALCOHOL_DAY_ID", "40").withSharedCategory(OPEN_AN);
-    builder.inQuestion("OTHER_ALCOHOL_DAY_ID").withSharedCategory(PNA, "88");
-    builder.inQuestion("OTHER_ALCOHOL_DAY_ID").withSharedCategory(DNK, "99");
-    builder.inQuestion("OTHER_ALCOHOL_DAY_ID").setAnswerCondition("OTHER_ALCOHOL_DAY_ID_ACONDITION", "OTHER_ALCOHOL_DAY", Y);
+
     builder.inSection("ALCOHOL_INTAKE").withPage("43").withQuestion("OTHER_ALCOHOL_DAY_QTY", "41").withSharedCategory(ALCOHOL_DAY_QTY);
     builder.inQuestion("OTHER_ALCOHOL_DAY_QTY").withSharedCategory(PNA, "888");
     builder.inQuestion("OTHER_ALCOHOL_DAY_QTY").withSharedCategory(DNK, "999");
