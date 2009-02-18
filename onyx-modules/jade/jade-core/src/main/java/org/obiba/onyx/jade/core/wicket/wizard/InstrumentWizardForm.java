@@ -147,7 +147,7 @@ public abstract class InstrumentWizardForm extends WizardForm {
       activeInstrumentRunService.setInstrument(queryService.matchOne(instrumentTemplate));
     }
 
-    // are there input parameters with input source that requires user provisionning ?
+    // are there input parameters with input source that requires user provisioning ?
     // or interpretative questions
     log.debug("instrumentInterpretativeParameters.count={}", activeInstrumentRunService.getInterpretativeParameters().size());
     log.debug("instrumentInputParameters.count={}", activeInstrumentRunService.getInputParameters(false));

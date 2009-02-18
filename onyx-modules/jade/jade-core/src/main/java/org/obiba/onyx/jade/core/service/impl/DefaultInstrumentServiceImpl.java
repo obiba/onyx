@@ -92,24 +92,7 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
   }
 
   public List<InstrumentInputParameter> getInstrumentInputParameter(InstrumentType instrumentType, boolean readOnlySource) {
-    List<InstrumentInputParameter> inputParameters = new ArrayList<InstrumentInputParameter>();
-
-    for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
-      if(parameter instanceof InstrumentInputParameter) {
-        InstrumentInputParameter inputParameter = (InstrumentInputParameter) parameter;
-
-        // Q: Is an input parameter with a null input source equivalent to one with an OperatorSource (which
-        // is read-only)? If so, the code block that follows is buggy: Input parameters with a null input
-        // source should be included in the returned list when this method is called with readOnlySource == false.
-        // Leaving this code as is, since there is no (known) Jade issue and anyway the new DataSource interface
-        // will supercede this implementation.
-        if(inputParameter.getInputSource() != null && inputParameter.getInputSource().isReadOnly() == readOnlySource) {
-          inputParameters.add(inputParameter);
-        }
-      }
-    }
-
-    return inputParameters;
+    return instrumentType.getInstrumentParameters(InstrumentInputParameter.class, readOnlySource);
   }
 
   public List<InstrumentOutputParameter> getOutputParameters(InstrumentType instrumentType, InstrumentParameterCaptureMethod captureMethod) {

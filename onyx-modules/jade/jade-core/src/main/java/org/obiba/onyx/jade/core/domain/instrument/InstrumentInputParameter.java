@@ -13,18 +13,8 @@ public class InstrumentInputParameter extends InstrumentParameter {
 
   private static final long serialVersionUID = -5035544856948727535L;
 
-  private InputSource inputSource;
-
   public InstrumentInputParameter() {
     super();
-  }
-
-  public InputSource getInputSource() {
-    return inputSource;
-  }
-
-  public void setInputSource(InputSource inputSource) {
-    this.inputSource = inputSource;
   }
 
 }

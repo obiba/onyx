@@ -82,6 +82,29 @@ public class InstrumentType {
     return this;
   }
 
+  /**
+   * Returns all of the <code>InstrumentType</code>'s parameters of the specified type and having, or not having, a
+   * data source.
+   * 
+   * @param parameterType type of parameter to return (i.e., the class)
+   * @param hasDataSource indicates whether the parameters returned should include those with or without a data source
+   * @return parameters of the specified type with or without a data source, as specified (or an empty list, if none)
+   */
+  @SuppressWarnings("unchecked")
+  public <T extends InstrumentParameter> List<T> getInstrumentParameters(Class<T> parameterType, boolean hasDataSource) {
+    List<T> inputParameters = new ArrayList<T>();
+
+    for(InstrumentParameter parameter : getInstrumentParameters()) {
+      if(parameterType.isInstance(parameter)) {
+        if(!(parameter.getDataSource() != null ^ hasDataSource)) {
+          inputParameters.add((T) parameter);
+        }
+      }
+    }
+
+    return inputParameters;
+  }
+
   @Override
   public String toString() {
     return name;

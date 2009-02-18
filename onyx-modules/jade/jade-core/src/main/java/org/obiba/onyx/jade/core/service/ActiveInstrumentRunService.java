@@ -11,10 +11,10 @@ package org.obiba.onyx.jade.core.service;
 
 import java.util.List;
 
+import org.obiba.onyx.core.data.ComputingDataSource;
 import org.obiba.onyx.core.domain.contraindication.IContraindicatable;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
@@ -150,8 +150,7 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
   public void update(InstrumentRunValue value);
 
   /**
-   * Compute the output parameters values of {@link InstrumentComputedOutputParameter} for the current
-   * {@link InstrumentRun}.
+   * Compute the values of parameters with a {@link ComputingDataSource} for the current {@link InstrumentRun}.
    */
   public void computeOutputParameters();
 
@@ -202,10 +201,6 @@ public interface ActiveInstrumentRunService extends IContraindicatable {
 
   /**
    * Sets the InstrumentRunValue for input parameters list (used for readonly input parameters)
-   * @param inputDataSourceVisitor
-   * @param activeInterviewService
-   * @param instrumentInputParameters
-   * @return
    */
   public String updateReadOnlyInputParameterRunValue();
 }

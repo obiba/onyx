@@ -18,25 +18,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.obiba.onyx.core.data.ComputingDataSource;
+import org.obiba.onyx.core.data.FirstNotNullDataSource;
+import org.obiba.onyx.core.data.FixedDataSource;
+import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
-import org.obiba.onyx.jade.core.domain.instrument.FixedSource;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
+import org.obiba.onyx.core.io.support.XStreamDataConverter;
+import org.obiba.onyx.jade.core.data.InputParameterDataSource;
+import org.obiba.onyx.jade.core.data.OutputParameterDataSource;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
-import org.obiba.onyx.jade.core.domain.instrument.MultipleOutputParameterSource;
-import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
-import org.obiba.onyx.jade.core.domain.instrument.OutputParameterSource;
-import org.obiba.onyx.jade.core.domain.instrument.ParticipantPropertySource;
 import org.obiba.onyx.jade.core.domain.instrument.validation.EqualsParameterCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.EqualsValueCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.ParameterSpreadCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.RangeCheck;
+import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.xstream.InjectingReflectionProviderWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -45,9 +51,20 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 
-public class InstrumentTypeFactoryBean implements FactoryBean, ResourceLoaderAware {
+public class InstrumentTypeFactoryBean implements FactoryBean, ApplicationContextAware, ResourceLoaderAware, InitializingBean {
+  //
+  // Constants
+  //
 
-  private final Logger log = LoggerFactory.getLogger(getClass());
+  private static final String resourceEncoding = "ISO-8859-1";
+
+  private static final Logger log = LoggerFactory.getLogger(InstrumentTypeFactoryBean.class);
+
+  //
+  // Instance Variables
+  //
+
+  private ApplicationContext applicationContext;
 
   private String[] xstreamResourcePatterns;
 
@@ -57,40 +74,90 @@ public class InstrumentTypeFactoryBean implements FactoryBean, ResourceLoaderAwa
 
   private Map<String, InstrumentType> instrumentTypes;
 
-  private static final String resourceEncoding = "ISO-8859-1";
+  //
+  // Constructors
+  //
 
   public InstrumentTypeFactoryBean() {
-    instrumentTypes = new HashMap<String, InstrumentType>();
-    xstream = new XStream();
     initializeXstream();
   }
 
-  public void setResourcePatterns(String[] xstreamResourcePatterns) {
-    this.xstreamResourcePatterns = xstreamResourcePatterns;
+  //
+  // ApplicationContextAware Methods
+  //
+
+  public void setApplicationContext(ApplicationContext applicationContext) {
+    this.applicationContext = applicationContext;
   }
+
+  //
+  // ResourceLoaderAware Methods
+  //
 
   public void setResourceLoader(ResourceLoader resourceLoader) {
     this.resolver = (ResourcePatternResolver) resourceLoader;
   }
 
+  //
+  // InitializingBean Methods
+  //
+
+  public void afterPropertiesSet() {
+    initializeXstream();
+  }
+
+  //
+  // FactoryBean Methods
+  //
+
+  public Class getObjectType() {
+    return instrumentTypes.getClass();
+  }
+
+  public boolean isSingleton() {
+    return true;
+  }
+
+  public Object getObject() throws Exception {
+    if(instrumentTypes == null) {
+      instrumentTypes = new HashMap<String, InstrumentType>();
+      handleResourcePattern();
+    }
+    return instrumentTypes;
+  }
+
+  //
+  // Methods
+  //
+
+  public void setResourcePatterns(String[] xstreamResourcePatterns) {
+    this.xstreamResourcePatterns = xstreamResourcePatterns;
+  }
+
   private void initializeXstream() {
+    xstream = new XStream(new InjectingReflectionProviderWrapper((new XStream()).getReflectionProvider(), applicationContext));
+
     xstream.setMode(XStream.ID_REFERENCES);
     xstream.alias("instrumentType", InstrumentType.class);
     xstream.alias("contraIndication", Contraindication.class);
-    xstream.alias("contraindication", Contraindication.class);
     xstream.alias("interpretative", InterpretativeParameter.class);
     xstream.alias("input", InstrumentInputParameter.class);
     xstream.alias("output", InstrumentOutputParameter.class);
-    xstream.alias("computedOutput", InstrumentComputedOutputParameter.class);
-    xstream.alias("fixedSource", FixedSource.class);
-    xstream.alias("participantPropertySource", ParticipantPropertySource.class);
-    xstream.alias("outputParameterSource", OutputParameterSource.class);
-    xstream.alias("multipleOutputParameterSource", MultipleOutputParameterSource.class);
-    xstream.alias("operatorSource", OperatorSource.class);
+
+    xstream.alias("participantPropertyDataSource", ParticipantPropertyDataSource.class);
+    xstream.alias("fixedDataSource", FixedDataSource.class);
+    xstream.alias("outputParameterDataSource", OutputParameterDataSource.class);
+    xstream.alias("inputParameterDataSource", InputParameterDataSource.class);
+    xstream.alias("firstNotNullDataSource", FirstNotNullDataSource.class);
+    xstream.alias("computingDataSource", ComputingDataSource.class);
+
     xstream.alias("equalsValueCheck", EqualsValueCheck.class);
     xstream.alias("equalsParameterCheck", EqualsParameterCheck.class);
     xstream.alias("rangeCheck", RangeCheck.class);
     xstream.alias("parameterSpreadCheck", ParameterSpreadCheck.class);
+
+    xstream.alias("data", Data.class);
+    xstream.registerConverter(new XStreamDataConverter());
   }
 
   private void handleResourcePattern() {
@@ -155,19 +222,6 @@ public class InstrumentTypeFactoryBean implements FactoryBean, ResourceLoaderAwa
         }
       }
     }
-  }
-
-  public Class getObjectType() {
-    return instrumentTypes.getClass();
-  }
-
-  public boolean isSingleton() {
-    return true;
-  }
-
-  public Object getObject() throws Exception {
-    handleResourcePattern();
-    return instrumentTypes;
   }
 
 }

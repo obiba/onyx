@@ -91,4 +91,19 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
     return runValue;
   }
 
+  public InstrumentRunValue findInstrumentRunValueFromLastRun(Participant participant, InstrumentType instrumentType, String parameterCode) {
+    if(instrumentType == null) throw new IllegalArgumentException("Cannot retrieve the last instrument run for a null instrument type.");
+    if(parameterCode == null) throw new IllegalArgumentException("Cannot retrieve the last instrument run for a null parameter.");
+
+    InstrumentRunValue runValue = null;
+    InstrumentRun run = getLastInstrumentRun(participant, instrumentType);
+
+    if(run != null) {
+      log.debug("Run.id={} Param.code={}", run.getId(), parameterCode);
+      runValue = (InstrumentRunValue) AssociationCriteria.create(InstrumentRunValue.class, getSession()).add("instrumentRun", Operation.eq, run).add("instrumentParameter", Operation.eq, parameterCode).getCriteria().uniqueResult();
+    }
+
+    return runValue;
+  }
+
 }

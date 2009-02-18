@@ -29,9 +29,9 @@
       <dataType>DECIMAL</dataType>
       <measurementUnit>cm</measurementUnit>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="fixedSource">
-        <value>39.5</value>
-      </inputSource>
+      <dataSource class="fixedDataSource">
+        <data type="DECIMAL">39.5</data>
+      </dataSource>
     </input>
     
     <!-- <output id="sit_stool_height">  form used if stool height must be entered
@@ -78,28 +78,56 @@
       </integrityChecks>
     </output>
 
-    <computedOutput id="avg_sit_height">
+    <output id="avg_sit_height">
       <code>CALC_AVG_SITTING_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
-      <algorithm>AVERAGE</algorithm>
       <captureMethod>COMPUTED</captureMethod>
-      <outputs>
-        <output reference="sit1_height1" />
-        <output reference="sit1_height2" />
-      </outputs>
-    </computedOutput>
+      <dataSource class="computingDataSource">
+        <dataType>DECIMAL</dataType>
+        <unit>cm</unit>
+        
+        <expression>
+          ($1 + $2)/2
+        </expression>
+          
+        <dataSources>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>SittingHeight</instrumentType>
+            <parameterCode>RES_FIRST_SITTING_HEIGHT</parameterCode>
+          </dataSource>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>SittingHeight</instrumentType>
+            <parameterCode>RES_SEC_SITTING_HEIGHT</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
     
-    <computedOutput>
+    <output>
       <code>CALC_DIFF_SITTING_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
-      <algorithm>DIFFERENCE</algorithm>
       <captureMethod>COMPUTED</captureMethod>
-      <outputs>
-        <output reference="avg_sit_height" />
-        <input reference="sit_stool_height"/>
-      </outputs>
-    </computedOutput>
+      <dataSource class="computingDataSource">
+        <dataType>DECIMAL</dataType>
+        <unit>cm</unit>
+        
+        <expression>
+          $1-$2
+        </expression>
+          
+        <dataSources>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>SittingHeight</instrumentType>
+            <parameterCode>CALC_AVG_SITTING_HEIGHT</parameterCode>
+          </dataSource>
+          <dataSource class="inputParameterDataSource">
+            <instrumentType>SittingHeight</instrumentType>
+            <parameterCode>INPUT_STOOL_HEIGHT</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
   </instrumentParameters>
 </instrumentType>

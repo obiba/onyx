@@ -16,81 +16,81 @@
       <code>INPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>barcode</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="last_name_in">
       <code>INPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>lastName</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="first_name_in">
       <code>INPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>firstName</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="birth_year_in">
       <code>INPUT_PARTICIPANT_BIRTH_YEAR</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>birthYear</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="birth_month_in">
       <code>INPUT_PARTICIPANT_BIRTH_MONTH</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>birthMonth</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="birth_day_in">
       <code>INPUT_PARTICIPANT_BIRTH_DAY</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>birthDay</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="gender_in">
       <code>INPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>gender</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="ethnic_group_in">
       <code>INPUT_PARTICIPANT_ETHNIC_GROUP</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="fixedSource">
-        <value>CAUCASIAN</value>
-      </inputSource>
+      <dataSource class="fixedDataSource">
+        <data type="TEXT">CAUCASIAN</data>
+      </dataSource>
     </input>
 
     <input id="pacemaker_in">
       <code>INPUT_PARTICIPANT_PACEMAKER</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="fixedSource">
-        <value>0</value>
-      </inputSource>
+      <dataSource class="fixedDataSource">
+        <data type="INTEGER">0</data>
+      </dataSource>
     </input>
 
     <input id="height_in">
@@ -98,9 +98,9 @@
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="fixedSource">
-        <value>0</value>
-      </inputSource>
+      <dataSource class="fixedDataSource">
+        <data type="INTEGER">0</data>
+      </dataSource>
     </input>
 
     <input id="weight_in">
@@ -108,9 +108,9 @@
       <measurementUnit>hg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="fixedSource">
-        <value>0</value>
-      </inputSource>
+      <dataSource class="fixedDataSource">
+        <data type="INTEGER">0</data>
+      </dataSource>
     </input>
 
     <output id="participantID">

@@ -14,7 +14,6 @@
       <requiresDescription>true</requiresDescription>
       <type>OBSERVED</type>
     </contraIndication>
-
   </contraindications>
 
   <instrumentParameters>
@@ -50,27 +49,27 @@
       <code>INPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>barcode</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="last_name">
       <code>INPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>lastName</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="first_name">
       <code>INPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>firstName</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="birth_date">
@@ -78,27 +77,28 @@
       <dataType>DATE</dataType>
       <displayFormat>%1$tY/%1$tm/%1$td</displayFormat>          
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>birthDate</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="gender">
       <code>INPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>gender</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="foot_scanned">*OBTAIN DEFAULT FROM CI QUEST.
       <code>INPUT_FOOT_SCANNED</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
-      <inputSource class="operatorSource">
-        <choices>L,R</choices>
-      </inputSource>
+      <allowedValues>
+        <data type="TEXT">L</data>
+        <data type="TEXT">R</data>
+      </allowedValues>
     </input>
 
     <output id="Chart_Num">

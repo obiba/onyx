@@ -9,7 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.core.domain.contraindication;
 
-import org.obiba.core.domain.AbstractEntity;
+import java.io.Serializable;
+
 import org.springframework.context.MessageSourceResolvable;
 
 /**
@@ -19,11 +20,8 @@ import org.springframework.context.MessageSourceResolvable;
  * <p>
  * The {@code label} attribute returns a localized string that describes this contraindication.
  * <p>
- * NOTE: The class extends AsbtractEntity in order to allow persisting them through JPA. This is required due to the
- * fact that Jade persists its model and Contraindications are part of this model. It is not recommended to actually
- * persist these entities.
  */
-public class Contraindication extends AbstractEntity implements MessageSourceResolvable {
+public class Contraindication implements MessageSourceResolvable, Serializable {
 
   private static final long serialVersionUID = 1L;
 

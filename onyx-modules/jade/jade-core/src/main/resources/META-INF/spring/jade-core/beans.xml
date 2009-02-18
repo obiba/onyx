@@ -47,14 +47,6 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="userSessionService" ref="userSessionService" />
     <property name="instrumentService" ref="instrumentService" />
-    <property name="inputDataSourceVisitor" ref="inputDataSourceVisitor" />
-  </bean>
-
-  <bean id="inputDataSourceVisitor" class="org.obiba.onyx.jade.core.service.impl.InputDataSourceVisitorImpl"
-    scope="prototype">
-    <property name="persistenceManager" ref="persistenceManager" />
-    <property name="instrumentRunService" ref="instrumentRunService" />
-    <property name="instrumentService" ref="instrumentService" />
   </bean>
 
   <bean id="jadeDatabaseSeed" class="org.obiba.onyx.jade.core.wicket.seed.JadeDatabaseSeed" scope="singleton">

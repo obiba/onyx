@@ -16,9 +16,10 @@
       <code>IV_ARM_USED</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
-      <inputSource class="operatorSource">
-        <choices>L,R</choices>  <!-- OBTAIN DEFAULT FROM CI QUEST.-->
-      </inputSource>
+      <allowedValues>  <!-- OBTAIN DEFAULT FROM CI QUEST.-->
+        <data type="TEXT">L</data>
+        <data type="TEXT">R</data>
+      </allowedValues>
     </input>
     
     <input id="upper_arm_length">  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
@@ -26,7 +27,6 @@
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
-      <inputSource class="operatorSource"></inputSource>
       <integrityChecks>
         <rangeCheck>
           <targetParameter reference="upper_arm_length" />
@@ -43,7 +43,6 @@
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
-      <inputSource class="operatorSource"></inputSource>
       <integrityChecks>
         <rangeCheck>
           <targetParameter reference="mid_upper_arm_circ" />
@@ -59,9 +58,12 @@
       <code>IV_ARMBAND_SIZE_USED</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
-      <inputSource class="operatorSource">
-        <choices>IV_S,IV_M,IV_LG,IV_XL</choices>  
-      </inputSource>
+      <allowedValues>
+        <data type="TEXT">IV_S</data>
+        <data type="TEXT">IV_M</data>
+        <data type="TEXT">IV_LG</data>
+        <data type="TEXT">IV_XL</data>
+      </allowedValues>  
     </input>
     
     <output id="blp1_systolic1">
@@ -298,43 +300,94 @@
       </integrityChecks>
     </output>
 
-    <computedOutput>
+    <output>
       <code>CALC_AVG_SYSTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
-      <algorithm>AVERAGE</algorithm>
       <captureMethod>COMPUTED</captureMethod>
-      <outputs>
-        <output reference="blp1_systolic1" />
-        <output reference="blp1_systolic2" />
-        <output reference="blp1_systolic3" />
-      </outputs>
-    </computedOutput>
+      <dataSource class="computingDataSource">
+        <dataType>INTEGER</dataType>
+        <unit>mmHg</unit>
+        
+        <expression>
+          ($1 + $2 + $3)/3
+        </expression>
+          
+        <dataSources>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_FIRST_SYSTOLIC_BP</parameterCode>
+          </dataSource>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_SEC_SYSTOLIC_BP</parameterCode>
+          </dataSource>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_THIRD_SYSTOLIC_BP</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
 
-    <computedOutput>
+    <output>
       <code>CALC_AVG_DIASTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
-      <algorithm>AVERAGE</algorithm>
       <captureMethod>COMPUTED</captureMethod>
-      <outputs>
-        <output reference="blp1_diastolic1" />
-        <output reference="blp1_diastolic2" />
-        <output reference="blp1_diastolic3" />
-      </outputs>
-    </computedOutput>
+      <dataSource class="computingDataSource">
+        <dataType>INTEGER</dataType>
+        <unit>mmHg</unit>
+        
+        <expression>
+          ($1 + $2 + $3)/3
+        </expression>
+                  
+        <dataSources>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_FIRST_DIASTOLIC_BP</parameterCode>
+          </dataSource>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_SEC_DIASTOLIC_BP</parameterCode>
+          </dataSource>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_THIRD_DIASTOLIC_BP</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
 
-    <computedOutput>
+    <output>
       <code>CALC_AVG_PULSE_RATE</code>
       <measurementUnit>BPM</measurementUnit>
       <dataType>INTEGER</dataType>
-      <algorithm>AVERAGE</algorithm>
       <captureMethod>COMPUTED</captureMethod>
-      <outputs>
-        <output reference="blp1_pulse1" />
-        <output reference="blp1_pulse2" />
-        <output reference="blp1_pulse3" />
-      </outputs>
-    </computedOutput>
+      <dataSource class="computingDataSource">
+        <dataType>INTEGER</dataType>
+        <unit>BPM</unit>
+        
+        <expression>
+          ($1 + $2 + $3)/3
+        </expression>
+          
+        <dataSources>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_FIRST_PULSE_RATE</parameterCode>
+          </dataSource>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_SEC_PULSE_RATE</parameterCode>
+          </dataSource>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>BloodPressure</instrumentType>
+            <parameterCode>RES_THIRD_PULSE_RATE</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
   </instrumentParameters>
 </instrumentType>

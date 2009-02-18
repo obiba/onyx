@@ -87,16 +87,30 @@
       </integrityChecks>
     </output>
 
-    <computedOutput>
+    <output>
       <code>CALC_AVG_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
-      <algorithm>AVERAGE</algorithm>
       <captureMethod>COMPUTED</captureMethod>
-      <outputs>
-        <output reference="sta1_height1" />
-        <output reference="sta1_height2" />
-      </outputs>
-    </computedOutput>
+      <dataSource class="computingDataSource">
+        <dataType>DECIMAL</dataType>
+        <unit>cm</unit>
+        
+        <expression>
+          ($1 + $2)/2
+        </expression>
+
+        <dataSources>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>StandingHeight</instrumentType>
+            <parameterCode>RES_FIRST_HEIGHT</parameterCode>
+          </dataSource>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>StandingHeight</instrumentType>
+            <parameterCode>RES_SEC_HEIGHT</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
   </instrumentParameters>
 </instrumentType>

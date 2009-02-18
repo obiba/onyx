@@ -80,17 +80,31 @@
       </integrityChecks>
     </output>
 
-    <computedOutput id="waist_size_avg">
+    <output id="waist_size_avg">
       <code>CALC_AVG_WAIST_SIZE</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
-      <algorithm>AVERAGE</algorithm>
       <captureMethod>COMPUTED</captureMethod>
-      <outputs>
-        <output reference="waist_size1" />
-        <output reference="waist_size2" />
-      </outputs>
-    </computedOutput>
+      <dataSource class="computingDataSource">
+        <dataType>INTEGER</dataType>
+        <unit>cm</unit>
+        
+        <expression>
+          ($1 + $2)/2
+        </expression>
+          
+        <dataSources>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>HipsWaist</instrumentType>
+            <parameterCode>RES_FIRST_WAIST_SIZE</parameterCode>
+          </dataSource>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>HipsWaist</instrumentType>
+            <parameterCode>RES_SEC_WAIST_SIZE</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
 
     <output id="hips_size1">
       <code>RES_FIRST_HIPS_SIZE</code>
@@ -145,28 +159,55 @@
       </integrityChecks>
     </output>
 
-    <computedOutput id="hips_size_avg">
+    <output id="hips_size_avg">
       <code>CALC_AVG_HIPS_SIZE</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
-      <algorithm>AVERAGE</algorithm>
       <captureMethod>COMPUTED</captureMethod>
-      <outputs>
-        <output reference="hips_size1" />
-        <output reference="hips_size2" />
-      </outputs>
-    </computedOutput>
+      <dataSource class="computingDataSource">
+        <dataType>INTEGER</dataType>
+        <unit>cm</unit>
+        
+        <expression>
+          ($1 + $2)/2
+        </expression>
+          
+        <dataSources>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>HipsWaist</instrumentType>
+            <parameterCode>RES_FIRST_HIPS_SIZE</parameterCode>
+          </dataSource>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>HipsWaist</instrumentType>
+            <parameterCode>RES_SEC_HIPS_SIZE</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
 
-    <computedOutput>
+    <output>
       <code>CALC_WAIST_TO_HIP_RATIO</code>
       <measurementUnit />
       <dataType>DECIMAL</dataType>
-      <algorithm>RATIO</algorithm>
       <captureMethod>COMPUTED</captureMethod>
-      <outputs>
-        <output reference="waist_size_avg" />
-        <output reference="hips_size_avg" />
-      </outputs>
-    </computedOutput>
+      <dataSource class="computingDataSource">
+        <dataType>DECIMAL</dataType>
+        
+        <expression>
+          $1/$2
+        </expression>
+          
+        <dataSources>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>HipsWaist</instrumentType>
+            <parameterCode>CALC_AVG_WAIST_SIZE</parameterCode>
+          </dataSource>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>HipsWaist</instrumentType>
+            <parameterCode>CALC_AVG_HIPS_SIZE</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
   </instrumentParameters>
 </instrumentType>

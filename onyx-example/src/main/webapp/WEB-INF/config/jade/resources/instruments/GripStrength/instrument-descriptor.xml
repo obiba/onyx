@@ -143,28 +143,56 @@
       </integrityChecks>
     </output>
 
-    <computedOutput>
+    <output>
       <code>CALC_AVG_RH_MUSCLE_STRENGTH</code>
       <measurementUnit>kg</measurementUnit>
       <dataType>INTEGER</dataType>
-      <algorithm>AVERAGE</algorithm>
       <captureMethod>COMPUTED</captureMethod>
-      <outputs>
-        <output reference="mus1_right_strength1"/>
-        <output reference="mus1_right_strength2"/>
-      </outputs>
-    </computedOutput>
+      <dataSource class="computingDataSource">
+        <dataType>INTEGER</dataType>
+        <unit>kg</unit>
+        
+        <expression>
+          ($1 + $2)/2
+        </expression>
+          
+        <dataSources>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>GripStrength</instrumentType>
+            <parameterCode>RES_FIRST_RH_MUSCLE_STRENGTH</parameterCode>
+          </dataSource>      
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>GripStrength</instrumentType>
+            <parameterCode>RES_SEC_RH_MUSCLE_STRENGTH</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
 
-    <computedOutput>
+    <output>
       <code>CALC_AVG_LH_MUSCLE_STRENGTH</code>
       <measurementUnit>kg</measurementUnit>
       <dataType>INTEGER</dataType>
-      <algorithm>AVERAGE</algorithm>
       <captureMethod>COMPUTED</captureMethod>
-      <outputs>
-        <output reference="mus1_left_strength1"/>
-        <output reference="mus1_left_strength2"/>
-      </outputs>
-    </computedOutput>
+      <dataSource class="computingDataSource">
+        <dataType>INTEGER</dataType>
+        <unit>kg</unit>
+        
+        <expression>
+          ($1 + $2)/2
+        </expression>
+          
+        <dataSources>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>GripStrength</instrumentType>
+            <parameterCode>RES_FIRST_LH_MUSCLE_STRENGTH</parameterCode>
+          </dataSource>
+          <dataSource class="outputParameterDataSource">
+            <instrumentType>GripStrength</instrumentType>
+            <parameterCode>RES_SEC_LH_MUSCLE_STRENGTH</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
+    </output>
   </instrumentParameters>
 </instrumentType>

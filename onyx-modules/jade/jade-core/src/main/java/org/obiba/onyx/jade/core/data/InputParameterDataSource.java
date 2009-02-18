@@ -11,18 +11,22 @@ package org.obiba.onyx.jade.core.data;
 
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
 
-/**
- * Used to get output parameter data and unit
- */
-public class OutputParameterDataSource implements IDataSource {
+public class InputParameterDataSource implements IDataSource {
+  //
+  // Constants
+  //
 
   private static final long serialVersionUID = 1L;
+
+  //
+  // Instance Variables
+  //
 
   private String instrumentType;
 
@@ -32,28 +36,39 @@ public class OutputParameterDataSource implements IDataSource {
 
   private InstrumentService instrumentService;
 
+  //
+  // IDataSource Methods
+  //
+
   public Data getData(Participant participant) {
+    Data data = null;
+
     if(participant == null) return null;
 
-    InstrumentOutputParameter outputParam = instrumentService.getInstrumentOutputParameter(instrumentService.getInstrumentType(instrumentType), parameterCode);
+    InstrumentParameter inputParam = instrumentService.getParameterByCode(instrumentService.getInstrumentType(instrumentType), parameterCode);
     InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValueFromLastRun(participant, instrumentService.getInstrumentType(instrumentType), parameterCode);
 
-    if(runValue != null) return runValue.getData(outputParam.getDataType());
-    return null;
+    if(runValue != null) {
+      data = runValue.getData(inputParam.getDataType());
+    }
+
+    return data;
   }
 
   public String getUnit() {
-    InstrumentOutputParameter outputParam = instrumentService.getInstrumentOutputParameter(instrumentService.getInstrumentType(instrumentType), parameterCode);
-    return (outputParam != null) ? outputParam.getMeasurementUnit() : null;
+    String unit = null;
+
+    InstrumentParameter inputParam = instrumentService.getParameterByCode(instrumentService.getInstrumentType(instrumentType), parameterCode);
+    if(inputParam != null) {
+      unit = inputParam.getMeasurementUnit();
+    }
+
+    return unit;
   }
 
-  public OutputParameterDataSource(String instrumentType, String parameterCode) {
-    super();
-    if(instrumentType == null) throw new IllegalArgumentException("Instrument type cannot be null.");
-    this.instrumentType = instrumentType;
-    if(parameterCode == null) throw new IllegalArgumentException("Parameter code cannot be null.");
-    this.parameterCode = parameterCode;
-  }
+  //
+  // Methods
+  //
 
   public void setIntrumentRunService(InstrumentRunService instrumentRunService) {
     this.instrumentRunService = instrumentRunService;
@@ -62,5 +77,4 @@ public class OutputParameterDataSource implements IDataSource {
   public void setInstrumentService(InstrumentService instrumentService) {
     this.instrumentService = instrumentService;
   }
-
 }

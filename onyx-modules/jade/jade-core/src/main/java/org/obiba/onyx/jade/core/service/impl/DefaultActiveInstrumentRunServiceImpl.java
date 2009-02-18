@@ -15,14 +15,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
+import org.obiba.onyx.core.data.ComputingDataSource;
+import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentComputedOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
-import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameterAlgorithm;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
@@ -35,24 +35,27 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRun;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunStatus;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
-import org.obiba.onyx.jade.core.service.InputDataSourceVisitor;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwareService implements ActiveInstrumentRunService {
+  //
+  // Constants
+  //
 
   private static final Logger log = LoggerFactory.getLogger(DefaultActiveInstrumentRunServiceImpl.class);
+
+  //
+  // Instance Variables
+  //
 
   private InstrumentService instrumentService;
 
   private UserSessionService userSessionService;
-
-  private InputDataSourceVisitor inputDataSourceVisitor;
 
   private Serializable currentRunId = null;
 
@@ -334,13 +337,11 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
 
     InstrumentRun currentRun = getInstrumentRun();
 
-    List<InstrumentComputedOutputParameter> dependentComputedParameters = new ArrayList<InstrumentComputedOutputParameter>();
+    List<InstrumentOutputParameter> dependentComputedParameters = new ArrayList<InstrumentOutputParameter>();
 
     // TODO quick and dirty implementation, to be checked
-    for(InstrumentOutputParameter param : getOutputParameters(InstrumentParameterCaptureMethod.COMPUTED)) {
-      InstrumentComputedOutputParameter computedParam = (InstrumentComputedOutputParameter) param;
-
-      if(isReadyToCompute(currentRun, computedParam)) {
+    for(InstrumentOutputParameter computedParam : getOutputParameters(InstrumentParameterCaptureMethod.COMPUTED)) {
+      if(isReadyToCompute(computedParam)) {
         // First, compute the parameters not depend on other computed parameters
         calculateAndPersistValue(currentRun, computedParam);
       } else {
@@ -351,9 +352,9 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     short maxRecur = 3; // Maximum dependence level
     while(!dependentComputedParameters.isEmpty() && maxRecur > 0) {
 
-      List<InstrumentComputedOutputParameter> parameters = new ArrayList<InstrumentComputedOutputParameter>();
-      for(InstrumentComputedOutputParameter computedParam : dependentComputedParameters) {
-        if(isReadyToCompute(currentRun, computedParam)) {
+      List<InstrumentOutputParameter> parameters = new ArrayList<InstrumentOutputParameter>();
+      for(InstrumentOutputParameter computedParam : dependentComputedParameters) {
+        if(isReadyToCompute(computedParam)) {
           calculateAndPersistValue(currentRun, computedParam);
         } else {
           parameters.add(computedParam);
@@ -443,26 +444,30 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   }
 
   public String updateReadOnlyInputParameterRunValue() {
+    InstrumentType instrumentType = getInstrumentType();
 
-    // get the data from not read-only input parameters sources
-    for(InstrumentInputParameter param : getInputParameters(true)) {
-      final InstrumentRunValue runValue = getInstrumentRunValue(param);
-      Data data = inputDataSourceVisitor.getData(getParticipant(), param);
+    List<InstrumentInputParameter> inputParametersWithDataSource = instrumentType.getInstrumentParameters(InstrumentInputParameter.class, true);
+
+    for(InstrumentInputParameter parameter : inputParametersWithDataSource) {
+      Data data = parameter.getDataSource().getData(getParticipant());
+
       if(data != null) {
-        if(!data.getType().equals(param.getDataType())) {
+        final InstrumentRunValue runValue = getInstrumentRunValue(parameter);
+
+        if(!data.getType().equals(parameter.getDataType())) {
           UnitParameterValueConverter converter = new UnitParameterValueConverter();
-          converter.convert(param, runValue, data);
+          converter.convert(parameter, runValue, data);
         } else {
           runValue.setData(data);
         }
         update(runValue);
       } else {
-        log.error("The value for instrument parameter {} comes from an InputSource, but this source has not produced a value. Please correct stage dependencies or your instrument-descriptor.xml file for this instrument.", param.getCode());
+        log.error("The value for instrument parameter {} comes from an InputSource, but this source has not produced a value. Please correct stage dependencies or your instrument-descriptor.xml file for this instrument.", parameter.getCode());
         return ("An unexpected problem occurred while setting up this instrument's run. Please contact support.");
       }
     }
-    return null;
 
+    return null;
   }
 
   //
@@ -523,22 +528,22 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     this.userSessionService = userSessionService;
   }
 
-  public void setInputDataSourceVisitor(InputDataSourceVisitor inputDataSourceVisitor) {
-    this.inputDataSourceVisitor = inputDataSourceVisitor;
-  }
-
   /**
+   * Indicates whether the specified computed output parameter is ready to be computed (i.e., if all its component data
+   * sources have data).
    * 
-   * @param currentRun
-   * @param computedParam
-   * @return
+   * @param computedParam computed output parameter
+   * @return <code>true</code> if the computed output parameter is ready to be computed
    */
-  private boolean isReadyToCompute(InstrumentRun currentRun, InstrumentComputedOutputParameter computedParam) {
-    for(InstrumentParameter p : computedParam.getInstrumentParameters()) {
-      if(p.getCaptureMethod().equals(InstrumentParameterCaptureMethod.COMPUTED) && currentRun.getInstrumentRunValue(p) == null) {
+  private boolean isReadyToCompute(InstrumentOutputParameter computedParam) {
+    ComputingDataSource computingDataSource = (ComputingDataSource) computedParam.getDataSource();
+
+    for(IDataSource dataSource : computingDataSource.getDataSources()) {
+      if(dataSource.getData(getParticipant()) == null) {
         return false;
       }
     }
+
     return true;
   }
 
@@ -547,153 +552,14 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
    * @param currentRun
    * @param computedParam
    */
-  private void calculateAndPersistValue(InstrumentRun currentRun, InstrumentComputedOutputParameter computedParam) {
-    InstrumentRunValue computedRunValue = null;
-
-    if(computedParam.getAlgorithm().equals(InstrumentOutputParameterAlgorithm.AVERAGE)) {
-      computedRunValue = calculateAverageValue(currentRun, computedParam);
-    } else if(computedParam.getAlgorithm().equals(InstrumentOutputParameterAlgorithm.RATIO)) {
-      computedRunValue = calculateRatioValue(currentRun, computedParam);
-    } else if(computedParam.getAlgorithm().equals(InstrumentOutputParameterAlgorithm.DIFFERENCE)) {
-      computedRunValue = calculateDifferenceValue(currentRun, computedParam);
-    }
-    if(computedRunValue != null) {
-      getPersistenceManager().save(computedRunValue);
-      currentRun.addInstrumentRunValue(computedRunValue);
-    }
-  }
-
-  /**
-   * @param currentRun
-   * @param computedParam
-   */
-  private InstrumentRunValue calculateAverageValue(InstrumentRun currentRun, InstrumentComputedOutputParameter computedParam) {
+  private void calculateAndPersistValue(InstrumentRun currentRun, InstrumentOutputParameter computedParam) {
     InstrumentRunValue computedRunValue = getOutputInstrumentRunValue(computedParam.getCode());
 
-    double sum = 0;
-    int count = 0;
-    for(InstrumentParameter p : computedParam.getInstrumentParameters()) {
-      count++;
-      InstrumentRunValue runValue = currentRun.getInstrumentRunValue(p);
-      if(p.getDataType().equals(DataType.DECIMAL)) {
-        Double value = runValue.getValue(p.getDataType());
-        sum += value;
-      } else if(p.getDataType().equals(DataType.INTEGER)) {
-        Long value = runValue.getValue(p.getDataType());
-        sum += value.doubleValue();
-      }
-    }
-    double avg = sum / count;
+    IDataSource computedDataSource = computedParam.getDataSource();
+    Data computedValue = computedDataSource.getData(getParticipant());
+    computedRunValue.setData(computedValue);
 
-    Serializable avgValue = null;
-    if(computedParam.getDataType().equals(DataType.DECIMAL)) {
-      long avgInt = Math.round(avg * 100);
-      avgValue = (double) avgInt / 100;
-    } else if(computedParam.getDataType().equals(DataType.INTEGER)) {
-      avgValue = Math.round(avg);
-    }
-
-    if(avgValue != null) {
-      computedRunValue.setData(new Data(computedParam.getDataType(), avgValue));
-    }
-
-    return computedRunValue;
-  }
-
-  /**
-   * @param currentRun
-   * @param computedParam
-   */
-  private InstrumentRunValue calculateDifferenceValue(InstrumentRun currentRun, InstrumentComputedOutputParameter computedParam) {
-    InstrumentRunValue computedRunValue = getOutputInstrumentRunValue(computedParam.getCode());
-
-    List<InstrumentParameter> parameters = computedParam.getInstrumentParameters();
-
-    if(parameters == null || parameters.size() != 2) {
-      throw new IllegalArgumentException("The number of parameters provided is invalid, two parameters are needed.");
-    }
-
-    InstrumentRunValue runValue0 = currentRun.getInstrumentRunValue(parameters.get(0));
-    InstrumentRunValue runValue1 = currentRun.getInstrumentRunValue(parameters.get(1));
-    Double value0 = 0.0;
-    Double value1 = 0.0;
-
-    if(parameters.get(0).getDataType().equals(DataType.DECIMAL)) {
-      value0 = runValue0.getValue(DataType.DECIMAL);
-    } else if(parameters.get(0).getDataType().equals(DataType.INTEGER)) {
-      Long valueInt = runValue0.getValue(DataType.INTEGER);
-      value0 = Double.valueOf(valueInt);
-    }
-    if(parameters.get(1).getDataType().equals(DataType.DECIMAL)) {
-      value1 = runValue1.getValue(DataType.DECIMAL);
-    } else if(parameters.get(1).getDataType().equals(DataType.INTEGER)) {
-      Long valueInt = runValue1.getValue(DataType.INTEGER);
-      value1 = Double.valueOf(valueInt);
-    }
-    double diff = value0 - value1;
-
-    Serializable diffValue = null;
-    if(computedParam.getDataType().equals(DataType.DECIMAL)) {
-      long diffInt = Math.round(diff * 100);
-      diffValue = (double) diffInt / 100;
-    } else if(computedParam.getDataType().equals(DataType.INTEGER)) {
-      diffValue = Math.round(diff);
-    }
-
-    if(diffValue != null) {
-      computedRunValue.setData(new Data(computedParam.getDataType(), diffValue));
-    }
-
-    return computedRunValue;
-  }
-
-  /**
-   * @param currentRun
-   * @param computedParam
-   */
-  private InstrumentRunValue calculateRatioValue(InstrumentRun currentRun, InstrumentComputedOutputParameter computedParam) {
-    InstrumentRunValue computedRunValue = getOutputInstrumentRunValue(computedParam.getCode());
-
-    List<InstrumentParameter> parameters = computedParam.getInstrumentParameters();
-    if(parameters == null || parameters.size() != 2) {
-      throw new IllegalArgumentException("The number of parameters provided is invalid, two parameters are needed.");
-    }
-
-    InstrumentRunValue runValue0 = currentRun.getInstrumentRunValue(parameters.get(0));
-    InstrumentRunValue runValue1 = currentRun.getInstrumentRunValue(parameters.get(1));
-    Double value0 = 0.0;
-    Double value1 = 0.0;
-
-    if(parameters.get(0).getDataType().equals(DataType.DECIMAL)) {
-      value0 = runValue0.getValue(DataType.DECIMAL);
-    } else if(parameters.get(0).getDataType().equals(DataType.INTEGER)) {
-      Long valueInt = runValue0.getValue(DataType.INTEGER);
-      value0 = Double.valueOf(valueInt);
-    }
-    if(parameters.get(1).getDataType().equals(DataType.DECIMAL)) {
-      value1 = runValue1.getValue(DataType.DECIMAL);
-    } else if(parameters.get(1).getDataType().equals(DataType.INTEGER)) {
-      Long valueInt = runValue1.getValue(DataType.INTEGER);
-      value1 = Double.valueOf(valueInt);
-    }
-
-    if(value1 == 0.0) {
-      throw new IllegalArgumentException("The second parameter must not be zero in Ratio parameter calculation.");
-    }
-    double ratio = value0 / value1;
-
-    Serializable ratioValue = null;
-    if(computedParam.getDataType().equals(DataType.DECIMAL)) {
-      long ratioInt = Math.round(ratio * 100);
-      ratioValue = (double) ratioInt / 100;
-    } else if(computedParam.getDataType().equals(DataType.INTEGER)) {
-      ratioValue = Math.round(ratio);
-    }
-
-    if(ratioValue != null) {
-      computedRunValue.setData(new Data(computedParam.getDataType(), ratioValue));
-    }
-
-    return computedRunValue;
+    getPersistenceManager().save(computedRunValue);
+    currentRun.addInstrumentRunValue(computedRunValue);
   }
 }

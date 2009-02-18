@@ -13,7 +13,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -33,6 +35,10 @@ public abstract class InstrumentParameter implements Serializable {
   private String displayFormat;
 
   private List<IntegrityCheck> integrityChecks;
+
+  private IDataSource dataSource;
+
+  private List<Data> allowedValues; // replaces OperatorSource.choices
 
   public String getCode() {
     return code;
@@ -95,5 +101,22 @@ public abstract class InstrumentParameter implements Serializable {
 
   public void setDisplayFormat(String displayFormat) {
     this.displayFormat = displayFormat;
+  }
+
+  public void setDataSource(IDataSource dataSource) {
+    this.dataSource = dataSource;
+  }
+
+  public IDataSource getDataSource() {
+    return dataSource;
+  }
+
+  /**
+   * Returns a list of the values allowed for this parameter.
+   * 
+   * @return list of values allowed for this parameter (empty list if none)
+   */
+  public List<Data> getAllowedValues() {
+    return allowedValues != null ? allowedValues : (allowedValues = new ArrayList<Data>());
   }
 }

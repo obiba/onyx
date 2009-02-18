@@ -45,36 +45,36 @@
       <dataType>DECIMAL</dataType>
       <measurementUnit>kg</measurementUnit>
       <captureMethod>MANUAL</captureMethod>
-      <inputSource class="fixedSource">
-        <value>0</value>
-      </inputSource>
+      <dataSource class="fixedDataSource">
+        <data type="DECIMAL">0</data>
+      </dataSource>
     </input>
 
     <input id="gender_in">
       <code>INPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>gender</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="body_type_in">
       <code>INPUT_BODY_TYPE</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
-      <inputSource class="fixedSource">
-        <value>STANDARD</value>
-      </inputSource>
+      <dataSource class="fixedDataSource">
+        <data type="TEXT">STANDARD</data>
+      </dataSource>
     </input>
 
     <input id="age_in">
       <code>INPUT_PARTICIPANT_AGE</code>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>age</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="height_in">
@@ -82,10 +82,10 @@
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
-      <inputSource class="outputParameterSource">
+      <dataSource class="outputParameterDataSource">
         <instrumentType>StandingHeight</instrumentType>
-        <parameterName>CALC_AVG_HEIGHT</parameterName>
-      </inputSource>
+        <parameterCode>CALC_AVG_HEIGHT</parameterCode>
+      </dataSource>
     </input>
 
     <output id="body_type">

@@ -21,7 +21,6 @@ import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
-import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
@@ -85,7 +84,7 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
       // We don't want to display parameters that were manually entered by the user in the previous step.
       // These will be automatically sent to the instrument.
-      if(!(param.getInputSource() instanceof OperatorSource)) {
+      if(param.getDataSource() != null) {
 
         manualCaptureRequired = true;
 

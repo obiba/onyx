@@ -16,27 +16,27 @@
       <code>INPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>barcode</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="last_name">
       <code>INPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>lastName</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="first_name_in">
       <code>INPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>firstName</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="birth_date">
@@ -44,18 +44,18 @@
       <dataType>DATE</dataType>
       <displayFormat>%1$tY/%1$tm/%1$td</displayFormat>      
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>birthDate</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="gender">
       <code>INPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>gender</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="systolic_pressure">
@@ -63,10 +63,10 @@
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
-      <inputSource class="outputParameterSource">
+      <dataSource class="outputParameterDataSource">
         <instrumentType>BloodPressure</instrumentType>
-        <parameterName>CALC_AVG_SYSTOLIC_BP</parameterName>
-      </inputSource>
+        <parameterCode>CALC_AVG_SYSTOLIC_BP</parameterCode>
+      </dataSource>
     </input>
 
     <input id="diastolic_pressure">
@@ -74,10 +74,10 @@
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
-      <inputSource class="outputParameterSource">
+      <dataSource class="outputParameterDataSource">
         <instrumentType>BloodPressure</instrumentType>
-        <parameterName>CALC_AVG_DIASTOLIC_BP</parameterName>
-      </inputSource>
+        <parameterCode>CALC_AVG_DIASTOLIC_BP</parameterCode>
+      </dataSource>
     </input>
 
     <output id="PATIENT_ID">

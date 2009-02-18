@@ -47,7 +47,7 @@ public class ComputingDataSource extends AbstractMultipleDataSource {
 
   private String expression;
 
-  private DataType type;
+  private DataType dataType;
 
   private String unit;
 
@@ -61,11 +61,11 @@ public class ComputingDataSource extends AbstractMultipleDataSource {
       operands.add(source.getData(participant));
     }
 
-    if(type.equals(DataType.BOOLEAN)) {
+    if(dataType.equals(DataType.BOOLEAN)) {
       return DataBuilder.buildBoolean(algorithmEvaluator.evaluateBoolean(expression, operands));
-    } else if(type.isNumberType()) {
+    } else if(dataType.isNumberType()) {
       double d = algorithmEvaluator.evaluateDouble(expression, operands);
-      if(type.equals(DataType.DECIMAL)) {
+      if(dataType.equals(DataType.DECIMAL)) {
         return DataBuilder.buildDecimal(d);
       } else {
         return DataBuilder.buildInteger(Long.valueOf(Math.round(d)));
@@ -81,7 +81,7 @@ public class ComputingDataSource extends AbstractMultipleDataSource {
 
   public ComputingDataSource(DataType type, String expression) {
     super();
-    this.type = type;
+    this.dataType = type;
     this.expression = expression;
   }
 
@@ -94,11 +94,11 @@ public class ComputingDataSource extends AbstractMultipleDataSource {
   }
 
   public DataType getType() {
-    return type;
+    return dataType;
   }
 
   public void setType(DataType type) {
-    this.type = type;
+    this.dataType = type;
   }
 
   public void setAlgorithmEvaluator(IAlgorithmEvaluator algorithmEvaluator) {

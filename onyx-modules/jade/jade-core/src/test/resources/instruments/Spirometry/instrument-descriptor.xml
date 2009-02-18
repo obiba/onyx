@@ -88,9 +88,9 @@
       <code>INPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>barcode</property>
-      </inputSource>
+      </dataSource>
 
     </input>
 
@@ -99,9 +99,9 @@
       <code>INPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>lastName</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="first_name_in">
@@ -109,9 +109,9 @@
       <code>INPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>firstName</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="birth_date_in">
@@ -120,9 +120,9 @@
       <dataType>DATE</dataType>
       <displayFormat>%1$tY/%1$tm/%1$td</displayFormat>          
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>birthDate</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="gender_in">
@@ -130,9 +130,9 @@
       <code>INPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="participantPropertySource">
+      <dataSource class="participantPropertyDataSource">
         <property>gender</property>
-      </inputSource>
+      </dataSource>
     </input>
 
     <input id="ethnic_group">
@@ -140,9 +140,9 @@
       <code>INPUT_PARTICIPANT_ETHNIC_GROUP</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="fixedSource">
-        <value>1</value>
-      </inputSource>
+      <dataSource class="fixedDataSource">
+        <data type="INTEGER">1</data>
+      </dataSource>
     </input>
 
     <input id="height">
@@ -151,10 +151,10 @@
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="outputParameterSource">
+      <dataSource class="outputParameterDataSource">
         <instrumentType>StandingHeight</instrumentType>
-        <parameterName>CALC_AVG_HEIGHT</parameterName>
-      </inputSource>
+        <parameterCode>CALC_AVG_HEIGHT</parameterCode>
+      </dataSource>
     </input>
 
     <input id="weight">
@@ -163,22 +163,22 @@
       <measurementUnit>kg</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <inputSource class="multipleOutputParameterSource">
-        <outputParameterSourceList>
-          <outputParameterSource>
+      <dataSource class="firstNotNullDataSource">
+        <dataSources>
+          <dataSource class="outputParameterDataSource">
             <instrumentType>Impedance310</instrumentType>
-            <parameterName>RES_WEIGHT</parameterName>
-          </outputParameterSource>
-          <outputParameterSource>
+            <parameterCode>RES_WEIGHT</parameterCode>
+          </dataSource>
+          <dataSource class="outputParameterDataSource">
             <instrumentType>Impedance418</instrumentType>
-            <parameterName>RES_WEIGHT</parameterName>
-          </outputParameterSource>
-          <outputParameterSource>
+            <parameterCode>RES_WEIGHT</parameterCode>
+          </dataSource>
+          <dataSource class="outputParameterDataSource">
             <instrumentType>Weight</instrumentType>
-            <parameterName>RES_WEIGHT</parameterName>
-          </outputParameterSource>
-        </outputParameterSourceList>
-      </inputSource>
+            <parameterCode>RES_WEIGHT</parameterCode>
+          </dataSource>
+        </dataSources>
+      </dataSource>
     </input>
 
     <output id="fvc">

@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
-import org.obiba.onyx.jade.core.domain.instrument.InputSource;
 import org.obiba.onyx.jade.core.domain.instrument.Instrument;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
+import org.xml.sax.InputSource;
 
 public interface InstrumentService {
 

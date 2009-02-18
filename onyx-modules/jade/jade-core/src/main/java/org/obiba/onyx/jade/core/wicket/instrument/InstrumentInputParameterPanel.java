@@ -39,7 +39,6 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentType;
 import org.obiba.onyx.jade.core.domain.instrument.InterpretativeParameter;
-import org.obiba.onyx.jade.core.domain.instrument.OperatorSource;
 import org.obiba.onyx.jade.core.domain.instrument.ParticipantInteractionType;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
@@ -47,7 +46,6 @@ import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.jade.core.wicket.InstrumentRunValueDataModel;
 import org.obiba.onyx.jade.core.wicket.instrument.validation.IntegrityCheckValidator;
 import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.onyx.wicket.data.DataValidator;
@@ -247,18 +245,8 @@ public class InstrumentInputParameterPanel extends Panel {
         inputRunValueModels.add(runValueModel);
 
         List<Data> choices = null;
-        if(param.getInputSource() instanceof OperatorSource) {
-          String choiceString = ((OperatorSource) param.getInputSource()).getChoices();
-          if(choiceString != null) {
-            // Choices are in a comma separated string
-            String parts[] = choiceString.split(",");
-            if(parts != null && parts.length > 0) {
-              choices = new ArrayList<Data>(parts.length);
-              for(String choice : parts) {
-                choices.add(DataBuilder.build(param.getDataType(), choice));
-              }
-            }
-          }
+        if(param.getDataSource() == null) {
+          choices = param.getAllowedValues();
         }
 
         DataField field;

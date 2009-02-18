@@ -16,13 +16,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="userSessionService" ref="userSessionService" />
   </bean>
-  
-  <bean id="inputDataSourceVisitor" class="org.obiba.onyx.jade.core.service.impl.InputDataSourceVisitorImpl"
-    scope="prototype">
-    <property name="instrumentRunService" ref="instrumentRunService" />
-    <property name="instrumentService" ref="instrumentService" />
-  </bean>
-  
+    
   <bean id="userSessionService" class="org.obiba.onyx.core.service.impl.UserSessionServiceBeanImpl">
     <property name="datePattern" value="yyyy-MM-dd" />
     <property name="dateTimePattern" value="yyyy-MM-dd HH:mm" />
