@@ -155,7 +155,7 @@ public class EditParticipantPanelTest implements Serializable {
       public Panel getTestPanel(String panelId) {
         DummyHomePage dummyHomePage = new DummyHomePage();
         EditParticipantPanel panel = new EditParticipantPanel(panelId, new Model(p), dummyHomePage);
-        panel.get("editParticipantForm:assignCodeToParticipantPanel").replaceWith(new AssignCodeToParticipantPanelMock("assignCodeToParticipantPanel", new Model(p)));
+        panel.get("editParticipantForm:assignCodeToParticipantPanel").replaceWith(new AssignCodeToParticipantPanelMock("assignCodeToParticipantPanel", new Model(p), new Model(participantMetadata)));
         return panel;
       }
     });
@@ -213,7 +213,7 @@ public class EditParticipantPanelTest implements Serializable {
       public Panel getTestPanel(String panelId) {
         DummyHomePage dummyHomePage = new DummyHomePage();
         EditParticipantPanel panel = new EditParticipantPanel(panelId, new Model(p), dummyHomePage);
-        panel.get("editParticipantForm:assignCodeToParticipantPanel").replaceWith(new AssignCodeToParticipantPanelMock("assignCodeToParticipantPanel", new Model(p)));
+        panel.get("editParticipantForm:assignCodeToParticipantPanel").replaceWith(new AssignCodeToParticipantPanelMock("assignCodeToParticipantPanel", new Model(p), new Model(participantMetadata)));
         return panel;
       }
     });
@@ -265,18 +265,18 @@ public class EditParticipantPanelTest implements Serializable {
     return p;
   }
 
-  private class AssignCodeToParticipantPanelMock extends AssignCodeToParticipantPanel {
+  private static class AssignCodeToParticipantPanelMock extends AssignCodeToParticipantPanel {
 
-    public AssignCodeToParticipantPanelMock(String id, IModel participantModel) {
+    public AssignCodeToParticipantPanelMock(String id, IModel participantModel, IModel metadataModel) {
       super(id);
-      add(new AssignCodeToParticipantFormMock("assignCodeToParticipantForm", participantModel, participantMetadata));
+      add(new AssignCodeToParticipantFormMock("assignCodeToParticipantForm", participantModel, metadataModel));
     }
 
     private class AssignCodeToParticipantFormMock extends AssignCodeToParticipantForm {
 
       @SuppressWarnings("serial")
-      public AssignCodeToParticipantFormMock(String id, final IModel participantModel, ParticipantMetadata participantMetadata) {
-        super(id, participantModel, participantMetadata);
+      public AssignCodeToParticipantFormMock(String id, final IModel participantModel, IModel metadataModel) {
+        super(id, participantModel, (ParticipantMetadata) metadataModel.getObject());
       }
 
       @Override
