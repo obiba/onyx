@@ -39,6 +39,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProv
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
+import org.obiba.onyx.wicket.link.AjaxImageLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,6 +125,18 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
 
     });
 
+    add(new AjaxImageLink("clear", new Model("Clear all")) {
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        for(Question child : getQuestion().getQuestions()) {
+          activeQuestionnaireAdministrationService.deleteAnswers(child);
+        }
+        updateSelections(target);
+      }
+
+    });
+
   }
 
   private IModel getQuestionModel() {
@@ -134,8 +147,12 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
     return (Question) getModelObject();
   }
 
-  public void onQuestionCategorySelection(final AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
     log.info("onQuestionCategorySelection({}, {}, {})", new Object[] { questionModel, questionCategoryModel, isSelected });
+    updateSelections(target);
+  }
+
+  private void updateSelections(final AjaxRequestTarget target) {
     // optimize by updating only the selection state that have changed
     visitChildren(new Component.IVisitor() {
 
