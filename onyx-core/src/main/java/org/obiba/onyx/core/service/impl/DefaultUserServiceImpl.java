@@ -9,9 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.core.service.impl;
 
-import java.io.Serializable;
+import java.util.List;
 import java.util.Locale;
 
+import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.Status;
@@ -20,10 +21,7 @@ import org.obiba.onyx.core.service.UserService;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Default implementation (non hibernate specific) of User Service
- * @see#UserServiceHibernateImpl.
- * @author acarey
- * 
+ * Default implementation of User Service
  */
 @Transactional
 public abstract class DefaultUserServiceImpl extends PersistenceManagerAwareService implements UserService {
@@ -34,8 +32,7 @@ public abstract class DefaultUserServiceImpl extends PersistenceManagerAwareServ
     return getPersistenceManager().matchOne(template);
   }
 
-  public void updateStatus(Serializable userId, Status status) {
-    User user = loadUser(userId);
+  public void updateStatus(User user, Status status) {
     user.setStatus(status);
     getPersistenceManager().save(user);
   }
@@ -44,14 +41,12 @@ public abstract class DefaultUserServiceImpl extends PersistenceManagerAwareServ
     getPersistenceManager().save(user);
   }
 
-  public void deleteUser(Serializable userId) {
-    User user = loadUser(userId);
+  public void deleteUser(User user) {
     user.setDeleted(true);
     getPersistenceManager().save(user);
   }
 
-  public void updateUserLanguage(Serializable userId, Locale language) {
-    User user = loadUser(userId);
+  public void updateUserLanguage(User user, Locale language) {
     user.setLanguage(language);
     getPersistenceManager().save(user);
   }
@@ -64,39 +59,21 @@ public abstract class DefaultUserServiceImpl extends PersistenceManagerAwareServ
     return (getPersistenceManager().matchOne(template) == null);
   }
 
-  public void updatePassword(Serializable userId, String password) {
-    User user = loadUser(userId);
+  public void updatePassword(User user, String password) {
     user.setPassword(password);
     getPersistenceManager().save(user);
   }
 
   public void createOrUpdateUser(User user) {
-    User template = new User();
-    if(user.getId() != null) {
-      template = loadUser(user.getId());
-
-      if(!user.getLastName().equals(template.getLastName())) template.setLastName(user.getLastName());
-      if(!user.getFirstName().equals(template.getFirstName())) template.setFirstName(user.getFirstName());
-      if(!user.getPassword().equals(template.getPassword())) template.setPassword(user.getPassword());
-      if(!user.getEmail().equals(template.getEmail())) template.setEmail(user.getEmail());
-      if(template.getLanguage() == null || !user.getLanguage().equals(template.getLanguage())) template.setLanguage(user.getLanguage());
-
-      if(!user.getRoles().equals(template.getRoles())) {
-        template.setRoles(user.getRoles());
-      }
-    } else {
-      template = user;
-    }
-    getPersistenceManager().save(template);
+    getPersistenceManager().save(user);
   }
 
   public Role createRole(Role role) {
     return getPersistenceManager().save(role);
   }
 
-  private User loadUser(Serializable userId) {
-    User user = getPersistenceManager().get(User.class, userId);
-    if(user == null) throw new IllegalArgumentException("Invalid user id");
-    return user;
+  public List<Role> getRoles(SortingClause... clauses) {
+    return getPersistenceManager().list(Role.class, clauses);
   }
+
 }

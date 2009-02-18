@@ -13,17 +13,19 @@ import org.apache.wicket.Request;
 import org.apache.wicket.Session;
 import org.apache.wicket.authorization.strategies.role.Roles;
 import org.apache.wicket.injection.web.InjectorHolder;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 
 public final class OnyxAuthenticatedSession extends WebSession {
 
   private static final long serialVersionUID = 8437488796788626235L;
 
-  private User user;
+  private IModel userModel;
 
   @SpringBean
   private EntityQueryService queryService;
@@ -33,6 +35,14 @@ public final class OnyxAuthenticatedSession extends WebSession {
     InjectorHolder.getInjector().inject(this);
   }
 
+  @Override
+  protected void detach() {
+    if(userModel != null) {
+      userModel.detach();
+    }
+    super.detach();
+  }
+
   /**
    * Checks the given username and password and, if they are correct, sets the session User object.
    * @param login the username
@@ -40,7 +50,7 @@ public final class OnyxAuthenticatedSession extends WebSession {
    * @return true if the user was authenticated
    */
   public final AuthenticateErrorCode authenticate(final String login, final String password) {
-    if(user == null) {
+    if(userModel == null) {
       // Try to authenticate user with database.
       User template = new User();
       template.setLogin(login);
@@ -51,20 +61,19 @@ public final class OnyxAuthenticatedSession extends WebSession {
           break;
         }
       }
-      if(fetchedUser != null && !fetchedUser.isDeleted() && fetchedUser.getPassword().equals(User.digest(password))) {
-        user = fetchedUser;
 
-        if(user.getLanguage() != null) {
-          setLocale(user.getLanguage());
+      if(fetchedUser != null && !fetchedUser.isDeleted() && fetchedUser.getPassword().equals(User.digest(password))) {
+        if(fetchedUser.getLanguage() != null) {
+          setLocale(fetchedUser.getLanguage());
         }
 
-        if(!user.isActive()) {
-          user = null;
+        if(!fetchedUser.isActive()) {
           return AuthenticateErrorCode.INACTIVE_ACCOUNT;
         }
+        userModel = new DetachableEntityModel(queryService, fetchedUser);
       }
     }
-    return (user != null) ? null : AuthenticateErrorCode.SIGNIN_ERROR;
+    return (userModel != null) ? null : AuthenticateErrorCode.SIGNIN_ERROR;
   }
 
   /**
@@ -72,9 +81,9 @@ public final class OnyxAuthenticatedSession extends WebSession {
    */
   public boolean isSignedIn() {
     if(isSessionInvalidated()) {
-      user = null;
+      userModel = null;
     }
-    return user != null;
+    return userModel != null;
   }
 
   /**
@@ -82,7 +91,10 @@ public final class OnyxAuthenticatedSession extends WebSession {
    * @return the <tt>User</tt> instance.
    */
   public User getUser() {
-    return user;
+    if(userModel != null) {
+      return (User) userModel.getObject();
+    }
+    return null;
   }
 
   public static OnyxAuthenticatedSession get() {
@@ -93,7 +105,7 @@ public final class OnyxAuthenticatedSession extends WebSession {
    * Sign the user out.
    */
   public void signOut() {
-    user = null;
+    userModel = null;
     invalidateNow();
   }
 
@@ -101,7 +113,7 @@ public final class OnyxAuthenticatedSession extends WebSession {
     if(isSignedIn()) {
 
       User template = new User();
-      template.setLogin(user.getLogin());
+      template.setLogin(getUser().getLogin());
       template.setDeleted(false);
       template = queryService.matchOne(template);
       // case user has disappeared or was virtually deleted

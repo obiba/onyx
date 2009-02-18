@@ -167,18 +167,26 @@ public class UserSearchPage extends BasePage {
           LinkPanel statusLink = new LinkPanel(componentId, new ILinkListener() {
 
             public void onLinkClicked() {
+              User user = getUser(rowModel);
               Status newStatus;
-              if(getUser(rowModel).getStatus().equals(Status.ACTIVE)) newStatus = Status.INACTIVE;
-              else
+              if(user.getStatus() == Status.ACTIVE) {
+                newStatus = Status.INACTIVE;
+              } else {
                 newStatus = Status.ACTIVE;
-              userService.updateStatus(getUser(rowModel).getId(), newStatus);
+              }
+
+              userService.updateStatus(user, newStatus);
             }
 
           }, new StringResourceModel("Status." + getUser(rowModel).getStatus(), UserSearchPage.this, null));
 
-          if(OnyxAuthenticatedSession.get().getUser().getLogin().equals(getUser(rowModel).getLogin())) cellItem.add(new Label(componentId, new StringResourceModel("Status." + getUser(rowModel).getStatus(), UserSearchPage.this, null)));
-          else
+          User currentUser = OnyxAuthenticatedSession.get().getUser();
+          // If this line is the current user, display a label instead of a toggle link
+          if(currentUser.getLogin().equals(getUser(rowModel).getLogin())) {
+            cellItem.add(new Label(componentId, new StringResourceModel("Status." + currentUser.getStatus(), UserSearchPage.this, null)));
+          } else {
             cellItem.add(statusLink);
+          }
         }
       });
 
@@ -198,7 +206,7 @@ public class UserSearchPage extends BasePage {
 
             @Override
             public void onClick() {
-              userService.deleteUser(getUser(rowModel).getId());
+              userService.deleteUser(getUser(rowModel));
             }
           };
           if(OnyxAuthenticatedSession.get().getUser().getLogin().equals(getUser(rowModel).getLogin())) deleteLink.setVisible(false);
@@ -241,7 +249,6 @@ public class UserSearchPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          // TODO Auto-generated method stub
           userDetailsModalWindow.setContent(new UserPanel("content", rowModel, userDetailsModalWindow));
           userDetailsModalWindow.show(target);
         }

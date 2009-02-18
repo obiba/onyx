@@ -15,22 +15,22 @@ import java.util.Locale;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserService;
-import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.base.panel.AjaxLanguageChoicePanel;
 import org.obiba.onyx.webapp.user.panel.ChangePasswordPanel;
 
 /**
  * Allows the signed user to change his password and preferred language
- * @author acarey
- * 
  */
 public class ProfilePage extends BasePage {
 
   @SpringBean
   private UserService userService;
+
+  @SpringBean
+  private UserSessionService userSessionService;
 
   public ProfilePage(int previousPageId) {
     super();
@@ -42,22 +42,14 @@ public class ProfilePage extends BasePage {
       @Override
       protected void onLanguageUpdate(Locale language, AjaxRequestTarget target) {
         if(language == null) return;
-        getSession().setLocale(language);
-        userService.updateUserLanguage(OnyxAuthenticatedSession.get().getUser().getId(), language);
+        userSessionService.setLocale(language);
+        userService.updateUserLanguage(userSessionService.getUser(), language);
         setResponsePage(getPage());
       }
 
     };
 
-    User user = OnyxAuthenticatedSession.get().getUser();
-    if(user.getLanguage() != null) getSession().setLocale(user.getLanguage());
-    else {
-      if(getSession().getLocale() != null && getSession().getLocale().getLanguage().equals("fr")) getSession().setLocale(Locale.FRENCH);
-      else
-        getSession().setLocale(Locale.ENGLISH);
-    }
-
-    languageSelect.setSelectedLanguage(getSession().getLocale());
+    languageSelect.setSelectedLanguage(userSessionService.getLocale());
 
     add(languageSelect);
 

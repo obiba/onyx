@@ -30,7 +30,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
-import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.user.Role;
@@ -85,13 +84,11 @@ public class UserPanel extends Panel {
       TextField lastName = new TextField("lastName", new PropertyModel(getModel(), "lastName"));
       lastName.add(new RequiredFormFieldBehavior());
       lastName.add(new StringValidator.MaximumLengthValidator(20));
-      lastName.add(new PatternValidator("^[A-Za-z\\-]+$"));
       add(lastName);
 
       TextField firstName = new TextField("firstName", new PropertyModel(getModel(), "firstName"));
       firstName.add(new RequiredFormFieldBehavior());
       firstName.add(new StringValidator.MaximumLengthValidator(20));
-      firstName.add(new PatternValidator("^[A-Za-z\\-]+$"));
       add(firstName);
 
       TextField login = new TextField("login", new PropertyModel(getModel(), "login"));

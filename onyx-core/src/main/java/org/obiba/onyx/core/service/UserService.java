@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.core.service;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
 
@@ -23,23 +22,23 @@ public interface UserService {
 
   /**
    * Returns the list of users
-   * @param isDeleted
-   * @param paging
-   * @param clauses
-   * @return
+   * @param template a template instance for matching users
+   * @param paging paging clause, can be null
+   * @param clauses sorting clause(s), can be null
+   * @return a list of user instances that match the template
    */
   public List<User> getUsers(User template, PagingClause paging, SortingClause... clauses);
 
   /**
-   * Returns the count of users
-   * @return
+   * Returns the count of users that match the specified template
+   * @return the number of users that match the template
    */
   public int getUserCount(User template);
 
   /**
-   * Gives the user with the specified login
-   * @param login
-   * @return
+   * Returns the user with the specified login
+   * @param login the unique login to match
+   * @return the user with the specified login or null if none exist
    */
   public User getUserWithLogin(String login);
 
@@ -48,7 +47,7 @@ public interface UserService {
    * @param user
    * @param status
    */
-  public void updateStatus(Serializable userId, Status status);
+  public void updateStatus(User user, Status status);
 
   /**
    * User creation during the application configuration
@@ -56,17 +55,17 @@ public interface UserService {
   public void createUser(User user);
 
   /**
-   * Delete specified user by setting the "deleted" field to "true"
+   * Delete specified user
    * @param user
    */
-  public void deleteUser(Serializable userId);
+  public void deleteUser(User user);
 
   /**
    * Update the language of the specified user
    * @param template
    * @param language
    */
-  public void updateUserLanguage(Serializable userId, Locale language);
+  public void updateUserLanguage(User user, Locale language);
 
   /**
    * Check if password was not previously given to the given user.
@@ -81,7 +80,7 @@ public interface UserService {
    * @param template
    * @param password
    */
-  public void updatePassword(Serializable userId, String password);
+  public void updatePassword(User user, String password);
 
   /**
    * Create a user when id is not provided, otherwise, updates the changed fields

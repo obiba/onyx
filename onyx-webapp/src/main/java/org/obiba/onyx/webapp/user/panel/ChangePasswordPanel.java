@@ -23,7 +23,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.UserService;
-import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
 /**
@@ -37,6 +37,9 @@ public abstract class ChangePasswordPanel extends Panel {
 
   @SpringBean
   private UserService userService;
+
+  @SpringBean
+  private UserSessionService userSessionService;
 
   public ChangePasswordPanel(String id, int previousPageId) {
     super(id);
@@ -73,10 +76,10 @@ public abstract class ChangePasswordPanel extends Panel {
 
           String password = model.getPassword();
 
-          User user = OnyxAuthenticatedSession.get().getUser();
+          User user = userSessionService.getUser();
           if(userService.isNewPassword(user, User.digest(password))) {
             try {
-              userService.updatePassword(user.getId(), User.digest(password));
+              userService.updatePassword(user, User.digest(password));
               onSuccess();
             } catch(Exception e) {
               e.printStackTrace();
