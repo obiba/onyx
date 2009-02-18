@@ -1,7 +1,8 @@
-package org.obiba.onyx.quartz.core.wicket.layout.impl;
+package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.FormMock;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanel;
 
 @SuppressWarnings("serial")
