@@ -15,11 +15,9 @@ import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategorySelectionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.QuestionCategoryCheckBoxPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 
 /**
  * Category column with check boxes, questions are in the rows.
@@ -45,9 +43,6 @@ public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColu
   public void populateItem(Item cellItem, String componentId, IModel rowModel, int index) {
     CheckGroup checkGroup = ((CheckGroup[]) checkGroupsModel.getObject())[index];
     checkGroup.add(new AnswerCountValidator(rowModel));
-    Question question = (Question) rowModel.getObject();
-    String label = new QuestionnaireStringResourceModel(question.getParentQuestion(), "label").getString() + " / " + new QuestionnaireStringResourceModel(question, "label").getString();
-    checkGroup.setLabel(new Model(label));
 
     AbstractQuestionCategorySelectionPanel qCategoryPanel;
     cellItem.add(qCategoryPanel = new QuestionCategoryCheckBoxPanel(componentId, rowModel, cellItem.getModel(), checkGroup.getModel(), false) {

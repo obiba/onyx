@@ -58,10 +58,10 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
 
   @SuppressWarnings("serial")
   public DropDownQuestionCategoriesPanel(String id, IModel questionModel) {
-    super(id, questionModel);
+    super(id, questionModel, null);
     setOutputMarkupId(true);
 
-    Question question = (Question) getModelObject();
+    Question question = getQuestion();
 
     // This component is visible when an open answer is needed
     add(new EmptyPanel("open"));
@@ -141,16 +141,8 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
     }
   }
 
-  private IModel getQuestionModel() {
-    return getModel();
-  }
-
-  private Question getQuestion() {
-    return (Question) getModelObject();
-  }
-
   private boolean hasEscapeQuestionCategories() {
-    for(Category category : ((Question) getModelObject()).getCategories()) {
+    for(Category category : getQuestion().getCategories()) {
       if(category.isEscape()) return true;
     }
     return false;

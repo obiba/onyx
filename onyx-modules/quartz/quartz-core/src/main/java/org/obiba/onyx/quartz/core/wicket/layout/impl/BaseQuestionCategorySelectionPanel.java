@@ -12,6 +12,8 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IQuestionAnswerChangedListener;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 
@@ -21,11 +23,33 @@ import org.obiba.onyx.wicket.wizard.WizardForm;
 public abstract class BaseQuestionCategorySelectionPanel extends Panel {
 
   /**
+   * The question model (not necessarily the question of the category in the case of shared categories question).
+   */
+  private IModel questionModel;
+
+  /**
    * @param id
    * @param model
    */
-  public BaseQuestionCategorySelectionPanel(String id, IModel model) {
-    super(id, model);
+  public BaseQuestionCategorySelectionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
+    super(id, questionCategoryModel);
+    this.questionModel = questionModel;
+  }
+
+  public IModel getQuestionModel() {
+    return questionModel;
+  }
+
+  public Question getQuestion() {
+    return (Question) questionModel.getObject();
+  }
+
+  public IModel getQuestionCategoryModel() {
+    return getModel();
+  }
+
+  public QuestionCategory getQuestionCategory() {
+    return (QuestionCategory) getModel().getObject();
   }
 
   /**

@@ -13,8 +13,6 @@ import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.MultipleDefaultOpenAnswerDefinitionPanel;
 import org.slf4j.Logger;
@@ -29,34 +27,13 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
   private static final Logger log = LoggerFactory.getLogger(AbstractQuestionCategorySelectionPanel.class);
 
   /**
-   * The question model (not necessarily the question of the category in the case of shared categories question).
-   */
-  private IModel questionModel;
-
-  /**
    * Constructor giving the question category model.
    * @param id
    * @param questionCategoryModel
    */
   public AbstractQuestionCategorySelectionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
-    super(id, questionCategoryModel);
-    this.questionModel = questionModel;
-  }
+    super(id, questionModel, questionCategoryModel);
 
-  protected IModel getQuestionModel() {
-    return questionModel;
-  }
-
-  protected Question getQuestion() {
-    return (Question) questionModel.getObject();
-  }
-
-  protected IModel getQuestionCategoryModel() {
-    return getModel();
-  }
-
-  protected QuestionCategory getQuestionCategory() {
-    return (QuestionCategory) getModel().getObject();
   }
 
   /**

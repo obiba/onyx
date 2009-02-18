@@ -34,7 +34,18 @@ public class SimplifiedQuestionPanel extends BaseQuestionPanel {
     } else if(question.getQuestionCategories().size() == 0) {
       throw new UnsupportedOperationException("Sub questions are not supported in the simplified question UI.");
     } else {
-      throw new UnsupportedOperationException("Joined or shared categories array questions are not supported in the simplified question UI.");
+      boolean shared = true;
+      for(Question child : question.getQuestions()) {
+        if(child.getCategories().size() > 0) {
+          shared = false;
+          break;
+        }
+      }
+      if(shared) {
+        add(new SimplifiedQuestionSharedCategoriesPanel(id, getModel()));
+      } else {
+        throw new UnsupportedOperationException("Joined or shared categories array questions are not supported in the simplified question UI.");
+      }
     }
   }
 }

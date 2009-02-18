@@ -31,7 +31,6 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategoriesV
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,7 +105,6 @@ public class DefaultQuestionCategoriesPanel extends Panel {
   @SuppressWarnings("serial")
   private void addRadioGroup(Question question) {
     final RadioGroup radioGroup = new RadioGroup("categories", new Model());
-    radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
     radioGroup.add(new AnswerCountValidator(getQuestionModel()));
     add(radioGroup);
 
@@ -148,7 +146,6 @@ public class DefaultQuestionCategoriesPanel extends Panel {
   @SuppressWarnings("serial")
   private void addCheckBoxGroup(Question question) {
     final CheckGroup checkGroup = new CheckGroup("categories", new ArrayList<IModel>());
-    checkGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
     checkGroup.add(new AnswerCountValidator(getQuestionModel()));
     add(checkGroup);
 

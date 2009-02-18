@@ -43,36 +43,17 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
   private static final Logger log = LoggerFactory.getLogger(SimplifiedQuestionCategoriesPanel.class);
 
   /**
-   * Context in which answer are given (case of joined categories question array).
-   */
-  @SuppressWarnings("unused")
-  private IModel parentQuestionCategoryModel;
-
-  /**
    * Constructor for a stand-alone question.
    * @param id
    * @param questionModel
    */
-  public SimplifiedQuestionCategoriesPanel(String id, IModel questionModel) {
-    this(id, questionModel, null);
-  }
-
-  /**
-   * Constructor for a joined categories question.
-   * @param id
-   * @param questionModel
-   * @param parentQuestionCategoryModel
-   */
   @SuppressWarnings("serial")
-  public SimplifiedQuestionCategoriesPanel(String id, IModel questionModel, IModel parentQuestionCategoryModel) {
+  public SimplifiedQuestionCategoriesPanel(String id, IModel questionModel) {
     super(id, questionModel);
     setOutputMarkupId(true);
 
-    this.parentQuestionCategoryModel = parentQuestionCategoryModel;
-
     // seams like ugly but we need a form component to run the answer count validator
     HiddenField hidden = new HiddenField("hidden", new Model());
-    hidden.setLabel(new QuestionnaireStringResourceModel(getQuestionModel(), "label"));
     hidden.add(new AnswerCountValidator(getQuestionModel()));
     hidden.setRequired(false);
     add(hidden);
@@ -140,7 +121,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
 
     @Override
     protected Component newQuestionCategoryComponent(String id, IModel questionCategoryModel) {
-      return new QuestionCategoryLink(id, questionCategoryModel);
+      return new QuestionCategoryLink(id, questionCategoryModel, new QuestionnaireStringResourceModel(questionCategoryModel, "label"));
     }
   }
 }

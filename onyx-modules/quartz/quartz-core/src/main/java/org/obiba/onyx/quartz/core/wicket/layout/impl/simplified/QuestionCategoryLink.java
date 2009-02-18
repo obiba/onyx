@@ -12,7 +12,6 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
@@ -20,7 +19,6 @@ import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionStateH
 import org.obiba.onyx.quartz.core.wicket.layout.impl.BaseQuestionCategorySelectionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCategorySelectionBehavior;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.link.AjaxImageLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,20 +36,21 @@ public class QuestionCategoryLink extends BaseQuestionCategorySelectionPanel imp
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  private IModel questionModel;
-
   private boolean selected;
 
+  public QuestionCategoryLink(String id, IModel questionCategoryModel, IModel labelModel) {
+    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, labelModel);
+  }
+
   @SuppressWarnings("serial")
-  public QuestionCategoryLink(String id, IModel questionCategoryModel) {
-    super(id, questionCategoryModel);
+  public QuestionCategoryLink(String id, IModel questionModel, IModel questionCategoryModel, IModel labelModel) {
+    super(id, questionModel, questionCategoryModel);
     setOutputMarkupId(true);
-    this.questionModel = new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion());
 
     updateState();
 
     // add the category label css decorated with images
-    AjaxImageLink link = new AjaxImageLink("link", new QuestionnaireStringResourceModel(questionCategoryModel, "label")) {
+    AjaxImageLink link = new AjaxImageLink("link", labelModel) {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
@@ -92,22 +91,6 @@ public class QuestionCategoryLink extends BaseQuestionCategorySelectionPanel imp
   public boolean updateState() {
     selected = isSelected();
     return selected;
-  }
-
-  protected IModel getQuestionModel() {
-    return questionModel;
-  }
-
-  public Question getQuestion() {
-    return (Question) questionModel.getObject();
-  }
-
-  protected IModel getQuestionCategoryModel() {
-    return getModel();
-  }
-
-  public QuestionCategory getQuestionCategory() {
-    return (QuestionCategory) getModel().getObject();
   }
 
 }

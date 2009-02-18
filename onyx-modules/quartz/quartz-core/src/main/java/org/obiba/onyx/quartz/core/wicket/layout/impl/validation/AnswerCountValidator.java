@@ -24,6 +24,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 
 /**
@@ -49,11 +50,21 @@ public class AnswerCountValidator implements INullAcceptingValidator, IClusterab
   @SuppressWarnings("unchecked")
   public void validate(IValidatable validatable) {
     Question question = (Question) questionModel.getObject();
+    if(question.getQuestions().size() > 0 && question.getCategories().size() > 0) {
+      for(Question child : question.getQuestions()) {
+        validate(validatable, child);
+      }
+    } else {
+      validate(validatable, question);
+    }
+  }
+
+  public void validate(IValidatable validatable, Question question) {
     List<CategoryAnswer> categoryAnswers = activeQuestionnaireAdministrationService.findAnswers(question);
     int count = categoryAnswers.size();
 
     if(count == 0 && question.isRequired()) {
-      ValidationError error = new ValidationError();
+      ValidationError error = newValidationError(question);
       error.addMessageKey(KEY_PREFIX + ".Required");
       validatable.error(error);
     } else {
@@ -70,9 +81,9 @@ public class AnswerCountValidator implements INullAcceptingValidator, IClusterab
 
       // find if there is an error
       if(minCount != null && minCount > count) {
-        validatable.error(newValidationError(minCount, maxCount, count));
+        validatable.error(newValidationError(question, minCount, maxCount, count));
       } else if(maxCount != null && maxCount < count) {
-        validatable.error(newValidationError(minCount, maxCount, count));
+        validatable.error(newValidationError(question, minCount, maxCount, count));
       } else {
 
         // check open answer requiredness
@@ -89,7 +100,7 @@ public class AnswerCountValidator implements INullAcceptingValidator, IClusterab
             if(openAnswerDefinition.isRequired()) {
               if(categoryAnswer.getOpenAnswers().size() == 0) {
                 // at least one open answer is required
-                ValidationError error = new ValidationError();
+                ValidationError error = newValidationError(question);
                 error.addMessageKey(KEY_PREFIX + ".Required");
                 validatable.error(error);
               } else if(openAnswerDefinition.getOpenAnswerDefinitions().size() > 0) {
@@ -104,7 +115,7 @@ public class AnswerCountValidator implements INullAcceptingValidator, IClusterab
                       }
                     }
                     if(!found) {
-                      ValidationError error = new ValidationError();
+                      ValidationError error = newValidationError(question);
                       error.addMessageKey(KEY_PREFIX + ".OpenRequired");
                       error.setVariable("open", (String) QuestionnaireStringResourceModelHelper.getStringResourceModel(question, questionCategory, childOpenAnswerDefinition).getObject());
                       validatable.error(error);
@@ -119,8 +130,14 @@ public class AnswerCountValidator implements INullAcceptingValidator, IClusterab
     }
   }
 
-  private ValidationError newValidationError(Integer minCount, Integer maxCount, int count) {
+  private ValidationError newValidationError(Question question) {
     ValidationError error = new ValidationError();
+    error.setVariable("question", new QuestionnaireStringResourceModel(question, "label").getString());
+    return error;
+  }
+
+  private ValidationError newValidationError(Question question, Integer minCount, Integer maxCount, int count) {
+    ValidationError error = newValidationError(question);
 
     error.setVariable("count", count);
 

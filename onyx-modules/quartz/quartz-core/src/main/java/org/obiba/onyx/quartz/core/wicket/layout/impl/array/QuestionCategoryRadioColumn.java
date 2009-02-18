@@ -18,7 +18,6 @@ import org.apache.wicket.model.Model;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategorySelectionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.QuestionCategoryRadioPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +47,6 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
   @Override
   public void populateItem(Item cellItem, String componentId, IModel rowModel, final int index) {
     RadioGroup radioGroup = ((RadioGroup[]) radioGroupsModel.getObject())[index];
-    radioGroup.setLabel(new QuestionnaireStringResourceModel(rowModel, "label"));
     radioGroup.add(new AnswerCountValidator(rowModel));
 
     AbstractQuestionCategorySelectionPanel qCategoryPanel;

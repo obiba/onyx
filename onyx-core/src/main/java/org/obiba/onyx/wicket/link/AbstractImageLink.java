@@ -41,9 +41,9 @@ public abstract class AbstractImageLink extends Panel {
 
     AbstractLink link = newLink("link");
 
-    link.add(new Label("label", labelModel));
+    link.add(new Label("label", labelModel).setEscapeModelStrings(false));
     if(descriptionModel != null) {
-      link.add(new Label("description", descriptionModel));
+      link.add(new Label("description", descriptionModel).setEscapeModelStrings(false));
     } else {
       link.add(new Label("description"));
     }

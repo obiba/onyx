@@ -42,6 +42,8 @@ public abstract class AbstractQuestionCategoryColumn extends AbstractColumn {
     if(parentItem != null) {
       log.debug("found parentItem.index={}", parentItem.getIndex());
       populateItem(cellItem, componentId, rowModel, parentItem.getIndex());
+    } else {
+      log.warn("No Item found in parents.");
     }
   }
 
