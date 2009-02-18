@@ -221,7 +221,7 @@ public class ApplicationConfigurationPage extends BasePage {
       user.addRole(dataCollectionRole);
       user.setDeleted(false);
       user.setStatus(Status.ACTIVE);
-      userService.createUser(user);
+      userService.createOrUpdateUser(user);
 
       // Save initial application configuration.
       appConfigService.createApplicationConfiguration(model.getConfig());

@@ -37,10 +37,6 @@ public abstract class DefaultUserServiceImpl extends PersistenceManagerAwareServ
     getPersistenceManager().save(user);
   }
 
-  public void createUser(User user) {
-    getPersistenceManager().save(user);
-  }
-
   public void deleteUser(User user) {
     user.setDeleted(true);
     getPersistenceManager().save(user);

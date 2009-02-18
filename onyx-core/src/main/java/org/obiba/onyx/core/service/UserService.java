@@ -50,11 +50,6 @@ public interface UserService {
   public void updateStatus(User user, Status status);
 
   /**
-   * User creation during the application configuration
-   */
-  public void createUser(User user);
-
-  /**
    * Delete specified user
    * @param user
    */
