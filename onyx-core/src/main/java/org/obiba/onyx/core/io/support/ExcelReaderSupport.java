@@ -109,6 +109,9 @@ public class ExcelReaderSupport {
       case HSSFCell.CELL_TYPE_NUMERIC:
         // If the cell type is NUMERIC, cast the value as a long and return it as a String.
         rvalue = (Long.valueOf((long) cell.getNumericCellValue())).toString();
+        break;
+      case HSSFCell.CELL_TYPE_BLANK:
+        rvalue = "";
       }
     }
 
