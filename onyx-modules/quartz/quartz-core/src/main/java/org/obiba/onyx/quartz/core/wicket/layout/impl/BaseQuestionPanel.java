@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -99,15 +100,21 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
     final ModalWindow commentWindow;
     add(commentWindow = new ModalWindow("addCommentModal"));
 
-    String commentWindowTitle = (new StringResourceModel("CommentsWindow", this, null)).getString() + " - " + new QuestionnaireStringResourceModel(question, "label").getString();
+    final IModel commentWindowTitleModel = new LoadableDetachableModel() {
 
-    // Question label is truncated if too long for Modal Window title bar.
-    if(commentWindowTitle.length() > 60) {
-      commentWindow.setTitle(commentWindowTitle.substring(0, 60) + "...");
-    } else {
-      commentWindow.setTitle(commentWindowTitle);
-    }
+      @Override
+      protected Object load() {
+        String title = (new StringResourceModel("CommentsWindow", BaseQuestionPanel.this, null)).getString() + " - " + new QuestionnaireStringResourceModel(BaseQuestionPanel.this.getModel(), "label").getString();
 
+        // Question label is truncated if too long for Modal Window title bar.
+        if(title.length() > 60) {
+          title = title.substring(0, 60) + "...";
+        }
+
+        return title;
+      }
+
+    };
     commentWindow.setInitialHeight(220);
     commentWindow.setInitialWidth(550);
     commentWindow.setResizable(false);
@@ -148,6 +155,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
             }
 
           });
+          commentWindow.setTitle(commentWindowTitleModel);
           commentWindow.show(target);
         }
       });
