@@ -215,7 +215,6 @@ public class RowView extends DataViewBase {
       cells.add(cellItem);
 
       ICellPopulator populator = (ICellPopulator) cellItem.getModelObject();
-      log.info("{}", populator.getClass().getGenericSuperclass());
       populator.populateItem(cellItem, CELL_ITEM_ID, item.getModel());
 
       if(cellItem.get("cell") == null) {
