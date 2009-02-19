@@ -29,8 +29,6 @@ public class QuestionCategorySelectionBehavior extends AbstractBehavior {
 
   private static final String SELECTED_CSS_CLASS = "selected";
 
-  private static final String NOT_SELECTED_CSS_CLASS = "not-selected";
-
   @Override
   public void onComponentTag(Component component, ComponentTag tag) {
     super.onRendered(component);
@@ -43,15 +41,9 @@ public class QuestionCategorySelectionBehavior extends AbstractBehavior {
       selector = (IQuestionCategorySelectionStateHolder) component.findParent(IQuestionCategorySelectionStateHolder.class);
     }
 
-    if(selector != null) {
-      String cssClass;
-
-      // synchronize the state
-      if(selector.updateState()) {
-        cssClass = SELECTED_CSS_CLASS;
-      } else {
-        cssClass = NOT_SELECTED_CSS_CLASS;
-      }
+    // synchronize the state
+    if(selector != null && selector.updateState()) {
+      String cssClass = SELECTED_CSS_CLASS;
       if(tag.getAttributes().containsKey("class")) {
         cssClass += " " + tag.getAttributes().getString("class");
       }
