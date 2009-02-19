@@ -52,7 +52,9 @@ public class AnswerCountValidator implements INullAcceptingValidator, IClusterab
     Question question = (Question) questionModel.getObject();
     if(question.getQuestions().size() > 0 && question.getCategories().size() > 0) {
       for(Question child : question.getQuestions()) {
-        validate(validatable, child);
+        if(child.isToBeAnswered(activeQuestionnaireAdministrationService)) {
+          validate(validatable, child);
+        }
       }
     } else {
       validate(validatable, question);
