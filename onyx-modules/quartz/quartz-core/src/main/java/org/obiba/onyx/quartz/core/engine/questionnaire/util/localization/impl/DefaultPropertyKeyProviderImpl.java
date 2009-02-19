@@ -23,46 +23,51 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyNamingStrategy;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.util.data.Data;
 
 public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVisitor {
 
+  private IPropertyKeyNamingStrategy propertyKeyNamingStrategy;
+
   //
   // Questionnaire element properties, with their default values.
   //
-  private List<String> questionnaireProperties = Arrays.asList("label", "description", "labelNext", "labelPrevious", "labelStart", "labelFinish", "labelInterrupt", "labelResume", "labelCancel", "conclusion");
+  private List<String> questionnaireProperties;
 
-  private List<String> sectionProperties = Arrays.asList("label");
+  private List<String> sectionProperties;
 
-  private List<String> pageProperties = Arrays.asList("label");
+  private List<String> pageProperties;
 
-  private List<String> questionProperties = Arrays.asList("label", "instructions", "caption", "help", "specifications", "categoryOrder");
+  private List<String> questionProperties;
 
-  private List<String> categoryProperties = Arrays.asList("label");
+  private List<String> categoryProperties;
 
-  private List<String> openAnswerDefinitionProperties = new ArrayList<String>(Arrays.asList("label", "unitLabel"));
-
-  /**
-   * The property requested for.
-   */
-  private String property;
+  private List<String> openAnswerDefinitionProperties;
 
   /**
    * The properties for the visited localizable.
    */
   private List<String> properties;
 
+  public DefaultPropertyKeyProviderImpl() {
+    this.questionnaireProperties = new ArrayList<String>(Arrays.asList("label", "description", "labelNext", "labelPrevious", "labelStart", "labelFinish", "labelInterrupt", "labelResume", "labelCancel", "conclusion"));
+    this.sectionProperties = new ArrayList<String>(Arrays.asList("label"));
+    this.pageProperties = new ArrayList<String>(Arrays.asList("label"));
+    this.questionProperties = new ArrayList<String>(Arrays.asList("label", "instructions", "caption", "help", "specifications", "categoryOrder"));
+    this.categoryProperties = new ArrayList<String>(Arrays.asList("label"));
+    this.openAnswerDefinitionProperties = new ArrayList<String>(Arrays.asList("label", "unitLabel"));
+    this.propertyKeyNamingStrategy = new DefaultPropertyKeyNamingStrategy();
+  }
+
   public List<String> getProperties(IQuestionnaireElement localizable) {
-    this.property = null;
     localizable.accept(this);
     return properties;
   }
 
   public String getPropertyKey(IQuestionnaireElement localizable, String property) {
-    this.property = property;
-    localizable.accept(this);
-    return localizable.getClass().getSimpleName() + "." + localizable.getName() + "." + property;
+    return propertyKeyNamingStrategy.getPropertyKey(localizable, property);
   }
 
   //
@@ -92,23 +97,23 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
     this.openAnswerDefinitionProperties = openAnswerDefinitionProperties;
   }
 
-  protected List<String> getQuestionnaireProperties() {
+  public List<String> getQuestionnaireProperties() {
     return questionnaireProperties;
   }
 
-  protected List<String> getSectionProperties() {
+  public List<String> getSectionProperties() {
     return sectionProperties;
   }
 
-  protected List<String> getPageProperties() {
+  public List<String> getPageProperties() {
     return pageProperties;
   }
 
-  protected List<String> getQuestionProperties() {
+  public List<String> getQuestionProperties() {
     return questionProperties;
   }
 
-  protected List<String> getCategoryProperties() {
+  public List<String> getCategoryProperties() {
     return categoryProperties;
   }
 
@@ -121,34 +126,18 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
   //
   public void visit(Questionnaire questionnaire) {
     properties = getQuestionnaireProperties();
-
-    if(property != null && !properties.contains(property)) {
-      throw invalidPropertyException(questionnaire);
-    }
   }
 
   public void visit(Section section) {
     properties = getSectionProperties();
-
-    if(property != null && !properties.contains(property)) {
-      throw invalidPropertyException(section);
-    }
   }
 
   public void visit(Page page) {
     properties = getPageProperties();
-
-    if(property != null && !properties.contains(property)) {
-      throw invalidPropertyException(page);
-    }
   }
 
   public void visit(Question question) {
     properties = getQuestionProperties();
-
-    if(property != null && !properties.contains(property)) {
-      throw invalidPropertyException(question);
-    }
   }
 
   public void visit(QuestionCategory questionCategory) {
@@ -157,10 +146,6 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
 
   public void visit(Category category) {
     properties = getCategoryProperties();
-
-    if(property != null && !properties.contains(property)) {
-      throw invalidPropertyException(category);
-    }
   }
 
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
@@ -168,23 +153,14 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
     for(Data value : openAnswerDefinition.getDefaultValues()) {
       properties.add(value.getValueAsString());
     }
-
-    if(property != null && !properties.contains(property)) {
-      throw invalidPropertyException(openAnswerDefinition);
-    }
   }
 
   public void visit(Condition condition) {
     properties = new ArrayList<String>();
   }
 
-  /**
-   * Exception if a requested property is not part of questionnaire element allowed properties.
-   * @param localizable
-   * @return
-   */
-  private IllegalArgumentException invalidPropertyException(IQuestionnaireElement localizable) {
-    return new IllegalArgumentException("Invalid property for class " + localizable.getClass().getName() + ": " + property);
+  public void setPropertyKeyNamingStrategy(IPropertyKeyNamingStrategy propertyKeyNamingStrategy) {
+    this.propertyKeyNamingStrategy = propertyKeyNamingStrategy;
   }
 
 }

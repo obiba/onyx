@@ -50,29 +50,11 @@ public class QuestionnaireLocalizationTest extends BaseDefaultSpringContextTestC
     builder.inPage("P4").withQuestion("Q5").withCategory("NAME").withOpenAnswerDefinition("AGE", DataType.INTEGER).addValidator(new DataValidator(new NumberValidator.RangeValidator(40, 70), DataType.INTEGER));
     builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setDefaultData("Left", "Right").setUnit("kg").addValidator(new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
 
-    try {
-      propertyKeyProvider.getPropertyKey(builder.getQuestionnaire(), "tata");
-      Assert.fail("Property check failed.");
-    } catch(IllegalArgumentException e) {
-    }
+    Assert.assertEquals("Questionnaire.HealthQuestionnaire.tata", propertyKeyProvider.getPropertyKey(builder.getQuestionnaire(), "tata"));
+    Assert.assertEquals("Section.S1.tata", propertyKeyProvider.getPropertyKey(builder.inSection("S1").getElement(), "tata"));
+    Assert.assertEquals("Page.P1.tata", propertyKeyProvider.getPropertyKey(builder.inPage("P1").getElement(), "tata"));
+    Assert.assertEquals("Question.Q1.tata", propertyKeyProvider.getPropertyKey(builder.inQuestion("Q1").getElement(), "tata"));
 
-    try {
-      propertyKeyProvider.getPropertyKey(builder.inSection("S1").getElement(), "tata");
-      Assert.fail("Property check failed.");
-    } catch(IllegalArgumentException e) {
-    }
-
-    try {
-      propertyKeyProvider.getPropertyKey(builder.inPage("P1").getElement(), "tata");
-      Assert.fail("Property check failed.");
-    } catch(IllegalArgumentException e) {
-    }
-
-    try {
-      propertyKeyProvider.getPropertyKey(builder.inQuestion("Q1").getElement(), "tata");
-      Assert.fail("Property check failed.");
-    } catch(IllegalArgumentException e) {
-    }
   }
 
 }

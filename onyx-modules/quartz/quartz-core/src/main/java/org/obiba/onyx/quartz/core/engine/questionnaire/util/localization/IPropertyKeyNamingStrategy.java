@@ -9,16 +9,14 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.localization;
 
-import java.util.List;
-
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 
 /**
- * Provides/ckecks the property localization key for a {@link IQuestionnaireElement} questionnaire element.
+ * Get the property localization key for a {@link IQuestionnaireElement} questionnaire element.
  * @author Yannick Marcon
  * 
  */
-public interface IPropertyKeyProvider {
+public interface IPropertyKeyNamingStrategy {
 
   /**
    * Get the property localization key.
@@ -28,12 +26,5 @@ public interface IPropertyKeyProvider {
    * @throws IllegalArgumentException if given property is not associated to the localizable.
    */
   public String getPropertyKey(IQuestionnaireElement localizable, String property);
-
-  /**
-   * Get the property keys associated to given localizable.
-   * @param localizable
-   * @return
-   */
-  public List<String> getProperties(IQuestionnaireElement localizable);
 
 }

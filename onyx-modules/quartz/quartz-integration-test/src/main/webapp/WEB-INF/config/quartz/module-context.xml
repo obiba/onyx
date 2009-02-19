@@ -18,8 +18,12 @@
 
   <bean id="questionToVariableMappingStrategy" class="org.obiba.onyx.quartz.engine.variable.impl.DefaultQuestionToVariableMappingStrategy" />
 
+  <bean id="propertyKeyNamingStrategy" class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyNamingStrategy" />
+
   <bean id="propertyKeyProvider" class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl"
-    scope="prototype" />
+    scope="prototype">
+    <property name="propertyKeyNamingStrategy" ref="propertyKeyNamingStrategy" />
+  </bean>
 
   <bean id="questionnaireBundleManager" class="org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl">
     <constructor-arg value="${org.obiba.onyx.quartz.resources.path}/questionnaires" />

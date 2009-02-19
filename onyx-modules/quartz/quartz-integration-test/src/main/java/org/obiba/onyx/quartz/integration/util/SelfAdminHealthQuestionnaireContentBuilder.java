@@ -15,6 +15,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.answer.CurrentYearSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.FixedSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedQuestionPanelFactory;
 import org.obiba.onyx.util.data.ArithmeticOperator;
@@ -97,6 +98,10 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
 
     builder.setDefaultPageUI(SimplifiedPageLayoutFactory.class);
     builder.setDefaultQuestionUI(SimplifiedQuestionPanelFactory.class);
+
+    DefaultPropertyKeyProviderImpl propertyKeyProvider = new DefaultPropertyKeyProviderImpl();
+    propertyKeyProvider.getQuestionnaireProperties().add("clearAll");
+    builder.setPropertyKeyProvider(propertyKeyProvider);
 
     builder.withSection("A_ADMINISTRATION").withSection("ADMINISTRATIVE_DATA").withPage("1").withQuestion("A0");
     builder.inPage("1").addTimestamp("TS_START");

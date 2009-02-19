@@ -18,9 +18,12 @@
     <property name="dateTimePattern" value="yyyy-MM-dd HH:mm" />
   </bean>
 
-  <bean id="propertyKeyProvider"
-    class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl"
-    scope="prototype" />
+  <bean id="propertyKeyNamingStrategy" class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyNamingStrategy" />
+
+  <bean id="propertyKeyProvider" class="org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl"
+    scope="prototype">
+    <property name="propertyKeyNamingStrategy" ref="propertyKeyNamingStrategy" />
+  </bean>
 
   <bean id="baseStageState" class="org.obiba.onyx.engine.state.AbstractStageState" abstract="true">
     <property name="userSessionService" ref="userSessionService" />

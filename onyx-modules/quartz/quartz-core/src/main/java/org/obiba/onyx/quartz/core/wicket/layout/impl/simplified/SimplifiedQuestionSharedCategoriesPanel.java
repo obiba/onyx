@@ -125,7 +125,7 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
 
     });
 
-    add(new AjaxImageLink("clear", new Model("Clear all")) {
+    add(new AjaxImageLink("clearAll", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "clearAll")) {
 
       @Override
       public void onClick(AjaxRequestTarget target) {

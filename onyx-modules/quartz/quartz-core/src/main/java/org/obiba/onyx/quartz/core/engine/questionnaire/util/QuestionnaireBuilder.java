@@ -27,6 +27,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.QuestionBuil
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.SectionBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.PropertiesPropertyKeyWriterImpl;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanelFactory;
 import org.obiba.runtime.Version;
@@ -37,6 +38,8 @@ import org.obiba.runtime.Version;
  * 
  */
 public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Questionnaire> {
+
+  private IPropertyKeyProvider propertyKeyProvider;
 
   /**
    * Constructor.
@@ -53,11 +56,13 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     }
     this.element = new Questionnaire(name, version);
     this.questionnaire = this.element;
+    this.propertyKeyProvider = new DefaultPropertyKeyProviderImpl();
   }
 
   private QuestionnaireBuilder(Questionnaire questionnaire) {
     super(questionnaire, DefaultPageLayoutFactory.class, DefaultQuestionPanelFactory.class);
     this.element = questionnaire;
+    this.propertyKeyProvider = new DefaultPropertyKeyProviderImpl();
   }
 
   /**
@@ -181,6 +186,15 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     writeProperties(propertyKeyProvider, pWriter);
 
     return pWriter.getProperties();
+  }
+
+  public QuestionnaireBuilder setPropertyKeyProvider(IPropertyKeyProvider propertyKeyProvider) {
+    this.propertyKeyProvider = propertyKeyProvider;
+    return this;
+  }
+
+  public IPropertyKeyProvider getPropertyKeyProvider() {
+    return propertyKeyProvider;
   }
 
 }

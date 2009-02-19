@@ -62,7 +62,7 @@ public class QuestionnaireCreator {
 
     // Create the bundle manager.
     QuestionnaireBundleManager bundleManager = new QuestionnaireBundleManagerImpl(bundleRootDirectory);
-    ((QuestionnaireBundleManagerImpl) bundleManager).setPropertyKeyProvider(new DefaultPropertyKeyProviderImpl());
+    ((QuestionnaireBundleManagerImpl) bundleManager).setPropertyKeyProvider(builder.getPropertyKeyProvider());
     ((QuestionnaireBundleManagerImpl) bundleManager).setResourceLoader(new PathMatchingResourcePatternResolver());
 
     // Create the bundle questionnaire.
