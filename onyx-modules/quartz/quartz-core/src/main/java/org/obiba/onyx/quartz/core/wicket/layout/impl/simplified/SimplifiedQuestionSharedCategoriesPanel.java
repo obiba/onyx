@@ -159,8 +159,8 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
       public Object component(Component component) {
         if(IQuestionCategorySelectionStateHolder.class.isInstance(component)) {
           IQuestionCategorySelectionStateHolder stateHolder = (IQuestionCategorySelectionStateHolder) component;
-          log.info("{}:{} selection was {}, is {}", new Object[] { stateHolder.getQuestion(), stateHolder.getQuestionCategory(), stateHolder.wasSelected(), stateHolder.isSelected() });
           if(stateHolder.wasSelected() != stateHolder.isSelected()) {
+            log.info("{}:{} selection was {}, is {}", new Object[] { stateHolder.getQuestion(), stateHolder.getQuestionCategory(), stateHolder.wasSelected(), stateHolder.isSelected() });
             target.addComponent(component);
           }
         }

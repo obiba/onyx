@@ -12,6 +12,8 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
@@ -57,14 +59,32 @@ public class QuestionCategoryLink extends BaseQuestionCategorySelectionPanel imp
         // persist (or not)
         // if it was selected, deselect it
         boolean isSelected = isSelected();
-        if(!getQuestion().isMultiple() || getQuestionCategory().isEscape()) {
+        Question question = getQuestion();
+        QuestionCategory questionCategory = getQuestionCategory();
+
+        if(!question.isMultiple() || questionCategory.isEscape()) {
           // exclusive choice, only one answer per question
-          activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
+          activeQuestionnaireAdministrationService.deleteAnswers(question);
         } else {
-          activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestionCategory());
+          // in case of multiple answer, make sure when selecting a regular category that a previously selected one is
+          // deselected
+          if(!questionCategory.isEscape()) {
+            for(CategoryAnswer categoryAnswer : activeQuestionnaireAdministrationService.findAnswers(question)) {
+              QuestionCategory qCategory = question.findQuestionCategory(categoryAnswer.getCategoryName());
+              if(qCategory == null && question.getParentQuestion() != null) {
+                // case of shared category
+                qCategory = question.getParentQuestion().findQuestionCategory(categoryAnswer.getCategoryName());
+              }
+              if(qCategory != null && qCategory.isEscape()) {
+                activeQuestionnaireAdministrationService.deleteAnswer(question, qCategory);
+              }
+            }
+          }
+          // delete the previous answer for this category
+          activeQuestionnaireAdministrationService.deleteAnswer(question, questionCategory);
         }
         if(!isSelected) {
-          activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory());
+          activeQuestionnaireAdministrationService.answer(question, questionCategory);
         }
 
         // fire event to other selectors in case of exclusive choice
