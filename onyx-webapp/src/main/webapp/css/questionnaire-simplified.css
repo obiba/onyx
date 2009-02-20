@@ -63,10 +63,9 @@
 	
 }
 
-.open {
+.open > table {
 	margin-left: auto;
 	margin-right: auto;
-	width: 400px;
 }
 
 .regular {
@@ -159,12 +158,23 @@ a.button .foot-left {
 	height:30px;
 	font-size: 18px;
 	line-height:1.6;
+	margin-left:auto;
+	margin-right:auto;
+	width:70px;
+}
+
+.categories .open .category .value.selected {
+	border: solid 2px #c65f02;
+	color: #c65f02;
 }
 
 .categories .open .category a.button {
 	font-size:10px;
 	margin-top:5px;
 	text-transform:uppercase;
+	margin-left:auto;
+	margin-right:auto;
+	width: 70px;
 }
 
 /*****************
