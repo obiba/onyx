@@ -140,6 +140,10 @@
     background: transparent url('../icons/button_orange_bottom-left.png') no-repeat;
 }
 
+.array .category {
+	width: 80px;
+}
+
 /***************
  Category Open
 ****************/
