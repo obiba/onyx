@@ -43,8 +43,10 @@
 }
 
 .instructions {
-	font-style: italic;
-	padding-bottom:5px;
+	color:#999999;
+	font-size:14px;
+	font-weight:bold;
+	padding:10px;
 }
 
 .caption {
@@ -80,10 +82,10 @@
 }
 
 /***************
- Category Buttons
+ Buttons
 ****************/
 
-.category a.button {
+a.button {
     display: block;
     overflow:hidden;
     margin-bottom:10px;
@@ -92,7 +94,7 @@
     background: transparent url('../icons/button_gray_full.png') no-repeat scroll top right;
 }
 
-.category a.button .label {
+a.button .label {
     display: block;
     padding-top: 7px;
     padding-left: 18px;
@@ -100,7 +102,7 @@
     background: transparent url('../icons/button_gray_top-left.png') no-repeat;
 }
 
-.category a.button .description {
+a.button .description {
     font: 12px;
     display: block;
     padding-left: 18px;
@@ -108,16 +110,20 @@
     background: transparent url('../icons/button_gray_middle-left.png') no-repeat;
 }
 
-.category a.button .foot {
+a.button .foot {
     display: block;
     background: transparent url('../icons/button_gray_bottom-right.png') no-repeat scroll top right;
 }
 
-.category a.button .foot-left {
+a.button .foot-left {
     display: block;
     padding: 5px 0 5px 18px;
     background: transparent url('../icons/button_gray_bottom-left.png') no-repeat;
 }
+
+/***************
+ Category Buttons
+****************/
 
 .category.selected a.button {
 	color: #fff;
@@ -138,10 +144,6 @@
 
 .category.selected a.button .foot-left {
     background: transparent url('../icons/button_orange_bottom-left.png') no-repeat;
-}
-
-.array .category {
-	width: 80px;
 }
 
 /***************
@@ -187,4 +189,38 @@
 
 .category .escape a.button {
     margin-right: 6px;
+}
+
+/*****************
+ Category Array
+******************/
+
+table.array {
+	margin-left:auto;
+	margin-right:auto;
+}
+
+.array .label {
+	text-align:right;
+	vertical-align: middle;
+	padding-right: 10px;
+}
+
+.array .headers .category {
+	font-size:14px;
+	text-align:center;
+}
+
+.array .category {
+	width: 80px;
+	padding-right:10px;
+}
+
+.clear {
+	margin-left:auto;
+	margin-right:auto;
+	padding-bottom:20px;
+	padding-top:20px;
+	width:120px;
+	text-align:center;
 }
