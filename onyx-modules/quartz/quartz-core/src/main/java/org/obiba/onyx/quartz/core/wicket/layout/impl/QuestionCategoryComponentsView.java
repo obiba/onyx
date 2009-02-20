@@ -31,6 +31,8 @@ public abstract class QuestionCategoryComponentsView extends Panel {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(QuestionCategoryComponentsView.class);
 
+  private GridView repeater;
+
   /**
    * Constructor around given question.
    * @param id
@@ -42,7 +44,7 @@ public abstract class QuestionCategoryComponentsView extends Panel {
     setOutputMarkupId(true);
 
     // escape categories are on the same line by default
-    GridView repeater = new AbstractQuestionCategoriesView("category", getModel(), filter, permutator) {
+    repeater = new AbstractQuestionCategoriesView("category", getModel(), filter, permutator) {
 
       @Override
       protected void populateItem(Item item) {
@@ -55,6 +57,14 @@ public abstract class QuestionCategoryComponentsView extends Panel {
 
     };
     add(repeater);
+  }
+
+  /**
+   * Get the number of columns.
+   * @return
+   */
+  public int getColumns() {
+    return repeater.getColumns();
   }
 
   /**

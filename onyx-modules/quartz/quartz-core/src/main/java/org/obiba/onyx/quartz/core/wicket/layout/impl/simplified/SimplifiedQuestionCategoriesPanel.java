@@ -10,6 +10,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.HiddenField;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -120,6 +121,16 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
 
     public QuestionCategoryLinksView(String id, IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<QuestionCategory> permutator) {
       super(id, questionModel, filter, permutator);
+    }
+
+    @Override
+    protected void onComponentTag(ComponentTag tag) {
+      if(getColumns() == 2) {
+        tag.getAttributes().put("style", "width: 550px;");
+      } else if(getColumns() >= 3) {
+        tag.getAttributes().put("style", "width: 750px;");
+      }
+      super.onComponentTag(tag);
     }
 
     @Override

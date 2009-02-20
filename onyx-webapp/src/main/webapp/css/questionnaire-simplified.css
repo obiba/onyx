@@ -205,6 +205,10 @@ a.button .foot-left {
 	width:100%;
 }
 
+.regular td.category {
+	width:250px;
+}
+
 .category .regular a.button {
     margin-right: 6px;
 }
@@ -215,6 +219,10 @@ a.button .foot-left {
 
 .escape > table {
 	width:100%;
+}
+
+.escape td.category {
+	width:250px;
 }
 
 .category .escape a.button {
