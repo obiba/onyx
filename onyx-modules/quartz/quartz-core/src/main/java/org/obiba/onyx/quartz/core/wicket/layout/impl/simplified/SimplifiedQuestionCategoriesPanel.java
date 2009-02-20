@@ -10,12 +10,17 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.HiddenField;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionStateHolder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCategoryComponentsView;
@@ -42,6 +47,9 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SimplifiedQuestionCategoriesPanel.class);
 
+  @SpringBean
+  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+
   /**
    * Constructor for a stand-alone question.
    * @param id
@@ -65,13 +73,8 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     add(new QuestionCategoryComponentsView("openCategories", getModel(), filter, new QuestionCategoryListToGridPermutator(getModel(), 1)) {
 
       @Override
-      protected Component newQuestionCategoryComponent(String id, IModel questionCategoryModel) {
-        OpenAnswerDefinition openAnswerDefinition = ((QuestionCategory) questionCategoryModel.getObject()).getOpenAnswerDefinition();
-        if(openAnswerDefinition.getOpenAnswerDefinitions().size() > 0) {
-          return new MultipleSimplifiedOpenAnswerDefinitionPanel(id, getQuestionModel(), questionCategoryModel);
-        } else {
-          return new SimplifiedOpenAnswerDefinitionPanel(id, getQuestionModel(), questionCategoryModel, new QuestionnaireModel(openAnswerDefinition));
-        }
+      protected Component newQuestionCategoryComponent(String id, IModel questionCategoryModel, int index) {
+        return new OpenFragment(id, questionCategoryModel, index);
       }
 
     });
@@ -120,8 +123,30 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     }
 
     @Override
-    protected Component newQuestionCategoryComponent(String id, IModel questionCategoryModel) {
+    protected Component newQuestionCategoryComponent(String id, IModel questionCategoryModel, int index) {
       return new QuestionCategoryLink(id, questionCategoryModel, new QuestionnaireStringResourceModel(questionCategoryModel, "label"));
     }
   }
+
+  @SuppressWarnings("serial")
+  private class OpenFragment extends Fragment {
+    public OpenFragment(String id, IModel questionCategoryModel, int index) {
+      super(id, "openFragment", SimplifiedQuestionCategoriesPanel.this);
+
+      // do not display the or before the first open answer item
+      if(index == 0) {
+        add(new EmptyPanel("or").setVisible(false));
+      } else {
+        add(new Label("or", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "or")));
+      }
+
+      OpenAnswerDefinition openAnswerDefinition = ((QuestionCategory) questionCategoryModel.getObject()).getOpenAnswerDefinition();
+      if(openAnswerDefinition.getOpenAnswerDefinitions().size() > 0) {
+        add(new MultipleSimplifiedOpenAnswerDefinitionPanel("open", getQuestionModel(), questionCategoryModel));
+      } else {
+        add(new SimplifiedOpenAnswerDefinitionPanel("open", getQuestionModel(), questionCategoryModel, new QuestionnaireModel(openAnswerDefinition)));
+      }
+    }
+  }
+
 }

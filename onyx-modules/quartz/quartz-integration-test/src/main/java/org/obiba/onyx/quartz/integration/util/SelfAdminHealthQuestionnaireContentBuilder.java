@@ -101,6 +101,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
 
     DefaultPropertyKeyProviderImpl propertyKeyProvider = new DefaultPropertyKeyProviderImpl();
     propertyKeyProvider.getQuestionnaireProperties().add("clearAll");
+    propertyKeyProvider.getQuestionnaireProperties().add("or");
     propertyKeyProvider.getCategoryProperties().add("description");
     builder.setPropertyKeyProvider(propertyKeyProvider);
 

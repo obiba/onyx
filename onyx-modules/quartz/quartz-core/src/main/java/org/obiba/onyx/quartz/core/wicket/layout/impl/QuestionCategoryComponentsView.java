@@ -49,7 +49,7 @@ public abstract class QuestionCategoryComponentsView extends Panel {
         if(item.getModel() == null) {
           item.add(new EmptyPanel("input").setVisible(false));
         } else {
-          item.add(newQuestionCategoryComponent("input", item.getModel()));
+          item.add(newQuestionCategoryComponent("input", item.getModel(), item.getIndex()));
         }
       }
 
@@ -63,6 +63,6 @@ public abstract class QuestionCategoryComponentsView extends Panel {
    * @param questionCategoryModel
    * @return
    */
-  protected abstract Component newQuestionCategoryComponent(String id, IModel questionCategoryModel);
+  protected abstract Component newQuestionCategoryComponent(String id, IModel questionCategoryModel, int index);
 
 }
