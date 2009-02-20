@@ -68,6 +68,10 @@
 	
 }
 
+/***************
+ Categories
+****************/
+
 .open > table {
 	margin-left: auto;
 	margin-right: auto;
@@ -83,6 +87,10 @@
 	margin-left: auto;
 	margin-right: auto;
 	width: 400px;
+}
+
+td.category {
+	vertical-align: top;
 }
 
 /***************
@@ -176,8 +184,8 @@ a.button .foot-left {
 }
 
 .categories .open .category .value.selected {
-	border: solid 2px #c65f02;
-	color: #c65f02;
+	background-color: #C65F02;
+	color: #ffffff;
 }
 
 .categories .open .category a.button {
