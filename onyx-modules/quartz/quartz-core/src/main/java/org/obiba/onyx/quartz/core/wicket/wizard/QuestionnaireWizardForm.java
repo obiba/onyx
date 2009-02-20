@@ -99,6 +99,7 @@ public class QuestionnaireWizardForm extends WizardForm {
   private void createModalFeedbackPanel() {
     // Create modal feedback window
     feedbackWindow = new ModalWindow("feedbackWindow");
+    feedbackWindow.setCssClassName("onyx");
     feedbackWindow.setInitialHeight(200);
     feedbackWindow.setInitialWidth(400);
     add(feedbackWindow);
@@ -132,6 +133,7 @@ public class QuestionnaireWizardForm extends WizardForm {
       if(!feedbackWindow.isShown()) {
         feedbackWindow.setContent(new ModalFeedbackPanel(feedbackWindow));
         feedbackWindow.show(target);
+        target.appendJavascript("resizeModalFeedback();");
       }
       getFeedbackPanel().setVisible(false);
     } else {

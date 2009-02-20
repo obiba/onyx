@@ -1,0 +1,66 @@
+/*************** Generic Modal Window ********************/
+
+div.wicket-modal div.w_content_1 div.header {
+  text-align: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 3px;
+}
+
+div.wicket-modal div.w_content_1 div.footer {
+  text-align: center;
+  margin-top: 10px;
+}
+
+div.wicket-modal {
+  overflow: auto;
+}
+
+/*************** Onyx Style Modal Window ********************/
+
+div.wicket-modal div.onyx a.w_close {
+  background-position:-45px 45px;
+  height:25px;
+  width:20px;
+}
+
+div.wicket-modal div.onyx a.w_close:hover {
+  background-position:-72px 45px;
+  height:25px;
+  width:20px;
+}
+
+div.wicket-modal div.onyx div.w_caption {
+  height:2em;
+}
+
+div.wicket-modal div.onyx div.w_content_3 {
+	border:0px solid #BBBBBB;
+}
+
+div.wicket-modal div.onyx div.w_left,
+div.wicket-modal div.onyx div.w_right {
+  background-image: url('../images/modal/modal-onyx-graph2.png');
+  _background-image: url('../images/modal/modal-onyx-graph2.png');
+}
+
+div.wicket-modal div.onyx div.w_top,
+div.wicket-modal div.onyx div.w_bottom,
+div.wicket-modal div.onyx div.w_topLeft,
+div.wicket-modal div.onyx div.w_topRight,
+div.wicket-modal div.onyx div.w_bottomRight,
+div.wicket-modal div.onyx div.w_bottomLeft,
+div.wicket-modal div.onyx a.w_close {
+  background-image: url('../images/modal/modal-onyx-graph1.png');
+  _background-image: url('../images/modal/modal-onyx-graph1.png');
+}
+
+div.wicket-modal div.onyx .imagelink { 
+  width:100px;
+  position: absolute; 
+  right: 15px; 
+  bottom: 10px; 
+  width: auto;  
+  font-family:arial,sans-serif;
+  font-size:18px;  
+}

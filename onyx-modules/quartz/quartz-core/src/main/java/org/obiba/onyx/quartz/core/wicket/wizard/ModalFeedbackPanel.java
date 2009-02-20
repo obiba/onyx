@@ -10,9 +10,10 @@
 package org.obiba.onyx.quartz.core.wicket.wizard;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.StringResourceModel;
+import org.obiba.onyx.wicket.link.AjaxImageLink;
 
 /**
  * This is an alternative feedback panel intended to facilitate error reporting in the context of a touch-screen
@@ -30,8 +31,10 @@ public class ModalFeedbackPanel extends FeedbackPanel {
   @SuppressWarnings("serial")
   public ModalFeedbackPanel(final ModalWindow feedbackWindow) {
     super("content");
+    feedbackWindow.setTitle(new StringResourceModel("ModalWindowTitle", this, null));
+    feedbackWindow.setResizable(false);
 
-    add(new AjaxLink("close") {
+    add(new AjaxImageLink("close", new StringResourceModel("CloseModalButton", this, null)) {
 
       @Override
       public void onClick(AjaxRequestTarget target) {

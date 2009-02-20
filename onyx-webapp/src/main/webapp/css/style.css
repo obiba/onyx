@@ -407,27 +407,6 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 
 /*************** End Wicket Autocomplete ********************/
 
-/*************** Modal Window ********************/
-
-div.wicket-modal div.w_content_1 div.header {
-  text-align: left;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-left: 3px;
-}
-
-div.wicket-modal div.w_content_1 div.footer {
-  text-align: center;
-  margin-top: 10px;
-}
-
-div.wicket-modal {
-  overflow: auto;
-}
-
-
-/*************** End Modal Window ********************/
-
 /*************** Dialog ********************/
 
 .centeredHorizontally {
@@ -779,16 +758,6 @@ div.gertTab div.tab-panel {
 
 div.tab-panel {
 	clear:both;
-}
-
-div.wicket-modal div.w_content_3 {
-	border-width: 0px;
-	border-style: solid;
-	border-color: #bbbbbb;
-	padding-top: 0px;
-	padding-right: 0px;
-	padding-bottom: 0px;
-	padding-left: 0px;
 }
 
 .requiredField {

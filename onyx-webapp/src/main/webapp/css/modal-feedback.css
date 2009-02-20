@@ -1,0 +1,32 @@
+div.wicket-modal div.onyx ul.feedback {
+  border-bottom:1px solid #B7B7B7;
+  border-top:1px solid #B7B7B7;
+  margin-left:-35px;  
+  padding-top:10px;  
+  font-weight:bold;  
+}
+
+div.wicket-modal div.onyx .feedbackPanelERROR {
+  color: #000000;
+}
+
+div.wicket-modal div.onyx li.feedbackPanelERROR {
+  background-image:none;
+  padding-left:0px;
+  padding-bottom:10px;
+  list-style-type:none;
+}
+
+div.wicket-modal div.onyx li.feedbackPanelWARNING{
+  background-image:none;
+  padding-left:0px;
+  padding-bottom:10px;
+  list-style-type:none;
+}
+
+div.wicket-modal div.onyx li.feedbackPanelINFO{
+  background-image:none;
+  padding-left:0px;
+  padding-bottom:10px;
+  list-style-type:none;
+}
