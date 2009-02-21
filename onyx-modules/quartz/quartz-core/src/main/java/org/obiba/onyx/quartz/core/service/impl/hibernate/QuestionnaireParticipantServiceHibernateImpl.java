@@ -46,48 +46,54 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
   public List<CategoryAnswer> getCategoryAnswers(Participant participant, String questionnaireName, String questionName) {
     QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant(participant, questionnaireName);
 
-    Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant", Operation.eq, questionnaireParticipant).add("questionAnswer.questionName", Operation.eq, questionName).add("active", Operation.eq, true).getCriteria();
-
-    return criteria.list();
+    if(questionnaireParticipant != null) {
+      Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant", Operation.eq, questionnaireParticipant).add("questionAnswer.questionName", Operation.eq, questionName).add("active", Operation.eq, true).getCriteria();
+      return criteria.list();
+    }
+    return null;
   }
 
   public OpenAnswer getOpenAnswer(Participant participant, String questionnaireName, String questionName, String categoryName, String openAnswerName) {
     QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant(participant, questionnaireName);
 
-    Criteria criteria = AssociationCriteria.create(OpenAnswer.class, getSession()).add("categoryAnswer.questionAnswer.questionnaireParticipant", Operation.eq, questionnaireParticipant).add("categoryAnswer.questionAnswer.questionName", Operation.eq, questionName).add("categoryAnswer.active", Operation.eq, true).add("categoryAnswer.categoryName", Operation.eq, categoryName).add("openAnswerDefinitionName", Operation.eq, openAnswerName).getCriteria();
-
-    return (OpenAnswer) criteria.uniqueResult();
+    if(questionnaireParticipant != null) {
+      Criteria criteria = AssociationCriteria.create(OpenAnswer.class, getSession()).add("categoryAnswer.questionAnswer.questionnaireParticipant", Operation.eq, questionnaireParticipant).add("categoryAnswer.questionAnswer.questionName", Operation.eq, questionName).add("categoryAnswer.active", Operation.eq, true).add("categoryAnswer.categoryName", Operation.eq, categoryName).add("openAnswerDefinitionName", Operation.eq, openAnswerName).getCriteria();
+      return (OpenAnswer) criteria.uniqueResult();
+    }
+    return null;
   }
 
   public String getQuestionComment(Participant participant, String questionnaireName, String questionName) {
     QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant(participant, questionnaireName);
 
-    QuestionAnswer answer = new QuestionAnswer();
-    answer.setQuestionName(questionName);
-    answer.setQuestionnaireParticipant(questionnaireParticipant);
+    if(questionnaireParticipant != null) {
+      QuestionAnswer answer = new QuestionAnswer();
+      answer.setQuestionName(questionName);
+      answer.setQuestionnaireParticipant(questionnaireParticipant);
 
-    answer = getPersistenceManager().matchOne(answer);
+      answer = getPersistenceManager().matchOne(answer);
 
-    if(answer != null) {
-      return answer.getComment();
+      if(answer != null) {
+        return answer.getComment();
+      }
     }
-
     return null;
   }
 
   public Boolean isQuestionActive(Participant participant, String questionnaireName, String questionName) {
     QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant(participant, questionnaireName);
 
-    QuestionAnswer answer = new QuestionAnswer();
-    answer.setQuestionName(questionName);
-    answer.setQuestionnaireParticipant(questionnaireParticipant);
+    if(questionnaireParticipant != null) {
+      QuestionAnswer answer = new QuestionAnswer();
+      answer.setQuestionName(questionName);
+      answer.setQuestionnaireParticipant(questionnaireParticipant);
 
-    answer = getPersistenceManager().matchOne(answer);
+      answer = getPersistenceManager().matchOne(answer);
 
-    if(answer != null) {
-      return answer.getActive();
+      if(answer != null) {
+        return answer.getActive();
+      }
     }
-
     return null;
   }
 
