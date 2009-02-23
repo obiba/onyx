@@ -61,6 +61,22 @@ public abstract class AbstractImageLink extends Panel {
   }
 
   /**
+   * Get the label inside the link.
+   * @return
+   */
+  public Label getLabel() {
+    return (Label) getLink().get("label");
+  }
+
+  /**
+   * Get the description inside the link.
+   * @return
+   */
+  public Label getDescription() {
+    return (Label) getLink().get("description");
+  }
+
+  /**
    * Called on link clicked.
    * @param target
    */
