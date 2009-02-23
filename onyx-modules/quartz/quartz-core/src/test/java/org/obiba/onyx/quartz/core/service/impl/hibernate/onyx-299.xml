@@ -1,0 +1,18 @@
+<dataset>
+
+  <participant id="1" />
+  <participant id="2" />
+  <participant id="3" />
+
+  <questionnaire_participant id="1" questionnaire_name="QUE1" questionnaire_version="1.0.0" participant_id="1" />
+  <questionnaire_participant id="2" questionnaire_name="QUE1" questionnaire_version="1.0.0" participant_id="2" />
+  <!-- Participant id 3 has no questionnaire_participant entry -->
+
+  <question_answer id="1" questionnaire_participant_id="1" question_name="q1" />
+  <question_answer id="2" questionnaire_participant_id="2" question_name="q1" />
+
+  <category_answer id="1" category_name="c1" active="true" question_answer_id="1" />
+
+  <category_answer id="2" category_name="c2" active="true" question_answer_id="2" />
+
+</dataset>
