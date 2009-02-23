@@ -127,7 +127,7 @@
                       <category id="65" name="DOB" escape="false">
                         <openAnswerDefinition id="66" name="DOB" dataType="DATE" required="true">
                           <openAnswerDefinitions id="67">
-                            <open id="68" name="DOB_YEAR" dataType="INTEGER" required="false">
+                            <open id="68" name="DOB_YEAR" dataType="INTEGER" required="true">
                               <validators id="69">
                                 <dataSourceValidator id="70" comparisonOperator="le">
                                   <dataSource class="arithmeticOperationSource" id="71" operator="minus">
@@ -153,7 +153,7 @@
                               <parentOpenAnswerDefinition reference="66"/>
                               <openAnswerDefinitions id="80"/>
                             </open>
-                            <open id="81" name="DOB_MONTH" dataType="INTEGER" required="false">
+                            <open id="81" name="DOB_MONTH" dataType="INTEGER" required="true">
                               <validators id="82">
                                 <dataSourceValidator id="83" comparisonOperator="le">
                                   <dataSource class="fixedSource" id="84">
@@ -173,7 +173,7 @@
                               <parentOpenAnswerDefinition reference="66"/>
                               <openAnswerDefinitions id="89"/>
                             </open>
-                            <open id="90" name="DOB_DAY" dataType="INTEGER" required="false">
+                            <open id="90" name="DOB_DAY" dataType="INTEGER" required="true">
                               <validators id="91">
                                 <dataSourceValidator id="92" comparisonOperator="le">
                                   <dataSource class="fixedSource" id="93">
