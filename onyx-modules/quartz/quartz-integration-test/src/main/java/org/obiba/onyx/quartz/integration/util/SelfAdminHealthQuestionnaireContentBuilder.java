@@ -15,9 +15,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.answer.CurrentYearSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.answer.FixedSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedPageLayoutFactory;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedQuestionPanelFactory;
 import org.obiba.onyx.util.data.ArithmeticOperator;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataBuilder;
@@ -96,14 +93,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
   public static QuestionnaireBuilder buildQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("HealthQuestionnaireSelfAdministered", "1.0");
 
-    builder.setDefaultPageUI(SimplifiedPageLayoutFactory.class);
-    builder.setDefaultQuestionUI(SimplifiedQuestionPanelFactory.class);
-
-    DefaultPropertyKeyProviderImpl propertyKeyProvider = new DefaultPropertyKeyProviderImpl();
-    propertyKeyProvider.getQuestionnaireProperties().add("clearAll");
-    propertyKeyProvider.getQuestionnaireProperties().add("or");
-    propertyKeyProvider.getCategoryProperties().add("description");
-    builder.setPropertyKeyProvider(propertyKeyProvider);
+    builder.setSimplifiedUI();
 
     builder.withSection("A_ADMINISTRATION").withSection("ADMINISTRATIVE_DATA").withPage("1").withQuestion("A0");
     builder.inPage("1").addTimestamp("TS_START");

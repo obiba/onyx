@@ -28,6 +28,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.SectionBuild
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.PropertiesPropertyKeyWriterImpl;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedPageLayoutFactory;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.SimplifiedQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanelFactory;
 import org.obiba.runtime.Version;
@@ -197,4 +199,20 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     return propertyKeyProvider;
   }
 
+  public void setSimplifiedUI() {
+    setDefaultPageUI(SimplifiedPageLayoutFactory.class);
+    setDefaultQuestionUI(SimplifiedQuestionPanelFactory.class);
+
+    DefaultPropertyKeyProviderImpl propertyKeyProvider = new DefaultPropertyKeyProviderImpl();
+    propertyKeyProvider.getQuestionnaireProperties().add("clearAll");
+    propertyKeyProvider.getQuestionnaireProperties().add("or");
+    propertyKeyProvider.getCategoryProperties().add("description");
+    setPropertyKeyProvider(propertyKeyProvider);
+  }
+
+  public void setStandardUI() {
+    setDefaultPageUI(DefaultPageLayoutFactory.class);
+    setDefaultQuestionUI(DefaultQuestionPanelFactory.class);
+    setPropertyKeyProvider(new DefaultPropertyKeyProviderImpl());
+  }
 }
