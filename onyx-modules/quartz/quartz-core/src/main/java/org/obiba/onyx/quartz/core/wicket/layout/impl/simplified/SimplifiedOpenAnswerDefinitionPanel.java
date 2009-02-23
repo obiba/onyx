@@ -13,7 +13,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
@@ -22,9 +21,10 @@ import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListen
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionStateHolder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCategorySelectionBehavior;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.pad.OpenAnswerPadFactory;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.pad.NumericPad;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
+import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.link.AjaxImageLink;
 
 /**
@@ -57,7 +57,7 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
     add(new Label("value", new PropertyModel(this, "openValue")).setOutputMarkupId(true).add(new QuestionCategorySelectionBehavior()));
     add(new Label("label", QuestionnaireStringResourceModelHelper.getStringResourceModel(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition())));
 
-    AjaxImageLink link = new AjaxImageLink("link", new Model("Click"), new Model("Here")) {
+    AjaxImageLink link = new AjaxImageLink("link", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "clickHere")) {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
@@ -72,17 +72,12 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
     add(padWindow = new ModalWindow("padModal"));
     padWindow.setCookieName("numeric-pad");
 
-    final AbstractOpenAnswerDefinitionPanel pad = OpenAnswerPadFactory.create(padWindow.getContentId(), getQuestionModel(), getQuestionCategoryModel(), new QuestionnaireModel(getQuestionCategory().getOpenAnswerDefinition()), padWindow);
+    final AbstractOpenAnswerDefinitionPanel pad = createPad(padWindow);
     padWindow.setContent(pad);
 
     // same as cancel
     padWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
       public boolean onCloseButtonClicked(AjaxRequestTarget target) {
-        if(!getQuestion().isMultiple()) {
-          activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
-        } else {
-          activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestionCategory());
-        }
         return true;
       }
     });
@@ -116,7 +111,7 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
   }
 
   public boolean isSelected() {
-    return activeQuestionnaireAdministrationService.findAnswer(getQuestion(), getQuestionCategory()) != null;
+    return activeQuestionnaireAdministrationService.findOpenAnswer(getQuestion(), getQuestionCategory().getCategory(), getOpenAnswerDefinition()) != null;
   }
 
   public boolean updateState() {
@@ -126,6 +121,15 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
 
   public boolean wasSelected() {
     return selected;
+  }
+
+  public AbstractOpenAnswerDefinitionPanel createPad(ModalWindow padWindow) {
+    DataType type = getOpenAnswerDefinition().getDataType();
+    if(type.equals(DataType.INTEGER) || type.equals(DataType.DECIMAL)) {
+      return new NumericPad(padWindow.getContentId(), getQuestionModel(), getQuestionCategoryModel(), getOpenAnswerDefinitionModel(), padWindow);
+    } else {
+      throw new UnsupportedOperationException("Pad for type " + type + " not supported yet.");
+    }
   }
 
 }

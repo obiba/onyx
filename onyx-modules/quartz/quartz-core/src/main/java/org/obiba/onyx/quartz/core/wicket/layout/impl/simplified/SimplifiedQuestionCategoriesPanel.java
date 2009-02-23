@@ -95,7 +95,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
   }
 
   public void onQuestionCategorySelection(final AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
-    log.info("onQuestionCategorySelection({}, {}, {})", new Object[] { questionModel, questionCategoryModel, isSelected });
+    log.debug("onQuestionCategorySelection({}, {}, {})", new Object[] { questionModel, questionCategoryModel, isSelected });
     // optimize by updating only the selection state that have changed
     visitChildren(new Component.IVisitor() {
 
@@ -103,7 +103,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
         if(IQuestionCategorySelectionStateHolder.class.isInstance(component)) {
           IQuestionCategorySelectionStateHolder stateHolder = (IQuestionCategorySelectionStateHolder) component;
           if(stateHolder.wasSelected() != stateHolder.isSelected()) {
-            log.info("{} selection was {}, is {}", new Object[] { stateHolder.getQuestionCategory(), stateHolder.wasSelected(), stateHolder.isSelected() });
+            log.info("{}:{} selection was {}, is {}", new Object[] { stateHolder.getQuestionCategory(), stateHolder.getOpenAnswerDefinition(), stateHolder.wasSelected(), stateHolder.isSelected() });
             target.addComponent(component);
           }
         }

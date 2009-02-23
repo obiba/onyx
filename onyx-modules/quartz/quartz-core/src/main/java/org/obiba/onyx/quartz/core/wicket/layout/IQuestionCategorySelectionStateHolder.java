@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout;
 
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 
@@ -28,6 +29,8 @@ public interface IQuestionCategorySelectionStateHolder {
    * @return
    */
   public QuestionCategory getQuestionCategory();
+
+  public OpenAnswerDefinition getOpenAnswerDefinition();
 
   /**
    * Is question category selected (persisted state).

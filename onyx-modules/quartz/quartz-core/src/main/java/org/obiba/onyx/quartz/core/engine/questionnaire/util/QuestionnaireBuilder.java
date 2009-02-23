@@ -206,6 +206,9 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     DefaultPropertyKeyProviderImpl propertyKeyProvider = new DefaultPropertyKeyProviderImpl();
     propertyKeyProvider.getQuestionnaireProperties().add("clearAll");
     propertyKeyProvider.getQuestionnaireProperties().add("or");
+    propertyKeyProvider.getQuestionnaireProperties().add("clickHere");
+    propertyKeyProvider.getQuestionnaireProperties().add("ok");
+    propertyKeyProvider.getQuestionnaireProperties().add("cancel");
     propertyKeyProvider.getCategoryProperties().add("description");
     setPropertyKeyProvider(propertyKeyProvider);
   }

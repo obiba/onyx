@@ -274,6 +274,8 @@ public interface ActiveQuestionnaireAdministrationService {
    */
   public void deleteAnswer(Question question, QuestionCategory questionCategory);
 
+  public void deleteAnswer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition);
+
   /**
    * Add a comment to a question answer.
    * 

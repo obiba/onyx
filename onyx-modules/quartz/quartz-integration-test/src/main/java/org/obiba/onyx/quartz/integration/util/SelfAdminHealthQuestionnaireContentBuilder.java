@@ -108,17 +108,11 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(PNA, "88");
     builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(DNK, "99");
 
-    builder.inSection("AGE_DATE_BIRTH").withPage("3_1").withQuestion("DOB_YEAR").withCategory("DOB_YEAR").withOpenAnswerDefinition("DOB_YEAR", DataType.INTEGER).addValidator(ComparisonOperator.le, new ArithmeticOperationSource(new CurrentYearSource(), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(40)))).addValidator(ComparisonOperator.ge, new ArithmeticOperationSource(new CurrentYearSource(), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(70))));
-    builder.inQuestion("DOB_YEAR").withSharedCategory(PNA, "8888");
-    builder.inQuestion("DOB_YEAR").withSharedCategory(DNK, "9999");
-
-    builder.inSection("AGE_DATE_BIRTH").withPage("3_2").withQuestion("DOB_MONTH").withCategories("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12");
-    builder.inQuestion("DOB_MONTH").withSharedCategory(PNA, "88");
-    builder.inQuestion("DOB_MONTH").withSharedCategory(DNK, "99");
-
-    builder.inSection("AGE_DATE_BIRTH").withPage("3_3").withQuestion("DOB_DAY").withCategories("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31");
-    builder.inQuestion("DOB_DAY").withSharedCategory(PNA, "88");
-    builder.inQuestion("DOB_DAY").withSharedCategory(DNK, "99");
+    builder.inSection("AGE_DATE_BIRTH").withPage("3_1").withQuestion("DOB").withCategory("DOB").withOpenAnswerDefinition("DOB", DataType.DATE).withOpenAnswerDefinition("DOB_YEAR", DataType.INTEGER).addValidator(ComparisonOperator.le, new ArithmeticOperationSource(new CurrentYearSource(), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(40)))).addValidator(ComparisonOperator.ge, new ArithmeticOperationSource(new CurrentYearSource(), ArithmeticOperator.minus, new FixedSource(DataBuilder.buildInteger(70))));
+    builder.inOpenAnswerDefinition("DOB").withOpenAnswerDefinition("DOB_MONTH", DataType.INTEGER).addValidator(ComparisonOperator.le, new FixedSource(DataBuilder.buildInteger(12))).addValidator(ComparisonOperator.ge, new FixedSource(DataBuilder.buildInteger(1)));
+    builder.inOpenAnswerDefinition("DOB").withOpenAnswerDefinition("DOB_DAY", DataType.INTEGER).addValidator(ComparisonOperator.le, new FixedSource(DataBuilder.buildInteger(31))).addValidator(ComparisonOperator.ge, new FixedSource(DataBuilder.buildInteger(1)));
+    builder.inQuestion("DOB").withSharedCategory(PNA, "8888");
+    builder.inQuestion("DOB").withSharedCategory(DNK, "9999");
 
     builder.inSection("B_DEMOGRAPHY").withSection("MARITAL_STATUS").withPage("4").withQuestion("MARITAL_STATUS", "4").withCategory("MARRIED").setExportName("1");
     builder.inQuestion("MARITAL_STATUS").withCategory("DIVORCED").setExportName("2");
@@ -138,7 +132,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(PNA, "88");
     builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(DNK, "99");
     builder.inSection("BIRTH_LOCATION").withPage("8").withQuestion("AGE_IMMIGRATION", "7").withSharedCategory(AGE).withOpenAnswerDefinition(AGE, DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0l)).addValidator(ComparisonOperator.le, "PARTICIPANT_AGE", "PARTICIPANT_AGE", "PARTICIPANT_AGE");
-    builder.inQuestion("AGE_IMMIGRATION").withSharedCategory(YEAR).withOpenAnswerDefinition("YEAR", DataType.INTEGER).addValidator(ComparisonOperator.ge, "DOB_YEAR", "DOB_YEAR", "DOB_YEAR").addCurrentYearValidator(ComparisonOperator.le);
+    builder.inQuestion("AGE_IMMIGRATION").withSharedCategory(YEAR).withOpenAnswerDefinition("YEAR", DataType.INTEGER).addValidator(ComparisonOperator.ge, "DOB", "DOB", "DOB_YEAR").addCurrentYearValidator(ComparisonOperator.le);
     builder.inQuestion("AGE_IMMIGRATION").withSharedCategory(PNA, "8888");
     builder.inQuestion("AGE_IMMIGRATION").withSharedCategory(DNK, "9999");
     builder.inQuestion("AGE_IMMIGRATION").setMultipleCondition("AGE_IMMIGRATION_MCONDITION", ConditionOperator.AND).withAnswerCondition("AGE_IMMIGRATION_ACONDITION_0", "COUNTRY_BIRTH");

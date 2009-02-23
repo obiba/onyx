@@ -18,6 +18,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
@@ -76,19 +77,6 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
         if(data != null && data.getValue() != null && data.getValueAsString().length() > 0) {
           try {
             setData(DataBuilder.build(type, data.getValueAsString()));
-            // Validatable validatable = new Validatable(getData()) {
-            // @Override
-            // public void error(IValidationError error) {
-            // // TODO Auto-generated method stub
-            // super.error(error);
-            // MessageSource source = new MessageSource();
-            // String message = error.getErrorMessage(source);
-            // NumericPad.this.error(new ValidationErrorFeedback(error, message));
-            // }
-            // };
-            // for(IDataValidator validator : getOpenAnswerDefinition().getValidators()) {
-            // validator.validate(validatable);
-            // }
           } catch(Exception e) {
             log.warn("Failed parsing as a " + type + ":" + data.getValueAsString(), e);
             setData(null);
@@ -99,12 +87,17 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
 
         // persist
         if(!getQuestion().isMultiple()) {
-          activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
-        } else {
-          activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestionCategory());
+          // exclusive choice: delete other category answers
+          for(CategoryAnswer categoryAnswer : activeQuestionnaireAdministrationService.findAnswers(getQuestion())) {
+            if(!categoryAnswer.getCategoryName().equals(getQuestionCategory().getCategory().getName())) {
+              activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestion().findQuestionCategory(categoryAnswer.getCategoryName()));
+            }
+          }
         }
         if(getData() != null) {
           activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
+        } else {
+          activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition());
         }
 
         // close pad modal window
@@ -112,24 +105,18 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
       }
 
     };
-    link.add(new AttributeModifier("value", new Model("Ok")));
+    link.add(new AttributeModifier("value", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "ok")));
     add(link);
 
     link = new AjaxLink("cancel") {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        setData(null);
-        if(!getQuestion().isMultiple()) {
-          activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
-        } else {
-          activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestionCategory());
-        }
         padWindow.close(target);
       }
 
     };
-    link.add(new AttributeModifier("value", new Model("Cancel")));
+    link.add(new AttributeModifier("value", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "cancel")));
     add(link);
 
   }

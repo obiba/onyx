@@ -88,6 +88,7 @@
 	margin-right: auto;
 	margin-top: 20px;
 	width: 400px;
+	text-align: center;
 }
 
 td.category {
@@ -162,6 +163,12 @@ a.button .foot-left {
 /***************
  Category Open
 ****************/
+
+.obiba-open-widget > span {
+	float:left;
+	margin-left:10px;
+	margin-right:10px;
+}
 
 .obiba-open-separator {
 	text-transform: uppercase;

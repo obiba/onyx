@@ -251,6 +251,15 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     // TODO deal with category answer parent
   }
 
+  public void deleteAnswer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition) {
+    OpenAnswer openAnswer = findOpenAnswer(question, questionCategory.getCategory(), openAnswerDefinition);
+    if(openAnswer != null) {
+      getPersistenceManager().delete(openAnswer);
+    }
+
+    // TODO deal with category answer parent
+  }
+
   public void deleteAnswers(Question question) {
     QuestionAnswer questionAnswer = null;
 

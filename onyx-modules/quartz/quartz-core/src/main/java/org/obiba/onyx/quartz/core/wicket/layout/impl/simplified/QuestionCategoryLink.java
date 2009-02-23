@@ -13,6 +13,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
@@ -111,6 +112,10 @@ public class QuestionCategoryLink extends BaseQuestionCategorySelectionPanel imp
   public boolean updateState() {
     selected = isSelected();
     return selected;
+  }
+
+  public OpenAnswerDefinition getOpenAnswerDefinition() {
+    return null;
   }
 
 }
