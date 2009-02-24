@@ -274,6 +274,12 @@ public interface ActiveQuestionnaireAdministrationService {
    */
   public void deleteAnswer(Question question, QuestionCategory questionCategory);
 
+  /**
+   * Delete the {@link OpenAnswer} (if any).
+   * @param question
+   * @param questionCategory
+   * @param openAnswerDefinition
+   */
   public void deleteAnswer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition);
 
   /**
