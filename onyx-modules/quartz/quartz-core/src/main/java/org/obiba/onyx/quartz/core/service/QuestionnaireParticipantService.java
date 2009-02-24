@@ -63,6 +63,16 @@ public interface QuestionnaireParticipantService {
   public List<CategoryAnswer> getCategoryAnswers(Participant participant, String questionnaireName, String questionName);
 
   /**
+   * Get the category answer.
+   * @param participant
+   * @param questionnaireName
+   * @param questionName
+   * @param categoryName
+   * @return null if category was not selected
+   */
+  public CategoryAnswer getCategoryAnswer(Participant participant, String questionnaireName, String questionName, String categoryName);
+
+  /**
    * Get the active open answer for the question open answer definition.
    * @param participant
    * @param questionnaireName

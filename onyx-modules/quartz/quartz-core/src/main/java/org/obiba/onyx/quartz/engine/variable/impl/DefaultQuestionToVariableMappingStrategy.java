@@ -122,7 +122,6 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     // log.info("question.name={} questionCategories={}", question.getName(), questionCategories);
     if(questionCategories != null) {
       for(QuestionCategory questionCategory : questionCategories) {
-        variable.addCategory(new Category(questionCategory.getCategory().getName(), questionCategory.getExportName(), questionCategory.getCategory().isEscape()));
         variable.addVariable(getCategoryVariable(questionCategory));
       }
       if(variable.getCategories().size() > 0) {
@@ -141,10 +140,14 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
   private Variable getCategoryVariable(QuestionCategory questionCategory) {
     Variable categoryVariable = null;
 
+    categoryVariable = new Category(questionCategory.getCategory().getName(), questionCategory.getExportName()).setEscape(questionCategory.getCategory().isEscape());
+
+    // one variable to show if category is selected or not
+    categoryVariable.setDataType(DataType.BOOLEAN);
+
+    // one variable per open answer
     OpenAnswerDefinition open = questionCategory.getCategory().getOpenAnswerDefinition();
     if(open != null) {
-      categoryVariable = new Variable(questionCategory.getCategory().getName());
-
       categoryVariable.addVariable(getOpenAnswerVariable(open));
       for(OpenAnswerDefinition openChild : open.getOpenAnswerDefinitions()) {
         categoryVariable.addVariable(getOpenAnswerVariable(openChild));
@@ -177,9 +180,15 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
       }
     }
 
-    // variable is about an open answer or the question comment or the questionnaire
+    // variable is about an open answer or the question comment or the questionnaire or a category
     else if(variable.getDataType() != null) {
-      if(variable.getParent().getName().equals(QUESTIONNAIRE_RUN)) {
+      if(Category.class.isInstance(variable)) {
+        // category was selected
+        CategoryAnswer categoryAnswer = questionnaireParticipantService.getCategoryAnswer(participant, questionnaire.getName(), variable.getParent().getName(), variable.getName());
+        if(categoryAnswer != null) {
+          variableData.addData(DataBuilder.buildBoolean(true));
+        }
+      } else if(variable.getParent().getName().equals(QUESTIONNAIRE_RUN)) {
         QuestionnaireParticipant questionnaireParticipant = questionnaireParticipantService.getQuestionnaireParticipant(participant, questionnaire.getName());
         if(questionnaireParticipant != null) {
           if(variable.getName().equals(QUESTIONNAIRE_LOCALE) && questionnaireParticipant.getLocale() != null) {
@@ -201,7 +210,6 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
           variableData.addData(DataBuilder.buildText(comment));
         }
       } else if(variable.getName().equals(QUESTION_ACTIVE)) {
-        // question active data only if it is active
         Boolean active = questionnaireParticipantService.isQuestionActive(participant, questionnaire.getName(), variable.getParent().getName());
         if(active != null) {
           variableData.addData(DataBuilder.buildBoolean(active));

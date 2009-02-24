@@ -53,6 +53,16 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
     return null;
   }
 
+  public CategoryAnswer getCategoryAnswer(Participant participant, String questionnaireName, String questionName, String categoryName) {
+    QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant(participant, questionnaireName);
+
+    if(questionnaireParticipant != null) {
+      Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant", Operation.eq, questionnaireParticipant).add("questionAnswer.questionName", Operation.eq, questionName).add("active", Operation.eq, true).add("categoryName", Operation.eq, categoryName).getCriteria();
+      return (CategoryAnswer) criteria.uniqueResult();
+    }
+    return null;
+  }
+
   public OpenAnswer getOpenAnswer(Participant participant, String questionnaireName, String questionName, String categoryName, String openAnswerName) {
     QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant(participant, questionnaireName);
 

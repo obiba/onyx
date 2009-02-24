@@ -9,22 +9,16 @@
  ******************************************************************************/
 package org.obiba.onyx.engine.variable;
 
-import java.io.Serializable;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 /**
  * 
  */
 @XStreamAlias("category")
-public class Category implements Serializable {
+public class Category extends Variable {
 
   private static final long serialVersionUID = 1L;
-
-  @XStreamAsAttribute
-  private String name;
 
   @XStreamAsAttribute
   private String alt;
@@ -32,29 +26,16 @@ public class Category implements Serializable {
   @XStreamAsAttribute
   private Boolean missing;
 
-  @XStreamOmitField
-  private Variable variable;
+  @XStreamAsAttribute
+  private Boolean escape;
 
   public Category(String name) {
-    super();
-    this.name = name;
+    super(name);
   }
 
-  public Category(String name, String alternateName, Boolean missing) {
-    super();
-    this.name = name;
+  public Category(String name, String alternateName) {
+    super(name);
     this.alt = alternateName;
-    if(missing) {
-      this.missing = missing;
-    }
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 
   public String getAlternateName() {
@@ -69,25 +50,26 @@ public class Category implements Serializable {
     return missing;
   }
 
-  public void setMissing(Boolean missing) {
+  public Category setMissing(Boolean missing) {
     if(missing == null || !missing) {
       this.missing = null;
     } else {
       this.missing = missing;
     }
+    return this;
   }
 
-  public Variable getVariable() {
-    return variable;
+  public Boolean getEscape() {
+    return escape;
   }
 
-  public void setVariable(Variable variable) {
-    this.variable = variable;
-  }
-
-  @Override
-  public String toString() {
-    return getName();
+  public Category setEscape(Boolean escape) {
+    if(escape == null || !escape) {
+      this.escape = null;
+    } else {
+      this.escape = escape;
+    }
+    return this;
   }
 
 }

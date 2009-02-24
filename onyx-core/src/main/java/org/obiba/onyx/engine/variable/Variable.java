@@ -48,9 +48,6 @@ public class Variable implements Serializable {
   @XStreamAsAttribute
   private String key;
 
-  @XStreamImplicit
-  private List<Category> categories;
-
   @XStreamImplicit(itemFieldName = "reference")
   private List<String> references;
 
@@ -244,20 +241,41 @@ public class Variable implements Serializable {
    * @return
    */
   public List<Category> getCategories() {
-    return categories != null ? categories : (categories = new ArrayList<Category>());
+    List<Category> categories = new ArrayList<Category>();
+
+    for(Variable var : getVariables()) {
+      if(Category.class.isInstance(var)) {
+        categories.add((Category) var);
+      }
+    }
+
+    return categories;
   }
 
   /**
-   * Add a {@link Category}, which is both a expected data value and other information for full exportation.
-   * @param category
-   * @return this for chaining
+   * Get the category with the given name.
+   * @param name
+   * @return null if not found.
    */
-  public Variable addCategory(Category category) {
-    if(category != null) {
-      getCategories().add(category);
-      category.setVariable(this);
+  public Category getCategory(String name) {
+    Variable var = getVariable(name);
+    if(Category.class.isInstance(var)) {
+      return (Category) var;
     }
-    return this;
+    return null;
+  }
+
+  /**
+   * True if one of its sub variable is a category.
+   * @return
+   */
+  public boolean isCategorial() {
+    for(Variable var : getVariables()) {
+      if(Category.class.isInstance(var)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -269,7 +287,7 @@ public class Variable implements Serializable {
     if(categoryName != null && categoryName.length() != 0) {
       Category category = new Category(categoryName);
       getCategories().add(category);
-      category.setVariable(this);
+      category.setParent(this);
     }
     return this;
   }
