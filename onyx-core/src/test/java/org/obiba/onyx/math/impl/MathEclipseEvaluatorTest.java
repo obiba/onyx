@@ -10,6 +10,8 @@
 package org.obiba.onyx.math.impl;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -17,7 +19,8 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.matheclipse.parser.client.eval.BooleanVariable;
 import org.matheclipse.parser.client.eval.DoubleEvaluator;
-import org.obiba.onyx.math.impl.MathEclipseEvaluator;
+import org.obiba.onyx.core.data.CurrentDateSource;
+import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 
@@ -186,6 +189,44 @@ public class MathEclipseEvaluatorTest {
       engine.defineVariable("x", vd);
       double d = engine.evaluate("(If[x,3.0,0])^2+3");
       Assert.assertEquals(Double.valueOf(d).toString(), "12.0");
+    } catch(Exception e) {
+      e.printStackTrace();
+      Assert.assertEquals("", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testEvalCurrentYear() {
+    try {
+      String expression = "$currentYear-$1";
+
+      // as a data source
+      List<IDataSource> operands = Arrays.asList(new IDataSource[] { new CurrentDateSource(Calendar.YEAR) });
+      Assert.assertEquals(0d, MathEclipseEvaluator.getInstance().evaluateDouble(expression, null, operands));
+
+      // as a data
+      Calendar cal = Calendar.getInstance();
+      cal.setTime(new Date());
+      List<Data> datas = Arrays.asList(new Data[] { DataBuilder.buildInteger(cal.get(Calendar.YEAR)) });
+      Assert.assertEquals(0d, MathEclipseEvaluator.getInstance().evaluateDouble(expression, datas));
+
+    } catch(Exception e) {
+      e.printStackTrace();
+      Assert.assertEquals("", e.getMessage());
+    }
+  }
+
+  @Test
+  public void testEvalCurrentDate() {
+    try {
+      String expression = "$currentDate-1>0";
+
+      // as data source
+      Assert.assertEquals(true, MathEclipseEvaluator.getInstance().evaluateBoolean(expression, null, null));
+
+      // as data
+      Assert.assertEquals(true, MathEclipseEvaluator.getInstance().evaluateBoolean(expression, null));
+
     } catch(Exception e) {
       e.printStackTrace();
       Assert.assertEquals("", e.getMessage());

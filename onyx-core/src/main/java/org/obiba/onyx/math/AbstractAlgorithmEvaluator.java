@@ -10,8 +10,13 @@
 package org.obiba.onyx.math;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.obiba.onyx.core.data.CurrentDateSource;
+import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -20,6 +25,16 @@ import org.obiba.onyx.util.data.DataType;
  * Base class for sharing the conversion from {@link Data} to double or boolean value. Dates are turned into double.
  */
 public abstract class AbstractAlgorithmEvaluator implements IAlgorithmEvaluator {
+
+  public static final String CURRENT_DATE = "currentDate";
+
+  public static final String CURRENT_YEAR = "currentYear";
+
+  public static final String CURRENT_MONTH = "currentMonth";
+
+  public static final String CURRENT_DAY = "currentDay";
+
+  private Map<String, IDataSource> defaultVariables;
 
   /**
    * Returns either a not null object of type Boolean or Double.
@@ -62,18 +77,61 @@ public abstract class AbstractAlgorithmEvaluator implements IAlgorithmEvaluator 
   }
 
   /**
+   * Get the full default variables, based on data sources.
+   * @return
+   */
+  protected Map<String, IDataSource> getDefaultVariables() {
+    if(defaultVariables == null) {
+      defaultVariables = new HashMap<String, IDataSource>();
+
+      defaultVariables.put(getVariableName(CURRENT_DATE), new CurrentDateSource());
+      defaultVariables.put(getVariableName(CURRENT_YEAR), new CurrentDateSource(Calendar.YEAR));
+      defaultVariables.put(getVariableName(CURRENT_MONTH), new CurrentDateSource(Calendar.MONTH));
+      defaultVariables.put(getVariableName(CURRENT_DAY), new CurrentDateSource(Calendar.DATE));
+    }
+
+    return defaultVariables;
+  }
+
+  /**
+   * Get default variables based on Data, meaning ones that are Participant independent.
+   * @return
+   */
+  protected Map<String, Data> getDefaultDoubleVariables() {
+    Map<String, Data> defaultDoubleVariables = new HashMap<String, Data>();
+
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(new Date());
+    defaultDoubleVariables.put(getVariableName(CURRENT_DATE), DataBuilder.buildDate(cal.getTime()));
+    defaultDoubleVariables.put(getVariableName(CURRENT_YEAR), DataBuilder.buildInteger(cal.get(Calendar.YEAR)));
+    defaultDoubleVariables.put(getVariableName(CURRENT_MONTH), DataBuilder.buildInteger(cal.get(Calendar.MONTH)));
+    defaultDoubleVariables.put(getVariableName(CURRENT_DAY), DataBuilder.buildInteger(cal.get(Calendar.DATE)));
+
+    return defaultDoubleVariables;
+  }
+
+  /**
    * Allow null values in expression (especially for booleans).
    * @return
    */
   protected abstract boolean nullValueAllowed();
 
   /**
-   * Given the index of the operand in the operands list, get the expected variable name.
+   * Given the index of the operand in the operands list, get the expected variable symbol.
    * @param index
    * @return
    */
   protected String getVariableName(int index) {
     return "$" + (index + 1);
+  }
+
+  /**
+   * Given a variable name, built a variable symbol.
+   * @param name
+   * @return
+   */
+  protected String getVariableName(String name) {
+    return "$" + name;
   }
 
 }

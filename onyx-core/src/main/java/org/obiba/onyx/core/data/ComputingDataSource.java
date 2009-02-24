@@ -9,9 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.core.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.math.IAlgorithmEvaluator;
 import org.obiba.onyx.util.data.Data;
@@ -23,9 +20,10 @@ import org.obiba.onyx.util.data.DataType;
  * Given an algorithm (boolean, arithmetic, conditional etc. expressions) and operands provided by a list of IDataSource
  * (this list is optional), the equation is evaluated. Only {@link DataType} BOOLEAN, INTEGER and DECIMAL are supported
  * as a result of the expression evaluation. Operands are data source which data value can be turned either in DECIMAL
- * or BOOLEAN. Expression variable syntax is $n as the nth operand.
+ * or BOOLEAN. Expression variable syntax is $n as the n-th operand.
  * </p>
  * 
+ * <p>
  * Examples:
  * <ul>
  * <li>($1 + $2 + $3)/3 returns the mean value</li>
@@ -36,6 +34,18 @@ import org.obiba.onyx.util.data.DataType;
  * <li>usual mathematical functions are supported ...
  * <li>
  * </ul>
+ * </p>
+ * 
+ * <p>
+ * Predefined variables:
+ * <ul>
+ * <li>$currentDate</li>
+ * <li>$currentYear</li>
+ * <li>$currentMonth</li>
+ * <li>$currentDay</li>
+ * <li>... (more to come)</li>
+ * </ul>
+ * </p>
  * 
  * @see http://matheclipse.org/en/Using_MathEclipse#Syntax_Overview
  */
@@ -56,15 +66,10 @@ public class ComputingDataSource extends AbstractMultipleDataSource {
    * @return null if type is not one of BOOLEAN, INTEGER, DECIMAL
    */
   public Data getData(Participant participant) {
-    List<Data> operands = new ArrayList<Data>();
-    for(IDataSource source : getDataSources()) {
-      operands.add(source.getData(participant));
-    }
-
     if(dataType.equals(DataType.BOOLEAN)) {
-      return DataBuilder.buildBoolean(algorithmEvaluator.evaluateBoolean(expression, operands));
+      return DataBuilder.buildBoolean(algorithmEvaluator.evaluateBoolean(expression, participant, getDataSources()));
     } else if(dataType.isNumberType()) {
-      double d = algorithmEvaluator.evaluateDouble(expression, operands);
+      double d = algorithmEvaluator.evaluateDouble(expression, participant, getDataSources());
       if(dataType.equals(DataType.DECIMAL)) {
         return DataBuilder.buildDecimal(d);
       } else {

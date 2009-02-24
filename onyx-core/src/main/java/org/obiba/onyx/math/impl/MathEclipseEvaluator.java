@@ -10,10 +10,14 @@
 package org.obiba.onyx.math.impl;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.matheclipse.parser.client.eval.DoubleEvaluator;
 import org.matheclipse.parser.client.eval.DoubleVariable;
+import org.obiba.onyx.core.data.IDataSource;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.math.AbstractAlgorithmEvaluator;
 import org.obiba.onyx.util.data.Data;
 import org.slf4j.Logger;
@@ -55,6 +59,25 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
         }
       }
     }
+    for(Map.Entry<String, Data> entry : getDefaultDoubleVariables().entrySet()) {
+      engine.defineVariable(entry.getKey(), new DoubleVariable((Double) convert(entry.getValue())));
+    }
+
+    log.debug(newExpression);
+    return newExpression;
+  }
+
+  private String defineDefaultVariables(DoubleEvaluator engine, String algorithm, Participant participant) {
+    String newExpression = algorithm;
+    for(Map.Entry<String, IDataSource> entry : getDefaultVariables().entrySet()) {
+      Serializable value = convert(entry.getValue().getData(participant));
+      if(Boolean.class.isInstance(value)) {
+        newExpression = newExpression.replace(entry.getKey(), (Boolean) value ? "True" : "False");
+      } else {
+        engine.defineVariable(entry.getKey(), new DoubleVariable((Double) value));
+      }
+    }
+
     log.debug(newExpression);
     return newExpression;
   }
@@ -62,6 +85,38 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
   @Override
   protected boolean nullValueAllowed() {
     return false;
+  }
+
+  public boolean evaluateBoolean(String algorithm, Participant participant, List<IDataSource> operands) {
+    List<Data> datas = null;
+    if(operands != null) {
+      datas = new ArrayList<Data>();
+      for(IDataSource source : operands) {
+        datas.add(source.getData(participant));
+      }
+    }
+    DoubleEvaluator engine = new DoubleEvaluator();
+    String newExpression = defineDefaultVariables(engine, algorithm, participant);
+    newExpression = defineVariables(engine, newExpression, datas);
+
+    double d = engine.evaluate("If[" + newExpression + ", 1, 0]");
+    return d == 1d;
+  }
+
+  public double evaluateDouble(String algorithm, Participant participant, List<IDataSource> operands) {
+    List<Data> datas = null;
+    if(operands != null) {
+      datas = new ArrayList<Data>();
+      for(IDataSource source : operands) {
+        datas.add(source.getData(participant));
+      }
+    }
+
+    DoubleEvaluator engine = new DoubleEvaluator();
+    String newExpression = defineDefaultVariables(engine, algorithm, participant);
+    newExpression = defineVariables(engine, newExpression, datas);
+
+    return engine.evaluate(newExpression);
   }
 
 }
