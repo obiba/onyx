@@ -47,6 +47,13 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
     return d;
   }
 
+  /**
+   * Add default variables definition to current evaluation engine.
+   * @param engine
+   * @param algorithm
+   * @param operands
+   * @return the new expression (boolean variables are not replaced correctly)
+   */
   private String defineVariables(DoubleEvaluator engine, String algorithm, List<Data> operands) {
     String newExpression = algorithm;
     if(operands != null) {
@@ -67,6 +74,13 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
     return newExpression;
   }
 
+  /**
+   * Add default variables definition to current evaluation engine.
+   * @param engine
+   * @param algorithm
+   * @param participant
+   * @return the new expression (boolean variables are not replaced correctly)
+   */
   private String defineDefaultVariables(DoubleEvaluator engine, String algorithm, Participant participant) {
     String newExpression = algorithm;
     for(Map.Entry<String, IDataSource> entry : getDefaultVariables().entrySet()) {
@@ -82,19 +96,17 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
     return newExpression;
   }
 
+  /**
+   * This evaluator does not support interpretation of null values.
+   */
   @Override
   protected boolean nullValueAllowed() {
     return false;
   }
 
   public boolean evaluateBoolean(String algorithm, Participant participant, List<IDataSource> operands) {
-    List<Data> datas = null;
-    if(operands != null) {
-      datas = new ArrayList<Data>();
-      for(IDataSource source : operands) {
-        datas.add(source.getData(participant));
-      }
-    }
+    List<Data> datas = getDatas(participant, operands);
+
     DoubleEvaluator engine = new DoubleEvaluator();
     String newExpression = defineDefaultVariables(engine, algorithm, participant);
     newExpression = defineVariables(engine, newExpression, datas);
@@ -104,6 +116,22 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
   }
 
   public double evaluateDouble(String algorithm, Participant participant, List<IDataSource> operands) {
+    List<Data> datas = getDatas(participant, operands);
+
+    DoubleEvaluator engine = new DoubleEvaluator();
+    String newExpression = defineDefaultVariables(engine, algorithm, participant);
+    newExpression = defineVariables(engine, newExpression, datas);
+
+    return engine.evaluate(newExpression);
+  }
+
+  /**
+   * Get the data from the data sources.
+   * @param participant
+   * @param operands
+   * @return
+   */
+  private List<Data> getDatas(Participant participant, List<IDataSource> operands) {
     List<Data> datas = null;
     if(operands != null) {
       datas = new ArrayList<Data>();
@@ -111,12 +139,7 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
         datas.add(source.getData(participant));
       }
     }
-
-    DoubleEvaluator engine = new DoubleEvaluator();
-    String newExpression = defineDefaultVariables(engine, algorithm, participant);
-    newExpression = defineVariables(engine, newExpression, datas);
-
-    return engine.evaluate(newExpression);
+    return datas;
   }
 
 }
