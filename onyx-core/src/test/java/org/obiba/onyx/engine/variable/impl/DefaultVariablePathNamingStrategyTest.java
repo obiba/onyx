@@ -48,7 +48,7 @@ public class DefaultVariablePathNamingStrategyTest {
     log.info(path = strategy.getPath(variable, "id", "1"));
     Assert.assertEquals("/Root/Test/Toto?id=1", path);
 
-    log.info(path = strategy.addParameters(strategy.addParameters(strategy.getPath(variable, "id", "1"), "name", "Vincent Ferreti"), "path", "/tutu/tata"));
+    log.info(path = strategy.addParameter(strategy.addParameter(strategy.getPath(variable, "id", "1"), "name", "Vincent Ferreti"), "path", "/tutu/tata"));
     Assert.assertEquals("/Root/Test/Toto?id=1&name=Vincent+Ferreti&path=%2Ftutu%2Ftata", path);
 
     List<String> names = strategy.getNormalizedNames(path);

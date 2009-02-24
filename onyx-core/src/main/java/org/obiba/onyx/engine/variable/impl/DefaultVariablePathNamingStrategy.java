@@ -78,10 +78,10 @@ public class DefaultVariablePathNamingStrategy implements IVariablePathNamingStr
   }
 
   public String getPath(Variable entity, String key, String value) {
-    return addParameters(getPath(entity), key, value);
+    return addParameter(getPath(entity), key, value);
   }
 
-  public String addParameters(String path, String key, String value) {
+  public String addParameter(String path, String key, String value) {
     if(path.contains("?")) {
       path += QUERY_STATEMENT_SEPARATOR;
     } else {

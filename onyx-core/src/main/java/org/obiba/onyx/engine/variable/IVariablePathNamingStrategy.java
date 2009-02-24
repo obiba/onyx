@@ -42,13 +42,13 @@ public interface IVariablePathNamingStrategy {
   public String getPath(Variable variable, String key, String value);
 
   /**
-   * Add parameters to path.
+   * Add parameter (key/value pair) to path.
    * @param path
    * @param key
    * @param value
    * @return
    */
-  public String addParameters(String path, String key, String value);
+  public String addParameter(String path, String key, String value);
 
   /**
    * Get the path from DOM representation of the variable (assuming 'name' attribute).
