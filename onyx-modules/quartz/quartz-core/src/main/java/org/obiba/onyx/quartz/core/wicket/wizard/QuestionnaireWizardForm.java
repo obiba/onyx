@@ -27,6 +27,8 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.ModalFeedbackPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.ProgressBarPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
@@ -76,6 +78,8 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   protected ModalWindow feedbackWindow;
 
+  protected ProgressBarPanel progressBar;
+
   //
   // Constructors
   //
@@ -93,6 +97,10 @@ public class QuestionnaireWizardForm extends WizardForm {
     conclusionStep = new ConclusionStep(getStepId());
 
     createModalFeedbackPanel();
+
+    progressBar = new ProgressBarPanel("progressBar");
+    progressBar.setVisible(false);
+    add(progressBar);
 
   }
 
@@ -304,4 +312,9 @@ public class QuestionnaireWizardForm extends WizardForm {
   public void setModalFeedback(boolean modalFeedback) {
     this.modalFeedback = modalFeedback;
   }
+
+  public ProgressBarPanel getProgressBar() {
+    return progressBar;
+  }
+
 }

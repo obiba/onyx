@@ -97,6 +97,14 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return currentPage;
   }
 
+  public int getCurrentPageNumber() {
+    return getQuestionnaire().getPages().indexOf(getCurrentPage()) + 1;
+  }
+
+  public int getLastPageNumber() {
+    return getQuestionnaire().getPages().indexOf(navigationStrategy.getPageOnLast(this)) + 1;
+  }
+
   public Page getResumePage() {
     return navigationStrategy.getPageOnResume(this, getQuestionnaireParticipant());
   }

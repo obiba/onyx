@@ -18,6 +18,7 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 import org.obiba.onyx.quartz.core.wicket.layout.IPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.ProgressBarPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.slf4j.Logger;
@@ -110,11 +111,13 @@ public class PageStepPanel extends QuestionnaireWizardStepPanel {
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
+    updateProgressBar(form);
     pageLayout.onStepInNext(target);
   }
 
   @Override
   public void onStepInPrevious(WizardForm form, AjaxRequestTarget target) {
+    updateProgressBar(form);
     pageLayout.onStepInPrevious(target);
   }
 
@@ -124,6 +127,43 @@ public class PageStepPanel extends QuestionnaireWizardStepPanel {
 
   public void setPreviousEnabled(boolean previousEnabled) {
     this.previousEnabled = previousEnabled;
+  }
+
+  /**
+   * Updates the progress bar to display the percentage completed for this Questionnaire Wizard.
+   * 
+   * @param form
+   */
+  private void updateProgressBar(WizardForm form) {
+
+    // Calculate the percentage
+    int progressPercentage = calculatePercentageCompleted();
+
+    // Update the progress bar to display the percentage
+    ProgressBarPanel progressBar = ((QuestionnaireWizardForm) form).getProgressBar();
+    progressBar.setProgressPercentage(progressPercentage);
+
+    // Make sure the progress bar is visible
+    progressBar.setVisible(true);
+  }
+
+  /**
+   * Calculates the percentage completed for this Questionnaire Wizard.
+   * 
+   * @return The percentage completed.
+   */
+  private int calculatePercentageCompleted() {
+
+    int pageTotalCount = activeQuestionnaireAdministrationService.getLastPageNumber();
+    log.debug("Total number of pages {}", pageTotalCount);
+
+    int lastCompletedPageNo = activeQuestionnaireAdministrationService.getCurrentPageNumber() - 1;
+    log.debug("Last completed page number {}", lastCompletedPageNo);
+
+    int progressPercentage = (int) (((float) lastCompletedPageNo / (float) pageTotalCount) * 100);
+    log.debug("Progress percentage {}", progressPercentage);
+
+    return progressPercentage;
   }
 
 }

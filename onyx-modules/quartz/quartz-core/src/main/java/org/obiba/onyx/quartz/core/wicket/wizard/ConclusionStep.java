@@ -68,4 +68,9 @@ public class ConclusionStep extends QuestionnaireWizardStepPanel {
     setPreviousStep(questionnaireWizardForm.getLastPageStep());
     onPageStep(target);
   }
+
+  @Override
+  public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
+    ((QuestionnaireWizardForm) form).getProgressBar().setVisible(false);
+  }
 }

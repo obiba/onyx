@@ -73,4 +73,10 @@ public class LanguageSelectionStep extends QuestionnaireWizardStepPanel {
       target.addComponent(form);
     }
   }
+
+  @Override
+  public void onStepInPrevious(WizardForm form, AjaxRequestTarget target) {
+    ((QuestionnaireWizardForm) form).getProgressBar().setVisible(false);
+  }
+
 }

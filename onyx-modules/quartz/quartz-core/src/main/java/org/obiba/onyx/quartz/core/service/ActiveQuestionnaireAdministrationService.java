@@ -40,6 +40,13 @@ public interface ActiveQuestionnaireAdministrationService {
   public Page getCurrentPage();
 
   /**
+   * Returns the questionnaire current page number.
+   * 
+   * @return The current page number
+   */  
+  public int getCurrentPageNumber();
+
+  /**
    * Returns the page at which the questionnaire will resume.
    * 
    * @return page at which to resume (or <code>null</code>, if the questionnaire has not been interrupted)
@@ -60,6 +67,13 @@ public interface ActiveQuestionnaireAdministrationService {
    */
   public Page lastPage();
 
+  /**
+   * Returns the questionnaire last page number.
+   * 
+   * @return The last page number
+   */    
+  public int getLastPageNumber();  
+  
   /**
    * Moves back to the previous page of the questionnaire.
    * 
