@@ -23,7 +23,6 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.page.InterviewPage;
-import org.obiba.onyx.webapp.stage.panel.StageHeaderPanel;
 import org.obiba.onyx.webapp.stage.panel.StageMenuBar;
 import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.action.ActionWindow;
@@ -56,12 +55,6 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
     if(participant == null) {
       setResponsePage(WebApplication.get().getHomePage());
     } else {
-      //
-      // Modify header.
-      //
-      remove("header");
-      add(new StageHeaderPanel("header"));
-
       //
       // Modify menu bar.
       //

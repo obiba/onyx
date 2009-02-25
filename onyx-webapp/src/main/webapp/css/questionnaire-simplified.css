@@ -270,3 +270,65 @@ table.array {
 	width:120px;
 	text-align:center;
 }
+
+/*******************
+ Questionnaire Form
+*******************/
+
+.form-data.questionnaire-form-data {
+  padding: 0 0 4px 0;
+}
+
+div.form-button {
+  padding-bottom: 5em;
+}
+
+.form-button input {
+  width: 160px;
+  height: 54px;
+  border: none;
+  background-color: #fff;
+  font-family: arial, helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: normal;
+}
+
+.form-button input.obiba-nav-prev {
+  position: absolute;
+  left: 54px;
+  background-image: url('../icons/button_navigation_back.png');
+  background-repeat: no-repeat;
+  background-position: left;
+  padding-left: 74px;
+  text-align: left;
+}
+
+.form-button input.obiba-nav-prev.disabled {
+  position: absolute;
+  left: 54px;
+  background-image: url('../icons/button_navigation_back_disable.png');
+  background-repeat: no-repeat;
+  background-position: left;
+  padding-left: 74px;
+  text-align: left;
+}
+
+.form-button input.obiba-nav-next {
+  position: absolute;
+  right: 54px;
+  background-image: url('../icons/button_navigation_next.png');
+  background-repeat: no-repeat;
+  background-position: right;
+  padding-right: 74px;
+  text-align: right;
+}
+
+.form-button input.obiba-nav-next.disabled {
+  position: absolute;
+  right: 54px;
+  background-image: url('../icons/button_navigation_next_disable.png');
+  background-repeat: no-repeat;
+  background-position: right;
+  padding-right: 74px;
+  text-align: right;
+}

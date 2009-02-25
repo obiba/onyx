@@ -1,12 +1,11 @@
 <html xmlns:wicket>
 <wicket:panel>
-	<div id="menuBar">
-		<div id="menu" style="margin-top: 5px; margin-left: 15px; font-weight: bold">
-		    <span wicket:id="stageLabel" /> | <span wicket:id="participantLabel" /> | <span wicket:id="birthDateLabel" />
+	<div id="menuWrapper">
+		<div id="menu" class="obiba-menu">
+		  <div class="obiba-menu-content">
+		    <span wicket:id="stageLabel" /> / <span wicket:id="participantLabel" /> / <span wicket:id="birthDateLabel" />
+		  </div>
 		</div>
-		<div id="menuAddOns">
-			<span wicket:id="languageSelect" />
-      	</div>
 	</div>
 	<div style="clear:both;"></div>
 </wicket:panel>

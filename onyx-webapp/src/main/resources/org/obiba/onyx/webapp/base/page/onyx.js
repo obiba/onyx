@@ -113,7 +113,8 @@ var baseLayoutSettings = {
 		spacing_closed:0
 	},
 	north: {
-		size: 63
+	    minSize: 0,
+		size: "auto"
 	},
 	center: {
 		onresize: "innerLayout.resizeAll"	// resize INNER LAYOUT when center pane resizes

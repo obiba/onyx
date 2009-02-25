@@ -25,7 +25,6 @@ import org.apache.wicket.markup.html.resources.JavascriptResourceReference;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.webapp.OnyxApplication;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
-import org.obiba.onyx.webapp.base.panel.HeaderPanel;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
 
 public abstract class BasePage extends WebPage implements IAjaxIndicatorAware, IHeaderContributor {
@@ -40,17 +39,14 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware, I
     feedbackPanel.setOutputMarkupId(true);
     add(feedbackPanel);
 
-    Panel headerPanel = new EmptyPanel("header");
     Panel menuBar = new EmptyPanel("menuBar");
     Session session = getSession();
     // Tests the session type for unit testing
     if(session instanceof OnyxAuthenticatedSession) {
       if(((OnyxAuthenticatedSession) getSession()).isSignedIn()) {
-        headerPanel = new HeaderPanel("header");
         menuBar = new MenuBar("menuBar");
       }
     }
-    add(headerPanel);
     add(menuBar);
 
     // Tests the application type for unit testing
@@ -85,6 +81,7 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware, I
   public void renderHead(IHeaderResponse response) {
     response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "jquery.js"));
     response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "jquery.layout.js"));
+    response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "jquery.corner.js"));
     response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "ui.js"));
     response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "onyx.js"));
   }

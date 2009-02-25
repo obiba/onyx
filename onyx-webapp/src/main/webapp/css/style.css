@@ -118,14 +118,35 @@ div.banner {
   color: #00CAA4;
 }
 
-
-
 #menuBar {
   background-color: #888888;
-  height:25px;
   color: #FFFFFF;
-  font-family: verdana, arial, sans-serif;
-  font-size:12px;
+  font-family: arial, verdana, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+#menuWrapper {
+  width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#menuBar .obiba-menu {
+  float: left;
+  background-image: url(../icons/tab_corner_left.png);
+  background-repeat: no-repeat;
+  margin: 0 1px 0 0;
+  padding: 0 0 0 8px; 
+}
+
+#menuBar .obiba-menu .obiba-menu-content {
+  float: left;
+  background-image: url(../icons/tab_full_right.png);
+  background-repeat: no-repeat;
+  background-position: right top;
+  margin: 0 1px 0 0;
+  padding: 0.2em 8px 0.2em 0;
 }
 
 #menuAddOns{
@@ -140,6 +161,7 @@ div.banner {
 	padding-left:5px;
 	display:inline;
 }
+
 #menu{
 	float:left;
 	margin-left:15px;
@@ -459,10 +481,8 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 
 /*************** Wizard ********************/
 
-form.wizard {
-  border-width: 2px;
-  border-style: solid;
-  border-color: #c65f02;
+.form-data {
+  padding: 4px;
 }
 
 form.wizard-consent {
@@ -996,6 +1016,18 @@ width: 100%;
 }
 /******************* End Tab Layout ************************************************/
 
+/******************* Stage Layout **************************************************/
+
+.stage {
+  background-color: #c65f00;
+  padding: 3px;
+}
+
+.stage .ui-layout-center {
+  background-color: #fff;
+}
+
+/******************* End Stage Layout **********************************************/
 
 div.progress-container {
   border: 1px solid #ccc;
