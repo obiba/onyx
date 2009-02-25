@@ -1,6 +1,10 @@
 <wicket:panel>
-	<div class="progress-container">
-		<div wicket:id="progress"></div>
+	<span class="obiba-progressbar-left"/>
+	<div class="obiba-progressbar-container">
+		<div wicket:id="progress"/>	
 	</div>
-	<span wicket:id="progressLabel"/><wicket:message key="PercentageCompleted" />
+	<span class="obiba-progressbar-right"/>	
+	<div class="obiba-progressbar-label">
+		<span wicket:id="progressLabel"/><wicket:message key="PercentageCompleted" />
+	</div>
 </wicket:panel>

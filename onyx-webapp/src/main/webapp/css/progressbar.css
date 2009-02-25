@@ -1,0 +1,29 @@
+div.obiba-progressbar-container {
+  background-image:url(../icons/bar_tile_light.png);
+  background-repeat:repeat-x;
+  margin:auto;
+  width:500px;
+}
+
+div.obiba-progressbar-container > div {
+  background-image:url(../icons/bar_tile_dark.png);
+  background-repeat:repeat-x;
+  height:25px;
+}
+
+div.obiba-progressbar-right {
+  background-repeat:no-repeat;
+  background-position:right;
+  background-image:url(../icons/bar_right.png);
+}
+
+div.obiba-progressbar-left {
+  background-repeat:no-repeat;
+  background-position:left;
+  background-image:url(../icons/bar_left.png);
+}
+
+div.obiba-progressbar-label {
+  text-align:center;
+  font-weight:bold;
+}

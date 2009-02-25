@@ -1028,17 +1028,3 @@ width: 100%;
 }
 
 /******************* End Stage Layout **********************************************/
-
-div.progress-container {
-  border: 1px solid #ccc;
-  width: 200px;
-  margin: 2px 5px 2px 0;
-  padding: 1px;
-  float: left;
-  background: white;
-}
-
-div.progress-container > div {
-  background-color: #ACE97C;
-  height: 12px
-}
