@@ -78,26 +78,6 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
   }
 
   /**
-   * Set if the current question category ({@link QuestionCategory}) should be selected or not.
-   * @param selected
-   * @return
-   */
-  public CategoryBuilder setSelected(boolean selected) {
-    questionCategory.setSelected(selected);
-    return this;
-  }
-
-  /**
-   * Set if the current question category ({@link QuestionCategory}) should be repeatable or not.
-   * @param selected
-   * @return
-   */
-  public CategoryBuilder setReselectable(boolean reselectable) {
-    questionCategory.setReselectable(reselectable);
-    return this;
-  }
-
-  /**
    * Set if the current category ({@link Category}) allows to escape question answer.
    * @param escape
    * @return
@@ -196,7 +176,6 @@ public class CategoryBuilder extends AbstractQuestionnaireElementBuilder<Categor
       }
     }
     QuestionCategory questionCategory = new QuestionCategory();
-    questionCategory.setSelected(false);
     questionCategory.setCategory(element);
     question.addQuestionCategory(questionCategory);
     return questionCategory;

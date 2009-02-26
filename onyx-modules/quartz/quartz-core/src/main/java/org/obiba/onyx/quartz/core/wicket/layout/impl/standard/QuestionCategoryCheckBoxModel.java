@@ -27,17 +27,12 @@ public class QuestionCategoryCheckBoxModel extends AbstractCheckBoxModel {
   private IModel selectionsModel;
 
   public QuestionCategoryCheckBoxModel(IModel selectionsModel, QuestionCategory questionCategory) {
-    this(selectionsModel, new QuestionnaireModel(questionCategory), questionCategory.isSelected());
+    this(selectionsModel, new QuestionnaireModel(questionCategory));
   }
 
   public QuestionCategoryCheckBoxModel(IModel selectionsModel, IModel questionCategoryModel) {
-    this(selectionsModel, questionCategoryModel, ((QuestionCategory) questionCategoryModel.getObject()).isSelected());
-  }
-
-  public QuestionCategoryCheckBoxModel(IModel selectionsModel, IModel questionCategoryModel, boolean selected) {
     this.selectionsModel = selectionsModel;
     this.questionCategoryModel = questionCategoryModel;
-    if(selected) select();
   }
 
   public QuestionCategory getQuestionCategory() {

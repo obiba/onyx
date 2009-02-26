@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -112,9 +111,6 @@ public class CategoryFinder extends AbstractFinderVisitor<Category> {
   }
 
   public void visit(OpenAnswerDefinition openAnswerDefinition) {
-  }
-
-  public void visit(Condition condition) {
   }
 
 }

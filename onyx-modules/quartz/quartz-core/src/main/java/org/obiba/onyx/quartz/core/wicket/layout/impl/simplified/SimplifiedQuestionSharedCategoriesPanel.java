@@ -27,7 +27,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionStateHolder;
@@ -99,8 +98,8 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
 
     // following columns: the question's categories
     QuestionCategoriesProvider provider = new QuestionCategoriesProvider(getModel());
-    for(QuestionCategory questionCategory : provider.getDataList()) {
-      columns.add(new AbstractQuestionCategoryColumn(new QuestionnaireModel(questionCategory)) {
+    for(IModel questionCategoryModel : provider.getDataList()) {
+      columns.add(new AbstractQuestionCategoryColumn(questionCategoryModel) {
 
         @Override
         public void populateItem(Item cellItem, String componentId, IModel rowModel, int index) {

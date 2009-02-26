@@ -11,10 +11,8 @@ package org.obiba.onyx.quartz.core.wicket.model;
 
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
-import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -28,7 +26,7 @@ import org.obiba.onyx.wicket.model.SpringDetachableModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QuestionnaireModel extends SpringDetachableModel implements IVisitor {
+public class QuestionnaireModel extends SpringDetachableModel {
 
   private static final long serialVersionUID = -6997906325842949254L;
 
@@ -44,7 +42,10 @@ public class QuestionnaireModel extends SpringDetachableModel implements IVisito
 
   private String questionnaireName;
 
-  private IQuestionnaireElement element;
+  @SuppressWarnings("unchecked")
+  private Class elementClass;
+
+  private String elementName;
 
   /**
    * Constructor for a questionnaire.
@@ -53,7 +54,9 @@ public class QuestionnaireModel extends SpringDetachableModel implements IVisito
   public QuestionnaireModel(Questionnaire questionnaire) {
     super();
     this.questionnaireName = questionnaire.getName();
-    this.element = questionnaire;
+
+    this.elementClass = Questionnaire.class;
+    this.elementName = this.questionnaireName;
   }
 
   /**
@@ -73,7 +76,8 @@ public class QuestionnaireModel extends SpringDetachableModel implements IVisito
   public QuestionnaireModel(String questionnaireName, IQuestionnaireElement element) {
     super();
     this.questionnaireName = questionnaireName;
-    this.element = element;
+
+    initialize(element);
   }
 
   /**
@@ -84,7 +88,18 @@ public class QuestionnaireModel extends SpringDetachableModel implements IVisito
   public QuestionnaireModel(IQuestionnaireElement element) {
     super();
     this.questionnaireName = activeQuestionnaireAdministrationService.getQuestionnaire().getName();
-    this.element = element;
+
+    initialize(element);
+  }
+
+  private void initialize(IQuestionnaireElement element) {
+    if(element.getClass().equals(Category.class)) throw new IllegalArgumentException("Category name is not unique, Use QuestionCategory instead.");
+    this.elementClass = element.getClass();
+    this.elementName = element.getName();
+  }
+
+  public String getElementName() {
+    return elementName;
   }
 
   @Override
@@ -93,7 +108,21 @@ public class QuestionnaireModel extends SpringDetachableModel implements IVisito
     QuestionnaireBundle bundle = bundleManager.getBundle(questionnaireName);
 
     finder = QuestionnaireFinder.getInstance(bundle.getQuestionnaire());
-    element.accept(this);
+
+    IQuestionnaireElement element = null;
+    if(elementClass.equals(Questionnaire.class)) {
+      element = finder.getQuestionnaire();
+    } else if(elementClass.equals(Section.class)) {
+      element = finder.findSection(elementName);
+    } else if(elementClass.equals(Page.class)) {
+      element = finder.findPage(elementName);
+    } else if(elementClass.equals(Question.class)) {
+      element = finder.findQuestion(elementName);
+    } else if(elementClass.equals(QuestionCategory.class)) {
+      element = finder.findQuestionCategory(QuestionCategory.getQuestionName(elementName), QuestionCategory.getCategoryName(elementName));
+    } else if(elementClass.equals(OpenAnswerDefinition.class)) {
+      element = finder.findOpenAnswerDefinition(elementName);
+    }
 
     return element;
   }
@@ -103,42 +132,9 @@ public class QuestionnaireModel extends SpringDetachableModel implements IVisito
     finder = null;
   }
 
-  public void visit(Questionnaire questionnaire) {
-    this.element = finder.getQuestionnaire();
-  }
-
-  public void visit(Section section) {
-    this.element = finder.findSection(section.getName());
-  }
-
-  public void visit(Page page) {
-    this.element = finder.findPage(page.getName());
-  }
-
-  public void visit(Question question) {
-    this.element = finder.findQuestion(question.getName());
-  }
-
-  public void visit(QuestionCategory questionCategory) {
-    this.element = finder.findQuestionCategory(questionCategory.getQuestion().getName(), questionCategory.getName());
-  }
-
-  public void visit(Category category) {
-    // category name is not unique
-    this.element = category;
-  }
-
-  public void visit(OpenAnswerDefinition openAnswerDefinition) {
-    this.element = finder.findOpenAnswerDefinition(openAnswerDefinition.getName());
-  }
-
-  public void visit(Condition condition) {
-    this.element = finder.findCondition(condition.getName());
-  }
-
   @Override
   public int hashCode() {
-    return questionnaireName.hashCode() + element.hashCode();
+    return questionnaireName.hashCode() + elementClass.hashCode() + elementName.hashCode();
   }
 
   @Override
@@ -148,7 +144,7 @@ public class QuestionnaireModel extends SpringDetachableModel implements IVisito
       return true;
     } else if(obj instanceof QuestionnaireModel) {
       QuestionnaireModel model = (QuestionnaireModel) obj;
-      return (this.questionnaireName.equals(model.questionnaireName) && this.element.getClass().equals(model.element.getClass()) && this.element.getName().equals(model.element.getName()));
+      return (this.questionnaireName.equals(model.questionnaireName) && this.elementClass.equals(model.elementClass) && this.elementName.equals(model.elementName));
     }
     return super.equals(obj);
   }
@@ -156,7 +152,7 @@ public class QuestionnaireModel extends SpringDetachableModel implements IVisito
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer(super.toString());
-    sb.append(":questionnaireName=").append(questionnaireName).append(":element=[").append(element).append("]");
+    sb.append(":questionnaireName=").append(questionnaireName).append(":element=[").append(elementClass.getSimpleName()).append(":").append(elementName).append("]");
     return sb.toString();
   }
 }

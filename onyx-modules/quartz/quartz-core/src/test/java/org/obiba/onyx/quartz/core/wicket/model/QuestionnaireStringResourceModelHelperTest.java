@@ -32,6 +32,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.impl.DefaultPropertyKeyProviderImpl;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
@@ -84,19 +85,23 @@ public class QuestionnaireStringResourceModelHelperTest {
     locale = new Locale("en");
 
     questionnaire = new Questionnaire("QUESTIONNAIRE", "1.0");
+    Section s1 = new Section("S1");
+    questionnaire.addSection(s1);
+    Page p1 = new Page("PAGE");
+    s1.addPage(p1);
 
     Question parentQuestion = new Question("PARENT_QUESTION");
+    p1.addQuestion(parentQuestion);
+
     question = new Question("QUESTION");
     parentQuestion.addQuestion(question);
+
     questionCategory = new QuestionCategory();
     Category category = new Category("CATEGORY");
     openAnswerDefinition = new OpenAnswerDefinition("OPEN", DataType.TEXT);
     category.setOpenAnswerDefinition(openAnswerDefinition);
     questionCategory.setCategory(category);
     question.addQuestionCategory(questionCategory);
-    Page page = new Page("PAGE");
-    page.addQuestion(parentQuestion);
-    questionnaire.addPage(page);
 
     questionnaireBundleMock = createMock(QuestionnaireBundle.class);
 
@@ -127,6 +132,7 @@ public class QuestionnaireStringResourceModelHelperTest {
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleManagerMock.getBundle("QUESTIONNAIRE")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).atLeastOnce();
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire);
     expect(questionnaireBundleMock.getPropertyKey(openAnswerDefinition, "label")).andReturn(propertyKeyProvider.getPropertyKey(openAnswerDefinition, "label"));
 
     replay(activeQuestionnaireAdministrationServiceMock);
@@ -155,6 +161,7 @@ public class QuestionnaireStringResourceModelHelperTest {
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleManagerMock.getBundle("QUESTIONNAIRE")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).atLeastOnce();
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(openAnswerDefinition, "label")).andReturn(propertyKeyProvider.getPropertyKey(openAnswerDefinition, "label"));
     expect(questionnaireBundleMock.getPropertyKey(openAnswerDefinition, "unitLabel")).andReturn(propertyKeyProvider.getPropertyKey(openAnswerDefinition, "unitLabel"));
 
@@ -184,6 +191,7 @@ public class QuestionnaireStringResourceModelHelperTest {
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleManagerMock.getBundle("QUESTIONNAIRE")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).atLeastOnce();
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(openAnswerDefinition, "label")).andReturn(propertyKeyProvider.getPropertyKey(openAnswerDefinition, "label"));
     expect(questionnaireBundleMock.getPropertyKey(openAnswerDefinition, "unitLabel")).andReturn(propertyKeyProvider.getPropertyKey(openAnswerDefinition, "unitLabel"));
 
@@ -213,6 +221,7 @@ public class QuestionnaireStringResourceModelHelperTest {
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleManagerMock.getBundle("QUESTIONNAIRE")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).atLeastOnce();
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(questionCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(questionCategory, "label"));
     expect(questionnaireBundleMock.getPropertyKey(openAnswerDefinition, "label")).andReturn(propertyKeyProvider.getPropertyKey(openAnswerDefinition, "label"));
     expect(questionnaireBundleMock.getPropertyKey(openAnswerDefinition, "unitLabel")).andReturn(propertyKeyProvider.getPropertyKey(openAnswerDefinition, "unitLabel"));
@@ -243,6 +252,7 @@ public class QuestionnaireStringResourceModelHelperTest {
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleManagerMock.getBundle("QUESTIONNAIRE")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).atLeastOnce();
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question, "label")).andReturn(propertyKeyProvider.getPropertyKey(question, "label"));
     expect(questionnaireBundleMock.getPropertyKey(questionCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(questionCategory, "label"));
     expect(questionnaireBundleMock.getPropertyKey(openAnswerDefinition, "label")).andReturn(propertyKeyProvider.getPropertyKey(openAnswerDefinition, "label"));
@@ -275,6 +285,7 @@ public class QuestionnaireStringResourceModelHelperTest {
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleManagerMock.getBundle("QUESTIONNAIRE")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).atLeastOnce();
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question.getParentQuestion(), "label")).andReturn(propertyKeyProvider.getPropertyKey(question.getParentQuestion(), "label"));
     expect(questionnaireBundleMock.getPropertyKey(question, "label")).andReturn(propertyKeyProvider.getPropertyKey(question, "label"));
     expect(questionnaireBundleMock.getPropertyKey(questionCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(questionCategory, "label"));
@@ -308,6 +319,7 @@ public class QuestionnaireStringResourceModelHelperTest {
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleManagerMock.getBundle("QUESTIONNAIRE")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).atLeastOnce();
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(question.getParentQuestion(), "label")).andReturn(propertyKeyProvider.getPropertyKey(question.getParentQuestion(), "label"));
     expect(questionnaireBundleMock.getPropertyKey(openAnswerDefinition, "label")).andReturn(propertyKeyProvider.getPropertyKey(openAnswerDefinition, "label"));
 

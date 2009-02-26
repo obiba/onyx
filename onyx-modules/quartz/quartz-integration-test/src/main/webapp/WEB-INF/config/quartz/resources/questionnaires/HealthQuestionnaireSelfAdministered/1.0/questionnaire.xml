@@ -20,11 +20,11 @@
                 <question id="15" name="TIMESTAMP_TS_START" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
                   <page reference="10"/>
                   <questionCategories id="16">
-                    <questionCategory id="17" reselectable="false" selected="false">
+                    <questionCategory id="17">
                       <question reference="15"/>
                       <category id="18" name="TIMESTAMP" escape="false">
                         <openAnswerDefinition id="19" name="TIMESTAMP_TS_AI" dataType="DATE" required="true">
-                          <dataSource class="timestampSource" id="20"/>
+                          <dataSource class="currentDateSource" id="20"/>
                         </openAnswerDefinition>
                       </category>
                     </questionCategory>
@@ -50,23 +50,23 @@
                 <question id="30" name="SEX" number="1" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
                   <page reference="28"/>
                   <questionCategories id="31">
-                    <questionCategory id="32" reselectable="false" selected="false" exportName="1">
+                    <questionCategory id="32" exportName="1">
                       <question reference="30"/>
                       <category id="33" name="MALE" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="34" reselectable="false" selected="false" exportName="2">
+                    <questionCategory id="34" exportName="2">
                       <question reference="30"/>
                       <category id="35" name="FEMALE" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="36" reselectable="false" selected="false" exportName="3">
+                    <questionCategory id="36" exportName="3">
                       <question reference="30"/>
                       <category id="37" name="OTHER" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="38" reselectable="false" selected="false" exportName="8">
+                    <questionCategory id="38" exportName="8">
                       <question reference="30"/>
                       <category id="39" name="PNA" escape="true"/>
                     </questionCategory>
-                    <questionCategory id="40" reselectable="false" selected="false" exportName="9">
+                    <questionCategory id="40" exportName="9">
                       <question reference="30"/>
                       <category id="41" name="DNK" escape="true"/>
                     </questionCategory>
@@ -87,7 +87,7 @@
                 <question id="48" name="PARTICIPANT_AGE" number="3" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
                   <page reference="46"/>
                   <questionCategories id="49">
-                    <questionCategory id="50" reselectable="false" selected="false">
+                    <questionCategory id="50">
                       <question reference="48"/>
                       <category id="51" name="PARTICIPANT_AGE" escape="false">
                         <openAnswerDefinition id="52" name="PARTICIPANT_AGE" dataType="INTEGER" required="true">
@@ -103,11 +103,11 @@
                         </openAnswerDefinition>
                       </category>
                     </questionCategory>
-                    <questionCategory id="57" reselectable="false" selected="false" exportName="88">
+                    <questionCategory id="57" exportName="88">
                       <question reference="48"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="58" reselectable="false" selected="false" exportName="99">
+                    <questionCategory id="58" exportName="99">
                       <question reference="48"/>
                       <category reference="41"/>
                     </questionCategory>
@@ -122,7 +122,7 @@
                 <question id="62" name="DOB" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
                   <page reference="60"/>
                   <questionCategories id="63">
-                    <questionCategory id="64" reselectable="false" selected="false">
+                    <questionCategory id="64">
                       <question reference="62"/>
                       <category id="65" name="DOB" escape="false">
                         <openAnswerDefinition id="66" name="DOB" dataType="DATE" required="true">
@@ -130,1879 +130,1588 @@
                             <open id="68" name="DOB_YEAR" dataType="INTEGER" required="true">
                               <validators id="69">
                                 <dataSourceValidator id="70" comparisonOperator="le">
-                                  <dataSource class="arithmeticOperationSource" id="71" operator="minus">
-                                    <dataSourceLeft class="currentYearSource" id="72"/>
-                                    <dataSourceRight class="fixedSource" id="73">
-                                      <data id="74" type="INTEGER">
-                                        <value class="int">40</value>
-                                      </data>
-                                    </dataSourceRight>
-                                  </dataSource>
+                                  <dataSource class="computingDataSource" id="71" expression="$currentYear - 40" dataType="INTEGER"/>
                                 </dataSourceValidator>
-                                <dataSourceValidator id="75" comparisonOperator="ge">
-                                  <dataSource class="arithmeticOperationSource" id="76" operator="minus">
-                                    <dataSourceLeft class="currentYearSource" id="77"/>
-                                    <dataSourceRight class="fixedSource" id="78">
-                                      <data id="79" type="INTEGER">
-                                        <value class="int">70</value>
-                                      </data>
-                                    </dataSourceRight>
-                                  </dataSource>
+                                <dataSourceValidator id="72" comparisonOperator="ge">
+                                  <dataSource class="computingDataSource" id="73" expression="$currentYear - 70" dataType="INTEGER"/>
                                 </dataSourceValidator>
                               </validators>
                               <parentOpenAnswerDefinition reference="66"/>
-                              <openAnswerDefinitions id="80"/>
+                              <openAnswerDefinitions id="74"/>
                             </open>
-                            <open id="81" name="DOB_MONTH" dataType="INTEGER" required="true">
-                              <validators id="82">
-                                <dataSourceValidator id="83" comparisonOperator="le">
-                                  <dataSource class="fixedSource" id="84">
-                                    <data id="85" type="INTEGER">
+                            <open id="75" name="DOB_MONTH" dataType="INTEGER" required="true">
+                              <validators id="76">
+                                <dataSourceValidator id="77" comparisonOperator="le">
+                                  <dataSource class="fixedDataSource" id="78">
+                                    <data id="79" type="INTEGER">
                                       <value class="int">12</value>
                                     </data>
                                   </dataSource>
                                 </dataSourceValidator>
-                                <dataSourceValidator id="86" comparisonOperator="ge">
-                                  <dataSource class="fixedSource" id="87">
-                                    <data id="88" type="INTEGER">
+                                <dataSourceValidator id="80" comparisonOperator="ge">
+                                  <dataSource class="fixedDataSource" id="81">
+                                    <data id="82" type="INTEGER">
                                       <value class="int">1</value>
                                     </data>
                                   </dataSource>
                                 </dataSourceValidator>
                               </validators>
                               <parentOpenAnswerDefinition reference="66"/>
-                              <openAnswerDefinitions id="89"/>
+                              <openAnswerDefinitions id="83"/>
                             </open>
-                            <open id="90" name="DOB_DAY" dataType="INTEGER" required="true">
-                              <validators id="91">
-                                <dataSourceValidator id="92" comparisonOperator="le">
-                                  <dataSource class="fixedSource" id="93">
-                                    <data id="94" type="INTEGER">
+                            <open id="84" name="DOB_DAY" dataType="INTEGER" required="true">
+                              <validators id="85">
+                                <dataSourceValidator id="86" comparisonOperator="le">
+                                  <dataSource class="fixedDataSource" id="87">
+                                    <data id="88" type="INTEGER">
                                       <value class="int">31</value>
                                     </data>
                                   </dataSource>
                                 </dataSourceValidator>
-                                <dataSourceValidator id="95" comparisonOperator="ge">
-                                  <dataSource class="fixedSource" id="96">
-                                    <data id="97" type="INTEGER">
+                                <dataSourceValidator id="89" comparisonOperator="ge">
+                                  <dataSource class="fixedDataSource" id="90">
+                                    <data id="91" type="INTEGER">
                                       <value class="int">1</value>
                                     </data>
                                   </dataSource>
                                 </dataSourceValidator>
                               </validators>
                               <parentOpenAnswerDefinition reference="66"/>
-                              <openAnswerDefinitions id="98"/>
+                              <openAnswerDefinitions id="92"/>
                             </open>
                           </openAnswerDefinitions>
                         </openAnswerDefinition>
                       </category>
                     </questionCategory>
-                    <questionCategory id="99" reselectable="false" selected="false" exportName="8888">
+                    <questionCategory id="93" exportName="8888">
                       <question reference="62"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="100" reselectable="false" selected="false" exportName="9999">
+                    <questionCategory id="94" exportName="9999">
                       <question reference="62"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="101"/>
+                  <questions id="95"/>
                 </question>
               </questions>
             </page>
           </pages>
-          <sections id="102"/>
+          <sections id="96"/>
         </section>
-        <section id="103" name="MARITAL_STATUS">
+        <section id="97" name="MARITAL_STATUS">
           <parentSection reference="23"/>
-          <pages id="104">
-            <page id="105" name="4" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="103"/>
-              <questions id="106">
-                <question id="107" name="MARITAL_STATUS" number="4" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="105"/>
-                  <questionCategories id="108">
-                    <questionCategory id="109" reselectable="false" selected="false" exportName="1">
-                      <question reference="107"/>
-                      <category id="110" name="MARRIED" escape="false"/>
+          <pages id="98">
+            <page id="99" name="4" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="97"/>
+              <questions id="100">
+                <question id="101" name="MARITAL_STATUS" number="4" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="99"/>
+                  <questionCategories id="102">
+                    <questionCategory id="103" exportName="1">
+                      <question reference="101"/>
+                      <category id="104" name="MARRIED" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="111" reselectable="false" selected="false" exportName="2">
-                      <question reference="107"/>
-                      <category id="112" name="DIVORCED" escape="false"/>
+                    <questionCategory id="105" exportName="2">
+                      <question reference="101"/>
+                      <category id="106" name="DIVORCED" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="113" reselectable="false" selected="false" exportName="3">
-                      <question reference="107"/>
-                      <category id="114" name="SEPARATED" escape="false"/>
+                    <questionCategory id="107" exportName="3">
+                      <question reference="101"/>
+                      <category id="108" name="SEPARATED" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="115" reselectable="false" selected="false" exportName="4">
-                      <question reference="107"/>
-                      <category id="116" name="WIDOWED" escape="false"/>
+                    <questionCategory id="109" exportName="4">
+                      <question reference="101"/>
+                      <category id="110" name="WIDOWED" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="117" reselectable="false" selected="false" exportName="5">
-                      <question reference="107"/>
-                      <category id="118" name="SINGLE" escape="false"/>
+                    <questionCategory id="111" exportName="5">
+                      <question reference="101"/>
+                      <category id="112" name="SINGLE" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="119" reselectable="false" selected="false" exportName="88">
-                      <question reference="107"/>
+                    <questionCategory id="113" exportName="88">
+                      <question reference="101"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="120" reselectable="false" selected="false" exportName="99">
-                      <question reference="107"/>
+                    <questionCategory id="114" exportName="99">
+                      <question reference="101"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="121"/>
+                  <questions id="115"/>
                 </question>
               </questions>
             </page>
           </pages>
-          <sections id="122"/>
+          <sections id="116"/>
         </section>
-        <section id="123" name="SIBLING">
+        <section id="117" name="SIBLING">
           <parentSection reference="23"/>
-          <pages id="124">
-            <page id="125" name="5" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="123"/>
-              <questions id="126">
-                <question id="127" name="NUMBER_SIBLINGS_ALL" number="5" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="125"/>
-                  <questionCategories id="128">
-                    <questionCategory id="129" reselectable="false" selected="false">
-                      <question reference="127"/>
-                      <category id="130" name="OPEN_N" escape="false">
-                        <openAnswerDefinition id="131" name="OPEN_N" dataType="INTEGER" required="true">
-                          <validators id="132">
-                            <dataValidator id="133" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="134">
+          <pages id="118">
+            <page id="119" name="5" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="117"/>
+              <questions id="120">
+                <question id="121" name="NUMBER_SIBLINGS_ALL" number="5" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="119"/>
+                  <questionCategories id="122">
+                    <questionCategory id="123">
+                      <question reference="121"/>
+                      <category id="124" name="OPEN_N" escape="false">
+                        <openAnswerDefinition id="125" name="OPEN_N" dataType="INTEGER" required="true">
+                          <validators id="126">
+                            <dataValidator id="127" dataType="INTEGER">
+                              <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="128">
                                 <minimum>0</minimum>
                               </validator>
                             </dataValidator>
                           </validators>
-                          <openAnswerDefinitions id="135"/>
+                          <openAnswerDefinitions id="129"/>
                         </openAnswerDefinition>
                       </category>
                     </questionCategory>
-                    <questionCategory id="136" reselectable="false" selected="false" exportName="88">
-                      <question reference="127"/>
+                    <questionCategory id="130" exportName="88">
+                      <question reference="121"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="137" reselectable="false" selected="false" exportName="99">
-                      <question reference="127"/>
+                    <questionCategory id="131" exportName="99">
+                      <question reference="121"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="138"/>
+                  <questions id="132"/>
                 </question>
               </questions>
             </page>
           </pages>
-          <sections id="139"/>
+          <sections id="133"/>
         </section>
-        <section id="140" name="BIRTH_LOCATION">
+        <section id="134" name="BIRTH_LOCATION">
           <parentSection reference="23"/>
-          <pages id="141">
-            <page id="142" name="6" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="140"/>
-              <questions id="143">
-                <question id="144" name="BL0" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="142"/>
-                  <questionCategories id="145"/>
-                  <questions id="146"/>
+          <pages id="135">
+            <page id="136" name="6" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="134"/>
+              <questions id="137">
+                <question id="138" name="BL0" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="136"/>
+                  <questionCategories id="139"/>
+                  <questions id="140"/>
                 </question>
               </questions>
             </page>
-            <page id="147" name="7" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="140"/>
-              <questions id="148">
-                <question id="149" name="COUNTRY_BIRTH" number="6" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="147"/>
-                  <questionCategories id="150">
-                    <questionCategory id="151" reselectable="false" selected="false">
-                      <question reference="149"/>
-                      <category id="152" name="CA" escape="false"/>
+            <page id="141" name="7" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="134"/>
+              <questions id="142">
+                <question id="143" name="COUNTRY_BIRTH" number="6" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="141"/>
+                  <questionCategories id="144">
+                    <questionCategory id="145">
+                      <question reference="143"/>
+                      <category id="146" name="CA" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="153" reselectable="false" selected="false">
-                      <question reference="149"/>
-                      <category id="154" name="IT" escape="false"/>
+                    <questionCategory id="147">
+                      <question reference="143"/>
+                      <category id="148" name="IT" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="155" reselectable="false" selected="false">
-                      <question reference="149"/>
-                      <category id="156" name="FR" escape="false"/>
+                    <questionCategory id="149">
+                      <question reference="143"/>
+                      <category id="150" name="FR" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="157" reselectable="false" selected="false">
-                      <question reference="149"/>
-                      <category id="158" name="HT" escape="false"/>
+                    <questionCategory id="151">
+                      <question reference="143"/>
+                      <category id="152" name="HT" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="159" reselectable="false" selected="false">
-                      <question reference="149"/>
-                      <category id="160" name="LB" escape="false"/>
+                    <questionCategory id="153">
+                      <question reference="143"/>
+                      <category id="154" name="LB" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="161" reselectable="false" selected="false">
-                      <question reference="149"/>
-                      <category id="162" name="US" escape="false"/>
+                    <questionCategory id="155">
+                      <question reference="143"/>
+                      <category id="156" name="US" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="163" reselectable="false" selected="false">
-                      <question reference="149"/>
-                      <category id="164" name="CN" escape="false"/>
+                    <questionCategory id="157">
+                      <question reference="143"/>
+                      <category id="158" name="CN" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="165" reselectable="false" selected="false">
-                      <question reference="149"/>
-                      <category id="166" name="VN" escape="false"/>
+                    <questionCategory id="159">
+                      <question reference="143"/>
+                      <category id="160" name="VN" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="167" reselectable="false" selected="false">
-                      <question reference="149"/>
-                      <category id="168" name="PT" escape="false"/>
+                    <questionCategory id="161">
+                      <question reference="143"/>
+                      <category id="162" name="PT" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="169" reselectable="false" selected="false">
-                      <question reference="149"/>
-                      <category id="170" name="GR" escape="false"/>
+                    <questionCategory id="163">
+                      <question reference="143"/>
+                      <category id="164" name="GR" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="171" reselectable="false" selected="false">
-                      <question reference="149"/>
-                      <category id="172" name="MA" escape="false"/>
+                    <questionCategory id="165">
+                      <question reference="143"/>
+                      <category id="166" name="MA" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="173" reselectable="false" selected="false">
-                      <question reference="149"/>
-                      <category id="174" name="GB" escape="false"/>
+                    <questionCategory id="167">
+                      <question reference="143"/>
+                      <category id="168" name="GB" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="175" reselectable="false" selected="false" exportName="77">
-                      <question reference="149"/>
-                      <category id="176" name="ELSEWHERE" escape="true"/>
+                    <questionCategory id="169" exportName="77">
+                      <question reference="143"/>
+                      <category id="170" name="ELSEWHERE" escape="true"/>
                     </questionCategory>
-                    <questionCategory id="177" reselectable="false" selected="false" exportName="88">
-                      <question reference="149"/>
+                    <questionCategory id="171" exportName="88">
+                      <question reference="143"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="178" reselectable="false" selected="false" exportName="99">
-                      <question reference="149"/>
+                    <questionCategory id="172" exportName="99">
+                      <question reference="143"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="179"/>
+                  <questions id="173"/>
                 </question>
               </questions>
             </page>
-            <page id="180" name="8" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="140"/>
-              <questions id="181">
-                <question id="182" name="AGE_IMMIGRATION" number="7" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="180"/>
-                  <questionCategories id="183">
-                    <questionCategory id="184" reselectable="false" selected="false">
-                      <question reference="182"/>
-                      <category id="185" name="AGE" escape="false">
-                        <openAnswerDefinition id="186" name="AGE" dataType="INTEGER" required="true">
-                          <validators id="187">
-                            <dataValidator id="188" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="189">
+            <page id="174" name="8" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="134"/>
+              <questions id="175">
+                <question id="176" name="AGE_IMMIGRATION" number="7" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="174"/>
+                  <questionCategories id="177">
+                    <questionCategory id="178">
+                      <question reference="176"/>
+                      <category id="179" name="AGE" escape="false">
+                        <openAnswerDefinition id="180" name="AGE" dataType="INTEGER" required="true">
+                          <validators id="181">
+                            <dataValidator id="182" dataType="INTEGER">
+                              <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="183">
                                 <minimum>0</minimum>
                               </validator>
                             </dataValidator>
-                            <dataSourceValidator id="190" comparisonOperator="le">
-                              <dataSource class="openAnswerSource" id="191">
-                                <question reference="48"/>
-                                <category reference="51"/>
-                                <openAnswerDefinition reference="52"/>
-                              </dataSource>
+                            <dataSourceValidator id="184" comparisonOperator="le">
+                              <dataSource class="questionnaireDataSource" id="185" questionnaire="HealthQuestionnaireSelfAdministered" question="PARTICIPANT_AGE" category="PARTICIPANT_AGE" openAnswerDefinition="PARTICIPANT_AGE"/>
                             </dataSourceValidator>
                           </validators>
-                          <openAnswerDefinitions id="192"/>
+                          <openAnswerDefinitions id="186"/>
                         </openAnswerDefinition>
                       </category>
                     </questionCategory>
-                    <questionCategory id="193" reselectable="false" selected="false">
-                      <question reference="182"/>
-                      <category id="194" name="YEAR" escape="false">
-                        <openAnswerDefinition id="195" name="YEAR" dataType="INTEGER" required="true">
-                          <validators id="196">
-                            <dataSourceValidator id="197" comparisonOperator="ge">
-                              <dataSource class="openAnswerSource" id="198">
-                                <question reference="62"/>
-                                <category reference="65"/>
-                                <openAnswerDefinition reference="68"/>
+                    <questionCategory id="187">
+                      <question reference="176"/>
+                      <category id="188" name="YEAR" escape="false">
+                        <openAnswerDefinition id="189" name="YEAR" dataType="INTEGER" required="true">
+                          <validators id="190">
+                            <dataSourceValidator id="191" comparisonOperator="ge">
+                              <dataSource class="questionnaireDataSource" id="192" questionnaire="HealthQuestionnaireSelfAdministered" question="DOB" category="DOB" openAnswerDefinition="DOB_YEAR"/>
+                            </dataSourceValidator>
+                            <dataSourceValidator id="193" comparisonOperator="le">
+                              <dataSource class="currentDateSource" id="194">
+                                <field>YEAR</field>
                               </dataSource>
                             </dataSourceValidator>
-                            <dataSourceValidator id="199" comparisonOperator="le">
-                              <dataSource class="currentYearSource" id="200"/>
-                            </dataSourceValidator>
                           </validators>
-                          <openAnswerDefinitions id="201"/>
+                          <openAnswerDefinitions id="195"/>
                         </openAnswerDefinition>
                       </category>
                     </questionCategory>
-                    <questionCategory id="202" reselectable="false" selected="false" exportName="8888">
-                      <question reference="182"/>
+                    <questionCategory id="196" exportName="8888">
+                      <question reference="176"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="203" reselectable="false" selected="false" exportName="9999">
-                      <question reference="182"/>
+                    <questionCategory id="197" exportName="9999">
+                      <question reference="176"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="multipleCondition" id="204" name="AGE_IMMIGRATION_MCONDITION" conditionOperator="AND">
-                    <questions id="205">
-                      <question reference="182"/>
-                    </questions>
-                    <conditions id="206">
-                      <answerCondition id="207" name="AGE_IMMIGRATION_ACONDITION_0">
-                        <question reference="149"/>
-                      </answerCondition>
-                      <notCondition id="208" name="AGE_IMMIGRATION_NCONDITION_0">
-                        <condition class="answerCondition" id="209" name="AGE_IMMIGRATION_ACONDITION_1">
-                          <question reference="149"/>
-                          <category reference="152"/>
-                        </condition>
-                      </notCondition>
-                      <notCondition id="210" name="AGE_IMMIGRATION_NCONDITION_1">
-                        <condition class="answerCondition" id="211" name="AGE_IMMIGRATION_ACONDITION_2">
-                          <question reference="149"/>
-                          <category reference="39"/>
-                        </condition>
-                      </notCondition>
-                      <notCondition id="212" name="AGE_IMMIGRATION_NCONDITION_2">
-                        <condition class="answerCondition" id="213" name="AGE_IMMIGRATION_ACONDITION_3">
-                          <question reference="149"/>
-                          <category reference="41"/>
-                        </condition>
-                      </notCondition>
-                    </conditions>
+                  <condition class="computingDataSource" id="198" expression="$1 &amp;&amp; !$2 &amp;&amp; !$3 &amp;&amp; !$4" dataType="BOOLEAN">
+                    <dataSources id="199">
+                      <questionnaireDataSource id="200" questionnaire="HealthQuestionnaireSelfAdministered" question="COUNTRY_BIRTH"/>
+                      <questionnaireDataSource id="201" questionnaire="HealthQuestionnaireSelfAdministered" question="COUNTRY_BIRTH" category="CA"/>
+                      <questionnaireDataSource id="202" questionnaire="HealthQuestionnaireSelfAdministered" question="COUNTRY_BIRTH" category="PNA"/>
+                      <questionnaireDataSource id="203" questionnaire="HealthQuestionnaireSelfAdministered" question="COUNTRY_BIRTH" category="DNK"/>
+                    </dataSources>
                   </condition>
-                  <questions id="214"/>
+                  <questions id="204"/>
                 </question>
               </questions>
             </page>
-            <page id="215" name="9" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="140"/>
-              <questions id="216">
-                <question id="217" name="MOTHER_COUNTRY_BIRTH" number="8" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="215"/>
-                  <questionCategories id="218">
-                    <questionCategory id="219" reselectable="false" selected="false">
-                      <question reference="217"/>
+            <page id="205" name="9" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="134"/>
+              <questions id="206">
+                <question id="207" name="MOTHER_COUNTRY_BIRTH" number="8" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="205"/>
+                  <questionCategories id="208">
+                    <questionCategory id="209">
+                      <question reference="207"/>
+                      <category reference="146"/>
+                    </questionCategory>
+                    <questionCategory id="210">
+                      <question reference="207"/>
+                      <category reference="148"/>
+                    </questionCategory>
+                    <questionCategory id="211">
+                      <question reference="207"/>
+                      <category reference="150"/>
+                    </questionCategory>
+                    <questionCategory id="212">
+                      <question reference="207"/>
                       <category reference="152"/>
                     </questionCategory>
-                    <questionCategory id="220" reselectable="false" selected="false">
-                      <question reference="217"/>
+                    <questionCategory id="213">
+                      <question reference="207"/>
                       <category reference="154"/>
                     </questionCategory>
-                    <questionCategory id="221" reselectable="false" selected="false">
-                      <question reference="217"/>
+                    <questionCategory id="214">
+                      <question reference="207"/>
                       <category reference="156"/>
                     </questionCategory>
-                    <questionCategory id="222" reselectable="false" selected="false">
-                      <question reference="217"/>
+                    <questionCategory id="215">
+                      <question reference="207"/>
                       <category reference="158"/>
                     </questionCategory>
-                    <questionCategory id="223" reselectable="false" selected="false">
-                      <question reference="217"/>
+                    <questionCategory id="216">
+                      <question reference="207"/>
                       <category reference="160"/>
                     </questionCategory>
-                    <questionCategory id="224" reselectable="false" selected="false">
-                      <question reference="217"/>
+                    <questionCategory id="217">
+                      <question reference="207"/>
                       <category reference="162"/>
                     </questionCategory>
-                    <questionCategory id="225" reselectable="false" selected="false">
-                      <question reference="217"/>
+                    <questionCategory id="218">
+                      <question reference="207"/>
                       <category reference="164"/>
                     </questionCategory>
-                    <questionCategory id="226" reselectable="false" selected="false">
-                      <question reference="217"/>
+                    <questionCategory id="219">
+                      <question reference="207"/>
                       <category reference="166"/>
                     </questionCategory>
-                    <questionCategory id="227" reselectable="false" selected="false">
-                      <question reference="217"/>
+                    <questionCategory id="220">
+                      <question reference="207"/>
                       <category reference="168"/>
                     </questionCategory>
-                    <questionCategory id="228" reselectable="false" selected="false">
-                      <question reference="217"/>
+                    <questionCategory id="221" exportName="77">
+                      <question reference="207"/>
                       <category reference="170"/>
                     </questionCategory>
-                    <questionCategory id="229" reselectable="false" selected="false">
-                      <question reference="217"/>
-                      <category reference="172"/>
-                    </questionCategory>
-                    <questionCategory id="230" reselectable="false" selected="false">
-                      <question reference="217"/>
-                      <category reference="174"/>
-                    </questionCategory>
-                    <questionCategory id="231" reselectable="false" selected="false" exportName="77">
-                      <question reference="217"/>
-                      <category reference="176"/>
-                    </questionCategory>
-                    <questionCategory id="232" reselectable="false" selected="false" exportName="88">
-                      <question reference="217"/>
+                    <questionCategory id="222" exportName="88">
+                      <question reference="207"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="233" reselectable="false" selected="false" exportName="99">
-                      <question reference="217"/>
+                    <questionCategory id="223" exportName="99">
+                      <question reference="207"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="234"/>
+                  <questions id="224"/>
                 </question>
               </questions>
             </page>
-            <page id="235" name="10" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="140"/>
-              <questions id="236">
-                <question id="237" name="FATHER_COUNTRY_BIRTH" number="9" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="235"/>
-                  <questionCategories id="238">
-                    <questionCategory id="239" reselectable="false" selected="false">
-                      <question reference="237"/>
+            <page id="225" name="10" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="134"/>
+              <questions id="226">
+                <question id="227" name="FATHER_COUNTRY_BIRTH" number="9" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="225"/>
+                  <questionCategories id="228">
+                    <questionCategory id="229">
+                      <question reference="227"/>
+                      <category reference="146"/>
+                    </questionCategory>
+                    <questionCategory id="230">
+                      <question reference="227"/>
+                      <category reference="148"/>
+                    </questionCategory>
+                    <questionCategory id="231">
+                      <question reference="227"/>
+                      <category reference="150"/>
+                    </questionCategory>
+                    <questionCategory id="232">
+                      <question reference="227"/>
                       <category reference="152"/>
                     </questionCategory>
-                    <questionCategory id="240" reselectable="false" selected="false">
-                      <question reference="237"/>
+                    <questionCategory id="233">
+                      <question reference="227"/>
                       <category reference="154"/>
                     </questionCategory>
-                    <questionCategory id="241" reselectable="false" selected="false">
-                      <question reference="237"/>
+                    <questionCategory id="234">
+                      <question reference="227"/>
                       <category reference="156"/>
                     </questionCategory>
-                    <questionCategory id="242" reselectable="false" selected="false">
-                      <question reference="237"/>
+                    <questionCategory id="235">
+                      <question reference="227"/>
                       <category reference="158"/>
                     </questionCategory>
-                    <questionCategory id="243" reselectable="false" selected="false">
-                      <question reference="237"/>
+                    <questionCategory id="236">
+                      <question reference="227"/>
                       <category reference="160"/>
                     </questionCategory>
-                    <questionCategory id="244" reselectable="false" selected="false">
-                      <question reference="237"/>
+                    <questionCategory id="237">
+                      <question reference="227"/>
                       <category reference="162"/>
                     </questionCategory>
-                    <questionCategory id="245" reselectable="false" selected="false">
-                      <question reference="237"/>
+                    <questionCategory id="238">
+                      <question reference="227"/>
                       <category reference="164"/>
                     </questionCategory>
-                    <questionCategory id="246" reselectable="false" selected="false">
-                      <question reference="237"/>
+                    <questionCategory id="239">
+                      <question reference="227"/>
                       <category reference="166"/>
                     </questionCategory>
-                    <questionCategory id="247" reselectable="false" selected="false">
-                      <question reference="237"/>
+                    <questionCategory id="240">
+                      <question reference="227"/>
                       <category reference="168"/>
                     </questionCategory>
-                    <questionCategory id="248" reselectable="false" selected="false">
-                      <question reference="237"/>
+                    <questionCategory id="241" exportName="77">
+                      <question reference="227"/>
                       <category reference="170"/>
                     </questionCategory>
-                    <questionCategory id="249" reselectable="false" selected="false">
-                      <question reference="237"/>
-                      <category reference="172"/>
-                    </questionCategory>
-                    <questionCategory id="250" reselectable="false" selected="false">
-                      <question reference="237"/>
-                      <category reference="174"/>
-                    </questionCategory>
-                    <questionCategory id="251" reselectable="false" selected="false" exportName="77">
-                      <question reference="237"/>
-                      <category reference="176"/>
-                    </questionCategory>
-                    <questionCategory id="252" reselectable="false" selected="false" exportName="88">
-                      <question reference="237"/>
+                    <questionCategory id="242" exportName="88">
+                      <question reference="227"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="253" reselectable="false" selected="false" exportName="99">
-                      <question reference="237"/>
+                    <questionCategory id="243" exportName="99">
+                      <question reference="227"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="254"/>
+                  <questions id="244"/>
                 </question>
               </questions>
             </page>
           </pages>
-          <sections id="255"/>
+          <sections id="245"/>
         </section>
-        <section id="256" name="LANGUAGE">
+        <section id="246" name="LANGUAGE">
           <parentSection reference="23"/>
-          <pages id="257">
-            <page id="258" name="22" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="256"/>
-              <questions id="259">
-                <question id="260" name="FIRST_LANGUAGE_LEARNED" number="21" multiple="true" minCount="1" maxCount="4" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="258"/>
-                  <uIArguments id="261">
-                    <string-array id="262">
+          <pages id="247">
+            <page id="248" name="22" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="246"/>
+              <questions id="249">
+                <question id="250" name="FIRST_LANGUAGE_LEARNED" number="21" multiple="true" minCount="1" maxCount="4" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="248"/>
+                  <uIArguments id="251">
+                    <string-array id="252">
                       <string>rowCount</string>
                       <string>8</string>
                     </string-array>
                   </uIArguments>
-                  <questionCategories id="263">
-                    <questionCategory id="264" reselectable="false" selected="false" exportName="1">
-                      <question reference="260"/>
-                      <category id="265" name="ENGLISH" escape="false"/>
+                  <questionCategories id="253">
+                    <questionCategory id="254" exportName="1">
+                      <question reference="250"/>
+                      <category id="255" name="ENGLISH" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="266" reselectable="false" selected="false" exportName="2">
-                      <question reference="260"/>
-                      <category id="267" name="FRENCH" escape="false"/>
+                    <questionCategory id="256" exportName="2">
+                      <question reference="250"/>
+                      <category id="257" name="FRENCH" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="268" reselectable="false" selected="false" exportName="3">
-                      <question reference="260"/>
-                      <category id="269" name="ARABIC" escape="false"/>
+                    <questionCategory id="258" exportName="3">
+                      <question reference="250"/>
+                      <category id="259" name="ARABIC" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="270" reselectable="false" selected="false" exportName="4">
-                      <question reference="260"/>
-                      <category id="271" name="CHINESE" escape="false"/>
+                    <questionCategory id="260" exportName="4">
+                      <question reference="250"/>
+                      <category id="261" name="CHINESE" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="272" reselectable="false" selected="false" exportName="5">
-                      <question reference="260"/>
-                      <category id="273" name="ABORIGINAL" escape="false"/>
+                    <questionCategory id="262" exportName="5">
+                      <question reference="250"/>
+                      <category id="263" name="ABORIGINAL" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="274" reselectable="false" selected="false" exportName="6">
-                      <question reference="260"/>
-                      <category id="275" name="GERMAN" escape="false"/>
+                    <questionCategory id="264" exportName="6">
+                      <question reference="250"/>
+                      <category id="265" name="GERMAN" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="276" reselectable="false" selected="false" exportName="7">
-                      <question reference="260"/>
-                      <category id="277" name="GREEK" escape="false"/>
+                    <questionCategory id="266" exportName="7">
+                      <question reference="250"/>
+                      <category id="267" name="GREEK" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="278" reselectable="false" selected="false" exportName="8">
-                      <question reference="260"/>
-                      <category id="279" name="HUNGARIAN" escape="false"/>
+                    <questionCategory id="268" exportName="8">
+                      <question reference="250"/>
+                      <category id="269" name="HUNGARIAN" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="280" reselectable="false" selected="false" exportName="9">
-                      <question reference="260"/>
-                      <category id="281" name="ITALIAN" escape="false"/>
+                    <questionCategory id="270" exportName="9">
+                      <question reference="250"/>
+                      <category id="271" name="ITALIAN" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="282" reselectable="false" selected="false" exportName="10">
-                      <question reference="260"/>
-                      <category id="283" name="KOREAN" escape="false"/>
+                    <questionCategory id="272" exportName="10">
+                      <question reference="250"/>
+                      <category id="273" name="KOREAN" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="284" reselectable="false" selected="false" exportName="11">
-                      <question reference="260"/>
-                      <category id="285" name="PERSIAN" escape="false"/>
+                    <questionCategory id="274" exportName="11">
+                      <question reference="250"/>
+                      <category id="275" name="PERSIAN" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="286" reselectable="false" selected="false" exportName="12">
-                      <question reference="260"/>
-                      <category id="287" name="POLISH" escape="false"/>
+                    <questionCategory id="276" exportName="12">
+                      <question reference="250"/>
+                      <category id="277" name="POLISH" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="288" reselectable="false" selected="false" exportName="13">
-                      <question reference="260"/>
-                      <category id="289" name="PORTUGUESE" escape="false"/>
+                    <questionCategory id="278" exportName="13">
+                      <question reference="250"/>
+                      <category id="279" name="PORTUGUESE" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="290" reselectable="false" selected="false" exportName="14">
-                      <question reference="260"/>
-                      <category id="291" name="PUNJABI" escape="false"/>
+                    <questionCategory id="280" exportName="14">
+                      <question reference="250"/>
+                      <category id="281" name="PUNJABI" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="292" reselectable="false" selected="false" exportName="15">
-                      <question reference="260"/>
-                      <category id="293" name="SPANISH" escape="false"/>
+                    <questionCategory id="282" exportName="15">
+                      <question reference="250"/>
+                      <category id="283" name="SPANISH" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="294" reselectable="false" selected="false" exportName="16">
-                      <question reference="260"/>
-                      <category id="295" name="TAGALOG" escape="false"/>
+                    <questionCategory id="284" exportName="16">
+                      <question reference="250"/>
+                      <category id="285" name="TAGALOG" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="296" reselectable="false" selected="false" exportName="17">
-                      <question reference="260"/>
-                      <category id="297" name="UKRAINIAN" escape="false"/>
+                    <questionCategory id="286" exportName="17">
+                      <question reference="250"/>
+                      <category id="287" name="UKRAINIAN" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="298" reselectable="false" selected="false" exportName="18">
-                      <question reference="260"/>
-                      <category id="299" name="VIETNAMESE" escape="false"/>
+                    <questionCategory id="288" exportName="18">
+                      <question reference="250"/>
+                      <category id="289" name="VIETNAMESE" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="300" reselectable="false" selected="false" exportName="19">
-                      <question reference="260"/>
-                      <category id="301" name="DUTCH" escape="false"/>
+                    <questionCategory id="290" exportName="19">
+                      <question reference="250"/>
+                      <category id="291" name="DUTCH" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="302" reselectable="false" selected="false" exportName="20">
-                      <question reference="260"/>
-                      <category id="303" name="HINDI" escape="false"/>
+                    <questionCategory id="292" exportName="20">
+                      <question reference="250"/>
+                      <category id="293" name="HINDI" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="304" reselectable="false" selected="false" exportName="21">
-                      <question reference="260"/>
-                      <category id="305" name="RUSSIAN" escape="false"/>
+                    <questionCategory id="294" exportName="21">
+                      <question reference="250"/>
+                      <category id="295" name="RUSSIAN" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="306" reselectable="false" selected="false" exportName="22">
-                      <question reference="260"/>
-                      <category id="307" name="TAMIL" escape="false"/>
+                    <questionCategory id="296" exportName="22">
+                      <question reference="250"/>
+                      <category id="297" name="TAMIL" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="308" reselectable="false" selected="false" exportName="23">
-                      <question reference="260"/>
+                    <questionCategory id="298" exportName="23">
+                      <question reference="250"/>
                       <category reference="37"/>
                     </questionCategory>
-                    <questionCategory id="309" reselectable="false" selected="false" exportName="88">
-                      <question reference="260"/>
+                    <questionCategory id="299" exportName="88">
+                      <question reference="250"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="310" reselectable="false" selected="false" exportName="99">
-                      <question reference="260"/>
+                    <questionCategory id="300" exportName="99">
+                      <question reference="250"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="311"/>
+                  <questions id="301"/>
                 </question>
               </questions>
             </page>
           </pages>
-          <sections id="312"/>
+          <sections id="302"/>
         </section>
-        <section id="313" name="EDUCATION_LEVEL">
+        <section id="303" name="EDUCATION_LEVEL">
           <parentSection reference="23"/>
-          <pages id="314">
-            <page id="315" name="23" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="313"/>
-              <questions id="316">
-                <question id="317" name="EL0" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="315"/>
-                  <questionCategories id="318"/>
-                  <questions id="319"/>
+          <pages id="304">
+            <page id="305" name="23" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="303"/>
+              <questions id="306">
+                <question id="307" name="EL0" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="305"/>
+                  <questionCategories id="308"/>
+                  <questions id="309"/>
                 </question>
               </questions>
             </page>
-            <page id="320" name="24" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="313"/>
-              <questions id="321">
-                <question id="322" name="YEARS_EDUCATION" number="22" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="320"/>
-                  <questionCategories id="323">
-                    <questionCategory id="324" reselectable="false" selected="false">
-                      <question reference="322"/>
-                      <category reference="130"/>
+            <page id="310" name="24" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="303"/>
+              <questions id="311">
+                <question id="312" name="YEARS_EDUCATION" number="22" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="310"/>
+                  <questionCategories id="313">
+                    <questionCategory id="314">
+                      <question reference="312"/>
+                      <category reference="124"/>
                     </questionCategory>
-                    <questionCategory id="325" reselectable="false" selected="false" exportName="8">
-                      <question reference="322"/>
+                    <questionCategory id="315" exportName="8">
+                      <question reference="312"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="326" reselectable="false" selected="false" exportName="9">
-                      <question reference="322"/>
+                    <questionCategory id="316" exportName="9">
+                      <question reference="312"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="327"/>
+                  <questions id="317"/>
                 </question>
               </questions>
             </page>
           </pages>
-          <sections id="328"/>
+          <sections id="318"/>
         </section>
-        <section id="329" name="WORKING_STATUS">
+        <section id="319" name="WORKING_STATUS">
           <parentSection reference="23"/>
-          <pages id="330">
-            <page id="331" name="25" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="329"/>
-              <questions id="332">
-                <question id="333" name="WS0" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="331"/>
-                  <questionCategories id="334"/>
-                  <questions id="335"/>
+          <pages id="320">
+            <page id="321" name="25" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="319"/>
+              <questions id="322">
+                <question id="323" name="WS0" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="321"/>
+                  <questionCategories id="324"/>
+                  <questions id="325"/>
                 </question>
               </questions>
             </page>
-            <page id="336" name="26" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="329"/>
-              <questions id="337">
-                <question id="338" name="CURRENT_SITUATION" number="23" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="336"/>
-                  <questionCategories id="339">
-                    <questionCategory id="340" reselectable="false" selected="false" exportName="0">
-                      <question reference="338"/>
-                      <category id="341" name="N" escape="false"/>
+            <page id="326" name="26" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="319"/>
+              <questions id="327">
+                <question id="328" name="CURRENT_SITUATION" number="23" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="326"/>
+                  <questionCategories id="329">
+                    <questionCategory id="330" exportName="0">
+                      <question reference="328"/>
+                      <category id="331" name="N" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="342" reselectable="false" selected="false" exportName="1">
-                      <question reference="338"/>
-                      <category id="343" name="Y" escape="false"/>
+                    <questionCategory id="332" exportName="1">
+                      <question reference="328"/>
+                      <category id="333" name="Y" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="344" reselectable="false" selected="false" exportName="8">
-                      <question reference="338"/>
+                    <questionCategory id="334" exportName="8">
+                      <question reference="328"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="345" reselectable="false" selected="false" exportName="9">
-                      <question reference="338"/>
+                    <questionCategory id="335" exportName="9">
+                      <question reference="328"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="346">
-                    <question id="347" name="EMPLOYED" number="1.1" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="348"/>
-                      <parentQuestion reference="338"/>
-                      <questions id="349"/>
+                  <questions id="336">
+                    <question id="337" name="EMPLOYED" number="1.1" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="338"/>
+                      <parentQuestion reference="328"/>
+                      <questions id="339"/>
                     </question>
-                    <question id="350" name="SELF_EMPLOYED" number="1.2" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="351"/>
-                      <parentQuestion reference="338"/>
-                      <questions id="352"/>
+                    <question id="340" name="SELF_EMPLOYED" number="1.2" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="341"/>
+                      <parentQuestion reference="328"/>
+                      <questions id="342"/>
                     </question>
-                    <question id="353" name="RETIRED" number="1.3" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="354"/>
-                      <parentQuestion reference="338"/>
-                      <questions id="355"/>
+                    <question id="343" name="RETIRED" number="1.3" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="344"/>
+                      <parentQuestion reference="328"/>
+                      <questions id="345"/>
                     </question>
-                    <question id="356" name="HOME_FAMILY" number="1.4" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="357"/>
-                      <parentQuestion reference="338"/>
-                      <questions id="358"/>
+                    <question id="346" name="HOME_FAMILY" number="1.4" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="347"/>
+                      <parentQuestion reference="328"/>
+                      <questions id="348"/>
                     </question>
-                    <question id="359" name="UNABLE_TO_WORK" number="1.5" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="360"/>
-                      <parentQuestion reference="338"/>
-                      <questions id="361"/>
+                    <question id="349" name="UNABLE_TO_WORK" number="1.5" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="350"/>
+                      <parentQuestion reference="328"/>
+                      <questions id="351"/>
                     </question>
-                    <question id="362" name="UNEMPLOYED" number="1.6" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="363"/>
-                      <parentQuestion reference="338"/>
-                      <questions id="364"/>
+                    <question id="352" name="UNEMPLOYED" number="1.6" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="353"/>
+                      <parentQuestion reference="328"/>
+                      <questions id="354"/>
                     </question>
-                    <question id="365" name="UNPAID_WORK" number="1.7" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="366"/>
-                      <parentQuestion reference="338"/>
-                      <questions id="367"/>
+                    <question id="355" name="UNPAID_WORK" number="1.7" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="356"/>
+                      <parentQuestion reference="328"/>
+                      <questions id="357"/>
                     </question>
-                    <question id="368" name="STUDENT" number="1.8" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="369"/>
-                      <parentQuestion reference="338"/>
-                      <questions id="370"/>
+                    <question id="358" name="STUDENT" number="1.8" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="359"/>
+                      <parentQuestion reference="328"/>
+                      <questions id="360"/>
                     </question>
                   </questions>
                 </question>
               </questions>
             </page>
-            <page id="371" name="26a" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="329"/>
-              <questions id="372">
-                <question id="373" name="EMPLOYED_FULL_TIME" number="24" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="371"/>
-                  <questionCategories id="374">
-                    <questionCategory id="375" reselectable="false" selected="false" exportName="1">
-                      <question reference="373"/>
-                      <category reference="343"/>
+            <page id="361" name="26a" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="319"/>
+              <questions id="362">
+                <question id="363" name="EMPLOYED_FULL_TIME" number="24" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="361"/>
+                  <questionCategories id="364">
+                    <questionCategory id="365" exportName="1">
+                      <question reference="363"/>
+                      <category reference="333"/>
                     </questionCategory>
-                    <questionCategory id="376" reselectable="false" selected="false" exportName="2">
-                      <question reference="373"/>
-                      <category reference="341"/>
+                    <questionCategory id="366" exportName="2">
+                      <question reference="363"/>
+                      <category reference="331"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="answerCondition" id="377" name="EMPLOYED_FULL_TIME_ACONDITION">
-                    <questions id="378">
-                      <question reference="373"/>
-                    </questions>
-                    <question reference="347"/>
-                    <category reference="343"/>
-                  </condition>
-                  <questions id="379"/>
+                  <condition class="questionnaireDataSource" id="367" questionnaire="HealthQuestionnaireSelfAdministered" question="EMPLOYED" category="Y"/>
+                  <questions id="368"/>
                 </question>
-                <question id="380" name="SELF_EMPLOYED_FULL_TIME" number="25" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="371"/>
-                  <questionCategories id="381">
-                    <questionCategory id="382" reselectable="false" selected="false" exportName="1">
-                      <question reference="380"/>
-                      <category reference="343"/>
+                <question id="369" name="SELF_EMPLOYED_FULL_TIME" number="25" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="361"/>
+                  <questionCategories id="370">
+                    <questionCategory id="371" exportName="1">
+                      <question reference="369"/>
+                      <category reference="333"/>
                     </questionCategory>
-                    <questionCategory id="383" reselectable="false" selected="false" exportName="2">
-                      <question reference="380"/>
-                      <category reference="341"/>
+                    <questionCategory id="372" exportName="2">
+                      <question reference="369"/>
+                      <category reference="331"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="answerCondition" id="384" name="SELF_EMPLOYED_FULL_TIME_ACONDITION">
-                    <questions id="385">
-                      <question reference="380"/>
-                    </questions>
-                    <question reference="350"/>
-                    <category reference="343"/>
-                  </condition>
-                  <questions id="386"/>
+                  <condition class="questionnaireDataSource" id="373" questionnaire="HealthQuestionnaireSelfAdministered" question="SELF_EMPLOYED" category="Y"/>
+                  <questions id="374"/>
                 </question>
               </questions>
             </page>
-            <page id="387" name="27" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="329"/>
-              <questions id="388">
-                <question id="389" name="CURRENT_WORK_ISIC1" number="26" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="387"/>
-                  <questionCategories id="390">
-                    <questionCategory id="391" reselectable="false" selected="false" exportName="A">
-                      <question reference="389"/>
-                      <category id="392" name="AGRICULTURE" escape="false"/>
+            <page id="375" name="27" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="319"/>
+              <questions id="376">
+                <question id="377" name="CURRENT_WORK_ISIC1" number="26" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="375"/>
+                  <questionCategories id="378">
+                    <questionCategory id="379" exportName="A">
+                      <question reference="377"/>
+                      <category id="380" name="AGRICULTURE" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="393" reselectable="false" selected="false" exportName="B">
-                      <question reference="389"/>
-                      <category id="394" name="FISHING" escape="false"/>
+                    <questionCategory id="381" exportName="B">
+                      <question reference="377"/>
+                      <category id="382" name="FISHING" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="395" reselectable="false" selected="false" exportName="C">
-                      <question reference="389"/>
-                      <category id="396" name="MINING" escape="false"/>
+                    <questionCategory id="383" exportName="C">
+                      <question reference="377"/>
+                      <category id="384" name="MINING" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="397" reselectable="false" selected="false" exportName="D">
-                      <question reference="389"/>
-                      <category id="398" name="MANUFACTURING" escape="false"/>
+                    <questionCategory id="385" exportName="D">
+                      <question reference="377"/>
+                      <category id="386" name="MANUFACTURING" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="399" reselectable="false" selected="false" exportName="E">
-                      <question reference="389"/>
-                      <category id="400" name="ELECTRICITY" escape="false"/>
+                    <questionCategory id="387" exportName="E">
+                      <question reference="377"/>
+                      <category id="388" name="ELECTRICITY" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="401" reselectable="false" selected="false" exportName="F">
-                      <question reference="389"/>
-                      <category id="402" name="CONSTRUCTION" escape="false"/>
+                    <questionCategory id="389" exportName="F">
+                      <question reference="377"/>
+                      <category id="390" name="CONSTRUCTION" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="403" reselectable="false" selected="false" exportName="G">
-                      <question reference="389"/>
-                      <category id="404" name="TRADE" escape="false"/>
+                    <questionCategory id="391" exportName="G">
+                      <question reference="377"/>
+                      <category id="392" name="TRADE" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="405" reselectable="false" selected="false" exportName="H">
-                      <question reference="389"/>
-                      <category id="406" name="RESTAURATION" escape="false"/>
+                    <questionCategory id="393" exportName="H">
+                      <question reference="377"/>
+                      <category id="394" name="RESTAURATION" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="407" reselectable="false" selected="false" exportName="I">
-                      <question reference="389"/>
-                      <category id="408" name="TRANSPORT" escape="false"/>
+                    <questionCategory id="395" exportName="I">
+                      <question reference="377"/>
+                      <category id="396" name="TRANSPORT" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="409" reselectable="false" selected="false" exportName="J">
-                      <question reference="389"/>
-                      <category id="410" name="FINANCIAL" escape="false"/>
+                    <questionCategory id="397" exportName="J">
+                      <question reference="377"/>
+                      <category id="398" name="FINANCIAL" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="411" reselectable="false" selected="false" exportName="K">
-                      <question reference="389"/>
-                      <category id="412" name="REAL_ESTATE" escape="false"/>
+                    <questionCategory id="399" exportName="K">
+                      <question reference="377"/>
+                      <category id="400" name="REAL_ESTATE" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="413" reselectable="false" selected="false" exportName="L">
-                      <question reference="389"/>
-                      <category id="414" name="PUBLIC_ADMIN" escape="false"/>
+                    <questionCategory id="401" exportName="L">
+                      <question reference="377"/>
+                      <category id="402" name="PUBLIC_ADMIN" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="415" reselectable="false" selected="false" exportName="M">
-                      <question reference="389"/>
-                      <category id="416" name="EDUCATION" escape="false"/>
+                    <questionCategory id="403" exportName="M">
+                      <question reference="377"/>
+                      <category id="404" name="EDUCATION" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="417" reselectable="false" selected="false" exportName="N">
-                      <question reference="389"/>
-                      <category id="418" name="HEALTH_SOCIAL" escape="false"/>
+                    <questionCategory id="405" exportName="N">
+                      <question reference="377"/>
+                      <category id="406" name="HEALTH_SOCIAL" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="419" reselectable="false" selected="false" exportName="O">
-                      <question reference="389"/>
-                      <category id="420" name="OTHER_COMMUNITY" escape="false"/>
+                    <questionCategory id="407" exportName="O">
+                      <question reference="377"/>
+                      <category id="408" name="OTHER_COMMUNITY" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="421" reselectable="false" selected="false" exportName="P">
-                      <question reference="389"/>
-                      <category id="422" name="PRIVATE_HOUSEHOLD" escape="false"/>
+                    <questionCategory id="409" exportName="P">
+                      <question reference="377"/>
+                      <category id="410" name="PRIVATE_HOUSEHOLD" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="423" reselectable="false" selected="false" exportName="Q">
-                      <question reference="389"/>
-                      <category id="424" name="EXTRATERRITORIAL" escape="false"/>
+                    <questionCategory id="411" exportName="Q">
+                      <question reference="377"/>
+                      <category id="412" name="EXTRATERRITORIAL" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="425" reselectable="false" selected="false" exportName="77">
-                      <question reference="389"/>
+                    <questionCategory id="413" exportName="77">
+                      <question reference="377"/>
                       <category reference="37"/>
                     </questionCategory>
-                    <questionCategory id="426" reselectable="false" selected="false" exportName="88">
-                      <question reference="389"/>
+                    <questionCategory id="414" exportName="88">
+                      <question reference="377"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="427" reselectable="false" selected="false" exportName="99">
-                      <question reference="389"/>
+                    <questionCategory id="415" exportName="99">
+                      <question reference="377"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="multipleCondition" id="428" name="CURRENT_WORK_ISIC1_MCONDITION" conditionOperator="OR">
-                    <questions id="429">
-                      <question reference="389"/>
-                    </questions>
-                    <conditions id="430">
-                      <answerCondition id="431" name="CURRENT_WORK_ISIC1_ACONDITION_0">
-                        <question reference="347"/>
-                        <category reference="343"/>
-                      </answerCondition>
-                      <answerCondition id="432" name="CURRENT_WORK_ISIC1_ACONDITION_1">
-                        <question reference="350"/>
-                        <category reference="343"/>
-                      </answerCondition>
-                    </conditions>
+                  <condition class="computingDataSource" id="416" expression="$1 || $2" dataType="BOOLEAN">
+                    <dataSources id="417">
+                      <questionnaireDataSource id="418" questionnaire="HealthQuestionnaireSelfAdministered" question="EMPLOYED" category="Y"/>
+                      <questionnaireDataSource id="419" questionnaire="HealthQuestionnaireSelfAdministered" question="SELF_EMPLOYED" category="Y"/>
+                    </dataSources>
                   </condition>
-                  <questions id="433"/>
+                  <questions id="420"/>
                 </question>
               </questions>
             </page>
-            <page id="434" name="29" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="329"/>
-              <questions id="435">
-                <question id="436" name="IS_LONGEST_TIME_OCCUPATION" number="28" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="434"/>
-                  <questionCategories id="437">
-                    <questionCategory id="438" reselectable="false" selected="false" exportName="0">
-                      <question reference="436"/>
-                      <category reference="341"/>
+            <page id="421" name="29" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="319"/>
+              <questions id="422">
+                <question id="423" name="IS_LONGEST_TIME_OCCUPATION" number="28" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="421"/>
+                  <questionCategories id="424">
+                    <questionCategory id="425" exportName="0">
+                      <question reference="423"/>
+                      <category reference="331"/>
                     </questionCategory>
-                    <questionCategory id="439" reselectable="false" selected="false" exportName="1">
-                      <question reference="436"/>
-                      <category reference="343"/>
+                    <questionCategory id="426" exportName="1">
+                      <question reference="423"/>
+                      <category reference="333"/>
                     </questionCategory>
-                    <questionCategory id="440" reselectable="false" selected="false" exportName="8">
-                      <question reference="436"/>
+                    <questionCategory id="427" exportName="8">
+                      <question reference="423"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="441" reselectable="false" selected="false" exportName="9">
-                      <question reference="436"/>
+                    <questionCategory id="428" exportName="9">
+                      <question reference="423"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="442"/>
+                  <questions id="429"/>
                 </question>
               </questions>
             </page>
-            <page id="443" name="30" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="329"/>
-              <questions id="444">
-                <question id="445" name="EVER_WORKED" number="29" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="443"/>
-                  <questionCategories id="446">
-                    <questionCategory id="447" reselectable="false" selected="false" exportName="0">
-                      <question reference="445"/>
-                      <category reference="341"/>
+            <page id="430" name="30" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="319"/>
+              <questions id="431">
+                <question id="432" name="EVER_WORKED" number="29" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="430"/>
+                  <questionCategories id="433">
+                    <questionCategory id="434" exportName="0">
+                      <question reference="432"/>
+                      <category reference="331"/>
                     </questionCategory>
-                    <questionCategory id="448" reselectable="false" selected="false" exportName="1">
-                      <question reference="445"/>
-                      <category reference="343"/>
+                    <questionCategory id="435" exportName="1">
+                      <question reference="432"/>
+                      <category reference="333"/>
                     </questionCategory>
-                    <questionCategory id="449" reselectable="false" selected="false" exportName="8">
-                      <question reference="445"/>
+                    <questionCategory id="436" exportName="8">
+                      <question reference="432"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="450" reselectable="false" selected="false" exportName="9">
-                      <question reference="445"/>
+                    <questionCategory id="437" exportName="9">
+                      <question reference="432"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="multipleCondition" id="451" name="EVER_WORKED_MCONDITION_0" conditionOperator="AND">
-                    <questions id="452">
-                      <question reference="445"/>
-                    </questions>
-                    <conditions id="453">
-                      <answerCondition id="454" name="EVER_WORKED_ACONDITION_0">
-                        <question reference="436"/>
-                      </answerCondition>
-                      <notCondition id="455" name="EVER_WORKED_NCONDITION_0">
-                        <condition class="answerCondition" id="456" name="EVER_WORKED_ACONDITION_1">
-                          <question reference="436"/>
-                          <category reference="343"/>
-                        </condition>
-                      </notCondition>
-                      <notCondition id="457" name="EVER_WORKED_NCONDITION_1">
-                        <condition class="multipleCondition" id="458" name="EVER_WORKED_MCONDITION_1" conditionOperator="OR">
-                          <conditions id="459">
-                            <answerCondition id="460" name="EVER_WORKED_ACONDITION_2">
-                              <question reference="347"/>
-                              <category reference="343"/>
-                            </answerCondition>
-                            <answerCondition id="461" name="EVER_WORKED_ACONDITION_3">
-                              <question reference="350"/>
-                              <category reference="343"/>
-                            </answerCondition>
-                          </conditions>
-                        </condition>
-                      </notCondition>
-                    </conditions>
+                  <condition class="computingDataSource" id="438" expression="$1 &amp;&amp; !$2 &amp;&amp; !($3 || $4)" dataType="BOOLEAN">
+                    <dataSources id="439">
+                      <questionnaireDataSource id="440" questionnaire="HealthQuestionnaireSelfAdministered" question="IS_LONGEST_TIME_OCCUPATION"/>
+                      <questionnaireDataSource id="441" questionnaire="HealthQuestionnaireSelfAdministered" question="IS_LONGEST_TIME_OCCUPATION" category="Y"/>
+                      <questionnaireDataSource id="442" questionnaire="HealthQuestionnaireSelfAdministered" question="EMPLOYED" category="Y"/>
+                      <questionnaireDataSource id="443" questionnaire="HealthQuestionnaireSelfAdministered" question="SELF_EMPLOYED" category="Y"/>
+                    </dataSources>
                   </condition>
-                  <questions id="462"/>
+                  <questions id="444"/>
                 </question>
               </questions>
             </page>
           </pages>
-          <sections id="463"/>
+          <sections id="445"/>
         </section>
       </sections>
     </section>
-    <section id="464" name="C_LIFE_HABITS">
-      <pages id="465"/>
-      <sections id="466">
-        <section id="467" name="TOBACCO_USE">
-          <parentSection reference="464"/>
-          <pages id="468">
-            <page id="469" name="32" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="467"/>
-              <questions id="470">
-                <question id="471" name="EVER_USED" number="31" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="469"/>
-                  <questionCategories id="472">
-                    <questionCategory id="473" reselectable="false" selected="false" exportName="0">
-                      <question reference="471"/>
-                      <category reference="341"/>
+    <section id="446" name="C_LIFE_HABITS">
+      <pages id="447"/>
+      <sections id="448">
+        <section id="449" name="TOBACCO_USE">
+          <parentSection reference="446"/>
+          <pages id="450">
+            <page id="451" name="32" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="449"/>
+              <questions id="452">
+                <question id="453" name="EVER_USED" number="31" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="451"/>
+                  <questionCategories id="454">
+                    <questionCategory id="455" exportName="0">
+                      <question reference="453"/>
+                      <category reference="331"/>
                     </questionCategory>
-                    <questionCategory id="474" reselectable="false" selected="false" exportName="1">
-                      <question reference="471"/>
-                      <category reference="343"/>
+                    <questionCategory id="456" exportName="1">
+                      <question reference="453"/>
+                      <category reference="333"/>
                     </questionCategory>
-                    <questionCategory id="475" reselectable="false" selected="false" exportName="8">
-                      <question reference="471"/>
+                    <questionCategory id="457" exportName="8">
+                      <question reference="453"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="476" reselectable="false" selected="false" exportName="9">
-                      <question reference="471"/>
+                    <questionCategory id="458" exportName="9">
+                      <question reference="453"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="477">
-                    <question id="478" name="CIGARS_EVER" number="1.1" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <questions id="459">
+                    <question id="460" name="CIGARS_EVER" number="1.1" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="461"/>
+                      <parentQuestion reference="453"/>
+                      <questions id="462"/>
+                    </question>
+                    <question id="463" name="SMALL_CIGARS_EVER" number="1.2" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="464"/>
+                      <parentQuestion reference="453"/>
+                      <questions id="465"/>
+                    </question>
+                    <question id="466" name="PIPES_EVER" number="1.3" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="467"/>
+                      <parentQuestion reference="453"/>
+                      <questions id="468"/>
+                    </question>
+                    <question id="469" name="CHEWING_TOBACCO_SNUFF_EVER" number="1.4" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="470"/>
+                      <parentQuestion reference="453"/>
+                      <questions id="471"/>
+                    </question>
+                    <question id="472" name="BETEL_NUT_EVER" number="1.5" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="473"/>
+                      <parentQuestion reference="453"/>
+                      <questions id="474"/>
+                    </question>
+                    <question id="475" name="PAAN_EVER" number="1.6" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="476"/>
+                      <parentQuestion reference="453"/>
+                      <questions id="477"/>
+                    </question>
+                    <question id="478" name="SHEESHA_EVER" number="1.7" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
                       <questionCategories id="479"/>
-                      <parentQuestion reference="471"/>
+                      <parentQuestion reference="453"/>
                       <questions id="480"/>
                     </question>
-                    <question id="481" name="SMALL_CIGARS_EVER" number="1.2" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                    <question id="481" name="OTHER_NICOTIN_PRODUCT_EVER" number="1.8" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
                       <questionCategories id="482"/>
-                      <parentQuestion reference="471"/>
+                      <parentQuestion reference="453"/>
                       <questions id="483"/>
-                    </question>
-                    <question id="484" name="PIPES_EVER" number="1.3" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="485"/>
-                      <parentQuestion reference="471"/>
-                      <questions id="486"/>
-                    </question>
-                    <question id="487" name="CHEWING_TOBACCO_SNUFF_EVER" number="1.4" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="488"/>
-                      <parentQuestion reference="471"/>
-                      <questions id="489"/>
-                    </question>
-                    <question id="490" name="BETEL_NUT_EVER" number="1.5" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="491"/>
-                      <parentQuestion reference="471"/>
-                      <questions id="492"/>
-                    </question>
-                    <question id="493" name="PAAN_EVER" number="1.6" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="494"/>
-                      <parentQuestion reference="471"/>
-                      <questions id="495"/>
-                    </question>
-                    <question id="496" name="SHEESHA_EVER" number="1.7" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="497"/>
-                      <parentQuestion reference="471"/>
-                      <questions id="498"/>
-                    </question>
-                    <question id="499" name="OTHER_NICOTIN_PRODUCT_EVER" number="1.8" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="500"/>
-                      <parentQuestion reference="471"/>
-                      <questions id="501"/>
                     </question>
                   </questions>
                 </question>
               </questions>
             </page>
-            <page id="502" name="33" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="467"/>
-              <questions id="503">
-                <question id="504" name="CURRENTLY_USE" number="32" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="502"/>
-                  <questionCategories id="505">
-                    <questionCategory id="506" reselectable="false" selected="false" exportName="0">
-                      <question reference="504"/>
-                      <category reference="341"/>
+            <page id="484" name="33" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="449"/>
+              <questions id="485">
+                <question id="486" name="CURRENTLY_USE" number="32" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="484"/>
+                  <questionCategories id="487">
+                    <questionCategory id="488" exportName="0">
+                      <question reference="486"/>
+                      <category reference="331"/>
                     </questionCategory>
-                    <questionCategory id="507" reselectable="false" selected="false" exportName="1">
-                      <question reference="504"/>
-                      <category reference="343"/>
+                    <questionCategory id="489" exportName="1">
+                      <question reference="486"/>
+                      <category reference="333"/>
                     </questionCategory>
-                    <questionCategory id="508" reselectable="false" selected="false" exportName="8">
-                      <question reference="504"/>
+                    <questionCategory id="490" exportName="8">
+                      <question reference="486"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="509" reselectable="false" selected="false" exportName="9">
-                      <question reference="504"/>
+                    <questionCategory id="491" exportName="9">
+                      <question reference="486"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="multipleCondition" id="510" name="CURRENTLY_USE_MCONDITION" conditionOperator="OR">
-                    <questions id="511">
-                      <question reference="504"/>
-                    </questions>
-                    <conditions id="512">
-                      <answerCondition id="513" name="CURRENTLY_USE_ACONDITION_0">
-                        <question reference="478"/>
-                        <category reference="343"/>
-                      </answerCondition>
-                      <answerCondition id="514" name="CURRENTLY_USE_ACONDITION_1">
-                        <question reference="478"/>
-                        <category reference="343"/>
-                      </answerCondition>
-                      <answerCondition id="515" name="CURRENTLY_USE_ACONDITION_2">
-                        <question reference="481"/>
-                        <category reference="343"/>
-                      </answerCondition>
-                      <answerCondition id="516" name="CURRENTLY_USE_ACONDITION_3">
-                        <question reference="484"/>
-                        <category reference="343"/>
-                      </answerCondition>
-                      <answerCondition id="517" name="CURRENTLY_USE_ACONDITION_4">
-                        <question reference="487"/>
-                        <category reference="343"/>
-                      </answerCondition>
-                      <answerCondition id="518" name="CURRENTLY_USE_ACONDITION_5">
-                        <question reference="490"/>
-                        <category reference="343"/>
-                      </answerCondition>
-                      <answerCondition id="519" name="CURRENTLY_USE_ACONDITION_6">
-                        <question reference="493"/>
-                        <category reference="343"/>
-                      </answerCondition>
-                      <answerCondition id="520" name="CURRENTLY_USE_ACONDITION_7">
-                        <question reference="496"/>
-                        <category reference="343"/>
-                      </answerCondition>
-                      <answerCondition id="521" name="CURRENTLY_USE_ACONDITION_8">
-                        <question reference="499"/>
-                        <category reference="343"/>
-                      </answerCondition>
-                    </conditions>
+                  <condition class="computingDataSource" id="492" expression="$1 || $2 || $3 || $4 || $5 || $6 || $7 || $8" dataType="BOOLEAN">
+                    <dataSources id="493">
+                      <questionnaireDataSource id="494" questionnaire="HealthQuestionnaireSelfAdministered" question="CIGARS_EVER" category="Y"/>
+                      <questionnaireDataSource id="495" questionnaire="HealthQuestionnaireSelfAdministered" question="SMALL_CIGARS_EVER" category="Y"/>
+                      <questionnaireDataSource id="496" questionnaire="HealthQuestionnaireSelfAdministered" question="PIPES_EVER" category="Y"/>
+                      <questionnaireDataSource id="497" questionnaire="HealthQuestionnaireSelfAdministered" question="CHEWING_TOBACCO_SNUFF_EVER" category="Y"/>
+                      <questionnaireDataSource id="498" questionnaire="HealthQuestionnaireSelfAdministered" question="BETEL_NUT_EVER" category="Y"/>
+                      <questionnaireDataSource id="499" questionnaire="HealthQuestionnaireSelfAdministered" question="PAAN_EVER" category="Y"/>
+                      <questionnaireDataSource id="500" questionnaire="HealthQuestionnaireSelfAdministered" question="SHEESHA_EVER" category="Y"/>
+                      <questionnaireDataSource id="501" questionnaire="HealthQuestionnaireSelfAdministered" question="OTHER_NICOTIN_PRODUCT_EVER" category="Y"/>
+                    </dataSources>
                   </condition>
-                  <questions id="522">
-                    <question id="523" name="CIGARS_CURRENT" number="1.1" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <questions id="502">
+                    <question id="503" name="CIGARS_CURRENT" number="1.1" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="504"/>
+                      <condition class="questionnaireDataSource" id="505" questionnaire="HealthQuestionnaireSelfAdministered" question="CIGARS_EVER" category="Y"/>
+                      <parentQuestion reference="486"/>
+                      <questions id="506"/>
+                    </question>
+                    <question id="507" name="SMALL_CIGARS_CURRENT" number="1.2" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="508"/>
+                      <condition class="questionnaireDataSource" id="509" questionnaire="HealthQuestionnaireSelfAdministered" question="SMALL_CIGARS_EVER" category="Y"/>
+                      <parentQuestion reference="486"/>
+                      <questions id="510"/>
+                    </question>
+                    <question id="511" name="PIPES_CURRENT" number="1.3" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="512"/>
+                      <condition class="questionnaireDataSource" id="513" questionnaire="HealthQuestionnaireSelfAdministered" question="PIPES_EVER" category="Y"/>
+                      <parentQuestion reference="486"/>
+                      <questions id="514"/>
+                    </question>
+                    <question id="515" name="CHEWING_TOBACCO_SNUFF_CURRENT" number="1.4" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="516"/>
+                      <condition class="questionnaireDataSource" id="517" questionnaire="HealthQuestionnaireSelfAdministered" question="CHEWING_TOBACCO_SNUFF_EVER" category="Y"/>
+                      <parentQuestion reference="486"/>
+                      <questions id="518"/>
+                    </question>
+                    <question id="519" name="BETEL_NUT_CURRENT" number="1.5" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="520"/>
+                      <condition class="questionnaireDataSource" id="521" questionnaire="HealthQuestionnaireSelfAdministered" question="BETEL_NUT_EVER" category="Y"/>
+                      <parentQuestion reference="486"/>
+                      <questions id="522"/>
+                    </question>
+                    <question id="523" name="PAAN_CURRENT" number="1.6" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
                       <questionCategories id="524"/>
-                      <condition class="answerCondition" id="525" name="CIGARS_CURRENT_ACONDITION">
-                        <questions id="526">
-                          <question reference="523"/>
-                        </questions>
-                        <question reference="478"/>
-                        <category reference="343"/>
-                      </condition>
-                      <parentQuestion reference="504"/>
-                      <questions id="527"/>
+                      <condition class="questionnaireDataSource" id="525" questionnaire="HealthQuestionnaireSelfAdministered" question="PAAN_EVER" category="Y"/>
+                      <parentQuestion reference="486"/>
+                      <questions id="526"/>
                     </question>
-                    <question id="528" name="SMALL_CIGARS_CURRENT" number="1.2" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="529"/>
-                      <condition class="answerCondition" id="530" name="SMALL_CIGARS_CURRENT_ACONDITION">
-                        <questions id="531">
-                          <question reference="528"/>
-                        </questions>
-                        <question reference="481"/>
-                        <category reference="343"/>
-                      </condition>
-                      <parentQuestion reference="504"/>
-                      <questions id="532"/>
+                    <question id="527" name="SHEESHA_CURRENT" number="1.7" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="528"/>
+                      <condition class="questionnaireDataSource" id="529" questionnaire="HealthQuestionnaireSelfAdministered" question="SHEESHA_EVER" category="Y"/>
+                      <parentQuestion reference="486"/>
+                      <questions id="530"/>
                     </question>
-                    <question id="533" name="PIPES_CURRENT" number="1.3" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="534"/>
-                      <condition class="answerCondition" id="535" name="PIPES_CURRENT_ACONDITION">
-                        <questions id="536">
-                          <question reference="533"/>
-                        </questions>
-                        <question reference="484"/>
-                        <category reference="343"/>
-                      </condition>
-                      <parentQuestion reference="504"/>
-                      <questions id="537"/>
-                    </question>
-                    <question id="538" name="CHEWING_TOBACCO_SNUFF_CURRENT" number="1.4" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="539"/>
-                      <condition class="answerCondition" id="540" name="CHEWING_TOBACCO_SNUFF_CURRENT_ACONDITION">
-                        <questions id="541">
-                          <question reference="538"/>
-                        </questions>
-                        <question reference="487"/>
-                        <category reference="343"/>
-                      </condition>
-                      <parentQuestion reference="504"/>
-                      <questions id="542"/>
-                    </question>
-                    <question id="543" name="BETEL_NUT_CURRENT" number="1.5" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="544"/>
-                      <condition class="answerCondition" id="545" name="BETEL_NUT_CURRENT_ACONDITION">
-                        <questions id="546">
-                          <question reference="543"/>
-                        </questions>
-                        <question reference="490"/>
-                        <category reference="343"/>
-                      </condition>
-                      <parentQuestion reference="504"/>
-                      <questions id="547"/>
-                    </question>
-                    <question id="548" name="PAAN_CURRENT" number="1.6" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="549"/>
-                      <condition class="answerCondition" id="550" name="PAAN_CURRENT_ACONDITION">
-                        <questions id="551">
-                          <question reference="548"/>
-                        </questions>
-                        <question reference="493"/>
-                        <category reference="343"/>
-                      </condition>
-                      <parentQuestion reference="504"/>
-                      <questions id="552"/>
-                    </question>
-                    <question id="553" name="SHEESHA_CURRENT" number="1.7" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="554"/>
-                      <condition class="answerCondition" id="555" name="SHEESHA_CURRENT_ACONDITION">
-                        <questions id="556">
-                          <question reference="553"/>
-                        </questions>
-                        <question reference="496"/>
-                        <category reference="343"/>
-                      </condition>
-                      <parentQuestion reference="504"/>
-                      <questions id="557"/>
-                    </question>
-                    <question id="558" name="OTHER_NICOTIN_PRODUCT_CURRENT" number="1.8" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                      <questionCategories id="559"/>
-                      <condition class="answerCondition" id="560" name="OTHER_NICOTIN_PRODUCT_CURRENT_ACONDITION">
-                        <questions id="561">
-                          <question reference="558"/>
-                        </questions>
-                        <question reference="499"/>
-                        <category reference="343"/>
-                      </condition>
-                      <parentQuestion reference="504"/>
-                      <questions id="562"/>
+                    <question id="531" name="OTHER_NICOTIN_PRODUCT_CURRENT" number="1.8" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                      <questionCategories id="532"/>
+                      <condition class="questionnaireDataSource" id="533" questionnaire="HealthQuestionnaireSelfAdministered" question="OTHER_NICOTIN_PRODUCT_EVER" category="Y"/>
+                      <parentQuestion reference="486"/>
+                      <questions id="534"/>
                     </question>
                   </questions>
                 </question>
-                <question id="563" name="TIMESTAMP_TS_TU" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="502"/>
-                  <questionCategories id="564">
-                    <questionCategory id="565" reselectable="false" selected="false">
-                      <question reference="563"/>
+                <question id="535" name="TIMESTAMP_TS_TU" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="484"/>
+                  <questionCategories id="536">
+                    <questionCategory id="537">
+                      <question reference="535"/>
                       <category reference="18"/>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="566"/>
+                  <questions id="538"/>
                 </question>
               </questions>
             </page>
           </pages>
-          <sections id="567"/>
+          <sections id="539"/>
         </section>
-        <section id="568" name="ALCOHOL_INTAKE">
-          <parentSection reference="464"/>
-          <pages id="569">
-            <page id="570" name="34" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="568"/>
-              <questions id="571">
-                <question id="572" name="AI0" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="570"/>
-                  <questionCategories id="573"/>
-                  <questions id="574"/>
+        <section id="540" name="ALCOHOL_INTAKE">
+          <parentSection reference="446"/>
+          <pages id="541">
+            <page id="542" name="34" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="540"/>
+              <questions id="543">
+                <question id="544" name="AI0" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="542"/>
+                  <questionCategories id="545"/>
+                  <questions id="546"/>
                 </question>
               </questions>
             </page>
-            <page id="575" name="35" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="568"/>
-              <questions id="576">
-                <question id="577" name="EVER_DRUNK_ALCOHOL" number="33" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="575"/>
-                  <questionCategories id="578">
-                    <questionCategory id="579" reselectable="false" selected="false" exportName="0">
-                      <question reference="577"/>
-                      <category reference="341"/>
+            <page id="547" name="35" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="540"/>
+              <questions id="548">
+                <question id="549" name="EVER_DRUNK_ALCOHOL" number="33" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="547"/>
+                  <questionCategories id="550">
+                    <questionCategory id="551" exportName="0">
+                      <question reference="549"/>
+                      <category reference="331"/>
                     </questionCategory>
-                    <questionCategory id="580" reselectable="false" selected="false" exportName="1">
-                      <question reference="577"/>
-                      <category reference="343"/>
+                    <questionCategory id="552" exportName="1">
+                      <question reference="549"/>
+                      <category reference="333"/>
                     </questionCategory>
-                    <questionCategory id="581" reselectable="false" selected="false" exportName="8">
-                      <question reference="577"/>
+                    <questionCategory id="553" exportName="8">
+                      <question reference="549"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="582" reselectable="false" selected="false" exportName="9">
-                      <question reference="577"/>
+                    <questionCategory id="554" exportName="9">
+                      <question reference="549"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="583"/>
+                  <questions id="555"/>
                 </question>
               </questions>
             </page>
-            <page id="584" name="36" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="568"/>
-              <questions id="585">
-                <question id="586" name="ALCOHOL_FREQUENCY" number="34" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="584"/>
-                  <questionCategories id="587">
-                    <questionCategory id="588" reselectable="false" selected="false" exportName="7">
-                      <question reference="586"/>
-                      <category id="589" name="DAILY" escape="false"/>
+            <page id="556" name="36" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="540"/>
+              <questions id="557">
+                <question id="558" name="ALCOHOL_FREQUENCY" number="34" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="556"/>
+                  <questionCategories id="559">
+                    <questionCategory id="560" exportName="7">
+                      <question reference="558"/>
+                      <category id="561" name="DAILY" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="590" reselectable="false" selected="false" exportName="6">
-                      <question reference="586"/>
-                      <category id="591" name="4TO5_WEEK" escape="false"/>
+                    <questionCategory id="562" exportName="6">
+                      <question reference="558"/>
+                      <category id="563" name="4TO5_WEEK" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="592" reselectable="false" selected="false" exportName="5">
-                      <question reference="586"/>
-                      <category id="593" name="2TO3_WEEK" escape="false"/>
+                    <questionCategory id="564" exportName="5">
+                      <question reference="558"/>
+                      <category id="565" name="2TO3_WEEK" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="594" reselectable="false" selected="false" exportName="4">
-                      <question reference="586"/>
-                      <category id="595" name="WEEKLY" escape="false"/>
+                    <questionCategory id="566" exportName="4">
+                      <question reference="558"/>
+                      <category id="567" name="WEEKLY" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="596" reselectable="false" selected="false" exportName="3">
-                      <question reference="586"/>
-                      <category id="597" name="2TO3_MONTH" escape="false"/>
+                    <questionCategory id="568" exportName="3">
+                      <question reference="558"/>
+                      <category id="569" name="2TO3_MONTH" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="598" reselectable="false" selected="false" exportName="2">
-                      <question reference="586"/>
-                      <category id="599" name="MONTHLY" escape="false"/>
+                    <questionCategory id="570" exportName="2">
+                      <question reference="558"/>
+                      <category id="571" name="MONTHLY" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="600" reselectable="false" selected="false" exportName="1">
-                      <question reference="586"/>
-                      <category id="601" name="LESS_MONTHLY" escape="false"/>
+                    <questionCategory id="572" exportName="1">
+                      <question reference="558"/>
+                      <category id="573" name="LESS_MONTHLY" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="602" reselectable="false" selected="false" exportName="0">
-                      <question reference="586"/>
-                      <category id="603" name="NEVER" escape="false"/>
+                    <questionCategory id="574" exportName="0">
+                      <question reference="558"/>
+                      <category id="575" name="NEVER" escape="false"/>
                     </questionCategory>
-                    <questionCategory id="604" reselectable="false" selected="false" exportName="88">
-                      <question reference="586"/>
+                    <questionCategory id="576" exportName="88">
+                      <question reference="558"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="605" reselectable="false" selected="false" exportName="99">
-                      <question reference="586"/>
+                    <questionCategory id="577" exportName="99">
+                      <question reference="558"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="answerCondition" id="606" name="ALCOHOL_FREQUENCY_ACONDITION">
-                    <questions id="607">
-                      <question reference="586"/>
-                    </questions>
-                    <question reference="577"/>
-                    <category reference="343"/>
-                  </condition>
-                  <questions id="608"/>
+                  <condition class="questionnaireDataSource" id="578" questionnaire="HealthQuestionnaireSelfAdministered" question="EVER_DRUNK_ALCOHOL" category="Y"/>
+                  <questions id="579"/>
                 </question>
               </questions>
             </page>
-            <page id="609" name="37" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="568"/>
-              <questions id="610">
-                <question id="611" name="RED_WINE_DAY_QTY" number="35" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="609"/>
-                  <questionCategories id="612">
-                    <questionCategory id="613" reselectable="false" selected="false">
-                      <question reference="611"/>
-                      <category id="614" name="ALCOHOL_DAY_QTY" escape="false">
-                        <openAnswerDefinition id="615" name="ALCOHOL_DAY_QTY" dataType="INTEGER" required="true">
-                          <validators id="616">
-                            <dataValidator id="617" dataType="INTEGER">
-                              <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="618">
+            <page id="580" name="37" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="540"/>
+              <questions id="581">
+                <question id="582" name="RED_WINE_DAY_QTY" number="35" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="580"/>
+                  <questionCategories id="583">
+                    <questionCategory id="584">
+                      <question reference="582"/>
+                      <category id="585" name="ALCOHOL_DAY_QTY" escape="false">
+                        <openAnswerDefinition id="586" name="ALCOHOL_DAY_QTY" dataType="INTEGER" required="true">
+                          <validators id="587">
+                            <dataValidator id="588" dataType="INTEGER">
+                              <validator class="org.apache.wicket.validation.validator.NumberValidator$MinimumValidator" id="589">
                                 <minimum>0</minimum>
                               </validator>
                             </dataValidator>
                           </validators>
-                          <openAnswerDefinitions id="619"/>
+                          <openAnswerDefinitions id="590"/>
                         </openAnswerDefinition>
                       </category>
                     </questionCategory>
-                    <questionCategory id="620" reselectable="false" selected="false" exportName="888">
+                    <questionCategory id="591" exportName="888">
+                      <question reference="582"/>
+                      <category reference="39"/>
+                    </questionCategory>
+                    <questionCategory id="592" exportName="999">
+                      <question reference="582"/>
+                      <category reference="41"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <condition class="computingDataSource" id="593" expression="$1 || $2 || $3 || $4" dataType="BOOLEAN">
+                    <dataSources id="594">
+                      <questionnaireDataSource id="595" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="DAILY"/>
+                      <questionnaireDataSource id="596" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="4TO5_WEEK"/>
+                      <questionnaireDataSource id="597" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="2TO3_WEEK"/>
+                      <questionnaireDataSource id="598" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="WEEKLY"/>
+                    </dataSources>
+                  </condition>
+                  <questions id="599"/>
+                </question>
+              </questions>
+            </page>
+            <page id="600" name="38" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="540"/>
+              <questions id="601">
+                <question id="602" name="WHITE_WINE_DAY_QTY" number="36" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="600"/>
+                  <questionCategories id="603">
+                    <questionCategory id="604">
+                      <question reference="602"/>
+                      <category reference="585"/>
+                    </questionCategory>
+                    <questionCategory id="605" exportName="888">
+                      <question reference="602"/>
+                      <category reference="39"/>
+                    </questionCategory>
+                    <questionCategory id="606" exportName="999">
+                      <question reference="602"/>
+                      <category reference="41"/>
+                    </questionCategory>
+                  </questionCategories>
+                  <condition class="questionnaireDataSource" id="607" questionnaire="HealthQuestionnaireSelfAdministered" question="RED_WINE_DAY_QTY"/>
+                  <questions id="608"/>
+                </question>
+              </questions>
+            </page>
+            <page id="609" name="39" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="540"/>
+              <questions id="610">
+                <question id="611" name="BEER_DAY_QTY" number="37" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="609"/>
+                  <questionCategories id="612">
+                    <questionCategory id="613">
+                      <question reference="611"/>
+                      <category reference="585"/>
+                    </questionCategory>
+                    <questionCategory id="614" exportName="888">
                       <question reference="611"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="621" reselectable="false" selected="false" exportName="999">
+                    <questionCategory id="615" exportName="999">
                       <question reference="611"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="multipleCondition" id="622" name="RED_WINE_DAY_QTY_MCONDITION" conditionOperator="OR">
-                    <questions id="623">
-                      <question reference="611"/>
-                    </questions>
-                    <conditions id="624">
-                      <answerCondition id="625" name="RED_WINE_DAY_QTY_ACONDITION_0">
-                        <question reference="586"/>
-                        <category reference="589"/>
-                      </answerCondition>
-                      <answerCondition id="626" name="RED_WINE_DAY_QTY_ACONDITION_1">
-                        <question reference="586"/>
-                        <category reference="591"/>
-                      </answerCondition>
-                      <answerCondition id="627" name="RED_WINE_DAY_QTY_ACONDITION_2">
-                        <question reference="586"/>
-                        <category reference="593"/>
-                      </answerCondition>
-                      <answerCondition id="628" name="RED_WINE_DAY_QTY_ACONDITION_3">
-                        <question reference="586"/>
-                        <category reference="595"/>
-                      </answerCondition>
-                    </conditions>
-                  </condition>
-                  <questions id="629"/>
+                  <condition class="questionnaireDataSource" id="616" questionnaire="HealthQuestionnaireSelfAdministered" question="RED_WINE_DAY_QTY"/>
+                  <questions id="617"/>
                 </question>
               </questions>
             </page>
-            <page id="630" name="38" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="568"/>
-              <questions id="631">
-                <question id="632" name="WHITE_WINE_DAY_QTY" number="36" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="630"/>
-                  <questionCategories id="633">
-                    <questionCategory id="634" reselectable="false" selected="false">
-                      <question reference="632"/>
-                      <category reference="614"/>
+            <page id="618" name="40" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="540"/>
+              <questions id="619">
+                <question id="620" name="LIQUOR_DAY_QTY" number="38" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="618"/>
+                  <questionCategories id="621">
+                    <questionCategory id="622">
+                      <question reference="620"/>
+                      <category reference="585"/>
                     </questionCategory>
-                    <questionCategory id="635" reselectable="false" selected="false" exportName="888">
-                      <question reference="632"/>
+                    <questionCategory id="623" exportName="888">
+                      <question reference="620"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="636" reselectable="false" selected="false" exportName="999">
-                      <question reference="632"/>
+                    <questionCategory id="624" exportName="999">
+                      <question reference="620"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="answerCondition" id="637" name="WHITE_WINE_DAY_QTY_ACONDITION">
-                    <questions id="638">
-                      <question reference="632"/>
-                    </questions>
-                    <question reference="611"/>
-                  </condition>
-                  <questions id="639"/>
+                  <condition class="questionnaireDataSource" id="625" questionnaire="HealthQuestionnaireSelfAdministered" question="RED_WINE_DAY_QTY"/>
+                  <questions id="626"/>
                 </question>
               </questions>
             </page>
-            <page id="640" name="39" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="568"/>
-              <questions id="641">
-                <question id="642" name="BEER_DAY_QTY" number="37" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="640"/>
-                  <questionCategories id="643">
-                    <questionCategory id="644" reselectable="false" selected="false">
-                      <question reference="642"/>
-                      <category reference="614"/>
+            <page id="627" name="41" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="540"/>
+              <questions id="628">
+                <question id="629" name="OTHER_ALCOHOL_DAY" number="39" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="627"/>
+                  <questionCategories id="630">
+                    <questionCategory id="631" exportName="0">
+                      <question reference="629"/>
+                      <category reference="331"/>
                     </questionCategory>
-                    <questionCategory id="645" reselectable="false" selected="false" exportName="888">
-                      <question reference="642"/>
+                    <questionCategory id="632" exportName="1">
+                      <question reference="629"/>
+                      <category reference="333"/>
+                    </questionCategory>
+                    <questionCategory id="633" exportName="8">
+                      <question reference="629"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="646" reselectable="false" selected="false" exportName="999">
-                      <question reference="642"/>
+                    <questionCategory id="634" exportName="9">
+                      <question reference="629"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="answerCondition" id="647" name="BEER_DAY_QTY_ACONDITION">
-                    <questions id="648">
-                      <question reference="642"/>
-                    </questions>
-                    <question reference="611"/>
-                  </condition>
-                  <questions id="649"/>
+                  <condition class="questionnaireDataSource" id="635" questionnaire="HealthQuestionnaireSelfAdministered" question="RED_WINE_DAY_QTY"/>
+                  <questions id="636"/>
                 </question>
               </questions>
             </page>
-            <page id="650" name="40" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="568"/>
-              <questions id="651">
-                <question id="652" name="LIQUOR_DAY_QTY" number="38" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="650"/>
-                  <questionCategories id="653">
-                    <questionCategory id="654" reselectable="false" selected="false">
-                      <question reference="652"/>
-                      <category reference="614"/>
+            <page id="637" name="43" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="540"/>
+              <questions id="638">
+                <question id="639" name="OTHER_ALCOHOL_DAY_QTY" number="41" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="637"/>
+                  <questionCategories id="640">
+                    <questionCategory id="641">
+                      <question reference="639"/>
+                      <category reference="585"/>
                     </questionCategory>
-                    <questionCategory id="655" reselectable="false" selected="false" exportName="888">
-                      <question reference="652"/>
+                    <questionCategory id="642" exportName="888">
+                      <question reference="639"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="656" reselectable="false" selected="false" exportName="999">
-                      <question reference="652"/>
+                    <questionCategory id="643" exportName="999">
+                      <question reference="639"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="answerCondition" id="657" name="LIQUOR_DAY_QTY_ACONDITION">
-                    <questions id="658">
-                      <question reference="652"/>
-                    </questions>
-                    <question reference="611"/>
-                  </condition>
-                  <questions id="659"/>
+                  <condition class="questionnaireDataSource" id="644" questionnaire="HealthQuestionnaireSelfAdministered" question="OTHER_ALCOHOL_DAY" category="Y"/>
+                  <questions id="645"/>
                 </question>
               </questions>
             </page>
-            <page id="660" name="41" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="568"/>
-              <questions id="661">
-                <question id="662" name="OTHER_ALCOHOL_DAY" number="39" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="660"/>
-                  <questionCategories id="663">
-                    <questionCategory id="664" reselectable="false" selected="false" exportName="0">
-                      <question reference="662"/>
-                      <category reference="341"/>
+            <page id="646" name="44" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="540"/>
+              <questions id="647">
+                <question id="648" name="BINGE_DRINKING_MALE_HEAVY_FREQ" number="42" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="646"/>
+                  <questionCategories id="649">
+                    <questionCategory id="650" exportName="8">
+                      <question reference="648"/>
+                      <category reference="561"/>
                     </questionCategory>
-                    <questionCategory id="665" reselectable="false" selected="false" exportName="1">
-                      <question reference="662"/>
-                      <category reference="343"/>
+                    <questionCategory id="651" exportName="7">
+                      <question reference="648"/>
+                      <category reference="563"/>
                     </questionCategory>
-                    <questionCategory id="666" reselectable="false" selected="false" exportName="8">
-                      <question reference="662"/>
+                    <questionCategory id="652" exportName="6">
+                      <question reference="648"/>
+                      <category reference="565"/>
+                    </questionCategory>
+                    <questionCategory id="653" exportName="5">
+                      <question reference="648"/>
+                      <category reference="567"/>
+                    </questionCategory>
+                    <questionCategory id="654" exportName="4">
+                      <question reference="648"/>
+                      <category reference="569"/>
+                    </questionCategory>
+                    <questionCategory id="655" exportName="3">
+                      <question reference="648"/>
+                      <category reference="571"/>
+                    </questionCategory>
+                    <questionCategory id="656" exportName="2">
+                      <question reference="648"/>
+                      <category id="657" name="6TO11_YEAR" escape="false"/>
+                    </questionCategory>
+                    <questionCategory id="658" exportName="1">
+                      <question reference="648"/>
+                      <category id="659" name="1TO5_YEAR" escape="false"/>
+                    </questionCategory>
+                    <questionCategory id="660" exportName="0">
+                      <question reference="648"/>
+                      <category reference="575"/>
+                    </questionCategory>
+                    <questionCategory id="661" exportName="88">
+                      <question reference="648"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="667" reselectable="false" selected="false" exportName="9">
-                      <question reference="662"/>
+                    <questionCategory id="662" exportName="99">
+                      <question reference="648"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="answerCondition" id="668" name="OTHER_ALCOHOL_DAY_ACONDITION">
-                    <questions id="669">
-                      <question reference="662"/>
-                    </questions>
-                    <question reference="611"/>
+                  <condition class="computingDataSource" id="663" expression="$1 &amp;&amp; ($2 || $3 || $4 || $5)" dataType="BOOLEAN">
+                    <dataSources id="664">
+                      <questionnaireDataSource id="665" questionnaire="HealthQuestionnaireSelfAdministered" question="SEX" category="MALE"/>
+                      <questionnaireDataSource id="666" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="DAILY"/>
+                      <questionnaireDataSource id="667" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="4TO5_WEEK"/>
+                      <questionnaireDataSource id="668" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="2TO3_WEEK"/>
+                      <questionnaireDataSource id="669" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="WEEKLY"/>
+                    </dataSources>
                   </condition>
                   <questions id="670"/>
                 </question>
-              </questions>
-            </page>
-            <page id="671" name="43" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="568"/>
-              <questions id="672">
-                <question id="673" name="OTHER_ALCOHOL_DAY_QTY" number="41" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="671"/>
-                  <questionCategories id="674">
-                    <questionCategory id="675" reselectable="false" selected="false">
-                      <question reference="673"/>
-                      <category reference="614"/>
+                <question id="671" name="BINGE_DRINKING_MALE_MOD_FREQ" number="43" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="646"/>
+                  <questionCategories id="672">
+                    <questionCategory id="673" exportName="4">
+                      <question reference="671"/>
+                      <category reference="569"/>
                     </questionCategory>
-                    <questionCategory id="676" reselectable="false" selected="false" exportName="888">
-                      <question reference="673"/>
+                    <questionCategory id="674" exportName="3">
+                      <question reference="671"/>
+                      <category reference="571"/>
+                    </questionCategory>
+                    <questionCategory id="675" exportName="2">
+                      <question reference="671"/>
+                      <category reference="657"/>
+                    </questionCategory>
+                    <questionCategory id="676" exportName="1">
+                      <question reference="671"/>
+                      <category reference="659"/>
+                    </questionCategory>
+                    <questionCategory id="677" exportName="0">
+                      <question reference="671"/>
+                      <category reference="575"/>
+                    </questionCategory>
+                    <questionCategory id="678" exportName="88">
+                      <question reference="671"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="677" reselectable="false" selected="false" exportName="999">
-                      <question reference="673"/>
+                    <questionCategory id="679" exportName="99">
+                      <question reference="671"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="answerCondition" id="678" name="OTHER_ALCOHOL_DAY_QTY_ACONDITION">
-                    <questions id="679">
-                      <question reference="673"/>
-                    </questions>
-                    <question reference="662"/>
-                    <category reference="343"/>
+                  <condition class="computingDataSource" id="680" expression="$1 &amp;&amp; ($2 || $3 || $4)" dataType="BOOLEAN">
+                    <dataSources id="681">
+                      <questionnaireDataSource id="682" questionnaire="HealthQuestionnaireSelfAdministered" question="SEX" category="MALE"/>
+                      <questionnaireDataSource id="683" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="2TO3_MONTH"/>
+                      <questionnaireDataSource id="684" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="MONTHLY"/>
+                      <questionnaireDataSource id="685" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="LESS_MONTHLY"/>
+                    </dataSources>
                   </condition>
-                  <questions id="680"/>
+                  <questions id="686"/>
                 </question>
               </questions>
             </page>
-            <page id="681" name="44" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="568"/>
-              <questions id="682">
-                <question id="683" name="BINGE_DRINKING_MALE_HEAVY_FREQ" number="42" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="681"/>
-                  <questionCategories id="684">
-                    <questionCategory id="685" reselectable="false" selected="false" exportName="8">
-                      <question reference="683"/>
-                      <category reference="589"/>
+            <page id="687" name="45" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
+              <section reference="540"/>
+              <questions id="688">
+                <question id="689" name="BINGE_DRINKING_FEMALE_HEAVY_FREQ" number="44" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="687"/>
+                  <questionCategories id="690">
+                    <questionCategory id="691" exportName="8">
+                      <question reference="689"/>
+                      <category reference="561"/>
                     </questionCategory>
-                    <questionCategory id="686" reselectable="false" selected="false" exportName="7">
-                      <question reference="683"/>
-                      <category reference="591"/>
+                    <questionCategory id="692" exportName="7">
+                      <question reference="689"/>
+                      <category reference="563"/>
                     </questionCategory>
-                    <questionCategory id="687" reselectable="false" selected="false" exportName="6">
-                      <question reference="683"/>
-                      <category reference="593"/>
+                    <questionCategory id="693" exportName="6">
+                      <question reference="689"/>
+                      <category reference="565"/>
                     </questionCategory>
-                    <questionCategory id="688" reselectable="false" selected="false" exportName="5">
-                      <question reference="683"/>
-                      <category reference="595"/>
+                    <questionCategory id="694" exportName="5">
+                      <question reference="689"/>
+                      <category reference="567"/>
                     </questionCategory>
-                    <questionCategory id="689" reselectable="false" selected="false" exportName="4">
-                      <question reference="683"/>
-                      <category reference="597"/>
+                    <questionCategory id="695" exportName="4">
+                      <question reference="689"/>
+                      <category reference="569"/>
                     </questionCategory>
-                    <questionCategory id="690" reselectable="false" selected="false" exportName="3">
-                      <question reference="683"/>
-                      <category reference="599"/>
+                    <questionCategory id="696" exportName="3">
+                      <question reference="689"/>
+                      <category reference="571"/>
                     </questionCategory>
-                    <questionCategory id="691" reselectable="false" selected="false" exportName="2">
-                      <question reference="683"/>
-                      <category id="692" name="6TO11_YEAR" escape="false"/>
+                    <questionCategory id="697" exportName="2">
+                      <question reference="689"/>
+                      <category reference="657"/>
                     </questionCategory>
-                    <questionCategory id="693" reselectable="false" selected="false" exportName="1">
-                      <question reference="683"/>
-                      <category id="694" name="1TO5_YEAR" escape="false"/>
+                    <questionCategory id="698" exportName="1">
+                      <question reference="689"/>
+                      <category reference="659"/>
                     </questionCategory>
-                    <questionCategory id="695" reselectable="false" selected="false" exportName="0">
-                      <question reference="683"/>
-                      <category reference="603"/>
+                    <questionCategory id="699" exportName="0">
+                      <question reference="689"/>
+                      <category reference="575"/>
                     </questionCategory>
-                    <questionCategory id="696" reselectable="false" selected="false" exportName="88">
-                      <question reference="683"/>
+                    <questionCategory id="700" exportName="88">
+                      <question reference="689"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="697" reselectable="false" selected="false" exportName="99">
-                      <question reference="683"/>
+                    <questionCategory id="701" exportName="99">
+                      <question reference="689"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="multipleCondition" id="698" name="BINGE_DRINKING_MALE_HEAVY_FREQ_MCONDITION_0" conditionOperator="AND">
-                    <questions id="699">
-                      <question reference="683"/>
-                    </questions>
-                    <conditions id="700">
-                      <answerCondition id="701" name="BINGE_DRINKING_MALE_HEAVY_FREQ_ACONDITION_0">
-                        <question reference="30"/>
-                        <category reference="33"/>
-                      </answerCondition>
-                      <multipleCondition id="702" name="BINGE_DRINKING_MALE_HEAVY_FREQ_MCONDITION_1" conditionOperator="OR">
-                        <conditions id="703">
-                          <answerCondition id="704" name="BINGE_DRINKING_MALE_HEAVY_FREQ_ACONDITION_1">
-                            <question reference="586"/>
-                            <category reference="589"/>
-                          </answerCondition>
-                          <answerCondition id="705" name="BINGE_DRINKING_MALE_HEAVY_FREQ_ACONDITION_2">
-                            <question reference="586"/>
-                            <category reference="591"/>
-                          </answerCondition>
-                          <answerCondition id="706" name="BINGE_DRINKING_MALE_HEAVY_FREQ_ACONDITION_3">
-                            <question reference="586"/>
-                            <category reference="593"/>
-                          </answerCondition>
-                          <answerCondition id="707" name="BINGE_DRINKING_MALE_HEAVY_FREQ_ACONDITION_4">
-                            <question reference="586"/>
-                            <category reference="595"/>
-                          </answerCondition>
-                        </conditions>
-                      </multipleCondition>
-                    </conditions>
+                  <condition class="computingDataSource" id="702" expression="$1 &amp;&amp; ($2 || $3 || $4 || $5)" dataType="BOOLEAN">
+                    <dataSources id="703">
+                      <questionnaireDataSource id="704" questionnaire="HealthQuestionnaireSelfAdministered" question="SEX" category="FEMALE"/>
+                      <questionnaireDataSource id="705" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="DAILY"/>
+                      <questionnaireDataSource id="706" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="4TO5_WEEK"/>
+                      <questionnaireDataSource id="707" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="2TO3_WEEK"/>
+                      <questionnaireDataSource id="708" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="WEEKLY"/>
+                    </dataSources>
                   </condition>
-                  <questions id="708"/>
+                  <questions id="709"/>
                 </question>
-                <question id="709" name="BINGE_DRINKING_MALE_MOD_FREQ" number="43" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="681"/>
-                  <questionCategories id="710">
-                    <questionCategory id="711" reselectable="false" selected="false" exportName="4">
-                      <question reference="709"/>
-                      <category reference="597"/>
+                <question id="710" name="BINGE_DRINKING_FEMALE_MOD_FREQ" number="45" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="687"/>
+                  <questionCategories id="711">
+                    <questionCategory id="712" exportName="4">
+                      <question reference="710"/>
+                      <category reference="569"/>
                     </questionCategory>
-                    <questionCategory id="712" reselectable="false" selected="false" exportName="3">
-                      <question reference="709"/>
-                      <category reference="599"/>
+                    <questionCategory id="713" exportName="3">
+                      <question reference="710"/>
+                      <category reference="571"/>
                     </questionCategory>
-                    <questionCategory id="713" reselectable="false" selected="false" exportName="2">
-                      <question reference="709"/>
-                      <category reference="692"/>
+                    <questionCategory id="714" exportName="2">
+                      <question reference="710"/>
+                      <category reference="657"/>
                     </questionCategory>
-                    <questionCategory id="714" reselectable="false" selected="false" exportName="1">
-                      <question reference="709"/>
-                      <category reference="694"/>
+                    <questionCategory id="715" exportName="1">
+                      <question reference="710"/>
+                      <category reference="659"/>
                     </questionCategory>
-                    <questionCategory id="715" reselectable="false" selected="false" exportName="0">
-                      <question reference="709"/>
-                      <category reference="603"/>
+                    <questionCategory id="716" exportName="0">
+                      <question reference="710"/>
+                      <category reference="575"/>
                     </questionCategory>
-                    <questionCategory id="716" reselectable="false" selected="false" exportName="88">
-                      <question reference="709"/>
+                    <questionCategory id="717" exportName="88">
+                      <question reference="710"/>
                       <category reference="39"/>
                     </questionCategory>
-                    <questionCategory id="717" reselectable="false" selected="false" exportName="99">
-                      <question reference="709"/>
+                    <questionCategory id="718" exportName="99">
+                      <question reference="710"/>
                       <category reference="41"/>
                     </questionCategory>
                   </questionCategories>
-                  <condition class="multipleCondition" id="718" name="BINGE_DRINKING_MALE_MOD_FREQ_MCONDITION_0" conditionOperator="AND">
-                    <questions id="719">
-                      <question reference="709"/>
-                    </questions>
-                    <conditions id="720">
-                      <answerCondition id="721" name="BINGE_DRINKING_MALE_MOD_FREQ_ACONDITION_0">
-                        <question reference="30"/>
-                        <category reference="33"/>
-                      </answerCondition>
-                      <multipleCondition id="722" name="BINGE_DRINKING_MALE_MOD_FREQ_MCONDITION_1" conditionOperator="OR">
-                        <conditions id="723">
-                          <answerCondition id="724" name="BINGE_DRINKING_MALE_MOD_FREQ_ACONDITION_1">
-                            <question reference="586"/>
-                            <category reference="597"/>
-                          </answerCondition>
-                          <answerCondition id="725" name="BINGE_DRINKING_MALE_MOD_FREQ_ACONDITION_2">
-                            <question reference="586"/>
-                            <category reference="599"/>
-                          </answerCondition>
-                          <answerCondition id="726" name="BINGE_DRINKING_MALE_MOD_FREQ_ACONDITION_3">
-                            <question reference="586"/>
-                            <category reference="601"/>
-                          </answerCondition>
-                        </conditions>
-                      </multipleCondition>
-                    </conditions>
+                  <condition class="computingDataSource" id="719" expression="$1 &amp;&amp; ($2 || $3 || $4)" dataType="BOOLEAN">
+                    <dataSources id="720">
+                      <questionnaireDataSource id="721" questionnaire="HealthQuestionnaireSelfAdministered" question="SEX" category="FEMALE"/>
+                      <questionnaireDataSource id="722" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="2TO3_MONTH"/>
+                      <questionnaireDataSource id="723" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="MONTHLY"/>
+                      <questionnaireDataSource id="724" questionnaire="HealthQuestionnaireSelfAdministered" question="ALCOHOL_FREQUENCY" category="LESS_MONTHLY"/>
+                    </dataSources>
                   </condition>
-                  <questions id="727"/>
+                  <questions id="725"/>
                 </question>
-              </questions>
-            </page>
-            <page id="728" name="45" uIFactoryName="quartz.SimplifiedPageLayoutFactory">
-              <section reference="568"/>
-              <questions id="729">
-                <question id="730" name="BINGE_DRINKING_FEMALE_HEAVY_FREQ" number="44" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="728"/>
-                  <questionCategories id="731">
-                    <questionCategory id="732" reselectable="false" selected="false" exportName="8">
-                      <question reference="730"/>
-                      <category reference="589"/>
-                    </questionCategory>
-                    <questionCategory id="733" reselectable="false" selected="false" exportName="7">
-                      <question reference="730"/>
-                      <category reference="591"/>
-                    </questionCategory>
-                    <questionCategory id="734" reselectable="false" selected="false" exportName="6">
-                      <question reference="730"/>
-                      <category reference="593"/>
-                    </questionCategory>
-                    <questionCategory id="735" reselectable="false" selected="false" exportName="5">
-                      <question reference="730"/>
-                      <category reference="595"/>
-                    </questionCategory>
-                    <questionCategory id="736" reselectable="false" selected="false" exportName="4">
-                      <question reference="730"/>
-                      <category reference="597"/>
-                    </questionCategory>
-                    <questionCategory id="737" reselectable="false" selected="false" exportName="3">
-                      <question reference="730"/>
-                      <category reference="599"/>
-                    </questionCategory>
-                    <questionCategory id="738" reselectable="false" selected="false" exportName="2">
-                      <question reference="730"/>
-                      <category reference="692"/>
-                    </questionCategory>
-                    <questionCategory id="739" reselectable="false" selected="false" exportName="1">
-                      <question reference="730"/>
-                      <category reference="694"/>
-                    </questionCategory>
-                    <questionCategory id="740" reselectable="false" selected="false" exportName="0">
-                      <question reference="730"/>
-                      <category reference="603"/>
-                    </questionCategory>
-                    <questionCategory id="741" reselectable="false" selected="false" exportName="88">
-                      <question reference="730"/>
-                      <category reference="39"/>
-                    </questionCategory>
-                    <questionCategory id="742" reselectable="false" selected="false" exportName="99">
-                      <question reference="730"/>
-                      <category reference="41"/>
-                    </questionCategory>
-                  </questionCategories>
-                  <condition class="multipleCondition" id="743" name="BINGE_DRINKING_FEMALE_HEAVY_FREQ_MCONDITION_0" conditionOperator="AND">
-                    <questions id="744">
-                      <question reference="730"/>
-                    </questions>
-                    <conditions id="745">
-                      <answerCondition id="746" name="BINGE_DRINKING_FEMALE_HEAVY_FREQ_ACONDITION_0">
-                        <question reference="30"/>
-                        <category reference="35"/>
-                      </answerCondition>
-                      <multipleCondition id="747" name="BINGE_DRINKING_FEMALE_HEAVY_FREQ_MCONDITION_1" conditionOperator="OR">
-                        <conditions id="748">
-                          <answerCondition id="749" name="BINGE_DRINKING_FEMALE_HEAVY_FREQ_ACONDITION_1">
-                            <question reference="586"/>
-                            <category reference="589"/>
-                          </answerCondition>
-                          <answerCondition id="750" name="BINGE_DRINKING_FEMALE_HEAVY_FREQ_ACONDITION_2">
-                            <question reference="586"/>
-                            <category reference="591"/>
-                          </answerCondition>
-                          <answerCondition id="751" name="BINGE_DRINKING_FEMALE_HEAVY_FREQ_ACONDITION_3">
-                            <question reference="586"/>
-                            <category reference="593"/>
-                          </answerCondition>
-                          <answerCondition id="752" name="BINGE_DRINKING_FEMALE_HEAVY_FREQ_ACONDITION_4">
-                            <question reference="586"/>
-                            <category reference="595"/>
-                          </answerCondition>
-                        </conditions>
-                      </multipleCondition>
-                    </conditions>
-                  </condition>
-                  <questions id="753"/>
-                </question>
-                <question id="754" name="BINGE_DRINKING_FEMALE_MOD_FREQ" number="45" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="728"/>
-                  <questionCategories id="755">
-                    <questionCategory id="756" reselectable="false" selected="false" exportName="4">
-                      <question reference="754"/>
-                      <category reference="597"/>
-                    </questionCategory>
-                    <questionCategory id="757" reselectable="false" selected="false" exportName="3">
-                      <question reference="754"/>
-                      <category reference="599"/>
-                    </questionCategory>
-                    <questionCategory id="758" reselectable="false" selected="false" exportName="2">
-                      <question reference="754"/>
-                      <category reference="692"/>
-                    </questionCategory>
-                    <questionCategory id="759" reselectable="false" selected="false" exportName="1">
-                      <question reference="754"/>
-                      <category reference="694"/>
-                    </questionCategory>
-                    <questionCategory id="760" reselectable="false" selected="false" exportName="0">
-                      <question reference="754"/>
-                      <category reference="603"/>
-                    </questionCategory>
-                    <questionCategory id="761" reselectable="false" selected="false" exportName="88">
-                      <question reference="754"/>
-                      <category reference="39"/>
-                    </questionCategory>
-                    <questionCategory id="762" reselectable="false" selected="false" exportName="99">
-                      <question reference="754"/>
-                      <category reference="41"/>
-                    </questionCategory>
-                  </questionCategories>
-                  <condition class="multipleCondition" id="763" name="BINGE_DRINKING_FEMALE_MOD_FREQ_MCONDITION_0" conditionOperator="AND">
-                    <questions id="764">
-                      <question reference="754"/>
-                    </questions>
-                    <conditions id="765">
-                      <answerCondition id="766" name="BINGE_DRINKING_FEMALE_MOD_FREQ_ACONDITION_0">
-                        <question reference="30"/>
-                        <category reference="35"/>
-                      </answerCondition>
-                      <multipleCondition id="767" name="BINGE_DRINKING_FEMALE_MOD_FREQ_MCONDITION_1" conditionOperator="OR">
-                        <conditions id="768">
-                          <answerCondition id="769" name="BINGE_DRINKING_FEMALE_MOD_FREQ_ACONDITION_1">
-                            <question reference="586"/>
-                            <category reference="597"/>
-                          </answerCondition>
-                          <answerCondition id="770" name="BINGE_DRINKING_FEMALE_MOD_FREQ_ACONDITION_2">
-                            <question reference="586"/>
-                            <category reference="599"/>
-                          </answerCondition>
-                          <answerCondition id="771" name="BINGE_DRINKING_FEMALE_MOD_FREQ_ACONDITION_3">
-                            <question reference="586"/>
-                            <category reference="601"/>
-                          </answerCondition>
-                        </conditions>
-                      </multipleCondition>
-                    </conditions>
-                  </condition>
-                  <questions id="772"/>
-                </question>
-                <question id="773" name="TIMESTAMP_TS_AI" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
-                  <page reference="728"/>
-                  <questionCategories id="774">
-                    <questionCategory id="775" reselectable="false" selected="false">
-                      <question reference="773"/>
+                <question id="726" name="TIMESTAMP_TS_AI" multiple="false" minCount="1" uIFactoryName="quartz.SimplifiedQuestionPanelFactory">
+                  <page reference="687"/>
+                  <questionCategories id="727">
+                    <questionCategory id="728">
+                      <question reference="726"/>
                       <category reference="18"/>
                     </questionCategory>
                   </questionCategories>
-                  <questions id="776"/>
+                  <questions id="729"/>
                 </question>
               </questions>
             </page>
           </pages>
-          <sections id="777"/>
+          <sections id="730"/>
         </section>
       </sections>
     </section>
   </sections>
-  <pages id="778">
+  <pages id="731">
     <page reference="10"/>
     <page reference="28"/>
     <page reference="46"/>
     <page reference="60"/>
-    <page reference="105"/>
-    <page reference="125"/>
-    <page reference="142"/>
-    <page reference="147"/>
-    <page reference="180"/>
-    <page reference="215"/>
-    <page reference="235"/>
-    <page reference="258"/>
-    <page reference="315"/>
-    <page reference="320"/>
-    <page reference="331"/>
-    <page reference="336"/>
-    <page reference="371"/>
-    <page reference="387"/>
-    <page reference="434"/>
-    <page reference="443"/>
-    <page reference="469"/>
-    <page reference="502"/>
-    <page reference="570"/>
-    <page reference="575"/>
-    <page reference="584"/>
+    <page reference="99"/>
+    <page reference="119"/>
+    <page reference="136"/>
+    <page reference="141"/>
+    <page reference="174"/>
+    <page reference="205"/>
+    <page reference="225"/>
+    <page reference="248"/>
+    <page reference="305"/>
+    <page reference="310"/>
+    <page reference="321"/>
+    <page reference="326"/>
+    <page reference="361"/>
+    <page reference="375"/>
+    <page reference="421"/>
+    <page reference="430"/>
+    <page reference="451"/>
+    <page reference="484"/>
+    <page reference="542"/>
+    <page reference="547"/>
+    <page reference="556"/>
+    <page reference="580"/>
+    <page reference="600"/>
     <page reference="609"/>
-    <page reference="630"/>
-    <page reference="640"/>
-    <page reference="650"/>
-    <page reference="660"/>
-    <page reference="671"/>
-    <page reference="681"/>
-    <page reference="728"/>
+    <page reference="618"/>
+    <page reference="627"/>
+    <page reference="637"/>
+    <page reference="646"/>
+    <page reference="687"/>
   </pages>
 </questionnaire>

@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -106,8 +105,8 @@ public class PropertyKeyWriterVisitor implements IWalkerVisitor {
   }
 
   /**
-   * For each of the localization keys declared by the {@link IQuestionnaireElement} add it to the properties object. Set the
-   * value to null by default or to the localization interpolation key.
+   * For each of the localization keys declared by the {@link IQuestionnaireElement} add it to the properties object.
+   * Set the value to null by default or to the localization interpolation key.
    * @param localizable
    * @param interpolationLocalizable
    * @param writer
@@ -143,10 +142,6 @@ public class PropertyKeyWriterVisitor implements IWalkerVisitor {
   public boolean visiteMore() {
     // no stop
     return true;
-  }
-
-  public void visit(Condition condition) {
-    // no localization properties for condition
   }
 
 }

@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -153,10 +152,6 @@ public class DefaultPropertyKeyProviderImpl implements IPropertyKeyProvider, IVi
     for(Data value : openAnswerDefinition.getDefaultValues()) {
       properties.add(value.getValueAsString());
     }
-  }
-
-  public void visit(Condition condition) {
-    properties = new ArrayList<String>();
   }
 
   public void setPropertyKeyNamingStrategy(IPropertyKeyNamingStrategy propertyKeyNamingStrategy) {

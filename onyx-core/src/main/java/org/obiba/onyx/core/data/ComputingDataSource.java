@@ -14,6 +14,8 @@ import org.obiba.onyx.math.IAlgorithmEvaluator;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -51,6 +53,9 @@ import org.obiba.onyx.util.data.DataType;
  */
 public class ComputingDataSource extends AbstractMultipleDataSource {
 
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(ComputingDataSource.class);
+
   private static final long serialVersionUID = 1L;
 
   private IAlgorithmEvaluator algorithmEvaluator;
@@ -66,17 +71,24 @@ public class ComputingDataSource extends AbstractMultipleDataSource {
    * @return null if type is not one of BOOLEAN, INTEGER, DECIMAL
    */
   public Data getData(Participant participant) {
-    if(dataType.equals(DataType.BOOLEAN)) {
-      return DataBuilder.buildBoolean(algorithmEvaluator.evaluateBoolean(expression, participant, getDataSources()));
-    } else if(dataType.isNumberType()) {
-      double d = algorithmEvaluator.evaluateDouble(expression, participant, getDataSources());
-      if(dataType.equals(DataType.DECIMAL)) {
-        return DataBuilder.buildDecimal(d);
-      } else {
-        return DataBuilder.buildInteger(Long.valueOf(Math.round(d)));
-      }
-    }
+    try {
+      if(dataType.equals(DataType.BOOLEAN)) {
+        return DataBuilder.buildBoolean(algorithmEvaluator.evaluateBoolean(expression, participant, getDataSources()));
+      } else if(dataType.isNumberType()) {
 
+        double d = algorithmEvaluator.evaluateDouble(expression, participant, getDataSources());
+
+        if(dataType.equals(DataType.DECIMAL)) {
+          return DataBuilder.buildDecimal(d);
+        } else {
+          return DataBuilder.buildInteger(Long.valueOf(Math.round(d)));
+        }
+
+      }
+    } catch(RuntimeException e) {
+      String message = "Failed computing: " + toString() + " : " + e.getMessage();
+      throw new RuntimeException(message, e);
+    }
     return null;
   }
 
@@ -108,6 +120,11 @@ public class ComputingDataSource extends AbstractMultipleDataSource {
 
   public void setAlgorithmEvaluator(IAlgorithmEvaluator algorithmEvaluator) {
     this.algorithmEvaluator = algorithmEvaluator;
+  }
+
+  @Override
+  public String toString() {
+    return "[type=" + dataType + ", expression=" + expression + ", unit=" + unit + "]";
   }
 
 }

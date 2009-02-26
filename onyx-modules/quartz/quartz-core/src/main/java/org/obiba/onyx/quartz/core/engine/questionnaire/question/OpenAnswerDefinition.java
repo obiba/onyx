@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.util.value.ValueMap;
+import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -41,7 +41,7 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
 
   private List<Data> defaultValues;
 
-  private DataSource dataSource;
+  private IDataSource dataSource;
 
   private OpenAnswerDefinition parentOpenAnswerDefinition;
 
@@ -132,11 +132,11 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     visitor.visit(this);
   }
 
-  public DataSource getDataSource() {
+  public IDataSource getDataSource() {
     return dataSource;
   }
 
-  public void setDataSource(DataSource dataSource) {
+  public void setDataSource(IDataSource dataSource) {
     this.dataSource = dataSource;
   }
 

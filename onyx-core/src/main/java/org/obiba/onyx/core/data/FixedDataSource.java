@@ -9,8 +9,12 @@
  ******************************************************************************/
 package org.obiba.onyx.core.data;
 
+import java.io.Serializable;
+
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataBuilder;
+import org.obiba.onyx.util.data.DataType;
 
 /**
  * Get a fix data.
@@ -29,6 +33,14 @@ public class FixedDataSource implements IDataSource {
 
   public String getUnit() {
     return unit;
+  }
+
+  public FixedDataSource(Serializable value) {
+    this(DataBuilder.build(value));
+  }
+
+  public FixedDataSource(DataType type, String value) {
+    this(DataBuilder.build(type, value));
   }
 
   public FixedDataSource(Data data) {

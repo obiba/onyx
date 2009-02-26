@@ -127,6 +127,7 @@ public class QuestionnaireWizardFormTest {
     expect(activeQuestionnaireAdministrationServiceMock.getResumePage()).andReturn(new Page("p2")).anyTimes();
     expect(questionnaireBundleManagerMock.getBundle(questionnaire.getName())).andReturn(questionnaireBundleMock).anyTimes();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).anyTimes();
+    expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(questionnaire, "label")).andReturn("labelKey").anyTimes();
     expect(questionnaireBundleMock.getPropertyKey(questionnaire, "description")).andReturn("descriptionKey").anyTimes();
 

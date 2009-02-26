@@ -196,6 +196,13 @@ public class MathEclipseEvaluatorTest {
   }
 
   @Test
+  public void testEval011() {
+    String expression = "$1 && !($2 || $3)";
+    List<Data> operands = Arrays.asList(new Data[] { DataBuilder.buildBoolean(true), DataBuilder.buildBoolean(false), DataBuilder.buildBoolean(false) });
+    Assert.assertEquals(true, MathEclipseEvaluator.getInstance().evaluateBoolean(expression, operands));
+  }
+
+  @Test
   public void testEvalCurrentYear() {
     try {
       String expression = "$currentYear-$1";

@@ -10,6 +10,8 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.question.validation;
 
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
 
 import java.util.Locale;
 
@@ -22,10 +24,11 @@ import org.apache.wicket.spring.test.SpringContextLocatorMock;
 import org.apache.wicket.validation.Validatable;
 import org.junit.Before;
 import org.junit.Test;
+import org.obiba.onyx.core.data.FixedDataSource;
+import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
-import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.DataSourceBuilder;
-import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -41,17 +44,19 @@ public class DataSourceValidatorTest {
 
   private ApplicationContextMock applicationContextMock;
 
-  private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationServiceMock;
+  private ActiveInterviewService activeInterviewServiceMock;
 
   @SuppressWarnings("unused")
   private Questionnaire questionnaire;
 
   @Before
   public void setUp() {
-    activeQuestionnaireAdministrationServiceMock = createMock(ActiveQuestionnaireAdministrationService.class);
+    activeInterviewServiceMock = createMock(ActiveInterviewService.class);
+    expect(activeInterviewServiceMock.getParticipant()).andReturn(new Participant()).atLeastOnce();
+    replay(activeInterviewServiceMock);
 
     applicationContextMock = new ApplicationContextMock();
-    applicationContextMock.putBean("activeQuestionnaireAdministrationService", activeQuestionnaireAdministrationServiceMock);
+    applicationContextMock.putBean("activeInterviewService", activeInterviewServiceMock);
 
     InjectorHolder.setInjector(new AnnotSpringInjector(new SpringContextLocatorMock(applicationContextMock)));
 
@@ -61,7 +66,7 @@ public class DataSourceValidatorTest {
 
   @Test
   public void testEqualDataSource() {
-    DataSourceValidator validator = new DataSourceValidator(ComparisonOperator.eq, DataSourceBuilder.createFixedSource(DataBuilder.buildInteger(1)).getDataSource());
+    DataSourceValidator validator = new DataSourceValidator(ComparisonOperator.eq, new FixedDataSource(DataBuilder.buildInteger(1)));
     Validatable validatable = new Validatable(DataBuilder.buildInteger(1));
     validator.validate(validatable);
     Assert.assertEquals(0, validatable.getErrors().size());
@@ -73,7 +78,7 @@ public class DataSourceValidatorTest {
 
   @Test
   public void testDifferentDataSource() {
-    DataSourceValidator validator = new DataSourceValidator(ComparisonOperator.ne, DataSourceBuilder.createFixedSource(DataBuilder.buildInteger(1)).getDataSource());
+    DataSourceValidator validator = new DataSourceValidator(ComparisonOperator.ne, new FixedDataSource(DataBuilder.buildInteger(1)));
     Validatable validatable = new Validatable(DataBuilder.buildInteger(0));
     validator.validate(validatable);
     Assert.assertEquals(0, validatable.getErrors().size());
@@ -85,7 +90,7 @@ public class DataSourceValidatorTest {
 
   @Test
   public void testNullDataSource() {
-    DataSourceValidator validator = new DataSourceValidator(ComparisonOperator.eq, DataSourceBuilder.createFixedSource(null).getDataSource());
+    DataSourceValidator validator = new DataSourceValidator(ComparisonOperator.eq, new FixedDataSource(null));
     Validatable validatable = new Validatable(DataBuilder.buildInteger(0));
     validator.validate(validatable);
     Assert.assertEquals(0, validatable.getErrors().size());
@@ -93,7 +98,7 @@ public class DataSourceValidatorTest {
 
   @Test
   public void testLowerDataSource() {
-    DataSourceValidator validator = new DataSourceValidator(ComparisonOperator.lt, DataSourceBuilder.createFixedSource(DataBuilder.buildInteger(1)).getDataSource());
+    DataSourceValidator validator = new DataSourceValidator(ComparisonOperator.lt, new FixedDataSource(DataBuilder.buildInteger(1)));
     Validatable validatable = new Validatable(DataBuilder.buildInteger(0));
     validator.validate(validatable);
     Assert.assertEquals(0, validatable.getErrors().size());
@@ -109,7 +114,7 @@ public class DataSourceValidatorTest {
 
   @Test
   public void testLowerEqualDataSource() {
-    DataSourceValidator validator = new DataSourceValidator(ComparisonOperator.le, DataSourceBuilder.createFixedSource(DataBuilder.buildInteger(1)).getDataSource());
+    DataSourceValidator validator = new DataSourceValidator(ComparisonOperator.le, new FixedDataSource(DataBuilder.buildInteger(1)));
     Validatable validatable = new Validatable(DataBuilder.buildInteger(0));
     validator.validate(validatable);
     Assert.assertEquals(0, validatable.getErrors().size());
@@ -125,7 +130,7 @@ public class DataSourceValidatorTest {
 
   @Test
   public void testGreaterDataSource() {
-    DataSourceValidator validator = new DataSourceValidator(ComparisonOperator.gt, DataSourceBuilder.createFixedSource(DataBuilder.buildInteger(1)).getDataSource());
+    DataSourceValidator validator = new DataSourceValidator(ComparisonOperator.gt, new FixedDataSource(DataBuilder.buildInteger(1)));
     Validatable validatable = new Validatable(DataBuilder.buildInteger(2));
     validator.validate(validatable);
     Assert.assertEquals(0, validatable.getErrors().size());
@@ -141,7 +146,7 @@ public class DataSourceValidatorTest {
 
   @Test
   public void testGreaterEqualDataSource() {
-    DataSourceValidator validator = new DataSourceValidator(ComparisonOperator.ge, DataSourceBuilder.createFixedSource(DataBuilder.buildInteger(1)).getDataSource());
+    DataSourceValidator validator = new DataSourceValidator(ComparisonOperator.ge, new FixedDataSource(DataBuilder.buildInteger(1)));
     Validatable validatable = new Validatable(DataBuilder.buildInteger(2));
     validator.validate(validatable);
     Assert.assertEquals(0, validatable.getErrors().size());

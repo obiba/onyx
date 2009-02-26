@@ -32,6 +32,15 @@ public abstract class AbstractMultipleDataSource implements IDataSource {
     return this;
   }
 
+  public AbstractMultipleDataSource addDataSources(IDataSource... dataSources) {
+    if(dataSources != null) {
+      for(IDataSource dataSource : dataSources) {
+        addDataSource(dataSource);
+      }
+    }
+    return this;
+  }
+
   public AbstractMultipleDataSource() {
   }
 

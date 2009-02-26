@@ -20,11 +20,15 @@ import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for sharing the conversion from {@link Data} to double or boolean value. Dates are turned into double.
  */
-public abstract class AbstractAlgorithmEvaluator implements IAlgorithmEvaluator {
+public abstract class AbstractAlgorithmEvaluator implements IAlgorithmEvaluator, Serializable {
+
+  private static final Logger log = LoggerFactory.getLogger(AbstractAlgorithmEvaluator.class);
 
   public static final String CURRENT_DATE = "currentDate";
 
@@ -34,46 +38,46 @@ public abstract class AbstractAlgorithmEvaluator implements IAlgorithmEvaluator 
 
   public static final String CURRENT_DAY = "currentDay";
 
-  private Map<String, IDataSource> defaultVariables;
-
   /**
    * Returns either a not null object of type Boolean or Double.
    * @param operand
    * @return
    */
-  protected Serializable convert(Data operand) {
-    if(!nullValueAllowed()) {
-      if(operand == null) {
-        throw new IllegalArgumentException("Operand cannot be null.");
-      }
-
-      if(operand.getValue() == null) {
-        throw new IllegalArgumentException("Operand value cannot be null.");
-      }
-    } else {
-      return null;
+  protected Serializable convert(String symbol, Data operand) {
+    if(operand == null) {
+      // throw new IllegalArgumentException("Operand cannot be null: " + symbol);
+      log.warn("Operand cannot be null: " + symbol);
+      return new Double(0);
     }
 
-    if(operand.getType().equals(DataType.DATE)) {
+    switch(operand.getType()) {
+    case DATE:
       Date date = operand.getValue();
       return new Long(date.getTime()).doubleValue();
-    } else {
+
+    case BOOLEAN:
+      Boolean b = operand.getValue();
+      if(b == null) {
+        b = Boolean.FALSE;
+      }
+      return b;
+
+    default:
       String value = operand.getValueAsString();
-
-      try {
-        Double d = DataBuilder.build(DataType.DECIMAL, value).getValue();
-        return d;
-      } catch(Exception e) {
+      if(value == null) {
+        return new Double(0d);
+      } else {
         try {
-          Boolean b = DataBuilder.build(DataType.BOOLEAN, value).getValue();
-          return b;
-        } catch(Exception e2) {
-
+          Double d = DataBuilder.build(DataType.DECIMAL, value).getValue();
+          return d;
+        } catch(Exception e) {
+          log.error("Cannot convert: " + operand, e);
         }
       }
+      break;
     }
 
-    throw new IllegalArgumentException("Cannot convert the operand value neither as a double nor as a boolean: " + operand);
+    throw new IllegalArgumentException("Cannot convert the operand (" + symbol + ") value neither as a double nor as a boolean: " + operand);
   }
 
   /**
@@ -81,14 +85,12 @@ public abstract class AbstractAlgorithmEvaluator implements IAlgorithmEvaluator 
    * @return
    */
   protected Map<String, IDataSource> getDefaultVariables() {
-    if(defaultVariables == null) {
-      defaultVariables = new HashMap<String, IDataSource>();
+    Map<String, IDataSource> defaultVariables = new HashMap<String, IDataSource>();
 
-      defaultVariables.put(getVariableName(CURRENT_DATE), new CurrentDateSource());
-      defaultVariables.put(getVariableName(CURRENT_YEAR), new CurrentDateSource(Calendar.YEAR));
-      defaultVariables.put(getVariableName(CURRENT_MONTH), new CurrentDateSource(Calendar.MONTH));
-      defaultVariables.put(getVariableName(CURRENT_DAY), new CurrentDateSource(Calendar.DATE));
-    }
+    defaultVariables.put(getVariableName(CURRENT_DATE), new CurrentDateSource());
+    defaultVariables.put(getVariableName(CURRENT_YEAR), new CurrentDateSource(Calendar.YEAR));
+    defaultVariables.put(getVariableName(CURRENT_MONTH), new CurrentDateSource(Calendar.MONTH));
+    defaultVariables.put(getVariableName(CURRENT_DAY), new CurrentDateSource(Calendar.DATE));
 
     return defaultVariables;
   }
@@ -109,12 +111,6 @@ public abstract class AbstractAlgorithmEvaluator implements IAlgorithmEvaluator 
 
     return defaultDoubleVariables;
   }
-
-  /**
-   * Allow null values in expression (especially for booleans).
-   * @return
-   */
-  protected abstract boolean nullValueAllowed();
 
   /**
    * Given the index of the operand in the operands list, get the expected variable symbol.

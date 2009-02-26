@@ -34,17 +34,17 @@ public class QuestionListProvider extends AbstractDataListProvider<Question> {
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  private Question parentQuestion;
+  private IModel parentQuestionModel;
 
   public QuestionListProvider(Question parentQuestion) {
     InjectorHolder.getInjector().inject(this);
-    this.parentQuestion = parentQuestion;
+    this.parentQuestionModel = new QuestionnaireModel(parentQuestion);
   }
 
   @Override
   public List<Question> getDataList() {
     List<Question> questionToAnswer = new ArrayList<Question>();
-    for(Question question : parentQuestion.getQuestions()) {
+    for(Question question : getParentQuestion().getQuestions()) {
       if(question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
         questionToAnswer.add(question);
       } else {
@@ -52,6 +52,10 @@ public class QuestionListProvider extends AbstractDataListProvider<Question> {
       }
     }
     return questionToAnswer;
+  }
+
+  public Question getParentQuestion() {
+    return (Question) parentQuestionModel.getObject();
   }
 
   @Override

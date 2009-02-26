@@ -24,7 +24,7 @@ import org.springframework.context.NoSuchMessageException;
 /**
  * Get the question categories, performing ordering, filtering and permutation when applicable.
  */
-public class QuestionCategoriesProvider extends AbstractDataListProvider<QuestionCategory> {
+public class QuestionCategoriesProvider extends AbstractDataListProvider<IModel> {
 
   private static final long serialVersionUID = 1L;
 
@@ -37,21 +37,21 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<Questio
     this(questionModel, null);
   }
 
-  public QuestionCategoriesProvider(IModel questionModel, IDataListFilter<QuestionCategory> filter) {
+  public QuestionCategoriesProvider(IModel questionModel, IDataListFilter<IModel> filter) {
     this(questionModel, filter, null);
   }
 
-  public QuestionCategoriesProvider(IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<QuestionCategory> permutator) {
+  public QuestionCategoriesProvider(IModel questionModel, IDataListFilter<IModel> filter, IDataListPermutator<IModel> permutator) {
     super(filter, permutator);
     this.questionModel = questionModel;
     getDataList();
   }
 
   @Override
-  public List<QuestionCategory> getDataList() {
+  public List<IModel> getDataList() {
     Question question = (Question) questionModel.getObject();
 
-    List<QuestionCategory> categories;
+    List<IModel> categories = new ArrayList<IModel>();
 
     // ordering by locale
     String categoryOrder = null;
@@ -62,38 +62,41 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<Questio
       log.debug("categoryOrder not defined for question {}", question);
     }
     if(categoryOrder != null && categoryOrder.trim().length() > 0) {
-      categories = new ArrayList<QuestionCategory>();
       for(String categoryName : categoryOrder.split(",")) {
         QuestionCategory found = question.findQuestionCategory(categoryName.trim());
         if(found != null) {
-          categories.add(found);
+          categories.add(new QuestionnaireModel(found));
         }
       }
       // make sure no one is missing
       if(categories.size() < question.getQuestionCategories().size()) {
         for(QuestionCategory questionCategory : question.getQuestionCategories()) {
-          if(!categories.contains(questionCategory)) {
-            categories.add(questionCategory);
+          IModel questionCategoryModel = new QuestionnaireModel(questionCategory);
+          if(!categories.contains(questionCategoryModel)) {
+            categories.add(questionCategoryModel);
           }
         }
       }
     } else {
-      categories = question.getQuestionCategories();
+      for(QuestionCategory questionCategory : question.getQuestionCategories()) {
+        categories.add(new QuestionnaireModel(questionCategory));
+      }
+
     }
 
     // filtering
     if(filter != null) {
-      List<QuestionCategory> filteredCategories = new ArrayList<QuestionCategory>();
-      for(QuestionCategory questionCategory : categories) {
-        if(filter.accept(questionCategory)) {
-          filteredCategories.add(questionCategory);
+      List<IModel> filteredCategories = new ArrayList<IModel>();
+      for(IModel questionCategoryModel : categories) {
+        if(filter.accept(questionCategoryModel)) {
+          filteredCategories.add(questionCategoryModel);
         }
       }
       categories = filteredCategories;
     }
 
     // permutation
-    IDataListPermutator<QuestionCategory> permutator = getDataListPermutator();
+    IDataListPermutator<IModel> permutator = getDataListPermutator();
     if(permutator != null) {
       return permutator.permute(categories);
     } else {
@@ -104,7 +107,7 @@ public class QuestionCategoriesProvider extends AbstractDataListProvider<Questio
   @Override
   public IModel model(Object object) {
     if(object != null) {
-      return new QuestionnaireModel((QuestionCategory) object);
+      return (QuestionnaireModel) object;
     }
     return null;
   }

@@ -12,12 +12,11 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.util;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 
 /**
  * Turns the list of question categories, in a grid representation.
  */
-public class QuestionCategoryListToGridPermutator extends ListToGridPermutator<QuestionCategory> {
+public class QuestionCategoryListToGridPermutator extends ListToGridPermutator<IModel> {
 
   private static final long serialVersionUID = 1L;
 

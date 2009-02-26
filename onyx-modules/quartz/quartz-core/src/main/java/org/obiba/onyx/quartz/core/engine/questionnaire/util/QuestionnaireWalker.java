@@ -10,9 +10,6 @@
 package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.MultipleCondition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.NotCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -121,9 +118,6 @@ public class QuestionnaireWalker implements IVisitor {
         if(!visiteMore()) break;
       }
     }
-    if(visiteMore() && question.getCondition() != null) {
-      question.getCondition().accept(this);
-    }
     if(!preOrder) question.accept(visitor);
   }
 
@@ -150,20 +144,6 @@ public class QuestionnaireWalker implements IVisitor {
       }
     }
     if(!preOrder) openAnswerDefinition.accept(visitor);
-  }
-
-  public final void visit(Condition condition) {
-    if(preOrder) condition.accept(visitor);
-    if(visiteMore() && (condition instanceof MultipleCondition) && ((MultipleCondition) condition).getConditions() != null) {
-      for(Condition childCondition : ((MultipleCondition) condition).getConditions()) {
-        childCondition.accept(this);
-        if(!visiteMore()) break;
-      }
-    }
-    if(visiteMore() && (condition instanceof NotCondition) && ((NotCondition) condition).getCondition() != null) {
-      ((NotCondition) condition).getCondition().accept(this);
-    }
-    if(!preOrder) condition.accept(visitor);
   }
 
 }

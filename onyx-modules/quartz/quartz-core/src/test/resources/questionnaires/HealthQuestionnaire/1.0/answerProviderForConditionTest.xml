@@ -1,6 +1,6 @@
 <configurableAnswerProvider>
   <defaultAnswer>
-    <categoryName>NO_ANSWER</categoryName><!-- Set default answer to NO_ANSWER. -->
+    <categoryName>PNA</categoryName><!-- Set default answer to NO_ANSWER. -->
   </defaultAnswer>
   <groups>
     <group>
@@ -11,7 +11,7 @@
         <string>Q5</string>
       </questions>
       <answer>
-        <categoryName>DONT_KNOW</categoryName>
+        <categoryName>DNK</categoryName>
       </answer>
     </group>
     

@@ -11,7 +11,7 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util;
 
 import java.util.Properties;
 
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
+import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -141,20 +141,6 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
   }
 
   /**
-   * Position the builder to the {@link Condition} with the given name.
-   * @param name
-   * @return
-   * @throws IllegalStateException if no Condition can be found with this name
-   */
-  public ConditionBuilder inCondition(String name) {
-    Condition condition = QuestionnaireFinder.getInstance(questionnaire).findCondition(name);
-    if(condition == null) {
-      throw invalidElementNameException(Condition.class, name);
-    }
-    return ConditionBuilder.inCondition(this, condition);
-  }
-
-  /**
    * Position the builder to the {@link OpenAnswerDefinition} with the given name.
    * @param name
    * @return
@@ -166,6 +152,69 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
       throw invalidElementNameException(OpenAnswerDefinition.class, name);
     }
     return OpenAnswerDefinitionBuilder.inOpenAnswerDefinition(this, openAnswerDefinition);
+  }
+
+  /**
+   * Build a data source representing the question answering in current questionnaire.
+   * @param question
+   * @return
+   */
+  public IDataSource newDataSource(String question) {
+    return ConditionBuilder.createQuestionCondition(this, question, null, null).getElement();
+  }
+
+  /**
+   * Build a data source representing the category selection in current questionnaire.
+   * @param question
+   * @param category
+   * @return
+   */
+  public IDataSource newDataSource(String question, String category) {
+    return ConditionBuilder.createQuestionCondition(this, question, category, null).getElement();
+  }
+
+  /**
+   * Build a data source that gives the open answer in current questionnaire.
+   * @param question
+   * @param category
+   * @param openAnswer
+   * @return
+   */
+  public IDataSource newDataSource(String question, String category, String openAnswer) {
+    return ConditionBuilder.createQuestionCondition(this, question, category, openAnswer).getElement();
+  }
+
+  /**
+   * Build a data source representing the question answering in another questionnaire.
+   * @param questionnaire
+   * @param question
+   * @return
+   */
+  public IDataSource newExternalDataSource(String questionnaire, String question) {
+    return ConditionBuilder.createQuestionCondition(this, questionnaire, question, null, null).getElement();
+  }
+
+  /**
+   * Build a data source representing the category selection in another questionnaire.
+   * @param questionnaire
+   * @param question
+   * @param category
+   * @return
+   */
+  public IDataSource newExternalDataSource(String questionnaire, String question, String category) {
+    return ConditionBuilder.createQuestionCondition(this, questionnaire, question, category, null).getElement();
+  }
+
+  /**
+   * Build a data source that gives the open answer in another questionnaire.
+   * @param questionnaire
+   * @param question
+   * @param category
+   * @param openAnswer
+   * @return
+   */
+  public IDataSource newExternalDataSource(String questionnaire, String question, String category, String openAnswer) {
+    return ConditionBuilder.createQuestionCondition(this, questionnaire, question, category, openAnswer).getElement();
   }
 
   /**

@@ -125,9 +125,6 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
 
     if(previousAnswer != null) {
       radioGroup.setModel(questionCategoryModel);
-    } else if(questionCategory.isSelected()) {
-      radioGroup.setModel(questionCategoryModel);
-      activeQuestionnaireAdministrationService.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), null);
     }
   }
 

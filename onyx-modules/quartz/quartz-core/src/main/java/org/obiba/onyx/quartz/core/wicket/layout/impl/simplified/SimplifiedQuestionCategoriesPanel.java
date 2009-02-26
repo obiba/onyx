@@ -68,7 +68,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     add(hidden);
 
     // open answers in one row
-    MultipleDataListFilter<QuestionCategory> filter = new MultipleDataListFilter<QuestionCategory>();
+    MultipleDataListFilter<IModel> filter = new MultipleDataListFilter<IModel>();
     filter.addFilter(new QuestionCategoryEscapeFilter(false));
     filter.addFilter(new QuestionCategoryOpenAnswerFilter(true));
     add(new QuestionCategoryComponentsView("openCategories", getModel(), filter, new QuestionCategoryListToGridPermutator(getModel(), 1)) {
@@ -81,7 +81,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     });
 
     // regular category choice in potentially multiple columns
-    filter = new MultipleDataListFilter<QuestionCategory>();
+    filter = new MultipleDataListFilter<IModel>();
     filter.addFilter(new QuestionCategoryEscapeFilter(false));
     filter.addFilter(new QuestionCategoryOpenAnswerFilter(false));
     add(new QuestionCategoryLinksView("regularCategories", getModel(), filter, new QuestionCategoryListToGridPermutator(getModel())));
@@ -119,7 +119,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
   @SuppressWarnings("serial")
   private class QuestionCategoryLinksView extends QuestionCategoryComponentsView {
 
-    public QuestionCategoryLinksView(String id, IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<QuestionCategory> permutator) {
+    public QuestionCategoryLinksView(String id, IModel questionModel, IDataListFilter<IModel> filter, IDataListPermutator<IModel> permutator) {
       super(id, questionModel, filter, permutator);
     }
 

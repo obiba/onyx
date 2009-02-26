@@ -16,8 +16,9 @@ import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.data.IDataSource;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -46,6 +47,9 @@ public class SimplifiedPageLayout extends PageLayout {
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+
+  @SpringBean(name = "activeInterviewService")
+  private ActiveInterviewService activeInterviewService;
 
   private QuestionPanel questionPanel;
 
@@ -137,7 +141,7 @@ public class SimplifiedPageLayout extends PageLayout {
   private boolean answerQuestionIfDataSourceAvailable(Question question) {
 
     OpenAnswerDefinition openAnswer;
-    DataSource dataSource;
+    IDataSource dataSource;
     CategoryAnswer answer;
     boolean questionHasAnswers = false;
 
@@ -152,7 +156,7 @@ public class SimplifiedPageLayout extends PageLayout {
           // Get data from AnswerSource and answer current question (if not already answered).
           answer = activeQuestionnaireAdministrationService.findAnswer(category);
           if(answer == null) {
-            activeQuestionnaireAdministrationService.answer(category, category.getCategory().getOpenAnswerDefinition(), dataSource.getData(activeQuestionnaireAdministrationService));
+            activeQuestionnaireAdministrationService.answer(category, category.getCategory().getOpenAnswerDefinition(), dataSource.getData(activeInterviewService.getParticipant()));
           }
           questionHasAnswers = true;
         }

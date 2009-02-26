@@ -15,20 +15,13 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.wicket.util.value.ValueMap;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ArithmeticOperationSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.CurrentYearSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DateModifier;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DateSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ExternalOpenAnswerSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.FixedSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.OpenAnswerSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ParticipantPropertySource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.TimestampSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.AnswerCondition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.DataCondition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.MultipleCondition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.NotCondition;
+import org.obiba.onyx.core.data.AbstractBeanPropertyDataSource;
+import org.obiba.onyx.core.data.ComputingDataSource;
+import org.obiba.onyx.core.data.CurrentDateSource;
+import org.obiba.onyx.core.data.DateModifier;
+import org.obiba.onyx.core.data.FixedDataSource;
+import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
+import org.obiba.onyx.quartz.core.data.QuestionnaireDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -90,8 +83,6 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(Category.class, "escape");
 
     xstream.alias("questionCategory", QuestionCategory.class);
-    xstream.useAttributeFor(QuestionCategory.class, "reselectable");
-    xstream.useAttributeFor(QuestionCategory.class, "selected");
     xstream.useAttributeFor(QuestionCategory.class, "exportName");
 
     xstream.alias("open", OpenAnswerDefinition.class);
@@ -108,33 +99,24 @@ public class QuestionnaireStreamer {
     xstream.alias("dataSourceValidator", DataSourceValidator.class);
     xstream.useAttributeFor(DataSourceValidator.class, "comparisonOperator");
 
-    xstream.useAttributeFor(Condition.class, "name");
-    xstream.alias("answerCondition", AnswerCondition.class);
-    xstream.alias("dataCondition", DataCondition.class);
-    xstream.useAttributeFor(DataCondition.class, "comparisonOperator");
-    xstream.alias("notCondition", NotCondition.class);
-    xstream.alias("multipleCondition", MultipleCondition.class);
-    xstream.useAttributeFor(MultipleCondition.class, "conditionOperator");
+    xstream.alias("fixedDataSource", FixedDataSource.class);
+    xstream.alias("questionnaireDataSource", QuestionnaireDataSource.class);
+    xstream.useAttributeFor(QuestionnaireDataSource.class, "questionnaire");
+    xstream.useAttributeFor(QuestionnaireDataSource.class, "question");
+    xstream.useAttributeFor(QuestionnaireDataSource.class, "category");
+    xstream.useAttributeFor(QuestionnaireDataSource.class, "openAnswerDefinition");
 
-    xstream.alias("fixedSource", FixedSource.class);
-    xstream.alias("openAnswerSource", OpenAnswerSource.class);
-    xstream.alias("externalOpenAnswerSource", ExternalOpenAnswerSource.class);
-    xstream.useAttributeFor(ExternalOpenAnswerSource.class, "questionnaireName");
-    xstream.useAttributeFor(ExternalOpenAnswerSource.class, "questionName");
-    xstream.useAttributeFor(ExternalOpenAnswerSource.class, "categoryName");
-    xstream.useAttributeFor(ExternalOpenAnswerSource.class, "openAnswerDefinitionName");
-
-    xstream.alias("timestampSource", TimestampSource.class);
-    xstream.alias("participantPropertySource", ParticipantPropertySource.class);
-    xstream.useAttributeFor(ParticipantPropertySource.class, "property");
-    xstream.alias("currentYearSource", CurrentYearSource.class);
-    xstream.alias("dateSource", DateSource.class);
+    xstream.alias("currentDateSource", CurrentDateSource.class);
+    xstream.alias("participantPropertyDataSource", ParticipantPropertyDataSource.class);
+    xstream.useAttributeFor(AbstractBeanPropertyDataSource.class, "property");
+    xstream.useAttributeFor(AbstractBeanPropertyDataSource.class, "unit");
     xstream.alias("dateModifier", DateModifier.class);
     xstream.useAttributeFor(DateModifier.class, "field");
     xstream.useAttributeFor(DateModifier.class, "amount");
-    xstream.alias("arithmeticOperationSource", ArithmeticOperationSource.class);
-    xstream.useAttributeFor(ArithmeticOperationSource.class, "operator");
-    xstream.useAttributeFor(ArithmeticOperationSource.class, "dataType");
+    xstream.alias("computingDataSource", ComputingDataSource.class);
+    xstream.useAttributeFor(ComputingDataSource.class, "dataType");
+    xstream.useAttributeFor(ComputingDataSource.class, "unit");
+    xstream.useAttributeFor(ComputingDataSource.class, "expression");
 
     xstream.alias("valueMap", ValueMap.class);
   }

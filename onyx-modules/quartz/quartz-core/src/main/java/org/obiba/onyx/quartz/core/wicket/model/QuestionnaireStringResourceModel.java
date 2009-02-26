@@ -41,8 +41,6 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel {
   @SpringBean
   private QuestionnaireBundleManager bundleManager;
 
-  private IQuestionnaireElement localizable;
-
   private IModel localizableModel;
 
   private String property;
@@ -74,7 +72,7 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel {
   public QuestionnaireStringResourceModel(IQuestionnaireElement localizable, String property, Object... stringArgs) {
     super();
     if(localizable == null) throw new IllegalArgumentException("Localizable element cannot be null.");
-    this.localizable = localizable;
+    this.localizableModel = new QuestionnaireModel(localizable);
     initialize(property, stringArgs);
   }
 
@@ -135,7 +133,6 @@ public class QuestionnaireStringResourceModel extends SpringDetachableModel {
    * Get the localizable element directly or from a model.
    */
   private IQuestionnaireElement getLocalizable() {
-    if(localizable != null) return localizable;
     IQuestionnaireElement loc = null;
     if(localizableModel != null) {
       loc = (IQuestionnaireElement) localizableModel.getObject();

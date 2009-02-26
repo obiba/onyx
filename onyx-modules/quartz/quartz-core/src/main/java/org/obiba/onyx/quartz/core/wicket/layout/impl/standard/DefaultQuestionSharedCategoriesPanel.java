@@ -29,7 +29,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.AbstractQuestionArray;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.CheckGroupView;
@@ -107,8 +106,8 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
     Question parentQuestion = (Question) getModelObject();
     QuestionCategoriesProvider provider = new QuestionCategoriesProvider(getModel());
     if(!parentQuestion.isMultiple()) {
-      for(QuestionCategory questionCategory : provider.getDataList()) {
-        columns.add(new QuestionCategoryRadioColumn(new QuestionnaireModel(questionCategory), new PropertyModel(this, "radioGroupView.groups")) {
+      for(IModel questionCategoryModel : provider.getDataList()) {
+        columns.add(new QuestionCategoryRadioColumn(questionCategoryModel, new PropertyModel(this, "radioGroupView.groups")) {
           @Override
           public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
             target.addComponent(array);
@@ -126,8 +125,8 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
 
       });
     } else {
-      for(QuestionCategory questionCategory : provider.getDataList()) {
-        columns.add(new QuestionCategoryCheckBoxColumn(new QuestionnaireModel(questionCategory), new PropertyModel(this, "checkGroupView.groups")) {
+      for(IModel questionCategoryModel : provider.getDataList()) {
+        columns.add(new QuestionCategoryCheckBoxColumn(questionCategoryModel, new PropertyModel(this, "checkGroupView.groups")) {
           @Override
           public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
             target.addComponent(array);

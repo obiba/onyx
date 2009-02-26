@@ -28,6 +28,8 @@ import org.slf4j.LoggerFactory;
  */
 public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
 
+  private static final long serialVersionUID = 1L;
+
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(MathEclipseEvaluator.class);
 
@@ -58,16 +60,17 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
     String newExpression = algorithm;
     if(operands != null) {
       for(int i = operands.size() - 1; i >= 0; i--) {
-        Serializable value = convert(operands.get(i));
+        String symbol = getVariableName(i);
+        Serializable value = convert(symbol, operands.get(i));
         if(Boolean.class.isInstance(value)) {
-          newExpression = newExpression.replace(getVariableName(i), (Boolean) value ? "True" : "False");
+          newExpression = newExpression.replace(symbol, (Boolean) value ? "True" : "False");
         } else {
-          engine.defineVariable(getVariableName(i), new DoubleVariable((Double) value));
+          engine.defineVariable(symbol, new DoubleVariable((Double) value));
         }
       }
     }
     for(Map.Entry<String, Data> entry : getDefaultDoubleVariables().entrySet()) {
-      engine.defineVariable(entry.getKey(), new DoubleVariable((Double) convert(entry.getValue())));
+      engine.defineVariable(entry.getKey(), new DoubleVariable((Double) convert(entry.getKey(), entry.getValue())));
     }
 
     log.debug(newExpression);
@@ -84,7 +87,7 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
   private String defineDefaultVariables(DoubleEvaluator engine, String algorithm, Participant participant) {
     String newExpression = algorithm;
     for(Map.Entry<String, IDataSource> entry : getDefaultVariables().entrySet()) {
-      Serializable value = convert(entry.getValue().getData(participant));
+      Serializable value = convert(entry.getKey(), entry.getValue().getData(participant));
       if(Boolean.class.isInstance(value)) {
         newExpression = newExpression.replace(entry.getKey(), (Boolean) value ? "True" : "False");
       } else {
@@ -94,14 +97,6 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
 
     log.debug(newExpression);
     return newExpression;
-  }
-
-  /**
-   * This evaluator does not support interpretation of null values.
-   */
-  @Override
-  protected boolean nullValueAllowed() {
-    return false;
   }
 
   public boolean evaluateBoolean(String algorithm, Participant participant, List<IDataSource> operands) {

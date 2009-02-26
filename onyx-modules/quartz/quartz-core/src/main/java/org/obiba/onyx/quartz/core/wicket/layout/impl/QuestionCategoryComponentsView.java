@@ -14,7 +14,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.GridView;
 import org.apache.wicket.model.IModel;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListPermutator;
 import org.slf4j.Logger;
@@ -39,7 +38,7 @@ public abstract class QuestionCategoryComponentsView extends Panel {
    * @param questionModel
    */
   @SuppressWarnings("serial")
-  public QuestionCategoryComponentsView(String id, IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<QuestionCategory> permutator) {
+  public QuestionCategoryComponentsView(String id, IModel questionModel, IDataListFilter<IModel> filter, IDataListPermutator<IModel> permutator) {
     super(id, questionModel);
     setOutputMarkupId(true);
 

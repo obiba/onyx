@@ -18,20 +18,12 @@ import org.apache.wicket.validation.validator.NumberValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.junit.Test;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.AnswerCondition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.DataCondition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.MultipleCondition;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.NotCondition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
-import org.obiba.onyx.util.data.ComparisonOperator;
-import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,14 +95,12 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     Category category = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCategory(DONT_KNOW);
     Assert.assertNotNull(category);
 
-    builder.inPage("P1").withQuestion("Q2").withCategories("1", "2", "3").withSharedCategory(DONT_KNOW).setExportName("888").setReselectable(false).setSelected(true);
+    builder.inPage("P1").withQuestion("Q2").withCategories("1", "2", "3").withSharedCategory(DONT_KNOW).setExportName("888");
     question = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q2");
     Assert.assertEquals(4, question.getCategories().size());
     Assert.assertEquals(category, question.findCategory(DONT_KNOW));
     QuestionCategory qCategory = question.findQuestionCategory(DONT_KNOW);
     Assert.assertEquals("888", qCategory.getExportName());
-    Assert.assertEquals(false, qCategory.isReselectable());
-    Assert.assertEquals(true, qCategory.isSelected());
 
     builder.inSection("S1_1").withPage("P2").withQuestion("Q3").withSharedCategory(YES).withSharedCategories(NO, DONT_KNOW);
     Assert.assertEquals(2, QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findSection("S1_1").getPages().size());
@@ -172,37 +162,16 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
 
     // Condition Test
     try {
-      builder.inQuestion("Q5").setAnswerCondition("AC1", "Q1", "1");
+      builder.inQuestion("Q5").setCondition("Q1", "1");
       Assert.fail("Question category Q1.1 not found");
     } catch(IllegalStateException e) {
     }
 
-    builder.inQuestion("Q5").setAnswerCondition("AC1", "Q1", YES);
-    Assert.assertEquals("AC1", QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q5").getCondition().getName());
+    builder.inQuestion("Q5").setCondition("Q1", YES);
+    Assert.assertNotNull(QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q5").getCondition());
 
-    try {
-      builder.inQuestion("Q5").setAnswerCondition("AC1", "Q2", "1");
-      Assert.fail("Condition AC1 already exists");
-    } catch(IllegalArgumentException e) {
-    }
-
-    builder.inQuestion("Q5").setAnswerCondition("AC2", "Q2", "1");
-    Assert.assertEquals("AC2", QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q5").getCondition().getName());
-
-    builder.inQuestion("Q6").setNotCondition("NAC1").withAnswerCondition("AC3", "Q2", "2");
-    builder.inQuestion("Q7").setMultipleCondition("MC1", ConditionOperator.AND).withAnswerCondition("AC4", "Q2", "2");
-    builder.inCondition("MC1").withNoAnswerCondition("NAC2").withMultipleCondition("MC2", ConditionOperator.OR).withAnswerCondition("AC5", "Q2", DONT_KNOW);
-    builder.inCondition("MC2").withDataCondition("AC6", "Q5", OTHER_SPECIFY, "SPECIFY", ComparisonOperator.ne, DataBuilder.buildText("toto"));
-
-    Condition condition_1 = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCondition("AC6");
-    Condition condition_2 = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCondition("NAC1");
-    Condition condition_3 = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findCondition("MC2");
-    Assert.assertEquals(DataCondition.class, condition_1.getClass());
-    Assert.assertEquals(NotCondition.class, condition_2.getClass());
-    Assert.assertEquals(MultipleCondition.class, condition_3.getClass());
-    Assert.assertNotNull(((NotCondition) condition_2).getCondition());
-    Assert.assertEquals(AnswerCondition.class, ((NotCondition) condition_2).getCondition().getClass());
-    Assert.assertEquals(2, ((MultipleCondition) condition_3).getConditions().size());
+    builder.inQuestion("Q5").setCondition("Q2", "1");
+    Assert.assertNotNull(QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q5").getCondition());
 
     // Add Timestamps to all pages
     List<Page> pages = builder.getElement().getPages();

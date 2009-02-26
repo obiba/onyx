@@ -12,9 +12,12 @@ package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 import java.util.List;
 import java.util.Map;
 
+import org.obiba.onyx.core.data.ComparingDataSource;
+import org.obiba.onyx.core.data.ComputingDataSource;
+import org.obiba.onyx.core.data.FixedDataSource;
+import org.obiba.onyx.core.data.IDataSource;
+import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
 import org.obiba.onyx.core.domain.participant.Gender;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.ConditionOperator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -24,7 +27,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.util.data.ComparisonOperator;
-import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 
 /**
  * {@link Question} builder, given a {@link Questionnaire} and a current {@link Page}.
@@ -331,180 +334,83 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   }
 
   /**
-   * Condition on any category is chosen in the given question.
-   * @param name
+   * Condition on any category is chosen in the given question in current questionnaire.
    * @param question
    * @return
    */
-  public ConditionBuilder setAnswerCondition(String name, String question) {
-    return setAnswerCondition(name, question, null);
+  public QuestionBuilder setCondition(String question) {
+    getElement().setCondition(ConditionBuilder.createQuestionCondition(this, question, null, null).getElement());
+    return this;
   }
 
   /**
-   * Condition on a category choice.
-   * @param name
-   * @param question
-   * @param category
-   * @return
-   */
-  public ConditionBuilder setAnswerCondition(String name, String question, String category) {
-    return ConditionBuilder.createQuestionCondition(this, name, question, category);
-  }
-
-  /**
-   * Condition on category choice in another questionnaire.
-   * @param name
-   * @param questionnaireName
+   * Condition on a category choice in current questionnaire.
    * @param question
    * @param category
    * @return
    */
-  public ConditionBuilder setExternalAnswerCondition(String name, String questionnaireName, String question, String category) {
-    return ConditionBuilder.createQuestionCondition(this, name, questionnaireName, question, category);
+  public QuestionBuilder setCondition(String question, String category) {
+    getElement().setCondition(ConditionBuilder.createQuestionCondition(this, question, category, null).getElement());
+    return this;
   }
 
   /**
-   * Compare an open answer from another questionnaire to given data.
-   * @param name
-   * @param questionnaireName
-   * @param questionName
-   * @param categoryName
-   * @param openAnswerDefinitionName
-   * @param comparisonOperator
-   * @param data
+   * Set a {@link ComparingDataSource} condition.
+   * @param dataSource1
+   * @param operator
+   * @param dataSource2
    * @return
    */
-  public ConditionBuilder setDataCondition(String name, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName, ComparisonOperator comparisonOperator, Data data) {
-    return ConditionBuilder.createQuestionCondition(this, name, questionnaireName, questionName, categoryName, openAnswerDefinitionName, comparisonOperator, data);
+  public QuestionBuilder setCondition(IDataSource dataSource1, ComparisonOperator operator, IDataSource dataSource2) {
+    getElement().setCondition(new ComparingDataSource(dataSource1, operator, dataSource2));
+    return this;
   }
 
   /**
-   * Compare an open answer to given data.
-   * @param name
-   * @param question
-   * @param category
-   * @param openAnswerDefinition
-   * @param comparisonOperator
-   * @param data
-   * @return
-   */
-  public ConditionBuilder setDataCondition(String name, String question, String category, String openAnswerDefinition, ComparisonOperator comparisonOperator, Data data) {
-    return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, comparisonOperator, data);
-  }
-
-  /**
-   * Compare an open answer to given data from data source.
-   * @param name
-   * @param question
-   * @param category
-   * @param openAnswerDefinition
-   * @param comparisonOperator
-   * @param dataSource
-   * @return
-   */
-  public ConditionBuilder setDataCondition(String name, String question, String category, String openAnswerDefinition, ComparisonOperator comparisonOperator, DataSource dataSource) {
-    return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, comparisonOperator, dataSource);
-  }
-
-  /**
-   * Compare two open answers.
-   * @param name
-   * @param question
-   * @param category
-   * @param openAnswerDefinition
-   * @param comparisonOperator
-   * @param questionName
-   * @param categoryName
-   * @param openAnswerDefinitionName
-   * @return
-   */
-  public ConditionBuilder setDataCondition(String name, String question, String category, String openAnswerDefinition, ComparisonOperator comparisonOperator, String questionName, String categoryName, String openAnswerDefinitionName) {
-    return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, comparisonOperator, questionName, categoryName, openAnswerDefinitionName);
-  }
-
-  /**
-   * Compare an open answer to an open answer in another questionnaire.
-   * @param name
-   * @param question
-   * @param category
-   * @param openAnswerDefinition
-   * @param comparisonOperator
-   * @param questionnaireName
-   * @param questionName
-   * @param categoryName
-   * @param openAnswerDefinitionName
-   * @return
-   */
-  public ConditionBuilder setDataCondition(String name, String question, String category, String openAnswerDefinition, ComparisonOperator comparisonOperator, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
-    return ConditionBuilder.createQuestionCondition(this, name, question, category, openAnswerDefinition, comparisonOperator, questionnaireName, questionName, categoryName, openAnswerDefinitionName);
-  }
-
-  /**
-   * Compare participant property to given data.
-   * @param name
-   * @param participantProperty
-   * @param comparisonOperator
-   * @param data
-   * @return
-   */
-  public ConditionBuilder setDataCondition(String name, String participantProperty, ComparisonOperator comparisonOperator, Data data) {
-    return ConditionBuilder.createQuestionCondition(this, name, participantProperty, comparisonOperator, data);
-  }
-
-  /**
-   * Compare participant property to open answer.
-   * @param name
-   * @param participantProperty
-   * @param comparisonOperator
-   * @param question
-   * @param category
-   * @param openAnswerDefinition
-   * @return
-   */
-  public ConditionBuilder setDataCondition(String name, String participantProperty, ComparisonOperator comparisonOperator, String question, String category, String openAnswerDefinition) {
-    return ConditionBuilder.createQuestionCondition(this, name, participantProperty, comparisonOperator, question, category, openAnswerDefinition);
-  }
-
-  /**
-   * Compare participant gender to given gender.
-   * @param name
-   * @param comparisonOperator
+   * Set a {@link ComparingDataSource} condition over gender participant property.
+   * @param operator
    * @param gender
    * @return
    */
-  public ConditionBuilder setDataCondition(String name, ComparisonOperator comparisonOperator, Gender gender) {
-    return ConditionBuilder.createQuestionCondition(this, name, comparisonOperator, gender);
+  public QuestionBuilder setCondition(ComparisonOperator operator, Gender gender) {
+    getElement().setCondition(new ComparingDataSource(new ParticipantPropertyDataSource("gender"), operator, new FixedDataSource(gender.toString())));
+    return this;
   }
 
   /**
-   * Compare two data from data sources.
+   * Condition on question answering and/or category choice in another questionnaire.
+   * @param questionnaireName
+   * @param question
+   * @param category can be null
+   * @return
+   */
+  public QuestionBuilder setCondition(String questionnaire, String question, String category) {
+    getElement().setCondition(ConditionBuilder.createQuestionCondition(this, questionnaire, question, category, null).getElement());
+    return this;
+  }
+
+  /**
+   * Add the data source condition (must be of boolean type).
    * @param name
    * @param dataSource1
    * @param comparisonOperator
    * @param dataSource2
    * @return
    */
-  public ConditionBuilder setDataCondition(String name, DataSource dataSource1, ComparisonOperator comparisonOperator, DataSource dataSource2) {
-    return ConditionBuilder.createQuestionCondition(this, name, dataSource1, comparisonOperator, dataSource2);
+  public QuestionBuilder setCondition(IDataSource dataSource) {
+    getElement().setCondition(dataSource);
+    return this;
   }
 
   /**
-   * Set a multiple condition that will contain several conditions to be compared with each other.
-   * @param name
-   * @param operator
+   * Add a {@link ComputingDataSource} as a condition.
+   * @param expression
+   * @param dataSources
    * @return
    */
-  public ConditionBuilder setMultipleCondition(String name, ConditionOperator operator) {
-    return ConditionBuilder.createQuestionMultipleCondition(this, name, operator);
-  }
-
-  /**
-   * Set a condition that will resolve with the the opposit of inner condition resolution.
-   * @param name
-   * @return
-   */
-  public ConditionBuilder setNotCondition(String name) {
-    return ConditionBuilder.createQuestionNotCondition(this, name);
+  public QuestionBuilder setCondition(String expression, IDataSource... dataSources) {
+    getElement().setCondition(new ComputingDataSource(DataType.BOOLEAN, expression).addDataSources(dataSources));
+    return this;
   }
 
   /**

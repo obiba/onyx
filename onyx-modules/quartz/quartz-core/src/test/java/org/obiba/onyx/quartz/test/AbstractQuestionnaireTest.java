@@ -17,7 +17,6 @@ import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.Radio;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
@@ -44,6 +43,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.test.provider.AnswerProvider;
 import org.obiba.wicket.test.MockSpringApplication;
 import org.slf4j.Logger;
@@ -457,14 +457,14 @@ public abstract class AbstractQuestionnaireTest {
 
       public Panel getTestPanel(String panelId) {
         QuartzPanel quartzPanel = new QuartzPanel(panelId, questionnaireStage, false);
-        quartzPanel.setModel(new Model(questionnaire));
+        quartzPanel.setModel(new QuestionnaireModel(questionnaire));
         return (quartzPanel);
       }
     });
 
     // We are currently at the language selection step. Select a language (1st available).
     FormTester formTester = wicketTester.newFormTester("panel:content:form");
-    formTester.select("step:panel:localeSelect", 1);
+    formTester.select("step:panel:localeSelect", 0);
 
     // Now advance to the next page, which is the first page of the questionnaire.
     nextPage();
@@ -769,7 +769,9 @@ public abstract class AbstractQuestionnaireTest {
    */
   private int getCategoryIndex(Question question, CategoryAnswer answer) {
     Category category = question.findCategory(answer.getCategoryName());
-    return question.getCategories().indexOf(category);
+    int index = question.getCategories().indexOf(category);
+    log.debug("question.{}.category.{}={}", new Object[] { question, answer.getCategoryName(), category });
+    return index;
   }
 
   /**

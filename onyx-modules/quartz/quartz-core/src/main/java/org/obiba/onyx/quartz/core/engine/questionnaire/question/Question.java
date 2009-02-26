@@ -14,10 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.util.value.ValueMap;
+import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
-import org.obiba.onyx.quartz.core.engine.questionnaire.condition.Condition;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.util.data.Data;
+import org.obiba.onyx.util.data.DataType;
 
 public class Question implements Serializable, IQuestionnaireElement {
 
@@ -41,7 +43,7 @@ public class Question implements Serializable, IQuestionnaireElement {
 
   private List<QuestionCategory> questionCategories;
 
-  private Condition condition;
+  private IDataSource condition;
 
   private Question parentQuestion;
 
@@ -93,7 +95,20 @@ public class Question implements Serializable, IQuestionnaireElement {
 
   public boolean isToBeAnswered(ActiveQuestionnaireAdministrationService service) {
     if(condition == null) return true;
-    return condition.isToBeAnswered(service);
+
+    Data data = condition.getData(service.getQuestionnaireParticipant().getParticipant());
+    if(data == null) return false;
+
+    if(data.getType().equals(DataType.BOOLEAN)) {
+      Boolean val = data.getValue();
+      return val != null && val;
+    } else {
+      try {
+        return Boolean.parseBoolean(data.getValueAsString());
+      } catch(Exception e) {
+        throw new IllegalArgumentException("Could not parse as a boolean: " + data, e);
+      }
+    }
   }
 
   public String getUIFactoryName() {
@@ -157,11 +172,11 @@ public class Question implements Serializable, IQuestionnaireElement {
     return false;
   }
 
-  public Condition getCondition() {
+  public IDataSource getCondition() {
     return condition;
   }
 
-  public void setCondition(Condition condition) {
+  public void setCondition(IDataSource condition) {
     this.condition = condition;
   }
 

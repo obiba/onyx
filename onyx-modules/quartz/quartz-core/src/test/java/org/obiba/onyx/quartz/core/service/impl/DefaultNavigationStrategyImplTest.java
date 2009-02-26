@@ -12,10 +12,10 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.obiba.onyx.core.data.CurrentDateSource;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.TimestampSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
@@ -283,7 +283,7 @@ public class DefaultNavigationStrategyImplTest {
     // Add Timestamp answer source to q1
     Category cat = new Category("1");
     OpenAnswerDefinition def = new OpenAnswerDefinition("timestamp", DataType.DATE);
-    def.setDataSource(new TimestampSource());
+    def.setDataSource(new CurrentDateSource());
     cat.setOpenAnswerDefinition(def);
     QuestionCategory qcat = new QuestionCategory();
     qcat.setCategory(cat);

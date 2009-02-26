@@ -22,10 +22,6 @@ public class QuestionCategory implements Serializable, IQuestionnaireElement {
 
   private Category category;
 
-  private boolean reselectable;
-
-  private boolean selected;
-
   private String exportName;
 
   public QuestionCategory() {
@@ -51,22 +47,6 @@ public class QuestionCategory implements Serializable, IQuestionnaireElement {
     this.category = category;
   }
 
-  public boolean isReselectable() {
-    return reselectable;
-  }
-
-  public void setReselectable(boolean reselectable) {
-    this.reselectable = reselectable;
-  }
-
-  public boolean isSelected() {
-    return selected;
-  }
-
-  public void setSelected(boolean selected) {
-    this.selected = selected;
-  }
-
   public boolean isEscape() {
     return category.isEscape();
   }
@@ -81,6 +61,14 @@ public class QuestionCategory implements Serializable, IQuestionnaireElement {
 
   public String getName() {
     return question.getName() + "." + category.getName();
+  }
+
+  public static String getQuestionName(String questionCategoryName) {
+    return questionCategoryName.substring(0, questionCategoryName.indexOf('.'));
+  }
+
+  public static String getCategoryName(String questionCategoryName) {
+    return questionCategoryName.substring(questionCategoryName.indexOf('.') + 1, questionCategoryName.length());
   }
 
   public void accept(IVisitor visitor) {

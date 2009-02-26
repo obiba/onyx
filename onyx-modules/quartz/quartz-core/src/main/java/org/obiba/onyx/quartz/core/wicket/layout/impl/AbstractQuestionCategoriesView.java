@@ -18,7 +18,6 @@ import org.apache.wicket.markup.repeater.OddEvenItem;
 import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.markup.repeater.data.GridView;
 import org.apache.wicket.model.IModel;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
@@ -47,7 +46,7 @@ public abstract class AbstractQuestionCategoriesView extends GridView {
    * @param filter filters the categories list
    * @param permutator permute the categories of the list so that it can be presented in a grid
    */
-  public AbstractQuestionCategoriesView(String id, IModel questionModel, IDataListFilter<QuestionCategory> filter, IDataListPermutator<QuestionCategory> permutator) {
+  public AbstractQuestionCategoriesView(String id, IModel questionModel, IDataListFilter<IModel> filter, IDataListPermutator<IModel> permutator) {
     super(id, new QuestionCategoriesProvider(questionModel, filter, permutator));
 
     QuestionCategoriesProvider provider = ((QuestionCategoriesProvider) getDataProvider());

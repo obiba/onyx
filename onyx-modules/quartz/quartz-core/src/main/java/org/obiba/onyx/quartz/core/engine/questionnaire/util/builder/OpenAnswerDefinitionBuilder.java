@@ -9,14 +9,15 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.engine.questionnaire.util.builder;
 
+import java.util.Calendar;
+
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.CurrentYearSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ExternalOpenAnswerSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.OpenAnswerSource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.ParticipantPropertySource;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.TimestampSource;
+import org.obiba.onyx.core.data.CurrentDateSource;
+import org.obiba.onyx.core.data.FixedDataSource;
+import org.obiba.onyx.core.data.IDataSource;
+import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
+import org.obiba.onyx.quartz.core.data.QuestionnaireDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
@@ -127,7 +128,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
   }
 
   /**
-   * Add a {@link IValidator} based on a {@link OpenAnswerSource} to the current {@link OpenAnswerDefinition}.
+   * Add a {@link IValidator} based on a {@link QuestionnaireDataSource} to the current {@link OpenAnswerDefinition}.
    * @param comparisonOperator
    * @param questionName
    * @param categoryName
@@ -135,12 +136,12 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String questionName, String categoryName, String openAnswerDefinitionName) {
-    element.addValidator(new DataSourceValidator(comparisonOperator, DataSourceBuilder.createOpenAnswerSource(this, questionName, categoryName, openAnswerDefinitionName).getElement()));
+    element.addValidator(new DataSourceValidator(comparisonOperator, new QuestionnaireDataSource(getQuestionnaire().getName(), questionName, categoryName, openAnswerDefinitionName)));
     return this;
   }
 
   /**
-   * Add a {@link IValidator} based on a {@link ExternalOpenAnswerSource} to the current {@link OpenAnswerDefinition}.
+   * Add a {@link IValidator} based on a {@link QuestionnaireDataSource} to the current {@link OpenAnswerDefinition}.
    * @param comparisonOperator
    * @param questionnaireName
    * @param questionName
@@ -149,40 +150,52 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
-    element.addValidator(new DataSourceValidator(comparisonOperator, DataSourceBuilder.createExternalOpenAnswerSource(questionnaireName, questionName, categoryName, openAnswerDefinitionName).getElement()));
+    element.addValidator(new DataSourceValidator(comparisonOperator, new QuestionnaireDataSource(questionnaireName, questionName, categoryName, openAnswerDefinitionName)));
     return this;
   }
 
   /**
-   * Add a {@link IValidator} based on a {@link ParticipantPropertySource} to the current {@link OpenAnswerDefinition}.
+   * Add a {@link IValidator} based on a {@link ParticipantPropertyDataSource} to the current
+   * {@link OpenAnswerDefinition}.
    * @param comparisonOperator
    * @param property
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String property) {
-    element.addValidator(new DataSourceValidator(comparisonOperator, DataSourceBuilder.createParticipantPropertySource(property).getElement()));
+    element.addValidator(new DataSourceValidator(comparisonOperator, new ParticipantPropertyDataSource(property)));
     return this;
   }
 
   /**
-   * Add a {@link IValidator} based on a {@link CurrentYearSource} to the current {@link OpenAnswerDefinition}.
+   * Add a {@link IValidator} based on a {@link CurrentDateSource} to the current {@link OpenAnswerDefinition}.
    * @param comparisonOperator
    * @return
    */
   public OpenAnswerDefinitionBuilder addCurrentYearValidator(ComparisonOperator comparisonOperator) {
-    element.addValidator(new DataSourceValidator(comparisonOperator, DataSourceBuilder.createCurrentYearSource().getElement()));
+    element.addValidator(new DataSourceValidator(comparisonOperator, new CurrentDateSource(Calendar.YEAR)));
     return this;
   }
 
   /**
-   * Add a {@link IValidator} based on a {@link DataSource} to the current {@link OpenAnswerDefinition}.
+   * Add a {@link IValidator} based on a {@link FixedDataSource} to the current {@link OpenAnswerDefinition}.
+   * @param comparisonOperator
+   * @param data
+   * @return
+   */
+  public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, Data data) {
+    element.addValidator(new DataSourceValidator(comparisonOperator, new FixedDataSource(data)));
+    return this;
+  }
+
+  /**
+   * Add a {@link IValidator} based on a {@link IDataSource} to the current {@link OpenAnswerDefinition}.
    * @param comparisonOperator
    * @param dataSource
    * @return
    * @see TimestampSource
    * @see CurrentYearSource
    */
-  public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, DataSource dataSource) {
+  public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, IDataSource dataSource) {
     element.addValidator(new DataSourceValidator(comparisonOperator, dataSource));
     return this;
   }
@@ -233,29 +246,38 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
   }
 
   /**
-   * Set a {@link TimestampSource} as to be the {@link DataSource} for the current {@link OpenAnswerDefinition}.
+   * All purpose data source.
+   * @param dataSource
    * @return
    */
-  public OpenAnswerDefinitionBuilder setTimestampSource() {
-    DataSourceBuilder builder = DataSourceBuilder.createTimestampSource();
-    element.setDataSource(builder.getElement());
+  public OpenAnswerDefinitionBuilder setDataSource(IDataSource dataSource) {
+    element.setDataSource(dataSource);
     return this;
   }
 
   /**
-   * Set a {@link OpenAnswerSource} as to be the {@link DataSource} for the current {@link OpenAnswerDefinition}.
+   * Set a {@link CurrentDateSource} as to be the {@link IDataSource} for the current {@link OpenAnswerDefinition}.
+   * @return
+   */
+  public OpenAnswerDefinitionBuilder setTimestampSource() {
+    element.setDataSource(new CurrentDateSource());
+    return this;
+  }
+
+  /**
+   * Set a {@link QuestionnaireDataSource} as to be the {@link DataSource} for the current {@link OpenAnswerDefinition}.
    * @param questionName
    * @param categoryName
    * @param openAnswerDefinitionName
    * @return
    */
   public OpenAnswerDefinitionBuilder setOpenAnswerSource(String questionName, String categoryName, String openAnswerDefinitionName) {
-    element.setDataSource(DataSourceBuilder.createOpenAnswerSource(this, questionName, categoryName, openAnswerDefinitionName).getElement());
+    element.setDataSource(new QuestionnaireDataSource(getQuestionnaire().getName(), questionName, categoryName, openAnswerDefinitionName));
     return this;
   }
 
   /**
-   * Set a {@link ExternalOpenAnswerSource} as to be the {@link DataSource} for the current {@link OpenAnswerDefinition}.
+   * Set a {@link QuestionnaireDataSource} as to be the {@link DataSource} for the current {@link OpenAnswerDefinition}.
    * @param questionnaireName
    * @param questionName
    * @param categoryName
@@ -263,18 +285,18 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder setExternalOpenAnswerSource(String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
-    element.setDataSource(DataSourceBuilder.createExternalOpenAnswerSource(questionnaireName, questionName, categoryName, openAnswerDefinitionName).getElement());
+    element.setDataSource(new QuestionnaireDataSource(questionnaireName, questionName, categoryName, openAnswerDefinitionName));
     return this;
   }
 
   /**
-   * Set a {@link ParticipantPropertySource} as to be the {@link DataSource} for the current
+   * Set a {@link ParticipantPropertyDataSource} as to be the {@link DataSource} for the current
    * {@link OpenAnswerDefinition}.
    * @param property
    * @return
    */
   public OpenAnswerDefinitionBuilder setParticipantPropertySource(String property) {
-    element.setDataSource(DataSourceBuilder.createParticipantPropertySource(property).getElement());
+    element.setDataSource(new ParticipantPropertyDataSource(property));
     return this;
   }
 

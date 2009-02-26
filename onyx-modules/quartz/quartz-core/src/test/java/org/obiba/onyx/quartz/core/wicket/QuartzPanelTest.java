@@ -18,7 +18,6 @@ import java.util.Locale;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.TestPanelSource;
@@ -46,6 +45,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanelFactory;
+import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.wicket.test.MockSpringApplication;
 import org.springframework.context.MessageSource;
 
@@ -141,7 +141,7 @@ public class QuartzPanelTest {
       public Panel getTestPanel(String panelId) {
 
         QuartzPanel quartzPanel = new QuartzPanel(panelId, newTestStage(), false);
-        quartzPanel.setModel(new Model(questionnaire));
+        quartzPanel.setModel(new QuestionnaireModel(questionnaire));
         return (quartzPanel);
 
       }

@@ -14,18 +14,17 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
-import org.obiba.onyx.quartz.core.engine.questionnaire.answer.DataSource;
-import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.core.data.IDataSource;
+import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
-import org.obiba.onyx.util.data.IDataUnitProvider;
 import org.obiba.onyx.wicket.data.IDataValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Validates a {@link Data} value by comparing it to the one provided by the {@link DataSource} in the context of the
+ * Validates a {@link Data} value by comparing it to the one provided by the {@link IDataSource} in the context of the
  * currently administered questionnaire.
  */
 public class DataSourceValidator implements IDataValidator {
@@ -34,19 +33,13 @@ public class DataSourceValidator implements IDataValidator {
 
   private static final Logger log = LoggerFactory.getLogger(DataSourceValidator.class);
 
-  private DataSource dataSource;
+  private IDataSource dataSource;
 
   private ComparisonOperator comparisonOperator;
 
-  private IDataUnitProvider dataUnitProvider;
-
-  public DataSourceValidator(ComparisonOperator comparisonOperator, DataSource dataSource) {
+  public DataSourceValidator(ComparisonOperator comparisonOperator, IDataSource dataSource) {
     this.dataSource = dataSource;
     this.comparisonOperator = comparisonOperator;
-  }
-
-  public void setDataUnitProvider(IDataUnitProvider dataUnitProvider) {
-    this.dataUnitProvider = dataUnitProvider;
   }
 
   public DataType getDataType() {
@@ -61,8 +54,8 @@ public class DataSourceValidator implements IDataValidator {
   @SuppressWarnings("serial")
   private class InnerDataSourceValidator implements IValidator {
 
-    @SpringBean
-    private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+    @SpringBean(name = "activeInterviewService")
+    private ActiveInterviewService activeInterviewService;
 
     public InnerDataSourceValidator() {
       InjectorHolder.getInjector().inject(this);
@@ -70,7 +63,7 @@ public class DataSourceValidator implements IDataValidator {
 
     public void validate(IValidatable validatable) {
       Data dataToCompare = (Data) validatable.getValue();
-      Data data = dataSource.getData(activeQuestionnaireAdministrationService);
+      Data data = dataSource.getData(activeInterviewService.getParticipant());
       // TODO deal with units
       // String sourceUnit = dataSource.getUnit();
       // String validatableUnit = getUnit();
@@ -117,7 +110,7 @@ public class DataSourceValidator implements IDataValidator {
   }
 
   public String getUnit() {
-    return dataUnitProvider != null ? dataUnitProvider.getUnit() : null;
+    return dataSource != null ? dataSource.getUnit() : null;
   }
 
 }
