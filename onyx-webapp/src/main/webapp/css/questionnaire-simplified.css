@@ -88,13 +88,10 @@
 	margin-right: auto;
 }
 
-.obiba-quartz-regular-image .category a.button {
-    height: 100px;
-    width: 100px;
-}
-
 .category img, .category.selected img.selected {
   display: inline;
+  height: 100px;
+  width: 100px;
 }
 
 .category img.selected, .category.selected img {

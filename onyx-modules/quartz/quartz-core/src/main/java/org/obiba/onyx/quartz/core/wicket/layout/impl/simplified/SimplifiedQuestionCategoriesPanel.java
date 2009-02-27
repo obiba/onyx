@@ -46,7 +46,9 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
 
   private static final long serialVersionUID = 5144933183339704600L;
 
-  private static final int CATEGORY_IMAGE_WIDTH = 90;
+  private static final int CATEGORY_IMAGE_WIDTH = 100;
+  
+  private static final int CATEGORY_IMAGE_SPACING = 5;
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SimplifiedQuestionCategoriesPanel.class);
@@ -158,7 +160,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
 
     @Override
     protected void onComponentTag(ComponentTag tag) {
-      int width = getColumns() * CATEGORY_IMAGE_WIDTH;
+      int width = getColumns() * (CATEGORY_IMAGE_WIDTH + CATEGORY_IMAGE_SPACING);
       tag.getAttributes().put("style", "margin-left: auto; margin-right: auto; width: " + width + "px;");
 
       super.onComponentTag(tag);
