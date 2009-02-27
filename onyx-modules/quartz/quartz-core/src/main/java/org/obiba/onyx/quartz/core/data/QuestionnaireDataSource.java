@@ -97,7 +97,7 @@ public class QuestionnaireDataSource implements IDataSource {
       data = DataBuilder.buildBoolean(active);
     }
 
-    log.info("data={}", data);
+    log.debug("data={}", data);
     return data;
   }
 
