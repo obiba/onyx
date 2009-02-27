@@ -96,8 +96,12 @@ public class ComparingDataSource implements IDataSource {
   }
 
   @Override
-  protected ComparingDataSource clone() throws CloneNotSupportedException {
+  public ComparingDataSource clone() {
     return new ComparingDataSource(dataSourceLeft, comparisonOperator, dataSourceRight);
   }
 
+  @Override
+  public String toString() {
+    return "[" + dataSourceLeft + ", " + comparisonOperator + ", " + dataSourceRight + "]";
+  }
 }

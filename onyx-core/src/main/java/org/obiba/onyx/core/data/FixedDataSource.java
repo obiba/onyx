@@ -27,14 +27,6 @@ public class FixedDataSource implements IDataSource {
 
   private String unit;
 
-  public Data getData(Participant participant) {
-    return data;
-  }
-
-  public String getUnit() {
-    return unit;
-  }
-
   public FixedDataSource(Serializable value) {
     this(DataBuilder.build(value));
   }
@@ -53,5 +45,18 @@ public class FixedDataSource implements IDataSource {
     super();
     this.data = data;
     this.unit = unit;
+  }
+
+  public Data getData(Participant participant) {
+    return data;
+  }
+
+  public String getUnit() {
+    return unit;
+  }
+
+  @Override
+  public String toString() {
+    return "[" + data + ", " + unit + "]";
   }
 }
