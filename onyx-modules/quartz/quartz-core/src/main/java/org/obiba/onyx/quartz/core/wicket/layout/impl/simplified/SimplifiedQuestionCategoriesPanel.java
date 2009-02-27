@@ -29,6 +29,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IDataListPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.MultipleDataListFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryImageFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryOpenAnswerFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
@@ -44,6 +45,8 @@ import org.slf4j.LoggerFactory;
 public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestionCategorySelectionListener {
 
   private static final long serialVersionUID = 5144933183339704600L;
+
+  private static final int CATEGORY_IMAGE_WIDTH = 90;
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SimplifiedQuestionCategoriesPanel.class);
@@ -82,9 +85,13 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
 
     // regular category choice in potentially multiple columns
     filter = new MultipleDataListFilter<IModel>();
+    filter.addFilter(new QuestionCategoryImageFilter(false));
     filter.addFilter(new QuestionCategoryEscapeFilter(false));
     filter.addFilter(new QuestionCategoryOpenAnswerFilter(false));
     add(new QuestionCategoryLinksView("regularCategories", getModel(), filter, new QuestionCategoryListToGridPermutator(getModel())));
+
+    // regular image categories (i.e., categories represented by images rather than text), in a single row.
+    add(new QuestionCategoryImageLinksView("regularImageCategories", getModel(), new QuestionCategoryImageFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1)));
 
     // escape categories in one row
     add(new QuestionCategoryLinksView("escapeCategories", getQuestionModel(), new QuestionCategoryEscapeFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1)));
@@ -139,6 +146,30 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     }
   }
 
+  /**
+   * Display the category simply as a {@link QuestionCategoryImageLink}.
+   */
+  @SuppressWarnings("serial")
+  private class QuestionCategoryImageLinksView extends QuestionCategoryComponentsView {
+
+    public QuestionCategoryImageLinksView(String id, IModel questionModel, IDataListFilter<IModel> filter, IDataListPermutator<IModel> permutator) {
+      super(id, questionModel, filter, permutator);
+    }
+
+    @Override
+    protected void onComponentTag(ComponentTag tag) {
+      int width = getColumns() * CATEGORY_IMAGE_WIDTH;
+      tag.getAttributes().put("style", "margin-left: auto; margin-right: auto; width: " + width + "px;");
+
+      super.onComponentTag(tag);
+    }
+
+    @Override
+    protected Component newQuestionCategoryComponent(String id, IModel questionCategoryModel, int index) {
+      return new QuestionCategoryImageLink(id, questionCategoryModel, new QuestionnaireStringResourceModel(questionCategoryModel, "label"));
+    }
+  }
+
   @SuppressWarnings("serial")
   private class OpenFragment extends Fragment {
     public OpenFragment(String id, IModel questionCategoryModel, int index) {
@@ -159,5 +190,4 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
       }
     }
   }
-
 }

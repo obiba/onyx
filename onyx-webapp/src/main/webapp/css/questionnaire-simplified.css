@@ -83,6 +83,24 @@
 	width: 400px;
 }
 
+.obiba-quartz-regular-image {
+    margin-left: auto;
+	margin-right: auto;
+}
+
+.obiba-quartz-regular-image .category a.button {
+    height: 100px;
+    width: 100px;
+}
+
+.category img, .category.selected img.selected {
+  display: inline;
+}
+
+.category img.selected, .category.selected img {
+  display: none;
+}
+
 .escape {
 	margin-left: auto;
 	margin-right: auto;

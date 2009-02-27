@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
@@ -118,6 +119,11 @@ public class QuestionnaireBundleImpl implements QuestionnaireBundle {
 
   public Questionnaire getQuestionnaire() {
     return questionnaire;
+  }
+
+  public Resource getImageResource(String imageId) {
+    File imageDir = new File(bundleVersionDir, "images");
+    return new FileSystemResource(new File(imageDir, imageId));
   }
 
   public void setLanguage(Locale locale, Properties language) {
