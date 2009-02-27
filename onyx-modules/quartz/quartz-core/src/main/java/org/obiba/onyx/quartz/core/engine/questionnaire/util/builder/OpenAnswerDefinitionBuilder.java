@@ -13,6 +13,7 @@ import java.util.Calendar;
 
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.CurrentDateSource;
 import org.obiba.onyx.core.data.FixedDataSource;
 import org.obiba.onyx.core.data.IDataSource;
@@ -22,7 +23,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataSourceValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
@@ -107,7 +107,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(IValidator validator, DataType dataType) {
-    element.addValidator(new DataValidator(validator, dataType));
+    element.addDataValidator(new DataValidator(validator, dataType));
     return this;
   }
 
@@ -118,7 +118,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    */
   public OpenAnswerDefinitionBuilder addValidator(IValidator validator) {
     if(validator instanceof IDataValidator) {
-      element.addValidator((IDataValidator) validator);
+      element.addDataValidator((IDataValidator) validator);
       return this;
     } else if(validator instanceof StringValidator) {
       return addValidator(validator, DataType.TEXT);
@@ -136,7 +136,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String questionName, String categoryName, String openAnswerDefinitionName) {
-    element.addValidator(new DataSourceValidator(comparisonOperator, new QuestionnaireDataSource(getQuestionnaire().getName(), questionName, categoryName, openAnswerDefinitionName)));
+    element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, new QuestionnaireDataSource(getQuestionnaire().getName(), questionName, categoryName, openAnswerDefinitionName)));
     return this;
   }
 
@@ -150,7 +150,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
-    element.addValidator(new DataSourceValidator(comparisonOperator, new QuestionnaireDataSource(questionnaireName, questionName, categoryName, openAnswerDefinitionName)));
+    element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, new QuestionnaireDataSource(questionnaireName, questionName, categoryName, openAnswerDefinitionName)));
     return this;
   }
 
@@ -162,7 +162,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String property) {
-    element.addValidator(new DataSourceValidator(comparisonOperator, new ParticipantPropertyDataSource(property)));
+    element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, new ParticipantPropertyDataSource(property)));
     return this;
   }
 
@@ -172,7 +172,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addCurrentYearValidator(ComparisonOperator comparisonOperator) {
-    element.addValidator(new DataSourceValidator(comparisonOperator, new CurrentDateSource(Calendar.YEAR)));
+    element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, new CurrentDateSource(Calendar.YEAR)));
     return this;
   }
 
@@ -183,7 +183,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, Data data) {
-    element.addValidator(new DataSourceValidator(comparisonOperator, new FixedDataSource(data)));
+    element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, new FixedDataSource(data)));
     return this;
   }
 
@@ -196,7 +196,7 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @see CurrentYearSource
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, IDataSource dataSource) {
-    element.addValidator(new DataSourceValidator(comparisonOperator, dataSource));
+    element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, dataSource));
     return this;
   }
 

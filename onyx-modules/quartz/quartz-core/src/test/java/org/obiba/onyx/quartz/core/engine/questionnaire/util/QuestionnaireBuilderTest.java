@@ -127,12 +127,12 @@ public class QuestionnaireBuilderTest extends BaseDefaultSpringContextTestCase {
     Assert.assertNotNull(category.getOpenAnswerDefinition());
     Assert.assertEquals(DataType.INTEGER, category.getOpenAnswerDefinition().getDataType());
     Assert.assertEquals("AGE", category.getOpenAnswerDefinition().getName());
-    Assert.assertEquals(40, ((NumberValidator.RangeValidator) ((DataValidator) category.getOpenAnswerDefinition().getValidators().get(0)).getValidator()).getMinimum());
-    Assert.assertEquals(70, ((NumberValidator.RangeValidator) ((DataValidator) category.getOpenAnswerDefinition().getValidators().get(0)).getValidator()).getMaximum());
+    Assert.assertEquals(40, ((NumberValidator.RangeValidator) ((DataValidator) category.getOpenAnswerDefinition().getDataValidators().get(0)).getValidator()).getMinimum());
+    Assert.assertEquals(70, ((NumberValidator.RangeValidator) ((DataValidator) category.getOpenAnswerDefinition().getDataValidators().get(0)).getValidator()).getMaximum());
 
     builder.inQuestion("Q5").withCategory(OTHER_SPECIFY).withOpenAnswerDefinition("SPECIFY", DataType.TEXT).setDefaultData("Left", "Right").setUnit("kg").addValidator(new DataValidator(new PatternValidator("[a-z,A-Z]+"), DataType.TEXT));
     category = QuestionnaireFinder.getInstance(builder.getQuestionnaire()).findQuestion("Q5").findCategory(OTHER_SPECIFY);
-    Assert.assertEquals("[a-z,A-Z]+", ((PatternValidator) ((DataValidator) category.getOpenAnswerDefinition().getValidators().get(0)).getValidator()).getPattern().toString());
+    Assert.assertEquals("[a-z,A-Z]+", ((PatternValidator) ((DataValidator) category.getOpenAnswerDefinition().getDataValidators().get(0)).getValidator()).getPattern().toString());
     Assert.assertEquals(2, category.getOpenAnswerDefinition().getDefaultValues().size());
 
     try {

@@ -30,10 +30,12 @@ import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
@@ -46,8 +48,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultPageLayoutFactory;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultQuestionPanelFactory;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
@@ -75,6 +75,8 @@ public class DefaultOpenAnswerDefinitionPanelTest {
   private MessageSource messageSourceMock;
 
   private DefaultOpenAnswerDefinitionPanelMock openMock;
+
+  private QuestionnaireParticipant questionnaireParticipant;
 
   @Before
   public void setUp() {
@@ -104,6 +106,9 @@ public class DefaultOpenAnswerDefinitionPanelTest {
     application.setHomePage(Page.class);
     application.setApplicationContext(mockCtx);
     tester = new WicketTester(application);
+
+    questionnaireParticipant = new QuestionnaireParticipant();
+    questionnaireParticipant.setParticipant(new Participant());
   }
 
   @Test
@@ -118,6 +123,7 @@ public class DefaultOpenAnswerDefinitionPanelTest {
 
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaireParticipant()).andReturn(questionnaireParticipant);
     expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer((Question) EasyMock.anyObject(), (Category) EasyMock.anyObject(), (OpenAnswerDefinition) EasyMock.anyObject())).andReturn(openAnswer);
     expect(activeQuestionnaireAdministrationServiceMock.answer((Question) EasyMock.anyObject(), (QuestionCategory) EasyMock.anyObject(), (OpenAnswerDefinition) EasyMock.anyObject(), (Data) EasyMock.anyObject())).andReturn(new CategoryAnswer()).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(Locale.FRENCH).anyTimes();
@@ -187,6 +193,7 @@ public class DefaultOpenAnswerDefinitionPanelTest {
 
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey((Questionnaire) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(new String()).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaireParticipant()).andReturn(questionnaireParticipant);
     expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer((Question) EasyMock.anyObject(), (Category) EasyMock.anyObject(), (OpenAnswerDefinition) EasyMock.anyObject())).andReturn(openAnswer);
     expect(activeQuestionnaireAdministrationServiceMock.answer((Question) EasyMock.anyObject(), (QuestionCategory) EasyMock.anyObject(), (OpenAnswerDefinition) EasyMock.anyObject(), (Data) EasyMock.anyObject())).andReturn(new CategoryAnswer()).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(Locale.FRENCH).anyTimes();

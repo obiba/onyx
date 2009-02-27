@@ -24,6 +24,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.OpenAnswerDefinitionValidatorFactory;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.util.data.Data;
@@ -103,11 +104,10 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     add(openField);
 
     // validators
-    if(getOpenAnswerDefinition().getValidators() != null) {
-      for(IValidator validator : getOpenAnswerDefinition().getValidators()) {
-        openField.add(validator);
-      }
+    for(IValidator validator : OpenAnswerDefinitionValidatorFactory.getValidators(getOpenAnswerDefinitionModel(), activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant())) {
+      openField.add(validator);
     }
+
     // at least this validator for textual input
     if(getOpenAnswerDefinition().getDataType().equals(DataType.TEXT) && getOpenAnswerDefinition().getDefaultValues().size() == 0) {
       // see OpenAnswer.textValue column length

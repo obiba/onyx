@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.util.value.ValueMap;
+import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
@@ -38,6 +39,8 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
   private List<String[]> uIArguments;
 
   private List<IDataValidator> validators;
+
+  private List<ComparingDataSource> validationDataSources;
 
   private List<Data> defaultValues;
 
@@ -101,12 +104,28 @@ public class OpenAnswerDefinition implements Serializable, IQuestionnaireElement
     uIArguments.add(new String[] { key, value });
   }
 
-  public List<IDataValidator> getValidators() {
+  public List<IDataValidator> getDataValidators() {
     return validators != null ? validators : (validators = new ArrayList<IDataValidator>());
   }
 
-  public void addValidator(IDataValidator validator) {
-    getValidators().add(validator);
+  public void addDataValidator(IDataValidator validator) {
+    if(validator != null) {
+      getDataValidators().add(validator);
+    }
+  }
+
+  public List<ComparingDataSource> getValidationDataSources() {
+    return validationDataSources != null ? validationDataSources : (validationDataSources = new ArrayList<ComparingDataSource>());
+  }
+
+  public void addValidationDataSource(ComparingDataSource comparingDataSource) {
+    if(comparingDataSource != null) {
+      getValidationDataSources().add(comparingDataSource);
+    }
+  }
+
+  public ComparingDataSource getValidationDataSource(int index) {
+    return getValidationDataSources().get(index).clone();
   }
 
   public List<Data> getDefaultValues() {

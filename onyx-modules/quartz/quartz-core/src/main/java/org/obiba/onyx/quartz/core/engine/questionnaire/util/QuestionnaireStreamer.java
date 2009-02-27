@@ -16,6 +16,7 @@ import java.util.Properties;
 
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.data.AbstractBeanPropertyDataSource;
+import org.obiba.onyx.core.data.ComparingDataSource;
 import org.obiba.onyx.core.data.ComputingDataSource;
 import org.obiba.onyx.core.data.CurrentDateSource;
 import org.obiba.onyx.core.data.DateModifier;
@@ -29,7 +30,6 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
-import org.obiba.onyx.quartz.core.engine.questionnaire.question.validation.DataSourceValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.IPropertyKeyWriter;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.builder.impl.OutputStreamPropertyKeyWriterImpl;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.localization.IPropertyKeyProvider;
@@ -96,10 +96,12 @@ public class QuestionnaireStreamer {
 
     xstream.alias("dataValidator", DataValidator.class);
     xstream.useAttributeFor(DataValidator.class, "dataType");
-    xstream.alias("dataSourceValidator", DataSourceValidator.class);
-    xstream.useAttributeFor(DataSourceValidator.class, "comparisonOperator");
+
+    xstream.alias("comparingDataSource", ComparingDataSource.class);
+    xstream.useAttributeFor(ComparingDataSource.class, "comparisonOperator");
 
     xstream.alias("fixedDataSource", FixedDataSource.class);
+
     xstream.alias("questionnaireDataSource", QuestionnaireDataSource.class);
     xstream.useAttributeFor(QuestionnaireDataSource.class, "questionnaire");
     xstream.useAttributeFor(QuestionnaireDataSource.class, "question");
@@ -107,12 +109,15 @@ public class QuestionnaireStreamer {
     xstream.useAttributeFor(QuestionnaireDataSource.class, "openAnswerDefinition");
 
     xstream.alias("currentDateSource", CurrentDateSource.class);
+
     xstream.alias("participantPropertyDataSource", ParticipantPropertyDataSource.class);
     xstream.useAttributeFor(AbstractBeanPropertyDataSource.class, "property");
     xstream.useAttributeFor(AbstractBeanPropertyDataSource.class, "unit");
+
     xstream.alias("dateModifier", DateModifier.class);
     xstream.useAttributeFor(DateModifier.class, "field");
     xstream.useAttributeFor(DateModifier.class, "amount");
+
     xstream.alias("computingDataSource", ComputingDataSource.class);
     xstream.useAttributeFor(ComputingDataSource.class, "dataType");
     xstream.useAttributeFor(ComputingDataSource.class, "unit");
