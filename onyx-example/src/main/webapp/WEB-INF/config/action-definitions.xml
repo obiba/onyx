@@ -266,7 +266,17 @@
     <askPassword>true</askPassword>
     <commentMandatory>false</commentMandatory>
     <reasonMandatory>false</reasonMandatory>         
-  </actionDefinition>         
+  </actionDefinition>     
+  
+  <!-- Quartz self administred questionnaire -->  
+  <actionDefinition>
+    <code>action.INTERRUPT.InProgress.Quartz.HealthQuestionnaireSelfAdministered</code>
+    <type>INTERRUPT</type>
+    <askParticipantId>true</askParticipantId>    
+    <askPassword>true</askPassword>
+    <commentMandatory>false</commentMandatory>
+    <reasonMandatory>false</reasonMandatory>     
+  </actionDefinition> 
 
   <!-- Ruby -->
   <actionDefinition>
