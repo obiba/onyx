@@ -101,6 +101,7 @@ public class SimplifiedPageLayout extends PageLayout {
   public void onStepInNext(AjaxRequestTarget target) {
     if(questionPanel != null) {
       enableModalFeedback(true);
+      updateProgressBar();
     }
   }
 
@@ -108,7 +109,13 @@ public class SimplifiedPageLayout extends PageLayout {
   public void onStepInPrevious(AjaxRequestTarget target) {
     if(questionPanel != null) {
       enableModalFeedback(true);
+      updateProgressBar();
     }
+  }
+
+  private void updateProgressBar() {
+    QuestionnaireWizardForm form = (QuestionnaireWizardForm) findParent(QuestionnaireWizardForm.class);
+    form.updateProgressBar(form);
   }
 
   private void enableModalFeedback(boolean isEnable) {

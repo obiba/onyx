@@ -313,6 +313,43 @@ public class QuestionnaireWizardForm extends WizardForm {
     this.modalFeedback = modalFeedback;
   }
 
+  /**
+   * Updates the progress bar to display the percentage completed for this Questionnaire Wizard.
+   * 
+   * @param form
+   */
+  public void updateProgressBar(WizardForm form) {
+
+    // Calculate the percentage
+    int progressPercentage = calculatePercentageCompleted();
+
+    // Update the progress bar to display the percentage
+    ProgressBarPanel progressBar = ((QuestionnaireWizardForm) form).getProgressBar();
+    progressBar.setProgressPercentage(progressPercentage);
+
+    // Make sure the progress bar is visible
+    progressBar.setVisible(true);
+  }
+
+  /**
+   * Calculates the percentage completed for this Questionnaire Wizard.
+   * 
+   * @return The percentage completed.
+   */
+  private int calculatePercentageCompleted() {
+
+    int pageTotalCount = activeQuestionnaireAdministrationService.getQuestionnaire().getPages().size();
+    log.debug("Total number of pages {}", pageTotalCount);
+
+    int lastCompletedPageNo = activeQuestionnaireAdministrationService.getCurrentPageNumber() - 1;
+    log.debug("Last completed page number {}", lastCompletedPageNo);
+
+    int progressPercentage = (int) (((float) lastCompletedPageNo / (float) pageTotalCount) * 100);
+    log.debug("Progress percentage {}", progressPercentage);
+
+    return progressPercentage;
+  }
+
   public ProgressBarPanel getProgressBar() {
     return progressBar;
   }
