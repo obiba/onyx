@@ -275,17 +275,6 @@ public class ComparingDataSourceTest {
     Assert.assertEquals(true, data.getValue());
   }
 
-  @Test
-  public void testComparingDataSource13() {
-
-    ComparingDataSource dataSource = new ComparingDataSource(iDataSourceMock0, ComparisonOperator.gt, iDataSourceMock1);
-    try {
-      dataSource.addDataSource(iDataSourceMock0);
-      Assert.assertFalse(true);
-    } catch(Exception e) {
-    }
-  }
-
   private Participant createParticipant() {
     Participant p = new Participant();
     p.setBarcode("1187432");

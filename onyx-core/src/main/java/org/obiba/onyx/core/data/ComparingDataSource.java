@@ -17,16 +17,20 @@ import org.obiba.onyx.util.data.DataBuilder;
 /**
  * Compares data from two datasources.
  */
-public class ComparingDataSource extends AbstractMultipleDataSource {
+public class ComparingDataSource implements IDataSource {
 
   private static final long serialVersionUID = 1L;
 
+  private IDataSource dataSourceLeft;
+
   private ComparisonOperator comparisonOperator;
 
-  public ComparingDataSource(IDataSource dataSource1, ComparisonOperator comparisonOperator, IDataSource dataSource2) {
+  private IDataSource dataSourceRight;
+
+  public ComparingDataSource(IDataSource left, ComparisonOperator comparisonOperator, IDataSource right) {
     super();
-    addDataSource(dataSource1);
-    addDataSource(dataSource2);
+    this.dataSourceLeft = left;
+    this.dataSourceRight = right;
     this.comparisonOperator = comparisonOperator;
   }
 
@@ -35,27 +39,36 @@ public class ComparingDataSource extends AbstractMultipleDataSource {
   }
 
   public Data getData(Participant participant) {
-    if(getDataSources().size() != 2) {
-      throw new IllegalArgumentException("Comparing requires two datasources.");
-    }
-    Data data1 = getDataSources().get(0).getData(participant);
-    Data data2 = getDataSources().get(1).getData(participant);
+    Data dataLeft = dataSourceLeft.getData(participant);
+    Data dataRight = dataSourceRight.getData(participant);
 
-    if(data1 == null && data2 == null) {
+    if(dataLeft == null && dataRight == null) {
       return DataBuilder.buildBoolean(isComparisonValid(0));
-    } else if(data1 != null) {
-      return DataBuilder.buildBoolean(isComparisonValid(data1.compareTo(data2)));
+    } else if(dataLeft != null) {
+      return DataBuilder.buildBoolean(isComparisonValid(dataLeft.compareTo(dataRight)));
     } else {
       return DataBuilder.buildBoolean(false);
     }
   }
 
-  @Override
-  public AbstractMultipleDataSource addDataSource(IDataSource dataSource) {
-    if(getDataSources().size() == 2) {
-      throw new IllegalArgumentException("Comparing requires two datasources.");
-    }
-    return super.addDataSource(dataSource);
+  public IDataSource getDataSourceLeft() {
+    return dataSourceLeft;
+  }
+
+  public void setDataSourceLeft(IDataSource dataSourceLeft) {
+    this.dataSourceLeft = dataSourceLeft;
+  }
+
+  public IDataSource getDataSourceRight() {
+    return dataSourceRight;
+  }
+
+  public void setDataSourceRight(IDataSource dataSourceRight) {
+    this.dataSourceRight = dataSourceRight;
+  }
+
+  public ComparisonOperator getComparisonOperator() {
+    return comparisonOperator;
   }
 
   public String getUnit() {
@@ -80,6 +93,11 @@ public class ComparingDataSource extends AbstractMultipleDataSource {
     default:
       return false;
     }
+  }
+
+  @Override
+  protected ComparingDataSource clone() throws CloneNotSupportedException {
+    return new ComparingDataSource(dataSourceLeft, comparisonOperator, dataSourceRight);
   }
 
 }
