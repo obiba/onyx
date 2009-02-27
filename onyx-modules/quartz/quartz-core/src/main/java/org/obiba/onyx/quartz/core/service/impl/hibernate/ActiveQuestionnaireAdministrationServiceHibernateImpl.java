@@ -81,4 +81,10 @@ public class ActiveQuestionnaireAdministrationServiceHibernateImpl extends Defau
     return (OpenAnswer) criteria.uniqueResult();
   }
 
+  @SuppressWarnings("unchecked")
+  public List<OpenAnswer> findOpenAnswers(Question question, Category category) {
+    Criteria criteria = AssociationCriteria.create(OpenAnswer.class, getSession()).add("categoryAnswer.questionAnswer.questionnaireParticipant", Operation.eq, getQuestionnaireParticipant()).add("categoryAnswer.questionAnswer.questionName", Operation.eq, question.getName()).add("categoryAnswer.categoryName", Operation.eq, category.getName()).getCriteria();
+    return criteria.list();
+  }
+
 }

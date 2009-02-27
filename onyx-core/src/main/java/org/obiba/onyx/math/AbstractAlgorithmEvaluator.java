@@ -43,11 +43,11 @@ public abstract class AbstractAlgorithmEvaluator implements IAlgorithmEvaluator,
    * @param operand
    * @return
    */
-  protected Serializable convert(String symbol, Data operand) {
+  protected Serializable convert(String algorithm, String symbol, Data operand) {
     if(operand == null) {
-      throw new IllegalArgumentException("Operand cannot be null: " + symbol);
-      // log.warn("Operand cannot be null: " + symbol);
-      // return new Double(0);
+      // throw new IllegalArgumentException("Operand in {" + algorithm + "} cannot be null: " + symbol);
+      log.warn("Operand in {" + algorithm + "} cannot be null: " + symbol + ", using 0 instead.");
+      return new Double(0);
     }
 
     switch(operand.getType()) {

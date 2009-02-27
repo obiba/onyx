@@ -61,7 +61,7 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
     if(operands != null) {
       for(int i = operands.size() - 1; i >= 0; i--) {
         String symbol = getVariableName(i);
-        Serializable value = convert(symbol, operands.get(i));
+        Serializable value = convert(algorithm, symbol, operands.get(i));
         if(Boolean.class.isInstance(value)) {
           newExpression = newExpression.replace(symbol, (Boolean) value ? "True" : "False");
         } else {
@@ -70,7 +70,7 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
       }
     }
     for(Map.Entry<String, Data> entry : getDefaultDoubleVariables().entrySet()) {
-      engine.defineVariable(entry.getKey(), new DoubleVariable((Double) convert(entry.getKey(), entry.getValue())));
+      engine.defineVariable(entry.getKey(), new DoubleVariable((Double) convert(algorithm, entry.getKey(), entry.getValue())));
     }
 
     log.debug(newExpression);
@@ -87,7 +87,7 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
   private String defineDefaultVariables(DoubleEvaluator engine, String algorithm, Participant participant) {
     String newExpression = algorithm;
     for(Map.Entry<String, IDataSource> entry : getDefaultVariables().entrySet()) {
-      Serializable value = convert(entry.getKey(), entry.getValue().getData(participant));
+      Serializable value = convert(algorithm, entry.getKey(), entry.getValue().getData(participant));
       if(Boolean.class.isInstance(value)) {
         newExpression = newExpression.replace(entry.getKey(), (Boolean) value ? "True" : "False");
       } else {

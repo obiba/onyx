@@ -13,8 +13,11 @@ import org.apache.wicket.validation.validator.NumberValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.junit.Test;
 import org.obiba.core.test.spring.Dataset;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
+import org.obiba.onyx.quartz.test.provider.AnswerProvider;
+import org.obiba.onyx.quartz.test.provider.impl.ConfigurableAnswerProvider;
 import org.obiba.onyx.util.data.DataType;
 
 /**
@@ -33,44 +36,42 @@ public class HealthQuestionnaireTest extends AbstractQuestionnaireTest {
   @Test
   @Dataset
   public void testQ1() {
-    // startQuestionnaire();
-    // assertCurrentPage(getPage("P1"));
-    //
-    // AnswerProvider answerProvider = ConfigurableAnswerProvider.fromXmlResource(getAnswerProviderResourcePath() +
-    // "/answerProvider.xml");
-    //
-    // Question q31 = getQuestion("Q31");
-    // answerQuestionsUpTo(answerProvider, q31);
-    // assertCurrentPage(getPage("P23"));
-    //
-    // returnToEarlierQuestion(getQuestion("Q1"));
-    // assertCurrentPage(getPage("P1"));
-    //
-    // returnToLaterQuestion(q31);
-    // assertCurrentPage(getPage("P23"));
+    startQuestionnaire();
+    assertCurrentPage(getPage("P1"));
+
+    AnswerProvider answerProvider = ConfigurableAnswerProvider.fromXmlResource(getAnswerProviderResourcePath() + "/answerProvider.xml");
+
+    Question q31 = getQuestion("Q31");
+    answerQuestionsUpTo(answerProvider, q31);
+    assertCurrentPage(getPage("P23"));
+
+    returnToEarlierQuestion(getQuestion("Q1"));
+    assertCurrentPage(getPage("P1"));
+
+    returnToLaterQuestion(q31);
+    assertCurrentPage(getPage("P23"));
   }
 
   @Test
   @Dataset
   public void testCondition() {
-    // startQuestionnaire();
-    // assertCurrentPage(getPage("P1"));
-    //
-    // AnswerProvider answerProvider = ConfigurableAnswerProvider.fromXmlResource(getAnswerProviderResourcePath() +
-    // "/answerProviderForConditionTest.xml");
-    //
-    // // if Q4 > 45 => question Q5 available
-    // // if Q5 answered => Q6 available but not Q7
-    // answerQuestionsUpTo(answerProvider, getQuestion("Q5"));
-    // assertNextPage(getPage("P6"));
-    // assertNextPage(getPage("P8"));
-    //
-    // // if Q4 < 45 => question Q7 available only
-    // returnToEarlierQuestion(getQuestion("Q1"));
-    // answerQuestionsUpTo(answerProvider, getQuestion("Q3"));
-    // answerQuestion(getQuestion("Q4"), answerProvider.getAnswer(new Question("Q4Changed")));
-    // assertCurrentPage(getPage("P4"));
-    // assertNextPage(getPage("P7"));
+    startQuestionnaire();
+    assertCurrentPage(getPage("P1"));
+
+    AnswerProvider answerProvider = ConfigurableAnswerProvider.fromXmlResource(getAnswerProviderResourcePath() + "/answerProviderForConditionTest.xml");
+
+    // if Q4 > 45 => question Q5 available
+    // if Q5 answered => Q6 available but not Q7
+    answerQuestionsUpTo(answerProvider, getQuestion("Q5"));
+    assertNextPage(getPage("P6"));
+    assertNextPage(getPage("P8"));
+
+    // if Q4 < 45 => question Q7 available only
+    returnToEarlierQuestion(getQuestion("Q1"));
+    answerQuestionsUpTo(answerProvider, getQuestion("Q3"));
+    answerQuestion(getQuestion("Q4"), answerProvider.getAnswer(new Question("Q4Changed")));
+    assertCurrentPage(getPage("P4"));
+    assertNextPage(getPage("P7"));
 
   }
 
@@ -106,7 +107,7 @@ public class HealthQuestionnaireTest extends AbstractQuestionnaireTest {
     builder.inPage("P4").addTimestamp();
 
     builder.withSection("MARITALSTATUS").withPage("P5").withQuestion("Q5").withCategories("1", "2", "3", "4", "5").withSharedCategories(PNA, DNK);
-    builder.inQuestion("Q5").setCondition("$1 > 45", builder.newDataSource("Q4", "1", "age"));
+    builder.inQuestion("Q5").setCondition("$1 && $2 > 45", builder.newDataSource("Q4", "1"), builder.newDataSource("Q4", "1", "age"));
 
     builder.withSection("HOUSEHOLDSTATUS").withPage("P6").withQuestion("Q6").withCategory("1").withOpenAnswerDefinition("adults", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(1, 100));
     builder.inQuestion("Q6").withSharedCategories(PNA, DNK);

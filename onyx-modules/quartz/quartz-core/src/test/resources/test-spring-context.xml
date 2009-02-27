@@ -70,6 +70,9 @@
   </bean>
 
   <bean id="moduleRegistry" class="org.obiba.onyx.engine.ModuleRegistry" />
+  
+  <bean id="algorithmEvaluator" class="org.obiba.onyx.math.impl.MathEclipseEvaluator">
+  </bean>
 
   <import resource="classpath:/test-hibernate-config.xml" />
   <import resource="classpath:/test-db-config.xml" />

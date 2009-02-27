@@ -43,7 +43,7 @@ public interface ActiveQuestionnaireAdministrationService {
    * Returns the questionnaire current page number.
    * 
    * @return The current page number
-   */  
+   */
   public int getCurrentPageNumber();
 
   /**
@@ -71,9 +71,9 @@ public interface ActiveQuestionnaireAdministrationService {
    * Returns the questionnaire last page number.
    * 
    * @return The last page number
-   */    
-  public int getLastPageNumber();  
-  
+   */
+  public int getLastPageNumber();
+
   /**
    * Moves back to the previous page of the questionnaire.
    * 
@@ -214,6 +214,14 @@ public interface ActiveQuestionnaireAdministrationService {
    * @return null if not found
    */
   public OpenAnswer findOpenAnswer(Question question, Category category, OpenAnswerDefinition openAnswerDefinition);
+
+  /**
+   * Get the open answers for the {@link Question} and the {@link Category}.
+   * @param question
+   * @param category
+   * @return
+   */
+  public List<OpenAnswer> findOpenAnswers(Question question, Category category);
 
   /**
    * Get the openAnswer for the {@link Question}, {@link Category} and the {@link OpenAnswerDefinition} for a different

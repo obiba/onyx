@@ -100,7 +100,8 @@ public class AnswerCountValidator implements INullAcceptingValidator, IClusterab
           if(questionCategory != null && questionCategory.getCategory().getOpenAnswerDefinition() != null) {
             OpenAnswerDefinition openAnswerDefinition = questionCategory.getCategory().getOpenAnswerDefinition();
             if(openAnswerDefinition.isRequired()) {
-              if(categoryAnswer.getOpenAnswers().size() == 0) {
+              List<OpenAnswer> openAnswers = activeQuestionnaireAdministrationService.findOpenAnswers(question, questionCategory.getCategory());
+              if(openAnswers.size() == 0) {
                 // at least one open answer is required
                 ValidationError error = newValidationError(question);
                 error.addMessageKey(KEY_PREFIX + ".Required");
@@ -110,7 +111,7 @@ public class AnswerCountValidator implements INullAcceptingValidator, IClusterab
                 for(OpenAnswerDefinition childOpenAnswerDefinition : openAnswerDefinition.getOpenAnswerDefinitions()) {
                   if(childOpenAnswerDefinition.isRequired()) {
                     boolean found = false;
-                    for(OpenAnswer openAnswer : categoryAnswer.getOpenAnswers()) {
+                    for(OpenAnswer openAnswer : openAnswers) {
                       if(openAnswer.getOpenAnswerDefinitionName().equals(childOpenAnswerDefinition.getName())) {
                         found = true;
                         break;
