@@ -61,13 +61,26 @@ WindowUtil.attachEvent("load", Focus.setInitialFocus);
 Resizer = {}
 
 Resizer.resize  = function(id, offsetBottom) {
-	var height=window.innerWidth;//Firefox
+	var pageHeight=window.innerWidth;//Firefox
 	if (document.body.clientHeight)
 		{
-		height=document.body.clientHeight;//IE
+		pageHeight=document.body.clientHeight;//IE
 	}
 	//resize the html according to the size of the window 
-	document.getElementById(id).style.height=parseInt(height-offsetBottom-document.getElementById(id).offsetTop)+"px";
+	document.getElementById(id).style.height=parseInt(pageHeight-offsetBottom-document.getElementById(id).offsetTop)+"px";
+}
+
+Resizer.centerInPage = function(id, offset) {
+	var pageHeight=window.innerWidth;//Firefox
+	if (document.body.clientHeight)
+		{
+		pageHeight=document.body.clientHeight;//IE
+	}
+	var elementHeight = document.getElementById(id).style.height;
+	var topPosition = parseInt((pageHeight-elementHeight)/2-elementHeight/2+offset);
+	
+	document.getElementById(id).style.position='absolute';
+	document.getElementById(id).style.top=topPosition+"px";
 }
 
 function resizeWizardContent() {

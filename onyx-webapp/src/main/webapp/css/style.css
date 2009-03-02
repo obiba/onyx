@@ -1,17 +1,14 @@
-/*
-Copyright: Darren Hester 2006, http://www.designsbydarren.com
-License: Released Under the "Creative Commons License", 
-http://creativecommons.org/licenses/by-nc/2.5/
-*/
-
 body {
   text-align: left;
   /*background: #F6F8FF;*/
-  margin-top:10px;
-  margin-bottom:10px;
   font-family: verdana, arial, sans-serif;
   font-size:12px;
   color: #666666;
+  margin: 0pt; 
+  padding: 0pt; 
+  overflow: hidden; 
+  position: relative; 
+  height: 100%;
 }
 
 A:link {
@@ -1027,3 +1024,32 @@ width: 100%;
 }
 
 /******************* End Stage Layout **********************************************/
+
+/******************* Centering *****************************************************/
+/* http://www.jakpsatweb.cz/css/css-vertical-center-solution.html */
+
+.obiba-center-vertical-outer {
+	overflow: hidden;
+	display: table;
+	position: static;
+}
+
+.obiba-center-vertical-outer.obiba-center-vertical-outer-page {
+	overflow: visible;
+	height: 100%;
+}
+
+.obiba-center-vertical-middle {
+	display: table-cell;
+	vertical-align: middle;
+	position: static;
+}
+
+.obiba-center-horizontal {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#login {
+	width:400px;
+}

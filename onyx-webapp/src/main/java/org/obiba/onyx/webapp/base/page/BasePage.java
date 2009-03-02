@@ -14,30 +14,17 @@ import java.util.Locale;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
-import org.apache.wicket.markup.html.IHeaderContributor;
-import org.apache.wicket.markup.html.IHeaderResponse;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.html.resources.JavascriptResourceReference;
 import org.apache.wicket.model.StringResourceModel;
-import org.obiba.onyx.webapp.OnyxApplication;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
 
-public abstract class BasePage extends WebPage implements IAjaxIndicatorAware, IHeaderContributor {
-
-  private FeedbackPanel feedbackPanel;
+public abstract class BasePage extends AbstractBasePage implements IAjaxIndicatorAware {
 
   public BasePage() {
     super();
-
-    // Create feedback panel and add to page
-    feedbackPanel = new FeedbackPanel("feedback");
-    feedbackPanel.setOutputMarkupId(true);
-    add(feedbackPanel);
 
     Panel menuBar = new EmptyPanel("menuBar");
     Session session = getSession();
@@ -49,22 +36,11 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware, I
     }
     add(menuBar);
 
-    // Tests the application type for unit testing
-    if(getApplication() instanceof OnyxApplication) {
-      add(new Label("version", ((OnyxApplication) getApplication()).getVersion().toString()));
-    } else {
-      add(new EmptyPanel("version"));
-    }
-
     add(new Label("baseAjaxIndicator", new StringResourceModel("Processing", this, null)));
   }
 
   public void setMenuBarVisible(boolean visible) {
     get("menuBar").setVisible(visible);
-  }
-
-  protected FeedbackPanel getFeedbackPanel() {
-    return feedbackPanel;
   }
 
   /**
@@ -76,14 +52,6 @@ public abstract class BasePage extends WebPage implements IAjaxIndicatorAware, I
 
   public void onLanguageUpdate(Locale language, AjaxRequestTarget target) {
     setResponsePage(getPage());
-  }
-
-  public void renderHead(IHeaderResponse response) {
-    response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "jquery.js"));
-    response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "jquery.layout.js"));
-    response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "jquery.corner.js"));
-    response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "ui.js"));
-    response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "onyx.js"));
   }
 
 }
