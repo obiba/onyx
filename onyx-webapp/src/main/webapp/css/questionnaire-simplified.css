@@ -132,7 +132,7 @@ a.button .label {
 }
 
 a.button .description {
-    font: 12px;
+    font-size: 12px;
     display: block;
     padding-left: 18px;
     padding-right: 18px;
