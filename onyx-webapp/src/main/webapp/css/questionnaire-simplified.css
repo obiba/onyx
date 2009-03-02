@@ -114,7 +114,7 @@ td.category {
  Buttons
 ****************/
 
-a.button {
+a.button, .category .top-right {
     display: block;
     overflow:hidden;
     margin-bottom:10px;
@@ -139,12 +139,12 @@ a.button .description {
     background: transparent url('../icons/button_gray_middle-left.png') no-repeat;
 }
 
-a.button .foot {
+a.button .foot, .category .top-right .foot {
     display: block;
     background: transparent url('../icons/button_gray_bottom-right.png') no-repeat scroll top right;
 }
 
-a.button .foot-left {
+a.button .foot-left, .category .top-right .foot .foot-left {
     display: block;
     padding: 5px 0 5px 18px;
     background: transparent url('../icons/button_gray_bottom-left.png') no-repeat;
@@ -154,12 +154,16 @@ a.button .foot-left {
  Category Buttons
 ****************/
 
-.category.selected a.button {
+.category img {
+    background: transparent url('../icons/button_gray_top-left.png') no-repeat;
+}
+
+.category.selected a.button, .category.selected .top-right {
 	color: #fff;
     background: transparent url('../icons/button_orange_full.png') no-repeat scroll top right;
 }
 
-.category.selected a.button .label {
+.category.selected a.button .label, .category.selected img.selected {
     background: transparent url('../icons/button_orange_top-left.png') no-repeat;
 }
 
@@ -167,11 +171,11 @@ a.button .foot-left {
     background: transparent url('../icons/button_orange_middle-left.png') no-repeat;
 }
 
-.category.selected a.button .foot {
+.category.selected a.button .foot, .category.selected .top-right .foot {
     background: transparent url('../icons/button_orange_bottom-right.png') no-repeat scroll top right;
 }
 
-.category.selected a.button .foot-left {
+.category.selected a.button .foot-left, .category.selected .top-right .foot .foot-left {
     background: transparent url('../icons/button_orange_bottom-left.png') no-repeat;
 }
 
