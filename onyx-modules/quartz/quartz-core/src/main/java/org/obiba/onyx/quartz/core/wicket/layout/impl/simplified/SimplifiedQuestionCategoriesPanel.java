@@ -12,12 +12,10 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.HiddenField;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -32,7 +30,6 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscape
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryImageFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryOpenAnswerFilter;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.slf4j.Logger;
@@ -47,8 +44,15 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
   private static final long serialVersionUID = 5144933183339704600L;
 
   private static final int CATEGORY_IMAGE_WIDTH = 100;
-  
+
   private static final int CATEGORY_IMAGE_SPACING = 5;
+
+  private static final int TWO_COLUMNS_VIEW_WIDTH = 550;
+
+  /**
+   * Applies to at least three columns in the grid view.
+   */
+  private static final int MANY_COLUMNS_VIEW_WIDTH = 750;
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SimplifiedQuestionCategoriesPanel.class);
@@ -67,12 +71,19 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     setOutputMarkupId(true);
 
     // seams like ugly but we need a form component to run the answer count validator
-    HiddenField hidden = new HiddenField("hidden", new Model());
-    hidden.add(new AnswerCountValidator(getQuestionModel()));
-    hidden.setRequired(false);
-    add(hidden);
+    add(new AnswerValidatorField("hidden", getQuestionModel()));
 
-    // open answers in one row
+    addOpenAnswerCategoriesView();
+    addRegularCategoriesView();
+    addRegularImageCategoriesView();
+    addEscapeCategoriesView();
+  }
+
+  /**
+   * Open answers in one row.
+   */
+  @SuppressWarnings("serial")
+  private void addOpenAnswerCategoriesView() {
     MultipleDataListFilter<IModel> filter = new MultipleDataListFilter<IModel>();
     filter.addFilter(new QuestionCategoryEscapeFilter(false));
     filter.addFilter(new QuestionCategoryOpenAnswerFilter(true));
@@ -84,18 +95,30 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
       }
 
     });
+  }
 
-    // regular category choice in potentially multiple columns
-    filter = new MultipleDataListFilter<IModel>();
+  /**
+   * Regular category choice in potentially multiple columns.
+   */
+  private void addRegularCategoriesView() {
+    MultipleDataListFilter<IModel> filter = new MultipleDataListFilter<IModel>();
     filter.addFilter(new QuestionCategoryImageFilter(false));
     filter.addFilter(new QuestionCategoryEscapeFilter(false));
     filter.addFilter(new QuestionCategoryOpenAnswerFilter(false));
     add(new QuestionCategoryLinksView("regularCategories", getModel(), filter, new QuestionCategoryListToGridPermutator(getModel())));
+  }
 
-    // regular image categories (i.e., categories represented by images rather than text), in a single row.
+  /**
+   * Regular image categories (i.e., categories represented by images rather than text), in a single row.
+   */
+  private void addRegularImageCategoriesView() {
     add(new QuestionCategoryImageLinksView("regularImageCategories", getModel(), new QuestionCategoryImageFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1)));
+  }
 
-    // escape categories in one row
+  /**
+   * Escape categories in one row.
+   */
+  private void addEscapeCategoriesView() {
     add(new QuestionCategoryLinksView("escapeCategories", getQuestionModel(), new QuestionCategoryEscapeFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1)));
   }
 
@@ -126,7 +149,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
    * Display the category simply as a {@link QuestionCategoryLink}.
    */
   @SuppressWarnings("serial")
-  private class QuestionCategoryLinksView extends QuestionCategoryComponentsView {
+  private static class QuestionCategoryLinksView extends QuestionCategoryComponentsView {
 
     public QuestionCategoryLinksView(String id, IModel questionModel, IDataListFilter<IModel> filter, IDataListPermutator<IModel> permutator) {
       super(id, questionModel, filter, permutator);
@@ -135,9 +158,9 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     @Override
     protected void onComponentTag(ComponentTag tag) {
       if(getColumns() == 2) {
-        tag.getAttributes().put("style", "width: 550px;");
+        tag.getAttributes().put("style", "width: " + TWO_COLUMNS_VIEW_WIDTH + "px;");
       } else if(getColumns() >= 3) {
-        tag.getAttributes().put("style", "width: 750px;");
+        tag.getAttributes().put("style", "width: " + MANY_COLUMNS_VIEW_WIDTH + "px;");
       }
       super.onComponentTag(tag);
     }
@@ -152,7 +175,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
    * Display the category simply as a {@link QuestionCategoryImageLink}.
    */
   @SuppressWarnings("serial")
-  private class QuestionCategoryImageLinksView extends QuestionCategoryComponentsView {
+  private static class QuestionCategoryImageLinksView extends QuestionCategoryComponentsView {
 
     public QuestionCategoryImageLinksView(String id, IModel questionModel, IDataListFilter<IModel> filter, IDataListPermutator<IModel> permutator) {
       super(id, questionModel, filter, permutator);

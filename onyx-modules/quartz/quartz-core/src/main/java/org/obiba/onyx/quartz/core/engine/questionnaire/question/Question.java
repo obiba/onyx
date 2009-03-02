@@ -93,6 +93,41 @@ public class Question implements Serializable, IQuestionnaireElement {
     return (getQuestionCategories().size() == 0 && getQuestions().size() == 0);
   }
 
+  public boolean hasSubQuestions() {
+    return getQuestions().size() > 0;
+  }
+
+  public boolean hasCategories() {
+    return getQuestionCategories().size() > 0;
+  }
+
+  public boolean isArrayOfSharedCategories() {
+    if(hasSubQuestions() && hasCategories()) {
+      return !hasSubQuestionsCategories();
+    }
+    return false;
+  }
+
+  public boolean isArrayOfJoinedCategories() {
+    if(hasSubQuestions() && hasCategories()) {
+      return hasSubQuestionsCategories();
+    }
+    return false;
+  }
+
+  /**
+   * Check if any of the sub questions has categories defined.
+   * @return
+   */
+  private boolean hasSubQuestionsCategories() {
+    for(Question child : getQuestions()) {
+      if(child.hasCategories()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public boolean isToBeAnswered(ActiveQuestionnaireAdministrationService service) {
     if(condition == null) return true;
 

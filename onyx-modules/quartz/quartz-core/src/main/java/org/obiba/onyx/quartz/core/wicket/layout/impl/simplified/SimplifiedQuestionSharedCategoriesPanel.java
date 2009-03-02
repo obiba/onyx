@@ -17,7 +17,6 @@ import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.HeaderlessColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.HiddenField;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -35,7 +34,6 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.array.AbstractQuestionCateg
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.RowView;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.AbstractDataListProvider;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.link.AjaxImageLink;
@@ -65,6 +63,9 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
   public SimplifiedQuestionSharedCategoriesPanel(String id, IModel questionModel) {
     super(id, questionModel);
     setOutputMarkupId(true);
+
+    // seams like ugly but we need a form component to run the answer count validator
+    add(new AnswerValidatorField("hidden", getQuestionModel()));
 
     // provider of question's children
     IDataProvider questionsProvider = new AbstractDataListProvider<Question>() {
@@ -108,12 +109,6 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
 
       });
     }
-
-    // seams like ugly but we need a form component to run the answer count validator
-    HiddenField hidden = new HiddenField("hidden", new Model());
-    hidden.add(new AnswerCountValidator(getQuestionModel()));
-    hidden.setRequired(false);
-    add(hidden);
 
     add(new AbstractQuestionArray("array", getModel(), columns, questionsProvider) {
 

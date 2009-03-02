@@ -28,7 +28,8 @@ import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.link.AjaxImageLink;
 
 /**
- * 
+ * Simplified UI for entering open answers: a popup appears on link clicked with a pad, and on pad entry validation the
+ * open value is displayed read-only.
  */
 public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefinitionPanel implements IQuestionCategorySelectionStateHolder {
 

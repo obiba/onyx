@@ -29,23 +29,14 @@ public class SimplifiedQuestionPanel extends BaseQuestionPanel {
   protected void setContent(String id) {
     Question question = (Question) getModelObject();
 
-    if(question.getQuestions().size() == 0) {
+    if(!question.hasSubQuestions()) {
       add(new SimplifiedQuestionCategoriesPanel(id, getModel()));
-    } else if(question.getQuestionCategories().size() == 0) {
+    } else if(!question.hasCategories()) {
       throw new UnsupportedOperationException("Sub questions are not supported in the simplified question UI.");
+    } else if(question.isArrayOfSharedCategories()) {
+      add(new SimplifiedQuestionSharedCategoriesPanel(id, getModel()));
     } else {
-      boolean shared = true;
-      for(Question child : question.getQuestions()) {
-        if(child.getCategories().size() > 0) {
-          shared = false;
-          break;
-        }
-      }
-      if(shared) {
-        add(new SimplifiedQuestionSharedCategoriesPanel(id, getModel()));
-      } else {
-        throw new UnsupportedOperationException("Joined or shared categories array questions are not supported in the simplified question UI.");
-      }
+      throw new UnsupportedOperationException("Joined or shared categories array questions are not supported in the simplified question UI.");
     }
   }
 }

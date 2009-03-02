@@ -31,23 +31,14 @@ public class DefaultQuestionPanel extends BaseQuestionPanel {
   protected void setContent(String id) {
     Question question = (Question) getModelObject();
 
-    if(question.getQuestions().size() == 0) {
+    if(!question.hasSubQuestions()) {
       add(new DefaultQuestionCategoriesPanel(id, getModel()));
-    } else if(question.getQuestionCategories().size() == 0) {
+    } else if(!question.hasCategories()) {
       add(new DefaultQuestionListPanel(id, new QuestionListProvider(question)));
+    } else if(question.isArrayOfSharedCategories()) {
+      add(new DefaultQuestionSharedCategoriesPanel(id, getModel()));
     } else {
-      boolean shared = true;
-      for(Question child : question.getQuestions()) {
-        if(child.getCategories().size() > 0) {
-          shared = false;
-          break;
-        }
-      }
-      if(shared) {
-        add(new DefaultQuestionSharedCategoriesPanel(id, getModel()));
-      } else {
-        throw new UnsupportedOperationException("Joined categories array questions not supported yet");
-      }
+      throw new UnsupportedOperationException("Joined categories array questions not supported yet");
     }
 
     add(new InvalidFormFieldBehavior());

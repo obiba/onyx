@@ -73,7 +73,6 @@ public class SimplifiedPageLayout extends PageLayout {
       add(new Label("question").setVisible(false));
     }
 
-    // TODO get it from questionnaire bundle ?
     add(HeaderContributor.forCss("css/questionnaire-simplified.css"));
   }
 
