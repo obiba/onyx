@@ -182,11 +182,6 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
             log.debug("adding participant={}", participant.getEnrollmentId());
             participant.setExported(false);
             getPersistenceManager().save(participant);
-            getPersistenceManager().save(participant.getAppointment());
-
-            for(ParticipantAttributeValue configuredAttribute : participant.getConfiguredAttributeValues()) {
-              getPersistenceManager().save(configuredAttribute);
-            }
             createdParticipant.add(participant);
 
           } else if(persistedParticipant != null) {
@@ -207,18 +202,20 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
               if(persistedParticipant.getAppointment() == null) {
                 // new appointment
                 log.debug("adding participant.appointment={}", participant.getEnrollmentId());
+                // Use appointment obtained from the list
                 appointment = participant.getAppointment();
-                appointment.setParticipant(persistedParticipant);
-                getPersistenceManager().save(appointment);
+
+                persistedParticipant.setAppointment(appointment);
+                getPersistenceManager().save(persistedParticipant);
               } else {
                 // appointment in database exists
                 if(participant.getAppointment().getDate().equals(persistedParticipant.getAppointment().getDate())) {
                   appointmentListUpdatelog.warn("Line {}: Appointment date for participant {} same in database => participant update ignored", line, participant.getAppointment().getDate());
                   return;
                 }
-
+                // Update the appointment date
                 persistedParticipant.getAppointment().setDate(participant.getAppointment().getDate());
-                getPersistenceManager().save(persistedParticipant.getAppointment());
+                getPersistenceManager().save(persistedParticipant);
               }
 
               updatedParticipant.add(participant);
@@ -228,7 +225,9 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
       }
 
       public void onParticipantReadEnd(int line) throws ValidationRuntimeException {
-        if(vex.getAllObjectErrors().size() > 0) throw vex;
+        if(vex.getAllObjectErrors().size() > 0) {
+          throw vex;
+        }
         appointmentListUpdatelog.info("Number of participants created: {}", createdParticipant.size());
         appointmentListUpdatelog.info("Number of participants updated: {}", updatedParticipant.size());
       }
