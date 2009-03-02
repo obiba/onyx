@@ -18,6 +18,7 @@ import java.util.Map;
 
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -71,10 +72,10 @@ public class Participant extends AbstractEntity {
   /**
    * List of values of configured participant attributes.
    */
-  @OneToMany(mappedBy = "participant")
+  @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL)
   private List<ParticipantAttributeValue> configuredAttributeValues;
 
-  @OneToOne(mappedBy = "participant")
+  @OneToOne(mappedBy = "participant", cascade = CascadeType.ALL)
   private Appointment appointment;
 
   @OneToOne(mappedBy = "participant")

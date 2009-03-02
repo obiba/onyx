@@ -88,10 +88,6 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
   public void updateParticipant(Participant participant) {
     getPersistenceManager().save(participant);
-    getPersistenceManager().save(participant.getAppointment());
-    for(ParticipantAttributeValue configuredAttribute : participant.getConfiguredAttributeValues()) {
-      getPersistenceManager().save(configuredAttribute);
-    }
   }
 
   public void updateParticipantList(User user) throws ValidationRuntimeException {
@@ -249,15 +245,6 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
     // do some clean up before updating
     for(Participant p : getNotReceivedParticipants()) {
-      if(p.getAppointment() != null) {
-        log.debug("removing appointment.appointmentCode={}", p.getAppointment().getAppointmentCode());
-        getPersistenceManager().delete(p.getAppointment());
-      }
-
-      for(ParticipantAttributeValue configuredAttribute : p.getConfiguredAttributeValues()) {
-        getPersistenceManager().delete(configuredAttribute);
-      }
-
       log.debug("removing participant.enrollmentId={}", p.getEnrollmentId());
       getPersistenceManager().delete(p);
     }
