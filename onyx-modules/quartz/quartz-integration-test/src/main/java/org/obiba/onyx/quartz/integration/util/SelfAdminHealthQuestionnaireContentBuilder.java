@@ -102,7 +102,15 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("SEX").withSharedCategory(PNA, "8").setEscape(true);
     builder.inQuestion("SEX").withSharedCategory(DNK, "9").setEscape(true);
 
-    builder.inSection("B_DEMOGRAPHY").withSection("AGE_DATE_BIRTH").withPage("3").withQuestion("PARTICIPANT_AGE", "3").withCategory("PARTICIPANT_AGE").withOpenAnswerDefinition("PARTICIPANT_AGE", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(40, 70));
+    builder.inSection("B_DEMOGRAPHY").withSection("FACE").withPage("3").withQuestion("PARTICIPANT_FACE", "3").withCategory("FACE1").setExportName("1");
+    builder.inQuestion("PARTICIPANT_FACE").withCategory("FACE2").setExportName("2");
+    builder.inQuestion("PARTICIPANT_FACE").withCategory("FACE3").setExportName("3");
+    builder.inQuestion("PARTICIPANT_FACE").withCategory("FACE4").setExportName("4");
+    builder.inQuestion("PARTICIPANT_FACE").withCategory("FACE5").setExportName("5");
+    builder.inQuestion("PARTICIPANT_FACE").withSharedCategory(PNA, "88");
+    builder.inQuestion("PARTICIPANT_FACE").withSharedCategory(DNK, "99");
+
+    builder.inSection("B_DEMOGRAPHY").withSection("AGE_DATE_BIRTH").withPage("3_0").withQuestion("PARTICIPANT_AGE", "3_0").withCategory("PARTICIPANT_AGE").withOpenAnswerDefinition("PARTICIPANT_AGE", DataType.INTEGER).addValidator(new NumberValidator.RangeValidator(40, 70));
     builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(PNA, "88");
     builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(DNK, "99");
 

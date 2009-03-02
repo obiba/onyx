@@ -11,7 +11,6 @@ package org.obiba.onyx.webapp.stage.page;
 
 import org.apache.wicket.markup.html.link.Link;
 import org.obiba.onyx.webapp.base.page.BasePage;
-import org.obiba.onyx.webapp.stage.panel.StageHeaderPanel;
 import org.obiba.onyx.webapp.stage.panel.StageMenuBar;
 
 /**
@@ -25,12 +24,6 @@ public class InvalidStagePage extends BasePage {
   public InvalidStagePage(final StagePage stagePage) {
     super();
     setMenuBarVisible(true);
-
-    //
-    // Modify header.
-    //
-    remove("header");
-    add(new StageHeaderPanel("header"));
 
     //
     // Modify menu bar.
