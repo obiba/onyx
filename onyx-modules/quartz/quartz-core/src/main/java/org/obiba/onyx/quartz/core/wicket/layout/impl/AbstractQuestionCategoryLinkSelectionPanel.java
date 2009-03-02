@@ -37,13 +37,13 @@ public abstract class AbstractQuestionCategoryLinkSelectionPanel extends BaseQue
   // Constructors
   //
 
-  public AbstractQuestionCategoryLinkSelectionPanel(String id, IModel questionModel, IModel questionCategoryModel, IModel labelModel) {
+  public AbstractQuestionCategoryLinkSelectionPanel(String id, IModel questionModel, IModel questionCategoryModel, IModel labelModel, IModel descriptionModel) {
     super(id, questionModel, questionCategoryModel);
     setOutputMarkupId(true);
 
     updateState();
 
-    addLinkComponent(labelModel);
+    addLinkComponent(labelModel, descriptionModel);
   }
 
   //
@@ -72,7 +72,7 @@ public abstract class AbstractQuestionCategoryLinkSelectionPanel extends BaseQue
   // Methods
   //
 
-  protected abstract void addLinkComponent(IModel labelModel);
+  protected abstract void addLinkComponent(IModel labelModel, IModel descriptionModel);
 
   protected void handleSelectionEvent(AjaxRequestTarget target) {
     // persist (or not)

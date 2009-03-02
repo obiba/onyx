@@ -144,7 +144,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
 
     @Override
     protected Component newQuestionCategoryComponent(String id, IModel questionCategoryModel, int index) {
-      return new QuestionCategoryLink(id, questionCategoryModel, new QuestionnaireStringResourceModel(questionCategoryModel, "label"));
+      return new QuestionCategoryLink(id, questionCategoryModel, new QuestionnaireStringResourceModel(questionCategoryModel, "label"), new QuestionnaireStringResourceModel(questionCategoryModel, "description"));
     }
   }
 

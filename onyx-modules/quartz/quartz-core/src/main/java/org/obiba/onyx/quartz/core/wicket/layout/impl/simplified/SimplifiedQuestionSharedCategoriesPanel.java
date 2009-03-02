@@ -103,7 +103,7 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
 
         @Override
         public void populateItem(Item cellItem, String componentId, IModel rowModel, int index) {
-          cellItem.add(new QuestionCategoryLink(componentId, rowModel, cellItem.getModel(), new Model("&nbsp;")));
+          cellItem.add(new QuestionCategoryLink(componentId, rowModel, cellItem.getModel(), new Model("&nbsp;"), null));
         }
 
       });

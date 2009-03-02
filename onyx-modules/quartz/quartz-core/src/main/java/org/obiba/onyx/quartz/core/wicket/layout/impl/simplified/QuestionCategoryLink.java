@@ -31,21 +31,25 @@ public class QuestionCategoryLink extends AbstractQuestionCategoryLinkSelectionP
   // Constructors
   //
 
+  public QuestionCategoryLink(String id, IModel questionCategoryModel, IModel labelModel, IModel descriptionModel) {
+    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, labelModel, descriptionModel);
+  }
+
   public QuestionCategoryLink(String id, IModel questionCategoryModel, IModel labelModel) {
-    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, labelModel);
+    this(id, new QuestionnaireModel(((QuestionCategory) questionCategoryModel.getObject()).getQuestion()), questionCategoryModel, labelModel, null);
   }
 
   @SuppressWarnings("serial")
-  public QuestionCategoryLink(String id, IModel questionModel, IModel questionCategoryModel, IModel labelModel) {
-    super(id, questionModel, questionCategoryModel, labelModel);
+  public QuestionCategoryLink(String id, IModel questionModel, IModel questionCategoryModel, IModel labelModel, IModel descriptionModel) {
+    super(id, questionModel, questionCategoryModel, labelModel, descriptionModel);
   }
 
   //
   // AbstractQuestionCategoryLinkSelectionPanel Methods
   //
 
-  protected void addLinkComponent(IModel labelModel) {
-    AjaxImageLink link = new AjaxImageLink("link", labelModel) {
+  protected void addLinkComponent(IModel labelModel, IModel descriptionModel) {
+    AjaxImageLink link = new AjaxImageLink("link", labelModel, descriptionModel) {
 
       private static final long serialVersionUID = 1L;
 

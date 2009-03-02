@@ -129,6 +129,7 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(ELSEWHERE, "77").setEscape(true);
     builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(PNA, "88");
     builder.inQuestion("COUNTRY_BIRTH").withSharedCategory(DNK, "99");
+    builder.inQuestion("COUNTRY_BIRTH").setRowCount(4);
     builder.inSection("BIRTH_LOCATION").withPage("8").withQuestion("AGE_IMMIGRATION", "7").withSharedCategory(AGE).withOpenAnswerDefinition(AGE, DataType.INTEGER).addValidator(new NumberValidator.MinimumValidator(0l)).addValidator(ComparisonOperator.le, "PARTICIPANT_AGE", "PARTICIPANT_AGE", "PARTICIPANT_AGE");
     builder.inQuestion("AGE_IMMIGRATION").withSharedCategory(YEAR).withOpenAnswerDefinition("YEAR", DataType.INTEGER).addValidator(ComparisonOperator.ge, "DOB", "DOB", "DOB_YEAR").addCurrentYearValidator(ComparisonOperator.le);
     builder.inQuestion("AGE_IMMIGRATION").withSharedCategory(PNA, "8888");
@@ -138,10 +139,12 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("MOTHER_COUNTRY_BIRTH").withSharedCategory(ELSEWHERE, "77");
     builder.inQuestion("MOTHER_COUNTRY_BIRTH").withSharedCategory(PNA, "88");
     builder.inQuestion("MOTHER_COUNTRY_BIRTH").withSharedCategory(DNK, "99");
+    builder.inQuestion("MOTHER_COUNTRY_BIRTH").setRowCount(4);
     builder.inSection("BIRTH_LOCATION").withPage("10").withQuestion("FATHER_COUNTRY_BIRTH", "9").withSharedCategories(CA, IT, FR, HT, LB, US, CN, VN, PT, GR, MA, GB);
     builder.inQuestion("FATHER_COUNTRY_BIRTH").withSharedCategory(ELSEWHERE, "77");
     builder.inQuestion("FATHER_COUNTRY_BIRTH").withSharedCategory(PNA, "88");
     builder.inQuestion("FATHER_COUNTRY_BIRTH").withSharedCategory(DNK, "99");
+    builder.inQuestion("FATHER_COUNTRY_BIRTH").setRowCount(4);
 
     builder.inSection("B_DEMOGRAPHY").withSection("LANGUAGE").withPage("22").withQuestion("FIRST_LANGUAGE_LEARNED", "21", true).setAnswerCount(1, 4).setRowCount(8);
     builder.inQuestion("FIRST_LANGUAGE_LEARNED").withCategory("ENGLISH").setExportName("1");

@@ -127,13 +127,21 @@ public class SimplifiedQuestionPanelTest {
     messageSource.addMessage("Question.Q1.caption", locale, "question caption");
     messageSource.addMessage("Question.Q1.categoryOrder", locale, "");
     messageSource.addMessage("QuestionCategory.Q1.1.label", locale, "Choice one");
+    messageSource.addMessage("QuestionCategory.Q1.1.description", locale, "Description one");
     messageSource.addMessage("QuestionCategory.Q1.2.label", locale, "Choice two");
+    messageSource.addMessage("QuestionCategory.Q1.2.description", locale, "Description two");
     messageSource.addMessage("QuestionCategory.Q1.3.label", locale, "Choice three");
+    messageSource.addMessage("QuestionCategory.Q1.3.description", locale, "Description three");
     messageSource.addMessage("QuestionCategory.Q1.4.label", locale, "Choice four");
+    messageSource.addMessage("QuestionCategory.Q1.4.description", locale, "Description four");
     messageSource.addMessage("QuestionCategory.Q1.5.label", locale, "Choice five");
+    messageSource.addMessage("QuestionCategory.Q1.5.description", locale, "Description five");
     messageSource.addMessage("QuestionCategory.Q1.6.label", locale, "Choice six");
+    messageSource.addMessage("QuestionCategory.Q1.6.description", locale, "Description six");
     messageSource.addMessage("QuestionCategory.Q1.7.label", locale, "Choice seven");
+    messageSource.addMessage("QuestionCategory.Q1.7.description", locale, "Description seven");
     messageSource.addMessage("QuestionCategory.Q1.8.label", locale, "Choice eight");
+    messageSource.addMessage("QuestionCategory.Q1.8.description", locale, "Description eight");
 
     messageSource.addMessage("QuestionCategory.Q1.1.imageSelected", locale, "");
     messageSource.addMessage("QuestionCategory.Q1.1.imageDeselected", locale, "");
@@ -159,12 +167,15 @@ public class SimplifiedQuestionPanelTest {
     messageSource.addMessage("Question.Q1_MULTIPLE.caption", locale, "question caption");
     messageSource.addMessage("Question.Q1_MULTIPLE.categoryOrder", locale, "");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.1.label", locale, "Choice one");
+    messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.1.description", locale, "");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.1.imageSelected", locale, "");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.1.imageDeselected", locale, "");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.2.label", locale, "Choice two");
+    messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.2.description", locale, "");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.2.imageSelected", locale, "");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.2.imageDeselected", locale, "");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.3.label", locale, "Choice three");
+    messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.3.description", locale, "");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.3.imageSelected", locale, "");
     messageSource.addMessage("QuestionCategory.Q1_MULTIPLE.3.imageDeselected", locale, "");
 
@@ -181,9 +192,11 @@ public class SimplifiedQuestionPanelTest {
     messageSource.addMessage("QuestionCategory.Q2.1.imageSelected", locale, "");
     messageSource.addMessage("QuestionCategory.Q2.1.imageDeselected", locale, "");
     messageSource.addMessage("QuestionCategory.Q2.DONT_KNOW.label", locale, "Dont know");
+    messageSource.addMessage("QuestionCategory.Q2.DONT_KNOW.description", locale, "");
     messageSource.addMessage("QuestionCategory.Q2.DONT_KNOW.imageSelected", locale, "");
     messageSource.addMessage("QuestionCategory.Q2.DONT_KNOW.imageDeselected", locale, "");
     messageSource.addMessage("QuestionCategory.Q2.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
+    messageSource.addMessage("QuestionCategory.Q2.PREFER_NOT_ANSWER.description", locale, "");
     messageSource.addMessage("QuestionCategory.Q2.PREFER_NOT_ANSWER.imageSelected", locale, "");
     messageSource.addMessage("QuestionCategory.Q2.PREFER_NOT_ANSWER.imageDeselected", locale, "");
     messageSource.addMessage("OpenAnswerDefinition.OPEN_INT.label", locale, "open label");
@@ -199,9 +212,11 @@ public class SimplifiedQuestionPanelTest {
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.DURATION.imageSelected", locale, "");
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.DURATION.imageDeselected", locale, "");
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.DONT_KNOW.label", locale, "Dont know");
+    messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.DONT_KNOW.description", locale, "");
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.DONT_KNOW.imageSelected", locale, "");
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.DONT_KNOW.imageDeselected", locale, "");
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.PREFER_NOT_ANSWER.label", locale, "Prefer not answer");
+    messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.PREFER_NOT_ANSWER.description", locale, "");
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.PREFER_NOT_ANSWER.imageSelected", locale, "");
     messageSource.addMessage("QuestionCategory.MULTIPLE_OPEN.PREFER_NOT_ANSWER.imageDeselected", locale, "");
     messageSource.addMessage("OpenAnswerDefinition.DURATION_OPEN_HOURS.label", locale, "open hours label");
@@ -295,6 +310,7 @@ public class SimplifiedQuestionPanelTest {
     expect(questionnaireBundleMock.getPropertyKey(question, "categoryOrder")).andReturn(propertyKeyProvider.getPropertyKey(question, "categoryOrder")).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
+      expect(questionnaireBundleMock.getPropertyKey(qCategory, "description")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "description")).atLeastOnce();
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "imageSelected")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "imageSelected")).anyTimes();
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "imageDeselected")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "imageDeselected")).anyTimes();
     }
@@ -392,6 +408,7 @@ public class SimplifiedQuestionPanelTest {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "imageDeselected")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "imageDeselected")).anyTimes();
       if(qCategory.getOpenAnswerDefinition() == null) {
         expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
+        expect(questionnaireBundleMock.getPropertyKey(qCategory, "description")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "description")).atLeastOnce();
       }
     }
     expect(questionnaireBundleMock.getPropertyKey(open, "label")).andReturn(propertyKeyProvider.getPropertyKey(open, "label")).atLeastOnce();
@@ -462,6 +479,7 @@ public class SimplifiedQuestionPanelTest {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "imageDeselected")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "imageDeselected")).anyTimes();
       if(qCategory.getOpenAnswerDefinition() == null) {
         expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
+        expect(questionnaireBundleMock.getPropertyKey(qCategory, "description")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "description")).atLeastOnce();
       }
     }
     expect(questionnaireBundleMock.getPropertyKey(openHours, "label")).andReturn(propertyKeyProvider.getPropertyKey(openHours, "label")).atLeastOnce();
@@ -535,6 +553,7 @@ public class SimplifiedQuestionPanelTest {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "imageDeselected")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "imageDeselected")).anyTimes();
       if(qCategory.getOpenAnswerDefinition() == null) {
         expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
+        expect(questionnaireBundleMock.getPropertyKey(qCategory, "description")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "description")).atLeastOnce();
       }
     }
 

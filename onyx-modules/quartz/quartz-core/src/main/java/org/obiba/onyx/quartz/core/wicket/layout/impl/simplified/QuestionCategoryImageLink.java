@@ -47,7 +47,7 @@ public class QuestionCategoryImageLink extends AbstractQuestionCategoryLinkSelec
   //
 
   public QuestionCategoryImageLink(String id, IModel questionModel, IModel questionCategoryModel, IModel labelModel) {
-    super(id, questionModel, questionCategoryModel, labelModel);
+    super(id, questionModel, questionCategoryModel, labelModel, null);
   }
 
   public QuestionCategoryImageLink(String id, IModel questionCategoryModel, IModel labelModel) {
@@ -58,7 +58,7 @@ public class QuestionCategoryImageLink extends AbstractQuestionCategoryLinkSelec
   // AbstractQuestionCategoryLinkSelectionPanel
   //
 
-  protected void addLinkComponent(IModel labelModel) {
+  protected void addLinkComponent(IModel labelModel, IModel descriptionModel) {
     AjaxLink link = new AjaxLink("link", labelModel) {
 
       private static final long serialVersionUID = 1L;
