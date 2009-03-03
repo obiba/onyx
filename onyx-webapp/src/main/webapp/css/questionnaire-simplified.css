@@ -8,48 +8,46 @@
 	margin-bottom:20px;
 }
 
-.page {
+.obiba-quartz-page {
 	font: normal 18px arial, sans-serif;
 	color: #000;
 }
 
-.section {
-	font-weight: bold;
-	font-size: larger;	
-	padding-bottom:10px;
-}
-
-.page > div.label {
-	line-height:1.4;
-}
-
-.questions {
-	padding-bottom:10px;
-}
-
-.boilerplate {
+.obiba-quartz-boilerplate {
 	line-height:1.4;
 	text-align: center;
 }
 
-.question {
+.obiba-quartz-boilerplate .ui-widget-header {
+	height:450px;
 }
 
-.question > div.label {
+.obiba-quartz-question {
+}
+
+.obiba-quartz-question .ui-widget-header {
 	background:#DBE7ED none repeat scroll 0 0;
 	border-bottom: 2px solid #999999;
 	font-weight: bold;
-	padding:5px;
+	height:75px;
 }
 
-.instructions {
+.obiba-quartz-question .ui-widget-header .obiba-label {
+	padding-left: 10px;
+}
+
+.obiba-quartz-question .ui-widget-content {
+	height:450px;
+}
+
+.obiba-quartz-instructions {
 	color:#999999;
 	font-size:14px;
 	font-weight:bold;
 	padding:10px;
 }
 
-.caption {
+.obiba-quartz-caption {
 	color:#999999;
 	font-size:14px;
 	font-weight:bold;
@@ -57,14 +55,14 @@
 	margin-right: auto;
 }
 
-.specifications {
+.obiba-quartz-specifications {
 	color:#999999;
 	font-size:14px;
 	font-weight:bold;
 	padding:10px;
 }
 
-.categories {
+.obiba-quartz-categories {
 	
 }
 
@@ -72,12 +70,12 @@
  Categories
 ****************/
 
-.open > table {
+.obiba-quartz-open > table {
 	margin-left: auto;
 	margin-right: auto;
 }
 
-.regular {
+.obiba-quartz-regular {
 	margin-left: auto;
 	margin-right: auto;
 	width: 400px;
@@ -88,17 +86,17 @@
 	margin-right: auto;
 }
 
-.category img, .category.selected img.selected {
+.obiba-quartz-category img, .obiba-quartz-category.ui-state-highlight img.ui-state-highlight {
   display: inline;
   height: 100px;
   width: 100px;
 }
 
-.category img.selected, .category.selected img {
+.obiba-quartz-category img.ui-state-highlight, .obiba-quartz-category.ui-state-highlight img {
   display: none;
 }
 
-.escape {
+.obiba-quartz-escape {
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 20px;
@@ -106,7 +104,7 @@
 	text-align: center;
 }
 
-td.category {
+td.obiba-quartz-category {
 	vertical-align: top;
 }
 
@@ -114,7 +112,7 @@ td.category {
  Buttons
 ****************/
 
-a.button, .category .top-right {
+a.button, .obiba-quartz-category .top-right {
     display: block;
     overflow:hidden;
     margin-bottom:10px;
@@ -139,12 +137,12 @@ a.button .description {
     background: transparent url('../icons/button_gray_middle-left.png') no-repeat;
 }
 
-a.button .foot, .category .top-right .foot {
+a.button .foot, .obiba-quartz-category .top-right .foot {
     display: block;
     background: transparent url('../icons/button_gray_bottom-right.png') no-repeat scroll top right;
 }
 
-a.button .foot-left, .category .top-right .foot .foot-left {
+a.button .foot-left, .obiba-quartz-category .top-right .foot .foot-left {
     display: block;
     padding: 5px 0 5px 18px;
     background: transparent url('../icons/button_gray_bottom-left.png') no-repeat;
@@ -154,28 +152,28 @@ a.button .foot-left, .category .top-right .foot .foot-left {
  Category Buttons
 ****************/
 
-.category img {
+.obiba-quartz-category img {
     background: transparent url('../icons/button_gray_top-left.png') no-repeat;
 }
 
-.category.selected a.button, .category.selected .top-right {
+.obiba-quartz-category.ui-state-highlight a.button, .obiba-quartz-category.ui-state-highlight .top-right {
 	color: #fff;
     background: transparent url('../icons/button_orange_full.png') no-repeat scroll top right;
 }
 
-.category.selected a.button .label, .category.selected img.selected {
+.obiba-quartz-category.ui-state-highlight a.button .label, .obiba-quartz-category.ui-state-highlight img.ui-state-highlight {
     background: transparent url('../icons/button_orange_top-left.png') no-repeat;
 }
 
-.category.selected a.button .description {
+.obiba-quartz-category.ui-state-highlight a.button .description {
     background: transparent url('../icons/button_orange_middle-left.png') no-repeat;
 }
 
-.category.selected a.button .foot, .category.selected .top-right .foot {
+.obiba-quartz-category.ui-state-highlight a.button .foot, .obiba-quartz-category.ui-state-highlight .top-right .foot {
     background: transparent url('../icons/button_orange_bottom-right.png') no-repeat scroll top right;
 }
 
-.category.selected a.button .foot-left, .category.selected .top-right .foot .foot-left {
+.obiba-quartz-category.ui-state-highlight a.button .foot-left, .obiba-quartz-category.ui-state-highlight .top-right .foot .foot-left {
     background: transparent url('../icons/button_orange_bottom-left.png') no-repeat;
 }
 
@@ -196,11 +194,11 @@ a.button .foot-left, .category .top-right .foot .foot-left {
 	padding-left: 40px;
 }
 
-.categories .open .category {
+.obiba-quartz-categories .obiba-quartz-open .obiba-quartz-category {
 	text-align:center;
 }
 
-.categories .open .category .value {
+.obiba-quartz-categories .obiba-quartz-open .obiba-quartz-category .obiba-value {
 	border: solid 1px #aaa;
 	height:30px;
 	font-size: 18px;
@@ -210,12 +208,12 @@ a.button .foot-left, .category .top-right .foot .foot-left {
 	width:70px;
 }
 
-.categories .open .category .value.selected {
+.obiba-quartz-categories .obiba-quartz-open .obiba-quartz-category .obiba-value.ui-state-highlight {
 	background-color: #C65F02;
 	color: #ffffff;
 }
 
-.categories .open .category a.button {
+.obiba-quartz-categories .obiba-quartz-open .obiba-quartz-category a.button {
 	font-size:10px;
 	margin-top:5px;
 	text-transform:uppercase;
@@ -228,15 +226,15 @@ a.button .foot-left, .category .top-right .foot .foot-left {
  Category Regular
 ******************/
 
-.regular > table {
+.obiba-quartz-regular > table {
 	width:100%;
 }
 
-.regular td.category {
+.obiba-quartz-regular td.obiba-quartz-category {
 	width:250px;
 }
 
-.category .regular a.button {
+.obiba-quartz-category .obiba-quartz-regular a.button {
     margin-right: 6px;
 }
 
@@ -244,15 +242,15 @@ a.button .foot-left, .category .top-right .foot .foot-left {
  Category Escape
 ******************/
 
-.escape > table {
+.obiba-quartz-escape > table {
 	width:100%;
 }
 
-.escape td.category {
+.obiba-quartz-escape td.obiba-quartz-category {
 	width:250px;
 }
 
-.category .escape a.button {
+.obiba-quartz-category .obiba-quartz-escape a.button {
     margin-right: 6px;
 }
 
@@ -260,28 +258,28 @@ a.button .foot-left, .category .top-right .foot .foot-left {
  Category Array
 ******************/
 
-table.array {
+table.obiba-quartz-array {
 	margin-left:auto;
 	margin-right:auto;
 }
 
-.array .label {
+.obiba-quartz-array .label {
 	text-align:right;
 	vertical-align: middle;
 	padding-right: 10px;
 }
 
-.array .headers .category {
+.obiba-quartz-array .headers .obiba-quartz-category {
 	font-size:14px;
 	text-align:center;
 }
 
-.array .category {
+.obiba-quartz-array .obiba-quartz-category {
 	width: 80px;
 	padding-right:10px;
 }
 
-.clear {
+.obiba-quartz-clear {
 	margin-left:auto;
 	margin-right:auto;
 	padding-bottom:20px;

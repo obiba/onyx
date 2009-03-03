@@ -32,6 +32,8 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
 
   private static final long serialVersionUID = -391676180175754335L;
 
+  private static final String BOILERPLATE_CLASS = "obiba-quartz-boilerplate";
+
   @SuppressWarnings("serial")
   public BaseQuestionPanel(String id, IModel questionModel) {
     super(id, questionModel);
@@ -81,7 +83,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
 
     // change the css rendering in case of a boiler plate
     if(question.isBoilerPlate()) {
-      add(new AttributeModifier("class", new Model("boilerplate")));
+      add(new AttributeModifier("class", new Model(BOILERPLATE_CLASS)));
       add(new EmptyPanel("content").setVisible(false));
     } else {
       setContent("content");

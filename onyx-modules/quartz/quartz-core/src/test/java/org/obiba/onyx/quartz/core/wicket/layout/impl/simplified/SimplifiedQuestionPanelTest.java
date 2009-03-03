@@ -733,7 +733,7 @@ public class SimplifiedQuestionPanelTest {
 
     tester.assertComponent(category + ":" + row + ":cols:" + col + ":input:link", AjaxImageLink.class);
     Component link = tester.getComponentFromLastRenderedPage(category + ":" + row + ":cols:" + col + ":input:link");
-    Assert.assertEquals("category", link.getMarkupAttributes().getString("class"));
+    Assert.assertEquals("obiba-quartz-category", link.getMarkupAttributes().getString("class"));
     tester.assertLabel(category + ":" + row + ":cols:" + col + ":input:link:link:label", label);
   }
 
@@ -754,7 +754,7 @@ public class SimplifiedQuestionPanelTest {
 
     tester.assertComponent(rows + ":" + row + ":cells:" + col + ":cell:link", AjaxImageLink.class);
     Component link = tester.getComponentFromLastRenderedPage(rows + ":" + row + ":cells:" + col + ":cell:link");
-    Assert.assertEquals("category", link.getMarkupAttributes().getString("class"));
+    Assert.assertEquals("obiba-quartz-category", link.getMarkupAttributes().getString("class"));
 
   }
 

@@ -27,7 +27,7 @@ public class QuestionCategorySelectionBehavior extends AbstractBehavior {
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(QuestionCategorySelectionBehavior.class);
 
-  private static final String SELECTED_CSS_CLASS = "selected";
+  private static final String SELECTED_CSS_CLASS = "ui-state-highlight";
 
   @Override
   public void onComponentTag(Component component, ComponentTag tag) {
