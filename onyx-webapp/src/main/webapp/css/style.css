@@ -1055,7 +1055,10 @@ width: 100%;
 
 .obiba-box {
 	background-color:#FFFFFF;
-	border:2px solid #C65F02;
+	border:3px solid #C65F02;
+}
+
+.obiba-box-content {
 	padding:20px;
 }
 
