@@ -300,7 +300,7 @@ div.form-button {
   padding-bottom: 20px;
 }
 
-.form-button input {
+.form-button input.obiba-quartz-nav {
   width: 160px;
   height: 54px;
   border: none;
@@ -308,6 +308,12 @@ div.form-button {
   font-family: arial, helvetica, sans-serif;
   font-size: 18px;
   font-weight: normal;
+}
+
+.obiba-quartz-nav-admin {
+	position: fixed;
+	top: 10px;
+	left: 10px;
 }
 
 .form-button input.obiba-nav-prev {

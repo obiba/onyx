@@ -9,22 +9,7 @@
 		// Resize the page every time the window is resized.
 		WindowUtil.attachEvent("load", resizeWizardContent);
 		WindowUtil.attachEvent("resize", resizeWizardContent);
-
-		function toggleDisplay(toggler, id) {
-			var elem = document.getElementById(id);
-			if (elem.style.display == "none") {
-				elem.style.display = "inline";
-				toggler.src="images/icons/16X16/bullet_triangle_blue.gif";
-				$("#" + id).fadeTo("slow", 1);
-			}
-			else {
-				$("#" + id).fadeTo("slow", 0, function () {
-  						this.style.display = "none";
-						toggler.src="images/icons/16X16/bullet_triangle_blue2.gif";
-					}
-				);
-			}
-		}        
+     
 	</script>
 
 	<form wicket:id="form" class="wizard" autocomplete="off">
@@ -33,13 +18,12 @@
 		</div>	
 		<div wicket:id="feedbackWindow" ></div>			
 		<div class="form-button" style="text-align:right;margin-right:10px;">
-			<input type="button" class="obiba-nav-prev" wicket:id="previousLink"/>
-			<input type="button" class="obiba-nav-next" wicket:id="nextLink"/>
-			<input type="submit" wicket:id="finish" style="display:none;"/>
-			<img src="images/icons/16X16/bullet_triangle_blue2.gif" class="toggler" onclick="toggleDisplay(this, 'togglable');"/>
-			<span style="display: none; opacity: 0;" id="togglable"> 
-				<input type="button" wicket:id="interrupt"/>
-				<input type="button" wicket:id="cancelLink"/>
+			<input type="button" class="obiba-quartz-nav obiba-nav-prev" wicket:id="previousLink"/>
+			<input type="button" class="obiba-quartz-nav obiba-nav-next" wicket:id="nextLink"/>
+			<span class="obiba-quartz-nav-admin">
+				<input type="submit" class="obiba-nav-finish" wicket:id="finish" style="display:none;"/>
+				<input type="button" class="obiba-nav-interrupt" wicket:id="interrupt"/>
+				<input type="button" class="obiba-nav-cancel" wicket:id="cancelLink"/>
 			</span>
 			<div wicket:id="progressBar"/>
 		</div>

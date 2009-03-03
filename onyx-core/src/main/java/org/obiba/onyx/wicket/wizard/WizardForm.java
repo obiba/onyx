@@ -50,6 +50,7 @@ public abstract class WizardForm extends Form {
     setMultiPart(true);
 
     IBehavior buttonBehavior = new WizardButtonBehavior();
+
     // finish button
     AjaxButton finish = new AjaxButton("finish", this) {
 
@@ -57,17 +58,12 @@ public abstract class WizardForm extends Form {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-        log.debug("finish.onSubmit");
-        if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
-        onFinish(target, form);
+        onFinishSubmit(target, form);
       }
 
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
-        log.debug("finish.onError");
-        if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
-        WizardForm.this.onError(target, form);
-        target.appendJavascript("resizeWizardContent();");
+        onFinishError(target, form);
       }
 
     };
@@ -83,12 +79,7 @@ public abstract class WizardForm extends Form {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        HistoryAjaxBehavior historyAjaxBehavior = getHistoryAjaxBehavior();
-        if(historyAjaxBehavior != null) {
-          historyAjaxBehavior.registerAjaxEvent(target, this);
-        }
-        if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
-        WizardForm.this.gotoPrevious(target);
+        onPreviousClick(target);
       }
 
     };
@@ -104,23 +95,12 @@ public abstract class WizardForm extends Form {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-        log.debug("next.onSubmit");
-        HistoryAjaxBehavior historyAjaxBehavior = getHistoryAjaxBehavior();
-        if(historyAjaxBehavior != null) {
-          historyAjaxBehavior.registerAjaxEvent(target, this);
-        }
-        if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
-        WizardForm.this.gotoNext(target);
+        onNextSubmit(target, form);
       }
 
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
-        log.debug("next.onError");
-        if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
-        WizardForm.this.onError(target, form);
-        WizardStepPanel currentStep = (WizardStepPanel) WizardForm.this.get("step");
-        currentStep.onStepOutNextError(WizardForm.this, target);
-        target.appendJavascript("resizeWizardContent();");
+        onNextError(target, form);
       }
 
     };
@@ -135,13 +115,62 @@ public abstract class WizardForm extends Form {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        canceled = true;
-        onCancel(target);
+        onCancelClick(target);
       }
 
     };
     link.add(new AttributeModifier("value", true, getLabelModel("Cancel")));
     add(link);
+  }
+
+  //
+  // Event form triggers
+  // 
+
+  protected void onFinishSubmit(AjaxRequestTarget target, Form form) {
+    log.debug("finish.onSubmit");
+    if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
+    onFinish(target, form);
+  }
+
+  protected void onFinishError(AjaxRequestTarget target, Form form) {
+    log.debug("finish.onError");
+    if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
+    WizardForm.this.onError(target, form);
+    target.appendJavascript("resizeWizardContent();");
+  }
+
+  protected void onPreviousClick(AjaxRequestTarget target) {
+    HistoryAjaxBehavior historyAjaxBehavior = getHistoryAjaxBehavior();
+    if(historyAjaxBehavior != null) {
+      historyAjaxBehavior.registerAjaxEvent(target, this);
+    }
+    if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
+    WizardForm.this.gotoPrevious(target);
+  }
+
+  protected void onNextSubmit(AjaxRequestTarget target, Form form) {
+    log.debug("next.onSubmit");
+    HistoryAjaxBehavior historyAjaxBehavior = getHistoryAjaxBehavior();
+    if(historyAjaxBehavior != null) {
+      historyAjaxBehavior.registerAjaxEvent(target, this);
+    }
+    if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
+    WizardForm.this.gotoNext(target);
+  }
+
+  protected void onNextError(AjaxRequestTarget target, Form form) {
+    log.debug("next.onError");
+    if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
+    WizardForm.this.onError(target, form);
+    WizardStepPanel currentStep = (WizardStepPanel) WizardForm.this.get("step");
+    currentStep.onStepOutNextError(WizardForm.this, target);
+    target.appendJavascript("resizeWizardContent();");
+  }
+
+  protected void onCancelClick(AjaxRequestTarget target) {
+    canceled = true;
+    onCancel(target);
   }
 
   /**
@@ -164,22 +193,42 @@ public abstract class WizardForm extends Form {
    */
   public abstract void onCancel(AjaxRequestTarget target);
 
+  /**
+   * Get the "next" component.
+   * @return
+   */
   public Component getNextLink() {
     return get("nextLink");
   }
 
+  /**
+   * Get the "previous" component.
+   * @return
+   */
   public Component getPreviousLink() {
     return get("previousLink");
   }
 
+  /**
+   * Get the "finish" component.
+   * @return
+   */
   public Component getFinishLink() {
     return get("finish");
   }
 
+  /**
+   * Get the "cancel" component.
+   * @return
+   */
   public Component getCancelLink() {
     return get("cancelLink");
   }
 
+  /**
+   * Warn the current step panel we are going out by next, and ask which is the next step.
+   * @param target
+   */
   protected void gotoNext(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
     log.debug("gotoNext.currentStep={}", currentStep.getClass().getName());
@@ -194,6 +243,10 @@ public abstract class WizardForm extends Form {
     target.addComponent(this);
   }
 
+  /**
+   * Warn the current step panel we are going out by previous, and ask which is the previous step.
+   * @param target
+   */
   protected void gotoPrevious(AjaxRequestTarget target) {
     WizardStepPanel currentStep = (WizardStepPanel) get("step");
     log.debug("gotoPrevious.currentStep={}", currentStep.getClass().getName());
@@ -216,6 +269,10 @@ public abstract class WizardForm extends Form {
     this.canceled = canceled;
   }
 
+  /**
+   * Accessor to the feedback panel if any.
+   * @return null by default.
+   */
   public FeedbackPanel getFeedbackPanel() {
     return null;
   }

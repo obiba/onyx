@@ -1,6 +1,6 @@
 body {
   text-align: left;
-  /*background: #F6F8FF;*/
+  background: url(../icons/background_tile.png) repeat;
   font-family: arial, verdana, sans-serif;
   font-size:12px;
   color: #666666;
@@ -70,7 +70,6 @@ div.banner {
 }
 
 #pageHeader1 {
-    background-color: #888888;
     color: #000000;
 	height: 25px;
 	width: 100%;
@@ -369,7 +368,6 @@ text-align:center;
 
 #pageFooter {
   clear: both;
-  background-color: #888888;
   color: #000000;
   height: 30px;
 }
