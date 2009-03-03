@@ -203,6 +203,27 @@ public class MathEclipseEvaluatorTest {
   }
 
   @Test
+  public void testEval012() {
+    String expression = "$1 && $2 > 1";
+    List<Data> operands = Arrays.asList(new Data[] { DataBuilder.buildBoolean(false), null });
+    Assert.assertEquals(false, MathEclipseEvaluator.getInstance().evaluateBoolean(expression, operands));
+  }
+
+  @Test
+  public void testEval013() {
+    String expression = "$1 || $2 > 1";
+    List<Data> operands = Arrays.asList(new Data[] { DataBuilder.buildBoolean(true), null });
+    Assert.assertEquals(true, MathEclipseEvaluator.getInstance().evaluateBoolean(expression, operands));
+  }
+
+  @Test
+  public void testEval014() {
+    String expression = "$1 || $2 < 1";
+    List<Data> operands = Arrays.asList(new Data[] { DataBuilder.buildBoolean(true), null });
+    Assert.assertEquals(true, MathEclipseEvaluator.getInstance().evaluateBoolean(expression, operands));
+  }
+
+  @Test
   public void testEvalCurrentYear() {
     try {
       String expression = "$currentYear-$1";
