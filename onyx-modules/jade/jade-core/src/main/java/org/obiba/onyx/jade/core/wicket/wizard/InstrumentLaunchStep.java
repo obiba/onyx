@@ -99,6 +99,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
           InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
           Data data = runValue.getData(param.getDataType());
           if(data == null || data.getValue() == null) {
+            log.warn("Missing value for the following output parameter: {}", param.getVendorName());
             error(getString("NoInstrumentDataSaveThem"));
             setNextStep(null);
             completed = false;
