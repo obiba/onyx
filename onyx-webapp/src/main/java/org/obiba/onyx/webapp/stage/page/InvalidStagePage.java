@@ -10,6 +10,7 @@
 package org.obiba.onyx.webapp.stage.page;
 
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.obiba.onyx.webapp.base.page.BasePage;
 
 /**
@@ -20,6 +21,12 @@ public class InvalidStagePage extends BasePage {
   @SuppressWarnings("serial")
   public InvalidStagePage(final StagePage stagePage) {
     super();
+
+    //
+    // Modify header.
+    //
+    remove("header");
+    add(new EmptyPanel("header"));
 
     add(new Link("link") {
 
