@@ -30,6 +30,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.user.Role;
@@ -92,8 +93,10 @@ public class UserPanel extends Panel {
       add(firstName);
 
       TextField login = new TextField("login", new PropertyModel(getModel(), "login"));
-      login.add(new RequiredFormFieldBehavior());
-      login.setEnabled(false);
+      login.add(new LoginUnicityValidator());
+      login.add(new StringValidator.LengthBetweenValidator(2, 12));
+      login.add(new PatternValidator("[a-zA-Z0-9_#.]+"));
+      if(((User) getModel().getObject()).getId() != null) login.setEnabled(false);
       add(login);
 
       password = new PasswordTextField("password", new Model(new String()));
@@ -169,6 +172,17 @@ public class UserPanel extends Panel {
           userModalWindow.close(target);
         }
       }.setDefaultFormProcessing(false));
+    }
+
+    private class LoginUnicityValidator extends AbstractValidator {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      protected void onValidate(IValidatable validatable) {
+        User existUser = userService.getUserWithLogin(validatable.getValue().toString());
+        if(existUser != null) feedbackPanel.error(new StringResourceModel("LoginAlreadyUsed", UserPanel.this, null).getString());
+      }
     }
 
     private class PasswordValidator extends AbstractValidator {

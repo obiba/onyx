@@ -95,6 +95,7 @@ public class UserPanelTest {
     final User u = newUserTest();
 
     expect(userServiceMock.getRoles(SortingClause.create("name"))).andReturn(newRoleListTest());
+
     userServiceMock.createOrUpdateUser(u);
 
     replay(userServiceMock);
@@ -191,6 +192,45 @@ public class UserPanelTest {
     verify(userServiceMock);
     Assert.assertEquals("Tremblay", u.getLastName());
     Assert.assertEquals(Locale.ENGLISH, u.getLanguage());
+    Assert.assertEquals("ptremblay", u.getLogin());
+    // Assert that two Sets are identical
+    assertSetsEquals(getUserRoles(), u.getRoles());
+  }
+
+  @Test
+  public void testAddUserWithCustomLogin() {
+    final User u = new User();
+    expect(userServiceMock.getRoles(SortingClause.create("name"))).andReturn(newRoleListTest());
+    expect(userServiceMock.getUserWithLogin("patou")).andReturn(null);
+    userServiceMock.createOrUpdateUser(u);
+
+    replay(userServiceMock);
+
+    tester.startPanel(new TestPanelSource() {
+
+      private static final long serialVersionUID = 1L;
+
+      public Panel getTestPanel(String panelId) {
+        return (userPanel = new UserPanel(panelId, new Model(u), new ModalWindow("windowMock")));
+      }
+    });
+
+    FormTester formTester = tester.newFormTester("panel:userPanelForm");
+    formTester.setValue("lastName", "Tremblay");
+    formTester.setValue("firstName", "patricia");
+    formTester.setValue("login", "patou");
+    formTester.setValue("email", "patriciatremblay@obiba.org");
+    formTester.setValue("password", "password01");
+    formTester.select("language", 1);
+    formTester.selectMultiple("roles", new int[] { 0, 1 });
+
+    submitForm();
+
+    tester.assertNoErrorMessage();
+    verify(userServiceMock);
+    Assert.assertEquals("Tremblay", u.getLastName());
+    Assert.assertEquals(Locale.ENGLISH, u.getLanguage());
+    Assert.assertEquals("patou", u.getLogin());
     // Assert that two Sets are identical
     assertSetsEquals(getUserRoles(), u.getRoles());
   }
