@@ -71,7 +71,7 @@ public abstract class AbstractQuestionCategoryColumn extends AbstractColumn {
 
   @Override
   public String getCssClass() {
-    return "category";
+    return "obiba-quartz-category";
   }
 
   /**

@@ -112,7 +112,7 @@ table.array {
 	padding-bottom:5px;
 }
 
-table.array tr.headers th.category {
+table.array tr.ui-widget-header th.obiba-quartz-category {
 	background-color:#E1E3E5;
 	border-bottom:1px solid #FFFFFF;
 	color:#666666;

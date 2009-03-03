@@ -92,7 +92,7 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
       public void populateItem(Item cellItem, String componentId, IModel rowModel) {
         Question question = (Question) rowModel.getObject();
         cellItem.add(new Label(componentId, new QuestionnaireStringResourceModel(question, "label")).setEscapeModelStrings(false));
-        cellItem.add(new AttributeAppender("class", new Model("label"), " "));
+        cellItem.add(new AttributeAppender("class", new Model("obiba-label"), " "));
       }
 
     });

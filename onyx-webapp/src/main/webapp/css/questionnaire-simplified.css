@@ -25,7 +25,7 @@
 .obiba-quartz-question {
 }
 
-.obiba-quartz-question .ui-widget-header {
+.obiba-quartz-question > .ui-widget-header {
 	background:#DBE7ED none repeat scroll 0 0;
 	border-bottom: 2px solid #999999;
 	font-weight: bold;
@@ -263,13 +263,13 @@ table.obiba-quartz-array {
 	margin-right:auto;
 }
 
-.obiba-quartz-array .label {
+.obiba-quartz-array .obiba-label {
 	text-align:right;
 	vertical-align: middle;
 	padding-right: 10px;
 }
 
-.obiba-quartz-array .headers .obiba-quartz-category {
+.obiba-quartz-array .ui-widget-header .obiba-quartz-category {
 	font-size:14px;
 	text-align:center;
 }
@@ -292,7 +292,7 @@ table.obiba-quartz-array {
  Questionnaire Form
 *******************/
 
-.form-data.questionnaire-form-data {
+.form-data.obiba-quartz-form-data {
   padding: 0 0 4px 0;
 }
 
