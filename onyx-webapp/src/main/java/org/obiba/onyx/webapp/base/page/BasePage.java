@@ -19,22 +19,22 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
-import org.obiba.onyx.webapp.base.panel.MenuBar;
+import org.obiba.onyx.webapp.base.panel.HeaderPanel;
 
 public abstract class BasePage extends AbstractBasePage implements IAjaxIndicatorAware {
 
   public BasePage() {
     super();
 
-    Panel menuBar = new EmptyPanel("menuBar");
+    Panel headerPanel = new EmptyPanel("header");
     Session session = getSession();
     // Tests the session type for unit testing
     if(session instanceof OnyxAuthenticatedSession) {
       if(((OnyxAuthenticatedSession) getSession()).isSignedIn()) {
-        menuBar = new MenuBar("menuBar");
+        headerPanel = new HeaderPanel("header");
       }
     }
-    add(menuBar);
+    add(headerPanel);
 
     add(new Label("baseAjaxIndicator", new StringResourceModel("Processing", this, null)));
   }

@@ -23,7 +23,7 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.page.InterviewPage;
-import org.obiba.onyx.webapp.stage.panel.StageMenuBar;
+import org.obiba.onyx.webapp.stage.panel.StageHeaderPanel;
 import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.behavior.ajaxbackbutton.HistoryAjaxBehavior;
@@ -40,14 +40,11 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
-  private StageMenuBar menuBar;
-
   private HistoryAjaxBehavior historyAjaxBehavior;
 
   @SuppressWarnings("serial")
   public StagePage(IModel stageModel) {
     super();
-    setMenuBarVisible(true);
     setModel(stageModel);
 
     Participant participant = activeInterviewService.getParticipant();
@@ -56,11 +53,10 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
       setResponsePage(WebApplication.get().getHomePage());
     } else {
       //
-      // Modify menu bar.
+      // Modify header.
       //
-      remove("menuBar");
-      menuBar = new StageMenuBar("menuBar", stageModel);
-      add(menuBar);
+      remove("header");
+      add(new StageHeaderPanel("header"));
 
       IStageExecution exec = activeInterviewService.getStageExecution((Stage) getModelObject());
 

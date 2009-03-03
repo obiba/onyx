@@ -17,9 +17,10 @@
   </head>
 
   <body>
-    <div class="ui-layout-north">
-      	<div id="menuBar">
-        	<div wicket:id="menuBar"></div>
+      <div class="ui-layout-north">
+      	<div id="pageHeader">
+      		<span id="pageHeader1" wicket:id="header"></span>
+        	<span style="clear:both;"></span>
       	</div>
       </div>
       
@@ -35,10 +36,9 @@
            
       <div class="ui-layout-south">
       	<div id="pageFooter">
-        	<p>&copy; 2008 Obiba <span wicket:id="version"/></p>
+        	<p>OBiBa / <span wicket:id="version" />&copy;</p>
       	</div>
-      </div>
-      
+      </div>  
   </body>
 
 </html>

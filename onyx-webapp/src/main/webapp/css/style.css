@@ -1,7 +1,7 @@
 body {
   text-align: left;
   /*background: #F6F8FF;*/
-  font-family: verdana, arial, sans-serif;
+  font-family: arial, verdana, sans-serif;
   font-size:12px;
   color: #666666;
   margin: 0pt; 
@@ -45,6 +45,7 @@ A:hover {
 
 div.banner {
 	margin-top: 5px;
+	margin-right: 16px;
 }
 
 #pageWrapper {
@@ -69,16 +70,13 @@ div.banner {
 }
 
 #pageHeader1 {
+    background-color: #888888;
+    color: #000000;
 	height: 25px;
-	width:100%;
-	float:left;
-	text-align:right;
-	font-weight:bold;
-	color:#FFFFFF;
-	background-color: #375FB7;
-	background-image: url('../images/bannerTopRepeater.gif');
-	background-repeat: repeat;
-	background-position: left top;
+	width: 100%;
+	float: left;
+	text-align: right;
+	font-size: 11px;
 }
 
 #pageHeader2 {
@@ -86,6 +84,12 @@ div.banner {
 	background-image: url('../images/genome_banner-repeat.png');
 	background-position: left top;
 }
+
+#pageHeader a {
+  color: #000000;
+  text-decoration: none;
+}
+
 #userLogged{
 	float:right;
 	padding-top:70px;
@@ -364,21 +368,18 @@ text-align:center;
 }
 
 #pageFooter {
-  height: 30px;
   clear: both;
   background-color: #888888;
+  color: #000000;
+  height: 30px;
 }
 
-#pageFooter a{
-  color: #FFFFFF;
-}
 #pageFooter p {
-  padding-top:9px;
-  text-align: center;
-  font-family: verdana, arial, sans-serif;
   font-size: 11px;
-  color: #FFFFFF;
-  letter-spacing:1px;
+  letter-spacing: 1px;
+  margin-right: 16px;
+  padding-top: 9px;
+  text-align: right;  
 }
 
 #spacer {

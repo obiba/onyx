@@ -11,26 +11,15 @@ package org.obiba.onyx.webapp.stage.page;
 
 import org.apache.wicket.markup.html.link.Link;
 import org.obiba.onyx.webapp.base.page.BasePage;
-import org.obiba.onyx.webapp.stage.panel.StageMenuBar;
 
 /**
  * 
  */
 public class InvalidStagePage extends BasePage {
 
-  private StageMenuBar menuBar;
-
   @SuppressWarnings("serial")
   public InvalidStagePage(final StagePage stagePage) {
     super();
-    setMenuBarVisible(true);
-
-    //
-    // Modify menu bar.
-    //
-    remove("menuBar");
-    menuBar = new StageMenuBar("menuBar", stagePage.getModel());
-    add(menuBar);
 
     add(new Link("link") {
 
