@@ -1050,6 +1050,27 @@ width: 100%;
 	margin-right: auto;
 }
 
+/******************* End Centering *************************************************/
+
+/******************* Login *********************************************************/
+
 #login {
+	background-color:#FFFFFF;
+	border:2px solid #C65F02;
+	padding:20px;
 	width:400px;
 }
+
+#loginFooter {
+	border-top:1px solid #888888;
+	margin-top:10px;
+}
+
+#loginFooter p {
+	font-family:verdana,arial,sans-serif;
+	font-size:11px;
+	letter-spacing:1px;
+	text-align:center;
+}
+
+/******************* End Login *****************************************************/
