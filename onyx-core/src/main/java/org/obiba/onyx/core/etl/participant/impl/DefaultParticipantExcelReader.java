@@ -271,6 +271,7 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
     }
 
     checkColumnsForMandatoryAttributesPresent();
+    checkColumnsForEssentialAssignableAttributesPresent();
   }
 
   private HSSFRow skipToFirstDataRow(Iterator<HSSFRow> rowIter) {
@@ -347,7 +348,7 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
 
   protected void setParticipantConfiguredAttributes(Participant participant, HSSFRow row, HSSFFormulaEvaluator evaluator) {
     for(ParticipantAttribute configuredAttribute : participantMetadata.getConfiguredAttributes()) {
-      if(configuredAttribute.isAssignableAtEnrollment()) {
+      if(configuredAttribute.isAssignableAtEnrollment() && attributeNameToColumnIndexMap.containsKey(configuredAttribute.getName().toUpperCase())) {
         HSSFCell cell = row.getCell(attributeNameToColumnIndexMap.get(configuredAttribute.getName().toUpperCase()));
         setConfiguredAttribute(participant, configuredAttribute, cell, evaluator);
       }
@@ -460,6 +461,20 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
       if(attribute.isMandatoryAtEnrollment()) {
         if(!attributeNameToColumnIndexMap.containsKey(attribute.getName().toUpperCase())) {
           throw new IllegalArgumentException("Invalid worksheet; no column exists for mandatory field '" + attribute.getName() + "'");
+        }
+      }
+    }
+  }
+
+  private void checkColumnsForEssentialAssignableAttributesPresent() {
+    List<ParticipantAttribute> essentialAttributes = new ArrayList<ParticipantAttribute>();
+    essentialAttributes.addAll(participantMetadata.getEssentialAttributes());
+
+    // Check if essential attributes assignable at enrollment are missing => In that case, return an error
+    for(ParticipantAttribute attribute : essentialAttributes) {
+      if(attribute.isAssignableAtEnrollment()) {
+        if(!attributeNameToColumnIndexMap.containsKey(attribute.getName().toUpperCase())) {
+          throw new IllegalArgumentException("Invalid worksheet; no column exists for assignable essential field '" + attribute.getName() + "'");
         }
       }
     }
