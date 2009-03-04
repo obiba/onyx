@@ -83,6 +83,15 @@ Resizer.centerInPage = function(id, offset) {
 	document.getElementById(id).style.top=topPosition+"px";
 }
 
+
+// Resize the content wrapper to fill the window.
+function resizeContentWrapper() {
+	Resizer.resize('contentWrapper', 70);
+}
+WindowUtil.attachEvent("load", resizeContentWrapper);
+WindowUtil.attachEvent("resize", resizeContentWrapper);
+
+
 function resizeWizardContent() {
 	var table = $('#wizardFormData .wizard-content table:first-child');
 	var wizardContent = $('#wizardFormData .wizard-content');
