@@ -20,6 +20,7 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.login.page.LoginPage;
 import org.obiba.onyx.webapp.user.page.ProfilePage;
+import org.obiba.onyx.webapp.user.page.UserSearchPage;
 
 public class HeaderPanel extends Panel {
 
@@ -41,6 +42,17 @@ public class HeaderPanel extends Panel {
       public void onClick() {
         OnyxAuthenticatedSession.get().getUser();
         setResponsePage(new ProfilePage(getPage().getPageMapEntry().getNumericId()));
+      }
+    });
+
+    add(new Link("admin") {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick() {
+        OnyxAuthenticatedSession.get().getUser();
+        setResponsePage(UserSearchPage.class);
       }
     });
 
