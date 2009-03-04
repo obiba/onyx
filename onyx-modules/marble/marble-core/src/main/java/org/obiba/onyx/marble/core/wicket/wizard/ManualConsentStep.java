@@ -29,7 +29,7 @@ public class ManualConsentStep extends WizardStepPanel {
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    form.getPreviousLink().setEnabled(true);
+    if(getPreviousStep() != null) form.getPreviousLink().setEnabled(true);
     form.getNextLink().setEnabled(false);
     form.getFinishLink().setEnabled(true);
     form.getCancelLink().setEnabled(true);

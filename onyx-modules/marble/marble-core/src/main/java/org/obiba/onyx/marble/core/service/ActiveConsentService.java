@@ -40,4 +40,11 @@ public interface ActiveConsentService {
    * @return True if submitted, false if not.
    */
   public boolean isConsentFormSubmitted();
+
+  /**
+   * Returns the value for the consent mode variable
+   * @return
+   */
+  public String getConsentMode();
+
 }

@@ -12,6 +12,7 @@ package org.obiba.onyx.marble.core.wicket.wizard;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
@@ -20,11 +21,17 @@ public abstract class ConsentWizardForm extends WizardForm {
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
 
+  @SpringBean
+  private ActiveConsentService activeConsentService;
+
   private WizardStepPanel consentModeSelectionStep;
 
   private WizardStepPanel electronicConsentStep;
 
   private WizardStepPanel consentConfirmationStep;
+
+  // Consent Mode
+  private static String MANUAL_AND_ELECTRONIC = "Manual and electronic";
 
   public ConsentWizardForm(String id, IModel interviewConsentModel) {
     super(id, interviewConsentModel);
@@ -33,18 +40,27 @@ public abstract class ConsentWizardForm extends WizardForm {
     electronicConsentStep = new ElectronicConsentStep(getStepId(), consentConfirmationStep);
     consentModeSelectionStep = new ConsentModeSelectionStep(getStepId(), electronicConsentStep, consentConfirmationStep);
 
-    WizardStepPanel startStep = setupStaticWizardFlow();
+    WizardStepPanel startStep = setupWizardFlow();
 
     startStep.onStepInNext(this, null);
     startStep.handleWizardState(this, null);
     add(startStep);
-
   }
 
-  private WizardStepPanel setupStaticWizardFlow() {
-    WizardStepPanel startStep = consentModeSelectionStep;
-    startStep.setPreviousStep(startStep);
-    electronicConsentStep.setPreviousStep(startStep);
+  private WizardStepPanel setupWizardFlow() {
+    // get the consent mode variable value
+    String consentMode = activeConsentService.getConsentMode();
+    WizardStepPanel startStep;
+
+    if(consentMode.equalsIgnoreCase(MANUAL_AND_ELECTRONIC)) {
+      startStep = consentModeSelectionStep;
+      startStep.setPreviousStep(startStep);
+      electronicConsentStep.setPreviousStep(startStep);
+    } else {
+      consentConfirmationStep.setPreviousStep(null);
+      startStep = consentConfirmationStep;
+    }
+
     return startStep;
   }
 

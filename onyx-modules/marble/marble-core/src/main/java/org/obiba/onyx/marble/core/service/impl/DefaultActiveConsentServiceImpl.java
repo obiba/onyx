@@ -32,6 +32,8 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
 
   private Consent consent;
 
+  private String consentMode;
+
   public ActiveInterviewService getActiveInterviewService() {
     return activeInterviewService;
   }
@@ -114,4 +116,11 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
     return false;
   }
 
+  public String getConsentMode() {
+    return consentMode;
+  }
+
+  public void setConsentMode(String consentMode) {
+    this.consentMode = consentMode;
+  }
 }
