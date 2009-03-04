@@ -1004,19 +1004,19 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 }
 
 .maxWidthTextArea {
-width: 100%;
+	width: 100%;
 }
+
 /******************* End Tab Layout ************************************************/
 
 /******************* Stage Layout **************************************************/
 
 .stage {
-  background-color: #c65f00;
-  padding: 3px;
+  	padding: 0px;
 }
 
 .stage .ui-layout-center {
-  background-color: #fff;
+ 	
 }
 
 /******************* End Stage Layout **********************************************/
