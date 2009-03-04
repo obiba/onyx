@@ -9,10 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.core.service;
 
-import java.util.EnumSet;
-
 import org.obiba.onyx.marble.domain.consent.Consent;
-import org.obiba.onyx.marble.domain.consent.ConsentMode;
 
 /**
  * Session active participant's consent service.
@@ -43,11 +40,5 @@ public interface ActiveConsentService {
    * @return True if submitted, false if not.
    */
   public boolean isConsentFormSubmitted();
-
-  /**
-   * Returns the value for the consent mode variable
-   * @return
-   */
-  public EnumSet<ConsentMode> getSupportedConsentModes();
 
 }

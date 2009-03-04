@@ -24,15 +24,15 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     scope="prototype">
   </bean>
 
-  <bean id="consentService" class="org.obiba.onyx.marble.core.service.impl.ConsentServiceImpl">
+  <bean id="consentService" class="org.obiba.onyx.marble.core.service.impl.ConsentServiceImpl" init-method="validateInstance">
     <property name="persistenceManager" ref="persistenceManager" />
+    <property name="supportedConsentModesString" value="${org.obiba.onyx.marble.consent.consentMode}" />
   </bean>
 
   <bean id="activeConsentService" class="org.obiba.onyx.marble.core.service.impl.DefaultActiveConsentServiceImpl"
     scope="session">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="activeInterviewService" ref="activeInterviewService" />
-    <property name="supportedConsentModesString" value="${org.obiba.onyx.marble.consent.consentMode}" />
   </bean>
 
   <bean id="fdfProducer" class="org.obiba.onyx.marble.core.service.FdfProducer" scope="prototype">

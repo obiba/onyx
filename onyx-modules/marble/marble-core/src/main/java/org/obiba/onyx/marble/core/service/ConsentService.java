@@ -9,8 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.core.service;
 
+import java.util.EnumSet;
+
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.marble.domain.consent.Consent;
+import org.obiba.onyx.marble.domain.consent.ConsentMode;
 
 public interface ConsentService {
 
@@ -32,5 +35,11 @@ public interface ConsentService {
    * @param consent
    */
   public void saveConsent(Consent consent);
+
+  /**
+   * Returns the value for the consent mode variable
+   * @return
+   */
+  public EnumSet<ConsentMode> getSupportedConsentModes();
 
 }

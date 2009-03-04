@@ -14,7 +14,7 @@ import java.util.EnumSet;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.marble.core.service.ActiveConsentService;
+import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
@@ -25,7 +25,7 @@ public abstract class ConsentWizardForm extends WizardForm {
   private ActiveInterviewService activeInterviewService;
 
   @SpringBean
-  private ActiveConsentService activeConsentService;
+  private ConsentService consentService;
 
   private WizardStepPanel consentModeSelectionStep;
 
@@ -49,7 +49,7 @@ public abstract class ConsentWizardForm extends WizardForm {
 
   private WizardStepPanel setupWizardFlow() {
     // get the consent mode variable value
-    EnumSet<ConsentMode> supportedConsentMode = activeConsentService.getSupportedConsentModes();
+    EnumSet<ConsentMode> supportedConsentMode = consentService.getSupportedConsentModes();
     WizardStepPanel startStep;
 
     if(supportedConsentMode.containsAll(EnumSet.allOf(ConsentMode.class))) {

@@ -9,12 +9,19 @@
  ******************************************************************************/
 package org.obiba.onyx.marble.core.service.impl;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.domain.consent.Consent;
+import org.obiba.onyx.marble.domain.consent.ConsentMode;
 
 public class ConsentServiceImpl extends PersistenceManagerAwareService implements ConsentService {
+
+  private EnumSet<ConsentMode> supportedConsentModes;
 
   public Consent getConsent(Interview interview) {
     Consent template = new Consent();
@@ -40,4 +47,33 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
     getPersistenceManager().save(consent);
   }
 
+  public EnumSet<ConsentMode> getSupportedConsentModes() {
+    return supportedConsentModes;
+  }
+
+  public void setSupportedConsentModes(EnumSet<ConsentMode> supportedConsentModes) {
+    this.supportedConsentModes = supportedConsentModes;
+  }
+
+  /**
+   * Set the supported consent mode using a comma separated set of consent mode.
+   * @param supportedConsentModes.
+   */
+  public void setSupportedConsentModesString(String supportedConsentModes) {
+    if(supportedConsentModes != null && supportedConsentModes.length() > 0) {
+
+      List<ConsentMode> consentModesList = new ArrayList<ConsentMode>();
+
+      String supportedConsentModeArray[] = supportedConsentModes.split(",");
+      for(String mode : supportedConsentModeArray) {
+        consentModesList.add(ConsentMode.valueOf(mode));
+      }
+
+      this.setSupportedConsentModes(EnumSet.copyOf(consentModesList));
+    }
+  }
+
+  public void validateInstance() {
+    if(!supportedConsentModes.contains(ConsentMode.MANUAL)) throw new IllegalArgumentException("Consent mode electronic only is not supported yet");
+  }
 }

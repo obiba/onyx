@@ -10,10 +10,7 @@
 package org.obiba.onyx.marble.core.service.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
-import java.util.List;
 
 import org.apache.wicket.util.string.Strings;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
@@ -21,7 +18,6 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.domain.consent.Consent;
-import org.obiba.onyx.marble.domain.consent.ConsentMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,8 +31,6 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
   private ActiveInterviewService activeInterviewService;
 
   private Consent consent;
-
-  private EnumSet<ConsentMode> supportedConsentModes;
 
   public ActiveInterviewService getActiveInterviewService() {
     return activeInterviewService;
@@ -118,31 +112,5 @@ public class DefaultActiveConsentServiceImpl extends PersistenceManagerAwareServ
       return true;
     }
     return false;
-  }
-
-  public EnumSet<ConsentMode> getSupportedConsentModes() {
-    return supportedConsentModes;
-  }
-
-  public void setSupportedConsentModes(EnumSet<ConsentMode> supportedConsentModes) {
-    this.supportedConsentModes = supportedConsentModes;
-  }
-
-  /**
-   * Set the supported consent mode using a comma separated set of consent mode.
-   * @param supportedConsentModes.
-   */
-  public void setSupportedConsentModesString(String supportedConsentModes) {
-    if(supportedConsentModes != null && supportedConsentModes.length() > 0) {
-
-      List<ConsentMode> consentModesList = new ArrayList<ConsentMode>();
-
-      String supportedConsentModeArray[] = supportedConsentModes.split(",");
-      for(String mode : supportedConsentModeArray) {
-        consentModesList.add(ConsentMode.valueOf(mode));
-      }
-
-      this.setSupportedConsentModes(EnumSet.copyOf(consentModesList));
-    }
   }
 }
