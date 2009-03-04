@@ -1,34 +1,51 @@
 <wicket:panel>
-	<div>
-		<table>
-			<tr>
-				<td><span wicket:id="7" /></td>
-				<td><span wicket:id="8" /></td>
-				<td><span wicket:id="9" /></td>
-			</tr>
-			<tr>
-				<td><span wicket:id="4" /></td>
-				<td><span wicket:id="5" /></td>
-				<td><span wicket:id="6" /></td>
-			</tr>
-			<tr>
-				<td><span wicket:id="1" /></td>
-				<td><span wicket:id="2" /></td>
-				<td><span wicket:id="3" /></td>
-			</tr>
-			<tr>
-				<td><span wicket:id="0" /></td>
-				<td><span wicket:id="dot" /></td>
-				<td><span wicket:id="clear" /></td>
-			</tr>
-		</table>
-	</div>
+	<div class="obiba-numeric-pad">
 	
-	<div>
-		<span wicket:id="category"/><span wicket:id="value"/>
-	</div>
-	
-	<div>
-		<input type="button" wicket:id="ok" value="Ok"/><input type="button" wicket:id="cancel" value="Cancel"/>
+		<div class="separator"/>
+		
+		<div class="pad-buttons">
+			<table>
+				<tr>
+					<td><span class="imagelink" wicket:id="1" /></td>
+					<td><span class="imagelink" wicket:id="2" /></td>
+					<td><span class="imagelink" wicket:id="3" /></td>
+				</tr>
+				<tr>
+					<td><span class="imagelink" wicket:id="4" /></td>
+					<td><span class="imagelink" wicket:id="5" /></td>
+					<td><span class="imagelink" wicket:id="6" /></td>
+				</tr>
+				<tr>
+					<td><span class="imagelink" wicket:id="7" /></td>
+					<td><span class="imagelink" wicket:id="8" /></td>
+					<td><span class="imagelink" wicket:id="9" /></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><span class="imagelink" wicket:id="0" /></td>
+					<td><span class="imagelink" wicket:id="separator" /></td>
+				</tr>
+			</table>
+		</div>
+		
+		<div class="separator"/>
+		
+		<div wicket:id="feedback" class="feedback"/>
+		
+		<form class="pad-form" wicket:id="form" autocomplete="off">		
+		  
+		  <table style="margin: auto; width: 230px;">
+		  	<tr>
+		  		<td><span wicket:id="category"/>: <span wicket:id="value"/></td>
+		  		<td><span class="imagelink" wicket:id="clear" /></td>
+		  	</tr>	
+		  </table>		  
+		 
+		  <div class="separator"/>
+			
+		  <div class="pad-actions">
+		    <span class="imagelink" style="float:left" wicket:id="ok"/><span class="imagelink" style="float:left" wicket:id="cancel"/>
+		  </div>
+		</form>		
 	</div>
 </wicket:panel>

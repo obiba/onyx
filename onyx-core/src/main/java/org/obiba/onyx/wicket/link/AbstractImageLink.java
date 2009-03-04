@@ -9,8 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.wicket.link;
 
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -36,7 +38,7 @@ public abstract class AbstractImageLink extends Panel {
    * @param labelModel
    * @param descriptionModel
    */
-  public AbstractImageLink(String id, IModel labelModel, IModel descriptionModel) {
+  public AbstractImageLink(String id, IModel labelModel, IModel descriptionModel, ResourceReference imageDecorator) {
     super(id, labelModel);
 
     AbstractLink link = newLink("link");
@@ -47,7 +49,39 @@ public abstract class AbstractImageLink extends Panel {
     } else {
       link.add(new Label("description"));
     }
+
+    addDecorator(imageDecorator, link);
+
     add(link);
+
+  }
+
+  /**
+   * Add image decorator to image link.
+   * 
+   * @param imageDecorator Image to add as a decorator.
+   * @param link
+   */
+  private void addDecorator(ResourceReference imageDecorator, AbstractLink link) {
+    Image image;
+    if(imageDecorator != null) {
+      image = new Image("decorator", imageDecorator);
+      link.add(image);
+    } else {
+      image = new Image("decorator");
+      image.setVisible(false);
+    }
+    link.add(image);
+  }
+
+  /**
+   * @param id
+   * @param labelModel
+   * @param descriptionModel
+   * @param imageDecorator
+   */
+  public AbstractImageLink(String id, IModel labelModel, IModel descriptionModel) {
+    this(id, labelModel, descriptionModel, null);
   }
 
   protected abstract AbstractLink newLink(String id);

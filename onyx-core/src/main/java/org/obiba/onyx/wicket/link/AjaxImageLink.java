@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.wicket.link;
 
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.link.AbstractLink;
@@ -37,6 +38,16 @@ public abstract class AjaxImageLink extends AbstractImageLink {
    */
   public AjaxImageLink(String id, IModel labelModel, IModel descriptionModel) {
     super(id, labelModel, descriptionModel);
+  }
+
+  /**
+   * @param id
+   * @param labelModel
+   * @param descriptionModel
+   * @param imageDecorator
+   */
+  public AjaxImageLink(String id, IModel labelModel, IModel descriptionModel, ResourceReference imageDecorator) {
+    super(id, labelModel, descriptionModel, imageDecorator);
   }
 
   @Override

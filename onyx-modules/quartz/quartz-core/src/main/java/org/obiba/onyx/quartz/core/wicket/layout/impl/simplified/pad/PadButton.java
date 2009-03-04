@@ -9,11 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.pad;
 
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.wicket.link.AjaxImageLink;
 
 /**
  * 
@@ -28,7 +27,7 @@ public class PadButton extends Panel {
   @SuppressWarnings("serial")
   public PadButton(String id, IModel model) {
     super(id, model);
-    AjaxLink link = new AjaxLink("button") {
+    AjaxImageLink link = new AjaxImageLink("button", model) {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
@@ -39,7 +38,6 @@ public class PadButton extends Panel {
       }
 
     };
-    link.add(new AttributeModifier("value", model));
     add(link);
 
   }

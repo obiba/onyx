@@ -1,13 +1,7 @@
-div.wicket-modal div.onyx ul.feedback {
-  border-bottom:1px solid #B7B7B7;
-  border-top:1px solid #B7B7B7;
+div.wicket-modal div.onyx .feedback {
   margin-left:-35px;  
   padding-top:10px;  
   font-weight:bold;  
-}
-
-div.wicket-modal div.onyx .feedbackPanelERROR {
-  color: #000000;
 }
 
 div.wicket-modal div.onyx li.feedbackPanelERROR {
@@ -29,4 +23,10 @@ div.wicket-modal div.onyx li.feedbackPanelINFO{
   padding-left:0px;
   padding-bottom:10px;
   list-style-type:none;
+}
+
+div.wicket-modal div.onyx div.close {
+  position: absolute; 
+  right: 15px; 
+  bottom: 10px; 
 }

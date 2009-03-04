@@ -56,11 +56,11 @@ div.wicket-modal div.onyx a.w_close {
 }
 
 div.wicket-modal div.onyx .imagelink { 
-  width:100px;
-  position: absolute; 
-  right: 15px; 
-  bottom: 10px; 
-  width: auto;  
   font-family:arial,sans-serif;
   font-size:18px;  
+}
+
+div.wicket-modal div.onyx .separator {
+  border-top:1px solid #B7B7B7;
+  margin:10px 5px;
 }

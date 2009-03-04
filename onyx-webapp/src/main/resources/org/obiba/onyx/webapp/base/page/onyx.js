@@ -101,7 +101,13 @@ Resizer.resizeWizard = function() {
 function resizeModalFeedback() {
 	var feedback = $('div.wicket-modal div.onyx ul.feedback');
 	var modalContent = $('div.wicket-modal div.onyx div.w_content > div');
-	modalContent.height(feedback.height() + 80);
+	modalContent.height(feedback.height() + 120);
+}
+
+function resizeNumericPad() {
+	var feedback = $('div.wicket-modal div.onyx ul');
+	var modalContent = $('div.wicket-modal div.onyx div.w_content > div');
+	modalContent.height(feedback.height() + 470);
 }
 
 //////////////////////////////////////////////////////////////////////

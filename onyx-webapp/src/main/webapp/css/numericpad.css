@@ -1,0 +1,52 @@
+.obiba-numeric-pad #valuePressed {
+  border:1px solid #B7B7B7;
+  color:black;
+  font-size:24px;
+  font-weight:bold;
+  padding:3px;
+  text-align:right;
+  margin-left:5px;
+}
+
+.obiba-numeric-pad #valuePressed input {
+  border-style:none;
+  width:75px;
+  font-size:22px;
+  height:25px;  
+}
+
+.obiba-numeric-pad a.button .label {
+  padding-right:30px;
+  padding-left:30px;  
+}
+
+.obiba-numeric-pad .pad-buttons {
+  margin:auto;
+  width:314px;
+}
+
+.obiba-numeric-pad .pad-buttons td {
+  padding-left: 12px; 
+  padding-right: 12px;
+}
+
+.obiba-numeric-pad .pad-form .pad-actions {
+  margin: auto; 
+  width: 220px;
+}
+
+div.wicket-modal div.onyx .obiba-numeric-pad .imagelink { 
+  font-size:25px;  
+  font-weight:bold;
+}
+
+div.wicket-modal div.onyx .obiba-numeric-pad .pad-form .imagelink { 
+  font-size:18px; 
+  font-weight:normal;
+}
+
+div.wicket-modal div.onyx .obiba-numeric-pad .feedback {  
+  padding-top:0px;  
+  text-align:center;
+  font-size:14px;
+}

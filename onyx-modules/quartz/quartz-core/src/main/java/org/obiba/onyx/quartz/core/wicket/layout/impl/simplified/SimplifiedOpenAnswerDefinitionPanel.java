@@ -71,7 +71,10 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
 
     // Create modal window
     add(padWindow = new ModalWindow("padModal"));
-    padWindow.setCookieName("numeric-pad");
+    padWindow.setCssClassName("onyx");
+    padWindow.setInitialWidth(379);
+    padWindow.setInitialHeight(450);
+    padWindow.setResizable(false);
 
     final AbstractOpenAnswerDefinitionPanel pad = createPad(padWindow);
     padWindow.setContent(pad);
@@ -90,6 +93,7 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
         if(listener != null) {
           listener.onQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), !isQuestionCategorySelected());
         }
+        target.addComponent(SimplifiedOpenAnswerDefinitionPanel.this);
       }
     });
   }
