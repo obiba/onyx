@@ -80,7 +80,9 @@ public abstract class InstrumentLaunchPanel extends Panel {
 
     // get all the input run values that requires manual capture
     boolean manualCaptureRequired = false;
-    for(final InstrumentInputParameter param : activeInstrumentRunService.getInputParameters(InstrumentParameterCaptureMethod.MANUAL)) {
+    for(InstrumentInputParameter param : activeInstrumentRunService.getInputParameters(InstrumentParameterCaptureMethod.MANUAL)) {
+
+      final String paramCode = param.getCode();
 
       // We don't want to display parameters that were manually entered by the user in the previous step.
       // These will be automatically sent to the instrument.
@@ -91,15 +93,9 @@ public abstract class InstrumentLaunchPanel extends Panel {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
-        // Inject the Spring application context and the user session service
-        // into the instrument parameter. NOTE: These are dependencies of
-        // InstrumentParameter.getDescription().
-        // param.setApplicationContext(((SpringWebApplication)
-        // getApplication()).getSpringContextLocator().getSpringContext());
-        // param.setUserSessionService(userSessionService);
-
         item.add(new Label("instruction", new StringResourceModel("TypeTheValueInTheInstrument", InstrumentLaunchPanel.this, new Model() {
           public Object getObject() {
+            InstrumentInputParameter param = (InstrumentInputParameter) instrumentService.getParameterByCode(activeInstrumentRunService.getInstrumentType(), paramCode);
             InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
             ValueMap map = new ValueMap();
             map.put("description", new MessageSourceResolvableStringModel(param.getLabel()).getObject());
