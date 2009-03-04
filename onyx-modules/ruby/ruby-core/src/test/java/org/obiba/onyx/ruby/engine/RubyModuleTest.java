@@ -204,35 +204,6 @@ public class RubyModuleTest {
   }
 
   @Test
-  public void testWaitingToSkippedTransition() {
-    setDependencyConditionNotSatisfied();
-
-    StageExecutionContext exec = (StageExecutionContext) rubyModule.createStageExecution(interview, stage);
-    exec.setModuleRegistry(moduleRegistry);
-
-    // Set the current state to WAITING.
-    StageExecutionMemento memento = createMemento(WAITING_STATE);
-    exec.restoreFromMemento(memento);
-
-    // Record expectations for mocks.
-    expect(persistenceManagerMock.matchOne(EasyMock.anyObject())).andReturn(memento).anyTimes();
-    expect(persistenceManagerMock.save(EasyMock.anyObject())).andReturn(memento).anyTimes();
-
-    // Stop recording expectations.
-    replay(persistenceManagerMock);
-
-    // Fire a SKIP event to trigger a transition to the SKIPPED state.
-    exec.castEvent(TransitionEvent.SKIP);
-
-    // Verify expectations of mocks.
-    verify(persistenceManagerMock);
-
-    // Verify that we have now transitioned to the SKIPPED state.
-    memento = (StageExecutionMemento) exec.saveToMemento(null);
-    Assert.assertEquals(RubySkippedState.class.getSimpleName(), memento.getState());
-  }
-
-  @Test
   public void testReadyToSkippedTransition() {
     setDependencyConditionSatisfied();
 

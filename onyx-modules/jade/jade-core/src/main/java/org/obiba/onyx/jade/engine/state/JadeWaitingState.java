@@ -11,7 +11,6 @@ package org.obiba.onyx.jade.engine.state;
 
 import java.util.Set;
 
-import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.state.TransitionEvent;
 import org.slf4j.Logger;
@@ -30,14 +29,7 @@ public class JadeWaitingState extends AbstractJadeStageState {
 
   @Override
   protected void addUserActions(Set<ActionType> types) {
-    types.add(ActionType.SKIP);
-  }
-
-  @Override
-  public void skip(Action action) {
-    super.skip(action);
-    log.debug("Jade Stage {} is skipping", super.getStage().getName());
-    castEvent(TransitionEvent.SKIP);
+    // No possible user actions
   }
 
   @Override

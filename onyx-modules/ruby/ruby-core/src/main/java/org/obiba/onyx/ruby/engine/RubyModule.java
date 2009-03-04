@@ -159,9 +159,6 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
     AbstractStageState ready = states.get(READY_STATE_BEAN);
     exec.addEdge(waiting, TransitionEvent.VALID, ready);
 
-    AbstractStageState skipped = states.get(SKIPPED_STATE_BEAN);
-    exec.addEdge(waiting, TransitionEvent.SKIP, skipped);
-
     AbstractStageState notApplicable = states.get(NOT_APPLICABLE_STATE_BEAN);
     exec.addEdge(waiting, TransitionEvent.NOTAPPLICABLE, notApplicable);
   }
