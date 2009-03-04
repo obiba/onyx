@@ -1634,112 +1634,116 @@
                 </question>
                 <question id="752" name="WH_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
                   <questionCategories id="753"/>
-                  <condition class="questionnaireDataSource" id="754" questionnaire="CIPreliminaryQuestionnaire" question="WH_OBS_CI" category="NC"/>
-                  <parentQuestion reference="712"/>
-                  <questions id="755"/>
-                </question>
-                <question id="756" name="SP_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <questionCategories id="757"/>
-                  <condition class="computingDataSource" id="758" expression="!$1 &amp;&amp; !$2" dataType="BOOLEAN">
-                    <dataSources id="759">
-                      <questionnaireDataSource id="760" questionnaire="CIPreliminaryQuestionnaire" question="SP_COLLAPSED_LUNG" category="N"/>
-                      <questionnaireDataSource id="761" questionnaire="CIPreliminaryQuestionnaire" question="SP_DETACHED_RETINA" category="N"/>
+                  <condition class="computingDataSource" id="754" expression="!$1" dataType="BOOLEAN">
+                    <dataSources id="755">
+                      <questionnaireDataSource id="756" questionnaire="CIPreliminaryQuestionnaire" question="WH_OBS_CI" category="NC"/>
                     </dataSources>
                   </condition>
                   <parentQuestion reference="712"/>
-                  <questions id="762"/>
+                  <questions id="757"/>
                 </question>
-                <question id="763" name="BI_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <questionCategories id="764"/>
-                  <condition class="computingDataSource" id="765" expression="!$1" dataType="BOOLEAN">
-                    <dataSources id="766">
-                      <questionnaireDataSource id="767" questionnaire="CIPreliminaryQuestionnaire" question="BW_OBS_CI_BIOIMPEDANCE" category="NC"/>
+                <question id="758" name="SP_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="759"/>
+                  <condition class="computingDataSource" id="760" expression="!$1 &amp;&amp; !$2" dataType="BOOLEAN">
+                    <dataSources id="761">
+                      <questionnaireDataSource id="762" questionnaire="CIPreliminaryQuestionnaire" question="SP_COLLAPSED_LUNG" category="N"/>
+                      <questionnaireDataSource id="763" questionnaire="CIPreliminaryQuestionnaire" question="SP_DETACHED_RETINA" category="N"/>
                     </dataSources>
                   </condition>
                   <parentQuestion reference="712"/>
-                  <questions id="768"/>
+                  <questions id="764"/>
                 </question>
-                <question id="769" name="WT_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <questionCategories id="770"/>
-                  <condition class="computingDataSource" id="771" expression="$1 || $2" dataType="BOOLEAN">
-                    <dataSources id="772">
-                      <questionnaireDataSource id="773" questionnaire="CIPreliminaryQuestionnaire" question="BW_OBS_CI_WEIGHT" category="YES_SPECIFY"/>
-                      <questionnaireDataSource id="774" questionnaire="CIPreliminaryQuestionnaire" question="ABLE_TO_STAND" category="N"/>
+                <question id="765" name="BI_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="766"/>
+                  <condition class="computingDataSource" id="767" expression="!$1" dataType="BOOLEAN">
+                    <dataSources id="768">
+                      <questionnaireDataSource id="769" questionnaire="CIPreliminaryQuestionnaire" question="BW_OBS_CI_BIOIMPEDANCE" category="NC"/>
                     </dataSources>
                   </condition>
                   <parentQuestion reference="712"/>
-                  <questions id="775"/>
+                  <questions id="770"/>
                 </question>
-                <question id="776" name="AS_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <questionCategories id="777"/>
-                  <condition class="computingDataSource" id="778" expression="!$1" dataType="BOOLEAN">
-                    <dataSources id="779">
-                      <questionnaireDataSource id="780" questionnaire="CIPreliminaryQuestionnaire" question="AS_STENOSIS_CI" category="N"/>
+                <question id="771" name="WT_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="772"/>
+                  <condition class="computingDataSource" id="773" expression="$1 || $2" dataType="BOOLEAN">
+                    <dataSources id="774">
+                      <questionnaireDataSource id="775" questionnaire="CIPreliminaryQuestionnaire" question="BW_OBS_CI_WEIGHT" category="YES_SPECIFY"/>
+                      <questionnaireDataSource id="776" questionnaire="CIPreliminaryQuestionnaire" question="ABLE_TO_STAND" category="N"/>
                     </dataSources>
                   </condition>
                   <parentQuestion reference="712"/>
-                  <questions id="781"/>
+                  <questions id="777"/>
                 </question>
-                <question id="782" name="BSC_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <questionCategories id="783"/>
-                  <condition class="computingDataSource" id="784" expression="!$1" dataType="BOOLEAN">
-                    <dataSources id="785">
-                      <questionnaireDataSource id="786" questionnaire="CIPreliminaryQuestionnaire" question="BLOOD_COLLECTION_SAFE" category="Y"/>
+                <question id="778" name="AS_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="779"/>
+                  <condition class="computingDataSource" id="780" expression="!$1" dataType="BOOLEAN">
+                    <dataSources id="781">
+                      <questionnaireDataSource id="782" questionnaire="CIPreliminaryQuestionnaire" question="AS_STENOSIS_CI" category="N"/>
                     </dataSources>
                   </condition>
                   <parentQuestion reference="712"/>
-                  <questions id="787"/>
+                  <questions id="783"/>
+                </question>
+                <question id="784" name="BSC_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="785"/>
+                  <condition class="computingDataSource" id="786" expression="!$1" dataType="BOOLEAN">
+                    <dataSources id="787">
+                      <questionnaireDataSource id="788" questionnaire="CIPreliminaryQuestionnaire" question="BLOOD_COLLECTION_SAFE" category="Y"/>
+                    </dataSources>
+                  </condition>
+                  <parentQuestion reference="712"/>
+                  <questions id="789"/>
                 </question>
               </questions>
             </question>
-            <question id="788" name="NO_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="790" name="NO_CI" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="710"/>
-              <questionCategories id="789"/>
-              <condition class="computingDataSource" id="790" expression="$1 &amp;&amp; $2 &amp;&amp; $3 &amp;&amp; $4 &amp;&amp; $5 &amp;&amp; $6 &amp;&amp; $7 &amp;&amp; $8 &amp;&amp; $9 &amp;&amp; $10" dataType="BOOLEAN">
-                <dataSources id="791">
-                  <questionnaireDataSource id="792" questionnaire="CIPreliminaryQuestionnaire" question="BLOOD_PRESSURE_MEASURE_SAFE" category="Y"/>
-                  <questionnaireDataSource id="793" questionnaire="CIPreliminaryQuestionnaire" question="ISOPROPYL_ALCOHOL_ALLERGY" category="N"/>
-                  <questionnaireDataSource id="794" questionnaire="CIPreliminaryQuestionnaire" question="GS_PAIN_BOTH_HANDS" category="N"/>
-                  <questionnaireDataSource id="795" questionnaire="CIPreliminaryQuestionnaire" question="SH_OBS_CI" category="NC"/>
-                  <questionnaireDataSource id="796" questionnaire="CIPreliminaryQuestionnaire" question="WH_OBS_CI" category="NC"/>
-                  <questionnaireDataSource id="797" questionnaire="CIPreliminaryQuestionnaire" question="SP_COLLAPSED_LUNG" category="N"/>
-                  <questionnaireDataSource id="798" questionnaire="CIPreliminaryQuestionnaire" question="SP_DETACHED_RETINA" category="N"/>
-                  <questionnaireDataSource id="799" questionnaire="CIPreliminaryQuestionnaire" question="BW_OBS_CI_BIOIMPEDANCE" category="NC"/>
-                  <questionnaireDataSource id="800" questionnaire="CIPreliminaryQuestionnaire" question="AS_STENOSIS_CI" category="N"/>
-                  <questionnaireDataSource id="801" questionnaire="CIPreliminaryQuestionnaire" question="BLOOD_COLLECTION_SAFE" category="Y"/>
+              <questionCategories id="791"/>
+              <condition class="computingDataSource" id="792" expression="$1 &amp;&amp; $2 &amp;&amp; $3 &amp;&amp; $4 &amp;&amp; $5 &amp;&amp; $6 &amp;&amp; $7 &amp;&amp; $8 &amp;&amp; $9 &amp;&amp; $10" dataType="BOOLEAN">
+                <dataSources id="793">
+                  <questionnaireDataSource id="794" questionnaire="CIPreliminaryQuestionnaire" question="BLOOD_PRESSURE_MEASURE_SAFE" category="Y"/>
+                  <questionnaireDataSource id="795" questionnaire="CIPreliminaryQuestionnaire" question="ISOPROPYL_ALCOHOL_ALLERGY" category="N"/>
+                  <questionnaireDataSource id="796" questionnaire="CIPreliminaryQuestionnaire" question="GS_PAIN_BOTH_HANDS" category="N"/>
+                  <questionnaireDataSource id="797" questionnaire="CIPreliminaryQuestionnaire" question="SH_OBS_CI" category="NC"/>
+                  <questionnaireDataSource id="798" questionnaire="CIPreliminaryQuestionnaire" question="WH_OBS_CI" category="NC"/>
+                  <questionnaireDataSource id="799" questionnaire="CIPreliminaryQuestionnaire" question="SP_COLLAPSED_LUNG" category="N"/>
+                  <questionnaireDataSource id="800" questionnaire="CIPreliminaryQuestionnaire" question="SP_DETACHED_RETINA" category="N"/>
+                  <questionnaireDataSource id="801" questionnaire="CIPreliminaryQuestionnaire" question="BW_OBS_CI_BIOIMPEDANCE" category="NC"/>
+                  <questionnaireDataSource id="802" questionnaire="CIPreliminaryQuestionnaire" question="AS_STENOSIS_CI" category="N"/>
+                  <questionnaireDataSource id="803" questionnaire="CIPreliminaryQuestionnaire" question="BLOOD_COLLECTION_SAFE" category="Y"/>
                 </dataSources>
               </condition>
-              <questions id="802"/>
+              <questions id="804"/>
             </question>
-            <question id="803" name="BP_ARM_CHOSEN_LEFT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="805" name="BP_ARM_CHOSEN_LEFT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="710"/>
-              <questionCategories id="804"/>
-              <condition class="questionnaireDataSource" id="805" questionnaire="CIPreliminaryQuestionnaire" question="BP_ARM_CHOSEN" category="LEFT_ARM"/>
-              <questions id="806"/>
+              <questionCategories id="806"/>
+              <condition class="questionnaireDataSource" id="807" questionnaire="CIPreliminaryQuestionnaire" question="BP_ARM_CHOSEN" category="LEFT_ARM"/>
+              <questions id="808"/>
             </question>
-            <question id="807" name="BP_ARM_CHOSEN_RIGHT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="809" name="BP_ARM_CHOSEN_RIGHT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="710"/>
-              <questionCategories id="808"/>
-              <condition class="questionnaireDataSource" id="809" questionnaire="CIPreliminaryQuestionnaire" question="BP_ARM_CHOSEN" category="RIGHT_ARM"/>
-              <questions id="810"/>
+              <questionCategories id="810"/>
+              <condition class="questionnaireDataSource" id="811" questionnaire="CIPreliminaryQuestionnaire" question="BP_ARM_CHOSEN" category="RIGHT_ARM"/>
+              <questions id="812"/>
             </question>
-            <question id="811" name="BD_FOOT_CHOSEN_LEFT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="813" name="BD_FOOT_CHOSEN_LEFT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="710"/>
-              <questionCategories id="812"/>
-              <condition class="questionnaireDataSource" id="813" questionnaire="CIPreliminaryQuestionnaire" question="BD_FOOT_CHOSEN" category="LEFT_FOOT"/>
-              <questions id="814"/>
+              <questionCategories id="814"/>
+              <condition class="questionnaireDataSource" id="815" questionnaire="CIPreliminaryQuestionnaire" question="BD_FOOT_CHOSEN" category="LEFT_FOOT"/>
+              <questions id="816"/>
             </question>
-            <question id="815" name="BD_FOOT_CHOSEN_RIGHT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="817" name="BD_FOOT_CHOSEN_RIGHT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="710"/>
-              <condition class="questionnaireDataSource" id="816" questionnaire="CIPreliminaryQuestionnaire" question="BD_FOOT_CHOSEN" category="RIGHT_FOOT"/>
+              <condition class="questionnaireDataSource" id="818" questionnaire="CIPreliminaryQuestionnaire" question="BD_FOOT_CHOSEN" category="RIGHT_FOOT"/>
             </question>
           </questions>
         </page>
       </pages>
-      <sections id="817"/>
+      <sections id="819"/>
     </section>
   </sections>
-  <pages id="818">
+  <pages id="820">
     <page reference="10"/>
     <page reference="22"/>
     <page reference="60"/>

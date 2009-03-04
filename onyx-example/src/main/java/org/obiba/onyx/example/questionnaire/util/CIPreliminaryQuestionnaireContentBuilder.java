@@ -231,7 +231,7 @@ public class CIPreliminaryQuestionnaireContentBuilder {
     builder.inQuestion("STAGE_STATUS").withQuestion("BD_CI"/* , "110b" */).setCondition("!$1", builder.newDataSource("ISOPROPYL_ALCOHOL_ALLERGY", N));
     builder.inQuestion("STAGE_STATUS").withQuestion("GS_CI"/* , "110c" */).setCondition("!$1", builder.newDataSource("GS_PAIN_BOTH_HANDS", N));
     builder.inQuestion("STAGE_STATUS").withQuestion("SH_CI"/* , "110d" */).setCondition("!$1", builder.newDataSource("SH_OBS_CI", NC));
-    builder.inQuestion("STAGE_STATUS").withQuestion("WH_CI"/* , "110f" */).setCondition("WH_OBS_CI", NC);
+    builder.inQuestion("STAGE_STATUS").withQuestion("WH_CI"/* , "110f" */).setCondition("!$1", builder.newDataSource("WH_OBS_CI", NC));
     builder.inQuestion("STAGE_STATUS").withQuestion("SP_CI"/* , "110g" */).setCondition("!$1 && !$2", builder.newDataSource("SP_COLLAPSED_LUNG", N), builder.newDataSource("SP_DETACHED_RETINA", N));
     builder.inQuestion("STAGE_STATUS").withQuestion("BI_CI"/* , "110h" */).setCondition("!$1", builder.newDataSource("BW_OBS_CI_BIOIMPEDANCE", NC));
     builder.inQuestion("STAGE_STATUS").withQuestion("WT_CI"/* , "110i" */).setCondition("$1 || $2", builder.newDataSource("BW_OBS_CI_WEIGHT", YES_SPECIFY), builder.newDataSource("ABLE_TO_STAND", N));
