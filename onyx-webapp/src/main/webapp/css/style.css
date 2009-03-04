@@ -44,8 +44,8 @@ A:hover {
 }
 
 div.banner {
-	margin-top: 5px;
-	margin-right: 16px;
+	margin-top: 8px;
+	margin-right: 10px;
 }
 
 #pageWrapper {
@@ -65,12 +65,12 @@ div.banner {
 }
 
 #pageHeader {
-	height: 25px;
+	height: 35px;
 }
 
 #pageHeader1 {
     color: #000000;
-	height: 25px;
+	height: 35px;
 	width: 100%;
 	float: left;
 	text-align: right;

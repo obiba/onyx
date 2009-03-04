@@ -67,7 +67,7 @@ public class ObservedContraIndicationPanel extends Panel {
           otherContraIndication.setModelObject(null);
         }
         target.addComponent(ObservedContraIndicationPanel.this);
-        target.appendJavascript("resizeWizardContent();");
+        target.appendJavascript("Resizer.resizeWizard();");
       }
     });
     add(radioGroup);
@@ -114,7 +114,7 @@ public class ObservedContraIndicationPanel extends Panel {
         // Invalidate the reason.
         otherContraIndication.setModelObject(null);
         target.addComponent(ObservedContraIndicationPanel.this);
-        target.appendJavascript("resizeWizardContent();");
+        target.appendJavascript("Resizer.resizeWizard();");
       }
 
     });

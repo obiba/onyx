@@ -1,8 +1,8 @@
 div.obiba-progressbar-container {
   background-image:url(../icons/bar_tile_light.png);
   background-repeat:repeat-x;
-  margin:auto;
-  width:500px;
+  margin:20px auto auto;
+  width:400px;
 }
 
 div.obiba-progressbar-container > div {

@@ -70,32 +70,26 @@ Resizer.resize  = function(id, offsetBottom) {
 	document.getElementById(id).style.height=parseInt(pageHeight-offsetBottom-document.getElementById(id).offsetTop)+"px";
 }
 
-Resizer.centerInPage = function(id, offset) {
-	var pageHeight=window.innerWidth;//Firefox
-	if (document.body.clientHeight)
-		{
-		pageHeight=document.body.clientHeight;//IE
-	}
-	var elementHeight = document.getElementById(id).style.height;
-	var topPosition = parseInt((pageHeight-elementHeight)/2-elementHeight/2+offset);
-	
-	document.getElementById(id).style.position='absolute';
-	document.getElementById(id).style.top=topPosition+"px";
-}
-
-
 // Resize the content wrapper to fill the window.
-function resizeContentWrapper() {
-	Resizer.resize('contentWrapper', 70);
+Resizer.resizeContentWrapper = function() {
+	Resizer.resize('contentWrapper', 75);
 }
-WindowUtil.attachEvent("load", resizeContentWrapper);
-WindowUtil.attachEvent("resize", resizeContentWrapper);
+WindowUtil.attachEvent("load", Resizer.resizeContentWrapper);
+WindowUtil.attachEvent("resize", Resizer.resizeContentWrapper);
 
-
-function resizeWizardContent() {
-	var table = $('#wizardFormData .wizard-content table:first-child');
-	var wizardContent = $('#wizardFormData .wizard-content');
-	var resizeHeight = parseInt(document.body.clientHeight-170-wizardContent.get()[0].offsetTop);
+Resizer.resizeWizard = function() {
+	var wizardFooter = $('#wizardFooter');
+	var footerHeight = 20;
+	if (wizardFooter) {
+		if (wizardFooter.height()) {
+			footerHeight = wizardFooter.height();
+			//alert("footer height " + footerHeight);
+		}
+	}
+	
+	var table = $('#wizardContent table:first-child');
+	var wizardContent = $('#wizardContent');
+	var resizeHeight = parseInt(document.body.clientHeight-(100 + footerHeight)-wizardContent.get()[0].offsetTop);
 	
 	if ( table == null || table.height() < resizeHeight ) {
 		wizardContent.height(resizeHeight + 'px');

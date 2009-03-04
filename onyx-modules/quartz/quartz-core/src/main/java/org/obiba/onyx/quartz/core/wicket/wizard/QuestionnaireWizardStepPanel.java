@@ -38,7 +38,7 @@ public abstract class QuestionnaireWizardStepPanel extends WizardStepPanel {
    * @param target
    */
   protected void onPageStep(AjaxRequestTarget target) {
-    target.appendJavascript("resizeWizardContent();");
+    target.appendJavascript("Resizer.resizeWizard();");
   }
 
 }

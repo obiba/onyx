@@ -137,7 +137,7 @@ public abstract class WizardForm extends Form {
     log.debug("finish.onError");
     if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
     WizardForm.this.onError(target, form);
-    target.appendJavascript("resizeWizardContent();");
+    target.appendJavascript("Resizer.resizeWizard();");
   }
 
   protected void onPreviousClick(AjaxRequestTarget target) {
@@ -165,7 +165,7 @@ public abstract class WizardForm extends Form {
     WizardForm.this.onError(target, form);
     WizardStepPanel currentStep = (WizardStepPanel) WizardForm.this.get("step");
     currentStep.onStepOutNextError(WizardForm.this, target);
-    target.appendJavascript("resizeWizardContent();");
+    target.appendJavascript("Resizer.resizeWizard();");
   }
 
   protected void onCancelClick(AjaxRequestTarget target) {

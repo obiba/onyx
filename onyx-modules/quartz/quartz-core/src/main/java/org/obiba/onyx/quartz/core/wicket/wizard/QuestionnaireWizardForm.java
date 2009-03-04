@@ -150,7 +150,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     }
     getFeedbackPanel().setOutputMarkupPlaceholderTag(true);
 
-    target.appendJavascript("resizeWizardContent();");
+    target.appendJavascript("Resizer.resizeWizard();");
   }
 
   @Override

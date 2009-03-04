@@ -141,7 +141,7 @@ public class DefaultPageLayout extends PageLayout implements IQuestionAnswerChan
     }
     // update the whole layout because some questions can (dis)appear.
     target.addComponent(this);
-    target.appendJavascript("resizeWizardContent();");
+    target.appendJavascript("Resizer.resizeWizard();");
   }
 
   @Override

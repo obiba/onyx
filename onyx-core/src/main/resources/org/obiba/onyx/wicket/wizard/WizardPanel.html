@@ -1,18 +1,17 @@
 <wicket:panel>		
 	<form wicket:id="form" class="wizard" autocomplete="off">	
-		<div class="form-data" id="wizardFormData">						
+		<div class="form-data" id="wizardContent">						
 			<span wicket:id="step" />		
 		</div>
-		<div class="form-button" style="text-align:right;">
+		<div class="form-button" id="wizardFooter" style="text-align:right;">
 			<input type="button" wicket:id="previousLink"/>
 			<input type="button" wicket:id="nextLink"/>
 			<input type="submit" wicket:id="finish" />
 			<input type="button" wicket:id="cancelLink" style="margin-right:10px;"/>
 		</div>	
 		<script language="JavaScript">
-			resizeWizardContent();
-			WindowUtil.attachEvent("load", resizeWizardContent);
-			WindowUtil.attachEvent("resize", resizeWizardContent);				
+			WindowUtil.attachEvent("load", Resizer.resizeWizard);
+			WindowUtil.attachEvent("resize", Resizer.resizeWizard);				
 		</script>			
 	</form>	
 </wicket:panel>

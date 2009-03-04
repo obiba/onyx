@@ -5,7 +5,6 @@
 .obiba-quartz-form-data {
 	border-bottom: 2px solid #ccc;
 	overflow:auto;
-	margin-bottom:20px;
 }
 
 .obiba-quartz-page {
@@ -19,7 +18,7 @@
 }
 
 .obiba-quartz-boilerplate .ui-widget-header {
-	height:450px;
+	height:550px;
 }
 
 .obiba-quartz-question {
@@ -297,7 +296,8 @@ table.obiba-quartz-array {
 }
 
 div.form-button {
-  padding-bottom: 20px;
+  height: 70px;
+  padding-top: 20px;
 }
 
 .form-button input.obiba-quartz-nav {
@@ -312,7 +312,7 @@ div.form-button {
 
 .obiba-quartz-nav-admin {
 	position: fixed;
-	top: 1px;
+	top: 5px;
 	left: 15px;
 }
 

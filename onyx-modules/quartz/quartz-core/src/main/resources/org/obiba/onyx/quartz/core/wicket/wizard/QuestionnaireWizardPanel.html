@@ -1,23 +1,10 @@
 <wicket:panel>
-
-	<script language="JavaScript">
-
-		function resizeWizardContent() {
-			Resizer.resize('wizardContent', 110);
-		}
-
-		// Resize the page every time the window is resized.
-		WindowUtil.attachEvent("load", resizeWizardContent);
-		WindowUtil.attachEvent("resize", resizeWizardContent);
-     
-	</script>
-
 	<form wicket:id="form" class="wizard" autocomplete="off">
-		<div class="form-data obiba-quartz-form-data" id="wizardContent">
+		<div id="wizardContent" class="form-data obiba-quartz-form-data">
 			<span wicket:id="step" />	
 		</div>	
 		<div wicket:id="feedbackWindow" ></div>			
-		<div class="form-button" style="text-align:right;margin-right:10px;">
+		<div class="form-button" id="wizardFooter" style="text-align:right;margin-right:10px;">
 			<input type="button" class="obiba-quartz-nav obiba-nav-prev" wicket:id="previousLink"/>
 			<input type="button" class="obiba-quartz-nav obiba-nav-next" wicket:id="nextLink"/>
 			<span class="obiba-quartz-nav-admin">
@@ -28,6 +15,10 @@
 			<div wicket:id="progressBar"/>
 		</div>
 	</form>	
+	<script language="JavaScript">
+		WindowUtil.attachEvent("load", Resizer.resizeWizard);
+		WindowUtil.attachEvent("resize", Resizer.resizeWizard);				
+	</script>	
 </wicket:panel>
 
   
