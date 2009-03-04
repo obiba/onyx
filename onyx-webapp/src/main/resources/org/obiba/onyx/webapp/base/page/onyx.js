@@ -72,7 +72,19 @@ Resizer.resize  = function(id, offsetBottom) {
 
 // Resize the content wrapper to fill the window.
 Resizer.resizeContentWrapper = function() {
-	Resizer.resize('contentWrapper', 75);
+    var pageHeader = $('#pageHeader');
+    var pageHeaderHeight = 35;
+    if (pageHeader) {
+      pageHeaderHeight = pageHeader.height();
+    }
+
+    var pageFooter = $('#pageFooter');
+    var pageFooterHeight = 40;
+    if (pageFooter) {
+      pageFooterHeight = pageFooter.height();
+    }
+    
+	Resizer.resize('contentWrapper', pageHeaderHeight + pageFooterHeight + 7);
 }
 WindowUtil.attachEvent("load", Resizer.resizeContentWrapper);
 WindowUtil.attachEvent("resize", Resizer.resizeContentWrapper);

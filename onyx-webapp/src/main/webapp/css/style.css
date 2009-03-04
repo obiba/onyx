@@ -64,10 +64,6 @@ div.banner {
   font-size: 12px;
 }
 
-#pageHeader {
-	height: 35px;
-}
-
 #pageHeader1 {
     color: #000000;
 	height: 35px;
@@ -118,7 +114,6 @@ div.banner {
 }
 
 #menuBar {
-  background-color: #888888;
   color: #FFFFFF;
   font-family: arial, verdana, sans-serif;
   font-size: 12px;
@@ -126,26 +121,20 @@ div.banner {
 }
 
 #menuWrapper {
-  width: 510px;
   margin-left: auto;
   margin-right: auto;
+  width: 510px;
 }
 
-#menuBar .obiba-menu {
-  float: left;
-  background-image: url(../icons/tab_corner_left.png);
-  background-repeat: no-repeat;
-  margin: 0 1px 0 0;
-  padding: 0 0 0 8px; 
+#menuBar .obiba-menu .obiba-menu-item {
+  background-color: #888888;
+  color: #C0C0C0 !important;
+  margin: 0 2px 0 2px;
 }
 
-#menuBar .obiba-menu .obiba-menu-content {
-  float: left;
-  background-image: url(../icons/tab_full_right.png);
-  background-repeat: no-repeat;
-  background-position: right top;
-  margin: 0 1px 0 0;
-  padding: 0.2em 8px 0.2em 0;
+#menuBar .obiba-menu .obiba-menu-item.ui-state-highlight {
+  background-color: #C65F00;
+  color: #FFFFFF !important;
 }
 
 #menuAddOns{
@@ -154,6 +143,7 @@ div.banner {
 	font-size:11px;
 	margin-right:15px;
 }
+
 #menuAddOns form{
 	padding:0px;
 	margin:0px;

@@ -20,6 +20,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.StringResourceModel;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.panel.HeaderPanel;
+import org.obiba.onyx.webapp.base.panel.MenuBar;
 
 public abstract class BasePage extends AbstractBasePage implements IAjaxIndicatorAware {
 
@@ -27,14 +28,17 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
     super();
 
     Panel headerPanel = new EmptyPanel("header");
+    Panel menuBar = new EmptyPanel("menuBar");
     Session session = getSession();
     // Tests the session type for unit testing
     if(session instanceof OnyxAuthenticatedSession) {
       if(((OnyxAuthenticatedSession) getSession()).isSignedIn()) {
         headerPanel = new HeaderPanel("header");
+        menuBar = new MenuBar("menuBar");
       }
     }
     add(headerPanel);
+    add(menuBar);
 
     add(new Label("baseAjaxIndicator", new StringResourceModel("Processing", this, null)));
   }

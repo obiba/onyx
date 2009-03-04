@@ -1,19 +1,19 @@
 <html xmlns:wicket>
 <wicket:panel>
-	<div id="menuBar">
+	<div id="menuWrapper">
 		<div id="menu">
-			<ul class="adxm menu">
+			<ul class="adxm menu obiba-menu">
     			<li wicket:id="menuItem">
-			   		<a wicket:id="menuLink"><span wicket:id="menuLabel"></span></a>
+			   		<a wicket:id="menuLink" class="obiba-menu-item ui-corner-top"><span wicket:id="menuLabel"></span></a>
       		  		<ul>
     					<li wicket:id="subMenuItem">
-      						<a wicket:id="subMenuLink"><span wicket:id="subMenuLabel"></span></a></li>  	
+      						<a wicket:id="subMenuLink"><span wicket:id="subMenuLabel"></span></a>
+      				    </li>  	
       				</ul>
     			</li>
   			</ul>
 		</div>
 		<div id="menuAddOns">
-			<span wicket:id="languageSelect" />
       	</div>
 	</div>
 	<div style="clear:both;"></div>

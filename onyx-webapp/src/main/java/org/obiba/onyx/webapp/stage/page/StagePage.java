@@ -23,6 +23,7 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.page.InterviewPage;
+import org.obiba.onyx.webapp.stage.panel.StageMenuBar;
 import org.obiba.onyx.wicket.IEngineComponentAware;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.behavior.ajaxbackbutton.HistoryAjaxBehavior;
@@ -56,6 +57,12 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
       //
       remove("header");
       add(new EmptyPanel("header"));
+
+      //
+      // Modify menu bar.
+      //
+      remove("menuBar");
+      add(new StageMenuBar("menuBar", stageModel));
 
       IStageExecution exec = activeInterviewService.getStageExecution((Stage) getModelObject());
 

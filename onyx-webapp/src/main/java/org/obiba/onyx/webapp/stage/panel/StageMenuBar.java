@@ -40,11 +40,8 @@ public class StageMenuBar extends MenuBar {
     Participant participant = activeInterviewService.getParticipant();
 
     add(new Label("stageLabel", new MessageSourceResolvableStringModel(new PropertyModel(stageModel, "description"))));
-    add(new Label("participantLabel", participant.getFullName() + " | " + participant.getBarcode()));
+    add(new Label("participantLabel", participant.getFullName() + " / " + participant.getBarcode()));
     add(new Label("birthDateLabel", DateModelUtils.getDateModel(new PropertyModel(this, "dateFormat"), new Model(participant.getBirthDate()))));
-
-    // Remove the languageSelect panel.
-    remove("languageSelect");
   }
 
   protected void buildMenus() {

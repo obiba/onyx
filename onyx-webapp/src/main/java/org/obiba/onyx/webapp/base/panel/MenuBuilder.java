@@ -15,9 +15,12 @@ import java.util.List;
 import org.apache.wicket.Application;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.Page;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
+import org.apache.wicket.behavior.AbstractBehavior;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -28,7 +31,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.obiba.core.util.StringUtil;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
-import org.obiba.onyx.webapp.user.page.UserSearchPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Builds the menu that will appear in the menu bar and in the home page. Only page links current user is allowed to go
@@ -57,8 +61,6 @@ public class MenuBuilder {
     if(OnyxAuthenticatedSession.get().isSignedIn()) {
       menuItems.add(new MenuItem(Application.get().getHomePage(), "Home"));
       menuItems.add(new MenuItem(ParticipantSearchPage.class, "Participant"));
-      if (OnyxAuthenticatedSession.get().getRoles().hasRole("SYSTEM_ADMINISTRATOR"))
-        menuItems.add(new MenuItem(UserSearchPage.class, "Administration"));;
     }
 
     // Creating the DataView containing the whole menu
@@ -103,6 +105,8 @@ public class MenuBuilder {
       link = new BookmarkablePageLink(linkId, pageClass);
 
     link.add(new Label(labelId, new StringResourceModel(label, component, null)));
+    link.add(new MenuItemSelectionBehavior());
+
     return link;
   }
 
@@ -112,6 +116,36 @@ public class MenuBuilder {
     if(authorizationAnnotation != null) {
       String[] authorizedRoles = authorizationAnnotation.value();
       MetaDataRoleAuthorizationStrategy.authorize(c, Component.RENDER, StringUtil.stringArrayToString(authorizedRoles));
+    }
+  }
+
+  static class MenuItemSelectionBehavior extends AbstractBehavior {
+
+    private static final long serialVersionUID = 1L;
+
+    private static final String SELECTED_CSS_CLASS = "ui-state-highlight";
+
+    @SuppressWarnings("unused")
+    private static final Logger log = LoggerFactory.getLogger(MenuItemSelectionBehavior.class);
+
+    @Override
+    public void onComponentTag(Component component, ComponentTag tag) {
+      super.onRendered(component);
+
+      if(component instanceof BookmarkablePageLink) {
+        BookmarkablePageLink link = (BookmarkablePageLink) component;
+
+        Page currentPage = component.getPage();
+        log.info("linkPageClass = {}, pageClass = {}", link.getPageClass().getSimpleName(), currentPage.getClass().getSimpleName());
+
+        if(link.getPageClass().equals(currentPage.getClass())) {
+          String cssClass = SELECTED_CSS_CLASS;
+          if(tag.getAttributes().containsKey("class")) {
+            cssClass += " " + tag.getAttributes().getString("class");
+          }
+          tag.getAttributes().put("class", cssClass);
+        }
+      }
     }
   }
 }

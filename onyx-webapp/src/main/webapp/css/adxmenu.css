@@ -88,7 +88,6 @@
 
 .menu, .menu ul li {
 	color: #FFFFFF;
-	background:  #888888;
 }
 
 .menu ul {
@@ -109,12 +108,10 @@
 }
 
 .menu a:hover, .menu li:hover {
-	background-color: #AAAAAA !important;
   	color: #375FB7 !important;
   	text-decoration:none;
 }
 .menu li:hover>a {
-	background-color: #AAAAAA !important;
   	color: #375FB7 !important;
   	text-decoration:none;
 }
