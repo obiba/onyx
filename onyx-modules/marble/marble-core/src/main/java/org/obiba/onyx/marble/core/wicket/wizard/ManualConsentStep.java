@@ -37,6 +37,7 @@ public class ManualConsentStep extends WizardStepPanel {
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
+    super.onStepInNext(form, target);
     setContent(target, new ManualConsentPanel(getContentId()));
   }
 

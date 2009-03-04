@@ -62,6 +62,7 @@ public class WarningsStep extends WizardStepPanel {
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
+    super.onStepInNext(form, target);
     KeyValueDataPanel warningsPanel = new KeyValueDataPanel(getContentId());
     warningsPanel.setOutputMarkupId(true);
 

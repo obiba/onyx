@@ -19,8 +19,9 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
+import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
-public class ConclusionStep extends QuestionnaireWizardStepPanel {
+public class ConclusionStep extends WizardStepPanel {
   //
   // Constants
   //
@@ -64,6 +65,7 @@ public class ConclusionStep extends QuestionnaireWizardStepPanel {
 
   @Override
   public void onStepOutPrevious(WizardForm form, AjaxRequestTarget target) {
+    super.onStepOutPrevious(form, target);
     QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
     setPreviousStep(questionnaireWizardForm.getLastPageStep());
     onPageStep(target);
@@ -71,6 +73,7 @@ public class ConclusionStep extends QuestionnaireWizardStepPanel {
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
+    super.onStepInNext(form, target);
     ((QuestionnaireWizardForm) form).getProgressBar().setVisible(false);
   }
 }

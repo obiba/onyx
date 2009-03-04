@@ -67,11 +67,13 @@ public class ValidationStep extends WizardStepPanel {
 
   @Override
   public void onStepOutPrevious(WizardForm form, AjaxRequestTarget target) {
+    super.onStepOutPrevious(form, target);
     ((RubyWizardForm) form).setUpWizardFlow();
   }
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
+    super.onStepInNext(form, target);
     int registeredTubeCount = activeTubeRegistrationService.getRegisteredTubeCount();
     int expectedTubeCount = activeTubeRegistrationService.getExpectedTubeCount();
 

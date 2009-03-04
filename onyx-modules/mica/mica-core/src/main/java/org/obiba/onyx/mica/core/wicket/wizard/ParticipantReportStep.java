@@ -45,6 +45,7 @@ public class ParticipantReportStep extends WizardStepPanel {
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
+    super.onStepInNext(form, target);
     setContent(target, participantReportPanel = new ParticipantReportPanel(getContentId()));
   }
 

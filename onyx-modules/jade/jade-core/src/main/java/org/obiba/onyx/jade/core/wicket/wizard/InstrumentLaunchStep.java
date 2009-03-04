@@ -72,6 +72,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
   @SuppressWarnings("serial")
   @Override
   public void onStepInNext(final WizardForm form, AjaxRequestTarget target) {
+    super.onStepInNext(form, target);
     setContent(target, new InstrumentLaunchPanel(getContentId()) {
 
       @Override
@@ -86,6 +87,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
 
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
+    super.onStepOutNext(form, target);
     if(launched) {
       if(InstrumentRunStatus.IN_ERROR.equals(activeInstrumentRunService.getInstrumentRunStatus())) {
         error(getString("InstrumentApplicationError"));

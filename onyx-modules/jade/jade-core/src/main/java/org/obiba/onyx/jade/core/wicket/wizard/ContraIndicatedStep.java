@@ -26,19 +26,20 @@ import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 public class ContraIndicatedStep extends WizardStepPanel {
 
   private static final long serialVersionUID = 2498999653493497444L;
-  
+
   @SpringBean
   protected ActiveInstrumentRunService activeInstrumentRunService;
 
   public ContraIndicatedStep(String id) {
     super(id);
     setOutputMarkupId(true);
-    
+
     add(new Label(getTitleId(), new StringResourceModel("InstrumentRunContraIndicated", this, null)));
   }
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
+    super.onStepInNext(form, target);
     activeInstrumentRunService.setInstrumentRunStatus(InstrumentRunStatus.CONTRA_INDICATED);
     setContent(target, new ContraIndicatedPanel(getContentId()));
   }

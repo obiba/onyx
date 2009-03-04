@@ -17,7 +17,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.PatternValidator;
-import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.mica.core.service.ActiveConclusionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +37,6 @@ public class BalsacConfirmationPanel extends Panel {
 
   @SpringBean
   private ActiveConclusionService activeConclusionService;
-
-  @SpringBean(name = "activeInterviewService")
-  private ActiveInterviewService activeInterviewService;
 
   private BalsacSelection selectionModel;
 
@@ -71,7 +67,7 @@ public class BalsacConfirmationPanel extends Panel {
           }
         }
         target.addComponent(BalsacConfirmationPanel.this);
-        target.appendJavascript("resizeWizardContent();");
+        target.appendJavascript("Resizer.resizeWizard();");
       }
     });
 

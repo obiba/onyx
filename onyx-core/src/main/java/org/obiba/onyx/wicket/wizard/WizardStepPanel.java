@@ -76,7 +76,6 @@ public abstract class WizardStepPanel extends Panel {
    * @param target
    */
   public void onStepOutPrevious(WizardForm form, AjaxRequestTarget target) {
-
   }
 
   /**
@@ -85,7 +84,7 @@ public abstract class WizardStepPanel extends Panel {
    * @param target
    */
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
-
+    onPageStep(target);
   }
 
   /**
@@ -94,7 +93,7 @@ public abstract class WizardStepPanel extends Panel {
    * @param target
    */
   public void onStepInPrevious(WizardForm form, AjaxRequestTarget target) {
-
+    onPageStep(target);
   }
 
   /**
@@ -103,7 +102,16 @@ public abstract class WizardStepPanel extends Panel {
    * @param target
    */
   public void onStepOutNextError(WizardForm form, AjaxRequestTarget target) {
+  }
 
+  /**
+   * Call this after page step previous / next occured.
+   * @param target
+   */
+  protected void onPageStep(AjaxRequestTarget target) {
+    if(target != null) {
+      target.appendJavascript("Resizer.resizeWizard();");
+    }
   }
 
   public abstract void handleWizardState(WizardForm form, AjaxRequestTarget target);

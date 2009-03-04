@@ -61,11 +61,13 @@ public class OutputParametersStep extends WizardStepPanel {
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
+    super.onStepInNext(form, target);
     setContent(target, instrumentOutputParameterPanel = new InstrumentOutputParameterPanel(getContentId()));
   }
 
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
+    super.onStepOutNext(form, target);
     instrumentOutputParameterPanel.saveOutputInstrumentRunValues();
     activeInstrumentRunService.computeOutputParameters();
 

@@ -87,7 +87,6 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
             // Consent not submitted, inform the user that the submit button (PDF form) has to be clicked.
             if(!consentIsSubmitted) {
               error(getString("MissingConsentForm"));
-              target.appendJavascript("resizeWizardContent();");
 
               // Invalid electronic consent.
             } else if(consentIsAccepted && consentIsElectronic && !activeConsentService.validateElectronicConsent()) {
@@ -95,7 +94,6 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
               getElectronicConsentStep().setNextStep(null);
               gotoNext(target);
               this.changeWizardFormStyle("wizard-consent");
-              target.appendJavascript("resizeWizardContent();");
 
               // Valid electronic consent, refused electronic consent, or manual consent.
             } else {
@@ -111,11 +109,12 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
               // Save the consent
               consentService.saveConsent(activeConsentService.getConsent());
 
-              target.appendJavascript("resizeWizardContent();");
               if(actionDef != null) {
                 actionWindow.show(target, MarblePanel.this.getModel(), actionDef);
               }
             }
+
+            target.appendJavascript("Resizer.resizeWizard();");
           }
 
           @Override

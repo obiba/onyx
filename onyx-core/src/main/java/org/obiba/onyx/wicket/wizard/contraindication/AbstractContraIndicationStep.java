@@ -44,6 +44,7 @@ public abstract class AbstractContraIndicationStep extends WizardStepPanel {
 
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
+    super.onStepOutNext(form, target);
     // Persist contraindicatable.
     persistContraindicatable();
 

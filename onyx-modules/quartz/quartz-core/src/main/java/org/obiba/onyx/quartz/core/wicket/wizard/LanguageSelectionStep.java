@@ -19,6 +19,7 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.quartz.core.wicket.questionnaire.LanguageSelectorPanel;
 import org.obiba.onyx.wicket.wizard.WizardForm;
+import org.obiba.onyx.wicket.wizard.WizardStepPanel;
 
 /**
  * First step for questionnaire workflow. WizardStepPanel that calls LanguageSelectionPanel and implements actions to be
@@ -26,7 +27,7 @@ import org.obiba.onyx.wicket.wizard.WizardForm;
  * 
  * @author acarey
  */
-public class LanguageSelectionStep extends QuestionnaireWizardStepPanel {
+public class LanguageSelectionStep extends WizardStepPanel {
 
   private static final long serialVersionUID = 5343357448108404508L;
 
@@ -50,6 +51,7 @@ public class LanguageSelectionStep extends QuestionnaireWizardStepPanel {
 
   @Override
   public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
+    super.onStepOutNext(form, target);
     QuestionnaireWizardForm questionnaireForm = (QuestionnaireWizardForm) form;
     Locale language = selectorPanel.getLanguage();
 
@@ -76,6 +78,7 @@ public class LanguageSelectionStep extends QuestionnaireWizardStepPanel {
 
   @Override
   public void onStepInPrevious(WizardForm form, AjaxRequestTarget target) {
+    super.onStepInPrevious(form, target);
     ((QuestionnaireWizardForm) form).getProgressBar().setVisible(false);
   }
 
