@@ -52,6 +52,69 @@ public abstract class WizardForm extends Form {
     IBehavior buttonBehavior = new WizardButtonBehavior();
 
     // finish button
+    AjaxButton finish = createFinish();
+    finish.add(buttonBehavior);
+    finish.setEnabled(false);
+    finish.setOutputMarkupId(true);
+    add(finish);
+
+    // previous button
+    AjaxLink link = createPrevious();
+    link.setEnabled(false);
+    link.setOutputMarkupId(true);
+    link.add(buttonBehavior);
+    add(link);
+
+    // next button
+    AjaxButton button = createNext();
+    button.setOutputMarkupId(true);
+    button.add(buttonBehavior);
+    add(button);
+
+    // cancel button
+    add(createCancel());
+  }
+
+  //
+  //
+  //
+
+  protected AjaxButton createNext() {
+    AjaxButton button = new AjaxButton("nextLink") {
+      private static final long serialVersionUID = 0L;
+
+      @Override
+      protected void onSubmit(AjaxRequestTarget target, Form form) {
+        onNextSubmit(target, form);
+      }
+
+      @Override
+      protected void onError(AjaxRequestTarget target, Form form) {
+        onNextError(target, form);
+      }
+
+    };
+    button.add(new AttributeModifier("value", true, getLabelModel("Next")));
+
+    return button;
+  }
+
+  protected AjaxLink createPrevious() {
+    AjaxLink link = new AjaxLink("previousLink") {
+      private static final long serialVersionUID = 0L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        onPreviousClick(target);
+      }
+
+    };
+    link.add(new AttributeModifier("value", true, getLabelModel("Previous")));
+
+    return link;
+  }
+
+  protected AjaxButton createFinish() {
     AjaxButton finish = new AjaxButton("finish", this) {
 
       private static final long serialVersionUID = 0L;
@@ -68,49 +131,12 @@ public abstract class WizardForm extends Form {
 
     };
     finish.add(new AttributeModifier("value", true, getLabelModel("Finish")));
-    finish.add(buttonBehavior);
-    finish.setEnabled(false);
-    finish.setOutputMarkupId(true);
-    add(finish);
 
-    // previous button
-    AjaxLink link = new AjaxLink("previousLink") {
-      private static final long serialVersionUID = 0L;
+    return finish;
+  }
 
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        onPreviousClick(target);
-      }
-
-    };
-    link.add(new AttributeModifier("value", true, getLabelModel("Previous")));
-    link.setEnabled(false);
-    link.setOutputMarkupId(true);
-    link.add(buttonBehavior);
-    add(link);
-
-    // next button
-    AjaxButton button = new AjaxButton("nextLink") {
-      private static final long serialVersionUID = 0L;
-
-      @Override
-      protected void onSubmit(AjaxRequestTarget target, Form form) {
-        onNextSubmit(target, form);
-      }
-
-      @Override
-      protected void onError(AjaxRequestTarget target, Form form) {
-        onNextError(target, form);
-      }
-
-    };
-    button.add(new AttributeModifier("value", true, getLabelModel("Next")));
-    button.setOutputMarkupId(true);
-    button.add(buttonBehavior);
-    add(button);
-
-    // cancel button
-    link = new AjaxLink("cancelLink") {
+  protected AjaxLink createCancel() {
+    AjaxLink link = new AjaxLink("cancelLink") {
       private static final long serialVersionUID = 0L;
 
       @Override
@@ -120,7 +146,8 @@ public abstract class WizardForm extends Form {
 
     };
     link.add(new AttributeModifier("value", true, getLabelModel("Cancel")));
-    add(link);
+
+    return link;
   }
 
   //

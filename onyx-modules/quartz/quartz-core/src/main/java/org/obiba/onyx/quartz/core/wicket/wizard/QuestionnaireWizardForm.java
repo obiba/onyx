@@ -16,6 +16,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -78,6 +79,8 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   protected ModalWindow feedbackWindow;
 
+  protected ModalWindow adminWindow;
+
   protected ProgressBarPanel progressBar;
 
   //
@@ -88,7 +91,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     super(id, questionnaireModel);
 
     // Add Interrupt button.
-    addInterruptLink();
+    add(createInterrupt());
 
     // Language selection step.
     languageSelectionStep = new LanguageSelectionStep(getStepId());
@@ -102,6 +105,25 @@ public class QuestionnaireWizardForm extends WizardForm {
     progressBar.setVisible(false);
     add(progressBar);
 
+    createModalAdministrationPanel();
+
+    // admin button
+    AjaxLink link = new AjaxLink("adminLink") {
+      private static final long serialVersionUID = 0L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        QuestionnaireWizardAdministrationPanel admin = new QuestionnaireWizardAdministrationPanel(adminWindow.getContentId());
+        admin.setInterrupt(createInterrupt(), getInterruptLink().isEnabled(), getInterruptLink().isVisible());
+        admin.setCancel(createCancel(), getCancelLink().isEnabled(), getCancelLink().isVisible());
+        admin.setFinish(createFinish(), getFinishLink().isEnabled(), getFinishLink().isVisible());
+        adminWindow.setContent(admin);
+        adminWindow.show(target);
+      }
+
+    };
+    link.add(new AttributeModifier("value", true, new StringResourceModel("Administration", this, null)));
+    add(link);
   }
 
   private void createModalFeedbackPanel() {
@@ -113,9 +135,34 @@ public class QuestionnaireWizardForm extends WizardForm {
     add(feedbackWindow);
   }
 
+  private void createModalAdministrationPanel() {
+    // Create modal feedback window
+    adminWindow = new ModalWindow("adminWindow");
+    adminWindow.setCssClassName("onyx");
+    adminWindow.setInitialHeight(100);
+    adminWindow.setInitialWidth(300);
+    adminWindow.setContent(new EmptyPanel(adminWindow.getContentId()));
+    add(adminWindow);
+  }
+
   //
   // WizardForm Methods
   //
+
+  public void onInterrupt(AjaxRequestTarget target) {
+    IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
+    ActionDefinition actionDef = exec.getActionDefinition(ActionType.INTERRUPT);
+
+    if(actionDef != null) {
+      actionWindow.show(target, stageModel, actionDef, new ModalWindow.WindowClosedCallback() {
+
+        public void onClose(AjaxRequestTarget target) {
+          adminWindow.close(target);
+        }
+
+      });
+    }
+  }
 
   public void onCancel(AjaxRequestTarget target) {
     IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
@@ -179,15 +226,6 @@ public class QuestionnaireWizardForm extends WizardForm {
     startStep.handleWizardState(this, null);
   }
 
-  public void onInterrupt(AjaxRequestTarget target) {
-    IStageExecution exec = activeInterviewService.getStageExecution((Stage) stageModel.getObject());
-    ActionDefinition actionDef = exec.getActionDefinition(ActionType.INTERRUPT);
-
-    if(actionDef != null) {
-      actionWindow.show(target, stageModel, actionDef);
-    }
-  }
-
   public void setStageModel(StageModel stageModel) {
     this.stageModel = stageModel;
   }
@@ -200,7 +238,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     this.feedbackPanel = feedbackPanel;
   }
 
-  private void addInterruptLink() {
+  private AjaxLink createInterrupt() {
     AjaxLink link = new AjaxLink("interrupt") {
       private static final long serialVersionUID = 0L;
 
@@ -211,9 +249,8 @@ public class QuestionnaireWizardForm extends WizardForm {
 
     };
     link.add(new AttributeModifier("value", true, new StringResourceModel("Interrupt", QuestionnaireWizardForm.this, null)));
-    add(link);
 
-    // add(new ToggleLink("more", new Model("More"), new Model("Less"), link));
+    return link;
   }
 
   public Component getInterruptLink() {

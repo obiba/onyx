@@ -34,6 +34,8 @@ public abstract class ActionWindow extends Panel {
 
   private ModalWindow modal;
 
+  private ModalWindow.WindowClosedCallback additionnalWindowClosedCallback;
+
   @SuppressWarnings("serial")
   public ActionWindow(String id) {
     super(id);
@@ -58,6 +60,9 @@ public abstract class ActionWindow extends Panel {
           }
           activeInterviewService.doAction(stage, action, activeInterviewService.getInterview().getUser());
           onActionPerformed(target, stage, action);
+        }
+        if(additionnalWindowClosedCallback != null) {
+          additionnalWindowClosedCallback.onClose(target);
         }
       }
     });
@@ -84,6 +89,11 @@ public abstract class ActionWindow extends Panel {
 
   @SuppressWarnings("serial")
   public void show(AjaxRequestTarget target, IModel stageModel, ActionDefinition actionDefinition) {
+    show(target, stageModel, actionDefinition, null);
+  }
+
+  public void show(AjaxRequestTarget target, IModel stageModel, ActionDefinition actionDefinition, ModalWindow.WindowClosedCallback additionnalWindowClosedCallback) {
+    this.additionnalWindowClosedCallback = additionnalWindowClosedCallback;
     setModel(stageModel);
     modal.setContent(new ActionDefinitionPanel(modal.getContentId(), actionDefinition, target) {
 
