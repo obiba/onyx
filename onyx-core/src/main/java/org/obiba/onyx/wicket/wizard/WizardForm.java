@@ -79,7 +79,7 @@ public abstract class WizardForm extends Form {
   //
   //
 
-  protected AjaxButton createNext() {
+  private AjaxButton createNext() {
     AjaxButton button = new AjaxButton("nextLink") {
       private static final long serialVersionUID = 0L;
 
@@ -99,7 +99,7 @@ public abstract class WizardForm extends Form {
     return button;
   }
 
-  protected AjaxLink createPrevious() {
+  private AjaxLink createPrevious() {
     AjaxLink link = new AjaxLink("previousLink") {
       private static final long serialVersionUID = 0L;
 
@@ -114,7 +114,7 @@ public abstract class WizardForm extends Form {
     return link;
   }
 
-  protected AjaxButton createFinish() {
+  private AjaxButton createFinish() {
     AjaxButton finish = new AjaxButton("finish", this) {
 
       private static final long serialVersionUID = 0L;
@@ -135,7 +135,7 @@ public abstract class WizardForm extends Form {
     return finish;
   }
 
-  protected AjaxLink createCancel() {
+  private AjaxLink createCancel() {
     AjaxLink link = new AjaxLink("cancelLink") {
       private static final long serialVersionUID = 0L;
 

@@ -16,7 +16,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
@@ -83,6 +82,10 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   protected ProgressBarPanel progressBar;
 
+  private QuestionnaireWizardAdministrationPanel adminPanel;
+
+  private boolean adminWindowClosed = false;
+
   //
   // Constructors
   //
@@ -113,11 +116,9 @@ public class QuestionnaireWizardForm extends WizardForm {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        QuestionnaireWizardAdministrationPanel admin = new QuestionnaireWizardAdministrationPanel(adminWindow.getContentId());
-        admin.setInterrupt(createInterrupt(), getInterruptLink().isEnabled(), getInterruptLink().isVisible());
-        admin.setCancel(createCancel(), getCancelLink().isEnabled(), getCancelLink().isVisible());
-        admin.setFinish(createFinish(), getFinishLink().isEnabled(), getFinishLink().isVisible());
-        adminWindow.setContent(admin);
+        adminPanel.setInterruptState(getInterruptLink().isEnabled(), getInterruptLink().isVisible());
+        adminPanel.setCancelState(getCancelLink().isEnabled(), getCancelLink().isVisible());
+        adminPanel.setFinishState(getFinishLink().isEnabled(), getFinishLink().isVisible());
         adminWindow.show(target);
       }
 
@@ -135,13 +136,49 @@ public class QuestionnaireWizardForm extends WizardForm {
     add(feedbackWindow);
   }
 
+  @SuppressWarnings("serial")
   private void createModalAdministrationPanel() {
     // Create modal feedback window
     adminWindow = new ModalWindow("adminWindow");
     adminWindow.setCssClassName("onyx");
     adminWindow.setInitialHeight(100);
     adminWindow.setInitialWidth(300);
-    adminWindow.setContent(new EmptyPanel(adminWindow.getContentId()));
+
+    adminPanel = new QuestionnaireWizardAdministrationPanel(adminWindow.getContentId(), QuestionnaireWizardForm.this, adminWindow);
+    adminWindow.setContent(adminPanel);
+
+    adminWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
+
+      public boolean onCloseButtonClicked(AjaxRequestTarget target) {
+        adminWindowClosed = true;
+        return true;
+      }
+
+    });
+
+    adminWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+
+      public void onClose(AjaxRequestTarget target) {
+        if(!adminWindowClosed) {
+          switch(adminPanel.getActionSelected()) {
+          case INTERRUPT:
+            onInterrupt(target);
+            break;
+          case FINISH_SUBMIT:
+            onFinishSubmit(target, QuestionnaireWizardForm.this);
+            break;
+          case FINISH_ERROR:
+            onFinishError(target, QuestionnaireWizardForm.this);
+            break;
+          case CANCEL:
+            onCancelClick(target);
+          }
+        }
+        adminWindowClosed = false;
+      }
+
+    });
+
     add(adminWindow);
   }
 
@@ -154,13 +191,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     ActionDefinition actionDef = exec.getActionDefinition(ActionType.INTERRUPT);
 
     if(actionDef != null) {
-      actionWindow.show(target, stageModel, actionDef, new ModalWindow.WindowClosedCallback() {
-
-        public void onClose(AjaxRequestTarget target) {
-          adminWindow.close(target);
-        }
-
-      });
+      actionWindow.show(target, stageModel, actionDef);
     }
   }
 

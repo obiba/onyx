@@ -63,6 +63,7 @@ public abstract class ActionWindow extends Panel {
         }
         if(additionnalWindowClosedCallback != null) {
           additionnalWindowClosedCallback.onClose(target);
+          additionnalWindowClosedCallback = null;
         }
       }
     });
