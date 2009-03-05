@@ -258,6 +258,7 @@ public class QuestionnaireBuilder extends AbstractQuestionnaireElementBuilder<Qu
     propertyKeyProvider.getQuestionnaireProperties().add("clickHere");
     propertyKeyProvider.getQuestionnaireProperties().add("ok");
     propertyKeyProvider.getQuestionnaireProperties().add("cancel");
+    propertyKeyProvider.getQuestionnaireProperties().add("reset");
     propertyKeyProvider.getCategoryProperties().add("description");
     propertyKeyProvider.getCategoryProperties().add("imageSelected");
     propertyKeyProvider.getCategoryProperties().add("imageDeselected");

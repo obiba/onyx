@@ -47,12 +47,19 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
 
   private static final int CATEGORY_IMAGE_SPACING = 5;
 
-  private static final int TWO_COLUMNS_VIEW_WIDTH = 550;
+  private static final int TWO_COLUMNS_REGULAR_VIEW_WIDTH = 750;
 
   /**
    * Applies to at least three columns in the grid view.
    */
-  private static final int MANY_COLUMNS_VIEW_WIDTH = 750;
+  private static final int MANY_COLUMNS_REGULAR_VIEW_WIDTH = 900;
+
+  private static final int TWO_COLUMNS_ESCAPE_VIEW_WIDTH = 550;
+
+  /**
+   * Applies to at least three columns in the grid view.
+   */
+  private static final int MANY_COLUMNS_ESCAPE_VIEW_WIDTH = 750;
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SimplifiedQuestionCategoriesPanel.class);
@@ -105,21 +112,26 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     filter.addFilter(new QuestionCategoryImageFilter(false));
     filter.addFilter(new QuestionCategoryEscapeFilter(false));
     filter.addFilter(new QuestionCategoryOpenAnswerFilter(false));
-    add(new QuestionCategoryLinksView("regularCategories", getModel(), filter, new QuestionCategoryListToGridPermutator(getModel())));
+    QuestionCategoryLinksView view = new QuestionCategoryLinksView("regularCategories", getModel(), filter, new QuestionCategoryListToGridPermutator(getModel()));
+    add(view);
   }
 
   /**
    * Regular image categories (i.e., categories represented by images rather than text), in a single row.
    */
   private void addRegularImageCategoriesView() {
-    add(new QuestionCategoryImageLinksView("regularImageCategories", getModel(), new QuestionCategoryImageFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1)));
+    QuestionCategoryImageLinksView view = new QuestionCategoryImageLinksView("regularImageCategories", getModel(), new QuestionCategoryImageFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1));
+    add(view);
   }
 
   /**
    * Escape categories in one row.
    */
   private void addEscapeCategoriesView() {
-    add(new QuestionCategoryLinksView("escapeCategories", getQuestionModel(), new QuestionCategoryEscapeFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1)));
+    QuestionCategoryLinksView view = new QuestionCategoryLinksView("escapeCategories", getQuestionModel(), new QuestionCategoryEscapeFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1));
+    view.setTwoColumnsWidth(TWO_COLUMNS_ESCAPE_VIEW_WIDTH);
+    view.setManyColumnsWidth(MANY_COLUMNS_ESCAPE_VIEW_WIDTH);
+    add(view);
   }
 
   private IModel getQuestionModel() {
@@ -151,16 +163,28 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
   @SuppressWarnings("serial")
   private static class QuestionCategoryLinksView extends QuestionCategoryComponentsView {
 
+    private int twoColumnsWidth = TWO_COLUMNS_REGULAR_VIEW_WIDTH;
+
+    private int manyColumnsWidth = MANY_COLUMNS_REGULAR_VIEW_WIDTH;
+
     public QuestionCategoryLinksView(String id, IModel questionModel, IDataListFilter<IModel> filter, IDataListPermutator<IModel> permutator) {
       super(id, questionModel, filter, permutator);
+    }
+
+    public void setTwoColumnsWidth(int twoColumnsWidth) {
+      this.twoColumnsWidth = twoColumnsWidth;
+    }
+
+    public void setManyColumnsWidth(int manyColumnsWidth) {
+      this.manyColumnsWidth = manyColumnsWidth;
     }
 
     @Override
     protected void onComponentTag(ComponentTag tag) {
       if(getColumns() == 2) {
-        tag.getAttributes().put("style", "width: " + TWO_COLUMNS_VIEW_WIDTH + "px;");
+        tag.getAttributes().put("style", "width: " + twoColumnsWidth + "px;");
       } else if(getColumns() >= 3) {
-        tag.getAttributes().put("style", "width: " + MANY_COLUMNS_VIEW_WIDTH + "px;");
+        tag.getAttributes().put("style", "width: " + manyColumnsWidth + "px;");
       }
       super.onComponentTag(tag);
     }
