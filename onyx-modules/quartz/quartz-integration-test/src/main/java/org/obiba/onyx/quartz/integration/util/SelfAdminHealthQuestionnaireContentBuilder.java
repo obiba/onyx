@@ -224,6 +224,14 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("EVER_WORKED").withSharedCategory(DNK, "9");
     builder.inQuestion("EVER_WORKED").setCondition("$1 && !$2 && !$3", builder.newDataSource("IS_LONGEST_TIME_OCCUPATION"), builder.newDataSource("IS_LONGEST_TIME_OCCUPATION", Y), builder.newDataSource("EMPLOYED", Y));
 
+    builder.inSection("WORKING_STATUS").withPage("29_1").withQuestion("COMPUTER_TIME");
+    builder.inQuestion("COMPUTER_TIME").withCategory("HOUR_DAY").withOpenAnswerDefinition("HOUR_DAY", DataType.INTEGER).addValidator(NumberValidator.range(1, 24));
+    builder.inQuestion("COMPUTER_TIME").withCategory("HOUR_WEEK").withOpenAnswerDefinition("HOUR_WEEK", DataType.INTEGER).addValidator(NumberValidator.range(1, 24 * 7));
+    builder.inQuestion("COMPUTER_TIME").withCategory("HOUR_MONTH").withOpenAnswerDefinition("HOUR_MONTH", DataType.INTEGER).addValidator(NumberValidator.range(1, 24 * 31));
+    builder.inQuestion("COMPUTER_TIME").withCategory("DONT_USE");
+    builder.inQuestion("COMPUTER_TIME").withSharedCategory(PNA, "8");
+    builder.inQuestion("COMPUTER_TIME").withSharedCategory(DNK, "9");
+
     builder.withSection("C_LIFE_HABITS").withSection("TOBACCO_USE").withPage("32").withQuestion("EVER_USED", "31").withSharedCategory(N, "0");
     builder.inQuestion("EVER_USED").withSharedCategory(Y, "1");
     builder.inQuestion("EVER_USED").withSharedCategory(PNA, "8");
