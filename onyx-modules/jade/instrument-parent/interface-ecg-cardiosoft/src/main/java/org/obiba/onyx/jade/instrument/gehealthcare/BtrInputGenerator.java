@@ -80,7 +80,10 @@ public class BtrInputGenerator {
     putString(bb, inputData.get("INPUT_PARTICIPANT_LAST_NAME").getValueAsString()); // 0-30
     putString(bb, inputData.get("INPUT_PARTICIPANT_FIRST_NAME").getValueAsString()); // 31-61
 
-    bb.putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_BIRTH_YEAR").getValueAsString())).putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_BIRTH_MONTH").getValueAsString())).putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_BIRTH_DAY").getValueAsString())); // 62-63,64-65,66-67
+    // We need to add one to the birthday month since the month of January is represented by "0" in
+    // java.util.Calendar (we need January to be "1" here).
+    short birthdayMonth = (short) (Short.parseShort(inputData.get("INPUT_PARTICIPANT_BIRTH_MONTH").getValueAsString()) + 1);
+    bb.putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_BIRTH_YEAR").getValueAsString())).putShort(birthdayMonth).putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_BIRTH_DAY").getValueAsString())); // 62-63,64-65,66-67
 
     putString(bb, inputData.get("INPUT_PARTICIPANT_BARCODE").getValueAsString()); // 68-98
     bb.putInt(Integer.valueOf(inputData.get("INPUT_PARTICIPANT_BARCODE").getValueAsString())); // 99-102
