@@ -10,7 +10,6 @@
 package org.obiba.onyx.webapp.participant.panel;
 
 import org.apache.wicket.Application;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
@@ -23,8 +22,6 @@ public class InterviewMenuBar extends MenuBar {
     super(id);
     setOutputMarkupId(true);
 
-    add(new Label("interviewLabel", "Interview"));
-    
     AbstractLink link = new BookmarkablePageLink("exitLink", Application.get().getHomePage(), null);
     add(link);
   }

@@ -39,7 +39,6 @@ import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.CommentsModalPanel;
 import org.obiba.onyx.webapp.participant.panel.InterviewMenuBar;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
-import org.obiba.onyx.webapp.stage.panel.StageMenuBar;
 import org.obiba.onyx.webapp.stage.panel.StageSelectionPanel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
