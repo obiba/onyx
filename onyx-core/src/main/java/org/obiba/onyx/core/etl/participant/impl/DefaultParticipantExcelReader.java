@@ -501,7 +501,11 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
       String textValue = data.getValue();
 
       if(!allowedValues.contains(textValue)) {
-        throw new IllegalArgumentException("Value not allowed for field '" + attribute.getName() + "': " + textValue);
+        if(attribute.isMandatoryAtEnrollment()) {
+          throw new IllegalArgumentException("Value not allowed for field '" + attribute.getName() + "': " + textValue);
+        } else {
+          data.setValue("");
+        }
       }
     }
   }
