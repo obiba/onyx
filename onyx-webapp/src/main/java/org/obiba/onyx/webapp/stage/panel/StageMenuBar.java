@@ -9,26 +9,18 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.stage.panel;
 
-import java.text.DateFormat;
-
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
-import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 
 public class StageMenuBar extends MenuBar {
 
   private static final long serialVersionUID = 8805458043658346936L;
-
-  @SpringBean(name = "userSessionService")
-  private UserSessionService userSessionService;
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
@@ -40,14 +32,9 @@ public class StageMenuBar extends MenuBar {
     Participant participant = activeInterviewService.getParticipant();
 
     add(new Label("stageLabel", new MessageSourceResolvableStringModel(new PropertyModel(stageModel, "description"))));
-    add(new Label("participantLabel", participant.getFullName() + " / " + participant.getBarcode()));
-    add(new Label("birthDateLabel", DateModelUtils.getDateModel(new PropertyModel(this, "dateFormat"), new Model(participant.getBirthDate()))));
+    add(new Label("participantLabel", participant.getBarcode()));
   }
 
   protected void buildMenus() {
-  }
-
-  public DateFormat getDateFormat() {
-    return userSessionService.getDateFormat();
   }
 }
