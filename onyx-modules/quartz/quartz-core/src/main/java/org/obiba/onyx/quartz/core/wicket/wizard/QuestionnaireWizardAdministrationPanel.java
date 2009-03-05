@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.wizard;
 
+import java.util.Locale;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -55,7 +57,7 @@ public class QuestionnaireWizardAdministrationPanel extends Panel {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
-        actionSelected = Action.INTERRUPT;
+        actionSelected = Action.CANCEL;
         adminWindow.close(target);
       }
 
@@ -95,14 +97,19 @@ public class QuestionnaireWizardAdministrationPanel extends Panel {
   }
 
   public QuestionnaireWizardAdministrationPanel setFinishState(boolean enabled, boolean visible) {
+    get("finish").setEnabled(enabled);
+    get("finish").setVisible(visible);
+    return this;
+  }
+
+  public QuestionnaireWizardAdministrationPanel setCancelState(boolean enabled, boolean visible) {
     get("cancelLink").setEnabled(enabled);
     get("cancelLink").setVisible(visible);
     return this;
   }
 
-  public QuestionnaireWizardAdministrationPanel setCancelState(boolean enabled, boolean visible) {
-    get("finish").setEnabled(enabled);
-    get("finish").setVisible(visible);
-    return this;
+  @Override
+  public Locale getLocale() {
+    return getPage().getLocale();
   }
 }

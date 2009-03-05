@@ -141,7 +141,8 @@ public class QuestionnaireWizardForm extends WizardForm {
     // Create modal feedback window
     adminWindow = new ModalWindow("adminWindow");
     adminWindow.setCssClassName("onyx");
-    adminWindow.setInitialHeight(100);
+    adminWindow.setMinimalHeight(50);
+    adminWindow.setInitialHeight(50);
     adminWindow.setInitialWidth(300);
 
     adminPanel = new QuestionnaireWizardAdministrationPanel(adminWindow.getContentId(), QuestionnaireWizardForm.this, adminWindow);
