@@ -332,6 +332,7 @@ div.form-button {
 }
 
 .form-button input.obiba-nav-prev {
+  cursor: pointer;
   position: absolute;
   left: 54px;
   background-image: url('../icons/button_navigation_back.png');
@@ -342,6 +343,7 @@ div.form-button {
 }
 
 .form-button input.obiba-nav-prev.disabled {
+  cursor: default;
   position: absolute;
   left: 54px;
   background-image: url('../icons/button_navigation_back_disable.png');
@@ -352,6 +354,7 @@ div.form-button {
 }
 
 .form-button input.obiba-nav-next {
+  cursor: pointer;
   position: absolute;
   right: 54px;
   background-image: url('../icons/button_navigation_next.png');
@@ -362,6 +365,7 @@ div.form-button {
 }
 
 .form-button input.obiba-nav-next.disabled {
+  cursor: default;
   position: absolute;
   right: 54px;
   background-image: url('../icons/button_navigation_next_disable.png');
@@ -369,4 +373,13 @@ div.form-button {
   background-position: right;
   padding-right: 74px;
   text-align: right;
+}
+
+/* Remove dotted border around buttons */
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+input[type="file"] > input[type="button"]::-moz-focus-inner {
+    border: none;
 }

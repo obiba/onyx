@@ -110,6 +110,24 @@ Resizer.resizeWizard = function() {
 	}
 }
 
+Resizer.resizeMenu = function() {
+    var menuWrapper = $('#menuWrapper');
+    if (menuWrapper) {
+	    var menuItems = $('#menuWrapper .obiba-menu li');   
+	    if (menuItems.length != 0) {	        
+	        var menuWidth = 0;	        
+	        for (var i=0; i<menuItems.length; i++) {
+	            computedWidth = document.defaultView.getComputedStyle(menuItems[i], "").getPropertyValue("width");
+	            if (computedWidth.indexOf('px') != -1) {
+	                menuWidth += parseInt(computedWidth.substring(0, computedWidth.length-2));
+	            }
+	        }
+	        menuWrapper.width(menuWidth + 'px');
+        }
+    }
+}
+WindowUtil.attachEvent("load", Resizer.resizeMenu);
+
 function resizeModalFeedback() {
 	var feedback = $('div.wicket-modal div.onyx ul.feedback');
 	var modalContent = $('div.wicket-modal div.onyx div.w_content > div');
@@ -121,7 +139,7 @@ function resizeNumericPad() {
 	var modalContent = $('div.wicket-modal div.onyx div.w_content > div');
 	modalContent.height(feedback.height() + 405);
 }
-
+        
 //////////////////////////////////////////////////////////////////////
 // JQuery Layout
 //////////////////////////////////////////////////////////////////////
