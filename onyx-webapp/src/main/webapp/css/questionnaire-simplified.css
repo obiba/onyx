@@ -15,10 +15,12 @@
 .obiba-quartz-boilerplate {
 	line-height:1.4;
 	text-align: center;
+	padding-left:20px;
+	padding-right:20px;
 }
 
 .obiba-quartz-boilerplate .ui-widget-header {
-	height:550px;
+	height:500px;
 }
 
 .obiba-quartz-question {
