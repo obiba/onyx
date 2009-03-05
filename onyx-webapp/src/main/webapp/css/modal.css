@@ -18,6 +18,10 @@ div.wicket-modal {
 
 /*************** Onyx Style Modal Window ********************/
 
+div.wicket-mask-dark {
+	opacity:0.4 !important;
+}
+
 div.wicket-modal div.onyx a.w_close {
   background-position:-45px 45px;
   height:25px;
