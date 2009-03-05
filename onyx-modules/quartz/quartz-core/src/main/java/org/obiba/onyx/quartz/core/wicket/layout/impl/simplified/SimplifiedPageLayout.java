@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.resources.StyleSheetReference;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.data.IDataSource;
@@ -72,8 +72,6 @@ public class SimplifiedPageLayout extends PageLayout {
     } else {
       add(new Label("question").setVisible(false));
     }
-
-    add(HeaderContributor.forCss("css/questionnaire-simplified.css"));
   }
 
   /**

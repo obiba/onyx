@@ -85,9 +85,6 @@ public class DefaultPageLayout extends PageLayout implements IQuestionAnswerChan
 
     });
     questionsView.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
-
-    // TODO get it from questionnaire bundle ?
-    add(HeaderContributor.forCss("css/questionnaire.css"));
   }
 
   /**
