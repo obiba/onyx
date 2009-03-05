@@ -2,6 +2,7 @@ div.wicket-modal div.onyx .feedback {
   margin-left:-35px;  
   padding-top:10px;  
   font-weight:bold;  
+  font-size:14px;
 }
 
 div.wicket-modal div.onyx li.feedbackPanelERROR {

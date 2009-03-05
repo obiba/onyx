@@ -114,7 +114,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
 
     // Create a decorated submit "OK" button.
     ResourceReference buttonDecorator = new ResourceReference(NumericPad.class, "check2.gif");
-    AjaxImageSubmitLink submitLink = new AjaxImageSubmitLink("ok", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "ok"), null, buttonDecorator) {
+    AjaxImageSubmitLink submitLink = new AjaxImageSubmitLink("ok", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "ok")) {
 
       @Override
       public void onError(AjaxRequestTarget target, Form form) {

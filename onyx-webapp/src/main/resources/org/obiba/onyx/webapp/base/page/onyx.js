@@ -119,7 +119,7 @@ function resizeModalFeedback() {
 function resizeNumericPad() {
 	var feedback = $('div.wicket-modal div.onyx ul');
 	var modalContent = $('div.wicket-modal div.onyx div.w_content > div');
-	modalContent.height(feedback.height() + 470);
+	modalContent.height(feedback.height() + 405);
 }
 
 //////////////////////////////////////////////////////////////////////

@@ -72,8 +72,8 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
     // Create modal window
     add(padWindow = new ModalWindow("padModal"));
     padWindow.setCssClassName("onyx");
-    padWindow.setInitialWidth(379);
-    padWindow.setInitialHeight(450);
+    padWindow.setInitialWidth(288);
+    padWindow.setInitialHeight(385);
     padWindow.setResizable(false);
 
     final AbstractOpenAnswerDefinitionPanel pad = createPad(padWindow);

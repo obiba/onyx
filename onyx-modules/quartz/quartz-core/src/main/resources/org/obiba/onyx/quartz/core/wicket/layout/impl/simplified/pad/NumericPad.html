@@ -34,9 +34,9 @@
 		
 		<form class="pad-form" wicket:id="form" autocomplete="off">		
 		  
-		  <table style="margin: auto; width: 230px;">
+		  <table style="margin: auto; width: 100%;padding: 0px 16px;">
 		  	<tr>
-		  		<td><span wicket:id="category"/>: <span wicket:id="value"/></td>
+		  		<td><span class="valuepressed-label" wicket:id="category"/>: <span class="valuepressed-value" wicket:id="value"/></td>
 		  		<td><span class="imagelink" wicket:id="clear" /></td>
 		  	</tr>	
 		  </table>		  
@@ -44,7 +44,7 @@
 		  <div class="separator"/>
 			
 		  <div class="pad-actions">
-		    <span class="imagelink" style="float:left" wicket:id="ok"/><span class="imagelink" style="float:left" wicket:id="cancel"/>
+		    <span class="imagelink" style="float:left;padding-right:10px;width:80px;" wicket:id="ok"/><span class="imagelink" style="float:left;padding-left:10px;width:80px;" wicket:id="cancel"/>
 		  </div>
 		</form>		
 	</div>
