@@ -41,6 +41,7 @@ public abstract class ActionWindow extends Panel {
     super(id);
 
     add(modal = new ModalWindow("modal"));
+    modal.setCssClassName("onyx");
     modal.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
       public boolean onCloseButtonClicked(AjaxRequestTarget target) {
         // same as cancel

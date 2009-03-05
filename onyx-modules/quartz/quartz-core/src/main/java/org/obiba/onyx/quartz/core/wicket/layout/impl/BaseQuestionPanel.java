@@ -101,6 +101,7 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
     // Create modal comments window
     final ModalWindow commentWindow;
     add(commentWindow = new ModalWindow("addCommentModal"));
+    commentWindow.setCssClassName("onyx");
 
     final IModel commentWindowTitleModel = new LoadableDetachableModel() {
 

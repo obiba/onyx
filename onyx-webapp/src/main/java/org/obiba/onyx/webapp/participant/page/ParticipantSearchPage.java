@@ -110,12 +110,14 @@ public class ParticipantSearchPage extends BasePage {
     super();
 
     participantDetailsModalWindow = new ModalWindow("participantDetailsModalWindow");
+    participantDetailsModalWindow.setCssClassName("onyx");
     participantDetailsModalWindow.setTitle(new StringResourceModel("Participant", this, null));
     participantDetailsModalWindow.setInitialHeight(300);
     participantDetailsModalWindow.setInitialWidth(400);
     add(participantDetailsModalWindow);
 
     editParticipantDetailsModalWindow = new ModalWindow("editParticipantDetailsModalWindow");
+    editParticipantDetailsModalWindow.setCssClassName("onyx");
     editParticipantDetailsModalWindow.setTitle(new StringResourceModel("EditParticipantInfo", this, null));
     editParticipantDetailsModalWindow.setInitialHeight(400);
     editParticipantDetailsModalWindow.setInitialWidth(600);

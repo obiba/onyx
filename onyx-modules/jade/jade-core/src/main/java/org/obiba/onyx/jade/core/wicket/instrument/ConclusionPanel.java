@@ -26,6 +26,7 @@ public class ConclusionPanel extends Panel {
 
     final ModalWindow modal;
     add(modal = new ModalWindow("modal"));
+    modal.setCssClassName("onyx");
     modal.setCookieName("instrument-run-modal");
 
     add(new AjaxLink("show") {

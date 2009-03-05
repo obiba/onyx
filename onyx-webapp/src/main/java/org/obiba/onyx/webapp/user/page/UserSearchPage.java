@@ -72,6 +72,7 @@ public class UserSearchPage extends BasePage {
     super();
 
     userDetailsModalWindow = new ModalWindow("userDetailsModalWindow");
+    userDetailsModalWindow.setCssClassName("onyx");
     userDetailsModalWindow.setTitle(new StringResourceModel("UserManagement", this, null));
 
     userDetailsModalWindow.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {

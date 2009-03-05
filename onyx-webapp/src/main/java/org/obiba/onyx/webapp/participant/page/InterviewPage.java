@@ -85,6 +85,7 @@ public class InterviewPage extends BasePage {
       // Create modal comments window
       final ModalWindow commentsWindow;
       add(commentsWindow = new ModalWindow("addCommentsModal"));
+      commentsWindow.setCssClassName("onyx");
       commentsWindow.setTitle(new StringResourceModel("CommentsWindow", this, null));
       commentsWindow.setInitialHeight(400);
       commentsWindow.setInitialWidth(600);
