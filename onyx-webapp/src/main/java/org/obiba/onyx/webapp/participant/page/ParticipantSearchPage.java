@@ -410,7 +410,7 @@ public class ParticipantSearchPage extends BasePage {
       columns.add(new AbstractColumn(new StringResourceModel("Gender", ParticipantSearchPage.this, null), "gender") {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          cellItem.add(new Label(componentId, new StringResourceModel("Gender.${gender}", ParticipantSearchPage.this, rowModel)));
+          cellItem.add(new Label(componentId, new StringResourceModel("Gender.${gender}", ParticipantSearchPage.this, new Model(new GenderObject(rowModel)))));
         }
 
       });
@@ -621,5 +621,30 @@ public class ParticipantSearchPage extends BasePage {
     Participant getParticipant() {
       return (Participant) getModelObject();
     }
+  }
+
+  private class GenderObject implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private IModel participantModel;
+
+    /**
+     * @param participantModel
+     */
+    public GenderObject(IModel participantModel) {
+      super();
+      this.participantModel = participantModel;
+    }
+
+    public String getGender() {
+      PropertyModel genderModel = new PropertyModel(participantModel, "gender");
+      if(genderModel.getObject() != null) {
+        return genderModel.getObject().toString();
+      } else {
+        return "Null";
+      }
+    }
+
   }
 }

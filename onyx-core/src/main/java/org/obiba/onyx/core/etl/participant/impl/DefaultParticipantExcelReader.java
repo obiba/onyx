@@ -334,15 +334,17 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
     participant.setLastName(lastName);
 
     data = getEssentialAttributeValue(BIRTH_DATE_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    Date birthDate = data.getValue();
+    Date birthDate = (data != null) ? (Date) data.getValue() : null;
     participant.setBirthDate(birthDate);
 
     data = getEssentialAttributeValue(GENDER_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(GENDER_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    String gender = data.getValue();
+    String gender = (data != null) ? data.getValueAsString() : "";
     if(gender.equals("M")) {
       participant.setGender(Gender.MALE);
     } else if(gender.equals("F")) {
       participant.setGender(Gender.FEMALE);
+    } else {
+      participant.setGender(null);
     }
   }
 
@@ -437,7 +439,11 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
         break;
       }
     } catch(IllegalArgumentException ex) {
-      throw new IllegalArgumentException("Wrong data type value for field '" + attribute.getName() + "': " + cell.toString());
+      if(attribute.isMandatoryAtEnrollment()) {
+        throw new IllegalArgumentException("Wrong data type value for field '" + attribute.getName() + "': " + cell.toString());
+      } else {
+        return null;
+      }
     }
 
     // For TEXT-type attributes, if the attribute has a list of allowed values, validate that the value

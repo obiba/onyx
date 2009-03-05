@@ -383,7 +383,7 @@ public class EditParticipantPanel extends Panel {
 
     public Object getDisplayValue(Object object) {
       // Prepend "Gender." to generate the proper resource bundle key
-      return "Gender." + object.toString();
+      return (object != null) ? "Gender." + object.toString() : null;
     }
 
     public String getIdValue(Object object, int index) {

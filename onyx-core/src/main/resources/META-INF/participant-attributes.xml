@@ -38,10 +38,10 @@
   <attribute>
     <name>Birth Date</name>
     <assignableAtEnrollment>true</assignableAtEnrollment>
-    <mandatoryAtEnrollment>true</mandatoryAtEnrollment>
+    <mandatoryAtEnrollment>false</mandatoryAtEnrollment>
     <mandatoryAtReception>true</mandatoryAtReception>
     <editableAtReception>true</editableAtReception>
-    <editableAfterReception>false</editableAfterReception>
+    <editableAfterReception>true</editableAfterReception>
     <type>DATE</type>
     <validators>
       <rangeValidator type="DATE">
@@ -52,10 +52,10 @@
   <attribute>
     <name>Gender</name>
     <assignableAtEnrollment>true</assignableAtEnrollment>
-    <mandatoryAtEnrollment>true</mandatoryAtEnrollment>
+    <mandatoryAtEnrollment>false</mandatoryAtEnrollment>
     <mandatoryAtReception>true</mandatoryAtReception>
     <editableAtReception>true</editableAtReception>
-    <editableAfterReception>false</editableAfterReception>
+    <editableAfterReception>true</editableAfterReception>
     <type>TEXT</type>
     <allowedValues>
       <string>F</string>

@@ -17,6 +17,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
@@ -66,7 +67,8 @@ public class ParticipantPanel extends Panel {
   }
 
   public String getLocalizedGender() {
-    return getString("Gender." + ((Participant) getModelObject()).getGender());
+    Gender gender = ((Participant) getModelObject()).getGender();
+    return (gender != null) ? getString("Gender." + gender) : null;
   }
 
   public DateFormat getDateFormat() {
