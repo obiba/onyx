@@ -331,6 +331,20 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("BINGE_DRINKING_FEMALE_MOD_FREQ").setCondition("$1 && ($2 || $3)", builder.newDataSource("SEX", "FEMALE"), builder.newDataSource("ALCOHOL_FREQUENCY", MONTHLY), builder.newDataSource("ALCOHOL_FREQUENCY", LESS_MONTHLY));
     builder.inPage("45").addTimestamp("TS_AI");
 
+    builder.inSection("C_LIFE_HABITS").withSection("FEELINGS").withPage("46").withQuestion("FEELINGS_BOILERPLATE");
+    builder.inSection("FEELINGS").withPage("47").withQuestion("FEELINGS");
+    builder.inQuestion("FEELINGS").withCategories("NOT_AT_ALL", "SEVERAL_DAYS", "MORE_THAN_HALF_A_DAY", "NEARLY_EVERY_DAY");
+    builder.inQuestion("FEELINGS").withSharedCategories(PNA, DNK);
+    builder.inQuestion("FEELINGS").withQuestion("NERVOUS");
+    builder.inQuestion("FEELINGS").withQuestion("WORRY_CONTROL");
+    builder.inQuestion("FEELINGS").withQuestion("WOORY_TOO_MUCH");
+    builder.inQuestion("FEELINGS").withQuestion("TROUBLE_RELAXING");
+    builder.inQuestion("FEELINGS").withQuestion("RESTLESS");
+    builder.inQuestion("FEELINGS").withQuestion("IRRITABLE");
+    builder.inQuestion("FEELINGS").withQuestion("AFRAID");
+
+    builder.withSection("CONCLUSION").withPage("48").withQuestion("CONCLUSION");
+
     return builder;
   }
 }

@@ -68,18 +68,14 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
       add(new EmptyPanel("help").setVisible(false));
     }
 
-    // specifications
-    QuestionnaireStringResourceModel specificationsModel = new QuestionnaireStringResourceModel(question, "specifications");
-    if(specificationsModel.getString() != null && !specificationsModel.getString().trim().equals("")) {
-      Label specifications = new Label("specifications", specificationsModel);
-      specifications.setEscapeModelStrings(false);
-      add(specifications);
-    } else {
-      add(new EmptyPanel("specifications").setVisible(false));
-    }
+    QuestionnaireStringResourceModel stringModel = new QuestionnaireStringResourceModel(question, "instructions");
+    add(new Label("instructions", stringModel).setEscapeModelStrings(false).setVisible(!isEmptyString(stringModel.getString())));
 
-    add(new Label("instructions", new QuestionnaireStringResourceModel(question, "instructions")).setEscapeModelStrings(false));
-    add(new Label("caption", new QuestionnaireStringResourceModel(question, "caption")).setEscapeModelStrings(false));
+    stringModel = new QuestionnaireStringResourceModel(question, "caption");
+    add(new Label("caption", stringModel).setEscapeModelStrings(false).setVisible(!isEmptyString(stringModel.getString())));
+
+    stringModel = new QuestionnaireStringResourceModel(question, "specifications");
+    add(new Label("specifications", stringModel).setEscapeModelStrings(false).setVisible(!isEmptyString(stringModel.getString())));
 
     // change the css rendering in case of a boiler plate
     if(question.isBoilerPlate()) {
@@ -89,6 +85,10 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
       setContent("content");
     }
 
+  }
+
+  private boolean isEmptyString(String str) {
+    return str == null || str.trim().equals("");
   }
 
   public void setCommentVisible(boolean visible) {
