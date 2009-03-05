@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.pad;
 
-import java.util.List;
-
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -22,16 +20,17 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.IValidator;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.util.OpenAnswerDefinitionValidatorFactory;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
-import org.obiba.onyx.wicket.data.IDataValidator;
 import org.obiba.onyx.wicket.link.AjaxImageLink;
 import org.obiba.onyx.wicket.link.AjaxImageSubmitLink;
 import org.slf4j.Logger;
@@ -93,8 +92,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
     padForm.add(valuePressed);
 
     // Transfer the validators of the OpenAnswer field to the numeric pad.
-    List<IDataValidator> validators = getOpenAnswerDefinition().getDataValidators();
-    for(IDataValidator dataValidator : validators) {
+    for(IValidator dataValidator : OpenAnswerDefinitionValidatorFactory.getValidators(getOpenAnswerDefinitionModel(), activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant())) {
       valuePressed.add(dataValidator);
     }
 
@@ -107,6 +105,8 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
       labelModel = questionCategoryModel;
     }
     padForm.add(new Label("category", new QuestionnaireStringResourceModel(labelModel, "label")));
+    // for error messages
+    valuePressed.setLabel(new QuestionnaireStringResourceModel(labelModel, "label"));
 
     // Add a feedback panel to the numeric pad for error reporting.
     final FeedbackPanel padFeedbackPanel = new FeedbackPanel("feedback");

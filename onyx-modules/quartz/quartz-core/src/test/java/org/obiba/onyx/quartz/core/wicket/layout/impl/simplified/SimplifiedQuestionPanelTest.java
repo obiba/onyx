@@ -36,10 +36,12 @@ import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionAnswer;
+import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -86,6 +88,8 @@ public class SimplifiedQuestionPanelTest {
   private IPropertyKeyProvider propertyKeyProvider;
 
   private Locale locale = Locale.ENGLISH;
+
+  private QuestionnaireParticipant questionnaireParticipant;
 
   @Before
   public void setUp() {
@@ -268,6 +272,9 @@ public class SimplifiedQuestionPanelTest {
     application.setHomePage(Page.class);
     application.setApplicationContext(mockCtx);
     tester = new WicketTester(application);
+
+    questionnaireParticipant = new QuestionnaireParticipant();
+    questionnaireParticipant.setParticipant(new Participant());
   }
 
   @Test
@@ -388,6 +395,7 @@ public class SimplifiedQuestionPanelTest {
 
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaireParticipant()).andReturn(questionnaireParticipant);
     expect(activeQuestionnaireAdministrationServiceMock.getComment((Question) EasyMock.anyObject())).andReturn("").times(1);
     expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer(question, question.getCategories().get(0), open)).andReturn(null).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(1))).andReturn(previousCategoryAnswer).atLeastOnce();
@@ -460,6 +468,7 @@ public class SimplifiedQuestionPanelTest {
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getComment((Question) EasyMock.anyObject())).andReturn("").times(1);
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaireParticipant()).andReturn(questionnaireParticipant).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer(question, question.getCategories().get(0), openHours)).andReturn(null).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer(question, question.getCategories().get(0), openMinutes)).andReturn(null).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(1))).andReturn(previousCategoryAnswer).atLeastOnce();
