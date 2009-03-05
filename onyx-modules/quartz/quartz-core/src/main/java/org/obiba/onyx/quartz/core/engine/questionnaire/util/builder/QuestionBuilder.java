@@ -258,6 +258,16 @@ public class QuestionBuilder extends AbstractQuestionnaireElementBuilder<Questio
   }
 
   /**
+   * Add a {@link Category} to current {@link Question}, make it the current category.
+   * @param name
+   * @param exportName
+   * @return
+   */
+  public CategoryBuilder withCategory(String name, String exportName) {
+    return withCategory(name).setExportName(exportName);
+  }
+
+  /**
    * Add a set of {@link Category} to current {@link Question}.
    * @param names
    * @return
