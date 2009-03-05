@@ -37,7 +37,9 @@ import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.CommentsModalPanel;
+import org.obiba.onyx.webapp.participant.panel.InterviewMenuBar;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
+import org.obiba.onyx.webapp.stage.panel.StageMenuBar;
 import org.obiba.onyx.webapp.stage.panel.StageSelectionPanel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
@@ -70,6 +72,12 @@ public class InterviewPage extends BasePage {
     if(activeInterviewService.getParticipant() == null || activeInterviewService.getInterview() == null) {
       setResponsePage(WebApplication.get().getHomePage());
     } else {
+      //
+      // Modify menu bar.
+      //
+      remove("menuBar");
+      add(new InterviewMenuBar("menuBar"));
+
       final Interview interview = activeInterviewService.setInterviewOperator(userSessionService.getUser());
       Participant participant = activeInterviewService.getParticipant();
 
