@@ -15,11 +15,10 @@
     <input id="arm_used">  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
       <code>IV_ARM_USED</code>
       <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <allowedValues>  <!-- OBTAIN DEFAULT FROM CI QUEST.-->
-        <data type="TEXT">L</data>
-        <data type="TEXT">R</data>
-      </allowedValues>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="variableDataSource">
+        <path>/Onyx/CIPreliminaryQuestionnaire/BP_ARM_CHOSEN</path>
+      </dataSource>
     </input>
     
     <input id="upper_arm_length">  <!-- Is really an interpretive value, but not yes, no; so input format used --> 

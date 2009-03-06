@@ -91,14 +91,13 @@
       </dataSource>
     </input>
 
-    <input id="foot_scanned">*OBTAIN DEFAULT FROM CI QUEST.
+    <input id="foot_scanned">
       <code>INPUT_FOOT_SCANNED</code>
       <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <allowedValues>
-        <data type="TEXT">L</data>
-        <data type="TEXT">R</data>
-      </allowedValues>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="variableDataSource">
+        <path>/Onyx/CIPreliminaryQuestionnaire/BD_FOOT_CHOSEN</path>
+      </dataSource>
     </input>
 
     <output id="Chart_Num">

@@ -36,9 +36,11 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.InstrumentRunValueDataModel;
 import org.obiba.onyx.jade.core.wicket.instrument.validation.IntegrityCheckValidator;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.onyx.wicket.data.DataValidator;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
@@ -143,17 +145,21 @@ public class InstrumentOutputParameterPanel extends Panel {
       RepeatingView repeat = new RepeatingView("repeat");
       add(repeat);
 
-      for(final InstrumentInputParameter param : activeInstrumentRunService.getInputParameters(InstrumentParameterCaptureMethod.AUTOMATIC)) {
+      for(InstrumentInputParameter param : activeInstrumentRunService.getInputParameters(InstrumentParameterCaptureMethod.AUTOMATIC)) {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 
         InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
-        final IModel runValueModel = new DetachableEntityModel(queryService, runValue);
+
+        IModel runValueModel = new DetachableEntityModel(queryService, runValue);
         inputRunValueModels.add(runValueModel);
 
         DataField field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), param.getMeasurementUnit());
         field.setLabel(new MessageSourceResolvableStringModel(new PropertyModel(param, "label")));
-        field.getField().setEnabled(false);
+
+        if(param.getDataType().equals(DataType.TEXT)) field.getField().setModelObject(DataBuilder.buildText(new SpringStringResourceModel(runValue.getData(param.getDataType()).getValueAsString()).getString()));
+
+        field.setFieldEnabled(false);
 
         item.add(field);
 
