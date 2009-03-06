@@ -349,7 +349,7 @@ public class CardiosoftInstrumentResultParser {
     pAxis = extractMeasurement("PAxis");
     rAxis = extractMeasurement("RAxis");
     tAxis = extractMeasurement("TAxis");
-    qRSNum = Long.valueOf(xpath.evaluate("//RestingECGMeasurements/QRSNum/text()", doc, XPathConstants.STRING).toString());
+    qRSNum = extractMeasurement("QRSNum");
     pOnset = extractMeasurement("POnset");
     pOffset = extractMeasurement("POffset");
     qOnset = extractMeasurement("QOnset");
