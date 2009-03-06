@@ -166,7 +166,7 @@
       <dataSource class="firstNotNullDataSource">
         <dataSources>
           <dataSource class="outputParameterDataSource">
-            <instrumentType>Impadence310</instrumentType>
+            <instrumentType>Impedance310</instrumentType>
             <parameterCode>RES_WEIGHT</parameterCode>
           </dataSource>
           <dataSource class="outputParameterDataSource">
