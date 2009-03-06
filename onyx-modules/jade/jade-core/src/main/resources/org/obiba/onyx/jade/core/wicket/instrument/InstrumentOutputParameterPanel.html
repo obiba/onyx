@@ -1,8 +1,24 @@
 <wicket:panel>
 	<table>
-		<tr wicket:id="repeat">
+		<span wicket:id="inputs" />
+		<span wicket:id="outputs" />
+	</table>
+</wicket:panel>
+<wicket:fragment wicket:id="inputFragment">
+	<tr>
+		<td colspan="2" class="wizard-title"><span class="wizard-title" wicket:id="title"/></td>
+	</tr>
+	<tr wicket:id="repeat">
+		<td><label wicket:id="label"><span wicket:id="labelText" /></label></td>
+		<td><span wicket:id="field"/></td>
+	</tr>
+</wicket:fragment>
+<wicket:fragment wicket:id="outputFragment">
+	<tr>
+		<td colspan="2" class="wizard-title"><span class="wizard-title" wicket:id="title"/></td>
+	</tr>
+	<tr wicket:id="repeat">
 			<td><label wicket:id="label"><span wicket:id="labelText" /></label></td>
 			<td><span wicket:id="field"/></td>
 		</tr>
-	</table>
-</wicket:panel>
+</wicket:fragment>

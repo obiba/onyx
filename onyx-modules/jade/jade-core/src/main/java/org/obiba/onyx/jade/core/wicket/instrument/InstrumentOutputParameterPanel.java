@@ -20,13 +20,16 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
@@ -56,14 +59,39 @@ public class InstrumentOutputParameterPanel extends Panel {
 
   private List<IModel> outputRunValueModels = new ArrayList<IModel>();
 
+  private List<IModel> inputRunValueModels = new ArrayList<IModel>();
+
   @SuppressWarnings("serial")
   public InstrumentOutputParameterPanel(String id) {
     super(id);
     setOutputMarkupId(true);
 
     if(!activeInstrumentRunService.hasOutputParameter(InstrumentParameterCaptureMethod.MANUAL)) {
-      add(new EmptyPanel("manualOutputs"));
+      add(new EmptyPanel("outputs"));
     } else {
+      add(new OutputFragment("outputs"));
+    }
+
+    if(!activeInstrumentRunService.hasInputParameter(InstrumentParameterCaptureMethod.AUTOMATIC)) {
+      add(new EmptyPanel("inputs"));
+    } else {
+      add(new InputFragment("inputs"));
+    }
+  }
+
+  public void saveOutputInstrumentRunValues() {
+    for(IModel runValueModel : outputRunValueModels) {
+      activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
+    }
+  }
+
+  @SuppressWarnings("serial")
+  private class OutputFragment extends Fragment {
+
+    public OutputFragment(String id) {
+      super(id, "outputFragment", InstrumentOutputParameterPanel.this);
+
+      add(new Label("title", new StringResourceModel("ProvideTheFollowingInformation", InstrumentOutputParameterPanel.this, null)));
 
       String errMessage = activeInstrumentRunService.updateReadOnlyInputParameterRunValue();
       if(errMessage != null) error(errMessage);
@@ -104,10 +132,37 @@ public class InstrumentOutputParameterPanel extends Panel {
     }
   }
 
-  public void saveOutputInstrumentRunValues() {
-    for(IModel runValueModel : outputRunValueModels) {
-      activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
+  @SuppressWarnings("serial")
+  private class InputFragment extends Fragment {
+
+    public InputFragment(String id) {
+      super(id, "inputFragment", InstrumentOutputParameterPanel.this);
+
+      add(new Label("title", new StringResourceModel("AutomaticEnteredInformation", InstrumentOutputParameterPanel.this, null)));
+
+      RepeatingView repeat = new RepeatingView("repeat");
+      add(repeat);
+
+      for(final InstrumentInputParameter param : activeInstrumentRunService.getInputParameters(InstrumentParameterCaptureMethod.AUTOMATIC)) {
+        WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
+        repeat.add(item);
+
+        InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
+        final IModel runValueModel = new DetachableEntityModel(queryService, runValue);
+        inputRunValueModels.add(runValueModel);
+
+        DataField field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), param.getMeasurementUnit());
+        field.setLabel(new MessageSourceResolvableStringModel(new PropertyModel(param, "label")));
+        field.getField().setEnabled(false);
+
+        item.add(field);
+
+        FormComponentLabel label = new FormComponentLabel("label", field.getField());
+        item.add(label);
+
+        Label labelText = new Label("labelText", new MessageSourceResolvableStringModel(param.getLabel()));
+        label.add(labelText);
+      }
     }
   }
-
 }

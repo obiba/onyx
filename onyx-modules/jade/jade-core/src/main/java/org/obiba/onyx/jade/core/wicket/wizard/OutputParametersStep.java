@@ -12,9 +12,7 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
@@ -42,9 +40,11 @@ public class OutputParametersStep extends WizardStepPanel {
     this.warningsStep = warningsStep;
 
     setOutputMarkupId(true);
-    add(new Label("title", new StringResourceModel("ProvideTheFollowingInformation", OutputParametersStep.this, null)));
+    add(new EmptyPanel(getTitleId()));
 
-    add(new EmptyPanel("panel"));
+    // add(new Label("title", new StringResourceModel("ProvideTheFollowingInformation", OutputParametersStep.this,
+    // null)));
+    // add(new EmptyPanel("panel"));
   }
 
   @Override
