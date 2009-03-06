@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.pad;
 
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
@@ -36,9 +35,6 @@ import org.obiba.onyx.wicket.link.AjaxImageSubmitLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * 
- */
 public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPadSelectionListener {
 
   private static final long serialVersionUID = 1L;
@@ -46,7 +42,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(NumericPad.class);
 
-  final DataField valuePressed;
+  private DataField valuePressed;
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
@@ -57,64 +53,74 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
    */
   @SuppressWarnings("serial")
   public NumericPad(String id, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel, final ModalWindow padWindow) {
+
     super(id, questionModel, questionCategoryModel, openAnswerDefinitionModel);
+
+    // Set the title of the modal window.
+    padWindow.setTitle(new StringResourceModel("NumericPadTitle", this, null));
 
     final DataType type = getOpenAnswerDefinition().getDataType();
 
-    // Adding numeric pad's buttons.
-    add(new PadButton("0", new Model("0")));
-    add(new PadButton("1", new Model("1")));
-    add(new PadButton("2", new Model("2")));
-    add(new PadButton("3", new Model("3")));
-    add(new PadButton("4", new Model("4")));
-    add(new PadButton("5", new Model("5")));
-    add(new PadButton("6", new Model("6")));
-    add(new PadButton("7", new Model("7")));
-    add(new PadButton("8", new Model("8")));
-    add(new PadButton("9", new Model("9")));
-    PadButton decimalSeparator = new PadButton("separator", new Model("."));
-    add(decimalSeparator);
-
-    if(type.equals(DataType.DECIMAL)) {
-      log.debug("DataType is decimal, so the decimal separator will be enabled on the numeric pad");
-    } else {
-      decimalSeparator.setButtonEnabled(false);
-    }
-
-    Form padForm = new Form("form");
-
-    // Create and add the numeric pad input field.
-    valuePressed = new DataField("value", new PropertyModel(this, "data"), type);
-    valuePressed.getField().clearInput();
-    valuePressed.setOutputMarkupId(true);
-    valuePressed.setMarkupId("valuePressed");
-    valuePressed.setRequired(true);
-    padForm.add(valuePressed);
-
-    // Transfer the validators of the OpenAnswer field to the numeric pad.
-    for(IValidator dataValidator : OpenAnswerDefinitionValidatorFactory.getValidators(getOpenAnswerDefinitionModel(), activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant())) {
-      valuePressed.add(dataValidator);
-    }
-
-    // Create and add the label for the numeric input field.
-    OpenAnswerDefinition parentOpenAnswer = ((OpenAnswerDefinition) openAnswerDefinitionModel.getObject()).getParentOpenAnswerDefinition();
-    IModel labelModel;
-    if(parentOpenAnswer != null && parentOpenAnswer.getOpenAnswerDefinitions().size() > 0) {
-      labelModel = openAnswerDefinitionModel;
-    } else {
-      labelModel = questionCategoryModel;
-    }
-    padForm.add(new Label("category", new QuestionnaireStringResourceModel(labelModel, "label")));
-    // for error messages
-    valuePressed.setLabel(new QuestionnaireStringResourceModel(labelModel, "label"));
+    // Create the dialog input field.
+    valuePressed = createPadInputField(type);
+    QuestionnaireStringResourceModel labelModel = createCategoryLabel(questionCategoryModel, openAnswerDefinitionModel);
+    valuePressed.setLabel(labelModel);
 
     // Add a feedback panel to the numeric pad for error reporting.
     final FeedbackPanel padFeedbackPanel = new FeedbackPanel("feedback");
-    add(padFeedbackPanel.setOutputMarkupId(true));
 
-    // Create a decorated submit "OK" button.
-    ResourceReference buttonDecorator = new ResourceReference(NumericPad.class, "check2.gif");
-    AjaxImageSubmitLink submitLink = new AjaxImageSubmitLink("ok", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "ok")) {
+    // Create the dialog action buttons.
+    AjaxImageSubmitLink submitButton = createSubmitButton(padWindow, type, padFeedbackPanel);
+    AjaxImageLink cancelButton = createCancelButton(padWindow);
+    AjaxImageLink clearButton = createClearButton();
+
+    // Add the numeric buttons to the numeric pad.
+    addNumericButtons();
+
+    // Add the other wicket components.
+    Form padForm = new Form("form");
+    padForm.add(valuePressed);
+    padForm.add(new Label("category", labelModel));
+    padForm.add(submitButton);
+    padForm.add(cancelButton);
+    padForm.add(clearButton);
+    add(padFeedbackPanel.setOutputMarkupId(true));
+    add(padForm);
+
+  }
+
+  private AjaxImageLink createClearButton() {
+    return new AjaxImageLink("clear", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "reset")) {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        resetField();
+        valuePressed.getField().clearInput();
+        target.addComponent(valuePressed);
+      }
+
+    };
+  }
+
+  private AjaxImageLink createCancelButton(final ModalWindow padWindow) {
+    return new AjaxImageLink("cancel", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "cancel")) {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        padWindow.close(target);
+      }
+
+    };
+  }
+
+  private AjaxImageSubmitLink createSubmitButton(final ModalWindow padWindow, final DataType type, final FeedbackPanel padFeedbackPanel) {
+    return new AjaxImageSubmitLink("ok", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "ok")) {
+
+      private static final long serialVersionUID = 1L;
 
       @Override
       public void onError(AjaxRequestTarget target, Form form) {
@@ -174,35 +180,40 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
       }
 
     };
+  }
 
-    padForm.add(submitLink);
+  private QuestionnaireStringResourceModel createCategoryLabel(IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
+    // Create and add the label for the numeric input field.
+    OpenAnswerDefinition parentOpenAnswer = ((OpenAnswerDefinition) openAnswerDefinitionModel.getObject()).getParentOpenAnswerDefinition();
+    IModel labelModel;
+    if(parentOpenAnswer != null && parentOpenAnswer.getOpenAnswerDefinitions().size() > 0) {
+      labelModel = openAnswerDefinitionModel;
+    } else {
+      labelModel = questionCategoryModel;
+    }
+    return new QuestionnaireStringResourceModel(labelModel, "label");
+  }
 
-    AjaxImageLink cancelLink = new AjaxImageLink("cancel", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "cancel")) {
+  private void addNumericButtons() {
+    for(int i = 0; i < 10; i++) {
+      add(new PadButton(String.valueOf(i), new Model(String.valueOf(i))));
+    }
+  }
 
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        padWindow.close(target);
-      }
+  private DataField createPadInputField(final DataType type) {
+    // Create the numeric pad input field.
+    DataField valuePressed = new DataField("value", new PropertyModel(this, "data"), type);
+    valuePressed.getField().clearInput();
+    valuePressed.setOutputMarkupId(true);
+    valuePressed.setMarkupId("valuePressed");
+    valuePressed.setRequired(true);
 
-    };
-    padForm.add(cancelLink);
+    // Transfer the validators of the OpenAnswer field to the numeric pad.
+    for(IValidator dataValidator : OpenAnswerDefinitionValidatorFactory.getValidators(getOpenAnswerDefinitionModel(), activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant())) {
+      valuePressed.add(dataValidator);
+    }
 
-    AjaxImageLink clearLink = new AjaxImageLink("clear", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "reset")) {
-
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        resetField();
-        valuePressed.getField().clearInput();
-        target.addComponent(valuePressed);
-      }
-
-    };
-    padForm.add(clearLink);
-
-    add(padForm);
-
-    padWindow.setTitle(new StringResourceModel("NumericPadTitle", this, null));
-
+    return valuePressed;
   }
 
   @Override
