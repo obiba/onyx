@@ -11,11 +11,15 @@ package org.obiba.onyx.math.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.matheclipse.parser.client.ast.ASTNode;
+import org.matheclipse.parser.client.ast.FunctionNode;
 import org.matheclipse.parser.client.eval.DoubleEvaluator;
 import org.matheclipse.parser.client.eval.DoubleVariable;
+import org.matheclipse.parser.client.eval.IDouble1Function;
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.math.AbstractAlgorithmEvaluator;
@@ -38,13 +42,13 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
   }
 
   public boolean evaluateBoolean(String algorithm, List<Data> operands) {
-    DoubleEvaluator engine = new DoubleEvaluator();
+    DoubleEvaluator engine = createEvaluator();
     double d = engine.evaluate("If[" + defineVariables(engine, algorithm, operands) + ", 1, 0]");
     return d == 1d;
   }
 
   public double evaluateDouble(String algorithm, List<Data> operands) {
-    DoubleEvaluator engine = new DoubleEvaluator();
+    DoubleEvaluator engine = createEvaluator();
     double d = engine.evaluate(defineVariables(engine, algorithm, operands));
     return d;
   }
@@ -102,7 +106,7 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
   public boolean evaluateBoolean(String algorithm, Participant participant, List<IDataSource> operands) {
     List<Data> datas = getDatas(participant, operands);
 
-    DoubleEvaluator engine = new DoubleEvaluator();
+    DoubleEvaluator engine = createEvaluator();
     String newExpression = defineDefaultVariables(engine, algorithm, participant);
     newExpression = defineVariables(engine, newExpression, datas);
 
@@ -113,11 +117,15 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
   public double evaluateDouble(String algorithm, Participant participant, List<IDataSource> operands) {
     List<Data> datas = getDatas(participant, operands);
 
-    DoubleEvaluator engine = new DoubleEvaluator();
+    DoubleEvaluator engine = createEvaluator();
     String newExpression = defineDefaultVariables(engine, algorithm, participant);
     newExpression = defineVariables(engine, newExpression, datas);
 
     return engine.evaluate(newExpression);
+  }
+
+  protected DoubleEvaluator createEvaluator() {
+    return new ExtendedDoubleEvaluator();
   }
 
   /**
@@ -137,4 +145,25 @@ public class MathEclipseEvaluator extends AbstractAlgorithmEvaluator {
     return datas;
   }
 
+  private static class ExtendedDoubleEvaluator extends DoubleEvaluator {
+
+    private Map<String, IDouble1Function> functions = new HashMap<String, IDouble1Function>();
+
+    public ExtendedDoubleEvaluator() {
+      functions.put("Abs", new IDouble1Function() {
+        public double evaluate(double arg1) {
+          return Math.abs(arg1);
+        }
+      });
+    }
+
+    @Override
+    public double evaluateFunction(FunctionNode functionNode) {
+      String symbol = functionNode.getNode(0).toString();
+      if(functions.get(symbol) != null) {
+        return functions.get(symbol).evaluate(evaluateNode((ASTNode) functionNode.getNode(1)));
+      }
+      return super.evaluateFunction(functionNode);
+    }
+  }
 }

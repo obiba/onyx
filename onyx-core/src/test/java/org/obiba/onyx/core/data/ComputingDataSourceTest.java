@@ -100,4 +100,33 @@ public class ComputingDataSourceTest {
     Assert.assertEquals(DataType.BOOLEAN, data.getType());
     Assert.assertEquals("true", data.getValueAsString());
   }
+
+  @Test
+  public void testAbsoluteValueFunction() {
+    Participant participant = new Participant();
+    ComputingDataSource computing = new ComputingDataSource(DataType.DECIMAL, "Abs[$1 - $2]");
+    computing.setAlgorithmEvaluator(MathEclipseEvaluator.getInstance());
+    computing.addDataSource(new FixedDataSource(DataBuilder.buildInteger(1)));
+    computing.addDataSource(new FixedDataSource(DataBuilder.buildInteger(2)));
+
+    Data data = computing.getData(participant);
+
+    Assert.assertEquals(DataType.DECIMAL, data.getType());
+    Assert.assertEquals(1.0d, (Double) data.getValue());
+  }
+
+  @Test
+  public void testArithmeticAndCompare() {
+    Participant participant = new Participant();
+    ComputingDataSource computing = new ComputingDataSource(DataType.BOOLEAN, "$1 + $2 > 4.0");
+    computing.setAlgorithmEvaluator(MathEclipseEvaluator.getInstance());
+    computing.addDataSource(new FixedDataSource(DataBuilder.buildInteger(1)));
+    computing.addDataSource(new FixedDataSource(DataBuilder.buildInteger(4)));
+
+    Data data = computing.getData(participant);
+
+    Assert.assertEquals(DataType.BOOLEAN, data.getType());
+    Assert.assertEquals("true", data.getValueAsString());
+  }
+
 }
