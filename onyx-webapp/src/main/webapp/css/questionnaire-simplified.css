@@ -249,6 +249,16 @@ a.button .foot-left, .obiba-quartz-category .top-right .foot .foot-left {
     margin-right: 6px;
 }
 
+.obiba-quartz-regular td.obiba-quartz-category div.obiba-quartz-category {
+    padding-left: 30px;
+}
+
+.obiba-quartz-regular td.obiba-quartz-category div.obiba-quartz-category.ui-state-highlight {
+    background-image: url('../icons/arrow.png');
+    background-position: 0 9px;
+    background-repeat: no-repeat;
+}
+
 /*****************
  Category Escape
 ******************/
@@ -263,6 +273,16 @@ a.button .foot-left, .obiba-quartz-category .top-right .foot .foot-left {
 
 .obiba-quartz-category .obiba-quartz-escape a.button {
     margin-right: 6px;
+}
+
+.obiba-quartz-escape td.obiba-quartz-category div.obiba-quartz-category {
+    padding-bottom: 20px;
+}
+
+.obiba-quartz-escape td.obiba-quartz-category div.obiba-quartz-category.ui-state-highlight {
+    background-image: url('../icons/arrow_up.png');
+    background-position: bottom center;
+    background-repeat: no-repeat;
 }
 
 /*****************
