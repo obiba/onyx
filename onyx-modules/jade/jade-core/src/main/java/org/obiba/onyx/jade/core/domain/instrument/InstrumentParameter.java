@@ -119,7 +119,11 @@ public abstract class InstrumentParameter implements Serializable {
     if(condition == null) {
       return true;
     }
-    return condition.getData(participant).getValue();
+    Boolean required = (Boolean) condition.getData(participant).getValue();
+    if(required != null) {
+      return required;
+    }
+    return true;
   }
 
   /**
