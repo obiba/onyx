@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.obiba.onyx.core.data.IDataSource;
+import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
@@ -34,11 +35,15 @@ public abstract class InstrumentParameter implements Serializable {
 
   private String displayFormat;
 
+  /** A IDataSource instance expected to return a DataType.BOOLEAN which dictates whether this parameter is required. */
+  private IDataSource condition;
+
   private List<IntegrityCheck> integrityChecks;
 
+  /** A IDataSource instance that provides the value for this parameter for a given Participant */
   private IDataSource dataSource;
 
-  private List<Data> allowedValues; // replaces OperatorSource.choices
+  private List<Data> allowedValues;
 
   public String getCode() {
     return code;
@@ -108,6 +113,13 @@ public abstract class InstrumentParameter implements Serializable {
 
   public IDataSource getDataSource() {
     return dataSource;
+  }
+
+  public boolean isRequired(Participant participant) {
+    if(condition == null) {
+      return true;
+    }
+    return condition.getData(participant).getValue();
   }
 
   /**

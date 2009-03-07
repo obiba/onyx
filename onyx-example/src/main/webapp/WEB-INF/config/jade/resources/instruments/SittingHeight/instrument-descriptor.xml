@@ -24,7 +24,7 @@
       <type>OBSERVED</type>
     </interpretative>
 
-  	<input id="sit_stool_height">
+    <input id="sit_stool_height">
       <code>INPUT_STOOL_HEIGHT</code>
       <dataType>DECIMAL</dataType>
       <measurementUnit>cm</measurementUnit>
@@ -33,13 +33,6 @@
         <data type="DECIMAL">39.5</data>
       </dataSource>
     </input>
-    
-    <!-- <output id="sit_stool_height">  form used if stool height must be entered
-      <code>RES_STOOL_HEIGHT</code>
-      <measurementUnit>cm</measurementUnit>
-      <dataType>DECIMAL</dataType>
-      <captureMethod>AUTOMATIQUE</captureMethod>
-    </output> -->
 
     <output id="sit1_height1">
       <code>RES_FIRST_SITTING_HEIGHT</code>
@@ -48,7 +41,6 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          
           <decimalMinValueMale>70.0</decimalMinValueMale>
           <decimalMaxValueMale>207.0</decimalMaxValueMale>
           <decimalMinValueFemale>70.0</decimalMinValueFemale>
@@ -64,17 +56,40 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          
           <decimalMinValueMale>70.0</decimalMinValueMale>
           <decimalMaxValueMale>207.0</decimalMaxValueMale>
           <decimalMinValueFemale>70.0</decimalMinValueFemale>
           <decimalMaxValueFemale>207.0</decimalMaxValueFemale>
         </rangeCheck>
-        <parameterSpreadCheck>
-          
-          <parameterCode>RES_FIRST_SITTING_HEIGHT</parameterCode>
-          <offset>1</offset>
-        </parameterSpreadCheck>
+      </integrityChecks>
+    </output>
+
+    <output>
+      <code>RES_THIRD_SITTING_HEIGHT</code>
+      <measurementUnit>cm</measurementUnit>
+      <dataType>DECIMAL</dataType>
+      <captureMethod>MANUAL</captureMethod>
+      <condition class="computingDataSource">
+        <dataType>BOOLEAN</dataType>
+        <expression>Abs[$1 - $2] &gt; 1.0</expression>
+        <dataSources>
+          <outputParameterDataSource>
+            <instrumentType>SittingHeight</instrumentType>
+            <parameterCode>RES_FIRST_SITTING_HEIGHT</parameterCode>
+          </outputParameterDataSource>
+          <outputParameterDataSource>
+            <instrumentType>SittingHeight</instrumentType>
+            <parameterCode>RES_SEC_SITTING_HEIGHT</parameterCode>
+          </outputParameterDataSource>
+        </dataSources>
+      </condition>
+      <integrityChecks>
+        <rangeCheck>
+          <decimalMinValueMale>70.0</decimalMinValueMale>
+          <decimalMaxValueMale>207.0</decimalMaxValueMale>
+          <decimalMinValueFemale>70.0</decimalMinValueFemale>
+          <decimalMaxValueFemale>207.0</decimalMaxValueFemale>
+        </rangeCheck>
       </integrityChecks>
     </output>
 
@@ -86,11 +101,9 @@
       <dataSource class="computingDataSource">
         <dataType>DECIMAL</dataType>
         <unit>cm</unit>
-        
-        <expression>
-          ($1 + $2)/2
-        </expression>
-          
+
+        <expression>($1 + $2)/2</expression>
+
         <dataSources>
           <dataSource class="outputParameterDataSource">
             <instrumentType>SittingHeight</instrumentType>
@@ -103,7 +116,7 @@
         </dataSources>
       </dataSource>
     </output>
-    
+
     <output>
       <code>CALC_DIFF_SITTING_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
@@ -112,11 +125,9 @@
       <dataSource class="computingDataSource">
         <dataType>DECIMAL</dataType>
         <unit>cm</unit>
-        
-        <expression>
-          $1-$2
-        </expression>
-          
+
+        <expression>$1-$2</expression>
+
         <dataSources>
           <dataSource class="outputParameterDataSource">
             <instrumentType>SittingHeight</instrumentType>

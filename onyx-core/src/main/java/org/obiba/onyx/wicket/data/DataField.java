@@ -36,14 +36,14 @@ import org.obiba.onyx.util.data.DataType;
 /**
  * Data field is the component representation of {@link Data}.
  * @see DataConverter
- * @author Yannick Marcon
- * 
  */
 public class DataField extends Panel {
 
   private static final long serialVersionUID = 4522983933046975818L;
 
   private FieldFragment input;
+
+  private boolean required = false;
 
   public DataField(String id, IModel model, final DataType dataType) {
     this(id, model, dataType, "");
@@ -214,8 +214,12 @@ public class DataField extends Panel {
    * @return this for chaining
    */
   public Component setRequired(boolean required) {
-    input.getField().setRequired(required);
+    this.required = required;
     return this;
+  }
+
+  public boolean isRequired() {
+    return this.required;
   }
 
   /**
@@ -265,6 +269,11 @@ public class DataField extends Panel {
           public IConverter getConverter(Class type) {
             return new DataConverter(dataType);
           }
+
+          @Override
+          public boolean isRequired() {
+            return DataField.this.isRequired();
+          }
         };
         break;
       case BOOLEAN:
@@ -273,6 +282,11 @@ public class DataField extends Panel {
           @Override
           public IConverter getConverter(Class type) {
             return new DataConverter(dataType);
+          }
+
+          @Override
+          public boolean isRequired() {
+            return DataField.this.isRequired();
           }
         };
         field.add(new AttributeModifier("type", new Model("checkbox")));
@@ -289,6 +303,11 @@ public class DataField extends Panel {
           public String getTextFormat() {
             return DataConverter.DATE_FORMAT;
           }
+
+          @Override
+          public boolean isRequired() {
+            return DataField.this.isRequired();
+          }
         };
         field.add(new DatePicker() {
           @Override
@@ -304,6 +323,11 @@ public class DataField extends Panel {
           public IConverter getConverter(Class type) {
             return new DataConverter(dataType);
           }
+
+          @Override
+          public boolean isRequired() {
+            return DataField.this.isRequired();
+          }
         };
         break;
       case DECIMAL:
@@ -312,6 +336,11 @@ public class DataField extends Panel {
           @Override
           public IConverter getConverter(Class type) {
             return new DataConverter(dataType);
+          }
+
+          @Override
+          public boolean isRequired() {
+            return DataField.this.isRequired();
           }
         };
         break;
@@ -328,19 +357,54 @@ public class DataField extends Panel {
     public SelectFragment(String id, IModel model, final DataType dataType, List choices, IChoiceRenderer renderer) {
       super(id, "selectFragment", DataField.this);
 
-      if(renderer == null) field = new DropDownChoice("select", model, choices);
-      else
-        field = new DropDownChoice("select", model, choices, renderer);
+      if(renderer == null) {
+        field = new DropDownChoice("select", model, choices) {
+          private static final long serialVersionUID = 1L;
 
+          @Override
+          public boolean isRequired() {
+            return DataField.this.isRequired();
+          }
+
+        };
+      } else {
+        field = new DropDownChoice("select", model, choices, renderer) {
+          private static final long serialVersionUID = 1L;
+
+          @Override
+          public boolean isRequired() {
+            return DataField.this.isRequired();
+          }
+
+        };
+      }
       add(field);
     }
 
     public SelectFragment(String id, IModel model, final DataType dataType, IModel choices, IChoiceRenderer renderer) {
       super(id, "selectFragment", DataField.this);
 
-      if(renderer == null) field = new DropDownChoice("select", model, choices);
-      else
-        field = new DropDownChoice("select", model, choices, renderer);
+      if(renderer == null) {
+        field = new DropDownChoice("select", model, choices) {
+          private static final long serialVersionUID = 1L;
+
+          @Override
+          public boolean isRequired() {
+            return DataField.this.isRequired();
+          }
+
+        };
+      } else {
+        field = new DropDownChoice("select", model, choices, renderer) {
+          private static final long serialVersionUID = 1L;
+
+          @Override
+          public boolean isRequired() {
+            return DataField.this.isRequired();
+          }
+
+        };
+      }
       add(field);
     }
   }

@@ -24,7 +24,6 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
@@ -106,12 +105,17 @@ public class InstrumentOutputParameterPanel extends Panel {
         repeat.add(item);
 
         InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
+        final String paramCode = param.getCode();
         final IModel runValueModel = new DetachableEntityModel(queryService, runValue);
         outputRunValueModels.add(runValueModel);
 
-        DataField field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), param.getMeasurementUnit());
-        field.setRequired(true);
-        field.setLabel(new MessageSourceResolvableStringModel(new PropertyModel(param, "label")));
+        DataField field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), param.getMeasurementUnit()) {
+          @Override
+          public boolean isRequired() {
+            return activeInstrumentRunService.getParameterByCode(paramCode).isRequired(activeInstrumentRunService.getParticipant());
+          }
+        };
+        field.setLabel(new MessageSourceResolvableStringModel(param.getLabel()));
         field.add(new AjaxFormComponentUpdatingBehavior("onblur") {
           protected void onUpdate(AjaxRequestTarget target) {
             activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
@@ -128,7 +132,7 @@ public class InstrumentOutputParameterPanel extends Panel {
         FormComponentLabel label = new FormComponentLabel("label", field.getField());
         item.add(label);
 
-        Label labelText = new Label("labelText", new MessageSourceResolvableStringModel(new PropertyModel(param, "label")));
+        Label labelText = new Label("labelText", new MessageSourceResolvableStringModel(param.getLabel()));
         label.add(labelText);
       }
     }
