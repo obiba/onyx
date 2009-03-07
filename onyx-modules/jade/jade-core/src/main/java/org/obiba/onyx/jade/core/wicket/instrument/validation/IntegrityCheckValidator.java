@@ -10,9 +10,7 @@
 package org.obiba.onyx.jade.core.wicket.instrument.validation;
 
 import java.io.Serializable;
-import java.util.List;
 
-import org.apache.wicket.Application;
 import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IErrorMessageSource;
@@ -20,19 +18,23 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheckType;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.data.DataField;
-import org.obiba.wicket.application.ISpringWebApplication;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceResolvable;
 
 public class IntegrityCheckValidator extends AbstractValidator {
 
   private static final long serialVersionUID = 1L;
 
   private IntegrityCheck integrityCheck;
+
+  private String checkedParameterCode;
 
   @SpringBean
   private InstrumentRunService instrumentRunService;
@@ -43,7 +45,11 @@ public class IntegrityCheckValidator extends AbstractValidator {
   @SpringBean
   private UserSessionService userSessionService;
 
-  public IntegrityCheckValidator(IntegrityCheck integrityCheck) {
+  @SpringBean
+  private MessageSource messageSource;
+
+  public IntegrityCheckValidator(InstrumentParameter parameter, IntegrityCheck integrityCheck) {
+    this.checkedParameterCode = parameter.getCode();
     this.integrityCheck = integrityCheck;
 
     InjectorHolder.getInjector().inject(this);
@@ -55,12 +61,9 @@ public class IntegrityCheckValidator extends AbstractValidator {
 
   @Override
   protected void onValidate(IValidatable validatable) {
-    boolean isValid = integrityCheck.checkParameterValue((Data) (validatable.getValue()), instrumentRunService, activeInstrumentRunService);
+    boolean isValid = integrityCheck.checkParameterValue(getCheckedParameter(), (Data) (validatable.getValue()), instrumentRunService, activeInstrumentRunService);
 
     if(!isValid) {
-      integrityCheck.setApplicationContext(((ISpringWebApplication) Application.get()).getSpringContextLocator().getSpringContext());
-      integrityCheck.setUserSessionService(userSessionService);
-
       validatable.error(new IntegrityCheckValidationError(integrityCheck));
     }
   }
@@ -75,12 +78,16 @@ public class IntegrityCheckValidator extends AbstractValidator {
    * @param targetField the field
    * @param integrityChecks the checks
    */
-  public static void addChecks(DataField targetField, List<IntegrityCheck> integrityChecks) {
-    for(IntegrityCheck check : integrityChecks) {
+  public static void addChecks(InstrumentParameter parameter, DataField targetField) {
+    for(IntegrityCheck check : parameter.getIntegrityChecks()) {
       if(check.getType().equals(IntegrityCheckType.ERROR)) {
-        targetField.add(new IntegrityCheckValidator(check));
+        targetField.add(new IntegrityCheckValidator(parameter, check));
       }
     }
+  }
+
+  protected InstrumentParameter getCheckedParameter() {
+    return this.activeInstrumentRunService.getParameterByCode(checkedParameterCode);
   }
 
   class IntegrityCheckValidationError implements IValidationError, Serializable {
@@ -92,8 +99,9 @@ public class IntegrityCheckValidator extends AbstractValidator {
       this.integrityCheck = integrityCheck;
     }
 
-    public String getErrorMessage(IErrorMessageSource messageSource) {
-      return integrityCheck.getDescription(activeInstrumentRunService);
+    public String getErrorMessage(IErrorMessageSource errorMessageSource) {
+      MessageSourceResolvable resolvable = integrityCheck.getDescription(getCheckedParameter(), activeInstrumentRunService);
+      return messageSource.getMessage(resolvable, userSessionService.getLocale());
     }
   }
 }

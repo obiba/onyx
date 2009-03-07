@@ -43,7 +43,7 @@ public class InstrumentTypeFactoryBeanTest {
 
   @Test
   public void testInstrumentType() {
-    Assert.assertEquals("Instrument type count is wrong", 12, instrumentTypes.size());
+    Assert.assertEquals("Instrument type count is wrong", 3, instrumentTypes.size());
   }
 
   @Test

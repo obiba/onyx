@@ -91,7 +91,6 @@ public abstract class InstrumentParameter implements Serializable {
   public void addIntegrityChecks(IntegrityCheck integrityCheck) {
     if(integrityCheck != null) {
       getIntegrityChecks().add(integrityCheck);
-      integrityCheck.setTargetParameter(this);
     }
   }
 

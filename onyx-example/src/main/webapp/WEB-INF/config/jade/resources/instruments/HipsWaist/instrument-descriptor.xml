@@ -34,7 +34,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="waist_size1" />
+          
           <integerMinValueMale>20</integerMinValueMale>
           <integerMaxValueMale>199</integerMaxValueMale>
           <integerMinValueFemale>20</integerMinValueFemale>
@@ -42,7 +42,7 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="waist_size1" />
+          
           <integerMinValueMale>62</integerMinValueMale>
           <integerMaxValueMale>140</integerMaxValueMale>
           <integerMinValueFemale>62</integerMinValueFemale>
@@ -58,7 +58,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="waist_size2" />
+          
           <integerMinValueMale>20</integerMinValueMale>
           <integerMaxValueMale>199</integerMaxValueMale>
           <integerMinValueFemale>20</integerMinValueFemale>
@@ -66,15 +66,15 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="waist_size2" />
+          
           <integerMinValueMale>62</integerMinValueMale>
           <integerMaxValueMale>140</integerMaxValueMale>
           <integerMinValueFemale>62</integerMinValueFemale>
           <integerMaxValueFemale>140</integerMaxValueFemale>
         </rangeCheck>
         <parameterSpreadCheck>
-          <targetParameter reference="waist_size1" />
-          <parameter reference="waist_size2" />
+          
+          <parameterCode>RES_SEC_WAIST_SIZE</parameterCode>
           <offset>1</offset>
         </parameterSpreadCheck>
       </integrityChecks>
@@ -113,7 +113,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="hips_size1" />
+          
           <integerMinValueMale>20</integerMinValueMale>
           <integerMaxValueMale>199</integerMaxValueMale>
           <integerMinValueFemale>20</integerMinValueFemale>
@@ -121,7 +121,7 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="hips_size1" />
+          
           <integerMinValueMale>84</integerMinValueMale>
           <integerMaxValueMale>171</integerMaxValueMale>
           <integerMinValueFemale>84</integerMinValueFemale>
@@ -137,7 +137,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="hips_size2" />
+          
           <integerMinValueMale>20</integerMinValueMale>
           <integerMaxValueMale>199</integerMaxValueMale>
           <integerMinValueFemale>20</integerMinValueFemale>
@@ -145,15 +145,15 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="hips_size2" />
+          
           <integerMinValueMale>84</integerMinValueMale>
           <integerMaxValueMale>171</integerMaxValueMale>
           <integerMinValueFemale>84</integerMinValueFemale>
           <integerMaxValueFemale>171</integerMaxValueFemale>
         </rangeCheck>
         <parameterSpreadCheck>
-          <targetParameter reference="hips_size2" />
-          <parameter reference="hips_size1" />
+          
+          <parameterCode>RES_FIRST_HIPS_SIZE</parameterCode>
           <offset>1</offset>
         </parameterSpreadCheck>
       </integrityChecks>
@@ -187,7 +187,7 @@
 
     <output>
       <code>CALC_WAIST_TO_HIP_RATIO</code>
-      <measurementUnit />
+      <measurementUnit/>
       <dataType>DECIMAL</dataType>
       <captureMethod>COMPUTED</captureMethod>
       <dataSource class="computingDataSource">

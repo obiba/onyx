@@ -28,7 +28,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="upper_arm_length" />
+          
           <decimalMinValueMale>20</decimalMinValueMale>
           <decimalMaxValueMale>60</decimalMaxValueMale>
           <decimalMinValueFemale>20</decimalMinValueFemale>
@@ -44,7 +44,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="mid_upper_arm_circ" />
+          
           <decimalMinValueMale>17</decimalMinValueMale>
           <decimalMaxValueMale>50</decimalMaxValueMale>
           <decimalMinValueFemale>17</decimalMinValueFemale>
@@ -72,7 +72,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="blp1_systolic1" />
+          
           <integerMinValueMale>30</integerMinValueMale>
           <integerMaxValueMale>299</integerMaxValueMale>
           <integerMinValueFemale>30</integerMinValueFemale>
@@ -80,7 +80,7 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="blp1_systolic1" />
+          
           <integerMinValueMale>82</integerMinValueMale>
           <integerMaxValueMale>195</integerMaxValueMale>
           <integerMinValueFemale>82</integerMinValueFemale>
@@ -96,7 +96,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="blp1_diastolic1" />
+          
           <integerMinValueMale>30</integerMinValueMale>
           <integerMaxValueMale>299</integerMaxValueMale>
           <integerMinValueFemale>30</integerMinValueFemale>
@@ -104,15 +104,15 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="blp1_diastolic1" />
+          
           <integerMinValueMale>57</integerMinValueMale>
           <integerMaxValueMale>103</integerMaxValueMale>
           <integerMinValueFemale>57</integerMinValueFemale>
           <integerMaxValueFemale>103</integerMaxValueFemale>
         </rangeCheck>
         <equalsParameterCheck>
-          <targetParameter reference="blp1_diastolic1" />
-          <parameter reference="blp1_systolic1" />
+          
+          <parameterCode>RES_FIRST_SYSTOLIC_BP</parameterCode>
           <operator>LESSER</operator>
           <customizedDescription>EqualsParameterCheck_SystolicGreaterThanDiastolic1</customizedDescription>
         </equalsParameterCheck>
@@ -126,7 +126,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="blp1_pulse1" />
+          
           <integerMinValueMale>30</integerMinValueMale>
           <integerMaxValueMale>199</integerMaxValueMale>
           <integerMinValueFemale>30</integerMinValueFemale>
@@ -134,7 +134,7 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="blp1_pulse1" />
+          
           <integerMinValueMale>42</integerMinValueMale>
           <integerMaxValueMale>101</integerMaxValueMale>
           <integerMinValueFemale>42</integerMinValueFemale>
@@ -150,7 +150,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="blp1_systolic2" />
+          
           <integerMinValueMale>30</integerMinValueMale>
           <integerMaxValueMale>299</integerMaxValueMale>
           <integerMinValueFemale>30</integerMinValueFemale>
@@ -158,7 +158,7 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="blp1_systolic2" />
+          
           <integerMinValueMale>82</integerMinValueMale>
           <integerMaxValueMale>195</integerMaxValueMale>
           <integerMinValueFemale>82</integerMinValueFemale>
@@ -174,7 +174,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="blp1_diastolic2" />
+          
           <integerMinValueMale>30</integerMinValueMale>
           <integerMaxValueMale>299</integerMaxValueMale>
           <integerMinValueFemale>30</integerMinValueFemale>
@@ -182,15 +182,15 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="blp1_diastolic2" />
+          
           <integerMinValueMale>57</integerMinValueMale>
           <integerMaxValueMale>103</integerMaxValueMale>
           <integerMinValueFemale>57</integerMinValueFemale>
           <integerMaxValueFemale>103</integerMaxValueFemale>
         </rangeCheck>
         <equalsParameterCheck>
-          <targetParameter reference="blp1_diastolic2" />
-          <parameter reference="blp1_systolic2" />
+          
+          <parameterCode>RES_SEC_SYSTOLIC_BP</parameterCode>
           <operator>LESSER</operator>
           <customizedDescription>EqualsParameterCheck_SystolicGreaterThanDiastolic2</customizedDescription>
         </equalsParameterCheck>
@@ -204,7 +204,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="blp1_pulse2" />
+          
           <integerMinValueMale>30</integerMinValueMale>
           <integerMaxValueMale>199</integerMaxValueMale>
           <integerMinValueFemale>30</integerMinValueFemale>
@@ -212,7 +212,7 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="blp1_pulse2" />
+          
           <integerMinValueMale>42</integerMinValueMale>
           <integerMaxValueMale>101</integerMaxValueMale>
           <integerMinValueFemale>42</integerMinValueFemale>
@@ -228,7 +228,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="blp1_systolic3" />
+          
           <integerMinValueMale>30</integerMinValueMale>
           <integerMaxValueMale>299</integerMaxValueMale>
           <integerMinValueFemale>30</integerMinValueFemale>
@@ -236,7 +236,7 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="blp1_systolic3" />
+          
           <integerMinValueMale>82</integerMinValueMale>
           <integerMaxValueMale>195</integerMaxValueMale>
           <integerMinValueFemale>82</integerMinValueFemale>
@@ -252,7 +252,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="blp1_diastolic3" />
+          
           <integerMinValueMale>30</integerMinValueMale>
           <integerMaxValueMale>299</integerMaxValueMale>
           <integerMinValueFemale>30</integerMinValueFemale>
@@ -260,15 +260,15 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="blp1_diastolic3" />
+          
           <integerMinValueMale>57</integerMinValueMale>
           <integerMaxValueMale>103</integerMaxValueMale>
           <integerMinValueFemale>57</integerMinValueFemale>
           <integerMaxValueFemale>103</integerMaxValueFemale>
         </rangeCheck>
         <equalsParameterCheck>
-          <targetParameter reference="blp1_diastolic3" />
-          <parameter reference="blp1_systolic3" />
+          
+          <parameterCode>RES_THIRD_SYSTOLIC_BP</parameterCode>
           <operator>LESSER</operator>
           <customizedDescription>EqualsParameterCheck_SystolicGreaterThanDiastolic3</customizedDescription>
         </equalsParameterCheck>
@@ -282,7 +282,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="blp1_pulse3" />
+          
           <integerMinValueMale>30</integerMinValueMale>
           <integerMaxValueMale>199</integerMaxValueMale>
           <integerMinValueFemale>30</integerMinValueFemale>
@@ -290,7 +290,7 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="blp1_pulse3" />
+          
           <integerMinValueMale>42</integerMinValueMale>
           <integerMaxValueMale>101</integerMaxValueMale>
           <integerMinValueFemale>42</integerMinValueFemale>

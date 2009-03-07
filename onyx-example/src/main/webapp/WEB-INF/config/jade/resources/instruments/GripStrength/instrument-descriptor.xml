@@ -44,7 +44,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="mus1_right_strength1"/>
+          
           <integerMinValueMale>0</integerMinValueMale>
           <integerMaxValueMale>130</integerMaxValueMale>
           <integerMinValueFemale>0</integerMinValueFemale>
@@ -52,7 +52,7 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="mus1_right_strength1"/>
+          
           <integerMinValueMale>0</integerMinValueMale>
           <integerMaxValueMale>72</integerMaxValueMale>
           <integerMinValueFemale>0</integerMinValueFemale>
@@ -68,7 +68,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="mus1_left_strength1"/>
+          
           <integerMinValueMale>0</integerMinValueMale>
           <integerMaxValueMale>130</integerMaxValueMale>
           <integerMinValueFemale>0</integerMinValueFemale>
@@ -76,7 +76,7 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="mus1_left_strength1"/>
+          
           <integerMinValueMale>0</integerMinValueMale>
           <integerMaxValueMale>72</integerMaxValueMale>
           <integerMinValueFemale>0</integerMinValueFemale>
@@ -92,7 +92,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="mus1_right_strength2"/>
+          
           <integerMinValueMale>0</integerMinValueMale>
           <integerMaxValueMale>130</integerMaxValueMale>
           <integerMinValueFemale>0</integerMinValueFemale>
@@ -100,15 +100,15 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="mus1_right_strength2"/>
+          
           <integerMinValueMale>0</integerMinValueMale>
           <integerMaxValueMale>72</integerMaxValueMale>
           <integerMinValueFemale>0</integerMinValueFemale>
           <integerMaxValueFemale>72</integerMaxValueFemale>
         </rangeCheck>
         <parameterSpreadCheck>
-          <targetParameter reference="mus1_right_strength2"/>
-          <parameter reference="mus1_right_strength1"/>
+          
+          <parameterCode>RES_FIRST_RH_MUSCLE_STRENGTH</parameterCode>
           <percent>10</percent>
         </parameterSpreadCheck>
       </integrityChecks>
@@ -121,7 +121,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="mus1_left_strength2"/>
+          
           <integerMinValueMale>0</integerMinValueMale>
           <integerMaxValueMale>130</integerMaxValueMale>
           <integerMinValueFemale>0</integerMinValueFemale>
@@ -129,15 +129,15 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="mus1_left_strength2"/>
+          
           <integerMinValueMale>0</integerMinValueMale>
           <integerMaxValueMale>72</integerMaxValueMale>
           <integerMinValueFemale>0</integerMinValueFemale>
           <integerMaxValueFemale>72</integerMaxValueFemale>
         </rangeCheck>
         <parameterSpreadCheck>
-          <targetParameter reference="mus1_left_strength2"/>
-          <parameter reference="mus1_left_strength1"/>
+          
+          <parameterCode>RES_FIRST_LH_MUSCLE_STRENGTH</parameterCode>
           <percent>10</percent>
         </parameterSpreadCheck>
       </integrityChecks>

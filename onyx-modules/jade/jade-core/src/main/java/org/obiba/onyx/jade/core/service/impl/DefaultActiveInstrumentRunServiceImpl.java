@@ -285,7 +285,7 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
             continue;
           }
 
-          if(!check.checkParameterValue(runValue.getData(outputParameter.getDataType()), null, this)) {
+          if(!check.checkParameterValue(outputParameter, runValue.getData(outputParameter.getDataType()), null, this)) {
             paramsWithWarnings.add(outputParameter);
           }
         }

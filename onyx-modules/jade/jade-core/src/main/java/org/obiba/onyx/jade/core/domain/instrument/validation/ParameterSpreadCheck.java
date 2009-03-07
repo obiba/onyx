@@ -15,34 +15,18 @@ import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ParameterSpreadCheck extends AbstractIntegrityCheck implements IntegrityCheck {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger log = LoggerFactory.getLogger(ParameterSpreadCheck.class);
-
   private RangeCheck rangeCheck;
-
-  private InstrumentParameter parameter;
 
   private Integer percent;
 
   private Integer offset;
 
-  public void setParameter(InstrumentParameter param) {
-    this.parameter = param;
-  }
-
-  public InstrumentParameter getParameter() {
-    return parameter;
-  }
-
-  public DataType getValueType() {
-    return getTargetParameter().getDataType();
-  }
+  private String parameterCode;
 
   public void setPercent(Integer percent) {
     this.percent = percent;
@@ -60,21 +44,26 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
     return offset;
   }
 
+  public void setParameterCode(String parameterCode) {
+    this.parameterCode = parameterCode;
+  }
+
   //
   // IntegrityCheck Methods
   //
 
   @Override
-  public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
-    if(parameter != null && (percent != null || offset != null)) {
+  public boolean checkParameterValue(InstrumentParameter checkedParameter, Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
+    if(parameterCode != null && (percent != null || offset != null)) {
       //
       // Get the other parameter's value.
       //
-      InstrumentRunValue otherRunValue = activeRunService.getInstrumentRunValue(parameter);
+      InstrumentParameter otherParameter = activeRunService.getParameterByCode(parameterCode);
+      InstrumentRunValue otherRunValue = activeRunService.getInstrumentRunValue(otherParameter);
 
       Data otherData = null;
       if(otherRunValue != null) {
-        otherData = otherRunValue.getData(parameter.getDataType());
+        otherData = otherRunValue.getData(paramData.getType());
       }
 
       if(otherData != null && otherData.getValue() != null) {
@@ -83,18 +72,15 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
           rangeCheck = new RangeCheck();
         }
 
-        // Update the rangeCheck accordingly.
-        rangeCheck.setTargetParameter(getTargetParameter());
-
-        if(getValueType().equals(DataType.INTEGER)) {
+        if(checkedParameter.getDataType() == DataType.INTEGER) {
           initIntegerRangeCheck(paramData, otherData);
-        } else if(getValueType().equals(DataType.DECIMAL)) {
+        } else if(checkedParameter.getDataType() == DataType.DECIMAL) {
           initDecimalRangeCheck(paramData, otherData);
         } else {
           return false;
         }
 
-        return rangeCheck.checkParameterValue(paramData, null, activeRunService);
+        return rangeCheck.checkParameterValue(checkedParameter, paramData, runService, activeRunService);
       } else { // no need to check the spread if the other parameter does not yet have a value
         return true;
       }
@@ -116,13 +102,14 @@ public class ParameterSpreadCheck extends AbstractIntegrityCheck implements Inte
     return descriptionKey;
   }
 
-  protected Object[] getDescriptionArgs(ActiveInstrumentRunService activeRunService) {
+  protected Object[] getDescriptionArgs(InstrumentParameter checkedParameter, ActiveInstrumentRunService activeRunService) {
+    InstrumentParameter otherParameter = activeRunService.getParameterByCode(parameterCode);
     if(percent != null && offset == null) {
-      return new Object[] { getTargetParameter().getLabel(), parameter.getLabel(), percent };
+      return new Object[] { checkedParameter.getLabel(), otherParameter.getLabel(), percent };
     } else if(percent == null && offset != null) {
-      return new Object[] { getTargetParameter().getLabel(), parameter.getLabel(), offset, getTargetParameter().getMeasurementUnit() };
+      return new Object[] { checkedParameter.getLabel(), otherParameter.getLabel(), offset, checkedParameter.getMeasurementUnit() };
     } else {
-      return new Object[] { getTargetParameter().getLabel(), parameter.getLabel(), percent, offset, getTargetParameter().getMeasurementUnit() };
+      return new Object[] { checkedParameter.getLabel(), otherParameter.getLabel(), percent, offset, checkedParameter.getMeasurementUnit() };
     }
   }
 

@@ -221,9 +221,9 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     user = persistenceManager.get(User.class, 1l);
     participant = persistenceManager.get(Participant.class, 1l);
 
-    // Start an InstrumentRun with InstrumentType SittingHeight.
+    // Start an InstrumentRun with InstrumentType StandingHeight.
     // This InstrumentType has 1 OBSERVED InterpretativeParameter.
-    InstrumentType instrumentType = instrumentTypes.get("SittingHeight");
+    InstrumentType instrumentType = instrumentTypes.get("StandingHeight");
     startInstrumentRun(participant, instrumentType);
 
     initInstrumentServiceMock(instrumentType);
@@ -255,7 +255,7 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
 
     // Start an InstrumentRun with InstrumentType SittingHeight.
     // This InstrumentType has 1 OBSERVED InterpretativeParameter.
-    InstrumentType instrumentType = instrumentTypes.get("SittingHeight");
+    InstrumentType instrumentType = instrumentTypes.get("StandingHeight");
     startInstrumentRun(participant, instrumentType);
 
     initInstrumentServiceMock(instrumentType);
@@ -285,9 +285,9 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     resetMocks();
     activeInstrumentRunService.reset();
 
-    // Start an InstrumentRun with InstrumentType GripStrength.
+    // Start an InstrumentRun with InstrumentType StandingHeight.
     // This Instrument has no InstrumentInputParameters.
-    instrumentType = instrumentTypes.get("GripStrength");
+    instrumentType = instrumentTypes.get("StandingHeight");
     startInstrumentRun(participant, instrumentType);
 
     initInstrumentServiceMockForInputParameterTests(instrumentType, 0, 0);
@@ -542,9 +542,9 @@ public class DefaultActiveInstrumentRunServiceImplTest extends BaseDefaultSpring
     user = persistenceManager.get(User.class, 1l);
     participant = persistenceManager.get(Participant.class, 1l);
 
-    // Start an InstrumentRun with InstrumentType BoneDensity.
+    // Start an InstrumentRun with InstrumentType StandingHeight.
     // This InstrumentType has 2 OBSERVED Contra-indications..
-    InstrumentType instrumentType = instrumentTypes.get("SittingHeight");
+    InstrumentType instrumentType = instrumentTypes.get("StandingHeight");
     startInstrumentRun(participant, instrumentType);
 
     initInstrumentServiceMock(instrumentType);

@@ -9,32 +9,18 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
-import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 
 public abstract class AbstractIntegrityCheck implements IntegrityCheck {
 
   private IntegrityCheckType type;
 
-  private InstrumentParameter targetParameter;
-
   private String customizedDescription;
-
-  protected transient ApplicationContext context;
-
-  protected transient UserSessionService userSessionService;
-
-  public void setApplicationContext(ApplicationContext context) {
-    this.context = context;
-  }
-
-  public void setUserSessionService(UserSessionService userSessionService) {
-    this.userSessionService = userSessionService;
-  }
 
   public void setType(IntegrityCheckType type) {
     this.type = type;
@@ -46,14 +32,6 @@ public abstract class AbstractIntegrityCheck implements IntegrityCheck {
     }
 
     return type;
-  }
-
-  public void setTargetParameter(InstrumentParameter targetParameter) {
-    this.targetParameter = targetParameter;
-  }
-
-  public InstrumentParameter getTargetParameter() {
-    return targetParameter;
   }
 
   public void setCustomizedDescription(String customizedDescription) {
@@ -68,16 +46,11 @@ public abstract class AbstractIntegrityCheck implements IntegrityCheck {
   // IntegrityCheck Methods
   //
 
-  public abstract boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService);
+  public abstract boolean checkParameterValue(InstrumentParameter checkedParameter, Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService);
 
-  public String getDescription(ActiveInstrumentRunService activeRunService) {
-    String retVal = getClass().getSimpleName();
-
-    if(context != null && userSessionService != null) {
-      retVal = context.getMessage(getDescriptionKey(activeRunService), getDescriptionArgs(activeRunService), userSessionService.getLocale());
-    }
-
-    return retVal;
+  public MessageSourceResolvable getDescription(InstrumentParameter checkedParameter, ActiveInstrumentRunService activeRunService) {
+    String[] codes = new String[] { getDescriptionKey(activeRunService) };
+    return new DefaultMessageSourceResolvable(codes, getDescriptionArgs(checkedParameter, activeRunService));
   }
 
   protected String getDescriptionKey(ActiveInstrumentRunService activeRunService) {
@@ -90,5 +63,5 @@ public abstract class AbstractIntegrityCheck implements IntegrityCheck {
     return descriptionKey;
   }
 
-  protected abstract Object[] getDescriptionArgs(ActiveInstrumentRunService activeRunService);
+  protected abstract Object[] getDescriptionArgs(InstrumentParameter checkedParameter, ActiveInstrumentRunService activeRunService);
 }

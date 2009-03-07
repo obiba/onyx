@@ -279,7 +279,7 @@ public class InstrumentInputParameterPanel extends Panel {
           field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(2000), param.getDataType()));
         }
 
-        IntegrityCheckValidator.addChecks(field, param.getIntegrityChecks());
+        IntegrityCheckValidator.addChecks(param, field);
         item.add(field);
 
         FormComponentLabel label = new FormComponentLabel("label", field.getField());

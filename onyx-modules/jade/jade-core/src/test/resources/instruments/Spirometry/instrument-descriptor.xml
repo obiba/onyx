@@ -3,85 +3,7 @@
 
   <name>Spirometry</name>
 
- <!-- <contraindications>  commented out
-    <contraIndication>
-      <code>Other_CI</code>
-      <requiresDescription>true</requiresDescription>
-      <type>OBSERVED</type>
-    </contraIndication>
-
-    <contraIndication>
-      <code>HeartAttack</code>
-      <type>ASKED</type>
-    </contraIndication>
-
-    <contraIndication>
-      <code>AbdominalThoracicEyeSurgery</code>
-      <type>ASKED</type>
-    </contraIndication>
-
-    <contraIndication>
-      <code>ChestInfection</code>
-      <type>ASKED</type>
-    </contraIndication>
-
-    <contraIndication>
-      <code>Tuberculosis</code>
-      <type>ASKED</type>
-    </contraIndication>
-
-    <contraIndication>
-      <code>DetachedRetina</code>
-      <type>ASKED</type>
-    </contraIndication>
-
-    <contraIndication>
-      <code>Pneumothorax</code>
-      <type>ASKED</type>
-    </contraIndication>
-
-    <contraIndication>
-      <code>Stoma</code>
-      <type>ASKED</type>
-    </contraIndication>
-
-  </contraindications>  -->
-
   <instrumentParameters>
-  <!--  <interpretative>   commented out
-      <code>IV_BRONCHODILATOR</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <type>OBSERVED</type>
-    </interpretative>
-
-    <interpretative>
-      <code>IV_SMOKED</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <type>OBSERVED</type>
-    </interpretative>
-
-    <interpretative>
-      <code>IV_ALCOHOL</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <type>OBSERVED</type>
-    </interpretative>
-
-    <interpretative>
-      <code>IV_HEARTY_MEAL</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <type>OBSERVED</type>
-    </interpretative>
-
-    <interpretative>
-      <code>IV_COFFEE</code>
-      <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
-      <type>OBSERVED</type>
-    </interpretative> -->
 
     <input id="id">
       <vendorName>ID</vendorName>
@@ -118,7 +40,7 @@
       <vendorName>BirthDate</vendorName>
       <code>INPUT_PARTICIPANT_DATE_BIRTH</code>
       <dataType>DATE</dataType>
-      <displayFormat>%1$tY/%1$tm/%1$td</displayFormat>          
+      <displayFormat>%1$tY/%1$tm/%1$td</displayFormat>
       <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="participantPropertyDataSource">
         <property>birthDate</property>

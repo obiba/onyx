@@ -41,7 +41,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="sta1_height1" />
+          
           <decimalMinValueMale>70.0</decimalMinValueMale>
           <decimalMaxValueMale>207.0</decimalMaxValueMale>
           <decimalMinValueFemale>70.0</decimalMinValueFemale>
@@ -49,7 +49,7 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="sta1_height1" />
+          
           <decimalMinValueMale>148.0</decimalMinValueMale>
           <decimalMaxValueMale>192.0</decimalMaxValueMale>
           <decimalMinValueFemale>148.0</decimalMinValueFemale>
@@ -65,7 +65,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="sta1_height2" />
+          
           <decimalMinValueMale>70.0</decimalMinValueMale>
           <decimalMaxValueMale>207.0</decimalMaxValueMale>
           <decimalMinValueFemale>70.0</decimalMinValueFemale>
@@ -73,15 +73,15 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="sta1_height2" />
+          
           <decimalMinValueMale>148.0</decimalMinValueMale>
           <decimalMaxValueMale>192.0</decimalMaxValueMale>
           <decimalMinValueFemale>148.0</decimalMinValueFemale>
           <decimalMaxValueFemale>192.0</decimalMaxValueFemale>
         </rangeCheck>
         <parameterSpreadCheck>
-          <targetParameter reference="sta1_height2" />
-          <parameter reference="sta1_height1" />
+          
+          <parameterCode>RES_FIRST_HEIGHT</parameterCode>
           <offset>1</offset>
         </parameterSpreadCheck>
       </integrityChecks>

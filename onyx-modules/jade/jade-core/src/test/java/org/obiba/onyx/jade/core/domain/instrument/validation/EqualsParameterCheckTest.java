@@ -70,8 +70,7 @@ public class EqualsParameterCheckTest {
     otherParameter = new InstrumentInputParameter();
     otherParameter.setCode("otherParamName");
 
-    equalsParameterCheck.setTargetParameter(checkedParameter);
-    equalsParameterCheck.setParameter(otherParameter);
+    equalsParameterCheck.setParameterCode(otherParameter.getCode());
 
     instrumentRunServiceMock = createMock(InstrumentRunService.class);
 
@@ -97,11 +96,11 @@ public class EqualsParameterCheckTest {
     otherRunValue.setData(otherData);
 
     expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
-    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter);
+    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter).atLeastOnce();
 
     replay(activeInstrumentRunServiceMock);
 
-    Assert.assertTrue(equalsParameterCheck.checkParameterValue(checkedData, instrumentRunServiceMock, activeInstrumentRunServiceMock));
+    Assert.assertTrue(equalsParameterCheck.checkParameterValue(checkedParameter, checkedData, instrumentRunServiceMock, activeInstrumentRunServiceMock));
 
     verify(activeInstrumentRunServiceMock);
   }
@@ -125,11 +124,11 @@ public class EqualsParameterCheckTest {
     otherRunValue.setData(otherData);
 
     expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
-    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter);
+    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter).atLeastOnce();
 
     replay(activeInstrumentRunServiceMock);
 
-    Assert.assertFalse(equalsParameterCheck.checkParameterValue(checkedData, instrumentRunServiceMock, activeInstrumentRunServiceMock));
+    Assert.assertFalse(equalsParameterCheck.checkParameterValue(checkedParameter, checkedData, instrumentRunServiceMock, activeInstrumentRunServiceMock));
 
     verify(activeInstrumentRunServiceMock);
   }
@@ -150,11 +149,11 @@ public class EqualsParameterCheckTest {
     otherRunValue.setData(otherData);
 
     expect(activeInstrumentRunServiceMock.getInstrumentRunValue(otherParameter)).andReturn(otherRunValue);
-    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter);
+    expect(activeInstrumentRunServiceMock.getParameterByCode(otherParameter.getCode())).andReturn(otherParameter).atLeastOnce();
 
     replay(activeInstrumentRunServiceMock);
     equalsParameterCheck.setOperator(ComparisonOperator.LESSER);
-    Assert.assertTrue(equalsParameterCheck.checkParameterValue(checkedData, instrumentRunServiceMock, activeInstrumentRunServiceMock));
+    Assert.assertTrue(equalsParameterCheck.checkParameterValue(checkedParameter, checkedData, instrumentRunServiceMock, activeInstrumentRunServiceMock));
 
   }
 }

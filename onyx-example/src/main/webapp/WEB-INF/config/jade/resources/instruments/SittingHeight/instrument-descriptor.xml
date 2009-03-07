@@ -48,7 +48,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="sit1_height1" />
+          
           <decimalMinValueMale>70.0</decimalMinValueMale>
           <decimalMaxValueMale>207.0</decimalMaxValueMale>
           <decimalMinValueFemale>70.0</decimalMinValueFemale>
@@ -64,15 +64,15 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="sit1_height2" />
+          
           <decimalMinValueMale>70.0</decimalMinValueMale>
           <decimalMaxValueMale>207.0</decimalMaxValueMale>
           <decimalMinValueFemale>70.0</decimalMinValueFemale>
           <decimalMaxValueFemale>207.0</decimalMaxValueFemale>
         </rangeCheck>
         <parameterSpreadCheck>
-          <targetParameter reference="sit1_height2" />
-          <parameter reference="sit1_height1" />
+          
+          <parameterCode>RES_FIRST_SITTING_HEIGHT</parameterCode>
           <offset>1</offset>
         </parameterSpreadCheck>
       </integrityChecks>

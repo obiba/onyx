@@ -122,7 +122,7 @@ public class InstrumentOutputParameterPanel extends Panel {
           field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(2000), param.getDataType()));
         }
 
-        IntegrityCheckValidator.addChecks(field, param.getIntegrityChecks());
+        IntegrityCheckValidator.addChecks(param, field);
         item.add(field);
 
         FormComponentLabel label = new FormComponentLabel("label", field.getField());
@@ -155,9 +155,11 @@ public class InstrumentOutputParameterPanel extends Panel {
         inputRunValueModels.add(runValueModel);
 
         DataField field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), param.getMeasurementUnit());
-        field.setLabel(new MessageSourceResolvableStringModel(new PropertyModel(param, "label")));
+        field.setLabel(new MessageSourceResolvableStringModel(param.getLabel()));
 
-        if(param.getDataType().equals(DataType.TEXT)) field.getField().setModelObject(DataBuilder.buildText(new SpringStringResourceModel(runValue.getData(param.getDataType()).getValueAsString()).getString()));
+        if(param.getDataType().equals(DataType.TEXT)) {
+          field.getField().setModelObject(DataBuilder.buildText(new SpringStringResourceModel(runValue.getData(param.getDataType()).getValueAsString()).getString()));
+        }
 
         field.setFieldEnabled(false);
 

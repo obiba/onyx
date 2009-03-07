@@ -102,8 +102,8 @@
 
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="body_type"/>
-          <parameter reference="body_type_in"/>
+          
+          <parameterCode>INPUT_BODY_TYPE</parameterCode>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
@@ -115,8 +115,8 @@
       <captureMethod>AUTOMATIC</captureMethod>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="gender"/>
-          <parameter reference="gender_in"/>
+          
+          <parameterCode>INPUT_PARTICIPANT_GENDER</parameterCode>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
@@ -128,8 +128,8 @@
       <captureMethod>AUTOMATIC</captureMethod>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="age"/>
-          <parameter reference="age_in"/>
+          
+          <parameterCode>INPUT_PARTICIPANT_AGE</parameterCode>
         </equalsParameterCheck>
       </integrityChecks>
     </output>
@@ -142,8 +142,8 @@
       <captureMethod>AUTOMATIC</captureMethod>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="height"/>
-          <parameter reference="height_in"/>
+          
+          <parameterCode>INPUT_PARTICIPANT_HEIGHT</parameterCode>
         </equalsParameterCheck>
       </integrityChecks>
     </output>

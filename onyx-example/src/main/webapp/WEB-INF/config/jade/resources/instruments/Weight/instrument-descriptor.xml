@@ -34,7 +34,7 @@
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="wei1_weight" />
+          
           <decimalMinValueMale>30.0</decimalMinValueMale>
           <decimalMaxValueMale>270.0</decimalMaxValueMale>
           <decimalMinValueFemale>30.0</decimalMinValueFemale>

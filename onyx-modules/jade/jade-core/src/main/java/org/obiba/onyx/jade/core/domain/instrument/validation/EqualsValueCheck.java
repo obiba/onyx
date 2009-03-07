@@ -9,12 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.jade.core.domain.instrument.validation;
 
-import java.util.Date;
-
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
-import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +21,6 @@ import org.slf4j.LoggerFactory;
  * Integrity check to verify that an instrument run value is equal to a given (fixed) value.
  * 
  * The check fails (returns <code>false</code>) if the values are <i>not</i> equal.
- * 
- * @author cag-dspathis
- * 
  */
 public class EqualsValueCheck extends AbstractIntegrityCheck implements IntegrityCheck {
 
@@ -33,44 +28,12 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
 
   private static final long serialVersionUID = 1L;
 
-  private Boolean booleanValue;
-
-  private Long integerValue;
-
-  private Double decimalValue;
-
-  private String textValue;
+  private Data value;
 
   private ComparisonOperator operator;
 
-  private Date dateValue;
-
   public EqualsValueCheck() {
     super();
-  }
-
-  public DataType getValueType() {
-    return getTargetParameter().getDataType();
-  }
-
-  public void setBooleanValue(boolean value) {
-    booleanValue = Boolean.valueOf(value);
-  }
-
-  public void setIntegerValue(long value) {
-    integerValue = Long.valueOf(value);
-  }
-
-  public void setDecimalValue(double value) {
-    decimalValue = Double.valueOf(value);
-  }
-
-  public void setTextValue(String value) {
-    textValue = value;
-  }
-
-  public void setDateValue(Date value) {
-    dateValue = new Date(value.getTime());
   }
 
   public ComparisonOperator getOperator() {
@@ -82,61 +45,11 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
   }
 
   public void setData(Data data) {
-    if(data != null) {
-      if(data.getType().equals(getValueType())) {
-
-        switch(getValueType()) {
-        case BOOLEAN:
-          booleanValue = data.getValue();
-          break;
-
-        case INTEGER:
-          integerValue = data.getValue();
-          break;
-
-        case DECIMAL:
-          decimalValue = data.getValue();
-          break;
-
-        case TEXT:
-          textValue = data.getValue();
-          break;
-
-        case DATE:
-          dateValue = data.getValue();
-          break;
-        }
-      } else {
-        throw new IllegalArgumentException("DataType " + getValueType() + " expected, " + data.getType() + " received.");
-      }
-    }
+    this.value = data;
   }
 
   public Data getData() {
-    Data data = null;
-
-    switch(getValueType()) {
-    case BOOLEAN:
-      data = DataBuilder.buildBoolean(booleanValue);
-      break;
-
-    case INTEGER:
-      data = DataBuilder.buildInteger(integerValue);
-      break;
-
-    case DECIMAL:
-      data = DataBuilder.buildDecimal(decimalValue);
-      break;
-
-    case TEXT:
-      data = DataBuilder.buildText(textValue);
-      break;
-
-    case DATE:
-      data = DataBuilder.buildDate(dateValue);
-    }
-
-    return data;
+    return value;
   }
 
   //
@@ -150,7 +63,7 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
    * @param runService instrument run service (not used by this check)
    * @return <code>true</code> if instrument run value equals configured value
    */
-  public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
+  public boolean checkParameterValue(InstrumentParameter checkedParameter, Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
 
     int compareResult = paramData.compareTo(getData());
 
@@ -183,8 +96,8 @@ public class EqualsValueCheck extends AbstractIntegrityCheck implements Integrit
 
   }
 
-  protected Object[] getDescriptionArgs(ActiveInstrumentRunService activeRunService) {
-    return new Object[] { getTargetParameter().getLabel(), getData().getValue() };
+  protected Object[] getDescriptionArgs(InstrumentParameter checkedParameter, ActiveInstrumentRunService activeRunService) {
+    return new Object[] { checkedParameter.getLabel(), getData().getValue() };
   }
 
 }

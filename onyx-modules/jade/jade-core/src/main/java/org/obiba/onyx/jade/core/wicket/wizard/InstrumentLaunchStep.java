@@ -12,13 +12,10 @@ package org.obiba.onyx.jade.core.wicket.wizard;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wicket.Application;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameterCaptureMethod;
 import org.obiba.onyx.jade.core.domain.instrument.validation.IntegrityCheck;
@@ -30,9 +27,10 @@ import org.obiba.onyx.jade.core.wicket.instrument.InstrumentLaunchPanel;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 import org.obiba.onyx.wicket.wizard.WizardStepPanel;
-import org.obiba.wicket.application.ISpringWebApplication;
+import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSourceResolvable;
 
 public class InstrumentLaunchStep extends WizardStepPanel {
 
@@ -41,13 +39,7 @@ public class InstrumentLaunchStep extends WizardStepPanel {
   private static final Logger log = LoggerFactory.getLogger(InstrumentLaunchStep.class);
 
   @SpringBean
-  private EntityQueryService queryService;
-
-  @SpringBean
   private ActiveInstrumentRunService activeInstrumentRunService;
-
-  @SpringBean
-  private UserSessionService userSessionService;
 
   private boolean launched = false;
 
@@ -116,15 +108,6 @@ public class InstrumentLaunchStep extends WizardStepPanel {
           if(failedChecks.isEmpty()) {
             ((InstrumentWizardForm) form).setUpWizardFlow();
           } else {
-            for(IntegrityCheck failedCheck : failedChecks) {
-              // Set the integrity check's context and user session service to ensure
-              // proper localization of the error message.
-              failedCheck.setApplicationContext(((ISpringWebApplication) Application.get()).getSpringContextLocator().getSpringContext());
-              failedCheck.setUserSessionService(userSessionService);
-
-              error(failedCheck.getDescription(activeInstrumentRunService));
-            }
-
             setNextStep(null);
           }
         }
@@ -157,8 +140,10 @@ public class InstrumentLaunchStep extends WizardStepPanel {
         InstrumentRunValue runValue = activeInstrumentRunService.getInstrumentRunValue(param);
         Data paramData = (runValue != null) ? runValue.getData(param.getDataType()) : null;
 
-        if(!integrityCheck.checkParameterValue(paramData, null, activeInstrumentRunService)) {
+        if(!integrityCheck.checkParameterValue(param, paramData, null, activeInstrumentRunService)) {
           failedChecks.add(integrityCheck);
+          MessageSourceResolvable resolvable = integrityCheck.getDescription(param, activeInstrumentRunService);
+          error((String) new MessageSourceResolvableStringModel(resolvable).getObject());
           break; // stop checking parameter after first failure (but continue checking other parameters!)
         }
       }

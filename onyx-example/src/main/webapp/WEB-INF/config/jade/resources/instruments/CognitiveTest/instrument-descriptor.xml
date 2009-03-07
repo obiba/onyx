@@ -9,7 +9,7 @@
       <code>RES_RESULT_FILE</code>
       <dataType>DATA</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit></measurementUnit>
+      <measurementUnit/>
     </output>
   </instrumentParameters>
   

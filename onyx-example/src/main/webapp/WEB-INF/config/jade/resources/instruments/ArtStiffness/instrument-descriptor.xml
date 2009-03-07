@@ -79,8 +79,8 @@
       <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="FAM_NAME"/>
-          <parameter reference="last_name"/>
+          
+          <parameterCode>INPUT_PARTICIPANT_LAST_NAME</parameterCode>
           <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
@@ -94,8 +94,8 @@
       <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="FIRST_NAME"/>
-          <parameter reference="first_name_in"/>
+          
+          <parameterCode>INPUT_PARTICIPANT_FIRST_NAME</parameterCode>
           <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
@@ -110,8 +110,8 @@
       <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="DOB"/>
-          <parameter reference="birth_date"/>
+          
+          <parameterCode>INPUT_PARTICIPANT_DATE_BIRTH</parameterCode>
           <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
@@ -125,8 +125,8 @@
       <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="SEX"/>
-          <parameter reference="gender"/>
+          
+          <parameterCode>INPUT_PARTICIPANT_GENDER</parameterCode>
           <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
@@ -140,8 +140,8 @@
       <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="SP"/>
-          <parameter reference="systolic_pressure"/>
+          
+          <parameterCode>INPUT_SYSTOLIC_PRESSURE</parameterCode>
           <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
@@ -155,8 +155,8 @@
       <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="DP"/>
-          <parameter reference="diastolic_pressure"/>
+          
+          <parameterCode>INPUT_DIASTOLIC_PRESSURE</parameterCode>
           <customizedDescription>EqualsParameterCheck_Arterial_Stiffness</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>

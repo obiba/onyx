@@ -31,7 +31,6 @@ public class EqualsValueCheckTest {
     equalsValueCheck = new EqualsValueCheck();
 
     instrumentParameter = new InstrumentInputParameter();
-    equalsValueCheck.setTargetParameter(instrumentParameter);
   }
 
   /**
@@ -44,14 +43,14 @@ public class EqualsValueCheckTest {
     // Test with run value TRUE.
     Data trueData = DataBuilder.buildBoolean(Boolean.TRUE);
 
-    equalsValueCheck.setBooleanValue(Boolean.TRUE);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(trueData, null, null));
+    equalsValueCheck.setData(DataBuilder.buildBoolean(true));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, trueData, null, null));
 
     // Test with run value FALSE.
     Data falseData = DataBuilder.buildBoolean(Boolean.FALSE);
 
-    equalsValueCheck.setBooleanValue(Boolean.FALSE);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(falseData, null, null));
+    equalsValueCheck.setData(DataBuilder.buildBoolean(false));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, falseData, null, null));
   }
 
   /**
@@ -64,14 +63,14 @@ public class EqualsValueCheckTest {
     // Test with run value TRUE.
     Data trueData = DataBuilder.buildBoolean(Boolean.TRUE);
 
-    equalsValueCheck.setBooleanValue(false); // unequal
-    Assert.assertFalse(equalsValueCheck.checkParameterValue(trueData, null, null));
+    equalsValueCheck.setData(DataBuilder.buildBoolean(false)); // unequal
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(instrumentParameter, trueData, null, null));
 
     // Test with run value FALSE.
     Data falseData = DataBuilder.buildBoolean(Boolean.FALSE);
 
-    equalsValueCheck.setBooleanValue(true); // unequal
-    Assert.assertFalse(equalsValueCheck.checkParameterValue(falseData, null, null));
+    equalsValueCheck.setData(DataBuilder.buildBoolean(true)); // unequal
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(instrumentParameter, falseData, null, null));
   }
 
   /**
@@ -84,14 +83,14 @@ public class EqualsValueCheckTest {
     // Test run value equals 1.
     Data oneData = DataBuilder.buildInteger(Long.valueOf(1));
 
-    equalsValueCheck.setIntegerValue(1l);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(oneData, null, null));
+    equalsValueCheck.setData(DataBuilder.buildInteger(1));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, oneData, null, null));
 
     // Test run value equals Long.MAX_VALUE.
     Data maxIntData = DataBuilder.buildInteger(Long.MAX_VALUE);
 
-    equalsValueCheck.setIntegerValue(Long.MAX_VALUE);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(maxIntData, null, null));
+    equalsValueCheck.setData(DataBuilder.buildInteger(Long.MAX_VALUE));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, maxIntData, null, null));
   }
 
   /**
@@ -105,13 +104,13 @@ public class EqualsValueCheckTest {
     Data oneData = DataBuilder.buildInteger(Long.valueOf(1));
 
     equalsValueCheck.setData(DataBuilder.buildInteger(Long.MAX_VALUE)); // unequal
-    Assert.assertFalse(equalsValueCheck.checkParameterValue(oneData, null, null));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(instrumentParameter, oneData, null, null));
 
     // Test run value equals Long.MAX_VALUE.
     Data maxIntData = DataBuilder.buildInteger(Long.MAX_VALUE);
 
     equalsValueCheck.setData(DataBuilder.buildInteger(Long.valueOf(1)));
-    Assert.assertFalse(equalsValueCheck.checkParameterValue(maxIntData, null, null));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(instrumentParameter, maxIntData, null, null));
   }
 
   /**
@@ -125,13 +124,13 @@ public class EqualsValueCheckTest {
     Data onePointFiveData = DataBuilder.buildDecimal(Double.valueOf(1.5));
 
     equalsValueCheck.setData(onePointFiveData);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(onePointFiveData, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, onePointFiveData, null, null));
 
     // Test run value equals Double.MAX_VALUE.
     Data maxDecimalData = DataBuilder.buildDecimal(Double.MAX_VALUE);
 
     equalsValueCheck.setData(maxDecimalData);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(maxDecimalData, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, maxDecimalData, null, null));
   }
 
   /**
@@ -145,13 +144,13 @@ public class EqualsValueCheckTest {
     Data onePointFiveData = DataBuilder.buildDecimal(Double.valueOf(1.5));
 
     equalsValueCheck.setData(DataBuilder.buildDecimal(Double.MIN_VALUE)); // unequal
-    Assert.assertFalse(equalsValueCheck.checkParameterValue(onePointFiveData, null, null));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(instrumentParameter, onePointFiveData, null, null));
 
     // Test run value equals Double.MAX_VALUE.
     Data maxDecimalData = DataBuilder.buildDecimal(Double.MAX_VALUE);
 
     equalsValueCheck.setData(DataBuilder.buildDecimal(Double.valueOf(1.5))); // unequal
-    Assert.assertFalse(equalsValueCheck.checkParameterValue(maxDecimalData, null, null));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(instrumentParameter, maxDecimalData, null, null));
   }
 
   /**
@@ -165,7 +164,7 @@ public class EqualsValueCheckTest {
     Data fooData = DataBuilder.buildText("Foo");
 
     equalsValueCheck.setData(fooData);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(fooData, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, fooData, null, null));
   }
 
   /**
@@ -179,7 +178,7 @@ public class EqualsValueCheckTest {
     Data fooData = DataBuilder.buildText("Foo");
 
     equalsValueCheck.setData(new Data(DataType.TEXT, "Bar")); // unequal
-    Assert.assertFalse(equalsValueCheck.checkParameterValue(fooData, null, null));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(instrumentParameter, fooData, null, null));
   }
 
   /**
@@ -194,7 +193,7 @@ public class EqualsValueCheckTest {
     Data nullData = DataBuilder.buildText(null);
 
     equalsValueCheck.setData(new Data(DataType.TEXT, null));
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(nullData, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, nullData, null, null));
   }
 
   /**
@@ -209,7 +208,7 @@ public class EqualsValueCheckTest {
     Data nullData = DataBuilder.buildText(null);
 
     equalsValueCheck.setData(new Data(DataType.TEXT, "Foo")); // not null
-    Assert.assertFalse(equalsValueCheck.checkParameterValue(nullData, null, null));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(instrumentParameter, nullData, null, null));
   }
 
   /**
@@ -224,7 +223,7 @@ public class EqualsValueCheckTest {
     Data fooData = DataBuilder.buildText("Foo");
 
     equalsValueCheck.setData(new Data(DataType.TEXT, null)); // null
-    Assert.assertFalse(equalsValueCheck.checkParameterValue(fooData, null, null));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(instrumentParameter, fooData, null, null));
   }
 
   /**
@@ -239,19 +238,19 @@ public class EqualsValueCheckTest {
 
     // Check value = false.
     equalsValueCheck.setData(DataBuilder.buildBoolean(false));
-    Assert.assertFalse(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value = true.
     equalsValueCheck.setData(DataBuilder.buildBoolean(true));
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Operator should be ignored for booleans.
     equalsValueCheck.setOperator(ComparisonOperator.LESSER);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
     equalsValueCheck.setOperator(ComparisonOperator.GREATER);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
     equalsValueCheck.setOperator(ComparisonOperator.GREATER_EQUALS);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
   }
 
@@ -267,16 +266,16 @@ public class EqualsValueCheckTest {
 
     // Check value = "genomic" should be true.
     equalsValueCheck.setData(DataBuilder.buildText("genomic"));
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value = "blood" should be false.
     equalsValueCheck.setData(DataBuilder.buildText("blood"));
-    Assert.assertFalse(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value > "blood".
     equalsValueCheck.setData(DataBuilder.buildText("blood"));
     equalsValueCheck.setOperator(ComparisonOperator.GREATER);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
   }
 
@@ -293,34 +292,34 @@ public class EqualsValueCheckTest {
     // Check value < 1 should be false.
     equalsValueCheck.setData(DataBuilder.buildInteger(1l));
     equalsValueCheck.setOperator(ComparisonOperator.LESSER);
-    Assert.assertFalse(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value > 1 should be true.
     equalsValueCheck.setOperator(ComparisonOperator.GREATER);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value < 100 should be false.
     equalsValueCheck.setOperator(ComparisonOperator.LESSER);
     equalsValueCheck.setData(DataBuilder.buildInteger(100l));
-    Assert.assertFalse(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value <= 100 should be true.
     equalsValueCheck.setOperator(ComparisonOperator.LESSER_EQUALS);
     equalsValueCheck.setData(DataBuilder.buildInteger(100l));
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value >= 100 should be true.
     equalsValueCheck.setOperator(ComparisonOperator.GREATER_EQUALS);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value = 100 should be true.
     equalsValueCheck.setOperator(ComparisonOperator.EQUALS);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value < 101 should be true.
     equalsValueCheck.setOperator(ComparisonOperator.LESSER);
     equalsValueCheck.setData(DataBuilder.buildInteger(101l));
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
   }
 
@@ -336,39 +335,39 @@ public class EqualsValueCheckTest {
 
     // Check value = 1.5 should be true.
     equalsValueCheck.setData(DataBuilder.buildDecimal(1.5d));
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value >= 1.5 should be true.
     equalsValueCheck.setOperator(ComparisonOperator.GREATER_EQUALS);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value <= 1.5 should be true.
     equalsValueCheck.setOperator(ComparisonOperator.LESSER_EQUALS);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value > 1.5 should be false.
     equalsValueCheck.setOperator(ComparisonOperator.GREATER);
-    Assert.assertFalse(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value > 1.499 should be true.
     equalsValueCheck.setOperator(ComparisonOperator.GREATER);
     equalsValueCheck.setData(DataBuilder.buildDecimal(1.499d));
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value < 1.501 should be true.
     equalsValueCheck.setOperator(ComparisonOperator.LESSER);
     equalsValueCheck.setData(DataBuilder.buildDecimal(1.501d));
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value = 1.500 should be true.
     equalsValueCheck.setOperator(ComparisonOperator.EQUALS);
     equalsValueCheck.setData(DataBuilder.buildDecimal(1.500d));
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value = 1.501 should be false.
     equalsValueCheck.setOperator(ComparisonOperator.EQUALS);
     equalsValueCheck.setData(DataBuilder.buildDecimal(1.501d));
-    Assert.assertFalse(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
   }
 
@@ -386,17 +385,17 @@ public class EqualsValueCheckTest {
     // Check value = current time should be true.
     equalsValueCheck.setData(DataBuilder.buildDate(new Date(currentTime)));
     equalsValueCheck.setOperator(ComparisonOperator.EQUALS);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value < an hour ago should be false.
     equalsValueCheck.setData(DataBuilder.buildDate(new Date(currentTime - 3600 * 1000)));
     equalsValueCheck.setOperator(ComparisonOperator.LESSER);
-    Assert.assertFalse(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertFalse(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
     // Check value > an hour ago should be true.
     equalsValueCheck.setData(DataBuilder.buildDate(new Date(currentTime - 3600 * 1000)));
     equalsValueCheck.setOperator(ComparisonOperator.GREATER);
-    Assert.assertTrue(equalsValueCheck.checkParameterValue(runValue, null, null));
+    Assert.assertTrue(equalsValueCheck.checkParameterValue(instrumentParameter, runValue, null, null));
 
   }
 

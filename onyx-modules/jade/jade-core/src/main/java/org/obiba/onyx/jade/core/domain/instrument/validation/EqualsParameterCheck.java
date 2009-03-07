@@ -22,9 +22,6 @@ import org.slf4j.LoggerFactory;
  * Integrity check to verify that an instrument run value is equal to the value of another parameter.
  * 
  * The check fails (returns <code>false</code>) if the values are <i>not</i> equal.
- * 
- * @author cag-dspathis
- * 
  */
 public class EqualsParameterCheck extends AbstractIntegrityCheck implements IntegrityCheck {
 
@@ -32,18 +29,16 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
 
   private static final Logger log = LoggerFactory.getLogger(EqualsParameterCheck.class);
 
-  private EqualsValueCheck equalsValueCheck;
-
-  private InstrumentParameter parameter;
+  private String parameterCode;
 
   private ComparisonOperator operator;
 
-  public void setParameter(InstrumentParameter param) {
-    this.parameter = param;
+  public void setParameterCode(String parameterCode) {
+    this.parameterCode = parameterCode;
   }
 
-  public InstrumentParameter getParameter() {
-    return this.parameter;
+  public String getParameterCode() {
+    return this.parameterCode;
   }
 
   //
@@ -58,17 +53,18 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
    * @param runService instrument run service
    * @return <code>true</code> if instrument run value equals value of configured other parameter
    */
-  public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
+  public boolean checkParameterValue(InstrumentParameter checkedParameter, Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
     // If the other parameter has not been specified, there is nothing to check!
-    if(parameter == null) {
+    if(parameterCode == null) {
       return true;
     }
 
     //
     // Get the other parameter's value.
     //
-    log.debug("Retrieving parameter value : {}", parameter.getCode());
-    InstrumentRunValue otherRunValue = activeRunService.getInstrumentRunValue(parameter);
+    log.debug("Retrieving parameter value : {}", parameterCode);
+    InstrumentParameter otherParameter = activeRunService.getParameterByCode(parameterCode);
+    InstrumentRunValue otherRunValue = activeRunService.getInstrumentRunValue(otherParameter);
     Data otherData = null;
 
     if(otherRunValue != null) {
@@ -76,33 +72,31 @@ public class EqualsParameterCheck extends AbstractIntegrityCheck implements Inte
 
       if(!otherParam.getDataType().equals(paramData.getType())) {
         InstrumentRunValue targetRunValue = new InstrumentRunValue();
-        targetRunValue.setInstrumentParameter(getTargetParameter().getCode());
+        targetRunValue.setInstrumentParameter(checkedParameter.getCode());
         UnitParameterValueConverter converter = new UnitParameterValueConverter();
         converter.convert(activeRunService, targetRunValue, otherRunValue);
-        otherData = targetRunValue.getData(getTargetParameter().getDataType());
+        otherData = targetRunValue.getData(paramData.getType());
       } else {
-        otherData = otherRunValue.getData(parameter.getDataType());
-        log.debug("Value is : {}", otherRunValue.getData(parameter.getDataType()));
+        otherData = otherRunValue.getData(otherParameter.getDataType());
+        log.debug("Value is : {}", otherRunValue.getData(otherParameter.getDataType()));
       }
     } else {
       log.debug("Value is : null");
     }
 
     // Lazily instantiate the equalsValueCheck.
-    if(equalsValueCheck == null) {
-      equalsValueCheck = new EqualsValueCheck();
-    }
+    EqualsValueCheck equalsValueCheck = new EqualsValueCheck();
 
     // Update the equalsValueCheck accordingly.
-    equalsValueCheck.setTargetParameter(getTargetParameter());
     equalsValueCheck.setData(otherData);
     equalsValueCheck.setOperator(operator);
 
-    return equalsValueCheck.checkParameterValue(paramData, null, null);
+    return equalsValueCheck.checkParameterValue(checkedParameter, paramData, runService, activeRunService);
   }
 
-  protected Object[] getDescriptionArgs(ActiveInstrumentRunService activeRunService) {
-    return new Object[] { getTargetParameter().getLabel(), parameter.getLabel() };
+  protected Object[] getDescriptionArgs(InstrumentParameter checkedParameter, ActiveInstrumentRunService activeRunService) {
+    InstrumentParameter otherParameter = activeRunService.getParameterByCode(parameterCode);
+    return new Object[] { checkedParameter.getLabel(), otherParameter.getLabel() };
   }
 
   public ComparisonOperator getOperator() {

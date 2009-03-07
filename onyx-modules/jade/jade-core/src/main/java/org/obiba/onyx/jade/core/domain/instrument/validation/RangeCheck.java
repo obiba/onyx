@@ -11,6 +11,7 @@ package org.obiba.onyx.jade.core.domain.instrument.validation;
 
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
@@ -43,10 +44,6 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
 
   public RangeCheck() {
     super();
-  }
-
-  public DataType getValueType() {
-    return getTargetParameter().getDataType();
   }
 
   public void setIntegerMinValueMale(Long value) {
@@ -86,37 +83,37 @@ public class RangeCheck extends AbstractIntegrityCheck implements IntegrityCheck
   //
 
   @Override
-  public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
+  public boolean checkParameterValue(InstrumentParameter checkedParameter, Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService) {
     // Get the participant's gender (range is gender-dependent).
     Gender gender = activeRunService.getParticipant().getGender();
 
-    if(getValueType().equals(DataType.INTEGER)) {
+    if(checkedParameter.getDataType() == DataType.INTEGER) {
       return checkIntegerParameterValue(paramData, gender);
-    } else if(getValueType().equals(DataType.DECIMAL)) {
+    } else if(checkedParameter.getDataType() == DataType.DECIMAL) {
       return checkDecimalParameterValue(paramData, gender);
     }
 
     return false;
   }
 
-  protected Object[] getDescriptionArgs(ActiveInstrumentRunService activeRunService) {
+  protected Object[] getDescriptionArgs(InstrumentParameter checkedParameter, ActiveInstrumentRunService activeRunService) {
     Object[] args = null;
 
     // For male participants, return the min/max values for males; for female participants,
     // return the min/max values for females.
     Participant participant = activeRunService.getParticipant();
 
-    if(getValueType().equals(DataType.INTEGER)) {
+    if(checkedParameter.getDataType() == DataType.INTEGER) {
       if(participant.getGender().equals(Gender.MALE)) {
-        args = new Object[] { getTargetParameter().getLabel(), integerMinValueMale, integerMaxValueMale };
+        args = new Object[] { checkedParameter.getLabel(), integerMinValueMale, integerMaxValueMale };
       } else if(participant.getGender().equals(Gender.FEMALE)) {
-        args = new Object[] { getTargetParameter().getLabel(), integerMinValueFemale, integerMaxValueFemale };
+        args = new Object[] { checkedParameter.getLabel(), integerMinValueFemale, integerMaxValueFemale };
       }
-    } else if(getValueType().equals(DataType.DECIMAL)) {
+    } else if(checkedParameter.getDataType() == DataType.DECIMAL) {
       if(participant.getGender().equals(Gender.MALE)) {
-        args = new Object[] { getTargetParameter().getLabel(), decimalMinValueMale, decimalMaxValueMale };
+        args = new Object[] { checkedParameter.getLabel(), decimalMinValueMale, decimalMaxValueMale };
       } else if(participant.getGender().equals(Gender.FEMALE)) {
-        args = new Object[] { getTargetParameter().getLabel(), decimalMinValueFemale, decimalMaxValueFemale };
+        args = new Object[] { checkedParameter.getLabel(), decimalMinValueFemale, decimalMaxValueFemale };
       }
     }
 

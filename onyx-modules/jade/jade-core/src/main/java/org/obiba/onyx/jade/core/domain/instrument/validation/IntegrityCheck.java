@@ -11,12 +11,11 @@ package org.obiba.onyx.jade.core.domain.instrument.validation;
 
 import java.io.Serializable;
 
-import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.util.data.Data;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSourceResolvable;
 
 /**
  * Interface for instrument parameter integrity checks.
@@ -34,20 +33,6 @@ public interface IntegrityCheck extends Serializable {
   public IntegrityCheckType getType();
 
   /**
-   * Sets the parameter to which this check is applied.
-   * 
-   * @param targetParameter parameter to which this check is applied
-   */
-  public void setTargetParameter(InstrumentParameter targetParameter);
-
-  /**
-   * Returns the parameter to which this check is applied.
-   * 
-   * @return parameter to which this check is applied
-   */
-  public InstrumentParameter getTargetParameter();
-
-  /**
    * Checks the specified instrument run value.
    * 
    * The nature of the "check" is specific to implementing classes.
@@ -58,7 +43,7 @@ public interface IntegrityCheck extends Serializable {
    * @param activeRunService service used to query the active instrument run (<code>null</code> if not used)
    * @return <code>true</code> if the value passes the check
    */
-  public boolean checkParameterValue(Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService);
+  public boolean checkParameterValue(InstrumentParameter checkedParameter, Data paramData, InstrumentRunService runService, ActiveInstrumentRunService activeRunService);
 
   /**
    * Returns a (localized) description of the check performed.
@@ -71,9 +56,6 @@ public interface IntegrityCheck extends Serializable {
    * @param activeRunService service used to query the measurement context
    * @return localized description
    */
-  public String getDescription(ActiveInstrumentRunService activeRunService);
+  public MessageSourceResolvable getDescription(InstrumentParameter checkedParameter, ActiveInstrumentRunService activeRunService);
 
-  public void setApplicationContext(ApplicationContext context);
-
-  public void setUserSessionService(UserSessionService userSessionService);
 }

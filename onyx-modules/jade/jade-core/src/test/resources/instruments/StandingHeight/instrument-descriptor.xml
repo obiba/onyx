@@ -2,7 +2,7 @@
 <instrumentType>
   <name>StandingHeight</name>
 
- <!-- <contraindications>
+  <contraindications>
     <contraIndication>
       <code>UnableToStandUnassistedHandicap</code>
       <type>OBSERVED</type>
@@ -12,18 +12,7 @@
       <code>UnableToStandUnassistedWheelchair</code>
       <type>OBSERVED</type>
     </contraIndication>
-
-    <contraIndication>
-      <code>UnableToStandUnassistedCast</code>
-      <type>OBSERVED</type>
-    </contraIndication>
-
-    <contraIndication>
-      <code>Other_CI</code>
-      <requiresDescription>true</requiresDescription>
-      <type>OBSERVED</type>
-    </contraIndication>
-  </contraindications>  -->
+  </contraindications>
 
   <instrumentParameters>
     <interpretative>
@@ -33,14 +22,13 @@
       <type>OBSERVED</type>
     </interpretative>
 
-    <output id="sta1_height1">
+    <output>
       <code>RES_FIRST_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="sta1_height1" />
           <decimalMinValueMale>70.0</decimalMinValueMale>
           <decimalMaxValueMale>207.0</decimalMaxValueMale>
           <decimalMinValueFemale>70.0</decimalMinValueFemale>
@@ -48,7 +36,6 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="sta1_height1" />
           <decimalMinValueMale>148.0</decimalMinValueMale>
           <decimalMaxValueMale>192.0</decimalMaxValueMale>
           <decimalMinValueFemale>148.0</decimalMinValueFemale>
@@ -57,14 +44,13 @@
       </integrityChecks>
     </output>
 
-    <output id="sta1_height2">
+    <output>
       <code>RES_SEC_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>MANUAL</captureMethod>
       <integrityChecks>
         <rangeCheck>
-          <targetParameter reference="sta1_height2" />
           <decimalMinValueMale>70.0</decimalMinValueMale>
           <decimalMaxValueMale>207.0</decimalMaxValueMale>
           <decimalMinValueFemale>70.0</decimalMinValueFemale>
@@ -72,15 +58,13 @@
         </rangeCheck>
         <rangeCheck>
           <type>WARNING</type>
-          <targetParameter reference="sta1_height2" />
           <decimalMinValueMale>148.0</decimalMinValueMale>
           <decimalMaxValueMale>192.0</decimalMaxValueMale>
           <decimalMinValueFemale>148.0</decimalMinValueFemale>
           <decimalMaxValueFemale>192.0</decimalMaxValueFemale>
         </rangeCheck>
         <parameterSpreadCheck>
-          <targetParameter reference="sta1_height2" />
-          <parameter reference="sta1_height1" />
+          <parameterCode>RES_FIRST_HEIGHT</parameterCode>
           <offset>1</offset>
         </parameterSpreadCheck>
       </integrityChecks>
@@ -94,11 +78,7 @@
       <dataSource class="computingDataSource">
         <dataType>DECIMAL</dataType>
         <unit>cm</unit>
-        
-        <expression>
-          ($1 + $2)/2
-        </expression>
-          
+        <expression>($1 + $2)/2</expression>
         <dataSources>
           <dataSource class="outputParameterDataSource">
             <instrumentType>StandingHeight</instrumentType>

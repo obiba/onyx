@@ -118,11 +118,11 @@
       <code>OUTPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit />
+      <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="participantID" />
-          <parameter reference="id_in" />
+          
+          <parameterCode>INPUT_PARTICIPANT_BARCODE</parameterCode>
           <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
@@ -133,11 +133,11 @@
       <code>OUTPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit />
+      <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="participantLastName" />
-          <parameter reference="last_name_in" />
+          
+          <parameterCode>INPUT_PARTICIPANT_LAST_NAME</parameterCode>
           <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
@@ -148,11 +148,11 @@
       <code>OUTPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit />
+      <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="Participant_First_Name" />
-          <parameter reference="first_name_in" />
+          
+          <parameterCode>INPUT_PARTICIPANT_FIRST_NAME</parameterCode>
           <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
@@ -163,11 +163,11 @@
       <code>OUTPUT_PARTICIPANT_BIRTH_DAY</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit />
+      <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="Participant_Birth_Day" />
-          <parameter reference="birth_day_in" />
+          
+          <parameterCode>INPUT_PARTICIPANT_BIRTH_DAY</parameterCode>
           <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
@@ -178,11 +178,11 @@
       <code>OUTPUT_PARTICIPANT_BIRTH_MONTH</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit />
+      <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="participantBirthMonth" />
-          <parameter reference="birth_month_in" />
+          
+          <parameterCode>INPUT_PARTICIPANT_BIRTH_MONTH</parameterCode>
           <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
@@ -193,11 +193,11 @@
       <code>OUTPUT_PARTICIPANT_BIRTH_YEAR</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit />
+      <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="participantBirthYear" />
-          <parameter reference="birth_year_in" />
+          
+          <parameterCode>INPUT_PARTICIPANT_BIRTH_YEAR</parameterCode>
           <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
@@ -208,11 +208,11 @@
       <code>OUTPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit />
+      <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="participantGender" />
-          <parameter reference="gender_in" />
+          
+          <parameterCode>INPUT_PARTICIPANT_GENDER</parameterCode>
           <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
@@ -223,11 +223,11 @@
       <code>OUTPUT_PARTICIPANT_ETHNIC_GROUP</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit />
+      <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="participantRace" />
-          <parameter reference="ethnic_group_in" />
+          
+          <parameterCode>INPUT_PARTICIPANT_ETHNIC_GROUP</parameterCode>
           <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
@@ -254,11 +254,11 @@
       <code>OUTPUT_PARTICIPANT_PACEMAKER</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <measurementUnit />
+      <measurementUnit/>
       <integrityChecks>
         <equalsParameterCheck>
-          <targetParameter reference="participantPacemaker" />
-          <parameter reference="pacemaker_in" />
+          
+          <parameterCode>INPUT_PARTICIPANT_PACEMAKER</parameterCode>
           <customizedDescription>EqualsParameterCheck_ECG</customizedDescription>
         </equalsParameterCheck>
       </integrityChecks>
