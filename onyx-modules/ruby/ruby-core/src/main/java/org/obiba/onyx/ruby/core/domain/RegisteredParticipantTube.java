@@ -9,19 +9,18 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.domain;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.CollectionOfElements;
 import org.obiba.core.domain.AbstractEntity;
 
 /**
@@ -37,8 +36,8 @@ public class RegisteredParticipantTube extends AbstractEntity {
   @Temporal(TemporalType.TIMESTAMP)
   private Date registrationTime;
 
-  @OneToMany(mappedBy = "registeredParticipantTube", cascade = CascadeType.ALL)
-  private List<RemarkCode> remarkCode;
+  @CollectionOfElements
+  private Set<String> remarks;
 
   @Column(length = 2000)
   private String comment;
@@ -85,25 +84,15 @@ public class RegisteredParticipantTube extends AbstractEntity {
     return participantTubeRegistration;
   }
 
-  public List<RemarkCode> getRemarkCode() {
-    return (remarkCode != null) ? remarkCode : new ArrayList<RemarkCode>();
+  public Set<String> getRemarks() {
+    return (remarks != null) ? remarks : new HashSet<String>();
   }
 
-  public void setRemarkCode(List<RemarkCode> remarkCode) {
-    this.remarkCode = remarkCode;
+  public void setRemarks(Set<String> remarks) {
+    this.remarks = remarks;
   }
 
-  public List<String> getRemarkCodeString() {
-    List<String> remarkStrList = new ArrayList<String>();
-
-    for(RemarkCode remark : getRemarkCode()) {
-      remarkStrList.add(remark.getCode());
-    }
-    return remarkStrList;
-  }
-
-  public void addRemarkCode(RemarkCode remarkCode) {
-    getRemarkCode().add(remarkCode);
-    remarkCode.setRegisteredParticipantTube(this);
+  public void addRemark(String remark) {
+    getRemarks().add(remark);
   }
 }

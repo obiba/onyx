@@ -20,7 +20,6 @@ import org.obiba.onyx.engine.variable.Variable;
 import org.obiba.onyx.engine.variable.VariableData;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
-import org.obiba.onyx.ruby.core.domain.RemarkCode;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.engine.variable.ITubeToVariableMappingStrategy;
 import org.obiba.onyx.util.data.Data;
@@ -56,7 +55,7 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
 
   private static final String COMMENT = "comment";
 
-  private static final String REMARK_CODE = "remarkCode";
+  private static final String REMARK_CODE = "remarks";
 
   private EntityQueryService queryService;
 
@@ -138,11 +137,8 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
         } else if(variable.getName().equals(REGISTRATION_TIME) && registeredTube.getRegistrationTime() != null) {
           datas.add(DataBuilder.buildDate(registeredTube.getRegistrationTime()));
         } else if(variable.getName().equals(REMARK_CODE)) {
-          RemarkCode codeTemplate = new RemarkCode();
-          codeTemplate.setRegisteredParticipantTube(registeredTube);
-
-          for(RemarkCode code : queryService.match(codeTemplate)) {
-            datas.add(DataBuilder.buildText(code.getCode()));
+          for(String code : registeredTube.getRemarks()) {
+            datas.add(DataBuilder.buildText(code));
           }
         }
 

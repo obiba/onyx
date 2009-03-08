@@ -62,6 +62,14 @@ public interface ActiveTubeRegistrationService {
   public void setTubeRemark(String barcode, List<Remark> remarks);
 
   /**
+   * Returns the list of {@code Remark} instances associtated with the specified registered tube's barcode.
+   * 
+   * @param barcode the registered tube's barcode
+   * @return a list of {@code Remark} instances
+   */
+  public List<Remark> getTubeRemarks(String barcode);
+
+  /**
    * Records a comment related to the specified tube registration.
    * 
    * @param barcode the tube's barcode

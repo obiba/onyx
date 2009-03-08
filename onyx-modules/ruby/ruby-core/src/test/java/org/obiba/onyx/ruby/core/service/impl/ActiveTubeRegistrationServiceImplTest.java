@@ -19,7 +19,9 @@ import static org.junit.Assert.fail;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -32,7 +34,6 @@ import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.Remark;
-import org.obiba.onyx.ruby.core.domain.RemarkCode;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.domain.parser.IBarcodePartParser;
 import org.obiba.onyx.ruby.core.domain.parser.impl.RegularExpressionBarcodePartParser;
@@ -155,7 +156,8 @@ public class ActiveTubeRegistrationServiceImplTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#setTubeComment(java.lang.String, java.lang.String)} .
+   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#setTubeComment(java.lang.String, java.lang.String)}
+   * .
    */
   @Test
   public void testSetTubeComment() {
@@ -180,7 +182,8 @@ public class ActiveTubeRegistrationServiceImplTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#setTubeComment(java.lang.String, java.lang.String)} .
+   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#setTubeComment(java.lang.String, java.lang.String)}
+   * .
    */
   @Test
   public void testFailToSetTubeComment() {
@@ -204,7 +207,8 @@ public class ActiveTubeRegistrationServiceImplTest {
 
   /**
    * Test method for
-   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#setTubeRemark(java.lang.String, org.obiba.onyx.ruby.core.domain.Remark)} .
+   * {@link org.obiba.onyx.ruby.core.service.impl.ActiveTubeRegistrationServiceImpl#setTubeRemark(java.lang.String, org.obiba.onyx.ruby.core.domain.Remark)}
+   * .
    */
   @Test
   public void testSetTubeRemark() {
@@ -213,13 +217,17 @@ public class ActiveTubeRegistrationServiceImplTest {
     tube.setRegistrationTime(new Date());
     tube.setBarcode(barcode);
 
+    Set<String> remarkCodes = new HashSet<String>();
+    // Add a code that should be absent after the service method call
+    remarkCodes.add("Removed");
+    tube.setRemarks(remarkCodes);
+
     List<Remark> remarks = new ArrayList<Remark>();
     remarks.add(new Remark("123"));
+    remarks.add(new Remark("321"));
 
     expect(persistenceManagerMock.matchOne(isA(RegisteredParticipantTube.class))).andReturn(tube).once();
-    expect(persistenceManagerMock.match(isA(RemarkCode.class))).andReturn(new ArrayList<RemarkCode>()).once();
-    expect(persistenceManagerMock.save(isA(RemarkCode.class))).andReturn(new RemarkCode("123")).once();
-    expect(persistenceManagerMock.save(isA(RegisteredParticipantTube.class))).andReturn(tube).once();
+    expect(persistenceManagerMock.save(tube)).andReturn(tube).once();
 
     replay(persistenceManagerMock);
 
@@ -227,6 +235,9 @@ public class ActiveTubeRegistrationServiceImplTest {
 
     verify(persistenceManagerMock);
 
+    Assert.assertTrue(remarkCodes.contains("123"));
+    Assert.assertTrue(remarkCodes.contains("321"));
+    Assert.assertFalse(remarkCodes.contains("Removed"));
   }
 
   /**

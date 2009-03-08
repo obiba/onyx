@@ -11,6 +11,7 @@ package org.obiba.onyx.ruby.core.wicket.tube;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -36,7 +37,7 @@ public class RemarkSelectorPanel extends Panel {
   private List<Remark> selectedRemark = new ArrayList<Remark>();
 
   /**
-   * Panel for the remark dropdown list
+   * Panel for the remark selection list
    * @param id
    * @param rowModel
    * @param tubeRegistrationConfiguration
@@ -48,10 +49,12 @@ public class RemarkSelectorPanel extends Panel {
     List<Remark> remarks = tubeRegistrationConfiguration.getAvailableRemarks();
 
     RegisteredParticipantTube registeredParticipantTube = (RegisteredParticipantTube) rowModel.getObject();
-    List<String> tubeRemarks = registeredParticipantTube.getRemarkCodeString();
+    Set<String> tubeRemarks = registeredParticipantTube.getRemarks();
 
     for(Remark remark : remarks) {
-      if(tubeRemarks.contains(remark.getCode())) selectedRemark.add(remark);
+      if(tubeRemarks.contains(remark.getCode())) {
+        selectedRemark.add(remark);
+      }
     }
 
     ListMultipleChoice listRemarks = new ListMultipleChoice("remarkSelect", new PropertyModel(this, "selectedRemark"), remarks, new IChoiceRenderer() {

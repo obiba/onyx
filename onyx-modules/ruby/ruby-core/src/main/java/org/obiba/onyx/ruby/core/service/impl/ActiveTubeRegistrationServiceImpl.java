@@ -25,7 +25,6 @@ import org.obiba.onyx.ruby.core.domain.BarcodeStructure;
 import org.obiba.onyx.ruby.core.domain.ParticipantTubeRegistration;
 import org.obiba.onyx.ruby.core.domain.RegisteredParticipantTube;
 import org.obiba.onyx.ruby.core.domain.Remark;
-import org.obiba.onyx.ruby.core.domain.RemarkCode;
 import org.obiba.onyx.ruby.core.domain.TubeRegistrationConfiguration;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.slf4j.Logger;
@@ -219,18 +218,26 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     RegisteredParticipantTube tube = findTubeByBarcode(barcode);
     checkBarcodeExists(barcode, tube);
 
-    for(RemarkCode remarkCode : findRemarkCodeForTube(tube)) {
-      tube.getRemarkCode().remove(remarkCode);
-      getPersistenceManager().delete(remarkCode);
-    }
-
+    tube.getRemarks().clear();
     for(Remark remark : remarks) {
-      RemarkCode remarkCode = new RemarkCode(remark.getCode());
-      tube.addRemarkCode(remarkCode);
-      getPersistenceManager().save(remarkCode);
+      tube.addRemark(remark.getCode());
     }
 
     getPersistenceManager().save(tube);
+  }
+
+  public List<Remark> getTubeRemarks(String barcode) {
+    RegisteredParticipantTube tube = findTubeByBarcode(barcode);
+    checkBarcodeExists(barcode, tube);
+
+    List<Remark> remarks = tubeRegistrationConfig.getAvailableRemarks();
+    List<Remark> tubeRemarks = new ArrayList<Remark>();
+    for(Remark remark : remarks) {
+      if(tube.getRemarks().contains(remark.getCode())) {
+        tubeRemarks.add(remark);
+      }
+    }
+    return tubeRemarks;
   }
 
   public boolean hasContraindications(Type type) {
@@ -315,12 +322,6 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     tube = getPersistenceManager().matchOne(tube);
 
     return tube;
-  }
-
-  private List<RemarkCode> findRemarkCodeForTube(RegisteredParticipantTube tube) {
-    RemarkCode remarkCode = new RemarkCode();
-    remarkCode.setRegisteredParticipantTube(tube);
-    return getPersistenceManager().match(remarkCode);
   }
 
   private boolean isDuplicateBarcode(String barcode) {
