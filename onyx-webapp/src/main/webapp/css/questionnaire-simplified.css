@@ -319,6 +319,14 @@ table.obiba-quartz-array {
 	margin-bottom:5px;	
 }
 
+.obiba-quartz-array .obiba-quartz-category.ui-state-highlight a.button > div {
+	background-attachment:scroll;
+	background-color:transparent;
+	background-image:url('../icons/button_check.png');
+	background-position:center top;
+	background-repeat:no-repeat;
+}
+
 .obiba-quartz-clear {
 	margin-left:auto;
 	margin-right:auto;
