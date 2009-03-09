@@ -31,12 +31,12 @@
   padding-right: 8px;
 }
 
-.obiba-numeric-pad .pad-form .pad-actions {
+.obiba-numeric-pad .obiba-quartz-padForm  .obiba-quartz-padActions {
   margin: auto; 
   width: 180px;
 }
 
-.obiba-numeric-pad .pad-form a.button .label {
+.obiba-numeric-pad .obiba-quartz-padForm  a.button .label {
   padding-right:10px;
   padding-left:10px;  
 }
@@ -46,7 +46,7 @@ div.wicket-modal div.onyx .obiba-numeric-pad .imagelink {
   font-weight:bold;
 }
 
-div.wicket-modal div.onyx .obiba-numeric-pad .pad-form .imagelink { 
+div.wicket-modal div.onyx .obiba-numeric-pad .obiba-quartz-padForm  .imagelink { 
   font-size:18px; 
   font-weight:normal;
 }
@@ -60,6 +60,22 @@ div.wicket-modal div.onyx .obiba-numeric-pad .feedback {
   text-align:center;
 }
 
-div.wicket-modal div.onyx .obiba-numeric-pad .pad-form .valuepressed-label {  
+div.wicket-modal div.onyx .obiba-numeric-pad .obiba-quartz-padForm  .valuepressed-label {  
   font-size:14px;
+}
+
+.obiba-numeric-pad .obiba-quartz-padForm  table {
+  margin: auto; padding: 0px 16px; width: 100%;
+}
+
+.obiba-quartz-padActions .imagelink {
+  float: left;width: 80px;
+}
+
+.obiba-quartz-padActions .imagelink.obiba-button-ok {
+  padding-right:10px;
+}
+
+.obiba-quartz-padActions .imagelink.obiba-button-cancel {
+  padding-left:10px;
 }

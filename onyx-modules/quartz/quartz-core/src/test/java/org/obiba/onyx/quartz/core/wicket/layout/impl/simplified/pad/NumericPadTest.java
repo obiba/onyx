@@ -15,6 +15,8 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import junit.framework.Assert;
@@ -27,9 +29,11 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
+import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundle;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
@@ -66,6 +70,10 @@ public class NumericPadTest {
   private QuestionnaireParticipant questionnaireParticipant;
 
   private static Boolean modalIsShown;
+
+  Questionnaire questionnaire;
+
+  Question question;
 
   static class MyModalWindow extends ModalWindow {
 
@@ -119,8 +127,8 @@ public class NumericPadTest {
 
   private void setupNumericPad() {
 
-    Questionnaire questionnaire = createQuestionnaire();
-    final Question question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("Q1");
+    questionnaire = createQuestionnaire();
+    question = QuestionnaireFinder.getInstance(questionnaire).findQuestion("Q1");
 
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaireParticipant()).andReturn(questionnaireParticipant).times(1);
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
@@ -194,6 +202,61 @@ public class NumericPadTest {
 
     // Verify that modal is closed
     Assert.assertFalse(isModalShown());
+
+  }
+
+  @Test
+  public void testValidNumericPadSubmit() {
+    showModal(true);
+
+    // Enter "1973" on the numeric pad.
+    tester.executeAjaxEvent("panel:1:button:link", "onclick");
+    tester.executeAjaxEvent("panel:9:button:link", "onclick");
+    tester.executeAjaxEvent("panel:7:button:link", "onclick");
+    tester.executeAjaxEvent("panel:3:button:link", "onclick");
+
+    EasyMock.reset(activeQuestionnaireAdministrationServiceMock);
+
+    List<CategoryAnswer> answers = new ArrayList<CategoryAnswer>();
+    CategoryAnswer category = new CategoryAnswer();
+    category.setCategoryName("1");
+    answers.add(category);
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswers(question)).andReturn(answers);
+    QuestionCategory questionCategory = question.findQuestionCategory("1");
+
+    // Insure that "1973" is saved (set has the answer to the question).
+    expect(activeQuestionnaireAdministrationServiceMock.answer(question, questionCategory, questionCategory.getOpenAnswerDefinition(), DataBuilder.buildInteger("1973"))).andReturn(category);
+
+    replay(activeQuestionnaireAdministrationServiceMock);
+
+    // Press the OK button.
+    tester.executeAjaxEvent("panel:form:ok:link", "onclick");
+
+    verify(activeQuestionnaireAdministrationServiceMock);
+
+    // Verify that modal is closed
+    Assert.assertFalse(isModalShown());
+
+  }
+
+  @Test
+  public void testInvalidNumericPadSubmit() {
+    showModal(true);
+
+    EasyMock.reset(activeQuestionnaireAdministrationServiceMock);
+
+    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale);
+    expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire);
+
+    replay(activeQuestionnaireAdministrationServiceMock);
+
+    // Press the OK button.
+    tester.executeAjaxEvent("panel:form:ok:link", "onclick");
+
+    // Verify that an error has been generated (this field is required).
+    tester.assertErrorMessages(new String[] { "Field 'Choice one' is required." });
+
+    verify(activeQuestionnaireAdministrationServiceMock);
 
   }
 
