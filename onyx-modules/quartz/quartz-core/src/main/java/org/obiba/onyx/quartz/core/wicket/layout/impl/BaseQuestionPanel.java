@@ -164,7 +164,8 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
       });
 
     } else {
-      imageLink.add(new WebMarkupContainer("addComment").setVisible(false));
+      imageLink.add(new WebMarkupContainer("addComment"));
+      imageLink.setVisible(false);
     }
 
   }
