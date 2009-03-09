@@ -92,11 +92,6 @@
 	width: 400px;
 }
 
-.obiba-quartz-regular-image {
-    margin-left: auto;
-	margin-right: auto;
-}
-
 .obiba-quartz-category img, .obiba-quartz-category.ui-state-highlight img.ui-state-highlight {
   display: inline;
   height: 100px;
@@ -105,6 +100,16 @@
 
 .obiba-quartz-category img.ui-state-highlight, .obiba-quartz-category.ui-state-highlight img {
   display: none;
+}
+
+.obiba-quartz-regularImage td.obiba-quartz-category div.obiba-quartz-category {
+    padding-bottom: 20px;
+}
+
+.obiba-quartz-regularImage td.obiba-quartz-category div.obiba-quartz-category.ui-state-highlight {
+    background-image: url('../icons/arrow_up.png');
+    background-position: bottom center;
+    background-repeat: no-repeat;
 }
 
 .obiba-quartz-escape {
