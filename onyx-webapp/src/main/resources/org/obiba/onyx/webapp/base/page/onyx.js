@@ -126,7 +126,7 @@ Resizer.resizeMenu = function() {
         }
     }
 }
-WindowUtil.attachEvent("DOMContentLoaded", Resizer.resizeMenu);
+WindowUtil.attachEvent("load", Resizer.resizeMenu);
 
 function resizeModalFeedback() {
 	var feedback = $('div.wicket-modal div.onyx ul.feedback');
