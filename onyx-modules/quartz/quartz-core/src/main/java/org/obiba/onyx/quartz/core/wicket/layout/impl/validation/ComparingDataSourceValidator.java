@@ -91,8 +91,16 @@ public class ComparingDataSourceValidator implements IValidator {
   private ValidationError newValidationError(String message, Data data, Data dataToCompare) {
     ValidationError error = new ValidationError();
     error.addMessageKey("DataSourceValidator." + message);
-    if(data != null) error.setVariable("expected", data.getValue());
-    if(dataToCompare != null) error.setVariable("found", dataToCompare.getValue());
+    if(data != null) {
+      error.setVariable("expected", data.getValue());
+    } else {
+      error.setVariable("expected", "?");
+    }
+    if(dataToCompare != null) {
+      error.setVariable("found", dataToCompare.getValue());
+    } else {
+      error.setVariable("found", "?");
+    }
     return error;
   }
 }
