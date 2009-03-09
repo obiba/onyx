@@ -6,7 +6,22 @@
     <property name="properties">
       <value>
       <![CDATA[
-      org.obiba.onyx.supportedRecruitmentTypes=
+        org.obiba.onyx.supportedRecruitmentTypes=
+        
+        # The Algorithm and Password configuration is just here to allow the beans to load correctly. This test
+        # uses the deployment "beans.xml" file and some beans require configuration, even thought they're not
+        # used directly in the test. It would be good for the test to use its own bean.xml file, and only load
+        # what it requires.
+        
+        # Algorithm used to hash user passwords. 
+        org.obiba.onyx.password.hash.algorithm=SHA
+        
+        # Password Validation Strategy
+        org.obiba.onyx.password.validation.allowedCharacterGroups="A-Z","a-z","0-9","[.!@#$%&*()]"
+        org.obiba.onyx.password.validation.minimumCharacterGroupsUsage=3
+        org.obiba.onyx.password.validation.preventUserAttributeUsage=true
+        org.obiba.onyx.password.validation.minimumSize=8
+        org.obiba.onyx.password.validation.maximumSize=14
       ]]>
       </value>
     </property>

@@ -85,5 +85,20 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean id="algorithmEvaluator" class="org.obiba.onyx.math.impl.MathEclipseEvaluator">
   </bean>
+  
+  <bean id="hashingService" class="org.obiba.onyx.core.service.impl.MessageDigestPasswordHashingStrategyImpl" init-method="validateAlgorithm">
+    <property name="algorithm" value="${org.obiba.onyx.password.hash.algorithm}" />
+  </bean>
+  
+  <bean id="passwordLengthValidationStrategy" class="org.obiba.onyx.core.service.impl.AbstractPasswordLengthValidationStrategy" abstract="true">
+    <property name="minimumSize" ref="${org.obiba.onyx.password.validation.minimumSize}" />
+    <property name="maximumSize" ref="${org.obiba.onyx.password.validation.maximumSize}" />
+  </bean>
+  
+  <bean id="validationStrategy" class="org.obiba.onyx.core.service.impl.ConfigurablePasswordValidationStrategyImpl"  init-method="validateCharacterGroups">
+    <property name="allowedCharacterGroups" value="${org.obiba.onyx.password.validation.allowedCharacterGroups}" />
+    <property name="minimumCharacterGroupsUsage" value="${org.obiba.onyx.password.validation.minimumCharacterGroupsUsage}" />
+    <property name="preventUserAttributeUsage" value="${org.obiba.onyx.password.validation.preventUserAttributeUsage}" />
+  </bean>
 
 </beans>
