@@ -73,7 +73,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     }
 
     currentQuestionnaireParticipant.setQuestionnaireVersion(currentQuestionnaire.getVersion());
-    currentQuestionnaireParticipant.setUser(activeInterviewService.getInterview().getUser());
+    currentQuestionnaireParticipant.setUser(activeInterviewService.getOperator());
     currentQuestionnaireParticipant.setLocale(language);
     currentQuestionnaireParticipant.setTimeStart(new Date());
 

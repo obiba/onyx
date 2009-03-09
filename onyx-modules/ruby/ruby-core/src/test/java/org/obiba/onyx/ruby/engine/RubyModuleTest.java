@@ -104,7 +104,6 @@ public class RubyModuleTest {
     participant = createParticipant(1l, "participant", "test");
 
     interview = createInterview(1l);
-    interview.setUser(user);
     interview.setParticipant(participant);
 
     stage = new Stage();

@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.core.service;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.obiba.onyx.core.domain.participant.Interview;
@@ -19,20 +18,11 @@ import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
-import org.obiba.onyx.engine.state.StageExecutionContext;
 
 /**
  * Session active participant's interview service.
- * @author Yannick Marcon
- * 
  */
 public interface ActiveInterviewService {
-
-  /**
-   * Set the current participant to deal with.
-   * @param participant
-   */
-  public void setParticipant(Participant participant);
 
   /**
    * Get the current participant.
@@ -47,10 +37,10 @@ public interface ActiveInterviewService {
   public Interview getInterview();
 
   /**
-   * Set the operator for the current interview.
-   * @param operator
+   * Returns the {@code User} that is administrating this interview.
+   * @return the {@code User} administrating this interview.
    */
-  public Interview setInterviewOperator(User operator);
+  public User getOperator();
 
   /**
    * Get the stage execution object for given stage, in the interview of current participant.
@@ -71,7 +61,7 @@ public interface ActiveInterviewService {
    * @param stage
    * @param action
    */
-  public void doAction(Stage stage, Action action, User user);
+  public void doAction(Stage stage, Action action);
 
   /**
    * Set the status of the current interview.
@@ -91,27 +81,5 @@ public interface ActiveInterviewService {
    * @return
    */
   public Action getStatusAction();
-
-  /**
-   * Store the participant given stage execution context.
-   * @param participant
-   * @param exec
-   */
-  public void storeStageExecutionContext(Participant participant, StageExecutionContext exec);
-
-  /**
-   * Get the participant stage execution context.
-   * @param participant
-   * @param stage
-   * @return
-   */
-  public StageExecutionContext retrieveStageExecutionContext(Participant participant, Stage stage);
-
-  /**
-   * Get the stage execution contexts of the participant.
-   * @param participant
-   * @return
-   */
-  public Collection<StageExecutionContext> getStageExecutionContexts(Participant participant);
 
 }

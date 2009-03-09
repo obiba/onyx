@@ -163,7 +163,7 @@ public abstract class CommentsModalPanel extends Panel {
           comment.setActionType(ActionType.COMMENT);
           comment.setStage(stageName);
 
-          activeInterviewService.doAction(null, comment, activeInterviewService.getInterview().getUser());
+          activeInterviewService.doAction(null, comment);
           CommentsModalPanel.this.onAddComments(target);
 
           // Refresh previous comments list.

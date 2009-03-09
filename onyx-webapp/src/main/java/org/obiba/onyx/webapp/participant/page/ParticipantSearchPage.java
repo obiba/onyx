@@ -53,7 +53,7 @@ import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
-import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.variable.export.OnyxDataExport;
@@ -62,6 +62,7 @@ import org.obiba.onyx.webapp.participant.panel.EditParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
+import org.obiba.onyx.webapp.participant.panel.UnlockInterviewPanel;
 import org.obiba.onyx.wicket.behavior.EnterOnKeyPressBehaviour;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.util.DateModelUtils;
@@ -74,7 +75,6 @@ import org.slf4j.LoggerFactory;
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class ParticipantSearchPage extends BasePage {
 
-  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(ParticipantSearchPage.class);
 
   @SpringBean
@@ -86,8 +86,8 @@ public class ParticipantSearchPage extends BasePage {
   @SpringBean
   private ParticipantService participantService;
 
-  @SpringBean(name = "activeInterviewService")
-  private ActiveInterviewService activeInterviewService;
+  @SpringBean
+  private InterviewManager interviewManager;
 
   @SpringBean
   private ParticipantMetadata participantMetadata;
@@ -102,6 +102,8 @@ public class ParticipantSearchPage extends BasePage {
   private ModalWindow participantDetailsModalWindow;
 
   private ModalWindow editParticipantDetailsModalWindow;
+
+  private ModalWindow unlockInterviewWindow;
 
   private UpdateParticipantListWindow updateParticipantListWindow;
 
@@ -122,6 +124,11 @@ public class ParticipantSearchPage extends BasePage {
     editParticipantDetailsModalWindow.setInitialHeight(400);
     editParticipantDetailsModalWindow.setInitialWidth(600);
     add(editParticipantDetailsModalWindow);
+
+    unlockInterviewWindow = new ModalWindow("unlockInterview");
+    unlockInterviewWindow.setCssClassName("onyx");
+    unlockInterviewWindow.setTitle(new StringResourceModel("UnlockInterview", this, null));
+    add(unlockInterviewWindow);
 
     Form form = new Form("searchForm");
     add(form);
@@ -514,7 +521,6 @@ public class ParticipantSearchPage extends BasePage {
       AjaxLink exportLink = new AjaxLink("export") {
         private static final long serialVersionUID = 1L;
 
-        @SuppressWarnings("unchecked")
         @Override
         public void onClick(AjaxRequestTarget target) {
           try {
@@ -565,8 +571,22 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          activeInterviewService.setParticipant(getParticipant());
-          setResponsePage(InterviewPage.class);
+          if(interviewManager.isInterviewAvailable(getParticipant()) == false) {
+            unlockInterviewWindow.setContent(new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), getModel()) {
+
+              private static final long serialVersionUID = 1L;
+
+              @Override
+              public void onCancel(AjaxRequestTarget target) {
+                unlockInterviewWindow.close(target);
+              }
+            });
+            target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
+            unlockInterviewWindow.show(target);
+          } else {
+            interviewManager.obtainInterview(getParticipant());
+            setResponsePage(InterviewPage.class);
+          }
         }
 
         @Override

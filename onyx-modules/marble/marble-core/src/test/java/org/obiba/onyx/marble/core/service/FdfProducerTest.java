@@ -60,7 +60,6 @@ public class FdfProducerTest {
     producer.setActiveInterviewService(interviewService);
     producer.setAppConfigService(applicationConfigurationService);
     consent.setLocale(Locale.ENGLISH);
-    interview.setUser(user);
     participant.setFirstName("Philippe");
   }
 
@@ -68,6 +67,7 @@ public class FdfProducerTest {
   public void something() throws IOException {
     EasyMock.expect(consentService.getConsent()).andReturn(consent);
     EasyMock.expect(interviewService.getInterview()).andReturn(interview);
+    EasyMock.expect(interviewService.getOperator()).andReturn(user);
     EasyMock.expect(interviewService.getParticipant()).andReturn(participant);
     EasyMock.replay(consentService, interviewService);
 

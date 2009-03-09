@@ -9,12 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.core.service.impl;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +24,8 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.stage.StageExecutionMemento;
 import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ActiveInterviewService;
-import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.core.service.InterviewManager;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Module;
@@ -43,47 +42,39 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
 
   private static final Logger log = LoggerFactory.getLogger(DefaultActiveInterviewServiceImpl.class);
 
-  /**
-   * Map of Participant.Interview.id to Map of Stage.id to StageExecutionContext
-   */
-  private Map<Serializable, Map<Serializable, StageExecutionContext>> interviewStageContexts;
+  private InterviewManager interviewManager;
 
-  private Serializable currentParticipantId = null;
+  private UserSessionService userSessionService;
 
   private ModuleRegistry moduleRegistry;
 
-  private ParticipantService participantService;
+  public void setInterviewManager(InterviewManager interviewManager) {
+    this.interviewManager = interviewManager;
+  }
+
+  public void setUserSessionService(UserSessionService userSessionService) {
+    this.userSessionService = userSessionService;
+  }
 
   public void setModuleRegistry(ModuleRegistry moduleRegistry) {
     this.moduleRegistry = moduleRegistry;
   }
 
-  public void setParticipantService(ParticipantService participantService) {
-    this.participantService = participantService;
-  }
-
   public Participant getParticipant() {
-    if(currentParticipantId == null) return null;
-    return getPersistenceManager().get(Participant.class, currentParticipantId);
+    return interviewManager.getInterviewedParticipant();
   }
 
   public Interview getInterview() {
     Participant currentParticipant = getParticipant();
-    if(currentParticipantId == null) return null;
-
-    Interview interview = currentParticipant.getInterview();
-
-    if(interview == null) {
-      interview = new Interview();
-      interview.setParticipant(currentParticipant);
-      interview.setStartDate(new Date());
-      interview.setStatus(InterviewStatus.IN_PROGRESS);
-      getPersistenceManager().save(interview);
-      currentParticipant = getPersistenceManager().get(Participant.class, currentParticipant.getId());
-      interview = currentParticipant.getInterview();
+    if(currentParticipant == null) {
+      return null;
     }
 
-    return interview;
+    return currentParticipant.getInterview();
+  }
+
+  public User getOperator() {
+    return userSessionService.getUser();
   }
 
   public IStageExecution getStageExecution(Stage stage) {
@@ -129,13 +120,13 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     return getStageExecution(stage);
   }
 
-  public void doAction(Stage stage, Action action, User user) {
+  public void doAction(Stage stage, Action action) {
     action.setInterview(getParticipant().getInterview());
     if(stage != null) {
       action.setStage(stage.getName());
     }
     action.setDateTime(new Date());
-    action.setUser(user);
+    action.setUser(userSessionService.getUser());
     getPersistenceManager().save(action);
 
     if(stage != null) {
@@ -145,38 +136,11 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   }
 
   public void shutdown() {
-    log.info("shutdown");
-  }
-
-  public void setParticipant(Participant participant) {
-    this.currentParticipantId = participant.getId();
-  }
-
-  public Interview setInterviewOperator(User operator) {
-    Participant currentParticipant = getParticipant();
-    if(currentParticipant == null) return null;
-
-    Interview template = new Interview();
-    template.setParticipant(currentParticipant);
-    Interview interview = getPersistenceManager().matchOne(template);
-
-    if(interview != null) {
-      interview.setUser(operator);
-      getPersistenceManager().save(interview);
-      currentParticipant = getPersistenceManager().get(Participant.class, currentParticipant.getId());
-    }
-
-    return interview;
+    interviewManager.releaseInterview(userSessionService.getSessionId());
   }
 
   public void setStatus(InterviewStatus status) {
-    Participant currentParticipant = getParticipant();
-    if(currentParticipant == null) return;
-
-    Interview template = new Interview();
-    template.setParticipant(currentParticipant);
-    Interview interview = getPersistenceManager().matchOne(template);
-
+    Interview interview = getInterview();
     if(interview != null) {
       interview.setStatus(status);
       if(status.equals(InterviewStatus.CANCELLED) || status.equals(InterviewStatus.COMPLETED)) {
@@ -221,28 +185,19 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
       return null;
   }
 
+  private Map<String, StageExecutionContext> getStageContexts() {
+    return interviewManager.getStageContexts();
+  }
+
   public void storeStageExecutionContext(Participant participant, StageExecutionContext exec) {
-    getInterviewStageExecutionContexts(participant).put(exec.getStage().getName(), exec);
+    getStageContexts().put(exec.getStage().getName(), exec);
   }
 
   public StageExecutionContext retrieveStageExecutionContext(Participant participant, Stage stage) {
-    return getInterviewStageExecutionContexts(participant).get(stage.getName());
-  }
-
-  private Map<Serializable, StageExecutionContext> getInterviewStageExecutionContexts(Participant participant) {
-    Map<Serializable, StageExecutionContext> contexts = interviewStageContexts.get(participant.getInterview().getId());
-    if(contexts == null) {
-      contexts = new HashMap<Serializable, StageExecutionContext>();
-      interviewStageContexts.put(participant.getInterview().getId(), contexts);
-    }
-    return contexts;
+    return getStageContexts().get(stage.getName());
   }
 
   public Collection<StageExecutionContext> getStageExecutionContexts(Participant participant) {
-    return Collections.unmodifiableCollection(getInterviewStageExecutionContexts(participant).values());
-  }
-
-  public void setInterviewStageContexts(Map<Serializable, Map<Serializable, StageExecutionContext>> interviewStageContexts) {
-    this.interviewStageContexts = interviewStageContexts;
+    return Collections.unmodifiableCollection(getStageContexts().values());
   }
 }

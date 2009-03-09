@@ -71,7 +71,6 @@ public class QuestionnaireWizardFormTest {
     participant = createParticipant(1l, "participant", "test");
 
     interview = createInterview(1l);
-    interview.setUser(user);
     interview.setParticipant(participant);
 
     questionnaire = createQuestionnaire("testQuestionnaire", "1.0");
@@ -122,6 +121,7 @@ public class QuestionnaireWizardFormTest {
   private void testInitStartStepWhenResuming(final boolean resuming) {
     expect(activeInterviewServiceMock.getParticipant()).andReturn(participant).anyTimes();
     expect(activeInterviewServiceMock.getInterview()).andReturn(interview).anyTimes();
+    expect(activeInterviewServiceMock.getOperator()).andReturn(user).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(new Locale("en")).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getResumePage()).andReturn(new Page("p2")).anyTimes();

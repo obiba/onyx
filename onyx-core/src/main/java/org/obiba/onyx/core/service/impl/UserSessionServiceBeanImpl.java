@@ -27,11 +27,15 @@ import org.obiba.onyx.core.service.UserSessionService;
  */
 public class UserSessionServiceBeanImpl implements UserSessionService {
 
+  private static int SESSION_COUNTER = 0;
+
   private Locale locale = Locale.ENGLISH;
 
   private String datePattern = DEFAULT_DATE_FORMAT_PATTERN;
 
   private String dateTimePattern = DEFAULT_DATETIME_FORMAT_PATTERN;
+
+  private int sessionId = SESSION_COUNTER++;
 
   public void setDatePattern(String pattern) {
     this.datePattern = pattern;
@@ -51,11 +55,17 @@ public class UserSessionServiceBeanImpl implements UserSessionService {
 
   public User getUser() {
     User user = new User();
+    user.setId(new Long(1));
+    user.setLogin("admin");
     user.setEmail("test@test.com");
     user.setFirstName("firstname");
     user.setLastName("lastname");
     return user;
   }
+
+  public String getSessionId() {
+    return Integer.toString(sessionId);
+  };
 
   public DateFormat getDateFormat() {
     return new SimpleDateFormat(datePattern, getLocale());

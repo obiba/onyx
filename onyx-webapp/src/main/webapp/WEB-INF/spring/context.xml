@@ -7,8 +7,9 @@
       <bean class="org.obiba.onyx.crypt.OnyxEnvironmentStringPBEConfig">
         <property name="algorithm" value="PBEWithMD5AndDES" />
 
-        <!-- onyxPasswordKeyName obtains the password from a system property (ie: java -DONYX_PASSWORD=changeme)
-             or if not found from environment variable -->
+        <!--
+          onyxPasswordKeyName obtains the password from a system property (ie: java -DONYX_PASSWORD=changeme) or if not found from environment variable
+        -->
         <property name="onyxPasswordKeyName" value="ONYX_PASSWORD" />
       </bean>
     </property>
@@ -28,25 +29,27 @@
       </list>
     </property>
   </bean>
-  
+
   <bean name="onyxApplicationConfiguration" class="org.obiba.onyx.webapp.OnyxApplicationConfiguration" primary="true">
     <property name="configurationType" value="${org.obiba.onyx.webapp.configurationType}" />
-    <property name="version" ref="version"/>
+    <property name="version" ref="version" />
   </bean>
 
-  <!-- Load Hibernate's configuration file -->
+  <!-- Import Hibernate's context -->
   <import resource="hibernate.xml" />
 
   <!-- Import Onyx's context -->
   <import resource="classpath:META-INF/spring/onyx-core/context.xml" />
 
-  <!-- A static stage ordering strategy. Override this by implementing Comparable<Stage> 
-    and defining the stageOrderingStrategy bean to point to your implementation -->
+  <!--
+    A static stage ordering strategy. Override this by implementing Comparable<Stage> and defining the stageOrderingStrategy bean to point to your
+    implementation
+  -->
   <bean id="stageOrderingStrategy" class="org.obiba.onyx.engine.StaticStageOrderingStrategy">
     <property name="stageOrdering" value="${org.obiba.onyx.engine.staticStageOrder}" />
   </bean>
 
-  <!-- Converts a entity to a path representing its unique identification -->
+  <!-- Converts a variable to a path representing its unique identification -->
   <bean id="variablePathNamingStrategy" class="org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy">
     <property name="rootName" value="${org.obiba.onyx.variablePathNamingStrategy.rootName}" />
     <property name="pathSeparator" value="${org.obiba.onyx.variablePathNamingStrategy.pathSeparator}" />
@@ -54,8 +57,7 @@
   </bean>
 
   <!-- The class that reads the participant Excel sheet. Override to fit your needs. -->
-  <bean id="participantReader" class="org.obiba.onyx.core.etl.participant.impl.DefaultParticipantExcelReader"
-    scope="prototype">
+  <bean id="participantReader" class="org.obiba.onyx.core.etl.participant.impl.DefaultParticipantExcelReader" scope="prototype">
     <property name="participantMetadata" ref="participantMetadata" />
     <property name="sheetNumber" value="${org.obiba.onyx.participantReader.sheetNumber}" />
     <property name="headerRowNumber" value="${org.obiba.onyx.participantReader.headerRowNumber}" />
@@ -64,16 +66,16 @@
   </bean>
 
   <!-- Implementation of UserService. Should not need to be overriden. -->
-  <bean id="userSessionService" class="org.obiba.onyx.webapp.service.impl.UserSessionServiceImpl">
+  <bean id="userSessionService" class="org.obiba.onyx.webapp.service.impl.UserSessionServiceImpl" init-method="initialize" scope="session">
     <!-- NOTE: Uncomment declaration below if this service is injected into a singleton bean. -->
     <!-- <aop:scoped-proxy /> -->
 
     <property name="datePattern" value="${org.obiba.onyx.dateFormat}" />
     <property name="dateTimePattern" value="${org.obiba.onyx.dateTimeFormat}" />
+    <property name="userService" ref="userService" />
   </bean>
 
-  <!-- Defines Onyx's MessageSource bean. extraBasenames can be used to load other ResourceBundles as required.
-    Currently, this is used to load the instrument's resource bundles until this is refactored -->
+  <!-- Defines Onyx's MessageSource bean. extraBasenames can be used to load other ResourceBundles as required. -->
   <bean name="messageSource" class="org.obiba.onyx.spring.context.OnyxMessageSourceFactoryBean">
     <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
   </bean>
@@ -89,8 +91,7 @@
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 
-  <bean id="onyxApplicationStartupListener" class="org.obiba.wicket.util.seed.DatabaseSeedWebApplicationStartupListener"
-    scope="singleton">
+  <bean id="onyxApplicationStartupListener" class="org.obiba.wicket.util.seed.DatabaseSeedWebApplicationStartupListener" scope="singleton">
     <property name="databaseSeeds">
       <list>
         <ref bean="testDatabaseSeed" />
@@ -98,11 +99,16 @@
     </property>
   </bean>
 
+  <!-- Data export pipeline -->
   <bean id="onyxDataExport" class="org.obiba.onyx.engine.variable.export.OnyxDataExport">
-    <property name="exportDestinations" ref="onyxDataExportDestinations"/>
+    <property name="exportDestinations" ref="onyxDataExportDestinations" />
     <property name="queryService" ref="persistenceManager" />
     <property name="variableDirectory" ref="variableDirectory" />
-    <property name="userSessionService" ref="userSessionService" />
+    <property name="userSessionService">
+      <bean class="org.springframework.aop.scope.ScopedProxyFactoryBean">
+        <property name="targetBeanName" value="userSessionService" />
+      </bean>
+    </property>
     <property name="configDirectory" value="${org.obiba.onyx.config.path}" />
     <property name="exportStrategy">
       <bean class="org.obiba.onyx.engine.variable.export.ChainingDataExportStrategyWiringFactoryBean">

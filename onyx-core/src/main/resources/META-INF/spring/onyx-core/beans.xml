@@ -1,6 +1,5 @@
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
-  xmlns:aop="http://www.springframework.org/schema/aop"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
   xsi:schemaLocation="
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
@@ -13,6 +12,15 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
 
   <bean name="actionDefinitionConfiguration" class="org.obiba.onyx.engine.ActionDefinitionConfiguration">
     <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
+  </bean>
+
+  <bean id="interviewManager" class="org.obiba.onyx.core.service.impl.DefaultInterviewManagerImpl">
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="userSessionService">
+      <bean class="org.springframework.aop.scope.ScopedProxyFactoryBean">
+        <property name="targetBeanName" value="userSessionService" />
+      </bean>
+    </property>
   </bean>
 
   <bean id="stageExecutionContext" class="org.obiba.onyx.engine.state.StageExecutionContext" scope="prototype">
@@ -28,17 +36,11 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="stageOrderingStrategy" ref="stageOrderingStrategy" />
   </bean>
 
-  <bean id="interviewStageContextsFactoryBean"
-    class="org.obiba.onyx.core.service.impl.InterviewStageContextsFactoryBean" />
-
-  <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl"
-    scope="session" destroy-method="shutdown">
+  <bean id="activeInterviewService" class="org.obiba.onyx.core.service.impl.DefaultActiveInterviewServiceImpl" scope="session" destroy-method="shutdown">
     <property name="persistenceManager" ref="persistenceManager" />
+    <property name="interviewManager" ref="interviewManager" />
+    <property name="userSessionService" ref="userSessionService" />
     <property name="moduleRegistry" ref="moduleRegistry" />
-    <property name="participantService" ref="participantService" />
-
-    <property name="interviewStageContexts" ref="interviewStageContextsFactoryBean" />
-
     <aop:scoped-proxy proxy-target-class="false" />
   </bean>
 
@@ -80,7 +82,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
   <bean id="onyxDataExportDestinations" class="org.obiba.onyx.engine.variable.export.OnyxDataExportFactoryBean">
     <property name="destinationsResource" value="${org.obiba.onyx.config.path}/export-destinations.xml" />
   </bean>
-  
+
   <bean id="algorithmEvaluator" class="org.obiba.onyx.math.impl.MathEclipseEvaluator">
   </bean>
 

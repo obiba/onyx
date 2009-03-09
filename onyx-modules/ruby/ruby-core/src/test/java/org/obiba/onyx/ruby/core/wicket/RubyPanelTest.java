@@ -163,7 +163,6 @@ public class RubyPanelTest {
     participant = createParticipant(1l, "participant", "test");
 
     interview = createInterview(1l);
-    interview.setUser(user);
     interview.setParticipant(participant);
 
     stage = new Stage();
@@ -257,6 +256,7 @@ public class RubyPanelTest {
 
   private void recordAndReplayCommonExpectations() {
     expect(activeInterviewServiceMock.getParticipant()).andReturn(participant).anyTimes();
+    expect(activeInterviewServiceMock.getOperator()).andReturn(user).anyTimes();
     expect(activeInterviewServiceMock.getInterview()).andReturn(interview).anyTimes();
     expect(activeTubeRegistrationServiceMock.hasContraindications(Contraindication.Type.OBSERVED)).andReturn(false).anyTimes();
     expect(activeTubeRegistrationServiceMock.hasContraindications(Contraindication.Type.ASKED)).andReturn(false).anyTimes();

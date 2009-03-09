@@ -20,7 +20,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
@@ -32,10 +32,9 @@ public class HomePage extends BasePage {
   @SpringBean
   private EntityQueryService queryService;
 
-  @SpringBean(name="activeInterviewService")
-  private ActiveInterviewService activeInterviewService;
+  @SpringBean
+  private InterviewManager interviewManager;
 
-  @SuppressWarnings("serial")
   public HomePage() {
     super();
 
@@ -69,11 +68,13 @@ public class HomePage extends BasePage {
 
       // Participant found, display interview page.
       if(participant != null) {
-        activeInterviewService.setParticipant(participant);
-        setResponsePage(InterviewPage.class);
-
-        // Not found, display error message in feedback panel.
+        if(interviewManager.isInterviewAvailable(participant)) {
+          interviewManager.obtainInterview(participant);
+          setResponsePage(InterviewPage.class);
+        }
+        error("Interview is locked");
       } else {
+        // Not found, display error message in feedback panel.
         error((new StringResourceModel("ParticipantNotFound", this, ParticipantSearchForm.this.getModel())).getString());
       }
     }

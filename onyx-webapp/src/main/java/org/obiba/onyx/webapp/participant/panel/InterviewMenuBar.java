@@ -9,20 +9,34 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.participant.panel;
 
-import org.apache.wicket.Application;
 import org.apache.wicket.markup.html.link.AbstractLink;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
+import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 
 public class InterviewMenuBar extends MenuBar {
 
   private static final long serialVersionUID = 8805458043658346936L;
 
+  @SpringBean
+  private InterviewManager interviewManager;
+
   public InterviewMenuBar(String id) {
     super(id);
     setOutputMarkupId(true);
 
-    AbstractLink link = new BookmarkablePageLink("exitLink", Application.get().getHomePage(), null);
+    AbstractLink link = new Link("exitLink") {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick() {
+        interviewManager.releaseInterview();
+        setResponsePage(ParticipantSearchPage.class);
+      }
+    };
     add(link);
   }
 

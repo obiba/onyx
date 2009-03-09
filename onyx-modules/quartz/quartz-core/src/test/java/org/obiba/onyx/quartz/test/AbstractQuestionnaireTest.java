@@ -10,7 +10,6 @@
 package org.obiba.onyx.quartz.test;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -20,13 +19,14 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.DbUnitAwareTestExecutionListener;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
@@ -38,18 +38,16 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireFinder;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.QuartzPanel;
-import org.obiba.onyx.quartz.core.wicket.layout.IPageLayoutFactory;
-import org.obiba.onyx.quartz.core.wicket.layout.IQuestionPanelFactory;
-import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
-import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
+import org.obiba.onyx.quartz.core.wicket.layout.QuestionnaireUIFactoryRegistrationListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.test.provider.AnswerProvider;
 import org.obiba.wicket.test.MockSpringApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ContextConfiguration;
@@ -89,15 +87,17 @@ public abstract class AbstractQuestionnaireTest {
   // Instance Variables
   //
 
-  private ConfigurableApplicationContext applicationContext;
+  @Autowired
+  private ApplicationContext applicationContext;
 
+  @Autowired
   private PersistenceManager persistenceManager;
 
-  private ActiveInterviewService activeInterviewService;
-
-  protected ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
+  private InterviewManager interviewManager;
 
   private QuestionnaireBundleManager questionnaireBundleManager;
+
+  protected ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   private Stage questionnaireStage;
 
@@ -124,51 +124,39 @@ public abstract class AbstractQuestionnaireTest {
     initActiveQuestionnaire();
   }
 
-  private void initContext() {
-    // Initialize context and bean references.
-    // TODO: If possible, have this class extend BaseDefaultSpringContextTestCase and
-    // get a reference to the context created by the latter.
-    applicationContext = new ClassPathXmlApplicationContext("test-spring-context.xml");
+  @After
+  public void tearDown() {
+    interviewManager.releaseInterview();
+    destroyUIFactoryRegistries();
+  }
 
+  private void initContext() {
     // Initialize web session. Need this for session scope beans in the context.
-    applicationContext.getBeanFactory().registerScope("session", new SessionScope());
+    ((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerScope("session", new SessionScope());
     MockHttpServletRequest request = new MockHttpServletRequest();
     MockHttpSession session = new MockHttpSession();
     request.setSession(session);
     RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
     // Initialize references to beans.
-    persistenceManager = (PersistenceManager) applicationContext.getBean("persistenceManager");
-    activeInterviewService = (ActiveInterviewService) applicationContext.getBean("activeInterviewService");
+    // These need to be here instead of using @Autowired, because at every call to setUp, a new context is created (ie:
+    // new beans)
     activeQuestionnaireAdministrationService = (ActiveQuestionnaireAdministrationService) applicationContext.getBean("activeQuestionnaireAdministrationService");
+    interviewManager = (InterviewManager) applicationContext.getBean("interviewManager");
     questionnaireBundleManager = (QuestionnaireBundleManager) applicationContext.getBean("questionnaireBundleManager");
 
-    // Initialize questionnaire UI factory registries. This is normally done by
-    // QuestionnaireUIFactoryRegistrationListener (a WebApplicationStartupListener) but
-    // MockSpringApplication doesn't seem to support this mechanism.
+    // Initialize questionnaire UI factory registries.
     initUIFactoryRegistries();
   }
 
-  @SuppressWarnings("unchecked")
   private void initUIFactoryRegistries() {
-    PageLayoutFactoryRegistry pageLayoutFactoryRegistry = (PageLayoutFactoryRegistry) applicationContext.getBean("pageLayoutFactoryRegistry");
-    QuestionPanelFactoryRegistry questionPanelFactoryRegistry = (QuestionPanelFactoryRegistry) applicationContext.getBean("questionPanelFactoryRegistry");
+    QuestionnaireUIFactoryRegistrationListener listener = (QuestionnaireUIFactoryRegistrationListener) applicationContext.getBean("questionnaireUIFactoryRegistrationListener");
+    listener.startup(null);
+  }
 
-    Map<String, IPageLayoutFactory> pageLayoutFactories = applicationContext.getBeansOfType(IPageLayoutFactory.class);
-    if(pageLayoutFactories != null) {
-      for(IPageLayoutFactory factory : pageLayoutFactories.values()) {
-
-        pageLayoutFactoryRegistry.register(factory);
-      }
-    }
-
-    Map<String, IQuestionPanelFactory> questionPanelFactories = applicationContext.getBeansOfType(IQuestionPanelFactory.class);
-    if(questionPanelFactories != null) {
-      for(IQuestionPanelFactory factory : questionPanelFactories.values()) {
-
-        questionPanelFactoryRegistry.register(factory);
-      }
-    }
+  private void destroyUIFactoryRegistries() {
+    QuestionnaireUIFactoryRegistrationListener listener = (QuestionnaireUIFactoryRegistrationListener) applicationContext.getBean("questionnaireUIFactoryRegistrationListener");
+    listener.shutdown(null);
   }
 
   private void initWicketTester() {
@@ -193,7 +181,7 @@ public abstract class AbstractQuestionnaireTest {
   private void initActiveInterview() {
     Participant participant = persistenceManager.get(Participant.class, Long.valueOf("1"));
     Assert.assertNotNull(participant);
-    activeInterviewService.setParticipant(participant);
+    interviewManager.obtainInterview(participant);
   }
 
   private void initActiveQuestionnaire() {
@@ -228,9 +216,9 @@ public abstract class AbstractQuestionnaireTest {
    * To support repeated calls to this method, the method allows that the question be present <i>either</i> on the
    * current page <i>or</i> on the page immediately following.
    * 
-   * Note: In the case of an "open" answer, the answer consists of both the category name (<code>CategoryAnswer.getCategoryName()</code>)
-   * and the open answer data (<code>CategoryAnswer.getData()</code>). Non-open answers consists of the category
-   * name only.
+   * Note: In the case of an "open" answer, the answer consists of both the category name (
+   * <code>CategoryAnswer.getCategoryName()</code>) and the open answer data (<code>CategoryAnswer.getData()</code>).
+   * Non-open answers consists of the category name only.
    * 
    * @param question question
    * @param answer answer
@@ -296,8 +284,8 @@ public abstract class AbstractQuestionnaireTest {
    * 
    * @param answerProvider answer provider
    * @param toQuestion question to stop at
-   * @param inclusive if <code>true</code>, the specified question is the last question answered; if
-   * <code>false</code>, the last question answered is the one before that question
+   * @param inclusive if <code>true</code>, the specified question is the last question answered; if <code>false</code>,
+   * the last question answered is the one before that question
    */
   public void answerQuestionsUpTo(AnswerProvider answerProvider, Question toQuestion, boolean inclusive) {
     Page currentPage = null;
@@ -338,8 +326,8 @@ public abstract class AbstractQuestionnaireTest {
    * 
    * @param answerProvider
    * @param toQuestion
-   * @param inclusive if <code>true</code>, the specified question is the last question answered; if
-   * <code>false</code>, the last question answered is the one before that question
+   * @param inclusive if <code>true</code>, the specified question is the last question answered; if <code>false</code>,
+   * the last question answered is the one before that question
    */
   public void answerQuestionsOnCurrentPage(AnswerProvider answerProvider, Question toQuestion, boolean inclusive) {
     Page currentPage = activeQuestionnaireAdministrationService.getCurrentPage();

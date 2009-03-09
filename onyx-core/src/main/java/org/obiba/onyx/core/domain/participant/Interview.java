@@ -15,13 +15,11 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.obiba.core.domain.AbstractEntity;
-import org.obiba.onyx.core.domain.user.User;
 
 @Entity
 public class Interview extends AbstractEntity {
@@ -40,10 +38,6 @@ public class Interview extends AbstractEntity {
 
   @Enumerated(EnumType.STRING)
   private InterviewStatus status;
-
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
 
   public Interview() {
   }
@@ -83,14 +77,6 @@ public class Interview extends AbstractEntity {
 
   public void setStatus(InterviewStatus status) {
     this.status = status;
-  }
-
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
   }
 
 }

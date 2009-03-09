@@ -33,6 +33,8 @@ public interface UserSessionService {
 
   public User getUser();
 
+  public String getSessionId();
+
   public DateFormat getDateFormat();
 
   public DateFormat getDateTimeFormat();

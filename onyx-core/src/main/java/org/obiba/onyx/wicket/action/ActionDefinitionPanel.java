@@ -82,7 +82,7 @@ public abstract class ActionDefinitionPanel extends Panel {
     form.add(feedback = new FeedbackPanel("feedback"));
     feedback.setOutputMarkupId(true);
 
-    form.add(new Label("operator", activeInterviewService.getInterview().getUser().getFullName()));
+    form.add(new Label("operator", userSessionService.getUser().getFullName()));
 
     Participant participant = activeInterviewService.getParticipant();
     form.add(new Label("participantName", participant.getFullName()));
@@ -220,7 +220,7 @@ public abstract class ActionDefinitionPanel extends Panel {
       pwdTextField.add(new IValidator() {
 
         public void validate(IValidatable validatable) {
-          if(!User.digest((String) validatable.getValue()).equals(activeInterviewService.getInterview().getUser().getPassword())) {
+          if(!User.digest((String) validatable.getValue()).equals(userSessionService.getUser().getPassword())) {
             validatable.error(new UserValidationError());
           }
         }

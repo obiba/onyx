@@ -21,7 +21,7 @@ import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.test.spring.Dataset;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.domain.answer.QuestionnaireParticipant;
@@ -48,7 +48,8 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
 
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
-  private ActiveInterviewService activeInterviewService;
+  @Autowired
+  private InterviewManager interviewManager;
 
   private Questionnaire questionnaire;
 
@@ -63,7 +64,6 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
     activeQuestionnaireAdministrationService = (ActiveQuestionnaireAdministrationService) applicationContext.getBean("activeQuestionnaireAdministrationService");
-    activeInterviewService = (ActiveInterviewService) applicationContext.getBean("activeInterviewService");
 
     questionnaire = createQuestionnaire();
   }
@@ -78,7 +78,7 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     activeQuestionnaireAdministrationService.setQuestionnaire(questionnaire);
 
     Participant participant = persistenceManager.get(Participant.class, Long.valueOf("1"));
-    activeInterviewService.setParticipant(participant);
+    interviewManager.obtainInterview(participant);
 
     QuestionnaireParticipant questionnaireParticipant = activeQuestionnaireAdministrationService.start(participant, Locale.FRENCH);
     Assert.assertEquals(questionnaireParticipant.getLocale(), Locale.FRENCH);
@@ -103,6 +103,7 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     testSetDeleteOpenAnswer(q2);
     testRetrieveQuestionComment(q1, q2, q3);
 
+    interviewManager.releaseInterview();
   }
 
   private void testAnswer(QuestionnaireParticipant questionnaireParticipant, Question q1, Question q2, Question q3) {

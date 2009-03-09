@@ -63,8 +63,6 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
   public static final String END_DATE = "endDate";
 
-  public static final String INTERVIEW_USER = "user";
-
   public static final String INTERVIEW_STATUS = "status";
 
   public static final String ACTION = "Action";
@@ -149,8 +147,6 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
           varData.addData(DataBuilder.buildDate(interview.getStartDate()));
         } else if(variable.getName().equals(END_DATE) && interview.getEndDate() != null) {
           varData.addData(DataBuilder.buildDate(interview.getEndDate()));
-        } else if(variable.getName().equals(INTERVIEW_USER) && interview.getUser() != null) {
-          varData.addData(DataBuilder.buildText(interview.getUser().getLogin()));
         } else if(variable.getName().equals(INTERVIEW_STATUS) && interview.getStatus() != null) {
           varData.addData(DataBuilder.buildText(interview.getStatus().toString()));
         }
@@ -220,7 +216,6 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
     entity = admin.addVariable(new Variable(INTERVIEW));
     entity.addVariable(new Variable(START_DATE).setDataType(DataType.DATE));
     entity.addVariable(new Variable(END_DATE).setDataType(DataType.DATE));
-    entity.addVariable(new Variable(INTERVIEW_USER).setDataType(DataType.TEXT)).setKey(USER_KEY);
     entity.addVariable(new Variable(INTERVIEW_STATUS).setDataType(DataType.TEXT));
 
     admin.addVariable(createActionVariable(false));

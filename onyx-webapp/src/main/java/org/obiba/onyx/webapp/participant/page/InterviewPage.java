@@ -25,7 +25,6 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.core.service.EntityQueryService;
-import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -77,7 +76,6 @@ public class InterviewPage extends BasePage {
       remove("menuBar");
       add(new InterviewMenuBar("menuBar"));
 
-      final Interview interview = activeInterviewService.setInterviewOperator(userSessionService.getUser());
       Participant participant = activeInterviewService.getParticipant();
 
       add(new ParticipantPanel("participant", new DetachableEntityModel(queryService, participant), true));
@@ -176,7 +174,7 @@ public class InterviewPage extends BasePage {
 
         @Override
         public boolean isVisible() {
-          return interview.getStatus().equals(InterviewStatus.CANCELLED) == false;
+          return activeInterviewService.getInterview().getStatus() != InterviewStatus.CANCELLED;
         }
       };
       add(link);

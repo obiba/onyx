@@ -180,7 +180,6 @@ public class RubyWizardPanelTest {
     participant = createParticipant(1l, "participant", "test");
 
     interview = createInterview(1l);
-    interview.setUser(user);
     interview.setParticipant(participant);
 
     tubeRegistrationConfiguration = createTubeRegistrationConfiguration();
@@ -291,6 +290,7 @@ public class RubyWizardPanelTest {
   private void recordAndReplayCommonExpectations(boolean hasObservedContraindications, boolean hasAskedContraindications) {
     expect(userSessionServiceMock.getLocale()).andReturn(enLocale).anyTimes();
     expect(activeInterviewServiceMock.getParticipant()).andReturn(participant).anyTimes();
+    expect(activeInterviewServiceMock.getOperator()).andReturn(user).anyTimes();
     expect(activeInterviewServiceMock.getInterview()).andReturn(interview).anyTimes();
     expect(activeTubeRegistrationServiceMock.getRegisteredTubeCount()).andReturn(0).anyTimes();
     expect(activeTubeRegistrationServiceMock.getExpectedTubeCount()).andReturn(0).anyTimes();

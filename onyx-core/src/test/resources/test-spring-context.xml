@@ -41,6 +41,8 @@
   <bean id="variablePathNamingStrategy" class="org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy">
     <property name="rootName" value="STUDY_NAME" />
   </bean>
+  
+  <bean id="userSessionService" class="org.obiba.onyx.core.service.impl.UserSessionServiceBeanImpl"/>
 
   <import resource="test-hibernate-config.xml" />
   <import resource="test-db-config.xml" />

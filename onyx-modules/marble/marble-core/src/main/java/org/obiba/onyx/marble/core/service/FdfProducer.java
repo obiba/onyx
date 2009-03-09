@@ -38,8 +38,8 @@ import com.lowagie.text.pdf.AcroFields.Item;
  * Builds a FDF stream used to fill-in a PDF form. Allows filling in data from the Participant, the administrating User
  * and some system fields. The available system fields are "Date", "AcceptURL" and "RefuseURL". Any field named "Date"
  * will be replaced by the current system Date and formatted using the specified date format
- * {@link #setDateFormat(String)}. The URL system fields allow specifying the URLs to submit the PDF to when the
- * consent is accepted or refused.
+ * {@link #setDateFormat(String)}. The URL system fields allow specifying the URLs to submit the PDF to when the consent
+ * is accepted or refused.
  */
 public class FdfProducer {
 
@@ -138,7 +138,7 @@ public class FdfProducer {
   protected void buildReplaceContext(String acceptUrl, String refuseUrl) {
     replaceContext = new HashMap<String, Object>();
     replaceContext.put("Participant", activeInterviewService.getParticipant());
-    replaceContext.put("User", activeInterviewService.getInterview().getUser());
+    replaceContext.put("User", activeInterviewService.getOperator());
     replaceContext.put("Date", dateFormatter.format(new Date()));
     replaceContext.put("Application", appConfigService.getApplicationConfiguration());
     replaceContext.put("AcceptURL", acceptUrl);
