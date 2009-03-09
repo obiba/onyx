@@ -50,13 +50,15 @@
 }
 
 .comment-add {
-	background: url(../images/icons/16X16/message_add.gif) no-repeat;
-	margin-left: 10px;
+	background:transparent url(../images/icons/16X16/message_add.gif) no-repeat scroll center top;
+	padding-left:10px;
+	padding-right:10px;
 }
 
 .comment-edit {
-	background: url(../images/icons/16X16/message_edit.gif) no-repeat;
-	margin-left: 10px;
+	background:transparent url(../images/icons/16X16/message_edit.gif) no-repeat scroll center top;
+	padding-left:10px;
+	padding-right:10px;
 }
 
 .comment-edit a:hover {
