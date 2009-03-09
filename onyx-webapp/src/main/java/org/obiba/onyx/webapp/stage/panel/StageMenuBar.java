@@ -36,7 +36,6 @@ public class StageMenuBar extends MenuBar {
 
   public StageMenuBar(String id, IModel stageModel) {
     super(id);
-    setOutputMarkupId(true);
 
     participantDetailsModalWindow = new ModalWindow("participantDetailsModalWindow");
     participantDetailsModalWindow.setCssClassName("onyx");

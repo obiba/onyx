@@ -22,6 +22,8 @@ public class MenuBar extends Panel {
 
   public MenuBar(String id) {
     super(id);
+    setMarkupId("menuBar");
+    setOutputMarkupId(true);
 
     buildMenus();
     buildAddOns();

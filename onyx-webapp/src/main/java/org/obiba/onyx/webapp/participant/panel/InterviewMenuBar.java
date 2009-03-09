@@ -25,7 +25,6 @@ public class InterviewMenuBar extends MenuBar {
 
   public InterviewMenuBar(String id) {
     super(id);
-    setOutputMarkupId(true);
 
     AbstractLink link = new Link("exitLink") {
 

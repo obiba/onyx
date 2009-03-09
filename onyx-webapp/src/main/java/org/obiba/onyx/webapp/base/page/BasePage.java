@@ -28,7 +28,11 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
     super();
 
     Panel headerPanel = new EmptyPanel("header");
+
     Panel menuBar = new EmptyPanel("menuBar");
+    menuBar.setMarkupId("menuBar");
+    setOutputMarkupId(true);
+
     Session session = getSession();
     // Tests the session type for unit testing
     if(session instanceof OnyxAuthenticatedSession) {
@@ -37,6 +41,7 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
         menuBar = new MenuBar("menuBar");
       }
     }
+
     add(headerPanel);
     add(menuBar);
 
