@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * 
  */
 public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService implements InterviewManager {
 
@@ -83,7 +83,6 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
   }
 
   synchronized public Interview obtainInterview(Participant participant) {
-    log.info("User {} is trying to acquire interview for participant {}.", userSessionService.getUser().getLogin(), participant.getBarcode());
     if(isInterviewAvailable(participant)) {
 
       lockInterview(participant);
