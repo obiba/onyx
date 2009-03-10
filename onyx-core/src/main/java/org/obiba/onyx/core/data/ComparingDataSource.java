@@ -17,7 +17,7 @@ import org.obiba.onyx.util.data.DataBuilder;
 /**
  * Compares data from two datasources.
  */
-public class ComparingDataSource implements IDataSource {
+public class ComparingDataSource implements IDataSource, Cloneable {
 
   private static final long serialVersionUID = 1L;
 
