@@ -53,7 +53,7 @@
       <code>INPUT_SYSTOLIC_PRESSURE</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
-      <captureMethod>MANUAL</captureMethod>
+      <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="instrumentParameterDataSource">
         <instrumentType>BloodPressure</instrumentType>
         <parameterCode>CALC_AVG_SYSTOLIC_BP</parameterCode>
@@ -64,7 +64,7 @@
       <code>INPUT_DIASTOLIC_PRESSURE</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
-      <captureMethod>MANUAL</captureMethod>
+      <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="instrumentParameterDataSource">
         <instrumentType>BloodPressure</instrumentType>
         <parameterCode>CALC_AVG_DIASTOLIC_BP</parameterCode>
