@@ -24,6 +24,7 @@ import junit.framework.Assert;
 import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.test.ApplicationContextMock;
@@ -154,7 +155,14 @@ public class NumericPadTest {
       public Panel getTestPanel(String panelId) {
         QuestionCategory category = question.getQuestionCategories().get(0);
         ModalWindow modal = new MyModalWindow("modal");
-        return new NumericPad("panel", new Model(question), new Model(question.getQuestionCategories().get(0)), new Model(category.getOpenAnswerDefinition()), modal);
+
+        return new NumericPad("panel", new Model(question), new Model(question.getQuestionCategories().get(0)), new Model(category.getOpenAnswerDefinition()), modal) {
+          @Override
+          public Locale getLocale() {
+            // for error messages in english
+            return Locale.ENGLISH;
+          }
+        };
       }
     });
 
@@ -254,6 +262,8 @@ public class NumericPadTest {
     tester.executeAjaxEvent("panel:form:ok:link", "onclick");
 
     // Verify that an error has been generated (this field is required).
+    Assert.assertEquals(1, tester.getMessages(FeedbackMessage.ERROR).size());
+    // warning: error message is localized
     tester.assertErrorMessages(new String[] { "Field 'Choice one' is required." });
 
     verify(activeQuestionnaireAdministrationServiceMock);
