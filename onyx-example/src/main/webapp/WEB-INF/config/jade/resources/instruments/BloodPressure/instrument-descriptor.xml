@@ -313,15 +313,15 @@
         </expression>
           
         <dataSources>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>BloodPressure</instrumentType>
             <parameterCode>RES_FIRST_SYSTOLIC_BP</parameterCode>
           </dataSource>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>BloodPressure</instrumentType>
             <parameterCode>RES_SEC_SYSTOLIC_BP</parameterCode>
           </dataSource>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>BloodPressure</instrumentType>
             <parameterCode>RES_THIRD_SYSTOLIC_BP</parameterCode>
           </dataSource>
@@ -343,15 +343,15 @@
         </expression>
                   
         <dataSources>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>BloodPressure</instrumentType>
             <parameterCode>RES_FIRST_DIASTOLIC_BP</parameterCode>
           </dataSource>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>BloodPressure</instrumentType>
             <parameterCode>RES_SEC_DIASTOLIC_BP</parameterCode>
           </dataSource>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>BloodPressure</instrumentType>
             <parameterCode>RES_THIRD_DIASTOLIC_BP</parameterCode>
           </dataSource>
@@ -373,15 +373,15 @@
         </expression>
           
         <dataSources>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>BloodPressure</instrumentType>
             <parameterCode>RES_FIRST_PULSE_RATE</parameterCode>
           </dataSource>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>BloodPressure</instrumentType>
             <parameterCode>RES_SEC_PULSE_RATE</parameterCode>
           </dataSource>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>BloodPressure</instrumentType>
             <parameterCode>RES_THIRD_PULSE_RATE</parameterCode>
           </dataSource>

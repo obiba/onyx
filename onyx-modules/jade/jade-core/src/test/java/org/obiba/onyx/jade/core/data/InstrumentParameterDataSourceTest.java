@@ -34,7 +34,7 @@ import org.obiba.onyx.util.data.DataType;
 /**
  * 
  */
-public class OutputParameterDataSourceTest {
+public class InstrumentParameterDataSourceTest {
 
   private static final String INSTRUMENT_TYPE = "SittingHeight";
 
@@ -45,27 +45,27 @@ public class OutputParameterDataSourceTest {
   private InstrumentService instrumentServiceMock = createMock(InstrumentService.class);
 
   @Test
-  public void testOutputParameterDataSourceNoParticipant() {
-    OutputParameterDataSource outputParameterDataSource = new OutputParameterDataSource(INSTRUMENT_TYPE, PARAMETER_CODE);
-    Data data = outputParameterDataSource.getData(null);
+  public void testInstrumentParameterDataSourceNoParticipant() {
+    InstrumentParameterDataSource parameterDataSource = new InstrumentParameterDataSource(INSTRUMENT_TYPE, PARAMETER_CODE);
+    Data data = parameterDataSource.getData(null);
     Assert.assertNull(data);
   }
 
   @Test
-  public void testOutputParameterDataSourceNoRunValue() {
+  public void testInstrumentParameterDataSourceNoRunValue() {
     Participant participant = createParticipant();
-    OutputParameterDataSource outputParameterDataSource = initOutputParameterDataSource();
+    InstrumentParameterDataSource parameterDataSource = initInstrumentParameterDataSource();
 
     InstrumentType instrumentType = new InstrumentType(INSTRUMENT_TYPE, "description");
-    InstrumentOutputParameter outputParam = new InstrumentOutputParameter();
+    InstrumentOutputParameter param = new InstrumentOutputParameter();
 
     expect(instrumentServiceMock.getInstrumentType(INSTRUMENT_TYPE)).andReturn(instrumentType).anyTimes();
-    expect(instrumentServiceMock.getInstrumentOutputParameter(instrumentType, PARAMETER_CODE)).andReturn(outputParam);
+    expect(instrumentServiceMock.getParameterByCode(instrumentType, PARAMETER_CODE)).andReturn(param).anyTimes();
     expect(instrumentRunServiceMock.findInstrumentRunValueFromLastRun(participant, instrumentType, PARAMETER_CODE)).andReturn(null);
 
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
-    Data data = outputParameterDataSource.getData(participant);
+    Data data = parameterDataSource.getData(participant);
     verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
 
@@ -73,21 +73,21 @@ public class OutputParameterDataSourceTest {
   }
 
   @Test
-  public void testOutputParameterDataSourceWithData() {
+  public void testInstrumentParameterDataSourceWithData() {
     Participant participant = createParticipant();
-    OutputParameterDataSource outputParameterDataSource = initOutputParameterDataSource();
+    InstrumentParameterDataSource parameterDataSource = initInstrumentParameterDataSource();
 
     InstrumentType instrumentType = new InstrumentType(INSTRUMENT_TYPE, "description");
-    InstrumentOutputParameter outputParam = new InstrumentOutputParameter();
-    outputParam.setDataType(DataType.INTEGER);
+    InstrumentOutputParameter param = new InstrumentOutputParameter();
+    param.setDataType(DataType.INTEGER);
 
     expect(instrumentServiceMock.getInstrumentType(INSTRUMENT_TYPE)).andReturn(instrumentType).anyTimes();
-    expect(instrumentServiceMock.getInstrumentOutputParameter(instrumentType, PARAMETER_CODE)).andReturn(outputParam);
+    expect(instrumentServiceMock.getParameterByCode(instrumentType, PARAMETER_CODE)).andReturn(param).anyTimes();
     expect(instrumentRunServiceMock.findInstrumentRunValueFromLastRun((Participant) EasyMock.anyObject(), (InstrumentType) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(createRunValue());
 
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
-    Data data = outputParameterDataSource.getData(participant);
+    Data data = parameterDataSource.getData(participant);
     verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
 
@@ -96,15 +96,19 @@ public class OutputParameterDataSourceTest {
   }
 
   @Test
-  public void testOutputParameterDataSourceWithUnit() {
-    OutputParameterDataSource outputParameterDataSource = initOutputParameterDataSource();
+  public void testInstrumentParameterDataSourceWithUnit() {
+    InstrumentParameterDataSource parameterDataSource = initInstrumentParameterDataSource();
 
-    expect(instrumentServiceMock.getInstrumentType(INSTRUMENT_TYPE)).andReturn(new InstrumentType(INSTRUMENT_TYPE, "description"));
-    expect(instrumentServiceMock.getInstrumentOutputParameter((InstrumentType) EasyMock.anyObject(), (String) EasyMock.anyObject())).andReturn(createInstrumentOutputParameter());
+    InstrumentType instrumentType = new InstrumentType(INSTRUMENT_TYPE, "description");
+    InstrumentOutputParameter param = new InstrumentOutputParameter();
+    param.setMeasurementUnit("cm");
+
+    expect(instrumentServiceMock.getInstrumentType(INSTRUMENT_TYPE)).andReturn(instrumentType).anyTimes();
+    expect(instrumentServiceMock.getParameterByCode(instrumentType, PARAMETER_CODE)).andReturn(param).anyTimes();
 
     replay(instrumentServiceMock);
     replay(instrumentRunServiceMock);
-    String unit = outputParameterDataSource.getUnit();
+    String unit = parameterDataSource.getUnit();
     verify(instrumentServiceMock);
     verify(instrumentRunServiceMock);
 
@@ -126,11 +130,11 @@ public class OutputParameterDataSourceTest {
     return instrumentRunValue;
   }
 
-  private OutputParameterDataSource initOutputParameterDataSource() {
-    OutputParameterDataSource outputParameterDataSource = new OutputParameterDataSource(INSTRUMENT_TYPE, PARAMETER_CODE);
-    outputParameterDataSource.setInstrumentService(instrumentServiceMock);
-    outputParameterDataSource.setIntrumentRunService(instrumentRunServiceMock);
-    return outputParameterDataSource;
+  private InstrumentParameterDataSource initInstrumentParameterDataSource() {
+    InstrumentParameterDataSource parameterDataSource = new InstrumentParameterDataSource(INSTRUMENT_TYPE, PARAMETER_CODE);
+    parameterDataSource.setInstrumentService(instrumentServiceMock);
+    parameterDataSource.setIntrumentRunService(instrumentRunServiceMock);
+    return parameterDataSource;
   }
 
   private Participant createParticipant() {

@@ -80,11 +80,11 @@
         <unit>cm</unit>
         <expression>($1 + $2)/2</expression>
         <dataSources>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>StandingHeight</instrumentType>
             <parameterCode>RES_FIRST_HEIGHT</parameterCode>
           </dataSource>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>StandingHeight</instrumentType>
             <parameterCode>RES_SEC_HEIGHT</parameterCode>
           </dataSource>

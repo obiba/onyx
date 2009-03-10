@@ -82,7 +82,7 @@
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
-      <dataSource class="outputParameterDataSource">
+      <dataSource class="instrumentParameterDataSource">
         <instrumentType>StandingHeight</instrumentType>
         <parameterCode>CALC_AVG_HEIGHT</parameterCode>
       </dataSource>

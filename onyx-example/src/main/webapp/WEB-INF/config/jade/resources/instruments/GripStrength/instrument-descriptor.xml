@@ -157,11 +157,11 @@
         </expression>
           
         <dataSources>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>GripStrength</instrumentType>
             <parameterCode>RES_FIRST_RH_MUSCLE_STRENGTH</parameterCode>
           </dataSource>      
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>GripStrength</instrumentType>
             <parameterCode>RES_SEC_RH_MUSCLE_STRENGTH</parameterCode>
           </dataSource>
@@ -183,11 +183,11 @@
         </expression>
           
         <dataSources>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>GripStrength</instrumentType>
             <parameterCode>RES_FIRST_LH_MUSCLE_STRENGTH</parameterCode>
           </dataSource>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>GripStrength</instrumentType>
             <parameterCode>RES_SEC_LH_MUSCLE_STRENGTH</parameterCode>
           </dataSource>

@@ -17,7 +17,7 @@ import org.obiba.onyx.jade.core.service.InstrumentRunService;
 import org.obiba.onyx.jade.core.service.InstrumentService;
 import org.obiba.onyx.util.data.Data;
 
-public class InputParameterDataSource implements IDataSource {
+public class InstrumentParameterDataSource implements IDataSource {
   //
   // Constants
   //
@@ -36,6 +36,12 @@ public class InputParameterDataSource implements IDataSource {
 
   private InstrumentService instrumentService;
 
+  public InstrumentParameterDataSource(String instrumentType, String parameterCode) {
+    super();
+    this.instrumentType = instrumentType;
+    this.parameterCode = parameterCode;
+  }
+
   //
   // IDataSource Methods
   //
@@ -45,11 +51,11 @@ public class InputParameterDataSource implements IDataSource {
 
     if(participant == null) return null;
 
-    InstrumentParameter inputParam = instrumentService.getParameterByCode(instrumentService.getInstrumentType(instrumentType), parameterCode);
+    InstrumentParameter param = instrumentService.getParameterByCode(instrumentService.getInstrumentType(instrumentType), parameterCode);
     InstrumentRunValue runValue = instrumentRunService.findInstrumentRunValueFromLastRun(participant, instrumentService.getInstrumentType(instrumentType), parameterCode);
 
     if(runValue != null) {
-      data = runValue.getData(inputParam.getDataType());
+      data = runValue.getData(param.getDataType());
     }
 
     return data;
@@ -58,9 +64,9 @@ public class InputParameterDataSource implements IDataSource {
   public String getUnit() {
     String unit = null;
 
-    InstrumentParameter inputParam = instrumentService.getParameterByCode(instrumentService.getInstrumentType(instrumentType), parameterCode);
-    if(inputParam != null) {
-      unit = inputParam.getMeasurementUnit();
+    InstrumentParameter param = instrumentService.getParameterByCode(instrumentService.getInstrumentType(instrumentType), parameterCode);
+    if(param != null) {
+      unit = param.getMeasurementUnit();
     }
 
     return unit;

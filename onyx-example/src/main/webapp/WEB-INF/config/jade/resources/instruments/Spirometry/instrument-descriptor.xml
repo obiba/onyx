@@ -151,7 +151,7 @@
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
-      <dataSource class="outputParameterDataSource">
+      <dataSource class="instrumentParameterDataSource">
         <instrumentType>StandingHeight</instrumentType>
         <parameterCode>CALC_AVG_HEIGHT</parameterCode>
       </dataSource>
@@ -165,15 +165,15 @@
       <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="firstNotNullDataSource">
         <dataSources>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>Impedance310</instrumentType>
             <parameterCode>RES_WEIGHT</parameterCode>
           </dataSource>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>Impedance418</instrumentType>
             <parameterCode>RES_WEIGHT</parameterCode>
           </dataSource>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>Weight</instrumentType>
             <parameterCode>RES_WEIGHT</parameterCode>
           </dataSource>

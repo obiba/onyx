@@ -25,8 +25,7 @@ import org.obiba.onyx.core.data.ParticipantPropertyDataSource;
 import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.io.support.XStreamDataConverter;
-import org.obiba.onyx.jade.core.data.InputParameterDataSource;
-import org.obiba.onyx.jade.core.data.OutputParameterDataSource;
+import org.obiba.onyx.jade.core.data.InstrumentParameterDataSource;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentInputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentOutputParameter;
 import org.obiba.onyx.jade.core.domain.instrument.InstrumentParameter;
@@ -148,8 +147,7 @@ public class InstrumentTypeFactoryBean implements FactoryBean, ApplicationContex
     xstream.alias("participantPropertyDataSource", ParticipantPropertyDataSource.class);
     xstream.alias("fixedDataSource", FixedDataSource.class);
     xstream.alias("variableDataSource", VariableDataSource.class);
-    xstream.alias("outputParameterDataSource", OutputParameterDataSource.class);
-    xstream.alias("inputParameterDataSource", InputParameterDataSource.class);
+    xstream.alias("instrumentParameterDataSource", InstrumentParameterDataSource.class);
     xstream.alias("firstNotNullDataSource", FirstNotNullDataSource.class);
     xstream.alias("computingDataSource", ComputingDataSource.class);
 

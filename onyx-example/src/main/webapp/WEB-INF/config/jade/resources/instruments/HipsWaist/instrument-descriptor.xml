@@ -94,11 +94,11 @@
         </expression>
           
         <dataSources>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>HipsWaist</instrumentType>
             <parameterCode>RES_FIRST_WAIST_SIZE</parameterCode>
           </dataSource>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>HipsWaist</instrumentType>
             <parameterCode>RES_SEC_WAIST_SIZE</parameterCode>
           </dataSource>
@@ -173,11 +173,11 @@
         </expression>
           
         <dataSources>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>HipsWaist</instrumentType>
             <parameterCode>RES_FIRST_HIPS_SIZE</parameterCode>
           </dataSource>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>HipsWaist</instrumentType>
             <parameterCode>RES_SEC_HIPS_SIZE</parameterCode>
           </dataSource>
@@ -198,11 +198,11 @@
         </expression>
           
         <dataSources>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>HipsWaist</instrumentType>
             <parameterCode>CALC_AVG_WAIST_SIZE</parameterCode>
           </dataSource>
-          <dataSource class="outputParameterDataSource">
+          <dataSource class="instrumentParameterDataSource">
             <instrumentType>HipsWaist</instrumentType>
             <parameterCode>CALC_AVG_HIPS_SIZE</parameterCode>
           </dataSource>

@@ -63,7 +63,7 @@
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
-      <dataSource class="outputParameterDataSource">
+      <dataSource class="instrumentParameterDataSource">
         <instrumentType>BloodPressure</instrumentType>
         <parameterCode>CALC_AVG_SYSTOLIC_BP</parameterCode>
       </dataSource>
@@ -74,7 +74,7 @@
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
-      <dataSource class="outputParameterDataSource">
+      <dataSource class="instrumentParameterDataSource">
         <instrumentType>BloodPressure</instrumentType>
         <parameterCode>CALC_AVG_DIASTOLIC_BP</parameterCode>
       </dataSource>
