@@ -22,6 +22,8 @@
         org.obiba.onyx.password.validation.preventUserAttributeUsage=true
         org.obiba.onyx.password.validation.minimumSize=8
         org.obiba.onyx.password.validation.maximumSize=14
+      org.obiba.onyx.appointments.inputDirectory=file:./src/test/resources/appointments/in
+      org.obiba.onyx.appointments.outputDirectory=
       ]]>
       </value>
     </property>
@@ -67,6 +69,6 @@
     <property name="participantIdPattern" value=".*" />
     <property name="onyxConfigPath" value="${org.obiba.onyx.config.path}" />
     <property name="supportedRecruitmentTypesString" value="${org.obiba.onyx.supportedRecruitmentTypes}" />
-  </bean>  
+  </bean>
   
 </beans>

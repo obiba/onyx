@@ -9,26 +9,15 @@
  ******************************************************************************/
 package org.obiba.onyx.core.service.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
-import org.obiba.core.validation.exception.ValidationRuntimeException;
-import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
-import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttributeValue;
 import org.obiba.onyx.core.domain.user.User;
-import org.obiba.onyx.core.etl.participant.IParticipantReadListener;
-import org.obiba.onyx.core.etl.participant.IParticipantReader;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
@@ -51,12 +40,6 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
 
   @SuppressWarnings("unused")
   private static final Logger appointmentListUpdatelog = LoggerFactory.getLogger("appointmentListUpdate");
-
-  private IParticipantReader participantReader;
-
-  public void setParticipantReader(IParticipantReader participantReader) {
-    this.participantReader = participantReader;
-  }
 
   public void assignCodeToParticipant(Participant participant, String barcode, String receptionComment, User user) {
     participant.setBarcode(barcode);
@@ -90,171 +73,13 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     getPersistenceManager().save(participant);
   }
 
-  public void updateParticipantList(User user) throws ValidationRuntimeException {
-
-    appointmentListUpdatelog.info("Start updating appointments - by {}", user.getFullName());
-
-    ApplicationConfiguration appConfig = new ApplicationConfiguration();
-    appConfig = getPersistenceManager().matchOne(appConfig);
-    if(appConfig.getParticipantDirectoryPath() == null) {
-      appointmentListUpdatelog.error("Abort updating appointments: " + "No participants list repository");
-
-      ValidationRuntimeException vex = new ValidationRuntimeException();
-      vex.reject("NoParticipantsListRepository", "No participants list repository.");
-      throw vex;
-    }
-
-    File dir = new File(appConfig.getParticipantDirectoryPath());
-    log.debug("participantDirectory={}", dir.getAbsolutePath());
-    File lastModifiedFile = null;
-    if(dir.exists() && dir.isDirectory()) {
-      File[] dirContent = dir.listFiles();
-      if(dirContent != null) {
-        for(File f : dirContent) {
-          if(f.isFile() && (lastModifiedFile == null || (f.lastModified() > lastModifiedFile.lastModified()))) {
-            lastModifiedFile = f;
-          }
-        }
-      }
-    } else {
-      log.error("Participants update list repository does not exists or is not a directory: {}", dir.getAbsolutePath());
-      appointmentListUpdatelog.error("Abort updating appointments: " + "Participants update list repository does not exists or is not a directory (" + dir.getAbsolutePath() + ")");
-    }
-
-    if(lastModifiedFile == null) {
-      appointmentListUpdatelog.error("Abort updating appointments: No participants list file found in: " + appConfig.getParticipantDirectoryPath());
-
-      ValidationRuntimeException vex = new ValidationRuntimeException();
-      vex.reject("NoParticipantsListFileFound", new String[] { appConfig.getParticipantDirectoryPath() }, "No participants list file found in: " + appConfig.getParticipantDirectoryPath());
-      throw vex;
-    }
-
-    log.info("participantFile={}", lastModifiedFile.getAbsolutePath());
-    appointmentListUpdatelog.info("Participant File: {}", lastModifiedFile.getAbsolutePath());
-
-    try {
-      updateParticipants(new FileInputStream(lastModifiedFile));
-      appointmentListUpdatelog.info("End updating appointments");
-    } catch(FileNotFoundException e) {
-      // should not happen cause we found it by exploring the directory
-      appointmentListUpdatelog.error("Abort updating appointments: No participants list file found in: " + appConfig.getParticipantDirectoryPath());
-
-      ValidationRuntimeException vex = new ValidationRuntimeException();
-      vex.reject("NoParticipantsListFileFound", new String[] { appConfig.getParticipantDirectoryPath() }, "No participants list file found in: " + appConfig.getParticipantDirectoryPath());
-      throw vex;
-    } catch(IllegalArgumentException e) {
-      appointmentListUpdatelog.error("Abort updating appointments: Validation error - " + e.getMessage());
-
-      ValidationRuntimeException vex = new ValidationRuntimeException();
-      vex.reject("ParticipantsListFileValidationError", new String[] { e.getMessage() }, "Validation error in file: " + e.getMessage());
-      throw vex;
-    }
-  }
-
-  public void updateParticipants(InputStream participantsListStream) throws ValidationRuntimeException {
-    final ApplicationConfiguration appConfig = getPersistenceManager().matchOne(new ApplicationConfiguration());
-
-    final ValidationRuntimeException vex = new ValidationRuntimeException();
-
-    IParticipantReadListener listener = null;
-
-    final List<Participant> updatedParticipant = new ArrayList<Participant>();
-    final List<Participant> createdParticipant = new ArrayList<Participant>();
-
-    participantReader.addParticipantReadListener(listener = new IParticipantReadListener() {
-
-      public void onParticipantRead(int line, Participant participant) throws ValidationRuntimeException {
-        log.debug("reading participant={} {}", participant.getEnrollmentId(), participant.getFullName());
-        if(!appConfig.getSiteNo().equals(participant.getSiteNo())) {
-          // note and ignore
-          appointmentListUpdatelog.warn("Line {}: Wrong Participant Site Name", line);
-        } else {
-          Participant persistedParticipant = new Participant();
-          persistedParticipant.setEnrollmentId(participant.getEnrollmentId());
-          persistedParticipant = getPersistenceManager().matchOne(persistedParticipant);
-
-          if(persistedParticipant == null) {
-            if(!isNewAppointmentDateValid(participant, line)) {
-              // log a warning for appointments scheduled in the past but add them to the system anyway
-              appointmentListUpdatelog.warn("Line {}: Appointment date/time is in the past => adding appointment anyway", line);
-            }
-
-            log.debug("adding participant={}", participant.getEnrollmentId());
-            participant.setExported(false);
-            getPersistenceManager().save(participant);
-            createdParticipant.add(participant);
-
-          } else if(persistedParticipant != null) {
-            log.debug("persistedParticipant.interview={}", persistedParticipant.getInterview());
-            if(persistedParticipant.getInterview() != null && (persistedParticipant.getInterview().getStatus().equals(InterviewStatus.COMPLETED) || persistedParticipant.getInterview().getStatus().equals(InterviewStatus.CANCELLED))) {
-              // note and ignored
-              String message = (persistedParticipant.getInterview().getStatus().equals(InterviewStatus.COMPLETED)) ? "completed" : "cancelled";
-              appointmentListUpdatelog.warn("Line {}: Interview {} => participant update ignored", line, message);
-            } else {
-              // not completed
-              if(!isNewAppointmentDateValid(participant, line)) {
-                appointmentListUpdatelog.warn("Line {}: Appointment date/time is in the past => participant update ignored", line);
-                return;
-              }
-
-              // update its appointment date
-              Appointment appointment = persistedParticipant.getAppointment();
-              if(persistedParticipant.getAppointment() == null) {
-                // new appointment
-                log.debug("adding participant.appointment={}", participant.getEnrollmentId());
-                // Use appointment obtained from the list
-                appointment = participant.getAppointment();
-
-                persistedParticipant.setAppointment(appointment);
-                getPersistenceManager().save(persistedParticipant);
-              } else {
-                // appointment in database exists
-                if(participant.getAppointment().getDate().equals(persistedParticipant.getAppointment().getDate())) {
-                  appointmentListUpdatelog.warn("Line {}: Appointment date for participant {} same in database => participant update ignored", line, participant.getAppointment().getDate());
-                  return;
-                }
-                // Update the appointment date
-                persistedParticipant.getAppointment().setDate(participant.getAppointment().getDate());
-                getPersistenceManager().save(persistedParticipant);
-              }
-
-              updatedParticipant.add(participant);
-            }
-          }
-        }
-      }
-
-      public void onParticipantReadEnd(int line) throws ValidationRuntimeException {
-        if(vex.getAllObjectErrors().size() > 0) {
-          throw vex;
-        }
-        appointmentListUpdatelog.info("Number of participants created: {}", createdParticipant.size());
-        appointmentListUpdatelog.info("Number of participants updated: {}", updatedParticipant.size());
-      }
-
-      private boolean isNewAppointmentDateValid(Participant participant, Integer line) {
-        Date newAppointmentDate = participant.getAppointment().getDate();
-        if(newAppointmentDate != null && newAppointmentDate.compareTo(new Date()) < 0) {
-          return false;
-        } else {
-          return true;
-        }
-      }
-    });
-
-    // do some clean up before updating
+  /**
+   * Delete all appointments that have not been received
+   */
+  public void cleanUpAppointment() {
     for(Participant p : getNotReceivedParticipants()) {
       log.debug("removing participant.enrollmentId={}", p.getEnrollmentId());
       getPersistenceManager().delete(p);
-    }
-
-    try {
-      participantReader.process(participantsListStream);
-    } catch(IOException e) {
-      log.error("Update participants list read failed.", e);
-      throw new ValidationRuntimeException("UpdateParticipantsListReadFailed", "Update participants list read failed.");
-    } finally {
-      if(listener != null) participantReader.removeParticipantReadListener(listener);
     }
   }
 
@@ -286,6 +111,10 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     }
 
     return null;
+  }
+
+  public Participant getParticipant(Participant participant) {
+    return getPersistenceManager().matchOne(participant);
   }
 
 }

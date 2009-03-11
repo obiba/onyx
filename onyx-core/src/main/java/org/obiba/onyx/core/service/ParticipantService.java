@@ -9,13 +9,11 @@
  ******************************************************************************/
 package org.obiba.onyx.core.service;
 
-import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
 import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.SortingClause;
-import org.obiba.core.validation.exception.ValidationRuntimeException;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
@@ -106,17 +104,6 @@ public interface ParticipantService {
   public void updateParticipant(Participant participant);
 
   /**
-   * Look in the special directory the participant list and add/update the participant/appointment list.
-   */
-  public void updateParticipantList(User user) throws ValidationRuntimeException;
-
-  /**
-   * Update participants and their appointment from the given participants file.
-   * @param participantsList
-   */
-  public void updateParticipants(InputStream participantsListStream) throws ValidationRuntimeException;
-
-  /**
    * Get Participant actions.
    * @param participant
    * @return
@@ -139,4 +126,15 @@ public interface ParticipantService {
    */
   public Data getConfiguredAttributeValue(Participant participant, String attributeName);
 
+  /**
+   * Get the participant corresponding to the specified template
+   * @param template
+   * @return
+   */
+  public Participant getParticipant(Participant participant);
+
+  /**
+   * Delete all appointments that have not been received
+   */
+  public void cleanUpAppointment();
 }

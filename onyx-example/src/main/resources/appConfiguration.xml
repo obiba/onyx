@@ -30,8 +30,6 @@
     <siteName>CHUM</siteName>
     <siteNo>onyx001</siteNo>
     <studyName>Onyx</studyName>
-    <!-- can be absolute or relative to webapp root -->
-    <participantDirectoryPath>/participants</participantDirectoryPath>
   </config>
 
 </linked-list>

@@ -9,10 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.seed;
 
-import java.io.File;
 import java.util.List;
-
-import javax.servlet.ServletContext;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.obiba.core.service.PersistenceManager;
@@ -65,18 +62,6 @@ public class TestDatabaseSeed extends XstreamResourceDatabaseSeed {
             persistenceManager.delete(conf);
           }
           ApplicationConfiguration appConfig = (ApplicationConfiguration) entity;
-          File participantDirectory = new File(appConfig.getParticipantDirectoryPath());
-          log.debug("participantDirectoryPath={}", appConfig.getParticipantDirectoryPath());
-          if(!participantDirectory.exists()) {
-            // get the webapp root from servlet context
-            ServletContext context = ((WebApplication) WebApplication.get()).getServletContext();
-            appConfig.setParticipantDirectoryPath(context.getRealPath(appConfig.getParticipantDirectoryPath()));
-            participantDirectory = new File(appConfig.getParticipantDirectoryPath());
-            log.debug("new participantDirectoryPath={}", appConfig.getParticipantDirectoryPath());
-            if(!participantDirectory.exists()) {
-              throw new IllegalArgumentException("Wrong participant repository: " + appConfig.getParticipantDirectoryPath());
-            }
-          }
         }
 
         if(entity != null) {

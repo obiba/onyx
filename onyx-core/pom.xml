@@ -152,10 +152,11 @@
     </dependency>
     
     <dependency>
-      <groupId>org.matheclipse</groupId>
-      <artifactId>meparser</artifactId>
-    </dependency>
-
+        <groupId>org.matheclipse</groupId>
+        <artifactId>meparser</artifactId>
+        <version>${meparser.version}</version>
+      </dependency>
+      
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>

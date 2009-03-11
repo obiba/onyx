@@ -97,11 +97,6 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
    */
   private int firstDataRowNumber;
 
-  /**
-   * Read listeners.
-   */
-  private List<IParticipantReadListener> listeners = new ArrayList<IParticipantReadListener>();
-
   //
   // Constructors
   //
@@ -110,20 +105,8 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
     columnNameToAttributeNameMap = new HashMap<String, String>();
   }
 
-  //
-  // IParticipantReader Methods
-  //
-
-  public void addParticipantReadListener(IParticipantReadListener listener) {
-    listeners.add(listener);
-  }
-
-  public void removeParticipantReadListener(IParticipantReadListener listener) {
-    listeners.remove(listener);
-  }
-
   @SuppressWarnings("unchecked")
-  public void process(InputStream input) throws IOException, IllegalArgumentException {
+  public void process(InputStream input, List<IParticipantReadListener> listeners) throws IOException, IllegalArgumentException {
     HSSFWorkbook wb = new HSSFWorkbook(input);
     HSSFSheet sheet = wb.getSheetAt(sheetNumber - 1);
     HSSFFormulaEvaluator evaluator = new HSSFFormulaEvaluator(wb);
@@ -175,6 +158,7 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
     for(IParticipantReadListener listener : listeners) {
       listener.onParticipantReadEnd(line);
     }
+
   }
 
   //
@@ -271,7 +255,6 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
     }
 
     checkColumnsForMandatoryAttributesPresent();
-    checkColumnsForEssentialAssignableAttributesPresent();
   }
 
   private HSSFRow skipToFirstDataRow(Iterator<HSSFRow> rowIter) {
@@ -333,18 +316,22 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
     String lastName = data.getValue();
     participant.setLastName(lastName);
 
-    data = getEssentialAttributeValue(BIRTH_DATE_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    Date birthDate = (data != null) ? (Date) data.getValue() : null;
-    participant.setBirthDate(birthDate);
+    if(attributeNameToColumnIndexMap.containsKey(BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())) {
+      data = getEssentialAttributeValue(BIRTH_DATE_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(BIRTH_DATE_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+      Date birthDate = (data != null) ? (Date) data.getValue() : null;
+      participant.setBirthDate(birthDate);
+    }
 
-    data = getEssentialAttributeValue(GENDER_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(GENDER_ATTRIBUTE_NAME.toUpperCase())), evaluator);
-    String gender = (data != null) ? data.getValueAsString() : "";
-    if(gender.equals("M")) {
-      participant.setGender(Gender.MALE);
-    } else if(gender.equals("F")) {
-      participant.setGender(Gender.FEMALE);
-    } else {
-      participant.setGender(null);
+    if(attributeNameToColumnIndexMap.containsKey(GENDER_ATTRIBUTE_NAME.toUpperCase())) {
+      data = getEssentialAttributeValue(GENDER_ATTRIBUTE_NAME, row.getCell(attributeNameToColumnIndexMap.get(GENDER_ATTRIBUTE_NAME.toUpperCase())), evaluator);
+      String gender = (data != null) ? data.getValueAsString() : "";
+      if(gender.equals("M")) {
+        participant.setGender(Gender.MALE);
+      } else if(gender.equals("F")) {
+        participant.setGender(Gender.FEMALE);
+      } else {
+        participant.setGender(null);
+      }
     }
   }
 
@@ -467,20 +454,6 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
       if(attribute.isMandatoryAtEnrollment()) {
         if(!attributeNameToColumnIndexMap.containsKey(attribute.getName().toUpperCase())) {
           throw new IllegalArgumentException("Invalid worksheet; no column exists for mandatory field '" + attribute.getName() + "'");
-        }
-      }
-    }
-  }
-
-  private void checkColumnsForEssentialAssignableAttributesPresent() {
-    List<ParticipantAttribute> essentialAttributes = new ArrayList<ParticipantAttribute>();
-    essentialAttributes.addAll(participantMetadata.getEssentialAttributes());
-
-    // Check if essential attributes assignable at enrollment are missing => In that case, return an error
-    for(ParticipantAttribute attribute : essentialAttributes) {
-      if(attribute.isAssignableAtEnrollment()) {
-        if(!attributeNameToColumnIndexMap.containsKey(attribute.getName().toUpperCase())) {
-          throw new IllegalArgumentException("Invalid worksheet; no column exists for assignable essential field '" + attribute.getName() + "'");
         }
       }
     }

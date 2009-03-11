@@ -244,16 +244,6 @@ public class ApplicationConfigurationPage extends BasePage {
     public User getUser() {
       return user;
     }
-
-    public void setParticipantDirectoryPath(String path) {
-      String dirPath = new File(path).getAbsolutePath();
-      log.info("participantDirectoryPath={}", dirPath);
-      config.setParticipantDirectoryPath(dirPath);
-    }
-
-    public String getParticipantDirectoryPath() {
-      return config.getParticipantDirectoryPath();
-    }
   }
 
   private class ExportDestinationCertificateModel extends Model {

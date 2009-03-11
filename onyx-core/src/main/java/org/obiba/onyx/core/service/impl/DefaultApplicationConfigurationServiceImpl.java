@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.core.service.impl;
 
-import java.io.IOException;
-
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.service.ApplicationConfigurationService;
@@ -23,11 +21,6 @@ public class DefaultApplicationConfigurationServiceImpl extends PersistenceManag
   protected ResourceLoader resourceLoader;
 
   public void createApplicationConfiguration(ApplicationConfiguration appConfiguration) {
-    try {
-      appConfiguration.setParticipantDirectoryPath(resourceLoader.getResource("/participants/").getFile().getAbsolutePath());
-    } catch(IOException e) {
-      throw new RuntimeException(e);
-    }
     persistenceManager.save(appConfiguration);
   }
 

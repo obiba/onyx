@@ -19,8 +19,6 @@ import org.obiba.core.service.PagingClause;
 import org.obiba.core.service.PersistenceManager;
 import org.obiba.core.test.spring.BaseDefaultSpringContextTestCase;
 import org.obiba.core.test.spring.Dataset;
-import org.obiba.core.validation.exception.ValidationRuntimeException;
-import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
@@ -131,57 +129,6 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
   }
 
   @Test
-  @Dataset(filenames = { "AppConfigurationForParticipantServiceTest.xml" })
-  public void testParticipantReader() {
-    try {
-      participantService.updateParticipants(getClass().getResourceAsStream("rendez-vous.xls"));
-      Assert.assertEquals(3l, persistenceManager.match(new Participant()).size());
-
-      // test we can run same file multiple times without breaking the db
-      participantService.updateParticipants(getClass().getResourceAsStream("rendez-vous.xls"));
-      Assert.assertEquals(3l, persistenceManager.match(new Participant()).size());
-      Participant p = new Participant();
-      p.setEnrollmentId("100001");
-      p = persistenceManager.matchOne(p);
-      Assert.assertNotNull("Cannot find participant", p);
-      Assert.assertNotNull("Cannot find participant appointment", p.getAppointment());
-      Assert.assertNotNull("Cannot find participant appointment date", p.getAppointment().getDate());
-
-      // add a completed interview
-      p.setBarcode("1");
-      persistenceManager.save(p);
-      Interview interview = new Interview();
-      interview.setStatus(InterviewStatus.COMPLETED);
-      interview.setParticipant(p);
-      persistenceManager.save(interview);
-      p.setInterview(interview);
-      persistenceManager.save(p);
-      p = new Participant();
-      p.setEnrollmentId("100001");
-      p = persistenceManager.matchOne(p);
-      Assert.assertNotNull("Cannot find participant", p);
-      Assert.assertNotNull("Cannot find participant interview", p.getInterview());
-      Assert.assertEquals("Cannot find participant completed interview", InterviewStatus.COMPLETED, p.getInterview().getStatus());
-
-      participantService.updateParticipants(getClass().getResourceAsStream("rendez-vous.xls"));
-      Assert.assertEquals(3l, persistenceManager.match(new Participant()).size());
-      p = new Participant();
-      p.setEnrollmentId("100001");
-      p = persistenceManager.matchOne(p);
-      Assert.assertNotNull("Cannot find participant", p);
-      Assert.assertNotNull("Cannot find participant appointment", p.getAppointment());
-      Assert.assertNotNull("Cannot find participant appointment date", p.getAppointment().getDate());
-      Assert.assertNotNull("Cannot find participant interview", p.getInterview());
-      Assert.assertEquals("Cannot find participant completed interview", InterviewStatus.COMPLETED, p.getInterview().getStatus());
-
-    } catch(ValidationRuntimeException e) {
-      Assert.fail(e.getMessage());
-      e.printStackTrace();
-    }
-
-  }
-
-  @Test
   @Dataset
   public void testUpdateConfiguredAttribute() {
     long participantId = 4l;
@@ -224,5 +171,30 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
     // Verify that the configured attribute has been updated to the new value.
     Assert.assertNotNull(participant.getConfiguredAttributeValue(attributeName));
     Assert.assertEquals(attributeValue2, participant.getConfiguredAttributeValue(attributeName).getValue());
+  }
+
+  @Test
+  @Dataset
+  public void testGetParticipant() {
+    Participant template = new Participant();
+    template.setLastName("Dupont");
+    template.setEnrollmentId("100003");
+
+    Participant participant = participantService.getParticipant(template);
+    Assert.assertNull(participant);
+
+    template.setLastName("Hudson");
+    participant = participantService.getParticipant(template);
+    Assert.assertEquals("Participant[100002]", participant.toString());
+
+  }
+
+  @Test
+  @Dataset
+  public void testCleanUpAppointment() {
+    Assert.assertEquals(4, persistenceManager.count(Participant.class));
+    participantService.cleanUpAppointment();
+    // Participant with ids 1, 2 and 4 are kept
+    Assert.assertEquals(3, persistenceManager.count(Participant.class));
   }
 }

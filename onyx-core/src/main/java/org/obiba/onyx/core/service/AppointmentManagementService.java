@@ -7,14 +7,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.obiba.onyx.core.etl.participant;
+package org.obiba.onyx.core.service;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+/**
+ * Interface that manages the process of updating the appointment list
+ */
+public interface AppointmentManagementService {
 
-public interface IParticipantReader {
+  /**
+   * executes the process of updating the appointments
+   */
+  public void updateAppointments();
 
-  public void process(InputStream input, List<IParticipantReadListener> listeners) throws IOException, IllegalArgumentException;
+  /**
+   * returns true when an update of the appointments is available
+   * @return
+   */
+  public boolean isUpdateAvailable();
 
 }

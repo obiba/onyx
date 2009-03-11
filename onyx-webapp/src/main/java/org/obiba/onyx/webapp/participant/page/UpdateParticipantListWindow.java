@@ -24,8 +24,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.validation.exception.ValidationRuntimeException;
-import org.obiba.onyx.core.service.ParticipantService;
-import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
+import org.obiba.onyx.core.service.AppointmentManagementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,18 +46,22 @@ public class UpdateParticipantListWindow extends ModalWindow {
   // Instance Variables
   //
 
-  @SpringBean
-  private ParticipantService participantService;
-
   private ConfirmationFragment confirmationFragment;
 
   private ProgressFragment progressFragment;
 
   private ResultFragment resultFragment;
 
+  @SpringBean
+  private AppointmentManagementService appointmentManagementService;
+
   //
   // Constructors
   //
+
+  public void setAppointmentManagementService(AppointmentManagementService appointmentManagementService) {
+    this.appointmentManagementService = appointmentManagementService;
+  }
 
   public UpdateParticipantListWindow(String id) {
     super(id);
@@ -241,7 +244,7 @@ public class UpdateParticipantListWindow extends ModalWindow {
       boolean updateSucceeded = false;
 
       try {
-        participantService.updateParticipantList(OnyxAuthenticatedSession.get().getUser());
+        appointmentManagementService.updateAppointments();
         updateSucceeded = true;
       } catch(ValidationRuntimeException e) {
         log.error("Failed to update participants: {}", e.toString());

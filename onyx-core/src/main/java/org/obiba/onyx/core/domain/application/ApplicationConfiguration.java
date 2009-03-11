@@ -24,8 +24,6 @@ public class ApplicationConfiguration extends AbstractEntity {
 
   private String siteNo;
 
-  private String participantDirectoryPath;
-
   /**
    * Session timeout (in minutes).
    */
@@ -53,14 +51,6 @@ public class ApplicationConfiguration extends AbstractEntity {
 
   public void setSiteNo(String siteNo) {
     this.siteNo = siteNo;
-  }
-
-  public String getParticipantDirectoryPath() {
-    return participantDirectoryPath;
-  }
-
-  public void setParticipantDirectoryPath(String participantDirectoryPath) {
-    this.participantDirectoryPath = participantDirectoryPath;
   }
 
   /**

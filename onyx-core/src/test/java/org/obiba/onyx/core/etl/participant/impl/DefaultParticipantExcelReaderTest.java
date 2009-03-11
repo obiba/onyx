@@ -9,13 +9,21 @@
  ******************************************************************************/
 package org.obiba.onyx.core.etl.participant.impl;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +32,10 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantAttributeReader;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
+import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.etl.participant.IParticipantReadListener;
+import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.core.service.impl.UpdateParticipantListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -44,12 +55,18 @@ public class DefaultParticipantExcelReaderTest {
 
   private ParticipantMetadata participantMetadata;
 
+  private List<IParticipantReadListener> listeners = new ArrayList<IParticipantReadListener>();
+
+  private ParticipantService participantServiceMock;
+
   //
   // Fixture Methods (setUp / tearDown)
   //
 
   @Before
   public void setUp() throws Exception {
+    participantServiceMock = createMock(ParticipantService.class);
+    listeners.add(new UpdateParticipantListener("cag001", getUser(), participantServiceMock));
     initParticipantMetadata();
   }
 
@@ -66,9 +83,15 @@ public class DefaultParticipantExcelReaderTest {
   public void testProcessWithNoConfiguredAttributes() throws IOException {
     participantMetadata.setConfiguredAttributes(null);
 
-    DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, false);
+    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null).times(3);
+    participantServiceMock.updateParticipant((Participant) EasyMock.anyObject());
+    expectLastCall().times(3);
+    replay(participantServiceMock);
 
-    reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_noConfiguredAttributes.xls"));
+    DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, false);
+    reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_noConfiguredAttributes.xls"), listeners);
+
+    verify(participantServiceMock);
   }
 
   /**
@@ -79,9 +102,14 @@ public class DefaultParticipantExcelReaderTest {
    */
   @Test
   public void testProcessWithColumnsInReverseOrder() throws IOException {
-    DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, false);
+    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null).times(3);
+    participantServiceMock.updateParticipant((Participant) EasyMock.anyObject());
+    expectLastCall().times(3);
+    replay(participantServiceMock);
 
-    reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_columnsInReverseOrder.xls"));
+    DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, false);
+    reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_columnsInReverseOrder.xls"), listeners);
+    verify(participantServiceMock);
   }
 
   /**
@@ -91,9 +119,14 @@ public class DefaultParticipantExcelReaderTest {
    */
   @Test
   public void testProcessWithDifferentHeaderRowAndFirstDataRow() throws IOException {
-    DefaultParticipantExcelReader reader = createParticipantExcelReader(2, 3, 5, false);
+    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null).times(3);
+    participantServiceMock.updateParticipant((Participant) EasyMock.anyObject());
+    expectLastCall().times(3);
+    replay(participantServiceMock);
 
-    reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_differentSheetAndHeaderRowAndFirstDataRow.xls"));
+    DefaultParticipantExcelReader reader = createParticipantExcelReader(2, 3, 5, false);
+    reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_differentSheetAndHeaderRowAndFirstDataRow.xls"), listeners);
+    verify(participantServiceMock);
   }
 
   /**
@@ -106,6 +139,11 @@ public class DefaultParticipantExcelReaderTest {
    */
   @Test
   public void testProcessWithDifferentColumnNames() throws IOException {
+    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null).times(3);
+    participantServiceMock.updateParticipant((Participant) EasyMock.anyObject());
+    expectLastCall().times(3);
+    replay(participantServiceMock);
+
     DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, false);
 
     Map<String, String> columnNameToAttributeNameMap = new HashMap<String, String>();
@@ -118,8 +156,8 @@ public class DefaultParticipantExcelReaderTest {
     columnNameToAttributeNameMap.put("appointmentTime", "Appointment Time");
 
     reader.setColumnNameToAttributeNameMap(columnNameToAttributeNameMap);
-
-    reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_differentColumnNames.xls"));
+    reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_differentColumnNames.xls"), listeners);
+    verify(participantServiceMock);
   }
 
   /**
@@ -132,6 +170,11 @@ public class DefaultParticipantExcelReaderTest {
    */
   @Test
   public void testProcessWithSomeDifferentColumnNames() throws IOException {
+    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null).times(3);
+    participantServiceMock.updateParticipant((Participant) EasyMock.anyObject());
+    expectLastCall().times(3);
+    replay(participantServiceMock);
+
     DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, false);
 
     Map<String, String> columnNameToAttributeNameMap = new HashMap<String, String>();
@@ -139,8 +182,8 @@ public class DefaultParticipantExcelReaderTest {
     columnNameToAttributeNameMap.put("Sex", "Gender");
 
     reader.setColumnNameToAttributeNameMap(columnNameToAttributeNameMap);
-
-    reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_someDifferentColumnNames.xls"));
+    reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_someDifferentColumnNames.xls"), listeners);
+    verify(participantServiceMock);
   }
 
   /**
@@ -164,16 +207,22 @@ public class DefaultParticipantExcelReaderTest {
    */
   @Test
   public void testProcessWithMissingMandatoryAttributeColumn() throws IOException {
+    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null).times(3);
+    participantServiceMock.updateParticipant((Participant) EasyMock.anyObject());
+    expectLastCall().times(3);
+    replay(participantServiceMock);
+
     DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, false);
 
     try {
-      reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_missingMandatoryAttributeColumn.xls"));
+      reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_missingMandatoryAttributeColumn.xls"), listeners);
     } catch(IllegalArgumentException ex) {
       String errorMessage = ex.getMessage();
       Assert.assertEquals("Invalid worksheet; no column exists for mandatory field 'Birth Date'", errorMessage);
       return;
     }
 
+    verify(participantServiceMock);
     Assert.fail("Should have thrown an IllegalArgumentException");
   }
 
@@ -185,16 +234,22 @@ public class DefaultParticipantExcelReaderTest {
    */
   @Test
   public void testProcessWithMissingMandatoryAttributeValue() throws IOException {
+    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null).times(3);
+    participantServiceMock.updateParticipant((Participant) EasyMock.anyObject());
+    expectLastCall().times(3);
+    replay(participantServiceMock);
+
     DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, false);
 
     try {
-      reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_missingMandatoryAttributeValue.xls"));
+      reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_missingMandatoryAttributeValue.xls"), listeners);
     } catch(IllegalArgumentException ex) {
       String errorMessage = ex.getMessage();
       Assert.assertEquals("Line 4: No value for mandatory field: Enrollment ID", errorMessage);
       return;
     }
 
+    verify(participantServiceMock);
     Assert.fail("Should have thrown an IllegalArgumentException");
   }
 
@@ -206,16 +261,22 @@ public class DefaultParticipantExcelReaderTest {
    */
   @Test
   public void testProcessWithWrongAttributeValueType() throws IOException {
+    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null).times(3);
+    participantServiceMock.updateParticipant((Participant) EasyMock.anyObject());
+    expectLastCall().times(3);
+    replay(participantServiceMock);
+
     DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, false);
 
     try {
-      reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_wrongAttributeValueType.xls"));
+      reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_wrongAttributeValueType.xls"), listeners);
     } catch(IllegalArgumentException ex) {
       String errorMessage = ex.getMessage();
       Assert.assertEquals("Line 5: Wrong data type value for field 'Appointment Time': TEST", errorMessage);
       return;
     }
 
+    verify(participantServiceMock);
     Assert.fail("Should have thrown an IllegalArgumentException");
   }
 
@@ -227,16 +288,22 @@ public class DefaultParticipantExcelReaderTest {
    */
   @Test
   public void testProcessWithNotAllowedAttributeValue() throws IOException {
+    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null).times(3);
+    participantServiceMock.updateParticipant((Participant) EasyMock.anyObject());
+    expectLastCall().times(3);
+    replay(participantServiceMock);
+
     DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, false);
 
     try {
-      reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_notAllowedAttributeValue.xls"));
+      reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_notAllowedAttributeValue.xls"), listeners);
     } catch(IllegalArgumentException ex) {
       String errorMessage = ex.getMessage();
       Assert.assertEquals("Line 3: Value not allowed for field 'Gender': TEST", errorMessage);
       return;
     }
 
+    verify(participantServiceMock);
     Assert.fail("Should have thrown an IllegalArgumentException");
   }
 
@@ -247,16 +314,22 @@ public class DefaultParticipantExcelReaderTest {
    */
   @Test
   public void testProcessWithDuplicateAttributeColumn() throws IOException {
+    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null).times(3);
+    participantServiceMock.updateParticipant((Participant) EasyMock.anyObject());
+    expectLastCall().times(3);
+    replay(participantServiceMock);
+
     DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, false);
 
     try {
-      reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_duplicateAttributeColumn.xls"));
+      reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_duplicateAttributeColumn.xls"), listeners);
     } catch(IllegalArgumentException ex) {
       String errorMessage = ex.getMessage();
       Assert.assertEquals("Duplicate column for field: Last Name", errorMessage);
       return;
     }
 
+    verify(participantServiceMock);
     Assert.fail("Should have thrown an IllegalArgumentException");
   }
 
@@ -272,9 +345,13 @@ public class DefaultParticipantExcelReaderTest {
     cal.set(1964, 10 - 1, 1);
     final Date expectedBirthDate = cal.getTime();
 
+    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null);
+    participantServiceMock.updateParticipant((Participant) EasyMock.anyObject());
+    replay(participantServiceMock);
+
     DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, true);
 
-    reader.addParticipantReadListener(new IParticipantReadListener() {
+    listeners.add(new IParticipantReadListener() {
       public void onParticipantRead(int line, Participant participant) {
         // Verify that the participant's essential attributes have been assigned the correct values.
         Assert.assertEquals(expectedAppointmentTime, participant.getAppointment().getDate());
@@ -300,14 +377,20 @@ public class DefaultParticipantExcelReaderTest {
       }
     });
 
-    reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_includesConfiguredAttributes.xls"));
+    reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_includesConfiguredAttributes.xls"), listeners);
+    verify(participantServiceMock);
   }
 
   @Test
   public void testProcessWithRowContainingWhitespaceOnly() throws IOException {
-    DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, false);
+    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null).times(3);
+    participantServiceMock.updateParticipant((Participant) EasyMock.anyObject());
+    expectLastCall().times(3);
+    replay(participantServiceMock);
 
-    reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_rowContainingWhitespaceOnly.xls"));
+    DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, false);
+    reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_rowContainingWhitespaceOnly.xls"), listeners);
+    verify(participantServiceMock);
   }
 
   /**
@@ -317,16 +400,22 @@ public class DefaultParticipantExcelReaderTest {
    */
   @Test
   public void testProcessWithDuplicateDuplicateEnrollmentId() throws IOException {
+    expect(participantServiceMock.getParticipant((Participant) EasyMock.anyObject())).andReturn(null).times(3);
+    participantServiceMock.updateParticipant((Participant) EasyMock.anyObject());
+    expectLastCall().times(3);
+    replay(participantServiceMock);
+
     DefaultParticipantExcelReader reader = createParticipantExcelReader(1, 2, 3, false);
 
     try {
-      reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_duplicateEnrollmentId.xls"));
+      reader.process(DefaultParticipantExcelReaderTest.class.getClassLoader().getResourceAsStream(TEST_RESOURCES_DIR + "/appointmentList_duplicateEnrollmentId.xls"), listeners);
     } catch(IllegalArgumentException ex) {
       String errorMessage = ex.getMessage();
       Assert.assertEquals("Line 5: Duplicate Enrollment ID", errorMessage);
       return;
     }
 
+    verify(participantServiceMock);
     Assert.fail("Should have thrown an IllegalArgumentException");
   }
 
@@ -361,5 +450,12 @@ public class DefaultParticipantExcelReaderTest {
     attributeReader.setResources(new Resource[] { new ClassPathResource(TEST_RESOURCES_DIR + "/configured-attributes.xml") });
     List<ParticipantAttribute> configuredAttributes = attributeReader.read();
     participantMetadata.setConfiguredAttributes(configuredAttributes);
+  }
+
+  private User getUser() {
+    User user = new User();
+    user.setFirstName("Admin");
+    user.setLastName("Onyx");
+    return user;
   }
 }
