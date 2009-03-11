@@ -20,6 +20,8 @@ public class OnyxDataExportDestination implements IVariableFilter {
 
   public String name;
 
+  public boolean includeAll;
+
   public Set<String> filteredVariables;
 
   public Set<String> includedVariables;
@@ -40,17 +42,42 @@ public class OnyxDataExportDestination implements IVariableFilter {
     this.filteredVariables = filteredVariables;
   }
 
+  public void setIncludeAll(boolean includeAll) {
+    this.includeAll = includeAll;
+  }
+
   public boolean accept(String path) {
-    boolean include = false;
-    if(filteredVariables != null) {
-      include = !containsPath(filteredVariables, path);
+    boolean include;
+
+    if(includeAll) {
+      // start by including it
+      include = true;
+
+      // eventually filter it
+      if(filteredVariables != null) {
+        include = !containsPath(filteredVariables, path);
+      }
+
+      // eventually re-include it after it was filtered
+      if(include == false && includedVariables != null) {
+        include = containsPath(includedVariables, path);
+      }
+    } else {
+      // start by not including it
+      include = false;
+
+      // eventually include it
+      if(includedVariables != null) {
+        include = containsPath(includedVariables, path);
+      }
+
+      // eventually filter it after it was included
+      if(include && filteredVariables != null) {
+        include = !containsPath(filteredVariables, path);
+      }
     }
 
-    if(include == false && includedVariables != null) {
-      return containsPath(includedVariables, path);
-    }
-
-    return true;
+    return include;
   }
 
   protected boolean containsPath(Set<String> set, String path) {
