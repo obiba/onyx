@@ -63,12 +63,12 @@ public class DefaultAppointmentManagementServiceImpl implements AppointmentManag
 
     try {
       setInputDir(resourceLoader.getResource(inputDirectory).getFile());
-      if(!getInputDir().exists()) throw new IllegalArgumentException("DefaultAppointmentManagementServiceImpl: InputDirectory " + getInputDir().getAbsolutePath() + " does not exist");
+      if(!getInputDir().exists()) getInputDir().mkdirs();
       if(!getInputDir().isDirectory()) throw new IllegalArgumentException("DefaultAppointmentManagementServiceImpl: InputDirectory " + getInputDir().getAbsolutePath() + " is not a directory");
 
       if(outputDirectory != null && !outputDirectory.isEmpty()) {
         setOutputDir(resourceLoader.getResource(outputDirectory).getFile());
-        if(!getOutputDir().exists()) throw new IllegalArgumentException("DefaultAppointmentManagementServiceImpl: OutputDirectory " + getOutputDir().getAbsolutePath() + " does not exist");
+        if(!getOutputDir().exists()) getOutputDir().mkdirs();
         if(!getOutputDir().isDirectory()) throw new IllegalArgumentException("DefaultAppointmentManagementServiceImpl: OutputDirectory " + getOutputDir().getAbsolutePath() + " is not a directory");
       }
     } catch(IOException ex) {
