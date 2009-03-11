@@ -41,6 +41,9 @@
   <!-- Import Onyx's context -->
   <import resource="classpath:META-INF/spring/onyx-core/context.xml" />
 
+  <!-- Import Data export pipeline -->
+  <import resource="data-export.xml" />
+
   <!--
     A static stage ordering strategy. Override this by implementing Comparable<Stage> and defining the stageOrderingStrategy bean to point to your
     implementation
@@ -96,37 +99,6 @@
       <list>
         <ref bean="testDatabaseSeed" />
       </list>
-    </property>
-  </bean>
-
-  <!-- Data export pipeline -->
-  <bean id="onyxDataExport" class="org.obiba.onyx.engine.variable.export.OnyxDataExport">
-    <property name="exportDestinations" ref="onyxDataExportDestinations" />
-    <property name="queryService" ref="persistenceManager" />
-    <property name="variableDirectory" ref="variableDirectory" />
-    <property name="userSessionService">
-      <bean class="org.springframework.aop.scope.ScopedProxyFactoryBean">
-        <property name="targetBeanName" value="userSessionService" />
-      </bean>
-    </property>
-    <property name="configDirectory" value="${org.obiba.onyx.config.path}" />
-    <property name="exportStrategy">
-      <bean class="org.obiba.onyx.engine.variable.export.ChainingDataExportStrategyWiringFactoryBean">
-        <property name="chainedStrategies">
-          <list>
-            <bean class="org.obiba.onyx.engine.variable.export.EncryptingOnyxDataExportStrategy">
-              <property name="publicKeyFactory" ref="onyxKeyStore" />
-            </bean>
-            <bean class="org.obiba.onyx.engine.variable.export.DigestingOnyxDataExportStrategy" />
-            <bean class="org.obiba.onyx.engine.variable.export.ZipExportStrategy" />
-            <bean class="org.obiba.onyx.engine.variable.export.DigestingOnyxDataExportStrategy" />
-            <bean class="org.obiba.onyx.engine.variable.export.DirectoryDataExportStrategy">
-              <property name="applicationConfigurationService" ref="appConfigService" />
-              <property name="outputRootDirectory" value="${org.obiba.onyx.export.path}" />
-            </bean>
-          </list>
-        </property>
-      </bean>
     </property>
   </bean>
 
