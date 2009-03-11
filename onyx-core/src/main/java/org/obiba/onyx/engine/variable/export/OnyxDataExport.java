@@ -119,7 +119,7 @@ public class OnyxDataExport {
           }
         } catch(RuntimeException e) {
           context.fail();
-          log.error("Error exporting data to destination {}:" + e.getMessage(), destination.getName());
+          log.error("Error exporting data to destination " + destination.getName() + ":" + e.getMessage(), e);
         } finally {
           context.endExport();
           exportStrategy.terminate(context);
