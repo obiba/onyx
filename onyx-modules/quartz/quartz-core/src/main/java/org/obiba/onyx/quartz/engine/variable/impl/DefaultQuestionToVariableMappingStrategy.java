@@ -175,8 +175,10 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
     // variable is a question
     if(variable.getCategories().size() > 0) {
       List<CategoryAnswer> answers = questionnaireParticipantService.getCategoryAnswers(participant, questionnaire.getName(), variable.getName());
-      for(CategoryAnswer answer : answers) {
-        variableData.addData(DataBuilder.buildText(answer.getCategoryName()));
+      if(answers != null) {
+        for(CategoryAnswer answer : answers) {
+          variableData.addData(DataBuilder.buildText(answer.getCategoryName()));
+        }
       }
     }
 
