@@ -19,5 +19,8 @@
     <includedVariables>
       <string>/Onyx/Consent</string>
     </includedVariables>
+    <filteredVariables>
+      <string>/Onyx/Consent/actions</string>
+    </filteredVariables>
   </destination>
 </destinations>
