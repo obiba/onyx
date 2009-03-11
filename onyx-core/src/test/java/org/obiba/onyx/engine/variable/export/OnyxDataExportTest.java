@@ -69,6 +69,7 @@ public class OnyxDataExportTest {
 
     destination = new OnyxDataExportDestination();
     destination.setName("TestDestination");
+    destination.setIncludeAll(true);
 
     ode = new OnyxDataExport();
     ode.setUserSessionService(mockUserSessionService);
@@ -135,6 +136,7 @@ public class OnyxDataExportTest {
     includedVariables.add("/STUDY_NAME/STUDY_NAME/ADMIN");
 
     destination.setIncludedVariables(includedVariables);
+    destination.setIncludeAll(false);
     User exportUser = new User();
 
     Interview interview = new Interview();
