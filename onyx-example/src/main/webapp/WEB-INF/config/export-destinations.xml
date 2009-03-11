@@ -13,7 +13,7 @@
   <destination>
     <name>Appointment Unit</name>
     <includedVariables>
-      <string>/Onyx/Consent/pdfForm</string>
+      <string>/Onyx/Consent</string>
     </includedVariables>
   </destination>
 </destinations>
