@@ -129,6 +129,7 @@ public class DefaultAppointmentManagementServiceImplTest {
     Assert.assertEquals(true, appointmentServiceImpl.isUpdateAvailable());
   }
 
+  @Ignore("File timestamps changes once files were checked in. Need to copy and touch files in order to use this test.")
   @Test
   public void testSortFilesOnDateAsc() {
     appointmentServiceImpl.setInputDirectory("file:./src/test/resources/appointments/in");
@@ -141,7 +142,6 @@ public class DefaultAppointmentManagementServiceImplTest {
     Assert.assertEquals("rendez-vous-corrupted.xls", appointmentFiles[1].getName());
   }
 
-  @Ignore("File timestamps changes once files were checked in. Need to copy and touch files in order to use this test.")
   @Test
   public void testUpdateAppointments() {
     setDirectories();
