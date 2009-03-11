@@ -12,7 +12,7 @@
   </contraindications> -->
 
   <instrumentParameters>
-    <input id="id_in">
+    <input>
       <code>INPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -21,7 +21,7 @@
       </dataSource>
     </input>
 
-    <input id="last_name_in">
+    <input>
       <code>INPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -30,7 +30,7 @@
       </dataSource>
     </input>
 
-    <input id="first_name_in">
+    <input>
       <code>INPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -39,7 +39,7 @@
       </dataSource>
     </input>
 
-    <input id="birth_year_in">
+    <input>
       <code>INPUT_PARTICIPANT_BIRTH_YEAR</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -48,7 +48,7 @@
       </dataSource>
     </input>
 
-    <input id="birth_month_in">
+    <input>
       <code>INPUT_PARTICIPANT_BIRTH_MONTH</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -57,7 +57,7 @@
       </dataSource>
     </input>
 
-    <input id="birth_day_in">
+    <input>
       <code>INPUT_PARTICIPANT_BIRTH_DAY</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -66,7 +66,7 @@
       </dataSource>
     </input>
 
-    <input id="gender_in">
+    <input>
       <code>INPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -75,7 +75,7 @@
       </dataSource>
     </input>
 
-    <input id="ethnic_group_in">
+    <input>
       <code>INPUT_PARTICIPANT_ETHNIC_GROUP</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -84,7 +84,7 @@
       </dataSource>
     </input>
 
-    <input id="pacemaker_in">
+    <input>
       <code>INPUT_PARTICIPANT_PACEMAKER</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -93,7 +93,7 @@
       </dataSource>
     </input>
 
-    <input id="height_in">
+    <input>
       <code>INPUT_PARTICIPANT_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
@@ -103,7 +103,7 @@
       </dataSource>
     </input>
 
-    <input id="weight_in">
+    <input>
       <code>INPUT_PARTICIPANT_WEIGHT</code>
       <measurementUnit>hg</measurementUnit>
       <dataType>INTEGER</dataType>
@@ -113,7 +113,7 @@
       </dataSource>
     </input>
 
-    <output id="participantID">
+    <output>
       <vendorName>participantID</vendorName>
       <code>OUTPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
@@ -128,7 +128,7 @@
       </integrityChecks>
     </output>
 
-    <output id="participantLastName">
+    <output>
       <vendorName>participantLastName</vendorName>
       <code>OUTPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
@@ -143,7 +143,7 @@
       </integrityChecks>
     </output>
 
-    <output id="Participant_First_Name">
+    <output>
       <vendorName>participantFirstName</vendorName>
       <code>OUTPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
@@ -158,7 +158,7 @@
       </integrityChecks>
     </output>
 
-    <output id="Participant_Birth_Day">
+    <output>
       <vendorName>participantBirthDay</vendorName>
       <code>OUTPUT_PARTICIPANT_BIRTH_DAY</code>
       <dataType>INTEGER</dataType>
@@ -173,7 +173,7 @@
       </integrityChecks>
     </output>
 
-    <output id="participantBirthMonth">
+    <output>
       <vendorName>participantBirthMonth</vendorName>
       <code>OUTPUT_PARTICIPANT_BIRTH_MONTH</code>
       <dataType>INTEGER</dataType>
@@ -188,7 +188,7 @@
       </integrityChecks>
     </output>
 
-    <output id="participantBirthYear">
+    <output>
       <vendorName>participantBirthYear</vendorName>
       <code>OUTPUT_PARTICIPANT_BIRTH_YEAR</code>
       <dataType>INTEGER</dataType>
@@ -203,7 +203,7 @@
       </integrityChecks>
     </output>
 
-    <output id="participantGender">
+    <output>
       <vendorName>participantGender</vendorName>
       <code>OUTPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
@@ -218,7 +218,7 @@
       </integrityChecks>
     </output>
 
-    <output id="participantRace">
+    <output>
       <vendorName>participantRace</vendorName>
       <code>OUTPUT_PARTICIPANT_ETHNIC_GROUP</code>
       <dataType>TEXT</dataType>
@@ -233,7 +233,7 @@
       </integrityChecks>
     </output>
 
-    <output id="participantHeight">
+    <output>
       <vendorName>participantHeight</vendorName>
       <code>OUTPUT_PARTICIPANT_HEIGHT</code>
       <dataType>INTEGER</dataType>
@@ -241,7 +241,7 @@
       <measurementUnit>cm</measurementUnit>
     </output>
 
-    <output id="participantWeight">
+    <output>
       <vendorName>participantWeight</vendorName>
       <code>OUTPUT_PARTICIPANT_WEIGHT</code>
       <dataType>DECIMAL</dataType>
@@ -249,7 +249,7 @@
       <measurementUnit>kg</measurementUnit>
     </output>
 
-    <output id="participantPacemaker">
+    <output>
       <vendorName>participantPacemaker</vendorName>
       <code>OUTPUT_PARTICIPANT_PACEMAKER</code>
       <dataType>INTEGER</dataType>

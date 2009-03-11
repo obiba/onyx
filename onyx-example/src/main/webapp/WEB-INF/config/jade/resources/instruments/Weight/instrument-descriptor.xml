@@ -27,7 +27,7 @@
   </contraindications>   -->
 
   <instrumentParameters>
-    <output id="wei1_weight">
+    <output>
       <code>RES_WEIGHT</code>
       <measurementUnit>kg</measurementUnit>
       <dataType>DECIMAL</dataType>

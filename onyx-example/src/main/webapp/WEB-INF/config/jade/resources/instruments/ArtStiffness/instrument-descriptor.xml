@@ -12,7 +12,7 @@
   </contraindications> -->
 
   <instrumentParameters>
-    <input id="last_name">
+    <input>
       <code>INPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -21,7 +21,7 @@
       </dataSource>
     </input>
 
-    <input id="first_name_in">
+    <input>
       <code>INPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -30,7 +30,7 @@
       </dataSource>
     </input>
 
-    <input id="birth_date">
+    <input>
       <code>INPUT_PARTICIPANT_DATE_BIRTH</code>
       <dataType>DATE</dataType>
       <displayFormat>%1$tY/%1$tm/%1$td</displayFormat>      
@@ -40,7 +40,7 @@
       </dataSource>
     </input>
 
-    <input id="gender">
+    <input>
       <code>INPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -49,7 +49,7 @@
       </dataSource>
     </input>
 
-    <input id="systolic_pressure">
+    <input>
       <code>INPUT_SYSTOLIC_PRESSURE</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
@@ -60,7 +60,7 @@
       </dataSource>
     </input>
 
-    <input id="diastolic_pressure">
+    <input>
       <code>INPUT_DIASTOLIC_PRESSURE</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
@@ -71,7 +71,7 @@
       </dataSource>
     </input>
 
-    <output id="FAM_NAME">
+    <output>
       <vendorName>FAM_NAME</vendorName>
       <code>OUTPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
@@ -86,7 +86,7 @@
       </integrityChecks>
     </output>
 
-    <output id="FIRST_NAME">
+    <output>
       <vendorName>FIRST_NAME</vendorName>
       <code>OUTPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
@@ -101,7 +101,7 @@
       </integrityChecks>
     </output>
     
-    <output id="DOB">
+    <output>
       <vendorName>DOB</vendorName>
       <code>OUTPUT_PARTICIPANT_DATE_BIRTH</code>
       <dataType>DATE</dataType>
@@ -117,7 +117,7 @@
       </integrityChecks>
     </output>
 
-    <output id="SEX">
+    <output>
       <vendorName>SEX</vendorName>
       <code>OUTPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
@@ -132,7 +132,7 @@
       </integrityChecks>
     </output>
 
-    <output id="SP">
+    <output>
       <vendorName>SP</vendorName>
       <code>OUTPUT_SYSTOLIC_PRESSURE</code>
       <dataType>INTEGER</dataType>
@@ -147,7 +147,7 @@
       </integrityChecks>
     </output>
 
-    <output id="DP">
+    <output>
       <vendorName>DP</vendorName>
       <code>OUTPUT_DIASTOLIC_PRESSURE</code>
       <dataType>INTEGER</dataType>
@@ -162,35 +162,35 @@
       </integrityChecks>
     </output>
     
-    <output id="Peripheral_Pulse_Quality_Control_Pulse_Height">
+    <output>
       <vendorName>P_QC_PH</vendorName>
       <code>RES_PER_PULSE_QC_PULSE_HEIGHT</code>
       <dataType>DECIMAL</dataType>      
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Peripheral_Pulse_Quality_Control_Pulse_Height_Variation">
+    <output>
       <vendorName>P_QC_PHV</vendorName>
       <code>RES_PER_PULSE_QC_PULSE_HEIGHT_VAR</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Peripheral_Pulse_Quality_Control_Pulse_Length_Variation">
+    <output>
       <vendorName>P_QC_PLV</vendorName>
       <code>RES_PER_PULSE_QC_PULSE_LENGTH_VAR</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Peripheral_Pulse_Quality_Control_Diastolic_Variation">
+    <output>
       <vendorName>P_QC_DV</vendorName>
       <code>RES_PER_PULSE_QC_DIASTOLIC_VAR</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Peripheral_Systolic_Pressure">
+    <output>
       <vendorName>P_SP</vendorName>
       <code>RES_PER_SYSTOLIC_PRESSURE</code>
       <dataType>DECIMAL</dataType>
@@ -198,7 +198,7 @@
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
-    <output id="Peripheral_Diastolic_Pressure">
+    <output>
       <vendorName>P_DP</vendorName>
       <code>RES_PER_DIASTOLIC_PRESSURE</code>
       <dataType>DECIMAL</dataType>
@@ -206,7 +206,7 @@
       <measurementUnit>mmHg</measurementUnit>
     </output>
     
-    <output id="Peripheral_Mean_Pressure">
+    <output>
       <vendorName>P_MEANP</vendorName>
       <code>RES_PER_MEAN_PRESSURE</code>
       <dataType>DECIMAL</dataType>
@@ -214,7 +214,7 @@
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
-    <output id="Peripheral_T1">
+    <output>
       <vendorName>P_T1</vendorName>
       <code>RES_PER_T1</code>
       <dataType>DECIMAL</dataType>
@@ -222,7 +222,7 @@
       <measurementUnit>ms</measurementUnit>
     </output>
 
-    <output id="Peripheral_T2">
+    <output>
       <vendorName>P_T2</vendorName>
       <code>RES_PER_T2</code>
       <dataType>DECIMAL</dataType>
@@ -230,7 +230,7 @@
       <measurementUnit>ms</measurementUnit>
     </output>
 
-    <output id="Peripheral_Augmentation_Index">
+    <output>
       <vendorName>P_AI</vendorName>
       <code>RES_PER_AUGMENTATION_INDEX</code>
       <dataType>DECIMAL</dataType>
@@ -238,42 +238,42 @@
       <measurementUnit>%</measurementUnit>
     </output>
 
-    <output id="End_Systolic_Pressure">
+    <output>
       <vendorName>P_ESP</vendorName>
       <code>RES_END_SYSTOLIC_PRESSURE</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Peripheral_P1">
+    <output>
       <vendorName>P_P1</vendorName>
       <code>RES_PER_P1</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Peripheral_P2">
+    <output>
       <vendorName>P_P2</vendorName>
       <code>RES_PER_P2</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Peripheral_Confidence_Level_of_T1">
+    <output>
       <vendorName>P_QUALITY_T1</vendorName>
       <code>RES_PER_CONFIDENCE_LEVEL_T1</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Peripheral_Confidence_Level_of_T2">
+    <output>
       <vendorName>P_QUALITY_T2</vendorName>
       <code>RES_PER_CONFIDENCE_LEVEL_T2</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Central_Augmented_Pressure">
+    <output>
       <vendorName>C_AP</vendorName>
       <code>RES_CEN_AUGMENTED_PRESSURE</code>
       <dataType>DECIMAL</dataType>
@@ -281,7 +281,7 @@
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
-    <output id="Central_Mean_Pressure_of_Systole">
+    <output>
       <vendorName>C_MPS</vendorName>
       <code>RES_CEN_MEAN_PRESSURE_SYSTOLE</code>
       <dataType>DECIMAL</dataType>
@@ -289,7 +289,7 @@
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
-    <output id="Central_Mean_Pressure_of_Diastole">
+    <output>
       <vendorName>C_MPD</vendorName>
       <code>RES_CEN_MEAN_PRESSURE_DIASTOLE</code>
       <dataType>DECIMAL</dataType>
@@ -297,21 +297,21 @@
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
-    <output id="Central_Tension_Time_Index">
+    <output>
       <vendorName>C_TTI</vendorName>
       <code>RES_CEN_TENSION_TIME_INDEX</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Central_Diastolic_Time_Index">
+    <output>
       <vendorName>C_DTI</vendorName>
       <code>RES_CEN_DIASTOLIC_TIME_INDEX</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Central_Buckberg_SubEndocardial_Viability_Ratio">
+    <output>
       <vendorName>C_SVI</vendorName>
       <code>RES_CEN_BUCKBERG_SUBE_VIABILITY_RATIO</code>
       <dataType>DECIMAL</dataType>
@@ -319,21 +319,21 @@
       <measurementUnit>%</measurementUnit>
     </output>
 
-    <output id="Augmentation_Load">
+    <output>
       <vendorName>C_AL</vendorName>
       <code>RES_AUGMENTATION_LOAD</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Augmentation_Time_Index">
+    <output>
       <vendorName>C_ATI</vendorName>
       <code>RES_AUGMENTATION_TIME_INDEX</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Heart_Rate">
+    <output>
       <vendorName>HR</vendorName>
       <code>RES_HEART_RATE</code>
       <dataType>DECIMAL</dataType>
@@ -341,7 +341,7 @@
       <measurementUnit>bmp</measurementUnit>
     </output>
 
-    <output id="Central_Pulse_Period">
+    <output>
       <vendorName>C_PERIOD</vendorName>
       <code>RES_CEN_PULSE_PERIOD</code>
       <dataType>DECIMAL</dataType>
@@ -349,14 +349,14 @@
       <measurementUnit>ms</measurementUnit>
     </output>
 
-    <output id="Central_Diastolic_Duration">
+    <output>
       <vendorName>C_DD</vendorName>
       <code>RES_CEN_DIASTOLIC_DURATION</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Central_ED_Period_Percent_Ejection_duration">
+    <output>
       <vendorName>C_ED_PERIOD</vendorName>
       <code>RES_CEN_ED_PERIOD_PERCENT_EJECT_DUR</code>
       <dataType>DECIMAL</dataType>
@@ -364,14 +364,14 @@
       <measurementUnit>%</measurementUnit>
     </output>
 
-    <output id="Period_ED_Period_Percent">
+    <output>
       <vendorName>C_DD_PERIOD</vendorName>
       <code>RES_PERIOD_ED_PERIOD_PERCENT</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Central_Pulse_Height">
+    <output>
       <vendorName>C_PH</vendorName>
       <code>RES_CEN_PULSE_HEIGHT</code>
       <dataType>DECIMAL</dataType>
@@ -379,7 +379,7 @@
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
-    <output id="Central_Aug_PH_Percent">
+    <output>
       <vendorName>C_AGPH</vendorName>
       <code>RES_CEN_AUG_PH_PERCENT</code>
       <dataType>DECIMAL</dataType>
@@ -387,7 +387,7 @@
       <measurementUnit>%</measurementUnit>
     </output>
 
-    <output id="Central_Pressure_at_T1_Dp">
+    <output>
       <vendorName>C_P1_HEIGHT</vendorName>
       <code>RES_CEN_PRESSURE_AT_T1_DP</code>
       <dataType>DECIMAL</dataType>
@@ -395,7 +395,7 @@
       <measurementUnit>%</measurementUnit>
     </output>
 
-    <output id="Time_of_the_Start_of_the_Reflected_Wave">
+    <output>
       <vendorName>C_T1R</vendorName>
       <code>RES_TIME_START_REFLECTED_WAVE</code>
       <dataType>DECIMAL</dataType>
@@ -403,7 +403,7 @@
       <measurementUnit>ms</measurementUnit>
     </output>
 
-    <output id="Central_Systolic_Pressure">
+    <output>
       <vendorName>C_SP</vendorName>
       <code>RES_CEN_SYSTOLIC_PRESSURE</code>
       <dataType>DECIMAL</dataType>
@@ -411,7 +411,7 @@
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
-    <output id="Central_Diastolic_Pressure">
+    <output>
       <vendorName>C_DP</vendorName>
       <code>RES_CEN_DIASTOLIC_PRESSURE</code>
       <dataType>DECIMAL</dataType>
@@ -419,14 +419,14 @@
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
-    <output id="Central_Mean_Pressure">
+    <output>
       <vendorName>C_MEANP</vendorName>
       <code>RES_CEN_MEAN_PRESSURE</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Central_T1">
+    <output>
       <vendorName>C_T1</vendorName>
       <code>RES_CEN_T1</code>
       <dataType>DECIMAL</dataType>
@@ -434,7 +434,7 @@
       <measurementUnit>ms</measurementUnit>
     </output>
 
-    <output id="Central_T2">
+    <output>
       <vendorName>C_T2</vendorName>
       <code>RES_CEN_T2</code>
       <dataType>DECIMAL</dataType>
@@ -442,14 +442,14 @@
       <measurementUnit>ms</measurementUnit>
     </output>
 
-    <output id="Central_Augmentation_Index">
+    <output>
       <vendorName>C_AI</vendorName>
       <code>RES_CEN_AUGMENTATION_INDEX</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Central_End_Systolic_Pressure">
+    <output>
       <vendorName>C_ESP</vendorName>
       <code>RES_CEN_END_SYSTOLIC_PRESSURE</code>
       <dataType>DECIMAL</dataType>
@@ -457,7 +457,7 @@
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
-    <output id="Central_Pressure_at_T1">
+    <output>
       <vendorName>C_P1</vendorName>
       <code>RES_CEN_PRESSURE_AT_T1</code>
       <dataType>DECIMAL</dataType>
@@ -465,7 +465,7 @@
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
-    <output id="Central_Pressure_at_T2">
+    <output>
       <vendorName>C_P2</vendorName>
       <code>RES_CEN_PRESSURE_AT_T2</code>
       <dataType>DECIMAL</dataType>
@@ -473,7 +473,7 @@
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
-    <output id="Central_T1_ED_Percent">
+    <output>
       <vendorName>C_T1ED</vendorName>
       <code>RES_CEN_T1_ED_PERCENT</code>
       <dataType>DECIMAL</dataType>
@@ -481,7 +481,7 @@
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
-    <output id="Central_T2_ED_Percent">
+    <output>
       <vendorName>C_T2ED</vendorName>
       <code>RES_CEN_T2_ED_PERCENT</code>
       <dataType>DECIMAL</dataType>
@@ -489,42 +489,42 @@
       <measurementUnit>mmHg</measurementUnit>
     </output>
 
-    <output id="Central_Confidence_Level_of_T1">
+    <output>
       <vendorName>C_QUALITY_T1</vendorName>
       <code>RES_CEN_CONFIDENCE_LEVEL_T1</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Central_Confidence_Level_of_T2">
+    <output>
       <vendorName>C_QUALITY_T2</vendorName>
       <code>RES_CEN_CONFIDENCE_LEVEL_T2</code>
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="Operator_Index">
+    <output>
       <vendorName>P_QC_OTHER4</vendorName>
       <code>RES_OPERATOR_INDEX</code>
       <dataType>DECIMAL</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
     
-    <output id="Export_PIC_CLINIC">
+    <output>
       <vendorName>PIC_CLINIC</vendorName>
       <code>RES_PIC_CLINIC</code>
       <dataType>DATA</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
     
-    <output id="Export_PIC_DETAIL">
+    <output>
       <vendorName>PIC_DETAIL</vendorName>
       <code>RES_PIC_DETAIL</code>
       <dataType>DATA</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
     
-    <output id="Export_PIC_CLASSIFICATION">
+    <output>
       <vendorName>PIC_CLASSIFICATION</vendorName>
       <code>RES_PIC_CLASSIFICATION</code>
       <dataType>DATA</dataType>

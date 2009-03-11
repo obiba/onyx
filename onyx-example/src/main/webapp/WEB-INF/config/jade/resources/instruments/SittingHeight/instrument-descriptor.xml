@@ -24,7 +24,7 @@
       <type>OBSERVED</type>
     </interpretative>
 
-    <input id="sit_stool_height">
+    <input>
       <code>INPUT_STOOL_HEIGHT</code>
       <dataType>DECIMAL</dataType>
       <measurementUnit>cm</measurementUnit>
@@ -34,7 +34,7 @@
       </dataSource>
     </input>
 
-    <output id="sit1_height1">
+    <output>
       <code>RES_FIRST_SITTING_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
@@ -49,7 +49,7 @@
       </integrityChecks>
     </output>
 
-    <output id="sit1_height2">
+    <output>
       <code>RES_SEC_SITTING_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
@@ -93,7 +93,7 @@
       </integrityChecks>
     </output>
 
-    <output id="avg_sit_height">
+    <output>
       <code>CALC_AVG_SITTING_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>

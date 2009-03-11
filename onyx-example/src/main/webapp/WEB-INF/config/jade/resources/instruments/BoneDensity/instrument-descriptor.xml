@@ -45,7 +45,7 @@
       <type>ASKED</type>
     </interpretative>    -->
 
-    <input id="id">
+    <input>
       <code>INPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -54,7 +54,7 @@
       </dataSource>
     </input>
 
-    <input id="last_name">
+    <input>
       <code>INPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -63,7 +63,7 @@
       </dataSource>
     </input>
 
-    <input id="first_name">
+    <input>
       <code>INPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -72,7 +72,7 @@
       </dataSource>
     </input>
 
-    <input id="birth_date">
+    <input>
       <code>INPUT_PARTICIPANT_DATE_BIRTH</code>  
       <dataType>DATE</dataType>
       <displayFormat>%1$tY/%1$tm/%1$td</displayFormat>          
@@ -82,7 +82,7 @@
       </dataSource>
     </input>
 
-    <input id="gender">
+    <input>
       <code>INPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -91,7 +91,7 @@
       </dataSource>
     </input>
 
-    <input id="foot_scanned">
+    <input>
       <code>INPUT_FOOT_SCANNED</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -100,7 +100,7 @@
       </dataSource>
     </input>
 
-    <output id="Chart_Num">
+    <output>
       <vendorName>Chart_Num</vendorName>
       <code>OUTPUT_PARTICIPANT_BARCODE</code>
       <dataType>TEXT</dataType>
@@ -115,7 +115,7 @@
       </integrityChecks>
     </output>
 
-    <output id="LName">
+    <output>
       <vendorName>LName</vendorName>
       <code>OUTPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
@@ -130,7 +130,7 @@
       </integrityChecks>
     </output>
 
-    <output id="FName">
+    <output>
       <vendorName>FName</vendorName>
       <code>OUTPUT_PARTICIPANT_FIRST_NAME</code>
       <dataType>TEXT</dataType>
@@ -145,7 +145,7 @@
       </integrityChecks>
     </output>
 
-    <output id="DOB">
+    <output>
       <vendorName>DOB</vendorName>
       <code>OUTPUT_PARTICIPANT_DATE_BIRTH</code>
       <dataType>DATE</dataType>
@@ -160,7 +160,7 @@
       </integrityChecks> 
     </output>
 
-    <output id="Sex">
+    <output>
       <vendorName>Sex</vendorName>
       <code>OUTPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
@@ -175,7 +175,7 @@
       </integrityChecks>
     </output>
 
-    <output id="sidescanned">
+    <output>
       <vendorName>sidescanned</vendorName>
       <code>OUTPUT_FOOT_SCANNED</code>
       <dataType>TEXT</dataType>
@@ -190,7 +190,7 @@
       </integrityChecks>
     </output>
 
-    <output id="assessment">
+    <output>
       <vendorName>assessment</vendorName>
       <code>RES_ASSESSMENT</code>
       <dataType>DECIMAL</dataType>
@@ -198,7 +198,7 @@
       <measurementUnit/>
     </output>
 
-    <output id="fxrisk">
+    <output>
       <vendorName>fxrisk</vendorName>
       <code>RES_FRACTURE_RISK</code>
       <dataType>DECIMAL</dataType>
@@ -206,7 +206,7 @@
       <measurementUnit/>
     </output>
 
-    <output id="total">
+    <output>
       <vendorName>total</vendorName>
       <code>RES_STIFFNESS_INDEX_RES</code>
       <dataType>DECIMAL</dataType>
@@ -214,7 +214,7 @@
       <measurementUnit/>
     </output>
 
-    <output id="tscore">
+    <output>
       <vendorName>tscore</vendorName>
       <code>RES_T-SCORE</code>
       <dataType>DECIMAL</dataType>
@@ -222,7 +222,7 @@
       <measurementUnit/>
     </output>
 
-    <output id="zscore">
+    <output>
       <vendorName>zscore</vendorName>
       <code>RES_Z-SCORE</code>
       <dataType>DECIMAL</dataType>
@@ -230,7 +230,7 @@
       <measurementUnit/>
     </output>
 
-    <output id="percentnormal">
+    <output>
       <vendorName>percentnormal</vendorName>
       <code>RES_PERCENT_YOUNG_ADULT</code>
       <dataType>DECIMAL</dataType>
@@ -238,7 +238,7 @@
       <measurementUnit>%</measurementUnit>
     </output>
 
-    <output id="agematched">
+    <output>
       <vendorName>agematched</vendorName>
       <code>RES_PERCENT_AGE_MATCHED</code>
       <dataType>DECIMAL</dataType>
@@ -246,7 +246,7 @@
       <measurementUnit>%</measurementUnit>
     </output>
 
-    <output id="achillesbitmap">
+    <output>
       <vendorName>achillesbitmap</vendorName>
       <code>RES_STIFFNESS_INDEX_GRAPH</code>
       <dataType>DATA</dataType>
@@ -254,7 +254,7 @@
       <measurementUnit/>
     </output>
 
-    <output id="stiffnessindex">
+    <output>
       <vendorName>stiffnessindex</vendorName>
       <code>RES_STIFFNESS_INDEX</code>
       <dataType>DECIMAL</dataType>
@@ -262,7 +262,7 @@
       <measurementUnit/>
     </output>
 
-    <output id="SOS">
+    <output>
       <vendorName>SOS</vendorName>
       <code>RES_SPEED_ULTRASOUND</code>
       <dataType>DECIMAL</dataType>
@@ -270,7 +270,7 @@
       <measurementUnit/>
     </output>
 
-    <output id="BUA">
+    <output>
       <vendorName>BUA</vendorName>
       <code>RES_BROADBAND_ULTRASOUND_ATT</code>
       <dataType>DECIMAL</dataType>
@@ -278,7 +278,7 @@
       <measurementUnit/>
     </output>
 
-    <output id="appversion">
+    <output>
       <vendorName>appversion</vendorName>
       <code>RES_SOFTWARE_VERSION</code>
       <dataType>TEXT</dataType>
@@ -286,7 +286,7 @@
       <measurementUnit/>
     </output>
 
-    <output id="roi_x">
+    <output>
       <vendorName>roi_x</vendorName>
       <code>RES_REGION_INTERSECTION_X_COOR</code>
       <dataType>INTEGER</dataType>
@@ -294,7 +294,7 @@
       <measurementUnit/>
     </output>
 
-    <output id="roi_y">
+    <output>
       <vendorName>roi_y</vendorName>
       <code>RES_REGION_INTERSECTION_Y_COOR</code>
       <dataType>INTEGER</dataType>
@@ -302,7 +302,7 @@
       <measurementUnit/>
     </output>
 
-    <output id="roi_z">
+    <output>
       <vendorName>roi_z</vendorName>
       <code>RES_REGION_INTERSECTION_Z_COOR</code>
       <dataType>INTEGER</dataType>

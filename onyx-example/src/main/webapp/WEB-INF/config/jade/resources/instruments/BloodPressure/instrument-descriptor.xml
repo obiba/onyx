@@ -12,7 +12,7 @@
 
   <instrumentParameters>
         
-    <input id="arm_used">  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
+    <input>  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
       <code>IV_ARM_USED</code>
       <dataType>TEXT</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
@@ -21,7 +21,7 @@
       </dataSource>
     </input>
     
-    <input id="upper_arm_length">  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
+    <input>  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
       <code>IV_UPPER_ARM_LN</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
@@ -37,7 +37,7 @@
       </integrityChecks>
     </input>
     
-    <input id="mid_upper_arm_circ">  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
+    <input>  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
       <code>IV_UPPER_ARM_CIRC</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
@@ -53,7 +53,7 @@
       </integrityChecks>  
     </input>
     
-    <input id="arm_used">  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
+    <input>  <!-- Is really an interpretive value, but not yes, no; so input format used --> 
       <code>IV_ARMBAND_SIZE_USED</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -65,7 +65,7 @@
       </allowedValues>  
     </input>
     
-    <output id="blp1_systolic1">
+    <output>
       <code>RES_FIRST_SYSTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
@@ -89,7 +89,7 @@
       </integrityChecks>
     </output>
 
-    <output id="blp1_diastolic1">
+    <output>
       <code>RES_FIRST_DIASTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
@@ -119,7 +119,7 @@
       </integrityChecks>
     </output>
 
-    <output id="blp1_pulse1">
+    <output>
       <code>RES_FIRST_PULSE_RATE</code>
       <measurementUnit>BPM</measurementUnit>
       <dataType>INTEGER</dataType>
@@ -143,7 +143,7 @@
       </integrityChecks>
     </output>
 
-    <output id="blp1_systolic2">
+    <output>
       <code>RES_SEC_SYSTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
@@ -167,7 +167,7 @@
       </integrityChecks>
     </output>
 
-    <output id="blp1_diastolic2">
+    <output>
       <code>RES_SEC_DIASTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
@@ -197,7 +197,7 @@
       </integrityChecks>
     </output>
 
-    <output id="blp1_pulse2">
+    <output>
       <code>RES_SEC_PULSE_RATE</code>
       <measurementUnit>BPM</measurementUnit>
       <dataType>INTEGER</dataType>
@@ -221,7 +221,7 @@
       </integrityChecks>
     </output>
 
-    <output id="blp1_systolic3">
+    <output>
       <code>RES_THIRD_SYSTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
@@ -245,7 +245,7 @@
       </integrityChecks>
     </output>
 
-    <output id="blp1_diastolic3">
+    <output>
       <code>RES_THIRD_DIASTOLIC_BP</code>
       <measurementUnit>mmHg</measurementUnit>
       <dataType>INTEGER</dataType>
@@ -275,7 +275,7 @@
       </integrityChecks>
     </output>
 
-    <output id="blp1_pulse3">
+    <output>
       <code>RES_THIRD_PULSE_RATE</code>
       <measurementUnit>BPM</measurementUnit>
       <dataType>INTEGER</dataType>

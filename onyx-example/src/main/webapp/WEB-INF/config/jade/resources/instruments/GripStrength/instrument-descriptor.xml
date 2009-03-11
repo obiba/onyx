@@ -37,7 +37,7 @@
   </contraindications>    -->
 
   <instrumentParameters>
-    <output id="mus1_right_strength1">
+    <output>
       <code>RES_FIRST_RH_MUSCLE_STRENGTH</code>
       <measurementUnit>kg</measurementUnit>
       <dataType>INTEGER</dataType>
@@ -61,7 +61,7 @@
       </integrityChecks>
     </output>
 
-    <output id="mus1_left_strength1">
+    <output>
       <code>RES_FIRST_LH_MUSCLE_STRENGTH</code>
       <measurementUnit>kg</measurementUnit>
       <dataType>INTEGER</dataType>
@@ -85,7 +85,7 @@
       </integrityChecks>
     </output>
 
-    <output id="mus1_right_strength2">
+    <output>
       <code>RES_SEC_RH_MUSCLE_STRENGTH</code>
       <measurementUnit>kg</measurementUnit>
       <dataType>INTEGER</dataType>
@@ -114,7 +114,7 @@
       </integrityChecks>
     </output>
 
-    <output id="mus1_left_strength2">
+    <output>
       <code>RES_SEC_LH_MUSCLE_STRENGTH</code>
       <measurementUnit>kg</measurementUnit>
       <dataType>INTEGER</dataType>

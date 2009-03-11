@@ -40,7 +40,7 @@
       <type>OBSERVED</type>
     </interpretative>  -->
 
-    <input id="clothes_weight">
+    <input>
       <code>INPUT_CLOTHES_WEIGHT</code>
       <dataType>DECIMAL</dataType>
       <measurementUnit>kg</measurementUnit>
@@ -50,7 +50,7 @@
       </dataSource>
     </input>
 
-    <input id="gender_in">
+    <input>
       <code>INPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -59,7 +59,7 @@
       </dataSource>
     </input>
 
-    <input id="body_type_in">
+    <input>
       <code>INPUT_BODY_TYPE</code>
       <dataType>TEXT</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -68,7 +68,7 @@
       </dataSource>
     </input>
 
-    <input id="age_in">
+    <input>
       <code>INPUT_PARTICIPANT_AGE</code>
       <dataType>INTEGER</dataType>
       <captureMethod>MANUAL</captureMethod>
@@ -77,7 +77,7 @@
       </dataSource>
     </input>
 
-    <input id="height_in">
+    <input>
       <code>INPUT_PARTICIPANT_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>INTEGER</dataType>
@@ -88,7 +88,7 @@
       </dataSource>
     </input>
 
-    <output id="body_type">
+    <output>
       <vendorName>BodyType</vendorName>
       <code>OUTPUT_BODY_TYPE</code>
       <dataType>TEXT</dataType>
@@ -102,7 +102,7 @@
       </integrityChecks>
     </output>
 
-    <output id="gender">
+    <output>
       <vendorName>Gender</vendorName>
       <code>OUTPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
@@ -116,7 +116,7 @@
       </integrityChecks>
     </output>
 
-    <output id="age">
+    <output>
       <vendorName>Age</vendorName>
       <code>OUTPUT_PARTICIPANT_AGE</code>
       <dataType>INTEGER</dataType>
@@ -130,7 +130,7 @@
       </integrityChecks>
     </output>
 
-    <output id="height">
+    <output>
       <vendorName>Height</vendorName>
       <code>OUTPUT_PARTICIPANT_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
@@ -145,7 +145,7 @@
       </integrityChecks>
     </output>
 
-    <output id="weight">
+    <output>
       <vendorName>Weight</vendorName>
       <code>RES_WEIGHT</code>
       <measurementUnit>kg</measurementUnit>
@@ -153,7 +153,7 @@
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="bmi">
+    <output>
       <vendorName>BMI</vendorName>
       <code>RES_BODY_MASS_INDEX</code>
       <measurementUnit>kg/m²</measurementUnit>
@@ -161,7 +161,7 @@
       <captureMethod>AUTOMATIC</captureMethod>
     </output>
 
-    <output id="bmr">
+    <output>
       <vendorName>BMR</vendorName>
       <code>RES_BASAL_METABOLIC_RATE</code>
       <dataType>INTEGER</dataType>
@@ -169,7 +169,7 @@
       <measurementUnit>kJ</measurementUnit>
     </output>
 
-    <output id="impedance">
+    <output>
       <vendorName>Impedance</vendorName>
       <code>RES_BODY_IMPEDANCE</code>
       <dataType>INTEGER</dataType>
@@ -177,7 +177,7 @@
       <measurementUnit>ohm</measurementUnit>
     </output>
 
-    <output id="fat_percentage">
+    <output>
       <vendorName>FatPercentage</vendorName>
       <code>RES_FAT_PERCENT</code>
       <dataType>DECIMAL</dataType>
@@ -185,7 +185,7 @@
       <measurementUnit>%</measurementUnit>
     </output>
 
-    <output id="fat_mass">
+    <output>
       <vendorName>FatMass</vendorName>
       <code>RES_FAT_MASS</code>
       <dataType>DECIMAL</dataType>
@@ -193,7 +193,7 @@
       <measurementUnit>kg</measurementUnit>
     </output>
 
-    <output id="ffm">
+    <output>
       <vendorName>FatFreeMass</vendorName>
       <code>RES_FAT_FREE_MASS</code>
       <dataType>DECIMAL</dataType>
@@ -201,7 +201,7 @@
       <measurementUnit>kg</measurementUnit>
     </output>
 
-    <output id="tbw">
+    <output>
       <vendorName>TotalBodyWater</vendorName>
       <code>RES_TOTAL_BODY_WATER_MASS</code>
       <dataType>DECIMAL</dataType>

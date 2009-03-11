@@ -34,7 +34,7 @@
       <type>OBSERVED</type>
     </interpretative>
 
-    <output id="sta1_height1">
+    <output>
       <code>RES_FIRST_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
@@ -58,7 +58,7 @@
       </integrityChecks>
     </output>
 
-    <output id="sta1_height2">
+    <output>
       <code>RES_SEC_HEIGHT</code>
       <measurementUnit>cm</measurementUnit>
       <dataType>DECIMAL</dataType>
