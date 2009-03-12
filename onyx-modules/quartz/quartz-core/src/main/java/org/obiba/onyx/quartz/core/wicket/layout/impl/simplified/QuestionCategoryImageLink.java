@@ -11,11 +11,8 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 
 import java.io.IOException;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.behavior.AbstractBehavior;
-import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -73,14 +70,7 @@ public class QuestionCategoryImageLink extends AbstractQuestionCategoryLinkSelec
 
     };
     link.add(new QuestionCategorySelectionBehavior());
-    link.add(new AbstractBehavior() {
-      @Override
-      public void onComponentTag(Component component, ComponentTag tag) {
-        super.onComponentTag(component, tag);
-        // prevent from drag
-        tag.getAttributes().put("onmousedown", "if (event.preventDefault) {event.preventDefault();}return false;");
-      }
-    });
+    link.add(new NoDragBehavior());
     link.add(getCategoryImage("imageSelected", getCategoryImageId(getQuestionCategory(), true)));
     link.add(getCategoryImage("imageDeselected", getCategoryImageId(getQuestionCategory(), false)));
 

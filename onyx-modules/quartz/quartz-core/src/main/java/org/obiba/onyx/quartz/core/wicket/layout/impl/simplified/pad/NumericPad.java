@@ -24,6 +24,7 @@ import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.NoDragBehavior;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.OpenAnswerDefinitionValidatorFactory;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.util.data.Data;
@@ -90,7 +91,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
   }
 
   private AjaxImageLink createClearButton() {
-    return new AjaxImageLink("clear", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "reset")) {
+    AjaxImageLink link = new AjaxImageLink("clear", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "reset")) {
 
       private static final long serialVersionUID = 1L;
 
@@ -102,10 +103,12 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
       }
 
     };
+    link.getLink().add(new NoDragBehavior());
+    return link;
   }
 
   private AjaxImageLink createCancelButton(final ModalWindow padWindow) {
-    return new AjaxImageLink("cancel", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "cancel")) {
+    AjaxImageLink link = new AjaxImageLink("cancel", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "cancel")) {
 
       private static final long serialVersionUID = 1L;
 
@@ -115,10 +118,12 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
       }
 
     };
+    link.getLink().add(new NoDragBehavior());
+    return link;
   }
 
   private AjaxImageSubmitLink createSubmitButton(final ModalWindow padWindow, final DataType type, final FeedbackPanel padFeedbackPanel) {
-    return new AjaxImageSubmitLink("ok", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "ok")) {
+    AjaxImageSubmitLink link = new AjaxImageSubmitLink("ok", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "ok")) {
 
       private static final long serialVersionUID = 1L;
 
@@ -180,6 +185,8 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
       }
 
     };
+    link.getLink().add(new NoDragBehavior());
+    return link;
   }
 
   private QuestionnaireStringResourceModel createCategoryLabel(IModel questionCategoryModel, IModel openAnswerDefinitionModel) {

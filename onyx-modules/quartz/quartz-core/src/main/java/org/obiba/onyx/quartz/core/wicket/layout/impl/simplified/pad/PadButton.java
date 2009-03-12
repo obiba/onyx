@@ -12,6 +12,7 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.pad;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.NoDragBehavior;
 import org.obiba.onyx.wicket.link.AjaxImageLink;
 
 /**
@@ -38,6 +39,7 @@ public class PadButton extends Panel {
       }
 
     };
+    link.getLink().add(new NoDragBehavior());
     add(link);
 
   }
