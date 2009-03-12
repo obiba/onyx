@@ -37,6 +37,10 @@
 	padding-left: 10px;
 }
 
+.obiba-quartz-question .comment-add {
+	display:none;
+}
+
 .obiba-quartz-question .ui-widget-content {
 	height:450px;
 }
@@ -162,6 +166,10 @@ a.button .foot-left, .obiba-quartz-category .top-right .foot .foot-left {
     display: block;
     padding: 5px 0 5px 18px;
     background: transparent url('../icons/button_gray_bottom-left.png') no-repeat;
+}
+
+a.button {
+	outline: none;
 }
 
 /***************
@@ -408,11 +416,15 @@ div.form-button {
   text-align: right;
 }
 
-/* Remove dotted border around buttons */
+/* Remove dotted border around buttons and focus */
 button::-moz-focus-inner,
 input[type="reset"]::-moz-focus-inner,
 input[type="button"]::-moz-focus-inner,
 input[type="submit"]::-moz-focus-inner,
 input[type="file"] > input[type="button"]::-moz-focus-inner {
     border: none;
+}
+
+:focus {
+  -moz-outline-style: none;
 }
