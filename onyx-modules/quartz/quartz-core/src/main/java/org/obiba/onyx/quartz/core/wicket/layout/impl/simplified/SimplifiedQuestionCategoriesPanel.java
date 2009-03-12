@@ -147,7 +147,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
         if(IQuestionCategorySelectionStateHolder.class.isInstance(component)) {
           IQuestionCategorySelectionStateHolder stateHolder = (IQuestionCategorySelectionStateHolder) component;
           if(stateHolder.wasSelected() != stateHolder.isSelected()) {
-            log.info("{}:{} selection was {}, is {}", new Object[] { stateHolder.getQuestionCategory(), stateHolder.getOpenAnswerDefinition(), stateHolder.wasSelected(), stateHolder.isSelected() });
+            log.debug("{}:{} selection was {}, is {}", new Object[] { stateHolder.getQuestionCategory(), stateHolder.getOpenAnswerDefinition(), stateHolder.wasSelected(), stateHolder.isSelected() });
             target.addComponent(component);
           }
         }

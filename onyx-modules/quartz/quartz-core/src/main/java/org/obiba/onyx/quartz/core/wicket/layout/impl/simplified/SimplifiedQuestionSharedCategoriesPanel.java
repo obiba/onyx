@@ -142,7 +142,7 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
   }
 
   public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
-    log.info("onQuestionCategorySelection({}, {}, {})", new Object[] { questionModel, questionCategoryModel, isSelected });
+    log.debug("onQuestionCategorySelection({}, {}, {})", new Object[] { questionModel, questionCategoryModel, isSelected });
     updateSelections(target);
   }
 
@@ -154,7 +154,7 @@ public class SimplifiedQuestionSharedCategoriesPanel extends Panel implements IQ
         if(IQuestionCategorySelectionStateHolder.class.isInstance(component)) {
           IQuestionCategorySelectionStateHolder stateHolder = (IQuestionCategorySelectionStateHolder) component;
           if(stateHolder.wasSelected() != stateHolder.isSelected()) {
-            log.info("{}:{} selection was {}, is {}", new Object[] { stateHolder.getQuestion(), stateHolder.getQuestionCategory(), stateHolder.wasSelected(), stateHolder.isSelected() });
+            log.debug("{}:{} selection was {}, is {}", new Object[] { stateHolder.getQuestion(), stateHolder.getQuestionCategory(), stateHolder.wasSelected(), stateHolder.isSelected() });
             target.addComponent(component);
           }
         }
