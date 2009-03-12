@@ -72,18 +72,18 @@ Resizer.resize  = function(id, offsetBottom) {
 
 // Resize the content wrapper to fill the window.
 Resizer.resizeContentWrapper = function() {
-    var pageHeader = $('#pageHeader');
-    var pageHeaderHeight = 35;
+    var pageHeader = $('.ui-layout-north');
+    var pageHeaderHeight = 43;
     if (pageHeader) {
       pageHeaderHeight = pageHeader.height();
     }
 
     var pageFooter = $('#pageFooter');
-    var pageFooterHeight = 40;
+    var pageFooterHeight = 30;
     if (pageFooter) {
       pageFooterHeight = pageFooter.height();
     }
-    
+    //alert('header='+pageHeaderHeight+' footer='+pageFooterHeight);
 	Resizer.resize('contentWrapper', pageHeaderHeight + pageFooterHeight + 7);
 }
 WindowUtil.attachEvent("load", Resizer.resizeContentWrapper);
@@ -101,7 +101,7 @@ Resizer.resizeWizard = function() {
 	
 	var table = $('#wizardContent table:first-child');
 	var wizardContent = $('#wizardContent');
-	var resizeHeight = parseInt(document.body.clientHeight-(120 + footerHeight)-wizardContent.get()[0].offsetTop);
+	var resizeHeight = parseInt(document.body.clientHeight-(110 + footerHeight)-wizardContent.get()[0].offsetTop);
 	
 	if ( table == null || table.height() < resizeHeight ) {
 		wizardContent.height(resizeHeight + 'px');
@@ -162,7 +162,7 @@ var baseLayoutSettings = {
 		spacing_closed:0
 	},
 	north: {
-	    minSize: 0,
+	    minSize: 43,
 		size: "auto"
 	}
 }
