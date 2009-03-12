@@ -66,6 +66,8 @@ public class UpdateParticipantListWindow extends ModalWindow {
   public UpdateParticipantListWindow(String id) {
     super(id);
 
+    setCssClassName("onyx");
+
     setTitle((new ResourceModel("UpdateParticipantList")));
     setInitialHeight(DEFAULT_INITIAL_HEIGHT);
     setInitialWidth(DEFAULT_INITIAL_WIDTH);
