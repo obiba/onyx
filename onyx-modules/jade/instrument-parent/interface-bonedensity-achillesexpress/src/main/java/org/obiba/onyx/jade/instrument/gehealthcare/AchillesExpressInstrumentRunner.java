@@ -108,7 +108,11 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
           ps.setString(5, "F");
         }
 
-        ps.setString(6, (String) instrumentExecutionService.getInputParameterValue("INPUT_FOOT_SCANNED").getValue());
+        if(instrumentExecutionService.getInputParameterValue("INPUT_FOOT_SCANNED").getValueAsString().equals("LEFT_FOOT")) {
+          ps.setString(6, "L");
+        } else {
+          ps.setString(6, "R");
+        }
       }
     });
 
@@ -154,7 +158,10 @@ public class AchillesExpressInstrumentRunner implements InstrumentRunner, Initia
           boneDensityData.put("RES_Z-SCORE", DataBuilder.buildDecimal(rs.getDouble("zscore")));
           boneDensityData.put("RES_PERCENT_AGE_MATCHED", DataBuilder.buildDecimal(rs.getDouble("agematched")));
           boneDensityData.put("RES_PERCENT_YOUNG_ADULT", DataBuilder.buildDecimal(rs.getDouble("percentnormal")));
-          boneDensityData.put("OUTPUT_FOOT_SCANNED", DataBuilder.buildText(rs.getString("sidescanned")));
+
+          String foot_scanned = rs.getString("sidescanned").equals("L") ? "LEFT_FOOT" : "RIGHT_FOOT";
+          boneDensityData.put("OUTPUT_FOOT_SCANNED", DataBuilder.buildText(foot_scanned));
+
           boneDensityData.put("RES_STIFFNESS_INDEX", DataBuilder.buildDecimal(rs.getDouble("stiffnessindex")));
           boneDensityData.put("RES_SPEED_ULTRASOUND", DataBuilder.buildDecimal(rs.getDouble("SOS")));
           boneDensityData.put("RES_BROADBAND_ULTRASOUND_ATT", DataBuilder.buildDecimal(rs.getDouble("BUA")));
