@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
@@ -74,6 +75,7 @@ public class ActionsPanelTest {
   public void testClickActions() {
 
     EasyMock.expect(mockActiveInterviewService.getStageExecution((Stage) EasyMock.anyObject())).andReturn(mockStageExecution).anyTimes();
+    EasyMock.expect(mockActiveInterviewService.getInteractiveStage()).andReturn(null).anyTimes();
     EasyMock.expect(mockStageExecution.getActionDefinitions()).andReturn(actionDefinitionList).anyTimes();
     EasyMock.replay(mockActiveInterviewService, mockStageExecution);
 
@@ -113,6 +115,7 @@ public class ActionsPanelTest {
   @Test
   public void testClickActionNoLongerAvailable() {
     EasyMock.expect(mockActiveInterviewService.getStageExecution((Stage) EasyMock.anyObject())).andReturn(mockStageExecution).anyTimes();
+    EasyMock.expect(mockActiveInterviewService.getInteractiveStage()).andReturn(null).anyTimes();
 
     // This is called by the InterviewPage upon redirect. Returning null will redirect to the HomePage.
     EasyMock.expect(mockActiveInterviewService.getParticipant()).andReturn(null).anyTimes();
@@ -149,6 +152,48 @@ public class ActionsPanelTest {
     // itself then redirected to the HomePage.
     tester.assertRenderedPage(application.getHomePage());
 
+    EasyMock.verify(mockActiveInterviewService, mockStageExecution);
+  }
+
+  @Test
+  public void testActionsPanelIsInvisibleWhenInteractiveStage() {
+
+    final Stage currentStage = new Stage();
+    currentStage.setName("currentStage");
+
+    Stage interactiveStage = new Stage();
+    currentStage.setName("interactiveStage");
+
+    EasyMock.expect(mockActiveInterviewService.getStageExecution(currentStage)).andReturn(mockStageExecution).anyTimes();
+
+    // Mock that another stage than the one for this panel is currently interactive
+    EasyMock.expect(mockActiveInterviewService.getInteractiveStage()).andReturn(interactiveStage).anyTimes();
+
+    // This is called by the InterviewPage upon redirect. Returning null will redirect to the HomePage.
+    EasyMock.expect(mockActiveInterviewService.getParticipant()).andReturn(null).anyTimes();
+    // This should be called once: for displaying the links (even though they'll be invisible in the end
+    EasyMock.expect(mockStageExecution.getActionDefinitions()).andReturn(actionDefinitionList).once();
+    EasyMock.replay(mockActiveInterviewService, mockStageExecution);
+
+    WicketTester tester = new WicketTester(application);
+
+    tester.startPanel(new TestPanelSource() {
+
+      private static final long serialVersionUID = 1L;
+
+      public Panel getTestPanel(String panelId) {
+        // Model may contain null since the panel only passes the value along and doesn't actually use it itself.
+        return new ActionsPanel(panelId, new LoadableDetachableModel(currentStage) {
+          @Override
+          protected Object load() {
+            return currentStage;
+          }
+        }, window = new MockActionWindow());
+      }
+    });
+
+    // Make sure the panel is invisible
+    tester.assertInvisible("panel");
     EasyMock.verify(mockActiveInterviewService, mockStageExecution);
   }
 

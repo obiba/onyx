@@ -57,6 +57,13 @@ public interface ActiveInterviewService {
   public IStageExecution getStageExecution(String stageName);
 
   /**
+   * Returns the {@code Stage} instance that is currently {@code interactive} or null if no such stage exists.
+   * @return the {@code Stage} instance for the current interactive stage or null if no stage is currently interactive.
+   * @See {@link IStageExecution#isInteractive()}
+   */
+  public Stage getInteractiveStage();
+
+  /**
    * Persist and perform action on the stage, in the interview of current participant.
    * @param stage
    * @param action

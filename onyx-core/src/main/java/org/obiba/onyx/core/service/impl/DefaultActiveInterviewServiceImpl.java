@@ -115,6 +115,19 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     return getStageExecution(stage);
   }
 
+  public Stage getInteractiveStage() {
+    // Return the first stage that is interactive
+    // Does not check that only one stage is interactive.
+    for(Stage stage : moduleRegistry.listStages()) {
+      // It's important to call getSageExecution here since the method will create it if it does not exist.
+      IStageExecution stageExecution = getStageExecution(stage);
+      if(stageExecution.isInteractive()) {
+        return stage;
+      }
+    }
+    return null;
+  }
+
   public void doAction(Stage stage, Action action) {
     action.setInterview(getParticipant().getInterview());
     if(stage != null) {

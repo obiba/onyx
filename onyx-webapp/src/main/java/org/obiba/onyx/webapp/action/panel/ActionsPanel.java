@@ -80,6 +80,21 @@ public class ActionsPanel extends Panel {
     }
   }
 
+  @Override
+  public boolean isVisible() {
+    // If the this panel is not for the current interactive stage, then it should NOT be visible.
+    // Otherwise, we let the super class determine our visibility
+
+    Stage interactiveStage = activeInterviewService.getInteractiveStage();
+    if(interactiveStage != null) {
+      // Test that this panel's stage is not for the interactive stage
+      if(getStage().getName().equals(interactiveStage.getName()) == false) {
+        return false;
+      }
+    }
+    return super.isVisible();
+  }
+
   private Stage getStage() {
     return (Stage) getModelObject();
   }
