@@ -15,10 +15,13 @@ import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
+import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.MultipleDefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.util.data.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class the building open answer panels.
@@ -28,6 +31,9 @@ import org.obiba.onyx.util.data.Data;
 public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(AbstractOpenAnswerDefinitionPanel.class);
 
   /**
    * The question model (not necessarily the question of the category in the case of shared categories question).
@@ -110,36 +116,16 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
   }
 
   /**
-   * Called when open field is selected.
-   * @param target
-   * @param questionModel
-   * @param questionCategoryModel
-   * @param openAnswerDefinitionModel TODO
-   */
-  public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
-  }
-
-  /**
-   * Called when open field is submitted.
-   * @param target
-   * @param questionModel
-   * @param questionCategoryModel
-   */
-  public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-  }
-
-  /**
-   * Called when open field is submitted and error occures.
-   * @param target
-   * @param questionModel
-   * @param questionCategoryModel
-   */
-  public void onError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-  }
-
-  /**
    * Call this to reset the open field content.
    */
   public abstract void resetField();
+
+  protected void fireQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+    log.info("fireQuestionCategorySelection({},{},{})", new Object[] { questionModel.getObject(), questionCategoryModel.getObject(), new Boolean(isSelected) });
+    IQuestionCategorySelectionListener listener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
+    if(listener != null) {
+      listener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
+    }
+  }
 
 }

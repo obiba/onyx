@@ -285,7 +285,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
    * Delete the category answer and its open answers.
    * @param categoryAnswer
    */
-  private void deleteAnswers(CategoryAnswer categoryAnswer) {
+  public void deleteAnswers(CategoryAnswer categoryAnswer) {
     if(categoryAnswer.getOpenAnswers() != null) {
       for(OpenAnswer openAnswer : categoryAnswer.getOpenAnswers()) {
         getPersistenceManager().delete(openAnswer);

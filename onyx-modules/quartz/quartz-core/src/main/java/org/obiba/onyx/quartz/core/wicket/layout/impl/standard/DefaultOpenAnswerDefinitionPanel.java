@@ -8,7 +8,6 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 
-import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -126,51 +125,44 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     // behaviors
     openField.add(new InvalidFormFieldBehavior());
 
-    openField.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+    openField.add(new AjaxFormComponentUpdatingBehavior(getOpenAnswerDefinition().getDefaultValues().size() == 0 ? "onchange" : "onchange") {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        log.info("openField.onChange.onUpdate.{}.data={}", getQuestion() + ":" + getQuestionCategory() + ":" + getOpenAnswerDefinition().getName(), getData());
-        onInternalSubmit(target);
+        log.info("onUpdate.{}:{}:{}={}", new Object[] { getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData() });
+        // persist data
+        activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
+
+        // clean a previous error message
+        updateFeedback(target);
+
+        fireQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), true);
       }
 
       @Override
       protected void onError(AjaxRequestTarget target, RuntimeException e) {
-        log.info("openField.onChange.onError.{}.data={}", getQuestion() + ":" + getQuestionCategory() + ":" + getOpenAnswerDefinition().getName(), getData());
+        log.info("onError.{}:{}:{}={}", new Object[] { getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData() });
         super.onError(target, e);
-        onInternalError(target);
+        // display error messages
+        updateFeedback(target);
+
+        // DefaultOpenAnswerDefinitionPanel.this.onError(target, getQuestionModel(), getQuestionCategoryModel());
       }
     });
 
-    openField.add(new AjaxEventBehavior("onclick") {
-
-      @Override
-      protected void onEvent(AjaxRequestTarget target) {
-        log.info("openField.onClick");
-        DefaultOpenAnswerDefinitionPanel.this.onSelect(target, getQuestionModel(), getQuestionCategoryModel(), getOpenAnswerDefinitionModel());
-        openField.focusField(target);
-      }
-
-    });
+    // openField.add(new AjaxEventBehavior("onclick") {
+    //
+    // @Override
+    // protected void onEvent(AjaxRequestTarget target) {
+    // log.info("openField.onClick");
+    // DefaultOpenAnswerDefinitionPanel.this.onSelect(target, getQuestionModel(), getQuestionCategoryModel(),
+    // getOpenAnswerDefinitionModel());
+    // openField.focusField(target);
+    // }
+    //
+    // });
 
     // set the label of the field
     openField.setLabel(QuestionnaireStringResourceModelHelper.getStringResourceModel(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition()));
-  }
-
-  private void onInternalSubmit(final AjaxRequestTarget target) {
-    // persist data
-    activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
-
-    // clean a previous error message
-    updateFeedback(target);
-
-    onSubmit(target, getQuestionModel(), getQuestionCategoryModel());
-  }
-
-  private void onInternalError(final AjaxRequestTarget target) {
-    // display error messages
-    updateFeedback(target);
-
-    onError(target, getQuestionModel(), getQuestionCategoryModel());
   }
 
   /**

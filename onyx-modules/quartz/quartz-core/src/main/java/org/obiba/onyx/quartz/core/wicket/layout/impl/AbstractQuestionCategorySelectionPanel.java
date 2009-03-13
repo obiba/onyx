@@ -13,6 +13,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DefaultOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.MultipleDefaultOpenAnswerDefinitionPanel;
 import org.slf4j.Logger;
@@ -21,7 +22,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract to share some facilities between radio/checkbox based question category selectors.
  */
-public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestionCategorySelectionPanel {
+public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestionCategorySelectionPanel implements IQuestionCategorySelectionListener {
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(AbstractQuestionCategorySelectionPanel.class);
@@ -37,55 +38,6 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
   }
 
   /**
-   * Called when open field is submitted.
-   * @param target
-   * @param questionModel
-   * @param questionCategoryModel
-   */
-  public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-
-  }
-
-  /**
-   * Called when open field is submitted and error occures.
-   * @param target
-   * @param questionModel
-   * @param questionCategoryModel
-   */
-  public void onOpenFieldError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-
-  }
-
-  /**
-   * Called when selector is clicked.
-   * @param target
-   */
-  public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-  }
-
-  /**
-   * Called for internal use after open field is selected.
-   * @param target
-   * @param questionModel
-   * @param questionCategoryModel
-   * @see #onOpenFieldSelection(AjaxRequestTarget, IModel, IModel)
-   */
-  protected void onInternalOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    onSelection(target, questionModel, questionCategoryModel);
-  }
-
-  /**
-   * Called for internal use after open field is submited.
-   * @param target
-   * @param questionModel
-   * @param questionCategoryModel
-   * @see #onOpenFieldSubmit(AjaxRequestTarget, IModel, IModel)
-   */
-  protected void onInternalOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    onOpenFieldSubmit(target, questionModel, questionCategoryModel);
-  }
-
-  /**
    * Factory method to get the appropriate {@link AbstractOpenAnswerDefinitionPanel} for this question category.
    * @param id
    * @return
@@ -96,44 +48,10 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
 
     if(getQuestionCategory().getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().size() == 0) {
       // case there is a simple open answer
-      openField = new DefaultOpenAnswerDefinitionPanel(id, getQuestionModel(), getQuestionCategoryModel()) {
-
-        @Override
-        public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
-          onInternalOpenFieldSelection(target, questionModel, questionCategoryModel);
-        }
-
-        @Override
-        public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          onInternalOpenFieldSubmit(target, questionModel, questionCategoryModel);
-        }
-
-        @Override
-        public void onError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          onOpenFieldError(target, questionModel, questionCategoryModel);
-        }
-
-      };
+      openField = new DefaultOpenAnswerDefinitionPanel(id, getQuestionModel(), getQuestionCategoryModel());
     } else {
       // case there are multiple open answers
-      openField = new MultipleDefaultOpenAnswerDefinitionPanel(id, getQuestionModel(), getQuestionCategoryModel()) {
-
-        @Override
-        public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
-          onInternalOpenFieldSelection(target, questionModel, questionCategoryModel);
-        }
-
-        @Override
-        public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          onInternalOpenFieldSubmit(target, questionModel, questionCategoryModel);
-        }
-
-        @Override
-        public void onError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          onOpenFieldError(target, questionModel, questionCategoryModel);
-        }
-
-      };
+      openField = new MultipleDefaultOpenAnswerDefinitionPanel(id, getQuestionModel(), getQuestionCategoryModel());
     }
 
     return openField;
@@ -175,5 +93,13 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
    * @return
    */
   public abstract boolean hasOpenField();
+
+  protected void fireQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+    log.info("fireQuestionCategorySelection({},{},{})", new Object[] { questionModel.getObject(), questionCategoryModel.getObject(), new Boolean(isSelected) });
+    IQuestionCategorySelectionListener listener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
+    if(listener != null) {
+      listener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
+    }
+  }
 
 }

@@ -80,22 +80,7 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
         if(item.getModel() == null) {
           item.add(new EmptyPanel("input").setVisible(false));
         } else {
-          item.add(new QuestionCategoryRadioPanel("input", item.getModel(), radioGroup) {
-
-            @Override
-            public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              // update all
-              target.addComponent(DefaultEscapeQuestionCategoriesPanel.this);
-              fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
-              DefaultEscapeQuestionCategoriesPanel.this.onSelection(target, questionModel, questionCategoryModel);
-            }
-
-            @Override
-            public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
-            }
-
-          });
+          item.add(new QuestionCategoryRadioPanel("input", item.getModel(), radioGroup));
         }
       }
 

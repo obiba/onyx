@@ -14,7 +14,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IQuestionAnswerChangedListener;
+import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 
 /**
@@ -71,9 +71,9 @@ public abstract class BaseQuestionCategorySelectionPanel extends Panel {
    * @see IQuestionAnswerChangedListener
    */
   protected void fireQuestionAnswerChanged(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    IQuestionAnswerChangedListener parentListener = (IQuestionAnswerChangedListener) findParent(IQuestionAnswerChangedListener.class);
+    IQuestionCategorySelectionListener parentListener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
     if(parentListener != null) {
-      parentListener.onQuestionAnswerChanged(target, questionModel, questionCategoryModel);
+      parentListener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, true);
     }
   }
 

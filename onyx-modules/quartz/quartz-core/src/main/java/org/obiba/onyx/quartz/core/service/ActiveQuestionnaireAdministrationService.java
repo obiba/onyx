@@ -305,6 +305,12 @@ public interface ActiveQuestionnaireAdministrationService {
   public void deleteAnswer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition);
 
   /**
+   * Delete the category answer and its open answers.
+   * @param categoryAnswer
+   */
+  public void deleteAnswers(CategoryAnswer categoryAnswer);
+
+  /**
    * Add a comment to a question answer.
    * 
    * @param question The question for which the comment will be added.

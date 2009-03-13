@@ -284,8 +284,8 @@ public abstract class AbstractQuestionnaireTest {
    * 
    * @param answerProvider answer provider
    * @param toQuestion question to stop at
-   * @param inclusive if <code>true</code>, the specified question is the last question answered; if <code>false</code>,
-   * the last question answered is the one before that question
+   * @param inclusive if <code>true</code>, the specified question is the last question answered; if
+   * <code>false</code>, the last question answered is the one before that question
    */
   public void answerQuestionsUpTo(AnswerProvider answerProvider, Question toQuestion, boolean inclusive) {
     Page currentPage = null;
@@ -326,8 +326,8 @@ public abstract class AbstractQuestionnaireTest {
    * 
    * @param answerProvider
    * @param toQuestion
-   * @param inclusive if <code>true</code>, the specified question is the last question answered; if <code>false</code>,
-   * the last question answered is the one before that question
+   * @param inclusive if <code>true</code>, the specified question is the last question answered; if
+   * <code>false</code>, the last question answered is the one before that question
    */
   public void answerQuestionsOnCurrentPage(AnswerProvider answerProvider, Question toQuestion, boolean inclusive) {
     Page currentPage = activeQuestionnaireAdministrationService.getCurrentPage();
@@ -635,7 +635,7 @@ public abstract class AbstractQuestionnaireTest {
    */
   private void openAnswer(Question question, CategoryAnswer answer) {
     List<Component> fields = getQuestionCategoryFormComponent(question, answer);
-    wicketTester.executeAjaxEvent(fields.get(0), "onclick");
+    // wicketTester.executeAjaxEvent(fields.get(0), "onclick");
 
     fields = getQuestionCategoryFormComponent(question, answer);
     setFormComponentValue((FormComponent) fields.get(0), answer.getOpenAnswers().get(0).getData().getValueAsString());

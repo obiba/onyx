@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.repeater.Item;
@@ -50,15 +49,16 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
     radioGroup.add(new AnswerCountValidator(rowModel));
 
     AbstractQuestionCategorySelectionPanel qCategoryPanel;
-    cellItem.add(qCategoryPanel = new QuestionCategoryRadioPanel(componentId, rowModel, cellItem.getModel(), radioGroup, false) {
-
-      @Override
-      public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-        // call for refresh
-        QuestionCategoryRadioColumn.this.onSelection(target, questionModel, questionCategoryModel);
-      }
-
-    });
+    cellItem.add(qCategoryPanel = new QuestionCategoryRadioPanel(componentId, rowModel, cellItem.getModel(), radioGroup, false));
+    // {
+    //
+    // @Override
+    // public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+    // // call for refresh
+    // QuestionCategoryRadioColumn.this.onSelection(target, questionModel, questionCategoryModel);
+    // }
+    //
+    // });
     if(qCategoryPanel.hasOpenField()) {
       cellItem.add(new AttributeAppender("class", new Model("category-open"), " "));
     } else {

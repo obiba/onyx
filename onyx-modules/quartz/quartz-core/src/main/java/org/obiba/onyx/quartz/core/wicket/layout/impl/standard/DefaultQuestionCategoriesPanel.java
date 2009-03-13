@@ -23,10 +23,10 @@ import org.apache.wicket.markup.repeater.data.GridView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategoriesView;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
@@ -38,12 +38,14 @@ import org.slf4j.LoggerFactory;
  * Panel containing the question categories in a grid view of radios or checkboxes depending the questions multiple
  * flag.
  */
-public class DefaultQuestionCategoriesPanel extends Panel {
+public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCategorySelectionListener {
 
   private static final long serialVersionUID = 5144933183339704600L;
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultQuestionCategoriesPanel.class);
+
+  private CheckGroup checkGroup;
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
@@ -115,21 +117,7 @@ public class DefaultQuestionCategoriesPanel extends Panel {
         if(item.getModel() == null) {
           item.add(new EmptyPanel("input").setVisible(false));
         } else {
-          item.add(new QuestionCategoryRadioPanel("input", item.getModel(), radioGroup) {
-
-            @Override
-            public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              // update all
-              target.addComponent(DefaultQuestionCategoriesPanel.this);
-              fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
-            }
-
-            @Override
-            public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
-            }
-
-          });
+          item.add(new QuestionCategoryRadioPanel("input", item.getModel(), radioGroup));
         }
       }
 
@@ -145,7 +133,7 @@ public class DefaultQuestionCategoriesPanel extends Panel {
    */
   @SuppressWarnings("serial")
   private void addCheckBoxGroup(Question question) {
-    final CheckGroup checkGroup = new CheckGroup("categories", new ArrayList<IModel>());
+    checkGroup = new CheckGroup("categories", new ArrayList<IModel>());
     checkGroup.add(new AnswerCountValidator(getQuestionModel()));
     add(checkGroup);
 
@@ -156,31 +144,7 @@ public class DefaultQuestionCategoriesPanel extends Panel {
         if(item.getModel() == null) {
           item.add(new EmptyPanel("input").setVisible(false));
         } else {
-          item.add(new QuestionCategoryCheckBoxPanel("input", item.getModel(), checkGroup.getModel()) {
-
-            @Override
-            public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              if(escapeQuestionCategoriesPanel != null) {
-                Question question = getQuestion();
-                for(CategoryAnswer answer : activeQuestionnaireAdministrationService.findAnswers(question)) {
-                  QuestionCategory questionCategory = question.findQuestionCategory(answer.getCategoryName());
-                  if(questionCategory.getCategory().isEscape()) {
-                    activeQuestionnaireAdministrationService.deleteAnswer(question, questionCategory);
-                  }
-                }
-                escapeQuestionCategoriesPanel.setNoSelection();
-              }
-              target.addComponent(DefaultQuestionCategoriesPanel.this);
-              fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
-            }
-
-            @Override
-            public void onOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-              fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
-            }
-
-          });
-
+          item.add(new QuestionCategoryCheckBoxPanel("input", item.getModel(), checkGroup.getModel()));
         }
       }
 
@@ -193,23 +157,39 @@ public class DefaultQuestionCategoriesPanel extends Panel {
         @SuppressWarnings("unchecked")
         @Override
         public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          ((Collection<IModel>) checkGroup.getModelObject()).clear();
-          // QUA-108 need to do this otherwise check box inputs are not cleared following a validation error
-          checkGroup.visitChildren(CheckBox.class, new Component.IVisitor() {
-
-            public Object component(Component component) {
-              CheckBox cb = (CheckBox) component;
-              cb.clearInput();
-              return null;
-            }
-
-          });
           target.addComponent(DefaultQuestionCategoriesPanel.this);
         }
 
       });
     } else {
       add(new EmptyPanel("escapeCategories").setVisible(false));
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+    // repaint the panel
+    target.addComponent(this);
+
+    // case we are called by an escape category in a multiple choice context
+    if(checkGroup != null && ((QuestionCategory) questionCategoryModel.getObject()).isEscape()) {
+      ((Collection<IModel>) checkGroup.getModelObject()).clear();
+      // QUA-108 need to do this otherwise check box inputs are not cleared following a validation error
+      checkGroup.visitChildren(CheckBox.class, new Component.IVisitor() {
+
+        public Object component(Component component) {
+          CheckBox cb = (CheckBox) component;
+          cb.clearInput();
+          return null;
+        }
+
+      });
+
+    }
+
+    IQuestionCategorySelectionListener parentListener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
+    if(parentListener != null) {
+      parentListener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
     }
   }
 }

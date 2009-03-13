@@ -20,7 +20,6 @@ import junit.framework.Assert;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
@@ -138,8 +137,6 @@ public class DefaultOpenAnswerDefinitionPanelTest {
     replay(questionnaireBundleMock);
     replay(messageSourceMock);
 
-    final IModel assertClickModel = new Model(Boolean.FALSE);
-
     tester.startPanel(new TestPanelSource() {
 
       private static final long serialVersionUID = 1L;
@@ -147,7 +144,7 @@ public class DefaultOpenAnswerDefinitionPanelTest {
       @SuppressWarnings("serial")
       public Panel getTestPanel(String panelId) {
         QuestionCategory element = QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q2", "Q2.1");
-        return openMock = new DefaultOpenAnswerDefinitionPanelMock(panelId, new Model(element), assertClickModel);
+        return openMock = new DefaultOpenAnswerDefinitionPanelMock(panelId, new Model(element));
       }
     });
 
@@ -160,8 +157,8 @@ public class DefaultOpenAnswerDefinitionPanelTest {
     Assert.assertEquals(321, value.intValue());
 
     // check onclick callback
-    tester.executeAjaxEvent("panel:form:content:open:input:field", "onclick");
-    Assert.assertEquals("No click event on open field", Boolean.TRUE, assertClickModel.getObject());
+    // tester.executeAjaxEvent("panel:form:content:open:input:field", "onclick");
+    // Assert.assertEquals("No click event on open field", Boolean.TRUE, assertClickModel.getObject());
 
     // check and set field value
     FormTester formTester = tester.newFormTester("panel:form");
@@ -208,8 +205,6 @@ public class DefaultOpenAnswerDefinitionPanelTest {
     replay(questionnaireBundleMock);
     replay(messageSourceMock);
 
-    final IModel assertClickModel = new Model(Boolean.FALSE);
-
     tester.startPanel(new TestPanelSource() {
 
       private static final long serialVersionUID = 1L;
@@ -217,7 +212,7 @@ public class DefaultOpenAnswerDefinitionPanelTest {
       @SuppressWarnings("serial")
       public Panel getTestPanel(String panelId) {
         QuestionCategory element = QuestionnaireFinder.getInstance(questionnaire).findQuestionCategory("Q2", "Q2.4");
-        return openMock = new DefaultOpenAnswerDefinitionPanelMock(panelId, new Model(element), assertClickModel);
+        return openMock = new DefaultOpenAnswerDefinitionPanelMock(panelId, new Model(element));
       }
     });
 
@@ -231,10 +226,6 @@ public class DefaultOpenAnswerDefinitionPanelTest {
     Assert.assertNotNull(openMock.getData());
     String value = openMock.getData().getValue();
     Assert.assertEquals("c", value);
-
-    // check onclick callback
-    tester.executeAjaxEvent("panel:form:content:open:input:select", "onclick");
-    Assert.assertEquals("No click event on open field", Boolean.TRUE, assertClickModel.getObject());
 
     // check and set field value
     FormTester formTester = tester.newFormTester("panel:form");

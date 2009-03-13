@@ -103,7 +103,8 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
             updateFeedbackPanel(target);
           }
         }
-        onSelection(target, getQuestionModel(), QuestionCategoryCheckBoxPanel.this.getModel());
+
+        fireQuestionCategorySelection(target, getQuestionModel(), QuestionCategoryCheckBoxPanel.this.getModel(), getSelectionModel().isSelected());
       }
 
     });
@@ -131,25 +132,6 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
     return (QuestionCategoryCheckBoxModel) checkbox.getModel();
   }
 
-  protected void onInternalOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    if(getSelectionModel().isSelected()) return;
-
-    // set checkbox as selected
-    getSelectionModel().select();
-
-    activeQuestionnaireAdministrationService.answer((Question) questionModel.getObject(), (QuestionCategory) getModelObject(), ((QuestionCategory) getModelObject()).getCategory().getOpenAnswerDefinition(), null);
-
-    onSelection(target, questionModel, questionCategoryModel);
-  }
-
-  @Override
-  protected void onInternalOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    // make sure checkbox is selected in case of open field selection event was bypassed
-    getSelectionModel().select();
-
-    onOpenFieldSubmit(target, questionModel, questionCategoryModel);
-  }
-
   /**
    * Get the associated open field.
    * @return null if there is no associated {@link OpenAnswerDefinition}
@@ -166,5 +148,14 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
   @Override
   public boolean hasOpenField() {
     return openField != null;
+  }
+
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+    if(getSelectionModel().isSelected()) return;
+
+    // set checkbox as selected
+    getSelectionModel().select();
+
+    fireQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
   }
 }

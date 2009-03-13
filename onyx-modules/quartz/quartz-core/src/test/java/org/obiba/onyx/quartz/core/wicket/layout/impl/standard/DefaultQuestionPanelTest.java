@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Locale;
@@ -36,6 +37,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.test.ApplicationContextMock;
+import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.apache.wicket.validation.validator.NumberValidator;
@@ -64,6 +66,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.PageLayoutFactoryRegistry;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
 import org.obiba.onyx.quartz.test.ComponentTesterUtils;
 import org.obiba.onyx.util.StringReferenceCompatibleMessageFormat;
+import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
 import org.obiba.wicket.test.MockSpringApplication;
@@ -336,12 +339,13 @@ public class DefaultQuestionPanelTest {
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaireParticipant()).andReturn(questionnaireParticipant);
     expect(activeQuestionnaireAdministrationServiceMock.getComment((Question) EasyMock.anyObject())).andReturn("").times(1);
     expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer(question, question.getCategories().get(0), open)).andReturn(null).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(0))).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findActiveAnswers(question)).andReturn(Arrays.asList(new CategoryAnswer[] { previousCategoryAnswer }));
+    expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(0))).andReturn(null);
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(1))).andReturn(previousCategoryAnswer).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
-    activeQuestionnaireAdministrationServiceMock.deleteAnswers(question);
+    activeQuestionnaireAdministrationServiceMock.deleteAnswers(previousCategoryAnswer);
     QuestionCategory questionCategory = question.getQuestionCategories().get(0);
-    expect(activeQuestionnaireAdministrationServiceMock.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), null)).andReturn(new CategoryAnswer());
+    expect(activeQuestionnaireAdministrationServiceMock.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), DataBuilder.buildInteger(1l))).andReturn(new CategoryAnswer());
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).anyTimes();
@@ -387,7 +391,9 @@ public class DefaultQuestionPanelTest {
     FormComponent field = (FormComponent) ComponentTesterUtils.findChildren(radioGroup, TextField.class).get(0);
 
     // select open field
-    tester.executeAjaxEvent(field, "onclick");
+    FormTester formTester = tester.newFormTester("panel:form");
+    formTester.setValue("content:content:categories:category:1:cols:2:input:open:open:input:field", "1");
+    tester.executeAjaxEvent(field, "onchange");
     radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
     Radio radio1 = (Radio) ComponentTesterUtils.findChildren(radioGroup, Radio.class).get(0);
     Assert.assertEquals(radioGroup.getModelObject(), radio1.getModelObject());
@@ -417,13 +423,14 @@ public class DefaultQuestionPanelTest {
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaireParticipant()).andReturn(questionnaireParticipant).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer(question, question.getCategories().get(0), openHours)).andReturn(null).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer(question, question.getCategories().get(0), openMinutes)).andReturn(null).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findActiveAnswers(question)).andReturn(Arrays.asList(new CategoryAnswer[] { previousCategoryAnswer }));
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(0))).andReturn(null).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(1))).andReturn(previousCategoryAnswer).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
-    activeQuestionnaireAdministrationServiceMock.deleteAnswers(question);
+    activeQuestionnaireAdministrationServiceMock.deleteAnswers(previousCategoryAnswer);
     QuestionCategory questionCategory = question.getQuestionCategories().get(0);
     expect(activeQuestionnaireAdministrationServiceMock.getComment((Question) EasyMock.anyObject())).andReturn("").times(1);
-    expect(activeQuestionnaireAdministrationServiceMock.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), null)).andReturn(new CategoryAnswer());
+    expect(activeQuestionnaireAdministrationServiceMock.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().get(0), DataBuilder.buildInteger(1l))).andReturn(new CategoryAnswer());
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).anyTimes();
@@ -471,7 +478,9 @@ public class DefaultQuestionPanelTest {
     FormComponent field1 = (FormComponent) ComponentTesterUtils.findChildren(radioGroup, TextField.class).get(0);
 
     // select open field
-    tester.executeAjaxEvent(field1, "onclick");
+    FormTester formTester = tester.newFormTester("panel:form");
+    formTester.setValue("content:content:categories:category:1:cols:2:input:open:repeating:1:open:open:input:field", "1");
+    tester.executeAjaxEvent(field1, "onchange");
     radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
     Radio radio1 = (Radio) ComponentTesterUtils.findChildren(radioGroup, Radio.class).get(0);
     Assert.assertEquals(radioGroup.getModelObject(), radio1.getModelObject());
@@ -604,7 +613,7 @@ public class DefaultQuestionPanelTest {
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(1))).andReturn(previousCategoryAnswer).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
     // activeQuestionnaireAdministrationServiceMock.deleteAnswers(question);
-    expect(activeQuestionnaireAdministrationServiceMock.answer(question, question.getQuestionCategories().get(0), question.getQuestionCategories().get(0).getCategory().getOpenAnswerDefinition(), null)).andReturn(new CategoryAnswer());
+    expect(activeQuestionnaireAdministrationServiceMock.answer(question, question.getQuestionCategories().get(0), question.getQuestionCategories().get(0).getCategory().getOpenAnswerDefinition(), DataBuilder.buildText("1"))).andReturn(new CategoryAnswer());
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).anyTimes();
@@ -650,7 +659,9 @@ public class DefaultQuestionPanelTest {
     FormComponent field = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(0);
 
     // select open field
-    tester.executeAjaxEvent(field, "onclick");
+    FormTester formTester = tester.newFormTester("panel:form");
+    formTester.setValue("content:content:categories:category:1:cols:2:input:open:open:input:field", "1");
+    tester.executeAjaxEvent(field, "onchange");
     checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
     field = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(0);
 
@@ -694,7 +705,7 @@ public class DefaultQuestionPanelTest {
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(1))).andReturn(previousCategoryAnswer).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
     QuestionCategory questionCategory = question.getQuestionCategories().get(0);
-    expect(activeQuestionnaireAdministrationServiceMock.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), null)).andReturn(new CategoryAnswer());
+    expect(activeQuestionnaireAdministrationServiceMock.answer(question, questionCategory, questionCategory.getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().get(0), DataBuilder.buildInteger(1l))).andReturn(new CategoryAnswer());
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).anyTimes();
@@ -742,7 +753,9 @@ public class DefaultQuestionPanelTest {
     FormComponent field1 = (FormComponent) ComponentTesterUtils.findChildren(checkGroup, TextField.class).get(0);
 
     // select open field
-    tester.executeAjaxEvent(field1, "onclick");
+    FormTester formTester = tester.newFormTester("panel:form");
+    formTester.setValue("content:content:categories:category:1:cols:2:input:open:repeating:1:open:open:input:field", "1");
+    tester.executeAjaxEvent(field1, "onchange");
     checkGroup = (CheckGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:categories");
     CheckBox checkbox1 = (CheckBox) ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).get(0);
     checkbox2 = (CheckBox) ComponentTesterUtils.findChildren(checkGroup, CheckBox.class).get(1);
@@ -775,6 +788,7 @@ public class DefaultQuestionPanelTest {
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaire")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.getComment((Question) EasyMock.anyObject())).andReturn("").times(1);
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaireParticipant()).andReturn(questionnaireParticipant).atLeastOnce();
+    expect(activeQuestionnaireAdministrationServiceMock.findActiveAnswers(question1)).andReturn(Arrays.asList(new CategoryAnswer[] { previousCategoryAnswer }));
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question1, question.getQuestionCategories().get(0))).andReturn(previousCategoryAnswer).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question1, question.getQuestionCategories().get(1))).andReturn(null).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question1, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
@@ -784,7 +798,7 @@ public class DefaultQuestionPanelTest {
     expect(activeQuestionnaireAdministrationServiceMock.findAnswer(question2, question.getQuestionCategories().get(2))).andReturn(null).atLeastOnce();
     expect(activeQuestionnaireAdministrationServiceMock.findOpenAnswer(question2, question.getCategories().get(2), question.getCategories().get(2).getOpenAnswerDefinition())).andReturn(null).atLeastOnce();
 
-    activeQuestionnaireAdministrationServiceMock.deleteAnswers(question1);
+    activeQuestionnaireAdministrationServiceMock.deleteAnswers(previousCategoryAnswer);
     expect(activeQuestionnaireAdministrationServiceMock.answer(question1, question.getQuestionCategories().get(2), question.getCategories().get(2).getOpenAnswerDefinition(), null)).andReturn(new CategoryAnswer());
     expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).anyTimes();
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).anyTimes();
@@ -853,7 +867,9 @@ public class DefaultQuestionPanelTest {
     Assert.assertEquals(radioGroup.getModelObject(), radio11.getModelObject());
 
     // select open field
-    tester.executeAjaxEvent("panel:form:content:content:array:rows:rows:1:group:cells:4:cell:open:open:input:field", "onclick");
+    FormTester formTester = tester.newFormTester("panel:form");
+    formTester.setValue("panel:form:content:content:array:rows:rows:1:group:cells:4:cell:open:open:input:field", "1");
+    tester.executeAjaxEvent("panel:form:content:content:array:rows:rows:1:group:cells:4:cell:open:open:input:field", "onchange");
     radioGroup = (RadioGroup) tester.getComponentFromLastRenderedPage("panel:form:content:content:array:rows:rows:1:group");
     Radio radio13 = (Radio) tester.getComponentFromLastRenderedPage("panel:form:content:content:array:rows:rows:1:group:cells:4:cell:categoryLabel:radio");
     Assert.assertEquals(radioGroup.getModelObject(), radio13.getModelObject());

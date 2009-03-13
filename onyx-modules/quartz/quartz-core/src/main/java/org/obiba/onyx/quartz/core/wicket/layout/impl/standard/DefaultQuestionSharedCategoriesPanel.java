@@ -30,13 +30,13 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.AbstractQuestionArray;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.CheckGroupView;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.QuestionCategoryCheckBoxColumn;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.QuestionCategoryRadioColumn;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.array.RadioGroupView;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.AbstractDataListProvider;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IQuestionAnswerChangedListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
@@ -199,9 +199,9 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
    * @see IQuestionAnswerChangedListener
    */
   protected void fireQuestionAnswerChanged(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    IQuestionAnswerChangedListener parentListener = (IQuestionAnswerChangedListener) findParent(IQuestionAnswerChangedListener.class);
+    IQuestionCategorySelectionListener parentListener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
     if(parentListener != null) {
-      parentListener.onQuestionAnswerChanged(target, questionModel, questionCategoryModel);
+      parentListener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, true);
     }
   }
 

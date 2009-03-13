@@ -24,10 +24,10 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Section;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.PageLayout;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.QuestionPanelFactoryRegistry;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.util.IQuestionAnswerChangedListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.PageQuestionsProvider;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 
@@ -37,7 +37,7 @@ import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
  * @see IQuestionAnswerChangedListener
  * @see Condition
  */
-public class DefaultPageLayout extends PageLayout implements IQuestionAnswerChangedListener {
+public class DefaultPageLayout extends PageLayout implements IQuestionCategorySelectionListener {
 
   private static final long serialVersionUID = -1757316578083924986L;
 
@@ -124,10 +124,22 @@ public class DefaultPageLayout extends PageLayout implements IQuestionAnswerChan
     return questionPanels;
   }
 
+  public void onQuestionAnswerChanged(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+
+  }
+
+  @Override
+  public void onStepInNext(AjaxRequestTarget target) {
+  }
+
+  @Override
+  public void onStepInPrevious(AjaxRequestTarget target) {
+  }
+
   /**
    * Called when an answer is given to a question and then requires to update the resolution of in-page conditions.
    */
-  public void onQuestionAnswerChanged(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
     for(QuestionPanel panel : getQuestionPanels()) {
       Question question = (Question) panel.getModelObject();
       if(!question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
@@ -139,14 +151,6 @@ public class DefaultPageLayout extends PageLayout implements IQuestionAnswerChan
     // update the whole layout because some questions can (dis)appear.
     target.addComponent(this);
     target.appendJavascript("Resizer.resizeWizard();");
-  }
-
-  @Override
-  public void onStepInNext(AjaxRequestTarget target) {
-  }
-
-  @Override
-  public void onStepInPrevious(AjaxRequestTarget target) {
   }
 
 }

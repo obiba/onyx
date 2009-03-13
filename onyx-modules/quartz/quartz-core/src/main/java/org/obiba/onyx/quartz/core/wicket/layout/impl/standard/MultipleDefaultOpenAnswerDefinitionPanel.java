@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractMultipleOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
@@ -35,23 +34,26 @@ public class MultipleDefaultOpenAnswerDefinitionPanel extends AbstractMultipleOp
   @SuppressWarnings("serial")
   @Override
   protected AbstractOpenAnswerDefinitionPanel newOpenAnswerDefinitionPanel(String id, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
-    return new DefaultOpenAnswerDefinitionPanel(id, questionModel, questionCategoryModel, openAnswerDefinitionModel) {
-
-      @Override
-      public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
-        MultipleDefaultOpenAnswerDefinitionPanel.this.onSelect(target, questionModel, questionCategoryModel, openAnswerDefinitionModel);
-      }
-
-      @Override
-      public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-        MultipleDefaultOpenAnswerDefinitionPanel.this.onSubmit(target, questionModel, questionCategoryModel);
-      }
-
-      @Override
-      public void onError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-        MultipleDefaultOpenAnswerDefinitionPanel.this.onError(target, questionModel, questionCategoryModel);
-      }
-
-    };
+    return new DefaultOpenAnswerDefinitionPanel(id, questionModel, questionCategoryModel, openAnswerDefinitionModel);
+    // {
+    //
+    // // @Override
+    // // public void onSelect(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, IModel
+    // // openAnswerDefinitionModel) {
+    // // MultipleDefaultOpenAnswerDefinitionPanel.this.onSelect(target, questionModel, questionCategoryModel,
+    // // openAnswerDefinitionModel);
+    // // }
+    //
+    // @Override
+    // public void onSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+    // MultipleDefaultOpenAnswerDefinitionPanel.this.onSubmit(target, questionModel, questionCategoryModel);
+    // }
+    //
+    // @Override
+    // public void onError(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+    // MultipleDefaultOpenAnswerDefinitionPanel.this.onError(target, questionModel, questionCategoryModel);
+    // }
+    //
+    // };
   }
 }

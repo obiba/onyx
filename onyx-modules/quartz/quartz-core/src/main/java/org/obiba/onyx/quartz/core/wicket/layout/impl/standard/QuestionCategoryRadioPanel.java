@@ -21,6 +21,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Category;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
@@ -96,7 +97,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
 
         updateFeedbackPanel(target);
 
-        onSelection(target, getQuestionModel(), getQuestionCategoryModel());
+        fireQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), true);
       }
 
     });
@@ -128,35 +129,6 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
     }
   }
 
-  protected void onInternalOpenFieldSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    if(radioGroup.getModel().equals(getQuestionCategoryModel())) return;
-
-    log.info("openField.onSelect={}.{}", getQuestion(), getQuestionCategory());
-
-    // make sure radio selection does not conflict with open field selection
-    radioGroup.setModel(getQuestionCategoryModel());
-
-    // exclusive choice, only one answer per question
-    CategoryAnswer previousAnswer = activeQuestionnaireAdministrationService.findAnswer(getQuestion(), getQuestionCategory());
-    if(previousAnswer == null) {
-      activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
-      activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getQuestionCategory().getCategory().getOpenAnswerDefinition(), null);
-    }
-
-    // make sure a previously selected open field is not asked for
-    resetOpenAnswerDefinitionPanels(radioGroup);
-
-    onSelection(target, questionModel, questionCategoryModel);
-  }
-
-  @Override
-  protected void onInternalOpenFieldSubmit(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    // make sure radio selection does not conflict with open field selection
-    radioGroup.setModel(getQuestionCategoryModel());
-
-    onOpenFieldSubmit(target, questionModel, questionCategoryModel);
-  }
-
   /**
    * Get the associated open field.
    * @return null if there is no associated {@link OpenAnswerDefinition}
@@ -173,6 +145,25 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
   @Override
   public boolean hasOpenField() {
     return openField != null;
+  }
+
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+    log.info("onQuestionCategorySelection={}:{}", questionModel.getObject(), questionCategoryModel.getObject());
+
+    if(radioGroup.getModel().equals(questionCategoryModel)) return;
+
+    // make sure radio selection does not conflict with open field selection
+    radioGroup.setModel(questionCategoryModel);
+
+    // exclusive choice
+    Category category = ((QuestionCategory) questionCategoryModel.getObject()).getCategory();
+    for(CategoryAnswer categoryAnswer : activeQuestionnaireAdministrationService.findActiveAnswers((Question) questionModel.getObject())) {
+      if(!categoryAnswer.getCategoryName().equals(category.getName())) {
+        activeQuestionnaireAdministrationService.deleteAnswers(categoryAnswer);
+      }
+    }
+
+    fireQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
   }
 
 }

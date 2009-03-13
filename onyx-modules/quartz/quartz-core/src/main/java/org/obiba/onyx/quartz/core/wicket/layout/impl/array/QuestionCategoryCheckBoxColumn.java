@@ -9,7 +9,6 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.array;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.repeater.Item;
@@ -45,19 +44,19 @@ public class QuestionCategoryCheckBoxColumn extends AbstractQuestionCategoryColu
     checkGroup.add(new AnswerCountValidator(rowModel));
 
     AbstractQuestionCategorySelectionPanel qCategoryPanel;
-    cellItem.add(qCategoryPanel = new QuestionCategoryCheckBoxPanel(componentId, rowModel, cellItem.getModel(), checkGroup.getModel(), false) {
-
-      @Override
-      public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-        QuestionCategoryCheckBoxColumn.this.onSelection(target, questionModel, questionCategoryModel);
-      }
-
-    });
+    cellItem.add(qCategoryPanel = new QuestionCategoryCheckBoxPanel(componentId, rowModel, cellItem.getModel(), checkGroup.getModel(), false));
+    // {
+    //
+    // @Override
+    // public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+    // QuestionCategoryCheckBoxColumn.this.onSelection(target, questionModel, questionCategoryModel);
+    // }
+    //
+    // });
     if(qCategoryPanel.hasOpenField()) {
       cellItem.add(new AttributeAppender("class", new Model("category-open"), " "));
     } else {
       cellItem.add(new AttributeAppender("class", new Model("category"), " "));
     }
   }
-
 }
