@@ -118,6 +118,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
 
       @Override
       public void onClick(AjaxRequestTarget target) {
+        resetField();
         padWindow.close(target);
       }
 
