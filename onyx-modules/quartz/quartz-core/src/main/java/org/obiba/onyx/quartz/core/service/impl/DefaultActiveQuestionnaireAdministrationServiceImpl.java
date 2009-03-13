@@ -240,6 +240,8 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
       openAnswer.setData(value);
       getPersistenceManager().save(openAnswer);
       categoryAnswer.addOpenAnswer(openAnswer);
+    } else if(openAnswer != null) {
+      getPersistenceManager().delete(openAnswer);
     }
 
     categoryAnswer.setActive(true);
