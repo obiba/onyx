@@ -65,12 +65,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
   }
 
   public Interview getInterview() {
-    Participant currentParticipant = getParticipant();
-    if(currentParticipant == null) {
-      return null;
-    }
-
-    return currentParticipant.getInterview();
+    return getParticipant().getInterview();
   }
 
   public User getOperator() {

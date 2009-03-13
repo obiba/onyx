@@ -33,8 +33,8 @@ import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -46,6 +46,9 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
   @Autowired
   private PersistenceManager persistenceManager;
 
+  @Autowired
+  private ApplicationContext applicationContext;
+
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
 
   @Autowired
@@ -55,7 +58,7 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
 
   @Before
   public void setUp() {
-    ConfigurableApplicationContext applicationContext = new ClassPathXmlApplicationContext("test-spring-context.xml");
+    ConfigurableApplicationContext applicationContext = (ConfigurableApplicationContext) this.applicationContext;
     applicationContext.getBeanFactory().registerScope("session", new SessionScope());
 
     MockHttpServletRequest request = new MockHttpServletRequest();

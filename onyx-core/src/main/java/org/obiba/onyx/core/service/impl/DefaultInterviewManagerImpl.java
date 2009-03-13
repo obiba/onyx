@@ -54,7 +54,7 @@ public class DefaultInterviewManagerImpl extends PersistenceManagerAwareService 
     if(lock != null) {
       return lock.getParticipant();
     }
-    return null;
+    throw new IllegalStateException("No current interview");
   }
 
   synchronized public Map<String, StageExecutionContext> getStageContexts() {
