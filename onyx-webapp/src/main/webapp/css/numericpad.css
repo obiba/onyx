@@ -79,3 +79,12 @@ div.wicket-modal div.onyx .obiba-numeric-pad .obiba-quartz-padForm  .valuepresse
 .obiba-quartz-padActions .imagelink.obiba-button-cancel {
   padding-left:10px;
 }
+
+.obiba-button-ok a.button .label {
+    display: inline;
+}
+
+.obiba-button-ok a.button img {
+    position: relative;
+    top: 4px;
+}

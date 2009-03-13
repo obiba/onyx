@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.pad;
 
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
@@ -42,6 +43,9 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(NumericPad.class);
+
+  /** reference to the ok button check mark gif file. */
+  public static final ResourceReference CHECKMARK = new ResourceReference(NumericPad.class, "check2.gif");
 
   private DataField valuePressed;
 
@@ -123,7 +127,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
   }
 
   private AjaxImageSubmitLink createSubmitButton(final ModalWindow padWindow, final DataType type, final FeedbackPanel padFeedbackPanel) {
-    AjaxImageSubmitLink link = new AjaxImageSubmitLink("ok", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "ok")) {
+    AjaxImageSubmitLink link = new AjaxImageSubmitLink("ok", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "ok"), null, CHECKMARK) {
 
       private static final long serialVersionUID = 1L;
 
