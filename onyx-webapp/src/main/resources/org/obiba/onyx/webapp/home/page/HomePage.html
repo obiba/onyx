@@ -1,18 +1,22 @@
 <html>
   <body>
     <wicket:extend>
-    	<div class="obiba-box-content">
-    	<p><wicket:message key="ParticipantExactSearchMsg" /></p>
-		<p>
-			<form wicket:id="configurationForm" autocomplete="off">
-				<label for="barCode"><wicket:message key="ParticipantCode" /></label>
-				<input wicket:id="barCode" id="barCode" type="text" size="20"/>
-				
-				<input type="submit" wicket:message="value:GoToInterview" wicket:id="submit"/>
-			</form>
-		</p>
-		<p><a wicket:id="search"><wicket:message key="SearchAndReceiveParticipants" /></a></p>
-		</div>
+      <div wicket:id="unlockInterview">Hidden unlock popup</div>
+      <div class="obiba-box-content">
+        <p>
+          <wicket:message key="ParticipantExactSearchMsg" />
+        </p>
+        <p>
+          <form wicket:id="searchForm" autocomplete="off">
+            <label for="barCode"><wicket:message key="ParticipantCode" /></label>
+            <input wicket:id="barCode" id="barCode" type="text" size="20" />
+            <button wicket:id="submit"><wicket:message key="GoToInterview" /></button>
+          </form>
+        </p>
+        <p>
+          <a wicket:id="search"><wicket:message key="SearchAndReceiveParticipants" /></a>
+        </p>
+      </div>
     </wicket:extend>
   </body>
 </html>

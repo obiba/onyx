@@ -9,38 +9,51 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.home.page;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.service.InterviewManager;
+import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
+import org.obiba.onyx.webapp.participant.panel.UnlockInterviewPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class HomePage extends BasePage {
 
   @SpringBean
-  private EntityQueryService queryService;
+  ParticipantService participantService;
 
   @SpringBean
   private InterviewManager interviewManager;
 
+  private ModalWindow unlockInterviewWindow;
+
   public HomePage() {
     super();
 
-    add(new ParticipantSearchForm("configurationForm"));
+    add(new ParticipantSearchForm("searchForm"));
 
     add(new BookmarkablePageLink("search", ParticipantSearchPage.class));
+
+    unlockInterviewWindow = new ModalWindow("unlockInterview");
+    unlockInterviewWindow.setCssClassName("onyx");
+    unlockInterviewWindow.setTitle(new ResourceModel("UnlockInterview"));
+    unlockInterviewWindow.setResizable(false);
+    unlockInterviewWindow.setUseInitialHeight(false);
+    add(unlockInterviewWindow);
 
   }
 
@@ -53,30 +66,47 @@ public class HomePage extends BasePage {
 
       setModel(new Model(new Participant()));
 
-      TextField barCode = new TextField("barCode", new PropertyModel(getModelObject(), "barcode"));
+      TextField barCode = new TextField("barCode", new PropertyModel(getModel(), "barcode"));
       barCode.add(new RequiredFormFieldBehavior());
       barCode.setLabel(new StringResourceModel("ParticipantCode", HomePage.this, null));
       add(barCode);
 
-      add(new Button("submit"));
+      add(new AjaxButton("submit") {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        protected void onSubmit(AjaxRequestTarget target, Form form) {
+          Participant participant = getParticipant();
+          // Participant found, display interview page.
+          if(participant != null) {
+            if(interviewManager.isInterviewAvailable(participant)) {
+              interviewManager.obtainInterview(participant);
+              setResponsePage(InterviewPage.class);
+            }
+            unlockInterviewWindow.setContent(new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), new PropertyModel(ParticipantSearchForm.this, "participant")) {
+
+              private static final long serialVersionUID = 1L;
+
+              @Override
+              public void onCancel(AjaxRequestTarget target) {
+                unlockInterviewWindow.close(target);
+              }
+            });
+            target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
+            unlockInterviewWindow.show(target);
+          } else {
+            // Not found, display error message in feedback panel.
+            error((new StringResourceModel("ParticipantNotFound", this, ParticipantSearchForm.this.getModel())).getString());
+          }
+        }
+      });
+
     }
 
-    @Override
-    protected void onSubmit() {
+    public Participant getParticipant() {
       Participant template = (Participant) ParticipantSearchForm.this.getModelObject();
-      Participant participant = queryService.matchOne(template);
-
-      // Participant found, display interview page.
-      if(participant != null) {
-        if(interviewManager.isInterviewAvailable(participant)) {
-          interviewManager.obtainInterview(participant);
-          setResponsePage(InterviewPage.class);
-        }
-        error("Interview is locked");
-      } else {
-        // Not found, display error message in feedback panel.
-        error((new StringResourceModel("ParticipantNotFound", this, ParticipantSearchForm.this.getModel())).getString());
-      }
+      return participantService.getParticipant(template);
     }
   }
 

@@ -127,7 +127,7 @@ public class ParticipantSearchPage extends BasePage {
 
     unlockInterviewWindow = new ModalWindow("unlockInterview");
     unlockInterviewWindow.setCssClassName("onyx");
-    unlockInterviewWindow.setTitle(new StringResourceModel("UnlockInterview", this, null));
+    unlockInterviewWindow.setTitle(new ResourceModel("UnlockInterview"));
     unlockInterviewWindow.setResizable(false);
     unlockInterviewWindow.setUseInitialHeight(false);
     add(unlockInterviewWindow);
