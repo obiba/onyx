@@ -18,8 +18,12 @@ import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.marble.core.service.ConsentService;
 import org.obiba.onyx.marble.domain.consent.Consent;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConsentServiceImpl extends PersistenceManagerAwareService implements ConsentService {
+
+  private static final Logger log = LoggerFactory.getLogger(ConsentServiceImpl.class);
 
   private EnumSet<ConsentMode> supportedConsentModes;
 
@@ -74,6 +78,10 @@ public class ConsentServiceImpl extends PersistenceManagerAwareService implement
   }
 
   public void validateInstance() {
-    if(!supportedConsentModes.contains(ConsentMode.MANUAL)) throw new IllegalArgumentException("Consent mode electronic only is not supported yet");
+    if(!supportedConsentModes.contains(ConsentMode.MANUAL)) {
+      IllegalArgumentException ex = new IllegalArgumentException();
+      log.error("Consent mode electronic only is not supported yet", ex);
+      throw ex;
+    }
   }
 }
