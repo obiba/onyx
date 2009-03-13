@@ -31,7 +31,7 @@ public class SpringStringResourceModel extends LoadableDetachableModel {
 
   private static final long serialVersionUID = -1944585777700210245L;
 
-  private ApplicationContext context;
+  private transient ApplicationContext context;
 
   /** The locale to use. */
   private transient Locale locale;
