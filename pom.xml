@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -728,8 +727,8 @@
   </distributionManagement>
 
   <scm>
-    <connection>scm:svn:http://svn.obiba.org/onyx/trunk</connection>
-    <developerConnection>scm:svn:https://svn.obiba.org/onyx/trunk</developerConnection>
+    <connection>scm:svn:http://svn.obiba.org/onyx/branches/onyx-1.1.x</connection>
+    <developerConnection>scm:svn:https://svn.obiba.org/onyx/branches/onyx-1.1.x</developerConnection>
   </scm>
 
   <properties>
