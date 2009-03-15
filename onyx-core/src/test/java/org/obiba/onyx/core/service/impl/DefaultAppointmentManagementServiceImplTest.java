@@ -143,18 +143,14 @@ public class DefaultAppointmentManagementServiceImplTest {
   }
 
   @Test
-  public void testUpdateAppointments() {
+  public void testUpdateAppointments() throws IllegalArgumentException, IOException {
     setDirectories();
 
     expect(userSessionServiceMock.getUser()).andReturn(getUser());
     expect(configServiceMock.getApplicationConfiguration()).andReturn(config);
     participantServiceMock.cleanUpAppointment();
-    try {
-      participantReaderMock.process((FileInputStream) EasyMock.anyObject(), (List<IParticipantReadListener>) EasyMock.anyObject());
-      expectLastCall().times(2);
-    } catch(IOException ex) {
-      throw new RuntimeException(ex);
-    }
+    participantReaderMock.process((FileInputStream) EasyMock.anyObject(), (List<IParticipantReadListener>) EasyMock.anyObject());
+    expectLastCall().times(1);
 
     replay(userSessionServiceMock);
     replay(configServiceMock);

@@ -9,12 +9,13 @@
  ******************************************************************************/
 package org.obiba.onyx.core.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.obiba.core.validation.exception.ValidationRuntimeException;
 import org.obiba.onyx.core.domain.participant.Appointment;
+import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
@@ -28,21 +29,23 @@ import org.slf4j.LoggerFactory;
  */
 public class UpdateParticipantListener implements IParticipantReadListener {
 
+  private static final Logger appointmentListUpdatelog = LoggerFactory.getLogger("appointmentListUpdate");
+
+  private static final Logger log = LoggerFactory.getLogger(UpdateParticipantListener.class);
+
   private ParticipantService participantService;
 
   private String siteCode;
 
   private User updateIssuedBy;
 
-  private List<Participant> updatedParticipants;
+  private List<Participant> updatedParticipants = new LinkedList<Participant>();
 
-  private List<Participant> createdParticipants;
+  private List<Participant> createdParticipants = new LinkedList<Participant>();
 
-  private List<Participant> erroneousParticipants;
+  private List<Participant> ignoredParticipants = new LinkedList<Participant>();
 
-  private static final Logger appointmentListUpdatelog = LoggerFactory.getLogger("appointmentListUpdate");
-
-  private static final Logger log = LoggerFactory.getLogger(UpdateParticipantListener.class);
+  private List<Participant> erroneousParticipants = new LinkedList<Participant>();
 
   public UpdateParticipantListener(String siteCode, User updateIssuedBy, ParticipantService participantService) {
     super();
@@ -56,8 +59,8 @@ public class UpdateParticipantListener implements IParticipantReadListener {
 
     if(!getSiteCode().equals(participant.getSiteNo())) {
       // note and ignore
-      appointmentListUpdatelog.warn("Line {}: Wrong Participant Site Name", line);
-      addErroneousParticipants(participant);
+      appointmentListUpdatelog.warn("Line {}: Ignoring participant for site {}.", line, participant.getSiteNo());
+      addIgnoredParticipant(participant);
     } else {
       Participant persistedParticipant = new Participant();
       persistedParticipant.setEnrollmentId(participant.getEnrollmentId());
@@ -66,26 +69,26 @@ public class UpdateParticipantListener implements IParticipantReadListener {
       if(persistedParticipant == null) {
         if(!isNewAppointmentDateValid(participant, line)) {
           // log a warning for appointments scheduled in the past but add them to the system anyway
-          appointmentListUpdatelog.warn("Line {}: Appointment date/time is in the past => adding appointment anyway", line);
+          appointmentListUpdatelog.warn("Line {}: Appointment date/time is in the past => adding appointment anyway.", line);
         }
 
         log.debug("adding participant={}", participant.getEnrollmentId());
         participant.setExported(false);
         participantService.updateParticipant(participant);
-        addCreatedParticipants(participant);
+        addCreatedParticipant(participant);
 
       } else if(persistedParticipant != null) {
         log.debug("persistedParticipant.interview={}", persistedParticipant.getInterview());
-        if(persistedParticipant.getInterview() != null && (persistedParticipant.getInterview().getStatus().equals(InterviewStatus.COMPLETED) || persistedParticipant.getInterview().getStatus().equals(InterviewStatus.CANCELLED))) {
+        Interview interview = persistedParticipant.getInterview();
+        if(interview != null && (interview.getStatus() == InterviewStatus.COMPLETED || interview.getStatus() == InterviewStatus.CANCELLED)) {
           // note and ignored
-          String message = (persistedParticipant.getInterview().getStatus().equals(InterviewStatus.COMPLETED)) ? "completed" : "cancelled";
-          appointmentListUpdatelog.warn("Line {}: Interview {} => participant update ignored", line, message);
-          addErroneousParticipants(participant);
+          appointmentListUpdatelog.warn("Line {}: Interview {} => participant update ignored.", line, interview.getStatus().toString().toLowerCase());
+          addIgnoredParticipant(participant);
         } else {
           // not completed
           if(!isNewAppointmentDateValid(participant, line)) {
-            appointmentListUpdatelog.warn("Line {}: Appointment date/time is in the past => participant update ignored", line);
-            addErroneousParticipants(participant);
+            appointmentListUpdatelog.warn("Line {}: Appointment date/time is in the past => participant update ignored.", line);
+            addIgnoredParticipant(participant);
             return;
           }
 
@@ -102,8 +105,8 @@ public class UpdateParticipantListener implements IParticipantReadListener {
           } else {
             // appointment in database exists
             if(participant.getAppointment().getDate().equals(persistedParticipant.getAppointment().getDate())) {
-              appointmentListUpdatelog.warn("Line {}: Appointment date for participant {} same in database => participant update ignored", line, participant.getAppointment().getDate());
-              addErroneousParticipants(participant);
+              appointmentListUpdatelog.warn("Line {}: Appointment date for participant {} same in database => participant update ignored.", line, participant.getAppointment().getDate());
+              addIgnoredParticipant(participant);
               return;
             }
             // Update the appointment date
@@ -111,7 +114,7 @@ public class UpdateParticipantListener implements IParticipantReadListener {
             participantService.updateParticipant(persistedParticipant);
           }
 
-          addUpdatedParticipants(participant);
+          addUpdatedParticipant(participant);
         }
       }
     }
@@ -122,6 +125,7 @@ public class UpdateParticipantListener implements IParticipantReadListener {
     appointmentListUpdatelog.info("Number of participants treated: {}", getTotalParticipants());
     appointmentListUpdatelog.info("Number of participants created: {}", getCreatedParticipants().size());
     appointmentListUpdatelog.info("Number of participants updated: {}", getUpdatedParticipants().size());
+    appointmentListUpdatelog.info("Number of ignored participants: {}", getIgnoredParticipants().size());
     appointmentListUpdatelog.info("Number of erroneous participants: {}", getErroneousParticipants().size());
   }
 
@@ -133,32 +137,40 @@ public class UpdateParticipantListener implements IParticipantReadListener {
   }
 
   public int getTotalParticipants() {
-    int totalParticipants = getUpdatedParticipants().size() + getCreatedParticipants().size() + getErroneousParticipants().size();
+    int totalParticipants = getUpdatedParticipants().size() + getCreatedParticipants().size() + getIgnoredParticipants().size() + getErroneousParticipants().size();
     return totalParticipants;
   }
 
   public List<Participant> getUpdatedParticipants() {
-    return (updatedParticipants != null) ? updatedParticipants : new ArrayList<Participant>();
+    return updatedParticipants;
   }
 
-  public void addUpdatedParticipants(Participant updatedParticipant) {
+  public void addUpdatedParticipant(Participant updatedParticipant) {
     getUpdatedParticipants().add(updatedParticipant);
   }
 
   public List<Participant> getCreatedParticipants() {
-    return (createdParticipants != null) ? createdParticipants : new ArrayList<Participant>();
+    return createdParticipants;
   }
 
-  public void addCreatedParticipants(Participant createdParticipant) {
+  public void addCreatedParticipant(Participant createdParticipant) {
     getCreatedParticipants().add(createdParticipant);
   }
 
   public List<Participant> getErroneousParticipants() {
-    return (erroneousParticipants != null) ? erroneousParticipants : new ArrayList<Participant>();
+    return erroneousParticipants;
   }
 
-  public void addErroneousParticipants(Participant erroneousParticipant) {
+  public void addErroneousParticipant(Participant erroneousParticipant) {
     getErroneousParticipants().add(erroneousParticipant);
+  }
+
+  public List<Participant> getIgnoredParticipants() {
+    return ignoredParticipants;
+  }
+
+  public void addIgnoredParticipant(Participant participant) {
+    getIgnoredParticipants().add(participant);
   }
 
   public String getSiteCode() {
