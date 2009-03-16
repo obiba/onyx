@@ -180,11 +180,11 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
     Page page = (Page) getModelObject();
 
     for(Question question : page.getQuestions()) {
-      if(question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
+      if(!question.hasDataSource() && question.isToBeAnswered(activeQuestionnaireAdministrationService)) {
         count++;
       }
     }
-    log.debug("questionToBeAnsweredCount={}", count);
+
     return count;
   }
 
