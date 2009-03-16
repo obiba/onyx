@@ -4,5 +4,10 @@
     <name>HealthQuestionnaireSelfAdministered</name>
     <module>quartz</module>
   </stage>
+  
+  <stage>
+    <name>Test</name>
+    <module>quartz</module>
+  </stage>
 
 </stages>

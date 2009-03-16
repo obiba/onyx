@@ -23,6 +23,7 @@ import org.apache.wicket.markup.repeater.data.GridView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
@@ -171,22 +172,37 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
     // repaint the panel
     target.addComponent(this);
 
-    // case we are called by an escape category in a multiple choice context
-    if(checkGroup != null && ((QuestionCategory) questionCategoryModel.getObject()).isEscape()) {
-      ((Collection<IModel>) checkGroup.getModelObject()).clear();
-      // QUA-108 need to do this otherwise check box inputs are not cleared following a validation error
-      checkGroup.visitChildren(CheckBox.class, new Component.IVisitor() {
+    boolean isEscape = ((QuestionCategory) questionCategoryModel.getObject()).isEscape();
 
-        public Object component(Component component) {
-          CheckBox cb = (CheckBox) component;
-          cb.clearInput();
-          return null;
+    if(checkGroup != null) {
+      if(isEscape) {
+        // case we are called by an escape category in a multiple choice context
+        ((Collection<IModel>) checkGroup.getModelObject()).clear();
+        // QUA-108 need to do this otherwise check box inputs are not cleared following a validation error
+        checkGroup.visitChildren(CheckBox.class, new Component.IVisitor() {
+
+          public Object component(Component component) {
+            CheckBox cb = (CheckBox) component;
+            cb.clearInput();
+            return null;
+          }
+
+        });
+
+      } else if(escapeQuestionCategoriesPanel != null) {
+        // exclude escape questions if currently selected is not an escape one in a multiple choice context
+        Question question = (Question) questionModel.getObject();
+        for(CategoryAnswer answer : activeQuestionnaireAdministrationService.findAnswers(question)) {
+          QuestionCategory questionCategory = question.findQuestionCategory(answer.getCategoryName());
+          if(questionCategory.getCategory().isEscape()) {
+            activeQuestionnaireAdministrationService.deleteAnswers(answer);
+          }
         }
-
-      });
-
+        escapeQuestionCategoriesPanel.setNoSelection();
+      }
     }
 
+    // forward event to parent
     IQuestionCategorySelectionListener parentListener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
     if(parentListener != null) {
       parentListener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
