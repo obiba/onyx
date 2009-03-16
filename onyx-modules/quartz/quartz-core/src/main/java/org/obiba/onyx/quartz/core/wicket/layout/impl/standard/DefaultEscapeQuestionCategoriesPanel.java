@@ -69,7 +69,13 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
 
     Question question = (Question) getModelObject();
 
-    radioGroup = new RadioGroup("categories", new Model());
+    radioGroup = new RadioGroup("categories", new Model()) {
+      @Override
+      public void updateModel() {
+        // ONYX-344: Do nothing -- QuestionCategoryRadioPanel sets the model to a read-only QuestionnaireModel
+        // whenever a radio button is selected.
+      }
+    };
     radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
     add(radioGroup);
 

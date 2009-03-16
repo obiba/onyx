@@ -107,7 +107,13 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
    */
   @SuppressWarnings("serial")
   private void addRadioGroup(Question question) {
-    final RadioGroup radioGroup = new RadioGroup("categories", new Model());
+    final RadioGroup radioGroup = new RadioGroup("categories", new Model()) {
+      @Override
+      public void updateModel() {
+        // ONYX-344: Do nothing -- QuestionCategoryRadioPanel sets the model to a read-only QuestionnaireModel
+        // whenever a radio button is selected.
+      }
+    };
     radioGroup.add(new AnswerCountValidator(getQuestionModel()));
     add(radioGroup);
 
