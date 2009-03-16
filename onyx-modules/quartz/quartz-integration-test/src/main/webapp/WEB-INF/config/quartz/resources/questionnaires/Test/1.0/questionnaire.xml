@@ -53,98 +53,112 @@
                 <questionCategory id="27">
                   <question reference="9"/>
                   <category id="28" name="OTHER" escape="false">
-                    <openAnswerDefinition id="29" name="TEXT" dataType="TEXT" required="true">
-                      <openAnswerDefinitions id="30"/>
+                    <openAnswerDefinition id="29" name="NUMERIC" dataType="INTEGER" required="true">
+                      <uIArguments id="30">
+                        <string-array id="31">
+                          <string>size</string>
+                          <string>2</string>
+                        </string-array>
+                      </uIArguments>
+                      <validators id="32">
+                        <dataValidator id="33" dataType="INTEGER">
+                          <validator class="org.apache.wicket.validation.validator.NumberValidator$RangeValidator" id="34">
+                            <minimum>1</minimum>
+                            <maximum>4</maximum>
+                          </validator>
+                        </dataValidator>
+                      </validators>
+                      <openAnswerDefinitions id="35"/>
                     </openAnswerDefinition>
                   </category>
                 </questionCategory>
               </questionCategories>
-              <questions id="31"/>
+              <questions id="36"/>
             </question>
-            <question id="32" name="Q_MULTIPLE" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="37" name="Q_MULTIPLE" multiple="true" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="7"/>
-              <questionCategories id="33">
-                <questionCategory id="34">
-                  <question reference="32"/>
-                  <category id="35" name="1" escape="false"/>
+              <questionCategories id="38">
+                <questionCategory id="39">
+                  <question reference="37"/>
+                  <category id="40" name="1" escape="false"/>
                 </questionCategory>
-                <questionCategory id="36">
-                  <question reference="32"/>
-                  <category id="37" name="2" escape="false"/>
+                <questionCategory id="41">
+                  <question reference="37"/>
+                  <category id="42" name="2" escape="false"/>
                 </questionCategory>
-                <questionCategory id="38">
-                  <question reference="32"/>
-                  <category id="39" name="3" escape="false"/>
+                <questionCategory id="43">
+                  <question reference="37"/>
+                  <category id="44" name="3" escape="false"/>
                 </questionCategory>
-                <questionCategory id="40">
-                  <question reference="32"/>
-                  <category id="41" name="PNA" escape="true"/>
+                <questionCategory id="45">
+                  <question reference="37"/>
+                  <category id="46" name="PNA" escape="true"/>
                 </questionCategory>
-                <questionCategory id="42">
-                  <question reference="32"/>
-                  <category id="43" name="DNK" escape="true"/>
-                </questionCategory>
-              </questionCategories>
-              <questions id="44"/>
-            </question>
-            <question id="45" name="ARRAY" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-              <page reference="7"/>
-              <questionCategories id="46">
                 <questionCategory id="47">
-                  <question reference="45"/>
-                  <category id="48" name="Y" escape="false"/>
-                </questionCategory>
-                <questionCategory id="49">
-                  <question reference="45"/>
-                  <category id="50" name="N" escape="false"/>
-                </questionCategory>
-                <questionCategory id="51">
-                  <question reference="45"/>
-                  <category reference="41"/>
-                </questionCategory>
-                <questionCategory id="52">
-                  <question reference="45"/>
-                  <category reference="43"/>
+                  <question reference="37"/>
+                  <category id="48" name="DNK" escape="true"/>
                 </questionCategory>
               </questionCategories>
-              <questions id="53">
-                <question id="54" name="Q1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <questionCategories id="55"/>
-                  <parentQuestion reference="45"/>
-                  <questions id="56"/>
+              <questions id="49"/>
+            </question>
+            <question id="50" name="ARRAY" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+              <page reference="7"/>
+              <questionCategories id="51">
+                <questionCategory id="52">
+                  <question reference="50"/>
+                  <category id="53" name="Y" escape="false"/>
+                </questionCategory>
+                <questionCategory id="54">
+                  <question reference="50"/>
+                  <category id="55" name="N" escape="false"/>
+                </questionCategory>
+                <questionCategory id="56">
+                  <question reference="50"/>
+                  <category reference="46"/>
+                </questionCategory>
+                <questionCategory id="57">
+                  <question reference="50"/>
+                  <category reference="48"/>
+                </questionCategory>
+              </questionCategories>
+              <questions id="58">
+                <question id="59" name="Q1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="60"/>
+                  <parentQuestion reference="50"/>
+                  <questions id="61"/>
                 </question>
-                <question id="57" name="Q2" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <questionCategories id="58"/>
-                  <parentQuestion reference="45"/>
-                  <questions id="59"/>
+                <question id="62" name="Q2" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="63"/>
+                  <parentQuestion reference="50"/>
+                  <questions id="64"/>
                 </question>
               </questions>
             </question>
-            <question id="60" name="Q_INNER_CONDITION" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="65" name="Q_INNER_CONDITION" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="7"/>
-              <questionCategories id="61">
-                <questionCategory id="62">
-                  <question reference="60"/>
-                  <category id="63" name="1" escape="false"/>
+              <questionCategories id="66">
+                <questionCategory id="67">
+                  <question reference="65"/>
+                  <category id="68" name="1" escape="false"/>
                 </questionCategory>
-                <questionCategory id="64">
-                  <question reference="60"/>
-                  <category id="65" name="2" escape="false"/>
+                <questionCategory id="69">
+                  <question reference="65"/>
+                  <category id="70" name="2" escape="false"/>
                 </questionCategory>
-                <questionCategory id="66">
-                  <question reference="60"/>
-                  <category id="67" name="3" escape="false"/>
+                <questionCategory id="71">
+                  <question reference="65"/>
+                  <category id="72" name="3" escape="false"/>
                 </questionCategory>
               </questionCategories>
-              <condition class="questionnaireDataSource" id="68" questionnaire="Test" question="Q_MULTIPLE" category="PNA"/>
+              <condition class="questionnaireDataSource" id="73" questionnaire="Test" question="Q_MULTIPLE" category="PNA"/>
             </question>
           </questions>
         </page>
       </pages>
-      <sections id="69"/>
+      <sections id="74"/>
     </section>
   </sections>
-  <pages id="70">
+  <pages id="75">
     <page reference="7"/>
   </pages>
 </questionnaire>
