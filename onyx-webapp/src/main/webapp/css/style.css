@@ -1064,3 +1064,7 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 }
 
 /******************* End Login *****************************************************/
+
+.obiba-scrollable {
+  overflow: auto;
+}

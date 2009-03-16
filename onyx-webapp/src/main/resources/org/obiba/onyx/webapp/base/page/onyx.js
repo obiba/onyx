@@ -95,19 +95,17 @@ Resizer.resizeWizard = function() {
 	if (wizardFooter) {
 		if (wizardFooter.height()) {
 			footerHeight = wizardFooter.height();
-			//alert("footer height " + footerHeight);
+			//alert("footer height: " + footerHeight);
 		}
 	}
 	
 	var table = $('#wizardContent table:first-child');
 	var wizardContent = $('#wizardContent');
 	var resizeHeight = parseInt(document.body.clientHeight-(110 + footerHeight)-wizardContent.get()[0].offsetTop);
+	//alert("resizeHeight: " + resizeHeight);
 	
-	if ( table == null || table.height() < resizeHeight ) {
-		wizardContent.height(resizeHeight + 'px');
-	} else {
-		wizardContent.removeAttr('style');
-	}
+    wizardContent.height(resizeHeight + 'px');
+	//alert("wizardContent.height: "+wizardContent.height());
 }
 
 Resizer.resizeMenu = function() {
