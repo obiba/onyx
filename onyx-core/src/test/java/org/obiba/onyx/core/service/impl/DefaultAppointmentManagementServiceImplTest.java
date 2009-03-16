@@ -25,7 +25,6 @@ import junit.framework.Assert;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.core.util.FileUtil;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
@@ -129,17 +128,29 @@ public class DefaultAppointmentManagementServiceImplTest {
     Assert.assertEquals(true, appointmentServiceImpl.isUpdateAvailable());
   }
 
-  @Ignore("File timestamps changes once files were checked in. Need to copy and touch files in order to use this test.")
   @Test
   public void testSortFilesOnDateAsc() {
     appointmentServiceImpl.setInputDirectory("file:./src/test/resources/appointments/in");
     appointmentServiceImpl.initialize();
 
     File[] appointmentFiles = appointmentServiceImpl.getInputDir().listFiles(appointmentServiceImpl.getFilter());
-    appointmentServiceImpl.sortFilesOnDateAsc(appointmentFiles);
+    long now = System.currentTimeMillis();
 
-    Assert.assertEquals("rendez-vous.xls", appointmentFiles[0].getName());
-    Assert.assertEquals("rendez-vous-corrupted.xls", appointmentFiles[1].getName());
+    // Set the file timestamps of the appointment files, spaced at one-minute intervals.
+    // Explicitly setting the timestamps prevents the test from failing if the files'
+    // timestamps are modified when checked into source control.
+    for(int i = 0; i < appointmentFiles.length; i++) {
+      appointmentFiles[i].setLastModified(now - 1000 * 60 * i);
+    }
+
+    File[] sortedAppointmentFiles = new File[appointmentFiles.length];
+    System.arraycopy(appointmentFiles, 0, sortedAppointmentFiles, 0, appointmentFiles.length);
+    appointmentServiceImpl.sortFilesOnDateAsc(sortedAppointmentFiles);
+
+    // Verify that the appointment files are sorted by date, in ascending order (earliest first).
+    for(int i = 0; i < appointmentFiles.length; i++) {
+      Assert.assertEquals(appointmentFiles[appointmentFiles.length - i - 1].getName(), sortedAppointmentFiles[i].getName());
+    }
   }
 
   @Test
