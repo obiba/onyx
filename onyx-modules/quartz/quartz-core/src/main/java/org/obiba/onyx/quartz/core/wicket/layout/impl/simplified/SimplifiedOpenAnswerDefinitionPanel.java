@@ -16,6 +16,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionStateHolder;
@@ -23,7 +24,6 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitio
 import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCategorySelectionBehavior;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.pad.NumericPad;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.link.AjaxImageLink;
 
@@ -56,7 +56,7 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
     updateState();
 
     add(new Label("value", new PropertyModel(this, "openValue")).setOutputMarkupId(true).add(new QuestionCategorySelectionBehavior()));
-    add(new Label("label", QuestionnaireStringResourceModelHelper.getStringResourceModel(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition())));
+    add(new Label("label", getCategoryLabelResourceModel()));
 
     AjaxImageLink link = new AjaxImageLink("link", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "clickHere")) {
 
@@ -96,6 +96,18 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
         target.addComponent(SimplifiedOpenAnswerDefinitionPanel.this);
       }
     });
+  }
+
+  private QuestionnaireStringResourceModel getCategoryLabelResourceModel() {
+    // Create and add the label for the numeric input field.
+    OpenAnswerDefinition parentOpenAnswer = getOpenAnswerDefinition().getParentOpenAnswerDefinition();
+    IModel labelModel;
+    if(parentOpenAnswer != null && parentOpenAnswer.getOpenAnswerDefinitions().size() > 0) {
+      labelModel = getOpenAnswerDefinitionModel();
+    } else {
+      labelModel = getQuestionCategoryModel();
+    }
+    return new QuestionnaireStringResourceModel(labelModel, "label");
   }
 
   public boolean isQuestionCategorySelected() {
