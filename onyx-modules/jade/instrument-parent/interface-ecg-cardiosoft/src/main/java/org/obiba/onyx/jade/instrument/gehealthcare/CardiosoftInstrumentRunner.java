@@ -259,7 +259,15 @@ public class CardiosoftInstrumentRunner implements InstrumentRunner, Initializin
           Object value = pd.getReadMethod().invoke(resultParser);
           if(value == null) continue;
           if(value instanceof Long) {
-            ouputToSend.put(pd.getName(), DataBuilder.buildInteger((Long) value));
+
+            // We need to subtract one to the birthday month since the month of January is represented by "0" in
+            // java.util.Calendar (January is represented by "1" in Cardiosoft).
+            if(pd.getName().equals("participantBirthMonth")) {
+              ouputToSend.put(pd.getName(), DataBuilder.buildInteger(((Long) value) - 1));
+            } else {
+              ouputToSend.put(pd.getName(), DataBuilder.buildInteger((Long) value));
+            }
+
           } else if(value instanceof Double) {
             ouputToSend.put(pd.getName(), DataBuilder.buildDecimal((Double) value));
           } else {
