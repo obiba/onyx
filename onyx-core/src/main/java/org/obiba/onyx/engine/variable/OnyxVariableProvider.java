@@ -207,7 +207,7 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
     Variable entity = admin.addVariable(new Variable(PARTICIPANT));
     entity.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT).setKey(PARTICIPANT_KEY));
-    entity.addVariable(new Variable(ENROLLMENT_ID).setDataType(DataType.TEXT).setKey(PARTICIPANT_KEY));
+    entity.addVariable(new Variable(ENROLLMENT_ID).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(GENDER).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(FIRST_NAME).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(LAST_NAME).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
