@@ -10,6 +10,7 @@
 package org.obiba.onyx.quartz.integration.util;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
+import org.obiba.onyx.util.data.DataType;
 
 /**
  * 
@@ -29,12 +30,20 @@ public class TestQuestionnaire {
   public static QuestionnaireBuilder buildQuestionnaire() {
     QuestionnaireBuilder builder = QuestionnaireBuilder.createQuestionnaire("Test", "1.0");
 
-    builder.withSection("S1").withPage("P1").withQuestion("Q_MULTIPLE", true).withCategories("1", "2", "3");
+    builder.withSection("S1").withPage("P1").withQuestion("OPEN_QUESTION").withCategory("OPEN").withOpenAnswerDefinition("OPEN_MULTIPLE", DataType.TEXT);
+    builder.inOpenAnswerDefinition("OPEN_MULTIPLE").withOpenAnswerDefinition("CHOICE1", DataType.TEXT).setDefaultData("A", "B", "C").setRequired(true);
+    builder.inOpenAnswerDefinition("OPEN_MULTIPLE").withOpenAnswerDefinition("CHOICE2", DataType.TEXT).setDefaultData("X", "Y", "Z").setRequired(true);
+    builder.inQuestion("OPEN_QUESTION").withSharedCategory(OTHER).withOpenAnswerDefinition("TEXT", DataType.TEXT);
+
+    builder.inPage("P1").withQuestion("Q_MULTIPLE", true).withCategories("1", "2", "3");
     builder.inQuestion("Q_MULTIPLE").withSharedCategory(PNA).setEscape(true).withSharedCategory(DNK).setEscape(true);
 
-    builder.inPage("P1").withQuestion("ARRAY").withCategories(Y, N, PNA, DNK);
+    builder.inPage("P1").withQuestion("ARRAY").withCategories(Y, N).withSharedCategories(PNA, DNK);
     builder.inQuestion("ARRAY").withQuestion("Q1");
     builder.inQuestion("ARRAY").withQuestion("Q2");
+
+    builder.inPage("P1").withQuestion("Q_INNER_CONDITION").setCondition("Q_MULTIPLE", "PNA");
+    builder.inQuestion("Q_INNER_CONDITION").withCategories("1", "2", "3");
 
     return builder;
   }
