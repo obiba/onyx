@@ -93,7 +93,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
         activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory());
 
         // make sure a previously selected open field is not asked for
-        resetOpenAnswerDefinitionPanels(QuestionCategoryRadioPanel.this.radioGroup);
+        resetOpenAnswerDefinitionPanels(QuestionCategoryRadioPanel.this.radioGroup, getQuestionCategoryModel());
 
         updateFeedbackPanel(target);
 
@@ -138,11 +138,6 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
   }
 
   @Override
-  protected boolean isToBeReseted(AbstractOpenAnswerDefinitionPanel openField) {
-    return !getQuestionCategoryModel().equals(openField.getModel());
-  }
-
-  @Override
   public boolean hasOpenField() {
     return openField != null;
   }
@@ -162,6 +157,9 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
         activeQuestionnaireAdministrationService.deleteAnswers(categoryAnswer);
       }
     }
+
+    // make sure a previously selected open field is not asked for
+    resetOpenAnswerDefinitionPanels(QuestionCategoryRadioPanel.this.radioGroup, questionCategoryModel);
 
     fireQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
   }

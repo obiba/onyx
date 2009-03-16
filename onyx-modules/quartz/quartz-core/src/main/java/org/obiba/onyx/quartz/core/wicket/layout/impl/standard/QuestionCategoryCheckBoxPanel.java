@@ -99,7 +99,7 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
         }
         if(getOpenField() != null) {
           if(!getSelectionModel().isSelected()) {
-            resetOpenAnswerDefinitionPanels(QuestionCategoryCheckBoxPanel.this);
+            resetOpenAnswerDefinitionPanels(QuestionCategoryCheckBoxPanel.this, QuestionCategoryCheckBoxPanel.this.getModel());
             updateFeedbackPanel(target);
           }
         }
@@ -138,11 +138,6 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
    */
   public AbstractOpenAnswerDefinitionPanel getOpenField() {
     return openField;
-  }
-
-  @Override
-  protected boolean isToBeReseted(AbstractOpenAnswerDefinitionPanel openField) {
-    return getQuestionCategoryModel().equals(openField.getModel());
   }
 
   @Override

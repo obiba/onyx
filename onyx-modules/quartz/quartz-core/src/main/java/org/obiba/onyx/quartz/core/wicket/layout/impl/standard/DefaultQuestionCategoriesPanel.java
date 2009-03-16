@@ -208,4 +208,5 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
       parentListener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
     }
   }
+
 }

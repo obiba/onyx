@@ -61,17 +61,15 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
    * Reset (set null data) the open fields not associated to the current question category.
    * @param parentContainer
    */
-  protected void resetOpenAnswerDefinitionPanels(MarkupContainer parentContainer) {
+  protected void resetOpenAnswerDefinitionPanels(MarkupContainer parentContainer, final IModel questionCategoryModel) {
 
-    parentContainer.visitChildren(new Component.IVisitor() {
+    parentContainer.visitChildren(AbstractOpenAnswerDefinitionPanel.class, new Component.IVisitor() {
 
       public Object component(Component component) {
-        if(component instanceof AbstractOpenAnswerDefinitionPanel) {
-          if(isToBeReseted((AbstractOpenAnswerDefinitionPanel) component)) {
-            log.debug("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getModelObject());
-            AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
-            openField.resetField();
-          }
+        if(!questionCategoryModel.equals(component.getModel())) {
+          log.debug("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getModelObject());
+          AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
+          openField.resetField();
         }
         return CONTINUE_TRAVERSAL;
       }
@@ -86,8 +84,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
    * @return
    * @see #resetOpenAnswerDefinitionPanels(MarkupContainer)
    */
-  protected abstract boolean isToBeReseted(AbstractOpenAnswerDefinitionPanel openField);
-
+  // protected abstract boolean isToBeReseted(AbstractOpenAnswerDefinitionPanel openField);
   /**
    * Does question category has an associated open answer field.
    * @return
