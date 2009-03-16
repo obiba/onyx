@@ -32,6 +32,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategoriesV
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
+import org.obiba.onyx.wicket.behavior.InvalidFormFieldBehavior;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,6 +87,8 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
     } else {
       addCheckBoxGroup(question);
     }
+
+    add(new InvalidFormFieldBehavior());
   }
 
   /**

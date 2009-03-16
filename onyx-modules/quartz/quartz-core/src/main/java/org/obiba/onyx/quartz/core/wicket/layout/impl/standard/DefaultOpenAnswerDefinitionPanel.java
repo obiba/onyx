@@ -128,7 +128,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     openField.add(new AjaxFormComponentUpdatingBehavior(getOpenAnswerDefinition().getDefaultValues().size() == 0 ? "onchange" : "onchange") {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        log.info("onUpdate.{}:{}:{}={}", new Object[] { getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData() });
+        log.debug("onUpdate.{}:{}:{}={}", new Object[] { getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData() });
         // persist data
         activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
 
@@ -140,26 +140,12 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
       @Override
       protected void onError(AjaxRequestTarget target, RuntimeException e) {
-        log.info("onError.{}:{}:{}={}", new Object[] { getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData() });
+        log.debug("onError.{}:{}:{}={}", new Object[] { getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData() });
         super.onError(target, e);
         // display error messages
         updateFeedback(target);
-
-        // DefaultOpenAnswerDefinitionPanel.this.onError(target, getQuestionModel(), getQuestionCategoryModel());
       }
     });
-
-    // openField.add(new AjaxEventBehavior("onclick") {
-    //
-    // @Override
-    // protected void onEvent(AjaxRequestTarget target) {
-    // log.info("openField.onClick");
-    // DefaultOpenAnswerDefinitionPanel.this.onSelect(target, getQuestionModel(), getQuestionCategoryModel(),
-    // getOpenAnswerDefinitionModel());
-    // openField.focusField(target);
-    // }
-    //
-    // });
 
     // set the label of the field
     openField.setLabel(QuestionnaireStringResourceModelHelper.getStringResourceModel(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition()));
