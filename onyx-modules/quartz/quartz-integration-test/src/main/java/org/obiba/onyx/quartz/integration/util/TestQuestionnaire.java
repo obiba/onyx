@@ -46,6 +46,8 @@ public class TestQuestionnaire {
     builder.inPage("P1").withQuestion("Q_INNER_CONDITION").setCondition("Q_MULTIPLE", "PNA");
     builder.inQuestion("Q_INNER_CONDITION").withCategories("1", "2", "3");
 
+    builder.inPage("P1").addTimestamp();
+
     return builder;
   }
 }

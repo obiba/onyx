@@ -151,14 +151,29 @@
                 </questionCategory>
               </questionCategories>
               <condition class="questionnaireDataSource" id="73" questionnaire="Test" question="Q_MULTIPLE" category="PNA"/>
+              <questions id="74"/>
+            </question>
+            <question id="75" name="TIMESTAMP_P1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+              <page reference="7"/>
+              <questionCategories id="76">
+                <questionCategory id="77">
+                  <question reference="75"/>
+                  <category id="78" name="TIMESTAMP" escape="false">
+                    <openAnswerDefinition id="79" name="TIMESTAMP_P1" dataType="DATE" required="true">
+                      <dataSource class="currentDateSource" id="80"/>
+                    </openAnswerDefinition>
+                  </category>
+                </questionCategory>
+              </questionCategories>
+              <questions id="81"/>
             </question>
           </questions>
         </page>
       </pages>
-      <sections id="74"/>
+      <sections id="82"/>
     </section>
   </sections>
-  <pages id="75">
+  <pages id="83">
     <page reference="7"/>
   </pages>
 </questionnaire>
