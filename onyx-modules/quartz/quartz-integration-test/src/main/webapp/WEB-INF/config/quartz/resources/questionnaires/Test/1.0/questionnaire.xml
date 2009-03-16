@@ -161,19 +161,38 @@
                   <category id="78" name="TIMESTAMP" escape="false">
                     <openAnswerDefinition id="79" name="TIMESTAMP_P1" dataType="DATE" required="true">
                       <dataSource class="currentDateSource" id="80"/>
+                      <openAnswerDefinitions id="81"/>
                     </openAnswerDefinition>
                   </category>
                 </questionCategory>
               </questionCategories>
-              <questions id="81"/>
+              <questions id="82"/>
+            </question>
+          </questions>
+        </page>
+        <page id="83" name="P2" uIFactoryName="quartz.DefaultPageLayoutFactory">
+          <section reference="5"/>
+          <questions id="84">
+            <question id="85" name="DATE_QUESTION" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+              <page reference="83"/>
+              <questionCategories id="86">
+                <questionCategory id="87">
+                  <question reference="85"/>
+                  <category id="88" name="DATE" escape="false">
+                    <openAnswerDefinition id="89" name="OPEN_DATE" dataType="DATE" required="true"/>
+                  </category>
+                </questionCategory>
+              </questionCategories>
+              <questions id="90"/>
             </question>
           </questions>
         </page>
       </pages>
-      <sections id="82"/>
+      <sections id="91"/>
     </section>
   </sections>
-  <pages id="83">
+  <pages id="92">
     <page reference="7"/>
+    <page reference="83"/>
   </pages>
 </questionnaire>

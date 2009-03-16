@@ -48,6 +48,8 @@ public class TestQuestionnaire {
 
     builder.inPage("P1").addTimestamp();
 
+    builder.inSection("S1").withPage("P2").withQuestion("DATE_QUESTION").withCategory("DATE").withOpenAnswerDefinition("OPEN_DATE", DataType.DATE);
+
     return builder;
   }
 }
