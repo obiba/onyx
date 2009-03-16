@@ -414,12 +414,11 @@ public class SimplifiedQuestionPanelTest {
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "imageSelected")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "imageSelected")).anyTimes();
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "imageDeselected")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "imageDeselected")).anyTimes();
+      expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
       if(qCategory.getOpenAnswerDefinition() == null) {
-        expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
         expect(questionnaireBundleMock.getPropertyKey(qCategory, "description")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "description")).atLeastOnce();
       }
     }
-    expect(questionnaireBundleMock.getPropertyKey(open, "label")).andReturn(propertyKeyProvider.getPropertyKey(open, "label")).atLeastOnce();
 
     replay(activeInterviewServiceMock);
     replay(activeQuestionnaireAdministrationServiceMock);
