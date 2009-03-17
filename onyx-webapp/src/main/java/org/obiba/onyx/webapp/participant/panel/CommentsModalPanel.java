@@ -42,6 +42,7 @@ import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.wicket.StageModel;
+import org.obiba.onyx.wicket.behavior.FocusBehavior;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
@@ -149,6 +150,7 @@ public abstract class CommentsModalPanel extends Panel {
       newComment.add(new RequiredFormFieldBehavior());
       newComment.add(new StringValidator.MaximumLengthValidator(2000));
       newComment.setOutputMarkupId(true);
+      newComment.add(new FocusBehavior());
       add(newComment);
 
       // Save a new comment.
