@@ -6,11 +6,18 @@
 .obiba-quartz-form-data {
 	border-bottom: 2px solid #ccc;
 	overflow:auto;
-	margin-bottom:10px;
+}
+
+.form-data {
+  padding-top: 0px;
+}
+
+.form-button {
+  padding-top: 10px;
 }
 
 .page {
-	padding-left: 20px;
+	padding-top: 20px;
 }
 
 .section {
@@ -151,7 +158,7 @@ table.array td.label {
 	padding-right:5px;
 	font-weight: bold;
 	text-align:left;
-	width: 200px;
+	width: 300px;
 }
 
 table.array td.category {

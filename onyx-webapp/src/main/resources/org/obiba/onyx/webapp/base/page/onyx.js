@@ -79,7 +79,7 @@ Resizer.resizeContentWrapper = function() {
     }
 
     var pageFooter = $('#pageFooter');
-    var pageFooterHeight = 30;
+    var pageFooterHeight = 40;
     if (pageFooter) {
       pageFooterHeight = pageFooter.height();
     }
@@ -91,13 +91,13 @@ WindowUtil.attachEvent("resize", Resizer.resizeContentWrapper);
 
 Resizer.resizeWizard = function() {
 	var wizardFooter = $('#wizardFooter');
-	var footerHeight = 20;
+	var footerHeight = 40;
 	if (wizardFooter) {
 		if (wizardFooter.height()) {
 			footerHeight = wizardFooter.height();
-			//alert("footer height: " + footerHeight);
 		}
 	}
+	//alert('wizardFooter='+footerHeight);
 	
 	var table = $('#wizardContent table:first-child');
 	var wizardContent = $('#wizardContent');

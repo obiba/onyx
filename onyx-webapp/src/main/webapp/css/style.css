@@ -458,7 +458,13 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 /*************** Wizard ********************/
 
 .form-data {
-  padding: 4px;
+  padding-left: 20px;
+  padding-top: 20px;
+  padding-right: 20px;
+}
+
+.form-button {
+  height: 60px;
 }
 
 form.wizard-consent {
