@@ -9,9 +9,12 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.behavior.AbstractBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
@@ -142,10 +145,21 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
     if(!question.isBoilerPlate()) {
 
       // Display a different link if a comment already exist for question.
-      String comment = activeQuestionnaireAdministrationService.getComment(question);
-      if(comment != null) {
-        switchToEditStyle(imageLink);
-      }
+      imageLink.add(new AbstractBehavior() {
+        @Override
+        public void onComponentTag(Component component, ComponentTag tag) {
+          super.onComponentTag(component, tag);
+          String comment = activeQuestionnaireAdministrationService.getComment((Question) BaseQuestionPanel.this.getModel().getObject());
+
+          if(comment != null) {
+            String cssClass = "comment-edit";
+            if(tag.getAttributes().containsKey("class")) {
+              cssClass += " " + tag.getAttributes().getString("class");
+            }
+            tag.getAttributes().put("class", cssClass);
+          }
+        }
+      });
 
       // Add comment action link.
       imageLink.add(new AjaxLink("addComment") {
@@ -153,7 +167,6 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
           commentWindow.setContent(new QuestionCommentModalPanel("content", commentWindow, BaseQuestionPanel.this.getModel(), target) {
 
             protected void onAddComment(AjaxRequestTarget target) {
-              switchToEditStyle(imageLink);
               target.addComponent(imageLink);
             }
 
@@ -168,10 +181,6 @@ public abstract class BaseQuestionPanel extends QuestionPanel {
       imageLink.setVisible(false);
     }
 
-  }
-
-  private void switchToEditStyle(WebMarkupContainer imageLink) {
-    imageLink.add(new AttributeModifier("class", new Model("comment-edit")));
   }
 
   /**

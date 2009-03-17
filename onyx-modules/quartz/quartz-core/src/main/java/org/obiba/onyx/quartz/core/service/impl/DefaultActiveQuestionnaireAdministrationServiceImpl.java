@@ -26,10 +26,15 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.service.INavigationStrategy;
 import org.obiba.onyx.util.data.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extends PersistenceManagerAwareService implements ActiveQuestionnaireAdministrationService {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(DefaultActiveQuestionnaireAdministrationServiceImpl.class);
 
   private ActiveInterviewService activeInterviewService;
 
@@ -182,27 +187,34 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     template.setQuestionnaireParticipant(getQuestionnaireParticipant());
     template.setQuestionName(question.getName());
     QuestionAnswer questionAnswer = getPersistenceManager().matchOne(template);
+
+    String comment = null;
     if(questionAnswer != null) {
-      return questionAnswer.getComment();
-    } else {
-      return null;
+      comment = questionAnswer.getComment();
     }
+
+    return comment;
   }
 
-  public QuestionAnswer addComment(Question question, String comment) {
+  public void setComment(Question question, String comment) {
     QuestionAnswer template = new QuestionAnswer();
     template.setQuestionnaireParticipant(getQuestionnaireParticipant());
     template.setQuestionName(question.getName());
     QuestionAnswer questionAnswer = getPersistenceManager().matchOne(template);
 
-    if(questionAnswer == null) {
-      questionAnswer = template;
+    if(comment == null || comment.trim().length() == 0) {
+      if(questionAnswer != null) {
+        questionAnswer.setComment(null);
+        getPersistenceManager().save(questionAnswer);
+      }
+    } else {
+      if(questionAnswer == null) {
+        questionAnswer = template;
+      }
+
+      questionAnswer.setComment(comment);
+      getPersistenceManager().save(questionAnswer);
     }
-
-    questionAnswer.setComment(comment);
-    getPersistenceManager().save(questionAnswer);
-
-    return questionAnswer;
   }
 
   public CategoryAnswer answer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value) {
