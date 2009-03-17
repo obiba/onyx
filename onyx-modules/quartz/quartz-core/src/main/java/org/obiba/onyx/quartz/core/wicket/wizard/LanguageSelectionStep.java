@@ -61,7 +61,6 @@ public class LanguageSelectionStep extends WizardStepPanel {
     } else {
       setNextStep(null);
     }
-    onPageStep(target);
   }
 
   @Override

@@ -72,9 +72,10 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
       }
       section = section.getParentSection();
     }
-    add(new Label("section", sectionString));
+    add(new Label("section", sectionString).setVisible(!isEmptyString(sectionString)));
 
-    add(new Label("label", new QuestionnaireStringResourceModel(page, "label")));
+    QuestionnaireStringResourceModel pageLabelModel = new QuestionnaireStringResourceModel(page, "label");
+    add(new Label("label", pageLabelModel).setVisible(!isEmptyString(pageLabelModel.getString())));
 
     DataView questionsView;
     add(questionsView = new DataView("questions", new PageQuestionsProvider(page)) {
@@ -89,6 +90,10 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
 
     });
     questionsView.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
+  }
+
+  private boolean isEmptyString(String str) {
+    return str == null || str.trim().equals("");
   }
 
   /**
