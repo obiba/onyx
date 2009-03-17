@@ -169,7 +169,7 @@ public class DefaultPageLayout extends PageLayout implements IQuestionCategorySe
 
     // update the whole layout because some questions can (dis)appear.
     if(questionListChanged) {
-      log.info("Page update");
+      log.debug("Page update");
       target.addComponent(this);
       target.appendJavascript("Resizer.resizeWizard();");
     }
