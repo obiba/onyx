@@ -85,7 +85,7 @@ public abstract class QuestionCategoryComponentsView extends Panel {
 
     private static final long serialVersionUID = 1L;
 
-    private String classPrefix = "obiba-quartz-column";
+    private static final String GRID_CLASS_PREFIX = "obiba-quartz-grid";
 
     public QuestionCategoryComponentsViewStyleBehavior() {
       super();
@@ -97,7 +97,7 @@ public abstract class QuestionCategoryComponentsView extends Panel {
 
       QuestionCategoryComponentsView view = (QuestionCategoryComponentsView) component;
 
-      String cssClass = classPrefix + "-" + view.getColumns();
+      String cssClass = GRID_CLASS_PREFIX + "-" + view.getColumns();
       if(tag.getAttributes().containsKey("class")) {
         cssClass += " " + tag.getAttributes().getString("class");
       }

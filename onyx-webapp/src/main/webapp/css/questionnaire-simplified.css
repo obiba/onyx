@@ -277,15 +277,15 @@ a.button {
     background-repeat: no-repeat;
 }
 
-.obiba-quartz-regular.obiba-quartz-column-1 {
+.obiba-quartz-regular.obiba-quartz-grid-1 {
 	width: 400px;
 }
 
-.obiba-quartz-regular.obiba-quartz-column-2 {
+.obiba-quartz-regular.obiba-quartz-grid-2 {
 	width: 750px;
 }
 
-.obiba-quartz-regular.obiba-quartz-column-3, .obiba-quartz-regular.obiba-quartz-column-4, .obiba-quartz-regular.obiba-quartz-column-5 {
+.obiba-quartz-regular.obiba-quartz-grid-3, .obiba-quartz-regular.obiba-quartz-grid-4, .obiba-quartz-regular.obiba-quartz-grid-5 {
 	width: 900px;
 }
 
@@ -294,23 +294,23 @@ a.button {
 ************************/
 
 /* default image size is 100px + padding */
-.obiba-quartz-regular-image.obiba-quartz-column-1 {
+.obiba-quartz-regular-image.obiba-quartz-grid-1 {
 	width: 105px;
 }
 
-.obiba-quartz-regular-image.obiba-quartz-column-2 {
+.obiba-quartz-regular-image.obiba-quartz-grid-2 {
 	width: 210px;
 }
 
-.obiba-quartz-regular-image.obiba-quartz-column-3 {
+.obiba-quartz-regular-image.obiba-quartz-grid-3 {
 	width: 315px;
 }
 
-.obiba-quartz-regular-image.obiba-quartz-column-4 {
+.obiba-quartz-regular-image.obiba-quartz-grid-4 {
 	width: 420px;
 }
 
-.obiba-quartz-regular-image.obiba-quartz-column-3, .obiba-quartz-regular-image.obiba-quartz-column-4, .obiba-quartz-regular-image.obiba-quartz-column-5 {
+.obiba-quartz-regular-image.obiba-quartz-grid-3, .obiba-quartz-regular-image.obiba-quartz-grid-4, .obiba-quartz-regular-image.obiba-quartz-grid-5 {
 	width: 525px;
 }
 
@@ -342,18 +342,18 @@ a.button {
     background-repeat: no-repeat;
 }
 
-.obiba-quartz-escape.obiba-quartz-column-1 {
+.obiba-quartz-escape.obiba-quartz-grid-1 {
 }
 
-.obiba-quartz-escape.obiba-quartz-column-2 {
+.obiba-quartz-escape.obiba-quartz-grid-2 {
 	width: 550px;
 }
 
-.obiba-quartz-escape.obiba-quartz-column-3 {
+.obiba-quartz-escape.obiba-quartz-grid-3 {
 	width: 750px;
 }
 
-.obiba-quartz-escape.obiba-quartz-column-4, .obiba-quartz-escape.obiba-quartz-column-5 {
+.obiba-quartz-escape.obiba-quartz-grid-4, .obiba-quartz-escape.obiba-quartz-grid-5 {
 	width: 900px;
 }
 
