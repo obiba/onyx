@@ -20,7 +20,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundl
 import org.obiba.onyx.quartz.core.engine.questionnaire.bundle.QuestionnaireBundleManager;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategoryLinkSelectionPanel;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCategorySelectionBehavior;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.behavior.QuestionCategorySelectionBehavior;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.wicket.util.FileResource;

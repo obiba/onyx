@@ -15,6 +15,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.behavior.QuestionnaireStyleBehavior;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,9 @@ public class QuestionPanel extends Panel {
 
   public QuestionPanel(String id, IModel questionModel) {
     super(id, questionModel);
+
+    // add a css class that represents this page instance
+    add(new QuestionnaireStyleBehavior());
   }
 
   /**

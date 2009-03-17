@@ -1,5 +1,6 @@
 /*
-* Default Questionnaire elements stylesheet.
+* Simplified Questionnaire elements stylesheet.
+* 
 */
 
 .obiba-quartz-form-data {
@@ -93,7 +94,11 @@
 .obiba-quartz-regular {
 	margin-left: auto;
 	margin-right: auto;
-	width: 400px;
+}
+
+.obiba-quartz-regular-image {
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .obiba-quartz-category img, .obiba-quartz-category.ui-state-highlight img.ui-state-highlight {
@@ -272,14 +277,15 @@ a.button {
     background-repeat: no-repeat;
 }
 
-.obiba-quartz-regular-one-column {
+.obiba-quartz-regular.obiba-quartz-column-1 {
+	width: 400px;
 }
 
-.obiba-quartz-regular-two-columns {
+.obiba-quartz-regular.obiba-quartz-column-2 {
 	width: 750px;
 }
 
-.obiba-quartz-regular-many-columns {
+.obiba-quartz-regular.obiba-quartz-column-3, .obiba-quartz-regular.obiba-quartz-column-4, .obiba-quartz-regular.obiba-quartz-column-5 {
 	width: 900px;
 }
 
@@ -287,22 +293,25 @@ a.button {
  Category Regular Image
 ************************/
 
-.obiba-quartz-regular-image-one-column {
-	margin-left: auto;
-	margin-right: auto;
-	width: 100px;
+/* default image size is 100px + padding */
+.obiba-quartz-regular-image.obiba-quartz-column-1 {
+	width: 105px;
 }
 
-.obiba-quartz-regular-image-two-columns {
-	margin-left: auto;
-	margin-right: auto;
-	width: 200px;
+.obiba-quartz-regular-image.obiba-quartz-column-2 {
+	width: 210px;
 }
 
-.obiba-quartz-regular-image-many-columns {
-	margin-left: auto;
-	margin-right: auto;
-	width: 550px;
+.obiba-quartz-regular-image.obiba-quartz-column-3 {
+	width: 315px;
+}
+
+.obiba-quartz-regular-image.obiba-quartz-column-4 {
+	width: 420px;
+}
+
+.obiba-quartz-regular-image.obiba-quartz-column-3, .obiba-quartz-regular-image.obiba-quartz-column-4, .obiba-quartz-regular-image.obiba-quartz-column-5 {
+	width: 525px;
 }
 
 /*****************
@@ -323,7 +332,8 @@ a.button {
 
 .obiba-quartz-escape td.obiba-quartz-category div.obiba-quartz-category {
     padding-bottom: 20px;
-    padding-left: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .obiba-quartz-escape td.obiba-quartz-category div.obiba-quartz-category.ui-state-highlight {
@@ -332,15 +342,19 @@ a.button {
     background-repeat: no-repeat;
 }
 
-.obiba-quartz-escape-one-column {
+.obiba-quartz-escape.obiba-quartz-column-1 {
 }
 
-.obiba-quartz-escape-two-columns {
+.obiba-quartz-escape.obiba-quartz-column-2 {
 	width: 550px;
 }
 
-.obiba-quartz-escape-many-columns {
+.obiba-quartz-escape.obiba-quartz-column-3 {
 	width: 750px;
+}
+
+.obiba-quartz-escape.obiba-quartz-column-4, .obiba-quartz-escape.obiba-quartz-column-5 {
+	width: 900px;
 }
 
 /*****************
@@ -397,8 +411,8 @@ table.obiba-quartz-array {
 }
 
 div.form-button {
-  height: 70px;
-  padding-top: 20px;
+  height: 60px;
+  padding-top: 10px;
 }
 
 .form-button input.obiba-quartz-nav {

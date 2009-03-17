@@ -21,7 +21,7 @@ import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationServi
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionStateHolder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCategorySelectionBehavior;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.behavior.QuestionCategorySelectionBehavior;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.pad.NumericPad;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.util.data.DataType;

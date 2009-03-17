@@ -10,8 +10,6 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.behavior.AbstractBehavior;
-import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
@@ -43,24 +41,6 @@ import org.slf4j.LoggerFactory;
 public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestionCategorySelectionListener {
 
   private static final long serialVersionUID = 5144933183339704600L;
-
-  private static final String ONE_COLUMN_REGULAR_CLASS = "obiba-quartz-regular-one-column";
-
-  private static final String TWO_COLUMNS_REGULAR_CLASS = "obiba-quartz-regular-two-columns";
-
-  private static final String MANY_COLUMNS_REGULAR_CLASS = "obiba-quartz-regular-many-columns";
-
-  private static final String ONE_COLUMN_REGULAR_IMAGE_CLASS = "obiba-quartz-regular-image-one-column";
-
-  private static final String TWO_COLUMNS_REGULAR_IMAGE_CLASS = "obiba-quartz-regular-image-two-columns";
-
-  private static final String MANY_COLUMNS_REGULAR_IMAGE_CLASS = "obiba-quartz-regular-image-many-columns";
-
-  private static final String ONE_COLUMN_ESCAPE_CLASS = "obiba-quartz-escape-one-column";
-
-  private static final String TWO_COLUMNS_ESCAPE_CLASS = "obiba-quartz-escape-two-columns";
-
-  private static final String MANY_COLUMNS_ESCAPE_CLASS = "obiba-quartz-escape-many-columns";
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SimplifiedQuestionCategoriesPanel.class);
@@ -114,7 +94,6 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     filter.addFilter(new QuestionCategoryEscapeFilter(false));
     filter.addFilter(new QuestionCategoryOpenAnswerFilter(false));
     QuestionCategoryLinksView view = new QuestionCategoryLinksView("regularCategories", getModel(), filter, new QuestionCategoryListToGridPermutator(getModel()));
-    view.add(new QuestionCategoryViewStyleBehavior(ONE_COLUMN_REGULAR_CLASS, TWO_COLUMNS_REGULAR_CLASS, MANY_COLUMNS_REGULAR_CLASS));
     add(view);
   }
 
@@ -123,7 +102,6 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
    */
   private void addRegularImageCategoriesView() {
     QuestionCategoryImageLinksView view = new QuestionCategoryImageLinksView("regularImageCategories", getModel(), new QuestionCategoryImageFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1));
-    view.add(new QuestionCategoryViewStyleBehavior(ONE_COLUMN_REGULAR_IMAGE_CLASS, TWO_COLUMNS_REGULAR_IMAGE_CLASS, MANY_COLUMNS_REGULAR_IMAGE_CLASS));
     add(view);
   }
 
@@ -132,7 +110,6 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
    */
   private void addEscapeCategoriesView() {
     QuestionCategoryLinksView view = new QuestionCategoryLinksView("escapeCategories", getQuestionModel(), new QuestionCategoryEscapeFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1));
-    view.add(new QuestionCategoryViewStyleBehavior(ONE_COLUMN_ESCAPE_CLASS, TWO_COLUMNS_ESCAPE_CLASS, MANY_COLUMNS_ESCAPE_CLASS));
     add(view);
   }
 
@@ -209,46 +186,6 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
       } else {
         add(new SimplifiedOpenAnswerDefinitionPanel("open", getQuestionModel(), questionCategoryModel, new QuestionnaireModel(openAnswerDefinition)));
       }
-    }
-  }
-
-  /**
-   * Set the appropriate css class to custom grid view according to columns count.
-   */
-  private class QuestionCategoryViewStyleBehavior extends AbstractBehavior {
-
-    private static final long serialVersionUID = 1L;
-
-    private String oneColumnClass;
-
-    private String twoColumnsClass;
-
-    private String manyColumnsClass;
-
-    public QuestionCategoryViewStyleBehavior(String oneColumnClass, String twoColumnsClass, String manyColumnsClass) {
-      super();
-      this.oneColumnClass = oneColumnClass;
-      this.twoColumnsClass = twoColumnsClass;
-      this.manyColumnsClass = manyColumnsClass;
-    }
-
-    @Override
-    public void onComponentTag(Component component, ComponentTag tag) {
-      super.onComponentTag(component, tag);
-
-      QuestionCategoryComponentsView view = (QuestionCategoryComponentsView) component;
-
-      String cssClass = oneColumnClass;
-      if(view.getColumns() == 2) {
-        cssClass = twoColumnsClass;
-      } else if(view.getColumns() >= 3) {
-        cssClass = manyColumnsClass;
-      }
-      if(tag.getAttributes().containsKey("class")) {
-        cssClass += " " + tag.getAttributes().getString("class");
-      }
-      tag.getAttributes().put("class", cssClass);
-
     }
   }
 

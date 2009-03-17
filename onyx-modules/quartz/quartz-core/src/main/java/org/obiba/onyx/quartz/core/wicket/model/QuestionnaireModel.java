@@ -102,6 +102,14 @@ public class QuestionnaireModel extends SpringDetachableModel {
     return elementName;
   }
 
+  public Class getElementClass() {
+    return elementClass;
+  }
+
+  public String getQuestionnaireName() {
+    return questionnaireName;
+  }
+
   @Override
   protected Object load() {
     // Now use these services to get current questionnaire bundle.

@@ -15,6 +15,7 @@ import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.behavior.QuestionnaireStyleBehavior;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 
 /**
@@ -34,6 +35,9 @@ public abstract class BaseQuestionCategorySelectionPanel extends Panel {
   public BaseQuestionCategorySelectionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
     super(id, questionCategoryModel);
     this.questionModel = questionModel;
+
+    // add a css class that represents this page instance
+    add(new QuestionnaireStyleBehavior());
   }
 
   public IModel getQuestionModel() {
