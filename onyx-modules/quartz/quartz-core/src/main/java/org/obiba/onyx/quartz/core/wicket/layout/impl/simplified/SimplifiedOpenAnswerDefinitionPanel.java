@@ -67,6 +67,7 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
 
     };
     link.getLink().add(new QuestionCategorySelectionBehavior());
+    link.getLink().add(new NoDragBehavior());
     add(link);
 
     // Create modal window
