@@ -106,11 +106,11 @@
   display: none;
 }
 
-.obiba-quartz-regularImage td.obiba-quartz-category div.obiba-quartz-category {
+.obiba-quartz-regular-image td.obiba-quartz-category div.obiba-quartz-category {
     padding-bottom: 20px;
 }
 
-.obiba-quartz-regularImage td.obiba-quartz-category div.obiba-quartz-category.ui-state-highlight {
+.obiba-quartz-regular-image td.obiba-quartz-category div.obiba-quartz-category.ui-state-highlight {
     background-image: url('../icons/arrow_up.png');
     background-position: bottom center;
     background-repeat: no-repeat;
@@ -272,6 +272,39 @@ a.button {
     background-repeat: no-repeat;
 }
 
+.obiba-quartz-regular-one-column {
+}
+
+.obiba-quartz-regular-two-columns {
+	width: 750px;
+}
+
+.obiba-quartz-regular-many-columns {
+	width: 900px;
+}
+
+/***********************
+ Category Regular Image
+************************/
+
+.obiba-quartz-regular-image-one-column {
+	margin-left: auto;
+	margin-right: auto;
+	width: 100px;
+}
+
+.obiba-quartz-regular-image-two-columns {
+	margin-left: auto;
+	margin-right: auto;
+	width: 200px;
+}
+
+.obiba-quartz-regular-image-many-columns {
+	margin-left: auto;
+	margin-right: auto;
+	width: 550px;
+}
+
 /*****************
  Category Escape
 ******************/
@@ -297,6 +330,17 @@ a.button {
     background-image: url('../icons/arrow_up.png');
     background-position: bottom center;
     background-repeat: no-repeat;
+}
+
+.obiba-quartz-escape-one-column {
+}
+
+.obiba-quartz-escape-two-columns {
+	width: 550px;
+}
+
+.obiba-quartz-escape-many-columns {
+	width: 750px;
 }
 
 /*****************
