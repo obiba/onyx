@@ -31,6 +31,14 @@
   padding-right: 8px;
 }
 
+.obiba-numeric-pad .pad-buttons .imagelink a.button { 
+  margin-bottom:3px;
+}
+
+.obiba-numeric-pad .pad-buttons .imagelink a.button div.label-container { 
+  height:32px;
+}
+
 .obiba-numeric-pad .obiba-quartz-padForm  .obiba-quartz-padActions {
   margin: auto; 
   width: 180px;
