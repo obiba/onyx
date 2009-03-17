@@ -14,10 +14,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -25,9 +27,11 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
+import org.obiba.onyx.jade.instrument.cardiffuniversity.NoddleTestInstrumentRunner.LineCallback;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
 import org.obiba.onyx.jade.util.FileUtil;
 import org.obiba.onyx.util.data.Data;
+import org.springframework.context.support.ResourceBundleMessageSource;
 
 public class NoddleTestInstrumentRunnerTest {
 
@@ -41,7 +45,7 @@ public class NoddleTestInstrumentRunnerTest {
 
   private String errorKey = null;
 
-  private HashSet<String> errorDescSet = null;
+  private Set<String> errorDescriptions = null;
 
   @Before
   public void setUp() throws URISyntaxException {
@@ -51,10 +55,16 @@ public class NoddleTestInstrumentRunnerTest {
 
     noddleTestInstrumentRunner = new NoddleTestInstrumentRunner() {
       @Override
-      public void warningPopup(String key, HashSet<String> errSet) {
+      String warningPopup(String key, String[] errSet) {
         setErrorKey(key);
-        if(errSet != null) setErrorDescSet(errSet);
+        if(errSet != null) setErrorDescriptions(new HashSet<String>(Arrays.asList(errSet)));
         // super.warningPopup(key, errSet);
+        return key;
+      }
+
+      @Override
+      String warningPopup(String key) {
+        return warningPopup(key, null);
       }
     };
 
@@ -68,7 +78,9 @@ public class NoddleTestInstrumentRunnerTest {
     resultPath.mkdir();
     noddleTestInstrumentRunner.setResultPath(resultPath.getPath());
 
-    noddleTestInstrumentRunner.setCtResourceBundle(ResourceBundle.getBundle("ct-instrument", Locale.getDefault()));
+    ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+    messageSource.setBasename("ct-instrument");
+    noddleTestInstrumentRunner.setResourceBundleMessageSource(messageSource);
 
     // Cannot mock ExternalAppLauncherHelper (without EasyMock extension!),
     // so for now, use the class itself with the launch method overridden to
@@ -85,6 +97,8 @@ public class NoddleTestInstrumentRunnerTest {
     // Create a mock instrumentExecutionService for testing.
     instrumentExecutionServiceMock = createMock(InstrumentExecutionService.class);
     noddleTestInstrumentRunner.setInstrumentExecutionService(instrumentExecutionServiceMock);
+
+    noddleTestInstrumentRunner.setLocale(Locale.CANADA);
   }
 
   @Test
@@ -144,11 +158,12 @@ public class NoddleTestInstrumentRunnerTest {
     noddleTestInstrumentRunner.getDataFiles();
 
     Assert.assertTrue(getErrorKey().equals("missingTestKey"));
-    Assert.assertTrue(getErrorDescSet().contains("Reasoning Quiz"));
+    Assert.assertTrue(isContainedInErrorDescription("Reasoning Quiz"));
+
     // Assert.assertTrue(getErrorDescSet().contains("Working Memory"));
     Assert.assertTrue(new File(noddleTestInstrumentRunner.getResultPath(), RESULT_FILENAME).exists());
     setErrorKey(null);
-    setErrorDescSet(null);
+    setErrorDescriptions(null);
   }
 
   @SuppressWarnings("unchecked")
@@ -182,12 +197,69 @@ public class NoddleTestInstrumentRunnerTest {
   }
 
   @Test
-  public void testShutdown() throws FileNotFoundException, IOException, URISyntaxException {
+  public void testShutdown() throws FileNotFoundException, IOException, URISyntaxException, InterruptedException {
     simulateResultsAndInput(RESULT_FILENAME);
     noddleTestInstrumentRunner.shutdown();
 
+    Thread.sleep(8000);
     Assert.assertFalse(new File(noddleTestInstrumentRunner.getResultPath(), RESULT_FILENAME).exists());
     Assert.assertFalse(new File(noddleTestInstrumentRunner.getSoftwareInstallPath(), "List.txt").exists());
+  }
+
+  @Test(expected = NoddleTestInsturmentRunnerException.class)
+  public void testSoftwareInstallPathDoesNotExist() throws NoddleTestInsturmentRunnerException {
+    String nonExistentSoftwareInstallPath = new File("target", "non-existent-software-install-directory").getPath();
+    noddleTestInstrumentRunner.setSoftwareInstallPath(nonExistentSoftwareInstallPath);
+    noddleTestInstrumentRunner.validatePaths();
+  }
+
+  @Test
+  public void testSoftwareInstallPathDoesExist() throws NoddleTestInsturmentRunnerException {
+    String existingSoftwareInstallPath = new File("target", "test-noddle").getPath();
+    noddleTestInstrumentRunner.setSoftwareInstallPath(existingSoftwareInstallPath);
+    noddleTestInstrumentRunner.validatePaths();
+    Assert.assertTrue("Validated true without throwing an exception.", true);
+  }
+
+  @Test(expected = NoddleTestInsturmentRunnerException.class)
+  public void testResultPathDoesNotExist() throws NoddleTestInsturmentRunnerException {
+    String nonExistentResultPath = new File("target/test-noddle", "non-existent-result-directory").getPath();
+    noddleTestInstrumentRunner.setResultPath(nonExistentResultPath);
+    noddleTestInstrumentRunner.validatePaths();
+  }
+
+  @Test
+  public void testResultPathDoesExist() throws NoddleTestInsturmentRunnerException {
+    String existingResultPath = new File("target/test-noddle", "RESULT").getPath();
+    noddleTestInstrumentRunner.setResultPath(existingResultPath);
+    noddleTestInstrumentRunner.validatePaths();
+    Assert.assertTrue("Validated true without throwing an exception.", true);
+  }
+
+  @Test
+  public void testParsingUtf16LeBomConfigFile() throws URISyntaxException {
+    File utf16ConfigFile = new File(getClass().getResource("/Config-UTF-16LE-BOM.txt").toURI());
+
+    HashSet<String> configuredTests = noddleTestInstrumentRunner.extractTestsFromResultFile(utf16ConfigFile, new LineCallback() {
+      public String handleLine(String line) {
+        if(line.startsWith("!") == false) return (line.substring(0, 2));
+        return null;
+      }
+    });
+    Assert.assertEquals(5, configuredTests.size());
+  }
+
+  @Test
+  public void testParsingIso8859ConfigFile() throws URISyntaxException {
+    File iso8859ConfigFile = new File(getClass().getResource("/Config-iso-8859-1.txt").toURI());
+
+    HashSet<String> configuredTests = noddleTestInstrumentRunner.extractTestsFromResultFile(iso8859ConfigFile, new LineCallback() {
+      public String handleLine(String line) {
+        if(line.startsWith("!") == false) return (line.substring(0, 2));
+        return null;
+      }
+    });
+    Assert.assertEquals(3, configuredTests.size());
   }
 
   private void simulateResultsAndInput(String fileToCopy) throws FileNotFoundException, IOException, URISyntaxException {
@@ -207,7 +279,7 @@ public class NoddleTestInstrumentRunnerTest {
     // Verify that the Input file has the right data.
     Assert.assertTrue(new File(noddleTestInstrumentRunner.getSoftwareInstallPath(), "List.txt").exists());
 
-    verifyFileContent(new File(noddleTestInstrumentRunner.getSoftwareInstallPath(), "List.txt"), new LineCallback() {
+    verifyFileContent(new File(noddleTestInstrumentRunner.getSoftwareInstallPath(), "List.txt"), new TestLineCallback() {
       public void handleLine(LineNumberReader reader) throws IOException {
         for(int i = 0; i < reader.getLineNumber(); i++) {
           if(i == 0) Assert.assertTrue(reader.readLine().contains("#ONYX"));
@@ -218,7 +290,7 @@ public class NoddleTestInstrumentRunnerTest {
     });
   }
 
-  private void verifyFileContent(File file, LineCallback callback) {
+  private void verifyFileContent(File file, TestLineCallback callback) {
     InputStream fileStrm = null;
     InputStreamReader strmReader = null;
     LineNumberReader reader = null;
@@ -238,7 +310,7 @@ public class NoddleTestInstrumentRunnerTest {
     }
   }
 
-  private interface LineCallback {
+  private interface TestLineCallback {
     public void handleLine(LineNumberReader reader) throws IOException;
   }
 
@@ -250,12 +322,19 @@ public class NoddleTestInstrumentRunnerTest {
     this.errorKey = errorKey;
   }
 
-  public HashSet<String> getErrorDescSet() {
-    return (errorDescSet != null) ? errorDescSet : new HashSet<String>();
+  public Set<String> getErrorDescSet() {
+    return errorDescriptions != null ? errorDescriptions : Collections.<String> emptySet();
   }
 
-  public void setErrorDescSet(HashSet<String> errorDescSet) {
-    this.errorDescSet = errorDescSet;
+  public void setErrorDescriptions(HashSet<String> errorDescriptions) {
+    this.errorDescriptions = errorDescriptions;
+  }
+
+  private boolean isContainedInErrorDescription(String lookingFor) {
+    for(String error : getErrorDescSet()) {
+      if(error.indexOf(lookingFor) > 0) return true;
+    }
+    return false;
   }
 
 }

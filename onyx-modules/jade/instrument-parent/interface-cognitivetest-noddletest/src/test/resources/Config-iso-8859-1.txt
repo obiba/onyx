@@ -1,0 +1,18 @@
+# The following lines control the inclusion of specific tests.
+# The two-letter code includes but a preceding '!' excludes.
+# PA - Paired Associates learning.
+# RT - Reaction Time.
+# RQ - Reasoning Quiz, fluid intelligence.
+# WM - Working Memory, digit span.
+# ST - Stroop, attention interference.
+PA
+RT
+RQ
+!WM
+!ST
+
+# XF uses the remainder of the line as the French closing message.
+# XE uses the remainder of the line as the English closing message.
+# Include <br /> in the text to give line breaks. 
+# Save this file as unicode to retain non-ascii characters.
+

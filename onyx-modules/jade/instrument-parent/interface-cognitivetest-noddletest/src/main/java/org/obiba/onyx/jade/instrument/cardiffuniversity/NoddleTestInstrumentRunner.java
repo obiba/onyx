@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 
@@ -28,6 +28,7 @@ import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.ResourceBundleMessageSource;
 
 public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
@@ -43,7 +44,7 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
   private Locale locale;
 
-  private ResourceBundle ctResourceBundle;
+  private ResourceBundleMessageSource resourceBundleMessageSource;
 
   private static String CONFIG_FILENAME = "Config.txt";
 
@@ -58,7 +59,8 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
   private static Map<String, String> TEST_NAME_TO_TEST_DESC = populateNameDescMap();
 
   public void afterPropertiesSet() throws Exception {
-    setCtResourceBundle(ResourceBundle.getBundle("ct-instrument", getLocale()));
+    resourceBundleMessageSource = new ResourceBundleMessageSource();
+    resourceBundleMessageSource.setBasename("ct-instrument");
   }
 
   public void initialize() {
@@ -110,7 +112,7 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
       });
 
       if(resultTests.isEmpty()) {
-        warningPopup("noTestKey", null);
+        warningPopup("noTestKey");
       } else {
         Data binaryData = DataBuilder.buildBinary(resultFiles.get(0));
         sendDataToServer(binaryData);
@@ -127,7 +129,8 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
         for(String configuredTest : configuredTests) {
           if(resultTests.contains(TEST_NAME_TO_TEST_CODE.get(configuredTest).toString()) == false) missingTests.add(TEST_NAME_TO_TEST_DESC.get(configuredTest));
         }
-        if(missingTests.isEmpty() == false) warningPopup("missingTestKey", missingTests);
+
+        if(missingTests.isEmpty() == false) warningPopup("missingTestKey", new String[] { failedTestsToString(missingTests) });
       }
     }
   }
@@ -151,7 +154,7 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
    * @param callback
    * @return
    */
-  private HashSet<String> extractTestsFromResultFile(File resultFile, LineCallback callback) {
+  HashSet<String> extractTestsFromResultFile(File resultFile, LineCallback callback) {
     HashSet<String> testCodes = new HashSet<String>();
     InputStream resultFileStrm = null;
     InputStreamReader resultReader = null;
@@ -159,7 +162,12 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
     try {
       resultFileStrm = new FileInputStream(resultFile);
-      resultReader = new InputStreamReader(resultFileStrm);
+      resultReader = new InputStreamReader(resultFileStrm, "UnicodeLittleUnmarked");
+      char bomChar = (char) resultReader.read();
+      if(bomChar != 0xFEFF) { // The file is not encoded in UTF-16LE-BOM
+        resultFileStrm = new FileInputStream(resultFile);
+        resultReader = new InputStreamReader(resultFileStrm, "ISO8859_1");
+      }
       fileReader = new BufferedReader(resultReader);
       String line;
 
@@ -184,17 +192,26 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
     return testCodes;
   }
 
-  public void warningPopup(String key, HashSet<String> errSet) {
-    String message = ctResourceBundle.getString(key);
-    String title = ctResourceBundle.getString("warningTitle");
-    String errStr = "";
+  String warningPopup(String key, String[] args) {
+    String message = resourceBundleMessageSource.getMessage(key, args, getLocale());
+    String title = resourceBundleMessageSource.getMessage("warningTitle", null, getLocale());
 
-    if(errSet != null) {
-      for(String errCode : errSet) {
-        errStr += "\n" + errCode;
+    JOptionPane.showMessageDialog(null, message, title, JOptionPane.WARNING_MESSAGE);
+    return message;
+  }
+
+  String warningPopup(String key) {
+    return warningPopup(key, null);
+  }
+
+  private String failedTestsToString(Set<String> failedTests) {
+    String errorString = "";
+    if(failedTests != null) {
+      for(String errorCode : failedTests) {
+        errorString += "\n" + errorCode;
       }
     }
-    JOptionPane.showMessageDialog(null, message + errStr, title, JOptionPane.WARNING_MESSAGE);
+    return errorString;
   }
 
   private void initInputFile() {
@@ -220,14 +237,14 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
     try {
       for(File file : resultDir.listFiles()) {
-        if(!FileUtil.delete(file)) log.warn("Could not delete NoddleTest result file.");
+        if(!FileUtil.delete(file)) log.warn("Could not delete NoddleTest result file [" + file.getAbsolutePath() + "].");
       }
     } catch(IOException ex) {
       log.warn("Could not delete NoddleTest result file: " + ex);
     }
   }
 
-  // Maps implemented to find correspondance between the codes in the result file, the name in the configuration file
+  // Maps implemented to find correspondence between the codes in the result file, the name in the configuration file
   // and the description to show in the warning popup message
   private static Map<String, Integer> populateNameCodeMap() {
     Map<String, Integer> map = new HashMap<String, Integer>();
@@ -285,11 +302,37 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
     this.locale = locale;
   }
 
-  public void setCtResourceBundle(ResourceBundle ctResourceBundle) {
-    this.ctResourceBundle = ctResourceBundle;
+  public void setResourceBundleMessageSource(ResourceBundleMessageSource resourceBundleMessageSource) {
+    this.resourceBundleMessageSource = resourceBundleMessageSource;
   }
 
-  private interface LineCallback {
+  interface LineCallback {
     public String handleLine(String line);
   }
+
+  /**
+   * Validates the softwareInstallPath and the resultPath. Shuts down instrument runner if not present.
+   * @throws NoddleTestInsturmentRunnerException thrown when paths are not present.
+   */
+  public void validatePaths() throws NoddleTestInsturmentRunnerException {
+    validateSoftwareInstallPathExists();
+    validateResultPathExists();
+  }
+
+  private void validateSoftwareInstallPathExists() throws NoddleTestInsturmentRunnerException {
+    File path = new File(this.softwareInstallPath);
+    if(!path.exists()) {
+      String errorMessage = warningPopup("noddleInstallationDirectoryMissing", new String[] { path.getAbsolutePath() });
+      throw new NoddleTestInsturmentRunnerException(errorMessage);
+    }
+  }
+
+  private void validateResultPathExists() throws NoddleTestInsturmentRunnerException {
+    File path = new File(this.resultPath);
+    if(!path.exists()) {
+      String errorMessage = warningPopup("noddleResultsDirectoryMissing", new String[] { path.getAbsolutePath() });
+      throw new NoddleTestInsturmentRunnerException(errorMessage);
+    }
+  }
+
 }
