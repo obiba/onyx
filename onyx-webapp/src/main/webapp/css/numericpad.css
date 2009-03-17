@@ -47,6 +47,7 @@
 .obiba-numeric-pad .obiba-quartz-padForm  a.button .label {
   padding-right:10px;
   padding-left:10px;  
+  text-align:center;
 }
 
 div.wicket-modal div.onyx .obiba-numeric-pad .imagelink { 
