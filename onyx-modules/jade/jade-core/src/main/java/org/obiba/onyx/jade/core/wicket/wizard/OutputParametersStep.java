@@ -40,7 +40,7 @@ public class OutputParametersStep extends WizardStepPanel {
     this.warningsStep = warningsStep;
 
     setOutputMarkupId(true);
-    add(new EmptyPanel(getTitleId()));
+    add(new EmptyPanel(getTitleId()).setVisible(false));
 
     // add(new Label("title", new StringResourceModel("ProvideTheFollowingInformation", OutputParametersStep.this,
     // null)));

@@ -25,7 +25,7 @@ public class InputParametersStep extends WizardStepPanel {
     super(id);
     setOutputMarkupId(true);
 
-    add(new EmptyPanel(getTitleId()));
+    add(new EmptyPanel(getTitleId()).setVisible(false));
   }
 
   @Override
