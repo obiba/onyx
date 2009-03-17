@@ -101,7 +101,7 @@ Resizer.resizeWizard = function() {
 	
 	var table = $('#wizardContent table:first-child');
 	var wizardContent = $('#wizardContent');
-	var resizeHeight = parseInt(document.body.clientHeight-(110 + footerHeight)-wizardContent.get()[0].offsetTop);
+	var resizeHeight = parseInt(document.body.clientHeight-(100 + footerHeight)-wizardContent.get()[0].offsetTop);
 	//alert("resizeHeight: " + resizeHeight);
 	
     wizardContent.height(resizeHeight + 'px');
