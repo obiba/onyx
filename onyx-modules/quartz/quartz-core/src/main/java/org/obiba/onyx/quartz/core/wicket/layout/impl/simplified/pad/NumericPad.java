@@ -85,6 +85,14 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
     // Add the other wicket components.
     Form padForm = new Form("form");
     padForm.add(valuePressed);
+
+    String labelText = (String) labelModel.getObject();
+    if(labelText != null && !labelText.trim().equals("")) {
+      padForm.add(new Label("separator", ":"));
+    } else {
+      padForm.add(new Label("separator", ""));
+    }
+
     padForm.add(new Label("category", labelModel));
     padForm.add(submitButton);
     padForm.add(cancelButton);
@@ -203,6 +211,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
     } else {
       labelModel = questionCategoryModel;
     }
+
     return new QuestionnaireStringResourceModel(labelModel, "label");
   }
 
