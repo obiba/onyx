@@ -467,31 +467,26 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 /*************** Wizard ********************/
 
 .form-data {
+  overflow:auto;
   padding-left: 20px;
-  padding-top: 20px;
   padding-right: 20px;
 }
 
 .form-button {
-  height: 60px;
+  border-top: 2px solid #ccc;
+  height: 40px;
   padding-right: 20px;
+  padding-top: 20px;
   text-align: right;
 }
 
-form.wizard-consent {
-}
-
-div.wizard-title {
-  margin-bottom:10px;
+.wizard-title {
+  padding-top:20px;
   font-weight: bold;
 }
 
-td.wizard-title {
-  margin-bottom:10px;
-  font-weight: bold;
-}
-
-div.wizard-content {
+.wizard-content {
+  padding-top: 20px;
   margin-top:0px;
   margin-bottom:0px;
 }

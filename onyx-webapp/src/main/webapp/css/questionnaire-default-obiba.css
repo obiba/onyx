@@ -4,21 +4,8 @@
 * Use .obiba-lang-* class to customize per questionnaire administration language.
 */
 
-/*
-* Default questionnaire elements stylesheet.
-*/
-
-.obiba-quartz-form-data {
-	border-bottom: 2px solid #ccc;
-	overflow:auto;
-}
-
-.form-data {
+.wizard-content {
   padding-top: 0px;
-}
-
-.form-button {
-  padding-top: 10px;
 }
 
 .page {

@@ -14,6 +14,14 @@ WindowUtil.attachEvent = function(event, callback) {
 	}
 }
 
+WindowUtil.pageHeight = function() {
+	var pageHeight=window.innerWidth;//Firefox
+	if (document.body.clientHeight) {
+		pageHeight=document.body.clientHeight;//IE
+	}
+	
+	return pageHeight;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Focus class that set the focus to the first input at page load
@@ -61,13 +69,8 @@ WindowUtil.attachEvent("load", Focus.setInitialFocus);
 Resizer = {}
 
 Resizer.resize  = function(id, offsetBottom) {
-	var pageHeight=window.innerWidth;//Firefox
-	if (document.body.clientHeight)
-		{
-		pageHeight=document.body.clientHeight;//IE
-	}
 	//resize the html according to the size of the window 
-	document.getElementById(id).style.height=parseInt(pageHeight-offsetBottom-document.getElementById(id).offsetTop)+"px";
+	document.getElementById(id).style.height=parseInt(WindowUtil.pageHeight()-offsetBottom-document.getElementById(id).offsetTop)+"px";
 }
 
 // Resize the content wrapper to fill the window.
@@ -91,17 +94,17 @@ WindowUtil.attachEvent("resize", Resizer.resizeContentWrapper);
 
 Resizer.resizeWizard = function() {
 	var wizardFooter = $('#wizardFooter');
-	var footerHeight = 40;
+	var footerHeight = 60;
 	if (wizardFooter) {
-		if (wizardFooter.height()) {
-			footerHeight = wizardFooter.height();
+		if (wizardFooter.outerHeight()) {
+			footerHeight = wizardFooter.outerHeight();
 		}
 	}
 	//alert('wizardFooter='+footerHeight);
 	
-	var table = $('#wizardContent table:first-child');
 	var wizardContent = $('#wizardContent');
-	var resizeHeight = parseInt(document.body.clientHeight-(100 + footerHeight)-wizardContent.get()[0].offsetTop);
+	//alert('offset=' + wizardContent.offset().top + ' wizardFooter='+footerHeight);
+	var resizeHeight = parseInt(WindowUtil.pageHeight()-(50 + footerHeight)-wizardContent.offset().top);
 	//alert("resizeHeight: " + resizeHeight);
 	
     wizardContent.height(resizeHeight + 'px');

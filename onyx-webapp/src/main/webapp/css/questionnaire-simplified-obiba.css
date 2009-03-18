@@ -2,11 +2,6 @@
 * Simplified (for touchscreen) questionnaire elements stylesheet.
 */
 
-.obiba-quartz-form-data {
-	border-bottom: 2px solid #ccc;
-	overflow:auto;
-}
-
 .obiba-quartz-page {
 	font: normal 18px arial, sans-serif;
 	color: #000;
@@ -410,11 +405,15 @@ table.obiba-quartz-array {
 *******************/
 
 .form-data.obiba-quartz-form-data {
-  padding: 0 0 4px 0;
+  padding: 0 0 0 0;
+}
+
+.wizard-content {
+  padding-top: 0px;
 }
 
 div.form-button {
-  height: 60px;
+  height: 50px;
   padding-top: 10px;
 }
 
