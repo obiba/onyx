@@ -9,6 +9,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +34,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ResourceBundleMessageSource;
 
+/**
+ * Launches, configures and collects data from Noddle Test native application.
+ */
 public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
   private static final Logger log = LoggerFactory.getLogger(JnlpClient.class);
@@ -38,6 +45,8 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
   protected InstrumentExecutionService instrumentExecutionService;
 
+  protected FileLock configAndResultFileLock;
+
   private String softwareInstallPath;
 
   private String resultPath;
@@ -45,6 +54,9 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
   private Locale locale;
 
   private ResourceBundleMessageSource resourceBundleMessageSource = new ResourceBundleMessageSource();
+
+  /** Map 'end code' to test. If the 'end code' exists in the test results file we know the test completed. */
+  private Map<Integer, NoddleTests> endDataCodeMap;
 
   private static String RESOURCE_BUNDLE_BASE_NAME = "ct-instrument";
 
@@ -56,11 +68,12 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
   private static String RESULT_FILENAME_PREFIX = "Noddletest_" + CLINIC_NAME + "_";
 
-  private static Map<String, Integer> TEST_NAME_TO_TEST_CODE = populateNameCodeMap();
-
-  private static Map<String, String> TEST_NAME_TO_TEST_DESC = populateNameDescMap();
-
   public void initialize() {
+    if(isConfigFileAndResultFileLocked()) {
+      String errorMessage = warningPopup("noddleLocked");
+      log.error(errorMessage);
+      System.exit(1); // Leave now. Avoid deleting in use data files.
+    }
     deleteDeviceData();
     initInputFile();
   }
@@ -68,7 +81,6 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
   public void run() {
     externalAppHelper.launch();
     getDataFiles();
-
   }
 
   public void shutdown() {
@@ -82,6 +94,7 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
     }
 
     deleteDeviceData();
+    releaseConfigFileAndResultFileLock();
   }
 
   /**
@@ -96,8 +109,8 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
     }
 
     if(resultFiles.size() == 0) {
-      // TODO: Handle no result file
-      log.info("No result file found");
+      warningPopup("noResultFileFound");
+      log.warn("Noddle has been shutdown but the result file was not found. Perhaps Noddle was shutdown before the test was started.");
     } else if(resultFiles.size() > 1) {
       // TODO: Handle multiple result files
       log.info("More than one result file found");
@@ -110,26 +123,63 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
       if(resultTests.isEmpty()) {
         warningPopup("noTestKey");
+        log.warn("No test data was found in the Noddle test result file. Perhaps Noddle was shutdown before the first test completed.");
       } else {
         Data binaryData = DataBuilder.buildBinary(resultFiles.get(0));
         sendDataToServer(binaryData);
 
-        // Check that all configured tests are present
-        HashSet<String> configuredTests = extractTestsFromResultFile(new File(getSoftwareInstallPath() + File.separator + NODDLE_CONFIG_FILENAME), new LineCallback() {
-          public String handleLine(String line) {
-            if(line.startsWith("!") == false) return (line.substring(0, 2));
-            return null;
-          }
-        });
+        Set<NoddleTests> completedTests = getTestsCompleted(resultTests);
+        Set<NoddleTests> configuredTests = getTestsConfiguredToRunFromNoodleConfigurationFile();
 
-        HashSet<String> missingTests = new HashSet<String>();
-        for(String configuredTest : configuredTests) {
-          if(resultTests.contains(TEST_NAME_TO_TEST_CODE.get(configuredTest).toString()) == false) missingTests.add(TEST_NAME_TO_TEST_DESC.get(configuredTest));
-        }
+        Set<NoddleTests> missingTests = getMissingTests(configuredTests, completedTests);
+        Set<String> missingTestNames = getLocalizedTestNames(missingTests);
 
-        if(missingTests.isEmpty() == false) warningPopup("missingTestKey", new String[] { failedTestsToString(missingTests) });
+        if(missingTests.isEmpty() == false) warningPopup("missingTestKey", new String[] { formatToString(missingTestNames) });
       }
     }
+  }
+
+  private Set<NoddleTests> getTestsConfiguredToRunFromNoodleConfigurationFile() {
+    Set<String> testsConfiguredToRun = extractTestsFromResultFile(new File(getSoftwareInstallPath() + File.separator + NODDLE_CONFIG_FILENAME), new LineCallback() {
+      public String handleLine(String line) {
+        if(line.startsWith("!") == false) return (line.substring(0, 2));
+        return null;
+      }
+    });
+    Set<NoddleTests> configuredSet = new HashSet<NoddleTests>(testsConfiguredToRun.size());
+    for(String testString : testsConfiguredToRun) {
+      configuredSet.add(NoddleTests.valueOf(testString));
+    }
+    return configuredSet;
+  }
+
+  private Set<NoddleTests> getMissingTests(Set<NoddleTests> configuredTests, Set<NoddleTests> completedTests) {
+    for(NoddleTests test : completedTests) {
+      if(configuredTests.contains(test)) {
+        configuredTests.remove(test);
+      }
+    }
+    return configuredTests;
+  }
+
+  private Set<String> getLocalizedTestNames(Set<NoddleTests> tests) {
+
+    Set<String> localizedTestNames = new HashSet<String>(tests.size());
+    for(NoddleTests test : tests) {
+      localizedTestNames.add(resourceBundleMessageSource.getMessage(test.getAssetKey(), null, getLocale()));
+    }
+    return localizedTestNames;
+  }
+
+  Set<NoddleTests> getTestsCompleted(Set<String> resultTests) {
+    Set<NoddleTests> testsCompleted = new HashSet<NoddleTests>(resultTests.size());
+    for(String codeAsString : resultTests) {
+      Integer code = Integer.valueOf(codeAsString); // Throws NumberFormatException.
+      if(endDataCodeMap.containsKey(code)) {
+        testsCompleted.add(endDataCodeMap.get(code));
+      }
+    }
+    return testsCompleted;
   }
 
   public void sendDataToServer(Data binaryData) {
@@ -201,14 +251,14 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
     return warningPopup(key, null);
   }
 
-  private String failedTestsToString(Set<String> failedTests) {
-    String errorString = "";
-    if(failedTests != null) {
-      for(String errorCode : failedTests) {
-        errorString += "\n" + errorCode;
+  private String formatToString(Set<String> strings) {
+    String formattedString = "";
+    if(strings != null) {
+      for(String item : strings) {
+        formattedString += "\n" + item;
       }
     }
-    return errorString;
+    return formattedString;
   }
 
   private void initInputFile() {
@@ -239,28 +289,6 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
     } catch(IOException ex) {
       log.error("Could not delete NoddleTest result file: " + ex);
     }
-  }
-
-  // Maps implemented to find correspondence between the codes in the result file, the name in the configuration file
-  // and the description to show in the warning popup message
-  private static Map<String, Integer> populateNameCodeMap() {
-    Map<String, Integer> map = new HashMap<String, Integer>();
-    map.put("RT", 11);
-    map.put("PA", 21);
-    map.put("RQ", 31);
-    map.put("ST", 41);
-    map.put("WM", 51);
-    return map;
-  }
-
-  private static Map<String, String> populateNameDescMap() {
-    Map<String, String> map = new HashMap<String, String>();
-    map.put("RT", "Reaction Time");
-    map.put("PA", "Paired Associates Learning");
-    map.put("RQ", "Reasoning Quiz");
-    map.put("ST", "Attention Interface");
-    map.put("WM", "Working Memory");
-    return map;
   }
 
   public ExternalAppLauncherHelper getExternalAppHelper() {
@@ -313,12 +341,20 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
    */
   public void initializeNoddleTestInstrumentRunner() throws NoddleTestInsturmentRunnerException {
     initializeResourceBundle();
+    initializeEndDataCodeMap();
     validateSoftwareInstallPathExists();
     validateResultPathExists();
   }
 
   private void initializeResourceBundle() {
     resourceBundleMessageSource.setBasename(RESOURCE_BUNDLE_BASE_NAME);
+  }
+
+  void initializeEndDataCodeMap() {
+    endDataCodeMap = new HashMap<Integer, NoddleTests>();
+    for(NoddleTests noddleTest : NoddleTests.values()) {
+      endDataCodeMap.put(noddleTest.getEndDataCode(), noddleTest);
+    }
   }
 
   private void validateSoftwareInstallPathExists() throws NoddleTestInsturmentRunnerException {
@@ -339,4 +375,35 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
     }
   }
 
+  public boolean isConfigFileAndResultFileLocked() {
+    File wFile = new File(System.getProperty("java.io.tmpdir"), "NoddleConfigAndResultFile.lock");
+    try {
+      FileChannel channel = new RandomAccessFile(wFile, "rw").getChannel();
+
+      try {
+        configAndResultFileLock = channel.tryLock();
+      } catch(OverlappingFileLockException wEx) {
+        return true;
+      }
+
+      if(configAndResultFileLock == null) {
+        return true;
+      } else {
+        return false;
+      }
+
+    } catch(Exception wCouldNotDetermineIfRunning) {
+      wCouldNotDetermineIfRunning.printStackTrace();
+      return true;
+    }
+
+  }
+
+  void releaseConfigFileAndResultFileLock() {
+    try {
+      configAndResultFileLock.release();
+    } catch(IOException e) {
+      log.error("Unable to release Noddle config and result file lock. " + e);
+    }
+  }
 }

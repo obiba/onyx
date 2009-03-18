@@ -87,6 +87,11 @@ public class NoddleTestInstrumentRunnerTest {
       public void launch() {
         // do nothing
       }
+
+      @Override
+      public boolean isSotfwareAlreadyStarted(String lockname) {
+        return false;
+      }
     };
 
     noddleTestInstrumentRunner.setExternalAppHelper(externalAppHelper);
@@ -96,6 +101,7 @@ public class NoddleTestInstrumentRunnerTest {
     noddleTestInstrumentRunner.setInstrumentExecutionService(instrumentExecutionServiceMock);
 
     noddleTestInstrumentRunner.setLocale(Locale.CANADA);
+    noddleTestInstrumentRunner.initializeEndDataCodeMap();
   }
 
   @Test
@@ -103,6 +109,7 @@ public class NoddleTestInstrumentRunnerTest {
     expect(instrumentExecutionServiceMock.getInstrumentOperator()).andReturn("administratorUser");
     replay(instrumentExecutionServiceMock);
     noddleTestInstrumentRunner.initialize();
+    noddleTestInstrumentRunner.releaseConfigFileAndResultFileLock();
     verify(instrumentExecutionServiceMock);
 
     // Verify that the Noddle Test result file has been deleted successfully.
@@ -257,6 +264,25 @@ public class NoddleTestInstrumentRunnerTest {
       }
     });
     Assert.assertEquals("Expected 3 tests in the config file.", 3, configuredTests.size());
+  }
+
+  @Test
+  public void testConvertingStringCodesToCompletedTests() {
+    noddleTestInstrumentRunner.initializeEndDataCodeMap();
+    Set<String> input = new HashSet<String>();
+    input.add("22"); // PA end data code.
+    input.add("31"); // RQ data code.
+    Set<NoddleTests> completedTests = noddleTestInstrumentRunner.getTestsCompleted(input);
+    Assert.assertTrue(completedTests.contains(NoddleTests.PA));
+    Assert.assertEquals(1, completedTests.size());
+  }
+
+  @Test(expected = NumberFormatException.class)
+  public void testConvertingStringCodesToCompletedTestsWithNonIntegerInput() {
+    Set<String> input = new HashSet<String>();
+    input.add("22"); // PA end data code.
+    input.add("RQCodeIsNotAnInteger");
+    noddleTestInstrumentRunner.getTestsCompleted(input);
   }
 
   private void simulateResultsAndInput(String fileToCopy) throws FileNotFoundException, IOException, URISyntaxException {
