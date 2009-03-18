@@ -4,7 +4,7 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-  <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.cardiffuniversity.NoddleTestInstrumentRunner" init-method="validatePaths">
+  <bean name="instrumentRunner" class="org.obiba.onyx.jade.instrument.cardiffuniversity.NoddleTestInstrumentRunner" init-method="initializeNoddleTestInstrumentRunner">
     <property name="instrumentExecutionService" ref="instrumentExecutionService" />  
     <property name="externalAppHelper" ref="externalAppHelper"/>
     <property name="locale" ref="locale"/>

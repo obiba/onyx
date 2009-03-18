@@ -44,11 +44,13 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
   private Locale locale;
 
-  private ResourceBundleMessageSource resourceBundleMessageSource;
+  private ResourceBundleMessageSource resourceBundleMessageSource = new ResourceBundleMessageSource();
 
-  private static String CONFIG_FILENAME = "Config.txt";
+  private static String RESOURCE_BUNDLE_BASE_NAME = "ct-instrument";
 
-  private static String INPUT_FILENAME = "List.txt";
+  private static String NODDLE_CONFIG_FILENAME = "Config.txt";
+
+  private static String NODDLE_INPUT_ARGUMENT_FILENAME = "List.txt";
 
   private static String CLINIC_NAME = "ONYX";
 
@@ -57,11 +59,6 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
   private static Map<String, Integer> TEST_NAME_TO_TEST_CODE = populateNameCodeMap();
 
   private static Map<String, String> TEST_NAME_TO_TEST_DESC = populateNameDescMap();
-
-  public void afterPropertiesSet() throws Exception {
-    resourceBundleMessageSource = new ResourceBundleMessageSource();
-    resourceBundleMessageSource.setBasename("ct-instrument");
-  }
 
   public void initialize() {
     deleteDeviceData();
@@ -76,7 +73,7 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
 
   public void shutdown() {
     // Delete input file
-    File inputFile = new File(getSoftwareInstallPath() + File.separator + INPUT_FILENAME);
+    File inputFile = new File(getSoftwareInstallPath() + File.separator + NODDLE_INPUT_ARGUMENT_FILENAME);
 
     try {
       if(!inputFile.delete()) log.warn("Could not delete NoddleTest input file.");
@@ -118,7 +115,7 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
         sendDataToServer(binaryData);
 
         // Check that all configured tests are present
-        HashSet<String> configuredTests = extractTestsFromResultFile(new File(getSoftwareInstallPath() + File.separator + CONFIG_FILENAME), new LineCallback() {
+        HashSet<String> configuredTests = extractTestsFromResultFile(new File(getSoftwareInstallPath() + File.separator + NODDLE_CONFIG_FILENAME), new LineCallback() {
           public String handleLine(String line) {
             if(line.startsWith("!") == false) return (line.substring(0, 2));
             return null;
@@ -217,7 +214,7 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
   private void initInputFile() {
     BufferedWriter localInputFile = null;
     try {
-      localInputFile = new BufferedWriter(new FileWriter(getSoftwareInstallPath() + File.separator + INPUT_FILENAME));
+      localInputFile = new BufferedWriter(new FileWriter(getSoftwareInstallPath() + File.separator + NODDLE_INPUT_ARGUMENT_FILENAME));
       localInputFile.write("#" + CLINIC_NAME + "\n");
       localInputFile.write(instrumentExecutionService.getInstrumentOperator() + "\n");
     } catch(IOException e) {
@@ -240,7 +237,7 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
         if(!FileUtil.delete(file)) log.warn("Could not delete NoddleTest result file [" + file.getAbsolutePath() + "].");
       }
     } catch(IOException ex) {
-      log.warn("Could not delete NoddleTest result file: " + ex);
+      log.error("Could not delete NoddleTest result file: " + ex);
     }
   }
 
@@ -311,18 +308,24 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
   }
 
   /**
-   * Validates the softwareInstallPath and the resultPath. Shuts down instrument runner if not present.
-   * @throws NoddleTestInsturmentRunnerException thrown when paths are not present.
+   * Initialise instrument runner after all properties are set. Prevents life cycle execution if values do not validate.
+   * @throws NoddleTestInsturmentRunnerException thrown when property validation fails.
    */
-  public void validatePaths() throws NoddleTestInsturmentRunnerException {
+  public void initializeNoddleTestInstrumentRunner() throws NoddleTestInsturmentRunnerException {
+    initializeResourceBundle();
     validateSoftwareInstallPathExists();
     validateResultPathExists();
+  }
+
+  private void initializeResourceBundle() {
+    resourceBundleMessageSource.setBasename(RESOURCE_BUNDLE_BASE_NAME);
   }
 
   private void validateSoftwareInstallPathExists() throws NoddleTestInsturmentRunnerException {
     File path = new File(this.softwareInstallPath);
     if(!path.exists()) {
       String errorMessage = warningPopup("noddleInstallationDirectoryMissing", new String[] { path.getAbsolutePath() });
+      log.error(errorMessage);
       throw new NoddleTestInsturmentRunnerException(errorMessage);
     }
   }
@@ -331,6 +334,7 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
     File path = new File(this.resultPath);
     if(!path.exists()) {
       String errorMessage = warningPopup("noddleResultsDirectoryMissing", new String[] { path.getAbsolutePath() });
+      log.error(errorMessage);
       throw new NoddleTestInsturmentRunnerException(errorMessage);
     }
   }
