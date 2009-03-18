@@ -158,7 +158,7 @@ public class QuartzModule implements Module, IVariableProvider, ApplicationConte
     if(stage.getStageDependencyCondition() == null) {
       initialState = ready;
     } else {
-      Boolean condition = stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService);
+      Boolean condition = stage.getStageDependencyCondition().isDependencySatisfied(stage, activeInterviewService);
       if(condition == null) {
         initialState = waiting;
       } else if(condition == true) {

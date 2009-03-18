@@ -90,7 +90,7 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
 
   protected Boolean areDependenciesCompleted() {
     if(stage.getStageDependencyCondition() != null) {
-      return stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService);
+      return stage.getStageDependencyCondition().isDependencySatisfied(stage, activeInterviewService);
     }
     return true;
   }

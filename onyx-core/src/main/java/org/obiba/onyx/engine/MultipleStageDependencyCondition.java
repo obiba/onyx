@@ -20,8 +20,7 @@ import org.slf4j.LoggerFactory;
  * Allows composing two instances of {@link StageDependencyCondition} using a boolean operator.
  * <p>
  * The normal boolean logic applies for determining the return value. The notable cases are shown in the following
- * table.
- * <table>
+ * table. <table>
  * <tr>
  * <td>Operator</td>
  * <td>Left</td>
@@ -51,9 +50,8 @@ import org.slf4j.LoggerFactory;
  * <td>false</td>
  * <td>null</td>
  * </tr>
- * </table>
- * For the OR operator, null is returned whenever one of the two conditions is returns null and the other is false. The
- * reason being that one returning null may return true on subsequent calls.
+ * </table> For the OR operator, null is returned whenever one of the two conditions is returns null and the other is
+ * false. The reason being that one returning null may return true on subsequent calls.
  */
 public class MultipleStageDependencyCondition implements StageDependencyCondition {
 
@@ -67,7 +65,7 @@ public class MultipleStageDependencyCondition implements StageDependencyConditio
 
   private List<StageDependencyCondition> conditions;
 
-  public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
+  public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService) {
     if(conditions == null) throw new IllegalStateException("conditions cannot be null");
     if(conditions.size() < 2) throw new IllegalStateException("at least 2 conditions required for MultipleStageDependencyCondition");
     if(operator == null) throw new IllegalStateException("operator cannot be null");
@@ -77,12 +75,12 @@ public class MultipleStageDependencyCondition implements StageDependencyConditio
     }
 
     StageDependencyCondition condition = conditions.get(0);
-    Boolean returnValue = condition.isDependencySatisfied(activeInterviewService);
+    Boolean returnValue = condition.isDependencySatisfied(stage, activeInterviewService);
     for(int i = 1; i < conditions.size(); i++) {
       condition = conditions.get(i);
 
       Boolean left = returnValue;
-      Boolean right = condition.isDependencySatisfied(activeInterviewService);
+      Boolean right = condition.isDependencySatisfied(stage, activeInterviewService);
 
       switch(operator) {
       case AND:
