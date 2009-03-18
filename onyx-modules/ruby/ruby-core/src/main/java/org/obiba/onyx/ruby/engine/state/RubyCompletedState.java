@@ -44,8 +44,6 @@ public class RubyCompletedState extends AbstractRubyStageState {
   public void stop(Action action) {
     log.debug("Ruby Stage {} is cancelling", super.getStage().getName());
 
-    activeTubeRegistrationService.deleteParticipantTubeRegistration();
-
     if(areDependenciesCompleted() != null && areDependenciesCompleted()) {
       castEvent(TransitionEvent.CANCEL);
     } else {
@@ -61,5 +59,11 @@ public class RubyCompletedState extends AbstractRubyStageState {
   @Override
   public ActionType getStartingActionType() {
     return ActionType.EXECUTE;
+  }
+
+  @Override
+  public void onExit(TransitionEvent event) {
+    // ONYX-366: Delete participant tube registration whenever Ruby leaves the COMPLETED state.
+    activeTubeRegistrationService.deleteParticipantTubeRegistration();
   }
 }
