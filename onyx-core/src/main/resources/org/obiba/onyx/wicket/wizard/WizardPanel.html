@@ -3,12 +3,12 @@
 		<div class="form-data" id="wizardContent">						
 			<span wicket:id="step" />		
 		</div>
-		<div class="form-button" id="wizardFooter" style="text-align:right;">
+		<div class="form-button" id="wizardFooter">
 			<input type="button" wicket:id="previousLink"/>
 			<input type="button" wicket:id="nextLink"/>
-			<input type="submit" wicket:id="finish" />
-			<input type="button" wicket:id="cancelLink" style="margin-right:10px;"/>
-		</div>				
+			<input type="submit" wicket:id="finish"/>
+			<input type="button" wicket:id="cancelLink"/>
+		</div>
 	</form>	
 	<script language="JavaScript">
 		WindowUtil.attachEvent("load", Resizer.resizeWizard);
