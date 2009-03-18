@@ -163,6 +163,12 @@ public class DefaultAppointmentManagementServiceImpl implements AppointmentManag
     if(outputDir != null) {
       try {
         appointmentListUpdatelog.info("Moving file {} to output directory {}.", file.getName(), getOutputDir().getAbsolutePath());
+
+        // Re-create output directory, in case it was deleted at runtime.
+        if(!getOutputDir().exists()) {
+          getOutputDir().mkdirs();
+        }
+
         FileUtil.moveFile(file, getOutputDir());
       } catch(IOException e) {
         appointmentListUpdatelog.error("Abort updating appointments: Archiving file error {} - {}", file.getName(), e.getMessage());
@@ -171,6 +177,9 @@ public class DefaultAppointmentManagementServiceImpl implements AppointmentManag
         vex.reject("ParticipantsListFileArchivingError", new String[] { e.getMessage() }, "Archiving file error: " + e.getMessage());
         throw vex;
       }
+    } else {
+      // If no output directory has been configured, just delete the file.
+      file.delete();
     }
 
   }
