@@ -162,6 +162,9 @@ public class OpenAnswerDefinitionBuilder extends AbstractQuestionnaireElementBui
    * @return
    */
   public OpenAnswerDefinitionBuilder addValidator(ComparisonOperator comparisonOperator, String property) {
+    if(!checkNamePattern(property)) {
+      throw new IllegalArgumentException("Not a valid Participant property: " + property + ". Expected pattern is " + NAME_PATTERN);
+    }
     element.addValidationDataSource(new ComparingDataSource(null, comparisonOperator, new ParticipantPropertyDataSource(property)));
     return this;
   }
