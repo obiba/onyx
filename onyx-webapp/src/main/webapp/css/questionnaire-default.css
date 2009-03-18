@@ -1,7 +1,8 @@
 /*
-* Customized simplified (for touchscreen) questionnaire elements stylesheet.
+* Customized default questionnaire elements stylesheet.
 * Use css classes based on questionnaire elements (<questionnaire>-<type>-<name>).
 * Use .obiba-lang-* class to customize per questionnaire administration language.
 */
 
-@import url("questionnaire-simplified-obiba.css");
+@import url("questionnaire-default-obiba.css");
+

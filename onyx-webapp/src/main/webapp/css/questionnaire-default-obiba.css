@@ -1,6 +1,11 @@
 /*
-* Default Questionnaire elements stylesheet.
-* Maybe customized with generated css classes based on questionnaire elements (<questionnaire>-<type>-<name>).
+* Customized default questionnaire elements stylesheet.
+* Use css classes based on questionnaire elements (<questionnaire>-<type>-<name>).
+* Use .obiba-lang-* class to customize per questionnaire administration language.
+*/
+
+/*
+* Default questionnaire elements stylesheet.
 */
 
 .obiba-quartz-form-data {
