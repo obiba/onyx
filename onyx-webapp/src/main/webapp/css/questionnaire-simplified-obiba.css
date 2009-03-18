@@ -2,6 +2,9 @@
 * Simplified (for touchscreen) questionnaire elements stylesheet.
 */
 
+@import url("progressbar.css");
+@import url("numericpad.css");
+
 .obiba-quartz-page {
 	font: normal 18px arial, sans-serif;
 	color: #000;
@@ -140,12 +143,16 @@ a.button, .obiba-quartz-category .top-right {
     background: transparent url('../icons/button_gray_full.png') no-repeat scroll top right;
 }
 
-a.button .label {
+a.button .label-container {
     display: block;
     padding-top: 7px;
     padding-left: 18px;
     padding-right: 18px;
     background: transparent url('../icons/button_gray_top-left.png') no-repeat;
+}
+
+a.button .label {
+
 }
 
 a.button .description {
@@ -184,7 +191,7 @@ a.button {
     background: transparent url('../icons/button_orange_full.png') no-repeat scroll top right;
 }
 
-.obiba-quartz-category.ui-state-highlight a.button .label, .obiba-quartz-category.ui-state-highlight img.ui-state-highlight {
+.obiba-quartz-category.ui-state-highlight a.button .label-container, .obiba-quartz-category.ui-state-highlight img.ui-state-highlight {
     background: transparent url('../icons/button_orange_top-left.png') no-repeat;
 }
 
