@@ -62,7 +62,7 @@ public class QuestionnaireWizardAdministrationPanel extends Panel {
       }
 
     };
-    link.add(new AttributeModifier("value", true, new StringResourceModel("Cancel", this, null)));
+    link.add(new AttributeModifier("value", true, new StringResourceModel("CancelQuestionnaire", this, null)));
     add(link);
 
     AjaxButton finish = new AjaxButton("finish", wizardForm) {
