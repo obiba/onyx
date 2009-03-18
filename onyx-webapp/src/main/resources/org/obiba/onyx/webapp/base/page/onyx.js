@@ -129,6 +129,10 @@ Resizer.resizeMenu = function() {
 }
 WindowUtil.attachEvent("load", Resizer.resizeMenu);
 
+Resizer.resizeConsentFrame = function() {
+    Resizer.resize('consentFrame',180);
+}
+
 function resizeModalFeedback() {
 	var feedback = $('div.wicket-modal div.onyx ul.feedback');
 	var modalContent = $('div.wicket-modal div.onyx div.w_content > div');
