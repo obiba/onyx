@@ -1080,3 +1080,8 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 .obiba-scrollable {
   overflow: auto;
 }
+
+.obiba-feedback ul {
+  height: 120px;
+  overflow: auto;
+}
