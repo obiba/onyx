@@ -361,6 +361,15 @@ text-align:center;
   text-align: right;  
 }
 
+#pageFooter > div#currentUser {
+  float: left; margin-left: 16px;
+}
+
+#pageFooter > div#currentVersion {
+  float: right;
+}
+
+
 #spacer {
   height:30px;
   clear:both;
