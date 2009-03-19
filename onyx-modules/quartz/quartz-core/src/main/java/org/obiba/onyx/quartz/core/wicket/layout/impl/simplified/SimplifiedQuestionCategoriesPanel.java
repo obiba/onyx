@@ -178,9 +178,9 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     public OpenFragment(String id, IModel questionCategoryModel, int index) {
       super(id, "openFragment", SimplifiedQuestionCategoriesPanel.this);
 
-      // do not display the or before the first open answer item
+      // do not display the or before the first open answer item or if the question is multiple
       if(getQuestion().isMultiple() || index == 0) {
-        add(new EmptyPanel("or").setVisible(false));
+        add(new EmptyPanel("or").setVisible(index != 0));
       } else {
         add(new Label("or", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "or")));
       }
