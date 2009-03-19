@@ -97,6 +97,7 @@ div.wicket-modal div.onyx .obiba-numeric-pad .obiba-quartz-padForm  .valuepresse
 
 .obiba-button-ok a.button .label {
     padding-right:5px;
+    text-transform: uppercase;
 }
 
 .obiba-button-ok a.button img {

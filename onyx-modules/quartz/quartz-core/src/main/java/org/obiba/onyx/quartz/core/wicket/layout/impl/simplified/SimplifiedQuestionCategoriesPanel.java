@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
@@ -117,6 +118,10 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     return getModel();
   }
 
+  private Question getQuestion() {
+    return (Question) getModelObject();
+  }
+
   public void onQuestionCategorySelection(final AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
     log.debug("onQuestionCategorySelection({}, {}, {})", new Object[] { questionModel, questionCategoryModel, isSelected });
     // optimize by updating only the selection state that have changed
@@ -174,7 +179,7 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
       super(id, "openFragment", SimplifiedQuestionCategoriesPanel.this);
 
       // do not display the or before the first open answer item
-      if(index == 0) {
+      if(getQuestion().isMultiple() || index == 0) {
         add(new EmptyPanel("or").setVisible(false));
       } else {
         add(new Label("or", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "or")));

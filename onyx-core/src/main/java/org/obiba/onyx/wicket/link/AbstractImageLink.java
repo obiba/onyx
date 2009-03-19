@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.wicket.link;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
@@ -23,6 +24,8 @@ import org.apache.wicket.model.IModel;
 public abstract class AbstractImageLink extends Panel {
 
   private static final long serialVersionUID = 1L;
+
+  private AbstractLink link;
 
   /**
    * 
@@ -41,37 +44,22 @@ public abstract class AbstractImageLink extends Panel {
   public AbstractImageLink(String id, IModel labelModel, IModel descriptionModel, ResourceReference imageDecorator) {
     super(id, labelModel);
 
-    AbstractLink link = newLink("link");
-
-    link.add(new Label("label", labelModel).setEscapeModelStrings(false));
-    if(descriptionModel != null) {
-      link.add(new Label("description", descriptionModel).setEscapeModelStrings(false));
-    } else {
-      link.add(new Label("description"));
-    }
-
-    addDecorator(imageDecorator, link);
-
-    add(link);
-
+    initialize(labelModel, descriptionModel);
+    addDecorator(imageDecorator);
   }
 
   /**
-   * Add image decorator to image link.
    * 
-   * @param imageDecorator Image to add as a decorator.
-   * @param link
+   * @param id
+   * @param labelModel
+   * @param descriptionModel
+   * @param imageDecoratorModel image src attribute value
    */
-  private void addDecorator(ResourceReference imageDecorator, AbstractLink link) {
-    Image image;
-    if(imageDecorator != null) {
-      image = new Image("decorator", imageDecorator);
-      link.add(image);
-    } else {
-      image = new Image("decorator");
-      image.setVisible(false);
-    }
-    link.add(image);
+  public AbstractImageLink(String id, IModel labelModel, IModel descriptionModel, IModel imageDecoratorModel) {
+    super(id, labelModel);
+
+    initialize(labelModel, descriptionModel);
+    addDecorator(imageDecoratorModel);
   }
 
   /**
@@ -81,7 +69,60 @@ public abstract class AbstractImageLink extends Panel {
    * @param imageDecorator
    */
   public AbstractImageLink(String id, IModel labelModel, IModel descriptionModel) {
-    this(id, labelModel, descriptionModel, null);
+    super(id, labelModel);
+
+    initialize(labelModel, descriptionModel);
+    addNoDecorator();
+  }
+
+  private void initialize(IModel labelModel, IModel descriptionModel) {
+    link = newLink("link");
+
+    link.add(new Label("label", labelModel).setEscapeModelStrings(false));
+    if(descriptionModel != null) {
+      link.add(new Label("description", descriptionModel).setEscapeModelStrings(false));
+    } else {
+      link.add(new Label("description"));
+    }
+    add(link);
+  }
+
+  /**
+   * Add image decorator to image link.
+   * 
+   * @param imageDecorator image resource
+   */
+  private void addDecorator(ResourceReference imageDecorator) {
+    if(imageDecorator != null) {
+      Image image = new Image("decorator", imageDecorator);
+      link.add(image);
+    } else {
+      addNoDecorator();
+    }
+  }
+
+  /**
+   * Add image decorator to image link.
+   * 
+   * @param imageDecoratorModel image src attribute value
+   */
+  private void addDecorator(IModel imageDecoratorModel) {
+    if(imageDecoratorModel != null) {
+      Image image = new Image("decorator");
+      image.add(new AttributeModifier("src", imageDecoratorModel));
+      link.add(image);
+    } else {
+      addNoDecorator();
+    }
+  }
+
+  /**
+   * Hide image tag.
+   */
+  private void addNoDecorator() {
+    Image image = new Image("decorator");
+    image.setVisible(false);
+    link.add(image);
   }
 
   protected abstract AbstractLink newLink(String id);
