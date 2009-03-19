@@ -65,6 +65,7 @@ public abstract class BaseQuestionCategorySelectionPanel extends Panel {
     if(wizard != null && wizard.getFeedbackPanel() != null) {
       target.addComponent(wizard.getFeedbackPanel());
     }
+    target.appendJavascript("Resizer.resizeWizard();");
   }
 
   /**
