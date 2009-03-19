@@ -24,7 +24,6 @@ import java.util.Set;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.cardiffuniversity.NoddleTestInstrumentRunner.LineCallback;
@@ -200,7 +199,6 @@ public class NoddleTestInstrumentRunnerTest {
     Assert.assertTrue(new File(noddleTestInstrumentRunner.getResultPath()).listFiles().length == 2);
   }
 
-  @Ignore("Temporarily, while figuring out why it doesn't work on windows.")
   @Test
   public void testShutdown() throws FileNotFoundException, IOException, URISyntaxException, InterruptedException {
     simulateResultsAndInput(RESULT_FILENAME);

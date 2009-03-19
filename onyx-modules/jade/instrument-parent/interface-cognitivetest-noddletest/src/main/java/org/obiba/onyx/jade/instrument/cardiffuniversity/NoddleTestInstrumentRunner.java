@@ -375,7 +375,7 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
     }
   }
 
-  public boolean isConfigFileAndResultFileLocked() {
+  boolean isConfigFileAndResultFileLocked() {
     File wFile = new File(System.getProperty("java.io.tmpdir"), "NoddleConfigAndResultFile.lock");
     try {
       FileChannel channel = new RandomAccessFile(wFile, "rw").getChannel();
@@ -400,10 +400,14 @@ public class NoddleTestInstrumentRunner implements InstrumentRunner {
   }
 
   void releaseConfigFileAndResultFileLock() {
-    try {
-      configAndResultFileLock.release();
-    } catch(IOException e) {
-      log.error("Unable to release Noddle config and result file lock. " + e);
+    if(configAndResultFileLock == null) {
+      log.error("We do not own the Noddle config and result file lock, yet we are attempting to release it.");
+    } else {
+      try {
+        configAndResultFileLock.release();
+      } catch(IOException e) {
+        log.error("Unable to release Noddle config and result file lock. " + e);
+      }
     }
   }
 }
