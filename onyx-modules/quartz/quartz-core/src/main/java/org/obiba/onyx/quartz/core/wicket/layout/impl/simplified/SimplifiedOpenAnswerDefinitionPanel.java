@@ -14,6 +14,7 @@ import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -144,7 +145,9 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
   public AbstractOpenAnswerDefinitionPanel createPad(ModalWindow padWindow) {
     DataType type = getOpenAnswerDefinition().getDataType();
     if(type.equals(DataType.INTEGER) || type.equals(DataType.DECIMAL)) {
-      return new NumericPad(padWindow.getContentId(), getQuestionModel(), getQuestionCategoryModel(), getOpenAnswerDefinitionModel(), padWindow);
+      NumericPad pad = new NumericPad(padWindow.getContentId(), getQuestionModel(), getQuestionCategoryModel(), getOpenAnswerDefinitionModel());
+      padWindow.setTitle(new StringResourceModel("NumericPadTitle", pad, null));
+      return pad;
     } else {
       throw new UnsupportedOperationException("Pad for type " + type + " not supported yet.");
     }

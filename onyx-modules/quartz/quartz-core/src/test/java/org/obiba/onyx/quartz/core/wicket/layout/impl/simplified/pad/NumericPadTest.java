@@ -156,7 +156,7 @@ public class NumericPadTest {
         QuestionCategory category = question.getQuestionCategories().get(0);
         ModalWindow modal = new MyModalWindow("modal");
 
-        return new NumericPad("panel", new Model(question), new Model(question.getQuestionCategories().get(0)), new Model(category.getOpenAnswerDefinition()), modal) {
+        return new NumericPad("panel", new Model(question), new Model(question.getQuestionCategories().get(0)), new Model(category.getOpenAnswerDefinition())) {
           @Override
           public Locale getLocale() {
             // for error messages in english
@@ -183,8 +183,6 @@ public class NumericPadTest {
   @Test
   public void testNumericPadButtons() {
 
-    showModal(true);
-
     // Enter "123456789" on the numeric pad.
     tester.executeAjaxEvent("panel:1:button:link", "onclick");
     tester.executeAjaxEvent("panel:2:button:link", "onclick");
@@ -208,14 +206,10 @@ public class NumericPadTest {
     // Press the cancel button.
     tester.executeAjaxEvent("panel:form:cancel:link", "onclick");
 
-    // Verify that modal is closed
-    Assert.assertFalse(isModalShown());
-
   }
 
   @Test
   public void testValidNumericPadSubmit() {
-    showModal(true);
 
     // Enter "1973" on the numeric pad.
     tester.executeAjaxEvent("panel:1:button:link", "onclick");
@@ -242,14 +236,10 @@ public class NumericPadTest {
 
     verify(activeQuestionnaireAdministrationServiceMock);
 
-    // Verify that modal is closed
-    Assert.assertFalse(isModalShown());
-
   }
 
   @Test
   public void testInvalidNumericPadSubmit() {
-    showModal(true);
 
     EasyMock.reset(activeQuestionnaireAdministrationServiceMock);
 
@@ -268,14 +258,6 @@ public class NumericPadTest {
 
     verify(activeQuestionnaireAdministrationServiceMock);
 
-  }
-
-  public boolean isModalShown() {
-    return modalIsShown;
-  }
-
-  public void showModal(boolean modalIsOpen) {
-    this.modalIsShown = modalIsOpen;
   }
 
 }

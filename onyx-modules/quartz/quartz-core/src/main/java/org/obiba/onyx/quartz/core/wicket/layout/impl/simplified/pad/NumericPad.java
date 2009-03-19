@@ -17,11 +17,12 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IValidator;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.NoDragBehavior;
@@ -53,14 +54,11 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
    * @param model
    */
   @SuppressWarnings("serial")
-  public NumericPad(String id, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel, final ModalWindow padWindow) {
+  public NumericPad(String id, IModel questionModel, IModel questionCategoryModel, IModel openAnswerDefinitionModel) {
 
     super(id, questionModel, questionCategoryModel, openAnswerDefinitionModel);
 
-    // Set the title of the modal window.
-    padWindow.setTitle(new StringResourceModel("NumericPadTitle", this, null));
-
-    final DataType type = getOpenAnswerDefinition().getDataType();
+    DataType type = getOpenAnswerDefinition().getDataType();
 
     // Create the dialog input field.
     valuePressed = createPadInputField(type);
@@ -71,8 +69,8 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
     final FeedbackPanel padFeedbackPanel = new FeedbackPanel("feedback");
 
     // Create the dialog action buttons.
-    AjaxImageSubmitLink submitButton = createSubmitButton(padWindow, type, padFeedbackPanel);
-    AjaxImageLink cancelButton = createCancelButton(padWindow);
+    AjaxImageSubmitLink submitButton = createSubmitButton(type, padFeedbackPanel);
+    AjaxImageLink cancelButton = createCancelButton();
     AjaxImageLink clearButton = createClearButton();
 
     // Add the numeric buttons to the numeric pad.
@@ -115,7 +113,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
     return link;
   }
 
-  private AjaxImageLink createCancelButton(final ModalWindow padWindow) {
+  private AjaxImageLink createCancelButton() {
     AjaxImageLink link = new AjaxImageLink("cancel", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "cancel")) {
 
       private static final long serialVersionUID = 1L;
@@ -123,7 +121,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
       @Override
       public void onClick(AjaxRequestTarget target) {
         resetField();
-        padWindow.close(target);
+        ModalWindow.closeCurrent(target);
       }
 
     };
@@ -131,7 +129,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
     return link;
   }
 
-  private AjaxImageSubmitLink createSubmitButton(final ModalWindow padWindow, final DataType type, final FeedbackPanel padFeedbackPanel) {
+  private AjaxImageSubmitLink createSubmitButton(final DataType type, final FeedbackPanel padFeedbackPanel) {
     AjaxImageSubmitLink link = new AjaxImageSubmitLink("ok", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "ok"), null, new Model("icons/check_ok.png")) {
 
       private static final long serialVersionUID = 1L;
@@ -164,15 +162,27 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
           setData(null);
         }
 
+        Question question = getQuestion();
+        QuestionCategory questionCategory = getQuestionCategory();
         // persist
-        if(!getQuestion().isMultiple()) {
+        if(!question.isMultiple() || questionCategory.isEscape()) {
           // exclusive choice: delete other category answers
-          for(CategoryAnswer categoryAnswer : activeQuestionnaireAdministrationService.findAnswers(getQuestion())) {
-            if(!categoryAnswer.getCategoryName().equals(getQuestionCategory().getCategory().getName())) {
-              activeQuestionnaireAdministrationService.deleteAnswer(getQuestion(), getQuestion().findQuestionCategory(categoryAnswer.getCategoryName()));
+          for(CategoryAnswer categoryAnswer : activeQuestionnaireAdministrationService.findAnswers(question)) {
+            if(!categoryAnswer.getCategoryName().equals(questionCategory.getCategory().getName())) {
+              activeQuestionnaireAdministrationService.deleteAnswer(question, question.findQuestionCategory(categoryAnswer.getCategoryName()));
+            }
+          }
+        } else if(!questionCategory.isEscape()) {
+          // in case of multiple answer, make sure when selecting a regular category that a previously selected one is
+          // deselected
+          for(CategoryAnswer categoryAnswer : activeQuestionnaireAdministrationService.findAnswers(question)) {
+            QuestionCategory qCategory = question.findQuestionCategory(categoryAnswer.getCategoryName());
+            if(qCategory != null && qCategory.isEscape()) {
+              activeQuestionnaireAdministrationService.deleteAnswer(question, qCategory);
             }
           }
         }
+
         if(getData() != null) {
           activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
         } else {
@@ -184,7 +194,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
         target.addComponent(valuePressed);
 
         // close pad modal window
-        padWindow.close(target);
+        ModalWindow.closeCurrent(target);
 
       }
 
