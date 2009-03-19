@@ -22,8 +22,8 @@ public class InverseStageDependencyCondition implements StageDependencyCondition
 
   private Boolean valueWhenNull = false;
 
-  public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService) {
-    Boolean value = stageDependencyCondition.isDependencySatisfied(stage, activeInterviewService);
+  public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
+    Boolean value = stageDependencyCondition.isDependencySatisfied(activeInterviewService);
 
     if(value == null) return valueWhenNull;
     return !value;

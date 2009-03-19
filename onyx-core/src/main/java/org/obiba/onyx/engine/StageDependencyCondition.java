@@ -34,7 +34,7 @@ public interface StageDependencyCondition {
    * @param activeInterviewService used to obtain {@link IStageExecution} instances of dependent {@link Stage}s
    * @return true, false or null as described above.
    */
-  public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService);
+  public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService);
 
   /**
    * Returns true if this instance has a dependency on the specified {@link Stage}.

@@ -537,7 +537,7 @@ public class RubyModuleTest {
       stageDependencies = new HashSet<String>();
     }
 
-    public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService) {
+    public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
       return dependencySatisfied;
     }
 

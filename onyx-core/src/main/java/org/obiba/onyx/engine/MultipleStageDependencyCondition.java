@@ -65,7 +65,7 @@ public class MultipleStageDependencyCondition implements StageDependencyConditio
 
   private List<StageDependencyCondition> conditions;
 
-  public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService) {
+  public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
     if(conditions == null) throw new IllegalStateException("conditions cannot be null");
     if(conditions.size() < 2) throw new IllegalStateException("at least 2 conditions required for MultipleStageDependencyCondition");
     if(operator == null) throw new IllegalStateException("operator cannot be null");
@@ -75,12 +75,12 @@ public class MultipleStageDependencyCondition implements StageDependencyConditio
     }
 
     StageDependencyCondition condition = conditions.get(0);
-    Boolean returnValue = condition.isDependencySatisfied(stage, activeInterviewService);
+    Boolean returnValue = condition.isDependencySatisfied(activeInterviewService);
     for(int i = 1; i < conditions.size(); i++) {
       condition = conditions.get(i);
 
       Boolean left = returnValue;
-      Boolean right = condition.isDependencySatisfied(stage, activeInterviewService);
+      Boolean right = condition.isDependencySatisfied(activeInterviewService);
 
       switch(operator) {
       case AND:

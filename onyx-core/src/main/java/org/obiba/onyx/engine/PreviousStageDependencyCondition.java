@@ -36,7 +36,7 @@ public class PreviousStageDependencyCondition implements StageDependencyConditio
     this.stageName = name;
   }
 
-  public Boolean isDependencySatisfied(Stage stage, ActiveInterviewService activeInterviewService) {
+  public Boolean isDependencySatisfied(ActiveInterviewService activeInterviewService) {
     log.info("stageName={}", stageName);
     IStageExecution stageExecution = activeInterviewService.getStageExecution(stageName);
     if(stageExecution == null) {
@@ -44,17 +44,7 @@ public class PreviousStageDependencyCondition implements StageDependencyConditio
       return true;
     }
 
-    if(stageExecution.isInteractive()) {
-      // ONYX-383 if slave is completed, it means that dependencies were already satisfied
-      // then ignore the transition of the master that is being modified
-      // and wait for the master to be in a stable state
-      IStageExecution stageSlave = activeInterviewService.getStageExecution(stage);
-      if(stageSlave.isCompleted()) {
-        return true;
-      } else {
-        return null;
-      }
-    } else if(!stageExecution.isCompleted()) {
+    if(stageExecution.isCompleted() == false) {
       return null;
     } else {
       return true;

@@ -100,9 +100,9 @@ public class MicaModule implements Module, IVariableProvider, ApplicationContext
     if(stage.getStageDependencyCondition() == null) {
       exec.setInitialState(ready);
     } else {
-      if(stage.getStageDependencyCondition().isDependencySatisfied(stage, activeInterviewService) == null) {
+      if(stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService) == null) {
         exec.setInitialState(waiting);
-      } else if(stage.getStageDependencyCondition().isDependencySatisfied(stage, activeInterviewService) == true) {
+      } else if(stage.getStageDependencyCondition().isDependencySatisfied(activeInterviewService) == true) {
         exec.setInitialState(ready);
       }
     }
