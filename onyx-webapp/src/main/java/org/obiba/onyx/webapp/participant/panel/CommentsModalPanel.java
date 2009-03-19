@@ -48,6 +48,7 @@ import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.markup.html.table.DetachableEntityModel;
 import org.obiba.wicket.model.MessageSourceResolvableStringModel;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 
 public abstract class CommentsModalPanel extends Panel {
 
@@ -227,7 +228,7 @@ public abstract class CommentsModalPanel extends Panel {
 
       IModel actionModel;
       if(comment.getActionType() != null) {
-        actionModel = new StringResourceModel("action." + comment.getActionType(), this, null);
+        actionModel = new MessageSourceResolvableStringModel(new DefaultMessageSourceResolvable("action." + comment.getActionType()));
       } else {
         actionModel = new StringResourceModel("GeneralComment", this, null);
       }
@@ -235,7 +236,9 @@ public abstract class CommentsModalPanel extends Panel {
 
       User currentUser = comment.getUser();
       kvPanel.addRow(new StringResourceModel("WrittenBy", this, null), new Label(KeyValueDataPanel.getRowValueId(), currentUser.getFirstName() + " " + currentUser.getLastName()));
-      if(comment.getEventReason() != null) kvPanel.addRow(new StringResourceModel("Reason", this, null), new StringResourceModel(comment.getEventReason(), this, null));
+      if(comment.getEventReason() != null) {
+        kvPanel.addRow(new StringResourceModel("Reason", this, null), new MessageSourceResolvableStringModel(new DefaultMessageSourceResolvable(comment.getEventReason())));
+      }
       kvPanel.addRow(new StringResourceModel("Comment", this, null), new MultiLineLabel(KeyValueDataPanel.getRowValueId(), new PropertyModel(comment, "comment")));
       item.add(kvPanel);
 
