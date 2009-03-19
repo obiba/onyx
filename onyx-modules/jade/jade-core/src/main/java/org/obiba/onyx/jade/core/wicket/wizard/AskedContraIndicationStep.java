@@ -41,8 +41,8 @@ public class AskedContraIndicationStep extends AbstractJadeContraIndicationStep 
   }
 
   @Override
-  public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
-    super.onStepOutNext(form, target);
+  protected void persistContraindicatable() {
+    super.persistContraindicatable();
     askedContraIndicationPanel.saveContraIndicationSelection();
   }
 
