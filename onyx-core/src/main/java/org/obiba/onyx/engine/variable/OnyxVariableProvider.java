@@ -47,6 +47,8 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
   public static final String ENROLLMENT_ID = "enrollmentId";
 
+  public static final String APPOINTMENT_DATE = "appointmentDate";
+
   public static final String GENDER = "gender";
 
   public static final String FIRST_NAME = "firstName";
@@ -125,6 +127,8 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
         varData.addData(DataBuilder.buildText(participant.getBarcode()));
       } else if(variable.getName().equals(ENROLLMENT_ID)) {
         varData.addData(DataBuilder.buildText(participant.getEnrollmentId()));
+      } else if(variable.getName().equals(APPOINTMENT_DATE) && participant.getAppointment() != null) {
+        varData.addData(DataBuilder.buildDate(participant.getAppointment().getDate()));
       } else if(variable.getName().equals(GENDER)) {
         varData.addData(DataBuilder.buildText(participant.getGender().toString()));
       } else if(variable.getName().equals(FIRST_NAME)) {
@@ -208,6 +212,7 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
     Variable entity = admin.addVariable(new Variable(PARTICIPANT));
     entity.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT).setKey(PARTICIPANT_KEY));
     entity.addVariable(new Variable(ENROLLMENT_ID).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
+    entity.addVariable(new Variable(APPOINTMENT_DATE).setDataType(DataType.DATE)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(GENDER).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(FIRST_NAME).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(LAST_NAME).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
