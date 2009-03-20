@@ -1,23 +1,16 @@
 td.valuepressed-value {
-	width: 65px;
-}
-
-.obiba-numeric-pad #valuePressed {
-  border:1px solid #B7B7B7;
-  color:black;
-  font-size:24px;
-  font-weight:bold;
-  padding:3px;
   text-align:right;
-  margin-left:5px;
 }
 
 .obiba-numeric-pad #valuePressed input {
-  border-style:none;
-  width:50px;
+  border:1px solid #B7B7B7;
+  font-weight:bold;
   font-size:22px;
-  height:25px;  
-  text-align:right;
+  height:25px;
+  text-align: right;
+  width:60px;
+  padding-top:5px;
+  padding-bottom:5px;
 }
 
 .obiba-numeric-pad a.button .label-container {
@@ -77,6 +70,11 @@ div.wicket-modal div.onyx .obiba-numeric-pad .feedback {
 div.wicket-modal div.onyx .obiba-numeric-pad .obiba-quartz-padForm  .valuepressed-label {  
   font-size:14px;
   text-align: right;
+}
+
+div.wicket-modal div.onyx .obiba-numeric-pad .obiba-quartz-padForm  .valuepressed-unit {  
+  font-size:14px;
+  text-align: left;
 }
 
 .obiba-numeric-pad .obiba-quartz-padForm  table {

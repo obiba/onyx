@@ -112,6 +112,7 @@ public class NumericPadTest {
     messageSource.addMessage("Questionnaire.HealthQuestionnaireSelfAdministered.cancel", locale, "Cancel");
     messageSource.addMessage("Questionnaire.HealthQuestionnaireSelfAdministered.reset", locale, "Clear");
     messageSource.addMessage("QuestionCategory.Q1.1.label", locale, "Choice one");
+    messageSource.addMessage("OpenAnswerDefinition.OPEN_INT.unitLabel", locale, "");
 
     propertyKeyProvider = new DefaultPropertyKeyProviderImpl();
 
@@ -133,12 +134,15 @@ public class NumericPadTest {
 
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaireParticipant()).andReturn(questionnaireParticipant).times(1);
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).times(4);
+    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).atLeastOnce();
 
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaireSelfAdministered")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
+      if(qCategory.getOpenAnswerDefinition() != null) {
+        expect(questionnaireBundleMock.getPropertyKey(qCategory.getOpenAnswerDefinition(), "unitLabel")).andReturn(propertyKeyProvider.getPropertyKey(qCategory.getOpenAnswerDefinition(), "unitLabel")).atLeastOnce();
+      }
     }
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(questionnaire, "reset")).andReturn(propertyKeyProvider.getPropertyKey(questionnaire, "reset")).atLeastOnce();

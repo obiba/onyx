@@ -10,6 +10,7 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.pad;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -18,6 +19,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.value.ValueMap;
 import org.apache.wicket.validation.IValidator;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
@@ -40,6 +42,8 @@ import org.slf4j.LoggerFactory;
 public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPadSelectionListener {
 
   private static final long serialVersionUID = 1L;
+
+  public static final String INPUT_SIZE_KEY = "size";
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(NumericPad.class);
@@ -81,6 +85,7 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
     padForm.add(valuePressed);
 
     padForm.add(new Label("category", labelModel));
+    padForm.add(new Label("unit", new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), "unitLabel")));
     padForm.add(submitButton);
     padForm.add(cancelButton);
     padForm.add(clearButton);
@@ -222,18 +227,28 @@ public class NumericPad extends AbstractOpenAnswerDefinitionPanel implements IPa
 
   private DataField createPadInputField(final DataType type) {
     // Create the numeric pad input field.
-    DataField valuePressed = new DataField("value", new PropertyModel(this, "data"), type);
-    valuePressed.getField().clearInput();
-    valuePressed.setOutputMarkupId(true);
-    valuePressed.setMarkupId("valuePressed");
-    valuePressed.setRequired(true);
+    DataField openField = new DataField("value", new PropertyModel(this, "data"), type);
+    openField.getField().clearInput();
+    openField.setOutputMarkupId(true);
+    openField.setMarkupId("valuePressed");
+    openField.setRequired(true);
+
+    ValueMap arguments = getOpenAnswerDefinition().getUIArgumentsValueMap();
+    int size = 2;
+    if(arguments != null) {
+      size = arguments.getInt(INPUT_SIZE_KEY, -1);
+    }
+    if(size < 1) {
+      size = 1;
+    }
+    openField.add(new AttributeAppender("size", new Model(Integer.toString(size)), ""));
 
     // Transfer the validators of the OpenAnswer field to the numeric pad.
     for(IValidator dataValidator : OpenAnswerDefinitionValidatorFactory.getValidators(getOpenAnswerDefinitionModel(), activeQuestionnaireAdministrationService.getQuestionnaireParticipant().getParticipant())) {
-      valuePressed.add(dataValidator);
+      openField.add(dataValidator);
     }
 
-    return valuePressed;
+    return openField;
   }
 
   @Override
