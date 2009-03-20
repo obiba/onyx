@@ -248,25 +248,20 @@
               </questionCategories>
               <condition class="computingDataSource" id="118" expression="$1 &amp;&amp; (!$2 &amp;&amp; !$3 &amp;&amp; !$4)" dataType="BOOLEAN">
                 <dataSources id="119">
-                  <comparingDataSource id="120" comparisonOperator="ne">
-                    <dataSourceLeft class="org.obiba.onyx.core.data.VariableDataSource" id="121">
-                      <path>/Onyx/Test/DD</path>
-                    </dataSourceLeft>
-                    <dataSourceRight class="fixedDataSource" id="122"/>
-                  </comparingDataSource>
-                  <questionnaireDataSource id="123" questionnaire="Test" question="DD" category="A"/>
-                  <questionnaireDataSource id="124" questionnaire="Test" question="DD" category="PNA"/>
-                  <questionnaireDataSource id="125" questionnaire="Test" question="DD" category="DNK"/>
+                  <questionnaireDataSource id="120" questionnaire="Test" question="DD" category="*"/>
+                  <questionnaireDataSource id="121" questionnaire="Test" question="DD" category="A"/>
+                  <questionnaireDataSource id="122" questionnaire="Test" question="DD" category="PNA"/>
+                  <questionnaireDataSource id="123" questionnaire="Test" question="DD" category="DNK"/>
                 </dataSources>
               </condition>
             </question>
           </questions>
         </page>
       </pages>
-      <sections id="126"/>
+      <sections id="124"/>
     </section>
   </sections>
-  <pages id="127">
+  <pages id="125">
     <page reference="7"/>
     <page reference="88"/>
     <page reference="97"/>

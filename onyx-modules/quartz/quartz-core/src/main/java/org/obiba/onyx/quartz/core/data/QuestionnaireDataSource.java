@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.quartz.core.data;
 
+import java.util.List;
+
 import org.obiba.onyx.core.data.IDataSource;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
@@ -31,6 +33,8 @@ public class QuestionnaireDataSource implements IDataSource {
   private static final long serialVersionUID = 1L;
 
   private static final Logger log = LoggerFactory.getLogger(QuestionnaireDataSource.class);
+
+  public static final String ANY_CATEGORY = "*";
 
   private QuestionnaireParticipantService questionnaireParticipantService;
 
@@ -83,13 +87,24 @@ public class QuestionnaireDataSource implements IDataSource {
 
       }
     } else if(category != null) {
-      // get if category was selected
-      CategoryAnswer categoryAnswer = questionnaireParticipantService.getCategoryAnswer(participant, questionnaire, question, category);
-
-      if(categoryAnswer != null) {
-        data = DataBuilder.buildBoolean(categoryAnswer.isActive());
+      if(category.equals(ANY_CATEGORY)) {
+        // was question answered by any category selection ?
+        List<CategoryAnswer> categoryAnswers = questionnaireParticipantService.getCategoryAnswers(participant, questionnaire, question);
+        if (categoryAnswers != null && categoryAnswers.size()>0) {
+          data = DataBuilder.buildBoolean(categoryAnswers.get(0).isActive());
+        }
+        else {
+          data = DataBuilder.buildBoolean(false);
+        }
       } else {
-        data = DataBuilder.buildBoolean((Boolean) null);
+        // get if category was selected
+        CategoryAnswer categoryAnswer = questionnaireParticipantService.getCategoryAnswer(participant, questionnaire, question, category);
+
+        if(categoryAnswer != null) {
+          data = DataBuilder.buildBoolean(categoryAnswer.isActive());
+        } else {
+          data = DataBuilder.buildBoolean((Boolean) null);
+        }
       }
     } else {
       // get if question was asked (but not necessarily answered)

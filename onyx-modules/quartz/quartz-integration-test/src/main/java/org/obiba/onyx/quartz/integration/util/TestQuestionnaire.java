@@ -10,12 +10,8 @@
 package org.obiba.onyx.quartz.integration.util;
 
 import org.apache.wicket.validation.validator.NumberValidator;
-import org.obiba.onyx.core.data.ComparingDataSource;
-import org.obiba.onyx.core.data.FixedDataSource;
-import org.obiba.onyx.core.data.VariableDataSource;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.QuestionnaireBuilder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.standard.DropDownQuestionPanelFactory;
-import org.obiba.onyx.util.data.ComparisonOperator;
 import org.obiba.onyx.util.data.DataType;
 
 /**
@@ -62,7 +58,7 @@ public class TestQuestionnaire {
     builder.inQuestion("DD").withSharedCategories(PNA, DNK);
 
     builder.inPage("P3").withQuestion("DD_DEPENDENT").withCategories("1", "2", "3");
-    builder.inQuestion("DD_DEPENDENT").setCondition("$1 && (!$2 && !$3 && !$4)", new ComparingDataSource(new VariableDataSource("/Onyx/Test/DD"), ComparisonOperator.ne, new FixedDataSource(null)), builder.newDataSource("DD", "A"), builder.newDataSource("DD", PNA), builder.newDataSource("DD", DNK));
+    builder.inQuestion("DD_DEPENDENT").setCondition("$1 && (!$2 && !$3 && !$4)", builder.newDataSource("DD", "*"), builder.newDataSource("DD", "A"), builder.newDataSource("DD", PNA), builder.newDataSource("DD", DNK));
 
     return builder;
   }

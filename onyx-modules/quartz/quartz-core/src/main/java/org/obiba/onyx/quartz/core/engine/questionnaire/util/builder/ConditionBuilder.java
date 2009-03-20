@@ -75,7 +75,7 @@ public class ConditionBuilder extends AbstractQuestionnaireElementBuilder<IDataS
     Category category = null;
     if(question == null) throw invalidElementNameException(Question.class, questionName);
 
-    if(categoryName != null) {
+    if(categoryName != null && !categoryName.equals(QuestionnaireDataSource.ANY_CATEGORY)) {
       if(question.getCategories().size() > 0) {
         category = question.findCategory(categoryName);
         if(category == null) throw invalidElementNameException(Category.class, categoryName);
