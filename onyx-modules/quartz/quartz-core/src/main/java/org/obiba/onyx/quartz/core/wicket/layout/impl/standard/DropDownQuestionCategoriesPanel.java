@@ -68,9 +68,10 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
 
     // When navigating to previous question
     CategoryAnswer previousAnswer = null;
-    if(activeQuestionnaireAdministrationService.findAnswers(question).size() != 0) {
+    List<CategoryAnswer> categoryAnswers = activeQuestionnaireAdministrationService.findAnswers(question);
+    if(categoryAnswers != null && categoryAnswers.size() != 0) {
 
-      previousAnswer = activeQuestionnaireAdministrationService.findAnswers(question).get(0);
+      previousAnswer = categoryAnswers.get(0);
 
       for(QuestionCategory questionCategory : question.getQuestionCategories()) {
         if(questionCategory.getCategory().getName().equals(previousAnswer.getCategoryName())) {
