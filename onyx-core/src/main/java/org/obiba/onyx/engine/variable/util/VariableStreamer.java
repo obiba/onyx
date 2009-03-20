@@ -11,9 +11,13 @@ package org.obiba.onyx.engine.variable.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.StringWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -65,14 +69,28 @@ public class VariableStreamer {
     initializeXStream();
   }
 
-  public static String toXML(Variable variable) {
-    VariableStreamer streamer = new VariableStreamer();
-    return streamer.xstream.toXML(variable);
+  /**
+   * XML deserialize from the stream in UTF-8 encoding.
+   * @param is
+   * @return
+   */
+  public static Variable fromXML(InputStream is) {
+    return fromXML(is, "UTF-8");
   }
 
-  public static Variable fromXML(InputStream is) {
+  /**
+   * XML deserialize from the stream in the given encoding.
+   * @param is
+   * @param encoding
+   * @return
+   */
+  public static Variable fromXML(InputStream is, String encoding) {
     VariableStreamer streamer = new VariableStreamer();
-    return setParentInstance((Variable) streamer.xstream.fromXML(is));
+    return setParentInstance((Variable) streamer.xstream.fromXML(createReader(is, encoding)));
+  }
+
+  private static Reader createReader(InputStream is, String encoding) {
+    return new InputStreamReader(is, Charset.forName(encoding));
   }
 
   /**
@@ -95,29 +113,90 @@ public class VariableStreamer {
   // XML
   //
 
-  public static void toXML(Variable variable, OutputStream os) {
+  /**
+   * XML serialize variable in a string.
+   * @param variable
+   */
+  public static String toXML(Variable variable) {
     VariableStreamer streamer = new VariableStreamer();
-    streamer.xstream.toXML(variable, os);
+    return streamer.xstream.toXML(variable);
   }
 
+  /**
+   * XML serialize variable in a stream using given encoding.
+   * @param variable
+   * @param os
+   * @param encoding
+   */
+  public static void toXML(Variable variable, OutputStream os, String encoding) {
+    VariableStreamer streamer = new VariableStreamer();
+    streamer.xstream.toXML(variable, createWriter(os, encoding));
+  }
+
+  /**
+   * XML serialize variable in a stream using UTF-8 encoding.
+   * @param variable
+   * @param os
+   */
+  public static void toXML(Variable variable, OutputStream os) {
+    toXML(variable, os, "UTF-8");
+  }
+
+  /**
+   * XML serialize variable in a string.
+   * @param variableData
+   * @return
+   */
   public static String toXML(VariableData variableData) {
     VariableStreamer streamer = new VariableStreamer();
     return streamer.xstream.toXML(variableData);
   }
 
-  public static void toXML(VariableData variableData, OutputStream os) {
+  /**
+   * XML serialize variable data set in a stream using given encoding.
+   * @param variableDataSet
+   * @param os
+   * @param encoding
+   */
+  public static void toXML(VariableDataSet variableDataSet, OutputStream os, String encoding) {
     VariableStreamer streamer = new VariableStreamer();
-    streamer.xstream.toXML(variableData, os);
+    streamer.xstream.toXML(variableDataSet, createWriter(os, encoding));
   }
 
+  /**
+   * XML serialize variable data set in a stream UTF-8 encoding.
+   * @param variableDataSet
+   * @param os
+   */
+  public static void toXML(VariableDataSet variableDataSet, OutputStream os) {
+    toXML(variableDataSet, os, "UTF-8");
+  }
+
+  /**
+   * XML serialize variable data set in a string.
+   * @param variableDataSet
+   * @return
+   */
   public static String toXML(VariableDataSet variableDataSet) {
     VariableStreamer streamer = new VariableStreamer();
     return streamer.xstream.toXML(variableDataSet);
   }
 
-  public static void toXML(VariableDataSet variableDataSet, OutputStream os) {
-    VariableStreamer streamer = new VariableStreamer();
-    streamer.xstream.toXML(variableDataSet, os);
+  /**
+   * Wrap stream in a writer and add xml header for the given encoding.
+   * @param os
+   * @param encoding
+   * @return
+   */
+  private static Writer createWriter(OutputStream os, String encoding) {
+    Writer writer = new OutputStreamWriter(os, Charset.forName(encoding));
+    try {
+      writer.write("<?xml version=\"1.0\" encoding=\"" + encoding + "\"?>\n");
+    } catch(IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return writer;
   }
 
   private void initializeXStream() {

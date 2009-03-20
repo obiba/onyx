@@ -88,6 +88,6 @@ public class Contraindication implements MessageSourceResolvable, Serializable {
 
   @Override
   public String toString() {
-    return "Contraindication [" + code + "] [" + type + "]";
+    return "Contraindication [" + code + ", " + type + "]";
   }
 }
