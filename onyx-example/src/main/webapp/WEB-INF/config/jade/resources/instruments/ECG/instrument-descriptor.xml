@@ -89,7 +89,7 @@
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="fixedDataSource">
-        <data type="INTEGER">0</data>
+        <data type="INTEGER">1</data>
       </dataSource>
     </input>
 
@@ -99,7 +99,7 @@
       <dataType>INTEGER</dataType>
       <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="fixedDataSource">
-        <data type="INTEGER">0</data>
+        <data type="INTEGER">1</data>
       </dataSource>
     </input>
 
