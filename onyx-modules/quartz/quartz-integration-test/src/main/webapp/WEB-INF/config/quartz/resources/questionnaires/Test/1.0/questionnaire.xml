@@ -102,101 +102,109 @@
                   <question reference="37"/>
                   <category id="49" name="DNK" escape="true"/>
                 </questionCategory>
-              </questionCategories>
-              <questions id="50"/>
-            </question>
-            <question id="51" name="ARRAY" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-              <page reference="7"/>
-              <questionCategories id="52">
-                <questionCategory id="53">
-                  <question reference="51"/>
-                  <category id="54" name="Y" escape="false"/>
-                </questionCategory>
-                <questionCategory id="55">
-                  <question reference="51"/>
-                  <category id="56" name="N" escape="false"/>
-                </questionCategory>
-                <questionCategory id="57">
-                  <question reference="51"/>
-                  <category reference="47"/>
-                </questionCategory>
-                <questionCategory id="58">
-                  <question reference="51"/>
-                  <category reference="49"/>
-                </questionCategory>
-              </questionCategories>
-              <questions id="59">
-                <question id="60" name="Q1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <questionCategories id="61"/>
-                  <parentQuestion reference="51"/>
-                  <questions id="62"/>
-                </question>
-                <question id="63" name="Q2" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-                  <questionCategories id="64"/>
-                  <parentQuestion reference="51"/>
-                  <questions id="65"/>
-                </question>
-              </questions>
-            </question>
-            <question id="66" name="Q_INNER_CONDITION" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-              <page reference="7"/>
-              <questionCategories id="67">
-                <questionCategory id="68">
-                  <question reference="66"/>
-                  <category id="69" name="1" escape="false"/>
-                </questionCategory>
-                <questionCategory id="70">
-                  <question reference="66"/>
-                  <category id="71" name="2" escape="false"/>
-                </questionCategory>
-                <questionCategory id="72">
-                  <question reference="66"/>
-                  <category id="73" name="3" escape="false"/>
-                </questionCategory>
-              </questionCategories>
-              <condition class="questionnaireDataSource" id="74" questionnaire="Test" question="Q_MULTIPLE" category="PNA"/>
-              <questions id="75"/>
-            </question>
-            <question id="76" name="TIMESTAMP_P1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-              <page reference="7"/>
-              <questionCategories id="77">
-                <questionCategory id="78">
-                  <question reference="76"/>
-                  <category id="79" name="TIMESTAMP" escape="false">
-                    <openAnswerDefinition id="80" name="TIMESTAMP_P1" dataType="DATE" required="true">
-                      <dataSource class="currentDateSource" id="81"/>
-                      <openAnswerDefinitions id="82"/>
+                <questionCategory id="50">
+                  <question reference="37"/>
+                  <category id="51" name="FOO" escape="true">
+                    <openAnswerDefinition id="52" name="TEXT" dataType="TEXT" required="true">
+                      <openAnswerDefinitions id="53"/>
                     </openAnswerDefinition>
                   </category>
                 </questionCategory>
               </questionCategories>
-              <questions id="83"/>
+              <questions id="54"/>
             </question>
-          </questions>
-        </page>
-        <page id="84" name="P2" uIFactoryName="quartz.DefaultPageLayoutFactory">
-          <section reference="5"/>
-          <questions id="85">
-            <question id="86" name="DATE_QUESTION" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-              <page reference="84"/>
-              <questionCategories id="87">
-                <questionCategory id="88">
-                  <question reference="86"/>
-                  <category id="89" name="DATE" escape="false">
-                    <openAnswerDefinition id="90" name="OPEN_DATE" dataType="DATE" required="true"/>
+            <question id="55" name="ARRAY" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+              <page reference="7"/>
+              <questionCategories id="56">
+                <questionCategory id="57">
+                  <question reference="55"/>
+                  <category id="58" name="Y" escape="false"/>
+                </questionCategory>
+                <questionCategory id="59">
+                  <question reference="55"/>
+                  <category id="60" name="N" escape="false"/>
+                </questionCategory>
+                <questionCategory id="61">
+                  <question reference="55"/>
+                  <category reference="47"/>
+                </questionCategory>
+                <questionCategory id="62">
+                  <question reference="55"/>
+                  <category reference="49"/>
+                </questionCategory>
+              </questionCategories>
+              <questions id="63">
+                <question id="64" name="Q1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="65"/>
+                  <parentQuestion reference="55"/>
+                  <questions id="66"/>
+                </question>
+                <question id="67" name="Q2" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+                  <questionCategories id="68"/>
+                  <parentQuestion reference="55"/>
+                  <questions id="69"/>
+                </question>
+              </questions>
+            </question>
+            <question id="70" name="Q_INNER_CONDITION" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+              <page reference="7"/>
+              <questionCategories id="71">
+                <questionCategory id="72">
+                  <question reference="70"/>
+                  <category id="73" name="1" escape="false"/>
+                </questionCategory>
+                <questionCategory id="74">
+                  <question reference="70"/>
+                  <category id="75" name="2" escape="false"/>
+                </questionCategory>
+                <questionCategory id="76">
+                  <question reference="70"/>
+                  <category id="77" name="3" escape="false"/>
+                </questionCategory>
+              </questionCategories>
+              <condition class="questionnaireDataSource" id="78" questionnaire="Test" question="Q_MULTIPLE" category="PNA"/>
+              <questions id="79"/>
+            </question>
+            <question id="80" name="TIMESTAMP_P1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+              <page reference="7"/>
+              <questionCategories id="81">
+                <questionCategory id="82">
+                  <question reference="80"/>
+                  <category id="83" name="TIMESTAMP" escape="false">
+                    <openAnswerDefinition id="84" name="TIMESTAMP_P1" dataType="DATE" required="true">
+                      <dataSource class="currentDateSource" id="85"/>
+                      <openAnswerDefinitions id="86"/>
+                    </openAnswerDefinition>
                   </category>
                 </questionCategory>
               </questionCategories>
-              <questions id="91"/>
+              <questions id="87"/>
+            </question>
+          </questions>
+        </page>
+        <page id="88" name="P2" uIFactoryName="quartz.DefaultPageLayoutFactory">
+          <section reference="5"/>
+          <questions id="89">
+            <question id="90" name="DATE_QUESTION" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+              <page reference="88"/>
+              <questionCategories id="91">
+                <questionCategory id="92">
+                  <question reference="90"/>
+                  <category id="93" name="DATE" escape="false">
+                    <openAnswerDefinition id="94" name="OPEN_DATE" dataType="DATE" required="true"/>
+                  </category>
+                </questionCategory>
+              </questionCategories>
+              <questions id="95"/>
             </question>
           </questions>
         </page>
       </pages>
-      <sections id="92"/>
+      <sections id="96"/>
     </section>
   </sections>
-  <pages id="93">
+  <pages id="97">
     <page reference="7"/>
-    <page reference="84"/>
+    <page reference="88"/>
   </pages>
 </questionnaire>

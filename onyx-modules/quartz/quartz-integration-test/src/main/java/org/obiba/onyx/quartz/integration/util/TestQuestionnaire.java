@@ -39,6 +39,7 @@ public class TestQuestionnaire {
     builder.inPage("P1").withQuestion("Q_MULTIPLE", true).withCategories("1", "2", "3");
     builder.inQuestion("Q_MULTIPLE").withSharedCategory(OTHER);
     builder.inQuestion("Q_MULTIPLE").withSharedCategory(PNA).setEscape(true).withSharedCategory(DNK).setEscape(true);
+    builder.inQuestion("Q_MULTIPLE").withCategory("FOO").setEscape(true).withOpenAnswerDefinition("TEXT", DataType.TEXT);
 
     builder.inPage("P1").withQuestion("ARRAY").withCategories(Y, N).withSharedCategories(PNA, DNK);
     builder.inQuestion("ARRAY").withQuestion("Q1");

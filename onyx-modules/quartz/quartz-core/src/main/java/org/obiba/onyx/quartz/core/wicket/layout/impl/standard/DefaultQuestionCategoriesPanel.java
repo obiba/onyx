@@ -28,6 +28,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategoriesView;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
@@ -177,7 +178,7 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
   }
 
   @SuppressWarnings("unchecked")
-  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, final IModel questionCategoryModel, boolean isSelected) {
     // repaint the panel
     target.addComponent(this);
 
@@ -193,6 +194,19 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
           public Object component(Component component) {
             CheckBox cb = (CheckBox) component;
             cb.clearInput();
+            return null;
+          }
+
+        });
+
+        // clear the open answers also (but not the one of the selected category!)
+        checkGroup.visitChildren(AbstractOpenAnswerDefinitionPanel.class, new Component.IVisitor() {
+
+          public Object component(Component component) {
+            AbstractOpenAnswerDefinitionPanel open = (AbstractOpenAnswerDefinitionPanel) component;
+            if(!open.getQuestionCategoryModel().equals(questionCategoryModel)) {
+              open.resetField();
+            }
             return null;
           }
 
