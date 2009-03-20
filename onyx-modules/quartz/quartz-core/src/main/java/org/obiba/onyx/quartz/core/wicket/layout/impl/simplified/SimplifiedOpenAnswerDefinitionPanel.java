@@ -27,6 +27,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.pad.NumericPad;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.link.AjaxImageLink;
+import org.springframework.util.StringUtils;
 
 /**
  * Simplified UI for entering open answers: a popup appears on link clicked with a pad, and on pad entry validation the
@@ -58,6 +59,8 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
 
     add(new Label("value", new PropertyModel(this, "openValue")).setOutputMarkupId(true).add(new QuestionCategorySelectionBehavior()));
     add(new Label("label", getCategoryLabelResourceModel()));
+    QuestionnaireStringResourceModel unitLabelModel = new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), "unitLabel");
+    add(new Label("unit", unitLabelModel).setVisible(StringUtils.hasLength(unitLabelModel.getString())));
 
     AjaxImageLink link = new AjaxImageLink("link", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "clickHere")) {
 
@@ -118,9 +121,13 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
 
   public String getOpenValue() {
     OpenAnswer answer = activeQuestionnaireAdministrationService.findOpenAnswer(getQuestion(), getQuestionCategory().getCategory(), getOpenAnswerDefinition());
-    if(answer == null) return null;
-    if(answer.getData() != null) return answer.getData().getValueAsString();
-    return null;
+    String val = null;
+
+    if(answer != null && answer.getData() != null) {
+      val = answer.getData().getValueAsString();
+    }
+
+    return val;
   }
 
   @Override

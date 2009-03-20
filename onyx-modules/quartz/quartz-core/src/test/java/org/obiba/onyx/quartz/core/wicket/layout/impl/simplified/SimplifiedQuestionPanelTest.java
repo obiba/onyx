@@ -417,6 +417,8 @@ public class SimplifiedQuestionPanelTest {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
       if(qCategory.getOpenAnswerDefinition() == null) {
         expect(questionnaireBundleMock.getPropertyKey(qCategory, "description")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "description")).atLeastOnce();
+      } else {
+        expect(questionnaireBundleMock.getPropertyKey(qCategory.getOpenAnswerDefinition(), "unitLabel")).andReturn(propertyKeyProvider.getPropertyKey(qCategory.getOpenAnswerDefinition(), "unitLabel")).atLeastOnce();
       }
     }
 
@@ -488,10 +490,13 @@ public class SimplifiedQuestionPanelTest {
       if(qCategory.getOpenAnswerDefinition() == null) {
         expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
         expect(questionnaireBundleMock.getPropertyKey(qCategory, "description")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "description")).atLeastOnce();
+      } else {
+        for(OpenAnswerDefinition open : qCategory.getOpenAnswerDefinition().getOpenAnswerDefinitions()) {
+          expect(questionnaireBundleMock.getPropertyKey(open, "label")).andReturn(propertyKeyProvider.getPropertyKey(open, "label")).atLeastOnce();
+          expect(questionnaireBundleMock.getPropertyKey(open, "unitLabel")).andReturn(propertyKeyProvider.getPropertyKey(open, "unitLabel")).atLeastOnce();
+        }
       }
     }
-    expect(questionnaireBundleMock.getPropertyKey(openHours, "label")).andReturn(propertyKeyProvider.getPropertyKey(openHours, "label")).atLeastOnce();
-    expect(questionnaireBundleMock.getPropertyKey(openMinutes, "label")).andReturn(propertyKeyProvider.getPropertyKey(openMinutes, "label")).atLeastOnce();
 
     replay(activeInterviewServiceMock);
     replay(activeQuestionnaireAdministrationServiceMock);

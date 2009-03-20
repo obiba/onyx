@@ -1,5 +1,6 @@
 td.valuepressed-value {
   text-align:right;
+  width:60px;
 }
 
 .obiba-numeric-pad #valuePressed input {

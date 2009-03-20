@@ -114,7 +114,8 @@ public class SelfAdminHealthQuestionnaireContentBuilder {
     builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(PNA, "88");
     builder.inQuestion("PARTICIPANT_AGE").withSharedCategory(DNK, "99");
 
-    builder.inSection("AGE_DATE_BIRTH").withPage("3_1").withQuestion("DOB").withCategory("DOB").withOpenAnswerDefinition("DOB", DataType.DATE).withOpenAnswerDefinition("DOB_YEAR", DataType.INTEGER).setRequired(true).addValidator(ComparisonOperator.le, new ComputingDataSource(DataType.INTEGER, "$currentYear - 40")).addValidator(ComparisonOperator.ge, new ComputingDataSource(DataType.INTEGER, "$currentYear - 70"));
+    builder.inSection("AGE_DATE_BIRTH").withPage("3_1").withQuestion("DOB").withCategory("DOB").withOpenAnswerDefinition("DOB", DataType.DATE);
+    builder.inOpenAnswerDefinition("DOB").withOpenAnswerDefinition("DOB_YEAR", DataType.INTEGER).setRequired(true).addValidator(ComparisonOperator.le, new ComputingDataSource(DataType.INTEGER, "$currentYear - 40")).addValidator(ComparisonOperator.ge, new ComputingDataSource(DataType.INTEGER, "$currentYear - 70")).setSize(4);
     builder.inOpenAnswerDefinition("DOB").withOpenAnswerDefinition("DOB_MONTH", DataType.INTEGER).setRequired(true).addValidator(ComparisonOperator.le, DataBuilder.buildInteger(12)).addValidator(ComparisonOperator.ge, DataBuilder.buildInteger(1));
     builder.inOpenAnswerDefinition("DOB").withOpenAnswerDefinition("DOB_DAY", DataType.INTEGER).setRequired(true).addValidator(ComparisonOperator.le, DataBuilder.buildInteger(31)).addValidator(ComparisonOperator.ge, DataBuilder.buildInteger(1));
     builder.inQuestion("DOB").withSharedCategory(PNA, "8888");

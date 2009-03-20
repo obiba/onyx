@@ -225,6 +225,10 @@ a.button {
 	padding-left: 40px;
 }
 
+.obiba-open-unit {
+    color: #999999;
+}
+
 .obiba-quartz-categories .obiba-quartz-open .obiba-quartz-category {
 	text-align:center;
 }
