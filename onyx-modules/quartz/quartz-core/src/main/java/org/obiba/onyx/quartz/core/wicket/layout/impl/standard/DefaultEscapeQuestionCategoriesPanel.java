@@ -9,7 +9,6 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -122,12 +121,4 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
     radioGroup.add(validator);
   }
 
-  /**
-   * Called on radio selection.
-   * @param target
-   * @param questionModel
-   * @param questionCategoryModel
-   */
-  public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-  }
 }

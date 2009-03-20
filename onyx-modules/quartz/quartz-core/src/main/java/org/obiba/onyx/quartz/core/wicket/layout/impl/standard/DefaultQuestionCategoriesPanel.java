@@ -163,15 +163,7 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
     checkGroup.add(repeater);
 
     if(hasEscapeQuestionCategories()) {
-      add(escapeQuestionCategoriesPanel = new DefaultEscapeQuestionCategoriesPanel("escapeCategories", getQuestionModel()) {
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          target.addComponent(DefaultQuestionCategoriesPanel.this);
-        }
-
-      });
+      add(escapeQuestionCategoriesPanel = new DefaultEscapeQuestionCategoriesPanel("escapeCategories", getQuestionModel()));
     } else {
       add(new EmptyPanel("escapeCategories").setVisible(false));
     }

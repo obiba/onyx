@@ -25,6 +25,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.BaseQuestionCategorySelectionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
@@ -39,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * Build a drop down choice panel, used by single choice question, and add escape categories in a radio group if there
  * are any.
  */
-public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelectionPanel {
+public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelectionPanel implements IQuestionCategorySelectionListener {
 
   private static final long serialVersionUID = 5144933183339704600L;
 
@@ -105,7 +106,7 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
           activeQuestionnaireAdministrationService.answer((QuestionCategory) selectedQuestionCategoryModel.getObject());
         }
 
-        fireQuestionAnswerChanged(target, getQuestionModel(), selectedQuestionCategoryModel == null ? null : selectedQuestionCategoryModel);
+        fireQuestionCategorySelected(target, getQuestionModel(), selectedQuestionCategoryModel == null ? null : selectedQuestionCategoryModel);
 
         if(escapeQuestionCategoriesPanel != null) {
           escapeQuestionCategoriesPanel.setNoSelection();
@@ -127,15 +128,7 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
     add(questionCategoriesDropDownChoice);
 
     if(hasEscapeQuestionCategories()) {
-      add(escapeQuestionCategoriesPanel = new DefaultEscapeQuestionCategoriesPanel("escapeCategories", getQuestionModel()) {
-        @Override
-        public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          setSelectedQuestionCategory(null);
-          questionCategoriesDropDownChoice.setRequired(false);
-          updateOpenAnswerDefinitionPanel(null);
-          target.addComponent(DropDownQuestionCategoriesPanel.this);
-        }
-      });
+      add(escapeQuestionCategoriesPanel = new DefaultEscapeQuestionCategoriesPanel("escapeCategories", getQuestionModel()));
       escapeQuestionCategoriesPanel.add(new AnswerCountValidator(getQuestionModel()));
     } else {
       add(new EmptyPanel("escapeCategories").setVisible(false));
@@ -209,6 +202,16 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
 
   public void setSelectedQuestionCategory(IModel selectedQuestionCategoryModel) {
     this.selectedQuestionCategoryModel = selectedQuestionCategoryModel;
+  }
+
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+    setSelectedQuestionCategory(null);
+    questionCategoriesDropDownChoice.setRequired(false);
+    updateOpenAnswerDefinitionPanel(null);
+    target.addComponent(this);
+
+    // forward event to parent
+    fireQuestionCategorySelected(target, questionModel, questionCategoryModel);
   }
 
 }
