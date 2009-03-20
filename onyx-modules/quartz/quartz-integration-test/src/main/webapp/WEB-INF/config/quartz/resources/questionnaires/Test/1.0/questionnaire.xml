@@ -191,20 +191,84 @@
                 <questionCategory id="92">
                   <question reference="90"/>
                   <category id="93" name="DATE" escape="false">
-                    <openAnswerDefinition id="94" name="OPEN_DATE" dataType="DATE" required="true"/>
+                    <openAnswerDefinition id="94" name="OPEN_DATE" dataType="DATE" required="true">
+                      <openAnswerDefinitions id="95"/>
+                    </openAnswerDefinition>
                   </category>
                 </questionCategory>
               </questionCategories>
-              <questions id="95"/>
+              <questions id="96"/>
+            </question>
+          </questions>
+        </page>
+        <page id="97" name="P3" uIFactoryName="quartz.DefaultPageLayoutFactory">
+          <section reference="5"/>
+          <questions id="98">
+            <question id="99" name="DD" multiple="false" minCount="1" uIFactoryName="quartz.DropDownQuestionPanelFactory">
+              <page reference="97"/>
+              <questionCategories id="100">
+                <questionCategory id="101">
+                  <question reference="99"/>
+                  <category id="102" name="A" escape="false"/>
+                </questionCategory>
+                <questionCategory id="103">
+                  <question reference="99"/>
+                  <category id="104" name="B" escape="false"/>
+                </questionCategory>
+                <questionCategory id="105">
+                  <question reference="99"/>
+                  <category id="106" name="C" escape="false"/>
+                </questionCategory>
+                <questionCategory id="107">
+                  <question reference="99"/>
+                  <category reference="47"/>
+                </questionCategory>
+                <questionCategory id="108">
+                  <question reference="99"/>
+                  <category reference="49"/>
+                </questionCategory>
+              </questionCategories>
+              <questions id="109"/>
+            </question>
+            <question id="110" name="DD_DEPENDENT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+              <page reference="97"/>
+              <questionCategories id="111">
+                <questionCategory id="112">
+                  <question reference="110"/>
+                  <category id="113" name="1" escape="false"/>
+                </questionCategory>
+                <questionCategory id="114">
+                  <question reference="110"/>
+                  <category id="115" name="2" escape="false"/>
+                </questionCategory>
+                <questionCategory id="116">
+                  <question reference="110"/>
+                  <category id="117" name="3" escape="false"/>
+                </questionCategory>
+              </questionCategories>
+              <condition class="computingDataSource" id="118" expression="$1 &amp;&amp; (!$2 &amp;&amp; !$3 &amp;&amp; !$4)" dataType="BOOLEAN">
+                <dataSources id="119">
+                  <comparingDataSource id="120" comparisonOperator="ne">
+                    <dataSourceLeft class="org.obiba.onyx.core.data.VariableDataSource" id="121">
+                      <path>/Onyx/Test/DD</path>
+                    </dataSourceLeft>
+                    <dataSourceRight class="fixedDataSource" id="122"/>
+                  </comparingDataSource>
+                  <questionnaireDataSource id="123" questionnaire="Test" question="DD" category="A"/>
+                  <questionnaireDataSource id="124" questionnaire="Test" question="DD" category="PNA"/>
+                  <questionnaireDataSource id="125" questionnaire="Test" question="DD" category="DNK"/>
+                </dataSources>
+              </condition>
             </question>
           </questions>
         </page>
       </pages>
-      <sections id="96"/>
+      <sections id="126"/>
     </section>
   </sections>
-  <pages id="97">
+  <pages id="127">
     <page reference="7"/>
     <page reference="88"/>
+    <page reference="97"/>
   </pages>
 </questionnaire>
