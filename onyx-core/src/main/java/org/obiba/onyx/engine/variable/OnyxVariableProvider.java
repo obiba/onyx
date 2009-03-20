@@ -10,6 +10,7 @@
 package org.obiba.onyx.engine.variable;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -56,6 +57,8 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
   public static final String LAST_NAME = "lastName";
 
   public static final String BIRTH_DATE = "birthDate";
+
+  public static final String BIRTH_YEAR = "birthYear";
 
   public static final String SITENO = "siteNo";
 
@@ -136,7 +139,15 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
       } else if(variable.getName().equals(LAST_NAME)) {
         varData.addData(DataBuilder.buildText(participant.getLastName()));
       } else if(variable.getName().equals(BIRTH_DATE)) {
-        varData.addData(DataBuilder.buildDate(participant.getBirthDate()));
+        if(participant.getBirthDate() != null) {
+          varData.addData(DataBuilder.buildDate(participant.getBirthDate()));
+        }
+      } else if(variable.getName().equals(BIRTH_YEAR)) {
+        if(participant.getBirthDate() != null) {
+          Calendar cal = Calendar.getInstance();
+          cal.setTime(participant.getBirthDate());
+          varData.addData(DataBuilder.buildInteger(cal.get(Calendar.YEAR)));
+        }
       } else if(variable.getName().equals(SITENO)) {
         varData.addData(DataBuilder.buildText(participant.getSiteNo()));
       } else if(variable.getName().equals(RECRUITMENT_TYPE)) {
@@ -217,6 +228,7 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
     entity.addVariable(new Variable(FIRST_NAME).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(LAST_NAME).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(BIRTH_DATE).setDataType(DataType.DATE)).addReference(PARTICIPANT_KEY);
+    entity.addVariable(new Variable(BIRTH_YEAR).setDataType(DataType.INTEGER)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(SITENO).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(RECRUITMENT_TYPE).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
     for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
