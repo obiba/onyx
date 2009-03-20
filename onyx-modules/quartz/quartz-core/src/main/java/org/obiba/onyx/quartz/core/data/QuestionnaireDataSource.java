@@ -92,7 +92,7 @@ public class QuestionnaireDataSource implements IDataSource {
         data = DataBuilder.buildBoolean((Boolean) null);
       }
     } else {
-      // get if question was answered
+      // get if question was asked (but not necessarily answered)
       Boolean active = questionnaireParticipantService.isQuestionActive(participant, questionnaire, question);
       data = DataBuilder.buildBoolean(active);
     }
