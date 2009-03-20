@@ -37,6 +37,7 @@ public class TestQuestionnaire {
     builder.inQuestion("OPEN_QUESTION").withSharedCategory(OTHER).withOpenAnswerDefinition("NUMERIC", DataType.INTEGER).addValidator(NumberValidator.range(1, 4)).setSize(2);
 
     builder.inPage("P1").withQuestion("Q_MULTIPLE", true).withCategories("1", "2", "3");
+    builder.inQuestion("Q_MULTIPLE").withSharedCategory(OTHER);
     builder.inQuestion("Q_MULTIPLE").withSharedCategory(PNA).setEscape(true).withSharedCategory(DNK).setEscape(true);
 
     builder.inPage("P1").withQuestion("ARRAY").withCategories(Y, N).withSharedCategories(PNA, DNK);
