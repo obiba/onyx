@@ -32,10 +32,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.transaction.annotation.Transactional;
 
-/**
- * 
- */
+@Transactional
 public class DefaultAppointmentManagementServiceImpl implements AppointmentManagementService, ResourceLoaderAware {
 
   private static final Logger appointmentListUpdatelog = LoggerFactory.getLogger("appointmentListUpdate");
