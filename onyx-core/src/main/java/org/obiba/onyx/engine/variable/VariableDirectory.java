@@ -114,7 +114,7 @@ public class VariableDirectory implements IVariableProvider {
   public VariableDataSet getParticipantData(Participant participant, IVariableFilter filter) {
     VariableDataSet dataSet = new VariableDataSet();
 
-    log.info("START participant.name={}", participant.getFullName());
+    log.info("START participant.barcode={}", participant.getBarcode());
 
     for(IVariableProvider provider : providerToVariablePathsMap.keySet()) {
       for(String path : providerToVariablePathsMap.get(provider)) {
@@ -126,7 +126,7 @@ public class VariableDirectory implements IVariableProvider {
         }
       }
     }
-    log.info("END participant.name={}", participant.getFullName());
+    log.info("END participant.barcode={}", participant.getBarcode());
 
     return dataSet;
   }
@@ -139,7 +139,7 @@ public class VariableDirectory implements IVariableProvider {
   public Variable getVariable(String path) {
     return VariableFinder.getInstance(getVariableRoot(), variablePathNamingStrategy).findVariable(path);
   }
-  
+
   /**
    * Get the participant's variable data for the variable at the given path.
    * @param participant
@@ -200,5 +200,5 @@ public class VariableDirectory implements IVariableProvider {
 
     return variables;
   }
-  
+
 }
