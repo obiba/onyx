@@ -54,7 +54,7 @@ public class TestQuestionnaire {
     builder.inSection("S1").withPage("P2").withQuestion("DATE_QUESTION").withCategory("DATE").withOpenAnswerDefinition("OPEN_DATE", DataType.DATE);
 
     builder.inSection("S1").withPage("P3").withQuestion("DD", DropDownQuestionPanelFactory.class);
-    builder.inQuestion("DD").withCategories("A", "B", "C");
+    builder.inQuestion("DD").withCategories("A", "B", "C").withSharedCategory(OTHER);
     builder.inQuestion("DD").withSharedCategories(PNA, DNK);
 
     builder.inPage("P3").withQuestion("DD_DEPENDENT").withCategories("1", "2", "3");
