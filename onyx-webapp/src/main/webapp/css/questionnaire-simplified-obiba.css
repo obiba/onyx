@@ -396,10 +396,16 @@ table.obiba-quartz-array {
 	margin-bottom:5px;	
 }
 
-.obiba-quartz-array .obiba-quartz-category.ui-state-highlight a.button > div {
-	background-attachment:scroll;
-	background-color:transparent;
+.obiba-quartz-array .obiba-quartz-category a.button .label-container .label {
+	display: block;
+	width:30px;
+	height:24px;
+	overflow:visible;
+}
+
+.obiba-quartz-array .obiba-quartz-category.ui-state-highlight a.button .label-container .label {
 	background-image:url('../icons/button_check.png');
+	background-color:transparent;
 	background-position:center top;
 	background-repeat:no-repeat;
 }
