@@ -36,7 +36,7 @@ public class QuestionnaireWizardAdministrationPanel extends Panel {
   /**
    * @param id
    */
-  public QuestionnaireWizardAdministrationPanel(String id, QuestionnaireWizardForm wizardForm, final ModalWindow adminWindow) {
+  public QuestionnaireWizardAdministrationPanel(String id, final QuestionnaireWizardForm wizardForm, final ModalWindow adminWindow) {
     super(id);
 
     AjaxLink link = new AjaxLink("interrupt") {
@@ -52,7 +52,7 @@ public class QuestionnaireWizardAdministrationPanel extends Panel {
     link.add(new AttributeModifier("value", true, new StringResourceModel("Interrupt", this, null)));
     add(link);
 
-    link = new AjaxLink("cancelLink") {
+    link = new AjaxLink("cancelQuestionnaireLink") {
       private static final long serialVersionUID = 0L;
 
       @Override
@@ -63,6 +63,19 @@ public class QuestionnaireWizardAdministrationPanel extends Panel {
 
     };
     link.add(new AttributeModifier("value", true, new StringResourceModel("CancelQuestionnaire", this, null)));
+    add(link);
+
+    link = new AjaxLink("cancelLink") {
+      private static final long serialVersionUID = 0L;
+
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        wizardForm.setAdminWindowClosed(true);
+        adminWindow.close(target);
+      }
+
+    };
+    link.add(new AttributeModifier("value", true, new StringResourceModel("Cancel", this, null)));
     add(link);
 
     AjaxButton finish = new AjaxButton("finish", wizardForm) {

@@ -143,7 +143,7 @@ public class QuestionnaireWizardForm extends WizardForm {
     adminWindow.setCssClassName("onyx");
     adminWindow.setMinimalHeight(50);
     adminWindow.setInitialHeight(50);
-    adminWindow.setInitialWidth(370);
+    adminWindow.setInitialWidth(400);
 
     adminPanel = new QuestionnaireWizardAdministrationPanel(adminWindow.getContentId(), QuestionnaireWizardForm.this, adminWindow);
     adminWindow.setContent(adminPanel);
@@ -421,6 +421,10 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   public ProgressBarPanel getProgressBar() {
     return progressBar;
+  }
+
+  public void setAdminWindowClosed(boolean adminWindowClosed) {
+    this.adminWindowClosed = adminWindowClosed;
   }
 
 }
