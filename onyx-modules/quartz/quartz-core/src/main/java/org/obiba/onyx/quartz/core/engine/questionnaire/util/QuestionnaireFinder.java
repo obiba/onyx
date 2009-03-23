@@ -26,6 +26,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.OpenAnswerDef
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.PageFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.QuestionFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.SectionFinder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Find elements in a {@link Questionnaire}.
@@ -33,6 +35,10 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.SectionFinder
  * 
  */
 public class QuestionnaireFinder {
+
+  private static final Logger log = LoggerFactory.getLogger(QuestionnaireFinder.class);
+
+  private static long total = 0;
 
   private Questionnaire questionnaire;
 
@@ -58,9 +64,11 @@ public class QuestionnaireFinder {
    * @return null if not found
    */
   public Section findSection(String name) {
+    long time = getDuration(0);
     SectionFinder finder = new SectionFinder(name);
     QuestionnaireWalker walker = new QuestionnaireWalker(finder);
     walker.walk(questionnaire);
+    addTotal("section", getDuration(time));
 
     return finder.getFirstElement();
   }
@@ -71,9 +79,11 @@ public class QuestionnaireFinder {
    * @return null if not found
    */
   public Page findPage(String name) {
+    long time = getDuration(0);
     PageFinder finder = new PageFinder(name);
     QuestionnaireWalker walker = new QuestionnaireWalker(finder);
     walker.walk(questionnaire);
+    addTotal("page", getDuration(time));
 
     return finder.getFirstElement();
   }
@@ -84,9 +94,11 @@ public class QuestionnaireFinder {
    * @return null if not found
    */
   public Question findQuestion(String name) {
+    long time = getDuration(0);
     QuestionFinder finder = new QuestionFinder(name);
     QuestionnaireWalker walker = new QuestionnaireWalker(finder);
     walker.walk(questionnaire);
+    addTotal("question", getDuration(time));
 
     return finder.getFirstElement();
   }
@@ -101,18 +113,22 @@ public class QuestionnaireFinder {
     Question question = findQuestion(questionName);
     if(question == null) return null;
 
+    long time = getDuration(0);
     String categoryName = name;
     if(!categoryName.startsWith(questionName + ".")) {
       categoryName = questionName + "." + name;
     }
 
+    QuestionCategory found = null;
     for(QuestionCategory questionCategory : question.getQuestionCategories()) {
       if(questionCategory.getName().equals(categoryName)) {
-        return questionCategory;
+        found = questionCategory;
+        break;
       }
     }
+    addTotal("questionCategory", getDuration(time));
 
-    return null;
+    return found;
   }
 
   /**
@@ -121,9 +137,11 @@ public class QuestionnaireFinder {
    * @return
    */
   public OpenAnswerDefinition findOpenAnswerDefinition(String name) {
+    long time = getDuration(0);
     OpenAnswerDefinitionFinder finder = new OpenAnswerDefinitionFinder(name);
     QuestionnaireWalker walker = new QuestionnaireWalker(finder);
     walker.walk(questionnaire);
+    addTotal("openAnswerDefinition", getDuration(time));
 
     return finder.getFirstElement();
   }
@@ -181,6 +199,15 @@ public class QuestionnaireFinder {
     }
 
     return new LinkedList<Category>(map.values());
+  }
+
+  private long getDuration(long from) {
+    return System.currentTimeMillis() - from;
+  }
+
+  private synchronized void addTotal(String msg, long duration) {
+    total += duration;
+    log.debug("### total={}ms [{}]", total, msg);
   }
 
 }
