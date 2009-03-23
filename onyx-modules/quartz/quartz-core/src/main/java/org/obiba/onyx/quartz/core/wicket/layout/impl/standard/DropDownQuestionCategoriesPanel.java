@@ -226,7 +226,7 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
     if(((QuestionCategory) questionCategoryModel.getObject()).isEscape()) {
       // called from escape category
       if(selectedQuestionCategoryModel != null) {
-        target.addComponent(questionCategoriesDropDownChoice);
+        target.appendJavascript("document.getElementById('" + questionCategoriesDropDownChoice.getMarkupId() + "').selectedIndex = 0;");
       }
       setSelectedQuestionCategory(null);
       questionCategoriesDropDownChoice.setRequired(false);
