@@ -25,6 +25,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.CategoryFinde
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.OpenAnswerDefinitionFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.PageFinder;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.QuestionFinder;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.QuestionnaireCache;
 import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.SectionFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,13 +80,20 @@ public class QuestionnaireFinder {
    * @return null if not found
    */
   public Page findPage(String name) {
+    Page page;
+
     long time = getDuration(0);
-    PageFinder finder = new PageFinder(name);
-    QuestionnaireWalker walker = new QuestionnaireWalker(finder);
-    walker.walk(questionnaire);
+    if(questionnaire.getQuestionnaireCache() != null) {
+      page = questionnaire.getQuestionnaireCache().getPageCache().get(name);
+    } else {
+      PageFinder finder = new PageFinder(name);
+      QuestionnaireWalker walker = new QuestionnaireWalker(finder);
+      walker.walk(questionnaire);
+      page = finder.getFirstElement();
+    }
     addTotal("page", getDuration(time));
 
-    return finder.getFirstElement();
+    return page;
   }
 
   /**
@@ -94,13 +102,20 @@ public class QuestionnaireFinder {
    * @return null if not found
    */
   public Question findQuestion(String name) {
+    Question question;
+
     long time = getDuration(0);
-    QuestionFinder finder = new QuestionFinder(name);
-    QuestionnaireWalker walker = new QuestionnaireWalker(finder);
-    walker.walk(questionnaire);
+    if(questionnaire.getQuestionnaireCache() != null) {
+      question = questionnaire.getQuestionnaireCache().getQuestionCache().get(name);
+    } else {
+      QuestionFinder finder = new QuestionFinder(name);
+      QuestionnaireWalker walker = new QuestionnaireWalker(finder);
+      walker.walk(questionnaire);
+      question = finder.getFirstElement();
+    }
     addTotal("question", getDuration(time));
 
-    return finder.getFirstElement();
+    return question;
   }
 
   /**
@@ -113,22 +128,27 @@ public class QuestionnaireFinder {
     Question question = findQuestion(questionName);
     if(question == null) return null;
 
-    long time = getDuration(0);
-    String categoryName = name;
-    if(!categoryName.startsWith(questionName + ".")) {
-      categoryName = questionName + "." + name;
-    }
+    QuestionCategory qCategory = null;
 
-    QuestionCategory found = null;
-    for(QuestionCategory questionCategory : question.getQuestionCategories()) {
-      if(questionCategory.getName().equals(categoryName)) {
-        found = questionCategory;
-        break;
+    long time = getDuration(0);
+    if(questionnaire.getQuestionnaireCache() != null) {
+      qCategory = questionnaire.getQuestionnaireCache().getQuestionCategoryCache().get(questionName + "." + name);
+    } else {
+      String categoryName = name;
+      if(!categoryName.startsWith(questionName + ".")) {
+        categoryName = questionName + "." + name;
+      }
+
+      for(QuestionCategory questionCategory : question.getQuestionCategories()) {
+        if(questionCategory.getName().equals(categoryName)) {
+          qCategory = questionCategory;
+          break;
+        }
       }
     }
     addTotal("questionCategory", getDuration(time));
 
-    return found;
+    return qCategory;
   }
 
   /**
@@ -137,13 +157,20 @@ public class QuestionnaireFinder {
    * @return
    */
   public OpenAnswerDefinition findOpenAnswerDefinition(String name) {
+    OpenAnswerDefinition open;
+
     long time = getDuration(0);
-    OpenAnswerDefinitionFinder finder = new OpenAnswerDefinitionFinder(name);
-    QuestionnaireWalker walker = new QuestionnaireWalker(finder);
-    walker.walk(questionnaire);
+    if(questionnaire.getQuestionnaireCache() != null) {
+      open = questionnaire.getQuestionnaireCache().getOpenAnswerDefinitionCache().get(name);
+    } else {
+      OpenAnswerDefinitionFinder finder = new OpenAnswerDefinitionFinder(name);
+      QuestionnaireWalker walker = new QuestionnaireWalker(finder);
+      walker.walk(questionnaire);
+      open = finder.getFirstElement();
+    }
     addTotal("openAnswerDefinition", getDuration(time));
 
-    return finder.getFirstElement();
+    return open;
   }
 
   /**
@@ -208,6 +235,29 @@ public class QuestionnaireFinder {
   private synchronized void addTotal(String msg, long duration) {
     total += duration;
     log.debug("### total={}ms [{}]", total, msg);
+  }
+
+  //
+  // Caches
+  //
+
+  /**
+   * Build the questionnaire cache.
+   */
+  public void buildQuestionnaireCache() {
+    long time = getDuration(0);
+    QuestionnaireCache questionnaireCache = new QuestionnaireCache();
+
+    QuestionnaireWalker walker = new QuestionnaireWalker(questionnaireCache);
+    walker.walk(questionnaire);
+
+    log.debug("pages={}", questionnaireCache.getPageCache().size());
+    log.debug("questions={}", questionnaireCache.getQuestionCache().size());
+    log.debug("questionCategories={}", questionnaireCache.getQuestionCategoryCache().size());
+    log.debug("openAnswerDefinition={}", questionnaireCache.getOpenAnswerDefinitionCache().size());
+
+    questionnaire.setQuestionnaireCache(questionnaireCache);
+    addTotal("questionnaireCache", getDuration(time));
   }
 
 }

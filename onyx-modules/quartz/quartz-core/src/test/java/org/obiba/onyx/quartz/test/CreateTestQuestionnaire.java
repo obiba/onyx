@@ -33,6 +33,7 @@ public class CreateTestQuestionnaire {
 
     // Select the questionnaire you wish to create
     creator.createQuestionnaire(HealthQuestionnaireTest.buildQuestionnaire(), Locale.ENGLISH);
+    creator.createQuestionnaire(LargeQuestionnaireTest.buildQuestionnaire(), Locale.ENGLISH);
 
   }
 

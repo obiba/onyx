@@ -16,6 +16,7 @@ import java.util.Locale;
 
 import org.obiba.onyx.quartz.core.engine.questionnaire.IQuestionnaireElement;
 import org.obiba.onyx.quartz.core.engine.questionnaire.IVisitor;
+import org.obiba.onyx.quartz.core.engine.questionnaire.util.finder.QuestionnaireCache;
 import org.obiba.runtime.Version;
 
 public class Questionnaire implements Serializable, IQuestionnaireElement {
@@ -31,6 +32,8 @@ public class Questionnaire implements Serializable, IQuestionnaireElement {
   private List<Section> sections;
 
   private List<Page> pages;
+
+  private QuestionnaireCache questionnaireCache;
 
   public Questionnaire(String name, String version) {
     this.name = name;
@@ -86,6 +89,18 @@ public class Questionnaire implements Serializable, IQuestionnaireElement {
   }
 
   //
+  // Cache
+  // 
+
+  public QuestionnaireCache getQuestionnaireCache() {
+    return questionnaireCache;
+  }
+
+  public void setQuestionnaireCache(QuestionnaireCache questionnaireCache) {
+    this.questionnaireCache = questionnaireCache;
+  }
+
+  //
   // ILocalizable
   //
 
@@ -97,4 +112,5 @@ public class Questionnaire implements Serializable, IQuestionnaireElement {
   public String toString() {
     return getName();
   }
+
 }

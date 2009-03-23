@@ -34,18 +34,28 @@ public class QuestionnaireFinderTest {
     }
 
     questionnaire = builder.getQuestionnaire();
+
+    long start = System.currentTimeMillis();
+    QuestionnaireFinder.getInstance(questionnaire).buildQuestionnaireCache();
+    System.out.println("QuestionnaireCache=" + (System.currentTimeMillis() - start) + "ms");
   }
 
   @Test
   public void testSpeed() {
+    Assert.assertNotNull(questionnaire.getQuestionnaireCache());
+    Assert.assertEquals(1000, questionnaire.getQuestionnaireCache().getPageCache().size());
+    Assert.assertEquals(1000, questionnaire.getQuestionnaireCache().getQuestionCache().size());
+    Assert.assertEquals(6000, questionnaire.getQuestionnaireCache().getQuestionCategoryCache().size());
+    Assert.assertEquals(1000, questionnaire.getQuestionnaireCache().getOpenAnswerDefinitionCache().size());
+
     findQuestion(1);
     findQuestion(1000);
 
-    findQuestionCategory(1, "OTHER");
-    findQuestionCategory(1000, "OTHER");
-
     findOpenAnswerDefinition(1);
     findOpenAnswerDefinition(1000);
+
+    findQuestionCategory(1, "OTHER");
+    findQuestionCategory(1000, "OTHER");
 
     findAllQuestion(1);
     findAllQuestion(1000);
@@ -55,7 +65,7 @@ public class QuestionnaireFinderTest {
   private void findQuestion(int index) {
     long start = System.currentTimeMillis();
     QuestionnaireFinder finder = QuestionnaireFinder.getInstance(questionnaire);
-    Assert.assertNotNull(finder.findQuestion("Q" + index));
+    Assert.assertNotNull("Q" + index, finder.findQuestion("Q" + index));
     System.out.println("Q" + index + "=" + (System.currentTimeMillis() - start) + "ms");
   }
 
@@ -63,14 +73,14 @@ public class QuestionnaireFinderTest {
     String questionCategory = "Q" + index + "." + category;
     long start = System.currentTimeMillis();
     QuestionnaireFinder finder = QuestionnaireFinder.getInstance(questionnaire);
-    Assert.assertNotNull(finder.findQuestionCategory(QuestionCategory.getQuestionName(questionCategory), QuestionCategory.getCategoryName(questionCategory)));
+    Assert.assertNotNull(questionCategory, finder.findQuestionCategory(QuestionCategory.getQuestionName(questionCategory), QuestionCategory.getCategoryName(questionCategory)));
     System.out.println(questionCategory + "=" + (System.currentTimeMillis() - start) + "ms");
   }
 
   private void findOpenAnswerDefinition(int index) {
     long start = System.currentTimeMillis();
     QuestionnaireFinder finder = QuestionnaireFinder.getInstance(questionnaire);
-    Assert.assertNotNull(finder.findOpenAnswerDefinition("OPEN" + index));
+    Assert.assertNotNull("OPEN" + index, finder.findOpenAnswerDefinition("OPEN" + index));
     System.out.println("OPEN" + index + "=" + (System.currentTimeMillis() - start) + "ms");
   }
 

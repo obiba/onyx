@@ -115,11 +115,16 @@ public class QuestionnaireModel extends SpringDetachableModel {
     // Now use these services to get current questionnaire bundle.
     QuestionnaireBundle bundle = bundleManager.getBundle(questionnaireName);
 
-    finder = QuestionnaireFinder.getInstance(bundle.getQuestionnaire());
+    Questionnaire questionnaire = bundle.getQuestionnaire();
+    finder = QuestionnaireFinder.getInstance(questionnaire);
+    // enable questionnaire elements caching
+    if(questionnaire.getQuestionnaireCache() == null) {
+      finder.buildQuestionnaireCache();
+    }
 
     IQuestionnaireElement element = null;
     if(elementClass.equals(Questionnaire.class)) {
-      element = finder.getQuestionnaire();
+      element = questionnaire;
     } else if(elementClass.equals(Section.class)) {
       element = finder.findSection(elementName);
     } else if(elementClass.equals(Page.class)) {
