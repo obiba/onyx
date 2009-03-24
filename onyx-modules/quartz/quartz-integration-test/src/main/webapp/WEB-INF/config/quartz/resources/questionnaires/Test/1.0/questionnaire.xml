@@ -162,112 +162,118 @@
                   <category id="77" name="3" escape="false"/>
                 </questionCategory>
               </questionCategories>
-              <condition class="questionnaireDataSource" id="78" questionnaire="Test" question="Q_MULTIPLE" category="PNA"/>
-              <questions id="79"/>
+              <condition class="computingDataSource" id="78" expression="$1 || $2&gt;1 || $3&gt;1" dataType="BOOLEAN">
+                <dataSources id="79">
+                  <questionnaireDataSource id="80" questionnaire="Test" question="Q_MULTIPLE" category="PNA"/>
+                  <questionnaireDataSource id="81" questionnaire="Test" question="OPEN_QUESTION" category="OTHER" openAnswerDefinition="NUMERIC"/>
+                  <questionnaireDataSource id="82" questionnaire="Test" question="Q_MULTIPLE" category="OTHER" openAnswerDefinition="NUMERIC"/>
+                </dataSources>
+              </condition>
+              <questions id="83"/>
             </question>
-            <question id="80" name="TIMESTAMP_P1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+            <question id="84" name="TIMESTAMP_P1" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
               <page reference="7"/>
-              <questionCategories id="81">
-                <questionCategory id="82">
-                  <question reference="80"/>
-                  <category id="83" name="TIMESTAMP" escape="false">
-                    <openAnswerDefinition id="84" name="TIMESTAMP_P1" dataType="DATE" required="true">
-                      <dataSource class="currentDateSource" id="85"/>
-                      <openAnswerDefinitions id="86"/>
+              <questionCategories id="85">
+                <questionCategory id="86">
+                  <question reference="84"/>
+                  <category id="87" name="TIMESTAMP" escape="false">
+                    <openAnswerDefinition id="88" name="TIMESTAMP_P1" dataType="DATE" required="true">
+                      <dataSource class="currentDateSource" id="89"/>
+                      <openAnswerDefinitions id="90"/>
                     </openAnswerDefinition>
                   </category>
                 </questionCategory>
               </questionCategories>
-              <questions id="87"/>
+              <questions id="91"/>
             </question>
           </questions>
         </page>
-        <page id="88" name="P2" uIFactoryName="quartz.DefaultPageLayoutFactory">
+        <page id="92" name="P2" uIFactoryName="quartz.DefaultPageLayoutFactory">
           <section reference="5"/>
-          <questions id="89">
-            <question id="90" name="DATE_QUESTION" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-              <page reference="88"/>
-              <questionCategories id="91">
-                <questionCategory id="92">
-                  <question reference="90"/>
-                  <category id="93" name="DATE" escape="false">
-                    <openAnswerDefinition id="94" name="OPEN_DATE" dataType="DATE" required="true">
-                      <openAnswerDefinitions id="95"/>
+          <questions id="93">
+            <question id="94" name="DATE_QUESTION" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+              <page reference="92"/>
+              <questionCategories id="95">
+                <questionCategory id="96">
+                  <question reference="94"/>
+                  <category id="97" name="DATE" escape="false">
+                    <openAnswerDefinition id="98" name="OPEN_DATE" dataType="DATE" required="true">
+                      <openAnswerDefinitions id="99"/>
                     </openAnswerDefinition>
                   </category>
                 </questionCategory>
               </questionCategories>
-              <questions id="96"/>
+              <questions id="100"/>
             </question>
           </questions>
         </page>
-        <page id="97" name="P3" uIFactoryName="quartz.DefaultPageLayoutFactory">
+        <page id="101" name="P3" uIFactoryName="quartz.DefaultPageLayoutFactory">
           <section reference="5"/>
-          <questions id="98">
-            <question id="99" name="DD" multiple="false" minCount="1" uIFactoryName="quartz.DropDownQuestionPanelFactory">
-              <page reference="97"/>
-              <questionCategories id="100">
-                <questionCategory id="101">
-                  <question reference="99"/>
-                  <category id="102" name="A" escape="false"/>
-                </questionCategory>
-                <questionCategory id="103">
-                  <question reference="99"/>
-                  <category id="104" name="B" escape="false"/>
-                </questionCategory>
+          <questions id="102">
+            <question id="103" name="DD" multiple="false" minCount="1" uIFactoryName="quartz.DropDownQuestionPanelFactory">
+              <page reference="101"/>
+              <questionCategories id="104">
                 <questionCategory id="105">
-                  <question reference="99"/>
-                  <category id="106" name="C" escape="false"/>
+                  <question reference="103"/>
+                  <category id="106" name="A" escape="false"/>
                 </questionCategory>
                 <questionCategory id="107">
-                  <question reference="99"/>
-                  <category reference="28"/>
-                </questionCategory>
-                <questionCategory id="108">
-                  <question reference="99"/>
-                  <category reference="47"/>
+                  <question reference="103"/>
+                  <category id="108" name="B" escape="false"/>
                 </questionCategory>
                 <questionCategory id="109">
-                  <question reference="99"/>
+                  <question reference="103"/>
+                  <category id="110" name="C" escape="false"/>
+                </questionCategory>
+                <questionCategory id="111">
+                  <question reference="103"/>
+                  <category reference="28"/>
+                </questionCategory>
+                <questionCategory id="112">
+                  <question reference="103"/>
+                  <category reference="47"/>
+                </questionCategory>
+                <questionCategory id="113">
+                  <question reference="103"/>
                   <category reference="49"/>
                 </questionCategory>
               </questionCategories>
-              <questions id="110"/>
+              <questions id="114"/>
             </question>
-            <question id="111" name="DD_DEPENDENT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
-              <page reference="97"/>
-              <questionCategories id="112">
-                <questionCategory id="113">
-                  <question reference="111"/>
-                  <category id="114" name="1" escape="false"/>
-                </questionCategory>
-                <questionCategory id="115">
-                  <question reference="111"/>
-                  <category id="116" name="2" escape="false"/>
-                </questionCategory>
+            <question id="115" name="DD_DEPENDENT" multiple="false" minCount="1" uIFactoryName="quartz.DefaultQuestionPanelFactory">
+              <page reference="101"/>
+              <questionCategories id="116">
                 <questionCategory id="117">
-                  <question reference="111"/>
-                  <category id="118" name="3" escape="false"/>
+                  <question reference="115"/>
+                  <category id="118" name="1" escape="false"/>
+                </questionCategory>
+                <questionCategory id="119">
+                  <question reference="115"/>
+                  <category id="120" name="2" escape="false"/>
+                </questionCategory>
+                <questionCategory id="121">
+                  <question reference="115"/>
+                  <category id="122" name="3" escape="false"/>
                 </questionCategory>
               </questionCategories>
-              <condition class="computingDataSource" id="119" expression="$1 &amp;&amp; (!$2 &amp;&amp; !$3 &amp;&amp; !$4)" dataType="BOOLEAN">
-                <dataSources id="120">
-                  <questionnaireDataSource id="121" questionnaire="Test" question="DD" category="*"/>
-                  <questionnaireDataSource id="122" questionnaire="Test" question="DD" category="A"/>
-                  <questionnaireDataSource id="123" questionnaire="Test" question="DD" category="PNA"/>
-                  <questionnaireDataSource id="124" questionnaire="Test" question="DD" category="DNK"/>
+              <condition class="computingDataSource" id="123" expression="$1 &amp;&amp; (!$2 &amp;&amp; !$3 &amp;&amp; !$4)" dataType="BOOLEAN">
+                <dataSources id="124">
+                  <questionnaireDataSource id="125" questionnaire="Test" question="DD" category="*"/>
+                  <questionnaireDataSource id="126" questionnaire="Test" question="DD" category="A"/>
+                  <questionnaireDataSource id="127" questionnaire="Test" question="DD" category="PNA"/>
+                  <questionnaireDataSource id="128" questionnaire="Test" question="DD" category="DNK"/>
                 </dataSources>
               </condition>
             </question>
           </questions>
         </page>
       </pages>
-      <sections id="125"/>
+      <sections id="129"/>
     </section>
   </sections>
-  <pages id="126">
+  <pages id="130">
     <page reference="7"/>
-    <page reference="88"/>
-    <page reference="97"/>
+    <page reference="92"/>
+    <page reference="101"/>
   </pages>
 </questionnaire>

@@ -46,7 +46,7 @@ public class TestQuestionnaire {
     builder.inQuestion("ARRAY").withQuestion("Q1");
     builder.inQuestion("ARRAY").withQuestion("Q2");
 
-    builder.inPage("P1").withQuestion("Q_INNER_CONDITION").setCondition("Q_MULTIPLE", "PNA");
+    builder.inPage("P1").withQuestion("Q_INNER_CONDITION").setCondition("$1 || $2>1 || $3>1", builder.newDataSource("Q_MULTIPLE", "PNA"), builder.newDataSource("OPEN_QUESTION", "OTHER", "NUMERIC"), builder.newDataSource("Q_MULTIPLE", "OTHER", "NUMERIC"));
     builder.inQuestion("Q_INNER_CONDITION").withCategories("1", "2", "3");
 
     builder.inPage("P1").addTimestamp();
