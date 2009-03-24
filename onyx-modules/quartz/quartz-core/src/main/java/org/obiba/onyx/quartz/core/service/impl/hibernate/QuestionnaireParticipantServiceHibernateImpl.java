@@ -59,20 +59,11 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
   }
 
   public String getQuestionComment(Participant participant, String questionnaireName, String questionName) {
-    QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant(participant, questionnaireName);
+    Criteria criteria = createQuestionnaireParticipantCriteria(QuestionAnswer.class, null, participant, questionnaireName).add("questionName", Operation.eq, questionName).getCriteria();
 
-    if(questionnaireParticipant != null) {
-      QuestionAnswer answer = new QuestionAnswer();
-      answer.setQuestionName(questionName);
-      answer.setQuestionnaireParticipant(questionnaireParticipant);
+    QuestionAnswer answer = (QuestionAnswer) criteria.uniqueResult();
 
-      answer = getPersistenceManager().matchOne(answer);
-
-      if(answer != null) {
-        return answer.getComment();
-      }
-    }
-    return null;
+    return (answer != null) ? answer.getComment() : null;
   }
 
   public Boolean isQuestionActive(Participant participant, String questionnaireName, String questionName) {
