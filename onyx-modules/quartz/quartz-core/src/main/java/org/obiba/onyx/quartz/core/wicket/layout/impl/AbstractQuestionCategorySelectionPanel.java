@@ -75,7 +75,7 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
 
       public Object component(Component component) {
         if(!questionCategoryModel.equals(component.getModel())) {
-          log.info("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getModelObject());
+          log.debug("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getModelObject());
           AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
           if(openField.getData() != null) {
             openField.resetField();
