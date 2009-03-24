@@ -39,30 +39,30 @@ public class ActiveQuestionnaireAdministrationServiceHibernateImpl extends Defau
   }
 
   public CategoryAnswer findAnswer(Question question, Category category) {
-    Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant.participant", Operation.eq, activeInterviewService.getParticipant()).add("categoryName", Operation.eq, category.getName()).add("questionAnswer.questionName", Operation.eq, question.getName()).getCriteria();
+    Criteria criteria = createQuestionnaireParticipantCriteria(CategoryAnswer.class, "questionAnswer").add("categoryName", Operation.eq, category.getName()).add("questionAnswer.questionName", Operation.eq, question.getName()).getCriteria();
     return (CategoryAnswer) criteria.uniqueResult();
   }
 
   public CategoryAnswer findAnswer(String questionnaireName, String questionName, String categoryName) {
-    Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant.participant", Operation.eq, activeInterviewService.getParticipant()).add("questionAnswer.questionnaireParticipant.questionnaireName", Operation.eq, questionnaireName).add("categoryName", Operation.eq, categoryName).add("questionAnswer.questionName", Operation.eq, questionName).getCriteria();
+    Criteria criteria = createQuestionnaireParticipantCriteria(CategoryAnswer.class, "questionAnswer").add("categoryName", Operation.eq, categoryName).add("questionAnswer.questionName", Operation.eq, questionName).getCriteria();
     return (CategoryAnswer) criteria.uniqueResult();
   }
 
   @SuppressWarnings("unchecked")
   public List<CategoryAnswer> findAnswers(Question question) {
-    Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant.participant", Operation.eq, activeInterviewService.getParticipant()).add("questionAnswer.questionName", Operation.eq, question.getName()).getCriteria();
+    Criteria criteria = createQuestionnaireParticipantCriteria(CategoryAnswer.class, "questionAnswer").add("questionAnswer.questionName", Operation.eq, question.getName()).getCriteria();
     return criteria.list();
   }
 
   @SuppressWarnings("unchecked")
   public List<CategoryAnswer> findActiveAnswers(Question question) {
-    Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant.participant", Operation.eq, activeInterviewService.getParticipant()).add("questionAnswer.questionName", Operation.eq, question.getName()).add("active", Operation.eq, true).getCriteria();
+    Criteria criteria = createQuestionnaireParticipantCriteria(CategoryAnswer.class, "questionAnswer").add("questionAnswer.questionName", Operation.eq, question.getName()).add("active", Operation.eq, true).getCriteria();
     return criteria.list();
   }
 
   @SuppressWarnings("unchecked")
   public List<CategoryAnswer> findActiveAnswers(String questionnaireName, String questionName) {
-    Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant.participant", Operation.eq, activeInterviewService.getParticipant()).add("questionAnswer.questionnaireParticipant.questionnaireName", Operation.eq, questionnaireName).add("questionAnswer.questionName", Operation.eq, questionName).add("active", Operation.eq, true).getCriteria();
+    Criteria criteria = createQuestionnaireParticipantCriteria(CategoryAnswer.class, "questionAnswer").add("questionAnswer.questionName", Operation.eq, questionName).add("active", Operation.eq, true).getCriteria();
     return criteria.list();
   }
 
@@ -71,25 +71,30 @@ public class ActiveQuestionnaireAdministrationServiceHibernateImpl extends Defau
   }
 
   public OpenAnswer findOpenAnswer(Question question, Category category, OpenAnswerDefinition openAnswerDefinition) {
-    Criteria criteria = AssociationCriteria.create(OpenAnswer.class, getSession()).add("categoryAnswer.questionAnswer.questionnaireParticipant.participant", Operation.eq, activeInterviewService.getParticipant()).add("categoryAnswer.questionAnswer.questionName", Operation.eq, question.getName()).add("categoryAnswer.categoryName", Operation.eq, category.getName()).add("openAnswerDefinitionName", Operation.eq, openAnswerDefinition.getName()).getCriteria();
+    Criteria criteria = createQuestionnaireParticipantCriteria(OpenAnswer.class, "categoryAnswer.questionAnswer").add("categoryAnswer.questionAnswer.questionName", Operation.eq, question.getName()).add("categoryAnswer.categoryName", Operation.eq, category.getName()).add("openAnswerDefinitionName", Operation.eq, openAnswerDefinition.getName()).getCriteria();
     return (OpenAnswer) criteria.uniqueResult();
   }
 
   public OpenAnswer findOpenAnswer(String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
-    Criteria criteria = AssociationCriteria.create(OpenAnswer.class, getSession()).add("categoryAnswer.questionAnswer.questionnaireParticipant.participant", Operation.eq, activeInterviewService.getParticipant()).add("categoryAnswer.questionAnswer.questionnaireParticipant.questionnaireName", Operation.eq, questionnaireName).add("categoryAnswer.questionAnswer.questionName", Operation.eq, questionName).add("categoryAnswer.categoryName", Operation.eq, categoryName).add("openAnswerDefinitionName", Operation.eq, openAnswerDefinitionName).getCriteria();
+    Criteria criteria = createQuestionnaireParticipantCriteria(OpenAnswer.class, "categoryAnswer.questionAnswer").add("categoryAnswer.questionAnswer.questionName", Operation.eq, questionName).add("categoryAnswer.categoryName", Operation.eq, categoryName).add("openAnswerDefinitionName", Operation.eq, openAnswerDefinitionName).getCriteria();
     return (OpenAnswer) criteria.uniqueResult();
   }
 
   @SuppressWarnings("unchecked")
   public List<OpenAnswer> findOpenAnswers(Question question, Category category) {
-    Criteria criteria = AssociationCriteria.create(OpenAnswer.class, getSession()).add("categoryAnswer.questionAnswer.questionnaireParticipant.participant", Operation.eq, activeInterviewService.getParticipant()).add("categoryAnswer.questionAnswer.questionName", Operation.eq, question.getName()).add("categoryAnswer.categoryName", Operation.eq, category.getName()).getCriteria();
+    Criteria criteria = createQuestionnaireParticipantCriteria(OpenAnswer.class, "categoryAnswer.questionAnswer").add("categoryAnswer.questionAnswer.questionName", Operation.eq, question.getName()).add("categoryAnswer.categoryName", Operation.eq, category.getName()).getCriteria();
     return criteria.list();
   }
 
   @Override
   protected QuestionAnswer findAnswer(Question question) {
-    Criteria criteria = AssociationCriteria.create(QuestionAnswer.class, getSession()).add("questionnaireParticipant.participant", Operation.eq, activeInterviewService.getParticipant()).add("questionName", Operation.eq, question.getName()).getCriteria();
+    Criteria criteria = createQuestionnaireParticipantCriteria(QuestionAnswer.class, null).add("questionName", Operation.eq, question.getName()).getCriteria();
     return (QuestionAnswer) criteria.uniqueResult();
+  }
+
+  private AssociationCriteria createQuestionnaireParticipantCriteria(Class<?> entityType, String prefix) {
+    String pref = (prefix != null ? prefix + "." : "");
+    return AssociationCriteria.create(entityType, getSession()).add(pref + "questionnaireParticipant.questionnaireName", Operation.eq, getQuestionnaire().getName()).add(pref + "questionnaireParticipant.participant", Operation.eq, activeInterviewService.getParticipant());
   }
 
 }

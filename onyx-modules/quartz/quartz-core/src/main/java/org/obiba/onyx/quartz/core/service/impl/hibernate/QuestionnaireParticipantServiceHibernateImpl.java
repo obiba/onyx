@@ -44,33 +44,18 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
 
   @SuppressWarnings("unchecked")
   public List<CategoryAnswer> getCategoryAnswers(Participant participant, String questionnaireName, String questionName) {
-    QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant(participant, questionnaireName);
-
-    if(questionnaireParticipant != null) {
-      Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant", Operation.eq, questionnaireParticipant).add("questionAnswer.questionName", Operation.eq, questionName).add("active", Operation.eq, true).getCriteria();
-      return criteria.list();
-    }
-    return null;
+    Criteria criteria = createQuestionnaireParticipantCriteria(CategoryAnswer.class, "questionAnswer", participant, questionnaireName).add("questionAnswer.questionName", Operation.eq, questionName).add("active", Operation.eq, true).getCriteria();
+    return criteria.list();
   }
 
   public CategoryAnswer getCategoryAnswer(Participant participant, String questionnaireName, String questionName, String categoryName) {
-    QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant(participant, questionnaireName);
-
-    if(questionnaireParticipant != null) {
-      Criteria criteria = AssociationCriteria.create(CategoryAnswer.class, getSession()).add("questionAnswer.questionnaireParticipant", Operation.eq, questionnaireParticipant).add("questionAnswer.questionName", Operation.eq, questionName).add("active", Operation.eq, true).add("categoryName", Operation.eq, categoryName).getCriteria();
-      return (CategoryAnswer) criteria.uniqueResult();
-    }
-    return null;
+    Criteria criteria = createQuestionnaireParticipantCriteria(CategoryAnswer.class, "questionAnswer", participant, questionnaireName).add("questionAnswer.questionName", Operation.eq, questionName).add("active", Operation.eq, true).add("categoryName", Operation.eq, categoryName).getCriteria();
+    return (CategoryAnswer) criteria.uniqueResult();
   }
 
   public OpenAnswer getOpenAnswer(Participant participant, String questionnaireName, String questionName, String categoryName, String openAnswerName) {
-    QuestionnaireParticipant questionnaireParticipant = getQuestionnaireParticipant(participant, questionnaireName);
-
-    if(questionnaireParticipant != null) {
-      Criteria criteria = AssociationCriteria.create(OpenAnswer.class, getSession()).add("categoryAnswer.questionAnswer.questionnaireParticipant", Operation.eq, questionnaireParticipant).add("categoryAnswer.questionAnswer.questionName", Operation.eq, questionName).add("categoryAnswer.active", Operation.eq, true).add("categoryAnswer.categoryName", Operation.eq, categoryName).add("openAnswerDefinitionName", Operation.eq, openAnswerName).getCriteria();
-      return (OpenAnswer) criteria.uniqueResult();
-    }
-    return null;
+    Criteria criteria = createQuestionnaireParticipantCriteria(OpenAnswer.class, "categoryAnswer.questionAnswer", participant, questionnaireName).add("categoryAnswer.questionAnswer.questionName", Operation.eq, questionName).add("categoryAnswer.active", Operation.eq, true).add("categoryAnswer.categoryName", Operation.eq, categoryName).add("openAnswerDefinitionName", Operation.eq, openAnswerName).getCriteria();
+    return (OpenAnswer) criteria.uniqueResult();
   }
 
   public String getQuestionComment(Participant participant, String questionnaireName, String questionName) {
@@ -105,6 +90,11 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
       }
     }
     return null;
+  }
+
+  private AssociationCriteria createQuestionnaireParticipantCriteria(Class<?> entityType, String prefix, Participant participant, String questionnaireName) {
+    String pref = (prefix != null ? prefix + "." : "");
+    return AssociationCriteria.create(entityType, getSession()).add(pref + "questionnaireParticipant.questionnaireName", Operation.eq, questionnaireName).add(pref + "questionnaireParticipant.participant", Operation.eq, participant);
   }
 
 }
