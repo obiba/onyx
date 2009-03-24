@@ -55,6 +55,7 @@
     <property name="sessionFactory" ref="sessionFactory" />
     <property name="navigationStrategy" ref="navigationStrategy" />
     <property name="activeInterviewService" ref="activeInterviewService" />
+    <property name="defaultLanguage" value="en" />
   </bean>
 
   <bean id="questionnaireBundleManager" class="org.obiba.onyx.quartz.core.engine.questionnaire.bundle.impl.QuestionnaireBundleManagerImpl">

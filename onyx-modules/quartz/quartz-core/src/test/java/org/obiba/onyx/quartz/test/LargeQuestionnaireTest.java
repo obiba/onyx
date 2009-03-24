@@ -34,16 +34,17 @@ public class LargeQuestionnaireTest extends AbstractQuestionnaireTest {
   @Ignore
   @Test
   @Dataset
-  public void testQ1() {
+  public void testSpeed() {
+
     startQuestionnaire();
     assertCurrentPage(getPage("P1"));
 
     AnswerProvider answerProvider = ConfigurableAnswerProvider.fromXmlResource(getAnswerProviderResourcePath() + "/answerProvider.xml");
 
-    Question q1000 = getQuestion("Q500");
-    answerQuestionsUpTo(answerProvider, q1000);
+    Question q = getQuestion("Q150");
+    answerQuestionsUpTo(answerProvider, q);
 
-    assertCurrentPage(getPage("P500"));
+    assertCurrentPage(getPage("P150"));
   }
 
   private static final String QUESTIONNAIRE = "LargeQuestionnaire";

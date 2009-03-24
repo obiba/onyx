@@ -152,8 +152,12 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
         @Override
         protected void onEvent(AjaxRequestTarget target) {
-          openField.focusField(target);
-          fireQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), true);
+          // persist data
+          // do not fire event if category was already selected
+          if(activeQuestionnaireAdministrationService.findAnswer(getQuestion(), getQuestionCategory().getCategory()) == null) {
+            openField.focusField(target);
+            fireQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), true);
+          }
         }
 
       });

@@ -36,11 +36,13 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultActiveQuestionnaireAdministrationServiceImpl.class);
 
-  private ActiveInterviewService activeInterviewService;
+  protected ActiveInterviewService activeInterviewService;
 
   private Questionnaire currentQuestionnaire;
 
   private Locale defaultLanguage;
+
+  private Locale currentLanguage = null;
 
   private INavigationStrategy navigationStrategy;
 
@@ -59,9 +61,21 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public Locale getLanguage() {
-    QuestionnaireParticipant currentQuestionnaireParticipant = getQuestionnaireParticipant();
-    if(currentQuestionnaireParticipant == null) return defaultLanguage;
-    return currentQuestionnaireParticipant.getLocale();
+    Locale language = currentLanguage;
+
+    if(currentLanguage == null) {
+      QuestionnaireParticipant currentQuestionnaireParticipant = getQuestionnaireParticipant();
+      if(currentQuestionnaireParticipant != null) {
+        currentLanguage = currentQuestionnaireParticipant.getLocale();
+        language = currentLanguage;
+      }
+
+      if(currentLanguage == null) {
+        language = defaultLanguage;
+      }
+    }
+
+    return language;
   }
 
   public void setNavigationStrategy(INavigationStrategy navigationStrategy) {
@@ -69,6 +83,8 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public QuestionnaireParticipant start(Participant participant, Locale language) {
+    currentLanguage = null;
+
     QuestionnaireParticipant currentQuestionnaireParticipant = getQuestionnaireParticipant();
 
     if(currentQuestionnaireParticipant == null) {
@@ -93,6 +109,8 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     if(currentQuestionnaireParticipant == null) {
       throw new IllegalArgumentException("Null QuestionnaireParticipant");
     }
+
+    currentLanguage = null;
 
     currentQuestionnaireParticipant.setTimeEnd(new Date());
     getPersistenceManager().save(currentQuestionnaireParticipant);
@@ -218,11 +236,9 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   }
 
   public CategoryAnswer answer(Question question, QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition, Data value) {
-    QuestionAnswer template = new QuestionAnswer();
-    template.setQuestionnaireParticipant(getQuestionnaireParticipant());
-    template.setQuestionName(question.getName());
 
-    QuestionAnswer questionAnswer = getPersistenceManager().matchOne(template);
+    QuestionAnswer questionAnswer = findAnswer(question);
+
     CategoryAnswer categoryTemplate = new CategoryAnswer();
     categoryTemplate.setCategoryName(questionCategory.getCategory().getName());
     CategoryAnswer categoryAnswer;
@@ -232,6 +248,10 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     OpenAnswer openAnswer = null;
 
     if(questionAnswer == null) {
+      QuestionAnswer template = new QuestionAnswer();
+      template.setQuestionnaireParticipant(getQuestionnaireParticipant());
+      template.setQuestionName(question.getName());
+
       questionAnswer = getPersistenceManager().save(template);
       categoryAnswer = categoryTemplate;
       categoryAnswer.setQuestionAnswer(questionAnswer);
@@ -306,15 +326,16 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     getPersistenceManager().delete(categoryAnswer);
   }
 
+  protected abstract QuestionAnswer findAnswer(Question question);
+
   public void setActiveAnswers(Question question, boolean active) {
     // question answers are made active (and created if none, in the case of boiler plates)
-    QuestionAnswer template = new QuestionAnswer();
-    template.setQuestionnaireParticipant(getQuestionnaireParticipant());
-    template.setQuestionName(question.getName());
-    QuestionAnswer questionAnswer = getPersistenceManager().matchOne(template);
+    QuestionAnswer questionAnswer = findAnswer(question);
 
     if(questionAnswer == null) {
-      questionAnswer = template;
+      questionAnswer = new QuestionAnswer();
+      questionAnswer.setQuestionnaireParticipant(getQuestionnaireParticipant());
+      questionAnswer.setQuestionName(question.getName());
     }
 
     questionAnswer.setActive(active);

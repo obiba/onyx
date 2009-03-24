@@ -99,7 +99,7 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
         }
         if(getOpenField() != null) {
           if(!getSelectionModel().isSelected()) {
-            resetOpenAnswerDefinitionPanels(QuestionCategoryCheckBoxPanel.this, QuestionCategoryCheckBoxPanel.this.getModel());
+            resetOpenAnswerDefinitionPanels(target, getOpenField(), QuestionCategoryCheckBoxPanel.this.getModel());
             updateFeedbackPanel(target);
           }
         }
@@ -146,10 +146,10 @@ public class QuestionCategoryCheckBoxPanel extends AbstractQuestionCategorySelec
   }
 
   public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
-    if(getSelectionModel().isSelected()) return;
-
-    // set checkbox as selected
-    getSelectionModel().select();
+    if(!getSelectionModel().isSelected()) {
+      // set checkbox as selected
+      getSelectionModel().select();
+    }
 
     fireQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
   }
