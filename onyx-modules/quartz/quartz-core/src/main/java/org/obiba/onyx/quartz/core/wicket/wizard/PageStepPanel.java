@@ -134,7 +134,7 @@ public class PageStepPanel extends WizardStepPanel {
     long duration = System.currentTimeMillis() - from;
 
     if(from > 0) {
-      log.info("### duration={}ms [PageStep]", duration);
+      log.debug("### duration={}ms [PageStep]", duration);
     }
 
     return duration;
