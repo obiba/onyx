@@ -59,4 +59,12 @@ public class RubyInterruptedState extends AbstractRubyStageState {
     log.debug("Ruby Stage {} is resuming", super.getStage().getName());
     castEvent(TransitionEvent.RESUME);
   }
+
+  public boolean wantTransitionEvent(TransitionEvent event) {
+    // ONYX-428
+    if(event.equals(TransitionEvent.VALID)) {
+      return false;
+    }
+    return super.wantTransitionEvent(event);
+  }
 }
