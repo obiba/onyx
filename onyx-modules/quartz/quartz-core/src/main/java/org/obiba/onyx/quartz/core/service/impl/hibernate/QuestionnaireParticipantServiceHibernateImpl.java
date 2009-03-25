@@ -67,7 +67,7 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
   public Boolean isQuestionActive(Participant participant, String questionnaireName, String questionName) {
     Criteria criteria = createQuestionnaireParticipantCriteria(QuestionAnswer.class, null, participant, questionnaireName).add("questionName", Operation.eq, questionName).getCriteria();
     QuestionAnswer answer = (QuestionAnswer) criteria.uniqueResult();
-    return (answer != null) ? answer.isActive() : null;
+    return (answer != null) ? answer.getActive() : null;
   }
 
   private AssociationCriteria createQuestionnaireParticipantCriteria(Class<?> entityType, String prefix, Participant participant, String questionnaireName) {
