@@ -126,6 +126,13 @@ public class InstrumentRunValue extends AbstractEntity {
         dataValue = data.getValue();
         break;
       }
+    } else {
+      booleanValue = null;
+      dateValue = null;
+      decimalValue = null;
+      integerValue = null;
+      textValue = null;
+      dataValue = null;
     }
   }
 
