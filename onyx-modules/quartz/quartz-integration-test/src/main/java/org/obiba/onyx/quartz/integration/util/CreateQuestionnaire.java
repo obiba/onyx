@@ -28,6 +28,7 @@ public class CreateQuestionnaire {
 
       // Select the questionnaire you wish to create
       creator.createQuestionnaire(SelfAdminHealthQuestionnaireContentBuilder.buildQuestionnaire(), Locale.ENGLISH);
+      creator.createQuestionnaire(TestQuestionnaire.buildQuestionnaire(), Locale.ENGLISH);
     } catch(Exception e) {
       e.printStackTrace();
     }

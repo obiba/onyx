@@ -42,6 +42,8 @@ public class ElectronicConsentStep extends WizardStepPanel {
     // Replace the WizardForm css to get rid of the blue border that surrounds the form.
     // This border is taking too much space when the electronic consent form is displayed.
     form.changeWizardFormStyle("wizard-consent");
+    
+    target.appendJavascript("Resizer.resizeConsentFrame();");
   }
 
   @Override

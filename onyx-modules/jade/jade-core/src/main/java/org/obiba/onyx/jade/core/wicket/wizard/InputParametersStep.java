@@ -25,13 +25,20 @@ public class InputParametersStep extends WizardStepPanel {
     super(id);
     setOutputMarkupId(true);
 
-    add(new EmptyPanel(getTitleId()));
+    add(new EmptyPanel(getTitleId()).setVisible(false));
   }
 
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
-    // No previous step
-    form.getPreviousLink().setEnabled(true);
+
+    // Disable previous button when not needed.
+    WizardStepPanel previousStep = this.getPreviousStep();
+    if(previousStep == null || previousStep.equals(this)) {
+      form.getPreviousLink().setEnabled(false);
+    } else {
+      form.getPreviousLink().setEnabled(true);
+    }
+
     form.getNextLink().setEnabled(true);
     form.getFinishLink().setEnabled(false);
     if(target != null) {

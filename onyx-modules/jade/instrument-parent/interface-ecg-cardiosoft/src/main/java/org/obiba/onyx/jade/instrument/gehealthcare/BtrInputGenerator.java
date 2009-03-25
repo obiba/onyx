@@ -59,7 +59,7 @@ public class BtrInputGenerator {
   }
 
   private enum Ethnicity {
-    NONE, CAUCASIAN, BLACK, ASIAN, ORIENTAL, HISPANIC, NATIVE, INUIT, POLYNESIAN, PACIFIC_ISLAND, MOGOLIAN, IDIAN;
+    UNKNOWN, CAUCASIAN, BLACK, ASIAN, ORIENTAL, HISPANIC, NATIVE, INUIT, POLYNESIAN, PACIFIC_ISLAND, MOGOLIAN, IDIAN;
 
     public void put(ByteBuffer bb) {
       bb.putShort((short) ordinal());
@@ -70,6 +70,32 @@ public class BtrInputGenerator {
     // constructor
   }
 
+  /**
+   * Formats the data so it can be loaded in the BTRIEVE patient table.
+   * <p>
+   * The data is expected to include the following attributes, presented in the following order:
+   * <ul>
+   * <li>Last name: string</li>
+   * <li>First name: string</li>
+   * <li>Birth month: short</li>
+   * <li>Birth year (yyyy): short</li>
+   * <li>Birth day: short</li>
+   * <li>Patient ID: string</li>
+   * <li>Primary key: integer</li>
+   * <li>Weight (dg): short</li>
+   * <li>Height (cm): short</li>
+   * <li>Gender: one of {@link Gender} values</li>
+   * <li>Ethnicity: one of {@link Ethnicity} values</li>
+   * <li>Pacemaker: byte</li>
+   * </ul>
+   * <p>
+   * Notes:
+   * <ul>
+   * <li>Primary key must be unique when loading the record.</li>
+   * <li>Weight is given in decigrams (dg).</li>
+   * <li>Pacemaker values are 1 (has one), 0 (does not have one).</li>
+   * </ul>
+   */
   public ByteBuffer generateByteBuffer(Map<String, Data> inputData) {
 
     // Create a buffer that will hold the record, its header, its separator, and the eof
@@ -86,9 +112,12 @@ public class BtrInputGenerator {
     bb.putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_BIRTH_YEAR").getValueAsString())).putShort(birthdayMonth).putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_BIRTH_DAY").getValueAsString())); // 62-63,64-65,66-67
 
     putString(bb, inputData.get("INPUT_PARTICIPANT_BARCODE").getValueAsString()); // 68-98
-    bb.putInt(Integer.valueOf(inputData.get("INPUT_PARTICIPANT_BARCODE").getValueAsString())); // 99-102
-    bb.putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_WEIGHT").getValueAsString()));
+    bb.putInt(0); // 99-102
+
+    // Input weight is expected in decigrams so multiply the kilograms input by 10.
+    bb.putShort((short) (Short.valueOf(inputData.get("INPUT_PARTICIPANT_WEIGHT").getValueAsString()).shortValue() * 10));
     WeightUnits.KG.put(bb); // 105-106
+
     bb.putShort(Short.valueOf(inputData.get("INPUT_PARTICIPANT_HEIGHT").getValueAsString()));
     HeightUnits.CM.put(bb); // 109-110
     Gender gender = Gender.valueOf(inputData.get("INPUT_PARTICIPANT_GENDER").getValueAsString());

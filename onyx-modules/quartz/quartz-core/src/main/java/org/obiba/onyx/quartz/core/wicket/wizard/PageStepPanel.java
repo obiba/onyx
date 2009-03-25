@@ -48,6 +48,8 @@ public class PageStepPanel extends WizardStepPanel {
 
   private boolean previousEnabled;
 
+  private long from = 0;
+
   //
   // Constructors
   //
@@ -99,6 +101,7 @@ public class PageStepPanel extends WizardStepPanel {
     QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
     pageLayout.onNext(target);
     setNextStep(questionnaireWizardForm.getNextStep());
+    getDuration(from);
   }
 
   @Override
@@ -108,6 +111,7 @@ public class PageStepPanel extends WizardStepPanel {
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
+    from = getDuration(0);
     super.onStepInNext(form, target);
     pageLayout.onStepInNext(target);
   }
@@ -124,6 +128,16 @@ public class PageStepPanel extends WizardStepPanel {
 
   public void setPreviousEnabled(boolean previousEnabled) {
     this.previousEnabled = previousEnabled;
+  }
+
+  private long getDuration(long from) {
+    long duration = System.currentTimeMillis() - from;
+
+    if(from > 0) {
+      log.debug("### duration={}ms [PageStep]", duration);
+    }
+
+    return duration;
   }
 
 }

@@ -8,7 +8,7 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -18,6 +18,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.IValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategoriesView;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
@@ -69,7 +70,13 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
 
     Question question = (Question) getModelObject();
 
-    radioGroup = new RadioGroup("categories", new Model());
+    radioGroup = new RadioGroup("categories", new Model()) {
+      @Override
+      public void updateModel() {
+        // ONYX-344: Do nothing -- QuestionCategoryRadioPanel sets the model to a read-only QuestionnaireModel
+        // whenever a radio button is selected.
+      }
+    };
     radioGroup.setLabel(new QuestionnaireStringResourceModel(question, "label"));
     add(radioGroup);
 
@@ -93,6 +100,17 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
    */
   public void setNoSelection() {
     radioGroup.setModel(new Model());
+
+    // clear the open fields if any
+    visitChildren(AbstractOpenAnswerDefinitionPanel.class, new Component.IVisitor() {
+
+      public Object component(Component component) {
+        AbstractOpenAnswerDefinitionPanel open = (AbstractOpenAnswerDefinitionPanel) component;
+        open.resetField();
+        return null;
+      }
+
+    });
   }
 
   /**
@@ -103,12 +121,4 @@ public class DefaultEscapeQuestionCategoriesPanel extends Panel {
     radioGroup.add(validator);
   }
 
-  /**
-   * Called on radio selection.
-   * @param target
-   * @param questionModel
-   * @param questionCategoryModel
-   */
-  public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-  }
 }

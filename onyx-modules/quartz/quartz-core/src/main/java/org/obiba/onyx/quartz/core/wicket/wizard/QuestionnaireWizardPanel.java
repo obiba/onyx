@@ -71,6 +71,7 @@ public class QuestionnaireWizardPanel extends WizardPanel {
    */
   @Override
   public Locale getLocale() {
-    return activeQuestionnaireAdministrationService.getLanguage();
+    Locale locale = activeQuestionnaireAdministrationService.getLanguage();
+    return locale != null ? locale : super.getLocale();
   }
 }

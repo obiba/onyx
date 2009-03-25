@@ -311,13 +311,13 @@ public interface ActiveQuestionnaireAdministrationService {
   public void deleteAnswers(CategoryAnswer categoryAnswer);
 
   /**
-   * Add a comment to a question answer.
+   * Set the comment to a question answer. If null or empty, delete a previously entered comment.
    * 
    * @param question The question for which the comment will be added.
    * @param comment The comment.
    * @return The question answer.
    */
-  public QuestionAnswer addComment(Question question, String comment);
+  public void setComment(Question question, String comment);
 
   /**
    * Get the comment attached to the question answer.

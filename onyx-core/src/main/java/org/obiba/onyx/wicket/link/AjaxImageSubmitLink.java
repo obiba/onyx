@@ -51,6 +51,17 @@ public abstract class AjaxImageSubmitLink extends AbstractImageLink {
     super(id, labelModel, descriptionModel, imageDecorator);
   }
 
+  /**
+   * 
+   * @param id
+   * @param labelModel
+   * @param descriptionModel
+   * @param imageDecoratorModel image src attribute value
+   */
+  public AjaxImageSubmitLink(String id, IModel labelModel, IModel descriptionModel, IModel imageDecoratorModel) {
+    super(id, labelModel, descriptionModel, imageDecoratorModel);
+  }
+
   @Override
   protected AbstractLink newLink(String id) {
     return new AjaxSubmitLink(id) {

@@ -204,11 +204,11 @@ public class EditParticipantPanel extends Panel {
         add(new EmptyPanel(BARCODE));
 
         FormComponent firstName = new TextField("value", new PropertyModel(getModel(), FIRST_NAME)).setRequired(true).setLabel(new ResourceModel("FirstName")).add(new StringValidator.MaximumLengthValidator(250));
-        firstName.add(new StringValidator.MaximumLengthValidator(100));
+        firstName.add(new StringValidator.MaximumLengthValidator(250));
         add(new TextFieldFragment(FIRST_NAME, getModel(), "FirstName*", firstName));
 
         FormComponent lastName = new TextField("value", new PropertyModel(getModel(), LAST_NAME)).setRequired(true).setLabel(new ResourceModel("LastName")).add(new StringValidator.MaximumLengthValidator(250));
-        lastName.add(new StringValidator.MaximumLengthValidator(100));
+        lastName.add(new StringValidator.MaximumLengthValidator(250));
         add(new TextFieldFragment(LAST_NAME, getModel(), "LastName*", lastName));
         add(new DropDownFragment(GENDER, getModel(), "Gender*", createGenderDropDown()));
 

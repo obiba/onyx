@@ -69,7 +69,7 @@ public class ComponentTesterUtils {
       public Object component(Component component) {
         if(clazz.isAssignableFrom(component.getClass())) {
           if(component.getModelObject() != null && localizable.getClass().isAssignableFrom(component.getModelObject().getClass()) && localizable.getName().equals(((IQuestionnaireElement) component.getModelObject()).getName())) {
-            log.info("child.{}.path: {}", localizable.getName(), component.getPath());
+            log.debug("child.{}.path: {}", localizable.getName(), component.getPath());
             return component;
           }
         }
@@ -93,7 +93,7 @@ public class ComponentTesterUtils {
       }
     }
 
-    log.info("extractPath={}", path);
+    log.debug("extractPath={}", path);
     return path;
   }
 
@@ -114,7 +114,7 @@ public class ComponentTesterUtils {
 
       public Object component(Component component) {
         if(clazz.isAssignableFrom(component.getClass())) {
-          log.info("children.path: {}", component.getPath());
+          log.debug("children.path: {}", component.getPath());
           children.add(component);
           return CONTINUE_TRAVERSAL;
         }

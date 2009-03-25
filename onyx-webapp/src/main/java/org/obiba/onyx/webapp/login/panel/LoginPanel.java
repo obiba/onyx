@@ -12,13 +12,13 @@ package org.obiba.onyx.webapp.login.panel;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.authentication.panel.SignInPanel;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession.AuthenticateErrorCode;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.onyx.wicket.util.JavascriptEventAlert;
 
 public class LoginPanel extends SignInPanel {
@@ -45,7 +45,7 @@ public class LoginPanel extends SignInPanel {
       }
 
     };
-    link.add(new JavascriptEventAlert("onclick", new StringResourceModel("ForgotPasswordMessage", LoginPanel.this, null)));
+    link.add(new JavascriptEventAlert("onclick", new SpringStringResourceModel("ForgotPasswordMessage", "ForgotPasswordMessage")));
     add(link);
 
   }

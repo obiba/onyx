@@ -574,15 +574,7 @@ public class ParticipantSearchPage extends BasePage {
         @Override
         public void onClick(AjaxRequestTarget target) {
           if(interviewManager.isInterviewAvailable(getParticipant()) == false) {
-            unlockInterviewWindow.setContent(new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), getModel()) {
-
-              private static final long serialVersionUID = 1L;
-
-              @Override
-              public void onCancel(AjaxRequestTarget target) {
-                unlockInterviewWindow.close(target);
-              }
-            });
+            unlockInterviewWindow.setContent(new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), getModel()));
             target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
             unlockInterviewWindow.show(target);
           } else {

@@ -361,6 +361,15 @@ text-align:center;
   text-align: right;  
 }
 
+#pageFooter > div#currentUser {
+  float: left; margin-left: 16px;
+}
+
+#pageFooter > div#currentVersion {
+  float: right;
+}
+
+
 #spacer {
   height:30px;
   clear:both;
@@ -458,23 +467,26 @@ div.wicket-aa ul li.selected { background-color: #FFFF00; padding: 2px; margin:0
 /*************** Wizard ********************/
 
 .form-data {
-  padding: 4px;
+  overflow:auto;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
-form.wizard-consent {
+.form-button {
+  border-top: 2px solid #ccc;
+  height: 40px;
+  padding-right: 20px;
+  padding-top: 20px;
+  text-align: right;
 }
 
-div.wizard-title {
-  margin-bottom:10px;
+.wizard-title {
+  padding-top:20px;
   font-weight: bold;
 }
 
-td.wizard-title {
-  margin-bottom:10px;
-  font-weight: bold;
-}
-
-div.wizard-content {
+.wizard-content {
+  padding-top: 20px;
   margin-top:0px;
   margin-bottom:0px;
 }
@@ -1064,3 +1076,12 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 }
 
 /******************* End Login *****************************************************/
+
+.obiba-scrollable {
+  overflow: auto;
+}
+
+.obiba-feedback ul {
+  height: 120px;
+  overflow: auto;
+}

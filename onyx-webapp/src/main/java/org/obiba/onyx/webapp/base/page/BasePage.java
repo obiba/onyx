@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.base.page;
 
+import java.util.Date;
 import java.util.Locale;
 
 import org.apache.wicket.Session;
@@ -17,12 +18,19 @@ import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.base.panel.HeaderPanel;
 import org.obiba.onyx.webapp.base.panel.MenuBar;
+import org.obiba.onyx.wicket.util.DateModelUtils;
 
 public abstract class BasePage extends AbstractBasePage implements IAjaxIndicatorAware {
+
+  @SpringBean
+  UserSessionService userSessionService;
 
   public BasePage() {
     super();
@@ -33,15 +41,23 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
     menuBar.setMarkupId("menuBar");
     setOutputMarkupId(true);
 
+    Label userFullName = new Label("userFullName");
+    Label currentTime = new Label("currentTime");
+
     Session session = getSession();
     // Tests the session type for unit testing
     if(session instanceof OnyxAuthenticatedSession) {
       if(((OnyxAuthenticatedSession) getSession()).isSignedIn()) {
         headerPanel = new HeaderPanel("header");
         menuBar = new MenuBar("menuBar");
+
+        userFullName.setModel(new Model(OnyxAuthenticatedSession.get().getUser().getFullName()));
+        currentTime.setModel(DateModelUtils.getDateTimeModel(new Model(userSessionService.getDateTimeFormat()), new Model(new Date())));
       }
     }
 
+    add(currentTime);
+    add(userFullName);
     add(headerPanel);
     add(menuBar);
 

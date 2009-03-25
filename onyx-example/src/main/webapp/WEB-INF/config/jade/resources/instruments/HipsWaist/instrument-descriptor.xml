@@ -74,7 +74,7 @@
         </rangeCheck>
         <parameterSpreadCheck>
           
-          <parameterCode>RES_SEC_WAIST_SIZE</parameterCode>
+          <parameterCode>RES_FIRST_WAIST_SIZE</parameterCode>
           <offset>1</offset>
         </parameterSpreadCheck>
       </integrityChecks>

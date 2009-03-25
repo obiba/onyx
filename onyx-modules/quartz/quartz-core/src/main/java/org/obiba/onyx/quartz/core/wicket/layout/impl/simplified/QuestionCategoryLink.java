@@ -13,7 +13,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategoryLinkSelectionPanel;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCategorySelectionBehavior;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.behavior.QuestionCategorySelectionBehavior;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.wicket.link.AjaxImageLink;
 

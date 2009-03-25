@@ -93,7 +93,7 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
         activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory());
 
         // make sure a previously selected open field is not asked for
-        resetOpenAnswerDefinitionPanels(QuestionCategoryRadioPanel.this.radioGroup);
+        resetOpenAnswerDefinitionPanels(target, QuestionCategoryRadioPanel.this.radioGroup, getQuestionCategoryModel());
 
         updateFeedbackPanel(target);
 
@@ -138,31 +138,31 @@ public class QuestionCategoryRadioPanel extends AbstractQuestionCategorySelectio
   }
 
   @Override
-  protected boolean isToBeReseted(AbstractOpenAnswerDefinitionPanel openField) {
-    return !getQuestionCategoryModel().equals(openField.getModel());
-  }
-
-  @Override
   public boolean hasOpenField() {
     return openField != null;
   }
 
   public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
-    log.info("onQuestionCategorySelection={}:{}", questionModel.getObject(), questionCategoryModel.getObject());
+    log.debug("onQuestionCategorySelection={}:{}", questionModel.getObject(), questionCategoryModel.getObject());
 
-    if(radioGroup.getModel().equals(questionCategoryModel)) return;
+    if(!radioGroup.getModel().equals(questionCategoryModel)) {
 
-    // make sure radio selection does not conflict with open field selection
-    radioGroup.setModel(questionCategoryModel);
+      // make sure radio selection does not conflict with open field selection
+      radioGroup.setModel(questionCategoryModel);
 
-    // exclusive choice
-    Category category = ((QuestionCategory) questionCategoryModel.getObject()).getCategory();
-    for(CategoryAnswer categoryAnswer : activeQuestionnaireAdministrationService.findActiveAnswers((Question) questionModel.getObject())) {
-      if(!categoryAnswer.getCategoryName().equals(category.getName())) {
-        activeQuestionnaireAdministrationService.deleteAnswers(categoryAnswer);
+      // exclusive choice
+      Category category = ((QuestionCategory) questionCategoryModel.getObject()).getCategory();
+      for(CategoryAnswer categoryAnswer : activeQuestionnaireAdministrationService.findActiveAnswers((Question) questionModel.getObject())) {
+        if(!categoryAnswer.getCategoryName().equals(category.getName())) {
+          activeQuestionnaireAdministrationService.deleteAnswers(categoryAnswer);
+        }
       }
+
+      // make sure a previously selected open field is not asked for
+      resetOpenAnswerDefinitionPanels(target, QuestionCategoryRadioPanel.this.radioGroup, questionCategoryModel);
     }
 
+    // warn parent
     fireQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
   }
 

@@ -61,7 +61,6 @@ public class ConfirmResumeStep extends WizardStepPanel {
     super.onStepOutNext(form, target);
     QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
     setNextStep(questionnaireWizardForm.getResumeStep());
-    onPageStep(target);
   }
 
   @Override

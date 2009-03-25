@@ -19,19 +19,11 @@
   </stage>
 
   <stage>
-    <name>HealthQuestionnaireAssisted</name>
+    <name>QuartzDemoQuestionnaire</name>
     <module>quartz</module>
-    <stageDependencyCondition class="multipleCondition">
-      <operator>AND</operator>
-      <conditions>
-        <variableCondition>
-          <stageName>Consent</stageName>
-          <variablePath>/Onyx/Consent/accepted</variablePath>
-        </variableCondition>
-        <stageCondition>
-          <stageName>HealthQuestionnaireSelfAdministered</stageName>
-        </stageCondition>
-      </conditions>
+    <stageDependencyCondition class="variableCondition">
+      <stageName>Consent</stageName>
+      <variablePath>/Onyx/Consent/accepted</variablePath>
     </stageDependencyCondition>
   </stage>
 

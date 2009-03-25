@@ -40,7 +40,7 @@ public class OutputParametersStep extends WizardStepPanel {
     this.warningsStep = warningsStep;
 
     setOutputMarkupId(true);
-    add(new EmptyPanel(getTitleId()));
+    add(new EmptyPanel(getTitleId()).setVisible(false));
 
     // add(new Label("title", new StringResourceModel("ProvideTheFollowingInformation", OutputParametersStep.this,
     // null)));
@@ -50,7 +50,15 @@ public class OutputParametersStep extends WizardStepPanel {
   @Override
   public void handleWizardState(WizardForm form, AjaxRequestTarget target) {
     form.getNextLink().setEnabled(true);
-    form.getPreviousLink().setEnabled(true);
+
+    // Disable previous button when not needed.
+    WizardStepPanel previousStep = this.getPreviousStep();
+    if(previousStep == null || previousStep.equals(this)) {
+      form.getPreviousLink().setEnabled(false);
+    } else {
+      form.getPreviousLink().setEnabled(true);
+    }
+
     form.getFinishLink().setEnabled(false);
     if(target != null) {
       target.addComponent(form.getNextLink());

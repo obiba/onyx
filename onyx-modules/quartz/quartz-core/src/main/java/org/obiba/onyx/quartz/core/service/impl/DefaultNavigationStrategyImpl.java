@@ -15,6 +15,8 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Questionnaire;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.service.INavigationStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default questionnaire navigation strategy.
@@ -23,6 +25,9 @@ import org.obiba.onyx.quartz.core.service.INavigationStrategy;
  * 
  */
 public class DefaultNavigationStrategyImpl implements INavigationStrategy {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(DefaultNavigationStrategyImpl.class);
 
   /**
    * Returns the earliest page of the questionnaire containing either no questions or at least one question without an
@@ -122,9 +127,14 @@ public class DefaultNavigationStrategyImpl implements INavigationStrategy {
     if(currentPage != null) {
       Page page = getPageOnStart(service);
 
-      while(!page.getName().equals(currentPage.getName())) {
+      if(currentPage.equals(page)) {
+        // ONYX-417 cannot go before the start page.
         previousPage = page;
-        page = getPageOnNext(service, page);
+      } else {
+        while(!page.getName().equals(currentPage.getName())) {
+          previousPage = page;
+          page = getPageOnNext(service, page);
+        }
       }
     }
 

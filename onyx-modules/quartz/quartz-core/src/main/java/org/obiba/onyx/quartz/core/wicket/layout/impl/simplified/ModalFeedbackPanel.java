@@ -33,6 +33,7 @@ public class ModalFeedbackPanel extends FeedbackPanel {
     super("content");
     feedbackWindow.setTitle(new StringResourceModel("ModalWindowTitle", this, null));
     feedbackWindow.setResizable(false);
+    this.setEscapeModelStrings(false);
 
     add(new AjaxImageLink("close", new StringResourceModel("CloseModalButton", this, null)) {
 

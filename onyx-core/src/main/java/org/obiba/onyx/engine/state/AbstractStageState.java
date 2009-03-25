@@ -78,7 +78,9 @@ public abstract class AbstractStageState implements IStageExecution, ITransition
     Boolean var = areDependenciesCompleted();
 
     if(var == null) {
-      if(wantTransitionEvent(TransitionEvent.INVALID)) {
+      // ONYX-383 ignore if master stage is interactive and this stage is completed (waiting from a stable state from
+      // master stage).
+      if((!execution.isInteractive() || !isCompleted()) && wantTransitionEvent(TransitionEvent.INVALID)) {
         castEvent(TransitionEvent.INVALID);
       }
     } else if(var == true && wantTransitionEvent(TransitionEvent.VALID)) {

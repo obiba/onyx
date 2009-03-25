@@ -1,24 +1,22 @@
-.obiba-numeric-pad #valuePressed {
-  border:1px solid #B7B7B7;
-  color:black;
-  font-size:24px;
-  font-weight:bold;
-  padding:3px;
+td.valuepressed-value {
   text-align:right;
-  margin-left:5px;
+  width:60px;
 }
 
 .obiba-numeric-pad #valuePressed input {
-  border-style:none;
-  width:75px;
+  border:1px solid #B7B7B7;
+  font-weight:bold;
   font-size:22px;
-  height:25px;  
-  text-align:right;
+  height:25px;
+  text-align: right;
+  width:60px;
+  padding-top:5px;
+  padding-bottom:5px;
 }
 
-.obiba-numeric-pad a.button .label {
+.obiba-numeric-pad a.button .label-container {
   padding-right:25px;
-  padding-left:25px;  
+  padding-left:25px; 
 }
 
 .obiba-numeric-pad .pad-buttons {
@@ -31,14 +29,24 @@
   padding-right: 8px;
 }
 
+.obiba-numeric-pad .pad-buttons .imagelink a.button { 
+  margin-bottom:3px;
+}
+
+.obiba-numeric-pad .pad-buttons .imagelink a.button div.label-container { 
+  height:25px; 
+  padding-top:4px;
+}
+
 .obiba-numeric-pad .obiba-quartz-padForm  .obiba-quartz-padActions {
   margin: auto; 
   width: 180px;
 }
 
-.obiba-numeric-pad .obiba-quartz-padForm  a.button .label {
+.obiba-numeric-pad .obiba-quartz-padForm  a.button .label-container {
   padding-right:10px;
   padding-left:10px;  
+  text-align:center;
 }
 
 div.wicket-modal div.onyx .obiba-numeric-pad .imagelink { 
@@ -62,6 +70,12 @@ div.wicket-modal div.onyx .obiba-numeric-pad .feedback {
 
 div.wicket-modal div.onyx .obiba-numeric-pad .obiba-quartz-padForm  .valuepressed-label {  
   font-size:14px;
+  text-align: right;
+}
+
+div.wicket-modal div.onyx .obiba-numeric-pad .obiba-quartz-padForm  .valuepressed-unit {  
+  font-size:14px;
+  text-align: left;
 }
 
 .obiba-numeric-pad .obiba-quartz-padForm  table {
@@ -81,10 +95,11 @@ div.wicket-modal div.onyx .obiba-numeric-pad .obiba-quartz-padForm  .valuepresse
 }
 
 .obiba-button-ok a.button .label {
-    display: inline;
+    padding-right:5px;
+    text-transform: uppercase;
 }
 
 .obiba-button-ok a.button img {
     position: relative;
-    top: 4px;
+    vertical-align:bottom;
 }

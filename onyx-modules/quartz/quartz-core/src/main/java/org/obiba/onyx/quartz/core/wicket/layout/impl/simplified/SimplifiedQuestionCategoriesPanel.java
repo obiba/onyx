@@ -10,7 +10,6 @@ package org.obiba.onyx.quartz.core.wicket.layout.impl.simplified;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
@@ -18,6 +17,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
@@ -42,24 +42,6 @@ import org.slf4j.LoggerFactory;
 public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestionCategorySelectionListener {
 
   private static final long serialVersionUID = 5144933183339704600L;
-
-  private static final int CATEGORY_IMAGE_WIDTH = 100;
-
-  private static final int CATEGORY_IMAGE_SPACING = 5;
-
-  private static final int TWO_COLUMNS_REGULAR_VIEW_WIDTH = 750;
-
-  /**
-   * Applies to at least three columns in the grid view.
-   */
-  private static final int MANY_COLUMNS_REGULAR_VIEW_WIDTH = 900;
-
-  private static final int TWO_COLUMNS_ESCAPE_VIEW_WIDTH = 550;
-
-  /**
-   * Applies to at least three columns in the grid view.
-   */
-  private static final int MANY_COLUMNS_ESCAPE_VIEW_WIDTH = 750;
 
   @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(SimplifiedQuestionCategoriesPanel.class);
@@ -129,13 +111,15 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
    */
   private void addEscapeCategoriesView() {
     QuestionCategoryLinksView view = new QuestionCategoryLinksView("escapeCategories", getQuestionModel(), new QuestionCategoryEscapeFilter(true), new QuestionCategoryListToGridPermutator(getQuestionModel(), 1));
-    view.setTwoColumnsWidth(TWO_COLUMNS_ESCAPE_VIEW_WIDTH);
-    view.setManyColumnsWidth(MANY_COLUMNS_ESCAPE_VIEW_WIDTH);
     add(view);
   }
 
   private IModel getQuestionModel() {
     return getModel();
+  }
+
+  private Question getQuestion() {
+    return (Question) getModelObject();
   }
 
   public void onQuestionCategorySelection(final AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
@@ -163,30 +147,8 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
   @SuppressWarnings("serial")
   private static class QuestionCategoryLinksView extends QuestionCategoryComponentsView {
 
-    private int twoColumnsWidth = TWO_COLUMNS_REGULAR_VIEW_WIDTH;
-
-    private int manyColumnsWidth = MANY_COLUMNS_REGULAR_VIEW_WIDTH;
-
     public QuestionCategoryLinksView(String id, IModel questionModel, IDataListFilter<IModel> filter, IDataListPermutator<IModel> permutator) {
       super(id, questionModel, filter, permutator);
-    }
-
-    public void setTwoColumnsWidth(int twoColumnsWidth) {
-      this.twoColumnsWidth = twoColumnsWidth;
-    }
-
-    public void setManyColumnsWidth(int manyColumnsWidth) {
-      this.manyColumnsWidth = manyColumnsWidth;
-    }
-
-    @Override
-    protected void onComponentTag(ComponentTag tag) {
-      if(getColumns() == 2) {
-        tag.getAttributes().put("style", "width: " + twoColumnsWidth + "px;");
-      } else if(getColumns() >= 3) {
-        tag.getAttributes().put("style", "width: " + manyColumnsWidth + "px;");
-      }
-      super.onComponentTag(tag);
     }
 
     @Override
@@ -206,14 +168,6 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     }
 
     @Override
-    protected void onComponentTag(ComponentTag tag) {
-      int width = getColumns() * (CATEGORY_IMAGE_WIDTH + CATEGORY_IMAGE_SPACING);
-      tag.getAttributes().put("style", "margin-left: auto; margin-right: auto; width: " + width + "px;");
-
-      super.onComponentTag(tag);
-    }
-
-    @Override
     protected Component newQuestionCategoryComponent(String id, IModel questionCategoryModel, int index) {
       return new QuestionCategoryImageLink(id, questionCategoryModel, new QuestionnaireStringResourceModel(questionCategoryModel, "label"));
     }
@@ -224,9 +178,9 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
     public OpenFragment(String id, IModel questionCategoryModel, int index) {
       super(id, "openFragment", SimplifiedQuestionCategoriesPanel.this);
 
-      // do not display the or before the first open answer item
-      if(index == 0) {
-        add(new EmptyPanel("or").setVisible(false));
+      // do not display the or before the first open answer item or if the question is multiple
+      if(getQuestion().isMultiple() || index == 0) {
+        add(new EmptyPanel("or").setVisible(index != 0));
       } else {
         add(new Label("or", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "or")));
       }
@@ -239,4 +193,5 @@ public class SimplifiedQuestionCategoriesPanel extends Panel implements IQuestio
       }
     }
   }
+
 }

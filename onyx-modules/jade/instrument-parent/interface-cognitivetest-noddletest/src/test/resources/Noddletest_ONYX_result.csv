@@ -34,6 +34,7 @@
 11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT21,1,658,Right,250,,,22
 11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT22,1,1033,Right,550,,,23
 11,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT23,1,768,Left,50,,,24
+12,Reaction,vC1.3.2t,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,RT23,1,768,Left,50,,,24
 20,Test,Version,Clinic,InterviewerId,UserId,UserStartDateTime,ScreenId,NumberOfGuesses,ElapsedTime_ms,Level,CorrectAnswer,SelectedAnswer,Empty,Dummy
 21,Pairing,vC1.3.4,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,P7A,4,5819,7,RightTop,RightTop,,2
 21,Pairing,vC1.3.4,ClinicName,Interviewer 1,9876543,2009-01-27 16:27:17,P7B,1,1408,7,LeftBottom,LeftBottom,,3

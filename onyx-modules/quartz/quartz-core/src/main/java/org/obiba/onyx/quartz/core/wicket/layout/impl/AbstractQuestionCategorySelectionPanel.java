@@ -61,16 +61,25 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
    * Reset (set null data) the open fields not associated to the current question category.
    * @param parentContainer
    */
-  protected void resetOpenAnswerDefinitionPanels(MarkupContainer parentContainer) {
+  protected void resetOpenAnswerDefinitionPanels(final AjaxRequestTarget target, MarkupContainer parentContainer, final IModel questionCategoryModel) {
 
-    parentContainer.visitChildren(new Component.IVisitor() {
+    if(AbstractOpenAnswerDefinitionPanel.class.isInstance(parentContainer)) {
+      AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) parentContainer;
+      if(openField.getData() != null) {
+        openField.resetField();
+        target.addComponent(openField);
+      }
+    }
+
+    parentContainer.visitChildren(AbstractOpenAnswerDefinitionPanel.class, new Component.IVisitor() {
 
       public Object component(Component component) {
-        if(component instanceof AbstractOpenAnswerDefinitionPanel) {
-          if(isToBeReseted((AbstractOpenAnswerDefinitionPanel) component)) {
-            log.debug("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getModelObject());
-            AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
+        if(!questionCategoryModel.equals(component.getModel())) {
+          log.debug("visit.AbstractOpenAnswerDefinitionPanel.model={}", component.getModelObject());
+          AbstractOpenAnswerDefinitionPanel openField = (AbstractOpenAnswerDefinitionPanel) component;
+          if(openField.getData() != null) {
             openField.resetField();
+            target.addComponent(openField);
           }
         }
         return CONTINUE_TRAVERSAL;
@@ -80,22 +89,13 @@ public abstract class AbstractQuestionCategorySelectionPanel extends BaseQuestio
   }
 
   /**
-   * When an open field is visited for reseting, this method should answer whether or not the operation should be
-   * performed (usually depending on its associated model).
-   * @param openField
-   * @return
-   * @see #resetOpenAnswerDefinitionPanels(MarkupContainer)
-   */
-  protected abstract boolean isToBeReseted(AbstractOpenAnswerDefinitionPanel openField);
-
-  /**
    * Does question category has an associated open answer field.
    * @return
    */
   public abstract boolean hasOpenField();
 
   protected void fireQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
-    log.info("fireQuestionCategorySelection({},{},{})", new Object[] { questionModel.getObject(), questionCategoryModel.getObject(), new Boolean(isSelected) });
+    log.debug("fireQuestionCategorySelection({},{},{})", new Object[] { questionModel.getObject(), questionCategoryModel.getObject(), new Boolean(isSelected) });
     IQuestionCategorySelectionListener listener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
     if(listener != null) {
       listener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);

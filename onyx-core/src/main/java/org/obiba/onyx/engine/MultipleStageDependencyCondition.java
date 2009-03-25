@@ -20,8 +20,7 @@ import org.slf4j.LoggerFactory;
  * Allows composing two instances of {@link StageDependencyCondition} using a boolean operator.
  * <p>
  * The normal boolean logic applies for determining the return value. The notable cases are shown in the following
- * table.
- * <table>
+ * table. <table>
  * <tr>
  * <td>Operator</td>
  * <td>Left</td>
@@ -51,9 +50,8 @@ import org.slf4j.LoggerFactory;
  * <td>false</td>
  * <td>null</td>
  * </tr>
- * </table>
- * For the OR operator, null is returned whenever one of the two conditions is returns null and the other is false. The
- * reason being that one returning null may return true on subsequent calls.
+ * </table> For the OR operator, null is returned whenever one of the two conditions is returns null and the other is
+ * false. The reason being that one returning null may return true on subsequent calls.
  */
 public class MultipleStageDependencyCondition implements StageDependencyCondition {
 

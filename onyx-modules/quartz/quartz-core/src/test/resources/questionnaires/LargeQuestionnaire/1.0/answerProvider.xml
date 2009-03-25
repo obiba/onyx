@@ -1,0 +1,22 @@
+<configurableAnswerProvider>
+  <defaultAnswer>
+    <categoryName>PNA</categoryName><!-- Set default answer to NO_ANSWER. -->
+  </defaultAnswer>
+  
+  <groups/>
+  
+  <answers>
+    <!--entry>
+      <string>Q3</string>
+      <categoryAnswer>
+        <categoryName>OTHER</categoryName>
+        <openAnswers>
+          <openAnswer>
+            <dataType>TEXT</dataType>
+            <integerValue>blabla</integerValue>
+          </openAnswer>
+        </openAnswers>
+      </categoryAnswer>
+    </entry-->
+  </answers>
+</configurableAnswerProvider>

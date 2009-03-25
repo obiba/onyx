@@ -30,6 +30,7 @@ public interface StageDependencyCondition {
    * {@link Stage} cannot ever be executed (another {@link Stage} has invalidated this one). Otherwise, null is returned
    * when the {@link Stage} still cannot be executed, but may at one point become executable.
    * 
+   * @param stage Stage to which the dependency is applied
    * @param activeInterviewService used to obtain {@link IStageExecution} instances of dependent {@link Stage}s
    * @return true, false or null as described above.
    */

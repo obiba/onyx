@@ -23,14 +23,17 @@ import org.apache.wicket.markup.repeater.data.GridView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.quartz.core.domain.answer.CategoryAnswer;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractQuestionCategoriesView;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscapeFilter;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryListToGridPermutator;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
+import org.obiba.onyx.wicket.behavior.InvalidFormFieldBehavior;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +88,8 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
     } else {
       addCheckBoxGroup(question);
     }
+
+    add(new InvalidFormFieldBehavior());
   }
 
   /**
@@ -106,7 +111,13 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
    */
   @SuppressWarnings("serial")
   private void addRadioGroup(Question question) {
-    final RadioGroup radioGroup = new RadioGroup("categories", new Model());
+    final RadioGroup radioGroup = new RadioGroup("categories", new Model()) {
+      @Override
+      public void updateModel() {
+        // ONYX-344: Do nothing -- QuestionCategoryRadioPanel sets the model to a read-only QuestionnaireModel
+        // whenever a radio button is selected.
+      }
+    };
     radioGroup.add(new AnswerCountValidator(getQuestionModel()));
     add(radioGroup);
 
@@ -152,44 +163,65 @@ public class DefaultQuestionCategoriesPanel extends Panel implements IQuestionCa
     checkGroup.add(repeater);
 
     if(hasEscapeQuestionCategories()) {
-      add(escapeQuestionCategoriesPanel = new DefaultEscapeQuestionCategoriesPanel("escapeCategories", getQuestionModel()) {
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          target.addComponent(DefaultQuestionCategoriesPanel.this);
-        }
-
-      });
+      add(escapeQuestionCategoriesPanel = new DefaultEscapeQuestionCategoriesPanel("escapeCategories", getQuestionModel()));
     } else {
       add(new EmptyPanel("escapeCategories").setVisible(false));
     }
   }
 
   @SuppressWarnings("unchecked")
-  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, final IModel questionCategoryModel, boolean isSelected) {
     // repaint the panel
     target.addComponent(this);
 
-    // case we are called by an escape category in a multiple choice context
-    if(checkGroup != null && ((QuestionCategory) questionCategoryModel.getObject()).isEscape()) {
-      ((Collection<IModel>) checkGroup.getModelObject()).clear();
-      // QUA-108 need to do this otherwise check box inputs are not cleared following a validation error
-      checkGroup.visitChildren(CheckBox.class, new Component.IVisitor() {
+    boolean isEscape = ((QuestionCategory) questionCategoryModel.getObject()).isEscape();
 
-        public Object component(Component component) {
-          CheckBox cb = (CheckBox) component;
-          cb.clearInput();
-          return null;
+    if(checkGroup != null) {
+      if(isEscape) {
+        // case we are called by an escape category in a multiple choice context
+        ((Collection<IModel>) checkGroup.getModelObject()).clear();
+        // QUA-108 need to do this otherwise check box inputs are not cleared following a validation error
+        checkGroup.visitChildren(CheckBox.class, new Component.IVisitor() {
+
+          public Object component(Component component) {
+            CheckBox cb = (CheckBox) component;
+            cb.clearInput();
+            return null;
+          }
+
+        });
+
+        // clear the open answers also (but not the one of the selected category!)
+        checkGroup.visitChildren(AbstractOpenAnswerDefinitionPanel.class, new Component.IVisitor() {
+
+          public Object component(Component component) {
+            AbstractOpenAnswerDefinitionPanel open = (AbstractOpenAnswerDefinitionPanel) component;
+            if(!open.getQuestionCategoryModel().equals(questionCategoryModel)) {
+              open.resetField();
+            }
+            return null;
+          }
+
+        });
+
+      } else if(escapeQuestionCategoriesPanel != null) {
+        // exclude escape questions if currently selected is not an escape one in a multiple choice context
+        Question question = (Question) questionModel.getObject();
+        for(CategoryAnswer answer : activeQuestionnaireAdministrationService.findAnswers(question)) {
+          QuestionCategory questionCategory = question.findQuestionCategory(answer.getCategoryName());
+          if(questionCategory.getCategory().isEscape()) {
+            activeQuestionnaireAdministrationService.deleteAnswers(answer);
+          }
         }
-
-      });
-
+        escapeQuestionCategoriesPanel.setNoSelection();
+      }
     }
 
+    // forward event to parent
     IQuestionCategorySelectionListener parentListener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
     if(parentListener != null) {
       parentListener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
     }
   }
+
 }

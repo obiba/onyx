@@ -8,6 +8,7 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.wicket.data;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
@@ -30,6 +31,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.validator.DateValidator;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataType;
 
@@ -40,6 +42,8 @@ import org.obiba.onyx.util.data.DataType;
 public class DataField extends Panel {
 
   private static final long serialVersionUID = 4522983933046975818L;
+
+  private static final int DATE_YEAR_MAXIMUM = 3000;
 
   private FieldFragment input;
 
@@ -309,6 +313,15 @@ public class DataField extends Panel {
             return DataField.this.isRequired();
           }
         };
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, DATE_YEAR_MAXIMUM);
+        cal.set(Calendar.MONTH, 0);
+        cal.set(Calendar.DATE, 1);
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        field.add(new DataValidator(DateValidator.maximum(cal.getTime()), DataType.DATE));
         field.add(new DatePicker() {
           @Override
           protected boolean enableMonthYearSelection() {

@@ -68,7 +68,6 @@ public class ConclusionStep extends WizardStepPanel {
     super.onStepOutPrevious(form, target);
     QuestionnaireWizardForm questionnaireWizardForm = (QuestionnaireWizardForm) form;
     setPreviousStep(questionnaireWizardForm.getLastPageStep());
-    onPageStep(target);
   }
 
   @Override

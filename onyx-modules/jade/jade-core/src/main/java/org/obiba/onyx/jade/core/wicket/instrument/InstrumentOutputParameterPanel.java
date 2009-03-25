@@ -18,6 +18,7 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.FormComponentLabel;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
@@ -35,6 +36,7 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.ActiveInstrumentRunService;
 import org.obiba.onyx.jade.core.wicket.InstrumentRunValueDataModel;
 import org.obiba.onyx.jade.core.wicket.instrument.validation.IntegrityCheckValidator;
+import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.data.DataField;
@@ -109,22 +111,47 @@ public class InstrumentOutputParameterPanel extends Panel {
         final IModel runValueModel = new DetachableEntityModel(queryService, runValue);
         outputRunValueModels.add(runValueModel);
 
-        DataField field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), param.getMeasurementUnit()) {
-          @Override
-          public boolean isRequired() {
-            return activeInstrumentRunService.getParameterByCode(paramCode).isRequired(activeInstrumentRunService.getParticipant());
+        List<Data> choices = null;
+        if(param.getDataSource() == null) {
+          choices = param.getAllowedValues();
+        }
+
+        DataField field;
+        if(choices != null && choices.size() > 0) {
+          field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), choices, new IChoiceRenderer() {
+
+            public Object getDisplayValue(Object object) {
+              Data data = (Data) object;
+              return new SpringStringResourceModel(data.getValueAsString()).getString();
+            }
+
+            public String getIdValue(Object object, int index) {
+              Data data = (Data) object;
+              return data.getValueAsString();
+            }
+
+          }, param.getMeasurementUnit());
+          field.setRequired(true);
+
+        } else {
+          field = new DataField("field", new InstrumentRunValueDataModel(runValueModel, param.getDataType()), param.getDataType(), param.getMeasurementUnit()) {
+            @Override
+            public boolean isRequired() {
+              return activeInstrumentRunService.getParameterByCode(paramCode).isRequired(activeInstrumentRunService.getParticipant());
+            }
+          };
+
+          if(param.getDataType().equals(DataType.TEXT) && (field.getField().getClass().equals(TextField.class) || field.getField().getClass().equals(TextArea.class))) {
+            field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(2000), param.getDataType()));
           }
-        };
+        }
+
         field.setLabel(new MessageSourceResolvableStringModel(param.getLabel()));
         field.add(new AjaxFormComponentUpdatingBehavior("onblur") {
           protected void onUpdate(AjaxRequestTarget target) {
             activeInstrumentRunService.update((InstrumentRunValue) runValueModel.getObject());
           }
         });
-
-        if(param.getDataType().equals(DataType.TEXT) && (field.getField().getClass().equals(TextField.class) || field.getField().getClass().equals(TextArea.class))) {
-          field.getField().add(new DataValidator(new StringValidator.MaximumLengthValidator(2000), param.getDataType()));
-        }
 
         IntegrityCheckValidator.addChecks(param, field);
         item.add(field);

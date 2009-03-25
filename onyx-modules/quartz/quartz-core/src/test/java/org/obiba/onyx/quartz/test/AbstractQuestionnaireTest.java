@@ -160,7 +160,12 @@ public abstract class AbstractQuestionnaireTest {
   }
 
   private void initWicketTester() {
-    MockSpringApplication application = new MockSpringApplication();
+    MockSpringApplication application = new MockSpringApplication() {
+      @Override
+      public String getConfigurationType() {
+        return "deployment";
+      }
+    };
     application.setHomePage(org.apache.wicket.Page.class);
     application.setApplicationContext(applicationContext);
     wicketTester = new WicketTester(application);

@@ -84,20 +84,13 @@ public class HomePage extends BasePage {
               interviewManager.obtainInterview(participant);
               setResponsePage(InterviewPage.class);
             }
-            unlockInterviewWindow.setContent(new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), new PropertyModel(ParticipantSearchForm.this, "participant")) {
-
-              private static final long serialVersionUID = 1L;
-
-              @Override
-              public void onCancel(AjaxRequestTarget target) {
-                unlockInterviewWindow.close(target);
-              }
-            });
+            unlockInterviewWindow.setContent(new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), new PropertyModel(ParticipantSearchForm.this, "participant")));
             target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
             unlockInterviewWindow.show(target);
           } else {
             // Not found, display error message in feedback panel.
             error((new StringResourceModel("ParticipantNotFound", this, ParticipantSearchForm.this.getModel())).getString());
+            target.addComponent(getFeedbackPanel());
           }
         }
       });

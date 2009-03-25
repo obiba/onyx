@@ -9,6 +9,8 @@
 package org.obiba.onyx.quartz.core.wicket.layout.impl;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.behavior.AbstractBehavior;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -56,6 +58,8 @@ public abstract class QuestionCategoryComponentsView extends Panel {
 
     };
     add(repeater);
+
+    add(new QuestionCategoryComponentsViewStyleBehavior());
   }
 
   /**
@@ -73,5 +77,33 @@ public abstract class QuestionCategoryComponentsView extends Panel {
    * @return
    */
   protected abstract Component newQuestionCategoryComponent(String id, IModel questionCategoryModel, int index);
+
+  /**
+   * Set the appropriate css class to custom grid view according to columns count.
+   */
+  private class QuestionCategoryComponentsViewStyleBehavior extends AbstractBehavior {
+
+    private static final long serialVersionUID = 1L;
+
+    private static final String GRID_CLASS_PREFIX = "obiba-quartz-grid";
+
+    public QuestionCategoryComponentsViewStyleBehavior() {
+      super();
+    }
+
+    @Override
+    public void onComponentTag(Component component, ComponentTag tag) {
+      super.onComponentTag(component, tag);
+
+      QuestionCategoryComponentsView view = (QuestionCategoryComponentsView) component;
+
+      String cssClass = GRID_CLASS_PREFIX + "-" + view.getColumns();
+      if(tag.getAttributes().containsKey("class")) {
+        cssClass += " " + tag.getAttributes().getString("class");
+      }
+      tag.getAttributes().put("class", cssClass);
+
+    }
+  }
 
 }

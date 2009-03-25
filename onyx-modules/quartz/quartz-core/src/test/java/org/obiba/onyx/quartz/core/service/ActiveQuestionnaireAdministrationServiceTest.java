@@ -113,11 +113,11 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     CategoryAnswer catAnswer_1 = activeQuestionnaireAdministrationService.answer(q1.getQuestionCategories().get(0), null, null);
     activeQuestionnaireAdministrationService.answer(q1.getQuestionCategories().get(1), null, null);
     activeQuestionnaireAdministrationService.answer(q1.getQuestionCategories().get(2), null, null);
-    activeQuestionnaireAdministrationService.addComment(q1, "comment question 1");
+    activeQuestionnaireAdministrationService.setComment(q1, "comment question 1");
 
     QuestionCategory questionCategory = q2.getQuestionCategories().get(0);
     CategoryAnswer year = activeQuestionnaireAdministrationService.answer(questionCategory, questionCategory.getCategory().getOpenAnswerDefinition(), DataBuilder.buildText("1979"));
-    activeQuestionnaireAdministrationService.addComment(q2, "comment question 2");
+    activeQuestionnaireAdministrationService.setComment(q2, "comment question 2");
 
     Assert.assertEquals("1", catAnswer_1.getCategoryName());
     Assert.assertEquals(questionnaireParticipant.getParticipant().getId(), catAnswer_1.getQuestionAnswer().getQuestionnaireParticipant().getParticipant().getId());
@@ -132,7 +132,7 @@ public class ActiveQuestionnaireAdministrationServiceTest extends BaseDefaultSpr
     CategoryAnswer secondYear = activeQuestionnaireAdministrationService.answer(questionCategory, questionCategory.getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().get(0), DataBuilder.buildInteger("1966"));
     activeQuestionnaireAdministrationService.answer(questionCategory, questionCategory.getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().get(1), DataBuilder.buildInteger("6"));
     activeQuestionnaireAdministrationService.answer(questionCategory, questionCategory.getCategory().getOpenAnswerDefinition().getOpenAnswerDefinitions().get(2), DataBuilder.buildInteger("5"));
-    activeQuestionnaireAdministrationService.addComment(q3, "comment question 3");
+    activeQuestionnaireAdministrationService.setComment(q3, "comment question 3");
 
     Assert.assertEquals("1966", secondYear.getOpenAnswers().get(0).getData().getValueAsString());
   }

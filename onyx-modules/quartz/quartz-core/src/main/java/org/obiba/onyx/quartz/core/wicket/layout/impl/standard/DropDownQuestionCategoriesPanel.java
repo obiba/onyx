@@ -25,6 +25,7 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefini
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
+import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.BaseQuestionCategorySelectionPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoriesProvider;
@@ -32,6 +33,7 @@ import org.obiba.onyx.quartz.core.wicket.layout.impl.util.QuestionCategoryEscape
 import org.obiba.onyx.quartz.core.wicket.layout.impl.validation.AnswerCountValidator;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
+import org.obiba.onyx.wicket.behavior.InvalidFormFieldBehavior;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,11 +41,13 @@ import org.slf4j.LoggerFactory;
  * Build a drop down choice panel, used by single choice question, and add escape categories in a radio group if there
  * are any.
  */
-public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelectionPanel {
+public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelectionPanel implements IQuestionCategorySelectionListener {
 
   private static final long serialVersionUID = 5144933183339704600L;
 
-  private static final Logger log = LoggerFactory.getLogger(DefaultQuestionCategoriesPanel.class);
+  private static final Logger log = LoggerFactory.getLogger(DropDownQuestionCategoriesPanel.class);
+
+  private static final String OPEN_ID = "open";
 
   @SpringBean
   private ActiveQuestionnaireAdministrationService activeQuestionnaireAdministrationService;
@@ -68,9 +72,10 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
 
     // When navigating to previous question
     CategoryAnswer previousAnswer = null;
-    if(activeQuestionnaireAdministrationService.findAnswers(question).size() != 0) {
+    List<CategoryAnswer> categoryAnswers = activeQuestionnaireAdministrationService.findAnswers(question);
+    if(categoryAnswers != null && categoryAnswers.size() != 0) {
 
-      previousAnswer = activeQuestionnaireAdministrationService.findAnswers(question).get(0);
+      previousAnswer = categoryAnswers.get(0);
 
       for(QuestionCategory questionCategory : question.getQuestionCategories()) {
         if(questionCategory.getCategory().getName().equals(previousAnswer.getCategoryName())) {
@@ -79,7 +84,7 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
         }
       }
 
-      updateOpenAnswerDefinitionPanel(selectedQuestionCategoryModel);
+      updateOpenAnswerDefinitionPanel(null, selectedQuestionCategoryModel);
     }
 
     questionCategoriesDropDownChoice = new DropDownChoice("questionCategories", new PropertyModel(this, "selectedQuestionCategory"), new PropertyModel(this, "questionCategories"), new QuestionCategoryChoiceRenderer());
@@ -94,25 +99,24 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
       @Override
       protected void onUpdate(final AjaxRequestTarget target) {
 
-        log.info("onUpdate()={}", selectedQuestionCategoryModel);
+        log.debug("onUpdate()={}", selectedQuestionCategoryModel != null ? selectedQuestionCategoryModel.getObject() : null);
 
-        updateOpenAnswerDefinitionPanel(selectedQuestionCategoryModel);
+        updateOpenAnswerDefinitionPanel(target, selectedQuestionCategoryModel);
 
         // Exclusive choice, only one answer per question
         activeQuestionnaireAdministrationService.deleteAnswers(getQuestion());
-        if(selectedQuestionCategoryModel != null && ((QuestionCategory) selectedQuestionCategoryModel.getObject()).getCategory().getOpenAnswerDefinition() == null) {
+        if(selectedQuestionCategoryModel != null) {
           activeQuestionnaireAdministrationService.answer((QuestionCategory) selectedQuestionCategoryModel.getObject());
         }
 
-        fireQuestionAnswerChanged(target, getQuestionModel(), selectedQuestionCategoryModel == null ? null : selectedQuestionCategoryModel);
-
         if(escapeQuestionCategoriesPanel != null) {
           escapeQuestionCategoriesPanel.setNoSelection();
+          target.addComponent(escapeQuestionCategoriesPanel);
         }
 
         updateFeedbackPanel(target);
-        // Update component
-        target.addComponent(DropDownQuestionCategoriesPanel.this);
+
+        fireQuestionCategorySelected(target, getQuestionModel(), selectedQuestionCategoryModel == null ? null : selectedQuestionCategoryModel);
       }
 
       @Override
@@ -126,19 +130,13 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
     add(questionCategoriesDropDownChoice);
 
     if(hasEscapeQuestionCategories()) {
-      add(escapeQuestionCategoriesPanel = new DefaultEscapeQuestionCategoriesPanel("escapeCategories", getQuestionModel()) {
-        @Override
-        public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-          setSelectedQuestionCategory(null);
-          questionCategoriesDropDownChoice.setRequired(false);
-          updateOpenAnswerDefinitionPanel(null);
-          target.addComponent(DropDownQuestionCategoriesPanel.this);
-        }
-      });
+      add(escapeQuestionCategoriesPanel = new DefaultEscapeQuestionCategoriesPanel("escapeCategories", getQuestionModel()));
       escapeQuestionCategoriesPanel.add(new AnswerCountValidator(getQuestionModel()));
     } else {
       add(new EmptyPanel("escapeCategories").setVisible(false));
     }
+
+    add(new InvalidFormFieldBehavior());
   }
 
   private boolean hasEscapeQuestionCategories() {
@@ -180,10 +178,15 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
    * @param questionCategory
    */
   @SuppressWarnings("serial")
-  private void updateOpenAnswerDefinitionPanel(IModel questionCategoryModel) {
+  private void updateOpenAnswerDefinitionPanel(AjaxRequestTarget target, IModel questionCategoryModel) {
+    boolean changed = false;
+
     if(questionCategoryModel == null) {
       openField = null;
-      get("open").replaceWith(new EmptyPanel("open"));
+      if(!EmptyPanel.class.isInstance(get(OPEN_ID))) {
+        get(OPEN_ID).replaceWith(new EmptyPanel("open").setOutputMarkupId(true));
+        changed = true;
+      }
     } else {
       QuestionCategory questionCategory = (QuestionCategory) questionCategoryModel.getObject();
       OpenAnswerDefinition openAnswerDefinition = questionCategory.getCategory().getOpenAnswerDefinition();
@@ -194,11 +197,18 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
         } else {
           openField = new MultipleDefaultOpenAnswerDefinitionPanel("open", getQuestionModel(), questionCategoryModel);
         }
-        get("open").replaceWith(openField);
+        get(OPEN_ID).replaceWith(openField);
+        changed = true;
       } else {
-        openField = null;
-        get("open").replaceWith(new EmptyPanel("open"));
+        if(!EmptyPanel.class.isInstance(get(OPEN_ID))) {
+          get(OPEN_ID).replaceWith(new EmptyPanel("open").setOutputMarkupId(true));
+          changed = true;
+        }
       }
+    }
+
+    if(changed && target != null) {
+      target.addComponent(get(OPEN_ID));
     }
   }
 
@@ -208,6 +218,25 @@ public class DropDownQuestionCategoriesPanel extends BaseQuestionCategorySelecti
 
   public void setSelectedQuestionCategory(IModel selectedQuestionCategoryModel) {
     this.selectedQuestionCategoryModel = selectedQuestionCategoryModel;
+  }
+
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+    log.debug("onQuestionCategorySelection()={}", selectedQuestionCategoryModel != null ? selectedQuestionCategoryModel.getObject() : null);
+
+    if(((QuestionCategory) questionCategoryModel.getObject()).isEscape()) {
+      // called from escape category
+      if(selectedQuestionCategoryModel != null) {
+        target.appendJavascript("document.getElementById('" + questionCategoriesDropDownChoice.getMarkupId() + "').selectedIndex = 0;");
+      }
+      setSelectedQuestionCategory(null);
+      questionCategoriesDropDownChoice.setRequired(false);
+      updateOpenAnswerDefinitionPanel(target, null);
+    }
+
+    updateFeedbackPanel(target);
+
+    // forward event to parent
+    fireQuestionCategorySelected(target, questionModel, questionCategoryModel);
   }
 
 }

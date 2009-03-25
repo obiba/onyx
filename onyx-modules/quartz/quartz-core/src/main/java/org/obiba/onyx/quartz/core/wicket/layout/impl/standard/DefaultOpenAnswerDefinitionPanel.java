@@ -8,6 +8,7 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.quartz.core.wicket.layout.impl.standard;
 
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -39,6 +40,7 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
   private static final long serialVersionUID = 8950481253772691811L;
 
+  @SuppressWarnings("unused")
   private static final Logger log = LoggerFactory.getLogger(DefaultOpenAnswerDefinitionPanel.class);
 
   public static final String INPUT_SIZE_KEY = "size";
@@ -125,10 +127,9 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
     // behaviors
     openField.add(new InvalidFormFieldBehavior());
 
-    openField.add(new AjaxFormComponentUpdatingBehavior(getOpenAnswerDefinition().getDefaultValues().size() == 0 ? "onchange" : "onchange") {
+    openField.add(new AjaxFormComponentUpdatingBehavior("onchange") {
       @Override
       protected void onUpdate(AjaxRequestTarget target) {
-        log.info("onUpdate.{}:{}:{}={}", new Object[] { getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData() });
         // persist data
         activeQuestionnaireAdministrationService.answer(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData());
 
@@ -140,26 +141,27 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
 
       @Override
       protected void onError(AjaxRequestTarget target, RuntimeException e) {
-        log.info("onError.{}:{}:{}={}", new Object[] { getQuestion(), getQuestionCategory(), getOpenAnswerDefinition(), getData() });
         super.onError(target, e);
         // display error messages
         updateFeedback(target);
-
-        // DefaultOpenAnswerDefinitionPanel.this.onError(target, getQuestionModel(), getQuestionCategoryModel());
       }
     });
 
-    // openField.add(new AjaxEventBehavior("onclick") {
-    //
-    // @Override
-    // protected void onEvent(AjaxRequestTarget target) {
-    // log.info("openField.onClick");
-    // DefaultOpenAnswerDefinitionPanel.this.onSelect(target, getQuestionModel(), getQuestionCategoryModel(),
-    // getOpenAnswerDefinitionModel());
-    // openField.focusField(target);
-    // }
-    //
-    // });
+    if(getOpenAnswerDefinition().getDefaultValues().size() == 0) {
+      openField.add(new AjaxEventBehavior("onclick") {
+
+        @Override
+        protected void onEvent(AjaxRequestTarget target) {
+          // persist data
+          // do not fire event if category was already selected
+          if(activeQuestionnaireAdministrationService.findAnswer(getQuestion(), getQuestionCategory().getCategory()) == null) {
+            openField.focusField(target);
+            fireQuestionCategorySelection(target, getQuestionModel(), getQuestionCategoryModel(), true);
+          }
+        }
+
+      });
+    }
 
     // set the label of the field
     openField.setLabel(QuestionnaireStringResourceModelHelper.getStringResourceModel(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition()));

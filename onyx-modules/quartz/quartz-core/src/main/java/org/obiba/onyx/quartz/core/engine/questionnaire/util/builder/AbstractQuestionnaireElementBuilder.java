@@ -29,7 +29,7 @@ public abstract class AbstractQuestionnaireElementBuilder<T> {
   /**
    * Naming pattern for questionnaire elements to be respected.
    */
-  private static final Pattern NAME_PATTERN = Pattern.compile("[a-z,A-Z,0-9,_]+");
+  protected static final Pattern NAME_PATTERN = Pattern.compile("[a-z,A-Z,0-9,_]+");
 
   /**
    * The current questionnaire element.

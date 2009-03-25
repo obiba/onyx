@@ -96,6 +96,7 @@ public class VariableReportContributor implements ModuleReportContributor {
     try {
       form.setField("Participant\\.fullName", participant.getFullName());
       form.setField("Participant\\.age", participant.getAge().toString());
+      form.setField("Participant\\.enrollmentId", participant.getEnrollmentId());
       form.setField("DateInterview\\.date", dateFormat.format(new Date()));
     } catch(Exception ex) {
       throw new RuntimeException(ex);

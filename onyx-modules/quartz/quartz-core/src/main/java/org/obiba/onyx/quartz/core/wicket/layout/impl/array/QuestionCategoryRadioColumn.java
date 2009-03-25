@@ -50,15 +50,7 @@ public class QuestionCategoryRadioColumn extends AbstractQuestionCategoryColumn 
 
     AbstractQuestionCategorySelectionPanel qCategoryPanel;
     cellItem.add(qCategoryPanel = new QuestionCategoryRadioPanel(componentId, rowModel, cellItem.getModel(), radioGroup, false));
-    // {
-    //
-    // @Override
-    // public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-    // // call for refresh
-    // QuestionCategoryRadioColumn.this.onSelection(target, questionModel, questionCategoryModel);
-    // }
-    //
-    // });
+
     if(qCategoryPanel.hasOpenField()) {
       cellItem.add(new AttributeAppender("class", new Model("category-open"), " "));
     } else {

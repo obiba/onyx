@@ -1,15 +1,15 @@
 /*
-* Default Questionnaire elements stylesheet.
+* Customized default questionnaire elements stylesheet.
+* Use css classes based on questionnaire elements (<questionnaire>-<type>-<name>).
+* Use .obiba-lang-* class to customize per questionnaire administration language.
 */
 
-.obiba-quartz-form-data {
-	border-bottom: 2px solid #ccc;
-	overflow:auto;
-	margin-bottom:10px;
+.wizard-content {
+  padding-top: 0px;
 }
 
 .page {
-	padding-left: 20px;
+	padding-top: 20px;
 }
 
 .section {
@@ -150,7 +150,7 @@ table.array td.label {
 	padding-right:5px;
 	font-weight: bold;
 	text-align:left;
-	width: 200px;
+	width: 300px;
 }
 
 table.array td.category {

@@ -36,13 +36,14 @@ public class AskedContraIndicationStep extends AbstractJadeContraIndicationStep 
 
   @Override
   public void onStepInNext(WizardForm form, AjaxRequestTarget target) {
+    super.onStepInNext(form, target);
     setContent(target, askedContraIndicationPanel = new AskedContraIndicationPanel(getContentId(), new PropertyModel(this, "activeInstrumentRunService")));
   }
 
   @Override
-  public void onStepOutNext(WizardForm form, AjaxRequestTarget target) {
+  protected void persistContraindicatable() {
+    super.persistContraindicatable();
     askedContraIndicationPanel.saveContraIndicationSelection();
-    super.onStepOutNext(form, target);
   }
 
   //

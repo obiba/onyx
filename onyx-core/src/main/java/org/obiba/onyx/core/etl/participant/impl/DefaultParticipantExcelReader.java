@@ -26,6 +26,8 @@ import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.Validatable;
 import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Gender;
 import org.obiba.onyx.core.domain.participant.Participant;
@@ -374,9 +376,6 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
 
   private void setConfiguredAttribute(Participant participant, ParticipantAttribute attribute, HSSFCell cell, HSSFFormulaEvaluator evaluator) {
     Data data = getAttributeValue(attribute, cell, evaluator);
-
-    checkMandatoryCondition(attribute, data);
-
     participant.setConfiguredAttributeValue(attribute.getName(), data);
   }
 
@@ -439,6 +438,20 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
       checkValueAllowed(attribute, data);
     }
 
+    // For non-null attribute values, execute the attribute's validators.
+    if(data != null && data.getValue() != null) {
+      Validatable validatableData = new Validatable(data);
+
+      for(IValidator validator : attribute.getValidators()) {
+        validator.validate(validatableData);
+      }
+
+      // In case of any errors, substitute null.
+      if(!validatableData.getErrors().isEmpty()) {
+        data.setValue(null);
+      }
+    }
+
     checkMandatoryCondition(attribute, data);
 
     return data;
@@ -473,7 +486,19 @@ public class DefaultParticipantExcelReader implements IParticipantReader {
     if(!allowedValues.isEmpty()) {
       String textValue = data.getValue();
 
-      if(!allowedValues.contains(textValue)) {
+      Iterator<String> iter = allowedValues.iterator();
+      String matchingValue = null;
+
+      while(iter.hasNext()) {
+        String s = iter.next();
+        if(s.equalsIgnoreCase(textValue)) {
+          matchingValue = s;
+          data.setValue(matchingValue);
+          break;
+        }
+      }
+
+      if(matchingValue == null) {
         if(attribute.isMandatoryAtEnrollment()) {
           throw new IllegalArgumentException("Value not allowed for field '" + attribute.getName() + "': " + textValue);
         } else {

@@ -11,6 +11,7 @@ package org.obiba.onyx.core.service.impl;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -221,7 +222,7 @@ public class UpdateParticipantListenerTest extends BaseDefaultSpringContextTestC
     return map;
   }
 
-  private java.util.Date getDate(int year, int month, int day, int hour, int minute) {
+  private Date getDate(int year, int month, int day, int hour, int minute) {
     Calendar c = Calendar.getInstance();
 
     c.set(Calendar.YEAR, year);

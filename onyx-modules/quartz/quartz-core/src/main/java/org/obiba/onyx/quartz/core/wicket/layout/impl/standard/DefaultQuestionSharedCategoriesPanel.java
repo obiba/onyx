@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Shared categories question array UI. Children questions are presented in rows, parent question categories in columns.
  */
-public class DefaultQuestionSharedCategoriesPanel extends Panel {
+public class DefaultQuestionSharedCategoriesPanel extends Panel implements IQuestionCategorySelectionListener {
 
   private static final long serialVersionUID = 5144933183339704600L;
 
@@ -107,13 +107,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
     QuestionCategoriesProvider provider = new QuestionCategoriesProvider(getModel());
     if(!parentQuestion.isMultiple()) {
       for(IModel questionCategoryModel : provider.getDataList()) {
-        columns.add(new QuestionCategoryRadioColumn(questionCategoryModel, new PropertyModel(this, "radioGroupView.groups")) {
-          @Override
-          public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-            target.addComponent(array);
-            fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
-          }
-        });
+        columns.add(new QuestionCategoryRadioColumn(questionCategoryModel, new PropertyModel(this, "radioGroupView.groups")));
       }
 
       add(array = new AbstractQuestionArray("array", getModel(), columns, questionsProvider) {
@@ -126,14 +120,7 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
       });
     } else {
       for(IModel questionCategoryModel : provider.getDataList()) {
-        columns.add(new QuestionCategoryCheckBoxColumn(questionCategoryModel, new PropertyModel(this, "checkGroupView.groups")) {
-          @Override
-          public void onSelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
-            target.addComponent(array);
-            fireQuestionAnswerChanged(target, questionModel, questionCategoryModel);
-          }
-
-        });
+        columns.add(new QuestionCategoryCheckBoxColumn(questionCategoryModel, new PropertyModel(this, "checkGroupView.groups")));
       }
 
       add(array = new AbstractQuestionArray("array", getModel(), columns, questionsProvider) {
@@ -191,17 +178,12 @@ public class DefaultQuestionSharedCategoriesPanel extends Panel {
     return checkGroupView;
   }
 
-  /**
-   * Find the first parent that will to be warned about a changing question answer.
-   * @param target
-   * @param questionModel
-   * @param questionCategoryModel
-   * @see IQuestionAnswerChangedListener
-   */
-  protected void fireQuestionAnswerChanged(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+  public void onQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
+    target.addComponent(array);
+
     IQuestionCategorySelectionListener parentListener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
     if(parentListener != null) {
-      parentListener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, true);
+      parentListener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
     }
   }
 

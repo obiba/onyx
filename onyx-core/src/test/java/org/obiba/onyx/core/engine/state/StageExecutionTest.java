@@ -94,6 +94,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     context1.addEdge(progress, TransitionEvent.CANCEL, ready);
     context1.addEdge(progress, TransitionEvent.COMPLETE, completed);
     context1.addEdge(completed, TransitionEvent.CANCEL, ready);
+    context1.addEdge(completed, TransitionEvent.RESUME, progress);
     context1.setInitialState(ready);
 
     Stage stage2 = new Stage();
@@ -216,7 +217,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
   }
 
   @Test
-  public void testCompleteInProgress() {
+  public void testComplete() {
     doAction(ActionType.EXECUTE);
     assertStateName(context1, InProgressState.NAME);
     assertStateName(context2, WaitingState.NAME);
@@ -234,6 +235,60 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
     assertStateName(context3, ReadyState.NAME);
     assertStateClass(context3, ReadyState.class);
+
+  }
+
+  /**
+   * Test of transitional state: ONYX-383.
+   */
+  @Test
+  public void testInProgressCompleteInProgressComplete() {
+    doAction(ActionType.EXECUTE);
+    assertStateName(context1, InProgressState.NAME);
+    assertStateName(context2, WaitingState.NAME);
+    assertStateName(context3, WaitingState.NAME);
+
+    // complete the first stage and make assert that the second becomes ready
+    doAction(ActionType.COMPLETE);
+    assertStateName(context1, CompletedState.NAME);
+    assertStateClass(context1, CompletedState.class);
+    Assert.assertEquals(true, context1.isCompleted());
+    Assert.assertEquals(false, context1.isInteractive());
+
+    assertStateName(context2, ReadyState.NAME);
+    assertStateClass(context2, ReadyState.class);
+
+    assertStateName(context3, ReadyState.NAME);
+    assertStateClass(context3, ReadyState.class);
+
+    doAction(context2, ActionType.EXECUTE);
+    assertStateName(context2, InProgressState.NAME);
+
+    // complete the second stage
+    doAction(context2, ActionType.COMPLETE);
+    assertStateName(context2, CompletedState.NAME);
+    assertStateClass(context2, CompletedState.class);
+
+    // 1 goes in progress, 2 does not change
+    doAction(ActionType.EXECUTE);
+    assertStateName(context1, InProgressState.NAME);
+    assertStateName(context2, CompletedState.NAME);
+
+    // 1 goes completed, 2 is still completed
+    doAction(ActionType.COMPLETE);
+    assertStateName(context1, CompletedState.NAME);
+    assertStateName(context2, CompletedState.NAME);
+
+    // 1 goes in progress, 2 does not change
+    doAction(ActionType.EXECUTE);
+    assertStateName(context1, InProgressState.NAME);
+    assertStateName(context2, CompletedState.NAME);
+
+    // 1 goes in ready, 2 goes waiting
+    doAction(ActionType.STOP);
+    assertStateName(context1, ReadyState.NAME);
+    assertStateName(context2, WaitingState.NAME);
+
   }
 
   @Test
@@ -443,6 +498,7 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
     @Override
     protected void addUserActions(Set<ActionType> types) {
       types.add(ActionType.STOP);
+      types.add(ActionType.EXECUTE);
       types.add(ActionType.COMMENT);
     }
 
@@ -460,6 +516,11 @@ public class StageExecutionTest extends BaseDefaultSpringContextTestCase {
 
     public String getName() {
       return NAME;
+    }
+
+    @Override
+    public void execute(Action action) {
+      castEvent(TransitionEvent.RESUME);
     }
 
     @Override

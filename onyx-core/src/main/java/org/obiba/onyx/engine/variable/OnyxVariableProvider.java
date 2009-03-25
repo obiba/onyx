@@ -10,6 +10,7 @@
 package org.obiba.onyx.engine.variable;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +46,10 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
   public static final String BARCODE = "barcode";
 
+  public static final String ENROLLMENT_ID = "enrollmentId";
+
+  public static final String APPOINTMENT_DATE = "appointmentDate";
+
   public static final String GENDER = "gender";
 
   public static final String FIRST_NAME = "firstName";
@@ -52,6 +57,8 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
   public static final String LAST_NAME = "lastName";
 
   public static final String BIRTH_DATE = "birthDate";
+
+  public static final String BIRTH_YEAR = "birthYear";
 
   public static final String SITENO = "siteNo";
 
@@ -121,6 +128,10 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
     if(variable.getParent().getName().equals(PARTICIPANT)) {
       if(variable.getName().equals(BARCODE)) {
         varData.addData(DataBuilder.buildText(participant.getBarcode()));
+      } else if(variable.getName().equals(ENROLLMENT_ID)) {
+        varData.addData(DataBuilder.buildText(participant.getEnrollmentId()));
+      } else if(variable.getName().equals(APPOINTMENT_DATE) && participant.getAppointment() != null) {
+        varData.addData(DataBuilder.buildDate(participant.getAppointment().getDate()));
       } else if(variable.getName().equals(GENDER)) {
         varData.addData(DataBuilder.buildText(participant.getGender().toString()));
       } else if(variable.getName().equals(FIRST_NAME)) {
@@ -128,7 +139,15 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
       } else if(variable.getName().equals(LAST_NAME)) {
         varData.addData(DataBuilder.buildText(participant.getLastName()));
       } else if(variable.getName().equals(BIRTH_DATE)) {
-        varData.addData(DataBuilder.buildDate(participant.getBirthDate()));
+        if(participant.getBirthDate() != null) {
+          varData.addData(DataBuilder.buildDate(participant.getBirthDate()));
+        }
+      } else if(variable.getName().equals(BIRTH_YEAR)) {
+        if(participant.getBirthDate() != null) {
+          Calendar cal = Calendar.getInstance();
+          cal.setTime(participant.getBirthDate());
+          varData.addData(DataBuilder.buildInteger(cal.get(Calendar.YEAR)));
+        }
       } else if(variable.getName().equals(SITENO)) {
         varData.addData(DataBuilder.buildText(participant.getSiteNo()));
       } else if(variable.getName().equals(RECRUITMENT_TYPE)) {
@@ -203,10 +222,13 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
     Variable entity = admin.addVariable(new Variable(PARTICIPANT));
     entity.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT).setKey(PARTICIPANT_KEY));
+    entity.addVariable(new Variable(ENROLLMENT_ID).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
+    entity.addVariable(new Variable(APPOINTMENT_DATE).setDataType(DataType.DATE)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(GENDER).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(FIRST_NAME).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(LAST_NAME).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(BIRTH_DATE).setDataType(DataType.DATE)).addReference(PARTICIPANT_KEY);
+    entity.addVariable(new Variable(BIRTH_YEAR).setDataType(DataType.INTEGER)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(SITENO).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(RECRUITMENT_TYPE).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
     for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {

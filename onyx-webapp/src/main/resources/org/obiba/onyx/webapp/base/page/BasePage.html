@@ -13,9 +13,7 @@
     <link href="css/layout.css" type="text/css" rel="stylesheet" />
     <link href="css/adxmenu.css" type="text/css" rel="stylesheet" />
     <link href="css/modal.css" type="text/css" rel="stylesheet" />    
-    <link href="css/modal-feedback.css" type="text/css" rel="stylesheet" />   
-    <link href="css/progressbar.css" type="text/css" rel="stylesheet" />  
-    <link href="css/numericpad.css" type="text/css" rel="stylesheet" />      
+    <link href="css/modal-feedback.css" type="text/css" rel="stylesheet" /> 
   </head>
 
   <body>
@@ -35,7 +33,8 @@
         	<wicket:child/>
       	</div>
       	<div id="pageFooter">
-        	<div>OBiBa / <span wicket:id="version" />&copy;</div>
+            <div id="currentUser"><span wicket:id="userFullName" /> - <span wicket:id="currentTime" /></div>    	
+        	<div id="currentVersion">OBiBa / <span wicket:id="version" />&copy;</div>
       	</div>
       </div> 
   </body>

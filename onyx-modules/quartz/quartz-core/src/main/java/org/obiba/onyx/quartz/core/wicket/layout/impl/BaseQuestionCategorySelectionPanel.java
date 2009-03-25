@@ -15,6 +15,7 @@ import org.apache.wicket.model.IModel;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.behavior.QuestionnaireStyleBehavior;
 import org.obiba.onyx.wicket.wizard.WizardForm;
 
 /**
@@ -34,6 +35,9 @@ public abstract class BaseQuestionCategorySelectionPanel extends Panel {
   public BaseQuestionCategorySelectionPanel(String id, IModel questionModel, IModel questionCategoryModel) {
     super(id, questionCategoryModel);
     this.questionModel = questionModel;
+
+    // add a css class that represents this page instance
+    add(new QuestionnaireStyleBehavior());
   }
 
   public IModel getQuestionModel() {
@@ -61,6 +65,7 @@ public abstract class BaseQuestionCategorySelectionPanel extends Panel {
     if(wizard != null && wizard.getFeedbackPanel() != null) {
       target.addComponent(wizard.getFeedbackPanel());
     }
+    target.appendJavascript("Resizer.resizeWizard();");
   }
 
   /**
@@ -70,7 +75,7 @@ public abstract class BaseQuestionCategorySelectionPanel extends Panel {
    * @param questionCategoryModel
    * @see IQuestionAnswerChangedListener
    */
-  protected void fireQuestionAnswerChanged(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
+  protected void fireQuestionCategorySelected(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel) {
     IQuestionCategorySelectionListener parentListener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
     if(parentListener != null) {
       parentListener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, true);

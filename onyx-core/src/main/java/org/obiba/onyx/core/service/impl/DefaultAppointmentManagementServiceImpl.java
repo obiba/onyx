@@ -32,10 +32,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.transaction.annotation.Transactional;
 
-/**
- * 
- */
+@Transactional
 public class DefaultAppointmentManagementServiceImpl implements AppointmentManagementService, ResourceLoaderAware {
 
   private static final Logger appointmentListUpdatelog = LoggerFactory.getLogger("appointmentListUpdate");
@@ -63,13 +62,21 @@ public class DefaultAppointmentManagementServiceImpl implements AppointmentManag
 
     try {
       setInputDir(resourceLoader.getResource(inputDirectory).getFile());
-      if(!getInputDir().exists()) getInputDir().mkdirs();
-      if(!getInputDir().isDirectory()) throw new IllegalArgumentException("DefaultAppointmentManagementServiceImpl: InputDirectory " + getInputDir().getAbsolutePath() + " is not a directory");
+      if(!getInputDir().exists()) {
+        getInputDir().mkdirs();
+      }
+      if(!getInputDir().isDirectory()) {
+        throw new IllegalArgumentException("DefaultAppointmentManagementServiceImpl: InputDirectory " + getInputDir().getAbsolutePath() + " is not a directory");
+      }
 
       if(outputDirectory != null && !outputDirectory.isEmpty()) {
         setOutputDir(resourceLoader.getResource(outputDirectory).getFile());
-        if(!getOutputDir().exists()) getOutputDir().mkdirs();
-        if(!getOutputDir().isDirectory()) throw new IllegalArgumentException("DefaultAppointmentManagementServiceImpl: OutputDirectory " + getOutputDir().getAbsolutePath() + " is not a directory");
+        if(!getOutputDir().exists()) {
+          getOutputDir().mkdirs();
+        }
+        if(!getOutputDir().isDirectory()) {
+          throw new IllegalArgumentException("DefaultAppointmentManagementServiceImpl: OutputDirectory " + getOutputDir().getAbsolutePath() + " is not a directory");
+        }
       }
     } catch(IOException ex) {
       throw new RuntimeException("DefaultAppointmentManagementServiceImpl: Failed to access directory - " + ex);
@@ -77,71 +84,103 @@ public class DefaultAppointmentManagementServiceImpl implements AppointmentManag
   }
 
   public boolean isUpdateAvailable() {
-    if(getInputDir().listFiles(getFilter()).length > 0) return true;
+    if(getInputDir().listFiles(getFilter()).length > 0) {
+      return true;
+    }
     return false;
   }
 
   synchronized public void updateAppointments() {
-    if(!isUpdateAvailable()) return;
+    if(!isUpdateAvailable()) {
+      return;
+    }
 
-    File[] appointmentFiles = getInputDir().listFiles(getFilter());
-    sortFilesOnDateAsc(appointmentFiles);
     appointmentListUpdatelog.info("Start updating appointments");
+    File[] appointmentFiles = getInputDir().listFiles(getFilter());
+    if(appointmentFiles.length > 1) {
+      appointmentListUpdatelog.info("Found {} appointment lists. Will process the most recent one only.");
+    }
+    sortFilesOnDateAsc(appointmentFiles);
 
-    List<IParticipantReadListener> listeners = new ArrayList<IParticipantReadListener>();
+    File currentFile = appointmentFiles[appointmentFiles.length - 1];
+    // Archive all other files
+    for(int i = 0; i < appointmentFiles.length - 1; i++) {
+      archiveFile(appointmentFiles[i]);
+    }
+
     String siteCode = applicationConfigurationService.getApplicationConfiguration().getSiteNo();
     User user = userSessionService.getUser();
     participantService.cleanUpAppointment();
 
-    for(File currentFile : appointmentFiles) {
-      appointmentListUpdatelog.info("Participant File: {}", currentFile.getName());
-      listeners.add(new UpdateParticipantListener(siteCode, user, participantService));
-      FileInputStream inputStream = null;
+    appointmentListUpdatelog.info("Processing appointment list file {}", currentFile.getName());
+    List<IParticipantReadListener> listeners = new ArrayList<IParticipantReadListener>();
+    listeners.add(new UpdateParticipantListener(siteCode, user, participantService));
+    FileInputStream inputStream = null;
 
-      try {
-        participantReader.process(inputStream = new FileInputStream(currentFile), listeners);
-        inputStream.close();
-      } catch(FileNotFoundException e) {
-        // should not happen cause we found it by exploring the directory
-        appointmentListUpdatelog.error("Abort updating appointments: No participants list file found in: " + inputDirectory);
+    try {
+      participantReader.process(inputStream = new FileInputStream(currentFile), listeners);
+    } catch(FileNotFoundException e) {
+      // should not happen cause we found it by exploring the directory
+      appointmentListUpdatelog.error("Abort updating appointments: No participants list file found in directory {} ", inputDirectory);
 
-        ValidationRuntimeException vex = new ValidationRuntimeException();
-        vex.reject("NoParticipantsListFileFound", new String[] { inputDirectory }, "No participants list file found in: " + inputDirectory);
-        throw vex;
-      } catch(IOException e) {
-        appointmentListUpdatelog.error("Abort updating appointments: Reading file error: {} - {}", currentFile.getName(), e.getMessage());
+      ValidationRuntimeException vex = new ValidationRuntimeException();
+      vex.reject("NoParticipantsListFileFound", new String[] { inputDirectory }, "No participants list file found in: " + inputDirectory);
+      throw vex;
+    } catch(IOException e) {
+      appointmentListUpdatelog.error("Abort updating appointments: Reading file error: {} - {}", currentFile.getName(), e.getMessage());
 
-        ValidationRuntimeException vex = new ValidationRuntimeException();
-        vex.reject("ParticipantsListFileReadingError", new String[] { e.getMessage() }, "Reading file error: " + e.getMessage());
-        throw vex;
-      } catch(IllegalArgumentException e) {
-        appointmentListUpdatelog.error("Abort updating appointments: Validation error: {} - {}", currentFile.getName(), e.getMessage());
+      ValidationRuntimeException vex = new ValidationRuntimeException();
+      vex.reject("ParticipantsListFileReadingError", new String[] { e.getMessage() }, "Reading file error: " + e.getMessage());
+      throw vex;
+    } catch(IllegalArgumentException e) {
+      appointmentListUpdatelog.error("Abort updating appointments: Validation error: {} - {}", currentFile.getName(), e.getMessage());
 
-        ValidationRuntimeException vex = new ValidationRuntimeException();
-        vex.reject("ParticipantsListFileValidationError", new String[] { e.getMessage() }, "Validation error in file: " + e.getMessage());
-        throw vex;
+      ValidationRuntimeException vex = new ValidationRuntimeException();
+      vex.reject("ParticipantsListFileValidationError", new String[] { e.getMessage() }, "Validation error in file: " + e.getMessage());
+      throw vex;
+    } finally {
+      if(inputStream != null) {
+        try {
+          inputStream.close();
+        } catch(IOException e) {
+          // Ignored
+        }
       }
-
-      listeners.clear();
     }
+    archiveFile(currentFile);
 
-    if(outputDir != null) archiveFiles(appointmentFiles);
     appointmentListUpdatelog.info("End updating appointments");
-
   }
 
-  public void archiveFiles(File[] appointmentFiles) {
+  public void archiveFiles(File... appointmentFiles) {
     for(File currentFile : appointmentFiles) {
+      archiveFile(currentFile);
+    }
+  }
+
+  public void archiveFile(File file) {
+    if(outputDir != null) {
       try {
-        FileUtil.moveFile(currentFile, getOutputDir());
+        appointmentListUpdatelog.info("Moving file {} to output directory {}.", file.getName(), getOutputDir().getAbsolutePath());
+
+        // Re-create output directory, in case it was deleted at runtime.
+        if(!getOutputDir().exists()) {
+          getOutputDir().mkdirs();
+        }
+
+        FileUtil.moveFile(file, getOutputDir());
       } catch(IOException e) {
-        appointmentListUpdatelog.error("Abort updating appointments: Archiving file error {} - {}", currentFile.getName(), e.getMessage());
+        appointmentListUpdatelog.error("Abort updating appointments: Archiving file error {} - {}", file.getName(), e.getMessage());
 
         ValidationRuntimeException vex = new ValidationRuntimeException();
         vex.reject("ParticipantsListFileArchivingError", new String[] { e.getMessage() }, "Archiving file error: " + e.getMessage());
         throw vex;
       }
+    } else {
+      // If no output directory has been configured, just delete the file.
+      file.delete();
     }
+
   }
 
   public void sortFilesOnDateAsc(File[] appointmentFiles) {
@@ -155,7 +194,7 @@ public class DefaultAppointmentManagementServiceImpl implements AppointmentManag
   public FilenameFilter getFilter() {
     return (new FilenameFilter() {
       public boolean accept(File dir, String name) {
-        return (name.endsWith(".xls"));
+        return (name.toLowerCase().endsWith(".xls"));
       }
     });
   }

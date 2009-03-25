@@ -115,6 +115,7 @@ public class MarblePanel extends Panel implements IEngineComponentAware {
             }
 
             target.appendJavascript("Resizer.resizeWizard();");
+            target.appendJavascript("Resizer.resizeConsentFrame();");
           }
 
           @Override

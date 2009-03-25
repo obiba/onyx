@@ -24,7 +24,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Question;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
-import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
 public abstract class QuestionCommentModalPanel extends Panel {
 
@@ -62,8 +61,8 @@ public abstract class QuestionCommentModalPanel extends Panel {
 
       setModel(new Model(QuestionCommentModalPanel.this));
 
+      // field is not required as comment may be removed
       final TextArea newComment = new TextArea("newComment", new PropertyModel(getModel(), "comment"));
-      newComment.add(new RequiredFormFieldBehavior());
       newComment.setOutputMarkupId(true);
       target.focusComponent(newComment);
       // see QuestionAnswer.comment column length
@@ -74,7 +73,7 @@ public abstract class QuestionCommentModalPanel extends Panel {
       add(new AjaxButton("saveComment", this) {
 
         protected void onSubmit(AjaxRequestTarget target, Form form) {
-          activeQuestionnaireAdministrationService.addComment((Question) QuestionCommentModalPanel.this.getModelObject(), comment);
+          activeQuestionnaireAdministrationService.setComment((Question) QuestionCommentModalPanel.this.getModelObject(), comment);
           QuestionCommentModalPanel.this.onAddComment(target);
           commentWindow.close(target);
         }

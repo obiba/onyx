@@ -14,18 +14,20 @@ import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.quartz.core.domain.answer.OpenAnswer;
+import org.obiba.onyx.quartz.core.engine.questionnaire.question.OpenAnswerDefinition;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionStateHolder;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.AbstractOpenAnswerDefinitionPanel;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.QuestionCategorySelectionBehavior;
+import org.obiba.onyx.quartz.core.wicket.layout.impl.behavior.QuestionCategorySelectionBehavior;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.pad.NumericPad;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModel;
-import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireStringResourceModelHelper;
 import org.obiba.onyx.util.data.DataType;
 import org.obiba.onyx.wicket.link.AjaxImageLink;
+import org.springframework.util.StringUtils;
 
 /**
  * Simplified UI for entering open answers: a popup appears on link clicked with a pad, and on pad entry validation the
@@ -56,7 +58,9 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
     updateState();
 
     add(new Label("value", new PropertyModel(this, "openValue")).setOutputMarkupId(true).add(new QuestionCategorySelectionBehavior()));
-    add(new Label("label", QuestionnaireStringResourceModelHelper.getStringResourceModel(getQuestion(), getQuestionCategory(), getOpenAnswerDefinition())));
+    add(new Label("label", getCategoryLabelResourceModel()));
+    QuestionnaireStringResourceModel unitLabelModel = new QuestionnaireStringResourceModel(getOpenAnswerDefinitionModel(), "unitLabel");
+    add(new Label("unit", unitLabelModel).setVisible(StringUtils.hasLength(unitLabelModel.getString())));
 
     AjaxImageLink link = new AjaxImageLink("link", new QuestionnaireStringResourceModel(activeQuestionnaireAdministrationService.getQuestionnaire(), "clickHere")) {
 
@@ -67,13 +71,14 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
 
     };
     link.getLink().add(new QuestionCategorySelectionBehavior());
+    link.getLink().add(new NoDragBehavior());
     add(link);
 
     // Create modal window
     add(padWindow = new ModalWindow("padModal"));
     padWindow.setCssClassName("onyx");
     padWindow.setInitialWidth(288);
-    padWindow.setInitialHeight(385);
+    padWindow.setInitialHeight(365);
     padWindow.setResizable(false);
 
     final AbstractOpenAnswerDefinitionPanel pad = createPad(padWindow);
@@ -98,15 +103,31 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
     });
   }
 
+  private QuestionnaireStringResourceModel getCategoryLabelResourceModel() {
+    // Create and add the label for the numeric input field.
+    OpenAnswerDefinition parentOpenAnswer = getOpenAnswerDefinition().getParentOpenAnswerDefinition();
+    IModel labelModel;
+    if(parentOpenAnswer != null && parentOpenAnswer.getOpenAnswerDefinitions().size() > 0) {
+      labelModel = getOpenAnswerDefinitionModel();
+    } else {
+      labelModel = getQuestionCategoryModel();
+    }
+    return new QuestionnaireStringResourceModel(labelModel, "label");
+  }
+
   public boolean isQuestionCategorySelected() {
     return activeQuestionnaireAdministrationService.findAnswer(getQuestion(), getQuestionCategory()) != null;
   }
 
   public String getOpenValue() {
     OpenAnswer answer = activeQuestionnaireAdministrationService.findOpenAnswer(getQuestion(), getQuestionCategory().getCategory(), getOpenAnswerDefinition());
-    if(answer == null) return null;
-    if(answer.getData() != null) return answer.getData().getValueAsString();
-    return null;
+    String val = null;
+
+    if(answer != null && answer.getData() != null) {
+      val = answer.getData().getValueAsString();
+    }
+
+    return val;
   }
 
   @Override
@@ -131,7 +152,9 @@ public class SimplifiedOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefin
   public AbstractOpenAnswerDefinitionPanel createPad(ModalWindow padWindow) {
     DataType type = getOpenAnswerDefinition().getDataType();
     if(type.equals(DataType.INTEGER) || type.equals(DataType.DECIMAL)) {
-      return new NumericPad(padWindow.getContentId(), getQuestionModel(), getQuestionCategoryModel(), getOpenAnswerDefinitionModel(), padWindow);
+      NumericPad pad = new NumericPad(padWindow.getContentId(), getQuestionModel(), getQuestionCategoryModel(), getOpenAnswerDefinitionModel());
+      padWindow.setTitle(new StringResourceModel("NumericPadTitle", pad, null));
+      return pad;
     } else {
       throw new UnsupportedOperationException("Pad for type " + type + " not supported yet.");
     }

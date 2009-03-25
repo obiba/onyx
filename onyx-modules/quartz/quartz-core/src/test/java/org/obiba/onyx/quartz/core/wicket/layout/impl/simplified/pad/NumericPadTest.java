@@ -112,6 +112,7 @@ public class NumericPadTest {
     messageSource.addMessage("Questionnaire.HealthQuestionnaireSelfAdministered.cancel", locale, "Cancel");
     messageSource.addMessage("Questionnaire.HealthQuestionnaireSelfAdministered.reset", locale, "Clear");
     messageSource.addMessage("QuestionCategory.Q1.1.label", locale, "Choice one");
+    messageSource.addMessage("OpenAnswerDefinition.OPEN_INT.unitLabel", locale, "");
 
     propertyKeyProvider = new DefaultPropertyKeyProviderImpl();
 
@@ -133,12 +134,15 @@ public class NumericPadTest {
 
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaireParticipant()).andReturn(questionnaireParticipant).times(1);
     expect(activeQuestionnaireAdministrationServiceMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
-    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).times(4);
+    expect(activeQuestionnaireAdministrationServiceMock.getLanguage()).andReturn(locale).atLeastOnce();
 
     expect(questionnaireBundleManagerMock.getBundle("HealthQuestionnaireSelfAdministered")).andReturn(questionnaireBundleMock).atLeastOnce();
     expect(questionnaireBundleMock.getMessageSource()).andReturn(messageSource).atLeastOnce();
     for(QuestionCategory qCategory : question.getQuestionCategories()) {
       expect(questionnaireBundleMock.getPropertyKey(qCategory, "label")).andReturn(propertyKeyProvider.getPropertyKey(qCategory, "label")).atLeastOnce();
+      if(qCategory.getOpenAnswerDefinition() != null) {
+        expect(questionnaireBundleMock.getPropertyKey(qCategory.getOpenAnswerDefinition(), "unitLabel")).andReturn(propertyKeyProvider.getPropertyKey(qCategory.getOpenAnswerDefinition(), "unitLabel")).atLeastOnce();
+      }
     }
     expect(questionnaireBundleMock.getQuestionnaire()).andReturn(questionnaire).atLeastOnce();
     expect(questionnaireBundleMock.getPropertyKey(questionnaire, "reset")).andReturn(propertyKeyProvider.getPropertyKey(questionnaire, "reset")).atLeastOnce();
@@ -156,7 +160,7 @@ public class NumericPadTest {
         QuestionCategory category = question.getQuestionCategories().get(0);
         ModalWindow modal = new MyModalWindow("modal");
 
-        return new NumericPad("panel", new Model(question), new Model(question.getQuestionCategories().get(0)), new Model(category.getOpenAnswerDefinition()), modal) {
+        return new NumericPad("panel", new Model(question), new Model(question.getQuestionCategories().get(0)), new Model(category.getOpenAnswerDefinition())) {
           @Override
           public Locale getLocale() {
             // for error messages in english
@@ -183,8 +187,6 @@ public class NumericPadTest {
   @Test
   public void testNumericPadButtons() {
 
-    showModal(true);
-
     // Enter "123456789" on the numeric pad.
     tester.executeAjaxEvent("panel:1:button:link", "onclick");
     tester.executeAjaxEvent("panel:2:button:link", "onclick");
@@ -208,14 +210,10 @@ public class NumericPadTest {
     // Press the cancel button.
     tester.executeAjaxEvent("panel:form:cancel:link", "onclick");
 
-    // Verify that modal is closed
-    Assert.assertFalse(isModalShown());
-
   }
 
   @Test
   public void testValidNumericPadSubmit() {
-    showModal(true);
 
     // Enter "1973" on the numeric pad.
     tester.executeAjaxEvent("panel:1:button:link", "onclick");
@@ -242,14 +240,10 @@ public class NumericPadTest {
 
     verify(activeQuestionnaireAdministrationServiceMock);
 
-    // Verify that modal is closed
-    Assert.assertFalse(isModalShown());
-
   }
 
   @Test
   public void testInvalidNumericPadSubmit() {
-    showModal(true);
 
     EasyMock.reset(activeQuestionnaireAdministrationServiceMock);
 
@@ -268,14 +262,6 @@ public class NumericPadTest {
 
     verify(activeQuestionnaireAdministrationServiceMock);
 
-  }
-
-  public boolean isModalShown() {
-    return modalIsShown;
-  }
-
-  public void showModal(boolean modalIsOpen) {
-    this.modalIsShown = modalIsOpen;
   }
 
 }

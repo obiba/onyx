@@ -45,6 +45,7 @@ import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Module;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.wicket.test.ExtendedApplicationContextMock;
 import org.obiba.wicket.markup.html.panel.KeyValueDataPanel;
 import org.obiba.wicket.test.MockSpringApplication;
 
@@ -70,7 +71,7 @@ public class CommentsModalPanelTest implements Serializable {
 
   @Before
   public void setup() {
-    applicationContextMock = new ApplicationContextMock() {
+    applicationContextMock = new ExtendedApplicationContextMock() {
       private static final long serialVersionUID = 1L;
 
       // Need to override this method since the default implementation
