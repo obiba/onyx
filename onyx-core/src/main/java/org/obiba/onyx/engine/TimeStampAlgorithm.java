@@ -66,11 +66,11 @@ public class TimeStampAlgorithm {
   }
 
   public Date getStartTimeStamp() {
-    return startTimeStamp;
+    return startTimeStamp == null ? null : new Date(startTimeStamp.getTime());
   }
 
   public Date getEndTimeStamp() {
-    return endTimeStamp;
+    return endTimeStamp == null ? null : new Date(endTimeStamp.getTime());
   }
 
   @Override
