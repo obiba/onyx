@@ -18,7 +18,6 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
-import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.wicket.util.DateModelUtils;
@@ -44,7 +43,7 @@ public class StageStartEndTimePanel extends Panel {
   @Override
   public boolean isVisible() {
     IStageExecution exec = getStageExecution();
-    return exec.isCompleted() && (exec.getStartingActionType() == ActionType.EXECUTE || exec.getStartingActionType() == ActionType.SKIP);
+    return exec.getStartTime() != null;
   }
 
   public IStageExecution getStageExecution() {

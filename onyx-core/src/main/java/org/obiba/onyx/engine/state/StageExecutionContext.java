@@ -26,6 +26,7 @@ import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
+import org.obiba.onyx.engine.TimeStampAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSourceResolvable;
@@ -274,27 +275,13 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
   }
 
   public Date getStartTime() {
-    // Find the last action of type EXECUTE or SKIP for this stage
-    Action lastExecuteOrSkipAction = null;
-    for(Action action : getStageActionList()) {
-      if(action.getActionType() == ActionType.EXECUTE || action.getActionType() == ActionType.SKIP) {
-        lastExecuteOrSkipAction = action;
-      }
-    }
-
-    return (lastExecuteOrSkipAction != null) ? lastExecuteOrSkipAction.getDateTime() : null;
+    TimeStampAlgorithm timeStampAlgorithm = new TimeStampAlgorithm(getStageActionList());
+    return timeStampAlgorithm.getStartTimeStamp();
   }
 
   public Date getEndTime() {
-    if(isCompleted() == false) {
-      return null;
-    }
-    // Return the last action's time
-    List<Action> actions = getStageActionList();
-    if(actions == null || actions.size() == 0) {
-      throw new IllegalStateException("Stage " + stage.getName() + " is in a completed state but has no associated action.");
-    }
-    return actions.get(actions.size() - 1).getDateTime();
+    TimeStampAlgorithm timeStampAlgorithm = new TimeStampAlgorithm(getStageActionList());
+    return timeStampAlgorithm.getEndTimeStamp();
   }
 
   private List<Action> getStageActionList() {
