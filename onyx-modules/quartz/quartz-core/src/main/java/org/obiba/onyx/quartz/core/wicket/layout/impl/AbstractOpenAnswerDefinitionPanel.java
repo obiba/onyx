@@ -121,7 +121,7 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
   public abstract void resetField();
 
   protected void fireQuestionCategorySelection(AjaxRequestTarget target, IModel questionModel, IModel questionCategoryModel, boolean isSelected) {
-    log.debug("fireQuestionCategorySelection({},{},{})", new Object[] { questionModel.getObject(), questionCategoryModel.getObject(), new Boolean(isSelected) });
+    log.debug("fireQuestionCategorySelection({},{},{})", new Object[] { questionModel.getObject(), questionCategoryModel.getObject(), Boolean.valueOf(isSelected) });
     IQuestionCategorySelectionListener listener = (IQuestionCategorySelectionListener) findParent(IQuestionCategorySelectionListener.class);
     if(listener != null) {
       listener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, isSelected);
