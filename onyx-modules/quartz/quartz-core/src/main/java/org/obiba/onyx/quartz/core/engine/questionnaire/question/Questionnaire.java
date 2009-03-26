@@ -33,7 +33,7 @@ public class Questionnaire implements Serializable, IQuestionnaireElement {
 
   private List<Page> pages;
 
-  private QuestionnaireCache questionnaireCache;
+  private transient QuestionnaireCache questionnaireCache;
 
   public Questionnaire(String name, String version) {
     this.name = name;
