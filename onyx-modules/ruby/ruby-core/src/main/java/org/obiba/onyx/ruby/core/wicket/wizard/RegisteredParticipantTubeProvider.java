@@ -9,7 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.wizard;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.injection.web.InjectorHolder;
@@ -46,7 +49,20 @@ public class RegisteredParticipantTubeProvider extends SortableDataProvider {
   //
 
   public Iterator<RegisteredParticipantTube> iterator(int first, int count) {
-    return activeTubeRegistrationService.getParticipantTubeRegistration().getRegisteredParticipantTubes().iterator();
+    List<RegisteredParticipantTube> tubes = activeTubeRegistrationService.getParticipantTubeRegistration().getRegisteredParticipantTubes();
+    // Display the list in reverse order so the operator can always see the last item scanned at the top of the list.
+    Collections.sort(tubes, Collections.reverseOrder(new TubeScanTimeComparator()));
+    return tubes.iterator();
+  }
+
+  /**
+   * Sorts {@link RegisteredParticipantTube}s in ascending order according the time they were scanned in.
+   */
+  private class TubeScanTimeComparator implements Comparator<RegisteredParticipantTube> {
+    public int compare(RegisteredParticipantTube tube0, RegisteredParticipantTube tube1) {
+      return tube0.getRegistrationTime().compareTo(tube1.getRegistrationTime());
+    }
+
   }
 
   public IModel model(Object object) {
