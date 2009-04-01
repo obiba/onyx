@@ -180,8 +180,6 @@ $(document).ready(function () {
 	$('.obiba-content-region').each(function() {
 	  $(this).addClass('ui-corner-all');
 	});
-	
-	$('.obiba-content-region > h1').wrap('<div class="obiba-header"></div>');
 });
 
 //////////////////////////////////////////////////////////////////////

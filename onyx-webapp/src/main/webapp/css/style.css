@@ -1080,7 +1080,7 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 /******************* Content Region ************************************************/
 
 .obiba-content-region {
-  background-color: white;
+  background-color: #FFFFFF;
   border-color: #B8B8B8;
   border-style: solid;
   border-width: 1px 2px 2px 1px;
@@ -1093,17 +1093,14 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
   -webkit-border-radius: 6px;	
 }
 
-.obiba-content-region > .obiba-header > h1 {
-  color: #C65F02;
-  font-size: 12px;
-  margin-bottom: 1px;
-}
-
-.obiba-header {
-  border-color: #c65f02;
+.obiba-content-region > h1 {
+  border-color: #C65F02;
   border-style: none none solid none;
   border-width: 1px;
-  margin-bottom: 25px
+  color: #C65F02;
+  font-size: 12px;
+  margin-bottom: 25px;
+  padding-bottom: 1px;
 }
 
 /******************* End Content Region ********************************************/
