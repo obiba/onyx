@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.apache.wicket.Component;
 import org.obiba.core.domain.IEntity;
+import org.obiba.core.service.SortingClause;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.domain.IMemento;
 import org.obiba.onyx.core.domain.participant.Interview;
@@ -289,7 +290,9 @@ public class StageExecutionContext extends PersistenceManagerAwareService implem
     template.setInterview(interview);
     template.setStage(stage.getName());
 
-    return getPersistenceManager().match(template);
+    SortingClause sortByDateTimeClause = new SortingClause("dateTime");
+
+    return getPersistenceManager().match(template, sortByDateTimeClause);
 
   }
 }
