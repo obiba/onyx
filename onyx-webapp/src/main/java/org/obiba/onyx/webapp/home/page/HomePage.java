@@ -15,7 +15,6 @@ import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInst
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
@@ -26,7 +25,6 @@ import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.page.InterviewPage;
-import org.obiba.onyx.webapp.participant.page.ParticipantSearchPage;
 import org.obiba.onyx.webapp.participant.panel.UnlockInterviewPanel;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 
@@ -45,8 +43,6 @@ public class HomePage extends BasePage {
     super();
 
     add(new ParticipantSearchForm("searchForm"));
-
-    add(new BookmarkablePageLink("search", ParticipantSearchPage.class));
 
     unlockInterviewWindow = new ModalWindow("unlockInterview");
     unlockInterviewWindow.setCssClassName("onyx");
