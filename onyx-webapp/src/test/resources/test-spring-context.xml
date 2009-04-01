@@ -3,7 +3,8 @@
   default-autowire="no">
   
   <bean id="participantMetadata" class="org.obiba.onyx.core.domain.participant.ParticipantMetadata">
-    <property name="participantIdPattern" value=".*" />   
+    <property name="participantIdPattern" value=".*" />
     <property name="onyxConfigPath" value="classpath:" />
+    <property name="supportedRecruitmentTypesString" value="ENROLLED,VOLUNTEER" />
   </bean>
 </beans>
