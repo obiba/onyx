@@ -1077,6 +1077,37 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 
 /******************* End Login *****************************************************/
 
+/******************* Content Region ************************************************/
+
+.obiba-content-region {
+  background-color: white;
+  border-color: #B8B8B8;
+  border-style: solid;
+  border-width: 1px 2px 2px 1px;
+  margin: 18px 20px 0px 20px;
+  padding: 10px 12px 36px 12px;
+}
+
+.obiba-content-region.ui-corner-all {
+  -moz-border-radius: 6px; 
+  -webkit-border-radius: 6px;	
+}
+
+.obiba-content-region > .obiba-header > h1 {
+  color: #C65F02;
+  font-size: 12px;
+  margin-bottom: 1px;
+}
+
+.obiba-header {
+  border-color: #c65f02;
+  border-style: none none solid none;
+  border-width: 1px;
+  margin-bottom: 25px
+}
+
+/******************* End Content Region ********************************************/
+
 /******************* Buttons *******************************************************/
 
 .obiba-button {
@@ -1088,7 +1119,7 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 
 .obiba-button.ui-corner-all {
   -moz-border-radius: 6px; 
-  -webkit-border-radius: 6px; }	
+  -webkit-border-radius: 6px;
 }
 
 /******************* End Buttons ***************************************************/
