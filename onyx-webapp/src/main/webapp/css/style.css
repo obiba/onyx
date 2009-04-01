@@ -1077,6 +1077,22 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 
 /******************* End Login *****************************************************/
 
+/******************* Buttons *******************************************************/
+
+.obiba-button {
+  background-color: white;
+  border-color: #B8B8B8;
+  border-style: solid;
+  border-width: 1px 2px 2px 1px;
+}
+
+.obiba-button.ui-corner-all {
+  -moz-border-radius: 6px; 
+  -webkit-border-radius: 6px; }	
+}
+
+/******************* End Buttons ***************************************************/
+
 .obiba-scrollable {
   overflow: auto;
 }

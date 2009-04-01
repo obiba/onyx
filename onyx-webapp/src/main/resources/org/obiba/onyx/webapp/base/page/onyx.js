@@ -171,3 +171,13 @@ var baseLayoutSettings = {
 		size: "auto"
 	}
 }
+
+//////////////////////////////////////////////////////////////////////
+// Button Styling
+//////////////////////////////////////////////////////////////////////
+
+$(document).ready(function () {
+	$('.obiba-button').each(function() {
+	  $(this).addClass('ui-corner-all');
+	});
+});
