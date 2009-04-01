@@ -88,34 +88,9 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
     return criteria;
   }
 
-  public List<Participant> getParticipantsByName(String likeName, PagingClause paging, SortingClause... clauses) {
-    return getCriteriaByName(likeName, paging, clauses).list();
-  }
-
-  public int countParticipantsByName(String likeName) {
-    return getCriteriaByName(likeName, null, (SortingClause[]) null).count();
-  }
-
-  private AssociationCriteria getCriteriaByName(String likeName, PagingClause paging, SortingClause... clauses) {
-    AssociationCriteria criteria = getCriteria(paging, clauses);
-
-    if(likeName != null) {
-      int idx = likeName.indexOf(' ');
-      if(idx != -1) {
-        String likeFirstName = likeName.substring(0, idx);
-        String likeLastName = likeName.substring(idx + 1, likeName.length());
-        criteria.add("firstName", Operation.ilike, "%" + likeFirstName + "%").add("lastName", Operation.ilike, "%" + likeLastName + "%");
-      } else {
-        criteria.getCriteria().add(Restrictions.or(Restrictions.ilike("firstName", "%" + likeName + "%"), Restrictions.ilike("lastName", "%" + likeName + "%")));
-      }
-    }
-
-    return criteria;
-  }
-
   @SuppressWarnings("unchecked")
-  public List<Participant> getParticipantsByCode(String code, PagingClause paging, SortingClause... clauses) {
-    Query participantQuery = createParticipantsByCodeQuery(code);
+  public List<Participant> getParticipantsByInputField(String inputField, PagingClause paging, SortingClause... clauses) {
+    Query participantQuery = createParticipantsByInputFieldQuery(inputField);
 
     participantQuery.setMaxResults(paging.getLimit());
     participantQuery.setFirstResult(paging.getOffset());
@@ -124,8 +99,8 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
   }
 
   @SuppressWarnings("unchecked")
-  public int countParticipantsByCode(String code) {
-    Query participantQuery = createParticipantsByCodeQuery(code);
+  public int countParticipantsByInputField(String inputField) {
+    Query participantQuery = createParticipantsByInputFieldQuery(inputField);
 
     List results = participantQuery.list();
 
@@ -138,13 +113,16 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
     return count;
   }
 
-  private Query createParticipantsByCodeQuery(String code) {
+  private Query createParticipantsByInputFieldQuery(String inputField) {
     Query participantQuery = null;
 
-    if(code != null) {
-      participantQuery = getSession().createQuery("from Participant p where p.barcode = :barcode or p.enrollmentId = :appointmentCode");
-      participantQuery.setString("barcode", code);
-      participantQuery.setString("appointmentCode", code);
+    if(inputField != null) {
+      participantQuery = getSession().createQuery("from Participant p where p.barcode = :barcode or p.enrollmentId = :appointmentCode or p.lastName like :lastName or p.firstName like :firstName or concat(p.firstName, ' ', p.lastName) = :fullName");
+      participantQuery.setString("barcode", inputField);
+      participantQuery.setString("appointmentCode", inputField);
+      participantQuery.setString("lastName", "%" + inputField + "%");
+      participantQuery.setString("firstName", "%" + inputField + "%");
+      participantQuery.setString("fullName", inputField);
     } else {
       participantQuery = getSession().createQuery("from Participant");
     }

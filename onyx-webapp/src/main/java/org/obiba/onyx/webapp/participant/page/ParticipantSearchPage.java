@@ -63,7 +63,6 @@ import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.UnlockInterviewPanel;
-import org.obiba.onyx.wicket.behavior.EnterOnKeyPressBehaviour;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
@@ -135,17 +134,19 @@ public class ParticipantSearchPage extends BasePage {
     Form form = new Form("searchForm");
     add(form);
 
-    form.add(new TextField("barcode", new PropertyModel(template, "barcode")));
+    form.add(new TextField("inputField", new Model(new String())));
 
-    form.add(new AjaxButton("searchByCode", form) {
+    form.add(new AjaxButton("searchByInputField", form) {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         OnyxEntityList<Participant> replacement;
-        if(template.getBarcode() == null) {
+        String inputField = form.get("inputField").getModelObjectAsString();
+
+        if(inputField == null) {
           replacement = getAllParticipantsList();
         } else {
-          replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantByCodeProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("ParticipantsByCode", ParticipantSearchPage.this, new Model(new ValueMap("code=" + template.getBarcode()))));
+          replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantByInputFieldProvider(inputField), new ParticipantListColumnProvider(), new StringResourceModel("ParticipantsByInputField", ParticipantSearchPage.this, new Model(new ValueMap("inputField=" + inputField))));
           replacement.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
         }
         replaceParticipantList(target, replacement);
@@ -158,33 +159,6 @@ public class ParticipantSearchPage extends BasePage {
       }
 
     });
-
-    AjaxButton lastNameButton;
-    form.add(lastNameButton = new AjaxButton("searchByLastName", form) {
-
-      @Override
-      protected void onSubmit(AjaxRequestTarget target, Form form) {
-        OnyxEntityList<Participant> replacement;
-        if(template.getLastName() == null) {
-          replacement = getAllParticipantsList();
-        } else {
-          replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantByNameProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("ParticipantsByName", ParticipantSearchPage.this, new Model(new ValueMap("name=" + template.getLastName()))));
-          replacement.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
-        }
-        replaceParticipantList(target, replacement);
-        target.addComponent(getFeedbackPanel());
-      }
-
-      @Override
-      protected void onError(AjaxRequestTarget target, Form form) {
-        target.addComponent(getFeedbackPanel());
-      }
-
-    });
-
-    TextField lastNameTextField = new TextField("lastName", new PropertyModel(template, "lastName"));
-    lastNameTextField.add(new EnterOnKeyPressBehaviour(lastNameButton));
-    form.add(lastNameTextField);
 
     form.add(new AjaxButton("submit", form) {
 
@@ -308,47 +282,24 @@ public class ParticipantSearchPage extends BasePage {
   }
 
   @SuppressWarnings("serial")
-  private class ParticipantByCodeProvider extends SortableDataProviderEntityServiceImpl<Participant> {
+  private class ParticipantByInputFieldProvider extends SortableDataProviderEntityServiceImpl<Participant> {
 
-    private Participant template;
+    private String inputField;
 
-    public ParticipantByCodeProvider(Participant template) {
+    public ParticipantByInputFieldProvider(String inputField) {
       super(queryService, Participant.class);
-      this.template = template;
+      this.inputField = inputField;
       setSort(new SortParam("barcode", true));
     }
 
     @Override
     protected List<Participant> getList(PagingClause paging, SortingClause... clauses) {
-      return participantService.getParticipantsByCode(template.getBarcode(), paging, clauses);
+      return participantService.getParticipantsByInputField(inputField, paging, clauses);
     }
 
     @Override
     public int size() {
-      return participantService.countParticipantsByCode(template.getBarcode());
-    }
-
-  }
-
-  @SuppressWarnings("serial")
-  private class ParticipantByNameProvider extends SortableDataProviderEntityServiceImpl<Participant> {
-
-    private Participant template;
-
-    public ParticipantByNameProvider(Participant template) {
-      super(queryService, Participant.class);
-      setSort(new SortParam("lastName", true));
-      this.template = template;
-    }
-
-    @Override
-    protected List<Participant> getList(PagingClause paging, SortingClause... clauses) {
-      return participantService.getParticipantsByName(template.getLastName(), paging, clauses);
-    }
-
-    @Override
-    public int size() {
-      return participantService.countParticipantsByName(template.getLastName());
+      return participantService.countParticipantsByInputField(inputField);
     }
 
   }

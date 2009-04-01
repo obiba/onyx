@@ -23,36 +23,20 @@ import org.obiba.onyx.util.data.Data;
 public interface ParticipantService {
 
   /**
-   * 
-   * @param code participant code or appointment code
+   * search by code, appointment code or name
+   * @param input field
    * @param paging
    * @param clauses
    * @return
    */
-  public List<Participant> getParticipantsByCode(String code, PagingClause paging, SortingClause... clauses);
+  public List<Participant> getParticipantsByInputField(String inputField, PagingClause paging, SortingClause... clauses);
 
   /**
-   * 
-   * @param code participant code or appointment code
+   * search by code, appointment code or name
+   * @param input field
    * @return
    */
-  public int countParticipantsByCode(String code);
-
-  /**
-   * Get the list of participants by like-comparing the first and last name to the given name.
-   * @param likeName
-   * @param paging
-   * @param clauses
-   * @return
-   */
-  public List<Participant> getParticipantsByName(String likeName, PagingClause paging, SortingClause... clauses);
-
-  /**
-   * Count the participants by like-comparing the first and last name to the given name.
-   * @param likeName
-   * @return
-   */
-  public int countParticipantsByName(String likeName);
+  public int countParticipantsByInputField(String inputField);
 
   /**
    * Get the list of participants by their interview status.

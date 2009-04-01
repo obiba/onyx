@@ -44,9 +44,12 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
 
   @Test
   @Dataset
-  public void testParticipantByCode() {
-    Assert.assertEquals(1, participantService.countParticipantsByCode("1"));
-    Assert.assertEquals(2, participantService.countParticipantsByCode("100002"));
+  public void testParticipantByInputField() {
+    Assert.assertEquals(1, participantService.countParticipantsByInputField("1"));
+    Assert.assertEquals(2, participantService.countParticipantsByInputField("100002"));
+    Assert.assertEquals(2, participantService.countParticipantsByInputField("Hudson"));
+    Assert.assertEquals(1, participantService.countParticipantsByInputField("John Hudson"));
+    Assert.assertEquals(2, participantService.countParticipantsByInputField("ohn"));
   }
 
   @Test
@@ -54,14 +57,6 @@ public class ParticipantServiceTest extends BaseDefaultSpringContextTestCase {
   public void testParticipantByInterviewStatus() {
     Assert.assertEquals(1, participantService.countParticipants(InterviewStatus.COMPLETED));
     Assert.assertEquals(1, participantService.countParticipants(InterviewStatus.IN_PROGRESS));
-  }
-
-  @Test
-  @Dataset
-  public void testParticipantByName() {
-    Assert.assertEquals(2, participantService.countParticipantsByName("Hudson"));
-    Assert.assertEquals(1, participantService.countParticipantsByName("John Hudson"));
-    Assert.assertEquals(2, participantService.countParticipantsByName("ohn"));
   }
 
   @Test

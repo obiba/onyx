@@ -17,25 +17,11 @@
               <form wicket:id="searchForm" autocomplete="off">
                 <table class="keyValueTable">
                   <tr>
-                    <td class="keyValueTableKey">
-                      <wicket:message key="Code" />
-                    </td>
-                    <td class="keyValueTableValueOdd">
-                      <input wicket:id="barcode" type="text" size="20" />
+	                <td class="keyValueTableValueOdd">
+                      <input wicket:id="inputField" type="text" size="20" />
                     </td>
                     <td>
-                      <input type="submit" wicket:message="value:Go" wicket:id="searchByCode" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="keyValueTableKey">
-                      <wicket:message key="Name" />
-                    </td>
-                    <td class="keyValueTableValueEven">
-                      <input wicket:id="lastName" type="text" size="20" />
-                    </td>
-                    <td>
-                      <input type="submit" wicket:message="value:Go" wicket:id="searchByLastName" />
+                      <input type="submit" wicket:message="value:Go" wicket:id="searchByInputField" />
                     </td>
                   </tr>
                   <tr>
