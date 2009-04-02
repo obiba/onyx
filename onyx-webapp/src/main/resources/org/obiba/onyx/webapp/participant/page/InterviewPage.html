@@ -5,39 +5,41 @@
     	<table style="width: 100%">
     		<tr>
     			<td valign="top">
-    				<fieldset>
-    					<legend><wicket:message key="Participant" /></legend>
-    					<span wicket:id="participant" />
-					</fieldset>
+    			    <div id="interviewPageParticipant" class="obiba-content-region">
+    			      <h1><wicket:message key="Participant" /></h1>
+    			      
+  					  <span wicket:id="participant" />
+					</div>
     			</td>
     			<td valign="top">
-    				<fieldset>
-    					<legend><wicket:message key="Interview" /></legend>
-    					<span wicket:id="interview" />
-    					<span wicket:id="modal"/>
-    					<p>
-    					<a wicket:id="cancelInterview"><wicket:message key="Cancel" /></a>
-    					</p>
-					</fieldset>
+    			    <div id="interviewPageInterview" class="obiba-content-region">
+    			      <h1><wicket:message key="Interview" /></h1>
+    				
+    				  <span wicket:id="interview" />
+    				  <span wicket:id="modal"/>
+    				  
+    				  <p>
+    				    <a class="obiba-button" wicket:id="cancelInterview"><wicket:message key="Cancel" /></a>
+    				  </p>
+					</div>
+    			</td>
+    			<td valign="top">
+    			    <div id="interviewPageLog" class="obiba-content-region">
+    			      <h1><wicket:message key="Log" /></h1>
+    				  
+    				  (<a href="#" wicket:id="viewComments"><span wicket:id="commentsCount" /> <wicket:message key="Comments" /></a>) <a class="obiba-button" href="#" wicket:id="addComments"><wicket:message key="AddComments" /></a>
+    					
+    				  <div wicket:id="addCommentsModal" />
+					</div>
     			</td>
     		</tr>
     		<tr>
-    			<td colspan="2">
-    				<fieldset>
-    					<legend><wicket:message key="Comments" /></legend>
-    					(<a href="#" wicket:id="viewComments"><span wicket:id="commentsCount" /> <wicket:message key="Comments" /></a>) <a href="#" wicket:id="addComments"><wicket:message key="AddComments" /></a>
-    					
-    					<div wicket:id="addCommentsModal" ></div>
-					</fieldset>
-    			</td>
-    		</tr>    		
-    		<tr>
-    			<td colspan="2">
-    				<fieldset>
-    					<legend><wicket:message key="Stages" /></legend>
-    					<span wicket:id="stage-list" />
-					</fieldset>
-    				
+    			<td colspan="3">
+    			    <div class="obiba-content-region">
+    			      <h1><wicket:message key="Stages" /></h1>
+    			      
+                      <span wicket:id="stage-list" />
+					</div>
     			</td>
     		</tr>
     	</table>

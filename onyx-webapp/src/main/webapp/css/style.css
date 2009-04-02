@@ -1140,6 +1140,8 @@ A:hover.obiba-button {
 
 /******************* End Buttons ***************************************************/
 
+/******************* Miscellaneous *************************************************/
+
 .obiba-scrollable {
   overflow: auto;
 }
@@ -1148,3 +1150,33 @@ A:hover.obiba-button {
   height: 120px;
   overflow: auto;
 }
+
+/******************* End Miscellaneous *********************************************/
+
+/******************* ParticipantSearchPage *****************************************/
+
+#participantPageSearch,
+#participantPageActions {
+  height: 95px;
+}
+
+/******************* End ParticipantSearchPage *************************************/
+
+/******************* InterviewPage *************************************************/
+
+#interviewPageParticipant,
+#interviewPageInterview,
+#interviewPageLog {
+  height: 105px;
+}
+
+#interviewPageParticipant,
+#interviewPageInterview {
+  width: 273px;
+}
+
+#interviewPageLog {
+  width: 364px;
+}
+
+/******************* End InterviewPage *********************************************/

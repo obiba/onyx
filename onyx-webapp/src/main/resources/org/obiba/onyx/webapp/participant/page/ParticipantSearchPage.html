@@ -10,10 +10,9 @@
       <table style="width: 100%">
         <tr>
           <td style="width: 50%">
-            <fieldset>
-              <legend>
-                <wicket:message key="ParticipantSearch" />
-              </legend>
+            <div id="participantPageSearch" class="obiba-content-region">
+              <h1><wicket:message key="ParticipantSearch" /></h1>
+
               <form wicket:id="searchForm" autocomplete="off">
                 <table class="keyValueTable">
                   <tr>
@@ -33,7 +32,7 @@
                   </tr>
                 </table>
               </form>
-            </fieldset>
+            </div>
           </td>
           <td valign="top">
             <span wicket:id="actions" />
@@ -41,25 +40,23 @@
         </tr>
         <tr>
           <td colspan="2">
-            <fieldset>
-              <legend>
-                <wicket:message key="Participants" />
-              </legend>
+            <div id="participantPageSearchResults" class="obiba-content-region">
+              <h1><wicket:message key="Participants" /></h1>
+
               <div style="text-align: right;">
                 <a wicket:id="excel">Excel</a>
               </div>
+              
               <span wicket:id="participant-list" />
-            </fieldset>
-
+            </div>
           </td>
         </tr>
       </table>
 
       <wicket:fragment wicket:id="actionFragment">
-        <fieldset>
-          <legend>
-            <wicket:message key="Action" />
-          </legend>
+        <div id="participantPageActions" class="obiba-content-region">
+          <h1><wicket:message key="Action" /></h1>
+
           <div style="margin-bottom:10px;">
             <a wicket:id="volunteer" class="obiba-button">
               <wicket:message key="EnrollVolunteer" />
@@ -75,7 +72,7 @@
               <wicket:message key="Export"/>
             </a>
           </div>
-        </fieldset>
+        </div>
       </wicket:fragment>
 
       <wicket:fragment wicket:id="actionList">
