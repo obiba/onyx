@@ -8,28 +8,26 @@
 					<td>
 						<input type="text" wicket:id="username" size="30"/>
 					</td>
+					<td />
 				</tr>
 				<tr>
 					<td><wicket:message key="password" /></td>
 					<td>
 						<input value="password" type="password" wicket:id="password" size="30"/>
 					</td>
-				</tr>
-				<tr wicket:id="rememberMeRow">
-					<td></td>
-					<td> <input type="checkbox" wicket:id="rememberMe"/> Remember Me </td>
-				</tr>
-				<tr>
-					<td></td>
 					<td>
 						<input type="submit" name="submit" class="obiba-button" wicket:message="value:signIn"/>
-						<input type="reset" class="obiba-button" wicket:message="value:reset"/>
 					</td>
+				</tr>
+				<tr wicket:id="rememberMeRow">
+					<td />
+					<td> <input type="checkbox" wicket:id="rememberMe"/> Remember Me </td>
+					<td />
 				</tr>
 			</table>
 		</form>
 		<br>
-		<a wicket:id="forgotPassword"><wicket:message key="ForgotPassword" /></a>
+		<a wicket:id="forgotPassword" class="obiba-button"><wicket:message key="ForgotPassword" /></a>
   </wicket:panel>
 </body>
 </html>
