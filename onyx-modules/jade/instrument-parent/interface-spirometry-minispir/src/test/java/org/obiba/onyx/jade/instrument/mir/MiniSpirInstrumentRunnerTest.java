@@ -157,7 +157,7 @@ public class MiniSpirInstrumentRunnerTest {
     FileUtil.copyFile(new File(getClass().getResource("/FVC.jpg").toURI()), new File(minispirInstrumentRunner.getMirPath(), minispirInstrumentRunner.getExternalImageName()));
 
     // Read the results file.
-    LinkedHashMap<String, Double[]> results = minispirInstrumentRunner.retrieveDeviceData();
+    LinkedHashMap<String, Double[]> results = minispirInstrumentRunner.retrieveDeviceData(minispirInstrumentRunner.getExternalOutputName());
 
     // Compare the values read with the ones from the result file.
     Assert.assertEquals(10.94, results.get("FVC")[0].doubleValue(), 0);

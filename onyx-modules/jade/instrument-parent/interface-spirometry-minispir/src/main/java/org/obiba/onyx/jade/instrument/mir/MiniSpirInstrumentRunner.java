@@ -28,7 +28,6 @@ import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
 
-import org.obiba.onyx.jade.client.JnlpClient;
 import org.obiba.onyx.jade.instrument.ExternalAppLauncherHelper;
 import org.obiba.onyx.jade.instrument.InstrumentRunner;
 import org.obiba.onyx.jade.instrument.service.InstrumentExecutionService;
@@ -46,7 +45,7 @@ import org.slf4j.LoggerFactory;
 public class MiniSpirInstrumentRunner implements InstrumentRunner {
 
   @SuppressWarnings("unused")
-  private static final Logger log = LoggerFactory.getLogger(JnlpClient.class);
+  private static final Logger log = LoggerFactory.getLogger(MiniSpirInstrumentRunner.class);
 
   // Injected by spring.
   protected InstrumentExecutionService instrumentExecutionService;
@@ -64,6 +63,10 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
   private String externalInputName;
 
   private String externalOutputName;
+
+  private String externalOutputName2ndBest;
+
+  private String externalOutputName3rdBest;
 
   private String externalImageName;
 
@@ -123,6 +126,22 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     this.externalOutputName = externalOutputName;
   }
 
+  public void setExternalOutputName2ndBest(String externalOutputName2ndBest) {
+    this.externalOutputName2ndBest = externalOutputName2ndBest;
+  }
+
+  public String getExternalOutputName2ndBest() {
+    return externalOutputName2ndBest;
+  }
+
+  public void setExternalOutputName3rdBest(String externalOutputName3rdBest) {
+    this.externalOutputName3rdBest = externalOutputName3rdBest;
+  }
+
+  public String getExternalOutputName3rdBest() {
+    return externalOutputName3rdBest;
+  }
+
   public String getExternalImageName() {
     return externalImageName;
   }
@@ -178,11 +197,12 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
   }
 
   /**
-   * Retrieve the data from the result file
-   * @return a map with the result data
-   * @throws Exception
+   * Retrieve the data from a result file
+   * @param externalOutputName The name of the output file
+   * @param measurementSuffix A suffix which will be added to the name of each variable found in the file
+   * @return A list of each variable found in the file with its corresponding value
    */
-  LinkedHashMap<String, Double[]> retrieveDeviceData() {
+  LinkedHashMap<String, Double[]> retrieveDeviceData(String externalOutputName, String measurementSuffix) {
 
     InputStream resultFileStrm = null;
     InputStreamReader resultReader = null;
@@ -190,7 +210,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
 
     LinkedHashMap<String, Double[]> outputData = new LinkedHashMap<String, Double[]>();
     try {
-      resultFileStrm = new FileInputStream(getMirPath() + getExternalOutputName());
+      resultFileStrm = new FileInputStream(getMirPath() + externalOutputName);
       resultReader = new InputStreamReader(resultFileStrm);
       fileReader = new BufferedReader(resultReader);
 
@@ -214,7 +234,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
         data = new Double[2];
         data[0] = Double.valueOf(matcher.group(3));
         data[1] = Double.valueOf(matcher.group(4));
-        outputData.put(description, data);
+        outputData.put(description + measurementSuffix, data);
       }
 
       resultFileStrm.close();
@@ -233,12 +253,16 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
     return outputData;
   }
 
+  public LinkedHashMap<String, Double[]> retrieveDeviceData(String externalOutputName) {
+    return retrieveDeviceData(externalOutputName, "");
+  }
+
   /**
    * Send the results to the server for persistence
-   * @param results
-   * @throws Exception
+   * @param results The data to send to the server.
+   * @param includePredictedData Include or not the predicted values calculated by the Spirometry software.
    */
-  public void sendDataToServer(LinkedHashMap<String, Double[]> results) {
+  public void sendDataToServer(LinkedHashMap<String, Double[]> results, boolean includePredictedData) {
     Map<String, Data> ouputToSend = new HashMap<String, Data>();
 
     for(Map.Entry<String, Double[]> entry : results.entrySet()) {
@@ -248,21 +272,22 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
       }
       if(entry.getKey().indexOf("ELA") == 0) {
         ouputToSend.put(entry.getKey(), DataBuilder.buildInteger(Math.round(entry.getValue()[0])));
-        ouputToSend.put(entry.getKey() + "_pred", DataBuilder.buildInteger(Math.round(entry.getValue()[1])));
+        if(includePredictedData) {
+          ouputToSend.put(entry.getKey() + "_pred", DataBuilder.buildInteger(Math.round(entry.getValue()[1])));
+        }
       } else {
         ouputToSend.put(entry.getKey(), DataBuilder.buildDecimal(entry.getValue()[0]));
-        ouputToSend.put(entry.getKey() + "_pred", DataBuilder.buildDecimal(entry.getValue()[1]));
+        if(includePredictedData) {
+          ouputToSend.put(entry.getKey() + "_pred", DataBuilder.buildDecimal(entry.getValue()[1]));
+        }
       }
     }
-
-    // Save the FVC image
-    try {
-      File FVCFile = new File(getMirPath() + getExternalImageName());
-      ouputToSend.put("FVCImage", DataBuilder.buildBinary(FVCFile));
-    } catch(Exception e) {
-      log.warn("No device output image found");
-    }
     instrumentExecutionService.addOutputParameterValues(ouputToSend);
+  }
+
+  public void sendDataToServer(LinkedHashMap<String, Double[]> retrieveDeviceData) {
+    sendDataToServer(retrieveDeviceData, false);
+
   }
 
   private int getGenderConverter(Data data) {
@@ -285,8 +310,46 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
    */
   public void run() {
     externalAppHelper.launch();
-    LinkedHashMap<String, Double[]> results = retrieveDeviceData();
-    sendDataToServer(results);
+
+    // Get the number of best measurement expected.
+    Long bestmeasurementsExpected = 1l;
+    Data bestmeasurementsExpectedData = null;
+    try {
+      bestmeasurementsExpectedData = instrumentExecutionService.getInputParameterValue("BEST_MEASUREMENTS_EXPECTED");
+    } catch(IllegalArgumentException ex) {
+      // If this has not been defined, the default value is one.
+    }
+
+    if(bestmeasurementsExpectedData != null) {
+      bestmeasurementsExpected = bestmeasurementsExpectedData.getValue();
+      if(bestmeasurementsExpected >= 1 && bestmeasurementsExpected <= 3) {
+        bestmeasurementsExpected = bestmeasurementsExpectedData.getValue();
+      } else {
+        throw new IllegalArgumentException("The number of best measurement expected has to be between 1 and 3.  Please check your instrument configuration file.");
+      }
+    }
+
+    log.info("Number of best measurements expected: {}", bestmeasurementsExpected);
+
+    log.info("Sending the first best measurement and predicted values...");
+    sendDataToServer(retrieveDeviceData(getExternalOutputName()), true);
+    if(bestmeasurementsExpected > 1) {
+      log.info("Sending the second best measurement...");
+      sendDataToServer(retrieveDeviceData(getExternalOutputName2ndBest(), "_2"));
+      if(bestmeasurementsExpected > 2) {
+        log.info("Sending the third best measurement...");
+        sendDataToServer(retrieveDeviceData(getExternalOutputName3rdBest(), "_3"));
+      }
+    }
+
+    // Save the FVC image
+    try {
+      File FVCFile = new File(getMirPath() + getExternalImageName());
+      instrumentExecutionService.addOutputParameterValue("FVCImage", DataBuilder.buildBinary(FVCFile));
+    } catch(Exception e) {
+      log.warn("No device output image found");
+    }
+
   }
 
   /**

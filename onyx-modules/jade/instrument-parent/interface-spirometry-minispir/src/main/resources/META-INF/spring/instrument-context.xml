@@ -13,6 +13,8 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
     <property name="externalDbName" value="WinSpiroPRO.wdb"/>
     <property name="externalInputName" value="patient.srv"/>
     <property name="externalOutputName" value="Results.wsp"/>
+    <property name="externalOutputName2ndBest" value="Results2ndBest.wsp"/>    
+    <property name="externalOutputName3rdBest" value="Results3rdBest.wsp"/>   
     <property name="externalImageName" value="FVC.jpg"/>
   </bean>
   
@@ -44,25 +46,44 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
         <value>FIV1</value>
         <value>FIV1_FIVC</value>
         <value>PIF</value>
-        <value>FVC_pred</value>
-        <value>FEV1_pred</value>
-        <value>FEV1_FVC_pred</value>
-        <value>FEV6_pred</value>
-        <value>FEV1_FEV6_pred</value>
-        <value>PEF_pred</value>
-        <value>FEF2575_pred</value>
-        <value>FEV3_pred</value>
-        <value>FEV3_FVC_pred</value>
-        <value>ELA_pred</value>
-        <value>FET_pred</value>
-        <value>FEF25_pred</value>
-        <value>FEF50_pred</value>
-        <value>FEF75_pred</value>
-        <value>EVol_pred</value>
-        <value>FIVC_pred</value>
-        <value>FIV1_pred</value>
-        <value>FIV1_FIVC_pred</value>
-        <value>PIF_pred</value>
+        <value>FVC_2</value>
+        <value>FEV1_2</value>
+        <value>FEV1_FVC_2</value>
+        <value>FEV6_2</value>
+        <value>FEV1_FEV6_2</value>
+        <value>PEF_2</value>
+        <value>FEF2575_2</value>
+        <value>FEV3_2</value>
+        <value>FEV3_FVC_2</value>
+        <value>ELA_2</value>
+        <value>FET_2</value>
+        <value>FEF25_2</value>
+        <value>FEF50_2</value>
+        <value>FEF75_2</value>
+        <value>EVol_2</value>
+        <value>FIVC_2</value>
+        <value>FIV1_2</value>
+        <value>FIV1_FIVC_2</value>
+        <value>PIF_2</value>   
+        <value>FVC_3</value>
+        <value>FEV1_3</value>
+        <value>FEV1_FVC_3</value>
+        <value>FEV6_3</value>
+        <value>FEV1_FEV6_3</value>
+        <value>PEF_3</value>
+        <value>FEF2575_3</value>
+        <value>FEV3_3</value>
+        <value>FEV3_FVC_3</value>
+        <value>ELA_3</value>
+        <value>FET_3</value>
+        <value>FEF25_3</value>
+        <value>FEF50_3</value>
+        <value>FEF75_3</value>
+        <value>EVol_3</value>
+        <value>FIVC_3</value>
+        <value>FIV1_3</value>
+        <value>FIV1_FIVC_3</value>
+        <value>PIF_3</value>          
       </set>
     </property>
   </bean>
