@@ -72,6 +72,12 @@ div.banner {
 	font-size: 11px;
 }
 
+#logo {
+  float: left;
+  margin-left: 50px;
+  margin-top: 8px;
+}
+
 #pageHeader2 {
 	height: 59px;
 	background-image: url('../images/genome_banner-repeat.png');

@@ -11,7 +11,9 @@ package org.obiba.onyx.webapp.login.panel;
 
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.authentication.panel.SignInPanel;
+import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
@@ -46,6 +48,10 @@ public class LoginPanel extends SignInPanel {
 
     };
     link.add(new JavascriptEventAlert("onclick", new SpringStringResourceModel("ForgotPasswordMessage", "ForgotPasswordMessage")));
+
+    ContextImage logoImage = new ContextImage("logo", new Model("images/logo/logo_on_light.png"));
+
+    add(logoImage);
     add(link);
 
   }

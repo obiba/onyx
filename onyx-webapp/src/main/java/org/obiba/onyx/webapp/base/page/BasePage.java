@@ -16,6 +16,7 @@ import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
@@ -34,6 +35,10 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
 
   public BasePage() {
     super();
+
+    ContextImage img = new ContextImage("logo", new Model("images/logo/logo_on_dark.png"));
+    img.setMarkupId("logo");
+    img.setOutputMarkupId(true);
 
     Panel headerPanel = new EmptyPanel("header");
 
@@ -57,6 +62,7 @@ public abstract class BasePage extends AbstractBasePage implements IAjaxIndicato
     }
 
     add(currentTime);
+    add(img);
     add(userFullName);
     add(headerPanel);
     add(menuBar);
