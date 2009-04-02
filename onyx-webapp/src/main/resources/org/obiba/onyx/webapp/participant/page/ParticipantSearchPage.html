@@ -21,14 +21,14 @@
                       <input wicket:id="inputField" type="text" size="20" />
                     </td>
                     <td>
-                      <input type="submit" wicket:message="value:Go" wicket:id="searchByInputField" />
+                      <input type="submit" class="obiba-button" wicket:message="value:Go" wicket:id="searchByInputField" />
                     </td>
                   </tr>
                   <tr>
                     <td colspan="3">
-                      <input type="submit" wicket:message="value:Search" wicket:id="submit" />
-                      <input type="submit" wicket:message="value:AppointmentsOfTheDay" wicket:id="appointments" />
-                      <input type="submit" wicket:message="value:CurrentInterviews" wicket:id="interviews" />
+                      <input type="submit" class="obiba-button" wicket:message="value:Search" wicket:id="submit" />
+                      <input type="submit" class="obiba-button" wicket:message="value:AppointmentsOfTheDay" wicket:id="appointments" />
+                      <input type="submit" class="obiba-button" wicket:message="value:CurrentInterviews" wicket:id="interviews" />
                     </td>
                   </tr>
                 </table>
@@ -61,17 +61,17 @@
             <wicket:message key="Action" />
           </legend>
           <div style="margin-bottom:10px;">
-            <a wicket:id="volunteer">
+            <a wicket:id="volunteer" class="obiba-button">
               <wicket:message key="EnrollVolunteer" />
             </a>
           </div>
           <div>
-            <a wicket:id="update">
+            <a wicket:id="update" class="obiba-button">
               <wicket:message key="UpdateParticipantsList" />
             </a>
           </div>
           <div style="margin-top:10px;">
-            <a wicket:id="export">
+            <a wicket:id="export" class="obiba-button">
               <wicket:message key="Export"/>
             </a>
           </div>
