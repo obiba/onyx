@@ -267,7 +267,7 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
 
     for(Map.Entry<String, Double[]> entry : results.entrySet()) {
       if(!expectedOutputParameterNames.contains(entry.getKey())) {
-        log.info("Output parameter {} is not expected but has an entry in result file.", entry.getKey());
+        log.debug("Output parameter {} is not expected but has an entry in result file.", entry.getKey());
         continue;
       }
       if(entry.getKey().indexOf("ELA") == 0) {
