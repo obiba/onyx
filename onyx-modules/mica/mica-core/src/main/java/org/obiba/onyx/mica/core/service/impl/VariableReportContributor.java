@@ -112,6 +112,12 @@ public class VariableReportContributor implements ModuleReportContributor {
       for(Entry<String, String> field : fieldList.entrySet()) {
         String[] keys = splitData(field.getKey());
 
+        // TEMPORARY FIX so that "NA" is displayed in a field if the data is not available.
+        // This should be replaced by a default value for the field in the PDF template,
+        // however this didn't seem to work when I tested it (default values were not getting printed)
+        // We need to find a way to fix that (might be a bug in Acrobat forms).
+        form.setField(field.getKey(), "NA");
+
         // Iterate on each key for one field of pdf template (for example when a variable depends on several
         // instruments)
         for(String variableKey : keys) {
