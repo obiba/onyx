@@ -14,10 +14,12 @@ import org.apache.wicket.Component;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.service.ActiveInterviewService;
@@ -124,6 +126,7 @@ public class QuestionnaireWizardForm extends WizardForm {
 
     };
     link.add(new AttributeModifier("value", true, new StringResourceModel("Administration", this, null)));
+    link.add(new AttributeAppender("class", new Model("ui-corner-all"), " "));
     add(link);
   }
 

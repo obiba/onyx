@@ -1125,6 +1125,14 @@ A:hover.obiba-button {
   color: #000000;
 }
 
+.obiba-button.ui-state-disabled, 
+A:link.obiba-button.ui-state-disabled,
+A:visited.obiba-button.ui-state-disabled,
+A:active.obiba-button.ui-state-disabled,
+A:hover.obiba-button.ui-state-disabled {
+  color: #B8B8B8;
+}
+
 A:link.obiba-button,
 A:visited.obiba-button,
 A:active.obiba-button,

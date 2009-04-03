@@ -462,7 +462,7 @@ div.form-button {
   text-align: left;
 }
 
-.form-button input.obiba-nav-prev.disabled {
+.form-button input.obiba-nav-prev.ui-state-disabled {
   cursor: default;
   position: absolute;
   left: 54px;
@@ -484,7 +484,7 @@ div.form-button {
   text-align: right;
 }
 
-.form-button input.obiba-nav-next.disabled {
+.form-button input.obiba-nav-next.ui-state-disabled {
   cursor: default;
   position: absolute;
   right: 54px;

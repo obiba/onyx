@@ -50,11 +50,12 @@ public abstract class WizardForm extends Form {
     setOutputMarkupId(true);
     setMultiPart(true);
 
-    IBehavior buttonBehavior = new WizardButtonBehavior();
+    IBehavior buttonStyleBehavior = new AttributeAppender("class", new Model("ui-corner-all"), " ");
+    IBehavior buttonDisableBehavior = new WizardButtonDisableBehavior();
 
     // finish button
     AjaxButton finish = createFinish();
-    finish.add(buttonBehavior);
+    finish.add(buttonStyleBehavior).add(buttonDisableBehavior);
     finish.setEnabled(false);
     finish.setOutputMarkupId(true);
     add(finish);
@@ -63,17 +64,19 @@ public abstract class WizardForm extends Form {
     AjaxLink link = createPrevious();
     link.setEnabled(false);
     link.setOutputMarkupId(true);
-    link.add(buttonBehavior);
+    link.add(buttonStyleBehavior).add(buttonDisableBehavior);
     add(link);
 
     // next button
     AjaxButton button = createNext();
     button.setOutputMarkupId(true);
-    button.add(buttonBehavior);
+    button.add(buttonStyleBehavior).add(buttonDisableBehavior);
     add(button);
 
     // cancel button
-    add(createCancel());
+    AjaxLink cancelLink = createCancel();
+    cancelLink.add(buttonStyleBehavior);
+    add(cancelLink);
 
     add(new LanguageStyleBehavior());
   }
@@ -322,12 +325,12 @@ public abstract class WizardForm extends Form {
     return "step";
   }
 
-  private class WizardButtonBehavior extends AttributeAppender {
+  private class WizardButtonDisableBehavior extends AttributeAppender {
 
     private static final long serialVersionUID = -2793180600410649652L;
 
-    public WizardButtonBehavior() {
-      super("class", new Model("disabled"), " ");
+    public WizardButtonDisableBehavior() {
+      super("class", new Model("ui-state-disabled"), " ");
     }
 
     /**
