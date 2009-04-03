@@ -165,7 +165,8 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     Map<String, Data> outputToSend = new HashMap<String, Data>();
 
     outputToSend.put("FIRST_NAME", DataBuilder.buildText((String) data.get("FIRST_NAME")));
-    outputToSend.put("FAM_NAME", DataBuilder.buildText((String) data.get("FAM_NAME")));
+    String familyName = (String) data.get("FAM_NAME");
+    outputToSend.put("FAM_NAME", DataBuilder.buildText(familyName));
     outputToSend.put("DOB", DataBuilder.buildDate((Date) data.get("DOB")));
     outputToSend.put("SEX", DataBuilder.buildText((String) data.get("SEX")));
     outputToSend.put("SP", DataBuilder.buildInteger(((Float) data.get("SP")).longValue()));
@@ -218,10 +219,15 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     outputToSend.put("C_QUALITY_T2", new Data(DataType.INTEGER, new Long((Integer) data.get("C_QUALITY_T2"))));
     outputToSend.put("P_QC_OTHER4", new Data(DataType.DECIMAL, new Double((Float) data.get("P_QC_OTHER4"))));
 
+    // Generates the correct file name identifier so we retrieve the files that belongs with this measurement.
+    SimpleDateFormat formatter = new SimpleDateFormat("ddMMMyyyy-HHmmss");
+    String fileIdentifier = "_" + familyName + "_" + formatter.format((Date) data.get("DATETIME"));
+    log.debug("The following filename identifier will be used to retrieve the exported screenshots : {}", fileIdentifier);
+
     // Add export files to output.
-    addExportFileToOutput(outputToSend, "PIC_CLINIC");
-    addExportFileToOutput(outputToSend, "PIC_DETAIL");
-    addExportFileToOutput(outputToSend, "PIC_CLASSIFICATION");
+    addExportFileToOutput(outputToSend, "PIC_CLINIC", fileIdentifier);
+    addExportFileToOutput(outputToSend, "PIC_DETAIL", fileIdentifier);
+    addExportFileToOutput(outputToSend, "PIC_CLASSIFICATION", fileIdentifier);
 
     instrumentExecutionService.addOutputParameterValues(outputToSend);
   }
@@ -231,9 +237,11 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
    * 
    * @param outputToSend output to send to the server
    * @param exportFilenamePrefix export file name prefix
+   * @param fileIdentifier
+   * @param measurementDateTime
    */
-  private void addExportFileToOutput(Map<String, Data> outputToSend, String exportFilenamePrefix) {
-    File exportFile = getExportFile(exportFilenamePrefix);
+  private void addExportFileToOutput(Map<String, Data> outputToSend, String exportFilenamePrefix, String fileIdentifier) {
+    File exportFile = getExportFile(exportFilenamePrefix + fileIdentifier);
 
     if(exportFile != null) {
       outputToSend.put(exportFilenamePrefix, DataBuilder.buildBinary(exportFile));
@@ -245,14 +253,14 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
   /**
    * Returns the export file with the specified file name prefix.
    * 
-   * @param exportFilenamePrefix export file name prefix
+   * @param exportFilename export file name prefix
    * @return export file (or <code>null</code> if no such file exists)
    */
-  private File getExportFile(final String exportFilenamePrefix) {
+  private File getExportFile(final String exportFilename) {
     FileFilter filter = new FileFilter() {
       public boolean accept(File file) {
         String fileName = file.getName();
-        return file.isFile() && fileName.startsWith(exportFilenamePrefix) && fileName.endsWith(".jpg");
+        return file.isFile() && fileName.startsWith(exportFilename) && fileName.endsWith(".jpg");
       }
     };
 
