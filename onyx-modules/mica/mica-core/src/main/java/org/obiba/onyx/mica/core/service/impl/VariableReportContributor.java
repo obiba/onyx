@@ -116,7 +116,7 @@ public class VariableReportContributor implements ModuleReportContributor {
         // This should be replaced by a default value for the field in the PDF template,
         // however this didn't seem to work when I tested it (default values were not getting printed)
         // We need to find a way to fix that (might be a bug in Acrobat forms).
-        form.setField(field.getKey(), "NA");
+        form.setField(field.getKey(), "N/A");
 
         // Iterate on each key for one field of pdf template (for example when a variable depends on several
         // instruments)
