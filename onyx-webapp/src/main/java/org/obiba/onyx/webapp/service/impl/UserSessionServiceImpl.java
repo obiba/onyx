@@ -24,6 +24,8 @@ public class UserSessionServiceImpl implements UserSessionService {
 
   private String datePattern = DEFAULT_DATE_FORMAT_PATTERN;
 
+  private String timePattern = DEFAULT_TIME_FORMAT_PATTERN;
+
   private String dateTimePattern = DEFAULT_DATETIME_FORMAT_PATTERN;
 
   private String userLogin;
@@ -57,6 +59,10 @@ public class UserSessionServiceImpl implements UserSessionService {
     this.datePattern = pattern;
   }
 
+  public void setTimePattern(String pattern) {
+    this.timePattern = pattern;
+  }
+
   public void setDateTimePattern(String pattern) {
     this.dateTimePattern = pattern;
   }
@@ -82,6 +88,10 @@ public class UserSessionServiceImpl implements UserSessionService {
 
   public DateFormat getDateFormat() {
     return new SimpleDateFormat(datePattern, getLocale());
+  }
+
+  public DateFormat getTimeFormat() {
+    return new SimpleDateFormat(timePattern, getLocale());
   }
 
   public DateFormat getDateTimeFormat() {

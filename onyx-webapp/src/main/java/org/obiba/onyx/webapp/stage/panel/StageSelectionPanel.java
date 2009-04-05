@@ -11,6 +11,7 @@ package org.obiba.onyx.webapp.stage.panel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,10 +33,12 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
+import org.obiba.onyx.util.DateUtil;
 import org.obiba.onyx.webapp.action.panel.ActionsPanel;
 import org.obiba.onyx.webapp.stage.page.StagePage;
 import org.obiba.onyx.wicket.StageModel;
@@ -55,6 +58,9 @@ public abstract class StageSelectionPanel extends Panel {
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
+
+  @SpringBean(name = "userSessionService")
+  private UserSessionService userSessionService;
 
   @SpringBean
   private ModuleRegistry moduleRegistry;
@@ -169,10 +175,18 @@ public abstract class StageSelectionPanel extends Panel {
 
       });
 
-      columns.add(new AbstractColumn(new ResourceModel("StartEndTime")) {
+      columns.add(new AbstractColumn(new ResourceModel("Start")) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          cellItem.add(new StageStartEndTimePanel(componentId, rowModel).setRenderBodyOnly(true));
+          cellItem.add(new Label(componentId, new StartTimeModel(rowModel)));
+        }
+
+      });
+
+      columns.add(new AbstractColumn(new ResourceModel("End")) {
+
+        public void populateItem(Item cellItem, String componentId, IModel rowModel) {
+          cellItem.add(new Label(componentId, new EndTimeModel(rowModel)));
         }
 
       });
@@ -268,6 +282,62 @@ public abstract class StageSelectionPanel extends Panel {
     public IStageExecution getStageExecution() {
       Stage stage = (Stage) getModelObject();
       return activeInterviewService.getStageExecution(stage);
+    }
+  }
+
+  private class StartTimeModel extends Model {
+
+    private static final long serialVersionUID = 1L;
+
+    private IModel stageModel;
+
+    public StartTimeModel(IModel stageModel) {
+      this.stageModel = stageModel;
+    }
+
+    public Object getObject() {
+      Stage stage = (Stage) stageModel.getObject();
+      IStageExecution stageExec = activeInterviewService.getStageExecution(stage);
+      Date startTime = stageExec.getStartTime();
+
+      String formattedStartTime = "";
+
+      if(startTime != null) {
+        formattedStartTime = userSessionService.getTimeFormat().format(startTime);
+      }
+
+      return formattedStartTime;
+    }
+  }
+
+  private class EndTimeModel extends Model {
+
+    private static final long serialVersionUID = 1L;
+
+    private IModel stageModel;
+
+    public EndTimeModel(IModel stageModel) {
+      this.stageModel = stageModel;
+    }
+
+    public Object getObject() {
+      Stage stage = (Stage) stageModel.getObject();
+      IStageExecution stageExec = activeInterviewService.getStageExecution(stage);
+      Date startTime = stageExec.getStartTime();
+      Date endTime = stageExec.getEndTime();
+
+      String formattedEndTime = "";
+
+      if(endTime != null) {
+        int daysBetween = DateUtil.getDaysBetween(startTime, endTime);
+
+        formattedEndTime = userSessionService.getTimeFormat().format(startTime);
+        if(daysBetween != 0) {
+          formattedEndTime += " +" + daysBetween;
+        }
+      }
+
+      return formattedEndTime;
     }
   }
 }

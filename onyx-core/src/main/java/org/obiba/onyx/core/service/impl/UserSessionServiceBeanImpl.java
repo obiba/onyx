@@ -33,12 +33,18 @@ public class UserSessionServiceBeanImpl implements UserSessionService {
 
   private String datePattern = DEFAULT_DATE_FORMAT_PATTERN;
 
+  private String timePattern = DEFAULT_TIME_FORMAT_PATTERN;
+
   private String dateTimePattern = DEFAULT_DATETIME_FORMAT_PATTERN;
 
   private int sessionId = SESSION_COUNTER++;
 
   public void setDatePattern(String pattern) {
     this.datePattern = pattern;
+  }
+
+  public void setTimePattern(String pattern) {
+    this.timePattern = pattern;
   }
 
   public void setDateTimePattern(String pattern) {
@@ -69,6 +75,10 @@ public class UserSessionServiceBeanImpl implements UserSessionService {
 
   public DateFormat getDateFormat() {
     return new SimpleDateFormat(datePattern, getLocale());
+  }
+
+  public DateFormat getTimeFormat() {
+    return new SimpleDateFormat(timePattern, getLocale());
   }
 
   public DateFormat getDateTimeFormat() {

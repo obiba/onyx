@@ -21,7 +21,9 @@ public interface UserSessionService {
 
   public static final String DEFAULT_DATE_FORMAT_PATTERN = "yyyy-MM-dd";
 
-  public static final String DEFAULT_DATETIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm";
+  public static final String DEFAULT_TIME_FORMAT_PATTERN = "HH:mm";
+
+  public static final String DEFAULT_DATETIME_FORMAT_PATTERN = DEFAULT_DATE_FORMAT_PATTERN + " " + DEFAULT_TIME_FORMAT_PATTERN;
 
   //
   // Methods
@@ -36,6 +38,8 @@ public interface UserSessionService {
   public String getSessionId();
 
   public DateFormat getDateFormat();
+
+  public DateFormat getTimeFormat();
 
   public DateFormat getDateTimeFormat();
 }
