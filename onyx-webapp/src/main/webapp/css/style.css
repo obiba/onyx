@@ -506,6 +506,7 @@ table.entityTable {
   border-style: solid;
   border-color: #375FB7;
   padding:1px;*/
+  border-spacing: 0px;
   width:100%;
 }
 
@@ -537,11 +538,10 @@ table.entityTable .navigator em {
 }
 
 table.entityTable th {
-  background-color: #AAAAAA;
+  border-color: #C65F02;
+  border-style: none none solid none;
+  border-width: 1px;
   padding: 3px;
-  border: 1px solid #FFFFFF;
-  border-style:solid;
-
 }
 
 table.entityTable th.wicket_orderUp {
@@ -560,7 +560,6 @@ table.entityTable th.wicket_orderDown {
 }
 
 table.entityTable td {
-  border: 1px solid #FFFFFF; 
   padding: 3px;
 }
 
@@ -1167,6 +1166,20 @@ A:hover.obiba-button {
 }
 
 /******************* End ParticipantSearchPage *************************************/
+
+/******************* Global List Styling *******************************************/
+
+#participantPageSearchResults table.entityTable tr.titleToolbar,
+#interviewPageStages table.entityTable tr.titleToolbar {
+  display: none;	
+}
+
+#participantPageSearchResults.obiba-content-region > h1,
+#interviewPageStages.obiba-content-region > h1 {
+  margin-bottom: 0px;	
+}
+
+/******************* End Global List Styling ***************************************/
 
 /******************* InterviewPage *************************************************/
 
