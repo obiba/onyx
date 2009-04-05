@@ -562,8 +562,6 @@ table.entityTable th.wicket_orderDown {
 table.entityTable td {
   border: 1px solid #FFFFFF; 
   padding: 3px;
-  
-  
 }
 
 /*************** End Entity Table ********************/
@@ -1185,6 +1183,11 @@ A:hover.obiba-button {
 
 #interviewPageLog {
   width: 364px;
+}
+
+#interviewPageStages table.entityTable tr > th:first-child,
+#interviewPageStages table.entityTable tr > td:first-child {
+  text-align: right;
 }
 
 /******************* End InterviewPage *********************************************/

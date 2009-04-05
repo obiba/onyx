@@ -154,7 +154,7 @@ public abstract class StageSelectionPanel extends Panel {
           // and http://www.nabble.com/Item.getIndex%28%29-on-DefaultDataTable-tp17676006p17676006.html
           Item row = ((Item) cellItem.findParent(Item.class));
           // The Index is zero-based
-          cellItem.add(new Label(componentId, ((Integer) (row.getIndex() + 1)).toString()));
+          cellItem.add(new Label(componentId, ((Integer) (row.getIndex() + 1)).toString() + " -"));
         }
       });
 
