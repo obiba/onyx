@@ -585,7 +585,6 @@ td.keyValueTableHeader {
 }
 
 td.keyValueTableKey {
-	width:30%;
 	color: #666666;
 	font-weight:bold;
 	background-color: #F1E0AD;
@@ -1088,7 +1087,7 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
   border-style: solid;
   border-width: 1px 2px 2px 1px;
   margin: 18px 20px 0px 20px;
-  padding: 10px 12px 36px 12px;
+  padding: 0px 12px 36px 12px;
 }
 
 .obiba-content-region.ui-corner-all {
@@ -1103,6 +1102,7 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
   color: #C65F02;
   font-size: 12px;
   margin-bottom: 25px;
+  margin-top: 10px;
   padding-bottom: 1px;
 }
 
@@ -1196,6 +1196,29 @@ A:hover.obiba-button {
 
 #interviewPageLog {
   width: 364px;
+}
+
+#interviewPageParticipant td.keyValueTableKey,
+#interviewPageInterview td.keyValueTableKey {
+  background-color: #FFFFFF;
+  font-weight: regular;
+  padding-right: 0px;
+  padding-left: 0px; 
+}
+
+#interviewPageParticipant td.keyValueTableValueEven,
+#interviewPageParticipant td.keyValueTableValueOdd,
+#interviewPageInterview td.keyValueTableValueEven,
+#interviewPageInterview td.keyValueTableValueOdd {
+  color: #000000;
+  background-color: #FFFFFF;
+  font-weight: bold;
+}
+
+#interviewPageParticipant.obiba-content-region > h1,
+#interviewPageInterview.obiba-content-region > h1,
+#interviewPageLog.obiba-content-region > h1 {
+  margin-bottom: 10px;	
 }
 
 #interviewPageStages table.entityTable tr > th:first-child,

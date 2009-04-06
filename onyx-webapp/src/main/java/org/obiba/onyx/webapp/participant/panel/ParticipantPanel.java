@@ -53,10 +53,11 @@ public class ParticipantPanel extends Panel {
     if(participant.getRecruitmentType().equals(RecruitmentType.ENROLLED) && !shortList) kvPanel.addRow(new StringResourceModel("EnrollmentId", this, null), new PropertyModel(getModel(), "enrollmentId"));
     if(participant.getBarcode() != null) kvPanel.addRow(new StringResourceModel("ParticipantCode", this, null), new PropertyModel(getModel(), "barcode"));
     kvPanel.addRow(new StringResourceModel("Name", this, null), new PropertyModel(getModel(), "fullName"));
-    kvPanel.addRow(new StringResourceModel("Gender", this, null), new PropertyModel(this, "localizedGender"));
-    kvPanel.addRow(new StringResourceModel("BirthDate", this, null), DateModelUtils.getDateModel(new PropertyModel(this, "dateFormat"), new PropertyModel(getModel(), "birthDate")));
 
     if(!shortList) {
+      kvPanel.addRow(new StringResourceModel("Gender", this, null), new PropertyModel(this, "localizedGender"));
+      kvPanel.addRow(new StringResourceModel("BirthDate", this, null), DateModelUtils.getDateModel(new PropertyModel(this, "dateFormat"), new PropertyModel(getModel(), "birthDate")));
+
       for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
         String value = (participant.getConfiguredAttributeValue(attribute.getName()) != null) ? participant.getConfiguredAttributeValue(attribute.getName()).getValueAsString() : null;
         kvPanel.addRow(new SpringStringResourceModel(new PropertyModel(attribute, "name")), new Model(value));
