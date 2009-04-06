@@ -50,6 +50,8 @@ public class OnyxDataExport {
 
   private List<OnyxDataExportDestination> exportDestinations;
 
+  private File outputRootDirectory;
+
   public void setExportDestinations(List<OnyxDataExportDestination> exportDestinations) {
     this.exportDestinations = exportDestinations;
   }
@@ -75,7 +77,6 @@ public class OnyxDataExport {
   }
 
   public void exportCompletedInterviews() throws Exception {
-
     Participant template = new Participant();
     // template.setExported(false);
     List<Participant> participants = queryService.match(template);
@@ -194,6 +195,14 @@ public class OnyxDataExport {
       path = f.getName() + File.separator + path;
     }
     return path;
+  }
+
+  public File getOutputRootDirectory() {
+    return outputRootDirectory;
+  }
+
+  public void setOutputRootDirectory(File outputRootDirectory) {
+    this.outputRootDirectory = outputRootDirectory;
   }
 
 }

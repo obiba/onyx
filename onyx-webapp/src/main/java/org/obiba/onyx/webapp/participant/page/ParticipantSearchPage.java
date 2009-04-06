@@ -56,8 +56,8 @@ import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
-import org.obiba.onyx.engine.variable.export.OnyxDataExport;
 import org.obiba.onyx.webapp.base.page.BasePage;
+import org.obiba.onyx.webapp.participant.panel.ConfirmExportPanel;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantModalPanel;
@@ -92,8 +92,8 @@ public class ParticipantSearchPage extends BasePage {
   @SpringBean
   private ParticipantMetadata participantMetadata;
 
-  @SpringBean
-  private OnyxDataExport onyxDataExport;
+  // @SpringBean
+  // private OnyxDataExport onyxDataExport;
 
   private OnyxEntityList<Participant> participantList;
 
@@ -104,6 +104,8 @@ public class ParticipantSearchPage extends BasePage {
   private ModalWindow editParticipantDetailsModalWindow;
 
   private ModalWindow unlockInterviewWindow;
+
+  private ModalWindow confirmExportModalWindow;
 
   private UpdateParticipantListWindow updateParticipantListWindow;
 
@@ -131,6 +133,13 @@ public class ParticipantSearchPage extends BasePage {
     unlockInterviewWindow.setResizable(false);
     unlockInterviewWindow.setUseInitialHeight(false);
     add(unlockInterviewWindow);
+
+    confirmExportModalWindow = new ModalWindow("confirmExportModalWindow");
+    confirmExportModalWindow.setCssClassName("onyx");
+    confirmExportModalWindow.setTitle(new ResourceModel("ConfirmExport"));
+    confirmExportModalWindow.setResizable(false);
+    confirmExportModalWindow.setUseInitialHeight(false);
+    add(confirmExportModalWindow);
 
     Form form = new Form("searchForm");
     add(form);
@@ -525,15 +534,16 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          try {
-            onyxDataExport.exportCompletedInterviews();
-          } catch(Exception e) {
-            log.error("Error on data export.", e);
-          }
+          confirmExportModalWindow.setContent(new ConfirmExportPanel("content"));
+          confirmExportModalWindow.show(target);
         }
+        /*
+         * @Override public void onClick(AjaxRequestTarget target) { try { onyxDataExport.exportCompletedInterviews(); }
+         * catch(Exception e) { log.error("Error on data export.", e); } }
+         */
 
       };
-      // exportLink.setVisible(((OnyxApplication) OnyxApplication.get()).isDevelopmentMode());
+
       add(exportLink);
     }
   }
