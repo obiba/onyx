@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
@@ -266,7 +267,10 @@ public abstract class StageSelectionPanel extends Panel {
      */
     public StageStatusFragment(String id, IModel model) {
       super(id, "stageStatusFragment", StageSelectionPanel.this, model);
-      add(new Label("status", new MessageSourceResolvableStringModel(new PropertyModel(this, "stageExecution.message"))));
+      Label statusLabel = new Label("status", new MessageSourceResolvableStringModel(new PropertyModel(this, "stageExecution.message")));
+      add(statusLabel);
+      addCssClasses();
+
       add(new Label("statusReason", new MessageSourceResolvableStringModel(new PropertyModel(this, "stageExecution.reasonMessage"))) {
         private static final long serialVersionUID = 1L;
 
@@ -282,6 +286,19 @@ public abstract class StageSelectionPanel extends Panel {
     public IStageExecution getStageExecution() {
       Stage stage = (Stage) getModelObject();
       return activeInterviewService.getStageExecution(stage);
+    }
+
+    public String getStageState() {
+      IStageExecution stageExec = getStageExecution();
+      return "obiba-state-" + stageExec.getMessage().getDefaultMessage().toLowerCase();
+    }
+
+    private void addCssClasses() {
+      // Add the generic obiba-state class.
+      add(new AttributeAppender("class", new Model("obiba-state"), " "));
+
+      // Add the specific obiba-state-* class based on the state execution's state.
+      add(new AttributeAppender("class", new PropertyModel(this, "stageState"), " "));
     }
   }
 

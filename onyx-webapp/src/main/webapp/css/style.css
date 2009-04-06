@@ -1225,4 +1225,28 @@ A:hover.obiba-button {
   text-align: right;
 }
 
+#interviewPageStages td > span.obiba-state {
+  padding-left: 12px;
+}
+
+#interviewPageStages td > span.obiba-state.obiba-state-contraindicated {
+  background: url('../icons/cancelled.png') no-repeat center left;
+}
+
+#interviewPageStages td > span.obiba-state.obiba-state-ready {
+  background: url('../icons/arrow_green.png') no-repeat center left;
+}
+
+#interviewPageStages td > span.obiba-state.obiba-state-inprogress {
+  background: url('../icons/progress.png') no-repeat center left;
+}
+
+#interviewPageStages td > span.obiba-state.obiba-state-interrupted {
+  background: url('../icons/arrow_yellow.png') no-repeat center left;
+}
+
+#interviewPageStages td > span.obiba-state.obiba-state-completed {
+  background: url('../icons/completed.png') no-repeat center left;
+}
+
 /******************* End InterviewPage *********************************************/
