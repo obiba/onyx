@@ -119,8 +119,8 @@ public class EditParticipantPanelTest implements Serializable {
     // test EditParticipantPanel in EDIT mode => no editable field
     tester.assertComponent("panel:editParticipantForm:firstName:value", Label.class);
     tester.assertComponent("panel:editParticipantForm:lastName:value", Label.class);
-    tester.assertComponent("panel:editParticipantForm:gender:value", Label.class);
-    tester.assertComponent("panel:editParticipantForm:birthDate:value", Label.class);
+    tester.assertComponent("panel:editParticipantForm:gender:gender", DropDownChoice.class);
+    tester.assertComponent("panel:editParticipantForm:birthDate:value", DateTextField.class);
     tester.assertInvisible("panel:editParticipantForm:assignCodeToParticipantPanel");
 
     tester.assertComponent("panel:editParticipantForm:metadata:repeat:1:field:input:select", DropDownChoice.class);

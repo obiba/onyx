@@ -214,7 +214,11 @@ public class ParticipantMetadata implements ResourceLoaderAware, InitializingBea
     }
   }
 
-  public boolean hasEditableAfterReceptionConfiguredAttribute() {
+  public boolean hasEditableAfterReceptionAttribute() {
+    for(ParticipantAttribute attribute : essentialAttributes) {
+      if(attribute.isEditableAfterReception() == true) return true;
+    }
+
     for(ParticipantAttribute attribute : configuredAttributes) {
       if(attribute.isEditableAfterReception() == true) return true;
     }

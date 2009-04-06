@@ -624,7 +624,7 @@ public class ParticipantSearchPage extends BasePage {
         @Override
         public boolean isVisible() {
           // Visible if participant has been received and some attributes are editable.
-          return getParticipant().getBarcode() != null && participantMetadata.hasEditableAfterReceptionConfiguredAttribute();
+          return getParticipant().getBarcode() != null && participantMetadata.hasEditableAfterReceptionAttribute();
         }
       };
       link.add(new Label("label", new ResourceModel("Edit")));
