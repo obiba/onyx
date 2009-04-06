@@ -1054,7 +1054,7 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 }
 
 .obiba-box-content {
-	padding:20px;
+	padding: 18px 20px 18px 20px;
 }
 
 /******************* End Boxing ****************************************************/
@@ -1086,7 +1086,6 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
   border-color: #B8B8B8;
   border-style: solid;
   border-width: 1px 2px 2px 1px;
-  margin: 18px 20px 0px 20px;
   padding: 0px 12px 36px 12px;
 }
 
