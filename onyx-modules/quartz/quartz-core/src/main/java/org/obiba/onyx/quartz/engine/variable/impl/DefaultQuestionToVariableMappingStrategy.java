@@ -113,6 +113,9 @@ public class DefaultQuestionToVariableMappingStrategy implements IQuestionToVari
    */
   private Variable getQuestionVariable(Question question, List<QuestionCategory> questionCategories) {
     Variable variable = new Variable(question.getName());
+    if(question.isMultiple()) {
+      variable.setMultiple(true);
+    }
 
     if(!question.isBoilerPlate() && !question.hasDataSource()) {
       variable.addVariable(new Variable(QUESTION_COMMENT).setDataType(DataType.TEXT));

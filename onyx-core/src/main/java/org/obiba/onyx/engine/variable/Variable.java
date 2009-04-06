@@ -46,6 +46,9 @@ public class Variable implements Serializable {
   private String unit;
 
   @XStreamAsAttribute
+  private Boolean multiple;
+
+  @XStreamAsAttribute
   private String key;
 
   @XStreamImplicit(itemFieldName = "reference")
@@ -89,6 +92,30 @@ public class Variable implements Serializable {
   }
 
   /**
+   * Get if multiple data are to be expected from this variable.
+   * @return
+   */
+  public Boolean getMultiple() {
+    return multiple;
+  }
+
+  /**
+   * Get if multiple data are to be expected from this variable.
+   * @return
+   */
+  public boolean isMultiple() {
+    return multiple != null ? multiple : false;
+  }
+
+  /**
+   * Set if multiple data are to be expected from this variable.
+   * @param multiple
+   */
+  public void setMultiple(Boolean multiple) {
+    this.multiple = multiple;
+  }
+
+  /**
    * Get data unit.
    * @return
    */
@@ -121,6 +148,10 @@ public class Variable implements Serializable {
    */
   public Variable setKey(String key) {
     this.key = key;
+    // if the variable represents a key, it is expected to have multiple data
+    if(key != null && key.trim().length() > 0) {
+      multiple = Boolean.TRUE;
+    }
     return this;
   }
 
