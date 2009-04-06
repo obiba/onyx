@@ -249,7 +249,7 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
     entity.addVariable(new Variable(USER_EMAIL).setDataType(DataType.TEXT)).addReference(USER_KEY);
     entity.addVariable(new Variable(USER_LANGUAGE).setDataType(DataType.TEXT)).addReference(USER_KEY);
     entity.addVariable(new Variable(USER_STATUS).setDataType(DataType.TEXT)).addReference(USER_KEY);
-    entity.addVariable(new Variable(USER_ROLES).setDataType(DataType.TEXT)).addReference(USER_KEY);
+    entity.addVariable(new Variable(USER_ROLES).setDataType(DataType.TEXT).setMultiple(true)).addReference(USER_KEY);
 
     return variables;
   }

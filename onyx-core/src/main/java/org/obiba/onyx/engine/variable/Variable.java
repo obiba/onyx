@@ -110,9 +110,11 @@ public class Variable implements Serializable {
   /**
    * Set if multiple data are to be expected from this variable.
    * @param multiple
+   * @return this for chaining
    */
-  public void setMultiple(Boolean multiple) {
+  public Variable setMultiple(Boolean multiple) {
     this.multiple = multiple;
+    return this;
   }
 
   /**
