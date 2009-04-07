@@ -541,6 +541,8 @@ table.entityTable th {
   border-color: #C65F02;
   border-style: none none solid none;
   border-width: 1px;
+  color: #999999;
+  font-weight: bold;
   padding: 3px;
 }
 
@@ -560,7 +562,14 @@ table.entityTable th.wicket_orderDown {
 }
 
 table.entityTable td {
+  color: #333333;
   padding: 3px;
+}
+
+table.entityTable td A {
+  color: #333333;
+  padding-right: 12px;
+  text-decoration: underline;
 }
 
 /*************** End Entity Table ********************/
@@ -1223,10 +1232,15 @@ A:hover.obiba-button {
 #interviewPageStages table.entityTable tr > th:first-child,
 #interviewPageStages table.entityTable tr > td:first-child {
   text-align: right;
+  width: 2.5%;
 }
 
 #interviewPageStages td > span.obiba-state {
   padding-left: 12px;
+}
+
+#interviewPageStages td > span.obiba-state.obiba-state-waiting {
+  color: #999999;
 }
 
 #interviewPageStages td > span.obiba-state.obiba-state-contraindicated {
