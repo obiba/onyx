@@ -83,6 +83,7 @@ public class DefaultAppointmentManagementServiceImpl implements AppointmentManag
     }
   }
 
+  @Transactional(readOnly = true)
   public boolean isUpdateAvailable() {
     if(getInputDir().listFiles(getFilter()).length > 0) {
       return true;
@@ -191,6 +192,7 @@ public class DefaultAppointmentManagementServiceImpl implements AppointmentManag
     });
   }
 
+  @Transactional(readOnly = true)
   public FilenameFilter getFilter() {
     return (new FilenameFilter() {
       public boolean accept(File dir, String name) {
@@ -227,6 +229,7 @@ public class DefaultAppointmentManagementServiceImpl implements AppointmentManag
     this.participantReader = participantReader;
   }
 
+  @Transactional(readOnly = true)
   public File getInputDir() {
     return inputDir;
   }
@@ -239,6 +242,7 @@ public class DefaultAppointmentManagementServiceImpl implements AppointmentManag
     this.outputDir = outputDir;
   }
 
+  @Transactional(readOnly = true)
   public File getOutputDir() {
     return outputDir;
   }

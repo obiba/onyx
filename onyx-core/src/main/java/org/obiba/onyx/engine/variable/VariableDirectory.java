@@ -11,6 +11,7 @@ package org.obiba.onyx.engine.variable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,21 +113,23 @@ public class VariableDirectory implements IVariableProvider {
    * @return
    */
   public VariableDataSet getParticipantData(Participant participant, IVariableFilter filter) {
+    long getParticipantDataStartTime = new Date().getTime();
     VariableDataSet dataSet = new VariableDataSet();
 
-    log.info("START participant.barcode={}", participant.getBarcode());
+    log.info("START getParticipantData participant.barcode=[{}]. keyset size=[{}]", participant.getBarcode(), providerToVariablePathsMap.keySet().size());
 
     for(IVariableProvider provider : providerToVariablePathsMap.keySet()) {
       for(String path : providerToVariablePathsMap.get(provider)) {
         if(filter == null || filter.accept(path)) {
-          VariableData varData = getVariableData(participant, path);
+          VariableData varData = getVariableData(participant, path); // Time consuming call.
           if(varData != null && (varData.getDatas().size() > 0 || varData.getVariableDatas().size() > 0)) {
             dataSet.addVariableData(varData);
           }
         }
       }
     }
-    log.info("END participant.barcode={}", participant.getBarcode());
+    long getParticipantDataEndTime = new Date().getTime();
+    log.info("END   getParticipantData participant.barcode=[{}] completed in [{}ms].", participant.getBarcode(), (getParticipantDataEndTime - getParticipantDataStartTime));
 
     return dataSet;
   }
