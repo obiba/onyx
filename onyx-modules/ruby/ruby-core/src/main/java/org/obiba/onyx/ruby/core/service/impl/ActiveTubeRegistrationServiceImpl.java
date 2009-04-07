@@ -117,10 +117,12 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     currentTubeRegistrationId = null;
   }
 
+  @Transactional(readOnly = true)
   public int getExpectedTubeCount() {
     return tubeRegistrationConfig.getExpectedTubeCount();
   }
 
+  @Transactional(readOnly = true)
   public int getRegisteredTubeCount() {
     int registeredTubeCount = 0;
 
@@ -139,6 +141,7 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
    * @return participant tube registration of the participant currently being interviewed (if there are many, returns
    * the latest one)
    */
+  @Transactional(readOnly = true)
   public ParticipantTubeRegistration getParticipantTubeRegistration() {
     ParticipantTubeRegistration participantTubeRegistration = null;
 
@@ -226,6 +229,7 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     getPersistenceManager().save(tube);
   }
 
+  @Transactional(readOnly = true)
   public List<Remark> getTubeRemarks(String barcode) {
     RegisteredParticipantTube tube = findTubeByBarcode(barcode);
     checkBarcodeExists(barcode, tube);
@@ -240,10 +244,12 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     return tubeRemarks;
   }
 
+  @Transactional(readOnly = true)
   public boolean hasContraindications(Type type) {
     return getParticipantTubeRegistration().hasContraindications(type);
   }
 
+  @Transactional(readOnly = true)
   public Contraindication getContraindication() {
     return getParticipantTubeRegistration().getContraindication();
   }
@@ -273,6 +279,7 @@ public class ActiveTubeRegistrationServiceImpl extends PersistenceManagerAwareSe
     this.tubeRegistrationConfig = config;
   }
 
+  @Transactional(readOnly = true)
   public TubeRegistrationConfiguration getTubeRegistrationConfiguration() {
     return tubeRegistrationConfig;
   }

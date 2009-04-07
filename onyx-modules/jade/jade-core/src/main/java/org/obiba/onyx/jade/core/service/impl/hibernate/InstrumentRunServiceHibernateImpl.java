@@ -27,6 +27,7 @@ import org.obiba.onyx.jade.core.domain.run.InstrumentRunValue;
 import org.obiba.onyx.jade.core.service.impl.DefaultInstrumentRunServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -46,10 +47,12 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
     this.instrumentTypes = instrumentTypes;
   }
 
+  @Transactional(propagation = Propagation.SUPPORTS)
   private Session getSession() {
     return factory.getCurrentSession();
   }
 
+  @Transactional(readOnly = true)
   public InstrumentRun getLastInstrumentRun(Participant participant, InstrumentType instrumentType) {
     if(instrumentType == null) throw new IllegalArgumentException("Cannot retrieve the last instrument run for a null instrument type.");
     InstrumentRun template = new InstrumentRun();
@@ -62,11 +65,13 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
     return null;
   }
 
+  @Transactional(readOnly = true)
   public InstrumentRun getLastInstrumentRun(Participant participant, String instrumentTypeName) {
     InstrumentType type = instrumentTypes.get(instrumentTypeName);
     return getLastInstrumentRun(participant, type);
   }
 
+  @Transactional(readOnly = true)
   public InstrumentRun getLastCompletedInstrumentRun(Participant participant, InstrumentType instrumentType) {
     if(instrumentType == null) throw new IllegalArgumentException("Cannot retrieve the last completed instrument run for a null instrument type.");
 
@@ -76,6 +81,7 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
     return (InstrumentRun) criteria.setMaxResults(1).uniqueResult();
   }
 
+  @Transactional(readOnly = true)
   public InstrumentRunValue findInstrumentRunValue(Participant participant, InstrumentType instrumentType, String parameterCode) {
     if(instrumentType == null) throw new IllegalArgumentException("Cannot retrieve the last completed instrument run for a null instrument type.");
     if(parameterCode == null) throw new IllegalArgumentException("Cannot retrieve the last completed instrument run for a null parameter.");
@@ -91,6 +97,7 @@ public class InstrumentRunServiceHibernateImpl extends DefaultInstrumentRunServi
     return runValue;
   }
 
+  @Transactional(readOnly = true)
   public InstrumentRunValue findInstrumentRunValueFromLastRun(Participant participant, InstrumentType instrumentType, String parameterCode) {
     if(instrumentType == null) throw new IllegalArgumentException("Cannot retrieve the last instrument run for a null instrument type.");
     if(parameterCode == null) throw new IllegalArgumentException("Cannot retrieve the last instrument run for a null parameter.");

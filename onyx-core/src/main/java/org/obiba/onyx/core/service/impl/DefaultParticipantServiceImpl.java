@@ -89,10 +89,12 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
    */
   protected abstract List<Participant> getNotReceivedParticipants();
 
+  @Transactional(readOnly = true)
   public List<Action> getActions(Participant participant) {
     return getActions(participant, null);
   }
 
+  @Transactional(readOnly = true)
   public List<Action> getActions(Participant participant, String stage) {
     Action template = new Action();
     template.setInterview(participant.getInterview());
@@ -100,6 +102,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     return getPersistenceManager().match(template);
   }
 
+  @Transactional(readOnly = true)
   public Data getConfiguredAttributeValue(Participant participant, String attributeName) {
     ParticipantAttributeValue value = new ParticipantAttributeValue();
     value.setAttributeName(attributeName);
@@ -113,6 +116,7 @@ public abstract class DefaultParticipantServiceImpl extends PersistenceManagerAw
     return null;
   }
 
+  @Transactional(readOnly = true)
   public Participant getParticipant(Participant participant) {
     return getPersistenceManager().matchOne(participant);
   }

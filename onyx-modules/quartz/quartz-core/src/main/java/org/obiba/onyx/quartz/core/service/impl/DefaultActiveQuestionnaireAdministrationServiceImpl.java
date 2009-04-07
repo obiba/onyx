@@ -48,6 +48,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
 
   private Page currentPage;
 
+  @Transactional(readOnly = true)
   public Questionnaire getQuestionnaire() {
     return currentQuestionnaire;
   }
@@ -60,6 +61,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     this.currentQuestionnaire = questionnaire;
   }
 
+  @Transactional(readOnly = true)
   public Locale getLanguage() {
     Locale language = currentLanguage;
 
@@ -82,6 +84,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     this.navigationStrategy = navigationStrategy;
   }
 
+  @Transactional(readOnly = true)
   public QuestionnaireParticipant start(Participant participant, Locale language) {
     currentLanguage = null;
 
@@ -116,18 +119,22 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     getPersistenceManager().save(currentQuestionnaireParticipant);
   }
 
+  @Transactional(readOnly = true)
   public Page getCurrentPage() {
     return currentPage;
   }
 
+  @Transactional(readOnly = true)
   public int getCurrentPageNumber() {
     return getQuestionnaire().getPages().indexOf(getCurrentPage()) + 1;
   }
 
+  @Transactional(readOnly = true)
   public int getLastPageNumber() {
     return getQuestionnaire().getPages().indexOf(navigationStrategy.getPageOnLast(this)) + 1;
   }
 
+  @Transactional(readOnly = true)
   public Page getResumePage() {
     return navigationStrategy.getPageOnResume(this, getQuestionnaireParticipant());
   }
@@ -176,10 +183,12 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return currentPage;
   }
 
+  @Transactional(readOnly = true)
   public boolean isOnStartPage() {
     return (currentPage != null && currentPage.equals(navigationStrategy.getPageOnStart(this)));
   }
 
+  @Transactional(readOnly = true)
   public boolean isOnLastPage() {
     return (currentPage != null && navigationStrategy.getPageOnNext(this, currentPage) == null);
   }
@@ -200,6 +209,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     return answer(question, questionCategory, null, null);
   }
 
+  @Transactional(readOnly = true)
   public String getComment(Question question) {
     QuestionAnswer template = new QuestionAnswer();
     template.setQuestionnaireParticipant(getQuestionnaireParticipant());
@@ -353,6 +363,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     }
   }
 
+  @Transactional(readOnly = true)
   public QuestionnaireParticipant getQuestionnaireParticipant() {
     // Note: Don't include questionnaire version in the template. This is in case the version
     // of the questionnaire changes between canceling and re-starting the questionnaire stage.

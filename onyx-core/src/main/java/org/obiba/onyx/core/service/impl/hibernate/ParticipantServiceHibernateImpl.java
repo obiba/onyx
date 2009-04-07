@@ -49,18 +49,21 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
     return factory.getCurrentSession();
   }
 
+  @Transactional(readOnly = true)
   public List<Participant> getParticipants(InterviewStatus status, PagingClause paging, SortingClause... clauses) {
     AssociationCriteria criteria = getCriteria(paging, clauses);
     if(status != null) criteria.add("interview.status", Operation.eq, status);
     return criteria.list();
   }
 
+  @Transactional(readOnly = true)
   public int countParticipants(InterviewStatus status) {
     AssociationCriteria criteria = getCriteria(null, (SortingClause[]) null);
     if(status != null) criteria.add("interview.status", Operation.eq, status);
     return criteria.count();
   }
 
+  @Transactional(readOnly = true)
   public List<Participant> getParticipants(Date from, Date to, PagingClause paging, SortingClause... clauses) {
     AssociationCriteria criteria = getCriteria(paging, clauses);
 
@@ -70,6 +73,7 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
     return criteria.list();
   }
 
+  @Transactional(readOnly = true)
   public int countParticipants(Date from, Date to) {
     AssociationCriteria criteria = getCriteria(null, (SortingClause[]) null);
 
@@ -79,6 +83,7 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
     return criteria.count();
   }
 
+  @Transactional(readOnly = true)
   private AssociationCriteria getCriteria(PagingClause paging, SortingClause... clauses) {
     AssociationCriteria criteria = AssociationCriteria.create(Participant.class, getSession());
 
@@ -114,6 +119,7 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
   }
 
   @SuppressWarnings("unchecked")
+  @Transactional(readOnly = true)
   public List<Participant> getParticipantsByCode(String code, PagingClause paging, SortingClause... clauses) {
     Query participantQuery = createParticipantsByCodeQuery(code);
 
@@ -124,6 +130,7 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
   }
 
   @SuppressWarnings("unchecked")
+  @Transactional(readOnly = true)
   public int countParticipantsByCode(String code) {
     Query participantQuery = createParticipantsByCodeQuery(code);
 
@@ -152,6 +159,7 @@ public class ParticipantServiceHibernateImpl extends DefaultParticipantServiceIm
     return participantQuery;
   }
 
+  @SuppressWarnings("unchecked")
   protected List<Participant> getNotReceivedParticipants() {
     return getSession().createCriteria(Participant.class).add(Restrictions.isNull("barcode")).list();
   }
