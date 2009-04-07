@@ -521,12 +521,13 @@ table.entityTable tr.titleToolbar {
 }
 
 table.entityTable tr.odd {
-  background-color: #E1E3E5;
+  background-color: #ECECEC;
 }
 
 table.entityTable tr.navigation {
-  background-color: #666666;
-  color: #FFFFFF;
+  color:#999999;
+  font-family:arial;
+  font-size:12px;
 }
 
 table.entityTable .navigator a {
@@ -538,12 +539,16 @@ table.entityTable .navigator em {
 }
 
 table.entityTable th {
-  border-color: #C65F02;
-  border-style: none none solid none;
-  border-width: 1px;
-  color: #999999;
-  font-weight: bold;
-  padding: 3px;
+  border-bottom:1px solid #C65F02;
+  font-family:arial;
+  font-size:11px;
+  font-weight:bold;
+  padding:3px;
+  color:#999999;
+}
+
+table.entityTable th a:link {
+  color:#999999;
 }
 
 table.entityTable th.wicket_orderUp {
@@ -562,8 +567,11 @@ table.entityTable th.wicket_orderDown {
 }
 
 table.entityTable td {
-  color: #333333;
-  padding: 3px;
+  color:#333333;
+  font-family:arial;
+  font-size:11px;
+  font-weight:bold;
+  padding:3px;
 }
 
 table.entityTable td A {
@@ -1114,6 +1122,10 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
   padding-bottom: 1px;
 }
 
+.obiba-content-region > h1.results-list {
+  margin-bottom:0px;
+}
+
 /******************* End Content Region ********************************************/
 
 /******************* Buttons *******************************************************/
@@ -1173,6 +1185,29 @@ A:hover.obiba-button {
   height: 95px;
 }
 
+span.interviewStatus {
+  padding-left:12px;
+  background-position:0 53%;
+  background-repeat:no-repeat;
+  background-attachment:scroll;
+  background-color:transparent;
+}
+
+span.interviewStatus.obiba-state-inprogress {
+  background-image:url(../icons/progress.png);
+}
+
+span.interviewStatus.obiba-state-cancelled {
+  background-image:url(../icons/cancelled.png);
+}	
+
+span.interviewStatus.obiba-state-completed {
+  background-image:url(../icons/completed.png);
+}
+
+a.interviewAction.ui-state-disabled {
+  color:#cccccc;
+}
 /******************* End ParticipantSearchPage *************************************/
 
 /******************* Global List Styling *******************************************/
@@ -1232,7 +1267,7 @@ A:hover.obiba-button {
 #interviewPageStages table.entityTable tr > th:first-child,
 #interviewPageStages table.entityTable tr > td:first-child {
   text-align: right;
-  width: 2.5%;
+  width: 2.5%;  
 }
 
 #interviewPageStages td > span.obiba-state {

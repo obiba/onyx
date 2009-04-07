@@ -117,9 +117,12 @@ public class ParticipantSearchPageTest {
     expect(mockUserSessionService.getDateFormat()).andReturn(new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)).anyTimes();
     expect(mockUserSessionService.getDateTimeFormat()).andReturn(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH)).anyTimes();
 
+    expect(mockInterviewManager.isInterviewAvailable((Participant) EasyMock.anyObject())).andReturn(true).anyTimes();
+
     replay(mockParticipantService);
     replay(mockEntityQueryService);
     replay(mockUserSessionService);
+    replay(mockInterviewManager);
 
     tester.startPage(new ITestPageSource() {
       private static final long serialVersionUID = 1L;
@@ -139,6 +142,7 @@ public class ParticipantSearchPageTest {
     verify(mockParticipantService);
     verify(mockEntityQueryService);
     verify(mockUserSessionService);
+    verify(mockInterviewManager);
   }
 
   private List<Participant> newParticipantList() {

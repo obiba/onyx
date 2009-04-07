@@ -11,12 +11,12 @@ package org.obiba.onyx.webapp.participant.page;
 
 import java.io.Serializable;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -25,15 +25,17 @@ import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeActi
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeActions;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -43,7 +45,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.request.target.resource.ResourceStreamRequestTarget;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.core.service.EntityQueryService;
@@ -67,7 +68,6 @@ import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
 import org.obiba.wicket.markup.html.table.SortableDataProviderEntityServiceImpl;
-import org.obiba.wicket.util.resource.CsvResourceStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -211,23 +211,6 @@ public class ParticipantSearchPage extends BasePage {
     });
 
     add(new ActionFragment("actions"));
-
-    add(new Link("excel") {
-
-      @Override
-      public void onClick() {
-        getRequestCycle().setRequestTarget(new ResourceStreamRequestTarget(participantList.getReportStream()) {
-          @Override
-          public String getFileName() {
-            SimpleDateFormat formater = new SimpleDateFormat("yyyyMMdd_HHmm");
-            String name = formater.format(new Date()) + "_participants";
-
-            return name + "." + CsvResourceStream.FILE_SUFFIX;
-          }
-        });
-      }
-
-    });
 
     participantList = new OnyxEntityList<Participant>("participant-list", new AppointedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
     participantList.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
@@ -395,7 +378,7 @@ public class ParticipantSearchPage extends BasePage {
       columns.add(new AbstractColumn(new StringResourceModel("Status", ParticipantSearchPage.this, null)) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-          cellItem.add(new Label(componentId, new StringResourceModel("InterviewStatus.${status}", ParticipantSearchPage.this, new PropertyModel(rowModel, "interview"), "")));
+          cellItem.add(new InterviewStatusFragment(componentId, rowModel));
         }
 
       });
@@ -407,6 +390,15 @@ public class ParticipantSearchPage extends BasePage {
         }
 
       });
+
+      columns.add(new AbstractColumn(new Model("")) {
+
+        public void populateItem(final Item cellItem, String componentId, final IModel rowModel) {
+          cellItem.add(new LockedInterviewFragment(componentId, rowModel));
+        }
+
+      });
+
     }
 
     public List<IColumn> getAdditionalColumns() {
@@ -489,6 +481,37 @@ public class ParticipantSearchPage extends BasePage {
     }
   }
 
+  private class InterviewStatusFragment extends Fragment {
+
+    private static final long serialVersionUID = 1L;
+
+    public InterviewStatusFragment(String id, IModel participantModel) {
+      super(id, "interviewStatus", ParticipantSearchPage.this, participantModel);
+
+      Label statusLabel = new Label("status", new StringResourceModel("InterviewStatus.${status}", ParticipantSearchPage.this, new PropertyModel(participantModel, "interview"), ""));
+      add(statusLabel);
+      Object interviewStatus = (new PropertyModel(participantModel, "interview.status")).getObject();
+      if(interviewStatus != null) {
+        String standardisedCssClassName = "obiba-state-" + interviewStatus.toString().toLowerCase().replace("_", "");
+        statusLabel.add(new AttributeAppender("class", new Model(standardisedCssClassName), " "));
+      }
+    }
+  }
+
+  private class LockedInterviewFragment extends Fragment {
+
+    private static final long serialVersionUID = 1L;
+
+    public LockedInterviewFragment(String id, IModel participantModel) {
+      super(id, "lockedInterview", ParticipantSearchPage.this, participantModel);
+      Image image = new Image("lock", new ResourceReference(ParticipantSearchPage.class, "locked.png"));
+      add(image);
+      if(interviewManager.isInterviewAvailable((Participant) participantModel.getObject())) {
+        image.setVisible(false);
+      }
+    }
+  }
+
   /**
    * This fragment uses link visibility in order to hide/display links within the list of available links. It replaces
    * the previous use of AjaxLinkList which would add/not add a component to the list in order to hide/display it. The
@@ -500,13 +523,35 @@ public class ParticipantSearchPage extends BasePage {
 
     private static final long serialVersionUID = 1L;
 
+    private abstract class ActionLink extends AjaxLink {
+
+      IModel participantModel;
+
+      @Override
+      protected void onComponentTag(ComponentTag tag) {
+        super.onComponentTag(tag);
+        
+        // Disable 
+        if(!interviewManager.isInterviewAvailable((Participant) participantModel.getObject())) {
+          tag.addBehavior(new AttributeAppender("class", true, new Model("ui-state-disabled"), " "));
+        }
+        
+      }
+
+      public ActionLink(String id, IModel participantModel) {
+        super(id, participantModel);
+        this.participantModel = participantModel;
+      }
+
+    }
+
     public ActionListFragment(String id, IModel participantModel) {
       super(id, "actionList", ParticipantSearchPage.this, participantModel);
 
       RepeatingView repeater = new RepeatingView("link");
 
       // View
-      AjaxLink link = new AjaxLink(repeater.newChildId(), participantModel) {
+      AjaxLink link = new ActionLink(repeater.newChildId(), participantModel) {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -519,7 +564,7 @@ public class ParticipantSearchPage extends BasePage {
       repeater.add(link);
 
       // Interview
-      link = new AjaxLink(repeater.newChildId(), participantModel) {
+      link = new ActionLink(repeater.newChildId(), participantModel) {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -544,7 +589,7 @@ public class ParticipantSearchPage extends BasePage {
       repeater.add(link);
 
       // Receive
-      link = new AjaxLink(repeater.newChildId(), participantModel) {
+      link = new ActionLink(repeater.newChildId(), participantModel) {
         private static final long serialVersionUID = 1L;
 
         @Override
@@ -563,7 +608,7 @@ public class ParticipantSearchPage extends BasePage {
       repeater.add(link);
 
       // Edit
-      link = new AjaxLink(repeater.newChildId(), participantModel) {
+      link = new ActionLink(repeater.newChildId(), participantModel) {
         private static final long serialVersionUID = 1L;
 
         @Override

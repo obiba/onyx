@@ -41,12 +41,7 @@
         <tr>
           <td colspan="2">
             <div id="participantPageSearchResults" class="obiba-content-region">
-              <h1><wicket:message key="Participants" /></h1>
-
-              <div style="text-align: right;">
-                <a wicket:id="excel">Excel</a>
-              </div>
-              
+              <h1 class="results-list"><wicket:message key="Participants" /></h1>              
               <span wicket:id="participant-list" />
             </div>
           </td>
@@ -76,10 +71,19 @@
       </wicket:fragment>
 
       <wicket:fragment wicket:id="actionList">
-        <a wicket:id="link">
+        <a class="interviewAction" wicket:id="link">
           <span wicket:id="label" />
         </a>
       </wicket:fragment>
+      
+      <wicket:fragment wicket:id="lockedInterview">
+      	<img src="" wicket:id="lock"/>
+      </wicket:fragment>   
+      
+      <wicket:fragment wicket:id="interviewStatus">
+      	<span class="interviewStatus" wicket:id="status"/>
+      </wicket:fragment>          
+         
 	  </div>
     </wicket:extend>
   </body>
