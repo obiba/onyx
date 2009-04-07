@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -77,6 +78,8 @@ public class OnyxDataExport {
   }
 
   public void exportCompletedInterviews() throws Exception {
+    long exportAllStartTime = new Date().getTime();
+
     Participant template = new Participant();
     // template.setExported(false);
     List<Participant> participants = queryService.match(template);
@@ -127,6 +130,9 @@ public class OnyxDataExport {
         }
       }
     }
+
+    long exportAllEndTime = new Date().getTime();
+    log.info("Exported [{}] interviews in [{}ms].", participants.size(), exportAllEndTime - exportAllStartTime);
   }
 
   /**
