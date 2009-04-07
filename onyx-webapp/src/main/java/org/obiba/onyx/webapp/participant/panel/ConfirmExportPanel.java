@@ -45,12 +45,12 @@ public class ConfirmExportPanel extends Panel {
 
       @Override
       public void onClick(AjaxRequestTarget target) {
+        ModalWindow.closeCurrent(target);
         try {
           onyxDataExport.exportCompletedInterviews();
         } catch(Exception e) {
           log.error("Error on data export.", e);
         }
-        ModalWindow.closeCurrent(target);
       }
     };
     add(okLink);
