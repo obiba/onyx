@@ -1,28 +1,28 @@
 div.wicket-modal div.onyx .feedback {
-  margin-left:-35px;  
-  padding-top:10px;  
+  margin-left:-30px;  
   font-weight:bold;  
   font-size:14px;
+}
+
+.feedbackPanelERROR {
+  color:black;
 }
 
 div.wicket-modal div.onyx li.feedbackPanelERROR {
   background-image:none;
   padding-left:0px;
-  padding-bottom:10px;
   list-style-type:none;
 }
 
 div.wicket-modal div.onyx li.feedbackPanelWARNING{
   background-image:none;
   padding-left:0px;
-  padding-bottom:10px;
   list-style-type:none;
 }
 
 div.wicket-modal div.onyx li.feedbackPanelINFO{
   background-image:none;
   padding-left:0px;
-  padding-bottom:10px;
   list-style-type:none;
 }
 

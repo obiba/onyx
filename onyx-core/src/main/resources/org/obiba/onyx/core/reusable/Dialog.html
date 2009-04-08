@@ -1,15 +1,18 @@
 <wicket:panel>
-  <div wicket:id="content">
+  <div wicket:id="content" style="overflow: hidden;">   	
   	<form wicket:id="form">
-	  <div style="overflow:scroll;" wicket:id="content"/>
-
-	  <div>
-    	<input type="button" class="obiba-button" wicket:id="yes" />
-    	<input type="button" class="obiba-button" wicket:id="no" />
-    	<input type="submit" class="obiba-button" wicket:id="ok" />
-    	<input type="button" class="obiba-button" wicket:id="cancel" />
-    	<input type="button" class="obiba-button" wicket:id="close" />
+  	  <div class="separator"/>
+	  
+	  <div wicket:id="content"/>
+	  
+	  <div class="separator"/>
+	  <div class="modal_footer">
+    	<input type="button" class="obiba-button ui-corner-all" wicket:id="yes" />
+    	<input type="button" class="obiba-button ui-corner-all" wicket:id="no" />
+    	<input type="submit" class="obiba-button ui-corner-all" wicket:id="ok" />
+    	<input type="button" class="obiba-button ui-corner-all" wicket:id="close" />
+    	<input type="button" class="obiba-button ui-corner-all" wicket:id="cancel" />
 	  </div>
 	</form>
-  </div>
+  </div>  
 </wicket:panel>

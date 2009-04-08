@@ -53,6 +53,9 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
+import org.obiba.onyx.core.reusable.Dialog;
+import org.obiba.onyx.core.reusable.FeedbackWindow;
+import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.util.data.Data;
@@ -97,7 +100,7 @@ public class EditParticipantPanel extends Panel {
   @SpringBean
   private UserSessionService userSessionService;
 
-  private FeedbackPanel feedbackPanel;
+  private FeedbackWindow feedbackWindow;
 
   private Page sourcePage;
 
@@ -123,9 +126,9 @@ public class EditParticipantPanel extends Panel {
     Form editParticipantForm = new EditParticipantForm("editParticipantForm", participantModel, null);
     add(editParticipantForm);
 
-    feedbackPanel = new FeedbackPanel("feedback");
-    feedbackPanel.setOutputMarkupId(true);
-    add(feedbackPanel);
+    feedbackWindow = new FeedbackWindow("feedback");
+    feedbackWindow.setOutputMarkupId(true);
+    add(feedbackWindow);
   }
 
   /**
@@ -145,9 +148,9 @@ public class EditParticipantPanel extends Panel {
     Form editParticipantForm = new EditParticipantForm("editParticipantForm", participantModel, modalWindow);
     add(editParticipantForm);
 
-    feedbackPanel = new FeedbackPanel("feedback");
-    feedbackPanel.setOutputMarkupId(true);
-    add(feedbackPanel);
+    feedbackWindow = new FeedbackWindow("feedback");
+    feedbackWindow.setOutputMarkupId(true);
+    add(feedbackWindow);
   }
 
   /**
@@ -252,7 +255,18 @@ public class EditParticipantPanel extends Panel {
         }
 
         protected void onError(AjaxRequestTarget target, Form form) {
-          target.addComponent(EditParticipantPanel.this.feedbackPanel);
+          feedbackWindow.setContent(new FeedbackPanel("content"));
+          feedbackWindow.setWindowClosedCallback(new Dialog.WindowClosedCallback() {
+
+            public void onClose(AjaxRequestTarget target, Status status) {
+              this.onClose(target);
+            }
+
+            public void onClose(AjaxRequestTarget target) {
+            }
+          });
+
+          feedbackWindow.show(target);
         }
       };
       add(submitLink);

@@ -63,13 +63,13 @@ public class DialogBuilder {
     return this;
   }
 
-  public DialogBuilder setClosedCallback(Dialog.IDialogClosedCallback callback) {
-    dialog.setDialogClosedCallback(callback);
+  public DialogBuilder setWindowClosedCallback(Dialog.WindowClosedCallback callback) {
+    dialog.setWindowClosedCallback(callback);
     return this;
   }
 
-  public DialogBuilder setCloseButtonCallback(Dialog.IDialogCloseButtonCallback callback) {
-    dialog.setDialogCloseButtonCallback(callback);
+  public DialogBuilder setCloseButtonCallback(Dialog.CloseButtonCallback callback) {
+    dialog.setCloseButtonCallback(callback);
     return this;
   }
 

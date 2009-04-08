@@ -11,7 +11,6 @@ package org.obiba.onyx.core.reusable;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
-import org.apache.wicket.IClusterable;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -37,9 +36,9 @@ public class Dialog extends ModalWindow {
 
   private Form form;
 
-  private IDialogCloseButtonCallback dialogCloseButtonCallback = null;
+  private CloseButtonCallback closeButtonCallback = null;
 
-  private IDialogClosedCallback dialogClosedCallback = null;
+  private WindowClosedCallback windowClosedCallback = null;
 
   public enum Option {
     YES_OPTION, NO_OPTION, OK_OPTION, CANCEL_OPTION, CLOSE_OPTION, YES_NO_OPTION, YES_NO_CANCEL_OPTION, OK_CANCEL_OPTION
@@ -55,6 +54,9 @@ public class Dialog extends ModalWindow {
 
   public Dialog(String id) {
     super(id);
+
+    setCssClassName("onyx");
+    setResizable(false);
 
     form = new Form("form");
     form.add(new WebMarkupContainer(getContentId()));
@@ -238,24 +240,11 @@ public class Dialog extends ModalWindow {
     }
   }
 
-  public static interface IDialogCloseButtonCallback extends IClusterable {
-    /**
-     * Methods invoked after the button has been clicked. The invocation is done using an ajax call, so
-     * <code>{@link AjaxRequestTarget}</code> instance is available.
-     * 
-     * @param target <code>{@link AjaxRequestTarget}</code> instance bound with the ajax request.
-     * @param status of the Dialog when button pressed
-     * @return True if the window can be closed (will close the window), false otherwise
-     */
+  public static interface CloseButtonCallback extends ModalWindow.CloseButtonCallback {
     public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status);
   }
 
-  public static interface IDialogClosedCallback extends IClusterable {
-    /**
-     * Called after the window has been closed.
-     * @param target <code>{@link AjaxRequestTarget}</code> instance bound with the ajax request.
-     * @param status of the Dialog when button pressed
-     */
+  public static interface WindowClosedCallback extends ModalWindow.WindowClosedCallback {
     public void onClose(AjaxRequestTarget target, Status status);
   }
 
@@ -275,20 +264,20 @@ public class Dialog extends ModalWindow {
     this.status = status;
   }
 
-  public void setDialogCloseButtonCallback(IDialogCloseButtonCallback dialogCloseButtonCallback) {
-    this.dialogCloseButtonCallback = dialogCloseButtonCallback;
+  public void setCloseButtonCallback(CloseButtonCallback closeButtonCallback) {
+    this.closeButtonCallback = closeButtonCallback;
   }
 
-  public void setDialogClosedCallback(IDialogClosedCallback dialogClosedCallback) {
-    this.dialogClosedCallback = dialogClosedCallback;
+  public void setClosedCallback(WindowClosedCallback windowClosedCallback) {
+    this.windowClosedCallback = windowClosedCallback;
   }
 
-  public IDialogCloseButtonCallback getDialogCloseButtonCallback() {
-    return dialogCloseButtonCallback;
+  public CloseButtonCallback getCloseButtonCallback() {
+    return closeButtonCallback;
   }
 
-  public IDialogClosedCallback getDialogClosedCallback() {
-    return dialogClosedCallback;
+  public WindowClosedCallback getWindowClosedCallback() {
+    return windowClosedCallback;
   }
 
   public Type getType() {

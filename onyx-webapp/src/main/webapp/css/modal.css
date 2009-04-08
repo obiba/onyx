@@ -18,24 +18,33 @@ div.wicket-modal {
 
 /*************** Onyx Style Modal Window ********************/
 
+div.modal_footer {
+  text-align: right;
+  padding-right: 10px;
+  padding-top: 10px;
+  height: 35px;
+}
+
 div.wicket-mask-dark {
 	opacity:0.4 !important;
 }
 
 div.wicket-modal div.onyx a.w_close {
   background-position:-45px 45px;
+  margin-right: 10px;
   height:25px;
   width:20px;
 }
 
 div.wicket-modal div.onyx a.w_close:hover {
   background-position:-72px 45px;
+  margin-right: 10px;
   height:25px;
   width:20px;
 }
 
 div.wicket-modal div.onyx div.w_caption {
-  height:2em;
+  height:36px;
 }
 
 div.wicket-modal div.onyx div.w_content_3 {
@@ -66,11 +75,12 @@ div.wicket-modal div.onyx .imagelink {
 
 div.wicket-modal div.onyx .separator {
   border-top:1px solid #B7B7B7;
-  margin:10px 5px;
+  margin-right:10px;
+  margin-left:10px;
 }
 
 div.wicket-modal div.onyx span.w_captionText  {
-  margin-left:6px;
+  margin-left:10px;
   margin-top:7px;
   color:black;
 }
