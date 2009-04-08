@@ -220,6 +220,7 @@ public class ParticipantSearchPage extends BasePage {
     updateParticipantListWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
       public void onClose(AjaxRequestTarget target) {
         target.addComponent(participantList);
+        target.appendJavascript("styleParticipantSearchNavigationBar();");
       }
     });
     add(updateParticipantListWindow);
@@ -242,6 +243,7 @@ public class ParticipantSearchPage extends BasePage {
     participantList = replacement;
 
     target.addComponent(participantList);
+    target.appendJavascript("styleParticipantSearchNavigationBar();");
   }
 
   @SuppressWarnings("serial")
@@ -530,12 +532,12 @@ public class ParticipantSearchPage extends BasePage {
       @Override
       protected void onComponentTag(ComponentTag tag) {
         super.onComponentTag(tag);
-        
-        // Disable 
+
+        // Disable
         if(!interviewManager.isInterviewAvailable((Participant) participantModel.getObject())) {
           tag.addBehavior(new AttributeAppender("class", true, new Model("ui-state-disabled"), " "));
         }
-        
+
       }
 
       public ActionLink(String id, IModel participantModel) {

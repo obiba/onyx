@@ -1215,6 +1215,31 @@ span.interviewStatus.obiba-state-completed {
 a.interviewAction.ui-state-disabled {
   color:#cccccc;
 }
+
+div#participantPageSearchResults #newNavigatorLabel {
+  float: right; 
+  position: relative; 
+  right: 100px; 
+  top: 6px;
+  color:#333333;
+  font-family:arial;
+  font-size:11px;
+}
+
+div#participantPageSearchResults #newNavigator {
+  float: right; 
+  position: relative; 
+  right: -110px; 
+  top: 6px;
+  color:#333333;
+  font-family:arial;
+  font-size:11px;  
+}
+
+div#participantPageSearchResults #newNavigator a {
+  color:#333333;
+}
+
 /******************* End ParticipantSearchPage *************************************/
 
 /******************* Global List Styling *******************************************/
