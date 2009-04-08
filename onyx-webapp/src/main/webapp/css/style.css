@@ -1079,7 +1079,7 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 /******************* Login *********************************************************/
 
 #login {
-	width: 600px;
+	width: 500px;
 }
 
 #loginFooter {
@@ -1140,6 +1140,8 @@ A:hover.obiba-button {
   border-style: solid;
   border-width: 1px 2px 2px 1px;
   color: #000000;
+  font-family: arial, verdana, sans-serif;
+  font-size: 12px;
 }
 
 .obiba-button.ui-state-disabled, 
@@ -1154,8 +1156,13 @@ A:link.obiba-button,
 A:visited.obiba-button,
 A:active.obiba-button,
 A:hover.obiba-button {
-  padding: 2px 5px 2px 5px;
+  padding: 3px 5px 2px 5px;
   text-decoration: none;
+}
+
+button.obiba-button,
+input.obiba-button {
+  padding: 2px 5px 1px 5px;	
 }
 
 .obiba-button.ui-corner-all {

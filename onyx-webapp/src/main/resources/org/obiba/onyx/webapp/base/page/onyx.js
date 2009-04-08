@@ -120,10 +120,10 @@ Resizer.resizeMenu = function() {
 	        for (var i=0; i<menuItems.length; i++) {
 	            computedWidth = document.defaultView.getComputedStyle(menuItems[i], "").getPropertyValue("width");
 	            if (computedWidth.indexOf('px') != -1) {
-	                menuWidth += parseInt(computedWidth.substring(0, computedWidth.length-2));
+	                menuWidth += parseFloat(computedWidth.substring(0, computedWidth.length-2));
 	            }
 	        }
-	        menuWrapper.width(menuWidth + 'px');
+	        menuWrapper.width(Math.ceil(menuWidth) + 'px');
         }
     }
 }
