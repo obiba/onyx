@@ -81,7 +81,7 @@ public class OnyxDataExport {
     long exportAllStartTime = new Date().getTime();
 
     Participant template = new Participant();
-    // template.setExported(false);
+    template.setExported(false);
     List<Participant> participants = queryService.match(template);
     for(Iterator<Participant> iterator = participants.iterator(); iterator.hasNext();) {
       Participant participant = iterator.next();
@@ -120,6 +120,9 @@ public class OnyxDataExport {
             VariableDataSet participantData = variableDirectory.getParticipantData(participant, destination);
             VariableStreamer.toXML(participantData, os);
             os.flush();
+
+            // Flag the participant as exported.
+            participant.setExported(true);
           }
         } catch(RuntimeException e) {
           context.fail();
