@@ -1240,6 +1240,11 @@ div#participantPageSearchResults #newNavigator a {
   color:#333333;
 }
 
+div#participantPageSearchResults #newNavigator em {
+  font-style:normal;
+  font-weight:bold;
+}
+
 /******************* End ParticipantSearchPage *************************************/
 
 /******************* Global List Styling *******************************************/
