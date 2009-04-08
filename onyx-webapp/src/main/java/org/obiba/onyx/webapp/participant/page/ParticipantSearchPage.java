@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.wicket.IRequestTarget;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -31,6 +32,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColu
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
+import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -140,13 +142,13 @@ public class ParticipantSearchPage extends BasePage {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-        OnyxEntityList<Participant> replacement;
+        ParticipantEntityList replacement;
         String inputField = form.get("inputField").getModelObjectAsString();
 
         if(inputField == null) {
           replacement = getAllParticipantsList();
         } else {
-          replacement = new OnyxEntityList<Participant>("participant-list", new ParticipantByInputFieldProvider(inputField), new ParticipantListColumnProvider(), new StringResourceModel("ParticipantsByInputField", ParticipantSearchPage.this, new Model(new ValueMap("inputField=" + inputField))));
+          replacement = new ParticipantEntityList("participant-list", new ParticipantByInputFieldProvider(inputField), new ParticipantListColumnProvider(), new StringResourceModel("ParticipantsByInputField", ParticipantSearchPage.this, new Model(new ValueMap("inputField=" + inputField))));
           replacement.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
         }
         replaceParticipantList(target, replacement);
@@ -164,7 +166,7 @@ public class ParticipantSearchPage extends BasePage {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-        OnyxEntityList<Participant> replacement = getAllParticipantsList();
+        ParticipantEntityList replacement = getAllParticipantsList();
         replaceParticipantList(target, replacement);
         target.addComponent(getFeedbackPanel());
       }
@@ -180,7 +182,7 @@ public class ParticipantSearchPage extends BasePage {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-        OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new AppointedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
+        ParticipantEntityList replacement = new ParticipantEntityList("participant-list", new AppointedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
         replacement.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
         replaceParticipantList(target, replacement);
         target.addComponent(getFeedbackPanel());
@@ -197,7 +199,7 @@ public class ParticipantSearchPage extends BasePage {
 
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
-        OnyxEntityList<Participant> replacement = new OnyxEntityList<Participant>("participant-list", new InterviewedParticipantProvider(), new ParticipantListColumnProvider(), new StringResourceModel("CurrentInterviews", ParticipantSearchPage.this, null));
+        ParticipantEntityList replacement = new ParticipantEntityList("participant-list", new InterviewedParticipantProvider(), new ParticipantListColumnProvider(), new StringResourceModel("CurrentInterviews", ParticipantSearchPage.this, null));
         replacement.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
         replaceParticipantList(target, replacement);
         target.addComponent(getFeedbackPanel());
@@ -212,7 +214,7 @@ public class ParticipantSearchPage extends BasePage {
 
     add(new ActionFragment("actions"));
 
-    participantList = new OnyxEntityList<Participant>("participant-list", new AppointedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
+    participantList = new ParticipantEntityList("participant-list", new AppointedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
     participantList.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
     add(participantList);
 
@@ -232,13 +234,13 @@ public class ParticipantSearchPage extends BasePage {
     this.participantList.modelChanged();
   }
 
-  private OnyxEntityList<Participant> getAllParticipantsList() {
-    OnyxEntityList<Participant> participantList = new OnyxEntityList<Participant>("participant-list", new ParticipantProvider(), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
+  private ParticipantEntityList getAllParticipantsList() {
+    ParticipantEntityList participantList = new ParticipantEntityList("participant-list", new ParticipantProvider(), new ParticipantListColumnProvider(), new StringResourceModel("Participants", ParticipantSearchPage.this, null));
     participantList.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
     return participantList;
   }
 
-  private void replaceParticipantList(AjaxRequestTarget target, OnyxEntityList<Participant> replacement) {
+  private void replaceParticipantList(AjaxRequestTarget target, ParticipantEntityList replacement) {
     participantList.replaceWith(replacement);
     participantList = replacement;
 
@@ -637,6 +639,32 @@ public class ParticipantSearchPage extends BasePage {
     }
   }
 
+  private class ParticipantEntityList extends OnyxEntityList<Participant> {
+
+    private static final long serialVersionUID = 1L;
+
+    public ParticipantEntityList(String id, Class<Participant> type, IColumnProvider columns, IModel title) {
+      super(id, type, columns, title);
+    }
+
+    public ParticipantEntityList(String id, Participant template, IColumnProvider columns, IModel title) {
+      super(id, template, columns, title);
+    }
+
+    public ParticipantEntityList(String id, SortableDataProvider dataProvider, IColumnProvider columns, IModel title) {
+      super(id, dataProvider, columns, title);
+    }
+
+    @Override
+    protected void onPageChanged() {
+      IRequestTarget target = getRequestCycle().getRequestTarget();
+      if(getRequestCycle().getRequestTarget() instanceof AjaxRequestTarget) {
+        ((AjaxRequestTarget) target).appendJavascript("styleParticipantSearchNavigationBar();");
+      }
+      super.onPageChanged();
+    }
+  }  
+  
   private class GenderObject implements Serializable {
 
     private static final long serialVersionUID = 1L;
