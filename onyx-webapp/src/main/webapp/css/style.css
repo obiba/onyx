@@ -1079,12 +1079,21 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 /******************* Login *********************************************************/
 
 #login {
-	width: 500px;
+	width: 575px;
+}
+
+#loginHeader {
+	border-bottom: 1px solid #C65F02;
+	margin-bottom: 10px;
+}
+
+#loginHeader > img {
+    padding-bottom: 10px;
 }
 
 #loginFooter {
-	border-top:1px solid #888888;
-	margin-top:10px;
+	border-top: 1px solid #888888;
+	margin-top: 10px;
 }
 
 #loginFooter p {
