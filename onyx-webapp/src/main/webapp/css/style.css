@@ -1102,7 +1102,7 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
   background-color: #FFFFFF;
   border-color: #B8B8B8;
   border-style: solid;
-  border-width: 1px 2px 2px 1px;
+  border-width: 1px;
   padding: 0px 12px 36px 12px;
 }
 
@@ -1226,19 +1226,20 @@ a.interviewAction.ui-state-disabled {
 
 /******************* InterviewPage *************************************************/
 
+#interviewPageContent {
+  border-spacing: 10px;
+  width: 100%;	
+}
+
+#interviewPageParticipantContainer,
+#interviewPageInterviewContainer {
+  width: 30%;	
+}
+
 #interviewPageParticipant,
 #interviewPageInterview,
 #interviewPageLog {
   height: 105px;
-}
-
-#interviewPageParticipant,
-#interviewPageInterview {
-  width: 273px;
-}
-
-#interviewPageLog {
-  width: 364px;
 }
 
 #interviewPageParticipant td.keyValueTableKey,
@@ -1271,7 +1272,7 @@ a.interviewAction.ui-state-disabled {
 }
 
 #interviewPageStages td > span.obiba-state {
-  padding-left: 12px;
+  padding-left: 14px;
 }
 
 #interviewPageStages td > span.obiba-state.obiba-state-waiting {
