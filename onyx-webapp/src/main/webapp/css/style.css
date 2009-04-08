@@ -1196,6 +1196,11 @@ input.obiba-button {
 
 /******************* ParticipantSearchPage *****************************************/
 
+#participantSearchPageContent {
+  border-spacing: 10px;
+  width: 100%;
+}
+
 #participantPageSearch,
 #participantPageActions {
   height: 95px;
