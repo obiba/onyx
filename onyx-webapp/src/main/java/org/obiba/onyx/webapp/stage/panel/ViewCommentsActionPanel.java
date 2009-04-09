@@ -11,7 +11,9 @@ package org.obiba.onyx.webapp.stage.panel;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.Model;
 
 abstract public class ViewCommentsActionPanel extends Panel {
 
@@ -19,16 +21,32 @@ abstract public class ViewCommentsActionPanel extends Panel {
 
   public ViewCommentsActionPanel(String id) {
     super(id);
-    add(new AjaxLink("viewComments") {
+    AjaxLink viewLogs = new AjaxLink("viewLogs") {
+
+      private static final long serialVersionUID = 1L;
+
+      public void onClick(AjaxRequestTarget target) {
+        ViewCommentsActionPanel.this.onViewLogs(target);
+      }
+    };
+    viewLogs.add(new ContextImage("viewLogsImg", new Model("icons/loupe_button.png")));
+    add(viewLogs);
+
+    AjaxLink viewComments = new AjaxLink("viewComments") {
 
       private static final long serialVersionUID = 1L;
 
       public void onClick(AjaxRequestTarget target) {
         ViewCommentsActionPanel.this.onViewComments(target);
       }
-    });   
+    };
+    viewComments.add(new ContextImage("viewCommentsImg", new Model("icons/note.png")));
+    add(viewComments);
+
   }
 
   public abstract void onViewComments(AjaxRequestTarget target);
+
+  public abstract void onViewLogs(AjaxRequestTarget target);
 
 }

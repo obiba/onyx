@@ -28,6 +28,8 @@ import org.apache.wicket.util.value.ValueMap;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.reusable.Dialog;
+import org.obiba.onyx.core.reusable.DialogBuilder;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
@@ -82,6 +84,11 @@ public class InterviewPage extends BasePage {
       Participant participant = activeInterviewService.getParticipant();
 
       add(new ParticipantPanel("participant", new DetachableEntityModel(queryService, participant), true));
+
+      final Dialog interviewLogsDialog = DialogBuilder.buildInfoDialog("interviewLogsDialog", "Interview Logs", new Label("content", "Interview logs not implemented yet")).getDialog();
+      interviewLogsDialog.setInitialHeight(100);
+      interviewLogsDialog.setInitialHeight(100);
+      add(interviewLogsDialog);
 
       // Create modal comments window
       final ModalWindow commentsWindow;
@@ -201,6 +208,11 @@ public class InterviewPage extends BasePage {
 
           });
           commentsWindow.show(target);
+        }
+
+        @Override
+        public void onViewLogs(AjaxRequestTarget target, String stage) {
+          interviewLogsDialog.show(target);
         }
 
         @Override

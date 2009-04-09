@@ -112,6 +112,8 @@ public abstract class StageSelectionPanel extends Panel {
 
   abstract public void onViewComments(AjaxRequestTarget target, String stage);
 
+  abstract public void onViewLogs(AjaxRequestTarget target, String stage);
+
   abstract public void onActionPerformed(AjaxRequestTarget target, Stage stage, Action action);
 
   private class StageProvider extends SortableDataProvider {
@@ -202,7 +204,7 @@ public abstract class StageSelectionPanel extends Panel {
         });
       }
 
-      columns.add(new AbstractColumn(new ResourceModel("Comments")) {
+      columns.add(new AbstractColumn(new ResourceModel("Log")) {
 
         public void populateItem(Item cellItem, String componentId, IModel rowModel) {
           List<Action> interviewComments = activeInterviewService.getInterviewComments();
@@ -226,6 +228,11 @@ public abstract class StageSelectionPanel extends Panel {
               @Override
               public void onViewComments(AjaxRequestTarget target) {
                 StageSelectionPanel.this.onViewComments(target, stageName);
+              }
+
+              @Override
+              public void onViewLogs(AjaxRequestTarget target) {
+                StageSelectionPanel.this.onViewLogs(target, stageName);
               }
 
             });

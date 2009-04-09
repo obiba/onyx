@@ -580,6 +580,10 @@ table.entityTable td A {
   text-decoration: underline;
 }
 
+table.entityTable td A img {
+  border:none;
+}
+
 /*************** End Entity Table ********************/
 
 /*******************KEY VALUE TABLE LAYOUT************************************/
