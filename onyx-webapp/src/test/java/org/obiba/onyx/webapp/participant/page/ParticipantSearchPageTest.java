@@ -28,6 +28,7 @@ import org.apache.wicket.util.tester.ITestPageSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.easymock.EasyMock;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.core.service.PagingClause;
@@ -101,6 +102,7 @@ public class ParticipantSearchPageTest {
     participants = newParticipantList();
   }
 
+  @Ignore
   @Test
   public void testSearchByInputFieldParticipant() {
 
