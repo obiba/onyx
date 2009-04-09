@@ -16,6 +16,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.IRequestTarget;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -66,6 +68,7 @@ import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.UnlockInterviewPanel;
+import org.obiba.onyx.wicket.link.AjaxImageSubmitLink;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
 import org.obiba.onyx.wicket.util.DateModelUtils;
 import org.obiba.wicket.markup.html.table.IColumnProvider;
@@ -138,10 +141,10 @@ public class ParticipantSearchPage extends BasePage {
 
     form.add(new TextField("inputField", new Model(new String())));
 
-    form.add(new AjaxButton("searchByInputField", form) {
+    AjaxImageSubmitLink searchByInputLink = new AjaxImageSubmitLink("searchByInputField", null, null, new Model("icons/loupe_button.png"), true) {
 
       @Override
-      protected void onSubmit(AjaxRequestTarget target, Form form) {
+      public void onSubmit(AjaxRequestTarget target, Form form) {
         ParticipantEntityList replacement;
         String inputField = form.get("inputField").getModelObjectAsString();
 
@@ -156,11 +159,21 @@ public class ParticipantSearchPage extends BasePage {
       }
 
       @Override
-      protected void onError(AjaxRequestTarget target, Form form) {
+      public void onError(AjaxRequestTarget target, Form form) {
         target.addComponent(getFeedbackPanel());
       }
 
-    });
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        // TODO Auto-generated method stub
+      }
+    };
+    Component imageDecorator = searchByInputLink.get("link:decorator");
+    if(imageDecorator != null) {
+      imageDecorator.add(new AttributeAppender("class", new Model("obiba-button"), " "));
+      imageDecorator.add(new AttributeModifier("style", false, new Model("")));
+    }
+    form.add(searchByInputLink);
 
     form.add(new AjaxButton("submit", form) {
 
@@ -663,8 +676,8 @@ public class ParticipantSearchPage extends BasePage {
       }
       super.onPageChanged();
     }
-  }  
-  
+  }
+
   private class GenderObject implements Serializable {
 
     private static final long serialVersionUID = 1L;

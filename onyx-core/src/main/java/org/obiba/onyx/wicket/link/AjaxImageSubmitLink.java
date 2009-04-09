@@ -57,9 +57,15 @@ public abstract class AjaxImageSubmitLink extends AbstractImageLink {
    * @param labelModel
    * @param descriptionModel
    * @param imageDecoratorModel image src attribute value
+   * @param contextRelativeImage indicates whether the image path in <code>imageDecoratorModel</code> is relative to
+   * the context root
    */
+  public AjaxImageSubmitLink(String id, IModel labelModel, IModel descriptionModel, IModel imageDecoratorModel, boolean contextRelativeImage) {
+    super(id, labelModel, descriptionModel, imageDecoratorModel, contextRelativeImage);
+  }
+
   public AjaxImageSubmitLink(String id, IModel labelModel, IModel descriptionModel, IModel imageDecoratorModel) {
-    super(id, labelModel, descriptionModel, imageDecoratorModel);
+    this(id, labelModel, descriptionModel, imageDecoratorModel, false);
   }
 
   @Override

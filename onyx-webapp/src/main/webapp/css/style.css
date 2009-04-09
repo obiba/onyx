@@ -1174,6 +1174,10 @@ input.obiba-button {
   padding: 2px 5px 1px 5px;	
 }
 
+img.obiba-button {
+  padding: 2px 3px 3px 3px;	
+}
+
 .obiba-button.ui-corner-all {
   -moz-border-radius: 6px; 
   -webkit-border-radius: 6px;
@@ -1204,6 +1208,11 @@ input.obiba-button {
 #participantPageSearch,
 #participantPageActions {
   height: 95px;
+}
+
+#participantSearchByInput a:hover,
+#participantSearchByInput a:link {
+  color: #FFFFFF
 }
 
 span.interviewStatus {

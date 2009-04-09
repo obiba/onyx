@@ -13,6 +13,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -54,12 +55,18 @@ public abstract class AbstractImageLink extends Panel {
    * @param labelModel
    * @param descriptionModel
    * @param imageDecoratorModel image src attribute value
+   * @param contextRelativeImage indicates whether the image path in <code>imageDecoratorModel</code> is relative to
+   * the context root
    */
-  public AbstractImageLink(String id, IModel labelModel, IModel descriptionModel, IModel imageDecoratorModel) {
+  public AbstractImageLink(String id, IModel labelModel, IModel descriptionModel, IModel imageDecoratorModel, boolean contextRelativeImage) {
     super(id, labelModel);
 
     initialize(labelModel, descriptionModel);
-    addDecorator(imageDecoratorModel);
+    addDecorator(imageDecoratorModel, contextRelativeImage);
+  }
+
+  public AbstractImageLink(String id, IModel labelModel, IModel descriptionModel, IModel imageDecoratorModel) {
+    this(id, labelModel, descriptionModel, imageDecoratorModel, false);
   }
 
   /**
@@ -105,12 +112,19 @@ public abstract class AbstractImageLink extends Panel {
    * Add image decorator to image link.
    * 
    * @param imageDecoratorModel image src attribute value
+   * @param contextRelative indicates whether <code>imageDecoratorModel</code> contains a path relative to the context
+   * root
    */
-  private void addDecorator(IModel imageDecoratorModel) {
+  private void addDecorator(IModel imageDecoratorModel, boolean contextRelative) {
     if(imageDecoratorModel != null) {
-      Image image = new Image("decorator");
-      image.add(new AttributeModifier("src", imageDecoratorModel));
-      link.add(image);
+      if(contextRelative) {
+        ContextImage image = new ContextImage("decorator", imageDecoratorModel);
+        link.add(image);
+      } else {
+        Image image = new Image("decorator");
+        image.add(new AttributeModifier("src", imageDecoratorModel));
+        link.add(image);
+      }
     } else {
       addNoDecorator();
     }
