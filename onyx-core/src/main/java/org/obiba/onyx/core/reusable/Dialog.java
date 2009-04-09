@@ -180,7 +180,7 @@ public class Dialog extends ModalWindow {
       break;
 
     default:
-      setEnabledOptions(true, false, false, false, false);
+      setEnabledOptions(false, false, false, false, true);
     }
   }
 
