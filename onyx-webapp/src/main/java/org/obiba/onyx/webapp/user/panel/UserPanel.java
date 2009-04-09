@@ -36,6 +36,8 @@ import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.Status;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.reusable.Dialog;
+import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.wicket.markup.html.form.LocaleDropDownChoice;
@@ -57,13 +59,21 @@ public class UserPanel extends Panel {
 
   private ModalWindow userModalWindow;
 
-  private FeedbackPanel feedbackPanel;
+  private FeedbackWindow feedbackWindow;
+
+  private final FeedbackPanel feedbackPanel;
 
   private PasswordTextField password;
 
   public UserPanel(String id, IModel model, final ModalWindow modalWindow) {
     super(id, model);
     userModalWindow = modalWindow;
+
+    feedbackPanel = new FeedbackPanel("content");
+    feedbackWindow = new FeedbackWindow("feedback");
+    feedbackWindow.setOutputMarkupId(true);
+    add(feedbackWindow);
+
     add(new UserPanelForm("userPanelForm", model));
   }
 
@@ -77,10 +87,6 @@ public class UserPanel extends Panel {
     public UserPanelForm(String id, final IModel model) {
       super(id);
       setModel(model);
-
-      feedbackPanel = new FeedbackPanel("feedback");
-      feedbackPanel.setOutputMarkupId(true);
-      add(feedbackPanel);
 
       TextField lastName = new TextField("lastName", new PropertyModel(getModel(), "lastName"));
       lastName.add(new RequiredFormFieldBehavior());
@@ -157,7 +163,21 @@ public class UserPanel extends Panel {
 
         @Override
         protected void onError(AjaxRequestTarget target, Form form) {
-          target.addComponent(feedbackPanel);
+          feedbackWindow.setContent(feedbackPanel);
+          feedbackWindow.setWindowClosedCallback(new Dialog.WindowClosedCallback() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void onClose(AjaxRequestTarget target, Dialog.Status status) {
+              this.onClose(target);
+            }
+
+            public void onClose(AjaxRequestTarget target) {
+            }
+
+          });
+
+          feedbackWindow.show(target);
         }
       });
 

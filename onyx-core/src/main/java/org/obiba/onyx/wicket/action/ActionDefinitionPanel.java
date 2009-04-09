@@ -39,6 +39,8 @@ import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.reusable.Dialog;
+import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
@@ -65,7 +67,7 @@ public abstract class ActionDefinitionPanel extends Panel {
 
   private boolean cancelled = true;
 
-  private FeedbackPanel feedback;
+  private FeedbackWindow feedback;
 
   @SuppressWarnings("serial")
   public ActionDefinitionPanel(String id, ActionDefinition definition, AjaxRequestTarget target) {
@@ -79,7 +81,7 @@ public abstract class ActionDefinitionPanel extends Panel {
     Form form = new Form("form");
     add(form);
 
-    form.add(feedback = new FeedbackPanel("feedback"));
+    form.add(feedback = new FeedbackWindow("feedback"));
     feedback.setOutputMarkupId(true);
 
     form.add(new Label("operator", userSessionService.getUser().getFullName()));
@@ -124,14 +126,25 @@ public abstract class ActionDefinitionPanel extends Panel {
       @Override
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         cancelled = false;
-        target.addComponent(feedback);
+        // target.addComponent(feedback);
         ActionDefinitionPanel.this.onClick(target);
       }
 
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
         cancelled = false;
-        target.addComponent(feedback);
+        feedback.setContent(new FeedbackPanel("content"));
+        feedback.setWindowClosedCallback(new Dialog.WindowClosedCallback() {
+
+          public void onClose(AjaxRequestTarget target, Dialog.Status status) {
+            this.onClose(target);
+          }
+
+          public void onClose(AjaxRequestTarget target) {
+          }
+        });
+
+        feedback.show(target);
       }
 
     });
@@ -141,7 +154,7 @@ public abstract class ActionDefinitionPanel extends Panel {
       @Override
       public void onClick(AjaxRequestTarget target) {
         cancelled = true;
-        target.addComponent(feedback);
+        // target.addComponent(feedback);
         ActionDefinitionPanel.this.onClick(target);
       }
 

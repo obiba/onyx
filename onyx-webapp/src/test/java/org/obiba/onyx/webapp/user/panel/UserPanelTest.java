@@ -109,7 +109,7 @@ public class UserPanelTest {
       }
     });
 
-    tester.dumpPage();
+    // tester.dumpPage();
 
     FormTester formTester = tester.newFormTester("panel:userPanelForm");
 

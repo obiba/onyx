@@ -36,9 +36,9 @@ public class Dialog extends ModalWindow {
 
   private Form form;
 
-  private CloseButtonCallback closeButtonCallback = null;
+  private CloseButtonCallback closeButtonCallback;
 
-  private WindowClosedCallback windowClosedCallback = null;
+  private WindowClosedCallback windowClosedCallback;
 
   public enum Option {
     YES_OPTION, NO_OPTION, OK_OPTION, CANCEL_OPTION, CLOSE_OPTION, YES_NO_OPTION, YES_NO_CANCEL_OPTION, OK_CANCEL_OPTION
@@ -240,12 +240,16 @@ public class Dialog extends ModalWindow {
     }
   }
 
-  public static interface CloseButtonCallback extends ModalWindow.CloseButtonCallback {
-    public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status);
+  public static interface CloseButtonCallback {
+
+    public boolean onClose(AjaxRequestTarget target, Status status);
+
   }
 
-  public static interface WindowClosedCallback extends ModalWindow.WindowClosedCallback {
+  public static interface WindowClosedCallback {
+
     public void onClose(AjaxRequestTarget target, Status status);
+
   }
 
   /**
@@ -264,20 +268,40 @@ public class Dialog extends ModalWindow {
     this.status = status;
   }
 
-  public void setCloseButtonCallback(CloseButtonCallback closeButtonCallback) {
-    this.closeButtonCallback = closeButtonCallback;
-  }
-
-  public void setClosedCallback(WindowClosedCallback windowClosedCallback) {
+  public void setWindowClosedCallback(WindowClosedCallback windowClosedCallback) {
     this.windowClosedCallback = windowClosedCallback;
-  }
 
-  public CloseButtonCallback getCloseButtonCallback() {
-    return closeButtonCallback;
+    super.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+
+      private static final long serialVersionUID = 1L;
+
+      public void onClose(AjaxRequestTarget target) {
+        Dialog.this.windowClosedCallback.onClose(target, Dialog.this.status);
+      }
+
+    });
   }
 
   public WindowClosedCallback getWindowClosedCallback() {
     return windowClosedCallback;
+  }
+
+  public void setCloseButtonCallback(CloseButtonCallback closeButtonCallback) {
+    this.closeButtonCallback = closeButtonCallback;
+
+    super.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
+
+      private static final long serialVersionUID = 1L;
+
+      public boolean onCloseButtonClicked(AjaxRequestTarget target) {
+        return Dialog.this.closeButtonCallback.onClose(target, Dialog.this.status);
+      }
+
+    });
+  }
+
+  public CloseButtonCallback getCloseButtonCallback() {
+    return closeButtonCallback;
   }
 
   public Type getType() {

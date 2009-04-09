@@ -13,7 +13,7 @@ div.wicket-modal div.w_content_1 div.footer {
 }
 
 div.wicket-modal {
-  overflow: auto;
+  //overflow: auto;
 }
 
 /*************** Onyx Style Modal Window ********************/
@@ -45,6 +45,10 @@ div.wicket-modal div.onyx a.w_close:hover {
 
 div.wicket-modal div.onyx div.w_caption {
   height:36px;
+}
+
+div.wicket-modal div.onyx div.w_content {
+	overflow: hidden;
 }
 
 div.wicket-modal div.onyx div.w_content_3 {

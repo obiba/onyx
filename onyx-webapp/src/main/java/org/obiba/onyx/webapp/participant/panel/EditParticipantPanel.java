@@ -259,10 +259,6 @@ public class EditParticipantPanel extends Panel {
           feedbackWindow.setWindowClosedCallback(new Dialog.WindowClosedCallback() {
 
             public void onClose(AjaxRequestTarget target, Status status) {
-              this.onClose(target);
-            }
-
-            public void onClose(AjaxRequestTarget target) {
             }
           });
 
