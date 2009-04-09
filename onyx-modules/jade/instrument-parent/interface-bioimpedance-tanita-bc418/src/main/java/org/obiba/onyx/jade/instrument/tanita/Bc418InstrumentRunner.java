@@ -109,7 +109,7 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
       log.info("Receiving response:{}", wResponse);
     } catch(IOException e) {
 
-	  // In case of communication failure, wait for 5 secs and try again...
+      // In case of communication failure, wait for 5 secs and try again...
       try {
         Thread.sleep(5000);
         wResponse = bufferedReader.readLine();
@@ -140,7 +140,8 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
     try {
       String wUnitsOfMeasure = "U0\r\n";
 
-      String wClothesWeight = "D0001.0\r\n";
+      String clothesWeight = "D000" + inputData.get("INPUT_CLOTHES_WEIGHT").getValueAsString() + "\r\n";
+      log.info("wClothesWeight" + clothesWeight);
 
       String wGender = null;
       if(inputData.get("INPUT_PARTICIPANT_GENDER").getValueAsString().equals("MALE")) {
@@ -185,7 +186,7 @@ public class Bc418InstrumentRunner extends TanitaInstrument {
       }
 
       // Send tare weight
-      wResponse = sendReceive(wClothesWeight);
+      wResponse = sendReceive(clothesWeight);
       if(!wResponse.equals("D0")) {
         throw new RuntimeException("Error when setting tare weight");
       }
