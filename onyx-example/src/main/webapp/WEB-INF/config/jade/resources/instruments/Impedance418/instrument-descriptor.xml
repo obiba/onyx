@@ -43,7 +43,7 @@
       <code>INPUT_CLOTHES_WEIGHT</code>
       <dataType>DECIMAL</dataType>
       <measurementUnit>kg</measurementUnit>
-      <captureMethod>MANUAL</captureMethod>
+      <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="fixedDataSource">
         <data type="DECIMAL">0</data>
       </dataSource>
@@ -52,7 +52,7 @@
     <input>
       <code>INPUT_PARTICIPANT_GENDER</code>
       <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
+      <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="participantPropertyDataSource">
         <property>gender</property>
       </dataSource>
@@ -61,7 +61,7 @@
     <input>
       <code>INPUT_BODY_TYPE</code>
       <dataType>TEXT</dataType>
-      <captureMethod>MANUAL</captureMethod>
+      <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="fixedDataSource">
         <data type="TEXT">STANDARD</data>
       </dataSource>
@@ -70,7 +70,7 @@
     <input>
       <code>INPUT_PARTICIPANT_AGE</code>
       <dataType>INTEGER</dataType>
-      <captureMethod>MANUAL</captureMethod>
+      <captureMethod>AUTOMATIC</captureMethod>
       <dataSource class="participantPropertyDataSource">
         <property>age</property>
       </dataSource>
