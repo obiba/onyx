@@ -1214,9 +1214,15 @@ img.obiba-button {
   height: 95px;
 }
 
-#participantSearchByInput a:hover,
-#participantSearchByInput a:link {
-  color: #FFFFFF
+#participantPageSearch #searchByInputField.obiba-button {
+  background-image: url(../icons/loupe_button.png);
+  background-repeat: no-repeat;
+  background-position: center center;
+  padding: 2px 9px 1px;
+}
+
+#participantPageSearch #searchByInputField.obiba-button::-moz-focus-inner {
+  border: none;	
 }
 
 span.interviewStatus {
