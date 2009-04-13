@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
@@ -30,6 +29,7 @@ import org.obiba.onyx.core.domain.contraindication.Contraindication;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ModuleRegistry;
@@ -125,8 +125,8 @@ public class RubyPanelTest {
 
     startWicketPanel(false);
 
-    FeedbackPanel feedbackPanel = new FeedbackPanel("feedbackPanel");
-    rubyPanel.setFeedbackPanel(feedbackPanel);
+    FeedbackWindow feedbackWindow = new FeedbackWindow("feedback");
+    rubyPanel.setFeedbackWindow(feedbackWindow);
 
     verifyCommonMocks();
 
@@ -135,9 +135,9 @@ public class RubyPanelTest {
     Assert.assertNotNull(wizardPanel);
     RubyWizardForm wizardForm = (RubyWizardForm) wizardPanel.get("form");
     Assert.assertNotNull(wizardForm);
-    FeedbackPanel formFeedbackPanel = wizardForm.getFeedbackPanel();
-    Assert.assertNotNull(formFeedbackPanel);
-    Assert.assertEquals(feedbackPanel, formFeedbackPanel);
+    FeedbackWindow formFeedbackWindow = wizardForm.getFeedbackWindow();
+    Assert.assertNotNull(formFeedbackWindow);
+    Assert.assertEquals(feedbackWindow, formFeedbackWindow);
   }
 
   @Test
@@ -146,12 +146,11 @@ public class RubyPanelTest {
 
     startWicketPanel(false);
 
-    FeedbackPanel feedbackPanel = new FeedbackPanel("feedbackPanel");
-    rubyPanel.setFeedbackPanel(feedbackPanel);
-
+    FeedbackWindow feedbackWindow = new FeedbackWindow("feedbackPanel");
+    rubyPanel.setFeedbackWindow(feedbackWindow);
     verifyCommonMocks();
 
-    Assert.assertEquals(feedbackPanel, rubyPanel.getFeedbackPanel());
+    Assert.assertEquals(feedbackWindow, rubyPanel.getFeedbackWindow());
   }
 
   //

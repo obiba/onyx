@@ -173,8 +173,8 @@ public class DefaultOpenAnswerDefinitionPanel extends AbstractOpenAnswerDefiniti
    */
   private void updateFeedback(final AjaxRequestTarget target) {
     WizardForm wizard = (WizardForm) findParent(WizardForm.class);
-    if(wizard != null && wizard.getFeedbackPanel() != null) {
-      target.addComponent(wizard.getFeedbackPanel());
+    if(wizard != null && wizard.getFeedbackWindow() != null) {
+      if(wizard.getFeedbackMessage() != null) wizard.getFeedbackWindow().show(target);
     }
     target.appendJavascript("Resizer.resizeWizard();");
     target.addComponent(openField.getField());

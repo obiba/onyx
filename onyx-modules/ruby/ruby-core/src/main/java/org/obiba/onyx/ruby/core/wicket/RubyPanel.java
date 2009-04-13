@@ -9,10 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket;
 
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.engine.ModuleRegistry;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.ruby.core.wicket.wizard.RubyWizardPanel;
@@ -56,11 +56,11 @@ public class RubyPanel extends Panel implements IEngineComponentAware {
     wizardPanel.setActionWindow(window);
   }
 
-  public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
-    wizardPanel.setFeedbackPanel(feedbackPanel);
+  public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
+    wizardPanel.setFeedbackWindow(feedbackWindow);
   }
 
-  public FeedbackPanel getFeedbackPanel() {
-    return wizardPanel.getFeedbackPanel();
+  public FeedbackWindow getFeedbackWindow() {
+    return wizardPanel.getFeedbackWindow();
   }
 }

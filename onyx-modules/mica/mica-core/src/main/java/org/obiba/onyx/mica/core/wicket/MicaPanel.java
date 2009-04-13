@@ -12,11 +12,11 @@ import java.io.Serializable;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
@@ -52,7 +52,7 @@ public class MicaPanel extends Panel implements IEngineComponentAware {
 
   private ActionWindow actionWindow;
 
-  private FeedbackPanel feedbackPanel;
+  private FeedbackWindow feedbackWindow;
 
   private MicaModel model;
 
@@ -91,12 +91,12 @@ public class MicaPanel extends Panel implements IEngineComponentAware {
 
           @Override
           public void onError(AjaxRequestTarget target, Form form) {
-            target.addComponent(feedbackPanel);
+            showFeedbackWindow(target);
           }
 
           @Override
-          public FeedbackPanel getFeedbackPanel() {
-            return feedbackPanel;
+          public FeedbackWindow getFeedbackWindow() {
+            return feedbackWindow;
           }
 
         };
@@ -138,11 +138,11 @@ public class MicaPanel extends Panel implements IEngineComponentAware {
     this.actionWindow = window;
   }
 
-  public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
-    this.feedbackPanel = feedbackPanel;
+  public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
+    this.feedbackWindow = feedbackWindow;
   }
 
-  public FeedbackPanel getFeedbackPanel() {
-    return feedbackPanel;
+  public FeedbackWindow getFeedbackWindow() {
+    return feedbackWindow;
   }
 }

@@ -20,6 +20,7 @@ import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
@@ -33,6 +34,9 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
+import org.obiba.onyx.core.reusable.Dialog;
+import org.obiba.onyx.core.reusable.FeedbackWindow;
+import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
@@ -72,12 +76,15 @@ public abstract class StageSelectionPanel extends Panel {
 
   private FeedbackPanel feedbackPanel;
 
+  private FeedbackWindow feedbackWindow;
+
   @SuppressWarnings("serial")
-  public StageSelectionPanel(String id, FeedbackPanel feedbackPanel) {
+  public StageSelectionPanel(String id, FeedbackWindow feedbackWindow) {
     super(id);
     setOutputMarkupId(true);
 
-    this.feedbackPanel = feedbackPanel;
+    this.feedbackWindow = feedbackWindow;
+    this.feedbackPanel = new FeedbackPanel("content");
 
     checkStageStatus();
 
@@ -88,7 +95,18 @@ public abstract class StageSelectionPanel extends Panel {
         IStageExecution exec = activeInterviewService.getStageExecution(stage);
         if(!exec.isInteractive()) {
           checkStageStatus();
-          target.addComponent(StageSelectionPanel.this.feedbackPanel);
+
+          if(((List<FeedbackMessage>) StageSelectionPanel.this.feedbackPanel.getFeedbackMessagesModel().getObject()).size() > 0) {
+            StageSelectionPanel.this.feedbackWindow.setContent(StageSelectionPanel.this.feedbackPanel);
+            StageSelectionPanel.this.feedbackWindow.setWindowClosedCallback(new Dialog.WindowClosedCallback() {
+
+              public void onClose(AjaxRequestTarget target, Status status) {
+              }
+            });
+
+            StageSelectionPanel.this.feedbackWindow.show(target);
+          }
+
           target.addComponent(list);
           StageSelectionPanel.this.onActionPerformed(target, stage, action);
         } else {

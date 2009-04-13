@@ -20,6 +20,9 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.reusable.Dialog;
+import org.obiba.onyx.core.reusable.FeedbackWindow;
+import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.ruby.core.service.ActiveTubeRegistrationService;
 import org.obiba.onyx.wicket.behavior.TabOnKeyPressBehaviour;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
@@ -48,6 +51,8 @@ public class TubeBarcodePanel extends Panel {
 
   private AjaxSubmitLink submitLink;
 
+  private FeedbackWindow feedbackWindow;
+
   //
   // Constructors
   //
@@ -56,7 +61,9 @@ public class TubeBarcodePanel extends Panel {
     super(id);
 
     add(new TubeBarcodeForm("tubeBarcodeForm"));
-    add(new FeedbackPanel("feedback"));
+    feedbackWindow = new FeedbackWindow("feedback");
+    feedbackWindow.setOutputMarkupId(true);
+    add(feedbackWindow);
   }
 
   //
@@ -121,6 +128,18 @@ public class TubeBarcodePanel extends Panel {
           }
 
           target.addComponent(TubeBarcodePanel.this.getParent());
+        }
+
+        @Override
+        protected void onError(AjaxRequestTarget target, Form form) {
+          feedbackWindow.setContent(new FeedbackPanel("content"));
+          feedbackWindow.setWindowClosedCallback(new Dialog.WindowClosedCallback() {
+
+            public void onClose(AjaxRequestTarget target, Status status) {
+            }
+          });
+
+          feedbackWindow.show(target);
         }
       };
 

@@ -189,7 +189,7 @@ public class InterviewPage extends BasePage {
       };
       add(link);
 
-      add(new StageSelectionPanel("stage-list", getFeedbackPanel()) {
+      add(new StageSelectionPanel("stage-list", getFeedbackWindow()) {
 
         private static final long serialVersionUID = 1L;
 

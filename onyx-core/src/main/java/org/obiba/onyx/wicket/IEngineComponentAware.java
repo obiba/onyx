@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.wicket;
 
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.action.ActionWindow;
 
 /**
@@ -29,6 +29,5 @@ public interface IEngineComponentAware {
    * The place to display feedback messages.
    * @param feedback
    */
-  public void setFeedbackPanel(FeedbackPanel feedbackPanel);
-
+  public void setFeedbackWindow(FeedbackWindow feedbackWindow);
 }

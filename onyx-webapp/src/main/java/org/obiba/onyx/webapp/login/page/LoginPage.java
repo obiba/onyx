@@ -10,6 +10,7 @@
 package org.obiba.onyx.webapp.login.page;
 
 import org.apache.wicket.markup.html.image.ContextImage;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.obiba.onyx.webapp.base.page.AbstractBasePage;
 import org.obiba.onyx.webapp.login.panel.LoginPanel;
@@ -21,7 +22,7 @@ public class LoginPage extends AbstractBasePage {
   public LoginPage() {
     ContextImage logoImage = new ContextImage("logo", new Model("images/logo/logo_on_light.png"));
     add(logoImage);
-
+    replace(new FeedbackPanel("feedback"));
     add(new LoginPanel("loginPanel"));
   }
 

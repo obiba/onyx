@@ -22,6 +22,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.obiba.onyx.core.reusable.Dialog;
+import org.obiba.onyx.core.reusable.FeedbackWindow;
+import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.behavior.LanguageStyleBehavior;
 import org.obiba.onyx.wicket.behavior.ajaxbackbutton.HistoryAjaxBehavior;
 import org.obiba.onyx.wicket.behavior.ajaxbackbutton.IHistoryAjaxBehaviorOwner;
@@ -162,13 +165,12 @@ public abstract class WizardForm extends Form {
 
   protected void onFinishSubmit(AjaxRequestTarget target, Form form) {
     log.debug("finish.onSubmit");
-    if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
     onFinish(target, form);
   }
 
   protected void onFinishError(AjaxRequestTarget target, Form form) {
     log.debug("finish.onError");
-    if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
+    if(getFeedbackWindow() != null) showFeedbackWindow(target);
     WizardForm.this.onError(target, form);
     target.appendJavascript("Resizer.resizeWizard();");
   }
@@ -178,7 +180,6 @@ public abstract class WizardForm extends Form {
     if(historyAjaxBehavior != null) {
       historyAjaxBehavior.registerAjaxEvent(target, this);
     }
-    if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
     WizardForm.this.gotoPrevious(target);
   }
 
@@ -188,13 +189,12 @@ public abstract class WizardForm extends Form {
     if(historyAjaxBehavior != null) {
       historyAjaxBehavior.registerAjaxEvent(target, this);
     }
-    if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
     WizardForm.this.gotoNext(target);
   }
 
   protected void onNextError(AjaxRequestTarget target, Form form) {
     log.debug("next.onError");
-    if(getFeedbackPanel() != null) target.addComponent(getFeedbackPanel());
+    if(getFeedbackWindow() != null) showFeedbackWindow(target);
     WizardForm.this.onError(target, form);
     WizardStepPanel currentStep = (WizardStepPanel) WizardForm.this.get("step");
     currentStep.onStepOutNextError(WizardForm.this, target);
@@ -302,11 +302,21 @@ public abstract class WizardForm extends Form {
     this.canceled = canceled;
   }
 
+  protected void showFeedbackWindow(AjaxRequestTarget target) {
+    getFeedbackWindow().setContent(new FeedbackPanel("content"));
+    getFeedbackWindow().setWindowClosedCallback(new Dialog.WindowClosedCallback() {
+      public void onClose(AjaxRequestTarget target, Status status) {
+      }
+    });
+
+    getFeedbackWindow().show(target);
+  }
+
   /**
    * Accessor to the feedback panel if any.
    * @return null by default.
    */
-  public FeedbackPanel getFeedbackPanel() {
+  public FeedbackWindow getFeedbackWindow() {
     return null;
   }
 

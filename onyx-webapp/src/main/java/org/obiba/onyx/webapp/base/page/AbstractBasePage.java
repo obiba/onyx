@@ -14,8 +14,8 @@ import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.resources.JavascriptResourceReference;
+import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.webapp.OnyxApplication;
 
 /**
@@ -23,13 +23,13 @@ import org.obiba.onyx.webapp.OnyxApplication;
  */
 public class AbstractBasePage extends WebPage implements IHeaderContributor {
 
-  private FeedbackPanel feedbackPanel;
+  private FeedbackWindow feedbackWindow;
 
   protected AbstractBasePage() {
-    // Create feedback panel and add to page
-    feedbackPanel = new FeedbackPanel("feedback");
-    feedbackPanel.setOutputMarkupId(true);
-    add(feedbackPanel);
+
+    feedbackWindow = new FeedbackWindow("feedback");
+    feedbackWindow.setOutputMarkupId(true);
+    add(feedbackWindow);
 
     // Tests the application type for unit testing
     if(getApplication() instanceof OnyxApplication) {
@@ -46,8 +46,8 @@ public class AbstractBasePage extends WebPage implements IHeaderContributor {
     response.renderJavascriptReference(new JavascriptResourceReference(BasePage.class, "onyx.js"));
   }
 
-  protected FeedbackPanel getFeedbackPanel() {
-    return feedbackPanel;
+  protected FeedbackWindow getFeedbackWindow() {
+    return feedbackWindow;
   }
 
 }

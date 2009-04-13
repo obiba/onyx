@@ -114,8 +114,8 @@ public class CommentPanel extends Panel {
         @Override
         protected void onError(AjaxRequestTarget target, RuntimeException e) {
           WizardForm wizard = (WizardForm) findParent(WizardForm.class);
-          if(wizard != null && wizard.getFeedbackPanel() != null) {
-            target.addComponent(wizard.getFeedbackPanel());
+          if(wizard != null && wizard.getFeedbackWindow() != null) {
+            if(wizard.getFeedbackMessage() != null) wizard.getFeedbackWindow().show(target);
           }
         }
       });

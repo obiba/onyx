@@ -15,12 +15,12 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.contraindication.Contraindication;
+import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
@@ -70,7 +70,7 @@ public class RubyWizardForm extends WizardForm {
 
   private ActionWindow actionWindow;
 
-  private FeedbackPanel feedbackPanel;
+  private FeedbackWindow feedbackWindow;
 
   private boolean resuming;
 
@@ -111,12 +111,12 @@ public class RubyWizardForm extends WizardForm {
   }
 
   public void onError(AjaxRequestTarget target, Form form) {
-    target.addComponent(feedbackPanel);
+    showFeedbackWindow(target);
   }
 
   @Override
-  public FeedbackPanel getFeedbackPanel() {
-    return feedbackPanel;
+  public FeedbackWindow getFeedbackWindow() {
+    return feedbackWindow;
   }
 
   //
@@ -135,8 +135,8 @@ public class RubyWizardForm extends WizardForm {
     return actionWindow;
   }
 
-  public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
-    this.feedbackPanel = feedbackPanel;
+  public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
+    this.feedbackWindow = feedbackWindow;
   }
 
   public Component getInterruptLink() {

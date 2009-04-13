@@ -9,8 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.ruby.core.wicket.wizard;
 
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
+import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
 import org.obiba.onyx.wicket.wizard.WizardForm;
@@ -63,11 +63,11 @@ public class RubyWizardPanel extends WizardPanel {
     wizardForm.setActionWindow(window);
   }
 
-  public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
-    wizardForm.setFeedbackPanel(feedbackPanel);
+  public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
+    wizardForm.setFeedbackWindow(feedbackWindow);
   }
 
-  public FeedbackPanel getFeedbackPanel() {
-    return wizardForm.getFeedbackPanel();
+  public FeedbackWindow getFeedbackWindow() {
+    return wizardForm.getFeedbackWindow();
   }
 }

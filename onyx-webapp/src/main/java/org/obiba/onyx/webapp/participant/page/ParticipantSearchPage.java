@@ -38,6 +38,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -56,6 +57,8 @@ import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
+import org.obiba.onyx.core.reusable.Dialog;
+import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -151,12 +154,11 @@ public class ParticipantSearchPage extends BasePage {
           replacement.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
         }
         replaceParticipantList(target, replacement);
-        target.addComponent(getFeedbackPanel());
       }
 
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
-        target.addComponent(getFeedbackPanel());
+        showFeedback(target);
       }
 
     };
@@ -169,12 +171,11 @@ public class ParticipantSearchPage extends BasePage {
       protected void onSubmit(AjaxRequestTarget target, Form form) {
         ParticipantEntityList replacement = getAllParticipantsList();
         replaceParticipantList(target, replacement);
-        target.addComponent(getFeedbackPanel());
       }
 
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
-        target.addComponent(getFeedbackPanel());
+        showFeedback(target);
       }
 
     });
@@ -186,12 +187,11 @@ public class ParticipantSearchPage extends BasePage {
         ParticipantEntityList replacement = new ParticipantEntityList("participant-list", new AppointedParticipantProvider(template), new ParticipantListColumnProvider(), new StringResourceModel("AppointmentsOfTheDay", ParticipantSearchPage.this, null));
         replacement.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
         replaceParticipantList(target, replacement);
-        target.addComponent(getFeedbackPanel());
       }
 
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
-        target.addComponent(getFeedbackPanel());
+        showFeedback(target);
       }
 
     });
@@ -203,12 +203,11 @@ public class ParticipantSearchPage extends BasePage {
         ParticipantEntityList replacement = new ParticipantEntityList("participant-list", new InterviewedParticipantProvider(), new ParticipantListColumnProvider(), new StringResourceModel("CurrentInterviews", ParticipantSearchPage.this, null));
         replacement.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
         replaceParticipantList(target, replacement);
-        target.addComponent(getFeedbackPanel());
       }
 
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
-        target.addComponent(getFeedbackPanel());
+        showFeedback(target);
       }
 
     });
@@ -247,6 +246,17 @@ public class ParticipantSearchPage extends BasePage {
 
     target.addComponent(participantList);
     target.appendJavascript("styleParticipantSearchNavigationBar();");
+  }
+
+  private void showFeedback(AjaxRequestTarget target) {
+    getFeedbackWindow().setContent(new FeedbackPanel("content"));
+    getFeedbackWindow().setWindowClosedCallback(new Dialog.WindowClosedCallback() {
+
+      public void onClose(AjaxRequestTarget target, Status status) {
+      }
+    });
+
+    getFeedbackWindow().show(target);
   }
 
   @SuppressWarnings("serial")

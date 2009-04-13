@@ -17,11 +17,11 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.ActionDefinition;
 import org.obiba.onyx.engine.ActionType;
@@ -29,7 +29,6 @@ import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.engine.state.IStageExecution;
 import org.obiba.onyx.quartz.core.engine.questionnaire.question.Page;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
-import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.ModalFeedbackPanel;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.simplified.ProgressBarPanel;
 import org.obiba.onyx.quartz.core.wicket.model.QuestionnaireModel;
 import org.obiba.onyx.wicket.StageModel;
@@ -72,13 +71,11 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   private ActionWindow actionWindow;
 
-  private FeedbackPanel feedbackPanel;
+  private FeedbackWindow feedbackWindow;
 
   private boolean resuming;
 
   protected boolean modalFeedback;
-
-  protected ModalWindow feedbackWindow;
 
   protected ModalWindow adminWindow;
 
@@ -104,8 +101,6 @@ public class QuestionnaireWizardForm extends WizardForm {
     // Conclusion step.
     conclusionStep = new ConclusionStep(getStepId());
 
-    createModalFeedbackPanel();
-
     progressBar = new ProgressBarPanel("progressBar");
     progressBar.setVisible(false);
     add(progressBar);
@@ -128,15 +123,6 @@ public class QuestionnaireWizardForm extends WizardForm {
     link.add(new AttributeModifier("value", true, new StringResourceModel("Administration", this, null)));
     link.add(new AttributeAppender("class", new Model("ui-corner-all"), " "));
     add(link);
-  }
-
-  private void createModalFeedbackPanel() {
-    // Create modal feedback window
-    feedbackWindow = new ModalWindow("feedbackWindow");
-    feedbackWindow.setCssClassName("onyx");
-    feedbackWindow.setInitialHeight(200);
-    feedbackWindow.setInitialWidth(400);
-    add(feedbackWindow);
   }
 
   @SuppressWarnings("serial")
@@ -217,27 +203,12 @@ public class QuestionnaireWizardForm extends WizardForm {
 
   public void onError(AjaxRequestTarget target, Form form) {
     log.info("onError={}", Session.get().getFeedbackMessages().iterator().next());
-
-    if(modalFeedback) {
-      log.debug("Modal feedback has been selected.");
-      if(!feedbackWindow.isShown()) {
-        feedbackWindow.setContent(new ModalFeedbackPanel(feedbackWindow));
-        feedbackWindow.show(target);
-        target.appendJavascript("resizeModalFeedback();");
-      }
-      getFeedbackPanel().setVisible(false);
-    } else {
-      log.debug("Standard feedback has been selected.");
-      getFeedbackPanel().setVisible(true);
-    }
-    getFeedbackPanel().setOutputMarkupPlaceholderTag(true);
-
-    target.appendJavascript("Resizer.resizeWizard();");
+    showFeedbackWindow(target);
   }
 
   @Override
-  public FeedbackPanel getFeedbackPanel() {
-    return feedbackPanel;
+  public FeedbackWindow getFeedbackWindow() {
+    return feedbackWindow;
   }
 
   //
@@ -269,8 +240,8 @@ public class QuestionnaireWizardForm extends WizardForm {
     this.actionWindow = window;
   }
 
-  public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
-    this.feedbackPanel = feedbackPanel;
+  public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
+    this.feedbackWindow = feedbackWindow;
   }
 
   private AjaxLink createInterrupt() {

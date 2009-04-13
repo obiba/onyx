@@ -117,7 +117,7 @@ public class StagePage extends BasePage implements IHistoryAjaxBehaviorOwner {
         if(stageComponent instanceof IEngineComponentAware) {
           IEngineComponentAware comp = (IEngineComponentAware) stageComponent;
           comp.setActionWindow(modal);
-          comp.setFeedbackPanel(getFeedbackPanel());
+          comp.setFeedbackWindow(getFeedbackWindow());
         }
         add(stageComponent);
       }

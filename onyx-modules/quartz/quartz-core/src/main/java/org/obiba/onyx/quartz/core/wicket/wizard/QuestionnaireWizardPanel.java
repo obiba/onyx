@@ -2,9 +2,9 @@ package org.obiba.onyx.quartz.core.wicket.wizard;
 
 import java.util.Locale;
 
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.quartz.core.service.ActiveQuestionnaireAdministrationService;
 import org.obiba.onyx.wicket.StageModel;
 import org.obiba.onyx.wicket.action.ActionWindow;
@@ -58,12 +58,12 @@ public class QuestionnaireWizardPanel extends WizardPanel {
     getQuestionnaireWizardForm().setActionWindow(window);
   }
 
-  public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
-    getQuestionnaireWizardForm().setFeedbackPanel(feedbackPanel);
+  public void setFeedbackWindow(FeedbackWindow feedbackWindow) {
+    getQuestionnaireWizardForm().setFeedbackWindow(feedbackWindow);
   }
 
-  public FeedbackPanel getFeedbackPanel() {
-    return getQuestionnaireWizardForm().getFeedbackPanel();
+  public FeedbackWindow getFeedbackWindow() {
+    return getQuestionnaireWizardForm().getFeedbackWindow();
   }
 
   /**
