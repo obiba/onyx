@@ -8,6 +8,7 @@
  **********************************************************************************************************************/
 package org.obiba.onyx.mica.core.service.impl;
 
+import org.hibernate.SessionFactory;
 import org.obiba.core.service.impl.PersistenceManagerAwareService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.marble.domain.consent.Consent;
@@ -24,6 +25,12 @@ public class DefaultActiveConclusionServiceImpl extends PersistenceManagerAwareS
   private ActiveInterviewService activeInterviewService;
 
   private boolean balsacConfirmationRequired = false;
+
+  protected SessionFactory sessionFactory = null;
+
+  public void setSessionFactory(SessionFactory sessionFactory) {
+    this.sessionFactory = sessionFactory;
+  }
 
   private Conclusion conclusion;
 
@@ -44,7 +51,10 @@ public class DefaultActiveConclusionServiceImpl extends PersistenceManagerAwareS
   }
 
   public void save() {
-    getPersistenceManager().save(this.conclusion);
+    // Fixes ONYX-457 Duplicate rows in conclusion table
+    // This quick fix required injecting the sessionFactory into this class. This is undesirable. It would be preferable
+    // for the Persistence Manager to handle these details. This is logged as ONYX-458.
+    sessionFactory.getCurrentSession().saveOrUpdate(this.conclusion);
   }
 
   public Consent getParticipantConsent() {
