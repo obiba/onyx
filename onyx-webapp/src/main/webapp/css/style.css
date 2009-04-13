@@ -609,7 +609,7 @@ td.keyValueTableKey {
 	color: #666666;
 	background-color: #FFFFFF;
 	padding: 2px 5px;
-	text-align: left; 
+	text-align: left;
 }
 
 td.keyValueTableKeyIndent {
@@ -1290,6 +1290,16 @@ div#participantPageSearchResults #newNavigator em {
 
 #participantReceptionPageContent #participantAndBarcodeAssignmentWrapper {
   overflow: auto;
+}
+
+#participantReceptionPageContent td.keyValueTableKey,
+#participantReceptionPageContent td.keyValueTableKeyIndent,
+#assignCodeToParticipant tr > td:first-child {
+  width: 142px;
+}
+
+#assignCodeToParticipant td {
+  padding: 2px 5px;
 }
 
 #participantReceptionPageContent .obiba-footer {
