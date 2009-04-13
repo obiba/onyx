@@ -27,6 +27,7 @@ import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.util.data.Data;
 import org.obiba.onyx.util.data.DataBuilder;
 import org.obiba.onyx.util.data.DataType;
+import org.obiba.runtime.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,8 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
   private static final Logger log = LoggerFactory.getLogger(OnyxVariableProvider.class);
 
   public static final String ADMIN = "Admin";
+
+  public static final String ONYX_VERSION = "onyxVersion";
 
   public static final String PARTICIPANT = "Participant";
 
@@ -110,6 +113,8 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
   private EntityQueryService queryService;
 
+  private Version version;
+
   public void setParticipantMetadata(ParticipantMetadata participantMetadata) {
     this.participantMetadata = participantMetadata;
   }
@@ -120,6 +125,10 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
   public void setQueryService(EntityQueryService queryService) {
     this.queryService = queryService;
+  }
+
+  public void setVersion(Version version) {
+    this.version = version;
   }
 
   public VariableData getVariableData(Participant participant, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
@@ -209,6 +218,8 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
         }
       }
 
+    } else if(variable.getName().equals(ONYX_VERSION)) {
+      varData.addData(DataBuilder.buildText(version.toString()));
     }
 
     return varData;
@@ -219,6 +230,8 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
     Variable admin = new Variable(ADMIN);
     variables.add(admin);
+
+    admin.addVariable(new Variable(ONYX_VERSION).setDataType(DataType.TEXT));
 
     Variable entity = admin.addVariable(new Variable(PARTICIPANT));
     entity.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT).setKey(PARTICIPANT_KEY));

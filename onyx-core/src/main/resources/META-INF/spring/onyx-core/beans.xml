@@ -85,6 +85,7 @@ http://www.springframework.org/schema/aop http://www.springframework.org/schema/
     <property name="participantMetadata" ref="participantMetadata" />
     <property name="participantService" ref="participantService" />
     <property name="queryService" ref="persistenceManager" />
+    <property name="version" ref="version"/>
   </bean>
 
   <bean id="onyxKeyStore" class="org.obiba.onyx.crypt.OnyxKeyStore" init-method="open" destroy-method="close">

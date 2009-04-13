@@ -11,13 +11,14 @@
       <string>/Onyx/Admin/Participant/barcode</string>
     </includedVariables>
   </destination>
-  
+
   <!-- Export only consent related variables -->
   <destination>
     <name>Appointment Unit</name>
     <includeAll>false</includeAll>
     <includedVariables>
       <string>/Onyx/Consent</string>
+      <string>/Onyx/Admin/onyxVersion</string>
     </includedVariables>
     <filteredVariables>
       <string>/Onyx/Consent/actions</string>
