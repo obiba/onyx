@@ -19,8 +19,8 @@
 		<span wicket:id="assignCodeToParticipantPanel"/>
     </div>
 	<div class="footer">
-    	<input type="button" class="obiba-button" wicket:id="saveAction" wicket:message="value:Save" />
-    	<input type="button" class="obiba-button" wicket:id="cancelAction" wicket:message="value:Cancel" />
+    	<input type="button" class="obiba-button ui-corner-all" wicket:id="saveAction" wicket:message="value:Save" />
+    	<input type="button" class="obiba-button ui-corner-all" wicket:id="cancelAction" wicket:message="value:Cancel" />
     </div>
   </form>
 </wicket:panel>
@@ -28,19 +28,20 @@
 <wicket:fragment wicket:id="rowFragment">
   <tr>
   	<td class="keyValueTableKey" nowrap="true"><span wicket:id="label"/></td>
-    <td><span wicket:id="value"/></td>
+    <td class="keyValueTableValue"><span wicket:id="value"/></td>
   </tr>
 </wicket:fragment>
 <wicket:fragment wicket:id="textFieldFragment">
   <tr>
   	<td class="keyValueTableKey" nowrap="true"><span wicket:id="label"/></td>
-    <td><input wicket:id="value" type="text" size="40" /></td>
+    <td class="keyValueTableValue"><input wicket:id="value" type="text" size="40" /></td>
   </tr>
 </wicket:fragment>
 <wicket:fragment wicket:id="genderFragment">
   <tr>
   	<td class="keyValueTableKey"><span wicket:id="label"/></td>
-    <td><select wicket:id="gender">
+    <td class="keyValueTableValue">
+      <select wicket:id="gender">
 	    <option>Female</option>
 	    <option>Male</option>
 	  </select>
@@ -50,12 +51,12 @@
 <wicket:fragment wicket:id="dateFragment">
   <tr>
   	<td class="keyValueTableKey" nowrap="true"><span wicket:id="label"/></td>
-    <td><input wicket:id="value" type="text" size="8" /></td>
+    <td class="keyValueTableValue"><input wicket:id="value" type="text" size="8" /></td>
   </tr>
 </wicket:fragment>
 <wicket:fragment wicket:id="metadataFragment">
-	<tr wicket:id="repeat">
-		<td class="keyValueTableKey"><span wicket:id="label"/><span wicket:id="mandatory"/></td>
-		<td><span wicket:id="field"/></td>
-	</tr>
+  <tr wicket:id="repeat">
+    <td class="keyValueTableKey"><span wicket:id="label"/><span wicket:id="mandatory"/></td>
+    <td class="keyValueTableValue"><span wicket:id="field"/></td>
+  </tr>
 </wicket:fragment>

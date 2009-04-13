@@ -607,50 +607,27 @@ td.keyValueTableHeader {
 
 td.keyValueTableKey {
 	color: #666666;
-	font-weight:bold;
-	background-color: #F1E0AD;
-	padding-right: 5px;
-	padding-left: 5px;
-	padding-top:2px;
-	padding-bottom:2px;
-	border-bottom: 1px solid #FFFFFF;
+	background-color: #FFFFFF;
+	padding: 2px 5px;
 	text-align: left; 
 }
 
 td.keyValueTableKeyIndent {
 	/*width:30%;*/
 	color: #666666;
-	font-weight:bold;
-	background-color: #cccccc;
-	padding-right: 5px;
-	padding-left: 15px;
-	padding-top:2px;
-	padding-bottom:2px;
-	border-bottom: 1px solid #FFFFFF;
+	background-color: #FFFFFF;
+	padding: 2px 5px 2px 15px;
 	text-align: left; 
 }
 
-td.keyValueTableValue {
-	color: #666666;
-	background-color: #ffffff;
-	text-align: left;
-}
-
-td.keyValueTableValueEven {
-	color: #666666;
-	background-color: #ffffff;
-	padding-right: 5px;
-	padding-left: 5px;
-	text-align: left;
-}
-
+td.keyValueTableValue,
+td.keyValueTableValueEven,
 td.keyValueTableValueOdd {
-	color: #666666;
-	background-color: #E1E3E5;
-	padding-right: 5px;
-	padding-left: 5px;
-	border-bottom: 1px solid #FFFFFF;
-	text-align: left; 
+	color: #000000;
+	background-color: #FFFFFF;
+	font-weight: bold;
+	padding: 2px 5px;
+	text-align: left;
 }
 
 /*******************END KEY VALUE TABLE LAYOUT********************************/
