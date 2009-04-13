@@ -1139,6 +1139,17 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
   margin-bottom:0px;
 }
 
+.obiba-content-region h2 {
+  border-color: #666666;
+  border-style: none none solid none;
+  border-width: 1px;
+  color: #666666;
+  font-size: 11px;
+  margin-bottom: 15px;
+  margin-top: 25px;
+  padding-bottom: 1px;	
+}
+
 /******************* End Content Region ********************************************/
 
 /******************* Buttons *******************************************************/
