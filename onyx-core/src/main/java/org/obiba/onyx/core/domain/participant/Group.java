@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.core.domain.participant;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +17,11 @@ import java.util.List;
 /**
  * Groups related {@code ParticipantAttribute}s.
  */
-public class Group implements ParticipantElement {
+public class Group implements ParticipantElement, Serializable {
+
+  private static final long serialVersionUID = -3365677950397361805L;
+
+  public static final String DEFAULT_GROUP_NAME = "DEFAULT_GROUP";
 
   private final String name;
 
