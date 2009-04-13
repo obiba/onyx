@@ -12,7 +12,6 @@ package org.obiba.onyx.webapp.participant.page;
 import org.apache.wicket.Page;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
@@ -32,11 +31,9 @@ public class ParticipantReceptionPage extends BasePage {
     switch(participant.getRecruitmentType()) {
     case ENROLLED:
       add(new TitleFragment("title", "participantReception"));
-      add(new InstructionFragment("instruction", "receiveParticipantInstructions"));
       break;
     case VOLUNTEER:
       add(new TitleFragment("title", "volunteerRegistration"));
-      add(new InstructionFragment("instruction", "enrollParticipantInstructions"));
       break;
     }
 
@@ -49,15 +46,6 @@ public class ParticipantReceptionPage extends BasePage {
     public TitleFragment(String id, String titleKey) {
       super(id, "titleFragment", ParticipantReceptionPage.this);
       add(new Label("titleMessage", new ResourceModel(titleKey)));
-    }
-  }
-
-  @SuppressWarnings("serial")
-  private class InstructionFragment extends Fragment {
-
-    public InstructionFragment(String id, String messageKey) {
-      super(id, "instructionFragment", ParticipantReceptionPage.this);
-      add(new MultiLineLabel("instructionMessage", new ResourceModel(messageKey)));
     }
   }
 }

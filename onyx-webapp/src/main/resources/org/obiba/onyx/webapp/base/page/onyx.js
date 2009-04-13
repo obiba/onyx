@@ -92,6 +92,19 @@ Resizer.resizeContentWrapper = function() {
 WindowUtil.attachEvent("load", Resizer.resizeContentWrapper);
 WindowUtil.attachEvent("resize", Resizer.resizeContentWrapper);
 
+// Resize the participantAndBarcodeAssignmentWrapper, based on the current size of the content wrapper.
+Resizer.resizeParticipantAndBarcodeAssignmentWrapper = function() {
+  var participantAndBarcodeAssignmentWrapper = $('#participantAndBarcodeAssignmentWrapper');
+  if (participantAndBarcodeAssignmentWrapper) {
+    var contentWrapper = $('#contentWrapper');
+    if (contentWrapper) {
+      participantAndBarcodeAssignmentWrapper.height(contentWrapper.height() - 150);
+    }
+  }
+}
+WindowUtil.attachEvent("load", Resizer.resizeParticipantAndBarcodeAssignmentWrapper);
+WindowUtil.attachEvent("resize", Resizer.resizeParticipantAndBarcodeAssignmentWrapper);
+
 Resizer.resizeWizard = function() {
 	var wizardFooter = $('#wizardFooter');
 	var footerHeight = 60;

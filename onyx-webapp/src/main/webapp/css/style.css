@@ -1268,6 +1268,23 @@ div#participantPageSearchResults #newNavigator em {
 
 /******************* End ParticipantSearchPage *************************************/
 
+/******************* ParticipantReceptionPage **************************************/
+
+#participantReceptionPageContent #participantAndBarcodeAssignmentWrapper {
+  overflow: auto;
+}
+
+#participantReceptionPageContent .obiba-footer {
+  border-top: 1px solid #C65F02;
+  padding-top: 10px;
+}
+
+#participantReceptionPageContent .obiba-footer > .obiba-footer-content {
+  float: right;
+}
+ 
+/******************* End ParticipantReceptionPage **********************************/
+
 /******************* Global List Styling *******************************************/
 
 #participantPageSearchResults table.entityTable tr.titleToolbar,

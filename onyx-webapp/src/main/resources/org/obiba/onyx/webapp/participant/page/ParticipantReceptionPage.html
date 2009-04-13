@@ -2,22 +2,16 @@
   <body>
     <wicket:extend>
       <div class="obiba-box-content">
-        <div class="obiba-content-region">
+        <div id="participantReceptionPageContent" class="obiba-content-region">
 	  	  <h1><span wicket:id="title" /></h1>
-  
-          <span wicket:id="instruction" />
           
-          <div wicket:id="editParticipantPanel"/>
-		  
-		  <wicket:fragment wicket:id="titleFragment">
-			<span wicket:id="titleMessage"/>
-		  </wicket:fragment>
-	  	  
-	  	  <wicket:fragment wicket:id="instructionFragment">
-		    <span wicket:id="instructionMessage"/>
-		  </wicket:fragment>
+          <div wicket:id="editParticipantPanel" />
 		</div>
       </div>
+      
+      <wicket:fragment wicket:id="titleFragment">
+        <span wicket:id="titleMessage" />
+      </wicket:fragment>
     </wicket:extend>
   </body>
 </html>
