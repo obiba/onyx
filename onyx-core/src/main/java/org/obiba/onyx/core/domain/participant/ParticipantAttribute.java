@@ -22,7 +22,7 @@ import org.obiba.onyx.util.data.DataType;
 /**
  * Participant attribute.
  */
-public class ParticipantAttribute implements Serializable {
+public class ParticipantAttribute implements Serializable, ParticipantElement {
   //
   // Instance Variables
   //
@@ -46,6 +46,8 @@ public class ParticipantAttribute implements Serializable {
   private boolean editableAfterReception;
 
   private List<IValidator> validators;
+
+  private Group group;
 
   //
   // Methods
@@ -216,5 +218,13 @@ public class ParticipantAttribute implements Serializable {
 
   public void setValidators(List<IValidator> validators) {
     this.validators = validators;
+  }
+
+  Group getGroup() {
+    return group;
+  }
+
+  void setGroup(Group group) {
+    this.group = group;
   }
 }
