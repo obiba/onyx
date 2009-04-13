@@ -1052,7 +1052,7 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 }
 
 .obiba-box-content {
-	padding: 18px 20px 18px 20px;
+	padding: 18px 20px;
 }
 
 /******************* End Boxing ****************************************************/
@@ -1192,7 +1192,11 @@ img.obiba-button {
 
 /******************* ParticipantSearchPage *****************************************/
 
-#participantSearchPageContent {
+#participantSearchPageContent.obiba-box-content {
+  padding: 7px 9px;
+}
+
+#participantSearchPageContent > table {
   border-spacing: 10px;
   width: 100%;
 }
@@ -1301,7 +1305,11 @@ div#participantPageSearchResults #newNavigator em {
 
 /******************* InterviewPage *************************************************/
 
-#interviewPageContent {
+#interviewPageContent.obiba-box-content {
+  padding: 7px 9px;
+}
+
+#interviewPageContent > table {
   border-spacing: 10px;
   width: 100%;	
 }
