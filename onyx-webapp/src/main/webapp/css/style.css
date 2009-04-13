@@ -1217,6 +1217,20 @@ img.obiba-button {
   border: none;	
 }
 
+#participantPageActions #enrollAndUpdateActions {
+  float: left;
+  margin-top: 5px;
+}
+
+#participantPageActions #enrollAndUpdateActions > div:first-child {
+  margin-bottom: 15px;
+}
+
+#participantPageActions #exportAction {
+  float: right;
+  margin-top: 5px;
+}
+
 span.interviewStatus {
   padding-left:12px;
   background-position:0 53%;
