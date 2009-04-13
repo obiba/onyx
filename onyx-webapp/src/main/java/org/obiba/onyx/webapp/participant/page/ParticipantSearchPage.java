@@ -56,6 +56,7 @@ import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
+import org.obiba.onyx.engine.variable.export.OnyxDataExport;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.panel.ConfirmExportPanel;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantModalPanel;
@@ -92,8 +93,8 @@ public class ParticipantSearchPage extends BasePage {
   @SpringBean
   private ParticipantMetadata participantMetadata;
 
-  // @SpringBean
-  // private OnyxDataExport onyxDataExport;
+  @SpringBean
+  private OnyxDataExport onyxDataExport;
 
   private OnyxEntityList<Participant> participantList;
 
@@ -534,13 +535,28 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          confirmExportModalWindow.setContent(new ConfirmExportPanel("content"));
+          final Model acceptModel = new Model();
+          confirmExportModalWindow.setContent(new ConfirmExportPanel("content", acceptModel));
+          confirmExportModalWindow.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void onClose(AjaxRequestTarget target) {
+              // This method is called after the confirm dialog is closed.
+              // This fixes part of ONYX-445. Ideally, the actual export would be done in a background thread
+              // so that the current request could terminate properly instead of idling during the export.
+              Boolean accepted = (Boolean) acceptModel.getObject();
+              if(accepted != null && accepted == true) {
+                try {
+                  onyxDataExport.exportCompletedInterviews();
+                } catch(Exception e) {
+                  log.error("Error on data export.", e);
+                }
+              }
+            };
+          });
           confirmExportModalWindow.show(target);
         }
-        /*
-         * @Override public void onClick(AjaxRequestTarget target) { try { onyxDataExport.exportCompletedInterviews(); }
-         * catch(Exception e) { log.error("Error on data export.", e); } }
-         */
 
       };
 
