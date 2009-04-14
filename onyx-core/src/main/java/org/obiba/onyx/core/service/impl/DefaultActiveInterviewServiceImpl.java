@@ -75,7 +75,6 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     return userSessionService.getUser();
   }
 
-  @Transactional(readOnly = true)
   public IStageExecution getStageExecution(Stage stage) {
     Participant currentParticipant = getParticipant();
     if(currentParticipant == null) return null;
