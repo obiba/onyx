@@ -197,7 +197,7 @@ public class PageBuilder extends AbstractQuestionnaireElementBuilder<Page> {
    */
   public PageBuilder addTimestamp(String name) {
     String timestampName = "TIMESTAMP_" + name;
-    withQuestion(timestampName).withSharedCategory("TIMESTAMP").withOpenAnswerDefinition(timestampName, DataType.DATE).setTimestampSource();
+    withQuestion(timestampName).withCategory("TIMESTAMP").withOpenAnswerDefinition(timestampName, DataType.DATE).setTimestampSource();
     return this;
   }
 
