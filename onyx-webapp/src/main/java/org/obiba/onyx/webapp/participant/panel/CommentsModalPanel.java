@@ -37,6 +37,9 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.reusable.Dialog;
+import org.obiba.onyx.core.reusable.FeedbackWindow;
+import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
@@ -65,7 +68,7 @@ public abstract class CommentsModalPanel extends Panel {
 
   private ModalWindow commentsWindow;
 
-  private FeedbackPanel feedback;
+  private FeedbackWindow feedback;
 
   private List<Action> commentList;
 
@@ -86,7 +89,7 @@ public abstract class CommentsModalPanel extends Panel {
     add(new ParticipantPanel("participant", new DetachableEntityModel(queryService, activeInterviewService.getParticipant()), true));
     add(new CommentForm("commentForm"));
 
-    add(feedback = new FeedbackPanel("feedback"));
+    add(feedback = new FeedbackWindow("feedback"));
     feedback.setOutputMarkupId(true);
 
     // The WebMarkupContainer is needed to allow the DataView update through Ajax. The DataView cannot be update
@@ -180,11 +183,18 @@ public abstract class CommentsModalPanel extends Panel {
 
           // Display a message confirming that the comment was saved.
           info(new StringResourceModel("NewCommentAddedConfirmation", this, null, new Object[] { DateModelUtils.getDateTimeModel(new Model(new Date(System.currentTimeMillis()))) }).getString());
-          target.addComponent(feedback);
         }
 
         protected void onError(AjaxRequestTarget target, Form form) {
-          target.addComponent(feedback);
+          feedback.setContent(new FeedbackPanel("content"));
+          feedback.setWindowClosedCallback(new Dialog.WindowClosedCallback() {
+
+            public void onClose(AjaxRequestTarget target, Status status) {
+            }
+
+          });
+
+          feedback.show(target);
         }
 
       });

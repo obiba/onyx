@@ -166,13 +166,7 @@ public class UserPanel extends Panel {
           feedbackWindow.setContent(feedbackPanel);
           feedbackWindow.setWindowClosedCallback(new Dialog.WindowClosedCallback() {
 
-            private static final long serialVersionUID = 1L;
-
             public void onClose(AjaxRequestTarget target, Dialog.Status status) {
-              this.onClose(target);
-            }
-
-            public void onClose(AjaxRequestTarget target) {
             }
 
           });
