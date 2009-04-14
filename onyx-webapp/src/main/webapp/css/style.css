@@ -1372,6 +1372,12 @@ div#participantPageSearchResults #newNavigator em {
   margin-bottom: 10px;	
 }
 
+#interviewPageLog #viewCommentsIconLink {
+  color: #FFFFFF;
+  position: relative;
+  top: 4px;
+}
+
 #interviewPageStages table.entityTable tr > th:first-child,
 #interviewPageStages table.entityTable tr > td:first-child {
   text-align: right;

@@ -108,53 +108,24 @@ public class InterviewPage extends BasePage {
         }
       });
 
+      CommentsLink viewCommentsIconLink = new CommentsLink("viewCommentsIconLink", commentsWindow);
+      viewCommentsIconLink.setMarkupId("viewCommentsIconLink");
+      viewCommentsIconLink.setOutputMarkupId(true);
+      add(viewCommentsIconLink);
+
       ContextImage commentIcon = new ContextImage("commentIcon", new Model("icons/note.png"));
       commentIcon.setMarkupId("commentIcon");
       commentIcon.setOutputMarkupId(true);
-      add(commentIcon);
+      viewCommentsIconLink.add(commentIcon);
 
       // Add view interview comments action
-      add(viewComments = new AjaxLink("viewComments") {
+      add(viewComments = new CommentsLink("viewComments", commentsWindow));
 
-        private static final long serialVersionUID = 1L;
-
-        public void onClick(AjaxRequestTarget target) {
-          commentsWindow.setContent(new CommentsModalPanel("content", commentsWindow, null) {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void onAddComments(AjaxRequestTarget target) {
-              InterviewPage.this.updateCommentsCount();
-              target.addComponent(InterviewPage.this.commentsCount);
-            }
-
-          });
-          commentsWindow.show(target);
-        }
-      });
+      // Add create interview comments action
+      add(new CommentsLink("addComments", commentsWindow));
 
       // Initialize comments counter
       updateCommentsCount();
-
-      // Add create interview comments action
-      add(new AjaxLink("addComments") {
-
-        private static final long serialVersionUID = 1L;
-
-        public void onClick(AjaxRequestTarget target) {
-          commentsWindow.setContent(new CommentsModalPanel("content", commentsWindow, null) {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void onAddComments(AjaxRequestTarget target) {
-              InterviewPage.this.updateCommentsCount();
-              target.addComponent(InterviewPage.this.commentsCount);
-            }
-
-          });
-          commentsWindow.show(target);
-        }
-      });
 
       ActiveInterviewModel interviewModel = new ActiveInterviewModel();
 
@@ -234,6 +205,32 @@ public class InterviewPage extends BasePage {
   public void updateCommentsCount() {
     viewComments.addOrReplace(commentsCount = new Label("commentsCount", String.valueOf(activeInterviewService.getInterviewComments().size())));
     commentsCount.setOutputMarkupId(true);
+  }
+
+  private class CommentsLink extends AjaxLink {
+
+    private static final long serialVersionUID = 1L;
+
+    private final ModalWindow commentsWindow;
+
+    private CommentsLink(String id, ModalWindow commentsWindow) {
+      super(id);
+      this.commentsWindow = commentsWindow;
+    }
+
+    public void onClick(AjaxRequestTarget target) {
+      commentsWindow.setContent(new CommentsModalPanel("content", commentsWindow, null) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onAddComments(AjaxRequestTarget target) {
+          InterviewPage.this.updateCommentsCount();
+          target.addComponent(InterviewPage.this.commentsCount);
+        }
+
+      });
+      commentsWindow.show(target);
+    }
   }
 
   @SuppressWarnings("serial")
