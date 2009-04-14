@@ -220,11 +220,11 @@ public class ParticipantAttribute implements Serializable, ParticipantElement {
     this.validators = validators;
   }
 
-  Group getGroup() {
+  public Group getGroup() {
     return group;
   }
 
-  void setGroup(Group group) {
+  public void setGroup(Group group) {
     this.group = group;
   }
 }

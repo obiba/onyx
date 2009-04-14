@@ -49,6 +49,7 @@ import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.participant.Appointment;
 import org.obiba.onyx.core.domain.participant.Gender;
+import org.obiba.onyx.core.domain.participant.Group;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
@@ -223,7 +224,7 @@ public class EditParticipantPanel extends Panel {
         add(new DateFragment(BIRTH_DATE, getModel(), "BirthDate*", birthDate));
       }
 
-      add(new MetadataFragment("metadata", getModel()));
+      add(new AttributeGroupsFragment("configuredAttributeGroups", getModel()));
 
       add(new AssignCodeToParticipantPanel("assignCodeToParticipantPanel", participantModel, participantMetadata) {
 
@@ -401,20 +402,65 @@ public class EditParticipantPanel extends Panel {
     }
   }
 
-  // Fragment definition for Metadata fields
-  private class MetadataFragment extends Fragment {
+  private class AttributeGroupsFragment extends Fragment {
 
     private static final long serialVersionUID = 1L;
 
-    public MetadataFragment(String id, IModel participantModel) {
-      super(id, "metadataFragment", EditParticipantPanel.this);
+    public AttributeGroupsFragment(String id, IModel participantModel) {
+      super(id, "attributeGroupsFragment", EditParticipantPanel.this);
 
-      RepeatingView repeat = new RepeatingView("repeat");
+      RepeatingView repeater = new RepeatingView("groupRepeater");
+      add(repeater);
+
+      List<Group> groups = getGroups();
+
+      for(int i = 0; i < groups.size(); i++) {
+        Group group = groups.get(i);
+
+        WebMarkupContainer item = new WebMarkupContainer(repeater.newChildId());
+        repeater.add(item);
+
+        String groupNameKey = group.getName();
+        String groupName = !group.isDefaultGroup() ? (new SpringStringResourceModel(groupNameKey, groupNameKey)).getString() : null;
+
+        item.add(new Label("groupName", groupName).setVisible(groupName != null));
+        item.add(new AttributeGroupFragment("group", participantModel, group));
+      }
+    }
+
+    private List<Group> getGroups() {
+      List<Group> groups = new ArrayList<Group>();
+
+      if(participantMetadata.getConfiguredAttributes().size() != 0) {
+        Group currentGroup = null;
+
+        for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
+          Group group = attribute.getGroup();
+
+          if((currentGroup == null) || (group.getName() == null && currentGroup.getName() != null) || (group.getName() != null && currentGroup.getName() == null) || (group.getName() != null && currentGroup.getName() != null && !group.getName().equals(currentGroup.getName()))) {
+            groups.add(group);
+            currentGroup = group;
+          }
+        }
+      }
+
+      return groups;
+    }
+  }
+
+  private class AttributeGroupFragment extends Fragment {
+
+    private static final long serialVersionUID = 1L;
+
+    public AttributeGroupFragment(String id, IModel participantModel, Group group) {
+      super(id, "attributeGroupFragment", EditParticipantPanel.this);
+
+      RepeatingView repeat = new RepeatingView("attributeRepeater");
       add(repeat);
 
       Participant participant = (Participant) participantModel.getObject();
 
-      for(final ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
+      for(final ParticipantAttribute attribute : group.getParticipantAttributes()) {
         WebMarkupContainer item = new WebMarkupContainer(repeat.newChildId());
         repeat.add(item);
 

@@ -110,8 +110,8 @@ public class EditParticipantPanelTest implements Serializable {
     tester.dumpPage();
 
     FormTester formTester = tester.newFormTester("panel:editParticipantForm");
-    formTester.select("metadata:repeat:1:field:input:select", 3);
-    formTester.setValue("metadata:repeat:2:field:input:field", "Peel street");
+    formTester.select("configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:1:field:input:select", 3);
+    formTester.setValue("configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:2:field:input:field", "Peel street");
 
     tester.executeAjaxEvent("panel:editParticipantForm:saveAction", "onclick");
     tester.assertNoErrorMessage();
@@ -123,10 +123,10 @@ public class EditParticipantPanelTest implements Serializable {
     tester.assertComponent("panel:editParticipantForm:birthDate:value", Label.class);
     tester.assertInvisible("panel:editParticipantForm:assignCodeToParticipantPanel");
 
-    tester.assertComponent("panel:editParticipantForm:metadata:repeat:1:field:input:select", DropDownChoice.class);
-    tester.assertComponent("panel:editParticipantForm:metadata:repeat:2:field:input:field", TextField.class);
-    tester.assertComponent("panel:editParticipantForm:metadata:repeat:3:field:input:field", TextField.class);
-    tester.assertComponent("panel:editParticipantForm:metadata:repeat:4:field", Label.class);
+    tester.assertComponent("panel:editParticipantForm:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:1:field:input:select", DropDownChoice.class);
+    tester.assertComponent("panel:editParticipantForm:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:2:field:input:field", TextField.class);
+    tester.assertComponent("panel:editParticipantForm:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:3:field:input:field", TextField.class);
+    tester.assertComponent("panel:editParticipantForm:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:4:field", Label.class);
 
     EasyMock.verify(mockUserSessionService);
     EasyMock.verify(mockParticipantService);
@@ -167,8 +167,8 @@ public class EditParticipantPanelTest implements Serializable {
     formTester.setValue("firstName:value", "Martine");
     formTester.select("gender:gender", 0);
     formTester.setValue("assignCodeToParticipantPanel:assignCodeToParticipantForm:participantCode", "B12345678");
-    formTester.setValue("metadata:repeat:2:field:input:field", "Peel street");
-    formTester.setValue("metadata:repeat:4:field:input:field", "514-398-3311 ext 00721");
+    formTester.setValue("configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:2:field:input:field", "Peel street");
+    formTester.setValue("configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:4:field:input:field", "514-398-3311 ext 00721");
 
     tester.assertComponent("panel:editParticipantForm:enrollmentId:value", Label.class);
     tester.assertComponent("panel:editParticipantForm:firstName:value", TextField.class);
@@ -177,10 +177,10 @@ public class EditParticipantPanelTest implements Serializable {
     tester.assertComponent("panel:editParticipantForm:birthDate:value", DateTextField.class);
     tester.assertComponent("panel:editParticipantForm:assignCodeToParticipantPanel", AssignCodeToParticipantPanel.class);
 
-    tester.assertComponent("panel:editParticipantForm:metadata:repeat:1:field:input:select", DropDownChoice.class);
-    tester.assertComponent("panel:editParticipantForm:metadata:repeat:2:field:input:field", TextField.class);
-    tester.assertComponent("panel:editParticipantForm:metadata:repeat:3:field", Label.class);
-    tester.assertComponent("panel:editParticipantForm:metadata:repeat:4:field:input:field", TextField.class);
+    tester.assertComponent("panel:editParticipantForm:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:1:field:input:select", DropDownChoice.class);
+    tester.assertComponent("panel:editParticipantForm:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:2:field:input:field", TextField.class);
+    tester.assertComponent("panel:editParticipantForm:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:3:field", Label.class);
+    tester.assertComponent("panel:editParticipantForm:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:4:field:input:field", TextField.class);
 
     tester.executeAjaxEvent("panel:editParticipantForm:saveAction", "onclick");
     tester.assertNoErrorMessage();
@@ -227,8 +227,8 @@ public class EditParticipantPanelTest implements Serializable {
     formTester.select("gender:gender", 1);
     formTester.setValue("birthDate", "05-05-1979");
     formTester.setValue("assignCodeToParticipantPanel:assignCodeToParticipantForm:participantCode", "B12345678");
-    formTester.setValue("metadata:repeat:2:field:input:field", "Peel street");
-    formTester.setValue("metadata:repeat:4:field:input:field", "514-398-3311 ext 00721");
+    formTester.setValue("configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:2:field:input:field", "Peel street");
+    formTester.setValue("configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:4:field:input:field", "514-398-3311 ext 00721");
 
     tester.assertComponent("panel:editParticipantForm:firstName:value", TextField.class);
     tester.assertComponent("panel:editParticipantForm:lastName:value", TextField.class);
@@ -237,10 +237,10 @@ public class EditParticipantPanelTest implements Serializable {
     tester.assertComponent("panel:editParticipantForm:assignCodeToParticipantPanel", AssignCodeToParticipantPanel.class);
     tester.assertVisible("panel:editParticipantForm:assignCodeToParticipantPanel");
 
-    tester.assertComponent("panel:editParticipantForm:metadata:repeat:1:field:input:select", DropDownChoice.class);
-    tester.assertComponent("panel:editParticipantForm:metadata:repeat:2:field:input:field", TextField.class);
-    tester.assertComponent("panel:editParticipantForm:metadata:repeat:3:field", Label.class);
-    tester.assertComponent("panel:editParticipantForm:metadata:repeat:4:field:input:field", TextField.class);
+    tester.assertComponent("panel:editParticipantForm:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:1:field:input:select", DropDownChoice.class);
+    tester.assertComponent("panel:editParticipantForm:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:2:field:input:field", TextField.class);
+    tester.assertComponent("panel:editParticipantForm:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:3:field", Label.class);
+    tester.assertComponent("panel:editParticipantForm:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:4:field:input:field", TextField.class);
 
     Assert.assertNull(formTester.getForm().get("enrollmentId:value"));
 

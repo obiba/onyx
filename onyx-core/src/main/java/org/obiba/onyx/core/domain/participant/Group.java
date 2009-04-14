@@ -43,4 +43,7 @@ public class Group implements ParticipantElement, Serializable {
     participantAttributes.add(participantAttribute);
   }
 
+  public boolean isDefaultGroup() {
+    return (name == DEFAULT_GROUP_NAME);
+  }
 }

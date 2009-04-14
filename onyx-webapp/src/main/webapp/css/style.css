@@ -630,6 +630,13 @@ td.keyValueTableValueOdd {
 	text-align: left;
 }
 
+td.keyValueTableValue input, td.keyValueTableValue select,
+td.keyValueTableValueEven input, td.keyValueTableValueEven select,
+td.keyValueTableValueOdd input, td.keyValueTableValueOdd select {
+    font-family: arial, verdana, sans-serif;
+    font-weight: bold;
+}
+
 /*******************END KEY VALUE TABLE LAYOUT********************************/
 
 table.gertTable {
@@ -1295,7 +1302,7 @@ div#participantPageSearchResults #newNavigator em {
 #participantReceptionPageContent td.keyValueTableKey,
 #participantReceptionPageContent td.keyValueTableKeyIndent,
 #assignCodeToParticipant tr > td:first-child {
-  width: 142px;
+  width: 186px;
 }
 
 #assignCodeToParticipant td {

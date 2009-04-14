@@ -11,18 +11,22 @@
 		    <span wicket:id="lastName" />
 		    <span wicket:id="gender" />
 		    <span wicket:id="birthDate" />
-		    <span wicket:id="metadata"/>
 		  </tbody>
 		</table>
+		
+		<span wicket:id="configuredAttributeGroups" />
       </div>
-      <br/>
+    
+      <h2></h2>
+    
       <div>
 		<span wicket:id="assignCodeToParticipantPanel"/>
       </div>
     </div>
-	<div class="obiba-footer">
+    
+    <div class="obiba-footer">
 	  <div class="obiba-footer-content">
-    	<input type="button" class="obiba-button ui-corner-all" wicket:id="saveAction" wicket:message="value:Save" />
+        <input type="button" class="obiba-button ui-corner-all" wicket:id="saveAction" wicket:message="value:Save" />
     	<input type="button" class="obiba-button ui-corner-all" wicket:id="cancelAction" wicket:message="value:Cancel" />
       </div>
     </div>
@@ -58,8 +62,21 @@
     <td class="keyValueTableValue"><input wicket:id="value" type="text" size="8" /></td>
   </tr>
 </wicket:fragment>
-<wicket:fragment wicket:id="metadataFragment">
-  <tr wicket:id="repeat">
+
+<wicket:fragment wicket:id="attributeGroupsFragment">
+  <div wicket:id="groupRepeater">
+    <h2><span wicket:id="groupName" /></h2>
+    
+	<table>
+	  <tbody>
+	    <span wicket:id="group" />
+      </tbody>
+	</table>
+  </div>
+</wicket:fragment>
+
+<wicket:fragment wicket:id="attributeGroupFragment">
+  <tr wicket:id="attributeRepeater">
     <td class="keyValueTableKey"><span wicket:id="label"/><span wicket:id="mandatory"/></td>
     <td class="keyValueTableValue"><span wicket:id="field"/></td>
   </tr>
