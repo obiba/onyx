@@ -34,9 +34,12 @@ public class FeedbackWindow extends Dialog {
    */
   public FeedbackWindow(String id) {
     super(id);
+    setCssClassName("onyx");
     setInitialHeight(DEFAULT_INITIAL_HEIGHT);
     setInitialWidth(DEFAULT_INITIAL_WIDTH);
     setOptions(Dialog.Option.CLOSE_OPTION);
+
+    get("content").add(new AttributeModifier("class", true, new Model("onyx-feedback")));
   }
 
   @Override

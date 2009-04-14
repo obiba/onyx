@@ -54,9 +54,7 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
-import org.obiba.onyx.core.reusable.Dialog;
 import org.obiba.onyx.core.reusable.FeedbackWindow;
-import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.util.data.Data;
@@ -257,12 +255,6 @@ public class EditParticipantPanel extends Panel {
 
         protected void onError(AjaxRequestTarget target, Form form) {
           feedbackWindow.setContent(new FeedbackPanel("content"));
-          feedbackWindow.setWindowClosedCallback(new Dialog.WindowClosedCallback() {
-
-            public void onClose(AjaxRequestTarget target, Status status) {
-            }
-          });
-
           feedbackWindow.show(target);
         }
       };

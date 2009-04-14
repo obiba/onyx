@@ -37,9 +37,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.user.User;
-import org.obiba.onyx.core.reusable.Dialog;
 import org.obiba.onyx.core.reusable.FeedbackWindow;
-import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionType;
@@ -187,13 +185,6 @@ public abstract class CommentsModalPanel extends Panel {
 
         protected void onError(AjaxRequestTarget target, Form form) {
           feedback.setContent(new FeedbackPanel("content"));
-          feedback.setWindowClosedCallback(new Dialog.WindowClosedCallback() {
-
-            public void onClose(AjaxRequestTarget target, Status status) {
-            }
-
-          });
-
           feedback.show(target);
         }
 

@@ -22,8 +22,6 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.participant.Participant;
-import org.obiba.onyx.core.reusable.Dialog;
-import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.webapp.base.page.BasePage;
@@ -92,12 +90,6 @@ public class HomePage extends BasePage {
 
             // target.addComponent(getFeedbackPanel());
             getFeedbackWindow().setContent(new FeedbackPanel("content"));
-            getFeedbackWindow().setWindowClosedCallback(new Dialog.WindowClosedCallback() {
-
-              public void onClose(AjaxRequestTarget target, Status status) {
-              }
-            });
-
             getFeedbackWindow().show(target);
           }
         }

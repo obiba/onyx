@@ -36,7 +36,6 @@ import org.obiba.core.service.SortingClause;
 import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.Status;
 import org.obiba.onyx.core.domain.user.User;
-import org.obiba.onyx.core.reusable.Dialog;
 import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.core.service.UserService;
 import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
@@ -164,13 +163,6 @@ public class UserPanel extends Panel {
         @Override
         protected void onError(AjaxRequestTarget target, Form form) {
           feedbackWindow.setContent(feedbackPanel);
-          feedbackWindow.setWindowClosedCallback(new Dialog.WindowClosedCallback() {
-
-            public void onClose(AjaxRequestTarget target, Dialog.Status status) {
-            }
-
-          });
-
           feedbackWindow.show(target);
         }
       });

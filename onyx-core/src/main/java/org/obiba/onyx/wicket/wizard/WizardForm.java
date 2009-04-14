@@ -22,9 +22,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
-import org.obiba.onyx.core.reusable.Dialog;
 import org.obiba.onyx.core.reusable.FeedbackWindow;
-import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.wicket.behavior.LanguageStyleBehavior;
 import org.obiba.onyx.wicket.behavior.ajaxbackbutton.HistoryAjaxBehavior;
 import org.obiba.onyx.wicket.behavior.ajaxbackbutton.IHistoryAjaxBehaviorOwner;
@@ -304,11 +302,6 @@ public abstract class WizardForm extends Form {
 
   protected void showFeedbackWindow(AjaxRequestTarget target) {
     getFeedbackWindow().setContent(new FeedbackPanel("content"));
-    getFeedbackWindow().setWindowClosedCallback(new Dialog.WindowClosedCallback() {
-      public void onClose(AjaxRequestTarget target, Status status) {
-      }
-    });
-
     getFeedbackWindow().show(target);
   }
 

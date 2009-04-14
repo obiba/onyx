@@ -34,9 +34,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.value.ValueMap;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
-import org.obiba.onyx.core.reusable.Dialog;
 import org.obiba.onyx.core.reusable.FeedbackWindow;
-import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
@@ -98,12 +96,6 @@ public abstract class StageSelectionPanel extends Panel {
 
           if(((List<FeedbackMessage>) StageSelectionPanel.this.feedbackPanel.getFeedbackMessagesModel().getObject()).size() > 0) {
             StageSelectionPanel.this.feedbackWindow.setContent(StageSelectionPanel.this.feedbackPanel);
-            StageSelectionPanel.this.feedbackWindow.setWindowClosedCallback(new Dialog.WindowClosedCallback() {
-
-              public void onClose(AjaxRequestTarget target, Status status) {
-              }
-            });
-
             StageSelectionPanel.this.feedbackWindow.show(target);
           }
 
