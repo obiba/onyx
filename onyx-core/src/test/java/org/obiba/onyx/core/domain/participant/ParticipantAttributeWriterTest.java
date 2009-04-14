@@ -65,7 +65,6 @@ public class ParticipantAttributeWriterTest {
     maritalStatus = createParticipantAttribute("Marital Status");
   }
 
-  // @Ignore("Test configuration needed to produce attribute and group participant-attribute.xml file.")
   @Test
   public void testWriteXmlGroupsAndAttributesMixed() {
     List<ParticipantElement> attributeList = new ArrayList<ParticipantElement>();

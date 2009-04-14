@@ -1,0 +1,60 @@
+<participantAttributes>
+  <group name="doctor">
+    <attribute>
+      <name>Doctor First Name</name>
+      <type>TEXT</type>
+      <assignableAtEnrollment>false</assignableAtEnrollment>
+      <mandatoryAtEnrollment>false</mandatoryAtEnrollment>
+      <mandatoryAtReception>false</mandatoryAtReception>
+      <editableAtReception>false</editableAtReception>
+      <editableAfterReception>false</editableAfterReception>
+    </attribute>
+    <attribute>
+      <name>Doctor Last Name</name>
+      <type>TEXT</type>
+      <assignableAtEnrollment>false</assignableAtEnrollment>
+      <mandatoryAtEnrollment>false</mandatoryAtEnrollment>
+      <mandatoryAtReception>false</mandatoryAtReception>
+      <editableAtReception>false</editableAtReception>
+      <editableAfterReception>false</editableAfterReception>
+    </attribute>
+  </group>
+  <attribute>
+    <name>Special Needs</name>
+    <type>TEXT</type>
+    <assignableAtEnrollment>false</assignableAtEnrollment>
+    <mandatoryAtEnrollment>false</mandatoryAtEnrollment>
+    <mandatoryAtReception>false</mandatoryAtReception>
+    <editableAtReception>false</editableAtReception>
+    <editableAfterReception>false</editableAfterReception>
+  </attribute>
+  <group name="familyMember">
+    <attribute>
+      <name>Family Member First Name</name>
+      <type>TEXT</type>
+      <assignableAtEnrollment>false</assignableAtEnrollment>
+      <mandatoryAtEnrollment>false</mandatoryAtEnrollment>
+      <mandatoryAtReception>false</mandatoryAtReception>
+      <editableAtReception>false</editableAtReception>
+      <editableAfterReception>false</editableAfterReception>
+    </attribute>
+    <attribute>
+      <name>Family Member Last Name</name>
+      <type>TEXT</type>
+      <assignableAtEnrollment>false</assignableAtEnrollment>
+      <mandatoryAtEnrollment>false</mandatoryAtEnrollment>
+      <mandatoryAtReception>false</mandatoryAtReception>
+      <editableAtReception>false</editableAtReception>
+      <editableAfterReception>false</editableAfterReception>
+    </attribute>
+  </group>
+  <attribute>
+    <name>Marital Status</name>
+    <type>TEXT</type>
+    <assignableAtEnrollment>false</assignableAtEnrollment>
+    <mandatoryAtEnrollment>false</mandatoryAtEnrollment>
+    <mandatoryAtReception>false</mandatoryAtReception>
+    <editableAtReception>false</editableAtReception>
+    <editableAfterReception>false</editableAfterReception>
+  </attribute>
+</participantAttributes>

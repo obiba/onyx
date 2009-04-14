@@ -83,7 +83,7 @@ public class ParticipantAttributeReader {
    */
   private List<ParticipantAttribute> flatten(List<ParticipantElement> participantElements) {
 
-    Group defaultGroup = new Group("DEFAULT_GROUP");
+    Group defaultGroup = new Group(Group.DEFAULT_GROUP_NAME);
     List<ParticipantAttribute> attributeList = new ArrayList<ParticipantAttribute>();
     for(ParticipantElement participantElement : participantElements) {
       doFlatten(participantElement, defaultGroup, attributeList);
@@ -95,7 +95,10 @@ public class ParticipantAttributeReader {
     if(participantElement instanceof ParticipantAttribute) {
       ParticipantAttribute attribute = (ParticipantAttribute) participantElement;
       attribute.setGroup(group);
-      group.addParticipantAttribute(attribute);
+      if(group.getName().equals(Group.DEFAULT_GROUP_NAME)) {
+        // Add attributes without a group to the default group.
+        group.addParticipantAttribute(attribute);
+      }
       attributeList.add(attribute);
       return;
     } else if(participantElement instanceof Group) {
