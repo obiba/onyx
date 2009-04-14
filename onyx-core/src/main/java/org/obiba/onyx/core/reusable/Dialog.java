@@ -74,6 +74,7 @@ public class Dialog extends ModalWindow {
       @Override
       protected void onError(AjaxRequestTarget target, Form form) {
         Dialog.this.setStatus(Status.ERROR);
+        if(closeButtonCallback == null || (closeButtonCallback != null && closeButtonCallback.onCloseButtonClicked(target, Dialog.this.getStatus()))) ModalWindow.closeCurrent(target);
       }
 
     };

@@ -10,7 +10,9 @@
 package org.obiba.onyx.core.reusable;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.model.IModel;
+import org.obiba.onyx.core.reusable.Dialog.Status;
 
 /**
  * Builder created to make easier the use of Dialog class in the application
@@ -24,13 +26,20 @@ public class DialogBuilder {
     dialog.setType(type);
     dialog.setOptions(option, labels);
     dialog.setContent(content);
+    dialog.setWindowClosedCallback(new Dialog.WindowClosedCallback() {
+      private static final long serialVersionUID = 1L;
+
+      public void onClose(AjaxRequestTarget target, Status status) {
+      }
+
+    });
   }
 
   public static DialogBuilder buildWarningDialog(String id, String title, Component content) {
     return new DialogBuilder(id, Dialog.Type.WARNING, content, null).setTitle(title);
   }
 
-  public static DialogBuilder buildWarningDialog(String id, Model title, Component content) {
+  public static DialogBuilder buildWarningDialog(String id, IModel title, Component content) {
     return new DialogBuilder(id, Dialog.Type.WARNING, content, null).setTitle(title);
   }
 
@@ -38,7 +47,7 @@ public class DialogBuilder {
     return new DialogBuilder(id, Dialog.Type.INFO, content, null).setTitle(title);
   }
 
-  public static DialogBuilder buildInfoDialog(String id, Model title, Component content) {
+  public static DialogBuilder buildInfoDialog(String id, IModel title, Component content) {
     return new DialogBuilder(id, Dialog.Type.INFO, content, null).setTitle(title);
   }
 
@@ -46,7 +55,7 @@ public class DialogBuilder {
     return new DialogBuilder(id, Dialog.Type.ERROR, content, null).setTitle(title);
   }
 
-  public static DialogBuilder buildErrorDialog(String id, Model title, Component content) {
+  public static DialogBuilder buildErrorDialog(String id, IModel title, Component content) {
     return new DialogBuilder(id, Dialog.Type.ERROR, content, null).setTitle(title);
   }
 
@@ -54,7 +63,7 @@ public class DialogBuilder {
     return new DialogBuilder(id, Dialog.Type.PLAIN, content, null).setTitle(title);
   }
 
-  public static DialogBuilder buildDialog(String id, Model title, Component content) {
+  public static DialogBuilder buildDialog(String id, IModel title, Component content) {
     return new DialogBuilder(id, Dialog.Type.PLAIN, content, null).setTitle(title);
   }
 
@@ -78,7 +87,7 @@ public class DialogBuilder {
     return this;
   }
 
-  private DialogBuilder setTitle(Model title) {
+  private DialogBuilder setTitle(IModel title) {
     dialog.setTitle(title);
     return this;
   }
