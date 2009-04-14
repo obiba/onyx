@@ -9,18 +9,24 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.login.panel;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.RequestCycle;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authentication.panel.SignInPanel;
-import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
+import org.obiba.onyx.core.reusable.Dialog;
+import org.obiba.onyx.core.reusable.DialogBuilder;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession;
 import org.obiba.onyx.webapp.OnyxAuthenticatedSession.AuthenticateErrorCode;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
-import org.obiba.onyx.wicket.util.JavascriptEventAlert;
 
 public class LoginPanel extends SignInPanel {
 
@@ -31,22 +37,25 @@ public class LoginPanel extends SignInPanel {
 
   private AuthenticateErrorCode errCode = null;
 
+  private Dialog forgotPasswordDialog;
+
   public LoginPanel(String id) {
     super(id, false);
     remove("feedback");
 
-    Link link = new Link("forgotPassword") {
+    forgotPasswordDialog = createForgotPasswordDialog();
+    add(forgotPasswordDialog);
+
+    AjaxLink link = new AjaxLink("forgotPassword") {
 
       private static final long serialVersionUID = 1L;
 
       @Override
-      public void onClick() {
-        // TODO Auto-generated method stub
-        return;
+      public void onClick(AjaxRequestTarget target) {
+        forgotPasswordDialog.show(target);
       }
 
     };
-    link.add(new JavascriptEventAlert("onclick", new SpringStringResourceModel("ForgotPasswordMessage", "ForgotPasswordMessage")));
     ((MarkupContainer) get("signInForm")).add(link);
   }
 
@@ -85,5 +94,19 @@ public class LoginPanel extends SignInPanel {
         ((WebRequest) RequestCycle.get().getRequest()).getHttpServletRequest().getSession().setMaxInactiveInterval(sessionTimeoutInMinutes * 60);
       }
     }
+  }
+
+  private Dialog createForgotPasswordDialog() {
+    Dialog dialog = null;
+
+    IModel titleModel = (new ResourceModel("ForgotPassword")).wrapOnAssignment(this);
+
+    IModel messageModel = new SpringStringResourceModel("ForgotPasswordMessage", "ForgotPasswordMessage");
+    Component content = new MultiLineLabel("content", messageModel);
+
+    dialog = DialogBuilder.buildInfoDialog("forgotPasswordDialog", titleModel, content).getDialog();
+    dialog.setInitialHeight(102);
+
+    return dialog;
   }
 }
