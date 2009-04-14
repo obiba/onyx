@@ -19,20 +19,19 @@ import org.obiba.onyx.core.reusable.Dialog.Status;
  */
 public class DialogBuilder {
 
-  Dialog dialog;
+  private Dialog dialog;
+
+  private static final Dialog.WindowClosedCallback WINDOW_CLOSED_CALLBACK = new Dialog.WindowClosedCallback() {
+    public void onClose(AjaxRequestTarget target, Status status) {
+    }
+  };
 
   private DialogBuilder(String id, Dialog.Type type, Component content, Dialog.Option option, String... labels) {
     dialog = new Dialog(id);
     dialog.setType(type);
     dialog.setOptions(option, labels);
     dialog.setContent(content);
-    dialog.setWindowClosedCallback(new Dialog.WindowClosedCallback() {
-      private static final long serialVersionUID = 1L;
-
-      public void onClose(AjaxRequestTarget target, Status status) {
-      }
-
-    });
+    dialog.setWindowClosedCallback(WINDOW_CLOSED_CALLBACK);
   }
 
   public static DialogBuilder buildWarningDialog(String id, String title, Component content) {
