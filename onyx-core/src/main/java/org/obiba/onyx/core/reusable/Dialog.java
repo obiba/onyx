@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.obiba.onyx.core.reusable;
 
+import java.io.Serializable;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.WicketRuntimeException;
@@ -239,13 +241,13 @@ public class Dialog extends ModalWindow {
     }
   }
 
-  public static interface CloseButtonCallback {
+  public static interface CloseButtonCallback extends Serializable {
 
     public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status);
 
   }
 
-  public static interface WindowClosedCallback {
+  public static interface WindowClosedCallback extends Serializable {
 
     public void onClose(AjaxRequestTarget target, Status status);
 
