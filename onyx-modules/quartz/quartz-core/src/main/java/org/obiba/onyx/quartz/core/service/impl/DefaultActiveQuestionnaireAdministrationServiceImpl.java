@@ -84,7 +84,6 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
     this.navigationStrategy = navigationStrategy;
   }
 
-  @Transactional(readOnly = true)
   public QuestionnaireParticipant start(Participant participant, Locale language) {
     currentLanguage = null;
 
@@ -366,7 +365,7 @@ public abstract class DefaultActiveQuestionnaireAdministrationServiceImpl extend
   @Transactional(readOnly = true)
   public QuestionnaireParticipant getQuestionnaireParticipant() {
     // Note: Don't include questionnaire version in the template. This is in case the version
-    // of the questionnaire changes between canceling and re-starting the questionnaire stage.
+    // of the questionnaire changes between cancelling and re-starting the questionnaire stage.
     QuestionnaireParticipant questionnaireParticipantTemplate = new QuestionnaireParticipant();
     questionnaireParticipantTemplate.setParticipant(activeInterviewService.getParticipant());
     questionnaireParticipantTemplate.setQuestionnaireName(currentQuestionnaire.getName());
