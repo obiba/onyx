@@ -38,8 +38,6 @@ public class QuestionnaireModel extends SpringDetachableModel {
   @SpringBean
   private QuestionnaireBundleManager bundleManager;
 
-  private transient QuestionnaireFinder finder;
-
   private String questionnaireName;
 
   @SuppressWarnings("unchecked")
@@ -116,7 +114,7 @@ public class QuestionnaireModel extends SpringDetachableModel {
     QuestionnaireBundle bundle = bundleManager.getBundle(questionnaireName);
 
     Questionnaire questionnaire = bundle.getQuestionnaire();
-    finder = QuestionnaireFinder.getInstance(questionnaire);
+    QuestionnaireFinder finder = QuestionnaireFinder.getInstance(questionnaire);
     // enable questionnaire elements caching
     if(questionnaire.getQuestionnaireCache() == null) {
       finder.buildQuestionnaireCache();
@@ -138,11 +136,6 @@ public class QuestionnaireModel extends SpringDetachableModel {
     }
 
     return element;
-  }
-
-  @Override
-  protected void onDetach() {
-    finder = null;
   }
 
   @Override
