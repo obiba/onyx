@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
@@ -40,6 +41,11 @@ public class FeedbackWindow extends Dialog {
     setOptions(Dialog.Option.CLOSE_OPTION);
 
     get("content").add(new AttributeModifier("class", true, new Model("onyx-feedback")));
+
+    setWindowClosedCallback(new WindowClosedCallback() {
+      public void onClose(AjaxRequestTarget target, Status status) {
+      }
+    });
   }
 
   @Override
