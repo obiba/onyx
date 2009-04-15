@@ -307,7 +307,10 @@ public class VariableStreamer {
     HSSFRichTextString str = new HSSFRichTextString();
     str.clearFormatting();
 
-    xlsWrite(wb, sheet, 1, variable, variablePathNamingStrategy);
+    HSSFCellStyle categoryTextStyle = wb.createCellStyle();
+    categoryTextStyle.setWrapText(true);
+
+    xlsWrite(wb, sheet, categoryTextStyle, 1, variable, variablePathNamingStrategy);
 
     // write the workbook to the output stream
     // close our file (don't blow out our file handles
@@ -320,7 +323,7 @@ public class VariableStreamer {
     }
   }
 
-  private static int xlsWrite(HSSFWorkbook wb, HSSFSheet sheet, int rowCount, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
+  private static int xlsWrite(HSSFWorkbook wb, HSSFSheet sheet, HSSFCellStyle categoryTextStyle, int rowCount, Variable variable, IVariablePathNamingStrategy variablePathNamingStrategy) {
     if(variable.getDataType() != null) {
       HSSFRow row = sheet.createRow(rowCount);
       HSSFCell cell = row.createCell(0);
@@ -332,9 +335,7 @@ public class VariableStreamer {
       cell = row.createCell(3);
       cell.setCellValue(new HSSFRichTextString(getReferences(variable)));
       cell = row.createCell(4);
-      HSSFCellStyle cs = wb.createCellStyle();
-      cs.setWrapText(true);
-      cell.setCellStyle(cs);
+      cell.setCellStyle(categoryTextStyle);
       cell.setCellValue(new HSSFRichTextString(getCategories(variable, "\n")));
       cell = row.createCell(5);
       cell.setCellValue(new HSSFRichTextString(variable.getDataType().toString()));
@@ -343,7 +344,7 @@ public class VariableStreamer {
       rowCount++;
     }
     for(Variable child : variable.getVariables()) {
-      rowCount = xlsWrite(wb, sheet, rowCount, child, variablePathNamingStrategy);
+      rowCount = xlsWrite(wb, sheet, categoryTextStyle, rowCount, child, variablePathNamingStrategy);
     }
     return rowCount;
   }
