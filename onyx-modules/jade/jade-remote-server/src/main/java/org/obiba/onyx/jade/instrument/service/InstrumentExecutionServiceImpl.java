@@ -35,42 +35,42 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
     this.activeInstrumentRunService = activeInstrumentRunService;
   }
 
-  @Transactional(readOnly = true)
+  
   private InstrumentRun getInstrumentRun() {
     return activeInstrumentRunService.getInstrumentRun();
   }
 
-  @Transactional(readOnly = true)
+  
   public String getInstrumentOperator() {
     return getInstrumentRun().getUser().getFullName();
   }
 
-  @Transactional(readOnly = true)
+  
   public String getParticipantFirstName() {
     return (getInstrumentRun().getParticipant().getFirstName());
   }
 
-  @Transactional(readOnly = true)
+  
   public String getParticipantLastName() {
     return (getInstrumentRun().getParticipant().getLastName());
   }
 
-  @Transactional(readOnly = true)
+  
   public Date getParticipantBirthDate() {
     return (getInstrumentRun().getParticipant().getBirthDate());
   }
 
-  @Transactional(readOnly = true)
+  
   public String getParticipantGender() {
     return (getInstrumentRun().getParticipant().getGender().toString());
   }
 
-  @Transactional(readOnly = true)
+  
   public String getParticipantID() {
     return (getInstrumentRun().getParticipant().getBarcode());
   }
 
-  @Transactional(readOnly = true)
+  
   public Map<String, Data> getInputParametersValue(String... parameters) {
     Map<String, Data> inputParametersValue = new HashMap<String, Data>();
     for(String parameterCode : parameters) {
@@ -82,7 +82,7 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
     return (inputParametersValue);
   }
 
-  @Transactional(readOnly = true)
+  
   public Map<String, String> getInputParametersVendorNames(String... parameters) {
     Map<String, String> inputParametersVendorName = new HashMap<String, String>();
     for(String parameterCode : parameters) {
@@ -93,7 +93,7 @@ public class InstrumentExecutionServiceImpl implements InstrumentExecutionServic
     return (inputParametersVendorName);
   }
 
-  @Transactional(readOnly = true)
+  
   public Data getInputParameterValue(String parameterCode) {
     InstrumentParameter parameter = activeInstrumentRunService.getParameterByCode(parameterCode);
     return activeInstrumentRunService.getInputInstrumentRunValue(parameterCode).getData(parameter.getDataType());

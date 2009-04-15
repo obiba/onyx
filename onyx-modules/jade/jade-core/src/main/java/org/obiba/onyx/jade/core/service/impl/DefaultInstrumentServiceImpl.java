@@ -45,17 +45,17 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     this.instrumentsPath = instrumentsPath;
   }
 
-  @Transactional(readOnly = true)
+  
   public InstrumentType getInstrumentType(String name) {
     return instrumentTypes.get(name);
   }
 
-  @Transactional(readOnly = true)
+  
   public Map<String, InstrumentType> getInstrumentTypes() {
     return instrumentTypes;
   }
 
-  @Transactional(readOnly = true)
+  
   public InstrumentParameter getParameterByCode(InstrumentType instrumentType, String parameterCode) {
     for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
       if(parameter.getCode().equals(parameterCode)) {
@@ -65,12 +65,12 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     return null;
   }
 
-  @Transactional(readOnly = true)
+  
   public List<Instrument> getInstruments(String typeName) {
     return getInstruments(getInstrumentType(typeName));
   }
 
-  @Transactional(readOnly = true)
+  
   public List<Instrument> getInstruments(InstrumentType instrumentType) {
     Instrument template = new Instrument();
     template.setType(instrumentType.getName());
@@ -78,7 +78,7 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     return getPersistenceManager().match(template);
   }
 
-  @Transactional(readOnly = true)
+  
   public List<Instrument> getActiveInstruments(InstrumentType instrumentType) {
     Instrument template = new Instrument();
     template.setType(instrumentType.getName());
@@ -87,24 +87,24 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     return getPersistenceManager().match(template);
   }
 
-  @Transactional(readOnly = true)
+  
   public boolean isInteractiveInstrument(InstrumentType instrumentType) {
     if(instrumentType == null) return false;
 
     return !getOutputParameters(instrumentType, InstrumentParameterCaptureMethod.AUTOMATIC).isEmpty();
   }
 
-  @Transactional(readOnly = true)
+  
   public int countInstrumentInputParameter(InstrumentType instrument, boolean readOnlySource) {
     return getInstrumentInputParameter(instrument, readOnlySource).size();
   }
 
-  @Transactional(readOnly = true)
+  
   public List<InstrumentInputParameter> getInstrumentInputParameter(InstrumentType instrumentType, boolean readOnlySource) {
     return instrumentType.getInstrumentParameters(InstrumentInputParameter.class, readOnlySource);
   }
 
-  @Transactional(readOnly = true)
+  
   public List<InstrumentOutputParameter> getOutputParameters(InstrumentType instrumentType, InstrumentParameterCaptureMethod captureMethod) {
     List<InstrumentOutputParameter> outputParameters = new ArrayList<InstrumentOutputParameter>();
 
@@ -122,7 +122,7 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     return outputParameters;
   }
 
-  @Transactional(readOnly = true)
+  
   public InstrumentOutputParameter getInstrumentOutputParameter(InstrumentType instrumentType, String parameterCode) {
     for(InstrumentParameter parameter : instrumentType.getInstrumentParameters()) {
       if(parameter instanceof InstrumentOutputParameter) {
@@ -134,7 +134,7 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     return null;
   }
 
-  @Transactional(readOnly = true)
+  
   public Contraindication getContraindication(InstrumentType instrumentType, String contraindicationCode) {
     for(Contraindication ci : instrumentType.getContraindications()) {
       if(ci.getCode().equals(contraindicationCode)) return ci;
@@ -142,7 +142,7 @@ public class DefaultInstrumentServiceImpl extends PersistenceManagerAwareService
     return null;
   }
 
-  @Transactional(readOnly = true)
+  
   public String getInstrumentInstallPath(InstrumentType type) {
     return instrumentsPath + "/" + type.getName();
   }

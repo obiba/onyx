@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public abstract class DefaultUserServiceImpl extends PersistenceManagerAwareService implements UserService {
 
-  @Transactional(readOnly = true)
+  
   public User getUserWithLogin(String login) {
     User template = new User();
     template.setLogin(login);
@@ -48,7 +48,7 @@ public abstract class DefaultUserServiceImpl extends PersistenceManagerAwareServ
     getPersistenceManager().save(user);
   }
 
-  @Transactional(readOnly = true)
+  
   public boolean isNewPassword(User user, String password) {
     User template = new User();
     template.setLogin(user.getLogin());
@@ -70,7 +70,7 @@ public abstract class DefaultUserServiceImpl extends PersistenceManagerAwareServ
     return getPersistenceManager().save(role);
   }
 
-  @Transactional(readOnly = true)
+  
   public List<Role> getRoles(SortingClause... clauses) {
     return getPersistenceManager().list(Role.class, clauses);
   }
