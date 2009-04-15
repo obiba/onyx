@@ -18,10 +18,10 @@ public class DialogPanel extends Panel {
 
   private static final long serialVersionUID = 1L;
 
-  public DialogPanel(String id) {
+  public DialogPanel(String id, boolean feedbackType) {
     super(id);
 
-    final Dialog dialog = new Dialog("dialog");
+    final Dialog dialog = feedbackType ? new FeedbackWindow("dialog") : new Dialog("dialog");
 
     add(dialog);
     add(new AjaxLink("openDialog") {
@@ -31,6 +31,10 @@ public class DialogPanel extends Panel {
         dialog.show(target);
       }
     });
+  }
+
+  public DialogPanel(String id) {
+    this(id, false);
   }
 
   public DialogPanel(String id, Dialog.Option option, String... labels) {
