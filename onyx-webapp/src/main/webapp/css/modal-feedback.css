@@ -10,6 +10,10 @@ div.wicket-modal div.onyx .feedback {
   color:black;
 }
 
+div.wicket-modal div.onyx div.onyx-feedback .separator {
+  border-top:1px solid #B7B7B7;
+}
+
 div.wicket-modal div.onyx li.feedbackPanelERROR {
   background-image:none;
   padding-left:0px;

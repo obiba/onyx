@@ -20,9 +20,8 @@ div.wicket-modal {
 
 div.modal_footer {
   text-align: right;
-  padding-right: 10px;
+  padding-right: 20px;
   padding-top: 10px;
-  height: 35px;
 }
 
 div.wicket-mask-dark {
@@ -80,10 +79,12 @@ div.wicket-modal div.onyx .imagelink {
 div.wicket-modal div.onyx .obiba-content {
   margin-left: 10px;
   margin-right: 10px;
+  margin-top: 15px;
+  height: 472px;
 }
 
 div.wicket-modal div.onyx .separator {
-  border-top:1px solid #B7B7B7;
+  border-top:1px solid #C65F02;
   margin-right:10px;
   margin-left:10px;
 }
@@ -91,5 +92,17 @@ div.wicket-modal div.onyx .separator {
 div.wicket-modal div.onyx span.w_captionText  {
   margin-left:10px;
   margin-top:7px;
-  color:black;
+  color: #C65F02;
+}
+
+div.wicket-modal div.onyx td.keyValueTableKey {
+	width: 25%;
+}
+
+div.wicket-modal div.onyx tr.ui-state-disabled td.keyValueTableKey {
+	color: #CCCCCC;
+}
+
+div.wicket-modal div.onyx td.keyValueTableValue input, div.wicket-modal div.onyx td.keyValueTableValue select{
+	width: 306px;
 }

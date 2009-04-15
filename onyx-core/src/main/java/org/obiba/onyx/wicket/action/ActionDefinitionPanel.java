@@ -11,26 +11,18 @@ package org.obiba.onyx.wicket.action;
 
 import java.io.Serializable;
 import java.text.DateFormat;
-import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.IErrorMessageSource;
 import org.apache.wicket.validation.IValidatable;
@@ -39,16 +31,12 @@ import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.User;
-import org.obiba.onyx.core.reusable.Dialog;
 import org.obiba.onyx.core.reusable.FeedbackWindow;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
-import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 import org.obiba.onyx.wicket.model.SpringStringResourceModel;
-import org.obiba.onyx.wicket.util.DateModelUtils;
-import org.obiba.wicket.model.MessageSourceResolvableStringModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,89 +64,71 @@ public abstract class ActionDefinitionPanel extends Panel {
     Action action = new Action(definition);
     setModel(new Model(action));
 
-    add(new Label("description", new MessageSourceResolvableStringModel(definition.getDescription())));
-
-    Form form = new Form("form");
-    add(form);
-
-    form.add(feedback = new FeedbackWindow("feedback"));
+    add(feedback = new FeedbackWindow("feedback"));
     feedback.setOutputMarkupId(true);
 
-    form.add(new Label("operator", userSessionService.getUser().getFullName()));
+    add(new Label("operator", userSessionService.getUser().getFullName()));
 
-    Participant participant = activeInterviewService.getParticipant();
-    form.add(new Label("participantName", participant.getFullName()));
-    form.add(new Label("participantGender", new StringResourceModel("Gender." + participant.getGender(), this, null)));
-    form.add(new Label("participantBirthDate", DateModelUtils.getDateModel(new PropertyModel(this, "dateFormat"), new Model(participant.getBirthDate()))));
+    // password field
+    User operatorTemplate = new User();
+    PasswordTextField password = new PasswordTextField("password", new PropertyModel(operatorTemplate, "password"));
+    password.setRequired(definition.isAskPassword());
+    password.add(new IValidator() {
 
-    PasswordFragment pwdFragment = new PasswordFragment("password");
-    form.add(pwdFragment.setVisible(definition.isAskPassword()));
+      public void validate(IValidatable validatable) {
+        if(!User.digest((String) validatable.getValue()).equals(userSessionService.getUser().getPassword())) {
+          validatable.error(new UserValidationError());
+        }
+      }
+    });
+    add(password.setEnabled(definition.isAskPassword()));
 
-    BarcodeFragment barcodeFragment = new BarcodeFragment("confirmBarcode");
-    form.add(barcodeFragment.setVisible(definition.isAskParticipantId()));
+    // participant barcode field
+    Participant participantTemplate = new Participant();
+    TextField barcode = new TextField("ParticipantCode", new PropertyModel(participantTemplate, "barcode"));
+    barcode.setRequired(definition.isAskParticipantId());
+    barcode.add(new IValidator() {
+
+      public void validate(IValidatable validatable) {
+        if(!activeInterviewService.getParticipant().getBarcode().equals(validatable.getValue())) {
+          validatable.error(new ParticipantValidationError());
+        }
+      }
+
+    });
+    add(barcode.setEnabled(definition.isAskParticipantId()));
 
     TextArea commentArea = new TextArea("comment", new PropertyModel(this, "action.comment"));
     commentArea.setRequired(definition.isCommentMandatory());
     commentArea.add(new StringValidator.MaximumLengthValidator(2000));
-    form.add(commentArea);
+    add(commentArea);
 
     // request for focus on first field
-    if(pwdFragment.isVisible()) {
-      pwdFragment.pwdTextField.setOutputMarkupId(true);
-      target.focusComponent(pwdFragment.pwdTextField);
-    } else if(barcodeFragment.isVisible()) {
-      barcodeFragment.barcodeTextField.setOutputMarkupId(true);
-      target.focusComponent(barcodeFragment.barcodeTextField);
+    if(password.isEnabled()) {
+      password.setOutputMarkupId(true);
+      target.focusComponent(password);
+    } else if(barcode.isEnabled()) {
+      barcode.setOutputMarkupId(true);
+      target.focusComponent(barcode);
     } else {
       commentArea.setOutputMarkupId(true);
       target.focusComponent(commentArea);
     }
 
     action.setEventReason(definition.getDefaultReason());
-    if(definition.getReasons().size() > 0) {
-      form.add(new ReasonsFragment("reasons", definition.getReasons(), definition.isReasonMandatory()));
-    } else {
-      form.add(new EmptyPanel("reasons").setVisible(false));
-    }
-
-    form.add(new AjaxButton("submit", form) {
-
-      @Override
-      protected void onSubmit(AjaxRequestTarget target, Form form) {
-        cancelled = false;
-        // target.addComponent(feedback);
-        ActionDefinitionPanel.this.onClick(target);
+    DropDownChoice reasonsDropDown = new DropDownChoice("reasonsSelect", new PropertyModel(ActionDefinitionPanel.this, "action.eventReason"), definition.getReasons(), new IChoiceRenderer() {
+      public Object getDisplayValue(Object object) {
+        return new SpringStringResourceModel(object.toString()).getString();
       }
 
-      @Override
-      protected void onError(AjaxRequestTarget target, Form form) {
-        cancelled = false;
-        feedback.setContent(new FeedbackPanel("content"));
-        feedback.setWindowClosedCallback(new Dialog.WindowClosedCallback() {
-
-          public void onClose(AjaxRequestTarget target, Dialog.Status status) {
-            this.onClose(target);
-          }
-
-          public void onClose(AjaxRequestTarget target) {
-          }
-        });
-
-        feedback.show(target);
+      public String getIdValue(Object object, int index) {
+        return object.toString();
       }
-
     });
-
-    form.add(new AjaxLink("cancel") {
-
-      @Override
-      public void onClick(AjaxRequestTarget target) {
-        cancelled = true;
-        // target.addComponent(feedback);
-        ActionDefinitionPanel.this.onClick(target);
-      }
-
-    });
+    reasonsDropDown.setLabel(new ResourceModel("Reasons"));
+    reasonsDropDown.setRequired(definition.isReasonMandatory());
+    reasonsDropDown.setEnabled(definition.getReasons().size() > 0);
+    add(reasonsDropDown);
   }
 
   public Action getAction() {
@@ -172,12 +142,6 @@ public abstract class ActionDefinitionPanel extends Panel {
   public DateFormat getDateFormat() {
     return userSessionService.getDateFormat();
   }
-
-  /**
-   * Called after submit or cancel button are clicked.
-   * @param target
-   */
-  public abstract void onClick(AjaxRequestTarget target);
 
   @SuppressWarnings("serial")
   private class ParticipantValidationError implements IValidationError, Serializable {
@@ -197,69 +161,11 @@ public abstract class ActionDefinitionPanel extends Panel {
 
   }
 
-  @SuppressWarnings("serial")
-  private class ReasonsFragment extends Fragment {
-
-    public ReasonsFragment(String id, List<String> reasons, boolean mandatory) {
-      super(id, "reasonsFragment", ActionDefinitionPanel.this);
-
-      DropDownChoice reasonsDropDown = new DropDownChoice("reasonsSelect", new PropertyModel(ActionDefinitionPanel.this, "action.eventReason"), reasons, new IChoiceRenderer() {
-        public Object getDisplayValue(Object object) {
-          return new SpringStringResourceModel(object.toString()).getString();
-        }
-
-        public String getIdValue(Object object, int index) {
-          return object.toString();
-        }
-      });
-      reasonsDropDown.setLabel(new ResourceModel("Reasons"));
-      reasonsDropDown.setRequired(mandatory);
-
-      add(reasonsDropDown);
-    }
-
+  public FeedbackWindow getFeedback() {
+    return feedback;
   }
 
-  @SuppressWarnings("serial")
-  private class PasswordFragment extends Fragment {
-
-    PasswordTextField pwdTextField;
-
-    public PasswordFragment(String id) {
-      super(id, "passwordFragment", ActionDefinitionPanel.this);
-      final User operatorTemplate = new User();
-      pwdTextField = new PasswordTextField("password", new PropertyModel(operatorTemplate, "password"));
-      add(pwdTextField.add(new RequiredFormFieldBehavior()));
-      pwdTextField.add(new IValidator() {
-
-        public void validate(IValidatable validatable) {
-          if(!User.digest((String) validatable.getValue()).equals(userSessionService.getUser().getPassword())) {
-            validatable.error(new UserValidationError());
-          }
-        }
-      });
-    }
-  }
-
-  @SuppressWarnings("serial")
-  private class BarcodeFragment extends Fragment {
-
-    TextField barcodeTextField;
-
-    public BarcodeFragment(String id) {
-      super(id, "barcodeFragment", ActionDefinitionPanel.this);
-      final Participant participantTemplate = new Participant();
-      barcodeTextField = new TextField("ParticipantCode", new PropertyModel(participantTemplate, "barcode"));
-      add(barcodeTextField.add(new RequiredFormFieldBehavior()));
-      barcodeTextField.add(new IValidator() {
-
-        public void validate(IValidatable validatable) {
-          if(!activeInterviewService.getParticipant().getBarcode().equals(validatable.getValue())) {
-            validatable.error(new ParticipantValidationError());
-          }
-        }
-
-      });
-    }
+  public void setFeedback(FeedbackWindow feedback) {
+    this.feedback = feedback;
   }
 }
