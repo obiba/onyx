@@ -17,11 +17,16 @@ import org.obiba.onyx.quartz.core.engine.questionnaire.question.QuestionCategory
 import org.obiba.onyx.quartz.core.wicket.layout.IQuestionCategorySelectionListener;
 import org.obiba.onyx.quartz.core.wicket.layout.impl.behavior.QuestionnaireStyleBehavior;
 import org.obiba.onyx.wicket.wizard.WizardForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base utility methods for sharing some question category selection callbacks.
  */
 public abstract class BaseQuestionCategorySelectionPanel extends Panel {
+
+  @SuppressWarnings("unused")
+  private static final Logger log = LoggerFactory.getLogger(BaseQuestionCategorySelectionPanel.class);
 
   /**
    * The question model (not necessarily the question of the category in the case of shared categories question).
@@ -80,6 +85,12 @@ public abstract class BaseQuestionCategorySelectionPanel extends Panel {
     if(parentListener != null) {
       parentListener.onQuestionCategorySelection(target, questionModel, questionCategoryModel, true);
     }
+  }
+
+  @Override
+  protected void detachModel() {
+    super.detachModel();
+    questionModel.detach();
   }
 
 }

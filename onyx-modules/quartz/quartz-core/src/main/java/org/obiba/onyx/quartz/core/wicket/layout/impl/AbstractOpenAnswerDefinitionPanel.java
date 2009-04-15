@@ -128,4 +128,11 @@ public abstract class AbstractOpenAnswerDefinitionPanel extends Panel {
     }
   }
 
+  @Override
+  protected void detachModel() {
+    super.detachModel();
+    questionModel.detach();
+    openAnswerDefinitionModel.detach();
+  }
+
 }
