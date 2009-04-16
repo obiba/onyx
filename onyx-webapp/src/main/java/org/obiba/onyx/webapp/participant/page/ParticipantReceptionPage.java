@@ -17,7 +17,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.webapp.base.page.BasePage;
-import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
+import org.obiba.onyx.webapp.participant.panel.EditParticipantFormPanel;
 
 @AuthorizeInstantiation( { "SYSTEM_ADMINISTRATOR", "PARTICIPANT_MANAGER", "DATA_COLLECTION_OPERATOR" })
 public class ParticipantReceptionPage extends BasePage {
@@ -37,7 +37,7 @@ public class ParticipantReceptionPage extends BasePage {
       break;
     }
 
-    add(new EditParticipantPanel("editParticipantPanel", participantModel, sourcePage));
+    add(new EditParticipantFormPanel("editParticipantFormPanel", participantModel, sourcePage));
   }
 
   @SuppressWarnings("serial")

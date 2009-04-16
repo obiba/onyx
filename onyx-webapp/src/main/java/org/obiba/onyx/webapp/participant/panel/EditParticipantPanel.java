@@ -23,7 +23,6 @@ import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.datetime.PatternDateConverter;
 import org.apache.wicket.datetime.markup.html.form.DateTextField;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -54,7 +53,10 @@ import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
+import org.obiba.onyx.core.reusable.Dialog;
 import org.obiba.onyx.core.reusable.FeedbackWindow;
+import org.obiba.onyx.core.reusable.Dialog.CloseButtonCallback;
+import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.util.data.Data;
@@ -105,8 +107,27 @@ public class EditParticipantPanel extends Panel {
 
   private PanelMode mode;
 
+  AssignCodeToParticipantPanel assignCodePanel;
+
+  IModel participantModel;
+
+  Dialog modalWindow;
+
   private static enum PanelMode {
     RECEPTION, ENROLLMENT, EDIT
+  }
+
+  public EditParticipantPanel(String id, IModel participantModel, Page sourcePage) {
+    super(id, participantModel);
+    this.sourcePage = sourcePage;
+    this.participantModel = participantModel;
+    initMode();
+
+    createEditParticipantPanel(sourcePage);
+
+    feedbackWindow = new FeedbackWindow("feedback");
+    feedbackWindow.setOutputMarkupId(true);
+    add(feedbackWindow);
   }
 
   /**
@@ -115,41 +136,172 @@ public class EditParticipantPanel extends Panel {
    * @param id
    * @param participantModel
    * @param sourcePage
-   * @param mode
+   * @param editParticipantForm
    */
-  public EditParticipantPanel(String id, IModel participantModel, Page sourcePage) {
-    super(id, participantModel);
-    this.sourcePage = sourcePage;
-    initMode();
-
-    Form editParticipantForm = new EditParticipantForm("editParticipantForm", participantModel, null);
-    add(editParticipantForm);
-
-    feedbackWindow = new FeedbackWindow("feedback");
-    feedbackWindow.setOutputMarkupId(true);
-    add(feedbackWindow);
+  public EditParticipantPanel(String id, IModel participantModel, Page sourcePage, Form editParticipantForm) {
+    this(id, participantModel, sourcePage);
+    addActionButtons(null, editParticipantForm);
   }
 
   /**
-   * Constructor in a modal window
+   * Constructor in a dialog window
    * 
    * @param id
    * @param participantModel
    * @param sourcePage
-   * @param mode
    * @param modalWindow
    */
-  public EditParticipantPanel(String id, IModel participantModel, Page sourcePage, ModalWindow modalWindow) {
-    super(id, participantModel);
-    this.sourcePage = sourcePage;
-    initMode();
+  public EditParticipantPanel(String id, final IModel participantModel, final Page sourcePage, final Dialog modalWindow) {
+    this(id, participantModel, sourcePage);
+    this.modalWindow = modalWindow;
+    addDialogActionButtons(modalWindow, participantModel);
+  }
 
-    Form editParticipantForm = new EditParticipantForm("editParticipantForm", participantModel, modalWindow);
-    add(editParticipantForm);
+  private void addActionButtons(final Dialog modalWindow, final Form editParticipantForm) {
 
-    feedbackWindow = new FeedbackWindow("feedback");
-    feedbackWindow.setOutputMarkupId(true);
-    add(feedbackWindow);
+    @SuppressWarnings("serial")
+    AjaxSubmitLink submitLink = new AjaxSubmitLink("saveAction") {
+      protected void onSubmit(AjaxRequestTarget target, Form form) {
+        updateParticipant(target);
+      }
+
+      protected void onError(AjaxRequestTarget target, Form form) {
+        displayFeedback(target);
+      }
+    };
+    editParticipantForm.add(submitLink);
+
+    @SuppressWarnings("serial")
+    AjaxLink cancelLink = new AjaxLink("cancelAction") {
+      @Override
+      public void onClick(AjaxRequestTarget target) {
+        cancelEditParticipant(target);
+      }
+    };
+    editParticipantForm.add(cancelLink);
+
+  }
+
+  @SuppressWarnings("serial")
+  private void addDialogActionButtons(final Dialog modalWindow, final IModel participantModel) {
+    modalWindow.setCloseButtonCallback(new CloseButtonCallback() {
+
+      public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
+        switch(status) {
+
+        case SUCCESS:
+          updateParticipant(target);
+          break;
+
+        case ERROR:
+          displayFeedback(target);
+          break;
+
+        case CANCELLED:
+          cancelEditParticipant(target);
+          break;
+
+        default:
+          break;
+
+        }
+        return true;
+      }
+
+    });
+
+  }
+
+  private void cancelEditParticipant(AjaxRequestTarget target) {
+    if(mode == PanelMode.EDIT && modalWindow != null) {
+      modalWindow.close(target);
+    } else {
+      setResponsePage(sourcePage);
+    }
+  }
+
+  private void displayFeedback(AjaxRequestTarget target) {
+    feedbackWindow.setContent(new FeedbackPanel("content"));
+    feedbackWindow.show(target);
+  }
+
+  private void updateParticipant(AjaxRequestTarget target) {
+    Participant participant = (Participant) participantModel.getObject();
+    participantService.updateParticipant(participant);
+
+    // submitting child form if it's visible
+    if(assignCodePanel.isVisible()) {
+      ((AssignCodeToParticipantForm) assignCodePanel.get("assignCodeToParticipantForm")).onSubmit(participant);
+    }
+
+    if(mode == PanelMode.EDIT && modalWindow != null) {
+      modalWindow.close(target);
+    } else {
+      setResponsePage(sourcePage);
+    }
+  }
+
+  private void createEditParticipantPanel(final Page sourcePage) {
+    Participant participant = (Participant) participantModel.getObject();
+
+    // set recruitmentType for participant to volunteer if it is null
+    if(participant.getRecruitmentType() == null) {
+      participant.setRecruitmentType(RecruitmentType.VOLUNTEER);
+      participant.setExported(false);
+    }
+    if(participant.getRecruitmentType().equals(RecruitmentType.VOLUNTEER)) {
+      add(new EmptyPanel("enrollmentId"));
+    } else
+      add(new RowFragment("enrollmentId", getModel(), "EnrollmentId", "enrollmentId"));
+
+    if(participant.getAppointment() == null) {
+      participant.setAppointment(new Appointment(participant, new Date()));
+    }
+
+    // set Assessment Center Id for participant
+    if(participant.getSiteNo() == null) {
+      ApplicationConfiguration appConfig = queryService.matchOne(new ApplicationConfiguration());
+      participant.setSiteNo(appConfig.getSiteNo());
+    }
+
+    if(mode == PanelMode.EDIT) {
+      add(new RowFragment(BARCODE, getModel(), "ParticipantCode", BARCODE));
+      add(new RowFragment(FIRST_NAME, getModel(), "FirstName", FIRST_NAME));
+      add(new RowFragment(LAST_NAME, getModel(), "LastName", LAST_NAME));
+      add(new RowFragment(GENDER, getModel(), "Gender", GENDER));
+      add(new RowFragment(BIRTH_DATE, getModel(), "BirthDate", BIRTH_DATE));
+    } else {
+      add(new EmptyPanel(BARCODE));
+
+      FormComponent firstName = new TextField("value", new PropertyModel(getModel(), FIRST_NAME)).setRequired(true).setLabel(new ResourceModel("FirstName")).add(new StringValidator.MaximumLengthValidator(250));
+      firstName.add(new StringValidator.MaximumLengthValidator(250));
+      add(new TextFieldFragment(FIRST_NAME, getModel(), "FirstName*", firstName));
+
+      FormComponent lastName = new TextField("value", new PropertyModel(getModel(), LAST_NAME)).setRequired(true).setLabel(new ResourceModel("LastName")).add(new StringValidator.MaximumLengthValidator(250));
+      lastName.add(new StringValidator.MaximumLengthValidator(250));
+      add(new TextFieldFragment(LAST_NAME, getModel(), "LastName*", lastName));
+      add(new DropDownFragment(GENDER, getModel(), "Gender*", createGenderDropDown()));
+
+      // A birthdate is valid only if it is in the following interval -> [currentDate - 130 years, currentDate]
+      FormComponent birthDate = createBirthDateField();
+      Calendar calendar = Calendar.getInstance();
+      calendar.add(Calendar.YEAR, -130);
+      birthDate.add(DateValidator.range(calendar.getTime(), new Date()));
+      add(new DateFragment(BIRTH_DATE, getModel(), "BirthDate*", birthDate));
+    }
+
+    add(new AttributeGroupsFragment("configuredAttributeGroups", getModel()));
+
+    add(assignCodePanel = new AssignCodeToParticipantPanel("assignCodeToParticipantPanel", participantModel, participantMetadata) {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public boolean isVisible() {
+        return mode == PanelMode.RECEPTION || mode == PanelMode.ENROLLMENT;
+      }
+    });
+
   }
 
   /**
@@ -164,114 +316,6 @@ public class EditParticipantPanel extends Panel {
       // Mode is ENROLLMENT if the participant is a volunteer
       // Mode is RECEPTION if the participant has been enrolled
       mode = participant.getRecruitmentType() == RecruitmentType.VOLUNTEER ? PanelMode.ENROLLMENT : PanelMode.RECEPTION;
-    }
-  }
-
-  private class EditParticipantForm extends Form {
-
-    private static final long serialVersionUID = 1L;
-
-    public EditParticipantForm(String id, final IModel participantModel, final ModalWindow modalWindow) {
-      super(id, participantModel);
-
-      Participant participant = (Participant) getModelObject();
-
-      // set recruitmentType for participant to volunteer if it is null
-      if(participant.getRecruitmentType() == null) {
-        participant.setRecruitmentType(RecruitmentType.VOLUNTEER);
-        participant.setExported(false);
-      }
-      if(participant.getRecruitmentType().equals(RecruitmentType.VOLUNTEER)) {
-        add(new EmptyPanel("enrollmentId"));
-      } else
-        add(new RowFragment("enrollmentId", getModel(), "EnrollmentId", "enrollmentId"));
-
-      if(participant.getAppointment() == null) {
-        participant.setAppointment(new Appointment(participant, new Date()));
-      }
-
-      // set Assessment Center Id for participant
-      if(participant.getSiteNo() == null) {
-        ApplicationConfiguration appConfig = queryService.matchOne(new ApplicationConfiguration());
-        participant.setSiteNo(appConfig.getSiteNo());
-      }
-
-      if(mode == PanelMode.EDIT) {
-        add(new RowFragment(BARCODE, getModel(), "ParticipantCode", BARCODE));
-        add(new RowFragment(FIRST_NAME, getModel(), "FirstName", FIRST_NAME));
-        add(new RowFragment(LAST_NAME, getModel(), "LastName", LAST_NAME));
-        add(new RowFragment(GENDER, getModel(), "Gender", GENDER));
-        add(new RowFragment(BIRTH_DATE, getModel(), "BirthDate", BIRTH_DATE));
-      } else {
-        add(new EmptyPanel(BARCODE));
-
-        FormComponent firstName = new TextField("value", new PropertyModel(getModel(), FIRST_NAME)).setRequired(true).setLabel(new ResourceModel("FirstName")).add(new StringValidator.MaximumLengthValidator(250));
-        firstName.add(new StringValidator.MaximumLengthValidator(250));
-        add(new TextFieldFragment(FIRST_NAME, getModel(), "FirstName*", firstName));
-
-        FormComponent lastName = new TextField("value", new PropertyModel(getModel(), LAST_NAME)).setRequired(true).setLabel(new ResourceModel("LastName")).add(new StringValidator.MaximumLengthValidator(250));
-        lastName.add(new StringValidator.MaximumLengthValidator(250));
-        add(new TextFieldFragment(LAST_NAME, getModel(), "LastName*", lastName));
-        add(new DropDownFragment(GENDER, getModel(), "Gender*", createGenderDropDown()));
-
-        // A birthdate is valid only if it is in the following interval -> [currentDate - 130 years, currentDate]
-        FormComponent birthDate = createBirthDateField();
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.YEAR, -130);
-        birthDate.add(DateValidator.range(calendar.getTime(), new Date()));
-        add(new DateFragment(BIRTH_DATE, getModel(), "BirthDate*", birthDate));
-      }
-
-      add(new AttributeGroupsFragment("configuredAttributeGroups", getModel()));
-
-      add(new AssignCodeToParticipantPanel("assignCodeToParticipantPanel", participantModel, participantMetadata) {
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public boolean isVisible() {
-          return mode == PanelMode.RECEPTION || mode == PanelMode.ENROLLMENT;
-        }
-      });
-
-      @SuppressWarnings("serial")
-      AjaxSubmitLink submitLink = new AjaxSubmitLink("saveAction") {
-        protected void onSubmit(AjaxRequestTarget target, Form form) {
-          Participant participant = (Participant) EditParticipantForm.this.getModelObject();
-          participantService.updateParticipant(participant);
-
-          // submitting child form if it's visible
-          AssignCodeToParticipantPanel panel = (AssignCodeToParticipantPanel) form.get("assignCodeToParticipantPanel");
-          if(panel.isVisible()) {
-            ((AssignCodeToParticipantForm) panel.get("assignCodeToParticipantForm")).onSubmit(participant);
-          }
-
-          if(mode == PanelMode.EDIT) {
-            modalWindow.close(target);
-          } else {
-            setResponsePage(sourcePage);
-          }
-        }
-
-        protected void onError(AjaxRequestTarget target, Form form) {
-          feedbackWindow.setContent(new FeedbackPanel("content"));
-          feedbackWindow.show(target);
-        }
-      };
-      add(submitLink);
-
-      @SuppressWarnings("serial")
-      AjaxLink cancelLink = new AjaxLink("cancelAction") {
-        @Override
-        public void onClick(AjaxRequestTarget target) {
-          if(mode == PanelMode.EDIT) {
-            modalWindow.close(target);
-          } else {
-            setResponsePage(sourcePage);
-          }
-        }
-      };
-      add(cancelLink);
     }
   }
 

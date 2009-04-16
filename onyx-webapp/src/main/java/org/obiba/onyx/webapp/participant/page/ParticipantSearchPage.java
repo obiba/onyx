@@ -57,14 +57,16 @@ import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
+import org.obiba.onyx.core.reusable.Dialog;
+import org.obiba.onyx.core.reusable.Dialog.Option;
+import org.obiba.onyx.core.reusable.Dialog.Status;
+import org.obiba.onyx.core.reusable.Dialog.WindowClosedCallback;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.variable.export.OnyxDataExport;
 import org.obiba.onyx.webapp.base.page.BasePage;
-import org.obiba.onyx.webapp.participant.panel.EditParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.EditParticipantPanel;
-import org.obiba.onyx.webapp.participant.panel.ParticipantModalPanel;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
 import org.obiba.onyx.webapp.participant.panel.UnlockInterviewPanel;
 import org.obiba.onyx.wicket.panel.OnyxEntityList;
@@ -101,9 +103,9 @@ public class ParticipantSearchPage extends BasePage {
 
   private Participant template = new Participant();
 
-  private ModalWindow participantDetailsModalWindow;
+  private Dialog participantDetailsModalWindow;
 
-  private ModalWindow editParticipantDetailsModalWindow;
+  private Dialog editParticipantDetailsModalWindow;
 
   private ModalWindow unlockInterviewWindow;
 
@@ -113,19 +115,10 @@ public class ParticipantSearchPage extends BasePage {
   public ParticipantSearchPage() {
     super();
 
-    participantDetailsModalWindow = new ModalWindow("participantDetailsModalWindow");
-    participantDetailsModalWindow.setCssClassName("onyx");
-    participantDetailsModalWindow.setTitle(new StringResourceModel("Participant", this, null));
-    participantDetailsModalWindow.setInitialHeight(300);
-    participantDetailsModalWindow.setInitialWidth(400);
-    add(participantDetailsModalWindow);
-
-    editParticipantDetailsModalWindow = new ModalWindow("editParticipantDetailsModalWindow");
-    editParticipantDetailsModalWindow.setCssClassName("onyx");
+    add(participantDetailsModalWindow = createParticipantDialog("participantDetailsModalWindow"));
+    add(editParticipantDetailsModalWindow = createParticipantDialog("editParticipantDetailsModalWindow"));
     editParticipantDetailsModalWindow.setTitle(new StringResourceModel("EditParticipantInfo", this, null));
-    editParticipantDetailsModalWindow.setInitialHeight(400);
-    editParticipantDetailsModalWindow.setInitialWidth(600);
-    add(editParticipantDetailsModalWindow);
+    editParticipantDetailsModalWindow.setOptions(Option.OK_CANCEL_OPTION);
 
     unlockInterviewWindow = new ModalWindow("unlockInterview");
     unlockInterviewWindow.setCssClassName("onyx");
@@ -224,6 +217,23 @@ public class ParticipantSearchPage extends BasePage {
       }
     });
     add(updateParticipantListWindow);
+  }
+
+  private Dialog createParticipantDialog(String id) {
+    Dialog participantDialog = new Dialog(id);
+    participantDialog.setCssClassName("onyx");
+    participantDialog.setTitle(new StringResourceModel("Participant", this, null));
+    participantDialog.setInitialHeight(570);
+    participantDialog.setInitialWidth(490);
+    participantDialog.setType(Dialog.Type.PLAIN);
+    participantDialog.setOptions(Dialog.Option.CLOSE_OPTION);
+    participantDialog.setWindowClosedCallback(new WindowClosedCallback() {
+      public void onClose(AjaxRequestTarget target, Status status) {
+        // TODO Auto-generated method stub
+
+      }
+    });
+    return participantDialog;
   }
 
   @Override
@@ -563,7 +573,7 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          participantDetailsModalWindow.setContent(new ParticipantModalPanel("content", new ParticipantPanel(ParticipantModalPanel.CONTENT_PANEL_ID, getModel()), participantDetailsModalWindow));
+          participantDetailsModalWindow.setContent(new ParticipantPanel("content", getModel()));
           participantDetailsModalWindow.show(target);
         }
       };
@@ -620,7 +630,7 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          editParticipantDetailsModalWindow.setContent(new EditParticipantModalPanel("content", new EditParticipantPanel("content", getModel(), ParticipantSearchPage.this, editParticipantDetailsModalWindow)));
+          editParticipantDetailsModalWindow.setContent(new EditParticipantPanel("content", getModel(), ParticipantSearchPage.this, editParticipantDetailsModalWindow));
           editParticipantDetailsModalWindow.show(target);
         }
 
@@ -691,5 +701,14 @@ public class ParticipantSearchPage extends BasePage {
       }
     }
 
+  }
+
+  @Override
+  protected void onAfterRender() {
+    super.onAfterRender();
+    IRequestTarget target = getRequestCycle().getRequestTarget();
+    if(getRequestCycle().getRequestTarget() instanceof AjaxRequestTarget) {
+      ((AjaxRequestTarget) target).appendJavascript("styleParticipantSearchNavigationBar();");
+    }
   }
 }
