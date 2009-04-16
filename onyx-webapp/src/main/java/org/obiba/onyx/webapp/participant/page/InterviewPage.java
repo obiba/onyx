@@ -22,6 +22,7 @@ import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -31,6 +32,8 @@ import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.reusable.Dialog;
 import org.obiba.onyx.core.reusable.DialogBuilder;
+import org.obiba.onyx.core.reusable.Dialog.Status;
+import org.obiba.onyx.core.reusable.Dialog.WindowClosedCallback;
 import org.obiba.onyx.core.service.ActiveInterviewService;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
@@ -39,6 +42,7 @@ import org.obiba.onyx.engine.ActionDefinitionConfiguration;
 import org.obiba.onyx.engine.ActionType;
 import org.obiba.onyx.engine.Stage;
 import org.obiba.onyx.webapp.base.page.BasePage;
+import org.obiba.onyx.webapp.participant.panel.AddCommentPanel;
 import org.obiba.onyx.webapp.participant.panel.CommentsModalPanel;
 import org.obiba.onyx.webapp.participant.panel.InterviewMenuBar;
 import org.obiba.onyx.webapp.participant.panel.ParticipantPanel;
@@ -63,6 +67,8 @@ public class InterviewPage extends BasePage {
 
   @SpringBean
   private EntityQueryService queryService;
+
+  private Dialog addCommentDialog;
 
   private Label commentsCount;
 
@@ -122,7 +128,15 @@ public class InterviewPage extends BasePage {
       add(viewComments = new CommentsLink("viewComments", commentsWindow));
 
       // Add create interview comments action
-      add(new CommentsLink("addComments", commentsWindow));
+      add(addCommentDialog = createAddCommentDialog());
+      add(new AjaxLink("addComment") {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          addCommentDialog.show(target);
+        }
+      });
 
       // Initialize comments counter
       updateCommentsCount();
@@ -205,6 +219,34 @@ public class InterviewPage extends BasePage {
   public void updateCommentsCount() {
     viewComments.addOrReplace(commentsCount = new Label("commentsCount", String.valueOf(activeInterviewService.getInterviewComments().size())));
     commentsCount.setOutputMarkupId(true);
+  }
+
+  private Dialog createAddCommentDialog() {
+    final AddCommentPanel dialogContent = new AddCommentPanel("content");
+    DialogBuilder builder = DialogBuilder.buildDialog("addCommentDialog", new ResourceModel("AddComment"), dialogContent);
+    builder.setOptions(Dialog.Option.OK_CANCEL_OPTION);
+
+    Dialog dialog = builder.getDialog();
+    dialog.setInitialHeight(534);
+    dialog.setInitialWidth(490);
+    dialog.setWindowClosedCallback(new WindowClosedCallback() {
+
+      private static final long serialVersionUID = 1L;
+
+      public void onClose(AjaxRequestTarget target, Status status) {
+        if(status.equals(Status.SUCCESS)) {
+          Action comment = (Action) dialogContent.getModelObject();
+          activeInterviewService.doAction(null, comment);
+          InterviewPage.this.updateCommentsCount();
+          target.addComponent(InterviewPage.this.commentsCount);
+        } else if(status.equals(Status.ERROR)) {
+          // TODO: Display in a FeedbackWindow.
+          System.err.println("<CommentValidationError>");
+        }
+      }
+    });
+
+    return dialog;
   }
 
   private class CommentsLink extends AjaxLink {

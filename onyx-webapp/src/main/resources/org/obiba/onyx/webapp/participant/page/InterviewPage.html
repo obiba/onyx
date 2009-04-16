@@ -2,6 +2,7 @@
   <body>
     <wicket:extend>
     	<div id="interviewPageContent" class="obiba-box-content">
+    	<div wicket:id="addCommentDialog" />
     	<table>
     		<tr>
     			<td id="interviewPageParticipantContainer" valign="top">
@@ -29,7 +30,7 @@
     				  
     				  <a href="#" wicket:id="viewCommentsIconLink"><img wicket:id="commentIcon" /></a>	  
     				  <a class="obiba-button" href="#" wicket:id="viewComments"><wicket:message key="Comments" /> (<span wicket:id="commentsCount" />)</a>
-    				  <a class="obiba-button" href="#" wicket:id="addComments"><wicket:message key="AddComments" /></a>
+    				  <a class="obiba-button" href="#" wicket:id="addComment"><wicket:message key="AddComment" /></a>
     					
     				  <div wicket:id="addCommentsModal" />
     				  <div wicket:id="interviewLogsDialog" />

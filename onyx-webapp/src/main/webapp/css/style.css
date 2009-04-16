@@ -1420,4 +1420,16 @@ div#participantPageSearchResults #newNavigator em {
   background: url('../icons/completed.png') no-repeat center left;
 }
 
+#commentInstructions,
+#commentText {
+  color: #000000;
+  font-weight: bold;	
+}
+
+#commentText {
+  display: block;
+  height: 85%;
+  width: 100%;	
+}
+
 /******************* End InterviewPage *********************************************/
