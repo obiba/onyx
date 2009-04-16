@@ -6,6 +6,7 @@
     <property name="exportDestinations" ref="onyxDataExportDestinations" />
     <property name="queryService" ref="persistenceManager" />
     <property name="variableDirectory" ref="variableDirectory" />
+    <property name="sessionFactory" ref="sessionFactory"/>
     <property name="userSessionService">
       <bean class="org.springframework.aop.scope.ScopedProxyFactoryBean">
         <property name="targetBeanName" value="userSessionService" />

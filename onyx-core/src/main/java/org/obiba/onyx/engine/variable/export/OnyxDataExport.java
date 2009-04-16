@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.hibernate.FlushMode;
+import org.hibernate.SessionFactory;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.InterviewStatus;
@@ -30,6 +32,7 @@ import org.obiba.onyx.engine.variable.util.VariableStreamer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 
@@ -48,6 +51,9 @@ public class OnyxDataExport {
   private IOnyxDataExportStrategy exportStrategy;
 
   private Resource configDirectory;
+
+  // ONYX-424: Required to set FlushMode to COMMIT
+  private SessionFactory sessionFactory;
 
   private List<OnyxDataExportDestination> exportDestinations;
 
@@ -77,7 +83,20 @@ public class OnyxDataExport {
     this.configDirectory = configDirectory;
   }
 
+  public void setSessionFactory(SessionFactory sessionFactory) {
+    this.sessionFactory = sessionFactory;
+  }
+
+  // Set this method to be Transactional in order to have a single commit at the end of the export.
+  @Transactional(rollbackFor = Exception.class)
   public void exportCompletedInterviews() throws Exception {
+    
+    // ONYX-424: Set FlushMode to COMMIT so that Hibernate only flushes the entities after the export has completed.
+    // This prevents Hibernate from flushing BEFORE every time we read from the database.
+    if(sessionFactory != null) {
+      sessionFactory.getCurrentSession().setFlushMode(FlushMode.COMMIT);
+    }
+    
     long exportAllStartTime = new Date().getTime();
 
     Participant template = new Participant();
@@ -127,6 +146,7 @@ public class OnyxDataExport {
         } catch(RuntimeException e) {
           context.fail();
           log.error("Error exporting data to destination " + destination.getName() + ":" + e.getMessage(), e);
+          throw e;
         } finally {
           context.endExport();
           exportStrategy.terminate(context);
