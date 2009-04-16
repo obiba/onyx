@@ -106,3 +106,11 @@ div.wicket-modal div.onyx tr.ui-state-disabled td.keyValueTableKey {
 div.wicket-modal div.onyx td.keyValueTableValue input, div.wicket-modal div.onyx td.keyValueTableValue select{
 	width: 306px;
 }
+
+div.wicket-modal div.onyx div#participantAndBarcodeAssignmentWrapper td.keyValueTableValue input {
+	width: 200px;
+}
+
+div.wicket-modal div.onyx div#participantAndBarcodeAssignmentWrapper td.keyValueTableValue select{
+	width: 206px;
+}
