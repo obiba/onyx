@@ -195,7 +195,7 @@ public class EditParticipantPanel extends Panel {
 
         case ERROR:
           displayFeedback(target);
-          break;
+          return false;
 
         case CANCELLED:
           cancelEditParticipant(target);
