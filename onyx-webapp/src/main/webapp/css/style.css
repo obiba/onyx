@@ -1420,6 +1420,45 @@ div#participantPageSearchResults #newNavigator em {
   background: url('../icons/completed.png') no-repeat center left;
 }
 
+#interviewPageStages table.entityTable {
+  border-bottom:1px solid #C65F02;
+}
+
+#interviewPageStages #exitInterview {
+  position:relative;
+  text-align:center;
+  top:18px;  
+}
+
+ul#interviewMenuBar li {
+ width:200px;
+}
+
+ul#interviewMenuBar li > div {
+  padding-left:63px !important;
+}
+
+ul#interviewMenuBar li a {
+  bottom:2px;
+  display:inline;
+  font-size:14px;
+  left:31px;
+  padding-bottom:0;
+  padding-left:0;
+  padding-right:0;
+  padding-top:0;
+  position:relative;
+}
+
+ul#interviewMenuBar li a span {
+  font-size: 8px;
+  padding-right:5px;
+}
+
+#interviewPageStages #exitInterview a.obiba-button:link, #interviewPageStages #exitInterview a.obiba-button:visited, #interviewPageStages #exitInterview a.obiba-button:active, #interviewPageStages #exitInterview a.obiba-button:hover {
+  padding:3px 50px 2px;
+}
+
 #commentInstructions,
 #commentText {
   color: #000000;

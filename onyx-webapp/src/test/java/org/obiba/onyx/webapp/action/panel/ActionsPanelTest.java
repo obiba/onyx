@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
@@ -69,6 +70,7 @@ public class ActionsPanelTest {
     mockApplicationContext.putBean("userSessionService", EasyMock.createMock(UserSessionService.class));
     mockApplicationContext.putBean(new ActionDefinitionConfiguration());
     mockApplicationContext.putBean(EasyMock.createMock(EntityQueryService.class));
+    mockApplicationContext.putBean(EasyMock.createMock(InterviewManager.class));
   }
 
   @Test

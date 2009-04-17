@@ -35,6 +35,7 @@ import org.obiba.onyx.core.reusable.DialogBuilder;
 import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.core.reusable.Dialog.WindowClosedCallback;
 import org.obiba.onyx.core.service.ActiveInterviewService;
+import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.ActionDefinition;
@@ -73,6 +74,9 @@ public class InterviewPage extends BasePage {
   private Label commentsCount;
 
   AjaxLink viewComments;
+
+  @SpringBean
+  private InterviewManager interviewManager;
 
   public InterviewPage() {
     super();
@@ -213,6 +217,19 @@ public class InterviewPage extends BasePage {
         }
 
       });
+
+      AjaxLink exitLink = new AjaxLink("exitInterview") {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+          interviewManager.releaseInterview();
+          setResponsePage(ParticipantSearchPage.class);
+        }
+      };
+      add(exitLink);
+
     }
   }
 
