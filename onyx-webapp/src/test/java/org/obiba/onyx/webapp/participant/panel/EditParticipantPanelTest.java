@@ -21,6 +21,7 @@ import org.apache.wicket.datetime.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -31,7 +32,6 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
 import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
@@ -86,7 +86,6 @@ public class EditParticipantPanelTest implements Serializable {
 
   @SuppressWarnings("serial")
   @Test
-  @Ignore
   public void testEditParticipant() {
     p.setEnrollmentId("10001010");
     p.setBarcode("1234");
@@ -105,16 +104,18 @@ public class EditParticipantPanelTest implements Serializable {
     tester.startPanel(new TestPanelSource() {
       public Panel getTestPanel(String panelId) {
         DummyHomePage dummyHomePage = new DummyHomePage();
-        return new EditParticipantFormPanel(panelId, new Model(p), dummyHomePage);
+        EditParticipantFormPanel panel = new EditParticipantFormPanel(panelId, new Model(p), dummyHomePage);
+
+        // We have to remove the feedback dialog because it is confusing the WicketTester when we try to submit the form
+        // in the EditParticipantFormPanel. The feedback dialog contains a useless form (all Dialogs include a form).
+        panel.get("editParticipantForm:editParticipantPanel:feedback").replaceWith(new EmptyPanel("feedback"));
+        return panel;
       }
     });
 
     FormTester formTester = tester.newFormTester("panel:editParticipantForm");
     formTester.select("editParticipantPanel:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:1:field:input:select", 3);
     formTester.setValue("editParticipantPanel:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:2:field:input:field", "Peel street");
-
-    tester.executeAjaxEvent("panel:editParticipantForm:saveAction", "onclick");
-    tester.assertNoErrorMessage();
 
     // test EditParticipantPanel in EDIT mode => no editable field
     tester.assertComponent("panel:editParticipantForm:editParticipantPanel:firstName:value", Label.class);
@@ -128,6 +129,9 @@ public class EditParticipantPanelTest implements Serializable {
     tester.assertComponent("panel:editParticipantForm:editParticipantPanel:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:3:field:input:field", TextField.class);
     tester.assertComponent("panel:editParticipantForm:editParticipantPanel:configuredAttributeGroups:groupRepeater:1:group:attributeRepeater:4:field", Label.class);
 
+    tester.executeAjaxEvent("panel:editParticipantForm:saveAction", "onclick");
+    tester.assertNoErrorMessage();
+
     EasyMock.verify(mockUserSessionService);
     EasyMock.verify(mockParticipantService);
     EasyMock.verify(mockQueryService);
@@ -139,7 +143,6 @@ public class EditParticipantPanelTest implements Serializable {
 
   @SuppressWarnings("serial")
   @Test
-  @Ignore
   public void testReceiveParticipant() {
     p.setBarcode(null);
     p.setRecruitmentType(RecruitmentType.ENROLLED);
@@ -158,6 +161,10 @@ public class EditParticipantPanelTest implements Serializable {
         DummyHomePage dummyHomePage = new DummyHomePage();
         EditParticipantFormPanel panel = new EditParticipantFormPanel(panelId, new Model(p), dummyHomePage);
         panel.get("editParticipantForm:editParticipantPanel:assignCodeToParticipantPanel").replaceWith(new AssignCodeToParticipantPanelMock("assignCodeToParticipantPanel", new Model(p), new Model(participantMetadata)));
+
+        // We have to remove the feedback dialog because it is confusing the WicketTester when we try to submit the form
+        // in the EditParticipantFormPanel. The feedback dialog contains a useless form (all Dialogs include a form).
+        panel.get("editParticipantForm:editParticipantPanel:feedback").replaceWith(new EmptyPanel("feedback"));
         return panel;
       }
     });
@@ -198,7 +205,6 @@ public class EditParticipantPanelTest implements Serializable {
 
   @SuppressWarnings("serial")
   @Test
-  @Ignore
   public void testEnrollVolunteerParticipant() {
     p.setEnrollmentId(null);
     p.setBarcode(null);
@@ -218,6 +224,10 @@ public class EditParticipantPanelTest implements Serializable {
         DummyHomePage dummyHomePage = new DummyHomePage();
         EditParticipantFormPanel panel = new EditParticipantFormPanel(panelId, new Model(p), dummyHomePage);
         panel.get("editParticipantForm:editParticipantPanel:assignCodeToParticipantPanel").replaceWith(new AssignCodeToParticipantPanelMock("assignCodeToParticipantPanel", new Model(p), new Model(participantMetadata)));
+
+        // We have to remove the feedback dialog because it is confusing the WicketTester when we try to submit the form
+        // in the EditParticipantFormPanel. The feedback dialog contains a useless form (all Dialogs include a form).
+        panel.get("editParticipantForm:editParticipantPanel:feedback").replaceWith(new EmptyPanel("feedback"));
         return panel;
       }
     });
