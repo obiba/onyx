@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.IRequestTarget;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -223,8 +224,8 @@ public class ParticipantSearchPage extends BasePage {
     Dialog participantDialog = new Dialog(id);
     participantDialog.setCssClassName("onyx");
     participantDialog.setTitle(new StringResourceModel("Participant", this, null));
-    participantDialog.setInitialHeight(570);
-    participantDialog.setInitialWidth(490);
+    participantDialog.setInitialHeight(530);
+    participantDialog.setInitialWidth(507);
     participantDialog.setType(Dialog.Type.PLAIN);
     participantDialog.setOptions(Dialog.Option.CLOSE_OPTION);
     participantDialog.setWindowClosedCallback(new WindowClosedCallback() {
@@ -630,7 +631,9 @@ public class ParticipantSearchPage extends BasePage {
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          editParticipantDetailsModalWindow.setContent(new EditParticipantPanel("content", getModel(), ParticipantSearchPage.this, editParticipantDetailsModalWindow));
+          EditParticipantPanel component = new EditParticipantPanel("content", getModel(), ParticipantSearchPage.this, editParticipantDetailsModalWindow);
+          component.add(new AttributeModifier("class", true, new Model("obiba-content participant-panel-content")));
+          editParticipantDetailsModalWindow.setContent(component);
           editParticipantDetailsModalWindow.show(target);
         }
 

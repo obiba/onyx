@@ -187,6 +187,7 @@ public class EditParticipantPanel extends Panel {
     modalWindow.setCloseButtonCallback(new CloseButtonCallback() {
 
       public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
+        if(status == null) return true;
         switch(status) {
 
         case SUCCESS:
@@ -209,7 +210,6 @@ public class EditParticipantPanel extends Panel {
       }
 
     });
-
   }
 
   private void cancelEditParticipant(AjaxRequestTarget target) {

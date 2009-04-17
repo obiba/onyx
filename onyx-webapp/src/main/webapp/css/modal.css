@@ -114,3 +114,13 @@ div.wicket-modal div.onyx td.keyValueTableValue select{
 div.wicket-modal div.onyx .window-action-content {
   	height:349px;
 }
+
+div.wicket-modal div.onyx .participant-panel-content {
+  	height:486px;
+}
+
+div.wicket-modal div.onyx h2 {
+	margin-left:8px;
+	margin-top:30px;
+	width:339px;	
+}
