@@ -59,7 +59,6 @@ public class DialogBuilderTest {
     Dialog dialog = DialogBuilder.buildWarningDialog("dialog", "title test", new Label("content", "test content")).setOptions(Dialog.Option.OK_CANCEL_OPTION).getDialog();
 
     Assert.assertEquals(Dialog.Type.WARNING, dialog.getType());
-    Assert.assertEquals("<IMG SRC=\"../icons/warning.png\" />title test", dialog.getTitle().getObject().toString());
 
     Assert.assertTrue(dialog.getForm().get("ok").isVisible());
     Assert.assertTrue(dialog.getForm().get("cancel").isVisible());
@@ -73,7 +72,6 @@ public class DialogBuilderTest {
     Dialog dialog = DialogBuilder.buildWarningDialog("dialog", new Model("title test"), new Label("content", "test content")).setOptions(Dialog.Option.OK_CANCEL_OPTION).getDialog();
 
     Assert.assertEquals(Dialog.Type.WARNING, dialog.getType());
-    Assert.assertEquals("<IMG SRC=\"../icons/warning.png\" />title test", dialog.getTitle().getObject().toString());
 
     Assert.assertTrue(dialog.getForm().get("ok").isVisible());
     Assert.assertTrue(dialog.getForm().get("cancel").isVisible());
@@ -87,7 +85,6 @@ public class DialogBuilderTest {
     Dialog dialog = DialogBuilder.buildInfoDialog("dialog", "Information", new Label("content", "test content")).setOptions(Dialog.Option.YES_NO_OPTION).getDialog();
 
     Assert.assertEquals(Dialog.Type.INFO, dialog.getType());
-    Assert.assertEquals("<IMG SRC=\"../icons/info.png\" />Information", dialog.getTitle().getObject().toString());
 
     Assert.assertFalse(dialog.getForm().get("ok").isVisible());
     Assert.assertFalse(dialog.getForm().get("cancel").isVisible());
@@ -101,7 +98,6 @@ public class DialogBuilderTest {
     Dialog dialog = DialogBuilder.buildInfoDialog("dialog", new Model("Information"), new Label("content", "test content")).setOptions(Dialog.Option.YES_NO_CANCEL_OPTION).getDialog();
 
     Assert.assertEquals(Dialog.Type.INFO, dialog.getType());
-    Assert.assertEquals("<IMG SRC=\"../icons/info.png\" />Information", dialog.getTitle().getObject().toString());
 
     Assert.assertFalse(dialog.getForm().get("ok").isVisible());
     Assert.assertTrue(dialog.getForm().get("cancel").isVisible());
@@ -115,7 +111,6 @@ public class DialogBuilderTest {
     Dialog dialog = DialogBuilder.buildErrorDialog("dialog", "Error", new Label("content", "test content")).setOptions(Dialog.Option.CLOSE_OPTION).getDialog();
 
     Assert.assertEquals(Dialog.Type.ERROR, dialog.getType());
-    Assert.assertEquals("<IMG SRC=\"../icons/error.png\" />Error", dialog.getTitle().getObject().toString());
 
     Assert.assertFalse(dialog.getForm().get("ok").isVisible());
     Assert.assertFalse(dialog.getForm().get("cancel").isVisible());
@@ -129,7 +124,6 @@ public class DialogBuilderTest {
     Dialog dialog = DialogBuilder.buildErrorDialog("dialog", new Model("Error"), new Label("content", "test content")).setOptions(Dialog.Option.CLOSE_OPTION).getDialog();
 
     Assert.assertEquals(Dialog.Type.ERROR, dialog.getType());
-    Assert.assertEquals("<IMG SRC=\"../icons/error.png\" />Error", dialog.getTitle().getObject().toString());
 
     Assert.assertFalse(dialog.getForm().get("ok").isVisible());
     Assert.assertFalse(dialog.getForm().get("cancel").isVisible());

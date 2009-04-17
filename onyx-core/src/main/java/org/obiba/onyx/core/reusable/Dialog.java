@@ -20,8 +20,6 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 
 /**
@@ -204,6 +202,19 @@ public class Dialog extends ModalWindow {
     }
   }
 
+  @Override
+  public void show(AjaxRequestTarget target) {
+    super.show(target);
+
+    if(type != null && type.equals(Type.ERROR)) {
+      target.appendJavascript("$(document).ready(function () {$('.onyx-feedback .w_captionText').each(function() {$(this).addClass('ui-state-error');});});");
+    } else if(type != null && type.equals(Type.WARNING)) {
+      target.appendJavascript("$(document).ready(function () {$('.onyx-feedback .w_captionText').each(function() {$(this).addClass('ui-state-warning');});});");
+    } else if(type != null && type.equals(Type.INFO)) {
+      target.appendJavascript("$(document).ready(function () {$('.onyx-feedback .w_captionText').each(function() {$(this).addClass('ui-state-high');});});");
+    }
+  }
+
   /**
    * Sets the content of the dialog box.
    * 
@@ -217,29 +228,6 @@ public class Dialog extends ModalWindow {
     component.setOutputMarkupPlaceholderTag(true);
     component.setVisible(true);
     form.replace(component);
-  }
-
-  @Override
-  public void setTitle(String title) {
-    if(type == null || type.equals(Type.PLAIN)) {
-      super.setTitle(title);
-    } else {
-      super.setTitle("<IMG SRC=\"../icons/" + type.toString().toLowerCase() + ".png\" />" + title);
-    }
-  }
-
-  @Override
-  public void setTitle(final IModel title) {
-    if(type == null || type.equals(Type.PLAIN)) {
-      super.setTitle(title);
-    } else {
-      super.setTitle(new Model() {
-        @Override
-        public Object getObject() {
-          return ("<IMG SRC=\"../icons/" + type.toString().toLowerCase() + ".png\" />" + title.getObject());
-        }
-      });
-    }
   }
 
   public static interface CloseButtonCallback extends Serializable {

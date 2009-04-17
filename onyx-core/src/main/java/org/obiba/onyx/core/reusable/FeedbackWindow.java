@@ -24,9 +24,9 @@ import org.apache.wicket.model.StringResourceModel;
  */
 public class FeedbackWindow extends Dialog {
 
-  private static final int DEFAULT_INITIAL_HEIGHT = 120;
+  private static final int DEFAULT_INITIAL_HEIGHT = 100;
 
-  private static final int DEFAULT_INITIAL_WIDTH = 450;
+  private static final int DEFAULT_INITIAL_WIDTH = 400;
 
   private static final long serialVersionUID = -9039412352683671244L;
 
@@ -35,7 +35,7 @@ public class FeedbackWindow extends Dialog {
    */
   public FeedbackWindow(String id) {
     super(id);
-    setCssClassName("onyx");
+    setCssClassName("onyx onyx-feedback");
     setInitialHeight(DEFAULT_INITIAL_HEIGHT);
     setInitialWidth(DEFAULT_INITIAL_WIDTH);
     setOptions(Dialog.Option.CLOSE_OPTION);
@@ -44,6 +44,8 @@ public class FeedbackWindow extends Dialog {
 
     setWindowClosedCallback(new WindowClosedCallback() {
       public void onClose(AjaxRequestTarget target, Status status) {
+        Dialog parent = (Dialog) FeedbackWindow.this.findParent(Dialog.class);
+        if(parent != null) parent.setStatus(null);
       }
     });
   }

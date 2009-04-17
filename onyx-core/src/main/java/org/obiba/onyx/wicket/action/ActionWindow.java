@@ -9,6 +9,7 @@
  ******************************************************************************/
 package org.obiba.onyx.wicket.action;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
@@ -30,9 +31,9 @@ public abstract class ActionWindow extends Dialog {
 
   private static final Logger log = LoggerFactory.getLogger(ActionWindow.class);
 
-  private static final int DEFAULT_INITIAL_HEIGHT = 534;
+  private static final int DEFAULT_INITIAL_HEIGHT = 393;
 
-  private static final int DEFAULT_INITIAL_WIDTH = 490;
+  private static final int DEFAULT_INITIAL_WIDTH = 370;
 
   @SpringBean(name = "activeInterviewService")
   private ActiveInterviewService activeInterviewService;
@@ -54,7 +55,7 @@ public abstract class ActionWindow extends Dialog {
       public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
         ActionDefinitionPanel pane = ActionWindow.this.getContent();
 
-        if(status.equals(Dialog.Status.ERROR)) {
+        if(status != null && status.equals(Dialog.Status.ERROR)) {
           FeedbackWindow feedback = pane.getFeedback();
           feedback.setContent(new FeedbackPanel("content"));
           feedback.show(target);
@@ -70,7 +71,7 @@ public abstract class ActionWindow extends Dialog {
 
         ActionDefinitionPanel pane = ActionWindow.this.getContent();
 
-        if(!status.equals(Dialog.Status.CANCELLED)) {
+        if(status != null && !status.equals(Dialog.Status.CANCELLED)) {
           Action action = pane.getAction();
           log.debug("action=" + action);
           Stage stage = null;
@@ -104,8 +105,10 @@ public abstract class ActionWindow extends Dialog {
   public void show(AjaxRequestTarget target, IModel stageModel, ActionDefinition actionDefinition, WindowClosedCallback additionnalWindowClosedCallback) {
     this.additionnalWindowClosedCallback = additionnalWindowClosedCallback;
     setModel(stageModel);
-    setContent(content = new ActionDefinitionPanel(getContentId(), actionDefinition, target) {
-    });
+    ActionDefinitionPanel component = new ActionDefinitionPanel(getContentId(), actionDefinition, target) {
+    };
+    component.add(new AttributeModifier("class", true, new Model("obiba-content window-action-content")));
+    setContent(content = component);
 
     final IModel labelModel = new MessageSourceResolvableStringModel(actionDefinition.getLabel());
     if(stageModel != null && stageModel.getObject() != null) {
@@ -121,6 +124,7 @@ public abstract class ActionWindow extends Dialog {
     } else {
       setTitle(labelModel);
     }
+
     show(target);
   }
 

@@ -125,7 +125,7 @@ public abstract class ActionDefinitionPanel extends Panel {
         return object.toString();
       }
     });
-    reasonsDropDown.setLabel(new ResourceModel("Reasons"));
+    reasonsDropDown.setLabel(new ResourceModel("Reason"));
     reasonsDropDown.setRequired(definition.isReasonMandatory());
     reasonsDropDown.setEnabled(definition.getReasons().size() > 0);
     add(reasonsDropDown);

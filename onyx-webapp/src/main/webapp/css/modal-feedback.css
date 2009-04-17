@@ -3,11 +3,32 @@ div.wicket-modal div.onyx .feedback {
   font-weight:bold;  
   font-size:14px;
   overflow: auto;
-  height: 73px;
+  height: 63px;
 }
 
 .feedbackPanelERROR {
   color:black;
+}
+
+div.wicket-modal div.onyx .ui-state-error {
+	background-image: url(../icons/error.png);
+	background-repeat: no-repeat;
+	color:black !important;
+	padding-left: 30px;
+}
+
+div.wicket-modal div.onyx .ui-state-highlight {
+	background-image: url(../icons/info.png);
+	background-repeat: no-repeat;
+	color:black !important;
+	padding-left: 30px;
+}
+
+div.wicket-modal div.onyx .ui-state-warning {
+	background-image: url(../icons/warning.png);
+	background-repeat: no-repeat;
+	color: black !important;
+	padding-left: 30px;
 }
 
 div.wicket-modal div.onyx div.onyx-feedback .separator {
