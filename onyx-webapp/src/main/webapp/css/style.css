@@ -608,7 +608,7 @@ td.keyValueTableHeader {
 td.keyValueTableKey {
 	color: #666666;
 	background-color: #FFFFFF;
-	padding: 2px 5px;
+	//padding: 2px 5px;
 	text-align: left;
 }
 
@@ -626,7 +626,7 @@ td.keyValueTableValueOdd {
 	color: #000000;
 	background-color: #FFFFFF;
 	font-weight: bold;
-	padding: 2px 5px;
+	//padding: 2px 5px;
 	text-align: left;
 }
 
@@ -635,6 +635,14 @@ td.keyValueTableValueEven input, td.keyValueTableValueEven select,
 td.keyValueTableValueOdd input, td.keyValueTableValueOdd select {
     font-family: arial, verdana, sans-serif;
     font-weight: bold;
+}
+
+td.keyValueTableValue input{
+	width: 217px;
+}
+
+td.keyValueTableValue select{
+	width: 222px;
 }
 
 /*******************END KEY VALUE TABLE LAYOUT********************************/
@@ -1100,7 +1108,7 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
   border-color: #B8B8B8;
   border-style: solid;
   border-width: 1px;
-  padding: 0px 12px 36px 12px;
+  padding: 0px 14px 36px;
 }
 
 .obiba-content-region.ui-corner-all {
@@ -1115,7 +1123,7 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
   color: #C65F02;
   font-size: 12px;
   margin-bottom: 25px;
-  margin-top: 10px;
+  margin-top: 7px;
   padding-bottom: 1px;
 }
 
@@ -1130,9 +1138,12 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
   color: #666666;
   font-size: 11px;
   margin-bottom: 15px;
-  margin-top: 25px;
-  margin-right: 25%;
-  padding-bottom: 1px;	
+  padding-bottom: 1px;
+  margin-top:17px;
+}
+
+.h2-short {
+	width:453px;
 }
 
 /******************* End Content Region ********************************************/
@@ -1304,10 +1315,11 @@ div#participantPageSearchResults #newNavigator em {
 #participantReceptionPageContent td.keyValueTableKeyIndent,
 #assignCodeToParticipant tr > td:first-child {
   width: 186px;
+  vertical-align:top;
 }
 
 #assignCodeToParticipant td {
-  padding: 2px 5px;
+  //padding: 2px 5px;
 }
 
 #participantReceptionPageContent .obiba-footer {

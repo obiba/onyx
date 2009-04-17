@@ -16,8 +16,6 @@
 		<span wicket:id="configuredAttributeGroups" />
       </div>
     
-      <h2></h2>
-    
       <div>
 		<span wicket:id="assignCodeToParticipantPanel"/>
       </div>
@@ -27,13 +25,13 @@
 
 <wicket:fragment wicket:id="rowFragment">
   <tr>
-  	<td class="keyValueTableKey" nowrap="true"><span wicket:id="label"/></td>
+  	<td class="keyValueTableKey"><span wicket:id="label"/></td>
     <td class="keyValueTableValue"><span wicket:id="value"/></td>
   </tr>
 </wicket:fragment>
 <wicket:fragment wicket:id="textFieldFragment">
   <tr>
-  	<td class="keyValueTableKey" nowrap="true"><span wicket:id="label"/></td>
+  	<td class="keyValueTableKey"><span wicket:id="label"/></td>
     <td class="keyValueTableValue"><input wicket:id="value" type="text" size="40" /></td>
   </tr>
 </wicket:fragment>
@@ -50,14 +48,14 @@
 </wicket:fragment>
 <wicket:fragment wicket:id="dateFragment">
   <tr>
-  	<td class="keyValueTableKey" nowrap="true"><span wicket:id="label"/></td>
+  	<td class="keyValueTableKey"><span wicket:id="label"/></td>
     <td class="keyValueTableValue"><input wicket:id="value" type="text" size="8" /></td>
   </tr>
 </wicket:fragment>
 
 <wicket:fragment wicket:id="attributeGroupsFragment">
   <div wicket:id="groupRepeater">
-    <h2><span wicket:id="groupName" /></h2>
+  <h2 class="h2-short"><span wicket:id="groupName" /></h2>
     
 	<table>
 	  <tbody>

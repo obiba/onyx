@@ -77,7 +77,7 @@ div.wicket-modal div.onyx .imagelink {
 }
 
 div.wicket-modal div.onyx .obiba-content {
-  	margin-left:5px;
+  	margin-left:9px;
 	margin-right:10px;
 	margin-top:7px;
 }
@@ -108,7 +108,7 @@ div.wicket-modal div.onyx td.keyValueTableValue input{
 }
 
 div.wicket-modal div.onyx td.keyValueTableValue select{
-	width: 223px;
+	width: 222px;
 }
 
 div.wicket-modal div.onyx .window-action-content {
@@ -120,7 +120,6 @@ div.wicket-modal div.onyx .participant-panel-content {
 }
 
 div.wicket-modal div.onyx h2 {
-	margin-left:8px;
-	margin-top:30px;
-	width:339px;	
+	width:339px;
+	margin-left:4px;
 }
