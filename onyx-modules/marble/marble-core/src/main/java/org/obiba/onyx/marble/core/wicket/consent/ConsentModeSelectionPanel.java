@@ -21,6 +21,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.io.support.LocalizedResourceLoader;
 import org.obiba.onyx.marble.core.service.ActiveConsentService;
 import org.obiba.onyx.marble.domain.consent.ConsentMode;
+import org.obiba.onyx.wicket.model.SpringStringResourceModel;
 import org.obiba.wicket.markup.html.form.LocaleDropDownChoice;
 
 public class ConsentModeSelectionPanel extends Panel {
@@ -65,10 +66,32 @@ public class ConsentModeSelectionPanel extends Panel {
   @SuppressWarnings("serial")
   private DropDownChoice createConsentLanguageDropDown(List<Locale> locales) {
     LocaleDropDownChoice consentLanguageDropDown = new LocaleDropDownChoice("consentLanguage", new PropertyModel(activeConsentService, "consent.locale"), locales);
-    consentLanguageDropDown.setUseSessionLocale(true);
+
+    if(existResourceForLocale(locales)) {
+      consentLanguageDropDown.setChoiceRenderer(new ChoiceRenderer() {
+        public Object getDisplayValue(Object object) {
+          return new SpringStringResourceModel(object.toString()).getString();
+        }
+
+        public String getIdValue(Object object, int index) {
+          return object.toString();
+        }
+      });
+    } else {
+      consentLanguageDropDown.setUseSessionLocale(true);
+    }
+
     consentLanguageDropDown.setRequired(true);
     consentLanguageDropDown.setNullValid(true);
     return consentLanguageDropDown;
+  }
+
+  // checks if resource for locales are available in properties files
+  private boolean existResourceForLocale(List<Locale> locales) {
+    for(Locale locale : locales) {
+      if(new SpringStringResourceModel(locale.toString()).getString().equals(locale.toString())) return false;
+    }
+    return true;
   }
 
 }
