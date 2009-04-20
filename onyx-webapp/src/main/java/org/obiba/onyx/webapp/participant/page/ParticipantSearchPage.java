@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.IRequestTarget;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -34,11 +33,10 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
-import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.repeater.Item;
@@ -522,7 +520,7 @@ public class ParticipantSearchPage extends BasePage {
 
     public LockedInterviewFragment(String id, IModel participantModel) {
       super(id, "lockedInterview", ParticipantSearchPage.this, participantModel);
-      Image image = new Image("lock", new ResourceReference(ParticipantSearchPage.class, "locked.png"));
+      ContextImage image = new ContextImage("lock", new Model("icons/locked.png"));
       add(image);
       if(interviewManager.isInterviewAvailable((Participant) participantModel.getObject())) {
         image.setVisible(false);
@@ -544,17 +542,6 @@ public class ParticipantSearchPage extends BasePage {
     private abstract class ActionLink extends AjaxLink {
 
       IModel participantModel;
-
-      @Override
-      protected void onComponentTag(ComponentTag tag) {
-        super.onComponentTag(tag);
-
-        // Disable
-        if(!interviewManager.isInterviewAvailable((Participant) participantModel.getObject())) {
-          tag.addBehavior(new AttributeAppender("class", true, new Model("ui-state-disabled"), " "));
-        }
-
-      }
 
       public ActionLink(String id, IModel participantModel) {
         super(id, participantModel);
@@ -582,12 +569,13 @@ public class ParticipantSearchPage extends BasePage {
       repeater.add(link);
 
       // Interview
+      final boolean interviewIsLocked = !interviewManager.isInterviewAvailable(getParticipant());
       link = new ActionLink(repeater.newChildId(), participantModel) {
         private static final long serialVersionUID = 1L;
 
         @Override
         public void onClick(AjaxRequestTarget target) {
-          if(interviewManager.isInterviewAvailable(getParticipant()) == false) {
+          if(interviewIsLocked) {
             unlockInterviewWindow.setContent(new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), getModel()));
             target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
             unlockInterviewWindow.show(target);
@@ -604,6 +592,12 @@ public class ParticipantSearchPage extends BasePage {
         }
       };
       link.add(new Label("label", new ResourceModel("Interview")));
+
+      // Locked interviews can only be unlocked by a participant manager (ONYX-463)
+      if(interviewIsLocked) {
+        MetaDataRoleAuthorizationStrategy.authorize(link, RENDER, "PARTICIPANT_MANAGER");
+      }
+
       repeater.add(link);
 
       // Receive

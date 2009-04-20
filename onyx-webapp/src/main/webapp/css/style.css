@@ -1270,10 +1270,6 @@ span.interviewStatus.obiba-state-completed {
   background-image:url(../icons/completed.png);
 }
 
-a.interviewAction.ui-state-disabled {
-  color:#cccccc;
-}
-
 div#participantPageSearchResults #newNavigatorLabel {
   float: right; 
   position: relative; 
