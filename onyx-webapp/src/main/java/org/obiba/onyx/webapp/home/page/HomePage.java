@@ -22,8 +22,10 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.participant.Participant;
+import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
+import org.obiba.onyx.core.service.UserSessionService;
 import org.obiba.onyx.webapp.base.page.BasePage;
 import org.obiba.onyx.webapp.participant.page.InterviewPage;
 import org.obiba.onyx.webapp.participant.panel.UnlockInterviewPanel;
@@ -33,10 +35,13 @@ import org.obiba.onyx.wicket.behavior.RequiredFormFieldBehavior;
 public class HomePage extends BasePage {
 
   @SpringBean
-  ParticipantService participantService;
+  private ParticipantService participantService;
 
   @SpringBean
   private InterviewManager interviewManager;
+
+  @SpringBean
+  private UserSessionService userSessionService;
 
   private ModalWindow unlockInterviewWindow;
 
@@ -51,7 +56,6 @@ public class HomePage extends BasePage {
     unlockInterviewWindow.setResizable(false);
     unlockInterviewWindow.setUseInitialHeight(false);
     add(unlockInterviewWindow);
-
   }
 
   private class ParticipantSearchForm extends Form {
@@ -83,12 +87,17 @@ public class HomePage extends BasePage {
             }
             unlockInterviewWindow.setContent(new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), new PropertyModel(ParticipantSearchForm.this, "participant")));
             target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
-            unlockInterviewWindow.show(target);
+
+            if(userSessionService.getUser().getRoles().contains(Role.PARTICIPANT_MANAGER)) {
+              unlockInterviewWindow.show(target);
+            } else {
+              error((new StringResourceModel("InterviewLocked", this, ParticipantSearchForm.this.getModel())).getString());
+              getFeedbackWindow().setContent(new FeedbackPanel("content"));
+              getFeedbackWindow().show(target);
+            }
           } else {
             // Not found, display error message in feedback panel.
             error((new StringResourceModel("ParticipantNotFound", this, ParticipantSearchForm.this.getModel())).getString());
-
-            // target.addComponent(getFeedbackPanel());
             getFeedbackWindow().setContent(new FeedbackPanel("content"));
             getFeedbackWindow().show(target);
           }

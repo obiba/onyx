@@ -56,6 +56,7 @@ import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.participant.RecruitmentType;
+import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.reusable.Dialog;
 import org.obiba.onyx.core.reusable.Dialog.Option;
 import org.obiba.onyx.core.reusable.Dialog.Status;
@@ -578,7 +579,14 @@ public class ParticipantSearchPage extends BasePage {
           if(interviewIsLocked) {
             unlockInterviewWindow.setContent(new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), getModel()));
             target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
-            unlockInterviewWindow.show(target);
+
+            if(userSessionService.getUser().getRoles().contains(Role.PARTICIPANT_MANAGER)) {
+              unlockInterviewWindow.show(target);
+            } else {
+              error((new StringResourceModel("InterviewLocked", this, ActionListFragment.this.getModel())).getString());
+              getFeedbackWindow().setContent(new FeedbackPanel("content"));
+              getFeedbackWindow().show(target);
+            }
           } else {
             interviewManager.obtainInterview(getParticipant());
             setResponsePage(InterviewPage.class);
