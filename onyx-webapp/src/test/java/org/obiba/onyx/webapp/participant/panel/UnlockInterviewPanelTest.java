@@ -94,7 +94,7 @@ public class UnlockInterviewPanelTest {
     });
 
     tester.dumpPage();
-    tester.executeAjaxEvent("panel:cancel", "onclick");
+    // tester.executeAjaxEvent("panel:cancel", "onclick");
     tester.assertNoErrorMessage();
 
     EasyMock.verify(interviewManager);

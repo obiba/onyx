@@ -59,6 +59,7 @@ import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.reusable.Dialog;
 import org.obiba.onyx.core.reusable.Dialog.Option;
+import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -105,7 +106,13 @@ public class ParticipantSearchPage extends BasePage {
 
   private Dialog editParticipantDetailsModalWindow;
 
-  private ModalWindow unlockInterviewWindow;
+  private Dialog unlockInterviewWindow;
+
+  private UnlockInterviewPanel content;
+
+  private static final int DEFAULT_INITIAL_HEIGHT = 146;
+
+  private static final int DEFAULT_INITIAL_WIDTH = 400;
 
   private UpdateParticipantListWindow updateParticipantListWindow;
 
@@ -118,11 +125,26 @@ public class ParticipantSearchPage extends BasePage {
     editParticipantDetailsModalWindow.setTitle(new StringResourceModel("EditParticipantInfo", this, null));
     editParticipantDetailsModalWindow.setOptions(Option.OK_CANCEL_OPTION);
 
-    unlockInterviewWindow = new ModalWindow("unlockInterview");
-    unlockInterviewWindow.setCssClassName("onyx");
+    unlockInterviewWindow = new Dialog("unlockInterview");
     unlockInterviewWindow.setTitle(new ResourceModel("UnlockInterview"));
-    unlockInterviewWindow.setResizable(false);
-    unlockInterviewWindow.setUseInitialHeight(false);
+    unlockInterviewWindow.setOptions(Dialog.Option.YES_NO_CANCEL_OPTION);
+    unlockInterviewWindow.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
+    unlockInterviewWindow.setInitialWidth(DEFAULT_INITIAL_WIDTH);
+
+    unlockInterviewWindow.setCloseButtonCallback(new Dialog.CloseButtonCallback() {
+      private static final long serialVersionUID = 1L;
+
+      public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
+
+        if(status.equals(Dialog.Status.YES)) {
+          interviewManager.overrideInterview(content.getParticipant());
+          setResponsePage(InterviewPage.class);
+        }
+
+        return true;
+      }
+    });
+
     add(unlockInterviewWindow);
 
     Form form = new Form("searchForm");
@@ -569,7 +591,9 @@ public class ParticipantSearchPage extends BasePage {
         @Override
         public void onClick(AjaxRequestTarget target) {
           if(interviewIsLocked) {
-            unlockInterviewWindow.setContent(new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), getModel()));
+            content = new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), getModel());
+            content.add(new AttributeModifier("class", true, new Model("obiba-content unlockInterview-panel-content")));
+            unlockInterviewWindow.setContent(content);
             target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
 
             if(userSessionService.getUser().getRoles().contains(Role.PARTICIPANT_MANAGER)) {

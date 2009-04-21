@@ -9,10 +9,10 @@
  ******************************************************************************/
 package org.obiba.onyx.webapp.home.page;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -23,6 +23,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.user.Role;
+import org.obiba.onyx.core.reusable.Dialog;
+import org.obiba.onyx.core.reusable.Dialog.Status;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -43,18 +45,39 @@ public class HomePage extends BasePage {
   @SpringBean
   private UserSessionService userSessionService;
 
-  private ModalWindow unlockInterviewWindow;
+  private Dialog unlockInterviewWindow;
+
+  private UnlockInterviewPanel content;
+
+  private static final int DEFAULT_INITIAL_HEIGHT = 146;
+
+  private static final int DEFAULT_INITIAL_WIDTH = 400;
 
   public HomePage() {
     super();
 
     add(new ParticipantSearchForm("searchForm"));
 
-    unlockInterviewWindow = new ModalWindow("unlockInterview");
-    unlockInterviewWindow.setCssClassName("onyx");
+    unlockInterviewWindow = new Dialog("unlockInterview");
     unlockInterviewWindow.setTitle(new ResourceModel("UnlockInterview"));
-    unlockInterviewWindow.setResizable(false);
-    unlockInterviewWindow.setUseInitialHeight(false);
+    unlockInterviewWindow.setOptions(Dialog.Option.YES_NO_CANCEL_OPTION);
+    unlockInterviewWindow.setInitialHeight(DEFAULT_INITIAL_HEIGHT);
+    unlockInterviewWindow.setInitialWidth(DEFAULT_INITIAL_WIDTH);
+
+    unlockInterviewWindow.setCloseButtonCallback(new Dialog.CloseButtonCallback() {
+      private static final long serialVersionUID = 1L;
+
+      public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
+
+        if(status.equals(Dialog.Status.YES)) {
+          interviewManager.overrideInterview(content.getParticipant());
+          setResponsePage(InterviewPage.class);
+        }
+
+        return true;
+      }
+    });
+
     add(unlockInterviewWindow);
   }
 
@@ -85,7 +108,9 @@ public class HomePage extends BasePage {
               interviewManager.obtainInterview(participant);
               setResponsePage(InterviewPage.class);
             }
-            unlockInterviewWindow.setContent(new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), new PropertyModel(ParticipantSearchForm.this, "participant")));
+            content = new UnlockInterviewPanel(unlockInterviewWindow.getContentId(), new PropertyModel(ParticipantSearchForm.this, "participant"));
+            content.add(new AttributeModifier("class", true, new Model("obiba-content unlockInterview-panel-content")));
+            unlockInterviewWindow.setContent(content);
             target.appendJavascript("Wicket.Window.unloadConfirmation = false;");
 
             if(userSessionService.getUser().getRoles().contains(Role.PARTICIPANT_MANAGER)) {
