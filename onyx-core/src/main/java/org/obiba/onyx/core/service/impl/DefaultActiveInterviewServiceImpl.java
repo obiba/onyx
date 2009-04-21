@@ -60,17 +60,17 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     this.moduleRegistry = moduleRegistry;
   }
 
-  @Transactional(readOnly = true)
+  
   public Participant getParticipant() {
     return interviewManager.getInterviewedParticipant();
   }
 
-  @Transactional(readOnly = true)
+  
   public Interview getInterview() {
     return getParticipant().getInterview();
   }
 
-  @Transactional(readOnly = true)
+  
   public User getOperator() {
     return userSessionService.getUser();
   }
@@ -109,7 +109,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     return exec;
   }
 
-  @Transactional(readOnly = true)
+  
   public IStageExecution getStageExecution(String stageName) {
     Stage stage = moduleRegistry.getStage(stageName);
     if(stage == null) {
@@ -119,7 +119,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     return getStageExecution(stage);
   }
 
-  @Transactional(readOnly = true)
+  
   public Stage getInteractiveStage() {
     // Return the first stage that is interactive
     // Does not check that only one stage is interactive.
@@ -163,7 +163,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     }
   }
 
-  @Transactional(readOnly = true)
+  
   public List<Action> getInterviewComments() {
     Action template = new Action();
     template.setInterview(getInterview());
@@ -179,7 +179,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     return comments;
   }
 
-  @Transactional(readOnly = true)
+  
   public Action getStatusAction() {
     Interview interview = getInterview();
     Action template = new Action();
@@ -200,7 +200,7 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
       return null;
   }
 
-  @Transactional(readOnly = true)
+  
   private Map<String, StageExecutionContext> getStageContexts() {
     return interviewManager.getStageContexts();
   }
@@ -209,12 +209,12 @@ public class DefaultActiveInterviewServiceImpl extends PersistenceManagerAwareSe
     getStageContexts().put(exec.getStage().getName(), exec);
   }
 
-  @Transactional(readOnly = true)
+  
   public StageExecutionContext retrieveStageExecutionContext(Participant participant, Stage stage) {
     return getStageContexts().get(stage.getName());
   }
 
-  @Transactional(readOnly = true)
+  
   public Collection<StageExecutionContext> getStageExecutionContexts(Participant participant) {
     return Collections.unmodifiableCollection(getStageContexts().values());
   }

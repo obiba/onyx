@@ -28,7 +28,7 @@ public class DefaultApplicationConfigurationServiceImpl extends PersistenceManag
     this.resourceLoader = resourceLoader;
   }
 
-  @Transactional(readOnly = true)
+  
   public ApplicationConfiguration getApplicationConfiguration() {
     ApplicationConfiguration appConfiguration = new ApplicationConfiguration();
     return persistenceManager.matchOne(appConfiguration);

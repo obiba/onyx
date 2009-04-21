@@ -36,17 +36,17 @@ public class UserServiceHibernateImpl extends DefaultUserServiceImpl {
     this.factory = factory;
   }
 
-  @Transactional(readOnly = true)
+  
   private Session getSession() {
     return factory.getCurrentSession();
   }
 
-  @Transactional(readOnly = true)
+  
   public List<User> getUsers(User template, PagingClause paging, SortingClause... clauses) {
     return getUserCriteria(template, paging, clauses).list();
   }
 
-  @Transactional(readOnly = true)
+  
   public int getUserCount(User template) {
     return getUserCriteria(template, null, (SortingClause) null).count();
   }

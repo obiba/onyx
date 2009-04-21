@@ -36,7 +36,7 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
     return factory.getCurrentSession();
   }
 
-  @Transactional(readOnly = true)
+  
   public QuestionnaireParticipant getQuestionnaireParticipant(Participant participant, String questionnaireName) {
     Criteria criteria = AssociationCriteria.create(QuestionnaireParticipant.class, getSession()).add("questionnaireName", Operation.eq, questionnaireName).add("participant", Operation.eq, participant).getCriteria();
 
@@ -44,32 +44,32 @@ public class QuestionnaireParticipantServiceHibernateImpl extends DefaultQuestio
   }
 
   @SuppressWarnings("unchecked")
-  @Transactional(readOnly = true)
+  
   public List<CategoryAnswer> getCategoryAnswers(Participant participant, String questionnaireName, String questionName) {
     Criteria criteria = createQuestionnaireParticipantCriteria(CategoryAnswer.class, "questionAnswer", participant, questionnaireName).add("questionAnswer.questionName", Operation.eq, questionName).add("active", Operation.eq, true).getCriteria();
     return criteria.list();
   }
 
-  @Transactional(readOnly = true)
+  
   public CategoryAnswer getCategoryAnswer(Participant participant, String questionnaireName, String questionName, String categoryName) {
     Criteria criteria = createQuestionnaireParticipantCriteria(CategoryAnswer.class, "questionAnswer", participant, questionnaireName).add("questionAnswer.questionName", Operation.eq, questionName).add("active", Operation.eq, true).add("categoryName", Operation.eq, categoryName).getCriteria();
     return (CategoryAnswer) criteria.uniqueResult();
   }
 
-  @Transactional(readOnly = true)
+  
   public OpenAnswer getOpenAnswer(Participant participant, String questionnaireName, String questionName, String categoryName, String openAnswerName) {
     Criteria criteria = createQuestionnaireParticipantCriteria(OpenAnswer.class, "categoryAnswer.questionAnswer", participant, questionnaireName).add("categoryAnswer.questionAnswer.questionName", Operation.eq, questionName).add("categoryAnswer.active", Operation.eq, true).add("categoryAnswer.categoryName", Operation.eq, categoryName).add("openAnswerDefinitionName", Operation.eq, openAnswerName).getCriteria();
     return (OpenAnswer) criteria.uniqueResult();
   }
 
-  @Transactional(readOnly = true)
+  
   public String getQuestionComment(Participant participant, String questionnaireName, String questionName) {
     Criteria criteria = createQuestionnaireParticipantCriteria(QuestionAnswer.class, null, participant, questionnaireName).add("questionName", Operation.eq, questionName).getCriteria();
     QuestionAnswer answer = (QuestionAnswer) criteria.uniqueResult();
     return (answer != null) ? answer.getComment() : null;
   }
 
-  @Transactional(readOnly = true)
+  
   public Boolean isQuestionActive(Participant participant, String questionnaireName, String questionName) {
     Criteria criteria = createQuestionnaireParticipantCriteria(QuestionAnswer.class, null, participant, questionnaireName).add("questionName", Operation.eq, questionName).getCriteria();
     QuestionAnswer answer = (QuestionAnswer) criteria.uniqueResult();

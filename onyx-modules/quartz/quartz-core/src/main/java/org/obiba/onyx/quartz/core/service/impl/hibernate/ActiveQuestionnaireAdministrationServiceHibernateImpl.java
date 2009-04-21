@@ -30,68 +30,57 @@ public class ActiveQuestionnaireAdministrationServiceHibernateImpl extends Defau
     return factory.getCurrentSession();
   }
 
-  @Transactional(readOnly = true)
   public CategoryAnswer findAnswer(QuestionCategory questionCategory) {
     return findAnswer(questionCategory.getQuestion(), questionCategory);
   }
 
-  @Transactional(readOnly = true)
   public CategoryAnswer findAnswer(Question question, QuestionCategory questionCategory) {
     return findAnswer(question, questionCategory.getCategory());
   }
 
-  @Transactional(readOnly = true)
   public CategoryAnswer findAnswer(Question question, Category category) {
     Criteria criteria = createQuestionnaireParticipantCriteria(CategoryAnswer.class, "questionAnswer").add("categoryName", Operation.eq, category.getName()).add("questionAnswer.questionName", Operation.eq, question.getName()).getCriteria();
     return (CategoryAnswer) criteria.uniqueResult();
   }
 
-  @Transactional(readOnly = true)
   public CategoryAnswer findAnswer(String questionnaireName, String questionName, String categoryName) {
     Criteria criteria = createQuestionnaireParticipantCriteria(CategoryAnswer.class, "questionAnswer").add("categoryName", Operation.eq, categoryName).add("questionAnswer.questionName", Operation.eq, questionName).getCriteria();
     return (CategoryAnswer) criteria.uniqueResult();
   }
 
   @SuppressWarnings("unchecked")
-  @Transactional(readOnly = true)
   public List<CategoryAnswer> findAnswers(Question question) {
     Criteria criteria = createQuestionnaireParticipantCriteria(CategoryAnswer.class, "questionAnswer").add("questionAnswer.questionName", Operation.eq, question.getName()).getCriteria();
     return criteria.list();
   }
 
   @SuppressWarnings("unchecked")
-  @Transactional(readOnly = true)
   public List<CategoryAnswer> findActiveAnswers(Question question) {
     Criteria criteria = createQuestionnaireParticipantCriteria(CategoryAnswer.class, "questionAnswer").add("questionAnswer.questionName", Operation.eq, question.getName()).add("active", Operation.eq, true).getCriteria();
     return criteria.list();
   }
 
   @SuppressWarnings("unchecked")
-  @Transactional(readOnly = true)
   public List<CategoryAnswer> findActiveAnswers(String questionnaireName, String questionName) {
     Criteria criteria = createQuestionnaireParticipantCriteria(CategoryAnswer.class, "questionAnswer").add("questionAnswer.questionName", Operation.eq, questionName).add("active", Operation.eq, true).getCriteria();
     return criteria.list();
   }
 
-  @Transactional(readOnly = true)
   public OpenAnswer findOpenAnswer(QuestionCategory questionCategory, OpenAnswerDefinition openAnswerDefinition) {
     return findOpenAnswer(questionCategory.getQuestion(), questionCategory.getCategory(), openAnswerDefinition);
   }
 
-  @Transactional(readOnly = true)
   public OpenAnswer findOpenAnswer(Question question, Category category, OpenAnswerDefinition openAnswerDefinition) {
     Criteria criteria = createQuestionnaireParticipantCriteria(OpenAnswer.class, "categoryAnswer.questionAnswer").add("categoryAnswer.questionAnswer.questionName", Operation.eq, question.getName()).add("categoryAnswer.categoryName", Operation.eq, category.getName()).add("openAnswerDefinitionName", Operation.eq, openAnswerDefinition.getName()).getCriteria();
     return (OpenAnswer) criteria.uniqueResult();
   }
 
-  @Transactional(readOnly = true)
   public OpenAnswer findOpenAnswer(String questionnaireName, String questionName, String categoryName, String openAnswerDefinitionName) {
     Criteria criteria = createQuestionnaireParticipantCriteria(OpenAnswer.class, "categoryAnswer.questionAnswer").add("categoryAnswer.questionAnswer.questionName", Operation.eq, questionName).add("categoryAnswer.categoryName", Operation.eq, categoryName).add("openAnswerDefinitionName", Operation.eq, openAnswerDefinitionName).getCriteria();
     return (OpenAnswer) criteria.uniqueResult();
   }
 
   @SuppressWarnings("unchecked")
-  @Transactional(readOnly = true)
   public List<OpenAnswer> findOpenAnswers(Question question, Category category) {
     Criteria criteria = createQuestionnaireParticipantCriteria(OpenAnswer.class, "categoryAnswer.questionAnswer").add("categoryAnswer.questionAnswer.questionName", Operation.eq, question.getName()).add("categoryAnswer.categoryName", Operation.eq, category.getName()).getCriteria();
     return criteria.list();
