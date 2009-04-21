@@ -87,7 +87,12 @@ public class MiniSpirInstrumentRunner implements InstrumentRunner {
   }
 
   public String getMirPath() {
-    return mirPath;
+    if(new File(this.mirPath).exists()) {
+      return mirPath;
+    } else {
+      log.error("The path {} was not found, please make sure that you installed winspiroPro software to that path.", mirPath);
+      throw new RuntimeException();
+    }
   }
 
   public void setMirPath(String mirPath) {
