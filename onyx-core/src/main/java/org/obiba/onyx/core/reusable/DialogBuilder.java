@@ -10,9 +10,7 @@
 package org.obiba.onyx.core.reusable;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
-import org.obiba.onyx.core.reusable.Dialog.Status;
 
 /**
  * Builder created to make easier the use of Dialog class in the application
@@ -21,17 +19,11 @@ public class DialogBuilder {
 
   private Dialog dialog;
 
-  private static final Dialog.WindowClosedCallback WINDOW_CLOSED_CALLBACK = new Dialog.WindowClosedCallback() {
-    public void onClose(AjaxRequestTarget target, Status status) {
-    }
-  };
-
   private DialogBuilder(String id, Dialog.Type type, Component content, Dialog.Option option, String... labels) {
     dialog = new Dialog(id);
     dialog.setType(type);
     dialog.setOptions(option, labels);
     dialog.setContent(content);
-    dialog.setWindowClosedCallback(WINDOW_CLOSED_CALLBACK);
   }
 
   public static DialogBuilder buildWarningDialog(String id, String title, Component content) {

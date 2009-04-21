@@ -59,8 +59,6 @@ import org.obiba.onyx.core.domain.participant.RecruitmentType;
 import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.reusable.Dialog;
 import org.obiba.onyx.core.reusable.Dialog.Option;
-import org.obiba.onyx.core.reusable.Dialog.Status;
-import org.obiba.onyx.core.reusable.Dialog.WindowClosedCallback;
 import org.obiba.onyx.core.service.InterviewManager;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.core.service.UserSessionService;
@@ -227,12 +225,6 @@ public class ParticipantSearchPage extends BasePage {
     participantDialog.setInitialWidth(507);
     participantDialog.setType(Dialog.Type.PLAIN);
     participantDialog.setOptions(Dialog.Option.CLOSE_OPTION);
-    participantDialog.setWindowClosedCallback(new WindowClosedCallback() {
-      public void onClose(AjaxRequestTarget target, Status status) {
-        // TODO Auto-generated method stub
-
-      }
-    });
     return participantDialog;
   }
 

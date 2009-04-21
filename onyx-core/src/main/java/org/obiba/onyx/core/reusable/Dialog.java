@@ -127,6 +127,14 @@ public class Dialog extends ModalWindow {
     closeButton.add(new AttributeModifier("value", true, new StringResourceModel("Dialog.Close", this, null)));
     form.add(closeButton);
 
+    this.setWindowClosedCallback(new WindowClosedCallback() {
+      private static final long serialVersionUID = 1L;
+
+      public void onClose(AjaxRequestTarget target, Status status) {
+        // TODO Auto-generated method stub
+      }
+    });
+
     WebMarkupContainer modalContent = new WebMarkupContainer(getContentId());
     modalContent.setOutputMarkupId(true);
     modalContent.add(form);
