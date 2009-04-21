@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -83,32 +84,103 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
     systolicPressure = instrumentExecutionService.getInputParameterValue("INPUT_SYSTOLIC_PRESSURE").getValue();
     diastolicPressure = instrumentExecutionService.getInputParameterValue("INPUT_DIASTOLIC_PRESSURE").getValue();
 
-    writeSphygmoCorInputFile();
+    writeSphygmocorInputFiles();
 
   }
 
-  private void writeSphygmoCorInputFile() {
-    BufferedWriter localInputFile = null;
+  private class InputFileWriter extends BufferedWriter {
+
+    public InputFileWriter(Writer out) {
+      super(out);
+    }
+
+    public void writeSection(String sectionName) throws IOException {
+      this.write("[" + sectionName + "]\n");
+    }
+
+    public void writeValue(String keyName, Object keyValue) throws IOException {
+      this.write(keyName + "=" + keyValue + "\n");
+    }
+  }
+
+  private void writeSphygmocorInputFiles() {
+
+    // Write Sphygmocor V8.2 input file for backward compatibility.
+    writeSphygmocor82InputFile();
+
+    writeSphygmocor90InputFile();
+
+  }
+
+  private void writeSphygmocor82InputFile() {
+    SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
+    InputFileWriter localInputFile = null;
     try {
-      localInputFile = new BufferedWriter(new FileWriter(externalAppHelper.getWorkDir() + File.separator + "patient.txt"));
+      localInputFile = new InputFileWriter(new FileWriter(externalAppHelper.getWorkDir() + File.separator + "patient.txt"));
+
       localInputFile.write(participantLastName + "\n");
       localInputFile.write(participantFirstName + "\n");
-
-      SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-      localInputFile.write(formatter.format(participantBirthDate) + "\n");
-
+      localInputFile.write(dateFormatter.format(participantBirthDate) + "\n");
       localInputFile.write(participantGender + "\n");
       localInputFile.write(participantId + "\n");
       localInputFile.write(systolicPressure + "\n");
       localInputFile.write(diastolicPressure + "\n");
     } catch(IOException e) {
-      log.error("Could not write input file!");
+      log.error("Could not write Sphymocor V8.2 input file!");
       throw new RuntimeException(e);
     } finally {
       try {
         localInputFile.close();
       } catch(Exception e) {
       }
+    }
+  }
+
+  private void writeSphygmocor90InputFile() {
+
+    SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
+    InputFileWriter localInputFile = null;
+    try {
+      localInputFile = new InputFileWriter(new FileWriter(externalAppHelper.getWorkDir() + File.separator + "inbound.ini"));
+
+      localInputFile.writeSection("REQUIRED");
+      localInputFile.writeValue("SYSTEMID", getSphygmocorSystemId());
+      localInputFile.writeValue("LASTNAME", participantLastName);
+      localInputFile.writeValue("FIRSTNAME", participantFirstName);
+      localInputFile.writeValue("DOB", dateFormatter.format(participantBirthDate));
+      localInputFile.writeValue("SEX", participantGender);
+
+      localInputFile.writeSection("PATIENT");
+      localInputFile.writeValue("PATIENTID", participantId);
+
+      localInputFile.writeSection("STUDY");
+      localInputFile.writeValue("SP", systolicPressure);
+      localInputFile.writeValue("DP", diastolicPressure);
+
+      localInputFile.writeSection("EXPORT");
+      localInputFile.writeValue("OPTION", 0);
+      localInputFile.writeValue("AUTOMATIC", 1);
+      localInputFile.writeValue("SHUTDOWN", 0);
+    } catch(IOException e) {
+      log.error("Could not write Sphymocor V9.0 input file!");
+      throw new RuntimeException(e);
+    } finally {
+      try {
+        localInputFile.close();
+      } catch(Exception e) {
+      }
+    }
+  }
+
+  private String getSphygmocorSystemId() {
+    try {
+      Data sphygmocorSystemId = instrumentExecutionService.getInputParameterValue("SPHYGMOCOR_SYSTEM_ID");
+      log.info("The Sphymocor system id is : {}", sphygmocorSystemId.getValue());
+      return sphygmocorSystemId.getValue();
+    } catch(IllegalArgumentException ex) {
+      // If this has not been defined, the default value is "01400".
+      log.info("The Sphymocor system was not found, using the default value : 01400");
+      return "01400";
     }
   }
 
@@ -221,7 +293,7 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
 
     // Generates the correct file name identifier so we retrieve the files that belongs with this measurement.
     SimpleDateFormat formatter = new SimpleDateFormat("ddMMMyyyy-HHmmss");
-    String fileIdentifier = "_" + familyName + "_" + formatter.format((Date) data.get("DATETIME"));
+    String fileIdentifier = "_" + familyName + "_" + formatter.format((Date) data.get("DATETIME")) + "_pwa";
     log.debug("The following filename identifier will be used to retrieve the exported screenshots : {}", fileIdentifier);
 
     // Add export files to output.
@@ -287,7 +359,14 @@ public class SphygmoCorInstrumentRunner implements InstrumentRunner {
   }
 
   private File getExportDir() {
-    return new File(externalAppHelper.getWorkDir() + File.separator + "export");
+    File sphygmocor90OutputDir = new File(externalAppHelper.getWorkDir() + File.separator + "EMROutput" + File.separator + "INBOUND");
+    if(sphygmocor90OutputDir.exists()) {
+      return sphygmocor90OutputDir;
+
+      // Support Sphygmocor V8.2 output directory for backward compatibility.
+    } else {
+      return new File(externalAppHelper.getWorkDir() + File.separator + "export");
+    }
   }
 
   public ExternalAppLauncherHelper getExternalAppHelper() {

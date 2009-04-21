@@ -93,14 +93,12 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     getPersistenceManager().save(currentRun);
   }
 
-  @Transactional(readOnly = true)
   public Participant getParticipant() {
     if(currentRunId == null) return null;
 
     return getInstrumentRun().getParticipant();
   }
 
-  @Transactional(readOnly = true)
   public InstrumentType getInstrumentType() {
     String instrumentTypeName = getInstrumentRun().getInstrumentType();
 
@@ -111,17 +109,14 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     getInstrumentRun().setInstrument(instrument);
   }
 
-  @Transactional(readOnly = true)
   public Instrument getInstrument() {
     return getInstrumentRun().getInstrument();
   }
 
-  @Transactional(readOnly = true)
   public InstrumentParameter getParameterByCode(String code) {
     return instrumentService.getParameterByCode(getInstrumentType(), code);
   }
 
-  @Transactional(readOnly = true)
   public InstrumentParameter getParameterByVendorName(String vendorName) {
     if(vendorName == null) throw new IllegalArgumentException("name cannot be null.");
     for(InstrumentParameter parameter : getInstrumentType().getInstrumentParameters()) {
@@ -132,12 +127,10 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return null;
   }
 
-  @Transactional(readOnly = true)
   public boolean hasInterpretativeParameter(ParticipantInteractionType type) {
     return !getInterpretativeParameters(type).isEmpty();
   }
 
-  @Transactional(readOnly = true)
   public List<InterpretativeParameter> getInterpretativeParameters(ParticipantInteractionType type) {
     List<InterpretativeParameter> interpretativeParameters = new ArrayList<InterpretativeParameter>();
 
@@ -156,32 +149,26 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return interpretativeParameters;
   }
 
-  @Transactional(readOnly = true)
   public boolean hasInterpretativeParameter() {
     return !getInterpretativeParameters(null).isEmpty();
   }
 
-  @Transactional(readOnly = true)
   public List<InterpretativeParameter> getInterpretativeParameters() {
     return getInterpretativeParameters(null);
   }
 
-  @Transactional(readOnly = true)
   public boolean hasInputParameter(boolean readOnly) {
     return !getInputParameters(readOnly).isEmpty();
   }
 
-  @Transactional(readOnly = true)
   public List<InstrumentInputParameter> getInputParameters(boolean readOnly) {
     return instrumentService.getInstrumentInputParameter(getInstrumentType(), readOnly);
   }
 
-  @Transactional(readOnly = true)
   public boolean hasInputParameter(InstrumentParameterCaptureMethod captureMethod) {
     return !getInputParameters(captureMethod).isEmpty();
   }
 
-  @Transactional(readOnly = true)
   public List<InstrumentInputParameter> getInputParameters(InstrumentParameterCaptureMethod captureMethod) {
     List<InstrumentInputParameter> inputParameters = new ArrayList<InstrumentInputParameter>();
 
@@ -201,12 +188,10 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return inputParameters;
   }
 
-  @Transactional(readOnly = true)
   public boolean hasInputParameter() {
     return !getInputParameters().isEmpty();
   }
 
-  @Transactional(readOnly = true)
   public List<InstrumentInputParameter> getInputParameters() {
     List<InstrumentInputParameter> inputParameters = new ArrayList<InstrumentInputParameter>();
 
@@ -222,22 +207,18 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return inputParameters;
   }
 
-  @Transactional(readOnly = true)
   public boolean hasOutputParameter(InstrumentParameterCaptureMethod captureMethod) {
     return !getOutputParameters(captureMethod).isEmpty();
   }
 
-  @Transactional(readOnly = true)
   public List<InstrumentOutputParameter> getOutputParameters(InstrumentParameterCaptureMethod captureMethod) {
     return instrumentService.getOutputParameters(getInstrumentType(), captureMethod);
   }
 
-  @Transactional(readOnly = true)
   public boolean hasOutputParameter(boolean automatic) {
     return !getOutputParameters(automatic).isEmpty();
   }
 
-  @Transactional(readOnly = true)
   public List<InstrumentOutputParameter> getOutputParameters(boolean automatic) {
     List<InstrumentOutputParameter> outputParameters = new ArrayList<InstrumentOutputParameter>();
 
@@ -254,12 +235,10 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return outputParameters;
   }
 
-  @Transactional(readOnly = true)
   public boolean hasOutputParameter() {
     return !getOutputParameters().isEmpty();
   }
 
-  @Transactional(readOnly = true)
   public List<InstrumentOutputParameter> getOutputParameters() {
     List<InstrumentOutputParameter> outputParameters = new ArrayList<InstrumentOutputParameter>();
 
@@ -275,12 +254,10 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return outputParameters;
   }
 
-  @Transactional(readOnly = true)
   public boolean hasParameterWithWarning() {
     return !getParametersWithWarning().isEmpty();
   }
 
-  @Transactional(readOnly = true)
   public List<InstrumentOutputParameter> getParametersWithWarning() {
     List<InstrumentOutputParameter> paramsWithWarnings = new ArrayList<InstrumentOutputParameter>();
 
@@ -324,7 +301,6 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     }
   }
 
-  @Transactional(readOnly = true)
   public InstrumentRun getInstrumentRun() {
     log.debug("currentRunId={}", currentRunId);
     if(currentRunId == null) return null;
@@ -344,7 +320,6 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     getPersistenceManager().save(currentRun);
   }
 
-  @Transactional(readOnly = true)
   public InstrumentRunStatus getInstrumentRunStatus() {
     return getInstrumentRun().getStatus();
   }
@@ -393,7 +368,6 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     }
   }
 
-  @Transactional(readOnly = true)
   public InstrumentRunValue getOutputInstrumentRunValue(String parameterCode) {
     if(currentRunId == null) return null;
 
@@ -408,7 +382,6 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return getInstrumentRunValue(instrumentOutputParameter);
   }
 
-  @Transactional(readOnly = true)
   public InstrumentRunValue getOutputInstrumentRunValueByVendorName(String parameterVendorName) {
     if(currentRunId == null) return null;
 
@@ -423,7 +396,6 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return getInstrumentRunValue(instrumentOutputParameter);
   }
 
-  @Transactional(readOnly = true)
   public InstrumentRunValue getInputInstrumentRunValue(String parameterCode) {
     if(currentRunId == null) return null;
 
@@ -438,7 +410,6 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return getInstrumentRunValue(instrumentInputParameter);
   }
 
-  @Transactional(readOnly = true)
   public InstrumentRunValue getInterpretativeInstrumentRunValue(String parameterCode) {
     if(currentRunId == null) return null;
 
@@ -453,7 +424,6 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return getInstrumentRunValue(instrumentInterpretativeParameter);
   }
 
-  @Transactional(readOnly = true)
   public InstrumentRunValue getInstrumentRunValue(InstrumentParameter parameter) {
     if(parameter == null) throw new IllegalArgumentException("Cannot retrieve a run value from a null instrument parameter.");
     InstrumentRun instrumentRun = getInstrumentRun();
@@ -504,7 +474,6 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
   // IContraindicatable Methods
   //
 
-  @Transactional(readOnly = true)
   public List<Contraindication> getContraindications(Contraindication.Type type) {
     List<Contraindication> contraindications = new ArrayList<Contraindication>();
 
@@ -517,12 +486,10 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return contraindications;
   }
 
-  @Transactional(readOnly = true)
   public boolean hasContraindications(Contraindication.Type type) {
     return !getContraindications(type).isEmpty();
   }
 
-  @Transactional(readOnly = true)
   public Contraindication getContraindication() {
     InstrumentType instrumentType = getInstrumentType();
     InstrumentRun instrumentRun = getInstrumentRun();
@@ -533,7 +500,6 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     return null;
   }
 
-  @Transactional(readOnly = true)
   public boolean isContraindicated() {
     return getInstrumentRun().getContraindication() != null;
   }
@@ -546,7 +512,6 @@ public class DefaultActiveInstrumentRunServiceImpl extends PersistenceManagerAwa
     getInstrumentRun().setOtherContraindication(other);
   }
 
-  @Transactional(readOnly = true)
   public String getOtherContraindication() {
     return getInstrumentRun().getOtherContraindication();
   }

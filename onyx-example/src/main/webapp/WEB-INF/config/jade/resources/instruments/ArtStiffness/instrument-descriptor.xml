@@ -12,6 +12,16 @@
   </contraindications> -->
 
   <instrumentParameters>
+  
+    <input>
+      <code>SPHYGMOCOR_SYSTEM_ID</code>
+      <dataType>TEXT</dataType>
+      <captureMethod>AUTOMATIC</captureMethod>
+      <dataSource class="fixedDataSource">
+        <data type="TEXT">01400</data>
+      </dataSource>
+    </input>  
+  
     <input>
       <code>INPUT_PARTICIPANT_LAST_NAME</code>
       <dataType>TEXT</dataType>
