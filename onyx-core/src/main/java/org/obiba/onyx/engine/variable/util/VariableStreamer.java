@@ -60,6 +60,8 @@ public class VariableStreamer {
 
   private static final String UNIT = "Unit";
 
+  private static final String MULTIPLE = "Multiple";
+
   /**
    * The de-serializer.
    */
@@ -303,6 +305,8 @@ public class VariableStreamer {
     cell.setCellValue(new HSSFRichTextString(TYPE));
     cell = row.createCell(6);
     cell.setCellValue(new HSSFRichTextString(UNIT));
+    cell = row.createCell(7);
+    cell.setCellValue(new HSSFRichTextString(MULTIPLE));
 
     HSSFRichTextString str = new HSSFRichTextString();
     str.clearFormatting();
@@ -341,6 +345,10 @@ public class VariableStreamer {
       cell.setCellValue(new HSSFRichTextString(variable.getDataType().toString()));
       cell = row.createCell(6);
       cell.setCellValue(new HSSFRichTextString(variable.getUnit()));
+      if(variable.isMultiple()) {
+        cell = row.createCell(7);
+        cell.setCellValue(new HSSFRichTextString("x"));
+      }
       rowCount++;
     }
     for(Variable child : variable.getVariables()) {
