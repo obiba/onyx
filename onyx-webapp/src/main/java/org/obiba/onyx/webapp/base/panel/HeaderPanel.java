@@ -56,6 +56,17 @@ public class HeaderPanel extends Panel {
       }
     });
 
+    Link helpLink = new Link("help") {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick() {
+      }
+    };
+    helpLink.setEnabled(false);
+    add(helpLink);
+
     add(new Link("quit") {
 
       private static final long serialVersionUID = 1L;
