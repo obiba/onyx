@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.obiba.core.service.EntityQueryService;
+import org.obiba.onyx.core.domain.application.ApplicationConfiguration;
 import org.obiba.onyx.core.domain.participant.Interview;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
@@ -22,6 +23,7 @@ import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
 import org.obiba.onyx.core.domain.user.Role;
 import org.obiba.onyx.core.domain.user.Status;
 import org.obiba.onyx.core.domain.user.User;
+import org.obiba.onyx.core.service.ApplicationConfigurationService;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.util.data.Data;
@@ -42,6 +44,14 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
   public static final String ADMIN = "Admin";
 
   public static final String ONYX_VERSION = "onyxVersion";
+
+  public static final String APPLICATION_CONFIGURATION = "ApplicationConfiguration";
+
+  public static final String SITE_CODE = "siteCode";
+
+  public static final String SITE_NAME = "siteName";
+
+  public static final String STUDY_NAME = "studyName";
 
   public static final String PARTICIPANT = "Participant";
 
@@ -112,6 +122,8 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
   private ParticipantService participantService;
 
   private EntityQueryService queryService;
+
+  private ApplicationConfigurationService applicationConfigurationService;
 
   private Version version;
 
@@ -220,6 +232,19 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
     } else if(variable.getName().equals(ONYX_VERSION)) {
       varData.addData(DataBuilder.buildText(version.toString()));
+    } else if(variable.getParent().getName().equals(APPLICATION_CONFIGURATION)) {
+
+      if(applicationConfigurationService.getApplicationConfiguration() != null) {
+        ApplicationConfiguration appConfig = applicationConfigurationService.getApplicationConfiguration();
+
+        if(variable.getName().equals(SITE_CODE) && appConfig.getSiteNo() != null) {
+          varData.addData(DataBuilder.buildText(appConfig.getSiteNo()));
+        } else if(variable.getName().equals(SITE_NAME) && appConfig.getSiteName() != null) {
+          varData.addData(DataBuilder.buildText(appConfig.getSiteName()));
+        } else if(variable.getName().equals(STUDY_NAME) && appConfig.getStudyName() != null) {
+          varData.addData(DataBuilder.buildText(appConfig.getStudyName()));
+        }
+      }
     }
 
     return varData;
@@ -233,7 +258,12 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
     admin.addVariable(new Variable(ONYX_VERSION).setDataType(DataType.TEXT));
 
-    Variable entity = admin.addVariable(new Variable(PARTICIPANT));
+    Variable entity = admin.addVariable(new Variable(APPLICATION_CONFIGURATION));
+    entity.addVariable(new Variable(SITE_CODE).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(SITE_NAME).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(STUDY_NAME).setDataType(DataType.TEXT));
+
+    entity = admin.addVariable(new Variable(PARTICIPANT));
     entity.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT).setKey(PARTICIPANT_KEY));
     entity.addVariable(new Variable(ENROLLMENT_ID).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
     entity.addVariable(new Variable(APPOINTMENT_DATE).setDataType(DataType.DATE)).addReference(PARTICIPANT_KEY);
@@ -338,6 +368,10 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
     }
 
     return actionVariable;
+  }
+
+  public void setApplicationConfigurationService(ApplicationConfigurationService applicationConfigurationService) {
+    this.applicationConfigurationService = applicationConfigurationService;
   }
 
 }
