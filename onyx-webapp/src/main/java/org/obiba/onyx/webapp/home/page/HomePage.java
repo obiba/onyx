@@ -69,7 +69,7 @@ public class HomePage extends BasePage {
 
       public boolean onCloseButtonClicked(AjaxRequestTarget target, Status status) {
 
-        if(status.equals(Dialog.Status.YES)) {
+        if(status != null && status.equals(Dialog.Status.YES)) {
           interviewManager.overrideInterview(content.getParticipant());
           setResponsePage(InterviewPage.class);
         }
