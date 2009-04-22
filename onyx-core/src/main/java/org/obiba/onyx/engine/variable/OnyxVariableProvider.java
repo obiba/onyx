@@ -55,8 +55,6 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
 
   public static final String PARTICIPANT = "Participant";
 
-  public static final String PARTICIPANT_KEY = "participant";
-
   public static final String BARCODE = "barcode";
 
   public static final String ENROLLMENT_ID = "enrollmentId";
@@ -264,18 +262,18 @@ public class OnyxVariableProvider implements IVariableProvider, IActionVariableP
     entity.addVariable(new Variable(STUDY_NAME).setDataType(DataType.TEXT));
 
     entity = admin.addVariable(new Variable(PARTICIPANT));
-    entity.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT).setKey(PARTICIPANT_KEY));
-    entity.addVariable(new Variable(ENROLLMENT_ID).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
-    entity.addVariable(new Variable(APPOINTMENT_DATE).setDataType(DataType.DATE)).addReference(PARTICIPANT_KEY);
-    entity.addVariable(new Variable(GENDER).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
-    entity.addVariable(new Variable(FIRST_NAME).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
-    entity.addVariable(new Variable(LAST_NAME).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
-    entity.addVariable(new Variable(BIRTH_DATE).setDataType(DataType.DATE)).addReference(PARTICIPANT_KEY);
-    entity.addVariable(new Variable(BIRTH_YEAR).setDataType(DataType.INTEGER)).addReference(PARTICIPANT_KEY);
-    entity.addVariable(new Variable(SITENO).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
-    entity.addVariable(new Variable(RECRUITMENT_TYPE).setDataType(DataType.TEXT)).addReference(PARTICIPANT_KEY);
+    entity.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(ENROLLMENT_ID).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(APPOINTMENT_DATE).setDataType(DataType.DATE));
+    entity.addVariable(new Variable(GENDER).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(FIRST_NAME).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(LAST_NAME).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(BIRTH_DATE).setDataType(DataType.DATE));
+    entity.addVariable(new Variable(BIRTH_YEAR).setDataType(DataType.INTEGER));
+    entity.addVariable(new Variable(SITENO).setDataType(DataType.TEXT));
+    entity.addVariable(new Variable(RECRUITMENT_TYPE).setDataType(DataType.TEXT));
     for(ParticipantAttribute attribute : participantMetadata.getConfiguredAttributes()) {
-      entity.addVariable(new Variable(attribute.getName()).setDataType(attribute.getType())).addReference(PARTICIPANT_KEY);
+      entity.addVariable(new Variable(attribute.getName()).setDataType(attribute.getType()));
     }
 
     entity = admin.addVariable(new Variable(INTERVIEW));
