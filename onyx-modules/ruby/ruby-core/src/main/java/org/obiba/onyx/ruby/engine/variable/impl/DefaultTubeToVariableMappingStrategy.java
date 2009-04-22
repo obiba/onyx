@@ -88,7 +88,8 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
 
     Variable tubeVariable = new Variable(REGISTERED_PARTICIPANT_TUBE);
 
-    tubeVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT).setKey(TUBE_KEY));
+    tubeVariable.addVariable(new Variable(TUBE_KEY).setDataType(DataType.INTEGER).setKey(TUBE_KEY));
+    tubeVariable.addVariable(new Variable(BARCODE).setDataType(DataType.TEXT)).addReference(TUBE_KEY);
     tubeVariable.addVariable(new Variable(REGISTRATION_TIME).setDataType(DataType.DATE)).addReference(TUBE_KEY);
     tubeVariable.addVariable(new Variable(COMMENT).setDataType(DataType.TEXT)).addReference(TUBE_KEY);
     tubeVariable.addVariable(new Variable(REMARK_CODE).setDataType(DataType.TEXT)).addReference(TUBE_KEY);
@@ -130,8 +131,10 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
       for(RegisteredParticipantTube registeredTube : queryService.match(template)) {
         List<Data> datas = new ArrayList<Data>();
 
-        if(variable.getName().equals(BARCODE)) {
-          varData.addData(DataBuilder.build(registeredTube.getBarcode()));
+        if(variable.getName().equals(TUBE_KEY)) {
+          varData.addData(DataBuilder.build(registeredTube.getId()));
+        } else if(variable.getName().equals(BARCODE)) {
+          datas.add(DataBuilder.build(registeredTube.getBarcode()));
         } else if(variable.getName().equals(COMMENT) && registeredTube.getComment() != null) {
           datas.add(DataBuilder.buildText(registeredTube.getComment()));
         } else if(variable.getName().equals(REGISTRATION_TIME) && registeredTube.getRegistrationTime() != null) {
@@ -144,7 +147,7 @@ public class DefaultTubeToVariableMappingStrategy implements ITubeToVariableMapp
 
         if(datas.size() > 0) {
 
-          VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, TUBE_KEY, registeredTube.getBarcode()));
+          VariableData childVarData = new VariableData(variablePathNamingStrategy.getPath(variable, TUBE_KEY, registeredTube.getId().toString()));
           varData.addVariableData(childVarData);
           for(Data data : datas) {
             childVarData.addData(data);
