@@ -47,6 +47,8 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
   private static final String PDF_ATTRIBUTE = "pdfForm";
 
   private ApplicationContext applicationContext;
+  
+  private IActionVariableProvider actionVariableProvider;
 
   private ConsentService consentService;
 
