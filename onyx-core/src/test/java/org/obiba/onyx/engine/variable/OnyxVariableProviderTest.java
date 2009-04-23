@@ -21,7 +21,6 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.wicket.spring.test.ApplicationContextMock;
-import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.obiba.core.service.EntityQueryService;
@@ -30,8 +29,6 @@ import org.obiba.onyx.core.domain.participant.InterviewStatus;
 import org.obiba.onyx.core.domain.participant.Participant;
 import org.obiba.onyx.core.domain.participant.ParticipantAttribute;
 import org.obiba.onyx.core.domain.participant.ParticipantMetadata;
-import org.obiba.onyx.core.domain.user.Role;
-import org.obiba.onyx.core.domain.user.User;
 import org.obiba.onyx.core.service.ParticipantService;
 import org.obiba.onyx.engine.Action;
 import org.obiba.onyx.engine.variable.impl.DefaultVariablePathNamingStrategy;
@@ -90,7 +87,7 @@ public class OnyxVariableProviderTest {
     Assert.assertEquals(1, root.getVariables().size());
     Variable variable = root.getVariable(OnyxVariableProvider.ADMIN);
     Assert.assertNotNull(variable);
-    Assert.assertEquals(4, variable.getVariables().size());
+    Assert.assertEquals(3, variable.getVariables().size());
 
     Variable subVar = variable.getVariable(OnyxVariableProvider.PARTICIPANT);
     Assert.assertNotNull(subVar);
@@ -101,9 +98,6 @@ public class OnyxVariableProviderTest {
     Assert.assertNotNull(subVar);
 
     subVar = variable.getVariable(OnyxVariableProvider.ACTION);
-    Assert.assertNotNull(subVar);
-
-    subVar = variable.getVariable(OnyxVariableProvider.USER);
     Assert.assertNotNull(subVar);
   }
 
@@ -246,88 +240,6 @@ public class OnyxVariableProviderTest {
     Assert.assertEquals("tata", subVarData.getDatas().get(0).getValueAsString());
 
     verify(participantServiceMock);
-  }
-
-  @Test
-  public void testUser() {
-    Variable root = createVariable();
-
-    Variable variable = root.getVariable(OnyxVariableProvider.ADMIN).getVariable(OnyxVariableProvider.USER).getVariable(OnyxVariableProvider.USER_LOGIN);
-    Assert.assertNotNull(variable);
-    Assert.assertEquals(OnyxVariableProvider.USER_KEY, variable.getKey());
-
-    Participant participant = new Participant();
-    List<User> users = new ArrayList<User>();
-
-    User user = new User();
-    user.setLogin("toto");
-    users.add(user);
-
-    user = new User();
-    user.setLogin("tata");
-    users.add(user);
-
-    expect(queryServiceMock.match((User) EasyMock.anyObject())).andReturn(users);
-    replay(queryServiceMock);
-
-    VariableData varData = variableProvider.getVariableData(participant, variable, variablePathNamingStrategy);
-    Assert.assertNotNull(varData);
-    Assert.assertEquals(2, varData.getDatas().size());
-    Assert.assertEquals(DataType.TEXT, varData.getDatas().get(0).getType());
-    Assert.assertEquals("toto", varData.getDatas().get(0).getValue());
-
-    Assert.assertEquals(DataType.TEXT, varData.getDatas().get(1).getType());
-    Assert.assertEquals("tata", varData.getDatas().get(1).getValue());
-
-    verify(queryServiceMock);
-  }
-
-  @Test
-  public void testUserRoles() {
-    Variable root = createVariable();
-
-    Variable variable = root.getVariable(OnyxVariableProvider.ADMIN).getVariable(OnyxVariableProvider.USER).getVariable(OnyxVariableProvider.USER_ROLES);
-    Assert.assertNotNull(variable);
-    Assert.assertEquals(1, variable.getReferences().size());
-    Assert.assertEquals(OnyxVariableProvider.USER_KEY, variable.getReferences().get(0));
-
-    Participant participant = new Participant();
-    List<User> users = new ArrayList<User>();
-
-    User user = new User();
-    user.setLogin("toto");
-    user.addRole(Role.DATA_COLLECTION_OPERATOR);
-    user.addRole(Role.PARTICIPANT_MANAGER);
-    users.add(user);
-
-    user = new User();
-    user.setLogin("tata");
-    user.addRole(Role.SYSTEM_ADMINISTRATOR);
-    users.add(user);
-
-    expect(queryServiceMock.match((User) EasyMock.anyObject())).andReturn(users);
-    replay(queryServiceMock);
-
-    VariableData varData = variableProvider.getVariableData(participant, variable, variablePathNamingStrategy);
-    Assert.assertNotNull(varData);
-    Assert.assertEquals("/Root/Admin/User/roles", varData.getVariablePath());
-    Assert.assertEquals(0, varData.getDatas().size());
-    Assert.assertEquals(2, varData.getVariableDatas().size());
-
-    VariableData subVarData = varData.getVariableDatas().get(0);
-    Assert.assertEquals("/Root/Admin/User/roles?user=toto", subVarData.getVariablePath());
-    Assert.assertEquals(2, subVarData.getDatas().size());
-    Assert.assertEquals(DataType.TEXT, subVarData.getDatas().get(0).getType());
-    Assert.assertEquals(Role.DATA_COLLECTION_OPERATOR.toString(), subVarData.getDatas().get(0).getValue());
-    Assert.assertEquals(Role.PARTICIPANT_MANAGER.toString(), subVarData.getDatas().get(1).getValue());
-
-    subVarData = varData.getVariableDatas().get(1);
-    Assert.assertEquals("/Root/Admin/User/roles?user=tata", subVarData.getVariablePath());
-    Assert.assertEquals(1, subVarData.getDatas().size());
-    Assert.assertEquals(DataType.TEXT, subVarData.getDatas().get(0).getType());
-    Assert.assertEquals(Role.SYSTEM_ADMINISTRATOR.toString(), subVarData.getDatas().get(0).getValue());
-
-    verify(queryServiceMock);
   }
 
   private Variable createVariable() {
