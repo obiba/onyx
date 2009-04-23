@@ -65,8 +65,6 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
 
   private ApplicationContext applicationContext;
 
-  private IActionVariableProvider actionVariableProvider;
-
   private ActiveInterviewService activeInterviewService;
 
   private ITubeToVariableMappingStrategy tubeToVariableMappingStrategy;
@@ -140,10 +138,6 @@ public class RubyModule implements Module, IVariableProvider, ApplicationContext
   //
   // Methods
   //
-
-  public void setActionVariableProvider(IActionVariableProvider actionVariableProvider) {
-    this.actionVariableProvider = actionVariableProvider;
-  }
 
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
     this.activeInterviewService = activeInterviewService;

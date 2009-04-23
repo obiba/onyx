@@ -50,8 +50,6 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
 
   private ConsentService consentService;
 
-  private IActionVariableProvider actionVariableProvider;
-
   private List<Stage> stages;
 
   public IStageExecution createStageExecution(Interview interview, Stage stage) {
@@ -95,10 +93,6 @@ public class MarbleModule implements Module, IVariableProvider, ApplicationConte
 
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
-  }
-
-  public void setActionVariableProvider(IActionVariableProvider actionVariableProvider) {
-    this.actionVariableProvider = actionVariableProvider;
   }
 
   public void setConsentService(ConsentService consentService) {

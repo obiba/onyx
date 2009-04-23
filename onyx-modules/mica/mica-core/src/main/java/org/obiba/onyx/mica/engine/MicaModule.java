@@ -49,8 +49,6 @@ public class MicaModule implements Module, IVariableProvider, ApplicationContext
 
   private ActiveInterviewService activeInterviewService;
 
-  private IActionVariableProvider actionVariableProvider;
-
   private EntityQueryService queryService;
 
   private List<Stage> stages;
@@ -123,10 +121,6 @@ public class MicaModule implements Module, IVariableProvider, ApplicationContext
 
   public void setActiveInterviewService(ActiveInterviewService activeInterviewService) {
     this.activeInterviewService = activeInterviewService;
-  }
-
-  public void setActionVariableProvider(IActionVariableProvider actionVariableProvider) {
-    this.actionVariableProvider = actionVariableProvider;
   }
 
   public void setQueryService(EntityQueryService queryService) {
