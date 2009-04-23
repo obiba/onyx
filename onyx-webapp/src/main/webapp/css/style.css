@@ -1146,6 +1146,11 @@ background-position:100% -82px; /*Shift background image up to start of 2nd tab 
 	width:453px;
 }
 
+.h2-short span {
+  font-weight: bold;
+  font-size: 12px;
+}
+
 /******************* End Content Region ********************************************/
 
 /******************* Buttons *******************************************************/
